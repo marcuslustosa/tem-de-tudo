@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Perfil Usuário - Tem de Tudo</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Dark mode style for profile page */
+    .dashboard {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+      color: var(--color-text);
+    }
+    .card {
+      background: var(--color-card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 12px var(--color-shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card h2 {
+      color: var(--color-primary);
+      margin-bottom: 1rem;
+    }
+    .points-total {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    ul li {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #333;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <img src="assets/images/logo.png.png" alt="Tem de Tudo Logo" style="height: 50px;" />
+      </div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="profile-client.html" class="active">Perfil</a></li>
+        <li><a href="logout.html">Sair</a></li>
+      </ul>
+      <div class="menu-toggle" id="menu-toggle">&#9776;</div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="dashboard">
+      <div class="card">
+        <h2>Seus Pontos</h2>
+        <div class="points-total" id="points-total">0</div>
+      </div>
+      <div class="card">
+        <h2>Ofertas Disponíveis</h2>
+        <ul id="offers-list">
+          <!-- Ofertas carregadas via JS -->
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Histórico de Transações</h2>
+        <ul id="history-list">
+          <!-- Histórico carregado via JS -->
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Dados fictícios para demonstração
+      document.getElementById('points-total').textContent = '1.500';
+
+      const offersList = document.getElementById('offers-list');
+      offersList.innerHTML = '<li>10% de desconto na Loja A</li><li>Brinde na Loja B</li><li>Frete grátis na Loja C</li>';
+
+      const historyList = document.getElementById('history-list');
+      historyList.innerHTML = '<li>Resgatou 100 pontos na Loja A</li><li>Acumulou 200 pontos na Loja C</li><li>Resgatou 50 pontos na Loja B</li>';
+    });
+  </script>
+</body>
+</html>
