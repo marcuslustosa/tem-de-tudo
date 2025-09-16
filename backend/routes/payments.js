@@ -10,6 +10,6 @@ const paymentsController = require('../controllers/paymentsController');
 router.post('/', paymentsController.registerPayment);
 
 // Atualizar status do pagamento
-router.put('/status/:id', paymentsController.updatePaymentStatus);
+router.put('/:id/status', paymentsController.updatePaymentStatus);
 
 module.exports = router;

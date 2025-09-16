@@ -42,6 +42,8 @@ describe('API Tem de Tudo - Testes principais', () => {
         email,
         password: 'senha123'
       });
+    // Aguarda 500ms para garantir commit no banco
+    await new Promise(resolve => setTimeout(resolve, 500));
     const res = await request(app)
       .post('/api/auth/login')
       .send({
@@ -92,6 +94,14 @@ describe('API Tem de Tudo - Testes principais', () => {
       .send({ status: 'approved' });
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toBe('Status do pagamento atualizado.');
+  });
+
+  // Teste confirmação de pagamento da empresa
+  test('PUT /api/companies/confirm-payment/:id - Confirmar pagamento empresa', async () => {
+    const res = await request(app)
+      .put(`/api/companies/confirm-payment/${companyId}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.message).toBe('Pagamento confirmado para a empresa.');
   });
 
   // Teste aprovação de empresa (perfil master)

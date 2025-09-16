@@ -17,9 +17,9 @@ const validateQRCode = (qrCodeString) => {
   try {
     const data = JSON.parse(qrCodeString);
     // Aqui pode-se adicionar validações adicionais conforme a estrutura esperada
-    return data;
+    return true; // Retorna true se válido
   } catch (error) {
-    throw new Error('QR Code inválido');
+    return false; // Retorna false se inválido
   }
 };
 

@@ -9,13 +9,22 @@ describe('Testes Frontend Tem de Tudo', () => {
   let page;
 
   beforeAll(async () => {
-    browser = await puppeteer.launch();
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
     page = await browser.newPage();
-  });
+  }, 30000);
 
   afterAll(async () => {
-    await browser.close();
-  });
+    if (browser) {
+      try {
+        await browser.close();
+      } catch (error) {
+        console.error('Erro ao fechar o browser:', error);
+      }
+    }
+  }, 60000);
 
   test('Página inicial carrega corretamente', async () => {
     await page.goto('file://' + __dirname + '/../frontend/index.html');

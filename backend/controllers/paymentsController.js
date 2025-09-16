@@ -17,7 +17,7 @@ const registerPayment = async (req, res) => {
       transactionId: transactionId || null,
       status: 'pending',
     });
-    return res.status(201).json(payment);
+    return res.status(201).json({ message: 'Pagamento registrado.', paymentId: payment.id });
   } catch (error) {
     return res.status(500).json({ error: 'Erro ao registrar pagamento' });
   }
@@ -31,12 +31,12 @@ const updatePaymentStatus = async (req, res) => {
     if (!payment) {
       return res.status(404).json({ error: 'Pagamento não encontrado' });
     }
-    if (!['pending', 'confirmed', 'cancelled'].includes(status)) {
+    if (!['pending', 'confirmed', 'cancelled', 'approved'].includes(status)) {
       return res.status(400).json({ error: 'Status inválido' });
     }
     payment.status = status;
     await payment.save();
-    return res.status(200).json(payment);
+    return res.status(200).json({ message: 'Status do pagamento atualizado.' });
   } catch (error) {
     return res.status(500).json({ error: 'Erro ao atualizar status do pagamento' });
   }

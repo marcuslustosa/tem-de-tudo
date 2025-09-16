@@ -66,14 +66,14 @@ class CompaniesController {
         return res.status(404).json({ error: 'Empresa não encontrada.' });
       }
 
-      if (!company.paymentConfirmed) {
-        return res.status(400).json({ error: 'Pagamento não confirmado. Não é possível aprovar.' });
-      }
+if (!company.paymentConfirmed) {
+  return res.status(400).json({ error: 'Pagamento não confirmado. Não é possível aprovar.' });
+}
 
-      company.approved = true;
-      await company.save();
+company.approved = true;
+await company.save();
 
-      return res.status(200).json({ message: 'Empresa aprovada e liberada para anunciar.' });
+return res.status(200).json({ message: 'Empresa aprovada e liberada para anunciar.' });
     } catch (error) {
       console.error('Erro ao aprovar empresa:', error);
       return res.status(500).json({ error: 'Erro interno do servidor.' });
@@ -93,7 +93,7 @@ class CompaniesController {
       company.paymentConfirmed = true;
       await company.save();
 
-      return res.json({ message: 'Pagamento confirmado para a empresa.', company });
+      return res.status(200).json({ message: 'Pagamento confirmado para a empresa.' });
     } catch (error) {
       console.error('Erro ao confirmar pagamento:', error);
       return res.status(500).json({ error: 'Erro interno do servidor.' });

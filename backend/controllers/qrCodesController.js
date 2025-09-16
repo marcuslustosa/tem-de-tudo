@@ -6,26 +6,26 @@ const qrCodeService = require('../services/qrCodeService');
 
 const generateQRCode = async (req, res) => {
   try {
-    const { userId, companyId, points } = req.body;
-    if (!userId || !companyId || !points) {
+    const { userId } = req.body;
+    if (!userId) {
       return res.status(400).json({ error: 'Parâmetros insuficientes' });
     }
-    const data = { userId, companyId, points, timestamp: Date.now() };
+    const data = { userId, timestamp: Date.now() };
     const qrCode = await qrCodeService.generateQRCode(data);
-    return res.status(201).json({ qrCode });
+    return res.status(200).json({ qrCodeData: qrCode });
   } catch (error) {
     return res.status(500).json({ error: 'Erro ao gerar QR Code' });
   }
 };
 
-const validateQRCode = (req, res) => {
+const validateQRCode = async (req, res) => {
   try {
-    const { qrCodeString } = req.body;
-    if (!qrCodeString) {
+    const { qrCodeData } = req.body;
+    if (!qrCodeData) {
       return res.status(400).json({ error: 'QR Code não fornecido' });
     }
-    const data = qrCodeService.validateQRCode(qrCodeString);
-    return res.status(200).json({ data });
+    const data = await qrCodeService.validateQRCode(qrCodeData);
+    return res.status(200).json({ valid: data });
   } catch (error) {
     return res.status(400).json({ error: 'QR Code inválido' });
   }
