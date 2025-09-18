@@ -35,8 +35,8 @@ class Empresa extends Model
         return $this->hasMany(Ponto::class);
     }
 
-    // public function ofertas()
-    // {
-    //     return $this->hasMany(Oferta::class);
-    // }
+    public function ofertas()
+    {
+        return $this->hasMany(Oferta::class);
+    }
 }
