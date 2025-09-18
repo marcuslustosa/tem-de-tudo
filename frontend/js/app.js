@@ -1,6 +1,7 @@
 // app.js - Script para menu responsivo e manipulação básica de formulários
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+// Use a variável definida no index.html
+const API_BASE_URL = window.API_BASE_URL;
 
 document.addEventListener('DOMContentLoaded', () => {
   const menuToggle = document.getElementById('menu-toggle');
@@ -32,11 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
           localStorage.setItem('token', result.token);
           localStorage.setItem('role', result.role || 'client');
           alert('Login realizado com sucesso!');
-          // Redirecionar baseado no role
           if (result.role === 'company') {
             window.location.href = 'profile-company.html';
           } else if (result.role === 'master') {
-            window.location.href = 'admin.html'; // Assumindo página admin
+            window.location.href = 'admin.html';
           } else {
             window.location.href = 'profile-client.html';
           }
@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const formData = new FormData(registerForm);
       const data = Object.fromEntries(formData);
 
-      // Verificar se senhas coincidem
       if (data.password !== data['confirm-password']) {
         alert('Senhas não coincidem');
         return;
@@ -87,24 +86,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Registrar Service Worker para PWA e Push Notifications
+  // Registrar Service Worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('Service Worker registrado com sucesso:', registration);
-      })
-      .catch(error => {
-        console.log('Falha ao registrar Service Worker:', error);
-      });
+      .then(registration => console.log('Service Worker registrado:', registration))
+      .catch(error => console.log('Erro ao registrar Service Worker:', error));
   }
 
-  // Solicitar permissão para notificações push
-  if ('Notification' in window && 'serviceWorker' in navigator) {
+  // Permissão para notificações push
+  if ('Notification' in window) {
     Notification.requestPermission().then(permission => {
-      if (permission === 'granted') {
-        console.log('Permissão para notificações concedida');
-      }
+      if (permission === 'granted') console.log('Permissão para notificações concedida');
     });
   }
-
 });
