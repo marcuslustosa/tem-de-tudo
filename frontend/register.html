@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cadastro - Tem de Tudo</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 <body>
   <header>
@@ -23,7 +24,7 @@
 
   <main>
     <section class="form-container">
-      <h1>Cadastro de Cliente</h1>
+      <h1 style="text-align: center;">Cadastro de Cliente</h1>
       <form id="register-form" action="/api/auth/register" method="POST">
         <label for="name">Nome Completo</label>
         <input type="text" id="name" name="name" required autocomplete="name" />
@@ -31,16 +32,30 @@
         <label for="email">Email</label>
         <input type="email" id="email" name="email" required autocomplete="email" />
 
+        <label for="phone">Telefone</label>
+        <input type="text" id="phone" name="phone" required autocomplete="tel" pattern="\\(?\\d{2}\\)?\\s?\\d{4,5}-?\\d{4}" title="Digite um telefone válido, ex: (11) 91234-5678" />
+
+        <label for="cpf">CPF</label>
+        <input type="text" id="cpf" name="cpf" required autocomplete="off" />
+
+        <label for="rg">RG</label>
+        <input type="text" id="rg" name="rg" required autocomplete="off" />
+
         <label for="password">Senha</label>
         <input type="password" id="password" name="password" required autocomplete="new-password" />
+
+        <label for="confirm-password">Confirme sua senha</label>
+        <input type="password" id="confirm-password" name="confirm-password" required autocomplete="new-password" />
+
+        <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
 
         <button type="submit" class="btn-primary">Cadastrar</button>
       </form>
 
       <div class="social-login">
         <p>Ou cadastre-se com</p>
-        <button class="btn-social facebook">Facebook</button>
-        <button class="btn-social google">Google</button>
+        <button class="btn-social facebook"><i class="fab fa-facebook-f"></i> Facebook</button>
+        <button class="btn-social google"><i class="fab fa-google"></i> Google</button>
       </div>
     </section>
   </main>

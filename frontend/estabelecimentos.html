@@ -80,16 +80,17 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const companies = [
-        { name: 'Empresa A', description: 'Produtos de qualidade e atendimento excelente.', status: 'Aprovado' },
-        { name: 'Empresa B', description: 'Descontos especiais para clientes fidelizados.', status: 'Aprovado' },
-        { name: 'Empresa C', description: 'Variedade e preços competitivos.', status: 'Pendente' },
-        { name: 'Empresa D', description: 'Entrega rápida e segura.', status: 'Aprovado' },
-        { name: 'Empresa E', description: 'Atendimento personalizado e promoções.', status: 'Pendente' },
+        { name: 'Empresa A', description: 'Produtos de qualidade e atendimento excelente.', status: 'Aprovado', photo: 'assets/images/company1.jpg', services: ['Serviço 1', 'Serviço 2'] },
+        { name: 'Empresa B', description: 'Descontos especiais para clientes fidelizados.', status: 'Aprovado', photo: 'assets/images/company2.jpg', services: ['Serviço 3', 'Serviço 4'] },
+        { name: 'Empresa C', description: 'Variedade e preços competitivos.', status: 'Pendente', photo: 'assets/images/company3.jpg', services: ['Serviço 5'] },
+        { name: 'Empresa D', description: 'Entrega rápida e segura.', status: 'Aprovado', photo: 'assets/images/company4.jpg', services: ['Serviço 6', 'Serviço 7'] },
+        { name: 'Empresa E', description: 'Atendimento personalizado e promoções.', status: 'Pendente', photo: 'assets/images/temdetudo-logo.png', services: ['Serviço 8'] },
       ];
 
       const container = document.getElementById('company-cards');
       container.innerHTML = companies.map(c => `
-        <div class="card">
+        <div class="card" onclick="selectCompanyService('${c.name}', ${JSON.stringify(c.services).replace(/"/g, '"')})">
+          <img src="${c.photo}" alt="Foto de ${c.name}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5rem;" />
           <h3>${c.name}</h3>
           <p>${c.description}</p>
           <div class="status">Status: ${c.status}</div>

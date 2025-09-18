@@ -40,3 +40,22 @@ self.addEventListener('fetch', event => {
       })
   );
 });
+
+self.addEventListener('push', event => {
+  const data = event.data ? event.data.json() : { title: 'Notificação', body: 'Você tem uma nova notificação!' };
+  const options = {
+    body: data.body,
+    icon: '/assets/images/logo.png.png',
+    badge: '/assets/images/logo.png.png'
+  };
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow('/')
+  );
+});
