@@ -1,7 +1,8 @@
 // app.js - Script para menu responsivo e manipulação básica de formulários
 
 // Use a variável definida no index.html
-const API_BASE_URL = window.API_BASE_URL;
+const API_BASE_URL = window.location.origin + '/api';
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const menuToggle = document.getElementById('menu-toggle');
