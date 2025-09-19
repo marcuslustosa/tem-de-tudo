@@ -1,9 +1,10 @@
-# Imagem base
+# Imagem base PHP
 FROM php:8.2-cli
 
-# Instala dependências do sistema
-RUN apt-get update && apt-get install -y unzip git curl libpng-dev libpq-dev libsqlite3-dev \
-    && docker-php-ext-install pdo pdo_pgsql pdo_sqlite gd
+# Instala dependências do sistema necessárias para Laravel
+RUN apt-get update && apt-get install -y \
+    unzip git curl libpng-dev libpq-dev libsqlite3-dev libonig-dev \
+    && docker-php-ext-install pdo pdo_pgsql pdo_sqlite gd mbstring
 
 # Instala Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -11,21 +12,19 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Define diretório de trabalho
 WORKDIR /app
 
-# Copia composer.json primeiro para aproveitar cache
+# Copia composer.json e composer.lock primeiro para aproveitar cache
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copia o restante do projeto
 COPY . .
 
-# Cache de config/rota/view (agora vai rodar só em runtime)
-RUN php artisan config:clear \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+# Copia o script de inicialização
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Expõe porta (opcional no Render)
-EXPOSE 10000
+# Expõe porta (Render ignora, mas útil localmente)
+EXPOSE 8080
 
-# Comando de inicialização (Render usa a variável $PORT)
-CMD php artisan serve --host=0.0.0.0 --port=${PORT}
+# Usa o entrypoint para rodar tudo antes do servidor
+ENTRYPOINT ["/entrypoint.sh"]
