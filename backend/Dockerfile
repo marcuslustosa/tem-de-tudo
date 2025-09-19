@@ -13,16 +13,18 @@ WORKDIR /app
 
 # Copia composer.json primeiro para aproveitar cache
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copia o restante do projeto
 COPY . .
 
-# Cache de config/rota/view para produção
-RUN php artisan config:clear \
+# Cache de config/rota/view (agora vai rodar só em runtime)
+CMD php artisan config:clear \
     && php artisan config:cache \
     && php artisan route:cache \
-    && php artisan view:cache
+    && php artisan view:cache \
+    && php artisan serve --host=0.0.0.0 --port=${PORT}
+
 
 # Expõe porta (opcional no Render)
 EXPOSE 8080
