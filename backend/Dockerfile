@@ -1,22 +1,31 @@
 # Imagem base
 FROM php:8.2-cli
 
-# Instala dependências
+# Instala dependências do sistema
 RUN apt-get update && apt-get install -y unzip git curl libpng-dev libpq-dev libsqlite3-dev \
     && docker-php-ext-install pdo pdo_pgsql pdo_sqlite gd
 
-# Instalar Composer
+# Instala Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copiar backend
+# Define diretório de trabalho
 WORKDIR /app
-COPY . .
 
-# Instalar dependências Laravel
+# Copia composer.json primeiro para aproveitar cache
+COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader
 
-# Expõe porta para Render
-EXPOSE 10000
+# Copia o restante do projeto
+COPY . .
 
-# Comando de inicialização
-CMD php artisan serve --host=0.0.0.0 --port=10000
+# Cache de config/rota/view para produção
+RUN php artisan config:clear \
+    && php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
+
+# Expõe porta (opcional no Render)
+EXPOSE 8080
+
+# Comando de inicialização (Render usa a variável $PORT)
+CMD php artisan serve --host=0.0.0.0 --port=${PORT}
