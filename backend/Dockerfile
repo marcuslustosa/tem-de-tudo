@@ -19,15 +19,13 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 COPY . .
 
 # Cache de config/rota/view (agora vai rodar só em runtime)
-CMD php artisan config:clear \
+RUN php artisan config:clear \
     && php artisan config:cache \
     && php artisan route:cache \
-    && php artisan view:cache \
-    && php artisan serve --host=0.0.0.0 --port=${PORT}
-
+    && php artisan view:cache
 
 # Expõe porta (opcional no Render)
-EXPOSE 8080
+EXPOSE 10000
 
 # Comando de inicialização (Render usa a variável $PORT)
 CMD php artisan serve --host=0.0.0.0 --port=${PORT}

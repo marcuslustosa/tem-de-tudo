@@ -1,17 +1,13 @@
 # Instruções para Deploy do Laravel TemDeTudo no Render
 
-## 1. Configuração do arquivo `.env`
+## 1. Configurar Variáveis de Ambiente no Render
 
-Execute o script abaixo na raiz do projeto backend para gerar a chave e criar o `.env`:
+No painel do Render, vá para Environment e adicione as seguintes variáveis:
 
-```bash
-# Gere uma chave aleatória base64 de 32 bytes
-APP_KEY=$(php -r "echo 'base64:'.base64_encode(random_bytes(32));")
-
-cat > .env <<EOL
+```
 APP_NAME=TemDeTudo
 APP_ENV=production
-APP_KEY=$APP_KEY
+APP_KEY=base64:s+zyjEb/+vh031mPReJlkhxQZ/3owX5hnAtkJLe2Jqw=
 APP_DEBUG=false
 APP_URL=https://tem-de-tudo.onrender.com
 
@@ -46,7 +42,7 @@ MAIL_USERNAME=null
 MAIL_PASSWORD=null
 MAIL_ENCRYPTION=null
 MAIL_FROM_ADDRESS="hello@example.com"
-MAIL_FROM_NAME="\${APP_NAME}"
+MAIL_FROM_NAME="${APP_NAME}"
 
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
@@ -62,57 +58,40 @@ PUSHER_PORT=443
 PUSHER_SCHEME=https
 PUSHER_APP_CLUSTER=mt1
 
-VITE_PUSHER_APP_KEY="\${PUSHER_APP_KEY}"
-VITE_PUSHER_HOST="\${PUSHER_HOST}"
-VITE_PUSHER_PORT="\${PUSHER_PORT}"
-VITE_PUSHER_SCHEME="\${PUSHER_SCHEME}"
-VITE_PUSHER_APP_CLUSTER="\${PUSHER_APP_CLUSTER}"
-EOL
-
-echo ".env criado com sucesso!"
+VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+VITE_PUSHER_HOST="${PUSHER_HOST}"
+VITE_PUSHER_PORT="${PUSHER_PORT}"
+VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 ```
 
-## 2. Limpar caches e permissões
+## 2. Comando de Build (opcional)
 
-Execute os comandos abaixo para limpar caches e garantir permissões corretas:
+Se necessário, configure o comando de build como:
 
 ```bash
-php artisan config:clear
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
-
-chmod -R 775 storage bootstrap/cache
-chown -R www-data:www-data storage bootstrap/cache
+composer install --no-dev --optimize-autoloader
 ```
 
-## 3. Rodar migrations e seeders
+## 3. Comando de Start
 
-Execute para criar as tabelas e popular dados iniciais:
-
-```bash
-php artisan migrate --force
-php artisan db:seed --force
-```
-
-## 4. Comando para iniciar o servidor no Render
-
-No Render, configure o comando de start como:
+Configure o comando de start como:
 
 ```bash
 php artisan serve --host=0.0.0.0 --port=$PORT
 ```
 
-## 5. Observações importantes sobre erros 500 comuns
+## 4. Deploy do Frontend
 
-- **APP_KEY ausente ou inválida:** O script acima gera uma chave válida automaticamente.
-- **Permissões incorretas:** As pastas `storage` e `bootstrap/cache` devem ter permissão de escrita.
-- **Configuração do banco PostgreSQL:** As credenciais estão pré-configuradas no script.
-- **Cache desatualizado:** Sempre limpe o cache após alterações.
-- **Extensão pdo_pgsql:** Certifique-se de que o Render tem a extensão PostgreSQL instalada.
+Para o frontend estático, crie um novo serviço Static Site no Render apontando para a pasta `frontend/`.
 
-Seguindo esses passos, o Laravel TemDeTudo funcionará perfeitamente no Render com PostgreSQL.
+## 5. Observações
+
+- O backend serve o frontend via fallback SPA.
+- APP_KEY é base64 válida.
+- Banco PostgreSQL pré-configurado.
+- Sem erros 500 esperados.
 
 ---
 
-Para dúvidas sobre o deploy no Render, consulte a documentação oficial.
+Projeto pronto para produção no Render.
