@@ -1,0 +1,120 @@
+services:
+  - type: web
+    name: tem-de-tudo
+    env: docker
+    region: oregon
+    plan: free
+    rootDir: backend
+    dockerfilePath: backend/Dockerfile
+    envVars:
+      - key: APP_KEY
+        sync: false   # gere com "php artisan key:generate --show" e coloque no Render
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://tem-de-tudo.onrender.com
+
+      # Banco de Dados Postgres
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: temdetudo-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: temdetudo-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: temdetudo-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: temdetudo-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: temdetudo-db
+          property: password
+
+      # Cache, Sessões e Queue
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: database
+
+      # Push Notifications (Firebase Cloud Messaging)
+      - key: FCM_SERVER_KEY
+        sync: false
+      - key: FCM_SENDER_ID
+        sync: false
+      - key: FCM_PROJECT_ID
+        sync: false
+
+    postDeployCommand: |
+      php artisan migrate --force
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+
+  - type: worker
+    name: tem-de-tudo-worker
+    env: docker
+    rootDir: backend
+    dockerfilePath: backend/Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        value: https://tem-de-tudo.onrender.com
+
+      # Banco de Dados
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: temdetudo-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: temdetudo-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: temdetudo-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: temdetudo-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: temdetudo-db
+          property: password
+
+      - key: QUEUE_CONNECTION
+        value: database
+
+      # Push Notifications
+      - key: FCM_SERVER_KEY
+        sync: false
+      - key: FCM_SENDER_ID
+        sync: false
+      - key: FCM_PROJECT_ID
+        sync: false
+
+    startCommand: php artisan queue:work --verbose --tries=3 --timeout=90
+
+databases:
+  - name: temdetudo-db
+    region: oregon
+    plan: free
+    databaseName: temdetudo
+    user: temdetudo_user
