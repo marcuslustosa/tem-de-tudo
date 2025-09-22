@@ -1,32 +1,38 @@
+# Imagem base
 FROM php:8.2-apache
 
-# Instala dependências do sistema
+# Instala extensões necessárias do Laravel + Postgres
 RUN apt-get update && apt-get install -y \
-    unzip git curl libpng-dev libpq-dev libzip-dev libonig-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    libpq-dev \
+    unzip \
+    git \
+    curl \
+    && docker-php-ext-install pdo pdo_pgsql mbstring zip
 
-# Instala Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Habilita o módulo rewrite do Apache
+# Habilita o mod_rewrite do Apache
 RUN a2enmod rewrite
 
 # Define diretório de trabalho
 WORKDIR /var/www/html
 
-# Copia composer.json primeiro (para cache de dependências)
-COPY composer.json composer.lock ./
+# Copia composer.json, composer.lock e artisan antes (para cache + evitar erro do artisan)
+COPY composer.json composer.lock artisan ./
+
+# Instala o Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Instala dependências do PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Copia todo o projeto
+# Agora copia o restante do projeto
 COPY . .
 
-# Define permissões corretas
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Ajusta permissões (storage e bootstrap/cache precisam ser graváveis)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expõe a porta
+# Porta exposta
 EXPOSE 80
 
-# Usa Apache como CMD
+# Comando de inicialização do Apache
 CMD ["apache2-foreground"]
