@@ -1,7 +1,7 @@
 // app.js - Script para menu responsivo e manipulação básica de formulários
 
-// Use a variável definida no index.html
-const API_BASE_URL = window.location.origin + '/api';
+// URL da API no Render - ajustar conforme necessário
+const API_BASE_URL = 'https://tem-de-tudo.onrender.com/api';
 
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,46 +1,72 @@
-# TODO - Deploy Laravel no Render
+# TODO - Correção de Problemas de API no Render
 
 ## ✅ COMPLETADO
 - [x] Análise da estrutura atual do projeto
-- [x] Criação do plano de implementação
-- [x] Mover frontend para backend/public/
-- [x] Ajustar routes/web.php para fallback correto
-- [x] Criar Procfile para Render
-- [x] Ajustar Dockerfile para Apache
-- [x] Verificar entrypoint.sh
+- [x] Identificação dos problemas de comunicação API
+- [x] Ajuste das rotas Laravel para incluir prefixo `/auth`
+- [x] Correção das URLs da API no frontend
+- [x] Atualização de arquivos JavaScript (app.js)
+- [x] Atualização de arquivos HTML com scripts inline
+- [x] Ajuste da URL do Render nos arquivos de configuração
 
-## ✅ COMPLETADO
-- [x] Testes de funcionalidade
-- [x] Criar instruções de deploy
+## 🚧 EM ANDAMENTO
+- [ ] Testes de funcionalidade das chamadas API
+- [ ] Verificação do CORS em produção
+- [ ] Teste das notificações push
+- [ ] Validação do service worker
 
-## 📋 DETALHES DA IMPLEMENTAÇÃO
+## 📋 PROBLEMAS IDENTIFICADOS E SOLUÇÕES
 
-### 1. Mover Frontend
-- Copiar todo conteúdo de `frontend/` para `backend/public/`
-- Manter estrutura: css/, js/, assets/, img/, service-worker.js
-- Preservar: index.html, login.html, register.html, etc.
+### 1. ✅ Rotas API Inconsistentes
+**Problema:** Frontend chamava `/api/auth/login` mas Laravel tinha apenas `/login`
+**Solução:** Adicionado prefixo `/auth` nas rotas do Laravel em `backend/routes/api.php`
 
-### 2. Ajustar Rotas Laravel
-- Modificar `backend/routes/web.php`
-- Adicionar fallback que serve index.html para rotas não-API
-- Usar regex para excluir rotas `/api`
+### 2. ✅ URLs Incorretas no Frontend
+**Problema:** Frontend usava `window.location.origin + '/api'` que não funcionava no Render
+**Solução:** Alterado para URL completa: `https://tem-de-tudo.onrender.com/api`
 
-### 3. Criar Procfile
-- Criar `backend/Procfile`
-- Conteúdo: `web: vendor/bin/heroku-php-apache2 public/`
+### 3. ✅ Arquivos Duplicados
+**Problema:** Havia arquivos duplicados em `frontend/` e `backend/public/`
+**Solução:** Ajustado ambos os conjuntos de arquivos para usar URLs corretas
 
-### 4. Ajustar Dockerfile
-- Mudar de `php:8.2-cli` para `php:8.2-apache`
-- Instalar extensões necessárias
-- Configurar Apache corretamente
-- Expor porta 80
+### 4. ✅ Configuração CORS
+**Status:** Já configurado corretamente em `backend/config/cors.php`
 
-### 5. Verificar Entrypoint
-- Verificar compatibilidade com Apache
-- Ajustar se necessário
+## 📁 ARQUIVOS MODIFICADOS
 
-### 6. Testes
-- Verificar se HTMLs carregam
-- Testar rotas API
-- Verificar assets CSS/JS
-- Testar service worker
+### Backend Laravel:
+- `backend/routes/api.php` - Adicionado prefixo `/auth` nas rotas de autenticação
+
+### Frontend:
+- `frontend/js/app.js` - URL da API alterada para Render
+- `frontend/admin.html` - URL da API ajustada
+- `frontend/index.html` - URL do Render corrigida
+- `backend/public/js/app.js` - URL da API alterada para Render
+- `backend/public/admin.html` - URL da API ajustada
+- `backend/public/index.html` - URL do Render corrigida
+
+## 🧪 TESTES NECESSÁRIOS
+
+1. **Teste de Login/Registro:**
+   - Verificar se `/api/auth/login` retorna JSON válido
+   - Verificar se `/api/auth/register` funciona
+   - Confirmar que não há erro "Unexpected token '<'"
+
+2. **Teste de CORS:**
+   - Verificar se requisições cross-origin funcionam
+   - Confirmar que headers estão corretos
+
+3. **Teste de Notificações:**
+   - Verificar se service worker registra corretamente
+   - Testar permissão de notificações push
+
+4. **Teste de Assets:**
+   - Verificar se CSS/JS carregam corretamente
+   - Confirmar que imagens são exibidas
+
+## 🚀 PRÓXIMOS PASSOS
+
+1. Deploy das mudanças no Render
+2. Testes em produção
+3. Monitoramento dos logs de erro
+4. Ajustes finais se necessário
