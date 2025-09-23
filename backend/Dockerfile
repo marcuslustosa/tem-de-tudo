@@ -1,50 +1,31 @@
-# Base
-FROM php:8.2-apache-bullseye
+# Imagem base PHP
+FROM php:8.2-cli
 
-ARG DEBIAN_FRONTEND=noninteractive
+# Instala dependências do Laravel
+RUN apt-get update && apt-get install -y \
+    unzip git curl libpng-dev libpq-dev libsqlite3-dev \
+    && docker-php-ext-install pdo pdo_pgsql pdo_sqlite gd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Dependências do sistema + extensões PHP necessárias
-RUN apt-get update -y \
-    && apt-get install -y --no-install-recommends \
-       libpq-dev unzip git curl ca-certificates gnupg libzip-dev zlib1g-dev libonig-dev \
-    && docker-php-ext-install pdo pdo_pgsql mbstring zip \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Habilita mod_rewrite
-RUN a2enmod rewrite
-
-# Define diretório de trabalho
-WORKDIR /var/www/html
-
-# Cria usuário não-root para evitar problemas com Composer
-RUN useradd -m -s /bin/bash laravel \
-    && usermod -aG www-data laravel
-
-# Copia Composer primeiro
+# Instala Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copia apenas arquivos necessários para composer install
-COPY composer.json composer.lock composer.config.json ./
+# Define diretório de trabalho
+WORKDIR /app
 
-# Instala dependências como usuário não-root (sem scripts para evitar erros)
-RUN chown -R laravel:laravel /var/www/html \
-    && su - laravel -c "cd /var/www/html && COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --no-scripts"
+# Copia composer.json primeiro (para cache de dependências)
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader
 
-# Copia o resto do projeto
-COPY --chown=laravel:laravel . .
+# Copia todo o projeto (backend + frontend)
+COPY . .
 
-# Ajusta permissões
-RUN chown -R www-data:www-data /var/www/html \
-    && find /var/www/html -type d -exec chmod 755 {} \; \
-    && find /var/www/html -type f -exec chmod 644 {} \; \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Copia script de inicialização
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Ajusta DocumentRoot do Apache
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+# Expõe a porta
+EXPOSE 8080
 
-# Porta
-EXPOSE 80
-
-# Start Apache
-CMD ["apache2-foreground"]
+# Usa entrypoint
+ENTRYPOINT ["/entrypoint.sh"]

@@ -1,27 +1,24 @@
 #!/bin/sh
 
 # Garante que diretórios de cache e storage existem
-mkdir -p /var/www/html/storage/framework/{sessions,views,cache}
-mkdir -p /var/www/html/storage/logs
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Gera chave da aplicação se não existir
-if [ ! -f /var/www/html/.env ]; then
-    cd /var/www/html && cp .env.example .env
-    php artisan key:generate --force
-fi
-
-# Roda package:discover manualmente (se necessário)
-cd /var/www/html && php artisan package:discover --ansi
+mkdir -p /app/storage/framework/{sessions,views,cache}
+mkdir -p /app/storage/logs
+chmod -R 777 /app/storage /app/bootstrap/cache
 
 # Roda migrations em produção sem pedir confirmação
-cd /var/www/html && php artisan migrate --force
+php artisan migrate --force
 
 # Regera caches
-cd /var/www/html && php artisan config:clear
-cd /var/www/html && php artisan config:cache
-cd /var/www/html && php artisan route:cache
-cd /var/www/html && php artisan view:cache
+php artisan config:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 
-# Inicia o Apache
-exec apache2-foreground
+# Cria link simbólico para que qualquer frontend estático seja servido
+if [ ! -d /app/public ]; then
+    mkdir -p /app/public
+fi
+cp -R /app/* /app/public/ 2>/dev/null || true
+
+# Serve Laravel (backend + frontend juntos)
+exec php artisan serve --host=0.0.0.0 --port=${PORT}
