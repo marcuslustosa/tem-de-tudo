@@ -47,8 +47,8 @@
 ### 6. ✅ **PROBLEMA CRÍTICO RESOLVIDO:** UrlGenerator.php Error
 **Problema:** "In UrlGenerator.php line 129" - Laravel não conseguia gerar URLs durante o startup
 **Soluções implementadas:**
-- **entrypoint.sh:** Removidos comandos que inicializam o sistema de rotas sem HTTP request
-- **entrypoint.sh:** Adicionado tratamento de erro silencioso (2>/dev/null) para comandos artisan
+- **entrypoint.sh:** Removidos TODOS os comandos artisan que causam problemas de inicialização
+- **entrypoint.sh:** Servidor iniciado diretamente sem comandos de cache/migration que requerem HTTP request
 - **entrypoint.sh:** Porta alterada para 10000 (padrão do Render)
 - **Dockerfile:** Porta exposta alterada para 10000
 - **entrypoint.sh:** Criação completa de .env com todas as variáveis necessárias

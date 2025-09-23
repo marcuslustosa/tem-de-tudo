@@ -80,14 +80,6 @@ if [ ! -f /app/database/database.sqlite ]; then
     echo "Banco SQLite criado!"
 fi
 
-# Limpa caches antigos para evitar problemas
-php artisan config:clear 2>/dev/null || echo "Config clear falhou - continuando..."
-php artisan route:clear 2>/dev/null || echo "Route clear falhou - continuando..."
-php artisan view:clear 2>/dev/null || echo "View clear falhou - continuando..."
-
-# Roda migrations em produção sem pedir confirmação (ignora erros se DB não estiver disponível)
-php artisan migrate --force 2>/dev/null || echo "Migrations falharam - continuando..."
-
-# Serve Laravel
+# Serve Laravel diretamente sem comandos artisan que causam problemas
 echo "Iniciando servidor Laravel na porta $PORT..."
 exec php artisan serve --host=0.0.0.0 --port=$PORT
