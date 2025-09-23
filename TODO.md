@@ -44,6 +44,15 @@
 - **entrypoint.sh:** Melhorado tratamento de variáveis de ambiente
 - **entrypoint.sh:** Adicionado criação automática de .env se não existir
 
+### 6. ✅ **PROBLEMA CRÍTICO RESOLVIDO:** UrlGenerator.php Error
+**Problema:** "In UrlGenerator.php line 129" - Laravel não conseguia gerar URLs
+**Soluções implementadas:**
+- **entrypoint.sh:** Criação completa de .env com todas as variáveis necessárias
+- **entrypoint.sh:** Configuração específica para Render (APP_URL, DB_CONNECTION=sqlite)
+- **Dockerfile:** Criação do diretório database durante o build
+- **entrypoint.sh:** Criação automática do banco SQLite
+- **entrypoint.sh:** Configurações de produção otimizadas
+
 ## 📁 ARQUIVOS MODIFICADOS
 
 ### Backend Laravel:

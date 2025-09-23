@@ -29,10 +29,10 @@ RUN if [ -f composer.lock ]; then \
 COPY . .
 
 # Cria diretórios necessários
-RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache
+RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache database
 
 # Define permissões
-RUN chmod -R 755 storage bootstrap/cache
+RUN chmod -R 755 storage bootstrap/cache database
 
 # Copia script de inicialização
 COPY entrypoint.sh /entrypoint.sh
