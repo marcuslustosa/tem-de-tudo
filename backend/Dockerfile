@@ -39,7 +39,7 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # Expõe a porta
-EXPOSE 8000
+EXPOSE 10000
 
 # Usa entrypoint
 ENTRYPOINT ["/entrypoint.sh"]

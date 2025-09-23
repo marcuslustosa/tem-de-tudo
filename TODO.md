@@ -45,8 +45,12 @@
 - **entrypoint.sh:** Adicionado criação automática de .env se não existir
 
 ### 6. ✅ **PROBLEMA CRÍTICO RESOLVIDO:** UrlGenerator.php Error
-**Problema:** "In UrlGenerator.php line 129" - Laravel não conseguia gerar URLs
+**Problema:** "In UrlGenerator.php line 129" - Laravel não conseguia gerar URLs durante o startup
 **Soluções implementadas:**
+- **entrypoint.sh:** Removidos comandos que inicializam o sistema de rotas sem HTTP request
+- **entrypoint.sh:** Adicionado tratamento de erro silencioso (2>/dev/null) para comandos artisan
+- **entrypoint.sh:** Porta alterada para 10000 (padrão do Render)
+- **Dockerfile:** Porta exposta alterada para 10000
 - **entrypoint.sh:** Criação completa de .env com todas as variáveis necessárias
 - **entrypoint.sh:** Configuração específica para Render (APP_URL, DB_CONNECTION=sqlite)
 - **Dockerfile:** Criação do diretório database durante o build
@@ -103,7 +107,7 @@
 - ✅ Fallback para composer install sem lock
 - ✅ Criação de diretórios necessários
 - ✅ Permissões corretas
-- ✅ Exposição da porta correta (8000)
+- ✅ Exposição da porta correta (10000)
 
 ### Entrypoint.sh Melhorado:
 - ✅ Remoção de cópia desnecessária de arquivos

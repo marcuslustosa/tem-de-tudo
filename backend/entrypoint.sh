@@ -1,17 +1,18 @@
 #!/bin/sh
 
 # Define porta padrão se não estiver definida
-PORT=${PORT:-8000}
+PORT=${PORT:-10000}
 
 # Garante que diretórios de cache e storage existem
 mkdir -p /app/storage/framework/{sessions,views,cache}
 mkdir -p /app/storage/logs
-chmod -R 775 /app/storage /app/bootstrap/cache
+mkdir -p /app/database
+chmod -R 775 /app/storage /app/bootstrap/cache /app/database
 
 # Cria .env se não existir com configurações mínimas para Render
 if [ ! -f /app/.env ]; then
     echo "Criando arquivo .env para Render..."
-    cat > /app/.env << EOF
+    cat > /app/.env << 'EOF'
 APP_NAME="TemDeTudo"
 APP_ENV=production
 APP_KEY=
@@ -45,7 +46,7 @@ MAIL_USERNAME=null
 MAIL_PASSWORD=null
 MAIL_ENCRYPTION=null
 MAIL_FROM_ADDRESS="hello@example.com"
-MAIL_FROM_NAME="\${APP_NAME}"
+MAIL_FROM_NAME="${APP_NAME}"
 
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
@@ -61,11 +62,11 @@ PUSHER_PORT=443
 PUSHER_SCHEME=https
 PUSHER_APP_CLUSTER=mt1
 
-VITE_PUSHER_APP_KEY="\${PUSHER_APP_KEY}"
-VITE_PUSHER_HOST="\${PUSHER_HOST}"
-VITE_PUSHER_PORT="\${PUSHER_PORT}"
-VITE_PUSHER_SCHEME="\${PUSHER_SCHEME}"
-VITE_PUSHER_APP_CLUSTER="\${PUSHER_APP_CLUSTER}"
+VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+VITE_PUSHER_HOST="${PUSHER_HOST}"
+VITE_PUSHER_PORT="${PUSHER_PORT}"
+VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 EOF
 
     # Gera chave da aplicação
@@ -79,14 +80,13 @@ if [ ! -f /app/database/database.sqlite ]; then
     echo "Banco SQLite criado!"
 fi
 
-# Roda migrations em produção sem pedir confirmação (ignora erros se DB não estiver disponível)
-php artisan migrate --force || echo "Migrations falharam - continuando..."
+# Limpa caches antigos para evitar problemas
+php artisan config:clear 2>/dev/null || echo "Config clear falhou - continuando..."
+php artisan route:clear 2>/dev/null || echo "Route clear falhou - continuando..."
+php artisan view:clear 2>/dev/null || echo "View clear falhou - continuando..."
 
-# Regera caches
-php artisan config:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+# Roda migrations em produção sem pedir confirmação (ignora erros se DB não estiver disponível)
+php artisan migrate --force 2>/dev/null || echo "Migrations falharam - continuando..."
 
 # Serve Laravel
 echo "Iniciando servidor Laravel na porta $PORT..."
