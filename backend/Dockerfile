@@ -27,9 +27,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Copia apenas arquivos necessários para composer install
 COPY composer.json composer.lock composer.config.json ./
 
-# Instala dependências como usuário não-root
+# Instala dependências como usuário não-root (sem scripts para evitar erros)
 RUN chown -R laravel:laravel /var/www/html \
-    && su - laravel -c "cd /var/www/html && COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --no-plugins"
+    && su - laravel -c "cd /var/www/html && COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction --no-scripts"
 
 # Copia o resto do projeto
 COPY --chown=laravel:laravel . .
