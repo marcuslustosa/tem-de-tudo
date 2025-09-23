@@ -16,7 +16,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|string|in:client,company,master',
+            'role' => 'required|string|in:cliente,empresa,admin',
         ]);
 
         $user = User::create([
@@ -29,6 +29,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
+            'message' => 'Usuário criado com sucesso',
             'user' => $user,
             'token' => $token,
         ], 201);
@@ -59,5 +60,14 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         return response()->json($request->user());
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logout realizado com sucesso'
+        ]);
     }
 }

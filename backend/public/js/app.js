@@ -32,17 +32,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await response.json();
         if (response.ok) {
           localStorage.setItem('token', result.token);
-          localStorage.setItem('role', result.role || 'client');
+          localStorage.setItem('role', result.user.role || 'cliente');
           alert('Login realizado com sucesso!');
-          if (result.role === 'company') {
+          if (result.user.role === 'empresa') {
             window.location.href = 'profile-company.html';
-          } else if (result.role === 'master') {
+          } else if (result.user.role === 'admin') {
             window.location.href = 'admin.html';
           } else {
             window.location.href = 'profile-client.html';
           }
         } else {
-          alert(result.error || 'Erro no login');
+          alert(result.message || 'Erro no login');
         }
       } catch (error) {
         console.error('Erro:', error);
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
           alert('Registro realizado com sucesso! Faça login.');
           window.location.href = 'login.html';
         } else {
-          alert(result.error || 'Erro no registro');
+          alert(result.message || 'Erro no registro');
         }
       } catch (error) {
         console.error('Erro:', error);
