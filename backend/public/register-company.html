@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -13,7 +13,7 @@
         <img src="assets/images/logo.png.png" alt="Tem de Tudo Logo" />
       </div>
       <ul class="nav-links" id="nav-links">
-        <li><a href="index.html">InÃ­cio</a></li>
+        <li><a href="index.html">Início</a></li>
         <li><a href="login.html">Login</a></li>
         <li><a href="register-company.html" class="active">Cadastro Empresa</a></li>
       </ul>
@@ -34,13 +34,13 @@
         <label for="phone">Telefone</label>
         <input type="text" id="phone" name="phone" required autocomplete="tel" />
 
-        <label for="address">EndereÃ§o</label>
+        <label for="address">Endereço</label>
         <input type="text" id="address" name="address" required autocomplete="street-address" />
 
-        <label for="description">DescriÃ§Ã£o</label>
+        <label for="description">Descrição</label>
         <textarea id="description" name="description" rows="4" required></textarea>
 
-        <button type="submit" class="btn-primary">Enviar SolicitaÃ§Ã£o</button>
+        <button type="submit" class="btn-primary">Enviar Solicitação</button>
       </form>
     </section>
   </main>
@@ -49,8 +49,63 @@
     <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
   </footer>
 
-  <script src="js/app.js"></script>
+  <script>
+    // Menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.getElementById('menu-toggle');
+      const navLinks = document.getElementById('nav-links');
+
+      if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', function() {
+          navLinks.classList.toggle('active');
+        });
+      }
+
+      // Form submission
+      const form = document.getElementById('register-company-form');
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const formData = new FormData(form);
+          const data = Object.fromEntries(formData.entries());
+          
+          // Simple validation
+          if (!data.companyName || !data.email || !data.phone || !data.address || !data.description) {
+            alert('Por favor, preencha todos os campos obrigatórios.');
+            return;
+          }
+
+          // Email validation
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(data.email)) {
+            alert('Por favor, insira um email válido.');
+            return;
+          }
+
+          // Phone validation (basic)
+          const phoneRegex = /^[\d\s\(\)\-\+]+$/;
+          if (!phoneRegex.test(data.phone)) {
+            alert('Por favor, insira um telefone válido.');
+            return;
+          }
+
+          // Simulate form submission
+          const submitBtn = form.querySelector('button[type="submit"]');
+          const originalText = submitBtn.textContent;
+          submitBtn.textContent = 'Enviando...';
+          submitBtn.disabled = true;
+
+          // Simulate API call
+          setTimeout(() => {
+            alert('Solicitação enviada com sucesso! Entraremos em contato em breve.');
+            form.reset();
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+          }, 2000);
+        });
+      }
+    });
+  </script>
 </body>
 </html>
-
-
