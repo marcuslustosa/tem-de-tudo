@@ -24,7 +24,9 @@ class User extends Authenticatable
         'password',
         'role',
         'pontos',
+        'pontos_pendentes',
         'telefone',
+        'nivel',
     ];
 
     /**
@@ -47,6 +49,80 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'pontos' => 'integer',
+            'pontos_pendentes' => 'integer',
         ];
+    }
+
+    /**
+     * Relacionamento com check-ins
+     */
+    public function checkIns()
+    {
+        return $this->hasMany(CheckIn::class);
+    }
+
+    /**
+     * Relacionamento com pontos
+     */
+    public function pontos_historico()
+    {
+        return $this->hasMany(Ponto::class);
+    }
+
+    /**
+     * Relacionamento com cupons
+     */
+    public function cupons()
+    {
+        return $this->hasMany(Coupon::class);
+    }
+
+    /**
+     * Calcular nível do usuário
+     */
+    public function getNivelAttribute(): array
+    {
+        $pontos = $this->pontos ?? 0;
+        
+        if ($pontos >= 10000) {
+            return ['nome' => 'Diamante', 'cor' => '#b9f2ff', 'min' => 10000, 'proximo' => null];
+        } elseif ($pontos >= 5000) {
+            return ['nome' => 'Platina', 'cor' => '#e5e4e2', 'min' => 5000, 'proximo' => 10000];
+        } elseif ($pontos >= 2500) {
+            return ['nome' => 'Ouro', 'cor' => '#ffd700', 'min' => 2500, 'proximo' => 5000];
+        } elseif ($pontos >= 1000) {
+            return ['nome' => 'Prata', 'cor' => '#c0c0c0', 'min' => 1000, 'proximo' => 2500];
+        }
+        
+        return ['nome' => 'Bronze', 'cor' => '#cd7f32', 'min' => 0, 'proximo' => 1000];
+    }
+
+    /**
+     * Verificar se é admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Inicializar valores padrão
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (is_null($user->pontos)) {
+                $user->pontos = 0;
+            }
+            if (is_null($user->pontos_pendentes)) {
+                $user->pontos_pendentes = 0;
+            }
+            if (is_null($user->role)) {
+                $user->role = 'user';
+            }
+        });
     }
 }

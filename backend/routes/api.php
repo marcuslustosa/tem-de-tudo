@@ -80,3 +80,93 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notifications/settings', [NotificationController::class, 'getNotificationSettings']);
     Route::put('/notifications/settings', [NotificationController::class, 'updateNotificationSettings']);
 });
+
+// Importar o controller de pontos
+use App\Http\Controllers\PontosController;
+use App\Http\Controllers\QRCodeController;
+use App\Http\Controllers\DiscountController;
+
+// Rotas do sistema de pontos (protegidas por Sanctum)
+Route::middleware('auth:sanctum')->prefix('pontos')->group(function () {
+    // Check-in do usuário
+    Route::post('/checkin', [PontosController::class, 'checkin']);
+    
+    // Resgatar pontos por recompensas
+    Route::post('/resgatar', [PontosController::class, 'resgatarPontos']);
+    
+    // Dados do usuário (pontos, nível, etc.)
+    Route::get('/meus-dados', [PontosController::class, 'meusDados']);
+    
+    // Histórico de pontos
+    Route::get('/historico', [PontosController::class, 'historicoPontos']);
+    
+    // Cupons do usuário
+    Route::get('/meus-cupons', [PontosController::class, 'meusCupons']);
+    
+    // Usar um cupom
+    Route::post('/usar-cupom/{cupom}', [PontosController::class, 'usarCupom']);
+});
+
+// Rotas administrativas do sistema de pontos (protegidas por JWT e admin)
+Route::middleware(['jwt.auth'])->prefix('admin/pontos')->group(function () {
+    // Aprovar/rejeitar check-ins
+    Route::post('/checkin/{checkin}/aprovar', [PontosController::class, 'aprovarCheckin'])
+        ->middleware(['admin.permission:manage_checkins']);
+    
+    // Check-ins pendentes
+    Route::get('/checkins-pendentes', [PontosController::class, 'checkinsPendentes'])
+        ->middleware(['admin.permission:view_checkins']);
+    
+    // Estatísticas do sistema
+    Route::get('/estatisticas', [PontosController::class, 'estatisticas'])
+        ->middleware(['admin.permission:view_reports']);
+});
+
+// Rotas do sistema QR Code
+Route::prefix('qrcode')->group(function () {
+    // Escanear QR Code (público - usuários logados)
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/scan', [QRCodeController::class, 'scanQR']);
+        Route::post('/checkin', [QRCodeController::class, 'checkinViaQR']);
+    });
+    
+    // Rotas administrativas de QR Code
+    Route::middleware(['jwt.auth'])->group(function () {
+        // Gerar QR Code para estabelecimento
+        Route::post('/generate', [QRCodeController::class, 'generateQR'])
+            ->middleware(['admin.permission:manage_qrcodes']);
+        
+        // Atualizar ofertas do QR Code
+        Route::put('/{qrcode}/offers', [QRCodeController::class, 'updateOffers'])
+            ->middleware(['admin.permission:manage_qrcodes']);
+        
+        // Estatísticas de uso do QR Code
+        Route::get('/{qrcode}/stats', [QRCodeController::class, 'getQRStats'])
+            ->middleware(['admin.permission:view_reports']);
+        
+        // Listar QR Codes do estabelecimento
+        Route::get('/list', [QRCodeController::class, 'listQRCodes'])
+            ->middleware(['admin.permission:view_qrcodes']);
+    });
+});
+
+// Rotas do sistema de descontos
+Route::prefix('discounts')->group(function () {
+    // Consultar descontos disponíveis (público - usuários logados)
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/company/{empresa_id}', [DiscountController::class, 'getCompanyDiscountLevels']);
+        Route::post('/calculate', [DiscountController::class, 'calculateUserDiscount']);
+        Route::post('/apply', [DiscountController::class, 'applyDiscount']);
+    });
+    
+    // Rotas administrativas de descontos
+    Route::middleware(['jwt.auth'])->group(function () {
+        // Configurar níveis de desconto
+        Route::post('/configure', [DiscountController::class, 'configureCompanyDiscounts'])
+            ->middleware(['admin.permission:manage_discounts']);
+        
+        // Buscar cliente para aplicar desconto
+        Route::post('/find-customer', [DiscountController::class, 'findCustomerForDiscount'])
+            ->middleware(['admin.permission:manage_discounts']);
+    });
+});
