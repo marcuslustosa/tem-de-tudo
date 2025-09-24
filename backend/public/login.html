@@ -4,150 +4,374 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Tem de Tudo</title>
+    
+    <!-- Meta Tags PWA -->
+    <meta name="description" content="Faça login no Tem de Tudo e acesse seu programa de fidelidade">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Login - Tem de Tudo">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/app-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/img/logo.png">
+    <link rel="apple-touch-icon" href="/img/logo.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/mobile-theme.css">
+    
+    <!-- Manifest PWA -->
     <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/" class="logo">
+                    <img src="/frontend/img/logo.png.png" alt="Tem de Tudo" class="logo-image">
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/">Início</a>
+                    <a href="/estabelecimentos.html">Estabelecimentos</a>
+                    <a href="/contato.html">Contato</a>
+                    <a href="/login.html" class="active">Login</a>
+                    <a href="/register.html">Cadastro</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-menu">
+                <div class="mobile-menu-header">
+                    <div class="logo">
+                        <div class="logo-icon">🎯</div>
+                        <span>Tem de Tudo</span>
+                    </div>
+                    <button class="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>
+                </div>
+                <ul class="mobile-menu-items">
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/estabelecimentos.html">Estabelecimentos</a></li>
+                    <li><a href="/contato.html">Contato</a></li>
+                    <li><a href="/login.html">Login</a></li>
+                    <li><a href="/register.html">Cadastro</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div class="container">
+                <div class="auth-section">
+                    <div class="auth-container">
+                        <div class="form-container">
+                            <div class="form-header">
+                                <div class="form-logo">
+                                    <div class="logo-icon">🔐</div>
+                                </div>
+                                <h1>Bem-vindo de volta!</h1>
+                                <p>Entre na sua conta para continuar aproveitando os benefícios</p>
+                            </div>
+
+                            <form id="loginForm" class="auth-form">
+                                <div class="form-group">
+                                    <input 
+                                        type="email" 
+                                        id="email" 
+                                        name="email" 
+                                        class="form-input" 
+                                        placeholder="Digite seu email" 
+                                        required
+                                    >
+                                    <label for="email" class="form-label">Email</label>
+                                </div>
+
+                                <div class="form-group">
+                                    <input 
+                                        type="password" 
+                                        id="password" 
+                                        name="password" 
+                                        class="form-input" 
+                                        placeholder="Digite sua senha" 
+                                        required
+                                    >
+                                    <label for="password" class="form-label">Senha</label>
+                                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                        👁️
+                                    </button>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-full">
+                                    <span>Entrar na minha conta</span>
+                                </button>
+                            </form>
+
+                            <div class="form-divider">
+                                <span>ou teste com uma conta demo</span>
+                            </div>
+
+                            <div class="demo-accounts">
+                                <button type="button" class="btn btn-outline demo-btn" onclick="demoLogin('cliente')">
+                                    <span class="demo-icon">👤</span>
+                                    <div class="demo-text">
+                                        <strong>Conta Cliente</strong>
+                                        <small>Acesso como cliente do programa</small>
+                                    </div>
+                                </button>
+
+                                <button type="button" class="btn btn-outline demo-btn" onclick="demoLogin('empresa')">
+                                    <span class="demo-icon">🏪</span>
+                                    <div class="demo-text">
+                                        <strong>Conta Empresa</strong>
+                                        <small>Painel administrativo</small>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div class="form-footer">
+                                <p>Ainda não tem uma conta? <a href="/register.html">Cadastre-se grátis</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Carregando...</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/app-mobile.js"></script>
+    <script>
+        // Inicialização da página de login
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📱 Página de Login carregada');
+            
+            // Registrar Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw-mobile.js');
+            }
+            
+            // Configurar formulário de login
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm && window.AuthManager) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    
+                    try {
+                        await AuthManager.login({ email, password });
+                        
+                        // Toast de sucesso
+                        if (window.ToastManager) {
+                            ToastManager.success('Login realizado com sucesso!');
+                        }
+                        
+                        // Redirecionar após 1 segundo
+                        setTimeout(() => {
+                            window.location.href = '/profile-client.html';
+                        }, 1000);
+                        
+                    } catch (error) {
+                        if (window.ToastManager) {
+                            ToastManager.error(error.message || 'Erro ao fazer login');
+                        }
+                    }
+                });
+            }
+            
+            // Biometria se disponível
+            if (window.AuthManager && AuthManager.isBiometricAvailable()) {
+                const biometricBtn = document.querySelector('.biometric-login');
+                if (biometricBtn) {
+                    biometricBtn.style.display = 'block';
+                    biometricBtn.addEventListener('click', async () => {
+                        try {
+                            await AuthManager.biometricLogin();
+                        } catch (error) {
+                            ToastManager.error('Falha na autenticação biométrica');
+                        }
+                    });
+                }
+            }
+            
+            // Lembrar dados do usuário
+            AuthManager.loadSavedCredentials();
+        });
+        
+        // Menu mobile toggle
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            if (mobileNav) {
+                mobileNav.classList.toggle('active');
+            }
+        }
+    </script>
+
     <style>
-        /* Login Page Specific Styles */
-        .login-page {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #f59e0b 100%);
+        /* Auth Page Styles */
+        .auth-section {
+            padding: 3rem 0;
+            min-height: 80vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
         }
 
-        .login-page::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-            animation: moveGrid 20s linear infinite;
-        }
-
-        @keyframes moveGrid {
-            0% { transform: translateX(0) translateY(0); }
-            100% { transform: translateX(10px) translateY(10px); }
-        }
-
-        .floating-elements {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .floating-element {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .floating-element:nth-child(1) { 
-            width: 80px; height: 80px; top: 20%; left: 10%; animation-delay: 0s; 
-        }
-        .floating-element:nth-child(2) { 
-            width: 60px; height: 60px; top: 60%; left: 80%; animation-delay: 2s; 
-        }
-        .floating-element:nth-child(3) { 
-            width: 40px; height: 40px; top: 80%; left: 20%; animation-delay: 4s; 
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        .login-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 2rem;
-            padding: 3rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+        .auth-container {
             width: 100%;
             max-width: 450px;
-            position: relative;
-            z-index: 10;
-            margin: 2rem;
         }
 
-        .login-header {
+        .form-header {
             text-align: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
-        .login-logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            border-radius: 1.5rem;
+        .form-logo .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1.5rem;
             color: white;
-            font-size: 2rem;
-            font-weight: bold;
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
-            animation: pulse 2s infinite;
+            font-size: 1.8rem;
+            box-shadow: var(--shadow-purple);
         }
 
-        .login-title {
+        .form-header h1 {
             font-size: 2rem;
-            font-weight: 800;
-            color: #1f2937;
+            font-weight: 700;
+            color: var(--gray-800);
             margin-bottom: 0.5rem;
         }
 
-        .login-subtitle {
-            color: #6b7280;
-            font-weight: 500;
+        .form-header p {
+            color: var(--gray-600);
+            font-size: 1rem;
         }
 
-        .form-group {
-            position: relative;
+        .auth-form {
             margin-bottom: 1.5rem;
         }
 
-        .form-input {
+        .btn-full {
             width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 1rem;
-            font-size: 1rem;
-            transition: all 0.25s ease;
-            background: white;
-            color: #374151;
-            outline: none;
+            margin-bottom: 1.5rem;
         }
 
-        .form-input:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            transform: translateY(-2px);
+        .form-divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+            color: var(--gray-500);
+            font-size: 0.875rem;
         }
 
-        .input-icon {
+        .form-divider::before {
+            content: '';
             position: absolute;
-            left: 1rem;
             top: 50%;
-            transform: translateY(-50%);
-            color: #9ca3af;
-            transition: color 0.25s ease;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gray-200);
+            z-index: 1;
         }
 
-        .form-input:focus + .input-icon {
-            color: #6366f1;
+        .form-divider span {
+            background: white;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .demo-accounts {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .demo-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            text-align: left;
+            justify-content: flex-start;
+            transition: var(--transition-base);
+        }
+
+        .demo-btn:hover {
+            background: var(--primary-purple-50);
+            border-color: var(--primary-purple);
+            color: var(--primary-purple);
+        }
+
+        .demo-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: var(--gray-100);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .demo-text {
+            flex: 1;
+        }
+
+        .demo-text strong {
+            display: block;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .demo-text small {
+            display: block;
+            color: var(--gray-500);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .form-footer a {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .form-footer a:hover {
+            color: var(--primary-purple-dark);
         }
 
         .password-toggle {
@@ -157,174 +381,45 @@
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: #9ca3af;
+            color: var(--gray-400);
             cursor: pointer;
             padding: 0.25rem;
-            border-radius: 0.375rem;
-            transition: color 0.25s ease;
+            border-radius: var(--radius-sm);
+            transition: var(--transition-base);
         }
 
         .password-toggle:hover {
-            color: #6366f1;
-        }
-
-        .login-button {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
-            border: none;
-            border-radius: 1rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            margin-bottom: 1.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .login-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
-        }
-
-        .login-button:active {
-            transform: translateY(0);
-        }
-
-        .login-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .login-button:hover::before {
-            left: 100%;
-        }
-
-        .divider {
-            text-align: center;
-            margin: 1.5rem 0;
-            position: relative;
-            color: #9ca3af;
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: #e5e7eb;
-        }
-
-        .divider span {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 0 1rem;
-        }
-
-        .demo-accounts {
-            display: grid;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .demo-btn {
-            padding: 0.75rem 1rem;
-            border: 2px solid #e5e7eb;
-            background: white;
-            border-radius: 0.75rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .demo-btn:hover {
-            border-color: #6366f1;
-            background: #f8faff;
-            transform: translateY(-2px);
-        }
-
-        .demo-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 0.875rem;
-        }
-
-        .demo-client .demo-icon {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-
-        .demo-company .demo-icon {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        }
-
-        .demo-text h4 {
-            font-weight: 600;
-            color: #374151;
-            margin: 0;
-            font-size: 0.875rem;
-        }
-
-        .demo-text p {
-            color: #6b7280;
-            margin: 0;
-            font-size: 0.75rem;
-        }
-
-        .auth-footer {
-            text-align: center;
-            margin-top: 1.5rem;
-        }
-
-        .auth-footer a {
-            color: #6366f1;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.25s ease;
-        }
-
-        .auth-footer a:hover {
-            color: #4f46e5;
+            color: var(--primary-purple);
         }
 
         .loading-overlay {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.9);
             display: none;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 2rem;
+            z-index: 10000;
             backdrop-filter: blur(5px);
         }
 
         .loading-spinner {
             width: 40px;
             height: 40px;
-            border: 3px solid #e5e7eb;
-            border-top-color: #6366f1;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary-purple);
             border-radius: 50%;
             animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        .loading-text {
+            color: var(--gray-600);
+            font-weight: 500;
         }
 
         @keyframes spin {
@@ -333,144 +428,22 @@
 
         /* Mobile Responsive */
         @media (max-width: 640px) {
-            .login-container {
-                padding: 2rem;
-                margin: 1rem;
-                border-radius: 1.5rem;
+            .auth-section {
+                padding: 1rem 0;
             }
 
-            .login-title {
+            .form-header h1 {
                 font-size: 1.75rem;
+            }
+
+            .demo-accounts {
+                gap: 0.5rem;
+            }
+
+            .demo-btn {
+                padding: 0.75rem;
             }
         }
     </style>
-</head>
-<body>
-    <div class="login-page">
-        <div class="floating-elements">
-            <div class="floating-element"></div>
-            <div class="floating-element"></div>
-            <div class="floating-element"></div>
-        </div>
-
-        <div class="login-container animate-slide-up">
-            <div class="login-header">
-                <div class="login-logo">🎯</div>
-                <h1 class="login-title">Bem-vindo!</h1>
-                <p class="login-subtitle">Entre na sua conta para continuar</p>
-            </div>
-
-            <form id="loginForm" class="login-form">
-                <div class="form-group">
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        class="form-input" 
-                        placeholder="Digite seu email" 
-                        required
-                    >
-                    <div class="input-icon">📧</div>
-                </div>
-
-                <div class="form-group">
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        class="form-input" 
-                        placeholder="Digite sua senha" 
-                        required
-                    >
-                    <div class="input-icon">🔒</div>
-                    <button type="button" class="password-toggle" onclick="togglePassword()">👁️</button>
-                </div>
-
-                <button type="submit" class="login-button">
-                    Entrar na Conta
-                </button>
-            </form>
-
-            <div class="divider">
-                <span>ou acesso rápido</span>
-            </div>
-
-            <div class="demo-accounts">
-                <button type="button" class="demo-btn demo-client" onclick="demoLogin('cliente')">
-                    <div class="demo-icon">👤</div>
-                    <div class="demo-text">
-                        <h4>Conta Cliente</h4>
-                        <p>Acesso como cliente do programa</p>
-                    </div>
-                </button>
-
-                <button type="button" class="demo-btn demo-company" onclick="demoLogin('empresa')">
-                    <div class="demo-icon">🏪</div>
-                    <div class="demo-text">
-                        <h4>Conta Empresa</h4>
-                        <p>Painel administrativo</p>
-                    </div>
-                </button>
-            </div>
-
-            <div class="auth-footer">
-                <p>Não tem uma conta? <a href="/register.html">Cadastre-se agora</a></p>
-            </div>
-
-            <div class="loading-overlay" id="loadingOverlay">
-                <div class="loading-spinner"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"></div>
-
-    <script src="/js/app.js"></script>
-    <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleBtn = document.querySelector('.password-toggle');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleBtn.textContent = '🙈';
-            } else {
-                passwordInput.type = 'password';
-                toggleBtn.textContent = '👁️';
-            }
-        }
-
-        function demoLogin(tipo) {
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-
-            if (tipo === 'cliente') {
-                emailInput.value = 'cliente@temdeTudo.com';
-                passwordInput.value = 'cliente123';
-            } else if (tipo === 'empresa') {
-                emailInput.value = 'empresa@temdeTudo.com';
-                passwordInput.value = 'empresa123';
-            }
-
-            // Adicionar efeito visual
-            emailInput.style.background = '#f0fdf4';
-            passwordInput.style.background = '#f0fdf4';
-            
-            setTimeout(() => {
-                emailInput.style.background = 'white';
-                passwordInput.style.background = 'white';
-            }, 1000);
-        }
-
-        // Animação de entrada
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.querySelector('.login-container');
-            setTimeout(() => {
-                container.style.opacity = '1';
-                container.style.transform = 'translateY(0)';
-            }, 100);
-        });
-    </script>
 </body>
 </html>

@@ -1,102 +1,554 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Estabelecimentos - Tem de Tudo</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <style>
-    /* Dark mode style for company cards */
-    .container {
-      max-width: 1000px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      color: var(--color-text);
-    }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
-      gap: 1.5rem;
-    }
-    .card {
-      background: var(--color-card-bg);
-      border-radius: var(--border-radius);
-      box-shadow: 0 4px 12px var(--color-shadow);
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: box-shadow 0.3s ease;
-      cursor: pointer;
-      color: var(--color-text);
-    }
-    .card:hover {
-      box-shadow: 0 8px 20px var(--color-shadow);
-    }
-    .card h3 {
-      margin: 0 0 0.5rem 0;
-      color: var(--color-primary);
-    }
-    .card p {
-      margin: 0.25rem 0;
-      color: #ccc;
-      flex-grow: 1;
-    }
-    .card .status {
-      font-weight: bold;
-      color: var(--color-primary);
-      margin-top: 0.5rem;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estabelecimentos - Tem de Tudo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/mobile-theme.css">
+    <link rel="manifest" href="/manifest.json">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <img src="assets/images/logo.png.png" alt="Tem de Tudo Logo" />
-      </div>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="estabelecimentos.html" class="active">Estabelecimentos</a></li>
-        <li><a href="profile-client.html">Perfil</a></li>
-        <li><a href="logout.html">Sair</a></li>
-      </ul>
-      <div class="menu-toggle" id="menu-toggle">&#9776;</div>
-    </nav>
-  </header>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/" class="logo">
+                    <img src="/frontend/img/logo.png.png" alt="Tem de Tudo" class="logo-image">
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/">InÃ­cio</a>
+                    <a href="/estabelecimentos.html" class="active">Estabelecimentos</a>
+                    <a href="/contato.html">Contato</a>
+                    <a href="/login.html">Login</a>
+                    <a href="/register.html">Cadastro</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
 
-  <main class="container">
-    <h1>Estabelecimentos</h1>
-    <div class="cards" id="company-cards">
-      <!-- Cards carregados via JS -->
-    </div>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
-  </footer>
-
-  <script src="js/app.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const companies = [
-        { name: 'Empresa A', description: 'Produtos de qualidade e atendimento excelente.', status: 'Aprovado', photo: 'assets/images/company1.jpg', services: ['Serviço 1', 'Serviço 2'] },
-        { name: 'Empresa B', description: 'Descontos especiais para clientes fidelizados.', status: 'Aprovado', photo: 'assets/images/company2.jpg', services: ['Serviço 3', 'Serviço 4'] },
-        { name: 'Empresa C', description: 'Variedade e preços competitivos.', status: 'Pendente', photo: 'assets/images/company3.jpg', services: ['Serviço 5'] },
-        { name: 'Empresa D', description: 'Entrega rápida e segura.', status: 'Aprovado', photo: 'assets/images/company4.jpg', services: ['Serviço 6', 'Serviço 7'] },
-        { name: 'Empresa E', description: 'Atendimento personalizado e promoções.', status: 'Pendente', photo: 'assets/images/temdetudo-logo.png', services: ['Serviço 8'] },
-      ];
-
-      const container = document.getElementById('company-cards');
-      container.innerHTML = companies.map(c => `
-        <div class="card" onclick="selectCompanyService('${c.name}', ${JSON.stringify(c.services).replace(/"/g, '"')})">
-          <img src="${c.photo}" alt="Foto de ${c.name}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 0.5rem;" />
-          <h3>${c.name}</h3>
-          <p>${c.description}</p>
-          <div class="status">Status: ${c.status}</div>
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-menu">
+                <div class="mobile-menu-header">
+                    <div class="logo">
+                        <img src="/frontend/img/logo.png.png" alt="Tem de Tudo" class="logo-image">
+                    </div>
+                    <button class="mobile-menu-close" onclick="toggleMobileMenu()">âœ•</button>
+                </div>
+                <ul class="mobile-menu-items">
+                    <li><a href="/">InÃ­cio</a></li>
+                    <li><a href="/estabelecimentos.html">Estabelecimentos</a></li>
+                    <li><a href="/contato.html">Contato</a></li>
+                    <li><a href="/login.html">Login</a></li>
+                    <li><a href="/register.html">Cadastro</a></li>
+                </ul>
+            </div>
         </div>
-      `).join('');
-    });
-  </script>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div class="container">
+                <!-- Hero Section -->
+                <section class="establishments-hero">
+                    <div class="hero-content">
+                        <h1>Estabelecimentos Parceiros</h1>
+                        <p>Mais de 50 estabelecimentos onde vocÃª acumula pontos em cada compra</p>
+                    </div>
+                    
+                    <div class="search-filters">
+                        <div class="search-box">
+                            <input type="text" placeholder="Buscar por nome ou categoria..." id="searchInput">
+                            <button class="search-btn">ðŸ”</button>
+                        </div>
+                        
+                        <div class="filter-chips">
+                            <button class="filter-chip active" data-filter="all">Todos</button>
+                            <button class="filter-chip" data-filter="restaurante">ðŸ½ï¸ Restaurantes</button>
+                            <button class="filter-chip" data-filter="loja">ðŸ›ï¸ Lojas</button>
+                            <button class="filter-chip" data-filter="servicos">âš™ï¸ ServiÃ§os</button>
+                            <button class="filter-chip" data-filter="farmacia">ðŸ’Š FarmÃ¡cias</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Establishments Grid -->
+                <section class="establishments-grid">
+                    <!-- Restaurante 1 -->
+                    <div class="establishment-card" data-category="restaurante">
+                        <div class="card-image">
+                            <div class="image-placeholder">ðŸ”</div>
+                            <div class="card-badge">â­ 4.8</div>
+                            <div class="points-badge">+2x pontos</div>
+                        </div>
+                        <div class="card-content">
+                            <h3>Burger House</h3>
+                            <p class="category">Hamburgueria â€¢ Fast Food</p>
+                            <p class="description">Os melhores hamburgueres artesanais da cidade com ingredientes premium.</p>
+                            <div class="card-info">
+                                <span class="delivery-time">â±ï¸ 25-35 min</span>
+                                <span class="points">ðŸ’° R$10 = 10 pontos</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn btn-outline btn-sm">Ver Menu</button>
+                                <button class="btn btn-primary btn-sm">Visitar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loja 1 -->
+                    <div class="establishment-card" data-category="loja">
+                        <div class="card-image">
+                            <div class="image-placeholder">ðŸ‘•</div>
+                            <div class="card-badge">â­ 4.9</div>
+                            <div class="points-badge">+1.5x pontos</div>
+                        </div>
+                        <div class="card-content">
+                            <h3>Fashion Store</h3>
+                            <p class="category">Roupas â€¢ AcessÃ³rios</p>
+                            <p class="description">Moda jovem e moderna com as Ãºltimas tendÃªncias nacionais e importadas.</p>
+                            <div class="card-info">
+                                <span class="delivery-time">ðŸ“ Centro</span>
+                                <span class="points">ðŸ’° R$20 = 20 pontos</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn btn-outline btn-sm">Ver Produtos</button>
+                                <button class="btn btn-primary btn-sm">Visitar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FarmÃ¡cia 1 -->
+                    <div class="establishment-card" data-category="farmacia">
+                        <div class="card-image">
+                            <div class="image-placeholder">ðŸ’Š</div>
+                            <div class="card-badge">â­ 4.7</div>
+                            <div class="points-badge">+3x pontos</div>
+                        </div>
+                        <div class="card-content">
+                            <h3>FarmÃ¡cia SaÃºde+</h3>
+                            <p class="category">FarmÃ¡cia â€¢ Medicamentos</p>
+                            <p class="description">Medicamentos, produtos de higiene e suplementos com os melhores preÃ§os.</p>
+                            <div class="card-info">
+                                <span class="delivery-time">ðŸšš Delivery</span>
+                                <span class="points">ðŸ’° R$5 = 15 pontos</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn btn-outline btn-sm">Ver Produtos</button>
+                                <button class="btn btn-primary btn-sm">Visitar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ServiÃ§os 1 -->
+                    <div class="establishment-card" data-category="servicos">
+                        <div class="card-image">
+                            <div class="image-placeholder">âœ‚ï¸</div>
+                            <div class="card-badge">â­ 4.9</div>
+                            <div class="points-badge">+2x pontos</div>
+                        </div>
+                        <div class="card-content">
+                            <h3>Studio Hair</h3>
+                            <p class="category">SalÃ£o â€¢ Beleza</p>
+                            <p class="description">Cortes modernos, coloraÃ§Ã£o e tratamentos com profissionais especializados.</p>
+                            <div class="card-info">
+                                <span class="delivery-time">ðŸ“… Agendamento</span>
+                                <span class="points">ðŸ’° R$15 = 30 pontos</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn btn-outline btn-sm">Ver ServiÃ§os</button>
+                                <button class="btn btn-primary btn-sm">Agendar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Restaurante 2 -->
+                    <div class="establishment-card" data-category="restaurante">
+                        <div class="card-image">
+                            <div class="image-placeholder">ðŸ•</div>
+                            <div class="card-badge">â­ 4.6</div>
+                            <div class="points-badge">+1.5x pontos</div>
+                        </div>
+                        <div class="card-content">
+                            <h3>Pizzaria Italiana</h3>
+                            <p class="category">Pizzaria â€¢ Italiana</p>
+                            <p class="description">Pizzas artesanais com massa fina e ingredientes importados da ItÃ¡lia.</p>
+                            <div class="card-info">
+                                <span class="delivery-time">â±ï¸ 30-45 min</span>
+                                <span class="points">ðŸ’° R$25 = 25 pontos</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn btn-outline btn-sm">Ver CardÃ¡pio</button>
+                                <button class="btn btn-primary btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loja 2 -->
+                    <div class="establishment-card" data-category="loja">
+                        <div class="card-image">
+                            <div class="image-placeholder">ðŸ“±</div>
+                            <div class="card-badge">â­ 4.8</div>
+                            <div class="points-badge">+2x pontos</div>
+                        </div>
+                        <div class="card-content">
+                            <h3>Tech Store</h3>
+                            <p class="category">EletrÃ´nicos â€¢ Tecnologia</p>
+                            <p class="description">Smartphones, notebooks e acessÃ³rios das principais marcas do mercado.</p>
+                            <div class="card-info">
+                                <span class="delivery-time">ðŸšš Entrega rÃ¡pida</span>
+                                <span class="points">ðŸ’° R$100 = 200 pontos</span>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn btn-outline btn-sm">Ver Produtos</button>
+                                <button class="btn btn-primary btn-sm">Comprar</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CTA Section -->
+                <section class="cta-section">
+                    <div class="cta-content">
+                        <h2>Quer participar do programa?</h2>
+                        <p>Cadastre-se agora e comece a acumular pontos em todos esses estabelecimentos</p>
+                        <div class="cta-actions">
+                            <a href="/register.html" class="btn btn-primary">Cadastrar GrÃ¡tis</a>
+                            <a href="/login.html" class="btn btn-outline">JÃ¡ sou cliente</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/app-mobile.js"></script>
+    <script>
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
+        }
+
+        // Filtros
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterChips = document.querySelectorAll('.filter-chip');
+            const cards = document.querySelectorAll('.establishment-card');
+            const searchInput = document.getElementById('searchInput');
+
+            // Filtro por categoria
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    // Atualizar chip ativo
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const filter = this.dataset.filter;
+                    
+                    cards.forEach(card => {
+                        if (filter === 'all' || card.dataset.category === filter) {
+                            card.style.display = 'block';
+                            card.style.animation = 'slideInUp 0.3s ease';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Busca
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                cards.forEach(card => {
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const category = card.querySelector('.category').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || category.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        /* Establishments Page Styles */
+        .establishments-hero {
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+        }
+
+        .search-filters {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            background: white;
+            transition: var(--transition-base);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px var(--primary-purple-100);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-chip {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--gray-200);
+            background: white;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-base);
+            white-space: nowrap;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--primary-purple);
+            background: var(--primary-purple-50);
+        }
+
+        .filter-chip.active {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
+
+        .establishments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            padding: 3rem 0;
+        }
+
+        .establishment-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-200);
+            transition: var(--transition-base);
+        }
+
+        .establishment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-image {
+            position: relative;
+            height: 160px;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-placeholder {
+            font-size: 4rem;
+            opacity: 0.7;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .points-badge {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: var(--gradient-gold);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-content h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 0.25rem;
+        }
+
+        .category {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .description {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .card-info {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .card-info span {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .cta-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: var(--radius-2xl);
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .cta-content h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-content p {
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-actions .btn {
+            min-width: 150px;
+        }
+
+        .cta-actions .btn-outline {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-actions .btn-outline:hover {
+            background: white;
+            color: var(--primary-purple);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .establishments-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 2rem 0;
+            }
+
+            .filter-chips {
+                gap: 0.25rem;
+            }
+
+            .filter-chip {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .card-actions {
+                flex-direction: column;
+            }
+
+            .cta-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </body>
 </html>
+

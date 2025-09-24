@@ -3,347 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tem de Tudo - Programa de Fidelidade</title>
+    <title>Tem de Tudo - Sistema de Fidelidade Mobile</title>
+    
+    <!-- Meta Tags PWA -->
+    <meta name="description" content="Sistema mobile de fidelidade com pontos, avaliações e recompensas">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Tem de Tudo">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/app-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/img/logo.png">
+    <link rel="apple-touch-icon" href="/img/logo.png">
+    <link rel="mask-icon" href="/img/logo.png" color="#3b82f6">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/mobile-theme.css">
+    
+    <!-- Manifest PWA -->
     <link rel="manifest" href="/manifest.json">
-    <style>
-        /* Hero Section */
-        .hero-section {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #f59e0b 100%);
-            padding: 4rem 0 6rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="heroGrid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23heroGrid)"/></svg>');
-            animation: movePattern 20s linear infinite;
-        }
-
-        @keyframes movePattern {
-            0% { transform: translateX(0) translateY(0); }
-            100% { transform: translateX(10px) translateY(10px); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            color: white;
-        }
-
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero-subtitle {
-            font-size: 1.25rem;
-            font-weight: 400;
-            margin-bottom: 2rem;
-            opacity: 0.95;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero-cta {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .cta-button {
-            padding: 1rem 2rem;
-            border-radius: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.25s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .cta-primary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .cta-primary:hover {
-            background: white;
-            color: #6366f1;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .cta-secondary {
-            background: rgba(245, 158, 11, 0.9);
-            color: white;
-            border: 2px solid transparent;
-        }
-
-        .cta-secondary:hover {
-            background: #f59e0b;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
-        }
-
-        /* Features Section */
-        .features-section {
-            padding: 4rem 0;
-            background: var(--gradient-subtle);
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--gray-800);
-            margin-bottom: 1rem;
-        }
-
-        .section-subtitle {
-            font-size: 1.125rem;
-            color: var(--gray-600);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            border: 1px solid var(--gray-200);
-            text-align: center;
-            transition: all 0.25s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient-primary);
-        }
-
-        .feature-card:nth-child(2)::before {
-            background: var(--gradient-gold);
-        }
-
-        .feature-card:nth-child(3)::before {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-        }
-
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 1.5rem;
-            border-radius: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            color: white;
-        }
-
-        .feature-card:nth-child(1) .feature-icon {
-            background: var(--gradient-primary);
-        }
-
-        .feature-card:nth-child(2) .feature-icon {
-            background: var(--gradient-gold);
-        }
-
-        .feature-card:nth-child(3) .feature-icon {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-
-        .feature-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--gray-800);
-            margin-bottom: 1rem;
-        }
-
-        .feature-description {
-            color: var(--gray-600);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-link {
-            color: var(--primary-purple);
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: color 0.25s ease;
-        }
-
-        .feature-link:hover {
-            color: var(--primary-purple-dark);
-        }
-
-        /* Stats Section */
-        .stats-section {
-            background: var(--gray-800);
-            color: white;
-            padding: 3rem 0;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            text-align: center;
-        }
-
-        .stat-item h3 {
-            font-size: 3rem;
-            font-weight: 800;
-            background: var(--gradient-gold);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-item p {
-            color: var(--gray-300);
-            font-weight: 500;
-        }
-
-        /* Mobile Menu */
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 200;
-        }
-
-        .mobile-nav.active {
-            display: flex;
-        }
-
-        .mobile-menu {
-            background: white;
-            width: 80%;
-            max-width: 300px;
-            margin-left: auto;
-            padding: 2rem;
-            box-shadow: -10px 0 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .mobile-menu-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .mobile-menu-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray-600);
-        }
-
-        .mobile-menu-items {
-            list-style: none;
-        }
-
-        .mobile-menu-items a {
-            display: block;
-            padding: 1rem 0;
-            color: var(--gray-700);
-            text-decoration: none;
-            font-weight: 500;
-            border-bottom: 1px solid var(--gray-100);
-            transition: color 0.25s ease;
-        }
-
-        .mobile-menu-items a:hover {
-            color: var(--primary-purple);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-
-            .hero-cta {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .cta-button {
-                width: 100%;
-                max-width: 280px;
-                justify-content: center;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .feature-card {
-                padding: 2rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .stat-item h3 {
-                font-size: 2rem;
-            }
-        }
-    </style>
 </head>
 <body>
     <div class="app-container">
@@ -351,16 +35,15 @@
         <header class="app-header">
             <div class="header-container">
                 <a href="/" class="logo">
-                    <div class="logo-icon">🎯</div>
-                    <span>Tem de Tudo</span>
+                    <img src="/frontend/img/logo.png.png" alt="Tem de Tudo" class="logo-image">
                 </a>
                 
                 <nav class="nav-menu">
                     <a href="/" class="active">Início</a>
                     <a href="/estabelecimentos.html">Estabelecimentos</a>
                     <a href="/contato.html">Contato</a>
-                    <a href="/login-app.html">Login</a>
-                    <a href="/register-app.html">Cadastro</a>
+                    <a href="/login.html">Login</a>
+                    <a href="/register.html">Cadastro</a>
                 </nav>
                 
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
@@ -382,11 +65,11 @@
                     <button class="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>
                 </div>
                 <ul class="mobile-menu-items">
-                    <li><a href="/" onclick="toggleMobileMenu()">Início</a></li>
-                    <li><a href="/estabelecimentos.html" onclick="toggleMobileMenu()">Estabelecimentos</a></li>
-                    <li><a href="/contato.html" onclick="toggleMobileMenu()">Contato</a></li>
-                    <li><a href="/login-app.html" onclick="toggleMobileMenu()">Login</a></li>
-                    <li><a href="/register-app.html" onclick="toggleMobileMenu()">Cadastro</a></li>
+                    <li><a href="/">Início</a></li>
+                    <li><a href="/estabelecimentos.html">Estabelecimentos</a></li>
+                    <li><a href="/contato.html">Contato</a></li>
+                    <li><a href="/login.html">Login</a></li>
+                    <li><a href="/register.html">Cadastro</a></li>
                 </ul>
             </div>
         </div>
@@ -397,89 +80,183 @@
             <section class="hero-section">
                 <div class="container">
                     <div class="hero-content">
-                        <h1 class="hero-title">Programa de Fidelidade</h1>
-                        <p class="hero-subtitle">
-                            Acumule pontos em suas compras e troque por descontos exclusivos. 
-                            Quanto mais você compra, mais vantagens você tem!
-                        </p>
-                        <div class="hero-cta">
-                            <a href="/register-app.html" class="cta-button cta-primary">
-                                🚀 Cadastre-se Grátis
-                            </a>
-                            <a href="/login-app.html" class="cta-button cta-secondary">
-                                👤 Já sou cliente
-                            </a>
+                        <div class="hero-text">
+                            <h1 class="hero-title">Programa de Fidelidade Inteligente</h1>
+                            <p class="hero-subtitle">
+                                Acumule pontos em cada compra e troque por descontos exclusivos. 
+                                Quanto mais você compra, mais vantagens você tem!
+                            </p>
+                            <div class="hero-stats">
+                                <div class="stat">
+                                    <strong>1000+</strong>
+                                    <span>Clientes Ativos</span>
+                                </div>
+                                <div class="stat">
+                                    <strong>50+</strong>
+                                    <span>Estabelecimentos</span>
+                                </div>
+                                <div class="stat">
+                                    <strong>10k+</strong>
+                                    <span>Pontos Resgatados</span>
+                                </div>
+                            </div>
+                            <div class="hero-actions">
+                                <a href="/register.html" class="btn btn-primary">
+                                    🚀 Cadastrar Grátis
+                                </a>
+                                <a href="/login.html" class="btn btn-outline">
+                                    👤 Já sou cliente
+                                </a>
+                            </div>
+                        </div>
+                        <div class="hero-visual">
+                            <div class="phone-mockup">
+                                <div class="phone-screen">
+                                    <div class="app-preview">
+                                        <div class="preview-header">
+                                            <div class="preview-logo">🎯</div>
+                                            <span>Meus Pontos</span>
+                                        </div>
+                                        <div class="preview-balance">
+                                            <h3>1.250</h3>
+                                            <p>pontos disponíveis</p>
+                                        </div>
+                                        <div class="preview-level">
+                                            <div class="level-badge">🥈 Prata</div>
+                                            <div class="level-progress">
+                                                <div class="progress-bar">
+                                                    <div class="progress-fill"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Features Section -->
-            <section class="features-section">
+            <!-- How it Works -->
+            <section class="how-it-works">
                 <div class="container">
                     <div class="section-header">
-                        <h2 class="section-title">Como Funciona</h2>
-                        <p class="section-subtitle">
-                            Sistema simples e transparente para você aproveitar ao máximo suas compras
-                        </p>
+                        <h2>Como Funciona</h2>
+                        <p>Sistema simples e transparente para maximizar suas vantagens</p>
                     </div>
                     
-                    <div class="features-grid">
-                        <div class="feature-card animate-slide-up">
-                            <div class="feature-icon">💳</div>
-                            <h3 class="feature-title">Acumule Pontos</h3>
-                            <p class="feature-description">
-                                Ganhe 1 ponto para cada R$ 1,00 em compras. Níveis especiais multiplicam seus pontos!
-                            </p>
-                            <a href="#" class="feature-link">
-                                Saiba mais →
-                            </a>
+                    <div class="steps-grid">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <div class="step-icon">📝</div>
+                            <h3>Cadastre-se</h3>
+                            <p>Crie sua conta gratuita e ganhe 100 pontos de bônus para começar</p>
                         </div>
                         
-                        <div class="feature-card animate-slide-up" style="animation-delay: 0.1s;">
-                            <div class="feature-icon">🏆</div>
-                            <h3 class="feature-title">Níveis VIP</h3>
-                            <p class="feature-description">
-                                Bronze, Prata, Ouro e Diamante. Cada nível oferece mais vantagens e multiplicadores.
-                            </p>
-                            <a href="#" class="feature-link">
-                                Ver níveis →
-                            </a>
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <div class="step-icon">💳</div>
+                            <h3>Acumule Pontos</h3>
+                            <p>Ganhe 1 ponto para cada R$ 1,00 em compras nos estabelecimentos parceiros</p>
                         </div>
                         
-                        <div class="feature-card animate-slide-up" style="animation-delay: 0.2s;">
-                            <div class="feature-icon">🎁</div>
-                            <h3 class="feature-title">Troque por Prêmios</h3>
-                            <p class="feature-description">
-                                Use seus pontos para conseguir descontos, produtos grátis e ofertas exclusivas.
-                            </p>
-                            <a href="#" class="feature-link">
-                                Ver prêmios →
-                            </a>
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <div class="step-icon">🏆</div>
+                            <h3>Suba de Nível</h3>
+                            <p>Evolua para Bronze, Prata, Ouro e Diamante com multiplicadores especiais</p>
+                        </div>
+                        
+                        <div class="step-card">
+                            <div class="step-number">4</div>
+                            <div class="step-icon">🎁</div>
+                            <h3>Resgate Prêmios</h3>
+                            <p>Troque seus pontos por descontos, produtos grátis e ofertas exclusivas</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Stats Section -->
-            <section class="stats-section">
+            <!-- Levels Section -->
+            <section class="levels-section">
                 <div class="container">
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <h3>1000+</h3>
-                            <p>Clientes Ativos</p>
+                    <div class="section-header">
+                        <h2>Níveis de Fidelidade</h2>
+                        <p>Quanto mais pontos, maiores as vantagens</p>
+                    </div>
+                    
+                    <div class="levels-grid">
+                        <div class="level-card bronze">
+                            <div class="level-header">
+                                <div class="level-icon">🥉</div>
+                                <h3>Bronze</h3>
+                                <p>0 - 999 pontos</p>
+                            </div>
+                            <div class="level-benefits">
+                                <div class="benefit">✅ Multiplicador 1x</div>
+                                <div class="benefit">✅ Ofertas básicas</div>
+                                <div class="benefit">✅ Suporte padrão</div>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <h3>50+</h3>
-                            <p>Estabelecimentos Parceiros</p>
+                        
+                        <div class="level-card silver">
+                            <div class="level-header">
+                                <div class="level-icon">🥈</div>
+                                <h3>Prata</h3>
+                                <p>1.000 - 4.999 pontos</p>
+                            </div>
+                            <div class="level-benefits">
+                                <div class="benefit">✅ Multiplicador 1.5x</div>
+                                <div class="benefit">✅ Ofertas exclusivas</div>
+                                <div class="benefit">✅ Desconto de 5%</div>
+                                <div class="benefit">✅ Suporte prioritário</div>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <h3>10K+</h3>
-                            <p>Pontos Resgatados</p>
+                        
+                        <div class="level-card gold">
+                            <div class="level-header">
+                                <div class="level-icon">🥇</div>
+                                <h3>Ouro</h3>
+                                <p>5.000 - 9.999 pontos</p>
+                            </div>
+                            <div class="level-benefits">
+                                <div class="benefit">✅ Multiplicador 2x</div>
+                                <div class="benefit">✅ Ofertas VIP</div>
+                                <div class="benefit">✅ Desconto de 10%</div>
+                                <div class="benefit">✅ Frete grátis</div>
+                                <div class="benefit">✅ Suporte VIP</div>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <h3>4.9</h3>
-                            <p>Avaliação dos Usuários</p>
+                        
+                        <div class="level-card diamond">
+                            <div class="level-header">
+                                <div class="level-icon">💎</div>
+                                <h3>Diamante</h3>
+                                <p>10.000+ pontos</p>
+                            </div>
+                            <div class="level-benefits">
+                                <div class="benefit">✅ Multiplicador 3x</div>
+                                <div class="benefit">✅ Ofertas exclusivas</div>
+                                <div class="benefit">✅ Desconto de 15%</div>
+                                <div class="benefit">✅ Acesso antecipado</div>
+                                <div class="benefit">✅ Gerente de conta</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <section class="cta-section">
+                <div class="container">
+                    <div class="cta-content">
+                        <h2>Pronto para começar?</h2>
+                        <p>Junte-se a milhares de clientes que já economizam com nosso programa</p>
+                        <div class="cta-actions">
+                            <a href="/register.html" class="btn btn-primary btn-lg">
+                                Cadastrar Agora - É Grátis!
+                            </a>
+                            <p class="cta-note">✅ 100 pontos de bônus • ✅ Sem taxas • ✅ Cancelamento gratuito</p>
                         </div>
                     </div>
                 </div>
@@ -487,40 +264,449 @@
         </main>
     </div>
 
-    <script src="/js/app.js"></script>
+    <!-- Scripts -->
+    <script src="/js/app-mobile.js"></script>
     <script>
-        function toggleMobileMenu() {
-            const mobileNav = document.getElementById('mobileNav');
-            mobileNav.classList.toggle('active');
-        }
-
-        // Fechar menu ao clicar fora
-        document.getElementById('mobileNav').addEventListener('click', function(e) {
-            if (e.target === this) {
-                toggleMobileMenu();
-            }
-        });
-
-        // Animação de entrada dos cards
+        // Inicialização da aplicação mobile
         document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.feature-card');
+            console.log('🎯 Tem de Tudo Mobile iniciando...');
             
+            // Registrar Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw-mobile.js')
+                    .then(registration => {
+                        console.log('✅ Service Worker registrado:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('❌ Erro ao registrar Service Worker:', error);
+                    });
+            }
+            
+            // Configurar PWA
+            if (window.PWAManager) {
+                PWAManager.init();
+            }
+            
+            // Configurar notificações se disponível
+            if (window.NotificationManager) {
+                NotificationManager.init();
+            }
+            
+            // Animações de entrada
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
+                        entry.target.classList.add('animate-in');
                     }
                 });
             }, { threshold: 0.1 });
             
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                card.style.transition = `all 0.5s ease ${index * 0.1}s`;
-                observer.observe(card);
+            document.querySelectorAll('.step-card, .level-card, .feature-card').forEach(el => {
+                observer.observe(el);
             });
         });
+        
+        // Menu mobile toggle
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            if (mobileNav) {
+                mobileNav.classList.toggle('active');
+            }
+        }
+        
+        // Scroll suave para seções
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
     </script>
+
+    <style>
+        /* Home Page Styles */
+        .hero-section {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #f59e0b 100%);
+            padding: 4rem 0 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="heroGrid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23heroGrid)"/></svg>');
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-text {
+            color: white;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat {
+            text-align: left;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fbbf24;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat span {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-actions .btn {
+            min-width: 160px;
+        }
+
+        .hero-actions .btn-outline {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-actions .btn-outline:hover {
+            background: white;
+            color: #6366f1;
+        }
+
+        .phone-mockup {
+            background: #1f2937;
+            padding: 1rem;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        .phone-screen {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem 1.5rem;
+            min-height: 400px;
+        }
+
+        .app-preview {
+            text-align: center;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .preview-logo {
+            width: 30px;
+            height: 30px;
+            background: var(--gradient-primary);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .preview-balance {
+            margin-bottom: 2rem;
+        }
+
+        .preview-balance h3 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-balance p {
+            color: var(--gray-600);
+            font-size: 0.875rem;
+        }
+
+        .level-badge {
+            background: var(--gradient-gold);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 60%;
+            background: var(--gradient-gold);
+            border-radius: 4px;
+        }
+
+        .how-it-works {
+            padding: 4rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-200);
+            position: relative;
+            transition: var(--transition-base);
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -15px;
+            right: 1rem;
+            width: 30px;
+            height: 30px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .step-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 1rem;
+        }
+
+        .step-card p {
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        .levels-section {
+            padding: 4rem 0;
+            background: var(--gray-50);
+        }
+
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .level-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            border: 2px solid transparent;
+            transition: var(--transition-base);
+        }
+
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .level-card.silver {
+            border-color: #e5e7eb;
+        }
+
+        .level-card.gold {
+            border-color: #fbbf24;
+        }
+
+        .level-card.diamond {
+            border-color: #8b5cf6;
+        }
+
+        .level-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .level-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 0.5rem;
+        }
+
+        .level-header p {
+            color: var(--gray-500);
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .level-benefits {
+            text-align: left;
+        }
+
+        .benefit {
+            padding: 0.5rem 0;
+            color: var(--gray-700);
+            font-size: 0.875rem;
+        }
+
+        .cta-section {
+            padding: 4rem 0;
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .cta-content {
+            text-align: center;
+        }
+
+        .cta-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .cta-content p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-actions {
+            margin-bottom: 1rem;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+        }
+
+        .cta-note {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-top: 1rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+
+            .steps-grid,
+            .levels-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .cta-content h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </body>
 </html>

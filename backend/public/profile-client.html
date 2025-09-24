@@ -1,487 +1,1040 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Tem de Tudo</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/mobile-theme.css">
+    <link rel="manifest" href="/manifest.json">
 </head>
 <body>
-    <header>
-        <nav class="container">
-            <a href="/" class="logo">Tem de Tudo</a>
-            <div class="menu-toggle" id="menu-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/" class="logo">
+                    <img src="/frontend/img/logo.png.png" alt="Tem de Tudo" class="logo-image">
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/">InÃ­cio</a>
+                    <a href="/estabelecimentos.html">Estabelecimentos</a>
+                    <a href="/contato.html">Contato</a>
+                    <a href="/profile-client.html" class="active">Perfil</a>
+                    <a href="#" onclick="logout()">Sair</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
-            <ul class="nav-links" id="nav-links">
-                <li><a href="/">Início</a></li>
-                <li><a href="/profile-client.html" class="active">Perfil</a></li>
-                <li><a href="#" onclick="logout()" class="btn btn-secondary">Sair</a></li>
-            </ul>
-        </nav>
-    </header>
+        </header>
 
-    <div class="container">
-        <main>
-            <!-- Informações do Usuário -->
-            <div class="card">
-                <div class="card-header">
-                    <h1>👤 Meu Perfil</h1>
-                    <p>Gerencie sua conta e acompanhe seus pontos</p>
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-menu">
+                <div class="mobile-menu-header">
+                    <div class="logo">
+                        <img src="/frontend/img/logo.png.png" alt="Tem de Tudo" class="logo-image">
+                    </div>
+                    <button class="mobile-menu-close" onclick="toggleMobileMenu()">âœ•</button>
                 </div>
-                
-                <div class="user-info" id="user-info">
-                    <div class="info-item">
-                        <div class="info-label">Nome</div>
-                        <div class="info-value" id="user-name">-</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">E-mail</div>
-                        <div class="info-value" id="user-email">-</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Telefone</div>
-                        <div class="info-value" id="user-phone">-</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Membro desde</div>
-                        <div class="info-value" id="user-created">-</div>
-                    </div>
-                </div>
+                <ul class="mobile-menu-items">
+                    <li><a href="/">InÃ­cio</a></li>
+                    <li><a href="/estabelecimentos.html">Estabelecimentos</a></li>
+                    <li><a href="/contato.html">Contato</a></li>
+                    <li><a href="/profile-client.html">Perfil</a></li>
+                    <li><a href="#" onclick="logout()">Sair</a></li>
+                </ul>
             </div>
+        </div>
 
-            <!-- Dashboard de Pontos -->
-            <div class="card">
-                <div class="card-header">
-                    <h1>💰 Meus Pontos</h1>
-                    <p>Acompanhe seu saldo e nível de fidelidade</p>
-                </div>
-                
-                <div class="dashboard-stats">
-                    <div class="stat-card">
-                        <div class="feature-icon">💰</div>
-                        <div class="stat-number" id="user-points">0</div>
-                        <div class="stat-label">Pontos Disponíveis</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="feature-icon" id="level-icon">🥉</div>
-                        <div class="stat-number" id="user-level">Bronze</div>
-                        <div class="stat-label">Nível Atual</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="feature-icon">⚡</div>
-                        <div class="stat-number" id="level-multiplier">1x</div>
-                        <div class="stat-label">Multiplicador</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="feature-icon">🎯</div>
-                        <div class="stat-number" id="points-next-level">1000</div>
-                        <div class="stat-label">Para Próximo Nível</div>
-                    </div>
-                </div>
-                
-                <!-- Barra de Progresso -->
-                <div class="progress-container" style="margin-top: 2rem;">
-                    <div class="progress-header">
-                        <span>Progresso para próximo nível</span>
-                        <span id="progress-percentage">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Profile Header -->
+            <section class="profile-header">
+                <div class="container">
+                    <div class="profile-hero">
+                        <div class="profile-info">
+                            <div class="avatar">
+                                <img src="https://via.placeholder.com/120" alt="Avatar" id="userAvatar">
+                            </div>
+                            <div class="user-details">
+                                <h1 id="userName">JoÃ£o Silva</h1>
+                                <p id="userEmail">joao@email.com</p>
+                                <div class="user-level">
+                                    <span class="level-badge" id="userLevel">ðŸ¥ˆ NÃ­vel Prata</span>
+                                    <span class="member-since">Membro desde: Jan 2024</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="points-card">
+                            <div class="points-header">
+                                <h3>Meus Pontos</h3>
+                                <button class="refresh-btn" onclick="refreshPoints()">ðŸ”„</button>
+                            </div>
+                            <div class="points-balance">
+                                <span class="points-number" id="pointsBalance">1.250</span>
+                                <span class="points-label">pontos disponÃ­veis</span>
+                            </div>
+                            <div class="points-actions">
+                                <button class="btn btn-primary btn-sm" onclick="showRewardsModal()">
+                                    ðŸŽ Resgatar
+                                </button>
+                                <button class="btn btn-outline btn-sm" onclick="showPointsHistory()">
+                                    ðŸ“Š HistÃ³rico
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Níveis de Fidelidade -->
-            <div class="card">
-                <div class="card-header">
-                    <h1>🏅 Níveis de Fidelidade</h1>
-                    <p>Evolua e ganhe mais benefícios</p>
-                </div>
-                
-                <div class="loyalty-levels">
-                    <div class="level-item" data-level="Bronze">
-                        <div class="level-icon">🥉</div>
-                        <div class="level-info">
-                            <h3>Bronze</h3>
-                            <p>0 - 999 pontos</p>
-                            <p>1x multiplicador</p>
-                        </div>
-                        <div class="level-status" id="bronze-status">🔒</div>
+            <!-- Dashboard -->
+            <section class="dashboard">
+                <div class="container">
+                    <div class="dashboard-tabs">
+                        <button class="tab-btn active" onclick="showTab('overview')">VisÃ£o Geral</button>
+                        <button class="tab-btn" onclick="showTab('history')">HistÃ³rico</button>
+                        <button class="tab-btn" onclick="showTab('rewards')">Recompensas</button>
+                        <button class="tab-btn" onclick="showTab('settings')">ConfiguraÃ§Ãµes</button>
                     </div>
-                    
-                    <div class="level-item" data-level="Prata">
-                        <div class="level-icon">🥈</div>
-                        <div class="level-info">
-                            <h3>Prata</h3>
-                            <p>1.000 - 4.999 pontos</p>
-                            <p>1.5x multiplicador</p>
-                        </div>
-                        <div class="level-status" id="prata-status">🔒</div>
-                    </div>
-                    
-                    <div class="level-item" data-level="Ouro">
-                        <div class="level-icon">🥇</div>
-                        <div class="level-info">
-                            <h3>Ouro</h3>
-                            <p>5.000 - 9.999 pontos</p>
-                            <p>2x multiplicador</p>
-                        </div>
-                        <div class="level-status" id="ouro-status">🔒</div>
-                    </div>
-                    
-                    <div class="level-item" data-level="Diamante">
-                        <div class="level-icon">💎</div>
-                        <div class="level-info">
-                            <h3>Diamante</h3>
-                            <p>10.000+ pontos</p>
-                            <p>3x multiplicador</p>
-                        </div>
-                        <div class="level-status" id="diamante-status">🔒</div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Simulador de Compras (para demonstração) -->
-            <div class="card">
-                <div class="card-header">
-                    <h1>🛒 Simular Compra</h1>
-                    <p>Para demonstração: simule uma compra e ganhe pontos</p>
-                </div>
-                
-                <div class="simulation-form">
-                    <div class="form-group">
-                        <label for="purchase-value">Valor da Compra (R$)</label>
-                        <input type="number" id="purchase-value" min="1" step="0.01" value="50.00">
-                        <small>Cada R$ 1,00 = 1 ponto (multiplicado pelo seu nível)</small>
+                    <!-- Overview Tab -->
+                    <div id="overview" class="tab-content active">
+                        <div class="dashboard-grid">
+                            <!-- Level Progress -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Progresso do NÃ­vel</h3>
+                                    <span class="card-icon">ðŸ†</span>
+                                </div>
+                                <div class="level-progress">
+                                    <div class="current-level">
+                                        <div class="level-info">
+                                            <span class="level-name">Prata</span>
+                                            <span class="level-range">1.000 - 4.999 pts</span>
+                                        </div>
+                                        <div class="next-level">
+                                            <span>PrÃ³ximo: Ouro (5.000 pts)</span>
+                                        </div>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 25%"></div>
+                                    </div>
+                                    <div class="progress-info">
+                                        <span>1.250 / 5.000 pontos</span>
+                                        <span>Faltam 3.750 pontos</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quick Stats -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>EstatÃ­sticas</h3>
+                                    <span class="card-icon">ðŸ“ˆ</span>
+                                </div>
+                                <div class="stats-grid">
+                                    <div class="stat-item">
+                                        <span class="stat-number">47</span>
+                                        <span class="stat-label">Compras este mÃªs</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number">R$ 1.847</span>
+                                        <span class="stat-label">Gasto total</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number">890</span>
+                                        <span class="stat-label">Pontos ganhos</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number">R$ 127</span>
+                                        <span class="stat-label">Economia gerada</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent Activity -->
+                            <div class="card full-width">
+                                <div class="card-header">
+                                    <h3>Atividade Recente</h3>
+                                    <span class="card-icon">ðŸ“</span>
+                                </div>
+                                <div class="activity-list">
+                                    <div class="activity-item">
+                                        <div class="activity-icon gain">+</div>
+                                        <div class="activity-details">
+                                            <span class="activity-title">Compra no Supermercado ABC</span>
+                                            <span class="activity-date">Hoje, 14:30</span>
+                                        </div>
+                                        <span class="activity-points gain">+45 pts</span>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon spend">-</div>
+                                        <div class="activity-details">
+                                            <span class="activity-title">Resgate: Desconto de 10%</span>
+                                            <span class="activity-date">Ontem, 16:45</span>
+                                        </div>
+                                        <span class="activity-points spend">-100 pts</span>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-icon gain">+</div>
+                                        <div class="activity-details">
+                                            <span class="activity-title">Compra na FarmÃ¡cia XYZ</span>
+                                            <span class="activity-date">2 dias atrÃ¡s, 10:15</span>
+                                        </div>
+                                        <span class="activity-points gain">+23 pts</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-outline btn-sm" onclick="showTab('history')">
+                                    Ver HistÃ³rico Completo
+                                </button>
+                            </div>
+
+                            <!-- Available Rewards -->
+                            <div class="card full-width">
+                                <div class="card-header">
+                                    <h3>Recompensas DisponÃ­veis</h3>
+                                    <span class="card-icon">ðŸŽ</span>
+                                </div>
+                                <div class="rewards-grid">
+                                    <div class="reward-card">
+                                        <div class="reward-icon">ðŸ’°</div>
+                                        <div class="reward-info">
+                                            <h4>Desconto de 5%</h4>
+                                            <p>Em qualquer compra acima de R$ 50</p>
+                                        </div>
+                                        <div class="reward-cost">50 pts</div>
+                                        <button class="btn btn-primary btn-xs">Resgatar</button>
+                                    </div>
+                                    <div class="reward-card">
+                                        <div class="reward-icon">ðŸ•</div>
+                                        <div class="reward-info">
+                                            <h4>Pizza GrÃ¡tis</h4>
+                                            <p>Pizza mÃ©dia na Pizzaria do Bairro</p>
+                                        </div>
+                                        <div class="reward-cost">200 pts</div>
+                                        <button class="btn btn-primary btn-xs">Resgatar</button>
+                                    </div>
+                                    <div class="reward-card">
+                                        <div class="reward-icon">â˜•</div>
+                                        <div class="reward-info">
+                                            <h4>CafÃ© Premium</h4>
+                                            <p>Bebida grÃ¡tis na Coffee House</p>
+                                        </div>
+                                        <div class="reward-cost">75 pts</div>
+                                        <button class="btn btn-primary btn-xs">Resgatar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <button type="button" onclick="simulatePurchase()" class="btn btn-primary" style="background: #f59e0b;">
-                        🎁 Simular Compra e Ganhar Pontos
-                    </button>
+
+                    <!-- History Tab -->
+                    <div id="history" class="tab-content">
+                        <div class="history-filters">
+                            <select id="filterPeriod">
+                                <option value="all">Todos os perÃ­odos</option>
+                                <option value="month">Ãšltimo mÃªs</option>
+                                <option value="3months">Ãšltimos 3 meses</option>
+                                <option value="year">Ãšltimo ano</option>
+                            </select>
+                            <select id="filterType">
+                                <option value="all">Todos os tipos</option>
+                                <option value="gain">Ganhos</option>
+                                <option value="spend">Gastos</option>
+                            </select>
+                        </div>
+                        <div class="history-list">
+                            <!-- History items will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Rewards Tab -->
+                    <div id="rewards" class="tab-content">
+                        <div class="rewards-categories">
+                            <button class="category-btn active">Todos</button>
+                            <button class="category-btn">Descontos</button>
+                            <button class="category-btn">Comida</button>
+                            <button class="category-btn">Produtos</button>
+                            <button class="category-btn">ServiÃ§os</button>
+                        </div>
+                        <div class="rewards-list">
+                            <!-- Rewards will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div id="settings" class="tab-content">
+                        <div class="settings-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>InformaÃ§Ãµes Pessoais</h3>
+                                </div>
+                                <form class="settings-form" id="personalForm">
+                                    <div class="form-group">
+                                        <label for="editName">Nome Completo</label>
+                                        <input type="text" id="editName" value="JoÃ£o Silva">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editEmail">E-mail</label>
+                                        <input type="email" id="editEmail" value="joao@email.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editPhone">Telefone</label>
+                                        <input type="tel" id="editPhone" value="(11) 99999-9999">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Salvar AlteraÃ§Ãµes</button>
+                                </form>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>NotificaÃ§Ãµes</h3>
+                                </div>
+                                <div class="notification-settings">
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" checked>
+                                            <span class="checkmark">âœ“</span>
+                                            E-mail de promoÃ§Ãµes
+                                        </label>
+                                    </div>
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" checked>
+                                            <span class="checkmark">âœ“</span>
+                                            NotificaÃ§Ãµes de pontos
+                                        </label>
+                                    </div>
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox">
+                                            <span class="checkmark">âœ“</span>
+                                            SMS de ofertas
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>SeguranÃ§a</h3>
+                                </div>
+                                <div class="security-actions">
+                                    <button class="btn btn-outline" onclick="changePassword()">
+                                        ðŸ”’ Alterar Senha
+                                    </button>
+                                    <button class="btn btn-outline" onclick="downloadData()">
+                                        ðŸ“¥ Baixar Meus Dados
+                                    </button>
+                                    <button class="btn btn-danger" onclick="deleteAccount()">
+                                        ðŸ—‘ï¸ Excluir Conta
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
         </main>
     </div>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Tem de Tudo - Programa de Fidelidade</p>
-        </div>
-    </footer>
-
-    <script src="/js/app.js"></script>
+    <script src="/js/app-mobile.js"></script>
     <script>
-        // Variáveis globais
-        let currentUserData = null;
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
+        }
 
-        // Carregar dados do usuário ao carregar a página
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab and activate button
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Load content based on tab
+            if (tabName === 'history') {
+                loadHistory();
+            } else if (tabName === 'rewards') {
+                loadRewards();
+            }
+        }
+
+        function loadHistory() {
+            const historyList = document.querySelector('.history-list');
+            historyList.innerHTML = `
+                <div class="activity-item">
+                    <div class="activity-icon gain">+</div>
+                    <div class="activity-details">
+                        <span class="activity-title">Compra no Supermercado ABC</span>
+                        <span class="activity-date">Hoje, 14:30 - Valor: R$ 45,00</span>
+                    </div>
+                    <span class="activity-points gain">+45 pts</span>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon spend">-</div>
+                    <div class="activity-details">
+                        <span class="activity-title">Resgate: Desconto de 10%</span>
+                        <span class="activity-date">Ontem, 16:45</span>
+                    </div>
+                    <span class="activity-points spend">-100 pts</span>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon gain">+</div>
+                    <div class="activity-details">
+                        <span class="activity-title">Compra na FarmÃ¡cia XYZ</span>
+                        <span class="activity-date">2 dias atrÃ¡s, 10:15 - Valor: R$ 23,50</span>
+                    </div>
+                    <span class="activity-points gain">+23 pts</span>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon gain">+</div>
+                    <div class="activity-details">
+                        <span class="activity-title">BÃ´nus de Cadastro</span>
+                        <span class="activity-date">15 Jan 2024, 09:00</span>
+                    </div>
+                    <span class="activity-points gain">+100 pts</span>
+                </div>
+            `;
+        }
+
+        function loadRewards() {
+            const rewardsList = document.querySelector('.rewards-list');
+            rewardsList.innerHTML = `
+                <div class="rewards-grid">
+                    <div class="reward-card">
+                        <div class="reward-icon">ðŸ’°</div>
+                        <div class="reward-info">
+                            <h4>Desconto de 5%</h4>
+                            <p>Em qualquer compra acima de R$ 50</p>
+                            <small>VÃ¡lido por 30 dias</small>
+                        </div>
+                        <div class="reward-cost">50 pts</div>
+                        <button class="btn btn-primary btn-xs">Resgatar</button>
+                    </div>
+                    <div class="reward-card">
+                        <div class="reward-icon">ðŸ’¸</div>
+                        <div class="reward-info">
+                            <h4>Desconto de 10%</h4>
+                            <p>Em qualquer compra acima de R$ 100</p>
+                            <small>VÃ¡lido por 30 dias</small>
+                        </div>
+                        <div class="reward-cost">100 pts</div>
+                        <button class="btn btn-primary btn-xs">Resgatar</button>
+                    </div>
+                    <div class="reward-card">
+                        <div class="reward-icon">ðŸ•</div>
+                        <div class="reward-info">
+                            <h4>Pizza GrÃ¡tis</h4>
+                            <p>Pizza mÃ©dia na Pizzaria do Bairro</p>
+                            <small>VÃ¡lido por 15 dias</small>
+                        </div>
+                        <div class="reward-cost">200 pts</div>
+                        <button class="btn btn-primary btn-xs">Resgatar</button>
+                    </div>
+                    <div class="reward-card">
+                        <div class="reward-icon">â˜•</div>
+                        <div class="reward-info">
+                            <h4>CafÃ© Premium</h4>
+                            <p>Bebida grÃ¡tis na Coffee House</p>
+                            <small>VÃ¡lido por 7 dias</small>
+                        </div>
+                        <div class="reward-cost">75 pts</div>
+                        <button class="btn btn-primary btn-xs">Resgatar</button>
+                    </div>
+                    <div class="reward-card">
+                        <div class="reward-icon">ðŸ”</div>
+                        <div class="reward-info">
+                            <h4>Combo Lanche</h4>
+                            <p>Lanche + batata + refrigerante</p>
+                            <small>VÃ¡lido por 10 dias</small>
+                        </div>
+                        <div class="reward-cost">150 pts</div>
+                        <button class="btn btn-primary btn-xs">Resgatar</button>
+                    </div>
+                    <div class="reward-card">
+                        <div class="reward-icon">ðŸ§´</div>
+                        <div class="reward-info">
+                            <h4>Produto de Beleza</h4>
+                            <p>Shampoo ou condicionador grÃ¡tis</p>
+                            <small>VÃ¡lido por 20 dias</small>
+                        </div>
+                        <div class="reward-cost">180 pts</div>
+                        <button class="btn btn-primary btn-xs">Resgatar</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function refreshPoints() {
+            showToast('Pontos atualizados!', 'success');
+        }
+
+        function changePassword() {
+            showToast('FunÃ§Ã£o em desenvolvimento', 'info');
+        }
+
+        function downloadData() {
+            showToast('Download iniciado', 'success');
+        }
+
+        function deleteAccount() {
+            if (confirm('Tem certeza que deseja excluir sua conta? Esta aÃ§Ã£o nÃ£o pode ser desfeita.')) {
+                showToast('Conta excluÃ­da com sucesso', 'success');
+            }
+        }
+
+        function logout() {
+            if (confirm('Deseja realmente sair?')) {
+                localStorage.removeItem('auth_token');
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            loadUserProfile();
-        });
-
-        // Carregar perfil do usuário
-        async function loadUserProfile() {
-            const token = localStorage.getItem('auth_token');
-            if (!token) {
+            // Check if user is logged in
+            if (!localStorage.getItem('auth_token')) {
                 window.location.href = '/login.html';
                 return;
             }
-
-            try {
-                showLoading('Carregando perfil...');
-                
-                const response = await fetch('/api/user', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    currentUserData = data.user;
-                    updateProfileUI(currentUserData);
-                } else {
-                    throw new Error('Erro ao carregar perfil');
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                showError('Erro ao carregar perfil');
-                localStorage.removeItem('auth_token');
-                setTimeout(() => {
-                    window.location.href = '/login.html';
-                }, 2000);
-            } finally {
-                hideLoading();
-            }
-        }
-
-        // Atualizar UI com dados do usuário
-        function updateProfileUI(user) {
-            document.getElementById('user-name').textContent = user.name || '-';
-            document.getElementById('user-email').textContent = user.email || '-';
-            document.getElementById('user-phone').textContent = user.telefone || 'Não informado';
-            document.getElementById('user-created').textContent = new Date(user.created_at).toLocaleDateString('pt-BR');
-
-            const points = user.pontos || 0;
-            const level = calculateUserLevel(points);
-            const multiplier = getLevelMultiplier(level);
-            
-            document.getElementById('user-points').textContent = points.toLocaleString('pt-BR');
-            document.getElementById('user-level').textContent = level;
-            document.getElementById('level-multiplier').textContent = multiplier + 'x';
-            
-            // Atualizar ícone do nível
-            const levelIcon = document.getElementById('level-icon');
-            levelIcon.textContent = getLevelIcon(level);
-            
-            // Calcular pontos para próximo nível
-            const nextLevelPoints = getNextLevelPoints(points);
-            document.getElementById('points-next-level').textContent = nextLevelPoints.toLocaleString('pt-BR');
-            
-            // Atualizar barra de progresso
-            updateProgressBar(points, level);
-            
-            // Atualizar status dos níveis
-            updateLevelStatus(level);
-        }
-
-        // Calcular nível baseado nos pontos
-        function calculateUserLevel(points) {
-            if (points >= 10000) return 'Diamante';
-            if (points >= 5000) return 'Ouro';
-            if (points >= 1000) return 'Prata';
-            return 'Bronze';
-        }
-
-        // Obter multiplicador do nível
-        function getLevelMultiplier(level) {
-            switch(level) {
-                case 'Diamante': return 3;
-                case 'Ouro': return 2;
-                case 'Prata': return 1.5;
-                default: return 1;
-            }
-        }
-
-        // Obter ícone do nível
-        function getLevelIcon(level) {
-            switch(level) {
-                case 'Diamante': return '💎';
-                case 'Ouro': return '🥇';
-                case 'Prata': return '🥈';
-                default: return '🥉';
-            }
-        }
-
-        // Calcular pontos necessários para próximo nível
-        function getNextLevelPoints(currentPoints) {
-            if (currentPoints < 1000) return 1000 - currentPoints;
-            if (currentPoints < 5000) return 5000 - currentPoints;
-            if (currentPoints < 10000) return 10000 - currentPoints;
-            return 0; // Já está no nível máximo
-        }
-
-        // Atualizar barra de progresso
-        function updateProgressBar(points, level) {
-            let currentMin = 0;
-            let currentMax = 1000;
-            
-            if (level === 'Prata') {
-                currentMin = 1000;
-                currentMax = 5000;
-            } else if (level === 'Ouro') {
-                currentMin = 5000;
-                currentMax = 10000;
-            } else if (level === 'Diamante') {
-                currentMin = 10000;
-                currentMax = 10000;
-            }
-            
-            let percentage = 0;
-            if (level === 'Diamante') {
-                percentage = 100;
-            } else {
-                percentage = Math.min(100, ((points - currentMin) / (currentMax - currentMin)) * 100);
-            }
-            
-            document.getElementById('progress-fill').style.width = percentage + '%';
-            document.getElementById('progress-percentage').textContent = Math.round(percentage) + '%';
-        }
-
-        // Atualizar status dos níveis
-        function updateLevelStatus(currentLevel) {
-            const levels = ['Bronze', 'Prata', 'Ouro', 'Diamante'];
-            const currentIndex = levels.indexOf(currentLevel);
-            
-            levels.forEach((level, index) => {
-                const statusElement = document.getElementById(level.toLowerCase() + '-status');
-                if (index <= currentIndex) {
-                    statusElement.textContent = '✅';
-                    statusElement.parentElement.classList.add('active');
-                } else {
-                    statusElement.textContent = '🔒';
-                    statusElement.parentElement.classList.remove('active');
-                }
-            });
-        }
-
-        // Simular compra (para demonstração)
-        async function simulatePurchase() {
-            const value = parseFloat(document.getElementById('purchase-value').value);
-            if (!value || value <= 0) {
-                showError('Digite um valor válido para a compra');
-                return;
-            }
-
-            const token = localStorage.getItem('auth_token');
-            if (!token) {
-                showError('Você precisa estar logado');
-                return;
-            }
-
-            const level = calculateUserLevel(currentUserData.pontos || 0);
-            const multiplier = getLevelMultiplier(level);
-            const pointsToAdd = Math.floor(value * multiplier);
-
-            try {
-                showLoading('Processando compra...');
-
-                const response = await fetch('/api/add-pontos', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        pontos: pointsToAdd,
-                        descricao: `Compra simulada de R$ ${value.toFixed(2)}`
-                    })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    showSuccess(`🎉 Compra realizada! Você ganhou ${pointsToAdd} pontos!`);
-                    
-                    // Atualizar dados locais
-                    currentUserData.pontos = data.pontos_total;
-                    updateProfileUI(currentUserData);
-                    
-                    // Limpar campo
-                    document.getElementById('purchase-value').value = '50.00';
-                } else {
-                    throw new Error('Erro ao processar compra');
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                showError('Erro ao processar compra');
-            } finally {
-                hideLoading();
-            }
-        }
+        });
     </script>
 
     <style>
-        .loyalty-levels {
+        /* Profile Page Styles */
+        .profile-header {
+            background: var(--gradient-primary);
+            padding: 2rem 0;
+            color: white;
+        }
+
+        .profile-hero {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .profile-info {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-details h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-details p {
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .user-level {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.25rem;
         }
 
-        .level-item {
+        .level-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .member-since {
+            font-size: 0.875rem;
+            opacity: 0.7;
+        }
+
+        .points-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .points-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            margin-bottom: 1rem;
         }
 
-        .level-item.active {
-            border-color: #f59e0b;
-            background: linear-gradient(135deg, #fef3c7, #f9f7ff);
-        }
-
-        .level-item .level-icon {
-            font-size: 2rem;
-            margin-right: 1rem;
-        }
-
-        .level-item .level-info {
-            flex: 1;
-        }
-
-        .level-item .level-info h3 {
+        .points-header h3 {
             margin: 0;
-            color: #1e293b;
-            font-size: 1.1rem;
+            font-size: 1.125rem;
         }
 
-        .level-item .level-info p {
-            margin: 0.25rem 0;
-            color: #64748b;
-            font-size: 0.9rem;
+        .refresh-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.125rem;
+            opacity: 0.7;
+            transition: var(--transition-base);
         }
 
-        .level-status {
+        .refresh-btn:hover {
+            opacity: 1;
+            transform: rotate(180deg);
+        }
+
+        .points-balance {
+            margin-bottom: 1.5rem;
+        }
+
+        .points-number {
+            display: block;
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--gold-color);
+        }
+
+        .points-label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        .points-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .dashboard {
+            padding: 2rem 0;
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray-600);
+            border-bottom: 2px solid transparent;
+            transition: var(--transition-base);
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-purple);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-purple);
+            border-bottom-color: var(--primary-purple);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-200);
+            padding: 1.5rem;
+        }
+
+        .card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .card-icon {
             font-size: 1.5rem;
         }
 
-        .simulation-form {
-            background: #f8fafc;
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
+        .level-progress {
+            text-align: center;
         }
 
-        .progress-container {
-            padding: 1rem;
-            background: #f8fafc;
-            border-radius: 12px;
-        }
-
-        .progress-header {
+        .current-level {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .level-name {
+            font-weight: 600;
+            color: var(--primary-purple);
+        }
+
+        .level-range {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .next-level {
+            font-size: 0.875rem;
+            color: var(--gray-500);
         }
 
         .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
+            height: 12px;
+            background: var(--gray-200);
+            border-radius: 6px;
             overflow: hidden;
+            margin: 1rem 0;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+            background: var(--gradient-gold);
             transition: width 0.5s ease;
         }
 
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .activity-list {
+            margin-bottom: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .activity-icon.gain {
+            background: var(--success-color);
+        }
+
+        .activity-icon.spend {
+            background: var(--error-color);
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-title {
+            display: block;
+            font-weight: 500;
+            color: var(--gray-800);
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-date {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .activity-points {
+            font-weight: 600;
+        }
+
+        .activity-points.gain {
+            color: var(--success-color);
+        }
+
+        .activity-points.spend {
+            color: var(--error-color);
+        }
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .reward-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+            transition: var(--transition-base);
+        }
+
+        .reward-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .reward-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .reward-info h4 {
+            margin: 0 0 0.5rem;
+            color: var(--gray-800);
+        }
+
+        .reward-info p {
+            margin: 0 0 0.25rem;
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .reward-info small {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        .reward-cost {
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin: 0.5rem 0;
+        }
+
+        .btn-xs {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .history-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .history-filters select {
+            padding: 0.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            background: white;
+        }
+
+        .rewards-categories {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 0.5rem 1rem;
+            background: var(--gray-100);
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            color: var(--gray-700);
+            transition: var(--transition-base);
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .settings-form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .notification-settings,
+        .security-actions {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .setting-item {
+            padding: 0.75rem 0;
+        }
+
+        .setting-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .setting-label input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkmark {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 2px solid var(--gray-300);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            transition: var(--transition-base);
+        }
+
+        .setting-label input[type="checkbox"]:checked + .checkmark {
+            background: var(--primary-purple);
+            border-color: var(--primary-purple);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .loyalty-levels {
-                gap: 0.75rem;
+            .profile-hero {
+                grid-template-columns: 1fr;
+                text-align: center;
             }
-            
-            .level-item {
-                padding: 0.75rem;
+
+            .profile-info {
+                flex-direction: column;
             }
-            
-            .level-item .level-icon {
-                font-size: 1.5rem;
-                margin-right: 0.75rem;
+
+            .dashboard-tabs {
+                flex-wrap: wrap;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .rewards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .history-filters {
+                flex-direction: column;
+            }
+
+            .points-actions {
+                flex-direction: column;
             }
         }
     </style>
 </body>
 </html>
+
