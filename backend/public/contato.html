@@ -136,7 +136,7 @@
                     </div>
 
                     <!-- Contact Form -->
-                    <div style="max-width: 800px; margin: 0 auto;">
+                    <div style="max-width: 900px; margin: 0 auto; margin-top: var(--space-12);">
                         <div class="card">
                             <div class="card-header text-center">
                                 <i class="fas fa-paper-plane icon-lg" style="color: white; font-size: 2rem; margin-bottom: 1rem;"></i>
@@ -144,8 +144,8 @@
                                 <p style="color: rgba(255,255,255,0.9);">Responderemos em até 24 horas</p>
                             </div>
 
-                            <form id="contactForm" class="card-body">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6);">
+                            <form id="contactForm" class="card-body" style="padding: var(--space-8);">
+                                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); margin-bottom: var(--space-6);"
                                     <div class="form-group">
                                         <label for="nome" class="form-label">
                                             <i class="fas fa-user icon-sm"></i> Nome Completo
@@ -394,9 +394,25 @@
             padding-right: 40px;
         }
 
+        /* Responsivo para formulário */
         @media (max-width: 768px) {
-            div[style*="grid-template-columns: 1fr 1fr"] {
+            .form-grid {
                 grid-template-columns: 1fr !important;
+            }
+            
+            .card-body {
+                padding: var(--space-6) !important;
+            }
+            
+            section[style*="padding"] {
+                padding: var(--space-8) var(--space-4) !important;
+            }
+        }
+        
+        /* Melhoria no layout desktop */
+        @media (min-width: 1024px) {
+            .form-grid {
+                gap: var(--space-8) !important;
             }
         }
     </style>

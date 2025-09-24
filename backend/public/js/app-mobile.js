@@ -843,14 +843,21 @@ async function handleRegister(e) {
 
 function showWelcomeBonus() {
     const bonusHTML = `
-        <div class="modal-overlay active" id="welcomeModal">
-            <div class="modal">
-                <div class="modal-body text-center">
-                    <div style="font-size: 4rem; margin-bottom: 1rem;">🎉</div>
-                    <h2 style="color: var(--gold-color); margin-bottom: 1rem;">Parabéns!</h2>
-                    <p>Você ganhou <strong>100 pontos</strong> de bônus por se cadastrar!</p>
-                    <button class="btn btn-primary mt-4" onclick="closeModal('welcomeModal')">
-                        Começar a usar!
+        <div class="modal-overlay active" id="welcomeModal" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);">
+            <div class="modal" style="background: white; border-radius: var(--radius-xl); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 2px solid var(--primary-purple); max-width: 400px;">
+                <div class="modal-body text-center" style="padding: var(--space-8); background: white; border-radius: var(--radius-xl);">
+                    <div style="background: var(--gradient-primary); width: 80px; height: 80px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; box-shadow: 0 10px 25px rgba(76, 29, 149, 0.3);">
+                        <div style="font-size: 2.5rem; color: white;">🎉</div>
+                    </div>
+                    <h2 style="color: var(--primary-purple); margin-bottom: 1rem; font-size: 1.75rem; font-weight: 700;">Bem-vindo(a)!</h2>
+                    <p style="color: #374151; font-size: 1.125rem; margin-bottom: 1rem; line-height: 1.5;">Parabéns! Você ganhou</p>
+                    <div style="background: var(--gradient-primary); color: white; padding: 1rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem; font-weight: 700; font-size: 1.25rem;">
+                        🎯 100 Pontos de Bônus
+                    </div>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 2rem;">Comece a acumular pontos e desbloqueie recompensas incríveis!</p>
+                    <button class="btn btn-primary btn-lg" onclick="closeModal('welcomeModal')" style="background: var(--gradient-primary); border: none; color: white; padding: 1rem 2rem; font-weight: 600; width: 100%; border-radius: var(--radius-lg);">
+                        <i class="fas fa-rocket" style="margin-right: 0.5rem;"></i>
+                        Começar Agora!
                     </button>
                 </div>
             </div>

@@ -1149,12 +1149,68 @@
           submitBtn.textContent = 'Enviando...';
           submitBtn.disabled = true;
 
-          // Simulate API call
+          // Simulate API call with billing notification
           setTimeout(() => {
-            alert('Solicitação enviada com sucesso! Entraremos em contato em breve.');
+            const billingMessage = `
+✅ CADASTRO EMPRESARIAL RECEBIDO!
+
+Olá, ${data.companyName}!
+
+Sua solicitação de cadastro foi recebida com sucesso! 
+
+📋 PRÓXIMOS PASSOS:
+1. Análise dos dados (1-2 dias úteis)
+2. Envio da proposta comercial por email
+3. Aprovação e ativação do perfil
+
+💰 INFORMAÇÕES DE COBRANÇA:
+• Taxa de adesão: R$ 149,90 (pagamento único)
+• Mensalidade: R$ 79,90/mês
+• Sem taxa por transação
+• Primeiro mês GRÁTIS para teste!
+
+📧 DOCUMENTOS NECESSÁRIOS:
+Você receberá um email em ${data.email} com:
+• Contrato de parceria
+• Informações bancárias para pagamento
+• Manual de integração
+• Cronograma de ativação
+
+⏰ PRAZO DE ATIVAÇÃO:
+• Após aprovação: 24-48h
+• Treinamento da equipe incluso
+• Suporte técnico completo
+
+Dúvidas? Entre em contato:
+📞 (11) 4000-1234
+📧 parcerias@temdetudo.com
+💬 WhatsApp: (11) 94000-1234
+
+Obrigado por escolher a TemDeTudo! 🚀
+            `.trim();
+            
+            alert(billingMessage);
+            
+            // Simulate sending billing email
+            console.log('📧 Email de cobrança enviado para:', data.email);
+            console.log('💰 Dados para cobrança:', {
+              empresa: data.companyName,
+              email: data.email,
+              telefone: data.phone,
+              endereco: data.address,
+              taxa_adesao: 149.90,
+              mensalidade: 79.90,
+              primeiro_mes_gratis: true
+            });
+            
             form.reset();
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
+            
+            // Redirect to confirmation page after 3 seconds
+            setTimeout(() => {
+              window.location.href = '/register-company-success.html';
+            }, 3000);
           }, 2000);
         });
       }

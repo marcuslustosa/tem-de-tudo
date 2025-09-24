@@ -510,29 +510,111 @@
             }
         });
 
+        // Dados fictícios dos estabelecimentos
+        const establishmentMenus = {
+            'burger-house': {
+                name: 'Burger House',
+                items: [
+                    { name: 'Burger Clássico', price: 'R$ 24,90', points: 25, description: 'Blend 180g, queijo cheddar, alface, tomate' },
+                    { name: 'X-Bacon Premium', price: 'R$ 32,90', points: 33, description: 'Blend 200g, bacon crocante, queijo suíço, cebola caramelizada' },
+                    { name: 'Fritas Especiais', price: 'R$ 14,90', points: 15, description: 'Batatas rústicas com tempero da casa' },
+                    { name: 'Milk Shake Oreo', price: 'R$ 18,90', points: 19, description: 'Sorvete de baunilha, biscoito Oreo, chantilly' }
+                ]
+            },
+            'farmacia-central': {
+                name: 'Farmácia Central',
+                items: [
+                    { name: 'Dipirona 500mg', price: 'R$ 8,90', points: 9, description: 'Caixa com 20 comprimidos' },
+                    { name: 'Vitamina C 1g', price: 'R$ 25,90', points: 26, description: 'Efervescente - 10 comprimidos' },
+                    { name: 'Protetor Solar FPS 60', price: 'R$ 34,90', points: 35, description: '200ml - Resistente à água' },
+                    { name: 'Multivitamínico', price: 'R$ 45,90', points: 46, description: '60 cápsulas - Adulto' }
+                ]
+            },
+            'pizzaria-italiana': {
+                name: 'Pizzaria Italiana',
+                items: [
+                    { name: 'Pizza Margherita', price: 'R$ 42,90', points: 43, description: 'Molho de tomate, mussarela, manjericão, azeitona' },
+                    { name: 'Pizza Calabresa', price: 'R$ 38,90', points: 39, description: 'Molho de tomate, mussarela, calabresa, cebola' },
+                    { name: 'Lasanha Bolonhesa', price: 'R$ 35,90', points: 36, description: 'Massa artesanal, molho bolonhesa, queijos' },
+                    { name: 'Tiramisu', price: 'R$ 16,90', points: 17, description: 'Sobremesa italiana tradicional' }
+                ]
+            },
+            'tech-store': {
+                name: 'Tech Store',
+                items: [
+                    { name: 'Fone Bluetooth Premium', price: 'R$ 199,90', points: 200, description: 'Cancelamento de ruído, bateria 30h' },
+                    { name: 'Carregador Rápido 65W', price: 'R$ 89,90', points: 90, description: 'USB-C, compatível com notebooks' },
+                    { name: 'Película 3D iPhone', price: 'R$ 45,90', points: 46, description: 'Vidro temperado, proteção total' },
+                    { name: 'Power Bank 20000mAh', price: 'R$ 129,90', points: 130, description: 'Carregamento rápido, display LED' }
+                ]
+            }
+        };
+
+        const establishmentServices = {
+            'salao-beleza': [
+                { name: 'Corte Feminino + Escova', price: 'R$ 65,00', points: 65, duration: '90 min' },
+                { name: 'Coloração Completa', price: 'R$ 150,00', points: 150, duration: '180 min' },
+                { name: 'Manicure + Pedicure', price: 'R$ 45,00', points: 45, duration: '60 min' },
+                { name: 'Hidratação Capilar', price: 'R$ 80,00', points: 80, duration: '120 min' }
+            ]
+        };
+
         // Funções dos botões dos estabelecimentos
         function showMenu(establishmentId) {
-            alert(`Abrindo cardápio de ${establishmentId}...\n\nEm breve você poderá ver todos os pratos disponíveis!`);
+            const menu = establishmentMenus[establishmentId];
+            if (menu) {
+                let menuText = `🍴 ${menu.name} - CARDÁPIO\n\n`;
+                menu.items.forEach((item, index) => {
+                    menuText += `${index + 1}. ${item.name}\n`;
+                    menuText += `   💰 ${item.price} | 🎯 ${item.points} pontos\n`;
+                    menuText += `   📝 ${item.description}\n\n`;
+                });
+                menuText += `💡 Todos os preços já incluem os pontos de fidelidade!\n`;
+                menuText += `🎉 Acumule pontos e ganhe descontos nas próximas compras!`;
+                alert(menuText);
+            } else {
+                alert(`Abrindo cardápio de ${establishmentId}...\n\nEm breve você poderá ver todos os pratos disponíveis!`);
+            }
         }
 
         function visitEstablishment(establishmentId) {
-            alert(`Redirecionando para ${establishmentId}...\n\nEm breve você será direcionado para a localização!`);
+            const locations = {
+                'burger-house': 'Rua das Flores, 123 - Centro\n📍 A 850m de você',
+                'farmacia-central': 'Av. Principal, 456 - Jardins\n📍 A 1.2km de você',
+                'pizzaria-italiana': 'Rua Roma, 789 - Vila Nova\n📍 A 2.1km de você'
+            };
+            
+            const location = locations[establishmentId] || 'Localização em breve!';
+            alert(`📍 ${establishmentId.toUpperCase()}\n\n${location}\n\n🚗 Deseja abrir no GPS?`);
         }
 
         function showProducts(establishmentId) {
-            alert(`Carregando produtos de ${establishmentId}...\n\nEm breve você poderá ver todo o catálogo!`);
+            showMenu(establishmentId);
         }
 
         function scheduleAppointment(establishmentId) {
-            alert(`Abrindo agendamento para ${establishmentId}...\n\nEm breve você poderá agendar online!`);
+            const services = establishmentServices[establishmentId];
+            if (services) {
+                let serviceText = `📅 AGENDAMENTO - ${establishmentId.toUpperCase()}\n\n`;
+                serviceText += `🕐 Horários disponíveis hoje:\n`;
+                serviceText += `• 09:00 - 10:30\n• 14:00 - 15:30\n• 16:00 - 17:30\n\n`;
+                serviceText += `💼 Serviços disponíveis:\n`;
+                services.forEach((service, index) => {
+                    serviceText += `${index + 1}. ${service.name}\n`;
+                    serviceText += `   💰 ${service.price} | ⏱️ ${service.duration}\n\n`;
+                });
+                alert(serviceText);
+            } else {
+                alert(`📅 Abrindo agendamento para ${establishmentId}...\n\n🕐 Horários disponíveis:\n• 09:00\n• 14:00\n• 16:00\n\nEm breve você poderá agendar online!`);
+            }
         }
 
         function orderOnline(establishmentId) {
-            alert(`Abrindo pedido online para ${establishmentId}...\n\nEm breve você poderá pedir delivery!`);
+            alert(`🛒 DELIVERY - ${establishmentId.toUpperCase()}\n\n🚚 Taxa de entrega: R$ 5,00\n⏱️ Tempo estimado: 35-45 min\n🎯 Ganhe pontos em cada pedido!\n\nEm breve você poderá pedir pelo app!`);
         }
 
         function showServices(establishmentId) {
-            alert(`Carregando serviços de ${establishmentId}...\n\nEm breve você poderá ver todos os tratamentos!`);
+            scheduleAppointment(establishmentId);
         }
 
         function loadMoreEstablishments() {

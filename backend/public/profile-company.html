@@ -472,6 +472,7 @@
 
     <!-- Scripts -->
     <script src="/js/app-mobile.js"></script>
+    <script src="/js/auth.js"></script>
     <script>
         let companyData = {};
 
@@ -484,6 +485,11 @@
 
         // Load company data
         document.addEventListener('DOMContentLoaded', function() {
+            // Proteger página - só empresas autenticadas
+            if (!AuthMiddleware.requireAuth()) {
+                return;
+            }
+            
             loadCompanyData();
             loadCompanyStats();
             loadRecentActivity();
@@ -493,9 +499,9 @@
         });
 
         function loadCompanyData() {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const user = window.Auth.getUser();
             
-            if (!user.nome || user.tipo !== 'empresa') {
+            if (!user || user.role !== 'empresa') {
                 alert('Acesso restrito para empresas. Redirecionando...');
                 window.location.href = '/login.html';
                 return;
@@ -695,11 +701,7 @@
 
         function logout() {
             if (confirm('Tem certeza que deseja sair?')) {
-                localStorage.removeItem('user');
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('companyStats');
-                alert('Logout realizado com sucesso!');
-                window.location.href = '/index.html';
+                window.Auth.logout();
             }
         }
 

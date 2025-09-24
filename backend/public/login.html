@@ -208,6 +208,7 @@
 
     <!-- Scripts -->
     <script src="/js/app-mobile.js"></script>
+    <script src="/js/auth.js"></script>
     <script>
         function toggleMobileMenu() {
             const mobileNav = document.getElementById('mobileNav');
@@ -216,111 +217,15 @@
             btn.classList.toggle('active');
         }
 
-        // Login form submission
+        // Verificar se já está logado
         document.addEventListener('DOMContentLoaded', function() {
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm) {
-                loginForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    
-                    const loadingOverlay = document.getElementById('loadingOverlay');
-                    loadingOverlay.style.display = 'flex';
-
-                    try {
-                        const formData = new FormData(this);
-                        const data = Object.fromEntries(formData);
-                        
-                        // Simulação de login (substituir pela API real)
-                        await new Promise(resolve => setTimeout(resolve, 2000));
-                        
-                        // Verificar administradores cadastrados
-                        const systemAdmins = JSON.parse(localStorage.getItem('systemAdmins') || '[]');
-                        const adminUser = systemAdmins.find(admin => 
-                            admin.email === data.email && admin.status === 'ativo'
-                        );
-
-                        let user;
-                        if (adminUser) {
-                            // Admin cadastrado
-                            user = adminUser;
-                        } else if (data.email === 'cliente@exemplo.com') {
-                            user = {
-                                id: 1,
-                                nome: 'João Silva',
-                                email: data.email,
-                                telefone: '(11) 99999-9999',
-                                tipo: 'cliente',
-                                pontos: 450,
-                                nivel: 'Gold',
-                                avatar: null
-                            };
-                        } else if (data.email === 'empresa@exemplo.com') {
-                            user = {
-                                id: 2,
-                                nome: 'Burger House',
-                                email: data.email,
-                                telefone: '(11) 3333-3333',
-                                tipo: 'empresa',
-                                categoria: 'restaurante',
-                                cnpj: '12.345.678/0001-90'
-                            };
-                        } else if (data.email === 'admin@temdeponto.com') {
-                            if (data.password === 'adm@123') {
-                                user = {
-                                    id: 0,
-                                    nome: 'Administrador Master',
-                                    email: data.email,
-                                    telefone: '(11) 2222-2222',
-                                    tipo: 'admin',
-                                    nivel: 'Master',
-                                    permissoes: ['gerenciar_empresas', 'relatorios_financeiros', 'configuracoes_sistema', 'criar_administradores']
-                                };
-                            } else {
-                                // Senha incorreta para admin
-                                document.getElementById('loadingOverlay').style.display = 'none';
-                                alert('❌ Senha incorreta para administrador!\n\nUse: adm@123');
-                                return;
-                            }
-                        } else {
-                            // Login genérico (cliente padrão)
-                            user = {
-                                id: Date.now(),
-                                nome: data.email.split('@')[0],
-                                email: data.email,
-                                tipo: 'cliente',
-                                pontos: 100,
-                                nivel: 'Bronze'
-                            };
-                        }
-                        
-                        // Salvar dados do usuário
-                        localStorage.setItem('user', JSON.stringify(user));
-                        localStorage.setItem('isLoggedIn', 'true');
-
-                        alert(`Bem-vindo(a), ${user.nome}!`);
-                        
-                        // Redirecionar baseado no tipo de usuário
-                        switch(user.tipo) {
-                            case 'admin':
-                                window.location.href = '/admin.html';
-                                break;
-                            case 'empresa':
-                                window.location.href = '/profile-company.html';
-                                break;
-                            case 'cliente':
-                            default:
-                                window.location.href = '/profile-client.html';
-                                break;
-                        }
-                        
-                    } catch (error) {
-                        console.error('Erro ao fazer login:', error);
-                        alert('Erro ao fazer login. Verifique suas credenciais.');
-                    } finally {
-                        loadingOverlay.style.display = 'none';
-                    }
-                });
+            // Redirecionar se já autenticado
+            if (window.AuthMiddleware) {
+                AuthMiddleware.redirectIfAuthenticated();
             }
+            
+            // O sistema de autenticação já configura automaticamente o formulário loginForm
+            console.log('🔐 Sistema de login iniciado - use as credenciais de teste');
         });
 
         function forgotPassword() {

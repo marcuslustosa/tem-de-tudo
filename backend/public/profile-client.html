@@ -222,6 +222,7 @@
 
     <!-- Scripts -->
     <script src="/js/app-mobile.js"></script>
+    <script src="/js/auth.js"></script>
     <script>
         let userData = {};
 
@@ -232,8 +233,13 @@
             btn.classList.toggle('active');
         }
 
-        // Load user data
+        // Verificar autenticação
         document.addEventListener('DOMContentLoaded', function() {
+            // Proteger página - só clientes autenticados podem acessar
+            if (!AuthMiddleware.requireAuth()) {
+                return;
+            }
+            
             loadUserData();
             loadUserStats();
             loadRecentActivity();
@@ -241,9 +247,9 @@
         });
 
         function loadUserData() {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const user = window.Auth.getUser();
             
-            if (!user.nome) {
+            if (!user) {
                 alert('Sessão expirada. Redirecionando para login...');
                 window.location.href = '/login.html';
                 return;
@@ -454,11 +460,7 @@
 
         function logout() {
             if (confirm('Tem certeza que deseja sair?')) {
-                localStorage.removeItem('user');
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('userStats');
-                alert('Logout realizado com sucesso!');
-                window.location.href = '/index.html';
+                window.Auth.logout();
             }
         }
     </script>
