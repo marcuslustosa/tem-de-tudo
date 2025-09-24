@@ -5,13 +5,33 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
+use App\Models\Admin;
+use App\Models\AuditLog;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
+    /**
+     * Registro de usuário cliente
+     */
     public function register(Request $request)
     {
+        // Rate limiting para registro
+        $key = 'register-attempts:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($key, 3)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Muitas tentativas de registro. Tente novamente em ' . RateLimiter::availableIn($key) . ' segundos.'
+            ], 429);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -19,22 +39,50 @@ class AuthController extends Controller
             'phone' => 'nullable|string|max:20',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'cliente', // Padrão para programa de fidelidade
-            'pontos' => 100, // Bônus de boas-vindas
-            'telefone' => $request->phone,
-        ]);
+        try {
+            DB::beginTransaction();
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'cliente',
+                'pontos' => 100, // Bônus de boas-vindas
+                'telefone' => $request->phone,
+                'status' => 'ativo'
+            ]);
 
-        return response()->json([
-            'message' => 'Usuário criado com sucesso! Você ganhou 100 pontos de boas-vindas!',
-            'user' => $user,
-            'token' => $token,
-        ], 201);
+            // Gerar JWT token
+            $token = JWTAuth::fromUser($user);
+
+            DB::commit();
+
+            // Log do evento
+            $this->logAuditEvent('user_registered', $user->id, $request);
+
+            RateLimiter::clear($key);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Usuário criado com sucesso! Você ganhou 100 pontos de boas-vindas!',
+                'data' => [
+                    'user' => $user,
+                    'token' => $token,
+                    'token_type' => 'Bearer',
+                    'expires_in' => config('jwt.ttl') * 60
+                ]
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            RateLimiter::hit($key, 300); // 5 minutos
+            Log::error('Erro no registro', ['error' => $e->getMessage(), 'request' => $request->all()]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao criar usuário. Tente novamente.'
+            ], 500);
+        }
     }
 
     public function login(Request $request)
@@ -51,7 +99,7 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = JWTAuth::fromUser($user);
 
         return response()->json([
             'user' => $user,

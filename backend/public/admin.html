@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Administrativo - Tem de Tudo</title>
+    <title>Administração Master | Tem de Tudo</title>
     
-    <!-- Meta Tags PWA -->
-    <meta name="description" content="Dashboard administrativo completo do sistema Tem de Tudo">
-    <meta name="theme-color" content="#1e40af">
+    <!-- Meta Tags -->
+    <meta name="description" content="Painel de administração master - gestão completa do sistema">
+    <meta name="theme-color" content="#4c1d95">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -197,6 +197,11 @@
                                 <button class="btn btn-primary" onclick="navigateTo('/register-company.html')" style="justify-content: flex-start;">
                                     <i class="fas fa-plus-circle"></i>
                                     <span>Novo Estabelecimento</span>
+                                </button>
+
+                                <button class="btn btn-outline" onclick="createNewAdmin()" style="justify-content: flex-start; border-color: var(--primary-purple); color: var(--primary-purple);" id="createAdminBtn">
+                                    <i class="fas fa-user-shield"></i>
+                                    <span>Criar Administrador</span>
                                 </button>
 
                                 <button class="btn btn-success" onclick="approveStores()" style="justify-content: flex-start;">
@@ -544,6 +549,39 @@
                 alert(`Notificação enviada com sucesso!\n\nMensagem: "${message}"\n\nTodos os usuários ativos receberão a notificação push em alguns minutos.`);
             }
         }
+
+        // Admin management functions
+        function createNewAdmin() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            // Check if user has permission to create administrators
+            if (!user.permissoes || !user.permissoes.includes('criar_administradores')) {
+                alert('🚫 Acesso Negado\n\nVocê não tem permissão para criar novos administradores.\n\nEsta função está disponível apenas para administradores Master.');
+                return;
+            }
+            
+            window.location.href = '/admin-create-user.html';
+        }
+
+        function openSystemConfig() {
+            alert('🔧 Configurações do Sistema\n\nEsta funcionalidade permite configurar:\n\n• Taxas de comissão\n• Limites de pontuação\n• Integrações de pagamento\n• Configurações de segurança\n\nEm desenvolvimento!');
+        }
+
+        function openSecurityPanel() {
+            alert('🔒 Painel de Segurança\n\nFuncionalidades incluem:\n\n• Backup automático\n• Logs de acesso\n• Alertas de segurança\n• Monitoramento de atividades suspeitas\n\nEm desenvolvimento!');
+        }
+
+        // Check admin permissions and show/hide create admin button
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const createAdminBtn = document.getElementById('createAdminBtn');
+            
+            if (!user.permissoes || !user.permissoes.includes('criar_administradores')) {
+                if (createAdminBtn) {
+                    createAdminBtn.style.display = 'none';
+                }
+            }
+        });
 
         // Auto-refresh stats every 30 seconds
         setInterval(function() {

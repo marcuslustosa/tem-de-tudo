@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>FAQ - Central de Ajuda | Tem de Tudo</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Central de ajuda com todas as respostas para suas dúvidas sobre o sistema de fidelidade Tem de Tudo">
+    <meta name="theme-color" content="#4c1d95">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/frontend/img/logo.png">
+    <link rel="apple-touch-icon" href="/frontend/img/logo.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header glass-header">
+            <div class="header-container">
+                <a href="/" class="logo">
+                    <img src="/frontend/img/logo.png" alt="Tem de Tudo" class="logo-image">
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                    <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                    <a href="/faq.html" class="active"><i class="fas fa-question-circle icon-sm"></i> FAQ</a>
+                    <a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
+                    <a href="/login.html"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-menu">
+                <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                <a href="/faq.html" class="active"><i class="fas fa-question-circle icon-sm"></i> FAQ</a>
+                <a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
+                <a href="/login.html"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Hero Section -->
+            <section style="background: var(--gradient-primary); color: white; padding: var(--space-16) var(--space-6); text-align: center;">
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">
+                        <i class="fas fa-question-circle icon-lg" style="margin-right: 1rem;"></i>
+                        Central de Ajuda
+                    </h1>
+                    <p style="font-size: 1.25rem; opacity: 0.9; margin-bottom: 2rem;">
+                        Encontre respostas para todas as suas dúvidas sobre o sistema de fidelidade
+                    </p>
+                    
+                    <!-- Search Bar -->
+                    <div style="position: relative; max-width: 600px; margin: 0 auto;">
+                        <input 
+                            type="text" 
+                            id="searchFAQ"
+                            placeholder="Busque sua dúvida..." 
+                            style="width: 100%; padding: 1rem 1rem 1rem 3rem; border: none; border-radius: var(--radius-lg); font-size: 1rem; background: rgba(255,255,255,0.95); color: var(--gray-800);"
+                        >
+                        <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--gray-500);"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ Categories -->
+            <section style="padding: var(--space-8) var(--space-6) var(--space-4);">
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center;">
+                        <button class="filter-chip active" data-filter="all" onclick="setFAQFilter('all')">
+                            Todas
+                        </button>
+                        <button class="filter-chip" data-filter="conta" onclick="setFAQFilter('conta')">
+                            <i class="fas fa-user"></i> Conta
+                        </button>
+                        <button class="filter-chip" data-filter="pontos" onclick="setFAQFilter('pontos')">
+                            <i class="fas fa-coins"></i> Pontos
+                        </button>
+                        <button class="filter-chip" data-filter="resgates" onclick="setFAQFilter('resgates')">
+                            <i class="fas fa-gift"></i> Resgates
+                        </button>
+                        <button class="filter-chip" data-filter="empresas" onclick="setFAQFilter('empresas')">
+                            <i class="fas fa-building"></i> Empresas
+                        </button>
+                        <button class="filter-chip" data-filter="problemas" onclick="setFAQFilter('problemas')">
+                            <i class="fas fa-exclamation-triangle"></i> Problemas
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ Content -->
+            <section style="padding: 0 var(--space-6) var(--space-16);">
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <div class="faq-container" id="faqContainer">
+
+                        <!-- Conta -->
+                        <div class="faq-item" data-category="conta">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <h3><i class="fas fa-user-plus" style="color: var(--primary-purple); margin-right: 0.5rem;"></i>Como criar uma conta?</h3>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Para criar sua conta é muito simples:</p>
+                                <ol>
+                                    <li>Clique em "Cadastro" no menu superior</li>
+                                    <li>Escolha o tipo de conta (Cliente ou Empresa)</li>
+                                    <li>Preencha seus dados pessoais</li>
+                                    <li>Confirme seu email</li>
+                                    <li>Pronto! Você já pode começar a acumular pontos</li>
+                                </ol>
+                                <p><strong>Clientes recebem 100 pontos de bônus de boas-vindas!</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-category="conta">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <h3><i class="fas fa-lock" style="color: var(--primary-purple); margin-right: 0.5rem;"></i>Esqueci minha senha, como recuperar?</h3>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Para recuperar sua senha:</p>
+                                <ol>
+                                    <li>Vá para a página de login</li>
+                                    <li>Clique em "Esqueci minha senha"</li>
+                                    <li>Digite seu email cadastrado</li>
+                                    <li>Verifique sua caixa de entrada</li>
+                                    <li>Clique no link recebido e crie uma nova senha</li>
+                                </ol>
+                                <p><em>Não encontrou o email? Verifique a pasta de spam ou lixo eletrônico.</em></p>
+                            </div>
+                        </div>
+
+                        <!-- Pontos -->
+                        <div class="faq-item" data-category="pontos">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <h3><i class="fas fa-coins" style="color: var(--accent-orange); margin-right: 0.5rem;"></i>Como funciona o sistema de pontos?</h3>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>O sistema de pontos é baseado em suas compras:</p>
+                                <ul>
+                                    <li><strong>Regra geral:</strong> R$ 1,00 gasto = 1 ponto</li>
+                                    <li><strong>Estabelecimentos especiais:</strong> Podem ter multiplicadores (2x, 3x pontos)</li>
+                                    <li><strong>Promoções:</strong> Pontos extras em datas especiais</li>
+                                    <li><strong>Bônus:</strong> 100 pontos de boas-vindas ao se cadastrar</li>
+                                </ul>
+                                <p>Os pontos são creditados automaticamente após a confirmação da compra pelo estabelecimento.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-category="pontos">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <h3><i class="fas fa-star" style="color: var(--accent-orange); margin-right: 0.5rem;"></i>Quais são os níveis de fidelidade?</h3>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Temos 5 níveis exclusivos com benefícios crescentes:</p>
+                                <div style="background: var(--gray-50); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0;">
+                                    <ul style="list-style: none; padding: 0;">
+                                        <li style="margin-bottom: 0.5rem;"><strong>🥉 Bronze:</strong> 0-499 pontos</li>
+                                        <li style="margin-bottom: 0.5rem;"><strong>🥈 Prata:</strong> 500-1999 pontos</li>
+                                        <li style="margin-bottom: 0.5rem;"><strong>🥇 Ouro:</strong> 2000-4999 pontos</li>
+                                        <li style="margin-bottom: 0.5rem;"><strong>💎 Platina:</strong> 5000-9999 pontos</li>
+                                        <li><strong>💎 Diamante:</strong> 10000+ pontos</li>
+                                    </ul>
+                                </div>
+                                <p>Quanto maior seu nível, mais benefícios exclusivos você desbloqueia!</p>
+                            </div>
+                        </div>
+
+                        <!-- Resgates -->
+                        <div class="faq-item" data-category="resgates">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <h3><i class="fas fa-gift" style="color: var(--accent-green); margin-right: 0.5rem;"></i>Como resgatar meus pontos?</h3>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Para resgatar seus pontos:</p>
+                                <ol>
+                                    <li>Acesse sua conta</li>
+                                    <li>Vá para a seção "Resgates"</li>
+                                    <li>Escolha a recompensa desejada</li>
+                                    <li>Confirme o resgate</li>
+                                    <li>Retire no estabelecimento ou receba por delivery</li>
+                                </ol>
+                                <p><strong>Importante:</strong> Pontos resgatados não podem ser devolvidos.</p>
+                            </div>
+                        </div>
+
+                        <!-- Empresas -->
+                        <div class="faq-item" data-category="empresas">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <h3><i class="fas fa-building" style="color: var(--primary-purple); margin-right: 0.5rem;"></i>Como minha empresa pode participar?</h3>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Para tornar-se um estabelecimento parceiro:</p>
+                                <ol>
+                                    <li>Entre em contato via WhatsApp: <a href="https://wa.me/5511999999999" target="_blank" style="color: var(--primary-purple);">(11) 99999-9999</a></li>
+                                    <li>Ou envie email para: <a href="mailto:parceiros@temdeTudo.com" style="color: var(--primary-purple);">parceiros@temdeTudo.com</a></li>
+                                    <li>Nossa equipe entrará em contato</li>
+                                    <li>Análise da proposta comercial</li>
+                                    <li>Assinatura do contrato</li>
+                                    <li>Treinamento da equipe</li>
+                                    <li>Ativação no sistema</li>
+                                </ol>
+                                <p><strong>Benefícios para empresas:</strong> Fidelização de clientes, análise de vendas, marketing digital.</p>
+                            </div>
+                        </div>
+
+                        <!-- Problemas Técnicos -->
+                        <div class="faq-item" data-category="problemas">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <h3><i class="fas fa-exclamation-triangle" style="color: var(--accent-red); margin-right: 0.5rem;"></i>Meus pontos não foram creditados</h3>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Se seus pontos não foram creditados:</p>
+                                <ol>
+                                    <li>Aguarde até 24h após a compra</li>
+                                    <li>Verifique se o estabelecimento é parceiro</li>
+                                    <li>Confirme se você informou CPF/email na compra</li>
+                                    <li>Guarde o comprovante da compra</li>
+                                    <li>Entre em contato conosco pelo WhatsApp</li>
+                                </ol>
+                                <p><strong>WhatsApp Suporte:</strong> <a href="https://wa.me/5511999999999" target="_blank" style="color: var(--primary-purple);">(11) 99999-9999</a></p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-category="problemas">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <h3><i class="fas fa-mobile-alt" style="color: var(--accent-red); margin-right: 0.5rem;"></i>App/Site não está funcionando</h3>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Se estiver com problemas técnicos:</p>
+                                <ol>
+                                    <li>Atualize a página (F5 no computador)</li>
+                                    <li>Limpe o cache do navegador</li>
+                                    <li>Tente usar outro navegador</li>
+                                    <li>Verifique sua conexão com a internet</li>
+                                    <li>Tente novamente em alguns minutos</li>
+                                </ol>
+                                <p>Se o problema persistir, entre em contato:</p>
+                                <ul>
+                                    <li><strong>WhatsApp:</strong> <a href="https://wa.me/5511999999999" target="_blank" style="color: var(--primary-purple);">(11) 99999-9999</a></li>
+                                    <li><strong>Email:</strong> <a href="mailto:suporte@temdeTudo.com" style="color: var(--primary-purple);">suporte@temdeTudo.com</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Mais Perguntas -->
+                        <div class="faq-item" data-category="conta">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <h3><i class="fas fa-edit" style="color: var(--primary-purple); margin-right: 0.5rem;"></i>Como alterar meus dados pessoais?</h3>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Para alterar seus dados:</p>
+                                <ol>
+                                    <li>Faça login na sua conta</li>
+                                    <li>Vá para "Meu Perfil"</li>
+                                    <li>Clique em "Editar Dados"</li>
+                                    <li>Altere as informações desejadas</li>
+                                    <li>Salve as alterações</li>
+                                </ol>
+                                <p><em>Algumas alterações podem precisar de confirmação por email.</em></p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" data-category="pontos">
+                            <div class="faq-question" onclick="toggleFAQ(this)">
+                                <h3><i class="fas fa-calendar" style="color: var(--accent-orange); margin-right: 0.5rem;"></i>Meus pontos têm validade?</h3>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p><strong>Sim, os pontos têm validade!</strong></p>
+                                <ul>
+                                    <li><strong>Validade:</strong> 12 meses a partir do acúmulo</li>
+                                    <li><strong>Renovação:</strong> A cada nova compra, os pontos ganham mais 12 meses</li>
+                                    <li><strong>Aviso:</strong> Você recebe notificação 30 dias antes do vencimento</li>
+                                    <li><strong>Consulta:</strong> Veja o extrato completo no seu perfil</li>
+                                </ul>
+                                <p>Mantenha-se ativo para não perder seus pontos!</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Contact CTA -->
+                    <div style="margin-top: 4rem; padding: 2rem; background: var(--gradient-primary); border-radius: 1rem; text-align: center; color: white;">
+                        <h3 style="margin-bottom: 1rem;"><i class="fas fa-question-circle"></i> Não encontrou sua resposta?</h3>
+                        <p style="margin-bottom: 2rem; opacity: 0.9;">Nossa equipe está pronta para ajudar você!</p>
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <a href="https://wa.me/5511999999999" target="_blank" class="btn btn-outline" style="background: rgba(255,255,255,0.1); border-color: white; color: white;">
+                                <i class="fab fa-whatsapp"></i> WhatsApp Suporte
+                            </a>
+                            <a href="mailto:suporte@temdeTudo.com" class="btn btn-outline" style="background: rgba(255,255,255,0.1); border-color: white; color: white;">
+                                <i class="fas fa-envelope"></i> Email Suporte
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer style="background: var(--gray-900); color: white; padding: var(--space-12) var(--space-6);">
+            <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+                <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
+            </div>
+        </footer>
+    </div>
+
+    <style>
+        .faq-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: var(--gradient-card);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: var(--transition-normal);
+        }
+
+        .faq-item.hidden {
+            display: none;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(76, 29, 149, 0.05);
+            transition: var(--transition-fast);
+        }
+
+        .faq-question:hover {
+            background: rgba(76, 29, 149, 0.1);
+        }
+
+        .faq-question h3 {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+        }
+
+        .faq-question i:last-child {
+            color: var(--primary-purple);
+            transition: var(--transition-fast);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 1.5rem;
+            max-height: 500px;
+        }
+
+        .faq-item.active .faq-question i:last-child {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer p, .faq-answer li {
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+
+        .faq-answer ol, .faq-answer ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .faq-answer li {
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-chip {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--gray-300);
+            background: white;
+            color: var(--gray-700);
+            border-radius: var(--radius-full);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--primary-purple);
+            color: var(--primary-purple);
+        }
+
+        .filter-chip.active {
+            background: var(--primary-purple);
+            border-color: var(--primary-purple);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .faq-question h3 {
+                font-size: 1rem;
+            }
+            
+            .faq-question, .faq-answer {
+                padding: 1rem;
+            }
+
+            .faq-item.active .faq-answer {
+                padding: 1rem;
+            }
+        }
+    </style>
+
+    <script>
+        // Menu mobile
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
+        }
+
+        // FAQ Toggle
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            const isActive = faqItem.classList.contains('active');
+            
+            // Fechar todos os outros
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Abrir/fechar o atual
+            if (!isActive) {
+                faqItem.classList.add('active');
+            }
+        }
+
+        // Filter FAQ
+        function setFAQFilter(category) {
+            // Atualizar botões ativos
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${category}"]`).classList.add('active');
+
+            // Filtrar items
+            const items = document.querySelectorAll('.faq-item');
+            items.forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        // Search FAQ
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchFAQ');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const items = document.querySelectorAll('.faq-item');
+                    
+                    items.forEach(item => {
+                        const question = item.querySelector('h3').textContent.toLowerCase();
+                        const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                        
+                        if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                            item.classList.remove('hidden');
+                        } else {
+                            item.classList.add('hidden');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

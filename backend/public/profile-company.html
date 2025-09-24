@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Empresa - Tem de Tudo</title>
+    <title>Painel Empresarial | Tem de Tudo</title>
     
-    <!-- Meta Tags PWA -->
-    <meta name="description" content="Painel administrativo para estabelecimentos parceiros">
-    <meta name="theme-color" content="#1e40af">
+    <!-- Meta Tags -->
+    <meta name="description" content="Painel de controle empresarial - relatórios, campanhas e gestão de clientes">
+    <meta name="theme-color" content="#4c1d95">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -337,6 +337,30 @@
                     </div>
                 </div>
 
+                <!-- Photo Gallery -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 style="color: white; margin: 0;">
+                            <i class="fas fa-images icon-sm"></i> Galeria de Fotos
+                        </h3>
+                        <button class="btn btn-ghost btn-sm" onclick="openPhotoUpload()">
+                            <i class="fas fa-plus icon-sm"></i> Adicionar Foto
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="photoGallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-3);">
+                            <!-- Photos will be loaded here -->
+                        </div>
+                        <div id="emptyGallery" style="text-align: center; padding: var(--space-6); color: var(--gray-500); display: none;">
+                            <i class="fas fa-camera" style="font-size: 3rem; margin-bottom: var(--space-3); opacity: 0.5;"></i>
+                            <p>Nenhuma foto adicionada ainda</p>
+                            <button class="btn btn-primary btn-sm" onclick="openPhotoUpload()">
+                                <i class="fas fa-plus icon-sm"></i> Adicionar Primeira Foto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Settings Panel -->
                 <div class="card mt-4">
                     <div class="card-header">
@@ -386,6 +410,66 @@
         </div>
     </div>
 
+    <!-- Photo Upload Modal -->
+    <div id="photoUploadModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: var(--z-modal); align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: var(--radius-xl); max-width: 600px; width: 90%; max-height: 90%; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0; color: var(--gray-900);">
+                    <i class="fas fa-upload icon-sm"></i> Adicionar Foto
+                </h3>
+                <button class="btn btn-ghost btn-sm" onclick="closePhotoUpload()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Selecionar Foto</label>
+                <div style="border: 2px dashed var(--gray-300); border-radius: var(--radius-lg); padding: 2rem; text-align: center; transition: all 0.3s ease;" 
+                     id="photoDropZone"
+                     ondragover="event.preventDefault(); this.style.borderColor = 'var(--primary-500)'; this.style.backgroundColor = 'var(--primary-50)';"
+                     ondragleave="this.style.borderColor = 'var(--gray-300)'; this.style.backgroundColor = 'transparent';"
+                     ondrop="handlePhotoDrop(event)">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--gray-400); margin-bottom: 1rem;"></i>
+                    <p style="margin-bottom: 1rem; color: var(--gray-600);">Arraste uma foto aqui ou clique para selecionar</p>
+                    <input type="file" id="photoInput" accept="image/*" multiple style="display: none;" onchange="handlePhotoSelect(event)">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('photoInput').click()">
+                        <i class="fas fa-folder-open icon-sm"></i> Escolher Arquivo
+                    </button>
+                </div>
+            </div>
+
+            <div id="photoPreview" style="display: none; margin-bottom: 1.5rem;">
+                <label class="form-label">Pré-visualização</label>
+                <div id="previewContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--space-2);"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Categoria</label>
+                <select id="photoCategory" class="form-control">
+                    <option value="ambiente">Ambiente</option>
+                    <option value="produtos">Produtos/Cardápio</option>
+                    <option value="equipe">Equipe</option>
+                    <option value="eventos">Eventos/Promoções</option>
+                    <option value="fachada">Fachada/Exterior</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Descrição (opcional)</label>
+                <textarea id="photoDescription" class="form-control" rows="3" placeholder="Descreva a foto ou adicione informações relevantes..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: var(--space-3); justify-content: flex-end;">
+                <button class="btn btn-ghost" onclick="closePhotoUpload()">
+                    <i class="fas fa-times icon-sm"></i> Cancelar
+                </button>
+                <button class="btn btn-primary" onclick="uploadPhotos()" id="uploadBtn" disabled>
+                    <i class="fas fa-upload icon-sm"></i> Enviar Fotos
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="/js/app-mobile.js"></script>
     <script>
@@ -405,6 +489,7 @@
             loadRecentActivity();
             loadTopCustomers();
             initializeCharts();
+            loadPhotoGallery();
         });
 
         function loadCompanyData() {
@@ -617,6 +702,246 @@
                 window.location.href = '/index.html';
             }
         }
+
+        // Photo Gallery Functions
+        let selectedPhotos = [];
+        
+        function openPhotoUpload() {
+            document.getElementById('photoUploadModal').style.display = 'flex';
+            resetPhotoForm();
+        }
+        
+        function closePhotoUpload() {
+            document.getElementById('photoUploadModal').style.display = 'none';
+            resetPhotoForm();
+        }
+        
+        function resetPhotoForm() {
+            selectedPhotos = [];
+            document.getElementById('photoInput').value = '';
+            document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('previewContainer').innerHTML = '';
+            document.getElementById('photoCategory').value = 'ambiente';
+            document.getElementById('photoDescription').value = '';
+            document.getElementById('uploadBtn').disabled = true;
+        }
+        
+        function handlePhotoDrop(e) {
+            e.preventDefault();
+            const dropZone = e.target;
+            dropZone.style.borderColor = 'var(--gray-300)';
+            dropZone.style.backgroundColor = 'transparent';
+            
+            const files = e.dataTransfer.files;
+            processFiles(files);
+        }
+        
+        function handlePhotoSelect(e) {
+            const files = e.target.files;
+            processFiles(files);
+        }
+        
+        function processFiles(files) {
+            const validFiles = [];
+            
+            for (let file of files) {
+                if (file.type.startsWith('image/')) {
+                    if (file.size <= 10 * 1024 * 1024) { // 10MB limit
+                        validFiles.push(file);
+                    } else {
+                        alert(`Arquivo ${file.name} é muito grande. Limite: 10MB`);
+                    }
+                } else {
+                    alert(`Arquivo ${file.name} não é uma imagem válida.`);
+                }
+            }
+            
+            if (validFiles.length > 0) {
+                selectedPhotos = validFiles;
+                showPhotoPreview(validFiles);
+                document.getElementById('uploadBtn').disabled = false;
+            }
+        }
+        
+        function showPhotoPreview(files) {
+            const previewContainer = document.getElementById('previewContainer');
+            previewContainer.innerHTML = '';
+            
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoDiv = document.createElement('div');
+                    photoDiv.style.cssText = `
+                        position: relative; 
+                        border-radius: var(--radius-lg); 
+                        overflow: hidden; 
+                        background: var(--gray-100);
+                        aspect-ratio: 1;
+                    `;
+                    
+                    photoDiv.innerHTML = `
+                        <img src="${e.target.result}" 
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                        <button onclick="removePhoto(${index})" 
+                                style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                            <i class="fas fa-times" style="font-size: 0.75rem;"></i>
+                        </button>
+                        <div style="position: absolute; bottom: 4px; left: 4px; right: 4px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                            ${file.name}
+                        </div>
+                    `;
+                    
+                    previewContainer.appendChild(photoDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            document.getElementById('photoPreview').style.display = 'block';
+        }
+        
+        function removePhoto(index) {
+            selectedPhotos.splice(index, 1);
+            if (selectedPhotos.length === 0) {
+                document.getElementById('photoPreview').style.display = 'none';
+                document.getElementById('uploadBtn').disabled = true;
+            } else {
+                showPhotoPreview(selectedPhotos);
+            }
+        }
+        
+        function uploadPhotos() {
+            if (selectedPhotos.length === 0) return;
+            
+            const category = document.getElementById('photoCategory').value;
+            const description = document.getElementById('photoDescription').value;
+            
+            // Simulate upload process
+            const uploadBtn = document.getElementById('uploadBtn');
+            const originalText = uploadBtn.innerHTML;
+            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            uploadBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Simulate successful upload
+                const photos = selectedPhotos.map((file, index) => ({
+                    id: Date.now() + index,
+                    name: file.name,
+                    category: category,
+                    description: description,
+                    url: URL.createObjectURL(file),
+                    uploadDate: new Date().toLocaleDateString('pt-BR')
+                }));
+                
+                savePhotosToStorage(photos);
+                loadPhotoGallery();
+                closePhotoUpload();
+                
+                alert(`${photos.length} foto(s) adicionada(s) com sucesso!`);
+                
+                uploadBtn.innerHTML = originalText;
+                uploadBtn.disabled = false;
+            }, 2000);
+        }
+        
+        function savePhotosToStorage(newPhotos) {
+            const existingPhotos = JSON.parse(localStorage.getItem('companyPhotos') || '[]');
+            const allPhotos = [...existingPhotos, ...newPhotos];
+            localStorage.setItem('companyPhotos', JSON.stringify(allPhotos));
+        }
+        
+        function loadPhotoGallery() {
+            const photos = JSON.parse(localStorage.getItem('companyPhotos') || '[]');
+            const gallery = document.getElementById('photoGallery');
+            const emptyGallery = document.getElementById('emptyGallery');
+            
+            if (photos.length === 0) {
+                gallery.style.display = 'none';
+                emptyGallery.style.display = 'block';
+                return;
+            }
+            
+            gallery.style.display = 'grid';
+            emptyGallery.style.display = 'none';
+            
+            gallery.innerHTML = photos.map(photo => `
+                <div class="photo-item" style="position: relative; border-radius: var(--radius-lg); overflow: hidden; background: var(--gray-100); aspect-ratio: 1; transition: transform 0.3s ease;">
+                    <img src="${photo.url}" 
+                         alt="${photo.name}" 
+                         style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                         onclick="viewPhoto('${photo.id}')">
+                    <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+                        <button onclick="deletePhoto('${photo.id}')" 
+                                style="background: rgba(220, 38, 38, 0.9); color: white; border: none; border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; cursor: pointer;"
+                                title="Excluir foto">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; padding: 8px; font-size: 0.75rem;">
+                        <div style="font-weight: 600; margin-bottom: 2px;">${getCategoryName(photo.category)}</div>
+                        <div style="opacity: 0.8;">${photo.uploadDate}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getCategoryName(category) {
+            const categories = {
+                'ambiente': 'Ambiente',
+                'produtos': 'Produtos/Cardápio',
+                'equipe': 'Equipe',
+                'eventos': 'Eventos/Promoções',
+                'fachada': 'Fachada/Exterior'
+            };
+            return categories[category] || category;
+        }
+        
+        function viewPhoto(photoId) {
+            const photos = JSON.parse(localStorage.getItem('companyPhotos') || '[]');
+            const photo = photos.find(p => p.id == photoId);
+            
+            if (photo) {
+                // Create a simple modal to view the photo
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+                    background: rgba(0,0,0,0.9); z-index: 1000; 
+                    display: flex; align-items: center; justify-content: center;
+                    padding: 2rem;
+                `;
+                
+                modal.innerHTML = `
+                    <div style="max-width: 90%; max-height: 90%; text-align: center;">
+                        <img src="${photo.url}" 
+                             style="max-width: 100%; max-height: 80vh; border-radius: var(--radius-lg);">
+                        <div style="color: white; margin-top: 1rem;">
+                            <h4 style="margin: 0 0 0.5rem 0;">${getCategoryName(photo.category)}</h4>
+                            ${photo.description ? `<p style="margin: 0; opacity: 0.8;">${photo.description}</p>` : ''}
+                        </div>
+                        <button onclick="this.closest('div[style*=\"position: fixed\"]').remove()" 
+                                style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.25rem; cursor: pointer;">
+                            ×
+                        </button>
+                    </div>
+                `;
+                
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+                
+                document.body.appendChild(modal);
+            }
+        }
+        
+        function deletePhoto(photoId) {
+            if (confirm('Deseja realmente excluir esta foto?')) {
+                const photos = JSON.parse(localStorage.getItem('companyPhotos') || '[]');
+                const filteredPhotos = photos.filter(p => p.id != photoId);
+                localStorage.setItem('companyPhotos', JSON.stringify(filteredPhotos));
+                loadPhotoGallery();
+            }
+        }
     </script>
 
     <style>
@@ -648,6 +973,29 @@
 
         .payment-item:last-child {
             border-bottom: none;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .photo-item img {
+            transition: transform 0.3s ease;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+
+        #photoDropZone {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #photoDropZone:hover {
+            border-color: var(--primary-500) !important;
+            background: var(--primary-50) !important;
         }
 
         @media (max-width: 768px) {

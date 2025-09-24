@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Login - Tem de Tudo</title>
     
     <!-- Meta Tags PWA -->
     <meta name="description" content="Entre na sua conta do Tem de Tudo e acesse seus pontos e recompensas">
-    <meta name="theme-color" content="#1e40af">
+    <meta name="theme-color" content="#4c1d95">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Login - Tem de Tudo">
@@ -74,8 +77,8 @@
                 <div class="card mb-4">
                     <div class="card-header text-center">
                         <i class="fas fa-award icon-lg" style="color: white; font-size: 2rem; margin-bottom: 1rem;"></i>
-                        <h3 style="color: white; margin-bottom: 0.5rem;">Acesse sua conta</h3>
-                        <p style="color: rgba(255,255,255,0.9);">Veja seus pontos, recompensas e histórico</p>
+                        <h3 style="color: white; margin-bottom: 0.5rem;">Entre na sua conta</h3>
+                        <p style="color: rgba(255,255,255,0.9);">Acesse seus pontos, recompensas e benefícios exclusivos</p>
                     </div>
                 </div>
 
@@ -121,7 +124,7 @@
                                 <input type="checkbox" id="remember" name="remember" style="margin: 0;">
                                 <span style="font-size: 0.875rem; color: var(--gray-600);">Lembrar de mim</span>
                             </label>
-                            <a href="#" onclick="forgotPassword()" style="color: var(--primary-blue); font-size: 0.875rem; text-decoration: none; font-weight: 500;">
+                            <a href="#" onclick="forgotPassword()" style="color: var(--primary-purple); font-size: 0.875rem; text-decoration: none; font-weight: 500;">
                                 Esqueci minha senha
                             </a>
                         </div>
@@ -133,7 +136,25 @@
                     </form>
 
                     <div class="card-footer text-center">
-                        <p>Não tem uma conta? <a href="/register.html" style="color: var(--primary-blue); font-weight: 600;">Cadastre-se grátis</a></p>
+                        <p>Não tem uma conta? <a href="/register.html" style="color: var(--primary-purple); font-weight: 600;">Cadastre-se grátis</a></p>
+                    </div>
+                </div>
+
+                <!-- Test Credentials -->
+                <div class="card mt-4" style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 1px solid #0ea5e9;">
+                    <div class="card-body text-center">
+                        <div style="margin-bottom: var(--space-3);">
+                            <i class="fas fa-flask" style="color: #0284c7; font-size: 1.25rem; margin-bottom: var(--space-2);"></i>
+                            <h4 style="color: #0c4a6e; margin: 0; font-size: 0.875rem; font-weight: 600;">🧪 Credenciais de Teste</h4>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.7); padding: var(--space-3); border-radius: var(--radius-lg); font-family: monospace; font-size: 0.875rem;">
+                            <div style="color: #0369a1; margin-bottom: var(--space-1);"><strong>Admin Master:</strong></div>
+                            <div style="color: #0c4a6e;">📧 admin@temdeponto.com</div>
+                            <div style="color: #0c4a6e;">🔐 adm@123</div>
+                        </div>
+                        <div style="margin-top: var(--space-2); font-size: 0.75rem; color: #0369a1;">
+                            💡 Use estas credenciais para acessar o painel administrativo
+                        </div>
                     </div>
                 </div>
 
@@ -156,17 +177,23 @@
                     </div>
                 </div>
 
-                <!-- Demo Account -->
-                <div class="card mt-4" style="background: var(--gray-100); border: 2px dashed var(--gray-300);">
+                <!-- Admin Registration -->
+                <div class="card mt-4" style="background: linear-gradient(135deg, rgba(76, 29, 149, 0.1), rgba(59, 7, 100, 0.1)); border: 1px solid rgba(76, 29, 149, 0.2);">
                     <div class="card-body text-center">
-                        <i class="fas fa-user-cog icon-lg" style="color: var(--gray-600); margin-bottom: 1rem;"></i>
-                        <h4 style="color: var(--gray-800); margin-bottom: 0.5rem;">Conta de Demonstração</h4>
-                        <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Teste o sistema sem fazer cadastro</p>
-                        <button class="btn btn-ghost" onclick="loginAsDemo()">
-                            <i class="fas fa-play icon-sm"></i> Acessar Demo
-                        </button>
+                        <div style="margin-bottom: var(--space-3);">
+                            <i class="fas fa-crown" style="color: var(--primary-purple); font-size: 1.5rem; margin-bottom: var(--space-2);"></i>
+                            <h4 style="color: var(--primary-purple); margin: 0; font-size: 1rem;">Acesso Administrativo</h4>
+                        </div>
+                        <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--space-3);">
+                            Possui token de acesso para criar conta de administrador?
+                        </p>
+                        <a href="/register-admin.html" class="btn btn-outline btn-sm" style="border-color: var(--primary-purple); color: var(--primary-purple);">
+                            <i class="fas fa-user-shield icon-sm"></i>
+                            Registrar Administrador
+                        </a>
                     </div>
                 </div>
+
             </div>
         </main>
     </div>
@@ -174,7 +201,7 @@
     <!-- Loading Overlay -->
     <div id="loadingOverlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; z-index: 9999; align-items: center; justify-content: center;">
         <div style="text-align: center; color: white;">
-            <div style="border: 3px solid var(--primary-blue); border-top: 3px solid transparent; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+            <div style="border: 3px solid var(--primary-purple); border-top: 3px solid transparent; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
             <div>Entrando...</div>
         </div>
     </div>
@@ -206,9 +233,17 @@
                         // Simulação de login (substituir pela API real)
                         await new Promise(resolve => setTimeout(resolve, 2000));
                         
-                        // Simular diferentes tipos de usuário
+                        // Verificar administradores cadastrados
+                        const systemAdmins = JSON.parse(localStorage.getItem('systemAdmins') || '[]');
+                        const adminUser = systemAdmins.find(admin => 
+                            admin.email === data.email && admin.status === 'ativo'
+                        );
+
                         let user;
-                        if (data.email === 'cliente@exemplo.com') {
+                        if (adminUser) {
+                            // Admin cadastrado
+                            user = adminUser;
+                        } else if (data.email === 'cliente@exemplo.com') {
                             user = {
                                 id: 1,
                                 nome: 'João Silva',
@@ -229,8 +264,25 @@
                                 categoria: 'restaurante',
                                 cnpj: '12.345.678/0001-90'
                             };
+                        } else if (data.email === 'admin@temdeponto.com') {
+                            if (data.password === 'adm@123') {
+                                user = {
+                                    id: 0,
+                                    nome: 'Administrador Master',
+                                    email: data.email,
+                                    telefone: '(11) 2222-2222',
+                                    tipo: 'admin',
+                                    nivel: 'Master',
+                                    permissoes: ['gerenciar_empresas', 'relatorios_financeiros', 'configuracoes_sistema', 'criar_administradores']
+                                };
+                            } else {
+                                // Senha incorreta para admin
+                                document.getElementById('loadingOverlay').style.display = 'none';
+                                alert('❌ Senha incorreta para administrador!\n\nUse: adm@123');
+                                return;
+                            }
                         } else {
-                            // Login genérico
+                            // Login genérico (cliente padrão)
                             user = {
                                 id: Date.now(),
                                 nome: data.email.split('@')[0],
@@ -248,10 +300,17 @@
                         alert(`Bem-vindo(a), ${user.nome}!`);
                         
                         // Redirecionar baseado no tipo de usuário
-                        if (user.tipo === 'empresa') {
-                            window.location.href = '/profile-company.html';
-                        } else {
-                            window.location.href = '/profile-client.html';
+                        switch(user.tipo) {
+                            case 'admin':
+                                window.location.href = '/admin.html';
+                                break;
+                            case 'empresa':
+                                window.location.href = '/profile-company.html';
+                                break;
+                            case 'cliente':
+                            default:
+                                window.location.href = '/profile-client.html';
+                                break;
                         }
                         
                     } catch (error) {
@@ -288,29 +347,21 @@
             alert('Login com Apple\n\nFuncionalidade em desenvolvimento!\n\nEm breve você poderá fazer login usando sua conta Apple.');
         }
 
-        function loginAsDemo() {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            loadingOverlay.style.display = 'flex';
-            
-            // Criar usuário de demonstração
-            const demoUser = {
-                id: 999,
-                nome: 'Usuário Demonstração',
-                email: 'demo@temdeTudo.com',
-                telefone: '(11) 99999-0000',
-                tipo: 'cliente',
-                pontos: 1250,
-                nivel: 'Platinum',
-                isDemo: true
-            };
-            
-            setTimeout(() => {
-                localStorage.setItem('user', JSON.stringify(demoUser));
-                localStorage.setItem('isLoggedIn', 'true');
-                alert('Entrando como usuário de demonstração!');
-                window.location.href = '/profile-client.html';
-            }, 1500);
-        }
+        // Show test credentials in console
+        console.log('🔐 CREDENCIAIS DE TESTE - TEM DE PONTO');
+        console.log('═══════════════════════════════════════════');
+        console.log('👑 ADMIN MASTER:');
+        console.log('   Email: admin@temdeponto.com');
+        console.log('   Senha: adm@123');
+        console.log('');
+        console.log('👤 CLIENTE TESTE:');
+        console.log('   Email: cliente@exemplo.com');
+        console.log('   Senha: qualquer coisa');
+        console.log('');
+        console.log('🏢 EMPRESA TESTE:');
+        console.log('   Email: empresa@exemplo.com');
+        console.log('   Senha: qualquer coisa');
+        console.log('═══════════════════════════════════════════');
     </script>
 
     <style>
@@ -326,7 +377,7 @@
         input[type="checkbox"] {
             width: 16px;
             height: 16px;
-            accent-color: var(--primary-blue);
+            accent-color: var(--primary-purple);
         }
 
         @media (max-width: 480px) {
