@@ -1,117 +1,582 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - Tem de Tudo</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/app-theme.css">
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        /* Register Page Specific Styles */
+        .register-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #f59e0b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .register-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+            animation: moveDots 15s linear infinite;
+        }
+
+        @keyframes moveDots {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(20px) translateY(20px); }
+        }
+
+        .register-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            z-index: 10;
+            margin: 1rem;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .register-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .register-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .register-subtitle {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .welcome-bonus {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-bonus::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #f59e0b, #fbbf24, #f59e0b);
+            border-radius: 1rem;
+            z-index: -1;
+            animation: glow 2s linear infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .bonus-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        .bonus-title {
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .bonus-text {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 1rem;
+            font-size: 1rem;
+            transition: all 0.25s ease;
+            background: white;
+            color: #374151;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-input.valid {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .form-input.invalid {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            transition: color 0.25s ease;
+        }
+
+        .form-input:focus + .input-icon {
+            color: #8b5cf6;
+        }
+
+        .password-strength {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            font-size: 0.75rem;
+        }
+
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            margin: 0.5rem 0;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            transition: width 0.25s ease, background-color 0.25s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak .strength-fill { width: 25%; background: #ef4444; }
+        .strength-fair .strength-fill { width: 50%; background: #f59e0b; }
+        .strength-good .strength-fill { width: 75%; background: #10b981; }
+        .strength-strong .strength-fill { width: 100%; background: #059669; }
+
+        .register-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+
+        .register-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .register-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+
+        .step::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            width: calc(100% - 30px);
+            height: 2px;
+            background: #e5e7eb;
+            z-index: -1;
+        }
+
+        .step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.25s ease;
+        }
+
+        .step.active .step-number {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: #10b981;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .auth-footer a {
+            color: #8b5cf6;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.25s ease;
+        }
+
+        .auth-footer a:hover {
+            color: #6366f1;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 640px) {
+            .register-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .register-steps {
+                padding: 0;
+            }
+
+            .step-label {
+                font-size: 0.625rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="auth-header">
-                <h1>🎁 Cadastrar</h1>
-                <p>Crie sua conta e comece a ganhar pontos!</p>
+    <div class="register-page">
+        <div class="register-container animate-slide-up">
+            <div class="register-header">
+                <div class="register-logo">🎉</div>
+                <h1 class="register-title">Junte-se a nós!</h1>
+                <p class="register-subtitle">Crie sua conta e comece a acumular pontos</p>
             </div>
-            
-            <form class="auth-form" id="registerForm">
-                <div class="form-group">
-                    <label for="name">Nome Completo</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="phone">Telefone</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Senha</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password_confirmation">Confirmar Senha</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" required>
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="background: #f59e0b;">
-                    🎯 Criar Conta e Começar a Ganhar
-                </button>
-                
-                <div class="auth-links">
-                    <p>Já tem conta? <a href="/login.html" style="color: #f59e0b;">Entre aqui</a></p>
-                </div>
-            </form>
-            
-            <div class="loyalty-preview">
-                <h3>🌟 O que você ganha ao se cadastrar:</h3>
-                <ul>
-                    <li>💰 <strong>Pontos de boas-vindas:</strong> 100 pontos grátis</li>
-                    <li>🎁 <strong>A cada compra:</strong> R$ 1,00 = 1 ponto</li>
-                    <li>🏆 <strong>Níveis de fidelidade:</strong> Bronze, Prata, Ouro, Diamante</li>
-                    <li>💎 <strong>Prêmios exclusivos:</strong> Produtos e descontos</li>
-                    <li>🎯 <strong>Ofertas especiais:</strong> Só para membros</li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="auth-info">
-            <h2>🏅 Comece no Nível Bronze</h2>
-            <p>E evolua conforme suas compras!</p>
-            
-            <div class="level-progression">
-                <div class="level-step">
-                    <div class="level-icon">🥉</div>
-                    <div class="level-details">
-                        <strong>Bronze</strong>
-                        <p>0-999 pontos<br>1x multiplicador</p>
-                    </div>
-                </div>
-                
-                <div class="level-arrow">➡️</div>
-                
-                <div class="level-step">
-                    <div class="level-icon">🥈</div>
-                    <div class="level-details">
-                        <strong>Prata</strong>
-                        <p>1.000-4.999 pontos<br>1.5x multiplicador</p>
-                    </div>
-                </div>
-                
-                <div class="level-arrow">➡️</div>
-                
-                <div class="level-step">
-                    <div class="level-icon">🥇</div>
-                    <div class="level-details">
-                        <strong>Ouro</strong>
-                        <p>5.000-9.999 pontos<br>2x multiplicador</p>
-                    </div>
-                </div>
-                
-                <div class="level-arrow">➡️</div>
-                
-                <div class="level-step">
-                    <div class="level-icon">💎</div>
-                    <div class="level-details">
-                        <strong>Diamante</strong>
-                        <p>10.000+ pontos<br>3x multiplicador</p>
-                    </div>
-                </div>
-            </div>
-            
+
             <div class="welcome-bonus">
-                <h3>🎁 Bônus de Boas-vindas</h3>
-                <p>Ganhe <strong style="color: #f59e0b;">100 pontos grátis</strong> só por se cadastrar!</p>
+                <div class="bonus-icon">💰</div>
+                <div class="bonus-title">Bônus de Boas-vindas</div>
+                <div class="bonus-text">Ganhe 100 pontos ao se cadastrar!</div>
+            </div>
+
+            <div class="register-steps">
+                <div class="step active">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Dados Pessoais</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Conta</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Concluído</div>
+                </div>
+            </div>
+
+            <form id="registerForm" class="register-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            id="nome" 
+                            name="nome" 
+                            class="form-input" 
+                            placeholder="Nome completo" 
+                            required
+                        >
+                        <div class="input-icon">👤</div>
+                    </div>
+                    <div class="form-group">
+                        <input 
+                            type="tel" 
+                            id="telefone" 
+                            name="telefone" 
+                            class="form-input" 
+                            placeholder="(11) 99999-9999" 
+                            required
+                        >
+                        <div class="input-icon">📱</div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="seu@email.com" 
+                        required
+                    >
+                    <div class="input-icon">📧</div>
+                </div>
+
+                <div class="form-group">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Crie uma senha forte" 
+                        required
+                        minlength="6"
+                    >
+                    <div class="input-icon">🔒</div>
+                    
+                    <div class="password-strength" id="passwordStrength" style="display: none;">
+                        <div class="strength-bar">
+                            <div class="strength-fill"></div>
+                        </div>
+                        <div class="strength-text">Força da senha: <span></span></div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 2rem;">
+                    <input 
+                        type="password" 
+                        id="password_confirmation" 
+                        name="password_confirmation" 
+                        class="form-input" 
+                        placeholder="Confirme sua senha" 
+                        required
+                    >
+                    <div class="input-icon">✅</div>
+                </div>
+
+                <button type="submit" class="register-button" id="registerBtn">
+                    Criar Minha Conta
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Já tem uma conta? <a href="/login.html">Entre agora</a></p>
             </div>
         </div>
     </div>
 
     <script src="/js/app.js"></script>
+    <script>
+        // Validação de senha em tempo real
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthDiv = document.getElementById('passwordStrength');
+            const strengthBar = strengthDiv.querySelector('.strength-bar');
+            const strengthText = strengthDiv.querySelector('.strength-text span');
+            
+            if (password.length > 0) {
+                strengthDiv.style.display = 'block';
+                
+                let strength = 0;
+                let label = '';
+                
+                if (password.length >= 6) strength++;
+                if (password.match(/[a-z]/)) strength++;
+                if (password.match(/[A-Z]/)) strength++;
+                if (password.match(/[0-9]/)) strength++;
+                if (password.match(/[^a-zA-Z0-9]/)) strength++;
+                
+                strengthBar.className = 'strength-bar';
+                
+                switch(strength) {
+                    case 0:
+                    case 1:
+                        strengthBar.classList.add('strength-weak');
+                        label = 'Muito fraca';
+                        break;
+                    case 2:
+                        strengthBar.classList.add('strength-fair');
+                        label = 'Fraca';
+                        break;
+                    case 3:
+                    case 4:
+                        strengthBar.classList.add('strength-good');
+                        label = 'Boa';
+                        break;
+                    case 5:
+                        strengthBar.classList.add('strength-strong');
+                        label = 'Muito forte';
+                        break;
+                }
+                
+                strengthText.textContent = label;
+            } else {
+                strengthDiv.style.display = 'none';
+            }
+        });
+
+        // Validação de confirmação de senha
+        document.getElementById('password_confirmation').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmation = this.value;
+            
+            if (confirmation.length > 0) {
+                if (password === confirmation) {
+                    this.classList.remove('invalid');
+                    this.classList.add('valid');
+                } else {
+                    this.classList.remove('valid');
+                    this.classList.add('invalid');
+                }
+            } else {
+                this.classList.remove('valid', 'invalid');
+            }
+        });
+
+        // Máscara para telefone
+        document.getElementById('telefone').addEventListener('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                if (value.length < 14) {
+                    value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                }
+                this.value = value;
+            }
+        });
+
+        // Progresso dos steps
+        const inputs = document.querySelectorAll('.form-input');
+        const steps = document.querySelectorAll('.step');
+        
+        inputs.forEach(input => {
+            input.addEventListener('input', updateSteps);
+        });
+        
+        function updateSteps() {
+            const nome = document.getElementById('nome').value;
+            const telefone = document.getElementById('telefone').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmation = document.getElementById('password_confirmation').value;
+            
+            // Step 1: Dados pessoais
+            if (nome && telefone) {
+                steps[0].classList.add('completed');
+                steps[0].classList.remove('active');
+                steps[1].classList.add('active');
+            } else {
+                steps[0].classList.remove('completed');
+                steps[0].classList.add('active');
+                steps[1].classList.remove('active', 'completed');
+            }
+            
+            // Step 2: Conta
+            if (nome && telefone && email && password && confirmation && password === confirmation) {
+                steps[1].classList.add('completed');
+                steps[1].classList.remove('active');
+                steps[2].classList.add('active');
+            } else if (nome && telefone) {
+                steps[1].classList.add('active');
+                steps[2].classList.remove('active', 'completed');
+            }
+        }
+
+        // Animação de entrada
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.querySelector('.register-container');
+            setTimeout(() => {
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
 </body>
 </html>

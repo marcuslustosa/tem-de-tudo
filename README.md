@@ -1,90 +1,176 @@
-# Plataforma Tem de Tudo
+# Tem de Tudo - Programa de Fidelidade 🎯# Plataforma Tem de Tudo
 
-Uma plataforma completa para fidelidade de clientes e gestão de empresas, com backend em Node.js/Express, frontend estático e banco de dados PostgreSQL.
 
-## Funcionalidades
 
-- Cadastro e login de clientes e empresas
-- Sistema de pontos de fidelidade
-- Avaliações e comentários
+Sistema moderno de programa de fidelidade com design app-like, desenvolvido em Laravel + PostgreSQL para deploy no Render.com.Uma plataforma completa para fidelidade de clientes e gestão de empresas, com backend em Node.js/Express, frontend estático e banco de dados PostgreSQL.
+
+
+
+## 🎨 Design System## Funcionalidades
+
+- **Paleta**: Roxo (#6366f1) + Dourado (#f59e0b) + Branco
+
+- **Interface**: Moderna, responsiva, tipo aplicativo- Cadastro e login de clientes e empresas
+
+- **Animações**: Fluidas e profissionais- Sistema de pontos de fidelidade
+
+- **UX**: Otimizada para conversão- Avaliações e comentários
+
 - Notificações push
-- Painel administrativo para gestão
+
+## ⚡ Funcionalidades- Painel administrativo para gestão
+
 - Integração com Mercado Pago e PagSeguro
 
-## Tecnologias
+### Sistema de Pontos
 
-- **Backend:** Node.js, Express, Sequelize, PostgreSQL
-- **Frontend:** HTML, CSS, JavaScript
-- **Deploy:** Render (web service)
+- **R$ 1,00 = 1 ponto** (base)## Tecnologias
+
+- **Níveis VIP** com multiplicadores:
+
+  - Bronze: 1x (padrão)- **Backend:** Node.js, Express, Sequelize, PostgreSQL
+
+  - Prata: 1.5x (1000+ pontos)- **Frontend:** HTML, CSS, JavaScript
+
+  - Ouro: 2x (5000+ pontos) - **Deploy:** Render (web service)
+
+  - Diamante: 3x (10000+ pontos)
 
 ## Instalação e Execução Local
 
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/tem-de-tudo.git
-   cd tem-de-tudo
+### Bônus e Vantagens
+
+- **100 pontos** de boas-vindas no cadastro1. Clone o repositório:
+
+- **Descontos progressivos** por nível   ```bash
+
+- **Ofertas exclusivas** para membros VIP   git clone https://github.com/seu-usuario/tem-de-tudo.git
+
+- **Dashboard personalizado** por perfil   cd tem-de-tudo
+
    ```
+
+## 🚀 Deploy Automatizado
 
 2. Instale as dependências:
-   ```bash
-   npm install
-   ```
+
+### Render.com   ```bash
+
+```bash   npm install
+
+# 1. Push para GitHub   ```
+
+git push origin main
 
 3. Configure as variáveis de ambiente:
-   Crie um arquivo `.env` na raiz do projeto com:
-   ```
-   DB_DIALECT=postgres
-   DB_HOST=localhost
+
+# 2. No Render, conecte o repo   Crie um arquivo `.env` na raiz do projeto com:
+
+# 3. render.yaml detectado automaticamente   ```
+
+# 4. Deploy completo em minutos   DB_DIALECT=postgres
+
+```   DB_HOST=localhost
+
    DB_PORT=5432
-   DB_NAME=temdetudo
-   DB_USER=seu_usuario_postgres
-   DB_PASSWORD=sua_senha_postgres
-   JWT_SECRET=sua_chave_secreta_jwt
-   MERCADO_PAGO_TOKEN=seu_token_mercado_pago
-   PAG_SEGURO_TOKEN=seu_token_pag_seguro
-   ```
 
-4. Execute o projeto:
+### Configurações Prontas   DB_NAME=temdetudo
+
+- ✅ Docker multi-stage otimizado   DB_USER=seu_usuario_postgres
+
+- ✅ PostgreSQL configurado     DB_PASSWORD=sua_senha_postgres
+
+- ✅ Variáveis de ambiente   JWT_SECRET=sua_chave_secreta_jwt
+
+- ✅ Migrations automáticas   MERCADO_PAGO_TOKEN=seu_token_mercado_pago
+
+- ✅ Cache de produção   PAG_SEGURO_TOKEN=seu_token_pag_seguro
+
+- ✅ SSL/HTTPS habilitado   ```
+
+
+
+## 👥 Contas Demo4. Execute o projeto:
+
    ```bash
-   npm run dev
-   ```
 
-   O servidor estará rodando em `http://localhost:3000`.
+### Cliente Teste   npm run dev
 
-## Deploy no Render.com
+- **Email**: cliente@temdetudo.com   ```
 
-1. Faça push do código para um repositório no GitHub.
+- **Senha**: cliente123
+
+- **Nível**: Bronze com 250 pontos   O servidor estará rodando em `http://localhost:3000`.
+
+
+
+### Empresa Admin  ## Deploy no Render.com
+
+- **Email**: empresa@temdetudo.com
+
+- **Senha**: empresa1231. Faça push do código para um repositório no GitHub.
+
+- **Acesso**: Painel administrativo completo
 
 2. Conecte o repositório ao Render.com:
-   - Acesse [render.com](https://render.com) e faça login.
+
+## 🛠️ Stack Tecnológica   - Acesse [render.com](https://render.com) e faça login.
+
    - Clique em "New" > "Web Service" e importe o repositório do GitHub.
 
-3. Configure o serviço:
-   - **Runtime:** Node
-   - **Build Command:** npm install
-   - **Start Command:** npm start
-   - **Environment:** Production
+- **Backend**: Laravel 11 + PHP 8.2
 
-4. Configure o banco de dados PostgreSQL no Render.com:
+- **Database**: PostgreSQL (produção) / SQLite (dev)3. Configure o serviço:
+
+- **Auth**: Laravel Sanctum (JWT)   - **Runtime:** Node
+
+- **Frontend**: HTML5 + CSS3 + Vanilla JS   - **Build Command:** npm install
+
+- **Deploy**: Docker + Render.com   - **Start Command:** npm start
+
+- **CI/CD**: Automated via render.yaml   - **Environment:** Production
+
+
+
+## 📱 URLs de Demonstração4. Configure o banco de dados PostgreSQL no Render.com:
+
    - Crie um novo "PostgreSQL" database no painel do Render.
-   - Copie a "Internal Database URL" ou "External Database URL".
 
-5. Configure as variáveis de ambiente no painel do Render:
-   - Vá para "Environment" no serviço web.
+- **Home**: https://tem-de-tudo.onrender.com   - Copie a "Internal Database URL" ou "External Database URL".
+
+- **Login**: https://tem-de-tudo.onrender.com/login.html
+
+- **Cadastro**: https://tem-de-tudo.onrender.com/register.html5. Configure as variáveis de ambiente no painel do Render:
+
+- **API**: https://tem-de-tudo.onrender.com/api   - Vá para "Environment" no serviço web.
+
    - Adicione as seguintes variáveis (use valores reais para produção):
-     - `DATABASE_URL`: URL do banco PostgreSQL (ex: postgresql://user:password@host:port/database)
-     - `JWT_SECRET`: chave secreta para JWT
-     - `MERCADO_PAGO_TOKEN`: token do Mercado Pago
-     - `PAG_SEGURO_TOKEN`: token do PagSeguro
 
-6. Implante:
-   - O Render.com implantará automaticamente o projeto.
+## 🎯 Ideal Para     - `DATABASE_URL`: URL do banco PostgreSQL (ex: postgresql://user:password@host:port/database)
+
+     - `JWT_SECRET`: chave secreta para JWT
+
+- **Pequenos negócios** buscando fidelização     - `MERCADO_PAGO_TOKEN`: token do Mercado Pago
+
+- **Redes de estabelecimentos**      - `PAG_SEGURO_TOKEN`: token do PagSeguro
+
+- **Demonstrações comerciais**
+
+- **MVPs de fidelidade**6. Implante:
+
+- **Sistemas white-label**   - O Render.com implantará automaticamente o projeto.
+
    - O frontend será servido estáticamente pelo Express, e o backend rodará no servidor.
 
+---
 
 
-## Estrutura do Projeto
 
+**Status**: ✅ **PRONTO PARA PRODUÇÃO**  
+
+**Última atualização**: Setembro 2025  ## Estrutura do Projeto
+
+**Versão**: 2.0 - Modern App Design
 - `backend/`: Código do servidor Express
 - `frontend/`: Arquivos estáticos (HTML, CSS, JS)
 - `backend/models/`: Modelos do Sequelize

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Tem de Tudo</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+    <!-- Partículas animadas de fundo -->
+    <div class="particles-container">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Header simplificado -->
+    <header class="auth-header">
+        <nav class="container">
+            <a href="/" class="logo">
+                <span class="logo-icon">💎</span>
+                Tem de Tudo
+            </a>
+        </nav>
+    </header>
+
+    <!-- Container principal de autenticação -->
+    <div class="auth-main-container">
+        <div class="auth-content-wrapper">
+            <!-- Lado esquerdo - Informações e benefícios -->
+            <div class="auth-info-side">
+                <div class="auth-info-content">
+                    <h1 class="auth-info-title">
+                        <span class="gradient-text">Comece a ganhar</span>
+                        <br>Pontos hoje!
+                    </h1>
+                    <p class="auth-info-subtitle">
+                        Cadastre-se gratuitamente e receba 100 pontos de boas-vindas
+                    </p>
+                    
+                    <!-- Contador animado de pontos de boas-vindas -->
+                    <div class="welcome-bonus animate-pulse">
+                        <div class="bonus-icon">🎁</div>
+                        <div class="bonus-text">
+                            <h3>Bônus de Boas-vindas</h3>
+                            <div class="bonus-points">
+                                <span id="bonusCounter">100</span> pontos grátis!
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="registration-steps">
+                        <h3>Como funciona?</h3>
+                        <div class="steps-list">
+                            <div class="step-item animate-slide-up" style="animation-delay: 0.2s">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <strong>Cadastre-se grátis</strong>
+                                    <p>Preencha seus dados em menos de 2 minutos</p>
+                                </div>
+                            </div>
+                            
+                            <div class="step-item animate-slide-up" style="animation-delay: 0.4s">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <strong>Ganhe 100 pontos</strong>
+                                    <p>Receba pontos de boas-vindas instantaneamente</p>
+                                </div>
+                            </div>
+                            
+                            <div class="step-item animate-slide-up" style="animation-delay: 0.6s">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <strong>Comece a comprar</strong>
+                                    <p>Acumule pontos a cada compra realizada</p>
+                                </div>
+                            </div>
+                            
+                            <div class="step-item animate-slide-up" style="animation-delay: 0.8s">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <strong>Troque por prêmios</strong>
+                                    <p>Use seus pontos para ganhar produtos e descontos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="success-stats animate-slide-up" style="animation-delay: 1s">
+                        <h3>Vantagens exclusivas</h3>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number">3x</div>
+                                <div class="stat-label">Mais pontos no nível Diamante</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">24h</div>
+                                <div class="stat-label">Suporte disponível</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">0%</div>
+                                <div class="stat-label">Taxa para participar</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lado direito - Formulário de cadastro -->
+            <div class="auth-form-side">
+                <div class="auth-form-container animate-fade-in">
+                    <div class="auth-form-header">
+                        <h2>Crie sua conta grátis</h2>
+                        <p>Junte-se a milhares de pessoas que já ganham pontos</p>
+                    </div>
+
+                    <form class="auth-form modern-form" id="registerForm">
+                        <div class="form-group floating-label">
+                            <input type="text" id="name" name="name" required autocomplete="name">
+                            <label for="name">Nome completo</label>
+                            <div class="input-highlight"></div>
+                        </div>
+                        
+                        <div class="form-group floating-label">
+                            <input type="email" id="email" name="email" required autocomplete="email">
+                            <label for="email">E-mail</label>
+                            <div class="input-highlight"></div>
+                        </div>
+                        
+                        <div class="form-group floating-label">
+                            <input type="tel" id="phone" name="phone" placeholder="(11) 99999-9999">
+                            <label for="phone">Telefone (opcional)</label>
+                            <div class="input-highlight"></div>
+                        </div>
+                        
+                        <div class="form-group floating-label">
+                            <input type="password" id="password" name="password" required autocomplete="new-password">
+                            <label for="password">Senha</label>
+                            <div class="input-highlight"></div>
+                            <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                <span id="toggleIcon1">👁️</span>
+                            </button>
+                        </div>
+                        
+                        <div class="form-group floating-label">
+                            <input type="password" id="password_confirmation" name="password_confirmation" required autocomplete="new-password">
+                            <label for="password_confirmation">Confirmar senha</label>
+                            <div class="input-highlight"></div>
+                            <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation')">
+                                <span id="toggleIcon2">👁️</span>
+                            </button>
+                        </div>
+
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-bars">
+                                <div class="strength-bar"></div>
+                                <div class="strength-bar"></div>
+                                <div class="strength-bar"></div>
+                                <div class="strength-bar"></div>
+                            </div>
+                            <p class="strength-text">Digite uma senha</p>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="terms" required>
+                                <span class="checkmark"></span>
+                                Aceito os <a href="#" class="terms-link">termos de uso</a> e <a href="#" class="terms-link">política de privacidade</a>
+                            </label>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="newsletter">
+                                <span class="checkmark"></span>
+                                Quero receber ofertas exclusivas por e-mail
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary modern-btn" id="registerBtn">
+                            <span class="btn-text">🎁 Criar conta e ganhar 100 pontos</span>
+                            <span class="btn-loading" style="display: none;">
+                                <div class="spinner"></div>
+                                Criando conta...
+                            </span>
+                        </button>
+                    </form>
+                    
+                    <div class="auth-footer">
+                        <p>
+                            Já tem conta? 
+                            <a href="/login.html" class="signin-link">Faça login aqui</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast para mensagens -->
+    <div id="toast-container"></div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        // Funções específicas da página de cadastro
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleIcon = document.getElementById(fieldId === 'password' ? 'toggleIcon1' : 'toggleIcon2');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = '👁️';
+            }
+        }
+
+        // Verificador de força da senha
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            let feedback = '';
+            
+            if (password.length >= 8) strength += 1;
+            if (password.match(/[a-z]/)) strength += 1;
+            if (password.match(/[A-Z]/)) strength += 1;
+            if (password.match(/[0-9]/) || password.match(/[^a-zA-Z0-9]/)) strength += 1;
+            
+            const strengthBar = document.querySelector('.password-strength');
+            const bars = strengthBar.querySelectorAll('.strength-bar');
+            const strengthText = strengthBar.querySelector('.strength-text');
+            
+            // Reset bars
+            bars.forEach(bar => {
+                bar.className = 'strength-bar';
+            });
+            
+            switch(strength) {
+                case 0:
+                case 1:
+                    bars[0].classList.add('weak');
+                    feedback = 'Senha muito fraca';
+                    strengthBar.className = 'password-strength weak';
+                    break;
+                case 2:
+                    bars[0].classList.add('fair');
+                    bars[1].classList.add('fair');
+                    feedback = 'Senha fraca';
+                    strengthBar.className = 'password-strength fair';
+                    break;
+                case 3:
+                    bars[0].classList.add('good');
+                    bars[1].classList.add('good');
+                    bars[2].classList.add('good');
+                    feedback = 'Senha boa';
+                    strengthBar.className = 'password-strength good';
+                    break;
+                case 4:
+                    bars.forEach(bar => bar.classList.add('strong'));
+                    feedback = 'Senha forte';
+                    strengthBar.className = 'password-strength strong';
+                    break;
+            }
+            
+            strengthText.textContent = feedback;
+        }
+
+        // Animações e interações
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.floating-label input');
+            
+            inputs.forEach(input => {
+                // Verificar se já tem valor (autocomplete)
+                if (input.value) {
+                    input.parentElement.classList.add('focused');
+                }
+                
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.parentElement.classList.remove('focused');
+                    }
+                });
+                
+                input.addEventListener('input', function() {
+                    if (this.value) {
+                        this.parentElement.classList.add('focused');
+                    } else {
+                        this.parentElement.classList.remove('focused');
+                    }
+                });
+            });
+
+            // Verificador de senha em tempo real
+            document.getElementById('password').addEventListener('input', function() {
+                checkPasswordStrength(this.value);
+            });
+
+            // Formatação do telefone
+            document.getElementById('phone').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length <= 11) {
+                    value = value.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
+                    if (value.length < 14) {
+                        value = value.replace(/^(\d{2})(\d{4})(\d{4}).*/, '($1) $2-$3');
+                    }
+                    e.target.value = value;
+                }
+            });
+
+            // Animação do contador de pontos
+            animateBonusCounter();
+            
+            // Partículas animadas
+            createParticles();
+        });
+
+        function animateBonusCounter() {
+            const counter = document.getElementById('bonusCounter');
+            let current = 0;
+            const target = 100;
+            const increment = 2;
+            const duration = 2000;
+            const stepTime = duration / (target / increment);
+
+            const timer = setInterval(() => {
+                current += increment;
+                counter.textContent = current;
+                
+                if (current >= target) {
+                    counter.textContent = target;
+                    clearInterval(timer);
+                }
+            }, stepTime);
+        }
+
+        function createParticles() {
+            const container = document.querySelector('.particles-container');
+            const particles = container.querySelectorAll('.particle');
+            
+            particles.forEach((particle, index) => {
+                const size = Math.random() * 6 + 2;
+                const left = Math.random() * 100;
+                const delay = Math.random() * 20;
+                const duration = Math.random() * 20 + 10;
+                
+                particle.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${left}%;
+                    animation-delay: ${delay}s;
+                    animation-duration: ${duration}s;
+                `;
+            });
+        }
+    </script>
+
+    <style>
+        /* Importa todos os estilos da página de login */
+        .auth-body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #059669 50%, #16a34a 75%, #22c55e 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Estilos específicos da página de cadastro */
+        .welcome-bonus {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 2rem;
+            background: rgba(245, 158, 11, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            margin-bottom: 3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .bonus-icon {
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+        }
+
+        .bonus-text h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .bonus-points {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.5); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .registration-steps {
+            margin-bottom: 3rem;
+        }
+
+        .registration-steps h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .step-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .step-content strong {
+            display: block;
+            color: white;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .step-content p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .success-stats {
+            padding: 2rem;
+            background: rgba(5, 150, 105, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(5, 150, 105, 0.3);
+        }
+
+        .success-stats h3 {
+            color: white;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .password-strength {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .strength-bars {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .strength-bar {
+            height: 4px;
+            flex: 1;
+            background: #e2e8f0;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-bar.weak {
+            background: #ef4444;
+        }
+
+        .strength-bar.fair {
+            background: #f59e0b;
+        }
+
+        .strength-bar.good {
+            background: #3b82f6;
+        }
+
+        .strength-bar.strong {
+            background: #10b981;
+        }
+
+        .strength-text {
+            font-size: 0.8rem;
+            margin: 0;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .password-strength.weak .strength-text {
+            color: #ef4444;
+        }
+
+        .password-strength.fair .strength-text {
+            color: #f59e0b;
+        }
+
+        .password-strength.good .strength-text {
+            color: #3b82f6;
+        }
+
+        .password-strength.strong .strength-text {
+            color: #10b981;
+        }
+
+        .terms-link {
+            color: #059669;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .terms-link:hover {
+            color: #047857;
+        }
+
+        .signin-link {
+            color: #059669;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signin-link:hover {
+            color: #047857;
+        }
+
+        /* Reutiliza estilos da página de login */
+        .particles-container,
+        .particle,
+        .auth-header,
+        .logo,
+        .logo-icon,
+        .auth-main-container,
+        .auth-content-wrapper,
+        .auth-info-side,
+        .auth-info-title,
+        .gradient-text,
+        .auth-info-subtitle,
+        .auth-form-side,
+        .auth-form-container,
+        .auth-form-header,
+        .modern-form,
+        .floating-label,
+        .floating-label input,
+        .floating-label label,
+        .floating-label.focused label,
+        .input-highlight,
+        .password-toggle,
+        .form-options,
+        .checkbox-container,
+        .checkmark,
+        .modern-btn,
+        .spinner,
+        .auth-footer,
+        .animate-fade-in,
+        .animate-slide-up {
+            /* Herda os estilos da página de login */
+        }
+
+        /* Responsivo específico */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .welcome-bonus {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .step-item:hover {
+                transform: none;
+            }
+        }
+    </style>
+</body>
+</html>

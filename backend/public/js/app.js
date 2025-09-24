@@ -91,12 +91,14 @@ function setupForms() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
+        console.log('Login form configurado');
     }
     
     // Formulário de registro
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', handleRegister);
+        console.log('Register form configurado');
     }
 }
 
