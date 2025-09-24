@@ -81,6 +81,15 @@
     /* Typography */
     --font-family: 'Inter', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', Consolas, Monaco, monospace;
+
+    /* Success Colors */
+    --success-green: #22c55e;
+    --success-green-light: #dcfce7;
+    --success-green-dark: #166534;
+
+    /* Additional Gradients */
+    --gradient-success: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    --gradient-accent: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
 }
 
 /* Reset & Base Styles */
@@ -172,8 +181,8 @@ body {
 }
 
 .logo-image {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     border-radius: var(--radius-lg);
 }
 
@@ -299,6 +308,10 @@ body {
     box-shadow: var(--shadow-2xl);
 }
 
+.card-body {
+    padding: var(--space-8);
+}
+
 /* Buttons */
 .btn {
     display: inline-flex;
@@ -381,6 +394,17 @@ body {
     box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
 }
 
+.btn-ghost {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: currentColor;
+}
+
+.btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
 /* Icons */
 .icon-sm {
     font-size: 0.875rem;
@@ -392,6 +416,18 @@ body {
 
 .icon-lg {
     font-size: 1.5rem;
+}
+
+/* Ensure Font Awesome icons are displayed */
+.fas, .far, .fab, .fal, .fad, .fass, .fasr, .fasl {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 6 Brands" !important;
+    font-weight: 900;
+}
+
+/* Icon visibility improvements */
+i[class*="fa-"] {
+    display: inline-block;
+    vertical-align: middle;
 }
 
 /* Form Elements */
@@ -565,4 +601,56 @@ input:focus, textarea:focus, select:focus {
 .info {
     background: linear-gradient(135deg, #3b82f6, #60a5fa);
     color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: flex;
+    }
+    
+    .logo-image {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .card {
+        margin-bottom: var(--space-6);
+    }
+    
+    .card-body {
+        padding: var(--space-6);
+    }
+    
+    h1 {
+        font-size: 2rem !important;
+    }
+    
+    h2 {
+        font-size: 1.75rem !important;
+    }
+    
+    .btn-lg {
+        padding: var(--space-4) var(--space-8);
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-container {
+        padding: var(--space-3) var(--space-4);
+    }
+    
+    .logo-image {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .card-body {
+        padding: var(--space-4);
+    }
 }

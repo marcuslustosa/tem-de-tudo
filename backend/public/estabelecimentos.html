@@ -460,6 +460,44 @@
                 display: none;
             }
         }
+
+        /* Animações do Modal */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Responsivo para Modal */
+        @media (max-width: 768px) {
+            .lightbox-content {
+                margin: 1rem !important;
+                max-height: 95vh !important;
+            }
+            
+            .lightbox-body {
+                padding: 1.5rem !important;
+            }
+            
+            .lightbox-header {
+                padding: 1rem 1.5rem !important;
+            }
+        }
     </style>
 
     <script>
@@ -559,22 +597,138 @@
             ]
         };
 
-        // Funções dos botões dos estabelecimentos
+        // Funções dos botões dos estabelecimentos  
         function showMenu(establishmentId) {
             const menu = establishmentMenus[establishmentId];
             if (menu) {
-                let menuText = `🍴 ${menu.name} - CARDÁPIO\n\n`;
-                menu.items.forEach((item, index) => {
-                    menuText += `${index + 1}. ${item.name}\n`;
-                    menuText += `   💰 ${item.price} | 🎯 ${item.points} pontos\n`;
-                    menuText += `   📝 ${item.description}\n\n`;
-                });
-                menuText += `💡 Todos os preços já incluem os pontos de fidelidade!\n`;
-                menuText += `🎉 Acumule pontos e ganhe descontos nas próximas compras!`;
-                alert(menuText);
+                showLightboxModal(menu.name + ' - Cardápio', createMenuHTML(menu.items));
             } else {
-                alert(`Abrindo cardápio de ${establishmentId}...\n\nEm breve você poderá ver todos os pratos disponíveis!`);
+                showLightboxModal('Cardápio', '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">Em breve você poderá ver todos os pratos disponíveis!</p>');
             }
+        }
+
+        function createMenuHTML(items) {
+            let html = '<div style="display: grid; gap: 1.5rem;">';
+            items.forEach((item, index) => {
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: start; padding: 1.5rem; background: var(--gray-50); border-radius: var(--radius-lg); border-left: 4px solid var(--primary-purple);">
+                        <div style="flex: 1;">
+                            <h4 style="color: var(--primary-purple); font-weight: 700; margin-bottom: 0.5rem; font-size: 1.1rem;">${item.name}</h4>
+                            <p style="color: var(--gray-600); font-size: 0.9rem; line-height: 1.4; margin-bottom: 0.75rem;">${item.description}</p>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="background: var(--success-green); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-weight: 600; font-size: 0.875rem;">
+                                    💰 ${item.price}
+                                </span>
+                                <span style="background: var(--accent-orange); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-weight: 600; font-size: 0.875rem;">
+                                    🎯 ${item.points} pontos
+                                </span>
+                            </div>
+                        </div>
+                        <div style="margin-left: 1rem;">
+                            <button class="btn btn-primary btn-sm" onclick="addToCart('${item.name}', '${item.price}')">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            html += `
+                <div style="margin-top: 2rem; padding: 1.5rem; background: var(--gradient-primary); color: white; border-radius: var(--radius-lg); text-align: center;">
+                    <p style="font-weight: 600; margin-bottom: 0.5rem;">💡 Como funciona?</p>
+                    <p style="opacity: 0.9; font-size: 0.875rem;">Todos os preços já incluem os pontos de fidelidade! Acumule pontos e ganhe descontos nas próximas compras!</p>
+                </div>
+            `;
+            return html;
+        }
+
+        function showLightboxModal(title, content) {
+            const modal = document.createElement('div');
+            modal.id = 'lightboxModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(8px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            modal.innerHTML = `
+                <div class="lightbox-content" style="
+                    background: white;
+                    border-radius: var(--radius-xl);
+                    width: 100%;
+                    max-width: 800px;
+                    max-height: 90vh;
+                    overflow: hidden;
+                    position: relative;
+                    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                    animation: slideUp 0.3s ease;
+                ">
+                    <div class="lightbox-header" style="
+                        background: var(--gradient-primary);
+                        color: white;
+                        padding: 1.5rem 2rem;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    ">
+                        <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0;">${title}</h2>
+                        <button onclick="closeLightboxModal()" style="
+                            background: none;
+                            border: none;
+                            color: white;
+                            font-size: 1.5rem;
+                            cursor: pointer;
+                            padding: 0.5rem;
+                            border-radius: 50%;
+                            transition: background 0.2s;
+                        " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='none'">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="lightbox-body" style="
+                        padding: 2rem;
+                        overflow-y: auto;
+                        max-height: calc(90vh - 120px);
+                    ">
+                        ${content}
+                    </div>
+                </div>
+            `;
+
+            // Fechar ao clicar fora
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeLightboxModal();
+                }
+            });
+
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightboxModal() {
+            const modal = document.getElementById('lightboxModal');
+            if (modal) {
+                modal.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => {
+                    document.body.removeChild(modal);
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        }
+
+        function addToCart(itemName, price) {
+            alert(`✅ ${itemName} adicionado ao carrinho!\n\nPreço: ${price}\n\nEm breve você poderá finalizar pedidos pelo app!`);
         }
 
         function visitEstablishment(establishmentId) {
