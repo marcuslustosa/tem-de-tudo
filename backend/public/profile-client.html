@@ -367,20 +367,12 @@
         }
 
         function showRewards() {
-            const rewards = [
-                { name: 'Desconto 5% - Burger House', points: 100, available: userData.pontos >= 100 },
-                { name: 'Brinde Grátis - Fashion Store', points: 250, available: userData.pontos >= 250 },
-                { name: 'Desconto 10% - Farmácia Saúde+', points: 500, available: userData.pontos >= 500 },
-                { name: 'Produto Grátis - Qualquer Loja', points: 1000, available: userData.pontos >= 1000 }
-            ];
-
-            let message = 'Recompensas Disponíveis:\n\n';
-            rewards.forEach(reward => {
-                const status = reward.available ? '✅ Disponível' : '❌ Pontos insuficientes';
-                message += `${reward.name}\n${reward.points} pontos - ${status}\n\n`;
-            });
-
-            alert(message);
+            if (userData.pontos < 500) {
+                alert('💰 Resgate de Pontos\n\nVocê precisa de pelo menos 500 pontos para fazer um resgate.\n\nPontos atuais: ' + userData.pontos + '\nContinue acumulando pontos visitando estabelecimentos parceiros!');
+            } else {
+                // Redirecionar para página de resgate
+                window.location.href = '/checkout-pontos.html';
+            }
         }
 
         function shareApp() {

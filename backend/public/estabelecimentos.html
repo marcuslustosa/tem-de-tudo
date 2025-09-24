@@ -388,6 +388,34 @@
                 button.classList.add('btn-ghost');
             }, 2000);
         }
+
+        function showMenu(establishmentId) {
+            alert(`🍔 Menu do ${establishmentId.replace('-', ' ')}\n\n• Hambúrguer Clássico - 25 pontos\n• Batata Frita - 15 pontos\n• Refrigerante - 10 pontos\n• Combo Completo - 45 pontos\n\nEm breve você poderá fazer pedidos pelo app!`);
+        }
+
+        function showProducts(establishmentId) {
+            const products = {
+                'fashion-store': [
+                    '👕 Camiseta Básica - 50 pontos',
+                    '👖 Calça Jeans - 120 pontos', 
+                    '👟 Tênis Casual - 200 pontos',
+                    '👚 Blusa Feminina - 80 pontos'
+                ],
+                'farmacia-saude': [
+                    '💊 Vitamina C - 30 pontos',
+                    '🧴 Protetor Solar - 45 pontos',
+                    '💉 Termômetro - 60 pontos',
+                    '🩹 Kit Primeiros Socorros - 90 pontos'
+                ]
+            };
+            
+            const productList = products[establishmentId] || ['Produtos em breve...'];
+            alert(`🛍️ Produtos disponíveis:\n\n${productList.join('\n')}\n\nEm breve você poderá resgatar pelo app!`);
+        }
+
+        function showServices(establishmentId) {
+            alert(`🔧 Serviços da Oficina Pro:\n\n• Troca de Óleo - 80 pontos\n• Alinhamento - 120 pontos\n• Balanceamento - 60 pontos\n• Revisão Completa - 300 pontos\n\nAgende pelo WhatsApp: (11) 99999-9999`);
+        }
     </script>
 
     <style>

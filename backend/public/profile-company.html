@@ -129,23 +129,163 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
                     
                     <button class="btn btn-primary" onclick="scanCustomerQR()">
-                        <i class="fas fa-qrcode icon-sm"></i> Escanear QR do Cliente
+                        <i class="fas fa-mobile-alt icon-sm"></i> Escanear QR Cliente
                     </button>
                     
-                    <button class="btn btn-success" onclick="addPoints()">
+                    <button class="btn btn-success" onclick="window.location.href='/empresa-qrcode.html'">
+                        <i class="fas fa-qrcode icon-sm"></i> Meu QR Code
+                    </button>
+                    
+                    <button class="btn btn-accent" onclick="addPoints()">
                         <i class="fas fa-plus-circle icon-sm"></i> Adicionar Pontos
                     </button>
                     
-                    <button class="btn btn-accent" onclick="manageOffers()">
+                    <button class="btn btn-warning" onclick="manageOffers()">
                         <i class="fas fa-tags icon-sm"></i> Gerenciar Ofertas
                     </button>
                     
                     <button class="btn btn-outline" onclick="viewReports()">
                         <i class="fas fa-chart-bar icon-sm"></i> Relatórios
                     </button>
+                </div>
+
+                <!-- Financial Section -->
+                <div class="card mb-6">
+                    <div class="card-header">
+                        <h3 style="color: white; margin: 0;">
+                            <i class="fas fa-dollar-sign icon-sm"></i> Painel Financeiro - Mercado Pago
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-4);">
+                            
+                            <div class="financial-stat">
+                                <div class="financial-icon" style="background: var(--success-green);">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; color: var(--gray-900);" id="monthlyRevenue">R$ 3.247,89</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Receita Este Mês</p>
+                                </div>
+                            </div>
+
+                            <div class="financial-stat">
+                                <div class="financial-icon" style="background: var(--primary-blue);">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; color: var(--gray-900);" id="pointsGenerated">24,890</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Pontos Gerados</p>
+                                </div>
+                            </div>
+
+                            <div class="financial-stat">
+                                <div class="financial-icon" style="background: var(--accent-orange);">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; color: var(--gray-900);" id="commissionRate">12%</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Taxa de Comissão</p>
+                                </div>
+                            </div>
+
+                            <div class="financial-stat">
+                                <div class="financial-icon" style="background: var(--warning-yellow);">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; color: var(--gray-900);" id="pendingAmount">R$ 127,45</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">A Receber</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                            
+                            <!-- Mercado Pago Setup -->
+                            <div style="background: var(--gray-50); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--gray-200);">
+                                <h4 style="color: var(--gray-900); margin-bottom: var(--space-3);">
+                                    <img src="https://logoeps.com/wp-content/uploads/2013/03/mercado-pago-vector-logo.png" 
+                                         alt="Mercado Pago" 
+                                         style="width: 30px; height: 30px; object-fit: contain; margin-right: 0.5rem;">
+                                    Configuração Mercado Pago
+                                </h4>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Access Token</label>
+                                    <input type="password" 
+                                           id="mercadopagoToken" 
+                                           class="form-control" 
+                                           placeholder="APP_USR-xxxx-xxxxxx"
+                                           value="APP_USR-1234-configured">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Conta para Receber</label>
+                                    <input type="email" 
+                                           id="mercadopagoAccount" 
+                                           class="form-control" 
+                                           placeholder="empresa@email.com"
+                                           value="empresa@estabelecimento.com">
+                                </div>
+
+                                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3);">
+                                    <div style="width: 12px; height: 12px; background: var(--success-green); border-radius: 50%;"></div>
+                                    <span style="color: var(--success-green); font-weight: 600; font-size: 0.875rem;">Conta Ativada</span>
+                                </div>
+
+                                <button class="btn btn-outline btn-sm w-full" onclick="updateMercadoPagoConfig()">
+                                    <i class="fas fa-sync-alt"></i> Atualizar Configurações
+                                </button>
+                            </div>
+
+                            <!-- Payment History -->
+                            <div style="background: var(--gray-50); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--gray-200);">
+                                <h4 style="color: var(--gray-900); margin-bottom: var(--space-3);">
+                                    <i class="fas fa-history"></i> Últimos Recebimentos
+                                </h4>
+                                
+                                <div style="max-height: 180px; overflow-y: auto;">
+                                    <div class="payment-item">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <p style="margin: 0; font-weight: 600; color: var(--gray-900);">R$ 89,50</p>
+                                                <p style="margin: 0; font-size: 0.75rem; color: var(--gray-600);">Cliente: João Silva</p>
+                                            </div>
+                                            <span style="font-size: 0.75rem; color: var(--success-green);">Hoje 14:32</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="payment-item">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <p style="margin: 0; font-weight: 600; color: var(--gray-900);">R$ 156,80</p>
+                                                <p style="margin: 0; font-size: 0.75rem; color: var(--gray-600);">Cliente: Maria Santos</p>
+                                            </div>
+                                            <span style="font-size: 0.75rem; color: var(--success-green);">Ontem 16:45</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="payment-item">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <p style="margin: 0; font-weight: 600; color: var(--gray-900);">R$ 73,25</p>
+                                                <p style="margin: 0; font-size: 0.75rem; color: var(--gray-600);">Cliente: Pedro Costa</p>
+                                            </div>
+                                            <span style="font-size: 0.75rem; color: var(--success-green);">Ontem 12:20</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary btn-sm w-full" onclick="viewAllPayments()" style="margin-top: var(--space-3);">
+                                    <i class="fas fa-list"></i> Ver Todos os Pagamentos
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Charts Section -->
@@ -409,8 +549,43 @@
             alert('Gerenciar Ofertas\n\nFuncionalidades:\n• Criar promoções\n• Definir descontos\n• Configurar pontos especiais\n• Agendar campanhas\n\nEm desenvolvimento!');
         }
 
+        function updateMercadoPagoConfig() {
+            const token = document.getElementById('mercadopagoToken').value;
+            const account = document.getElementById('mercadopagoAccount').value;
+            
+            if (!token || !account) {
+                alert('Preencha todos os campos do Mercado Pago');
+                return;
+            }
+
+            // Simular atualização
+            alert(`✅ Configuração atualizada com sucesso!\n\nToken: ${token.substring(0, 15)}...\nConta: ${account}\n\nSua conta está ativa e pronta para receber pagamentos.`);
+        }
+
+        function viewAllPayments() {
+            const payments = [
+                { client: 'João Silva', amount: 'R$ 89,50', date: 'Hoje 14:32', status: 'Aprovado' },
+                { client: 'Maria Santos', amount: 'R$ 156,80', date: 'Ontem 16:45', status: 'Aprovado' },
+                { client: 'Pedro Costa', amount: 'R$ 73,25', date: 'Ontem 12:20', status: 'Aprovado' },
+                { client: 'Ana Oliveira', amount: 'R$ 234,90', date: '2 dias atrás', status: 'Aprovado' },
+                { client: 'Carlos Ferreira', amount: 'R$ 45,60', date: '2 dias atrás', status: 'Pendente' }
+            ];
+
+            let message = '💰 Histórico de Pagamentos\n\n';
+            payments.forEach(payment => {
+                const status = payment.status === 'Aprovado' ? '✅' : '⏳';
+                message += `${status} ${payment.client}\n${payment.amount} - ${payment.date}\n\n`;
+            });
+            
+            message += 'Total recebido este mês: R$ 3.247,89\n\nDeseja exportar relatório completo?';
+            
+            if (confirm(message)) {
+                alert('Relatório de pagamentos enviado para seu email!\n\nO arquivo será entregue em alguns minutos.');
+            }
+        }
+
         function viewReports() {
-            alert('Relatórios Avançados\n\nDisponíveis:\n• Vendas por período\n• Ranking de clientes\n• Análise de pontos\n• ROI de campanhas\n• Exportar dados\n\nEm desenvolvimento!');
+            window.location.href = '/relatorios-financeiros.html';
         }
 
         function updateProfile() {
@@ -445,6 +620,36 @@
     </script>
 
     <style>
+        .financial-stat {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+        }
+
+        .financial-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .payment-item {
+            padding: var(--space-3);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .payment-item:last-child {
+            border-bottom: none;
+        }
+
         @media (max-width: 768px) {
             main > div {
                 padding: var(--space-4) !important;
@@ -456,6 +661,16 @@
             
             div[style*="grid-template-columns"] {
                 grid-template-columns: 1fr !important;
+            }
+            
+            .financial-stat {
+                padding: var(--space-2);
+            }
+            
+            .financial-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
             }
         }
     </style>

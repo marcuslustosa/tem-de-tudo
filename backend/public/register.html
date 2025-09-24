@@ -7,7 +7,7 @@
     
     <!-- Meta Tags PWA -->
     <meta name="description" content="Cadastre-se no Tem de Tudo e comece a acumular pontos e recompensas">
-    <meta name="theme-color" content="#1e40af">
+    <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Cadastro - Tem de Tudo">
@@ -68,26 +68,40 @@
 
         <!-- Main Content -->
         <main class="app-main">
-            <div class="container" style="max-width: 500px; margin: 2rem auto; padding: 0 1rem;">
+            <div class="container" style="max-width: 500px; margin: 0 auto; padding: var(--space-6);">
                 
-                <!-- Welcome Bonus -->
-                <div class="card mb-4">
-                    <div class="card-header text-center">
-                        <i class="fas fa-gift icon-lg" style="color: var(--accent-orange); font-size: 2rem; margin-bottom: 1rem;"></i>
-                        <h3 style="color: white; margin-bottom: 0.5rem;">Bônus de Boas-vindas!</h3>
-                        <p style="color: rgba(255,255,255,0.9);">Ganhe <strong>100 pontos</strong> ao criar sua conta</p>
-                    </div>
-                </div>
-
-                <!-- Registration Form -->
                 <div class="card">
                     <div class="card-header text-center">
-                        <i class="fas fa-user-plus icon-lg" style="color: white; font-size: 2rem; margin-bottom: 1rem;"></i>
-                        <h1 style="color: white; margin-bottom: 0.5rem;">Crie sua conta</h1>
-                        <p style="color: rgba(255,255,255,0.9);">Junte-se ao nosso programa de fidelidade e comece a acumular pontos</p>
+                        <i class="fas fa-user-plus icon-lg" style="color: white; font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h1 style="color: white; margin-bottom: 0.5rem;">Criar Conta</h1>
+                        <p style="color: rgba(255,255,255,0.9);">Junte-se ao programa de fidelização mais completo</p>
                     </div>
+                    
+                    <form id="registerForm" class="card-body" style="padding: var(--space-6);">
+                        
+                        <!-- Tipo de Conta -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-users icon-sm"></i> Tipo de Conta
+                            </label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2);">
+                                <label class="account-type-option">
+                                    <input type="radio" name="tipo_conta" value="cliente" checked>
+                                    <div class="account-type-card">
+                                        <i class="fas fa-user"></i>
+                                        <span>Cliente</span>
+                                    </div>
+                                </label>
+                                <label class="account-type-option">
+                                    <input type="radio" name="tipo_conta" value="empresa">
+                                    <div class="account-type-card">
+                                        <i class="fas fa-building"></i>
+                                        <span>Empresa</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
 
-                    <form id="registerForm" class="card-body">
                         <div class="form-group">
                             <label for="nome" class="form-label">
                                 <i class="fas fa-user icon-sm"></i> Nome Completo
@@ -159,6 +173,51 @@
                             >
                         </div>
 
+                        <!-- Campos adicionais para empresas -->
+                        <div id="camposEmpresa" style="display: none;">
+                            <div class="form-group">
+                                <label for="cnpj" class="form-label">
+                                    <i class="fas fa-building icon-sm"></i> CNPJ
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="cnpj" 
+                                    name="cnpj" 
+                                    class="form-control" 
+                                    placeholder="00.000.000/0000-00"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="categoria" class="form-label">
+                                    <i class="fas fa-tags icon-sm"></i> Categoria
+                                </label>
+                                <select id="categoria" name="categoria" class="form-control">
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="alimentacao">Alimentação</option>
+                                    <option value="varejo">Varejo</option>
+                                    <option value="saude">Saúde</option>
+                                    <option value="servicos">Serviços</option>
+                                    <option value="entretenimento">Entretenimento</option>
+                                </select>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Atenção:</strong> Contas de empresa precisam ser aprovadas pelo administrador antes de ficarem ativas.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label style="display: flex; align-items: flex-start; gap: var(--space-2); cursor: pointer;">
+                                <input type="checkbox" required style="margin-top: 4px;">
+                                <span style="font-size: 0.875rem; line-height: 1.4;">
+                                    Eu concordo com os <a href="/privacidade.html" target="_blank" style="color: var(--primary-blue);">Termos de Uso</a> 
+                                    e <a href="/privacidade.html" target="_blank" style="color: var(--primary-blue);">Política de Privacidade</a>
+                                </span>
+                            </label>
+                        </div>
+
                         <button type="submit" class="btn btn-primary w-full btn-lg">
                             <i class="fas fa-user-plus icon-sm"></i>
                             Criar minha conta grátis
@@ -174,16 +233,18 @@
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; z-index: 9999; align-items: center; justify-content: center;">
-        <div style="text-align: center; color: white;">
-            <div style="border: 3px solid var(--primary-blue); border-top: 3px solid transparent; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
-            <div>Carregando...</div>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div>Criando sua conta...</div>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="/js/app-mobile.js"></script>
     <script>
+        let formSubmitted = false; // Previne submissão dupla
+
         function toggleMobileMenu() {
             const mobileNav = document.getElementById('mobileNav');
             const btn = document.querySelector('.mobile-menu-btn');
@@ -191,17 +252,49 @@
             btn.classList.toggle('active');
         }
 
-        // Máscara para telefone
         document.addEventListener('DOMContentLoaded', function() {
+            
+            // Toggle campos empresa
+            const tipoContaInputs = document.querySelectorAll('input[name="tipo_conta"]');
+            const camposEmpresa = document.getElementById('camposEmpresa');
+            
+            tipoContaInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    if (this.value === 'empresa') {
+                        camposEmpresa.style.display = 'block';
+                        document.getElementById('cnpj').required = true;
+                        document.getElementById('categoria').required = true;
+                    } else {
+                        camposEmpresa.style.display = 'none';
+                        document.getElementById('cnpj').required = false;
+                        document.getElementById('categoria').required = false;
+                    }
+                });
+            });
+
+            // Máscara para telefone
             const telefoneInput = document.getElementById('telefone');
             if (telefoneInput) {
                 telefoneInput.addEventListener('input', function() {
                     let value = this.value.replace(/\D/g, '');
                     if (value.length <= 11) {
-                        value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-                        if (value.length < 14) {
-                            value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                        if (value.length <= 10) {
+                            value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+                        } else {
+                            value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
                         }
+                        this.value = value;
+                    }
+                });
+            }
+
+            // Máscara para CNPJ
+            const cnpjInput = document.getElementById('cnpj');
+            if (cnpjInput) {
+                cnpjInput.addEventListener('input', function() {
+                    let value = this.value.replace(/\D/g, '');
+                    if (value.length <= 14) {
+                        value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
                         this.value = value;
                     }
                 });
@@ -211,33 +304,29 @@
             const passwordConfirm = document.getElementById('password_confirmation');
             const password = document.getElementById('password');
             
+            function validarSenhas() {
+                if (passwordConfirm.value && passwordConfirm.value !== password.value) {
+                    passwordConfirm.setCustomValidity('As senhas não coincidem');
+                    passwordConfirm.classList.add('error');
+                } else {
+                    passwordConfirm.setCustomValidity('');
+                    passwordConfirm.classList.remove('error');
+                }
+            }
+            
             if (passwordConfirm && password) {
-                passwordConfirm.addEventListener('input', function() {
-                    if (this.value !== password.value) {
-                        this.setCustomValidity('As senhas não coincidem');
-                        this.classList.add('error');
-                    } else {
-                        this.setCustomValidity('');
-                        this.classList.remove('error');
-                    }
-                });
-
-                password.addEventListener('input', function() {
-                    if (passwordConfirm.value && passwordConfirm.value !== this.value) {
-                        passwordConfirm.setCustomValidity('As senhas não coincidem');
-                        passwordConfirm.classList.add('error');
-                    } else {
-                        passwordConfirm.setCustomValidity('');
-                        passwordConfirm.classList.remove('error');
-                    }
-                });
+                passwordConfirm.addEventListener('input', validarSenhas);
+                password.addEventListener('input', validarSenhas);
             }
 
-            // Submissão do formulário
+            // Submissão do formulário (SEM DUPLICAÇÃO)
             const registerForm = document.getElementById('registerForm');
             if (registerForm) {
                 registerForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
+                    
+                    if (formSubmitted) return; // Previne submissão dupla
+                    formSubmitted = true;
                     
                     const loadingOverlay = document.getElementById('loadingOverlay');
                     loadingOverlay.style.display = 'flex';
@@ -246,25 +335,33 @@
                         const formData = new FormData(this);
                         const data = Object.fromEntries(formData);
                         
-                        // Simulação de registro (substituir pela API real)
+                        // Simulação de registro
                         await new Promise(resolve => setTimeout(resolve, 2000));
                         
-                        // Salvar dados do usuário
-                        localStorage.setItem('user', JSON.stringify({
-                            id: Date.now(),
-                            nome: data.nome,
-                            email: data.email,
-                            telefone: data.telefone,
-                            pontos: 100, // Bônus de boas-vindas
-                            nivel: 'Bronze'
-                        }));
+                        if (data.tipo_conta === 'empresa') {
+                            // Para empresas - aguardar aprovação
+                            alert('Solicitação de cadastro enviada!\n\nSua conta empresarial será analisada pelo nosso time e você receberá um email em até 24h com o resultado da aprovação.');
+                            window.location.href = '/login.html';
+                        } else {
+                            // Para clientes - acesso direto
+                            localStorage.setItem('user', JSON.stringify({
+                                id: Date.now(),
+                                nome: data.nome,
+                                email: data.email,
+                                telefone: data.telefone,
+                                pontos: 100, // Bônus de boas-vindas
+                                nivel: 'Bronze',
+                                tipo: 'cliente'
+                            }));
 
-                        alert('Conta criada com sucesso! Você ganhou 100 pontos de bônus!');
-                        window.location.href = '/profile-client.html';
+                            alert('Conta criada com sucesso!\n\nVocê ganhou 100 pontos de bônus de boas-vindas! 🎉');
+                            window.location.href = '/profile-client.html';
+                        }
                         
                     } catch (error) {
                         console.error('Erro ao criar conta:', error);
                         alert('Erro ao criar conta. Tente novamente.');
+                        formSubmitted = false;
                     } finally {
                         loadingOverlay.style.display = 'none';
                     }
@@ -274,13 +371,101 @@
     </script>
 
     <style>
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loading-spinner {
+            border: 3px solid var(--primary-blue);
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
+        .account-type-option {
+            cursor: pointer;
+        }
+
+        .account-type-option input {
+            display: none;
+        }
+
+        .account-type-card {
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            text-align: center;
+            transition: all 0.3s ease;
+            background: var(--gray-50);
+        }
+
+        .account-type-card i {
+            font-size: 2rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .account-type-option input:checked + .account-type-card {
+            border-color: var(--primary-blue);
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .account-type-option input:checked + .account-type-card i {
+            color: white;
+        }
+
+        .form-control.error {
+            border-color: var(--error-red);
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+        }
+
+        .alert {
+            padding: var(--space-3);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-2);
+        }
+
+        .alert-info {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-blue);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
         .container {
             animation: fadeIn 0.6s ease forwards;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--space-4) !important;
+            }
         }
     </style>
 </body>
