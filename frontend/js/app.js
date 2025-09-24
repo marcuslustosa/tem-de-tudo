@@ -1,4 +1,4 @@
-// app.js - Script para menu responsivo e manipulação básica de formulários
+e consegue resolver o projetooc// app.js - Script para menu responsivo e manipulação básica de formulários
 
 // URL da API no Render - ajustar conforme necessário
 const API_BASE_URL = 'https://tem-de-tudo.onrender.com/api';
