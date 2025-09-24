@@ -5,14 +5,20 @@ services:
     buildCommand: |
       cd backend &&
       composer install --no-dev --optimize-autoloader &&
+      cp .env.render .env &&
+      php artisan key:generate --force &&
       php artisan config:cache &&
       php artisan route:cache &&
-      php artisan view:cache
+      php artisan view:cache &&
+      touch database/database.sqlite &&
+      php artisan migrate --force &&
+      php artisan db:seed --force
     startCommand: |
       cd backend &&
-      php artisan migrate --force &&
       php artisan serve --host=0.0.0.0 --port=$PORT
     envVars:
+      - key: APP_NAME
+        value: "Tem de Tudo"
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
@@ -21,16 +27,20 @@ services:
         generateValue: true
       - key: APP_URL
         value: https://tem-de-tudo.onrender.com
+      - key: APP_LOCALE
+        value: pt_BR
       - key: DB_CONNECTION
         value: sqlite
       - key: DB_DATABASE
         value: /opt/render/project/src/backend/database/database.sqlite
       - key: SESSION_DRIVER
-        value: file
+        value: database
       - key: CACHE_DRIVER
-        value: file
+        value: database
       - key: QUEUE_CONNECTION
         value: sync
+      - key: LOG_LEVEL
+        value: error
     disk:
       name: tem-de-tudo-data
       mountPath: /opt/render/project/src/backend/storage
