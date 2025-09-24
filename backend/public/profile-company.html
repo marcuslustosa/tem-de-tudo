@@ -1,100 +1,463 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Perfil Empresa - Tem de Tudo</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <style>
-    /* Dark mode style for company profile */
-    .dashboard {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 1rem;
-      color: var(--color-text);
-    }
-    .card {
-      background: var(--color-card-bg);
-      border-radius: var(--border-radius);
-      box-shadow: 0 4px 12px var(--color-shadow);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .card h2 {
-      color: var(--color-primary);
-      margin-bottom: 1rem;
-    }
-    ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    ul li {
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #333;
-    }
-    .status {
-      font-weight: bold;
-      color: var(--color-primary);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Empresa - Tem de Tudo</title>
+    
+    <!-- Meta Tags PWA -->
+    <meta name="description" content="Painel administrativo para estabelecimentos parceiros">
+    <meta name="theme-color" content="#1e40af">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/frontend/img/logo.png">
+    <link rel="apple-touch-icon" href="/frontend/img/logo.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="/manifest.json">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <img src="assets/images/logo.png.png" alt="Tem de Tudo Logo" />
-      </div>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="index.html">InÃ­cio</a></li>
-        <li><a href="profile-company.html" class="active">Perfil</a></li>
-        <li><a href="logout.html">Sair</a></li>
-      </ul>
-      <div class="menu-toggle" id="menu-toggle">&#9776;</div>
-    </nav>
-  </header>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/" class="logo">
+                    <img src="/frontend/img/logo.png" alt="Tem de Tudo" class="logo-image">
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                    <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                    <a href="/profile-company.html" class="active"><i class="fas fa-chart-line icon-sm"></i> Painel</a>
+                    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
 
-  <main>
-    <section class="dashboard">
-      <div class="card">
-        <h2>InformaÃ§Ãµes da Empresa</h2>
-        <img src="assets/images/company1.jpg" alt="Foto da Empresa" class="profile-photo" id="company-photo" />
-        <p id="company-name">Nome da Empresa</p>
-        <p>Status: <span class="status" id="company-status">NÃ£o aprovado</span></p>
-      </div>
-      <div class="card">
-        <h2>Ofertas Ativas</h2>
-        <ul id="offers-list">
-          <!-- Ofertas carregadas via JS -->
-        </ul>
-      </div>
-      <div class="card">
-        <h2>AvaliaÃ§Ãµes</h2>
-        <ul id="reviews-list">
-          <!-- AvaliaÃ§Ãµes carregadas via JS -->
-        </ul>
-      </div>
-    </section>
-  </main>
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-menu">
+                <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                <a href="/profile-company.html" class="active"><i class="fas fa-chart-line icon-sm"></i> Painel</a>
+                <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+            </div>
+        </div>
 
-  <footer>
-    <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
-  </footer>
+        <!-- Main Content -->
+        <main class="app-main">
+            <div style="max-width: 1400px; margin: 0 auto; padding: var(--space-6);">
+                
+                <!-- Company Header -->
+                <div class="card mb-4">
+                    <div class="card-header" style="background: var(--gradient-primary); color: white; text-align: center;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: var(--space-4);">
+                            <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--accent-orange); color: white; display: flex; align-items: center; justify-content: center; font-size: 2rem; border: 4px solid white;">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <div style="text-align: left;">
+                                <h1 id="companyName" style="color: white; margin-bottom: 0.5rem;">Carregando...</h1>
+                                <p id="companyCategory" style="color: rgba(255,255,255,0.9);">Categoria: Carregando...</p>
+                                <p style="color: rgba(255,255,255,0.9); margin: 0;">Painel Administrativo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-  <script src="js/app.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Dados fictÃ­cios para demonstraÃ§Ã£o
-      document.getElementById('company-name').textContent = 'Loja Exemplo Ltda';
-      document.getElementById('company-status').textContent = 'Aprovado';
+                <!-- Stats Dashboard -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+                    
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-users" style="font-size: 2rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                            <div id="totalCustomers" style="font-size: 1.8rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Clientes Ativos</p>
+                        </div>
+                    </div>
 
-      const offersList = document.getElementById('offers-list');
-      offersList.innerHTML = '<li>Desconto de 15% em produtos selecionados</li><li>Brinde para clientes fidelizados</li><li>Frete grÃ¡tis para compras acima de R$100</li>';
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-coins" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: 1rem;"></i>
+                            <div id="pointsDistributed" style="font-size: 1.8rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Pontos Distribuídos</p>
+                        </div>
+                    </div>
 
-      const reviewsList = document.getElementById('reviews-list');
-      reviewsList.innerHTML = '<li>â­â­â­â­â­ - Excelente atendimento!</li><li>â­â­â­â­ - Produtos de qualidade</li><li>â­â­â­â­â­ - Recomendo!</li>';
-    });
-  </script>
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-check" style="font-size: 2rem; color: var(--success-green); margin-bottom: 1rem;"></i>
+                            <div id="monthlyVisits" style="font-size: 1.8rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Visitas no Mês</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: 1rem;"></i>
+                            <div id="averageRating" style="font-size: 1.8rem; font-weight: 700; color: var(--gray-900);">0.0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Avaliação Média</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                            <div id="growthRate" style="font-size: 1.8rem; font-weight: 700; color: var(--success-green);">+0%</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Crescimento</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+                    
+                    <button class="btn btn-primary" onclick="scanCustomerQR()">
+                        <i class="fas fa-qrcode icon-sm"></i> Escanear QR do Cliente
+                    </button>
+                    
+                    <button class="btn btn-success" onclick="addPoints()">
+                        <i class="fas fa-plus-circle icon-sm"></i> Adicionar Pontos
+                    </button>
+                    
+                    <button class="btn btn-accent" onclick="manageOffers()">
+                        <i class="fas fa-tags icon-sm"></i> Gerenciar Ofertas
+                    </button>
+                    
+                    <button class="btn btn-outline" onclick="viewReports()">
+                        <i class="fas fa-chart-bar icon-sm"></i> Relatórios
+                    </button>
+                </div>
+
+                <!-- Charts Section -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); margin-bottom: var(--space-8);">
+                    
+                    <!-- Visits Chart -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="color: white; margin: 0;">
+                                <i class="fas fa-chart-line icon-sm"></i> Visitas nos Últimos 30 Dias
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="visitsChart" style="max-height: 300px;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Top Customers -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="color: white; margin: 0;">
+                                <i class="fas fa-trophy icon-sm"></i> Top Clientes
+                            </h3>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <div id="topCustomers">
+                                <!-- Top customers will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="color: white; margin: 0;">
+                            <i class="fas fa-history icon-sm"></i> Atividades Recentes
+                        </h3>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div id="recentActivity">
+                            <!-- Recent activities will be loaded here -->
+                        </div>
+                        <div style="padding: var(--space-4); text-align: center; border-top: 1px solid var(--gray-200);">
+                            <button class="btn btn-ghost btn-sm" onclick="loadMoreActivity()">
+                                <i class="fas fa-plus icon-sm"></i> Carregar Mais
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Panel -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 style="color: white; margin: 0;">
+                            <i class="fas fa-cogs icon-sm"></i> Configurações da Empresa
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4);">
+                            
+                            <button class="btn btn-outline" onclick="updateProfile()">
+                                <i class="fas fa-edit icon-sm"></i> Editar Perfil
+                            </button>
+                            
+                            <button class="btn btn-outline" onclick="managePromotions()">
+                                <i class="fas fa-percentage icon-sm"></i> Promoções
+                            </button>
+                            
+                            <button class="btn btn-outline" onclick="customerSupport()">
+                                <i class="fas fa-headset icon-sm"></i> Suporte
+                            </button>
+                            
+                            <button class="btn btn-outline" onclick="viewAnalytics()">
+                                <i class="fas fa-analytics icon-sm"></i> Analytics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- QR Scanner Modal -->
+    <div id="qrScannerModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: var(--z-modal); align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: var(--radius-xl); text-align: center; max-width: 90%; max-height: 90%; overflow-y: auto;">
+            <h3 style="margin-bottom: 1.5rem; color: var(--gray-900);">Escanear QR Code do Cliente</h3>
+            <div style="background: var(--gray-100); padding: 3rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+                <i class="fas fa-camera" style="font-size: 4rem; color: var(--gray-400); margin-bottom: 1rem;"></i>
+                <p style="color: var(--gray-600);">Câmera será ativada aqui</p>
+                <p style="color: var(--gray-500); font-size: 0.875rem;">Funcionalidade em desenvolvimento</p>
+            </div>
+            <div style="display: flex; gap: var(--space-3); justify-content: center;">
+                <button class="btn btn-ghost" onclick="closeQRScanner()">
+                    <i class="fas fa-times icon-sm"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/app-mobile.js"></script>
+    <script>
+        let companyData = {};
+
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const btn = document.querySelector('.mobile-menu-btn');
+            mobileNav.classList.toggle('active');
+            btn.classList.toggle('active');
+        }
+
+        // Load company data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCompanyData();
+            loadCompanyStats();
+            loadRecentActivity();
+            loadTopCustomers();
+            initializeCharts();
+        });
+
+        function loadCompanyData() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!user.nome || user.tipo !== 'empresa') {
+                alert('Acesso restrito para empresas. Redirecionando...');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            companyData = user;
+
+            // Update UI elements
+            document.getElementById('companyName').textContent = user.nome;
+            document.getElementById('companyCategory').textContent = `Categoria: ${user.categoria || 'Geral'}`;
+        }
+
+        function loadCompanyStats() {
+            // Simulate company statistics
+            const stats = JSON.parse(localStorage.getItem('companyStats') || '{}');
+            
+            document.getElementById('totalCustomers').textContent = stats.customers || Math.floor(Math.random() * 500) + 150;
+            document.getElementById('pointsDistributed').textContent = (stats.points || Math.floor(Math.random() * 10000) + 2000).toLocaleString();
+            document.getElementById('monthlyVisits').textContent = stats.visits || Math.floor(Math.random() * 200) + 50;
+            document.getElementById('averageRating').textContent = (stats.rating || (Math.random() * 2 + 3).toFixed(1));
+            document.getElementById('growthRate').textContent = `+${stats.growth || Math.floor(Math.random() * 30) + 5}%`;
+        }
+
+        function loadRecentActivity() {
+            const activities = [
+                { customer: 'João Silva', action: 'Ganhou 25 pontos', time: '5 min atrás', icon: 'fas fa-coins', color: 'var(--success-green)' },
+                { customer: 'Maria Santos', action: 'Resgatou desconto 10%', time: '15 min atrás', icon: 'fas fa-gift', color: 'var(--accent-orange)' },
+                { customer: 'Pedro Costa', action: 'Primeira visita (+100 pontos)', time: '1 hora atrás', icon: 'fas fa-star', color: 'var(--primary-blue)' },
+                { customer: 'Ana Oliveira', action: 'Avaliou 5 estrelas', time: '2 horas atrás', icon: 'fas fa-heart', color: 'var(--error-red)' },
+                { customer: 'Carlos Lima', action: 'Ganhou 15 pontos', time: '3 horas atrás', icon: 'fas fa-coins', color: 'var(--success-green)' }
+            ];
+
+            const activityList = document.getElementById('recentActivity');
+            activityList.innerHTML = activities.map(activity => `
+                <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); border-bottom: 1px solid var(--gray-200);">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: ${activity.color}; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="${activity.icon}"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: var(--gray-900);">${activity.customer}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">${activity.action}</div>
+                    </div>
+                    <div style="font-size: 0.875rem; color: var(--gray-500);">
+                        ${activity.time}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadTopCustomers() {
+            const customers = [
+                { name: 'João Silva', points: 1250, visits: 15, level: 'Gold' },
+                { name: 'Maria Santos', points: 890, visits: 12, level: 'Silver' },
+                { name: 'Pedro Costa', points: 640, visits: 8, level: 'Bronze' },
+                { name: 'Ana Oliveira', points: 520, visits: 6, level: 'Bronze' },
+                { name: 'Carlos Lima', points: 380, visits: 5, level: 'Bronze' }
+            ];
+
+            const topCustomersList = document.getElementById('topCustomers');
+            topCustomersList.innerHTML = customers.map((customer, index) => `
+                <div style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-4); border-bottom: 1px solid var(--gray-200);">
+                    <div style="width: 30px; height: 30px; border-radius: 50%; background: var(--primary-blue); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.875rem;">
+                        ${index + 1}
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: var(--gray-900); font-size: 0.9rem;">${customer.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--gray-600);">${customer.points} pontos • ${customer.visits} visitas</div>
+                    </div>
+                    <span class="loyalty-level loyalty-${customer.level.toLowerCase()}" style="font-size: 0.75rem; padding: 2px 8px;">
+                        ${customer.level}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        function initializeCharts() {
+            // Visits chart
+            const ctx = document.getElementById('visitsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1', '5', '10', '15', '20', '25', '30'],
+                    datasets: [{
+                        label: 'Visitas Diárias',
+                        data: [12, 19, 8, 15, 28, 22, 35],
+                        borderColor: '#1e40af',
+                        backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function scanCustomerQR() {
+            document.getElementById('qrScannerModal').style.display = 'flex';
+        }
+
+        function closeQRScanner() {
+            document.getElementById('qrScannerModal').style.display = 'none';
+        }
+
+        function addPoints() {
+            const customerName = prompt('Nome do cliente:');
+            if (!customerName) return;
+            
+            const points = prompt('Quantos pontos adicionar?');
+            if (!points || isNaN(points)) return;
+            
+            alert(`${points} pontos adicionados para ${customerName}!\n\nFuncionalidade completa em desenvolvimento.`);
+        }
+
+        function manageOffers() {
+            alert('Gerenciar Ofertas\n\nFuncionalidades:\n• Criar promoções\n• Definir descontos\n• Configurar pontos especiais\n• Agendar campanhas\n\nEm desenvolvimento!');
+        }
+
+        function viewReports() {
+            alert('Relatórios Avançados\n\nDisponíveis:\n• Vendas por período\n• Ranking de clientes\n• Análise de pontos\n• ROI de campanhas\n• Exportar dados\n\nEm desenvolvimento!');
+        }
+
+        function updateProfile() {
+            alert('Editar Perfil da Empresa\n\nOpções:\n• Informações básicas\n• Horário de funcionamento\n• Descrição\n• Fotos do estabelecimento\n• Contatos\n\nEm desenvolvimento!');
+        }
+
+        function managePromotions() {
+            alert('Gerenciar Promoções\n\nRecursos:\n• Criar campanhas sazonais\n• Happy hour com pontos duplos\n• Descontos por fidelidade\n• Ofertas personalizadas\n\nEm desenvolvimento!');
+        }
+
+        function customerSupport() {
+            alert('Central de Suporte\n\nCanais:\n• Chat online\n• Email: suporte@temdeTudo.com\n• WhatsApp: (11) 99999-9999\n• Central de ajuda\n\nEm desenvolvimento!');
+        }
+
+        function viewAnalytics() {
+            alert('Analytics Avançado\n\nMétricas:\n• Comportamento dos clientes\n• Horários de pico\n• Sazonalidade\n• Conversão de pontos\n• Benchmarking\n\nEm desenvolvimento!');
+        }
+
+        function loadMoreActivity() {
+            alert('Carregando mais atividades...\n\nFuncionalidade em desenvolvimento!');
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('user');
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('companyStats');
+                alert('Logout realizado com sucesso!');
+                window.location.href = '/index.html';
+            }
+        }
+    </script>
+
+    <style>
+        @media (max-width: 768px) {
+            main > div {
+                padding: var(--space-4) !important;
+            }
+            
+            div[style*="grid-template-columns: 2fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
 </body>
 </html>
-
-

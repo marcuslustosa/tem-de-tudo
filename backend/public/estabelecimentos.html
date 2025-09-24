@@ -1,13 +1,30 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estabelecimentos - Tem de Tudo</title>
+    
+    <!-- Meta Tags PWA -->
+    <meta name="description" content="Descubra estabelecimentos parceiros onde você pode acumular pontos">
+    <meta name="theme-color" content="#1e40af">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/mobile-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/frontend/img/logo.png">
+    <link rel="apple-touch-icon" href="/frontend/img/logo.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    
+    <!-- Manifest PWA -->
     <link rel="manifest" href="/manifest.json">
 </head>
 <body>
@@ -16,15 +33,15 @@
         <header class="app-header">
             <div class="header-container">
                 <a href="/" class="logo">
-                    <img src="/frontend/img/logo.png.png" alt="Tem de Tudo" class="logo-image">
+                    <img src="/frontend/img/logo.png" alt="Tem de Tudo" class="logo-image">
                 </a>
                 
                 <nav class="nav-menu">
-                    <a href="/">InÃ­cio</a>
-                    <a href="/estabelecimentos.html" class="active">Estabelecimentos</a>
-                    <a href="/contato.html">Contato</a>
-                    <a href="/login.html">Login</a>
-                    <a href="/register.html">Cadastro</a>
+                    <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                    <a href="/estabelecimentos.html" class="active"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                    <a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
+                    <a href="/login.html"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
+                    <a href="/register.html"><i class="fas fa-user-plus icon-sm"></i> Cadastro</a>
                 </nav>
                 
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
@@ -37,518 +54,377 @@
 
         <!-- Mobile Navigation -->
         <div class="mobile-nav" id="mobileNav">
-            <div class="mobile-menu">
-                <div class="mobile-menu-header">
-                    <div class="logo">
-                        <img src="/frontend/img/logo.png.png" alt="Tem de Tudo" class="logo-image">
-                    </div>
-                    <button class="mobile-menu-close" onclick="toggleMobileMenu()">âœ•</button>
-                </div>
-                <ul class="mobile-menu-items">
-                    <li><a href="/">InÃ­cio</a></li>
-                    <li><a href="/estabelecimentos.html">Estabelecimentos</a></li>
-                    <li><a href="/contato.html">Contato</a></li>
-                    <li><a href="/login.html">Login</a></li>
-                    <li><a href="/register.html">Cadastro</a></li>
-                </ul>
+            <div class="mobile-nav-menu">
+                <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                <a href="/estabelecimentos.html" class="active"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                <a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
+                <a href="/login.html"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
+                <a href="/register.html"><i class="fas fa-user-plus icon-sm"></i> Cadastro</a>
             </div>
         </div>
 
         <!-- Main Content -->
         <main class="app-main">
-            <div class="container">
-                <!-- Hero Section -->
-                <section class="establishments-hero">
-                    <div class="hero-content">
-                        <h1>Estabelecimentos Parceiros</h1>
-                        <p>Mais de 50 estabelecimentos onde vocÃª acumula pontos em cada compra</p>
-                    </div>
+            <!-- Hero Section -->
+            <section style="background: var(--gradient-primary); color: white; padding: var(--space-12) var(--space-6); text-align: center;">
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <i class="fas fa-store-alt" style="font-size: 3rem; color: var(--accent-orange); margin-bottom: 1rem; display: block;"></i>
+                    <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">Estabelecimentos Parceiros</h1>
+                    <p style="font-size: 1.125rem; opacity: 0.9; margin-bottom: 2rem;">Mais de 50 estabelecimentos onde você acumula pontos em cada compra</p>
                     
-                    <div class="search-filters">
-                        <div class="search-box">
-                            <input type="text" placeholder="Buscar por nome ou categoria..." id="searchInput">
-                            <button class="search-btn">ðŸ”</button>
+                    <!-- Search and Filters -->
+                    <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: var(--radius-xl); padding: var(--space-6); margin-top: 2rem;">
+                        <div style="margin-bottom: var(--space-4);">
+                            <div style="position: relative; max-width: 400px; margin: 0 auto;">
+                                <input 
+                                    type="text" 
+                                    id="searchInput" 
+                                    placeholder="Buscar por nome ou categoria..." 
+                                    class="form-control"
+                                    style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding-right: 50px;"
+                                >
+                                <button class="btn btn-accent" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); padding: 8px 12px;">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
                         </div>
                         
-                        <div class="filter-chips">
-                            <button class="filter-chip active" data-filter="all">Todos</button>
-                            <button class="filter-chip" data-filter="restaurante">ðŸ½ï¸ Restaurantes</button>
-                            <button class="filter-chip" data-filter="loja">ðŸ›ï¸ Lojas</button>
-                            <button class="filter-chip" data-filter="servicos">âš™ï¸ ServiÃ§os</button>
-                            <button class="filter-chip" data-filter="farmacia">ðŸ’Š FarmÃ¡cias</button>
+                        <div style="display: flex; gap: var(--space-2); flex-wrap: wrap; justify-content: center;">
+                            <button class="filter-chip active" data-filter="all">
+                                <i class="fas fa-th icon-sm"></i> Todos
+                            </button>
+                            <button class="filter-chip" data-filter="restaurante">
+                                <i class="fas fa-utensils icon-sm"></i> Restaurantes
+                            </button>
+                            <button class="filter-chip" data-filter="loja">
+                                <i class="fas fa-shopping-bag icon-sm"></i> Lojas
+                            </button>
+                            <button class="filter-chip" data-filter="servicos">
+                                <i class="fas fa-cogs icon-sm"></i> Serviços
+                            </button>
+                            <button class="filter-chip" data-filter="farmacia">
+                                <i class="fas fa-pills icon-sm"></i> Farmácias
+                            </button>
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                <!-- Establishments Grid -->
-                <section class="establishments-grid">
-                    <!-- Restaurante 1 -->
-                    <div class="establishment-card" data-category="restaurante">
-                        <div class="card-image">
-                            <div class="image-placeholder">ðŸ”</div>
-                            <div class="card-badge">â­ 4.8</div>
-                            <div class="points-badge">+2x pontos</div>
-                        </div>
-                        <div class="card-content">
-                            <h3>Burger House</h3>
-                            <p class="category">Hamburgueria â€¢ Fast Food</p>
-                            <p class="description">Os melhores hamburgueres artesanais da cidade com ingredientes premium.</p>
-                            <div class="card-info">
-                                <span class="delivery-time">â±ï¸ 25-35 min</span>
-                                <span class="points">ðŸ’° R$10 = 10 pontos</span>
+            <!-- Establishments Grid -->
+            <section style="padding: var(--space-12) var(--space-6); background: var(--gray-50);">
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <div id="establishmentsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: var(--space-6);">
+                        
+                        <!-- Restaurante 1 -->
+                        <div class="card establishment-card" data-category="restaurante" data-name="burger house">
+                            <div style="position: relative; height: 200px; background: var(--gradient-accent); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; overflow: hidden;">
+                                <i class="fas fa-hamburger"></i>
+                                <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: var(--radius-md); font-size: 0.875rem;">
+                                    <i class="fas fa-star" style="color: gold;"></i> 4.8
+                                </div>
+                                <div style="position: absolute; top: 10px; left: 10px; background: var(--success-green); color: white; padding: 4px 8px; border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 600;">
+                                    +2x pontos
+                                </div>
                             </div>
-                            <div class="card-actions">
-                                <button class="btn btn-outline btn-sm">Ver Menu</button>
-                                <button class="btn btn-primary btn-sm">Visitar</button>
+                            <div class="card-body">
+                                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--gray-900);">Burger House</h3>
+                                <p style="color: var(--primary-blue); font-weight: 500; margin-bottom: 1rem;">Hamburgueria • Fast Food</p>
+                                <p style="color: var(--gray-600); margin-bottom: 1.5rem; line-height: 1.5;">Os melhores hambúrgueres artesanais da cidade com ingredientes premium.</p>
+                                
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 0.875rem;">
+                                    <span style="color: var(--gray-600);"><i class="fas fa-clock icon-sm"></i> 25-35 min</span>
+                                    <span style="color: var(--success-green); font-weight: 600;"><i class="fas fa-coins icon-sm"></i> R$10 = 10 pontos</span>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-2);">
+                                    <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="showMenu('burger-house')">
+                                        <i class="fas fa-list icon-sm"></i> Ver Menu
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="visitEstablishment('burger-house')">
+                                        <i class="fas fa-map-marker-alt icon-sm"></i> Visitar
+                                    </button>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Loja 1 -->
+                        <div class="card establishment-card" data-category="loja" data-name="fashion store">
+                            <div style="position: relative; height: 200px; background: var(--gradient-success); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                                <i class="fas fa-tshirt"></i>
+                                <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: var(--radius-md); font-size: 0.875rem;">
+                                    <i class="fas fa-star" style="color: gold;"></i> 4.9
+                                </div>
+                                <div style="position: absolute; top: 10px; left: 10px; background: var(--accent-orange); color: white; padding: 4px 8px; border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 600;">
+                                    +1.5x pontos
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--gray-900);">Fashion Store</h3>
+                                <p style="color: var(--primary-blue); font-weight: 500; margin-bottom: 1rem;">Roupas • Acessórios</p>
+                                <p style="color: var(--gray-600); margin-bottom: 1.5rem; line-height: 1.5;">Moda jovem e moderna com as últimas tendências nacionais e importadas.</p>
+                                
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 0.875rem;">
+                                    <span style="color: var(--gray-600);"><i class="fas fa-map-marker-alt icon-sm"></i> Centro</span>
+                                    <span style="color: var(--success-green); font-weight: 600;"><i class="fas fa-coins icon-sm"></i> R$20 = 20 pontos</span>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-2);">
+                                    <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="showProducts('fashion-store')">
+                                        <i class="fas fa-shopping-bag icon-sm"></i> Ver Produtos
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="visitEstablishment('fashion-store')">
+                                        <i class="fas fa-map-marker-alt icon-sm"></i> Visitar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Farmácia 1 -->
+                        <div class="card establishment-card" data-category="farmacia" data-name="farmacia saude">
+                            <div style="position: relative; height: 200px; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                                <i class="fas fa-pills"></i>
+                                <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: var(--radius-md); font-size: 0.875rem;">
+                                    <i class="fas fa-star" style="color: gold;"></i> 4.7
+                                </div>
+                                <div style="position: absolute; top: 10px; left: 10px; background: var(--success-green); color: white; padding: 4px 8px; border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 600;">
+                                    +3x pontos
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--gray-900);">Farmácia Saúde+</h3>
+                                <p style="color: var(--primary-blue); font-weight: 500; margin-bottom: 1rem;">Farmácia • Medicamentos</p>
+                                <p style="color: var(--gray-600); margin-bottom: 1.5rem; line-height: 1.5;">Medicamentos, produtos de higiene e suplementos com os melhores preços.</p>
+                                
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 0.875rem;">
+                                    <span style="color: var(--gray-600);"><i class="fas fa-truck icon-sm"></i> Delivery</span>
+                                    <span style="color: var(--success-green); font-weight: 600;"><i class="fas fa-coins icon-sm"></i> R$5 = 15 pontos</span>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-2);">
+                                    <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="showProducts('farmacia-saude')">
+                                        <i class="fas fa-pills icon-sm"></i> Ver Produtos
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="visitEstablishment('farmacia-saude')">
+                                        <i class="fas fa-map-marker-alt icon-sm"></i> Visitar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Serviços 1 -->
+                        <div class="card establishment-card" data-category="servicos" data-name="oficina mecanica">
+                            <div style="position: relative; height: 200px; background: var(--gradient-dark); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                                <i class="fas fa-wrench"></i>
+                                <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 8px; border-radius: var(--radius-md); font-size: 0.875rem;">
+                                    <i class="fas fa-star" style="color: gold;"></i> 4.6
+                                </div>
+                                <div style="position: absolute; top: 10px; left: 10px; background: var(--primary-blue); color: white; padding: 4px 8px; border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 600;">
+                                    +2.5x pontos
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--gray-900);">Oficina Mecânica Pro</h3>
+                                <p style="color: var(--primary-blue); font-weight: 500; margin-bottom: 1rem;">Automotivo • Serviços</p>
+                                <p style="color: var(--gray-600); margin-bottom: 1.5rem; line-height: 1.5;">Manutenção completa e reparos automotivos com mecânicos especializados.</p>
+                                
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 0.875rem;">
+                                    <span style="color: var(--gray-600);"><i class="fas fa-phone icon-sm"></i> Agendamento</span>
+                                    <span style="color: var(--success-green); font-weight: 600;"><i class="fas fa-coins icon-sm"></i> R$50 = 125 pontos</span>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-2);">
+                                    <button class="btn btn-outline btn-sm" style="flex: 1;" onclick="showServices('oficina-pro')">
+                                        <i class="fas fa-cogs icon-sm"></i> Ver Serviços
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="visitEstablishment('oficina-pro')">
+                                        <i class="fas fa-map-marker-alt icon-sm"></i> Visitar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <!-- Loja 1 -->
-                    <div class="establishment-card" data-category="loja">
-                        <div class="card-image">
-                            <div class="image-placeholder">ðŸ‘•</div>
-                            <div class="card-badge">â­ 4.9</div>
-                            <div class="points-badge">+1.5x pontos</div>
-                        </div>
-                        <div class="card-content">
-                            <h3>Fashion Store</h3>
-                            <p class="category">Roupas â€¢ AcessÃ³rios</p>
-                            <p class="description">Moda jovem e moderna com as Ãºltimas tendÃªncias nacionais e importadas.</p>
-                            <div class="card-info">
-                                <span class="delivery-time">ðŸ“ Centro</span>
-                                <span class="points">ðŸ’° R$20 = 20 pontos</span>
-                            </div>
-                            <div class="card-actions">
-                                <button class="btn btn-outline btn-sm">Ver Produtos</button>
-                                <button class="btn btn-primary btn-sm">Visitar</button>
-                            </div>
-                        </div>
+                    <!-- Load More Button -->
+                    <div style="text-align: center; margin-top: 3rem;">
+                        <button id="loadMoreBtn" class="btn btn-outline btn-lg" onclick="loadMoreEstablishments()">
+                            <i class="fas fa-plus icon-sm"></i> Carregar Mais Estabelecimentos
+                        </button>
                     </div>
-
-                    <!-- FarmÃ¡cia 1 -->
-                    <div class="establishment-card" data-category="farmacia">
-                        <div class="card-image">
-                            <div class="image-placeholder">ðŸ’Š</div>
-                            <div class="card-badge">â­ 4.7</div>
-                            <div class="points-badge">+3x pontos</div>
-                        </div>
-                        <div class="card-content">
-                            <h3>FarmÃ¡cia SaÃºde+</h3>
-                            <p class="category">FarmÃ¡cia â€¢ Medicamentos</p>
-                            <p class="description">Medicamentos, produtos de higiene e suplementos com os melhores preÃ§os.</p>
-                            <div class="card-info">
-                                <span class="delivery-time">ðŸšš Delivery</span>
-                                <span class="points">ðŸ’° R$5 = 15 pontos</span>
-                            </div>
-                            <div class="card-actions">
-                                <button class="btn btn-outline btn-sm">Ver Produtos</button>
-                                <button class="btn btn-primary btn-sm">Visitar</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ServiÃ§os 1 -->
-                    <div class="establishment-card" data-category="servicos">
-                        <div class="card-image">
-                            <div class="image-placeholder">âœ‚ï¸</div>
-                            <div class="card-badge">â­ 4.9</div>
-                            <div class="points-badge">+2x pontos</div>
-                        </div>
-                        <div class="card-content">
-                            <h3>Studio Hair</h3>
-                            <p class="category">SalÃ£o â€¢ Beleza</p>
-                            <p class="description">Cortes modernos, coloraÃ§Ã£o e tratamentos com profissionais especializados.</p>
-                            <div class="card-info">
-                                <span class="delivery-time">ðŸ“… Agendamento</span>
-                                <span class="points">ðŸ’° R$15 = 30 pontos</span>
-                            </div>
-                            <div class="card-actions">
-                                <button class="btn btn-outline btn-sm">Ver ServiÃ§os</button>
-                                <button class="btn btn-primary btn-sm">Agendar</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Restaurante 2 -->
-                    <div class="establishment-card" data-category="restaurante">
-                        <div class="card-image">
-                            <div class="image-placeholder">ðŸ•</div>
-                            <div class="card-badge">â­ 4.6</div>
-                            <div class="points-badge">+1.5x pontos</div>
-                        </div>
-                        <div class="card-content">
-                            <h3>Pizzaria Italiana</h3>
-                            <p class="category">Pizzaria â€¢ Italiana</p>
-                            <p class="description">Pizzas artesanais com massa fina e ingredientes importados da ItÃ¡lia.</p>
-                            <div class="card-info">
-                                <span class="delivery-time">â±ï¸ 30-45 min</span>
-                                <span class="points">ðŸ’° R$25 = 25 pontos</span>
-                            </div>
-                            <div class="card-actions">
-                                <button class="btn btn-outline btn-sm">Ver CardÃ¡pio</button>
-                                <button class="btn btn-primary btn-sm">Pedir</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Loja 2 -->
-                    <div class="establishment-card" data-category="loja">
-                        <div class="card-image">
-                            <div class="image-placeholder">ðŸ“±</div>
-                            <div class="card-badge">â­ 4.8</div>
-                            <div class="points-badge">+2x pontos</div>
-                        </div>
-                        <div class="card-content">
-                            <h3>Tech Store</h3>
-                            <p class="category">EletrÃ´nicos â€¢ Tecnologia</p>
-                            <p class="description">Smartphones, notebooks e acessÃ³rios das principais marcas do mercado.</p>
-                            <div class="card-info">
-                                <span class="delivery-time">ðŸšš Entrega rÃ¡pida</span>
-                                <span class="points">ðŸ’° R$100 = 200 pontos</span>
-                            </div>
-                            <div class="card-actions">
-                                <button class="btn btn-outline btn-sm">Ver Produtos</button>
-                                <button class="btn btn-primary btn-sm">Comprar</button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- CTA Section -->
-                <section class="cta-section">
-                    <div class="cta-content">
-                        <h2>Quer participar do programa?</h2>
-                        <p>Cadastre-se agora e comece a acumular pontos em todos esses estabelecimentos</p>
-                        <div class="cta-actions">
-                            <a href="/register.html" class="btn btn-primary">Cadastrar GrÃ¡tis</a>
-                            <a href="/login.html" class="btn btn-outline">JÃ¡ sou cliente</a>
-                        </div>
-                    </div>
-                </section>
-            </div>
+                </div>
+            </section>
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="/js/app-mobile.js"></script>
     <script>
         function toggleMobileMenu() {
             const mobileNav = document.getElementById('mobileNav');
+            const btn = document.querySelector('.mobile-menu-btn');
             mobileNav.classList.toggle('active');
+            btn.classList.toggle('active');
         }
 
-        // Filtros
+        // Funcionalidade de busca e filtros
         document.addEventListener('DOMContentLoaded', function() {
-            const filterChips = document.querySelectorAll('.filter-chip');
-            const cards = document.querySelectorAll('.establishment-card');
             const searchInput = document.getElementById('searchInput');
-
-            // Filtro por categoria
-            filterChips.forEach(chip => {
-                chip.addEventListener('click', function() {
-                    // Atualizar chip ativo
-                    filterChips.forEach(c => c.classList.remove('active'));
-                    this.classList.add('active');
-
-                    const filter = this.dataset.filter;
-                    
-                    cards.forEach(card => {
-                        if (filter === 'all' || card.dataset.category === filter) {
-                            card.style.display = 'block';
-                            card.style.animation = 'slideInUp 0.3s ease';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
-                });
-            });
+            const filterChips = document.querySelectorAll('.filter-chip');
+            const establishmentCards = document.querySelectorAll('.establishment-card');
 
             // Busca
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
-                
-                cards.forEach(card => {
-                    const title = card.querySelector('h3').textContent.toLowerCase();
-                    const category = card.querySelector('.category').textContent.toLowerCase();
+                filterEstablishments(searchTerm, getCurrentFilter());
+            });
+
+            // Filtros
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    filterChips.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
                     
-                    if (title.includes(searchTerm) || category.includes(searchTerm)) {
+                    const filter = this.getAttribute('data-filter');
+                    const searchTerm = searchInput.value.toLowerCase();
+                    filterEstablishments(searchTerm, filter);
+                });
+            });
+
+            function getCurrentFilter() {
+                const activeChip = document.querySelector('.filter-chip.active');
+                return activeChip ? activeChip.getAttribute('data-filter') : 'all';
+            }
+
+            function filterEstablishments(searchTerm, filter) {
+                establishmentCards.forEach(card => {
+                    const name = card.getAttribute('data-name').toLowerCase();
+                    const category = card.getAttribute('data-category');
+                    
+                    const matchesSearch = name.includes(searchTerm);
+                    const matchesFilter = filter === 'all' || category === filter;
+                    
+                    if (matchesSearch && matchesFilter) {
                         card.style.display = 'block';
+                        card.style.animation = 'fadeIn 0.5s ease forwards';
                     } else {
                         card.style.display = 'none';
                     }
                 });
-            });
+            }
         });
+
+        // Funções dos botões
+        function showMenu(establishmentId) {
+            alert(`Abrindo menu do estabelecimento: ${establishmentId}\n\nFuncionalidade em desenvolvimento!\n\nEm breve você poderá ver cardápios completos, preços e fazer pedidos diretamente pelo app.`);
+        }
+
+        function showProducts(establishmentId) {
+            alert(`Abrindo catálogo de produtos: ${establishmentId}\n\nFuncionalidade em desenvolvimento!\n\nEm breve você poderá navegar pelos produtos, ver preços e adicionar ao carrinho.`);
+        }
+
+        function showServices(establishmentId) {
+            alert(`Abrindo lista de serviços: ${establishmentId}\n\nFuncionalidade em desenvolvimento!\n\nEm breve você poderá ver todos os serviços oferecidos e agendar horários.`);
+        }
+
+        function visitEstablishment(establishmentId) {
+            // Simular check-in no estabelecimento
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!user.nome) {
+                alert('Faça login para visitar estabelecimentos e acumular pontos!');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // Simular acúmulo de pontos por check-in
+            const pointsEarned = Math.floor(Math.random() * 20) + 5; // 5-25 pontos aleatórios
+            user.pontos = (user.pontos || 0) + pointsEarned;
+            localStorage.setItem('user', JSON.stringify(user));
+
+            // Mostrar QR Code simulado
+            showQRCode(establishmentId, pointsEarned);
+        }
+
+        function showQRCode(establishmentId, points) {
+            // Criar modal com QR Code
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0,0,0,0.8); z-index: 9999;
+                display: flex; align-items: center; justify-content: center;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 2rem; border-radius: 1rem; text-align: center; max-width: 90%; max-height: 90%; overflow-y: auto;">
+                    <i class="fas fa-qrcode" style="font-size: 4rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                    <h3 style="margin-bottom: 1rem; color: var(--gray-900);">Check-in Realizado!</h3>
+                    <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Você ganhou <strong style="color: var(--success-green);">${points} pontos</strong> por visitar este estabelecimento!</p>
+                    
+                    <div style="background: var(--gray-100); padding: 2rem; border-radius: 0.5rem; margin: 1.5rem 0;">
+                        <div style="width: 150px; height: 150px; background: black; margin: 0 auto; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; text-align: center;">
+                            QR CODE<br>SIMULADO<br>#${Date.now()}
+                        </div>
+                        <p style="font-size: 0.875rem; color: var(--gray-600); margin-top: 1rem;">Mostre este código no estabelecimento</p>
+                    </div>
+                    
+                    <button onclick="this.parentElement.parentElement.remove()" class="btn btn-primary">
+                        <i class="fas fa-check icon-sm"></i> Fechar
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function loadMoreEstablishments() {
+            const button = document.getElementById('loadMoreBtn');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...';
+            
+            // Simular carregamento
+            setTimeout(() => {
+                button.innerHTML = '<i class="fas fa-check icon-sm"></i> Todos os estabelecimentos foram carregados!';
+                button.disabled = true;
+                button.classList.add('btn-ghost');
+            }, 2000);
+        }
     </script>
 
     <style>
-        /* Establishments Page Styles */
-        .establishments-hero {
-            padding: 2rem 0;
-            text-align: center;
-        }
-
-        .hero-content h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--gray-800);
-            margin-bottom: 1rem;
-        }
-
-        .hero-content p {
-            font-size: 1.125rem;
-            color: var(--gray-600);
-            margin-bottom: 2rem;
-        }
-
-        .search-filters {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .search-box {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 1rem 3rem 1rem 1rem;
-            border: 2px solid var(--gray-200);
-            border-radius: var(--radius-lg);
-            font-size: 1rem;
-            background: white;
-            transition: var(--transition-base);
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--primary-purple);
-            box-shadow: 0 0 0 3px var(--primary-purple-100);
-        }
-
-        .search-btn {
-            position: absolute;
-            right: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            font-size: 1.25rem;
-            cursor: pointer;
-        }
-
-        .filter-chips {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
         .filter-chip {
-            padding: 0.5rem 1rem;
-            border: 2px solid var(--gray-200);
-            background: white;
+            padding: var(--space-2) var(--space-4);
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
             border-radius: var(--radius-full);
             font-size: 0.875rem;
-            font-weight: 500;
             cursor: pointer;
-            transition: var(--transition-base);
-            white-space: nowrap;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
         }
 
         .filter-chip:hover {
-            border-color: var(--primary-purple);
-            background: var(--primary-purple-50);
+            background: rgba(255,255,255,0.2);
         }
 
         .filter-chip.active {
-            background: var(--primary-purple);
-            color: white;
-            border-color: var(--primary-purple);
-        }
-
-        .establishments-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 1.5rem;
-            padding: 3rem 0;
-        }
-
-        .establishment-card {
-            background: white;
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--gray-200);
-            transition: var(--transition-base);
-        }
-
-        .establishment-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .card-image {
-            position: relative;
-            height: 160px;
-            background: var(--gray-100);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .image-placeholder {
-            font-size: 4rem;
-            opacity: 0.7;
-        }
-
-        .card-badge {
-            position: absolute;
-            top: 0.75rem;
-            left: 0.75rem;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
             font-weight: 600;
         }
 
-        .points-badge {
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
-            background: var(--gradient-gold);
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .card-content {
-            padding: 1.5rem;
-        }
-
-        .card-content h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--gray-800);
-            margin-bottom: 0.25rem;
-        }
-
-        .category {
-            font-size: 0.875rem;
-            color: var(--gray-500);
-            font-weight: 500;
-            margin-bottom: 0.75rem;
-        }
-
-        .description {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-            line-height: 1.5;
-            margin-bottom: 1rem;
-        }
-
-        .card-info {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .card-info span {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-            font-weight: 500;
-        }
-
-        .card-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-
-        .cta-section {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 3rem 2rem;
-            border-radius: var(--radius-2xl);
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .cta-content h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .cta-content p {
-            font-size: 1.125rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .cta-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .cta-actions .btn {
-            min-width: 150px;
-        }
-
-        .cta-actions .btn-outline {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .cta-actions .btn-outline:hover {
-            background: white;
-            color: var(--primary-purple);
-        }
-
-        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2rem;
-            }
-
-            .establishments-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-                padding: 2rem 0;
-            }
-
-            .filter-chips {
-                gap: 0.25rem;
-            }
-
             .filter-chip {
-                padding: 0.375rem 0.75rem;
                 font-size: 0.75rem;
+                padding: var(--space-1) var(--space-3);
             }
-
-            .card-actions {
-                flex-direction: column;
-            }
-
-            .cta-actions {
-                flex-direction: column;
-                align-items: center;
+            
+            #establishmentsGrid {
+                grid-template-columns: 1fr !important;
             }
         }
     </style>
 </body>
 </html>
-

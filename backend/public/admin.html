@@ -1,88 +1,649 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin - Tem de Tudo</title>
-  <link rel="stylesheet" href="css/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrativo - Tem de Tudo</title>
+    
+    <!-- Meta Tags PWA -->
+    <meta name="description" content="Dashboard administrativo completo do sistema Tem de Tudo">
+    <meta name="theme-color" content="#1e40af">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/frontend/img/logo.png">
+    <link rel="apple-touch-icon" href="/frontend/img/logo.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="/manifest.json">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <img src="assets/images/logo.png.png" alt="Tem de Tudo Logo" />
-      </div>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="admin.html" class="active">Admin</a></li>
-        <li><a href="logout.html">Sair</a></li>
-      </ul>
-      <div class="menu-toggle" id="menu-toggle">&#9776;</div>
-    </nav>
-  </header>
+    <div class="app-container">
+        <!-- Admin Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/admin.html" class="logo">
+                    <img src="/frontend/img/logo.png" alt="Admin - Tem de Tudo" class="logo-image">
+                    <span style="color: var(--accent-orange); margin-left: 8px; font-weight: 600;">ADMIN</span>
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="#" class="active"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
+                    <a href="/profile-company.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
+                    <a href="/admin-relatorios.html"><i class="fas fa-chart-line icon-sm"></i> Relatórios</a>
+                    <a href="/admin-configuracoes.html"><i class="fas fa-cogs icon-sm"></i> Configurações</a>
+                    <a href="/login.html"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
 
-  <main>
-    <section class="dashboard">
-      <h1>Painel de Administração</h1>
-      <div class="card">
-        <h2>Gerenciar Empresas</h2>
-        <button onclick="listCompanies()">Listar Empresas</button>
-        <button onclick="createCompany()">Cadastrar Empresa</button>
-        <ul id="companies-list"></ul>
-      </div>
-      <div class="card">
-        <h2>Gerenciar Usuários</h2>
-        <button onclick="listUsers()">Listar Usuários</button>
-        <ul id="users-list"></ul>
-      </div>
-    </section>
-  </main>
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-menu">
+                <a href="#" class="active"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
+                <a href="/profile-company.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
+                <a href="/admin-relatorios.html"><i class="fas fa-chart-line icon-sm"></i> Relatórios</a>
+                <a href="/admin-configuracoes.html"><i class="fas fa-cogs icon-sm"></i> Configurações</a>
+                <a href="/login.html"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+            </div>
+        </div>
 
-  <footer>
-    <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
-  </footer>
+        <!-- Main Content -->
+        <main class="app-main">
+            <div style="max-width: 1400px; margin: 0 auto; padding: var(--space-6);">
+                
+                <!-- Welcome Banner -->
+                <div class="card mb-4">
+                    <div class="card-header text-center">
+                        <i class="fas fa-crown icon-lg" style="color: white; font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h1 style="color: white; margin-bottom: 0.5rem;">Dashboard Administrativo</h1>
+                        <p style="color: rgba(255,255,255,0.9);">Bem-vindo ao centro de controle do sistema Tem de Tudo</p>
+                        <div style="margin-top: 1rem;">
+                            <span style="background: rgba(255,255,255,0.2); padding: 0.25rem 1rem; border-radius: var(--radius-full); color: white; font-size: 0.875rem;">
+                                <i class="fas fa-clock icon-xs"></i> Último acesso: hoje às 14:32
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
-  <script src="js/app.js"></script>
-  <script>
-    const API_BASE_URL = 'https://tem-de-tudo.onrender.com/api';
+                <!-- Quick Stats -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6);">
+                    
+                    <div class="card stat-card" onclick="navigateTo('/admin-relatorios.html')">
+                        <div class="card-body">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div>
+                                    <p style="color: var(--gray-600); margin-bottom: 0.5rem; font-size: 0.875rem;">Total de Usuários</p>
+                                    <h3 style="color: var(--gray-900); margin: 0; font-size: 1.75rem;" id="totalUsers">12,547</h3>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                                        <span style="color: var(--success-green); font-size: 0.875rem;">
+                                            <i class="fas fa-arrow-up"></i> +12.5%
+                                        </span>
+                                        <span style="color: var(--gray-600); font-size: 0.75rem;">este mês</span>
+                                    </div>
+                                </div>
+                                <div class="stat-icon" style="background: var(--primary-blue);">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    function getToken() {
-      return localStorage.getItem('token');
-    }
+                    <div class="card stat-card" onclick="navigateTo('/profile-company.html')">
+                        <div class="card-body">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div>
+                                    <p style="color: var(--gray-600); margin-bottom: 0.5rem; font-size: 0.875rem;">Estabelecimentos</p>
+                                    <h3 style="color: var(--gray-900); margin: 0; font-size: 1.75rem;" id="totalStores">1,247</h3>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                                        <span style="color: var(--success-green); font-size: 0.875rem;">
+                                            <i class="fas fa-arrow-up"></i> +8.3%
+                                        </span>
+                                        <span style="color: var(--gray-600); font-size: 0.75rem;">este mês</span>
+                                    </div>
+                                </div>
+                                <div class="stat-icon" style="background: var(--success-green);">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    async function listCompanies() {
-      try {
-        const response = await fetch(`${API_BASE_URL}/admin/companies`, {
-          headers: {
-            'Authorization': `Bearer ${getToken()}`
-          }
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div>
+                                    <p style="color: var(--gray-600); margin-bottom: 0.5rem; font-size: 0.875rem;">Pontos Distribuídos</p>
+                                    <h3 style="color: var(--gray-900); margin: 0; font-size: 1.75rem;" id="totalPoints">2.8M</h3>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                                        <span style="color: var(--success-green); font-size: 0.875rem;">
+                                            <i class="fas fa-arrow-up"></i> +24.8%
+                                        </span>
+                                        <span style="color: var(--gray-600); font-size: 0.75rem;">este mês</span>
+                                    </div>
+                                </div>
+                                <div class="stat-icon" style="background: var(--accent-orange);">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div>
+                                    <p style="color: var(--gray-600); margin-bottom: 0.5rem; font-size: 0.875rem;">Receita do Mês</p>
+                                    <h3 style="color: var(--gray-900); margin: 0; font-size: 1.75rem;" id="monthlyRevenue">R$ 89.6K</h3>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                                        <span style="color: var(--success-green); font-size: 0.875rem;">
+                                            <i class="fas fa-arrow-up"></i> +18.7%
+                                        </span>
+                                        <span style="color: var(--gray-600); font-size: 0.75rem;">este mês</span>
+                                    </div>
+                                </div>
+                                <div class="stat-icon" style="background: var(--warning-yellow);">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts and Quick Actions Row -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6);">
+                    
+                    <!-- Overview Chart -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="color: white; margin: 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <i class="fas fa-chart-area"></i> Visão Geral dos Últimos 30 Dias
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="overviewChart" height="300"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="color: white; margin: 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <i class="fas fa-bolt"></i> Ações Rápidas
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div style="display: grid; gap: var(--space-3);">
+                                
+                                <button class="btn btn-primary" onclick="navigateTo('/register-company.html')" style="justify-content: flex-start;">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span>Novo Estabelecimento</span>
+                                </button>
+
+                                <button class="btn btn-success" onclick="approveStores()" style="justify-content: flex-start;">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Aprovar Cadastros</span>
+                                    <span style="background: var(--error-red); color: white; padding: 0.25rem 0.5rem; border-radius: var(--radius-full); font-size: 0.75rem; margin-left: auto;">3</span>
+                                </button>
+
+                                <button class="btn btn-outline" onclick="navigateTo('/admin-configuracoes.html')" style="justify-content: flex-start;">
+                                    <i class="fas fa-cogs"></i>
+                                    <span>Configurações</span>
+                                </button>
+
+                                <button class="btn btn-accent" onclick="sendBroadcast()" style="justify-content: flex-start;">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <span>Enviar Notificação</span>
+                                </button>
+
+                                <button class="btn btn-outline" onclick="navigateTo('/admin-relatorios.html')" style="justify-content: flex-start;">
+                                    <i class="fas fa-file-export"></i>
+                                    <span>Gerar Relatório</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities and Pending Approvals -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6);">
+                    
+                    <!-- Recent Activities -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="color: white; margin: 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <i class="fas fa-clock"></i> Atividades Recentes
+                            </h3>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <div style="max-height: 300px; overflow-y: auto;">
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: var(--success-green);">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p style="margin: 0; font-weight: 600; color: var(--gray-900);">Novo usuário cadastrado</p>
+                                        <p style="margin: 0; font-size: 0.875rem; color: var(--gray-600);">Maria Silva se cadastrou no sistema</p>
+                                        <span style="font-size: 0.75rem; color: var(--gray-500);">há 5 minutos</span>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: var(--primary-blue);">
+                                        <i class="fas fa-store"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p style="margin: 0; font-weight: 600; color: var(--gray-900);">Estabelecimento aprovado</p>
+                                        <p style="margin: 0; font-size: 0.875rem; color: var(--gray-600);">Padaria Central foi aprovada e ativada</p>
+                                        <span style="font-size: 0.75rem; color: var(--gray-500);">há 15 minutos</span>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: var(--accent-orange);">
+                                        <i class="fas fa-coins"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p style="margin: 0; font-weight: 600; color: var(--gray-900);">Grande resgate de pontos</p>
+                                        <p style="margin: 0; font-size: 0.875rem; color: var(--gray-600);">João resgatou 5.000 pontos no McDonald's</p>
+                                        <span style="font-size: 0.75rem; color: var(--gray-500);">há 32 minutos</span>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: var(--warning-yellow);">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p style="margin: 0; font-weight: 600; color: var(--gray-900);">Estabelecimento inativo</p>
+                                        <p style="margin: 0; font-size: 0.875rem; color: var(--gray-600);">Cinema Village não registra atividade há 7 dias</p>
+                                        <span style="font-size: 0.75rem; color: var(--gray-500);">há 1 hora</span>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-icon" style="background: var(--success-green);">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <p style="margin: 0; font-weight: 600; color: var(--gray-900);">Meta mensal atingida</p>
+                                        <p style="margin: 0; font-size: 0.875rem; color: var(--gray-600);">Número de transações superou a expectativa em 15%</p>
+                                        <span style="font-size: 0.75rem; color: var(--gray-500);">há 2 horas</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Approvals -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="color: white; margin: 0; display: flex; align-items: center; gap: var(--space-2);">
+                                <i class="fas fa-hourglass-half"></i> Aprovações Pendentes
+                                <span style="background: var(--error-red); color: white; padding: 0.25rem 0.5rem; border-radius: var(--radius-full); font-size: 0.75rem; margin-left: auto;">3</span>
+                            </h3>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <div style="max-height: 300px; overflow-y: auto;">
+                                
+                                <div class="approval-item">
+                                    <div style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border-bottom: 1px solid var(--gray-200);">
+                                        <div style="width: 50px; height: 50px; background: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">LM</div>
+                                        <div style="flex: 1;">
+                                            <h4 style="margin: 0; color: var(--gray-900); font-size: 1rem;">Loja de Móveis Premium</h4>
+                                            <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Categoria: Varejo • Solicitado há 2 dias</p>
+                                        </div>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <button class="btn btn-sm btn-success" onclick="approveStore('loja-moveis')">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline" onclick="rejectStore('loja-moveis')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="approval-item">
+                                    <div style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border-bottom: 1px solid var(--gray-200);">
+                                        <div style="width: 50px; height: 50px; background: var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">AC</div>
+                                        <div style="flex: 1;">
+                                            <h4 style="margin: 0; color: var(--gray-900); font-size: 1rem;">Academia Central</h4>
+                                            <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Categoria: Saúde • Solicitado há 1 dia</p>
+                                        </div>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <button class="btn btn-sm btn-success" onclick="approveStore('academia-central')">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline" onclick="rejectStore('academia-central')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="approval-item">
+                                    <div style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3);">
+                                        <div style="width: 50px; height: 50px; background: var(--accent-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">RC</div>
+                                        <div style="flex: 1;">
+                                            <h4 style="margin: 0; color: var(--gray-900); font-size: 1rem;">Restaurante Casa Blanca</h4>
+                                            <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Categoria: Alimentação • Solicitado hoje</p>
+                                        </div>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <button class="btn btn-sm btn-success" onclick="approveStore('casa-blanca')">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline" onclick="rejectStore('casa-blanca')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="color: white; margin: 0; display: flex; align-items: center; gap: var(--space-2);">
+                            <i class="fas fa-server"></i> Status do Sistema
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
+                            
+                            <div class="system-status-item">
+                                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: 0.5rem;">
+                                    <div style="width: 12px; height: 12px; background: var(--success-green); border-radius: 50%;"></div>
+                                    <span style="font-weight: 600; color: var(--gray-900);">API Principal</span>
+                                </div>
+                                <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">Operacional • 99.9% uptime</p>
+                            </div>
+
+                            <div class="system-status-item">
+                                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: 0.5rem;">
+                                    <div style="width: 12px; height: 12px; background: var(--success-green); border-radius: 50%;"></div>
+                                    <span style="font-weight: 600; color: var(--gray-900);">Banco de Dados</span>
+                                </div>
+                                <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">Operacional • Consultas: 142ms</p>
+                            </div>
+
+                            <div class="system-status-item">
+                                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: 0.5rem;">
+                                    <div style="width: 12px; height: 12px; background: var(--warning-yellow); border-radius: 50%;"></div>
+                                    <span style="font-weight: 600; color: var(--gray-900);">Notificações Push</span>
+                                </div>
+                                <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">Lentidão • Fila: 247 pendentes</p>
+                            </div>
+
+                            <div class="system-status-item">
+                                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: 0.5rem;">
+                                    <div style="width: 12px; height: 12px; background: var(--success-green); border-radius: 50%;"></div>
+                                    <span style="font-weight: 600; color: var(--gray-900);">Pagamentos</span>
+                                </div>
+                                <p style="color: var(--gray-600); font-size: 0.875rem; margin: 0;">Operacional • Taxa sucesso: 98.7%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/app-mobile.js"></script>
+    <script>
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const btn = document.querySelector('.mobile-menu-btn');
+            mobileNav.classList.toggle('active');
+            btn.classList.toggle('active');
+        }
+
+        function navigateTo(url) {
+            window.location.href = url;
+        }
+
+        // Chart setup
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeChart();
+            updateStats();
         });
-        const companies = await response.json();
-        const list = document.getElementById('companies-list');
-        list.innerHTML = companies.map(c => `<li>${c.name} - ${c.email}</li>`).join('');
-      } catch (error) {
-        console.error('Erro:', error);
-      }
-    }
 
-    async function listUsers() {
-      try {
-        const response = await fetch(`${API_BASE_URL}/admin/users`, {
-          headers: {
-            'Authorization': `Bearer ${getToken()}`
-          }
-        });
-        const users = await response.json();
-        const list = document.getElementById('users-list');
-        list.innerHTML = users.map(u => `<li>${u.name} - ${u.email}</li>`).join('');
-      } catch (error) {
-        console.error('Erro:', error);
-      }
-    }
+        function initializeChart() {
+            const ctx = document.getElementById('overviewChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1', '3', '5', '7', '9', '11', '13', '15', '17', '19', '21', '23', '25', '27', '29', '30'],
+                    datasets: [{
+                        label: 'Novos Usuários',
+                        data: [12, 19, 8, 15, 22, 28, 15, 35, 28, 42, 38, 45, 52, 48, 58, 65],
+                        borderColor: '#1e40af',
+                        backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Transações',
+                        data: [45, 52, 48, 61, 78, 65, 89, 95, 88, 102, 115, 108, 125, 132, 145, 158],
+                        borderColor: '#059669',
+                        backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
 
-    function createCompany() {
-      // Placeholder for creating company
-      alert('Funcionalidade de criação de empresa em desenvolvimento.');
-    }
-  </script>
+        function updateStats() {
+            // Animate counters
+            animateCounter('totalUsers', 12547);
+            animateCounter('totalStores', 1247);
+            animateCounter('totalPoints', 2800000);
+            animateCounter('monthlyRevenue', 89600);
+        }
+
+        function animateCounter(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            const duration = 2000;
+            const startTime = performance.now();
+            const startValue = 0;
+
+            function updateCounter(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const currentValue = Math.floor(startValue + (targetValue - startValue) * progress);
+
+                if (elementId === 'totalPoints') {
+                    element.textContent = (currentValue / 1000000).toFixed(1) + 'M';
+                } else if (elementId === 'monthlyRevenue') {
+                    element.textContent = 'R$ ' + (currentValue / 1000).toFixed(1) + 'K';
+                } else {
+                    element.textContent = currentValue.toLocaleString();
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                }
+            }
+
+            requestAnimationFrame(updateCounter);
+        }
+
+        function approveStores() {
+            alert('Aprovações Pendentes\n\n3 estabelecimentos aguardam aprovação:\n\n1. Loja de Móveis Premium\n2. Academia Central\n3. Restaurante Casa Blanca\n\nRevise os documentos e aprove individualmente.');
+        }
+
+        function approveStore(storeId) {
+            if (confirm('Aprovar este estabelecimento?\n\nEle será ativado imediatamente no sistema.')) {
+                alert('Estabelecimento aprovado com sucesso!\n\nO estabelecimento já pode começar a receber clientes.');
+                // Remove from pending list
+                event.target.closest('.approval-item').remove();
+                updatePendingCount();
+            }
+        }
+
+        function rejectStore(storeId) {
+            const reason = prompt('Motivo da rejeição:\n\n(Este feedback será enviado para o estabelecimento)');
+            if (reason) {
+                alert('Estabelecimento rejeitado.\n\nO feedback foi enviado para o solicitante.');
+                // Remove from pending list
+                event.target.closest('.approval-item').remove();
+                updatePendingCount();
+            }
+        }
+
+        function updatePendingCount() {
+            const pendingItems = document.querySelectorAll('.approval-item').length;
+            document.querySelectorAll('.card-header span:last-child').forEach(span => {
+                span.textContent = pendingItems;
+                if (pendingItems === 0) {
+                    span.style.display = 'none';
+                }
+            });
+        }
+
+        function sendBroadcast() {
+            const message = prompt('Digite a mensagem para enviar a todos os usuários:');
+            if (message) {
+                alert(`Notificação enviada com sucesso!\n\nMensagem: "${message}"\n\nTodos os usuários ativos receberão a notificação push em alguns minutos.`);
+            }
+        }
+
+        // Auto-refresh stats every 30 seconds
+        setInterval(function() {
+            // Simulate slight changes in stats
+            const elements = ['totalUsers', 'totalStores', 'totalPoints', 'monthlyRevenue'];
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (Math.random() > 0.7) { // 30% chance to update
+                    const currentValue = parseInt(element.textContent.replace(/[^\d]/g, ''));
+                    const change = Math.floor(Math.random() * 10) - 5; // +/- 5
+                    const newValue = Math.max(0, currentValue + change);
+                    
+                    if (id === 'totalPoints') {
+                        element.textContent = (newValue / 1000000).toFixed(1) + 'M';
+                    } else if (id === 'monthlyRevenue') {
+                        element.textContent = 'R$ ' + (newValue / 1000).toFixed(1) + 'K';
+                    } else {
+                        element.textContent = newValue.toLocaleString();
+                    }
+                }
+            });
+        }, 30000);
+    </script>
+
+    <style>
+        .stat-card {
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .nav-menu a.active {
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-md);
+        }
+
+        @media (max-width: 768px) {
+            main > div {
+                padding: var(--space-4) !important;
+            }
+            
+            div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+
+            .stat-card .card-body {
+                padding: var(--space-3);
+            }
+
+            .activity-item,
+            .approval-item > div {
+                padding: var(--space-2) !important;
+            }
+
+            h3 {
+                font-size: 1.1rem !important;
+            }
+        }
+    </style>
 </body>
 </html>

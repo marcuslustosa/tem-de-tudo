@@ -1,13 +1,33 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Tem de Tudo</title>
+    
+    <!-- Meta Tags PWA -->
+    <meta name="description" content="Acompanhe seus pontos, recompensas e histórico no programa de fidelidade">
+    <meta name="theme-color" content="#1e40af">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/mobile-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/frontend/img/logo.png">
+    <link rel="apple-touch-icon" href="/frontend/img/logo.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    
+    <!-- Manifest PWA -->
     <link rel="manifest" href="/manifest.json">
 </head>
 <body>
@@ -16,15 +36,15 @@
         <header class="app-header">
             <div class="header-container">
                 <a href="/" class="logo">
-                    <img src="/frontend/img/logo.png.png" alt="Tem de Tudo" class="logo-image">
+                    <img src="/frontend/img/logo.png" alt="Tem de Tudo" class="logo-image">
                 </a>
                 
                 <nav class="nav-menu">
-                    <a href="/">InÃ­cio</a>
-                    <a href="/estabelecimentos.html">Estabelecimentos</a>
-                    <a href="/contato.html">Contato</a>
-                    <a href="/profile-client.html" class="active">Perfil</a>
-                    <a href="#" onclick="logout()">Sair</a>
+                    <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                    <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                    <a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
+                    <a href="/profile-client.html" class="active"><i class="fas fa-user icon-sm"></i> Perfil</a>
+                    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
                 </nav>
                 
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
@@ -37,1004 +57,431 @@
 
         <!-- Mobile Navigation -->
         <div class="mobile-nav" id="mobileNav">
-            <div class="mobile-menu">
-                <div class="mobile-menu-header">
-                    <div class="logo">
-                        <img src="/frontend/img/logo.png.png" alt="Tem de Tudo" class="logo-image">
-                    </div>
-                    <button class="mobile-menu-close" onclick="toggleMobileMenu()">âœ•</button>
-                </div>
-                <ul class="mobile-menu-items">
-                    <li><a href="/">InÃ­cio</a></li>
-                    <li><a href="/estabelecimentos.html">Estabelecimentos</a></li>
-                    <li><a href="/contato.html">Contato</a></li>
-                    <li><a href="/profile-client.html">Perfil</a></li>
-                    <li><a href="#" onclick="logout()">Sair</a></li>
-                </ul>
+            <div class="mobile-nav-menu">
+                <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                <a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
+                <a href="/profile-client.html" class="active"><i class="fas fa-user icon-sm"></i> Perfil</a>
+                <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
             </div>
         </div>
 
         <!-- Main Content -->
         <main class="app-main">
-            <!-- Profile Header -->
-            <section class="profile-header">
-                <div class="container">
-                    <div class="profile-hero">
-                        <div class="profile-info">
-                            <div class="avatar">
-                                <img src="https://via.placeholder.com/120" alt="Avatar" id="userAvatar">
-                            </div>
-                            <div class="user-details">
-                                <h1 id="userName">JoÃ£o Silva</h1>
-                                <p id="userEmail">joao@email.com</p>
-                                <div class="user-level">
-                                    <span class="level-badge" id="userLevel">ðŸ¥ˆ NÃ­vel Prata</span>
-                                    <span class="member-since">Membro desde: Jan 2024</span>
-                                </div>
-                            </div>
+            <div style="max-width: 1200px; margin: 0 auto; padding: var(--space-6);">
+                
+                <!-- User Welcome Section -->
+                <div class="card mb-4">
+                    <div class="card-header" style="background: var(--gradient-primary); color: white; text-align: center;">
+                        <div id="userAvatar" style="width: 80px; height: 80px; border-radius: 50%; background: var(--accent-orange); color: white; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem; border: 4px solid white;">
+                            <i class="fas fa-user"></i>
                         </div>
-                        
-                        <div class="points-card">
-                            <div class="points-header">
-                                <h3>Meus Pontos</h3>
-                                <button class="refresh-btn" onclick="refreshPoints()">ðŸ”„</button>
+                        <h1 id="userName" style="color: white; margin-bottom: 0.5rem;">Carregando...</h1>
+                        <p id="userLevel" style="color: rgba(255,255,255,0.9);">Nível: Carregando...</p>
+                    </div>
+                </div>
+
+                <!-- Points Dashboard -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-6); margin-bottom: var(--space-6);">
+                    
+                    <!-- Points Balance -->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-coins" style="font-size: 2.5rem; color: var(--accent-orange); margin-bottom: 1rem;"></i>
+                            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Seus Pontos</h3>
+                            <div id="pointsBalance" style="font-size: 2rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 1rem;">0</div>
+                            <button class="btn btn-primary btn-sm" onclick="showQRCode()">
+                                <i class="fas fa-qrcode icon-sm"></i> Meu QR Code
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Next Reward -->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-gift" style="font-size: 2.5rem; color: var(--success-green); margin-bottom: 1rem;"></i>
+                            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Próxima Recompensa</h3>
+                            <div id="nextReward" style="font-size: 1.25rem; font-weight: 600; color: var(--success-green); margin-bottom: 1rem;">500 pontos</div>
+                            <div class="progress-bar" style="margin-bottom: 1rem;">
+                                <div id="progressFill" class="progress-fill" style="width: 0%;"></div>
                             </div>
-                            <div class="points-balance">
-                                <span class="points-number" id="pointsBalance">1.250</span>
-                                <span class="points-label">pontos disponÃ­veis</span>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;" id="progressText">0 de 500 pontos</p>
+                        </div>
+                    </div>
+
+                    <!-- Level Progress -->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-trophy" style="font-size: 2.5rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Seu Nível</h3>
+                            <div id="currentLevel" class="loyalty-level loyalty-bronze" style="margin-bottom: 1rem;">
+                                <i class="fas fa-medal"></i> Bronze
                             </div>
-                            <div class="points-actions">
-                                <button class="btn btn-primary btn-sm" onclick="showRewardsModal()">
-                                    ðŸŽ Resgatar
-                                </button>
-                                <button class="btn btn-outline btn-sm" onclick="showPointsHistory()">
-                                    ðŸ“Š HistÃ³rico
-                                </button>
-                            </div>
+                            <button class="btn btn-outline btn-sm" onclick="showLevelInfo()">
+                                <i class="fas fa-info-circle icon-sm"></i> Ver Benefícios
+                            </button>
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <!-- Dashboard -->
-            <section class="dashboard">
-                <div class="container">
-                    <div class="dashboard-tabs">
-                        <button class="tab-btn active" onclick="showTab('overview')">VisÃ£o Geral</button>
-                        <button class="tab-btn" onclick="showTab('history')">HistÃ³rico</button>
-                        <button class="tab-btn" onclick="showTab('rewards')">Recompensas</button>
-                        <button class="tab-btn" onclick="showTab('settings')">ConfiguraÃ§Ãµes</button>
+                <!-- Action Buttons Row -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+                    
+                    <button class="btn btn-primary" onclick="scanQR()">
+                        <i class="fas fa-camera icon-sm"></i> Escanear QR Code
+                    </button>
+                    
+                    <button class="btn btn-success" onclick="showRewards()">
+                        <i class="fas fa-gift icon-sm"></i> Resgatar Pontos
+                    </button>
+                    
+                    <button class="btn btn-accent" onclick="shareApp()">
+                        <i class="fas fa-share-alt icon-sm"></i> Compartilhar App
+                    </button>
+                    
+                    <button class="btn btn-outline" onclick="showSettings()">
+                        <i class="fas fa-cog icon-sm"></i> Configurações
+                    </button>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="color: white; margin: 0;">
+                            <i class="fas fa-history icon-sm"></i> Atividades Recentes
+                        </h3>
                     </div>
-
-                    <!-- Overview Tab -->
-                    <div id="overview" class="tab-content active">
-                        <div class="dashboard-grid">
-                            <!-- Level Progress -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3>Progresso do NÃ­vel</h3>
-                                    <span class="card-icon">ðŸ†</span>
-                                </div>
-                                <div class="level-progress">
-                                    <div class="current-level">
-                                        <div class="level-info">
-                                            <span class="level-name">Prata</span>
-                                            <span class="level-range">1.000 - 4.999 pts</span>
-                                        </div>
-                                        <div class="next-level">
-                                            <span>PrÃ³ximo: Ouro (5.000 pts)</span>
-                                        </div>
-                                    </div>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: 25%"></div>
-                                    </div>
-                                    <div class="progress-info">
-                                        <span>1.250 / 5.000 pontos</span>
-                                        <span>Faltam 3.750 pontos</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Quick Stats -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3>EstatÃ­sticas</h3>
-                                    <span class="card-icon">ðŸ“ˆ</span>
-                                </div>
-                                <div class="stats-grid">
-                                    <div class="stat-item">
-                                        <span class="stat-number">47</span>
-                                        <span class="stat-label">Compras este mÃªs</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-number">R$ 1.847</span>
-                                        <span class="stat-label">Gasto total</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-number">890</span>
-                                        <span class="stat-label">Pontos ganhos</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-number">R$ 127</span>
-                                        <span class="stat-label">Economia gerada</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Recent Activity -->
-                            <div class="card full-width">
-                                <div class="card-header">
-                                    <h3>Atividade Recente</h3>
-                                    <span class="card-icon">ðŸ“</span>
-                                </div>
-                                <div class="activity-list">
-                                    <div class="activity-item">
-                                        <div class="activity-icon gain">+</div>
-                                        <div class="activity-details">
-                                            <span class="activity-title">Compra no Supermercado ABC</span>
-                                            <span class="activity-date">Hoje, 14:30</span>
-                                        </div>
-                                        <span class="activity-points gain">+45 pts</span>
-                                    </div>
-                                    <div class="activity-item">
-                                        <div class="activity-icon spend">-</div>
-                                        <div class="activity-details">
-                                            <span class="activity-title">Resgate: Desconto de 10%</span>
-                                            <span class="activity-date">Ontem, 16:45</span>
-                                        </div>
-                                        <span class="activity-points spend">-100 pts</span>
-                                    </div>
-                                    <div class="activity-item">
-                                        <div class="activity-icon gain">+</div>
-                                        <div class="activity-details">
-                                            <span class="activity-title">Compra na FarmÃ¡cia XYZ</span>
-                                            <span class="activity-date">2 dias atrÃ¡s, 10:15</span>
-                                        </div>
-                                        <span class="activity-points gain">+23 pts</span>
-                                    </div>
-                                </div>
-                                <button class="btn btn-outline btn-sm" onclick="showTab('history')">
-                                    Ver HistÃ³rico Completo
-                                </button>
-                            </div>
-
-                            <!-- Available Rewards -->
-                            <div class="card full-width">
-                                <div class="card-header">
-                                    <h3>Recompensas DisponÃ­veis</h3>
-                                    <span class="card-icon">ðŸŽ</span>
-                                </div>
-                                <div class="rewards-grid">
-                                    <div class="reward-card">
-                                        <div class="reward-icon">ðŸ’°</div>
-                                        <div class="reward-info">
-                                            <h4>Desconto de 5%</h4>
-                                            <p>Em qualquer compra acima de R$ 50</p>
-                                        </div>
-                                        <div class="reward-cost">50 pts</div>
-                                        <button class="btn btn-primary btn-xs">Resgatar</button>
-                                    </div>
-                                    <div class="reward-card">
-                                        <div class="reward-icon">ðŸ•</div>
-                                        <div class="reward-info">
-                                            <h4>Pizza GrÃ¡tis</h4>
-                                            <p>Pizza mÃ©dia na Pizzaria do Bairro</p>
-                                        </div>
-                                        <div class="reward-cost">200 pts</div>
-                                        <button class="btn btn-primary btn-xs">Resgatar</button>
-                                    </div>
-                                    <div class="reward-card">
-                                        <div class="reward-icon">â˜•</div>
-                                        <div class="reward-info">
-                                            <h4>CafÃ© Premium</h4>
-                                            <p>Bebida grÃ¡tis na Coffee House</p>
-                                        </div>
-                                        <div class="reward-cost">75 pts</div>
-                                        <button class="btn btn-primary btn-xs">Resgatar</button>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div id="activityList">
+                            <!-- Activities will be loaded here -->
                         </div>
-                    </div>
-
-                    <!-- History Tab -->
-                    <div id="history" class="tab-content">
-                        <div class="history-filters">
-                            <select id="filterPeriod">
-                                <option value="all">Todos os perÃ­odos</option>
-                                <option value="month">Ãšltimo mÃªs</option>
-                                <option value="3months">Ãšltimos 3 meses</option>
-                                <option value="year">Ãšltimo ano</option>
-                            </select>
-                            <select id="filterType">
-                                <option value="all">Todos os tipos</option>
-                                <option value="gain">Ganhos</option>
-                                <option value="spend">Gastos</option>
-                            </select>
-                        </div>
-                        <div class="history-list">
-                            <!-- History items will be loaded here -->
-                        </div>
-                    </div>
-
-                    <!-- Rewards Tab -->
-                    <div id="rewards" class="tab-content">
-                        <div class="rewards-categories">
-                            <button class="category-btn active">Todos</button>
-                            <button class="category-btn">Descontos</button>
-                            <button class="category-btn">Comida</button>
-                            <button class="category-btn">Produtos</button>
-                            <button class="category-btn">ServiÃ§os</button>
-                        </div>
-                        <div class="rewards-list">
-                            <!-- Rewards will be loaded here -->
-                        </div>
-                    </div>
-
-                    <!-- Settings Tab -->
-                    <div id="settings" class="tab-content">
-                        <div class="settings-grid">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3>InformaÃ§Ãµes Pessoais</h3>
-                                </div>
-                                <form class="settings-form" id="personalForm">
-                                    <div class="form-group">
-                                        <label for="editName">Nome Completo</label>
-                                        <input type="text" id="editName" value="JoÃ£o Silva">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editEmail">E-mail</label>
-                                        <input type="email" id="editEmail" value="joao@email.com">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="editPhone">Telefone</label>
-                                        <input type="tel" id="editPhone" value="(11) 99999-9999">
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Salvar AlteraÃ§Ãµes</button>
-                                </form>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3>NotificaÃ§Ãµes</h3>
-                                </div>
-                                <div class="notification-settings">
-                                    <div class="setting-item">
-                                        <label class="setting-label">
-                                            <input type="checkbox" checked>
-                                            <span class="checkmark">âœ“</span>
-                                            E-mail de promoÃ§Ãµes
-                                        </label>
-                                    </div>
-                                    <div class="setting-item">
-                                        <label class="setting-label">
-                                            <input type="checkbox" checked>
-                                            <span class="checkmark">âœ“</span>
-                                            NotificaÃ§Ãµes de pontos
-                                        </label>
-                                    </div>
-                                    <div class="setting-item">
-                                        <label class="setting-label">
-                                            <input type="checkbox">
-                                            <span class="checkmark">âœ“</span>
-                                            SMS de ofertas
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3>SeguranÃ§a</h3>
-                                </div>
-                                <div class="security-actions">
-                                    <button class="btn btn-outline" onclick="changePassword()">
-                                        ðŸ”’ Alterar Senha
-                                    </button>
-                                    <button class="btn btn-outline" onclick="downloadData()">
-                                        ðŸ“¥ Baixar Meus Dados
-                                    </button>
-                                    <button class="btn btn-danger" onclick="deleteAccount()">
-                                        ðŸ—‘ï¸ Excluir Conta
-                                    </button>
-                                </div>
-                            </div>
+                        <div style="padding: var(--space-4); text-align: center; border-top: 1px solid var(--gray-200);">
+                            <button class="btn btn-ghost btn-sm" onclick="loadMoreActivity()">
+                                <i class="fas fa-plus icon-sm"></i> Carregar Mais
+                            </button>
                         </div>
                     </div>
                 </div>
-            </section>
+
+                <!-- Statistics Cards -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-top: var(--space-6);">
+                    
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-check" style="font-size: 1.5rem; color: var(--primary-blue); margin-bottom: 0.5rem;"></i>
+                            <div id="totalVisits" style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Visitas Totais</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star" style="font-size: 1.5rem; color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                            <div id="totalReviews" style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Avaliações Feitas</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-trophy" style="font-size: 1.5rem; color: var(--success-green); margin-bottom: 0.5rem;"></i>
+                            <div id="totalRewards" style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Recompensas Resgatadas</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar" style="font-size: 1.5rem; color: var(--primary-blue); margin-bottom: 0.5rem;"></i>
+                            <div id="memberSince" style="font-size: 1rem; font-weight: 600; color: var(--gray-900);">-</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Membro desde</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
+    <!-- QR Code Modal -->
+    <div id="qrModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: var(--z-modal); align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: var(--radius-xl); text-align: center; max-width: 90%; max-height: 90%; overflow-y: auto;">
+            <h3 style="margin-bottom: 1.5rem; color: var(--gray-900);">Seu QR Code Pessoal</h3>
+            <div style="background: var(--gray-100); padding: 2rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+                <canvas id="qrCanvas" style="max-width: 100%;"></canvas>
+            </div>
+            <p style="color: var(--gray-600); margin-bottom: 2rem; font-size: 0.875rem;">Mostre este código nos estabelecimentos parceiros para acumular pontos</p>
+            <div style="display: flex; gap: var(--space-3); justify-content: center;">
+                <button class="btn btn-primary" onclick="downloadQR()">
+                    <i class="fas fa-download icon-sm"></i> Baixar
+                </button>
+                <button class="btn btn-ghost" onclick="closeQRModal()">
+                    <i class="fas fa-times icon-sm"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="/js/app-mobile.js"></script>
     <script>
+        let userData = {};
+
         function toggleMobileMenu() {
             const mobileNav = document.getElementById('mobileNav');
+            const btn = document.querySelector('.mobile-menu-btn');
             mobileNav.classList.toggle('active');
+            btn.classList.toggle('active');
         }
 
-        function showTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
+        // Load user data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            loadUserStats();
+            loadRecentActivity();
+            setupNotifications();
+        });
+
+        function loadUserData() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!user.nome) {
+                alert('Sessão expirada. Redirecionando para login...');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            userData = user;
+
+            // Update UI elements
+            document.getElementById('userName').textContent = user.nome;
+            document.getElementById('pointsBalance').textContent = (user.pontos || 0).toLocaleString();
+            
+            // Update user avatar
+            const avatar = document.getElementById('userAvatar');
+            if (user.avatar) {
+                avatar.innerHTML = `<img src="${user.avatar}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            } else {
+                avatar.innerHTML = `<i class="fas fa-user"></i>`;
+            }
+
+            // Update level
+            const level = user.nivel || 'Bronze';
+            document.getElementById('userLevel').textContent = `Nível: ${level}`;
+            
+            const levelElement = document.getElementById('currentLevel');
+            levelElement.className = `loyalty-level loyalty-${level.toLowerCase()}`;
+            levelElement.innerHTML = `<i class="fas fa-medal"></i> ${level}`;
+
+            // Update progress to next reward
+            updateRewardProgress(user.pontos || 0);
+        }
+
+        function updateRewardProgress(points) {
+            const rewards = [
+                { points: 100, name: 'Desconto 5%' },
+                { points: 250, name: 'Brinde Grátis' },
+                { points: 500, name: 'Desconto 10%' },
+                { points: 1000, name: 'Produto Grátis' },
+                { points: 2000, name: 'Desconto 20%' },
+                { points: 5000, name: 'Prêmio Especial' }
+            ];
+
+            let nextReward = rewards.find(r => r.points > points);
+            if (!nextReward) {
+                nextReward = { points: points + 1000, name: 'Próximo Nível' };
+            }
+
+            const progress = (points / nextReward.points) * 100;
+            
+            document.getElementById('nextReward').textContent = nextReward.name;
+            document.getElementById('progressFill').style.width = `${Math.min(progress, 100)}%`;
+            document.getElementById('progressText').textContent = `${points} de ${nextReward.points} pontos`;
+        }
+
+        function loadUserStats() {
+            // Simulate user statistics
+            const stats = JSON.parse(localStorage.getItem('userStats') || '{}');
+            
+            document.getElementById('totalVisits').textContent = stats.visits || Math.floor(Math.random() * 50) + 10;
+            document.getElementById('totalReviews').textContent = stats.reviews || Math.floor(Math.random() * 20) + 5;
+            document.getElementById('totalRewards').textContent = stats.rewards || Math.floor(Math.random() * 10) + 2;
+            
+            const memberSince = stats.memberSince || new Date().toLocaleDateString('pt-BR');
+            document.getElementById('memberSince').textContent = memberSince;
+        }
+
+        function loadRecentActivity() {
+            const activities = [
+                { type: 'points', establishment: 'Burger House', points: 25, date: '2 horas atrás', icon: 'fas fa-coins', color: 'var(--success-green)' },
+                { type: 'visit', establishment: 'Fashion Store', points: 15, date: '1 dia atrás', icon: 'fas fa-store', color: 'var(--primary-blue)' },
+                { type: 'reward', establishment: 'Sistema', points: -100, date: '3 dias atrás', icon: 'fas fa-gift', color: 'var(--accent-orange)' },
+                { type: 'review', establishment: 'Farmácia Saúde+', points: 10, date: '5 dias atrás', icon: 'fas fa-star', color: 'var(--accent-orange)' },
+                { type: 'bonus', establishment: 'Bônus de Cadastro', points: 100, date: '1 semana atrás', icon: 'fas fa-trophy', color: 'var(--success-green)' }
+            ];
+
+            const activityList = document.getElementById('activityList');
+            activityList.innerHTML = activities.map(activity => `
+                <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); border-bottom: 1px solid var(--gray-200);">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: ${activity.color}; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="${activity.icon}"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: var(--gray-900);">${activity.establishment}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">${activity.date}</div>
+                    </div>
+                    <div style="font-weight: 700; color: ${activity.points > 0 ? 'var(--success-green)' : 'var(--accent-orange)'};">
+                        ${activity.points > 0 ? '+' : ''}${activity.points} pontos
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showQRCode() {
+            const modal = document.getElementById('qrModal');
+            modal.style.display = 'flex';
+            
+            // Generate QR Code
+            const qr = new QRious({
+                element: document.getElementById('qrCanvas'),
+                value: `USER:${userData.id}:${userData.email}:${Date.now()}`,
+                size: 200,
+                foreground: '#1e40af',
+                background: '#ffffff'
             });
-            
-            // Remove active class from all buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+
+        function downloadQR() {
+            const canvas = document.getElementById('qrCanvas');
+            const link = document.createElement('a');
+            link.download = 'meu-qrcode-temdeTudo.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function scanQR() {
+            alert('Scanner QR Code\n\nFuncionalidade em desenvolvimento!\n\nEm breve você poderá escanear QR codes de estabelecimentos para acumular pontos automaticamente.');
+        }
+
+        function showRewards() {
+            const rewards = [
+                { name: 'Desconto 5% - Burger House', points: 100, available: userData.pontos >= 100 },
+                { name: 'Brinde Grátis - Fashion Store', points: 250, available: userData.pontos >= 250 },
+                { name: 'Desconto 10% - Farmácia Saúde+', points: 500, available: userData.pontos >= 500 },
+                { name: 'Produto Grátis - Qualquer Loja', points: 1000, available: userData.pontos >= 1000 }
+            ];
+
+            let message = 'Recompensas Disponíveis:\n\n';
+            rewards.forEach(reward => {
+                const status = reward.available ? '✅ Disponível' : '❌ Pontos insuficientes';
+                message += `${reward.name}\n${reward.points} pontos - ${status}\n\n`;
             });
-            
-            // Show selected tab and activate button
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-            
-            // Load content based on tab
-            if (tabName === 'history') {
-                loadHistory();
-            } else if (tabName === 'rewards') {
-                loadRewards();
+
+            alert(message);
+        }
+
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Tem de Tudo - Programa de Fidelidade',
+                    text: 'Descubra o melhor programa de fidelidade da cidade! Acumule pontos e ganhe recompensas incríveis.',
+                    url: window.location.origin
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.origin).then(() => {
+                    alert('Link copiado para área de transferência!');
+                });
             }
         }
 
-        function loadHistory() {
-            const historyList = document.querySelector('.history-list');
-            historyList.innerHTML = `
-                <div class="activity-item">
-                    <div class="activity-icon gain">+</div>
-                    <div class="activity-details">
-                        <span class="activity-title">Compra no Supermercado ABC</span>
-                        <span class="activity-date">Hoje, 14:30 - Valor: R$ 45,00</span>
-                    </div>
-                    <span class="activity-points gain">+45 pts</span>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon spend">-</div>
-                    <div class="activity-details">
-                        <span class="activity-title">Resgate: Desconto de 10%</span>
-                        <span class="activity-date">Ontem, 16:45</span>
-                    </div>
-                    <span class="activity-points spend">-100 pts</span>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon gain">+</div>
-                    <div class="activity-details">
-                        <span class="activity-title">Compra na FarmÃ¡cia XYZ</span>
-                        <span class="activity-date">2 dias atrÃ¡s, 10:15 - Valor: R$ 23,50</span>
-                    </div>
-                    <span class="activity-points gain">+23 pts</span>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon gain">+</div>
-                    <div class="activity-details">
-                        <span class="activity-title">BÃ´nus de Cadastro</span>
-                        <span class="activity-date">15 Jan 2024, 09:00</span>
-                    </div>
-                    <span class="activity-points gain">+100 pts</span>
-                </div>
-            `;
+        function showSettings() {
+            const options = [
+                'Notificações Push',
+                'Dados Pessoais',
+                'Histórico de Pontos',
+                'Política de Privacidade',
+                'Termos de Uso',
+                'Suporte'
+            ];
+
+            let message = 'Configurações:\n\n';
+            options.forEach((option, index) => {
+                message += `${index + 1}. ${option}\n`;
+            });
+            message += '\nFuncionalidades em desenvolvimento!';
+
+            alert(message);
         }
 
-        function loadRewards() {
-            const rewardsList = document.querySelector('.rewards-list');
-            rewardsList.innerHTML = `
-                <div class="rewards-grid">
-                    <div class="reward-card">
-                        <div class="reward-icon">ðŸ’°</div>
-                        <div class="reward-info">
-                            <h4>Desconto de 5%</h4>
-                            <p>Em qualquer compra acima de R$ 50</p>
-                            <small>VÃ¡lido por 30 dias</small>
-                        </div>
-                        <div class="reward-cost">50 pts</div>
-                        <button class="btn btn-primary btn-xs">Resgatar</button>
-                    </div>
-                    <div class="reward-card">
-                        <div class="reward-icon">ðŸ’¸</div>
-                        <div class="reward-info">
-                            <h4>Desconto de 10%</h4>
-                            <p>Em qualquer compra acima de R$ 100</p>
-                            <small>VÃ¡lido por 30 dias</small>
-                        </div>
-                        <div class="reward-cost">100 pts</div>
-                        <button class="btn btn-primary btn-xs">Resgatar</button>
-                    </div>
-                    <div class="reward-card">
-                        <div class="reward-icon">ðŸ•</div>
-                        <div class="reward-info">
-                            <h4>Pizza GrÃ¡tis</h4>
-                            <p>Pizza mÃ©dia na Pizzaria do Bairro</p>
-                            <small>VÃ¡lido por 15 dias</small>
-                        </div>
-                        <div class="reward-cost">200 pts</div>
-                        <button class="btn btn-primary btn-xs">Resgatar</button>
-                    </div>
-                    <div class="reward-card">
-                        <div class="reward-icon">â˜•</div>
-                        <div class="reward-info">
-                            <h4>CafÃ© Premium</h4>
-                            <p>Bebida grÃ¡tis na Coffee House</p>
-                            <small>VÃ¡lido por 7 dias</small>
-                        </div>
-                        <div class="reward-cost">75 pts</div>
-                        <button class="btn btn-primary btn-xs">Resgatar</button>
-                    </div>
-                    <div class="reward-card">
-                        <div class="reward-icon">ðŸ”</div>
-                        <div class="reward-info">
-                            <h4>Combo Lanche</h4>
-                            <p>Lanche + batata + refrigerante</p>
-                            <small>VÃ¡lido por 10 dias</small>
-                        </div>
-                        <div class="reward-cost">150 pts</div>
-                        <button class="btn btn-primary btn-xs">Resgatar</button>
-                    </div>
-                    <div class="reward-card">
-                        <div class="reward-icon">ðŸ§´</div>
-                        <div class="reward-info">
-                            <h4>Produto de Beleza</h4>
-                            <p>Shampoo ou condicionador grÃ¡tis</p>
-                            <small>VÃ¡lido por 20 dias</small>
-                        </div>
-                        <div class="reward-cost">180 pts</div>
-                        <button class="btn btn-primary btn-xs">Resgatar</button>
-                    </div>
-                </div>
-            `;
+        function showLevelInfo() {
+            const levels = {
+                'Bronze': { min: 0, max: 249, benefits: ['Acumular pontos básicos', 'Ofertas ocasionais'] },
+                'Silver': { min: 250, max: 499, benefits: ['Pontos 1.2x', 'Ofertas semanais', 'Suporte prioritário'] },
+                'Gold': { min: 500, max: 999, benefits: ['Pontos 1.5x', 'Ofertas exclusivas', 'Frete grátis'] },
+                'Platinum': { min: 1000, max: 1999, benefits: ['Pontos 2x', 'Acesso antecipado', 'Desconto VIP'] },
+                'Diamond': { min: 2000, max: null, benefits: ['Pontos 3x', 'Benefícios premium', 'Concierge pessoal'] }
+            };
+
+            const currentLevel = userData.nivel || 'Bronze';
+            const levelInfo = levels[currentLevel];
+            
+            let message = `Seu Nível: ${currentLevel}\n\n`;
+            message += 'Benefícios:\n';
+            levelInfo.benefits.forEach(benefit => {
+                message += `• ${benefit}\n`;
+            });
+
+            alert(message);
         }
 
-        function refreshPoints() {
-            showToast('Pontos atualizados!', 'success');
+        function loadMoreActivity() {
+            alert('Carregando mais atividades...\n\nFuncionalidade em desenvolvimento!');
         }
 
-        function changePassword() {
-            showToast('FunÃ§Ã£o em desenvolvimento', 'info');
-        }
-
-        function downloadData() {
-            showToast('Download iniciado', 'success');
-        }
-
-        function deleteAccount() {
-            if (confirm('Tem certeza que deseja excluir sua conta? Esta aÃ§Ã£o nÃ£o pode ser desfeita.')) {
-                showToast('Conta excluÃ­da com sucesso', 'success');
+        function setupNotifications() {
+            // Request notification permission
+            if ('Notification' in window && 'serviceWorker' in navigator) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('Notificações habilitadas');
+                        
+                        // Send welcome notification after delay
+                        setTimeout(() => {
+                            new Notification('Tem de Tudo', {
+                                body: `Bem-vindo, ${userData.nome}! Você tem ${userData.pontos} pontos disponíveis.`,
+                                icon: '/frontend/img/logo.png',
+                                badge: '/frontend/img/logo.png'
+                            });
+                        }, 3000);
+                    }
+                });
             }
         }
 
         function logout() {
-            if (confirm('Deseja realmente sair?')) {
-                localStorage.removeItem('auth_token');
-                window.location.href = '/login.html';
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('user');
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userStats');
+                alert('Logout realizado com sucesso!');
+                window.location.href = '/index.html';
             }
         }
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is logged in
-            if (!localStorage.getItem('auth_token')) {
-                window.location.href = '/login.html';
-                return;
-            }
-        });
     </script>
 
     <style>
-        /* Profile Page Styles */
-        .profile-header {
-            background: var(--gradient-primary);
-            padding: 2rem 0;
-            color: white;
-        }
-
-        .profile-hero {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .profile-info {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 4px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .user-details h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .user-details p {
-            opacity: 0.8;
-            margin-bottom: 1rem;
-        }
-
-        .user-level {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .level-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-lg);
-            font-weight: 600;
-            display: inline-block;
-            width: fit-content;
-        }
-
-        .member-since {
-            font-size: 0.875rem;
-            opacity: 0.7;
-        }
-
-        .points-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius-xl);
-            padding: 2rem;
-            min-width: 250px;
-            text-align: center;
-        }
-
-        .points-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .points-header h3 {
-            margin: 0;
-            font-size: 1.125rem;
-        }
-
-        .refresh-btn {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1.125rem;
-            opacity: 0.7;
-            transition: var(--transition-base);
-        }
-
-        .refresh-btn:hover {
-            opacity: 1;
-            transform: rotate(180deg);
-        }
-
-        .points-balance {
-            margin-bottom: 1.5rem;
-        }
-
-        .points-number {
-            display: block;
-            font-size: 3rem;
-            font-weight: 800;
-            line-height: 1;
-            color: var(--gold-color);
-        }
-
-        .points-label {
-            font-size: 0.875rem;
-            opacity: 0.8;
-        }
-
-        .points-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .dashboard {
-            padding: 2rem 0;
-        }
-
-        .dashboard-tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 1rem 1.5rem;
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--gray-600);
-            border-bottom: 2px solid transparent;
-            transition: var(--transition-base);
-        }
-
-        .tab-btn:hover {
-            color: var(--primary-purple);
-        }
-
-        .tab-btn.active {
-            color: var(--primary-purple);
-            border-bottom-color: var(--primary-purple);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--gray-200);
-            padding: 1.5rem;
-        }
-
-        .card.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-header h3 {
-            margin: 0;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--gray-800);
-        }
-
-        .card-icon {
-            font-size: 1.5rem;
-        }
-
-        .level-progress {
-            text-align: center;
-        }
-
-        .current-level {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-
-        .level-name {
-            font-weight: 600;
-            color: var(--primary-purple);
-        }
-
-        .level-range {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-        }
-
-        .next-level {
-            font-size: 0.875rem;
-            color: var(--gray-500);
-        }
-
-        .progress-bar {
-            height: 12px;
-            background: var(--gray-200);
-            border-radius: 6px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient-gold);
-            transition: width 0.5s ease;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.875rem;
-            color: var(--gray-600);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 1rem;
-            background: var(--gray-50);
-            border-radius: var(--radius-lg);
-        }
-
-        .stat-number {
-            display: block;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-purple);
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-label {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-        }
-
-        .activity-list {
-            margin-bottom: 1rem;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--gray-100);
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: white;
-        }
-
-        .activity-icon.gain {
-            background: var(--success-color);
-        }
-
-        .activity-icon.spend {
-            background: var(--error-color);
-        }
-
-        .activity-details {
-            flex: 1;
-        }
-
-        .activity-title {
-            display: block;
-            font-weight: 500;
-            color: var(--gray-800);
-            margin-bottom: 0.25rem;
-        }
-
-        .activity-date {
-            font-size: 0.875rem;
-            color: var(--gray-600);
-        }
-
-        .activity-points {
-            font-weight: 600;
-        }
-
-        .activity-points.gain {
-            color: var(--success-color);
-        }
-
-        .activity-points.spend {
-            color: var(--error-color);
-        }
-
-        .rewards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .reward-card {
-            background: var(--gray-50);
-            border-radius: var(--radius-lg);
-            padding: 1rem;
-            text-align: center;
-            border: 1px solid var(--gray-200);
-            transition: var(--transition-base);
-        }
-
-        .reward-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .reward-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .reward-info h4 {
-            margin: 0 0 0.5rem;
-            color: var(--gray-800);
-        }
-
-        .reward-info p {
-            margin: 0 0 0.25rem;
-            font-size: 0.875rem;
-            color: var(--gray-600);
-        }
-
-        .reward-info small {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-        }
-
-        .reward-cost {
-            font-weight: 600;
-            color: var(--primary-purple);
-            margin: 0.5rem 0;
-        }
-
-        .btn-xs {
-            padding: 0.25rem 0.75rem;
-            font-size: 0.75rem;
-        }
-
-        .history-filters {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .history-filters select {
-            padding: 0.5rem;
-            border: 1px solid var(--gray-300);
-            border-radius: var(--radius-md);
-            background: white;
-        }
-
-        .rewards-categories {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .category-btn {
-            padding: 0.5rem 1rem;
-            background: var(--gray-100);
-            border: none;
-            border-radius: var(--radius-lg);
-            cursor: pointer;
-            color: var(--gray-700);
-            transition: var(--transition-base);
-        }
-
-        .category-btn:hover,
-        .category-btn.active {
-            background: var(--primary-purple);
-            color: white;
-        }
-
-        .settings-grid {
-            display: grid;
-            gap: 2rem;
-        }
-
-        .settings-form {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .notification-settings,
-        .security-actions {
-            display: grid;
-            gap: 1rem;
-        }
-
-        .setting-item {
-            padding: 0.75rem 0;
-        }
-
-        .setting-label {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-        }
-
-        .setting-label input[type="checkbox"] {
-            display: none;
-        }
-
-        .checkmark {
-            width: 20px;
-            height: 20px;
-            background: white;
-            border: 2px solid var(--gray-300);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: white;
-            transition: var(--transition-base);
-        }
-
-        .setting-label input[type="checkbox"]:checked + .checkmark {
-            background: var(--primary-purple);
-            border-color: var(--primary-purple);
-        }
-
-        .btn-danger {
-            background: var(--error-color);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-
-        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .profile-hero {
-                grid-template-columns: 1fr;
-                text-align: center;
+            main > div {
+                padding: var(--space-4) !important;
             }
-
-            .profile-info {
-                flex-direction: column;
-            }
-
-            .dashboard-tabs {
-                flex-wrap: wrap;
-            }
-
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .rewards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .history-filters {
-                flex-direction: column;
-            }
-
-            .points-actions {
-                flex-direction: column;
+            
+            div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
             }
         }
     </style>
 </body>
 </html>
-
