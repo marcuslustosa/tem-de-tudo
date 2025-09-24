@@ -1,98 +1,487 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Perfil Usuário - Tem de Tudo</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <style>
-    /* Dark mode style for profile page */
-    .dashboard {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 1rem;
-      color: var(--color-text);
-    }
-    .card {
-      background: var(--color-card-bg);
-      border-radius: var(--border-radius);
-      box-shadow: 0 4px 12px var(--color-shadow);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .card h2 {
-      color: var(--color-primary);
-      margin-bottom: 1rem;
-    }
-    .points-total {
-      font-size: 3rem;
-      font-weight: 700;
-      color: var(--color-primary);
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    ul {
-      list-style: none;
-      padding-left: 0;
-    }
-    ul li {
-      padding: 0.75rem 0;
-      border-bottom: 1px solid #333;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Tem de Tudo</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <img src="assets/images/logo.png.png" alt="Tem de Tudo Logo" style="height: 50px;" />
-      </div>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="profile-client.html" class="active">Perfil</a></li>
-        <li><a href="logout.html">Sair</a></li>
-      </ul>
-      <div class="menu-toggle" id="menu-toggle">&#9776;</div>
-    </nav>
-  </header>
+    <header>
+        <nav class="container">
+            <a href="/" class="logo">Tem de Tudo</a>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="/">Início</a></li>
+                <li><a href="/profile-client.html" class="active">Perfil</a></li>
+                <li><a href="#" onclick="logout()" class="btn btn-secondary">Sair</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <main>
-    <section class="dashboard">
-      <div class="card">
-        <h2>Seus Pontos</h2>
-        <div class="points-total" id="points-total">0</div>
-      </div>
-      <div class="card">
-        <h2>Ofertas Disponíveis</h2>
-        <ul id="offers-list">
-          <!-- Ofertas carregadas via JS -->
-        </ul>
-      </div>
-      <div class="card">
-        <h2>Histórico de Transações</h2>
-        <ul id="history-list">
-          <!-- Histórico carregado via JS -->
-        </ul>
-      </div>
-    </section>
-  </main>
+    <div class="container">
+        <main>
+            <!-- Informações do Usuário -->
+            <div class="card">
+                <div class="card-header">
+                    <h1>👤 Meu Perfil</h1>
+                    <p>Gerencie sua conta e acompanhe seus pontos</p>
+                </div>
+                
+                <div class="user-info" id="user-info">
+                    <div class="info-item">
+                        <div class="info-label">Nome</div>
+                        <div class="info-value" id="user-name">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">E-mail</div>
+                        <div class="info-value" id="user-email">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Telefone</div>
+                        <div class="info-value" id="user-phone">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Membro desde</div>
+                        <div class="info-value" id="user-created">-</div>
+                    </div>
+                </div>
+            </div>
 
-  <footer>
-    <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
-  </footer>
+            <!-- Dashboard de Pontos -->
+            <div class="card">
+                <div class="card-header">
+                    <h1>💰 Meus Pontos</h1>
+                    <p>Acompanhe seu saldo e nível de fidelidade</p>
+                </div>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="feature-icon">💰</div>
+                        <div class="stat-number" id="user-points">0</div>
+                        <div class="stat-label">Pontos Disponíveis</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="feature-icon" id="level-icon">🥉</div>
+                        <div class="stat-number" id="user-level">Bronze</div>
+                        <div class="stat-label">Nível Atual</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="feature-icon">⚡</div>
+                        <div class="stat-number" id="level-multiplier">1x</div>
+                        <div class="stat-label">Multiplicador</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="feature-icon">🎯</div>
+                        <div class="stat-number" id="points-next-level">1000</div>
+                        <div class="stat-label">Para Próximo Nível</div>
+                    </div>
+                </div>
+                
+                <!-- Barra de Progresso -->
+                <div class="progress-container" style="margin-top: 2rem;">
+                    <div class="progress-header">
+                        <span>Progresso para próximo nível</span>
+                        <span id="progress-percentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
 
-  <script src="js/app.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Dados fictícios para demonstração
-      document.getElementById('points-total').textContent = '1.500';
+            <!-- Níveis de Fidelidade -->
+            <div class="card">
+                <div class="card-header">
+                    <h1>🏅 Níveis de Fidelidade</h1>
+                    <p>Evolua e ganhe mais benefícios</p>
+                </div>
+                
+                <div class="loyalty-levels">
+                    <div class="level-item" data-level="Bronze">
+                        <div class="level-icon">🥉</div>
+                        <div class="level-info">
+                            <h3>Bronze</h3>
+                            <p>0 - 999 pontos</p>
+                            <p>1x multiplicador</p>
+                        </div>
+                        <div class="level-status" id="bronze-status">🔒</div>
+                    </div>
+                    
+                    <div class="level-item" data-level="Prata">
+                        <div class="level-icon">🥈</div>
+                        <div class="level-info">
+                            <h3>Prata</h3>
+                            <p>1.000 - 4.999 pontos</p>
+                            <p>1.5x multiplicador</p>
+                        </div>
+                        <div class="level-status" id="prata-status">🔒</div>
+                    </div>
+                    
+                    <div class="level-item" data-level="Ouro">
+                        <div class="level-icon">🥇</div>
+                        <div class="level-info">
+                            <h3>Ouro</h3>
+                            <p>5.000 - 9.999 pontos</p>
+                            <p>2x multiplicador</p>
+                        </div>
+                        <div class="level-status" id="ouro-status">🔒</div>
+                    </div>
+                    
+                    <div class="level-item" data-level="Diamante">
+                        <div class="level-icon">💎</div>
+                        <div class="level-info">
+                            <h3>Diamante</h3>
+                            <p>10.000+ pontos</p>
+                            <p>3x multiplicador</p>
+                        </div>
+                        <div class="level-status" id="diamante-status">🔒</div>
+                    </div>
+                </div>
+            </div>
 
-      const offersList = document.getElementById('offers-list');
-      offersList.innerHTML = '<li>10% de desconto na Loja A</li><li>Brinde na Loja B</li><li>Frete grátis na Loja C</li>';
+            <!-- Simulador de Compras (para demonstração) -->
+            <div class="card">
+                <div class="card-header">
+                    <h1>🛒 Simular Compra</h1>
+                    <p>Para demonstração: simule uma compra e ganhe pontos</p>
+                </div>
+                
+                <div class="simulation-form">
+                    <div class="form-group">
+                        <label for="purchase-value">Valor da Compra (R$)</label>
+                        <input type="number" id="purchase-value" min="1" step="0.01" value="50.00">
+                        <small>Cada R$ 1,00 = 1 ponto (multiplicado pelo seu nível)</small>
+                    </div>
+                    
+                    <button type="button" onclick="simulatePurchase()" class="btn btn-primary" style="background: #f59e0b;">
+                        🎁 Simular Compra e Ganhar Pontos
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
 
-      const historyList = document.getElementById('history-list');
-      historyList.innerHTML = '<li>Resgatou 100 pontos na Loja A</li><li>Acumulou 200 pontos na Loja C</li><li>Resgatou 50 pontos na Loja B</li>';
-    });
-  </script>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Tem de Tudo - Programa de Fidelidade</p>
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        // Variáveis globais
+        let currentUserData = null;
+
+        // Carregar dados do usuário ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserProfile();
+        });
+
+        // Carregar perfil do usuário
+        async function loadUserProfile() {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                showLoading('Carregando perfil...');
+                
+                const response = await fetch('/api/user', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUserData = data.user;
+                    updateProfileUI(currentUserData);
+                } else {
+                    throw new Error('Erro ao carregar perfil');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showError('Erro ao carregar perfil');
+                localStorage.removeItem('auth_token');
+                setTimeout(() => {
+                    window.location.href = '/login.html';
+                }, 2000);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Atualizar UI com dados do usuário
+        function updateProfileUI(user) {
+            document.getElementById('user-name').textContent = user.name || '-';
+            document.getElementById('user-email').textContent = user.email || '-';
+            document.getElementById('user-phone').textContent = user.telefone || 'Não informado';
+            document.getElementById('user-created').textContent = new Date(user.created_at).toLocaleDateString('pt-BR');
+
+            const points = user.pontos || 0;
+            const level = calculateUserLevel(points);
+            const multiplier = getLevelMultiplier(level);
+            
+            document.getElementById('user-points').textContent = points.toLocaleString('pt-BR');
+            document.getElementById('user-level').textContent = level;
+            document.getElementById('level-multiplier').textContent = multiplier + 'x';
+            
+            // Atualizar ícone do nível
+            const levelIcon = document.getElementById('level-icon');
+            levelIcon.textContent = getLevelIcon(level);
+            
+            // Calcular pontos para próximo nível
+            const nextLevelPoints = getNextLevelPoints(points);
+            document.getElementById('points-next-level').textContent = nextLevelPoints.toLocaleString('pt-BR');
+            
+            // Atualizar barra de progresso
+            updateProgressBar(points, level);
+            
+            // Atualizar status dos níveis
+            updateLevelStatus(level);
+        }
+
+        // Calcular nível baseado nos pontos
+        function calculateUserLevel(points) {
+            if (points >= 10000) return 'Diamante';
+            if (points >= 5000) return 'Ouro';
+            if (points >= 1000) return 'Prata';
+            return 'Bronze';
+        }
+
+        // Obter multiplicador do nível
+        function getLevelMultiplier(level) {
+            switch(level) {
+                case 'Diamante': return 3;
+                case 'Ouro': return 2;
+                case 'Prata': return 1.5;
+                default: return 1;
+            }
+        }
+
+        // Obter ícone do nível
+        function getLevelIcon(level) {
+            switch(level) {
+                case 'Diamante': return '💎';
+                case 'Ouro': return '🥇';
+                case 'Prata': return '🥈';
+                default: return '🥉';
+            }
+        }
+
+        // Calcular pontos necessários para próximo nível
+        function getNextLevelPoints(currentPoints) {
+            if (currentPoints < 1000) return 1000 - currentPoints;
+            if (currentPoints < 5000) return 5000 - currentPoints;
+            if (currentPoints < 10000) return 10000 - currentPoints;
+            return 0; // Já está no nível máximo
+        }
+
+        // Atualizar barra de progresso
+        function updateProgressBar(points, level) {
+            let currentMin = 0;
+            let currentMax = 1000;
+            
+            if (level === 'Prata') {
+                currentMin = 1000;
+                currentMax = 5000;
+            } else if (level === 'Ouro') {
+                currentMin = 5000;
+                currentMax = 10000;
+            } else if (level === 'Diamante') {
+                currentMin = 10000;
+                currentMax = 10000;
+            }
+            
+            let percentage = 0;
+            if (level === 'Diamante') {
+                percentage = 100;
+            } else {
+                percentage = Math.min(100, ((points - currentMin) / (currentMax - currentMin)) * 100);
+            }
+            
+            document.getElementById('progress-fill').style.width = percentage + '%';
+            document.getElementById('progress-percentage').textContent = Math.round(percentage) + '%';
+        }
+
+        // Atualizar status dos níveis
+        function updateLevelStatus(currentLevel) {
+            const levels = ['Bronze', 'Prata', 'Ouro', 'Diamante'];
+            const currentIndex = levels.indexOf(currentLevel);
+            
+            levels.forEach((level, index) => {
+                const statusElement = document.getElementById(level.toLowerCase() + '-status');
+                if (index <= currentIndex) {
+                    statusElement.textContent = '✅';
+                    statusElement.parentElement.classList.add('active');
+                } else {
+                    statusElement.textContent = '🔒';
+                    statusElement.parentElement.classList.remove('active');
+                }
+            });
+        }
+
+        // Simular compra (para demonstração)
+        async function simulatePurchase() {
+            const value = parseFloat(document.getElementById('purchase-value').value);
+            if (!value || value <= 0) {
+                showError('Digite um valor válido para a compra');
+                return;
+            }
+
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                showError('Você precisa estar logado');
+                return;
+            }
+
+            const level = calculateUserLevel(currentUserData.pontos || 0);
+            const multiplier = getLevelMultiplier(level);
+            const pointsToAdd = Math.floor(value * multiplier);
+
+            try {
+                showLoading('Processando compra...');
+
+                const response = await fetch('/api/add-pontos', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pontos: pointsToAdd,
+                        descricao: `Compra simulada de R$ ${value.toFixed(2)}`
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showSuccess(`🎉 Compra realizada! Você ganhou ${pointsToAdd} pontos!`);
+                    
+                    // Atualizar dados locais
+                    currentUserData.pontos = data.pontos_total;
+                    updateProfileUI(currentUserData);
+                    
+                    // Limpar campo
+                    document.getElementById('purchase-value').value = '50.00';
+                } else {
+                    throw new Error('Erro ao processar compra');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showError('Erro ao processar compra');
+            } finally {
+                hideLoading();
+            }
+        }
+    </script>
+
+    <style>
+        .loyalty-levels {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .level-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .level-item.active {
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, #fef3c7, #f9f7ff);
+        }
+
+        .level-item .level-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+
+        .level-item .level-info {
+            flex: 1;
+        }
+
+        .level-item .level-info h3 {
+            margin: 0;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+
+        .level-item .level-info p {
+            margin: 0.25rem 0;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .level-status {
+            font-size: 1.5rem;
+        }
+
+        .simulation-form {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .progress-container {
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .loyalty-levels {
+                gap: 0.75rem;
+            }
+            
+            .level-item {
+                padding: 0.75rem;
+            }
+            
+            .level-item .level-icon {
+                font-size: 1.5rem;
+                margin-right: 0.75rem;
+            }
+        }
+    </style>
 </body>
 </html>

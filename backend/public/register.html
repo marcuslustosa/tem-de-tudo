@@ -1,69 +1,117 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cadastro - Tem de Tudo</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Tem de Tudo</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <img src="assets/images/logo.png.png" alt="Tem de Tudo Logo" />
-      </div>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="login.html">Login</a></li>
-        <li><a href="register.html" class="active">Cadastro</a></li>
-      </ul>
-      <div class="menu-toggle" id="menu-toggle">&#9776;</div>
-    </nav>
-  </header>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>🎁 Cadastrar</h1>
+                <p>Crie sua conta e comece a ganhar pontos!</p>
+            </div>
+            
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="name">Nome Completo</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Telefone</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password_confirmation">Confirmar Senha</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="background: #f59e0b;">
+                    🎯 Criar Conta e Começar a Ganhar
+                </button>
+                
+                <div class="auth-links">
+                    <p>Já tem conta? <a href="/login.html" style="color: #f59e0b;">Entre aqui</a></p>
+                </div>
+            </form>
+            
+            <div class="loyalty-preview">
+                <h3>🌟 O que você ganha ao se cadastrar:</h3>
+                <ul>
+                    <li>💰 <strong>Pontos de boas-vindas:</strong> 100 pontos grátis</li>
+                    <li>🎁 <strong>A cada compra:</strong> R$ 1,00 = 1 ponto</li>
+                    <li>🏆 <strong>Níveis de fidelidade:</strong> Bronze, Prata, Ouro, Diamante</li>
+                    <li>💎 <strong>Prêmios exclusivos:</strong> Produtos e descontos</li>
+                    <li>🎯 <strong>Ofertas especiais:</strong> Só para membros</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="auth-info">
+            <h2>🏅 Comece no Nível Bronze</h2>
+            <p>E evolua conforme suas compras!</p>
+            
+            <div class="level-progression">
+                <div class="level-step">
+                    <div class="level-icon">🥉</div>
+                    <div class="level-details">
+                        <strong>Bronze</strong>
+                        <p>0-999 pontos<br>1x multiplicador</p>
+                    </div>
+                </div>
+                
+                <div class="level-arrow">➡️</div>
+                
+                <div class="level-step">
+                    <div class="level-icon">🥈</div>
+                    <div class="level-details">
+                        <strong>Prata</strong>
+                        <p>1.000-4.999 pontos<br>1.5x multiplicador</p>
+                    </div>
+                </div>
+                
+                <div class="level-arrow">➡️</div>
+                
+                <div class="level-step">
+                    <div class="level-icon">🥇</div>
+                    <div class="level-details">
+                        <strong>Ouro</strong>
+                        <p>5.000-9.999 pontos<br>2x multiplicador</p>
+                    </div>
+                </div>
+                
+                <div class="level-arrow">➡️</div>
+                
+                <div class="level-step">
+                    <div class="level-icon">💎</div>
+                    <div class="level-details">
+                        <strong>Diamante</strong>
+                        <p>10.000+ pontos<br>3x multiplicador</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="welcome-bonus">
+                <h3>🎁 Bônus de Boas-vindas</h3>
+                <p>Ganhe <strong style="color: #f59e0b;">100 pontos grátis</strong> só por se cadastrar!</p>
+            </div>
+        </div>
+    </div>
 
-  <main>
-    <section class="form-container">
-      <h1 style="text-align: center;">Cadastro de Cliente</h1>
-      <form id="register-form" action="/api/auth/register" method="POST">
-        <label for="name">Nome Completo</label>
-        <input type="text" id="name" name="name" required autocomplete="name" />
-
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required autocomplete="email" />
-
-        <label for="phone">Telefone</label>
-        <input type="text" id="phone" name="phone" required autocomplete="tel" pattern="\\(?\\d{2}\\)?\\s?\\d{4,5}-?\\d{4}" title="Digite um telefone válido, ex: (11) 91234-5678" />
-
-        <label for="cpf">CPF</label>
-        <input type="text" id="cpf" name="cpf" required autocomplete="off" />
-
-        <label for="rg">RG</label>
-        <input type="text" id="rg" name="rg" required autocomplete="off" />
-
-        <label for="password">Senha</label>
-        <input type="password" id="password" name="password" required autocomplete="new-password" />
-
-        <label for="confirm-password">Confirme sua senha</label>
-        <input type="password" id="confirm-password" name="confirm-password" required autocomplete="new-password" />
-
-        <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
-
-        <button type="submit" class="btn-primary">Cadastrar</button>
-      </form>
-
-      <div class="social-login">
-        <p>Ou cadastre-se com</p>
-        <button class="btn-social facebook"><i class="fab fa-facebook-f"></i> Facebook</button>
-        <button class="btn-social google"><i class="fab fa-google"></i> Google</button>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
-  </footer>
-
-  <script src="js/app.js"></script>
+    <script src="/js/app.js"></script>
 </body>
 </html>

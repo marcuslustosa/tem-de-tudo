@@ -1,52 +1,83 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login - Tem de Tudo</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Tem de Tudo</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="logo">
-        <img src="assets/images/logo.png.png" alt="Tem de Tudo Logo" />
-      </div>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="login.html" class="active">Login</a></li>
-        <li><a href="register.html">Cadastro</a></li>
-      </ul>
-      <div class="menu-toggle" id="menu-toggle">&#9776;</div>
-    </nav>
-  </header>
-
-  <main>
-    <section class="form-container">
-      <h1 style="text-align: center;">Login</h1>
-      <form id="login-form" action="/api/auth/login" method="POST">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required autocomplete="email" />
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>🎯 Entrar</h1>
+                <p>Acesse sua conta do programa de fidelidade</p>
+            </div>
+            
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="background: #f59e0b;">
+                    🔓 Entrar na Conta
+                </button>
+                
+                <div class="auth-links">
+                    <p>Não tem conta? <a href="/register.html" style="color: #f59e0b;">Cadastre-se aqui</a></p>
+                    <p><a href="#" style="color: #64748b;">Esqueci minha senha</a></p>
+                </div>
+            </form>
+            
+            <div class="loyalty-preview">
+                <h3>💰 Seus benefícios te esperam:</h3>
+                <ul>
+                    <li>🎁 Ganhe pontos a cada compra</li>
+                    <li>🏆 Suba de nível e ganhe mais pontos</li>
+                    <li>💎 Troque pontos por prêmios</li>
+                    <li>🎯 Ofertas exclusivas para membros</li>
+                </ul>
+            </div>
+        </div>
         
-        <label for="password">Senha</label>
-        <input type="password" id="password" name="password" required autocomplete="current-password" />
-        
-        <button type="submit" class="btn-primary">Entrar</button>
-      </form>
+        <div class="auth-info">
+            <h2>🌟 Programa de Fidelidade</h2>
+            <p>Transforme suas compras em recompensas!</p>
+            
+            <div class="info-stats">
+                <div class="stat">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-text">
+                        <strong>R$ 1,00</strong>
+                        <span>= 1 ponto</span>
+                    </div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-icon">🏅</div>
+                    <div class="stat-text">
+                        <strong>4 níveis</strong>
+                        <span>de fidelidade</span>
+                    </div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-icon">🎁</div>
+                    <div class="stat-text">
+                        <strong>Muitos prêmios</strong>
+                        <span>para trocar</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      <div class="social-login">
-        <p>Ou entre com</p>
-        <button class="btn-social facebook"><i class="fab fa-facebook-f"></i> Facebook</button>
-        <button class="btn-social google"><i class="fab fa-google"></i> Google</button>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
-  </footer>
-
-  <script src="js/app.js"></script>
+    <script src="/js/app.js"></script>
 </body>
 </html>
