@@ -3,17 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Login - Tem de Tudo</title>
+    <title>Login - TemDeTudo</title>
     
-    <!-- Meta Tags PWA -->
-    <meta name="description" content="Entre na sua conta do Tem de Tudo e acesse seus pontos e recompensas">
+    <!-- Meta Tags -->
+    <meta name="description" content="Faça login no TemDeTudo e ganhe pontos em suas compras">
     <meta name="theme-color" content="#4c1d95">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Login - Tem de Tudo">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,227 +18,247 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Icons -->
-    <link rel="icon" type="image/png" href="/frontend/img/logo.png">
-    <link rel="apple-touch-icon" href="/frontend/img/logo.png">
+    <link rel="icon" type="image/png" href="/img/logo.png">
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/modern-theme.css">
-    
-    <!-- Manifest PWA -->
-    <link rel="manifest" href="/manifest.json">
 </head>
-<body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="app-header">
-            <div class="header-container">
-                <a href="/" class="logo">
-                    <img src="/frontend/img/logo.png" alt="Tem de Tudo" class="logo-image">
-                </a>
-                
-                <nav class="nav-menu">
-                    <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
-                    <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
-                    <a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
-                    <a href="/login.html" class="active"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
-                    <a href="/register.html"><i class="fas fa-user-plus icon-sm"></i> Cadastro</a>
-                </nav>
-                
-                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+<body style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    
+    <!-- Login Container -->
+    <div class="login-container" style="width: 100%; max-width: 450px; margin: 2rem;">
+        <div class="card" style="border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+            <!-- Header -->
+            <div class="card-header text-center" style="background: var(--gradient-primary); padding: var(--space-8);">
+                <div style="margin-bottom: 1.5rem;">
+                    <img src="/img/logo.png" alt="TemDeTudo" style="width: 64px; height: 64px; border-radius: var(--radius-full); border: 3px solid white;">
+                </div>
+                <h1 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">Bem-vindo de volta!</h1>
+                <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">Faça login para acumular pontos</p>
             </div>
-        </header>
-
-        <!-- Mobile Navigation -->
-        <div class="mobile-nav" id="mobileNav">
-            <div class="mobile-nav-menu">
-                <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
-                <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
-                <a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
-                <a href="/login.html" class="active"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
-                <a href="/register.html"><i class="fas fa-user-plus icon-sm"></i> Cadastro</a>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <main class="app-main">
-            <div class="container" style="max-width: 400px; margin: 3rem auto; padding: 0 1rem;">
-                
-                <!-- Login Form -->
-                <div class="card">
-                    <div class="card-header text-center">
-                        <i class="fas fa-sign-in-alt" style="color: var(--primary-purple); font-size: 1.5rem; margin-bottom: 1rem;"></i>
-                        <h1 style="color: var(--gray-900); margin-bottom: 0.5rem;">Fazer Login</h1>
-                        <p style="color: var(--gray-600);">Entre com seu email e senha para acessar sua conta e acumular pontos nos seus estabelecimentos favoritos</p>
+            
+            <!-- Login Form -->
+            <div class="card-body" style="padding: var(--space-8);">
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <!-- Email -->
+                    <div class="form-group" style="margin-bottom: var(--space-6);">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope icon-sm"></i> Email
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-control" 
+                            placeholder="seu@email.com"
+                            required
+                            autocomplete="username"
+                        >
                     </div>
-
-                    <form id="loginForm" class="card-body" style="padding: 10px;">
-                        <div class="form-group">
-                            <label for="email" class="form-label">
-                                <i class="fas fa-envelope" style="font-size: 0.875rem; margin-right: 0.5rem;"></i> Email
-                            </label>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="email" 
-                                class="form-control" 
-                                placeholder="seu@email.com" 
-                                required
-                            >
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password" class="form-label">
-                                <i class="fas fa-lock" style="font-size: 0.875rem; margin-right: 0.5rem;"></i> Senha
-                            </label>
+                    
+                    <!-- Password -->
+                    <div class="form-group" style="margin-bottom: var(--space-6);">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock icon-sm"></i> Senha
+                        </label>
+                        <div style="position: relative;">
                             <input 
                                 type="password" 
                                 id="password" 
                                 name="password" 
                                 class="form-control" 
-                                placeholder="Sua senha" 
+                                placeholder="••••••••"
                                 required
+                                autocomplete="current-password"
                             >
-                        </div>
-
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6);">
-                            <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
-                                <input type="checkbox" id="remember" name="remember" style="margin: 0;">
-                                <span style="font-size: 0.875rem; color: var(--gray-600);">Lembrar de mim</span>
-                            </label>
-                            <a href="#" onclick="forgotPassword()" style="color: var(--primary-purple); font-size: 0.875rem; text-decoration: none; font-weight: 500;">
-                                Esqueci minha senha
-                            </a>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-full btn-lg">
-                            <i class="fas fa-sign-in-alt icon-sm"></i>
-                            Entrar
-                        </button>
-                    </form>
-
-                    <div class="card-footer text-center">
-                        <p>Não tem uma conta? <a href="/register.html" style="color: var(--primary-purple); font-weight: 600;">Cadastre-se grátis</a></p>
-                    </div>
-                </div>
-
-                <!-- Login Alternatives -->
-                <div class="card mt-4">
-                    <div class="card-body text-center" style="padding: 10px;">
-                        <p style="color: var(--gray-600); margin-bottom: 1rem;">Ou faça login com</p>
-                        
-                        <div style="display: flex; gap: var(--space-3); justify-content: center;">
-                            <button class="btn btn-outline" style="padding: var(--space-3); border-radius: var(--radius-full); width: 50px; height: 50px;" onclick="loginWithGoogle()">
-                                <i class="fab fa-google" style="color: #db4437;"></i>
-                            </button>
-                            <button class="btn btn-outline" style="padding: var(--space-3); border-radius: var(--radius-full); width: 50px; height: 50px;" onclick="loginWithFacebook()">
-                                <i class="fab fa-facebook-f" style="color: #4267B2;"></i>
-                            </button>
-                            <button class="btn btn-outline" style="padding: var(--space-3); border-radius: var(--radius-full); width: 50px; height: 50px;" onclick="loginWithApple()">
-                                <i class="fab fa-apple" style="color: var(--gray-800);"></i>
+                            <button 
+                                type="button" 
+                                onclick="togglePasswordVisibility()" 
+                                style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--gray-500); cursor: pointer;"
+                            >
+                                <i id="passwordToggleIcon" class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
-                </div>
 
+                    <!-- Remember Me -->
+                    <div class="form-group" style="margin-bottom: var(--space-6); display: flex; align-items: center; justify-content: space-between;">
+                        <label style="display: flex; align-items: center; cursor: pointer; font-size: 0.875rem; color: var(--gray-600);">
+                            <input type="checkbox" id="remember" name="remember" style="margin-right: 0.5rem;">
+                            Lembrar de mim
+                        </label>
+                        <a href="#" style="color: var(--primary-color); text-decoration: none; font-size: 0.875rem;">
+                            Esqueceu a senha?
+                        </a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit" 
+                        class="btn btn-primary" 
+                        id="loginBtn"
+                        style="width: 100%; padding: 0.875rem; font-weight: 600; border-radius: var(--border-radius); margin-bottom: var(--space-4);"
+                    >
+                        <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                        Entrar
+                    </button>
+
+                    <!-- Divider -->
+                    <div style="text-align: center; margin: var(--space-6) 0;">
+                        <span style="color: var(--gray-500); font-size: 0.875rem; background: white; padding: 0 1rem; position: relative;">
+                            ou
+                        </span>
+                        <hr style="border: none; height: 1px; background: var(--gray-200); margin-top: -0.6rem; z-index: -1;">
+                    </div>
+
+                    <!-- Register Link -->
+                    <div style="text-align: center;">
+                        <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: var(--space-4);">
+                            Não tem uma conta?
+                        </p>
+                        <a 
+                            href="/register.html" 
+                            class="btn btn-outline-primary" 
+                            style="width: 100%; padding: 0.875rem; font-weight: 600; border-radius: var(--border-radius);"
+                        >
+                            <i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>
+                            Criar conta
+                        </a>
+                    </div>
+                </form>
             </div>
-        </main>
-    </div>
+        </div>
 
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; z-index: 9999; align-items: center; justify-content: center;">
-        <div style="text-align: center; color: white;">
-            <div style="border: 3px solid var(--primary-purple); border-top: 3px solid transparent; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
-            <div>Entrando...</div>
+        <!-- Back to Home -->
+        <div style="text-align: center; margin-top: var(--space-6);">
+            <a href="/index.html" style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.875rem;">
+                <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>
+                Voltar ao início
+            </a>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="/js/app-fixed.js"></script>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 2rem; border-radius: var(--border-radius); text-align: center;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+            <p>Fazendo login...</p>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" style="position: fixed; top: 20px; right: 20px; z-index: 10000;"></div>
+
     <script>
-        function toggleMobileMenu() {
-            const mobileNav = document.getElementById('mobileNav');
-            const btn = document.querySelector('.mobile-menu-btn');
-            mobileNav.classList.toggle('active');
-            btn.classList.toggle('active');
-        }
-
-        // Verificar se já está logado
-        document.addEventListener('DOMContentLoaded', function() {
-            // Redirecionar se já autenticado
-            if (window.AuthMiddleware) {
-                AuthMiddleware.redirectIfAuthenticated();
-            }
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('passwordToggleIcon');
             
-            // O sistema de autenticação já configura automaticamente o formulário loginForm
-            console.log('🔐 Sistema de login iniciado');
-        });
-
-        function forgotPassword() {
-            const email = document.getElementById('email').value;
-            if (email) {
-                alert(`Link de recuperação enviado para: ${email}\n\nFuncionalidade em desenvolvimento!`);
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'fas fa-eye-slash';
             } else {
-                const userEmail = prompt('Digite seu email para recuperação:');
-                if (userEmail) {
-                    alert(`Link de recuperação enviado para: ${userEmail}\n\nFuncionalidade em desenvolvimento!`);
+                passwordInput.type = 'password';
+                toggleIcon.className = 'fas fa-eye';
+            }
+        }
+
+        // Handle login form submission
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const loginBtn = document.getElementById('loginBtn');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            
+            // Show loading
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>Entrando...';
+            loadingOverlay.style.display = 'flex';
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        email: formData.get('email'),
+                        password: formData.get('password')
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.token) {
+                    // Save token
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    showMessage('Login realizado com sucesso!', 'success');
+                    
+                    // Redirect after short delay
+                    setTimeout(() => {
+                        window.location.href = '/pontos.html';
+                    }, 1500);
+                } else {
+                    throw new Error(data.message || 'Erro ao fazer login');
                 }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                showMessage(error.message || 'Erro ao fazer login. Tente novamente.', 'error');
+            } finally {
+                // Hide loading
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>Entrar';
+                loadingOverlay.style.display = 'none';
             }
         }
 
-        function loginWithGoogle() {
-            alert('Login com Google\n\nFuncionalidade em desenvolvimento!\n\nEm breve você poderá fazer login usando sua conta Google.');
+        // Show message function
+        function showMessage(message, type = 'info') {
+            const container = document.getElementById('messageContainer');
+            const messageDiv = document.createElement('div');
+            
+            const bgColor = type === 'success' ? 'var(--success-color)' : 
+                           type === 'error' ? 'var(--danger-color)' : 'var(--info-color)';
+            
+            messageDiv.style.cssText = `
+                background: ${bgColor};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: var(--border-radius);
+                margin-bottom: 0.5rem;
+                box-shadow: var(--shadow-lg);
+                animation: slideIn 0.3s ease;
+            `;
+            
+            messageDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}" style="margin-right: 0.5rem;"></i>
+                ${message}
+            `;
+            
+            container.appendChild(messageDiv);
+            
+            // Remove message after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
         }
 
-        function loginWithFacebook() {
-            alert('Login com Facebook\n\nFuncionalidade em desenvolvimento!\n\nEm breve você poderá fazer login usando sua conta Facebook.');
-        }
-
-        function loginWithApple() {
-            alert('Login com Apple\n\nFuncionalidade em desenvolvimento!\n\nEm breve você poderá fazer login usando sua conta Apple.');
-        }
-
-        // Show test credentials in console
-        console.log('🔐 CREDENCIAIS DE TESTE - TEM DE PONTO');
-        console.log('═══════════════════════════════════════════');
-        console.log('👑 ADMIN MASTER:');
-        console.log('   Email: admin@temdeponto.com');
-        console.log('   Senha: adm@123');
-        console.log('');
-        console.log('👤 CLIENTE TESTE:');
-        console.log('   Email: cliente@exemplo.com');
-        console.log('   Senha: qualquer coisa');
-        console.log('');
-        console.log('🏢 EMPRESA TESTE:');
-        console.log('   Email: empresa@exemplo.com');
-        console.log('   Senha: qualquer coisa');
-        console.log('═══════════════════════════════════════════');
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
-
-    <style>
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .container {
-            animation: fadeIn 0.6s ease forwards;
-        }
-
-        input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--primary-purple);
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                margin-top: 1rem !important;
-            }
-        }
-    </style>
 </body>
 </html>
