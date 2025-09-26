@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - Tem de Tudo</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Entre em contato conosco - Suporte, dúvidas e parcerias">
+    <meta name="theme-color" content="#4c1d95">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/frontend/img/logo.png">
+    <link rel="apple-touch-icon" href="/frontend/img/logo.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/" class="logo">
+                    <img src="/frontend/img/logo.png" alt="Tem de Tudo" class="logo-image">
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                    <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                    <a href="/contato.html" class="active"><i class="fas fa-envelope icon-sm"></i> Contato</a>
+                    <a href="/login.html"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
+                    <a href="/register.html"><i class="fas fa-user-plus icon-sm"></i> Cadastro</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-menu">
+                <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                <a href="/contato.html" class="active"><i class="fas fa-envelope icon-sm"></i> Contato</a>
+                <a href="/login.html"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
+                <a href="/register.html"><i class="fas fa-user-plus icon-sm"></i> Cadastro</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Hero Section -->
+            <section style="background: var(--gradient-primary); color: white; padding: var(--space-12) var(--space-6); text-align: center;">
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <i class="fas fa-comments" style="font-size: 3rem; color: var(--accent-orange); margin-bottom: 1rem; display: block;"></i>
+                    <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">Entre em Contato</h1>
+                    <p style="font-size: 1.125rem; opacity: 0.9;">Estamos aqui para ajudar! Suporte técnico, parcerias e dúvidas gerais.</p>
+                </div>
+            </section>
+
+            <!-- Contact Options -->
+            <section style="padding: var(--space-12) var(--space-6); background: var(--gray-50);">
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-8); margin-bottom: var(--space-12);">
+                        
+                        <!-- Suporte -->
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div style="background: var(--gradient-success); width: 80px; height: 80px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-6);">
+                                    <i class="fas fa-headset" style="font-size: 2rem; color: white;"></i>
+                                </div>
+                                <h3 style="font-size: 1.5rem; font-weight: 600; color: var(--gray-900); margin-bottom: 1rem;">Suporte Técnico</h3>
+                                <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Problemas com o app, pontos ou resgates? Nossa equipe está pronta para ajudar!</p>
+                                <div style="margin-bottom: 1.5rem;">
+                                    <p style="font-weight: 600; color: var(--gray-800);"><i class="fas fa-phone icon-sm"></i> (11) 4000-1234</p>
+                                    <p style="font-weight: 600; color: var(--gray-800);"><i class="fas fa-envelope icon-sm"></i> suporte@temdetudo.com</p>
+                                </div>
+                                <button class="btn btn-success" onclick="openSupport()">
+                                    <i class="fas fa-comment icon-sm"></i> Falar com Suporte
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Parcerias -->
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div style="background: var(--gradient-primary); width: 80px; height: 80px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-6);">
+                                    <i class="fab fa-whatsapp" style="font-size: 2rem; color: white;"></i>
+                                </div>
+                                <h3 style="font-size: 1.5rem; font-weight: 600; color: var(--gray-900); margin-bottom: 1rem;">Seja um Parceiro</h3>
+                                <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Tem um estabelecimento? Entre em contato diretamente pelo WhatsApp!</p>
+                                <div style="margin-bottom: 1.5rem;">
+                                    <p style="font-weight: 600; color: var(--gray-800);"><i class="fab fa-whatsapp icon-sm" style="color: #25D366;"></i> (11) 99988-7766</p>
+                                    <p style="font-weight: 600; color: var(--gray-800);"><i class="fas fa-envelope icon-sm"></i> parcerias@temdetudo.com</p>
+                                    <p style="font-size: 0.875rem; color: var(--gray-600); margin-top: 0.5rem;">Horário: Seg-Sex 8h às 18h</p>
+                                </div>
+                                <button class="btn btn-success" onclick="openPartnershipWhatsApp()">
+                                    <i class="fab fa-whatsapp icon-sm"></i> Falar sobre Parceria
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Dúvidas Gerais -->
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div style="background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%); width: 80px; height: 80px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-6);">
+                                    <i class="fas fa-question-circle" style="font-size: 2rem; color: white;"></i>
+                                </div>
+                                <h3 style="font-size: 1.5rem; font-weight: 600; color: var(--gray-900); margin-bottom: 1rem;">Dúvidas Gerais</h3>
+                                <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Informações sobre pontos, recompensas, níveis de fidelidade e mais.</p>
+                                <div style="margin-bottom: 1.5rem;">
+                                    <p style="font-weight: 600; color: var(--gray-800);"><i class="fas fa-book icon-sm" style="color: #4c1d95;"></i> Central de Ajuda Completa</p>
+                                    <p style="font-weight: 600; color: var(--gray-800);"><i class="fas fa-envelope icon-sm"></i> contato@temdetudo.com</p>
+                                </div>
+                                <a href="/faq.html" class="btn" style="background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%); color: white; text-decoration: none; display: inline-block;">
+                                    <i class="fas fa-book icon-sm"></i> Ver FAQ Completo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div style="max-width: 900px; margin: 0 auto; margin-top: var(--space-12);">
+                        <div class="card">
+                            <div class="card-header text-center" style="background: white; color: var(--gray-900);">
+                                <i class="fas fa-paper-plane icon-lg" style="color: var(--primary-purple); font-size: 2rem; margin-bottom: 1rem;"></i>
+                                <h2 style="color: var(--gray-900); margin-bottom: 0.5rem;">Formulário de Contato Unificado</h2>
+                                <p style="color: var(--gray-600);">Suporte técnico, parcerias, dúvidas gerais - tudo em um só lugar. Responderemos em até 24 horas.</p>
+                            </div>
+
+                            <form id="contactForm" class="card-body" style="padding: var(--space-8);">
+                                <div class="form-group">
+                                    <label for="nome" class="form-label">
+                                        <i class="fas fa-user" style="font-size: 0.875rem; margin-right: 0.5rem;"></i> Nome Completo
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="nome" 
+                                        name="nome" 
+                                        class="form-control" 
+                                        placeholder="Seu nome completo" 
+                                        required
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email" class="form-label">
+                                        <i class="fas fa-envelope" style="font-size: 0.875rem; margin-right: 0.5rem;"></i> Email
+                                    </label>
+                                    <input 
+                                        type="email" 
+                                        id="email" 
+                                        name="email" 
+                                        class="form-control" 
+                                        placeholder="seu@email.com" 
+                                        required
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="telefone" class="form-label">
+                                        <i class="fas fa-phone" style="font-size: 0.875rem; margin-right: 0.5rem;"></i> Telefone
+                                    </label>
+                                    <input 
+                                        type="tel" 
+                                        id="telefone" 
+                                        name="telefone" 
+                                        class="form-control" 
+                                        placeholder="(11) 99999-9999"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="assunto" class="form-label">
+                                        <i class="fas fa-tag" style="font-size: 0.875rem; margin-right: 0.5rem;"></i> Assunto
+                                    </label>
+                                    <select id="assunto" name="assunto" class="form-control" required>
+                                        <option value="">Selecione um assunto</option>
+                                        <option value="suporte">Suporte Técnico</option>
+                                        <option value="parceria">Parceria/Estabelecimento</option>
+                                        <option value="pontos">Dúvidas sobre Pontos</option>
+                                        <option value="recompensas">Recompensas e Resgates</option>
+                                        <option value="conta">Problemas com Conta</option>
+                                        <option value="sugestao">Sugestão/Melhoria</option>
+                                        <option value="outro">Outro</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="mensagem" class="form-label">
+                                        <i class="fas fa-comment" style="font-size: 0.875rem; margin-right: 0.5rem;"></i> Mensagem
+                                    </label>
+                                    <textarea 
+                                        id="mensagem" 
+                                        name="mensagem" 
+                                        class="form-control" 
+                                        rows="6" 
+                                        placeholder="Descreva sua dúvida, problema ou sugestão..."
+                                        required
+                                        style="resize: vertical; min-height: 120px;"
+                                    ></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-full btn-lg">
+                                    <i class="fas fa-paper-plane icon-sm"></i>
+                                    Enviar Mensagem
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; z-index: 9999; align-items: center; justify-content: center;">
+        <div style="text-align: center; color: white;">
+            <div style="border: 3px solid var(--primary-blue); border-top: 3px solid transparent; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+            <div>Enviando mensagem...</div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/app-mobile.js"></script>
+    <script>
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const btn = document.querySelector('.mobile-menu-btn');
+            mobileNav.classList.toggle('active');
+            btn.classList.toggle('active');
+        }
+
+        // Contact form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactForm = document.getElementById('contactForm');
+            const telefoneInput = document.getElementById('telefone');
+
+            // Phone mask
+            if (telefoneInput) {
+                telefoneInput.addEventListener('input', function() {
+                    let value = this.value.replace(/\D/g, '');
+                    if (value.length <= 11) {
+                        value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                        if (value.length < 14) {
+                            value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                        }
+                        this.value = value;
+                    }
+                });
+            }
+
+            // Form submission
+            if (contactForm) {
+                contactForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const loadingOverlay = document.getElementById('loadingOverlay');
+                    loadingOverlay.style.display = 'flex';
+
+                    try {
+                        const formData = new FormData(this);
+                        const data = Object.fromEntries(formData);
+                        
+                        // Simulate sending message
+                        await new Promise(resolve => setTimeout(resolve, 3000));
+                        
+                        // Save to localStorage for demo
+                        const messages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+                        messages.push({
+                            ...data,
+                            id: Date.now(),
+                            timestamp: new Date().toISOString(),
+                            status: 'enviado'
+                        });
+                        localStorage.setItem('contactMessages', JSON.stringify(messages));
+
+                        alert('Mensagem enviada com sucesso!\n\nRecebemos sua mensagem e responderemos em até 24 horas.\n\nVerifique sua caixa de entrada e spam.');
+                        
+                        // Reset form
+                        this.reset();
+                        
+                    } catch (error) {
+                        console.error('Erro ao enviar mensagem:', error);
+                        alert('Erro ao enviar mensagem. Tente novamente ou entre em contato pelos telefones listados.');
+                    } finally {
+                        loadingOverlay.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        // Contact functions
+        function openSupport() {
+            const options = [
+                '📞 Ligar para (11) 4000-1234',
+                '📧 Enviar email para suporte@temdetudo.com',
+                '💬 Abrir chat online',
+                '❌ Cancelar'
+            ];
+            
+            const choice = prompt(`Escolha como deseja falar com o suporte:\n\n1. ${options[0]}\n2. ${options[1]}\n3. ${options[2]}\n4. ${options[3]}\n\nDigite o número da opção:`);
+            
+            switch(choice) {
+                case '1':
+                    window.open('tel:+551140001234');
+                    break;
+                case '2':
+                    window.open('mailto:suporte@temdetudo.com?subject=Suporte Técnico');
+                    break;
+                case '3':
+                    openChat();
+                    break;
+            }
+        }
+
+        function openPartnershipWhatsApp() {
+            const phone = '5511999887766';
+            const message = encodeURIComponent('Olá! Tenho interesse em ser parceiro do Tem de Tudo. Gostaria de saber mais sobre o programa de fidelidade para estabelecimentos.');
+            window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+        }
+
+        function openSupportWhatsApp() {
+            const phone = '5511940001234';
+            const message = encodeURIComponent('Olá! Preciso de ajuda com o app Tem de Tudo.');
+            window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+        }
+
+        function openEmailSupport() {
+            window.open('mailto:suporte@temdetudo.com?subject=Suporte - Tem de Tudo&body=Olá,%0D%0A%0D%0ADescreva aqui sua dúvida ou problema:%0D%0A%0D%0A----%0D%0APor favor, inclua informações como:%0D%0A- Seu nome completo%0D%0A- Telefone para contato%0D%0A- Tipo de problema%0D%0A- Dispositivo que está usando');
+        }
+    </script>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        /* Responsivo para formulário */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .card-body {
+                padding: var(--space-6) !important;
+            }
+            
+            section[style*="padding"] {
+                padding: var(--space-8) var(--space-4) !important;
+            }
+        }
+        
+        /* Melhoria no layout desktop */
+        @media (min-width: 1024px) {
+            .form-grid {
+                gap: var(--space-8) !important;
+            }
+        }
+    </style>
+</body>
+</html>

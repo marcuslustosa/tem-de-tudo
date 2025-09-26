@@ -7,18 +7,14 @@ services:
     rootDir: backend
     dockerfilePath: backend/Dockerfile
     envVars:
-      - key: APP_NAME
-        value: "Tem de Tudo"
+      - key: APP_KEY
+        sync: false   # cole a chave gerada pelo php artisan key:generate --show
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: false
-      - key: APP_KEY
-        sync: false   # cole a chave gerada pelo php artisan key:generate --show
       - key: APP_URL
         value: https://tem-de-tudo.onrender.com
-      - key: APP_LOCALE
-        value: pt_BR
 
       - key: DB_CONNECTION
         value: pgsql
@@ -42,15 +38,6 @@ services:
         fromDatabase:
           name: temdetudo-db
           property: password
-
-      - key: SESSION_DRIVER
-        value: database
-      - key: CACHE_DRIVER
-        value: database
-      - key: QUEUE_CONNECTION
-        value: database
-      - key: LOG_LEVEL
-        value: error
 
     postDeployCommand: |
       php artisan migrate --force

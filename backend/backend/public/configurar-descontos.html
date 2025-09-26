@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Descontos - Tem de Tudo</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    
+    <style>
+        .discount-level {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--gray-200);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: var(--transition-fast);
+        }
+        
+        .discount-level:hover {
+            border-color: var(--primary-purple);
+            box-shadow: 0 4px 12px rgba(76, 29, 149, 0.1);
+        }
+        
+        .discount-level.active {
+            border-color: var(--success-green);
+            background: var(--success-50);
+        }
+        
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .level-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .level-bronze { background: #CD7F32; color: white; }
+        .level-silver { background: #C0C0C0; color: white; }
+        .level-gold { background: #FFD700; color: #333; }
+        .level-platinum { background: #E5E4E2; color: #333; }
+        .level-diamond { background: #B9F2FF; color: #333; }
+        
+        .points-input {
+            width: 120px;
+            margin-right: 1rem;
+        }
+        
+        .percentage-input {
+            width: 80px;
+        }
+        
+        .preview-section {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .customer-simulator {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .customer-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            text-align: center;
+            border: 2px solid var(--gray-200);
+        }
+        
+        .customer-card.eligible {
+            border-color: var(--success-green);
+            background: var(--success-50);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/" class="logo">
+                    <img src="/frontend/img/logo.png" alt="Tem de Tudo" class="logo-image">
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/admin.html"><i class="fas fa-tachometer-alt" style="font-size: 0.875rem; margin-right: 0.5rem;"></i> Dashboard</a>
+                    <a href="/configurar-descontos.html" class="active"><i class="fas fa-percent" style="font-size: 0.875rem; margin-right: 0.5rem;"></i> Descontos</a>
+                    <a href="/empresa-qrcode.html"><i class="fas fa-qrcode" style="font-size: 0.875rem; margin-right: 0.5rem;"></i> QR Codes</a>
+                    <a href="/relatorios-financeiros.html"><i class="fas fa-chart-bar" style="font-size: 0.875rem; margin-right: 0.5rem;"></i> Relatórios</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <main class="app-main" style="padding: var(--space-8) var(--space-6);">
+            <div style="max-width: 1000px; margin: 0 auto;">
+                
+                <!-- Header da página -->
+                <div style="text-align: center; margin-bottom: 3rem;">
+                    <h1 style="color: var(--primary-purple); margin-bottom: 1rem;">
+                        <i class="fas fa-percent"></i> Configurar Descontos por Pontos
+                    </h1>
+                    <p style="color: var(--gray-600); font-size: 1.125rem;">
+                        Configure os níveis de desconto que seus clientes podem obter acumulando pontos
+                    </p>
+                </div>
+
+                <!-- Informações do Plano -->
+                <div class="card" style="margin-bottom: 2rem;">
+                    <div class="card-body" style="padding: 10px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; text-align: center;">
+                            <div>
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--primary-purple);">Premium</div>
+                                <div style="color: var(--gray-600);">Seu Plano Atual</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--accent-orange);">1.5x</div>
+                                <div style="color: var(--gray-600);">Multiplicador de Pontos</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--success-green);">20%</div>
+                                <div style="color: var(--gray-600);">Desconto Máximo Permitido</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--blue-500);">Ilimitado</div>
+                                <div style="color: var(--gray-600);">Níveis de Desconto</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuração dos Níveis -->
+                <div class="card" style="margin-bottom: 2rem;">
+                    <div class="card-header">
+                        <h3><i class="fas fa-cog"></i> Configurar Níveis de Desconto</h3>
+                        <p style="margin: 0.5rem 0 0; color: var(--gray-600);">
+                            Defina quantos pontos são necessários para cada nível de desconto
+                        </p>
+                    </div>
+                    
+                    <div class="card-body" style="padding: 10px;">
+                        <!-- Níveis Padrão -->
+                        <div id="discount-levels-container">
+                            
+                            <!-- Nível Bronze -->
+                            <div class="discount-level active" data-level="bronze">
+                                <div class="level-header">
+                                    <div>
+                                        <span class="level-badge level-bronze">🥉 Bronze</span>
+                                        <span style="margin-left: 1rem; color: var(--gray-600);">Nível Inicial</span>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline" onclick="toggleLevel('bronze')">
+                                        <i class="fas fa-eye"></i> Ativo
+                                    </button>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: auto auto 1fr; gap: 1rem; align-items: center;">
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Pontos Necessários:</label>
+                                        <input type="number" class="form-control points-input" value="500" min="1" max="50000">
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Desconto:</label>
+                                        <div style="display: flex; align-items: center;">
+                                            <input type="number" class="form-control percentage-input" value="5" min="0.1" max="20" step="0.1">
+                                            <span style="margin-left: 0.5rem; font-weight: 600;">%</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Descrição:</label>
+                                        <input type="text" class="form-control" value="5% de desconto em todas as compras" placeholder="Descreva o benefício">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nível Prata -->
+                            <div class="discount-level active" data-level="silver">
+                                <div class="level-header">
+                                    <div>
+                                        <span class="level-badge level-silver">🥈 Prata</span>
+                                        <span style="margin-left: 1rem; color: var(--gray-600);">Cliente Frequente</span>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline" onclick="toggleLevel('silver')">
+                                        <i class="fas fa-eye"></i> Ativo
+                                    </button>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: auto auto 1fr; gap: 1rem; align-items: center;">
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Pontos Necessários:</label>
+                                        <input type="number" class="form-control points-input" value="1000" min="1" max="50000">
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Desconto:</label>
+                                        <div style="display: flex; align-items: center;">
+                                            <input type="number" class="form-control percentage-input" value="10" min="0.1" max="20" step="0.1">
+                                            <span style="margin-left: 0.5rem; font-weight: 600;">%</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Descrição:</label>
+                                        <input type="text" class="form-control" value="10% de desconto em todas as compras" placeholder="Descreva o benefício">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nível Ouro -->
+                            <div class="discount-level active" data-level="gold">
+                                <div class="level-header">
+                                    <div>
+                                        <span class="level-badge level-gold">🥇 Ouro</span>
+                                        <span style="margin-left: 1rem; color: var(--gray-600);">Cliente Fiel</span>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline" onclick="toggleLevel('gold')">
+                                        <i class="fas fa-eye"></i> Ativo
+                                    </button>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: auto auto 1fr; gap: 1rem; align-items: center;">
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Pontos Necessários:</label>
+                                        <input type="number" class="form-control points-input" value="2000" min="1" max="50000">
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Desconto:</label>
+                                        <div style="display: flex; align-items: center;">
+                                            <input type="number" class="form-control percentage-input" value="15" min="0.1" max="20" step="0.1">
+                                            <span style="margin-left: 0.5rem; font-weight: 600;">%</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Descrição:</label>
+                                        <input type="text" class="form-control" value="15% de desconto em todas as compras" placeholder="Descreva o benefício">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nível Platina -->
+                            <div class="discount-level active" data-level="platinum">
+                                <div class="level-header">
+                                    <div>
+                                        <span class="level-badge level-platinum">💎 Platina</span>
+                                        <span style="margin-left: 1rem; color: var(--gray-600);">Cliente VIP</span>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline" onclick="toggleLevel('platinum')">
+                                        <i class="fas fa-eye"></i> Ativo
+                                    </button>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: auto auto 1fr; gap: 1rem; align-items: center;">
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Pontos Necessários:</label>
+                                        <input type="number" class="form-control points-input" value="5000" min="1" max="50000">
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Desconto:</label>
+                                        <div style="display: flex; align-items: center;">
+                                            <input type="number" class="form-control percentage-input" value="20" min="0.1" max="20" step="0.1">
+                                            <span style="margin-left: 0.5rem; font-weight: 600;">%</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label" style="margin-bottom: 0.25rem;">Descrição:</label>
+                                        <input type="text" class="form-control" value="20% de desconto VIP em tudo" placeholder="Descreva o benefício">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div style="margin-top: 2rem; text-align: center;">
+                            <button type="button" class="btn btn-outline" onclick="addCustomLevel()">
+                                <i class="fas fa-plus"></i> Adicionar Nível Personalizado
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="saveDiscountLevels()">
+                                <i class="fas fa-save"></i> Salvar Configurações
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview dos Níveis -->
+                <div class="preview-section">
+                    <h4 style="text-align: center; margin-bottom: 1.5rem; color: var(--primary-purple);">
+                        <i class="fas fa-eye"></i> Preview: Como seus clientes verão
+                    </h4>
+                    
+                    <div style="background: white; border-radius: var(--radius-lg); padding: 1.5rem;">
+                        <h5 style="margin-bottom: 1rem;">🎁 Descontos Disponíveis</h5>
+                        
+                        <div id="levels-preview" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+                            <!-- Será preenchido dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulador de Clientes -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-users"></i> Simulador de Clientes</h3>
+                        <p style="margin: 0.5rem 0 0; color: var(--gray-600);">
+                            Veja como diferentes tipos de clientes se beneficiariam dos seus descontos
+                        </p>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="customer-simulator">
+                            
+                            <!-- Cliente Novo -->
+                            <div class="customer-card">
+                                <h5 style="margin-bottom: 0.5rem; color: var(--gray-700);">👶 Cliente Novo</h5>
+                                <div style="font-size: 1.25rem; font-weight: 600; margin: 0.5rem 0;">150 pontos</div>
+                                <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                    Precisa de mais <strong>350 pontos</strong><br>
+                                    para primeiro desconto
+                                </div>
+                                <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--gray-500);">
+                                    ≈ R$ 350 em compras
+                                </div>
+                            </div>
+
+                            <!-- Cliente Frequente -->
+                            <div class="customer-card eligible">
+                                <h5 style="margin-bottom: 0.5rem; color: var(--success-700);">😊 Cliente Frequente</h5>
+                                <div style="font-size: 1.25rem; font-weight: 600; margin: 0.5rem 0; color: var(--success-green);">750 pontos</div>
+                                <div style="color: var(--success-700); font-size: 0.875rem;">
+                                    <strong>✅ 5% desconto disponível</strong><br>
+                                    (Nível Bronze)
+                                </div>
+                                <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--success-600);">
+                                    Em compra de R$ 100 = R$ 95
+                                </div>
+                            </div>
+
+                            <!-- Cliente Fiel -->
+                            <div class="customer-card eligible">
+                                <h5 style="margin-bottom: 0.5rem; color: var(--success-700);">🤝 Cliente Fiel</h5>
+                                <div style="font-size: 1.25rem; font-weight: 600; margin: 0.5rem 0; color: var(--success-green);">1500 pontos</div>
+                                <div style="color: var(--success-700); font-size: 0.875rem;">
+                                    <strong>✅ 10% desconto disponível</strong><br>
+                                    (Nível Prata)
+                                </div>
+                                <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--success-600);">
+                                    Em compra de R$ 100 = R$ 90
+                                </div>
+                            </div>
+
+                            <!-- Cliente VIP -->
+                            <div class="customer-card eligible">
+                                <h5 style="margin-bottom: 0.5rem; color: var(--success-700);">👑 Cliente VIP</h5>
+                                <div style="font-size: 1.25rem; font-weight: 600; margin: 0.5rem 0; color: var(--success-green);">8000 pontos</div>
+                                <div style="color: var(--success-700); font-size: 0.875rem;">
+                                    <strong>✅ 20% desconto disponível</strong><br>
+                                    (Nível Platina)
+                                </div>
+                                <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--success-600);">
+                                    Em compra de R$ 100 = R$ 80
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/pontos-api.js"></script>
+    <script>
+        let discountLevels = [];
+
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const btn = document.querySelector('.mobile-menu-btn');
+            mobileNav.classList.toggle('active');
+            btn.classList.toggle('active');
+        }
+
+        function toggleLevel(levelId) {
+            const level = document.querySelector(`[data-level="${levelId}"]`);
+            const button = level.querySelector('button');
+            
+            if (level.classList.contains('active')) {
+                level.classList.remove('active');
+                level.style.opacity = '0.5';
+                button.innerHTML = '<i class="fas fa-eye-slash"></i> Inativo';
+                button.className = 'btn btn-sm btn-outline-danger';
+            } else {
+                level.classList.add('active');
+                level.style.opacity = '1';
+                button.innerHTML = '<i class="fas fa-eye"></i> Ativo';
+                button.className = 'btn btn-sm btn-outline';
+            }
+            
+            updatePreview();
+        }
+
+        function addCustomLevel() {
+            const container = document.getElementById('discount-levels-container');
+            const customId = 'custom_' + Date.now();
+            
+            const customLevel = document.createElement('div');
+            customLevel.className = 'discount-level active';
+            customLevel.setAttribute('data-level', customId);
+            
+            customLevel.innerHTML = `
+                <div class="level-header">
+                    <div>
+                        <span class="level-badge" style="background: var(--primary-purple); color: white;">⭐ Personalizado</span>
+                        <span style="margin-left: 1rem; color: var(--gray-600);">Nível Customizado</span>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-sm btn-outline" onclick="toggleLevel('${customId}')">
+                            <i class="fas fa-eye"></i> Ativo
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeLevel('${customId}')" style="margin-left: 0.5rem;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: auto auto 1fr; gap: 1rem; align-items: center;">
+                    <div>
+                        <label class="form-label" style="margin-bottom: 0.25rem;">Pontos Necessários:</label>
+                        <input type="number" class="form-control points-input" value="3000" min="1" max="50000">
+                    </div>
+                    <div>
+                        <label class="form-label" style="margin-bottom: 0.25rem;">Desconto:</label>
+                        <div style="display: flex; align-items: center;">
+                            <input type="number" class="form-control percentage-input" value="12" min="0.1" max="20" step="0.1">
+                            <span style="margin-left: 0.5rem; font-weight: 600;">%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label" style="margin-bottom: 0.25rem;">Descrição:</label>
+                        <input type="text" class="form-control" value="Desconto especial personalizado" placeholder="Descreva o benefício">
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(customLevel);
+            updatePreview();
+            
+            showToast('Nível personalizado adicionado! Configure os valores.', 'success');
+        }
+
+        function removeLevel(levelId) {
+            if (confirm('Tem certeza que deseja remover este nível?')) {
+                document.querySelector(`[data-level="${levelId}"]`).remove();
+                updatePreview();
+                showToast('Nível removido com sucesso', 'info');
+            }
+        }
+
+        function updatePreview() {
+            const container = document.getElementById('levels-preview');
+            const levels = document.querySelectorAll('.discount-level.active');
+            
+            container.innerHTML = '';
+            
+            levels.forEach(level => {
+                const points = level.querySelector('.points-input').value;
+                const percentage = level.querySelector('.percentage-input').value;
+                const description = level.querySelector('input[type="text"]').value;
+                const badge = level.querySelector('.level-badge').textContent;
+                
+                const previewCard = document.createElement('div');
+                previewCard.style.cssText = `
+                    background: var(--gradient-primary);
+                    color: white;
+                    padding: 1rem;
+                    border-radius: var(--radius-lg);
+                    text-align: center;
+                `;
+                
+                previewCard.innerHTML = `
+                    <div style="font-size: 0.875rem; margin-bottom: 0.5rem; opacity: 0.9;">${badge}</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem;">${percentage}%</div>
+                    <div style="font-size: 0.75rem; opacity: 0.8;">${parseInt(points).toLocaleString('pt-BR')} pontos</div>
+                `;
+                
+                container.appendChild(previewCard);
+            });
+        }
+
+        async function saveDiscountLevels() {
+            const levels = document.querySelectorAll('.discount-level.active');
+            const levelsData = [];
+            
+            levels.forEach(level => {
+                const points = parseInt(level.querySelector('.points-input').value);
+                const percentage = parseFloat(level.querySelector('.percentage-input').value);
+                const description = level.querySelector('input[type="text"]').value;
+                const badge = level.querySelector('.level-badge').textContent;
+                
+                levelsData.push({
+                    points_required: points,
+                    discount_percentage: percentage,
+                    title: badge.replace(/[^\w\s]/gi, '').trim(),
+                    description: description
+                });
+            });
+            
+            // Ordenar por pontos
+            levelsData.sort((a, b) => a.points_required - b.points_required);
+            
+            try {
+                showLoading('Salvando configurações...');
+                
+                // Simular salvamento (substituir por chamada real da API)
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                hideLoading();
+                showSuccess('Níveis de desconto configurados com sucesso!');
+                
+                console.log('Níveis salvos:', levelsData);
+                
+            } catch (error) {
+                hideLoading();
+                showError('Erro ao salvar configurações: ' + error.message);
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePreview();
+            
+            // Atualizar preview quando campos mudarem
+            document.addEventListener('input', function(e) {
+                if (e.target.matches('.points-input, .percentage-input, input[type="text"]')) {
+                    updatePreview();
+                }
+            });
+        });
+
+        // Funções auxiliares
+        function showLoading(message) {
+            if (window.showLoading) {
+                window.showLoading(message);
+            }
+        }
+
+        function hideLoading() {
+            if (window.hideLoading) {
+                window.hideLoading();
+            }
+        }
+
+        function showSuccess(message) {
+            if (window.showToast) {
+                window.showToast(message, 'success');
+            } else {
+                alert(message);
+            }
+        }
+
+        function showError(message) {
+            if (window.showToast) {
+                window.showToast(message, 'error');
+            } else {
+                alert(message);
+            }
+        }
+
+        function showToast(message, type) {
+            if (window.showToast) {
+                window.showToast(message, type);
+            } else {
+                console.log(`${type}: ${message}`);
+            }
+        }
+    </script>
+</body>
+</html>

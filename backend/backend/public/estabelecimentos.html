@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estabelecimentos - Tem de Tudo</title>
+    
+    <!-- Meta Tags PWA -->
+    <meta name="description" content="Descubra estabelecimentos parceiros onde você pode acumular pontos">
+    <meta name="theme-color" content="#4c1d95">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Fallback Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.4.0/css/all.css" crossorigin="anonymous">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/frontend/img/logo.png">
+    <link rel="apple-touch-icon" href="/frontend/img/logo.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header glass-header">
+            <div class="header-container">
+                <a href="/" class="logo">
+                    <img src="/frontend/img/logo.png" alt="Tem de Tudo" class="logo-image">
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                    <a href="/estabelecimentos.html" class="active"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                    <a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
+                    <a href="/login.html"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
+                    <a href="/register.html"><i class="fas fa-user-plus icon-sm"></i> Cadastro</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-menu">
+                <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                <a href="/estabelecimentos.html" class="active"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                <a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
+                <a href="/login.html"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
+                <a href="/register.html"><i class="fas fa-user-plus icon-sm"></i> Cadastro</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Hero Section -->
+            <section style="background: var(--gradient-primary); color: white; padding: var(--space-12) var(--space-6); text-align: center;">
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Estabelecimentos Parceiros</h1>
+                    <p style="font-size: 1.25rem; opacity: 0.9; margin-bottom: 2rem;">Mais de 50 estabelecimentos onde você acumula pontos em cada compra</p>
+                    
+                    <!-- Search Bar -->
+                    <div style="position: relative; max-width: 600px; margin: 0 auto;">
+                        <input 
+                            type="text" 
+                            id="searchInput"
+                            placeholder="Buscar por nome ou categoria..." 
+                            style="width: 100%; padding: 1rem 1rem 1rem 3rem; border: none; border-radius: var(--radius-lg); font-size: 1rem; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);"
+                        >
+                        <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--gray-500);"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filters -->
+            <section style="padding: var(--space-8) var(--space-6) var(--space-4);">
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center;">
+                        <button class="filter-chip active" data-filter="all" onclick="setFilter('all')">
+                            Todos
+                        </button>
+                        <button class="filter-chip" data-filter="restaurantes" onclick="setFilter('restaurantes')">
+                            🍽️ Restaurantes
+                        </button>
+                        <button class="filter-chip" data-filter="lojas" onclick="setFilter('lojas')">
+                            🛍️ Lojas
+                        </button>
+                        <button class="filter-chip" data-filter="servicos" onclick="setFilter('servicos')">
+                            ⚙️ Serviços
+                        </button>
+                        <button class="filter-chip" data-filter="farmacias" onclick="setFilter('farmacias')">
+                            💊 Farmácias
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Establishments Grid -->
+            <section style="padding: 0 var(--space-6) var(--space-16);">
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <div class="establishments-grid" id="establishmentsGrid">
+
+                        <!-- Burger House -->
+                        <div class="card establishment-card" data-category="restaurantes">
+                            <div style="position: relative; height: 200px; background: linear-gradient(135deg, #f59e0b, #f97316); overflow: hidden;">
+                                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=200&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(245,158,11,0.8), rgba(249,115,22,0.8));"></div>
+                                <div style="position: absolute; top: 1rem; left: 1rem; width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: white;">
+                                    <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=60&h=60&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px);">
+                                    <i class="fas fa-heart" style="color: var(--primary-purple);"></i>
+                                </div>
+                                <div style="position: absolute; bottom: 1rem; left: 1rem; color: white;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                        <span style="font-weight: 600;">4.9</span>
+                                        <span style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.875rem;">+1.5x pontos</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="padding: var(--space-6);">
+                                <div style="margin-bottom: 1rem;">
+                                    <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 0.5rem;">Burger House</h3>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Hamburgueria • Fast Food</p>
+                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Os melhores hambúrgueres artesanais da cidade com ingredientes premium.</p>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-lg);">
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-clock" style="color: var(--primary-purple); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">⏱️ 25-35 min</p>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-coins" style="color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$10 = 10 pontos</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <button class="btn btn-primary btn-sm" onclick="showMenu('burger-house')">
+                                        <i class="fas fa-utensils"></i> Ver Cardápio
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="visitEstablishment('burger-house')">
+                                        <i class="fas fa-map-marker-alt"></i> Visitar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fashion Store -->
+                        <div class="card establishment-card" data-category="lojas">
+                            <div style="position: relative; height: 200px; background: linear-gradient(135deg, #ec4899, #f472b6); overflow: hidden;">
+                                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=200&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(236,72,153,0.8), rgba(244,114,182,0.8));"></div>
+                                <div style="position: absolute; top: 1rem; left: 1rem; width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: white;">
+                                    <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=60&h=60&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px);">
+                                    <i class="fas fa-heart" style="color: var(--primary-purple);"></i>
+                                </div>
+                                <div style="position: absolute; bottom: 1rem; left: 1rem; color: white;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                        <span style="font-weight: 600;">4.7</span>
+                                        <span style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.875rem;">+3x pontos</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="padding: var(--space-6);">
+                                <div style="margin-bottom: 1rem;">
+                                    <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 0.5rem;">Fashion Store</h3>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Roupas • Acessórios</p>
+                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Moda jovem e moderna com as últimas tendências nacionais e importadas.</p>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-lg);">
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-map-marker-alt" style="color: var(--primary-purple); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">📍 Centro</p>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-coins" style="color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$20 = 20 pontos</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <button class="btn btn-primary btn-sm" onclick="showProducts('fashion-store')">
+                                        <i class="fas fa-shopping-bag"></i> Ver Produtos
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="visitEstablishment('fashion-store')">
+                                        <i class="fas fa-store"></i> Visitar Loja
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Farmácia Saúde+ -->
+                        <div class="card establishment-card" data-category="farmacias">
+                            <div style="position: relative; height: 200px; background: linear-gradient(135deg, #059669, #10b981); overflow: hidden;">
+                                <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=200&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(5,150,105,0.8), rgba(16,185,129,0.8));"></div>
+                                <div style="position: absolute; top: 1rem; left: 1rem; width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: white;">
+                                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=60&h=60&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px);">
+                                    <i class="fas fa-heart" style="color: var(--primary-purple);"></i>
+                                </div>
+                                <div style="position: absolute; bottom: 1rem; left: 1rem; color: white;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                        <span style="font-weight: 600;">4.9</span>
+                                        <span style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.875rem;">+2x pontos</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="padding: var(--space-6);">
+                                <div style="margin-bottom: 1rem;">
+                                    <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 0.5rem;">Farmácia Saúde+</h3>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Farmácia • Medicamentos</p>
+                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Medicamentos, produtos de higiene e suplementos com os melhores preços.</p>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-lg);">
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-truck" style="color: var(--primary-purple); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">🚚 Delivery</p>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-coins" style="color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$5 = 15 pontos</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <button class="btn btn-success btn-sm" onclick="showProducts('farmacia-saude')">
+                                        <i class="fas fa-pills"></i> Ver Produtos
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="visitEstablishment('farmacia-saude')">
+                                        <i class="fas fa-map-marker-alt"></i> Localizar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Studio Hair -->
+                        <div class="card establishment-card" data-category="servicos">
+                            <div style="position: relative; height: 200px; background: linear-gradient(135deg, #8b5cf6, #a78bfa); overflow: hidden;">
+                                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=200&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(139,92,246,0.8), rgba(167,139,250,0.8));"></div>
+                                <div style="position: absolute; top: 1rem; left: 1rem; width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: white;">
+                                    <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=60&h=60&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px);">
+                                    <i class="fas fa-heart" style="color: var(--primary-purple);"></i>
+                                </div>
+                                <div style="position: absolute; bottom: 1rem; left: 1rem; color: white;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                        <span style="font-weight: 600;">4.9</span>
+                                        <span style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.875rem;">+2x pontos</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="padding: var(--space-6);">
+                                <div style="margin-bottom: 1rem;">
+                                    <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 0.5rem;">Studio Hair</h3>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Salão • Beleza</p>
+                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Cortes modernos, coloração e tratamentos com profissionais especializados.</p>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-lg);">
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-calendar" style="color: var(--primary-purple); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">📅 Agendamento</p>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-coins" style="color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$15 = 30 pontos</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <button class="btn btn-accent btn-sm" onclick="showServices('studio-hair')">
+                                        <i class="fas fa-cut"></i> Ver Serviços
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="scheduleAppointment('studio-hair')">
+                                        <i class="fas fa-calendar-plus"></i> Agendar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pizzaria Italiana -->
+                        <div class="card establishment-card" data-category="restaurantes">
+                            <div style="position: relative; height: 200px; background: linear-gradient(135deg, #dc2626, #ef4444); overflow: hidden;">
+                                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=200&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(220,38,38,0.8), rgba(239,68,68,0.8));"></div>
+                                <div style="position: absolute; top: 1rem; left: 1rem; width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: white;">
+                                    <img src="https://images.unsplash.com/photo-1579952363873-27d3bfad9c0d?w=60&h=60&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px);">
+                                    <i class="fas fa-heart" style="color: var(--primary-purple);"></i>
+                                </div>
+                                <div style="position: absolute; bottom: 1rem; left: 1rem; color: white;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                        <span style="font-weight: 600;">4.6</span>
+                                        <span style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.875rem;">+1.5x pontos</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="padding: var(--space-6);">
+                                <div style="margin-bottom: 1rem;">
+                                    <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 0.5rem;">Pizzaria Italiana</h3>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Pizzaria • Italiana</p>
+                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Pizzas artesanais com massa fina e ingredientes importados da Itália.</p>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-lg);">
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-clock" style="color: var(--primary-purple); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">⏱️ 30-45 min</p>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-coins" style="color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$25 = 25 pontos</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <button class="btn btn-primary btn-sm" onclick="showMenu('pizzaria-italiana')">
+                                        <i class="fas fa-pizza-slice"></i> Ver Cardápio
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="orderOnline('pizzaria-italiana')">
+                                        <i class="fas fa-shopping-cart"></i> Pedir Online
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tech Store -->
+                        <div class="card establishment-card" data-category="lojas">
+                            <div style="position: relative; height: 200px; background: linear-gradient(135deg, #1e40af, #3b82f6); overflow: hidden;">
+                                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=200&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(30,64,175,0.8), rgba(59,130,246,0.8));"></div>
+                                <div style="position: absolute; top: 1rem; left: 1rem; width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: white;">
+                                    <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=60&h=60&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px);">
+                                    <i class="fas fa-heart" style="color: var(--primary-purple);"></i>
+                                </div>
+                                <div style="position: absolute; bottom: 1rem; left: 1rem; color: white;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                        <span style="font-weight: 600;">4.8</span>
+                                        <span style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.875rem;">+2x pontos</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="padding: var(--space-6);">
+                                <div style="margin-bottom: 1rem;">
+                                    <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 0.5rem;">Tech Store</h3>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Eletrônicos • Tecnologia</p>
+                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Smartphones, notebooks e acessórios das principais marcas do mercado.</p>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-lg);">
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-shipping-fast" style="color: var(--primary-purple); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">🚚 Entrega rápida</p>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-coins" style="color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$100 = 200 pontos</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <button class="btn btn-primary btn-sm" onclick="showProducts('tech-store')">
+                                        <i class="fas fa-mobile-alt"></i> Ver Produtos
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="visitEstablishment('tech-store')">
+                                        <i class="fas fa-store"></i> Visitar Loja
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- Load More Button -->
+                    <div style="text-align: center; margin-top: var(--space-12);">
+                        <button id="loadMoreBtn" class="btn btn-outline btn-lg" onclick="loadMoreEstablishments()">
+                            <i class="fas fa-plus"></i> Carregar Mais Estabelecimentos
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer style="background: var(--gray-900); color: white; padding: var(--space-12) var(--space-6);">
+            <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+                <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
+            </div>
+        </footer>
+    </div>
+
+    <style>
+        .filter-chip {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--gray-300);
+            background: white;
+            color: var(--gray-700);
+            border-radius: var(--radius-full);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--primary-purple);
+            color: var(--primary-purple);
+        }
+
+        .filter-chip.active {
+            background: var(--primary-purple);
+            border-color: var(--primary-purple);
+            color: white;
+        }
+
+        .establishments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .establishment-card {
+            transition: all var(--transition-normal);
+            cursor: pointer;
+        }
+
+        .establishment-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(76, 29, 149, 0.15);
+        }
+
+        .establishment-card.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .establishments-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .nav-menu {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+
+        /* Animações do Modal */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Responsivo para Modal */
+        @media (max-width: 768px) {
+            .lightbox-content {
+                margin: 1rem !important;
+                max-height: 95vh !important;
+            }
+            
+            .lightbox-body {
+                padding: 1.5rem !important;
+            }
+            
+            .lightbox-header {
+                padding: 1rem 1.5rem !important;
+            }
+        }
+        
+        /* Força a exibição dos ícones */
+        .fas, .far, .fab {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "FontAwesome" !important;
+            font-weight: 900 !important;
+            display: inline-block !important;
+            font-style: normal !important;
+            font-variant: normal !important;
+            text-rendering: auto !important;
+            -webkit-font-smoothing: antialiased !important;
+        }
+        
+        i[class*="fa-"] {
+            display: inline-block !important;
+            font-style: normal !important;
+        }
+    </style>
+
+    <script>
+        // Menu mobile
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
+        }
+
+        // Filtros
+        function setFilter(category) {
+            // Atualizar botões ativos
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${category}"]`).classList.add('active');
+
+            // Filtrar cards
+            const cards = document.querySelectorAll('.establishment-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Busca
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const cards = document.querySelectorAll('.establishment-card');
+                    
+                    cards.forEach(card => {
+                        const title = card.querySelector('h3').textContent.toLowerCase();
+                        const description = card.querySelector('p').textContent.toLowerCase();
+                        
+                        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+                });
+            }
+        });
+
+        // Dados fictícios dos estabelecimentos
+        const establishmentMenus = {
+            'burger-house': {
+                name: 'Burger House',
+                category: 'Cardápio',
+                items: [
+                    { name: 'Burger Clássico', price: 'R$ 24,90', points: 37, description: 'Blend 180g, queijo cheddar, alface, tomate, maionese especial' },
+                    { name: 'X-Bacon Premium', price: 'R$ 32,90', points: 49, description: 'Blend 200g, bacon crocante, queijo suíço, cebola caramelizada' },
+                    { name: 'Burger Vegetariano', price: 'R$ 28,90', points: 43, description: 'Hambúrguer de quinoa, queijo vegano, vegetais frescos' },
+                    { name: 'Fritas Especiais', price: 'R$ 14,90', points: 22, description: 'Batatas rústicas com tempero da casa e maionese' },
+                    { name: 'Onion Rings', price: 'R$ 12,90', points: 19, description: '8 unidades crocantes com molho barbecue' },
+                    { name: 'Milk Shake Oreo', price: 'R$ 18,90', points: 28, description: 'Sorvete de baunilha, biscoito Oreo, chantilly' },
+                    { name: 'Refrigerante 350ml', price: 'R$ 6,90', points: 10, description: 'Coca-Cola, Guaraná ou Fanta' },
+                    { name: 'Combo Família', price: 'R$ 79,90', points: 120, description: '4 burgers + 2 fritas grandes + 4 refrigerantes' }
+                ]
+            },
+            'fashion-store': {
+                name: 'Fashion Store',
+                category: 'Produtos',
+                items: [
+                    { name: 'Camiseta Básica', price: 'R$ 39,90', points: 40, description: '100% algodão, várias cores disponíveis' },
+                    { name: 'Jeans Skinny', price: 'R$ 129,90', points: 195, description: 'Jeans premium com elastano, modelagem perfeita' },
+                    { name: 'Vestido Floral', price: 'R$ 89,90', points: 135, description: 'Tecido leve, estampa exclusiva, tamanhos P ao GG' },
+                    { name: 'Tênis Casual', price: 'R$ 199,90', points: 300, description: 'Confortável para o dia a dia, várias cores' },
+                    { name: 'Bolsa de Mão', price: 'R$ 159,90', points: 240, description: 'Couro sintético, compartimentos internos' },
+                    { name: 'Óculos de Sol', price: 'R$ 79,90', points: 120, description: 'Proteção UV 400, armação resistente' },
+                    { name: 'Jaqueta Jeans', price: 'R$ 149,90', points: 225, description: 'Clássica, modelagem oversized' },
+                    { name: 'Kit 3 Cuecas', price: 'R$ 49,90', points: 75, description: 'Algodão premium, elástico confortável' }
+                ]
+            },
+            'farmacia-saude': {
+                name: 'Farmácia Saúde+',
+                category: 'Produtos',
+                items: [
+                    { name: 'Dipirona 500mg', price: 'R$ 8,90', points: 27, description: 'Caixa com 20 comprimidos - analgésico e antitérmico' },
+                    { name: 'Vitamina C 1g', price: 'R$ 25,90', points: 78, description: 'Efervescente - 10 comprimidos, sabor laranja' },
+                    { name: 'Protetor Solar FPS 60', price: 'R$ 34,90', points: 105, description: '200ml - Resistente à água, toque seco' },
+                    { name: 'Multivitamínico', price: 'R$ 45,90', points: 138, description: '60 cápsulas - Complexo vitamínico completo' },
+                    { name: 'Shampoo Anticaspa', price: 'R$ 18,90', points: 57, description: '400ml - Controla oleosidade e caspa' },
+                    { name: 'Pasta de Dente', price: 'R$ 7,90', points: 24, description: '90g - Proteção total com flúor' },
+                    { name: 'Termômetro Digital', price: 'R$ 29,90', points: 90, description: 'Leitura rápida, memória última medição' },
+                    { name: 'Kit Primeiros Socorros', price: 'R$ 39,90', points: 120, description: 'Completo com bandagens, antisséptico e manual' }
+                ]
+            },
+            'studio-hair': {
+                name: 'Studio Hair',
+                category: 'Serviços',
+                items: [
+                    { name: 'Corte Feminino', price: 'R$ 45,00', points: 135, description: 'Corte + lavagem + finalização + produtos premium' },
+                    { name: 'Corte Masculino', price: 'R$ 30,00', points: 90, description: 'Corte moderno + acabamento + produtos de qualidade' },
+                    { name: 'Coloração Completa', price: 'R$ 120,00', points: 360, description: 'Tintura profissional + tratamento + hidratação' },
+                    { name: 'Mechas + Luzes', price: 'R$ 180,00', points: 540, description: 'Técnica profissional + tonalizante + tratamento' },
+                    { name: 'Escova Progressiva', price: 'R$ 200,00', points: 600, description: 'Redução de volume + alinhamento + selagem' },
+                    { name: 'Hidratação Profunda', price: 'R$ 60,00', points: 180, description: 'Máscara nutritiva + ampola + finalizador' },
+                    { name: 'Manicure + Pedicure', price: 'R$ 35,00', points: 105, description: 'Esmaltação + cutilagem + hidratação' },
+                    { name: 'Pacote Noiva', price: 'R$ 350,00', points: 1050, description: 'Corte + cor + penteado + maquiagem + teste' }
+                ]
+            },
+            'pizzaria-italiana': {
+                name: 'Pizzaria Italiana',
+                category: 'Cardápio',
+                items: [
+                    { name: 'Pizza Margherita', price: 'R$ 42,90', points: 64, description: 'Molho de tomate, mussarela, manjericão fresco, azeite extra virgem' },
+                    { name: 'Pizza Quattro Stagioni', price: 'R$ 56,90', points: 85, description: 'Presunto, cogumelos, alcachofra, azeitonas, mussarela' },
+                    { name: 'Pizza Pepperoni', price: 'R$ 48,90', points: 73, description: 'Pepperoni artesanal, mussarela, orégano, molho especial' },
+                    { name: 'Pizza Vegetariana', price: 'R$ 46,90', points: 70, description: 'Abobrinha, berinjela, pimentão, tomate seco, mussarela' },
+                    { name: 'Calzone Tradicional', price: 'R$ 38,90', points: 58, description: 'Presunto, mussarela, molho de tomate, fechado e dourado' },
+                    { name: 'Lasanha Bolonhesa', price: 'R$ 34,90', points: 52, description: 'Massa fresca, molho bolonhesa, bechamel, queijo gratinado' },
+                    { name: 'Tiramisu', price: 'R$ 18,90', points: 28, description: 'Sobremesa italiana com café, mascarpone e cacau' },
+                    { name: 'Vinho Chianti', price: 'R$ 89,90', points: 135, description: 'Vinho tinto italiano, 750ml - harmonização perfeita' }
+                ]
+            },
+            'tech-store': {
+                name: 'Tech Store',
+                category: 'Produtos',
+                items: [
+                    { name: 'iPhone 15 Pro', price: 'R$ 8.999,90', points: 18000, description: '128GB, Titânio Natural, câmera 48MP, chip A17 Pro' },
+                    { name: 'Samsung Galaxy S24', price: 'R$ 4.199,90', points: 8400, description: '256GB, câmera 50MP, tela 6.2", processador Snapdragon' },
+                    { name: 'MacBook Air M3', price: 'R$ 12.999,90', points: 26000, description: '13", 8GB RAM, 256GB SSD, chip M3, bateria 18h' },
+                    { name: 'iPad Pro 11"', price: 'R$ 7.599,90', points: 15200, description: '128GB, chip M4, Apple Pencil compatível, tela Liquid Retina' },
+                    { name: 'AirPods Pro 2', price: 'R$ 2.399,90', points: 4800, description: 'Cancelamento de ruído, áudio espacial, case MagSafe' },
+                    { name: 'Apple Watch Series 9', price: 'R$ 4.299,90', points: 8600, description: '45mm, GPS + Cellular, pulseira esportiva, resistente à água' },
+                    { name: 'Nintendo Switch OLED', price: 'R$ 2.599,90', points: 5200, description: 'Tela OLED 7", 64GB, Joy-Con inclusos, dock TV' },
+                    { name: 'Carregador Wireless', price: 'R$ 299,90', points: 600, description: '15W, compatível iPhone/Samsung, design premium' }
+                ]
+            }
+        };
+
+        const establishmentServices = {
+            'salao-beleza': [
+                { name: 'Corte Feminino + Escova', price: 'R$ 65,00', points: 65, duration: '90 min' },
+                { name: 'Coloração Completa', price: 'R$ 150,00', points: 150, duration: '180 min' },
+                { name: 'Manicure + Pedicure', price: 'R$ 45,00', points: 45, duration: '60 min' },
+                { name: 'Hidratação Capilar', price: 'R$ 80,00', points: 80, duration: '120 min' }
+            ]
+        };
+
+        // Funções dos botões dos estabelecimentos  
+        function showMenu(establishmentId) {
+            const menu = establishmentMenus[establishmentId];
+            if (menu) {
+                showLightboxModal(menu.name + ' - Cardápio', createMenuHTML(menu.items));
+            } else {
+                showLightboxModal('Cardápio', '<p style="text-align: center; color: var(--gray-600); padding: 2rem;">Em breve você poderá ver todos os pratos disponíveis!</p>');
+            }
+        }
+
+        function createMenuHTML(items) {
+            let html = '<div style="display: grid; gap: 1.5rem;">';
+            items.forEach((item, index) => {
+                html += `
+                    <div style="display: flex; justify-content: space-between; align-items: start; padding: 1.5rem; background: var(--gray-50); border-radius: var(--radius-lg); border-left: 4px solid var(--primary-purple);">
+                        <div style="flex: 1;">
+                            <h4 style="color: var(--primary-purple); font-weight: 700; margin-bottom: 0.5rem; font-size: 1.1rem;">${item.name}</h4>
+                            <p style="color: var(--gray-600); font-size: 0.9rem; line-height: 1.4; margin-bottom: 0.75rem;">${item.description}</p>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="background: var(--success-green); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-weight: 600; font-size: 0.875rem;">
+                                    💰 ${item.price}
+                                </span>
+                                <span style="background: var(--accent-orange); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-weight: 600; font-size: 0.875rem;">
+                                    🎯 ${item.points} pontos
+                                </span>
+                            </div>
+                        </div>
+                        <div style="margin-left: 1rem;">
+                            <button class="btn btn-primary btn-sm" onclick="addToCart('${item.name}', '${item.price}')">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            html += `
+                <div style="margin-top: 2rem; padding: 1.5rem; background: var(--gradient-primary); color: white; border-radius: var(--radius-lg); text-align: center;">
+                    <p style="font-weight: 600; margin-bottom: 0.5rem;">💡 Como funciona?</p>
+                    <p style="opacity: 0.9; font-size: 0.875rem;">Todos os preços já incluem os pontos de fidelidade! Acumule pontos e ganhe descontos nas próximas compras!</p>
+                </div>
+            `;
+            return html;
+        }
+
+        function showLightboxModal(title, content) {
+            const modal = document.createElement('div');
+            modal.id = 'lightboxModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(8px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 2rem;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            modal.innerHTML = `
+                <div class="lightbox-content" style="
+                    background: white;
+                    border-radius: var(--radius-xl);
+                    width: 100%;
+                    max-width: 800px;
+                    max-height: 90vh;
+                    overflow: hidden;
+                    position: relative;
+                    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                    animation: slideUp 0.3s ease;
+                ">
+                    <div class="lightbox-header" style="
+                        background: var(--gradient-primary);
+                        color: white;
+                        padding: 1.5rem 2rem;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    ">
+                        <h2 style="font-size: 1.5rem; font-weight: 700; margin: 0;">${title}</h2>
+                        <button onclick="closeLightboxModal()" style="
+                            background: none;
+                            border: none;
+                            color: white;
+                            font-size: 1.5rem;
+                            cursor: pointer;
+                            padding: 0.5rem;
+                            border-radius: 50%;
+                            transition: background 0.2s;
+                        " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='none'">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="lightbox-body" style="
+                        padding: 2rem;
+                        overflow-y: auto;
+                        max-height: calc(90vh - 120px);
+                    ">
+                        ${content}
+                    </div>
+                </div>
+            `;
+
+            // Fechar ao clicar fora
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeLightboxModal();
+                }
+            });
+
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightboxModal() {
+            const modal = document.getElementById('lightboxModal');
+            if (modal) {
+                modal.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => {
+                    document.body.removeChild(modal);
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        }
+
+        function addToCart(itemName, price) {
+            alert(`✅ ${itemName} adicionado ao carrinho!\n\nPreço: ${price}\n\nEm breve você poderá finalizar pedidos pelo app!`);
+        }
+
+        function visitEstablishment(establishmentId) {
+            const locations = {
+                'burger-house': 'Rua das Flores, 123 - Centro\n📍 A 850m de você',
+                'farmacia-central': 'Av. Principal, 456 - Jardins\n📍 A 1.2km de você',
+                'pizzaria-italiana': 'Rua Roma, 789 - Vila Nova\n📍 A 2.1km de você'
+            };
+            
+            const location = locations[establishmentId] || 'Localização em breve!';
+            alert(`📍 ${establishmentId.toUpperCase()}\n\n${location}\n\n🚗 Deseja abrir no GPS?`);
+        }
+
+        function showProducts(establishmentId) {
+            showMenu(establishmentId);
+        }
+
+        function scheduleAppointment(establishmentId) {
+            const services = establishmentServices[establishmentId];
+            if (services) {
+                let serviceText = `📅 AGENDAMENTO - ${establishmentId.toUpperCase()}\n\n`;
+                serviceText += `🕐 Horários disponíveis hoje:\n`;
+                serviceText += `• 09:00 - 10:30\n• 14:00 - 15:30\n• 16:00 - 17:30\n\n`;
+                serviceText += `💼 Serviços disponíveis:\n`;
+                services.forEach((service, index) => {
+                    serviceText += `${index + 1}. ${service.name}\n`;
+                    serviceText += `   💰 ${service.price} | ⏱️ ${service.duration}\n\n`;
+                });
+                alert(serviceText);
+            } else {
+                alert(`📅 Abrindo agendamento para ${establishmentId}...\n\n🕐 Horários disponíveis:\n• 09:00\n• 14:00\n• 16:00\n\nEm breve você poderá agendar online!`);
+            }
+        }
+
+        function orderOnline(establishmentId) {
+            alert(`🛒 DELIVERY - ${establishmentId.toUpperCase()}\n\n🚚 Taxa de entrega: R$ 5,00\n⏱️ Tempo estimado: 35-45 min\n🎯 Ganhe pontos em cada pedido!\n\nEm breve você poderá pedir pelo app!`);
+        }
+
+        function showServices(establishmentId) {
+            scheduleAppointment(establishmentId);
+        }
+
+        function loadMoreEstablishments() {
+            alert(`Carregando mais estabelecimentos...\n\nEm breve teremos centenas de parceiros!`);
+        }
+    </script>
+</body>
+</html>

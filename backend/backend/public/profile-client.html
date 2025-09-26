@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Cliente | Tem de Tudo</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Dashboard do cliente - pontos, recompensas e histórico">
+    <meta name="theme-color" content="#4c1d95">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/frontend/img/logo.png">
+    <link rel="apple-touch-icon" href="/frontend/img/logo.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/" class="logo">
+                    <img src="/frontend/img/logo.png" alt="Tem de Tudo" class="logo-image">
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/profile-client.html" class="active"><i class="fas fa-user icon-sm"></i> Meu Perfil</a>
+                    <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                    <a href="/faq.html"><i class="fas fa-question-circle icon-sm"></i> Ajuda</a>
+                    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-menu">
+                <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                <a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
+                <a href="/profile-client.html" class="active"><i class="fas fa-user icon-sm"></i> Perfil</a>
+                <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div style="max-width: 1200px; margin: 0 auto; padding: var(--space-6);">
+                
+                <!-- User Welcome Section -->
+                <div class="card mb-4">
+                    <div class="card-header" style="background: var(--gradient-primary); color: white; text-align: center;">
+                        <div id="userAvatar" style="width: 80px; height: 80px; border-radius: 50%; background: var(--accent-orange); color: white; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem; border: 4px solid white;">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h1 id="userName" style="color: white; margin-bottom: 0.5rem;">Carregando...</h1>
+                        <p id="userLevel" style="color: rgba(255,255,255,0.9);">Nível: Carregando...</p>
+                    </div>
+                </div>
+
+                <!-- Points Dashboard -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-6); margin-bottom: var(--space-6);">
+                    
+                    <!-- Points Balance -->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-coins" style="font-size: 2.5rem; color: var(--accent-orange); margin-bottom: 1rem;"></i>
+                            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Seus Pontos</h3>
+                            <div id="pointsBalance" style="font-size: 2rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 1rem;">0</div>
+                            <button class="btn btn-primary btn-sm" onclick="showQRCode()">
+                                <i class="fas fa-qrcode icon-sm"></i> Meu QR Code
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Next Reward -->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-gift" style="font-size: 2.5rem; color: var(--success-green); margin-bottom: 1rem;"></i>
+                            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Próxima Recompensa</h3>
+                            <div id="nextReward" style="font-size: 1.25rem; font-weight: 600; color: var(--success-green); margin-bottom: 1rem;">500 pontos</div>
+                            <div class="progress-bar" style="margin-bottom: 1rem;">
+                                <div id="progressFill" class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;" id="progressText">0 de 500 pontos</p>
+                        </div>
+                    </div>
+
+                    <!-- Level Progress -->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-trophy" style="font-size: 2.5rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                            <h3 style="color: var(--gray-800); margin-bottom: 0.5rem;">Seu Nível</h3>
+                            <div id="currentLevel" class="loyalty-level loyalty-bronze" style="margin-bottom: 1rem;">
+                                <i class="fas fa-medal"></i> Bronze
+                            </div>
+                            <button class="btn btn-outline btn-sm" onclick="showLevelInfo()">
+                                <i class="fas fa-info-circle icon-sm"></i> Ver Benefícios
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons Row -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+                    
+                    <button class="btn btn-primary" onclick="scanQR()">
+                        <i class="fas fa-camera icon-sm"></i> Escanear QR Code
+                    </button>
+                    
+                    <button class="btn btn-success" onclick="showRewards()">
+                        <i class="fas fa-gift icon-sm"></i> Resgatar Pontos
+                    </button>
+                    
+                    <button class="btn btn-accent" onclick="shareApp()">
+                        <i class="fas fa-share-alt icon-sm"></i> Compartilhar App
+                    </button>
+                    
+                    <button class="btn btn-outline" onclick="showSettings()">
+                        <i class="fas fa-cog icon-sm"></i> Configurações
+                    </button>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="color: white; margin: 0;">
+                            <i class="fas fa-history icon-sm"></i> Atividades Recentes
+                        </h3>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div id="activityList">
+                            <!-- Activities will be loaded here -->
+                        </div>
+                        <div style="padding: var(--space-4); text-align: center; border-top: 1px solid var(--gray-200);">
+                            <button class="btn btn-ghost btn-sm" onclick="loadMoreActivity()">
+                                <i class="fas fa-plus icon-sm"></i> Carregar Mais
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-top: var(--space-6);">
+                    
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-check" style="font-size: 1.5rem; color: var(--primary-blue); margin-bottom: 0.5rem;"></i>
+                            <div id="totalVisits" style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Visitas Totais</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star" style="font-size: 1.5rem; color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                            <div id="totalReviews" style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Avaliações Feitas</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-trophy" style="font-size: 1.5rem; color: var(--success-green); margin-bottom: 0.5rem;"></i>
+                            <div id="totalRewards" style="font-size: 1.5rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Recompensas Resgatadas</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar" style="font-size: 1.5rem; color: var(--primary-blue); margin-bottom: 0.5rem;"></i>
+                            <div id="memberSince" style="font-size: 1rem; font-weight: 600; color: var(--gray-900);">-</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Membro desde</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div id="qrModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: var(--z-modal); align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: var(--radius-xl); text-align: center; max-width: 90%; max-height: 90%; overflow-y: auto;">
+            <h3 style="margin-bottom: 1.5rem; color: var(--gray-900);">Seu QR Code Pessoal</h3>
+            <div style="background: var(--gray-100); padding: 2rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+                <canvas id="qrCanvas" style="max-width: 100%;"></canvas>
+            </div>
+            <p style="color: var(--gray-600); margin-bottom: 2rem; font-size: 0.875rem;">Mostre este código nos estabelecimentos parceiros para acumular pontos</p>
+            <div style="display: flex; gap: var(--space-3); justify-content: center;">
+                <button class="btn btn-primary" onclick="downloadQR()">
+                    <i class="fas fa-download icon-sm"></i> Baixar
+                </button>
+                <button class="btn btn-ghost" onclick="closeQRModal()">
+                    <i class="fas fa-times icon-sm"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/app-mobile.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        let userData = {};
+
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const btn = document.querySelector('.mobile-menu-btn');
+            mobileNav.classList.toggle('active');
+            btn.classList.toggle('active');
+        }
+
+        // Verificar autenticação
+        document.addEventListener('DOMContentLoaded', function() {
+            // Proteger página - só clientes autenticados podem acessar
+            if (!AuthMiddleware.requireAuth()) {
+                return;
+            }
+            
+            loadUserData();
+            loadUserStats();
+            loadRecentActivity();
+            setupNotifications();
+        });
+
+        function loadUserData() {
+            const user = window.Auth.getUser();
+            
+            if (!user) {
+                alert('Sessão expirada. Redirecionando para login...');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            userData = user;
+
+            // Update UI elements
+            document.getElementById('userName').textContent = user.nome;
+            document.getElementById('pointsBalance').textContent = (user.pontos || 0).toLocaleString();
+            
+            // Update user avatar
+            const avatar = document.getElementById('userAvatar');
+            if (user.avatar) {
+                avatar.innerHTML = `<img src="${user.avatar}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+            } else {
+                avatar.innerHTML = `<i class="fas fa-user"></i>`;
+            }
+
+            // Update level
+            const level = user.nivel || 'Bronze';
+            document.getElementById('userLevel').textContent = `Nível: ${level}`;
+            
+            const levelElement = document.getElementById('currentLevel');
+            levelElement.className = `loyalty-level loyalty-${level.toLowerCase()}`;
+            levelElement.innerHTML = `<i class="fas fa-medal"></i> ${level}`;
+
+            // Update progress to next reward
+            updateRewardProgress(user.pontos || 0);
+        }
+
+        function updateRewardProgress(points) {
+            const rewards = [
+                { points: 100, name: 'Desconto 5%' },
+                { points: 250, name: 'Brinde Grátis' },
+                { points: 500, name: 'Desconto 10%' },
+                { points: 1000, name: 'Produto Grátis' },
+                { points: 2000, name: 'Desconto 20%' },
+                { points: 5000, name: 'Prêmio Especial' }
+            ];
+
+            let nextReward = rewards.find(r => r.points > points);
+            if (!nextReward) {
+                nextReward = { points: points + 1000, name: 'Próximo Nível' };
+            }
+
+            const progress = (points / nextReward.points) * 100;
+            
+            document.getElementById('nextReward').textContent = nextReward.name;
+            document.getElementById('progressFill').style.width = `${Math.min(progress, 100)}%`;
+            document.getElementById('progressText').textContent = `${points} de ${nextReward.points} pontos`;
+        }
+
+        function loadUserStats() {
+            // Simulate user statistics
+            const stats = JSON.parse(localStorage.getItem('userStats') || '{}');
+            
+            document.getElementById('totalVisits').textContent = stats.visits || Math.floor(Math.random() * 50) + 10;
+            document.getElementById('totalReviews').textContent = stats.reviews || Math.floor(Math.random() * 20) + 5;
+            document.getElementById('totalRewards').textContent = stats.rewards || Math.floor(Math.random() * 10) + 2;
+            
+            const memberSince = stats.memberSince || new Date().toLocaleDateString('pt-BR');
+            document.getElementById('memberSince').textContent = memberSince;
+        }
+
+        function loadRecentActivity() {
+            const activities = [
+                { type: 'points', establishment: 'Burger House', points: 25, date: '2 horas atrás', icon: 'fas fa-coins', color: 'var(--success-green)' },
+                { type: 'visit', establishment: 'Fashion Store', points: 15, date: '1 dia atrás', icon: 'fas fa-store', color: 'var(--primary-blue)' },
+                { type: 'reward', establishment: 'Sistema', points: -100, date: '3 dias atrás', icon: 'fas fa-gift', color: 'var(--accent-orange)' },
+                { type: 'review', establishment: 'Farmácia Saúde+', points: 10, date: '5 dias atrás', icon: 'fas fa-star', color: 'var(--accent-orange)' },
+                { type: 'bonus', establishment: 'Bônus de Cadastro', points: 100, date: '1 semana atrás', icon: 'fas fa-trophy', color: 'var(--success-green)' }
+            ];
+
+            const activityList = document.getElementById('activityList');
+            activityList.innerHTML = activities.map(activity => `
+                <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); border-bottom: 1px solid var(--gray-200);">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: ${activity.color}; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="${activity.icon}"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: var(--gray-900);">${activity.establishment}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">${activity.date}</div>
+                    </div>
+                    <div style="font-weight: 700; color: ${activity.points > 0 ? 'var(--success-green)' : 'var(--accent-orange)'};">
+                        ${activity.points > 0 ? '+' : ''}${activity.points} pontos
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showQRCode() {
+            const modal = document.getElementById('qrModal');
+            modal.style.display = 'flex';
+            
+            // Generate QR Code
+            const qr = new QRious({
+                element: document.getElementById('qrCanvas'),
+                value: `USER:${userData.id}:${userData.email}:${Date.now()}`,
+                size: 200,
+                foreground: '#1e40af',
+                background: '#ffffff'
+            });
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+
+        function downloadQR() {
+            const canvas = document.getElementById('qrCanvas');
+            const link = document.createElement('a');
+            link.download = 'meu-qrcode-temdeTudo.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function scanQR() {
+            alert('Scanner QR Code\n\nFuncionalidade em desenvolvimento!\n\nEm breve você poderá escanear QR codes de estabelecimentos para acumular pontos automaticamente.');
+        }
+
+        function showRewards() {
+            if (userData.pontos < 500) {
+                alert('💰 Resgate de Pontos\n\nVocê precisa de pelo menos 500 pontos para fazer um resgate.\n\nPontos atuais: ' + userData.pontos + '\nContinue acumulando pontos visitando estabelecimentos parceiros!');
+            } else {
+                // Redirecionar para página de resgate
+                window.location.href = '/checkout-pontos.html';
+            }
+        }
+
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Tem de Tudo - Programa de Fidelidade',
+                    text: 'Descubra o melhor programa de fidelidade da cidade! Acumule pontos e ganhe recompensas incríveis.',
+                    url: window.location.origin
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.origin).then(() => {
+                    alert('Link copiado para área de transferência!');
+                });
+            }
+        }
+
+        function showSettings() {
+            const options = [
+                'Notificações Push',
+                'Dados Pessoais',
+                'Histórico de Pontos',
+                'Política de Privacidade',
+                'Termos de Uso',
+                'Suporte'
+            ];
+
+            let message = 'Configurações:\n\n';
+            options.forEach((option, index) => {
+                message += `${index + 1}. ${option}\n`;
+            });
+            message += '\nFuncionalidades em desenvolvimento!';
+
+            alert(message);
+        }
+
+        function showLevelInfo() {
+            const levels = {
+                'Bronze': { min: 0, max: 249, benefits: ['Acumular pontos básicos', 'Ofertas ocasionais'] },
+                'Silver': { min: 250, max: 499, benefits: ['Pontos 1.2x', 'Ofertas semanais', 'Suporte prioritário'] },
+                'Gold': { min: 500, max: 999, benefits: ['Pontos 1.5x', 'Ofertas exclusivas', 'Frete grátis'] },
+                'Platinum': { min: 1000, max: 1999, benefits: ['Pontos 2x', 'Acesso antecipado', 'Desconto VIP'] },
+                'Diamond': { min: 2000, max: null, benefits: ['Pontos 3x', 'Benefícios premium', 'Concierge pessoal'] }
+            };
+
+            const currentLevel = userData.nivel || 'Bronze';
+            const levelInfo = levels[currentLevel];
+            
+            let message = `Seu Nível: ${currentLevel}\n\n`;
+            message += 'Benefícios:\n';
+            levelInfo.benefits.forEach(benefit => {
+                message += `• ${benefit}\n`;
+            });
+
+            alert(message);
+        }
+
+        function loadMoreActivity() {
+            alert('Carregando mais atividades...\n\nFuncionalidade em desenvolvimento!');
+        }
+
+        function setupNotifications() {
+            // Request notification permission
+            if ('Notification' in window && 'serviceWorker' in navigator) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('Notificações habilitadas');
+                        
+                        // Send welcome notification after delay
+                        setTimeout(() => {
+                            new Notification('Tem de Tudo', {
+                                body: `Bem-vindo, ${userData.nome}! Você tem ${userData.pontos} pontos disponíveis.`,
+                                icon: '/frontend/img/logo.png',
+                                badge: '/frontend/img/logo.png'
+                            });
+                        }, 3000);
+                    }
+                });
+            }
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                window.Auth.logout();
+            }
+        }
+    </script>
+
+    <style>
+        @media (max-width: 768px) {
+            main > div {
+                padding: var(--space-4) !important;
+            }
+            
+            div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</body>
+</html>

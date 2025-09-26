@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Novo Administrador - Tem de Ponto</title>
+    <meta name="description" content="Área restrita para criação de novos administradores">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Modern Theme CSS -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    
+    <style>
+        body {
+            background: var(--gray-50);
+            font-family: var(--font-family);
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--primary-600), var(--primary-800));
+            color: white;
+            padding: var(--space-6) var(--space-4);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: var(--space-6);
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+            padding-bottom: var(--space-4);
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            margin-bottom: var(--space-4);
+        }
+
+        .form-container {
+            max-width: 600px;
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-divider {
+            border-top: 1px solid var(--gray-200);
+            margin: var(--space-6) 0;
+            position: relative;
+        }
+
+        .section-divider::after {
+            content: attr(data-title);
+            position: absolute;
+            top: -12px;
+            left: 0;
+            background: white;
+            padding: 0 var(--space-3);
+            color: var(--gray-600);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .permission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-3);
+            margin-top: var(--space-4);
+        }
+
+        .permission-card {
+            background: var(--gray-50);
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .permission-card.selected {
+            border-color: var(--primary-500);
+            background: var(--primary-50);
+        }
+
+        .permission-card:hover {
+            border-color: var(--primary-400);
+            transform: translateY(-2px);
+        }
+
+        .admin-actions {
+            position: fixed;
+            bottom: var(--space-6);
+            right: var(--space-6);
+            display: flex;
+            gap: var(--space-3);
+            z-index: 100;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: var(--space-4);
+            }
+
+            .admin-actions {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                margin-top: var(--space-4);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6); padding-bottom: var(--space-4); border-bottom: 1px solid rgba(255,255,255,0.2);">
+            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-crown" style="font-size: 1.5rem;"></i>
+            </div>
+            <div>
+                <h3 style="margin: 0; font-size: 1.1rem;">Painel Admin</h3>
+                <p style="margin: 0; opacity: 0.8; font-size: 0.875rem;" id="adminNameDisplay">Administrador</p>
+            </div>
+        </div>
+
+        <nav>
+            <a href="/admin.html" style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); color: rgba(255,255,255,0.8); text-decoration: none; border-radius: var(--radius-lg); margin-bottom: var(--space-2); transition: all 0.3s ease;">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); color: white; text-decoration: none; border-radius: var(--radius-lg); margin-bottom: var(--space-2); background: rgba(255,255,255,0.2);">
+                <i class="fas fa-user-plus"></i>
+                <span>Criar Administrador</span>
+            </a>
+            <a href="/admin-configuracoes.html" style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); color: rgba(255,255,255,0.8); text-decoration: none; border-radius: var(--radius-lg); margin-bottom: var(--space-2); transition: all 0.3s ease;">
+                <i class="fas fa-cogs"></i>
+                <span>Configurações</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="/admin.html" style="color: var(--primary-600); text-decoration: none;">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <i class="fas fa-chevron-right" style="font-size: 0.75rem;"></i>
+            <span>Criar Administrador</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary-500), var(--primary-700)); border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center; color: white;">
+                <i class="fas fa-user-shield" style="font-size: 1.5rem;"></i>
+            </div>
+            <div>
+                <h1 style="margin: 0; color: var(--gray-900); font-size: 1.875rem;">Criar Novo Administrador</h1>
+                <p style="margin: var(--space-1) 0 0; color: var(--gray-600);">Adicione um novo administrador ao sistema com permissões específicas</p>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successAlert" style="display: none; background: linear-gradient(135deg, #d1fae5, #a7f3d0); border: 1px solid #10b981; border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-6);">
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+                <i class="fas fa-check-circle" style="color: #059669; font-size: 1.5rem;"></i>
+                <div>
+                    <h4 style="margin: 0; color: #065f46;">Administrador Criado com Sucesso!</h4>
+                    <p style="margin: var(--space-1) 0 0; color: #047857; font-size: 0.875rem;">O novo administrador pode agora fazer login no sistema.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <form id="createAdminForm">
+                <!-- Basic Information -->
+                <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-6);">
+                    <i class="fas fa-user-circle" style="color: var(--primary-600); font-size: 1.25rem;"></i>
+                    <h3 style="margin: 0; color: var(--gray-900);">Informações Básicas</h3>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+                    <div class="form-group">
+                        <label class="form-label">Nome Completo *</label>
+                        <input type="text" id="adminName" class="form-control" placeholder="Nome do administrador" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" id="adminEmail" class="form-control" placeholder="admin@empresa.com" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                    <div class="form-group">
+                        <label class="form-label">Telefone *</label>
+                        <input type="tel" id="adminPhone" class="form-control" placeholder="(11) 99999-9999" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Senha Temporária *</label>
+                        <div style="position: relative;">
+                            <input type="password" id="adminPassword" class="form-control" placeholder="Senha inicial" required>
+                            <button type="button" onclick="generatePassword()" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--primary-600); padding: var(--space-2);" title="Gerar senha aleatória">
+                                <i class="fas fa-random"></i>
+                            </button>
+                        </div>
+                        <small style="color: var(--gray-500);">O administrador pode alterar após o primeiro login</small>
+                    </div>
+                </div>
+
+                <!-- Company Information -->
+                <div class="section-divider" data-title="Informações da Empresa (Opcional)"></div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                    <div class="form-group">
+                        <label class="form-label">Nome da Empresa</label>
+                        <input type="text" id="companyName" class="form-control" placeholder="Nome da empresa">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">CNPJ</label>
+                        <input type="text" id="companyCnpj" class="form-control" placeholder="00.000.000/0000-00">
+                    </div>
+                </div>
+
+                <!-- Permissions -->
+                <div class="section-divider" data-title="Nível de Permissões"></div>
+
+                <div class="permission-grid">
+                    <div class="permission-card" onclick="selectPermissionLevel('master')" data-level="master">
+                        <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                            <i class="fas fa-crown" style="color: #f59e0b; font-size: 1.25rem;"></i>
+                            <h4 style="margin: 0; color: var(--gray-900);">Master Admin</h4>
+                        </div>
+                        <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Acesso completo ao sistema, pode criar outros administradores</p>
+                        <div style="margin-top: var(--space-3); font-size: 0.75rem; color: var(--gray-500);">
+                            ✓ Gerenciar empresas &nbsp; ✓ Relatórios financeiros<br>
+                            ✓ Configurações sistema &nbsp; ✓ Criar administradores
+                        </div>
+                    </div>
+
+                    <div class="permission-card" onclick="selectPermissionLevel('admin')" data-level="admin">
+                        <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                            <i class="fas fa-user-shield" style="color: #3b82f6; font-size: 1.25rem;"></i>
+                            <h4 style="margin: 0; color: var(--gray-900);">Administrador</h4>
+                        </div>
+                        <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Gerenciamento de empresas e relatórios, sem criação de admins</p>
+                        <div style="margin-top: var(--space-3); font-size: 0.75rem; color: var(--gray-500);">
+                            ✓ Gerenciar empresas &nbsp; ✓ Relatórios financeiros<br>
+                            ✓ Configurações sistema &nbsp; ✗ Criar administradores
+                        </div>
+                    </div>
+
+                    <div class="permission-card" onclick="selectPermissionLevel('moderator')" data-level="moderator">
+                        <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2);">
+                            <i class="fas fa-eye" style="color: #10b981; font-size: 1.25rem;"></i>
+                            <h4 style="margin: 0; color: var(--gray-900);">Moderador</h4>
+                        </div>
+                        <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Apenas visualização de dados e suporte básico</p>
+                        <div style="margin-top: var(--space-3); font-size: 0.75rem; color: var(--gray-500);">
+                            ✓ Visualizar relatórios &nbsp; ✓ Suporte clientes<br>
+                            ✗ Gerenciar empresas &nbsp; ✗ Criar administradores
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="selectedLevel" value="admin">
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: var(--space-3); justify-content: flex-end; margin-top: var(--space-8);">
+                    <button type="button" class="btn btn-ghost" onclick="cancelCreate()">
+                        <i class="fas fa-times icon-sm"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus icon-sm"></i> Criar Administrador
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="text-align: center; color: white;">
+            <div style="width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s ease-in-out infinite; margin: 0 auto var(--space-4);"></div>
+            <p>Criando administrador...</p>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in and has admin permissions
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!user.tipo || user.tipo !== 'admin') {
+                alert('Acesso negado. Apenas administradores podem acessar esta área.');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            if (!user.permissoes || !user.permissoes.includes('criar_administradores')) {
+                alert('Você não tem permissão para criar novos administradores.');
+                window.location.href = '/admin.html';
+                return;
+            }
+
+            // Display admin name
+            document.getElementById('adminNameDisplay').textContent = user.nome || 'Administrador';
+        });
+
+        let selectedPermissionLevel = 'admin';
+
+        // Format inputs
+        document.getElementById('adminPhone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/^(\d{2})(\d)/, '($1) $2');
+            value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+
+        document.getElementById('companyCnpj').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/^(\d{2})(\d)/, '$1.$2');
+            value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+            value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
+            value = value.replace(/(\d{4})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+
+        function selectPermissionLevel(level) {
+            // Remove selection from all cards
+            document.querySelectorAll('.permission-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selection to clicked card
+            document.querySelector(`[data-level="${level}"]`).classList.add('selected');
+            selectedPermissionLevel = level;
+            document.getElementById('selectedLevel').value = level;
+        }
+
+        function generatePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let password = '';
+            for (let i = 0; i < 8; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('adminPassword').value = password;
+        }
+
+        function cancelCreate() {
+            if (confirm('Deseja cancelar a criação do administrador?')) {
+                window.location.href = '/admin.html';
+            }
+        }
+
+        // Form submission
+        document.getElementById('createAdminForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            // Get form data
+            const formData = {
+                nome: document.getElementById('adminName').value,
+                email: document.getElementById('adminEmail').value,
+                telefone: document.getElementById('adminPhone').value,
+                senha: document.getElementById('adminPassword').value,
+                empresa: document.getElementById('companyName').value,
+                cnpj: document.getElementById('companyCnpj').value,
+                nivel: selectedPermissionLevel
+            };
+
+            // Validations
+            if (!formData.nome || !formData.email || !formData.telefone || !formData.senha) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            if (formData.senha.length < 6) {
+                alert('A senha deve ter pelo menos 6 caracteres.');
+                return;
+            }
+
+            // Check if email already exists
+            const existingAdmins = JSON.parse(localStorage.getItem('systemAdmins') || '[]');
+            if (existingAdmins.find(admin => admin.email === formData.email)) {
+                alert('Já existe um administrador com este email.');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loadingOverlay').style.display = 'flex';
+
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // Define permissions based on level
+                let permissoes = [];
+                switch(selectedPermissionLevel) {
+                    case 'master':
+                        permissoes = ['gerenciar_empresas', 'relatorios_financeiros', 'configuracoes_sistema', 'criar_administradores'];
+                        break;
+                    case 'admin':
+                        permissoes = ['gerenciar_empresas', 'relatorios_financeiros', 'configuracoes_sistema'];
+                        break;
+                    case 'moderator':
+                        permissoes = ['visualizar_relatorios', 'suporte_clientes'];
+                        break;
+                }
+
+                // Create new admin
+                const newAdmin = {
+                    id: Date.now(),
+                    nome: formData.nome,
+                    email: formData.email,
+                    telefone: formData.telefone,
+                    tipo: 'admin',
+                    nivel: selectedPermissionLevel === 'master' ? 'Master' : selectedPermissionLevel === 'admin' ? 'Admin' : 'Moderador',
+                    empresa: formData.empresa || 'Sistema Tem de Ponto',
+                    cnpj: formData.cnpj || null,
+                    permissoes: permissoes,
+                    criadoPor: currentUser.nome,
+                    criadoEm: new Date().toISOString(),
+                    status: 'ativo',
+                    senhaTemporaria: true
+                };
+
+                // Save to localStorage
+                existingAdmins.push(newAdmin);
+                localStorage.setItem('systemAdmins', JSON.stringify(existingAdmins));
+
+                // Hide loading
+                document.getElementById('loadingOverlay').style.display = 'none';
+
+                // Show success
+                document.getElementById('successAlert').style.display = 'block';
+                document.getElementById('createAdminForm').reset();
+                
+                // Reset permission selection
+                document.querySelectorAll('.permission-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                document.querySelector('[data-level="admin"]').classList.add('selected');
+                selectedPermissionLevel = 'admin';
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+
+            } catch (error) {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                alert('Erro ao criar administrador. Tente novamente.');
+            }
+        });
+
+        // Select default permission level
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                selectPermissionLevel('admin');
+            }, 100);
+        });
+    </script>
+
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .permission-card {
+            transition: all 0.3s ease;
+        }
+
+        .permission-card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .form-container div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .permission-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</body>
+</html>

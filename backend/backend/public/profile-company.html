@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Empresarial | Tem de Tudo</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Painel de controle empresarial - relatórios, campanhas e gestão de clientes">
+    <meta name="theme-color" content="#4c1d95">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="/frontend/img/logo.png">
+    <link rel="apple-touch-icon" href="/frontend/img/logo.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/" class="logo">
+                    <img src="/frontend/img/logo.png" alt="Tem de Tudo" class="logo-image">
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                    <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                    <a href="/profile-company.html" class="active"><i class="fas fa-chart-line icon-sm"></i> Painel</a>
+                    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-menu">
+                <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
+                <a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                <a href="/profile-company.html" class="active"><i class="fas fa-chart-line icon-sm"></i> Painel</a>
+                <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div style="max-width: 1400px; margin: 0 auto; padding: var(--space-6);">
+                
+                <!-- Company Header -->
+                <div class="card mb-4">
+                    <div class="card-header" style="background: var(--gradient-primary); color: white; text-align: center;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: var(--space-4);">
+                            <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--accent-orange); color: white; display: flex; align-items: center; justify-content: center; font-size: 2rem; border: 4px solid white;">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <div style="text-align: left;">
+                                <h1 id="companyName" style="color: white; margin-bottom: 0.5rem;">Carregando...</h1>
+                                <p id="companyCategory" style="color: rgba(255,255,255,0.9);">Categoria: Carregando...</p>
+                                <p style="color: rgba(255,255,255,0.9); margin: 0;">Painel Administrativo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Dashboard -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+                    
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-users" style="font-size: 2rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                            <div id="totalCustomers" style="font-size: 1.8rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Clientes Ativos</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-coins" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: 1rem;"></i>
+                            <div id="pointsDistributed" style="font-size: 1.8rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Pontos Distribuídos</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calendar-check" style="font-size: 2rem; color: var(--success-green); margin-bottom: 1rem;"></i>
+                            <div id="monthlyVisits" style="font-size: 1.8rem; font-weight: 700; color: var(--gray-900);">0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Visitas no Mês</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: 1rem;"></i>
+                            <div id="averageRating" style="font-size: 1.8rem; font-weight: 700; color: var(--gray-900);">0.0</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Avaliação Média</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--primary-blue); margin-bottom: 1rem;"></i>
+                            <div id="growthRate" style="font-size: 1.8rem; font-weight: 700; color: var(--success-green);">+0%</div>
+                            <p style="color: var(--gray-600); font-size: 0.875rem;">Crescimento</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+                    
+                    <button class="btn btn-primary" onclick="scanCustomerQR()">
+                        <i class="fas fa-mobile-alt icon-sm"></i> Escanear QR Cliente
+                    </button>
+                    
+                    <button class="btn btn-success" onclick="window.location.href='/empresa-qrcode.html'">
+                        <i class="fas fa-qrcode icon-sm"></i> Meu QR Code
+                    </button>
+                    
+                    <button class="btn btn-accent" onclick="addPoints()">
+                        <i class="fas fa-plus-circle icon-sm"></i> Adicionar Pontos
+                    </button>
+                    
+                    <button class="btn btn-warning" onclick="manageOffers()">
+                        <i class="fas fa-tags icon-sm"></i> Gerenciar Ofertas
+                    </button>
+                    
+                    <button class="btn btn-outline" onclick="viewReports()">
+                        <i class="fas fa-chart-bar icon-sm"></i> Relatórios
+                    </button>
+                </div>
+
+                <!-- Financial Section -->
+                <div class="card mb-6">
+                    <div class="card-header">
+                        <h3 style="color: white; margin: 0;">
+                            <i class="fas fa-dollar-sign icon-sm"></i> Painel Financeiro - Mercado Pago
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-4);">
+                            
+                            <div class="financial-stat">
+                                <div class="financial-icon" style="background: var(--success-green);">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; color: var(--gray-900);" id="monthlyRevenue">R$ 3.247,89</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Receita Este Mês</p>
+                                </div>
+                            </div>
+
+                            <div class="financial-stat">
+                                <div class="financial-icon" style="background: var(--primary-blue);">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; color: var(--gray-900);" id="pointsGenerated">24,890</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Pontos Gerados</p>
+                                </div>
+                            </div>
+
+                            <div class="financial-stat">
+                                <div class="financial-icon" style="background: var(--accent-orange);">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; color: var(--gray-900);" id="commissionRate">12%</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Taxa de Comissão</p>
+                                </div>
+                            </div>
+
+                            <div class="financial-stat">
+                                <div class="financial-icon" style="background: var(--warning-yellow);">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; color: var(--gray-900);" id="pendingAmount">R$ 127,45</h4>
+                                    <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">A Receber</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                            
+                            <!-- Mercado Pago Setup -->
+                            <div style="background: var(--gray-50); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--gray-200);">
+                                <h4 style="color: var(--gray-900); margin-bottom: var(--space-3);">
+                                    <img src="https://logoeps.com/wp-content/uploads/2013/03/mercado-pago-vector-logo.png" 
+                                         alt="Mercado Pago" 
+                                         style="width: 30px; height: 30px; object-fit: contain; margin-right: 0.5rem;">
+                                    Configuração Mercado Pago
+                                </h4>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Access Token</label>
+                                    <input type="password" 
+                                           id="mercadopagoToken" 
+                                           class="form-control" 
+                                           placeholder="APP_USR-xxxx-xxxxxx"
+                                           value="APP_USR-1234-configured">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Conta para Receber</label>
+                                    <input type="email" 
+                                           id="mercadopagoAccount" 
+                                           class="form-control" 
+                                           placeholder="empresa@email.com"
+                                           value="empresa@estabelecimento.com">
+                                </div>
+
+                                <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-3);">
+                                    <div style="width: 12px; height: 12px; background: var(--success-green); border-radius: 50%;"></div>
+                                    <span style="color: var(--success-green); font-weight: 600; font-size: 0.875rem;">Conta Ativada</span>
+                                </div>
+
+                                <button class="btn btn-outline btn-sm w-full" onclick="updateMercadoPagoConfig()">
+                                    <i class="fas fa-sync-alt"></i> Atualizar Configurações
+                                </button>
+                            </div>
+
+                            <!-- Payment History -->
+                            <div style="background: var(--gray-50); padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--gray-200);">
+                                <h4 style="color: var(--gray-900); margin-bottom: var(--space-3);">
+                                    <i class="fas fa-history"></i> Últimos Recebimentos
+                                </h4>
+                                
+                                <div style="max-height: 180px; overflow-y: auto;">
+                                    <div class="payment-item">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <p style="margin: 0; font-weight: 600; color: var(--gray-900);">R$ 89,50</p>
+                                                <p style="margin: 0; font-size: 0.75rem; color: var(--gray-600);">Cliente: João Silva</p>
+                                            </div>
+                                            <span style="font-size: 0.75rem; color: var(--success-green);">Hoje 14:32</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="payment-item">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <p style="margin: 0; font-weight: 600; color: var(--gray-900);">R$ 156,80</p>
+                                                <p style="margin: 0; font-size: 0.75rem; color: var(--gray-600);">Cliente: Maria Santos</p>
+                                            </div>
+                                            <span style="font-size: 0.75rem; color: var(--success-green);">Ontem 16:45</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="payment-item">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <p style="margin: 0; font-weight: 600; color: var(--gray-900);">R$ 73,25</p>
+                                                <p style="margin: 0; font-size: 0.75rem; color: var(--gray-600);">Cliente: Pedro Costa</p>
+                                            </div>
+                                            <span style="font-size: 0.75rem; color: var(--success-green);">Ontem 12:20</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary btn-sm w-full" onclick="viewAllPayments()" style="margin-top: var(--space-3);">
+                                    <i class="fas fa-list"></i> Ver Todos os Pagamentos
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); margin-bottom: var(--space-8);">
+                    
+                    <!-- Visits Chart -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="color: white; margin: 0;">
+                                <i class="fas fa-chart-line icon-sm"></i> Visitas nos Últimos 30 Dias
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="visitsChart" style="max-height: 300px;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Top Customers -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="color: white; margin: 0;">
+                                <i class="fas fa-trophy icon-sm"></i> Top Clientes
+                            </h3>
+                        </div>
+                        <div class="card-body" style="padding: 0;">
+                            <div id="topCustomers">
+                                <!-- Top customers will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="color: white; margin: 0;">
+                            <i class="fas fa-history icon-sm"></i> Atividades Recentes
+                        </h3>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div id="recentActivity">
+                            <!-- Recent activities will be loaded here -->
+                        </div>
+                        <div style="padding: var(--space-4); text-align: center; border-top: 1px solid var(--gray-200);">
+                            <button class="btn btn-ghost btn-sm" onclick="loadMoreActivity()">
+                                <i class="fas fa-plus icon-sm"></i> Carregar Mais
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Gallery -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 style="color: white; margin: 0;">
+                            <i class="fas fa-images icon-sm"></i> Galeria de Fotos
+                        </h3>
+                        <button class="btn btn-ghost btn-sm" onclick="openPhotoUpload()">
+                            <i class="fas fa-plus icon-sm"></i> Adicionar Foto
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="photoGallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-3);">
+                            <!-- Photos will be loaded here -->
+                        </div>
+                        <div id="emptyGallery" style="text-align: center; padding: var(--space-6); color: var(--gray-500); display: none;">
+                            <i class="fas fa-camera" style="font-size: 3rem; margin-bottom: var(--space-3); opacity: 0.5;"></i>
+                            <p>Nenhuma foto adicionada ainda</p>
+                            <button class="btn btn-primary btn-sm" onclick="openPhotoUpload()">
+                                <i class="fas fa-plus icon-sm"></i> Adicionar Primeira Foto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Panel -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 style="color: white; margin: 0;">
+                            <i class="fas fa-cogs icon-sm"></i> Configurações da Empresa
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-4);">
+                            
+                            <button class="btn btn-outline" onclick="updateProfile()">
+                                <i class="fas fa-edit icon-sm"></i> Editar Perfil
+                            </button>
+                            
+                            <button class="btn btn-outline" onclick="managePromotions()">
+                                <i class="fas fa-percentage icon-sm"></i> Promoções
+                            </button>
+                            
+                            <button class="btn btn-outline" onclick="customerSupport()">
+                                <i class="fas fa-headset icon-sm"></i> Suporte
+                            </button>
+                            
+                            <button class="btn btn-outline" onclick="viewAnalytics()">
+                                <i class="fas fa-analytics icon-sm"></i> Analytics
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- QR Scanner Modal -->
+    <div id="qrScannerModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: var(--z-modal); align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: var(--radius-xl); text-align: center; max-width: 90%; max-height: 90%; overflow-y: auto;">
+            <h3 style="margin-bottom: 1.5rem; color: var(--gray-900);">Escanear QR Code do Cliente</h3>
+            <div style="background: var(--gray-100); padding: 3rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+                <i class="fas fa-camera" style="font-size: 4rem; color: var(--gray-400); margin-bottom: 1rem;"></i>
+                <p style="color: var(--gray-600);">Câmera será ativada aqui</p>
+                <p style="color: var(--gray-500); font-size: 0.875rem;">Funcionalidade em desenvolvimento</p>
+            </div>
+            <div style="display: flex; gap: var(--space-3); justify-content: center;">
+                <button class="btn btn-ghost" onclick="closeQRScanner()">
+                    <i class="fas fa-times icon-sm"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Upload Modal -->
+    <div id="photoUploadModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: var(--z-modal); align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2rem; border-radius: var(--radius-xl); max-width: 600px; width: 90%; max-height: 90%; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0; color: var(--gray-900);">
+                    <i class="fas fa-upload icon-sm"></i> Adicionar Foto
+                </h3>
+                <button class="btn btn-ghost btn-sm" onclick="closePhotoUpload()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Selecionar Foto</label>
+                <div style="border: 2px dashed var(--gray-300); border-radius: var(--radius-lg); padding: 2rem; text-align: center; transition: all 0.3s ease;" 
+                     id="photoDropZone"
+                     ondragover="event.preventDefault(); this.style.borderColor = 'var(--primary-500)'; this.style.backgroundColor = 'var(--primary-50)';"
+                     ondragleave="this.style.borderColor = 'var(--gray-300)'; this.style.backgroundColor = 'transparent';"
+                     ondrop="handlePhotoDrop(event)">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--gray-400); margin-bottom: 1rem;"></i>
+                    <p style="margin-bottom: 1rem; color: var(--gray-600);">Arraste uma foto aqui ou clique para selecionar</p>
+                    <input type="file" id="photoInput" accept="image/*" multiple style="display: none;" onchange="handlePhotoSelect(event)">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('photoInput').click()">
+                        <i class="fas fa-folder-open icon-sm"></i> Escolher Arquivo
+                    </button>
+                </div>
+            </div>
+
+            <div id="photoPreview" style="display: none; margin-bottom: 1.5rem;">
+                <label class="form-label">Pré-visualização</label>
+                <div id="previewContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--space-2);"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Categoria</label>
+                <select id="photoCategory" class="form-control">
+                    <option value="ambiente">Ambiente</option>
+                    <option value="produtos">Produtos/Cardápio</option>
+                    <option value="equipe">Equipe</option>
+                    <option value="eventos">Eventos/Promoções</option>
+                    <option value="fachada">Fachada/Exterior</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Descrição (opcional)</label>
+                <textarea id="photoDescription" class="form-control" rows="3" placeholder="Descreva a foto ou adicione informações relevantes..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: var(--space-3); justify-content: flex-end;">
+                <button class="btn btn-ghost" onclick="closePhotoUpload()">
+                    <i class="fas fa-times icon-sm"></i> Cancelar
+                </button>
+                <button class="btn btn-primary" onclick="uploadPhotos()" id="uploadBtn" disabled>
+                    <i class="fas fa-upload icon-sm"></i> Enviar Fotos
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/app-mobile.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        let companyData = {};
+
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            const btn = document.querySelector('.mobile-menu-btn');
+            mobileNav.classList.toggle('active');
+            btn.classList.toggle('active');
+        }
+
+        // Load company data
+        document.addEventListener('DOMContentLoaded', function() {
+            // Proteger página - só empresas autenticadas
+            if (!AuthMiddleware.requireAuth()) {
+                return;
+            }
+            
+            loadCompanyData();
+            loadCompanyStats();
+            loadRecentActivity();
+            loadTopCustomers();
+            initializeCharts();
+            loadPhotoGallery();
+        });
+
+        function loadCompanyData() {
+            const user = window.Auth.getUser();
+            
+            if (!user || user.role !== 'empresa') {
+                alert('Acesso restrito para empresas. Redirecionando...');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            companyData = user;
+
+            // Update UI elements
+            document.getElementById('companyName').textContent = user.nome;
+            document.getElementById('companyCategory').textContent = `Categoria: ${user.categoria || 'Geral'}`;
+        }
+
+        function loadCompanyStats() {
+            // Simulate company statistics
+            const stats = JSON.parse(localStorage.getItem('companyStats') || '{}');
+            
+            document.getElementById('totalCustomers').textContent = stats.customers || Math.floor(Math.random() * 500) + 150;
+            document.getElementById('pointsDistributed').textContent = (stats.points || Math.floor(Math.random() * 10000) + 2000).toLocaleString();
+            document.getElementById('monthlyVisits').textContent = stats.visits || Math.floor(Math.random() * 200) + 50;
+            document.getElementById('averageRating').textContent = (stats.rating || (Math.random() * 2 + 3).toFixed(1));
+            document.getElementById('growthRate').textContent = `+${stats.growth || Math.floor(Math.random() * 30) + 5}%`;
+        }
+
+        function loadRecentActivity() {
+            const activities = [
+                { customer: 'João Silva', action: 'Ganhou 25 pontos', time: '5 min atrás', icon: 'fas fa-coins', color: 'var(--success-green)' },
+                { customer: 'Maria Santos', action: 'Resgatou desconto 10%', time: '15 min atrás', icon: 'fas fa-gift', color: 'var(--accent-orange)' },
+                { customer: 'Pedro Costa', action: 'Primeira visita (+100 pontos)', time: '1 hora atrás', icon: 'fas fa-star', color: 'var(--primary-blue)' },
+                { customer: 'Ana Oliveira', action: 'Avaliou 5 estrelas', time: '2 horas atrás', icon: 'fas fa-heart', color: 'var(--error-red)' },
+                { customer: 'Carlos Lima', action: 'Ganhou 15 pontos', time: '3 horas atrás', icon: 'fas fa-coins', color: 'var(--success-green)' }
+            ];
+
+            const activityList = document.getElementById('recentActivity');
+            activityList.innerHTML = activities.map(activity => `
+                <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); border-bottom: 1px solid var(--gray-200);">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: ${activity.color}; display: flex; align-items: center; justify-content: center; color: white;">
+                        <i class="${activity.icon}"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: var(--gray-900);">${activity.customer}</div>
+                        <div style="font-size: 0.875rem; color: var(--gray-600);">${activity.action}</div>
+                    </div>
+                    <div style="font-size: 0.875rem; color: var(--gray-500);">
+                        ${activity.time}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadTopCustomers() {
+            const customers = [
+                { name: 'João Silva', points: 1250, visits: 15, level: 'Gold' },
+                { name: 'Maria Santos', points: 890, visits: 12, level: 'Silver' },
+                { name: 'Pedro Costa', points: 640, visits: 8, level: 'Bronze' },
+                { name: 'Ana Oliveira', points: 520, visits: 6, level: 'Bronze' },
+                { name: 'Carlos Lima', points: 380, visits: 5, level: 'Bronze' }
+            ];
+
+            const topCustomersList = document.getElementById('topCustomers');
+            topCustomersList.innerHTML = customers.map((customer, index) => `
+                <div style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-4); border-bottom: 1px solid var(--gray-200);">
+                    <div style="width: 30px; height: 30px; border-radius: 50%; background: var(--primary-blue); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.875rem;">
+                        ${index + 1}
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: var(--gray-900); font-size: 0.9rem;">${customer.name}</div>
+                        <div style="font-size: 0.75rem; color: var(--gray-600);">${customer.points} pontos • ${customer.visits} visitas</div>
+                    </div>
+                    <span class="loyalty-level loyalty-${customer.level.toLowerCase()}" style="font-size: 0.75rem; padding: 2px 8px;">
+                        ${customer.level}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        function initializeCharts() {
+            // Visits chart
+            const ctx = document.getElementById('visitsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1', '5', '10', '15', '20', '25', '30'],
+                    datasets: [{
+                        label: 'Visitas Diárias',
+                        data: [12, 19, 8, 15, 28, 22, 35],
+                        borderColor: '#1e40af',
+                        backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function scanCustomerQR() {
+            document.getElementById('qrScannerModal').style.display = 'flex';
+        }
+
+        function closeQRScanner() {
+            document.getElementById('qrScannerModal').style.display = 'none';
+        }
+
+        function addPoints() {
+            const customerName = prompt('Nome do cliente:');
+            if (!customerName) return;
+            
+            const points = prompt('Quantos pontos adicionar?');
+            if (!points || isNaN(points)) return;
+            
+            alert(`${points} pontos adicionados para ${customerName}!\n\nFuncionalidade completa em desenvolvimento.`);
+        }
+
+        function manageOffers() {
+            alert('Gerenciar Ofertas\n\nFuncionalidades:\n• Criar promoções\n• Definir descontos\n• Configurar pontos especiais\n• Agendar campanhas\n\nEm desenvolvimento!');
+        }
+
+        function updateMercadoPagoConfig() {
+            const token = document.getElementById('mercadopagoToken').value;
+            const account = document.getElementById('mercadopagoAccount').value;
+            
+            if (!token || !account) {
+                alert('Preencha todos os campos do Mercado Pago');
+                return;
+            }
+
+            // Simular atualização
+            alert(`✅ Configuração atualizada com sucesso!\n\nToken: ${token.substring(0, 15)}...\nConta: ${account}\n\nSua conta está ativa e pronta para receber pagamentos.`);
+        }
+
+        function viewAllPayments() {
+            const payments = [
+                { client: 'João Silva', amount: 'R$ 89,50', date: 'Hoje 14:32', status: 'Aprovado' },
+                { client: 'Maria Santos', amount: 'R$ 156,80', date: 'Ontem 16:45', status: 'Aprovado' },
+                { client: 'Pedro Costa', amount: 'R$ 73,25', date: 'Ontem 12:20', status: 'Aprovado' },
+                { client: 'Ana Oliveira', amount: 'R$ 234,90', date: '2 dias atrás', status: 'Aprovado' },
+                { client: 'Carlos Ferreira', amount: 'R$ 45,60', date: '2 dias atrás', status: 'Pendente' }
+            ];
+
+            let message = '💰 Histórico de Pagamentos\n\n';
+            payments.forEach(payment => {
+                const status = payment.status === 'Aprovado' ? '✅' : '⏳';
+                message += `${status} ${payment.client}\n${payment.amount} - ${payment.date}\n\n`;
+            });
+            
+            message += 'Total recebido este mês: R$ 3.247,89\n\nDeseja exportar relatório completo?';
+            
+            if (confirm(message)) {
+                alert('Relatório de pagamentos enviado para seu email!\n\nO arquivo será entregue em alguns minutos.');
+            }
+        }
+
+        function viewReports() {
+            window.location.href = '/relatorios-financeiros.html';
+        }
+
+        function updateProfile() {
+            alert('Editar Perfil da Empresa\n\nOpções:\n• Informações básicas\n• Horário de funcionamento\n• Descrição\n• Fotos do estabelecimento\n• Contatos\n\nEm desenvolvimento!');
+        }
+
+        function managePromotions() {
+            alert('Gerenciar Promoções\n\nRecursos:\n• Criar campanhas sazonais\n• Happy hour com pontos duplos\n• Descontos por fidelidade\n• Ofertas personalizadas\n\nEm desenvolvimento!');
+        }
+
+        function customerSupport() {
+            alert('Central de Suporte\n\nCanais:\n• Chat online\n• Email: suporte@temdeTudo.com\n• WhatsApp: (11) 99999-9999\n• Central de ajuda\n\nEm desenvolvimento!');
+        }
+
+        function viewAnalytics() {
+            alert('Analytics Avançado\n\nMétricas:\n• Comportamento dos clientes\n• Horários de pico\n• Sazonalidade\n• Conversão de pontos\n• Benchmarking\n\nEm desenvolvimento!');
+        }
+
+        function loadMoreActivity() {
+            alert('Carregando mais atividades...\n\nFuncionalidade em desenvolvimento!');
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                window.Auth.logout();
+            }
+        }
+
+        // Photo Gallery Functions
+        let selectedPhotos = [];
+        
+        function openPhotoUpload() {
+            document.getElementById('photoUploadModal').style.display = 'flex';
+            resetPhotoForm();
+        }
+        
+        function closePhotoUpload() {
+            document.getElementById('photoUploadModal').style.display = 'none';
+            resetPhotoForm();
+        }
+        
+        function resetPhotoForm() {
+            selectedPhotos = [];
+            document.getElementById('photoInput').value = '';
+            document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('previewContainer').innerHTML = '';
+            document.getElementById('photoCategory').value = 'ambiente';
+            document.getElementById('photoDescription').value = '';
+            document.getElementById('uploadBtn').disabled = true;
+        }
+        
+        function handlePhotoDrop(e) {
+            e.preventDefault();
+            const dropZone = e.target;
+            dropZone.style.borderColor = 'var(--gray-300)';
+            dropZone.style.backgroundColor = 'transparent';
+            
+            const files = e.dataTransfer.files;
+            processFiles(files);
+        }
+        
+        function handlePhotoSelect(e) {
+            const files = e.target.files;
+            processFiles(files);
+        }
+        
+        function processFiles(files) {
+            const validFiles = [];
+            
+            for (let file of files) {
+                if (file.type.startsWith('image/')) {
+                    if (file.size <= 10 * 1024 * 1024) { // 10MB limit
+                        validFiles.push(file);
+                    } else {
+                        alert(`Arquivo ${file.name} é muito grande. Limite: 10MB`);
+                    }
+                } else {
+                    alert(`Arquivo ${file.name} não é uma imagem válida.`);
+                }
+            }
+            
+            if (validFiles.length > 0) {
+                selectedPhotos = validFiles;
+                showPhotoPreview(validFiles);
+                document.getElementById('uploadBtn').disabled = false;
+            }
+        }
+        
+        function showPhotoPreview(files) {
+            const previewContainer = document.getElementById('previewContainer');
+            previewContainer.innerHTML = '';
+            
+            files.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photoDiv = document.createElement('div');
+                    photoDiv.style.cssText = `
+                        position: relative; 
+                        border-radius: var(--radius-lg); 
+                        overflow: hidden; 
+                        background: var(--gray-100);
+                        aspect-ratio: 1;
+                    `;
+                    
+                    photoDiv.innerHTML = `
+                        <img src="${e.target.result}" 
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                        <button onclick="removePhoto(${index})" 
+                                style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                            <i class="fas fa-times" style="font-size: 0.75rem;"></i>
+                        </button>
+                        <div style="position: absolute; bottom: 4px; left: 4px; right: 4px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                            ${file.name}
+                        </div>
+                    `;
+                    
+                    previewContainer.appendChild(photoDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            document.getElementById('photoPreview').style.display = 'block';
+        }
+        
+        function removePhoto(index) {
+            selectedPhotos.splice(index, 1);
+            if (selectedPhotos.length === 0) {
+                document.getElementById('photoPreview').style.display = 'none';
+                document.getElementById('uploadBtn').disabled = true;
+            } else {
+                showPhotoPreview(selectedPhotos);
+            }
+        }
+        
+        function uploadPhotos() {
+            if (selectedPhotos.length === 0) return;
+            
+            const category = document.getElementById('photoCategory').value;
+            const description = document.getElementById('photoDescription').value;
+            
+            // Simulate upload process
+            const uploadBtn = document.getElementById('uploadBtn');
+            const originalText = uploadBtn.innerHTML;
+            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            uploadBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Simulate successful upload
+                const photos = selectedPhotos.map((file, index) => ({
+                    id: Date.now() + index,
+                    name: file.name,
+                    category: category,
+                    description: description,
+                    url: URL.createObjectURL(file),
+                    uploadDate: new Date().toLocaleDateString('pt-BR')
+                }));
+                
+                savePhotosToStorage(photos);
+                loadPhotoGallery();
+                closePhotoUpload();
+                
+                alert(`${photos.length} foto(s) adicionada(s) com sucesso!`);
+                
+                uploadBtn.innerHTML = originalText;
+                uploadBtn.disabled = false;
+            }, 2000);
+        }
+        
+        function savePhotosToStorage(newPhotos) {
+            const existingPhotos = JSON.parse(localStorage.getItem('companyPhotos') || '[]');
+            const allPhotos = [...existingPhotos, ...newPhotos];
+            localStorage.setItem('companyPhotos', JSON.stringify(allPhotos));
+        }
+        
+        function loadPhotoGallery() {
+            const photos = JSON.parse(localStorage.getItem('companyPhotos') || '[]');
+            const gallery = document.getElementById('photoGallery');
+            const emptyGallery = document.getElementById('emptyGallery');
+            
+            if (photos.length === 0) {
+                gallery.style.display = 'none';
+                emptyGallery.style.display = 'block';
+                return;
+            }
+            
+            gallery.style.display = 'grid';
+            emptyGallery.style.display = 'none';
+            
+            gallery.innerHTML = photos.map(photo => `
+                <div class="photo-item" style="position: relative; border-radius: var(--radius-lg); overflow: hidden; background: var(--gray-100); aspect-ratio: 1; transition: transform 0.3s ease;">
+                    <img src="${photo.url}" 
+                         alt="${photo.name}" 
+                         style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;"
+                         onclick="viewPhoto('${photo.id}')">
+                    <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;">
+                        <button onclick="deletePhoto('${photo.id}')" 
+                                style="background: rgba(220, 38, 38, 0.9); color: white; border: none; border-radius: 4px; padding: 4px 6px; font-size: 0.75rem; cursor: pointer;"
+                                title="Excluir foto">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; padding: 8px; font-size: 0.75rem;">
+                        <div style="font-weight: 600; margin-bottom: 2px;">${getCategoryName(photo.category)}</div>
+                        <div style="opacity: 0.8;">${photo.uploadDate}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getCategoryName(category) {
+            const categories = {
+                'ambiente': 'Ambiente',
+                'produtos': 'Produtos/Cardápio',
+                'equipe': 'Equipe',
+                'eventos': 'Eventos/Promoções',
+                'fachada': 'Fachada/Exterior'
+            };
+            return categories[category] || category;
+        }
+        
+        function viewPhoto(photoId) {
+            const photos = JSON.parse(localStorage.getItem('companyPhotos') || '[]');
+            const photo = photos.find(p => p.id == photoId);
+            
+            if (photo) {
+                // Create a simple modal to view the photo
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+                    background: rgba(0,0,0,0.9); z-index: 1000; 
+                    display: flex; align-items: center; justify-content: center;
+                    padding: 2rem;
+                `;
+                
+                modal.innerHTML = `
+                    <div style="max-width: 90%; max-height: 90%; text-align: center;">
+                        <img src="${photo.url}" 
+                             style="max-width: 100%; max-height: 80vh; border-radius: var(--radius-lg);">
+                        <div style="color: white; margin-top: 1rem;">
+                            <h4 style="margin: 0 0 0.5rem 0;">${getCategoryName(photo.category)}</h4>
+                            ${photo.description ? `<p style="margin: 0; opacity: 0.8;">${photo.description}</p>` : ''}
+                        </div>
+                        <button onclick="this.closest('div[style*=\"position: fixed\"]').remove()" 
+                                style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.25rem; cursor: pointer;">
+                            ×
+                        </button>
+                    </div>
+                `;
+                
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+                
+                document.body.appendChild(modal);
+            }
+        }
+        
+        function deletePhoto(photoId) {
+            if (confirm('Deseja realmente excluir esta foto?')) {
+                const photos = JSON.parse(localStorage.getItem('companyPhotos') || '[]');
+                const filteredPhotos = photos.filter(p => p.id != photoId);
+                localStorage.setItem('companyPhotos', JSON.stringify(filteredPhotos));
+                loadPhotoGallery();
+            }
+        }
+    </script>
+
+    <style>
+        .financial-stat {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+        }
+
+        .financial-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .payment-item {
+            padding: var(--space-3);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .payment-item:last-child {
+            border-bottom: none;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .photo-item img {
+            transition: transform 0.3s ease;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+
+        #photoDropZone {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #photoDropZone:hover {
+            border-color: var(--primary-500) !important;
+            background: var(--primary-50) !important;
+        }
+
+        @media (max-width: 768px) {
+            main > div {
+                padding: var(--space-4) !important;
+            }
+            
+            div[style*="grid-template-columns: 2fr 1fr"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .financial-stat {
+                padding: var(--space-2);
+            }
+            
+            .financial-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</body>
+</html>
