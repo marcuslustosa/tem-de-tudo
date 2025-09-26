@@ -21,7 +21,12 @@
     <div class="register-container" style="width: 100%; max-width: 500px; margin: 2rem;">
         <div class="card" style="border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
             
-            <div class="card-header text-center" style="background: var(--gradient-primary); padding: var(--space-8);">
+            <div class="card-header text-center" style="background: var(--gradient-primary); padding: var(--space-8); position: relative;">
+                <!-- Close Button -->
+                <button onclick="window.location.href='/index.html'" style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: background 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                    <i class="fas fa-times"></i>
+                </button>
+                
                 <div style="margin-bottom: 1.5rem;">
                     <img src="/img/logo.png" alt="TemDeTudo" style="width: 64px; height: 64px; border-radius: var(--radius-full); border: 3px solid white;">
                 </div>
@@ -181,9 +186,9 @@
         </div>
 
         <div style="text-align: center; margin-top: var(--space-6);">
-            <a href="/index.html" style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.875rem;">
-                <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>
-                Voltar ao início
+            <a href="/index.html" style="color: rgba(255,255,255,0.9); text-decoration: none; font-size: 1rem; background: rgba(255,255,255,0.1); padding: 0.75rem 1.5rem; border-radius: var(--radius-full); border: 1px solid rgba(255,255,255,0.2); display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; backdrop-filter: blur(8px);" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                <i class="fas fa-arrow-left"></i>
+                <span>Voltar ao início</span>
             </a>
         </div>
     </div>
@@ -322,6 +327,58 @@
             @keyframes slideIn {
                 from { transform: translateX(100%); opacity: 0; }
                 to { transform: translateX(0); opacity: 1; }
+            }
+            
+            /* Mobile specific styles */
+            @media (max-width: 768px) {
+                .register-container {
+                    margin: 1rem !important;
+                    max-width: none !important;
+                }
+                
+                .card {
+                    border-radius: 1rem !important;
+                }
+                
+                .card-header {
+                    padding: 2rem 1.5rem !important;
+                }
+                
+                .card-body {
+                    padding: 1.5rem !important;
+                }
+                
+                /* Close button responsive */
+                .card-header button {
+                    top: 0.75rem !important;
+                    right: 0.75rem !important;
+                    width: 36px !important;
+                    height: 36px !important;
+                    font-size: 1rem !important;
+                }
+                
+                /* Logo responsive */
+                .card-header img {
+                    width: 56px !important;
+                    height: 56px !important;
+                }
+                
+                /* Title responsive */
+                .card-header h1 {
+                    font-size: 1.5rem !important;
+                }
+                
+                /* Form groups spacing */
+                .form-group {
+                    margin-bottom: 1.25rem !important;
+                }
+                
+                /* Back button mobile */
+                a[href="/index.html"] {
+                    padding: 0.875rem 2rem !important;
+                    font-size: 1rem !important;
+                    margin-top: 1rem !important;
+                }
             }
         `;
         document.head.appendChild(style);
