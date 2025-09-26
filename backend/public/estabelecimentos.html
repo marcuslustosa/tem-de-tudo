@@ -89,22 +89,93 @@
             <!-- Filters -->
             <section style="padding: var(--space-8) var(--space-6) var(--space-4);">
                 <div style="max-width: 1200px; margin: 0 auto;">
-                    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center;">
+                    <!-- Category Filters -->
+                    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; justify-content: center; margin-bottom: var(--space-6);">
                         <button class="filter-chip active" data-filter="all" onclick="setFilter('all')">
-                            Todos
+                            <i class="fas fa-th-large icon-sm"></i> Todos
                         </button>
                         <button class="filter-chip" data-filter="restaurantes" onclick="setFilter('restaurantes')">
-                            🍽️ Restaurantes
+                            <i class="fas fa-utensils icon-sm"></i> Restaurantes
                         </button>
                         <button class="filter-chip" data-filter="lojas" onclick="setFilter('lojas')">
-                            🛍️ Lojas
+                            <i class="fas fa-shopping-bag icon-sm"></i> Lojas
                         </button>
                         <button class="filter-chip" data-filter="servicos" onclick="setFilter('servicos')">
-                            ⚙️ Serviços
+                            <i class="fas fa-tools icon-sm"></i> Serviços
                         </button>
                         <button class="filter-chip" data-filter="farmacias" onclick="setFilter('farmacias')">
-                            💊 Farmácias
+                            <i class="fas fa-pills icon-sm"></i> Farmácias
                         </button>
+                    </div>
+
+                    <!-- Advanced Filters -->
+                    <div style="background: white; padding: var(--space-6); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); margin-bottom: var(--space-6);">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); align-items: center;">
+                            <!-- Sort By -->
+                            <div>
+                                <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: 0.5rem;">
+                                    <i class="fas fa-sort icon-sm"></i> Ordenar por:
+                                </label>
+                                <select id="sortBy" onchange="applySorting()" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: var(--radius-md); background: white;">
+                                    <option value="relevance">Relevância</option>
+                                    <option value="rating">Melhor Avaliação</option>
+                                    <option value="points">Mais Pontos</option>
+                                    <option value="visits">Mais Visitados</option>
+                                    <option value="newest">Mais Recentes</option>
+                                    <option value="alphabetical">A-Z</option>
+                                </select>
+                            </div>
+
+                            <!-- Rating Filter -->
+                            <div>
+                                <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: 0.5rem;">
+                                    <i class="fas fa-star icon-sm"></i> Avaliação mínima:
+                                </label>
+                                <select id="minRating" onchange="applyFilters()" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: var(--radius-md); background: white;">
+                                    <option value="0">Todas</option>
+                                    <option value="3">3+ estrelas</option>
+                                    <option value="4">4+ estrelas</option>
+                                    <option value="4.5">4.5+ estrelas</option>
+                                </select>
+                            </div>
+
+                            <!-- Points Multiplier -->
+                            <div>
+                                <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: 0.5rem;">
+                                    <i class="fas fa-coins icon-sm"></i> Multiplicador:
+                                </label>
+                                <select id="pointsMultiplier" onchange="applyFilters()" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: var(--radius-md); background: white;">
+                                    <option value="0">Todos</option>
+                                    <option value="1.5">1.5x ou mais</option>
+                                    <option value="2">2x ou mais</option>
+                                    <option value="3">3x ou mais</option>
+                                </select>
+                            </div>
+
+                            <!-- Distance Filter -->
+                            <div>
+                                <label style="display: block; font-weight: 600; color: var(--gray-700); margin-bottom: 0.5rem;">
+                                    <i class="fas fa-map-marker-alt icon-sm"></i> Distância:
+                                </label>
+                                <select id="distance" onchange="applyFilters()" style="width: 100%; padding: 0.75rem; border: 1px solid var(--gray-300); border-radius: var(--radius-md); background: white;">
+                                    <option value="all">Todas</option>
+                                    <option value="1">Até 1km</option>
+                                    <option value="3">Até 3km</option>
+                                    <option value="5">Até 5km</option>
+                                    <option value="10">Até 10km</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Results Info -->
+                        <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--gray-200); display: flex; justify-content: between; align-items: center; flex-wrap: wrap; gap: var(--space-3);">
+                            <span id="resultsCount" style="color: var(--gray-600); font-size: 0.875rem;">
+                                <i class="fas fa-info-circle icon-sm"></i> Mostrando todos os estabelecimentos
+                            </span>
+                            <button onclick="clearFilters()" style="background: none; border: 1px solid var(--gray-300); color: var(--gray-600); padding: 0.5rem 1rem; border-radius: var(--radius-md); cursor: pointer; font-size: 0.875rem;">
+                                <i class="fas fa-times icon-sm"></i> Limpar filtros
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -115,20 +186,33 @@
                     <div class="establishments-grid" id="establishmentsGrid">
 
                         <!-- Burger House -->
-                        <div class="card establishment-card" data-category="restaurantes">
+                        <div class="card establishment-card" data-category="restaurantes" data-rating="4.9" data-points="1.5" data-visits="2847" data-distance="1.2">
                             <div style="position: relative; height: 200px; background: linear-gradient(135deg, #f59e0b, #f97316); overflow: hidden;">
                                 <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=200&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
                                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(245,158,11,0.8), rgba(249,115,22,0.8));"></div>
                                 <div style="position: absolute; top: 1rem; left: 1rem; width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: white;">
                                     <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=60&h=60&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px);">
-                                    <i class="fas fa-heart" style="color: var(--primary-purple);"></i>
+                                <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.5rem;">
+                                    <button onclick="toggleFavorite('burger-house')" style="background: rgba(255,255,255,0.9); padding: 0.5rem; border: none; border-radius: var(--radius-md); backdrop-filter: blur(8px); cursor: pointer;">
+                                        <i class="fas fa-heart" style="color: var(--gray-400);" id="fav-burger-house"></i>
+                                    </button>
+                                    <div style="background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px); display: flex; align-items: center; gap: 0.25rem;">
+                                        <i class="fas fa-eye" style="color: var(--primary-purple); font-size: 0.75rem;"></i>
+                                        <span style="font-size: 0.75rem; font-weight: 600;">2.8k</span>
+                                    </div>
                                 </div>
                                 <div style="position: absolute; bottom: 1rem; left: 1rem; color: white;">
                                     <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                        <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                        </div>
                                         <span style="font-weight: 600;">4.9</span>
+                                        <span style="color: rgba(255,255,255,0.8); font-size: 0.875rem;">(284 avaliações)</span>
                                         <span style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.875rem;">+1.5x pontos</span>
                                     </div>
                                 </div>
@@ -136,8 +220,24 @@
                             <div style="padding: var(--space-6);">
                                 <div style="margin-bottom: 1rem;">
                                     <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 0.5rem;">Burger House</h3>
-                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Hamburgueria • Fast Food</p>
-                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Os melhores hambúrgueres artesanais da cidade com ingredientes premium.</p>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.5rem;">Hamburgueria • Fast Food • 1.2km</p>
+                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Os melhores hambúrgueres artesanais da cidade com ingredientes premium e molhos especiais.</p>
+                                    
+                                    <!-- Latest Reviews Preview -->
+                                    <div style="background: var(--gray-50); padding: 0.75rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                            <img src="https://images.unsplash.com/photo-1494790108755-2616b332c108?w=24&h=24&fit=crop&crop=face" style="width: 24px; height: 24px; border-radius: 50%;">
+                                            <span style="font-size: 0.875rem; font-weight: 600;">Maria Silva</span>
+                                            <div style="display: flex; gap: 0.125rem;">
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                            </div>
+                                        </div>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600); line-height: 1.4;">"Hambúrguer delicioso e atendimento excelente! Super recomendo."</p>
+                                    </div>
                                 </div>
                                 
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-lg);">
@@ -147,36 +247,52 @@
                                     </div>
                                     <div style="text-align: center;">
                                         <i class="fas fa-coins" style="color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
-                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$10 = 10 pontos</p>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$10 = 15 pontos</p>
                                     </div>
                                 </div>
                                 
-                                <div style="display: flex; gap: var(--space-3);">
+                                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
                                     <button class="btn btn-primary btn-sm" onclick="showMenu('burger-house')">
                                         <i class="fas fa-utensils"></i> Ver Cardápio
                                     </button>
                                     <button class="btn btn-outline btn-sm" onclick="visitEstablishment('burger-house')">
                                         <i class="fas fa-map-marker-alt"></i> Visitar
                                     </button>
+                                    <button class="btn btn-outline btn-sm" onclick="showReviews('burger-house')">
+                                        <i class="fas fa-star"></i> Avaliar
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Fashion Store -->
-                        <div class="card establishment-card" data-category="lojas">
+                        <div class="card establishment-card" data-category="lojas" data-rating="4.7" data-points="3.0" data-visits="1923" data-distance="0.8">
                             <div style="position: relative; height: 200px; background: linear-gradient(135deg, #ec4899, #f472b6); overflow: hidden;">
                                 <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=200&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
                                 <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(236,72,153,0.8), rgba(244,114,182,0.8));"></div>
                                 <div style="position: absolute; top: 1rem; left: 1rem; width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: white;">
                                     <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=60&h=60&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
-                                <div style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px);">
-                                    <i class="fas fa-heart" style="color: var(--primary-purple);"></i>
+                                <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.5rem;">
+                                    <button onclick="toggleFavorite('fashion-store')" style="background: rgba(255,255,255,0.9); padding: 0.5rem; border: none; border-radius: var(--radius-md); backdrop-filter: blur(8px); cursor: pointer;">
+                                        <i class="fas fa-heart" style="color: var(--gray-400);" id="fav-fashion-store"></i>
+                                    </button>
+                                    <div style="background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px); display: flex; align-items: center; gap: 0.25rem;">
+                                        <i class="fas fa-eye" style="color: var(--primary-purple); font-size: 0.75rem;"></i>
+                                        <span style="font-size: 0.75rem; font-weight: 600;">1.9k</span>
+                                    </div>
                                 </div>
                                 <div style="position: absolute; bottom: 1rem; left: 1rem; color: white;">
                                     <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                        <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star-half-alt" style="color: #fbbf24;"></i>
+                                        </div>
                                         <span style="font-weight: 600;">4.7</span>
+                                        <span style="color: rgba(255,255,255,0.8); font-size: 0.875rem;">(158 avaliações)</span>
                                         <span style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.875rem;">+3x pontos</span>
                                     </div>
                                 </div>
@@ -184,8 +300,24 @@
                             <div style="padding: var(--space-6);">
                                 <div style="margin-bottom: 1rem;">
                                     <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 0.5rem;">Fashion Store</h3>
-                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem;">Roupas • Acessórios</p>
-                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Moda jovem e moderna com as últimas tendências nacionais e importadas.</p>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.5rem;">Roupas • Acessórios • 0.8km</p>
+                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Moda jovem e moderna com as últimas tendências nacionais e importadas. Peças exclusivas e preços acessíveis.</p>
+                                    
+                                    <!-- Latest Reviews Preview -->
+                                    <div style="background: var(--gray-50); padding: 0.75rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=24&h=24&fit=crop&crop=face" style="width: 24px; height: 24px; border-radius: 50%;">
+                                            <span style="font-size: 0.875rem; font-weight: 600;">Ana Costa</span>
+                                            <div style="display: flex; gap: 0.125rem;">
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                            </div>
+                                        </div>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600); line-height: 1.4;">"Roupas lindas e de qualidade! Sempre encontro peças únicas aqui."</p>
+                                    </div>
                                 </div>
                                 
                                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-lg);">
@@ -195,16 +327,179 @@
                                     </div>
                                     <div style="text-align: center;">
                                         <i class="fas fa-coins" style="color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
-                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$20 = 20 pontos</p>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$20 = 60 pontos</p>
                                     </div>
                                 </div>
                                 
-                                <div style="display: flex; gap: var(--space-3);">
+                                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
                                     <button class="btn btn-primary btn-sm" onclick="showProducts('fashion-store')">
                                         <i class="fas fa-shopping-bag"></i> Ver Produtos
                                     </button>
                                     <button class="btn btn-outline btn-sm" onclick="visitEstablishment('fashion-store')">
                                         <i class="fas fa-store"></i> Visitar Loja
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="showReviews('fashion-store')">
+                                        <i class="fas fa-star"></i> Avaliar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tech Store Premium -->
+                        <div class="card establishment-card" data-category="lojas" data-rating="4.8" data-points="2.5" data-visits="3245" data-distance="2.1">
+                            <div style="position: relative; height: 200px; background: linear-gradient(135deg, #1e40af, #3b82f6); overflow: hidden;">
+                                <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=200&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(30,64,175,0.8), rgba(59,130,246,0.8));"></div>
+                                <div style="position: absolute; top: 1rem; left: 1rem; width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: white;">
+                                    <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=60&h=60&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.5rem;">
+                                    <button onclick="toggleFavorite('tech-store')" style="background: rgba(255,255,255,0.9); padding: 0.5rem; border: none; border-radius: var(--radius-md); backdrop-filter: blur(8px); cursor: pointer;">
+                                        <i class="fas fa-heart" style="color: var(--gray-400);" id="fav-tech-store"></i>
+                                    </button>
+                                    <div style="background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px); display: flex; align-items: center; gap: 0.25rem;">
+                                        <i class="fas fa-eye" style="color: var(--primary-purple); font-size: 0.75rem;"></i>
+                                        <span style="font-size: 0.75rem; font-weight: 600;">3.2k</span>
+                                    </div>
+                                </div>
+                                <div style="position: absolute; bottom: 1rem; left: 1rem; color: white;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                        </div>
+                                        <span style="font-weight: 600;">4.8</span>
+                                        <span style="color: rgba(255,255,255,0.8); font-size: 0.875rem;">(241 avaliações)</span>
+                                        <span style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.875rem;">+2.5x pontos</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="padding: var(--space-6);">
+                                <div style="margin-bottom: 1rem;">
+                                    <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 0.5rem;">Tech Store Premium</h3>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.5rem;">Eletrônicos • Celulares • 2.1km</p>
+                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Loja premium de tecnologia com os últimos lançamentos em smartphones, laptops e acessórios. Garantia estendida e suporte técnico especializado.</p>
+                                    
+                                    <!-- Latest Reviews Preview -->
+                                    <div style="background: var(--gray-50); padding: 0.75rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=24&h=24&fit=crop&crop=face" style="width: 24px; height: 24px; border-radius: 50%;">
+                                            <span style="font-size: 0.875rem; font-weight: 600;">Rafael Santos</span>
+                                            <div style="display: flex; gap: 0.125rem;">
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                            </div>
+                                        </div>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600); line-height: 1.4;">"Melhor loja de tecnologia da cidade! Preços justos e atendimento excepcional."</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-lg);">
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-shipping-fast" style="color: var(--primary-purple); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">🚚 Entrega grátis</p>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-coins" style="color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$50 = 125 pontos</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                                    <button class="btn btn-primary btn-sm" onclick="showProducts('tech-store')">
+                                        <i class="fas fa-mobile-alt"></i> Ver Produtos
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="visitEstablishment('tech-store')">
+                                        <i class="fas fa-store"></i> Visitar Loja
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="showReviews('tech-store')">
+                                        <i class="fas fa-star"></i> Avaliar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pizzaria Nonna -->
+                        <div class="card establishment-card" data-category="restaurantes" data-rating="4.6" data-points="2.0" data-visits="1567" data-distance="1.8">
+                            <div style="position: relative; height: 200px; background: linear-gradient(135deg, #dc2626, #ef4444); overflow: hidden;">
+                                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=200&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;">
+                                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(220,38,38,0.8), rgba(239,68,68,0.8));"></div>
+                                <div style="position: absolute; top: 1rem; left: 1rem; width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: white;">
+                                    <img src="https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=60&h=60&fit=crop&crop=center" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                                <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.5rem;">
+                                    <button onclick="toggleFavorite('pizzaria-nonna')" style="background: rgba(255,255,255,0.9); padding: 0.5rem; border: none; border-radius: var(--radius-md); backdrop-filter: blur(8px); cursor: pointer;">
+                                        <i class="fas fa-heart" style="color: var(--gray-400);" id="fav-pizzaria-nonna"></i>
+                                    </button>
+                                    <div style="background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: var(--radius-md); backdrop-filter: blur(8px); display: flex; align-items: center; gap: 0.25rem;">
+                                        <i class="fas fa-eye" style="color: var(--primary-purple); font-size: 0.75rem;"></i>
+                                        <span style="font-size: 0.75rem; font-weight: 600;">1.6k</span>
+                                    </div>
+                                </div>
+                                <div style="position: absolute; bottom: 1rem; left: 1rem; color: white;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.25rem;">
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star" style="color: #fbbf24;"></i>
+                                            <i class="fas fa-star-half-alt" style="color: #fbbf24;"></i>
+                                        </div>
+                                        <span style="font-weight: 600;">4.6</span>
+                                        <span style="color: rgba(255,255,255,0.8); font-size: 0.875rem;">(189 avaliações)</span>
+                                        <span style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.875rem;">+2x pontos</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="padding: var(--space-6);">
+                                <div style="margin-bottom: 1rem;">
+                                    <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--primary-purple); margin-bottom: 0.5rem;">Pizzaria Nonna</h3>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.5rem;">Pizza • Italiana • 1.8km</p>
+                                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">Autêntica pizzaria italiana com receitas tradicionais da família. Massa artesanal e ingredientes importados direto da Itália.</p>
+                                    
+                                    <!-- Latest Reviews Preview -->
+                                    <div style="background: var(--gray-50); padding: 0.75rem; border-radius: var(--radius-md); margin-bottom: 1rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=24&h=24&fit=crop&crop=face" style="width: 24px; height: 24px; border-radius: 50%;">
+                                            <span style="font-size: 0.875rem; font-weight: 600;">Isabella Rossi</span>
+                                            <div style="display: flex; gap: 0.125rem;">
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                                <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                                            </div>
+                                        </div>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600); line-height: 1.4;">"Pizza maravilhosa! Me lembrou da Itália. Ambiente acolhedor e preços justos."</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-lg);">
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-clock" style="color: var(--primary-purple); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">🍕 30-40 min</p>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-coins" style="color: var(--accent-orange); margin-bottom: 0.5rem;"></i>
+                                        <p style="font-size: 0.875rem; color: var(--gray-600);">💰 R$15 = 30 pontos</p>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                                    <button class="btn btn-primary btn-sm" onclick="showMenu('pizzaria-nonna')">
+                                        <i class="fas fa-pizza-slice"></i> Ver Cardápio
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="orderOnline('pizzaria-nonna')">
+                                        <i class="fas fa-motorcycle"></i> Delivery
+                                    </button>
+                                    <button class="btn btn-outline btn-sm" onclick="showReviews('pizzaria-nonna')">
+                                        <i class="fas fa-star"></i> Avaliar
                                     </button>
                                 </div>
                             </div>
@@ -870,6 +1165,472 @@
         function loadMoreEstablishments() {
             alert(`Carregando mais estabelecimentos...\n\nEm breve teremos centenas de parceiros!`);
         }
+
+        // Sistema de Filtros e Avaliações
+        let currentFilter = 'all';
+        let allEstablishments = [];
+        let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+        // Inicializar dados dos estabelecimentos
+        function initializeEstablishments() {
+            const cards = document.querySelectorAll('.establishment-card');
+            allEstablishments = Array.from(cards).map(card => ({
+                element: card,
+                name: card.querySelector('h3').textContent,
+                category: card.dataset.category,
+                rating: parseFloat(card.dataset.rating),
+                points: parseFloat(card.dataset.points),
+                visits: parseInt(card.dataset.visits),
+                distance: parseFloat(card.dataset.distance)
+            }));
+            updateResultsCount(allEstablishments.length);
+            loadFavorites();
+        }
+
+        // Filtros por categoria
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+            applyFilters();
+        }
+
+        // Aplicar todos os filtros
+        function applyFilters() {
+            const minRating = parseFloat(document.getElementById('minRating').value);
+            const minPoints = parseFloat(document.getElementById('pointsMultiplier').value);
+            const maxDistance = document.getElementById('distance').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            let filteredEstablishments = allEstablishments.filter(est => {
+                // Filtro de categoria
+                if (currentFilter !== 'all' && est.category !== currentFilter) return false;
+                
+                // Filtro de avaliação
+                if (est.rating < minRating) return false;
+                
+                // Filtro de pontos
+                if (est.points < minPoints) return false;
+                
+                // Filtro de distância
+                if (maxDistance !== 'all' && est.distance > parseFloat(maxDistance)) return false;
+                
+                // Filtro de busca
+                if (searchTerm && !est.name.toLowerCase().includes(searchTerm)) return false;
+                
+                return true;
+            });
+
+            // Aplicar ordenação
+            applySorting(filteredEstablishments);
+            
+            // Mostrar/ocultar estabelecimentos
+            allEstablishments.forEach(est => {
+                est.element.style.display = filteredEstablishments.includes(est) ? 'block' : 'none';
+            });
+
+            updateResultsCount(filteredEstablishments.length);
+        }
+
+        // Aplicar ordenação
+        function applySorting(establishments = null) {
+            const sortBy = document.getElementById('sortBy').value;
+            const toSort = establishments || allEstablishments;
+
+            toSort.sort((a, b) => {
+                switch(sortBy) {
+                    case 'rating':
+                        return b.rating - a.rating;
+                    case 'points':
+                        return b.points - a.points;
+                    case 'visits':
+                        return b.visits - a.visits;
+                    case 'distance':
+                        return a.distance - b.distance;
+                    case 'alphabetical':
+                        return a.name.localeCompare(b.name);
+                    case 'newest':
+                        return Math.random() - 0.5; // Simulação de ordenação por novos
+                    default: // relevance
+                        return (b.rating * 0.4 + b.visits * 0.0001 + (5 - a.distance) * 0.3 + b.points * 0.3) - 
+                               (a.rating * 0.4 + a.visits * 0.0001 + (5 - b.distance) * 0.3 + a.points * 0.3);
+                }
+            });
+
+            // Reordenar elementos no DOM
+            const container = document.getElementById('establishmentsGrid');
+            toSort.forEach(est => {
+                container.appendChild(est.element);
+            });
+        }
+
+        // Limpar filtros
+        function clearFilters() {
+            document.getElementById('sortBy').value = 'relevance';
+            document.getElementById('minRating').value = '0';
+            document.getElementById('pointsMultiplier').value = '0';
+            document.getElementById('distance').value = 'all';
+            document.getElementById('searchInput').value = '';
+            setFilter('all');
+        }
+
+        // Atualizar contador de resultados
+        function updateResultsCount(count) {
+            const total = allEstablishments.length;
+            const resultsText = count === total ? 
+                `Mostrando todos os ${total} estabelecimentos` :
+                `Mostrando ${count} de ${total} estabelecimentos`;
+            document.getElementById('resultsCount').innerHTML = `<i class="fas fa-info-circle icon-sm"></i> ${resultsText}`;
+        }
+
+        // Sistema de Favoritos
+        function toggleFavorite(establishmentId) {
+            const icon = document.getElementById(`fav-${establishmentId}`);
+            const index = favorites.indexOf(establishmentId);
+            
+            if (index === -1) {
+                favorites.push(establishmentId);
+                icon.style.color = 'var(--error-red)';
+                icon.classList.add('fas');
+                icon.classList.remove('far');
+                showNotification(`❤️ ${establishmentId.replace('-', ' ')} adicionado aos favoritos!`, 'success');
+            } else {
+                favorites.splice(index, 1);
+                icon.style.color = 'var(--gray-400)';
+                icon.classList.add('far');
+                icon.classList.remove('fas');
+                showNotification(`💔 ${establishmentId.replace('-', ' ')} removido dos favoritos`, 'info');
+            }
+            
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+        }
+
+        // Carregar favoritos
+        function loadFavorites() {
+            favorites.forEach(id => {
+                const icon = document.getElementById(`fav-${id}`);
+                if (icon) {
+                    icon.style.color = 'var(--error-red)';
+                    icon.classList.add('fas');
+                    icon.classList.remove('far');
+                }
+            });
+        }
+
+        // Sistema de Avaliações
+        function showReviews(establishmentId) {
+            const reviews = getEstablishmentReviews(establishmentId);
+            const content = createReviewsHTML(establishmentId, reviews);
+            showLightboxModal(`Avaliações - ${establishmentId.replace('-', ' ')}`, content);
+        }
+
+        // Obter avaliações do estabelecimento
+        function getEstablishmentReviews(establishmentId) {
+            // Dados simulados - em produção viria do backend
+            const allReviews = {
+                'burger-house': [
+                    {
+                        name: 'Maria Silva',
+                        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b332c108?w=40&h=40&fit=crop&crop=face',
+                        rating: 5,
+                        date: '2024-09-20',
+                        comment: 'Hambúrguer delicioso e atendimento excelente! Super recomendo o X-Bacon.',
+                        helpful: 23
+                    },
+                    {
+                        name: 'João Santos',
+                        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face',
+                        rating: 5,
+                        date: '2024-09-18',
+                        comment: 'Melhor hambúrguer da cidade! Ingredientes frescos e entrega rápida.',
+                        helpful: 19
+                    },
+                    {
+                        name: 'Ana Costa',
+                        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face',
+                        rating: 4,
+                        date: '2024-09-15',
+                        comment: 'Muito bom! Apenas o tempo de entrega poderia ser menor.',
+                        helpful: 12
+                    }
+                ],
+                'fashion-store': [
+                    {
+                        name: 'Ana Costa',
+                        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face',
+                        rating: 5,
+                        date: '2024-09-19',
+                        comment: 'Roupas lindas e de qualidade! Sempre encontro peças únicas aqui.',
+                        helpful: 15
+                    },
+                    {
+                        name: 'Carla Oliveira',
+                        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=40&h=40&fit=crop&crop=face',
+                        rating: 5,
+                        date: '2024-09-17',
+                        comment: 'Atendimento personalizado e peças incríveis! Preços justos.',
+                        helpful: 11
+                    }
+                ]
+            };
+            return allReviews[establishmentId] || [];
+        }
+
+        // Criar HTML das avaliações
+        function createReviewsHTML(establishmentId, reviews) {
+            const establishment = allEstablishments.find(est => 
+                est.element.querySelector('h3').textContent.toLowerCase().replace(' ', '-') === establishmentId
+            );
+
+            let html = `
+                <div style="margin-bottom: 2rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 3rem; font-weight: 700; color: var(--primary-purple);">${establishment?.rating || '4.8'}</div>
+                            <div style="display: flex; justify-content: center; margin-bottom: 0.5rem;">
+                                ${createStarRating(establishment?.rating || 4.8)}
+                            </div>
+                            <div style="color: var(--gray-600); font-size: 0.875rem;">${reviews.length} avaliações</div>
+                        </div>
+                        <div style="flex: 1;">
+                            ${createRatingBars(reviews)}
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="showRatingForm('${establishmentId}')" style="width: 100%; margin-bottom: 2rem;">
+                        <i class="fas fa-star"></i> Avaliar este estabelecimento
+                    </button>
+                </div>
+
+                <div style="border-top: 1px solid var(--gray-200); padding-top: 1.5rem;">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--gray-800);">Comentários dos clientes</h3>
+                    ${reviews.map(review => createReviewHTML(review)).join('')}
+                </div>
+            `;
+
+            return html;
+        }
+
+        // Criar avaliação por estrelas
+        function createStarRating(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += '<i class="fas fa-star" style="color: #fbbf24;"></i>';
+                } else if (i - 0.5 <= rating) {
+                    stars += '<i class="fas fa-star-half-alt" style="color: #fbbf24;"></i>';
+                } else {
+                    stars += '<i class="far fa-star" style="color: #fbbf24;"></i>';
+                }
+            }
+            return stars;
+        }
+
+        // Criar barras de avaliação
+        function createRatingBars(reviews) {
+            const counts = [0, 0, 0, 0, 0];
+            reviews.forEach(review => counts[review.rating - 1]++);
+            const total = reviews.length || 1;
+
+            let html = '';
+            for (let i = 4; i >= 0; i--) {
+                const count = counts[i];
+                const percentage = (count / total) * 100;
+                html += `
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                        <span style="font-size: 0.875rem; color: var(--gray-600); width: 20px;">${i + 1}</span>
+                        <i class="fas fa-star" style="color: #fbbf24; font-size: 0.75rem;"></i>
+                        <div style="flex: 1; height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: #fbbf24; width: ${percentage}%; transition: width 0.3s ease;"></div>
+                        </div>
+                        <span style="font-size: 0.875rem; color: var(--gray-600); width: 30px;">${count}</span>
+                    </div>
+                `;
+            }
+            return html;
+        }
+
+        // Criar HTML de uma avaliação
+        function createReviewHTML(review) {
+            const date = new Date(review.date).toLocaleDateString('pt-BR');
+            return `
+                <div style="border-bottom: 1px solid var(--gray-100); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <img src="${review.avatar}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                        <div>
+                            <div style="font-weight: 600; color: var(--gray-800);">${review.name}</div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
+                                <div style="display: flex; gap: 0.125rem;">
+                                    ${createStarRating(review.rating)}
+                                </div>
+                                <span style="color: var(--gray-500); font-size: 0.875rem;">${date}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="color: var(--gray-700); line-height: 1.5; margin-bottom: 1rem;">${review.comment}</p>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <button onclick="likeReview('${review.name}')" style="background: none; border: 1px solid var(--gray-300); color: var(--gray-600); padding: 0.5rem 1rem; border-radius: var(--radius-md); cursor: pointer; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="far fa-thumbs-up"></i> Útil (${review.helpful})
+                        </button>
+                        <button style="background: none; border: none; color: var(--gray-500); cursor: pointer; font-size: 0.875rem;">
+                            <i class="far fa-flag"></i> Denunciar
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Mostrar formulário de avaliação
+        function showRatingForm(establishmentId) {
+            const content = `
+                <form onsubmit="submitRating('${establishmentId}', event)" style="display: grid; gap: 1.5rem;">
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Sua avaliação:</label>
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            ${[1,2,3,4,5].map(i => `
+                                <button type="button" onclick="setRating(${i})" style="background: none; border: none; font-size: 2rem; color: var(--gray-300); cursor: pointer;" id="star-${i}">
+                                    <i class="far fa-star"></i>
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div id="ratingText" style="color: var(--gray-600); font-size: 0.875rem;">Clique nas estrelas para avaliar</div>
+                    </div>
+                    
+                    <div>
+                        <label for="reviewComment" style="display: block; font-weight: 600; margin-bottom: 0.5rem;">Seu comentário:</label>
+                        <textarea id="reviewComment" placeholder="Conte sua experiência..." style="width: 100%; min-height: 100px; padding: 1rem; border: 1px solid var(--gray-300); border-radius: var(--radius-md); resize: vertical;" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Enviar Avaliação
+                    </button>
+                </form>
+            `;
+            
+            showLightboxModal('Avaliar Estabelecimento', content);
+        }
+
+        let currentRating = 0;
+
+        // Definir avaliação por estrelas
+        function setRating(rating) {
+            currentRating = rating;
+            const ratingTexts = ['', 'Péssimo', 'Ruim', 'Regular', 'Bom', 'Excelente'];
+            
+            for (let i = 1; i <= 5; i++) {
+                const star = document.getElementById(`star-${i}`);
+                if (i <= rating) {
+                    star.style.color = '#fbbf24';
+                    star.innerHTML = '<i class="fas fa-star"></i>';
+                } else {
+                    star.style.color = 'var(--gray-300)';
+                    star.innerHTML = '<i class="far fa-star"></i>';
+                }
+            }
+            
+            document.getElementById('ratingText').textContent = ratingTexts[rating];
+        }
+
+        // Enviar avaliação
+        function submitRating(establishmentId, event) {
+            event.preventDefault();
+            
+            if (currentRating === 0) {
+                showNotification('Por favor, selecione uma avaliação', 'error');
+                return;
+            }
+            
+            const comment = document.getElementById('reviewComment').value;
+            
+            // Simular envio - em produção enviaria para o backend
+            showNotification('✅ Avaliação enviada com sucesso! Obrigado pelo feedback.', 'success');
+            closeLightboxModal();
+            
+            // Reset
+            currentRating = 0;
+        }
+
+        // Curtir avaliação
+        function likeReview(reviewerName) {
+            showNotification(`👍 Você achou a avaliação de ${reviewerName} útil!`, 'success');
+        }
+
+        // Busca em tempo real
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    applyFilters();
+                });
+            }
+            
+            initializeEstablishments();
+        });
+
+        // Notificações
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const colors = {
+                success: '#22c55e',
+                error: '#ef4444',
+                info: '#3b82f6',
+                warning: '#f59e0b'
+            };
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${colors[type]};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 0.5rem;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                z-index: 10001;
+                animation: slideIn 0.3s ease;
+                max-width: 400px;
+            `;
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // CSS para animações
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+            @keyframes slideUp {
+                from { transform: translateY(30px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
