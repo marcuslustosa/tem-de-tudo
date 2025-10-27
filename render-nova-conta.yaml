@@ -1,0 +1,87 @@
+services:
+  - type: web
+    name: tem-de-tudo
+    runtime: php
+    plan: free
+    rootDir: backend
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan config:clear
+      php artisan route:clear
+      php artisan view:clear
+    startCommand: |
+      php artisan migrate --force
+      php artisan db:seed --force
+      php artisan serve --host=0.0.0.0 --port=$PORT
+    healthCheckPath: /
+    envVars:
+      - key: APP_NAME
+        value: "Tem de Tudo"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        value: base64:3cQV4S7tE8m2dR9wQ5lN6pK1jH0uI8yT7rE3wQ9pL5k=
+      - key: APP_URL
+        value: https://tem-de-tudo.onrender.com
+      - key: APP_LOCALE
+        value: pt_BR
+      - key: APP_FALLBACK_LOCALE
+        value: pt_BR
+
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_SSL_MODE
+        value: require
+      - key: DB_HOST
+        value: dpg-d3vps0k9c44c738q64gg-a
+      - key: DB_PORT
+        value: 5432
+      - key: DB_DATABASE
+        value: tem_de_tudo_database
+      - key: DB_USERNAME
+        value: tem_de_tudo_database_user
+      - key: DB_PASSWORD
+        value: 9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA
+
+      - key: SESSION_DRIVER
+        value: database
+      - key: SESSION_LIFETIME
+        value: 120
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: LOG_LEVEL
+        value: error
+      - key: LOG_CHANNEL
+        value: stack
+
+      - key: JWT_SECRET
+        value: t3md3tud0syst3mj4wt53cr3tk3y2024s3cur3h4shk3y
+      - key: JWT_TTL
+        value: 60
+      - key: JWT_REFRESH_TTL
+        value: 20160
+      - key: JWT_ALGO
+        value: HS256
+
+      - key: SANCTUM_STATEFUL_DOMAINS
+        value: tem-de-tudo.onrender.com
+
+      - key: MAIL_MAILER
+        value: log
+      - key: MAIL_FROM_ADDRESS
+        value: noreply@temdetudo.com
+      - key: MAIL_FROM_NAME
+        value: "Tem de Tudo"
+
+      - key: PHP_CLI_SERVER_WORKERS
+        value: 4
+      - key: BCRYPT_ROUNDS
+        value: 12
+      - key: FILESYSTEM_DISK
+        value: local
+
+databases: []

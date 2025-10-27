@@ -1,45 +1,52 @@
-# Imagem base PHP
-FROM php:8.2-cli
+FROM php:8.2-apache
 
-# Instala dependências do sistema
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    unzip git curl libpng-dev libpq-dev libsqlite3-dev libzip-dev zip \
-    && docker-php-ext-install pdo pdo_pgsql pdo_sqlite pdo_mysql zip \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    libpq-dev \
+    && docker-php-ext-install pdo_pgsql pgsql mbstring exif pcntl bcmath gd \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Instala Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Define diretório de trabalho
-WORKDIR /app
+# Set working directory
+WORKDIR /var/www/html
 
-# Copia composer.json primeiro (para cache de dependências)
-COPY composer.json ./
+# Copy application files
+COPY . /var/www/html/
 
-# Instala dependências do PHP (ignora composer.lock se não existir)
-RUN if [ -f composer.lock ]; then \
-        cp composer.lock composer.lock.backup; \
-    fi && \
-    composer install --no-dev --optimize-autoloader --no-scripts || \
-    (echo "Composer install falhou, tentando sem lock..." && \
-     rm -f composer.lock && \
-     composer install --no-dev --optimize-autoloader --no-scripts)
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-# Copia todo o projeto
-COPY . .
+# Configure Apache
+COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
+RUN a2enmod rewrite
 
-# Cria diretórios necessários
-RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache database
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Define permissões
-RUN chmod -R 755 storage bootstrap/cache database
+# Create directories and set permissions
+RUN mkdir -p /var/www/html/storage/framework/{sessions,views,cache} \
+    && mkdir -p /var/www/html/storage/logs \
+    && mkdir -p /var/www/html/bootstrap/cache \
+    && mkdir -p /var/www/html/database \
+    && chown -R www-data:www-data /var/www/html/storage \
+    && chown -R www-data:www-data /var/www/html/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html/database
 
-# Copia script de inicialização
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Copy and make entrypoint executable
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Expõe a porta
-EXPOSE 10000
+EXPOSE 80
 
-# Usa entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
