@@ -1,62 +1,72 @@
 #!/bin/bash
 
-# Script de inicialização para Render - Apache
-echo "🚀 Iniciando Tem de Tudo no Render..."
+# Script simplificado para corrigir erro 500
+echo "🚀 Iniciando Tem de Tudo..."
 
-# Configurações críticas de ambiente
+# Configura ambiente
 export APP_ENV=production
 export APP_DEBUG=false
 
-# Aguarda banco de dados estar disponível
-echo "📡 Aguardando conexão com PostgreSQL..."
-sleep 15
+# Cria diretórios essenciais
+mkdir -p /var/www/html/storage/framework/{sessions,views,cache}
+mkdir -p /var/www/html/storage/logs
+mkdir -p /var/www/html/bootstrap/cache
+mkdir -p /var/www/html/database
 
-# Limpa caches do Laravel
-echo "🧹 Limpando caches..."
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-php artisan cache:clear
-
-# Gera chave da aplicação se não estiver definida
-echo "🔑 Verificando APP_KEY..."
-if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
-    echo "Gerando nova APP_KEY..."
-    php artisan key:generate --force --no-interaction
-fi
-
-# Testa conexão com banco de dados
-echo "🗃️ Testando conexão com banco..."
-timeout 30 php artisan tinker --execute="DB::connection()->getPdo(); echo 'Database connected successfully!';" || {
-    echo "❌ Erro na conexão com banco de dados"
-    echo "🔧 Tentando criar banco local de fallback..."
-    touch /var/www/html/database/database.sqlite
-    export DB_CONNECTION=sqlite
-    export DB_DATABASE=/var/www/html/database/database.sqlite
-}
-
-# Executa migrations
-echo "📊 Executando migrations..."
-php artisan migrate --force --no-interaction
-
-# Executa seeds para criar usuário admin
-echo "👤 Criando usuário administrador..."
-php artisan db:seed --force --no-interaction
-
-# Otimiza configurações para produção
-echo "⚡ Otimizando para produção..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-
-# Configura permissões finais
-echo "🔒 Configurando permissões..."
+# Define permissões
 chown -R www-data:www-data /var/www/html/storage
 chown -R www-data:www-data /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage
 chmod -R 775 /var/www/html/bootstrap/cache
 
-echo "✅ Aplicação pronta! Iniciando Apache..."
+# Limpa caches
+echo "🧹 Limpando caches..."
+php artisan config:clear || true
+php artisan route:clear || true
+php artisan view:clear || true
+php artisan cache:clear || true
+
+# Gera chave se necessário
+echo "🔑 Configurando APP_KEY..."
+if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
+    php artisan key:generate --force --no-interaction || true
+fi
+
+# Tenta PostgreSQL, se falhar usa SQLite
+echo "🗃️ Configurando banco de dados..."
+if ! php artisan migrate --force --no-interaction 2>/dev/null; then
+    echo "⚠️ PostgreSQL indisponível, usando SQLite..."
+    touch /var/www/html/database/database.sqlite
+    chown www-data:www-data /var/www/html/database/database.sqlite
+    
+    # Cria .env com SQLite
+    cat > /var/www/html/.env << EOF
+APP_NAME="Tem de Tudo"
+APP_ENV=production
+APP_DEBUG=false
+APP_KEY=base64:3cQV4S7tE8m2dR9wQ5lN6pK1jH0uI8yT7rE3wQ9pL5k=
+APP_URL=https://app-tem-de-tudo.onrender.com
+
+DB_CONNECTION=sqlite
+DB_DATABASE=/var/www/html/database/database.sqlite
+
+SESSION_DRIVER=file
+CACHE_STORE=file
+QUEUE_CONNECTION=sync
+LOG_LEVEL=error
+
+JWT_SECRET=t3md3tud0syst3mj4wt53cr3tk3y2024s3cur3h4shk3y
+EOF
+    
+    # Roda migrations com SQLite
+    php artisan migrate --force --no-interaction
+fi
+
+# Seeds
+echo "🌱 Executando seeds..."
+php artisan db:seed --force --no-interaction || true
+
+echo "✅ Aplicação configurada! Iniciando Apache..."
 
 # Inicia Apache
 exec apache2-foreground
