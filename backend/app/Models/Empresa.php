@@ -18,14 +18,15 @@ class Empresa extends Model
         'photos',
         'services',
         'user_id',
-        'plan_id',
-        'subscription_id',
-        'category'
+        'category',
+        'descricao',
+        'ativo'
     ];
 
     protected $casts = [
         'photos' => 'array',
         'services' => 'array',
+        'ativo' => 'boolean'
     ];
 
     public function user()
@@ -34,84 +35,43 @@ class Empresa extends Model
     }
 
     /**
-     * Relacionamento com plano
+     * Relacionamento com check-ins
      */
-    public function plan()
+    public function checkIns()
     {
-        return $this->belongsTo(Plan::class);
+        return $this->hasMany(CheckIn::class);
     }
 
     /**
-     * Relacionamento com assinatura
+     * Relacionamento com pontos
      */
-    public function subscription()
-    {
-        return $this->belongsTo(Subscription::class);
-    }
-
-    /**
-     * Relacionamento com níveis de desconto
-     */
-    public function discountLevels()
-    {
-        return $this->hasMany(DiscountLevel::class, 'empresa_id');
-    }
-
-    /**
-     * Relacionamento com QR Codes
-     */
-    public function qrCodes()
-    {
-        return $this->hasMany(QRCode::class, 'empresa_id');
-    }
-
-    /**
-     * Criar níveis de desconto padrão quando empresa é criada
-     */
-    public static function boot()
-    {
-        parent::boot();
-        
-        static::created(function ($empresa) {
-            // Criar níveis de desconto padrão
-            \App\Models\DiscountLevel::createDefaultLevels($empresa->id);
-        });
-    }
-
-    /**
-     * Verificar se empresa tem plano ativo
-     */
-    public function hasActivePlan()
-    {
-        return $this->subscription && $this->subscription->isActive();
-    }
-
-    /**
-     * Obter multiplicador de pontos baseado no plano
-     */
-    public function getPointsMultiplier()
-    {
-        if (!$this->plan) {
-            return 1; // Multiplicador padrão
-        }
-
-        $multipliers = [
-            'basico' => 1,
-            'premium' => 1.5,
-            'enterprise' => 2,
-            'franquia' => 2
-        ];
-
-        return $multipliers[$this->plan->slug] ?? 1;
-    }
-
     public function pontos()
     {
         return $this->hasMany(Ponto::class);
     }
 
-    public function ofertas()
+    /**
+     * Relacionamento com cupons
+     */
+    public function cupons()
     {
-        return $this->hasMany(Oferta::class);
+        return $this->hasMany(Coupon::class);
+    }
+
+    /**
+     * Obter multiplicador de pontos baseado no valor da compra
+     */
+    public function getPointsMultiplier(float $valorCompra = 0): float
+    {
+        // Lógica simples: R$ 1,00 = 1 ponto
+        return 1;
+    }
+
+    /**
+     * Verificar se empresa está ativa
+     */
+    public function isAtiva(): bool
+    {
+        return $this->ativo ?? true;
     }
 }

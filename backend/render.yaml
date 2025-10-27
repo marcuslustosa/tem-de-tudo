@@ -14,7 +14,7 @@ services:
       - key: APP_DEBUG
         value: false
       - key: APP_KEY
-        sync: false   # cole a chave gerada pelo php artisan key:generate --show
+        value: base64:3cQV4S7tE8m2dR9wQ5lN6pK1jH0uI8yT7rE3wQ9pL5k=
       - key: APP_URL
         value: https://tem-de-tudo.onrender.com
       - key: APP_LOCALE
@@ -49,11 +49,16 @@ services:
         value: database
       - key: QUEUE_CONNECTION
         value: database
-      - key: LOG_LEVEL
-        value: error
+      - key: JWT_SECRET
+        value: t3md3tud0syst3mj4wt53cr3tk3y2024s3cur3h4shk3y
+      - key: JWT_TTL
+        value: 60
+      - key: JWT_REFRESH_TTL
+        value: 20160
 
     postDeployCommand: |
       php artisan migrate --force
+      php artisan db:seed --force
       php artisan config:cache
       php artisan route:cache
       php artisan view:cache

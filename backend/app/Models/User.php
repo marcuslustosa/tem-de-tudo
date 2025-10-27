@@ -79,23 +79,23 @@ class User extends Authenticatable
     }
 
     /**
-     * Calcular nível do usuário
+     * Calcular nível do usuário baseado em pontos
      */
-    public function getNivelAttribute(): array
+    public function calcularNivel(): array
     {
         $pontos = $this->pontos ?? 0;
         
         if ($pontos >= 10000) {
-            return ['nome' => 'Diamante', 'cor' => '#b9f2ff', 'min' => 10000, 'proximo' => null];
+            return ['nome' => 'Diamante', 'cor' => '#b9f2ff', 'min' => 10000, 'proximo' => null, 'multiplicador' => 3.0];
         } elseif ($pontos >= 5000) {
-            return ['nome' => 'Platina', 'cor' => '#e5e4e2', 'min' => 5000, 'proximo' => 10000];
+            return ['nome' => 'Ouro', 'cor' => '#ffd700', 'min' => 5000, 'proximo' => 10000, 'multiplicador' => 2.0];
         } elseif ($pontos >= 2500) {
-            return ['nome' => 'Ouro', 'cor' => '#ffd700', 'min' => 2500, 'proximo' => 5000];
+            return ['nome' => 'Prata', 'cor' => '#c0c0c0', 'min' => 2500, 'proximo' => 5000, 'multiplicador' => 1.5];
         } elseif ($pontos >= 1000) {
-            return ['nome' => 'Prata', 'cor' => '#c0c0c0', 'min' => 1000, 'proximo' => 2500];
+            return ['nome' => 'Bronze', 'cor' => '#cd7f32', 'min' => 1000, 'proximo' => 2500, 'multiplicador' => 1.2];
         }
         
-        return ['nome' => 'Bronze', 'cor' => '#cd7f32', 'min' => 0, 'proximo' => 1000];
+        return ['nome' => 'Iniciante', 'cor' => '#8b8b8b', 'min' => 0, 'proximo' => 1000, 'multiplicador' => 1.0];
     }
 
     /**

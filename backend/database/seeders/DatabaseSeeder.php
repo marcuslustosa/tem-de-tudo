@@ -14,38 +14,51 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Usuários de teste para diferentes roles
-
         // Admin Master
-        User::factory()->create([
-            'name' => 'Admin Master',
-            'email' => 'admin@temdetudo.com',
-            'password' => Hash::make('Admin123!'),
-            'role' => 'admin',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@sistema.com'],
+            [
+                'name' => 'Administrador',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin',
+                'pontos' => 0,
+                'pontos_pendentes' => 0,
+                'telefone' => '(11) 99999-9999',
+                'email_verified_at' => now(),
+            ]
+        );
 
-        // Cliente
-        User::factory()->create([
-            'name' => 'Cliente Teste',
-            'email' => 'cliente@temdetudo.com',
-            'password' => Hash::make('Cliente123!'),
-            'role' => 'cliente',
-        ]);
+        // Cliente Teste
+        User::firstOrCreate(
+            ['email' => 'cliente@teste.com'],
+            [
+                'name' => 'Cliente Teste',
+                'password' => Hash::make('123456'),
+                'role' => 'cliente',
+                'pontos' => 150,
+                'pontos_pendentes' => 50,
+                'telefone' => '(11) 77777-7777',
+                'email_verified_at' => now(),
+            ]
+        );
 
-        // Empresa
-        User::factory()->create([
-            'name' => 'Empresa Teste',
-            'email' => 'empresa@temdetudo.com',
-            'password' => Hash::make('Empresa123!'),
-            'role' => 'empresa',
-        ]);
+        // Empresa Teste
+        User::firstOrCreate(
+            ['email' => 'empresa@teste.com'],
+            [
+                'name' => 'Empresa Teste',
+                'password' => Hash::make('123456'),
+                'role' => 'empresa',
+                'pontos' => 0,
+                'pontos_pendentes' => 0,
+                'telefone' => '(11) 88888-8888',
+                'email_verified_at' => now(),
+            ]
+        );
 
-        // Usuário adicional para testes
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'cliente',
-        ]);
+        $this->command->info('✅ Usuários padrão criados!');
+        $this->command->info('👤 Admin: admin@sistema.com / admin123');
+        $this->command->info('👥 Cliente: cliente@teste.com / 123456');
+        $this->command->info('🏪 Empresa: empresa@teste.com / 123456');
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Models\User;
@@ -106,11 +107,11 @@ class PontosController extends Controller
      */
     private function calcularPontos(float $valorCompra, Empresa $empresa): int
     {
-        // Regra base: 1 ponto a cada R$ 2,00 gastos
-        $pontosBase = floor($valorCompra / 2);
+        // Regra base: 1 ponto a cada R$ 1,00 gasto
+        $pontosBase = floor($valorCompra);
 
-        // Multiplicador da empresa (se configurado)
-        $multiplicador = $empresa->multiplicador_pontos ?? 1.0;
+        // Multiplicador baseado no nível do usuário (se configurado)
+        $multiplicador = $empresa->getPointsMultiplier($valorCompra);
         
         // Aplicar multiplicador
         $pontosFinais = floor($pontosBase * $multiplicador);
@@ -446,11 +447,24 @@ class PontosController extends Controller
     }
 
     /**
-     * Registrar atividade no histórico
+     * Registrar atividade no sistema
      */
     private function registrarAtividade(int $userId, string $tipo, string $descricao, int $pontos): void
     {
-        // Implementar sistema de log de atividades se necessário
+        try {
+            // Criar registro de histórico de pontos
+            Ponto::create([
+                'user_id' => $userId,
+                'pontos' => $pontos,
+                'tipo' => $tipo,
+                'descricao' => $descricao,
+                'created_at' => now()
+            ]);
+
+            \Log::info("Atividade registrada: {$tipo} - User: {$userId} - Pontos: {$pontos}");
+        } catch (\Exception $e) {
+            \Log::error("Erro ao registrar atividade: " . $e->getMessage());
+        }
     }
 
     /**

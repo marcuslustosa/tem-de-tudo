@@ -5,8 +5,10 @@
 
 class PontosAPI {
     constructor() {
-        this.baseURL = '/api';
-        this.token = localStorage.getItem('auth_token');
+        // Detectar automaticamente a URL base
+        this.baseURL = window.location.origin + '/api';
+        this.token = localStorage.getItem('auth_token') || sessionStorage.getItem('tem_de_tudo_token');
+        console.log('🔗 PontosAPI inicializada com base URL:', this.baseURL);
     }
 
     // Configurar token de autorização

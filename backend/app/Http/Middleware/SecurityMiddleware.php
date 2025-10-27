@@ -36,6 +36,19 @@ class SecurityMiddleware
             $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
         }
 
+        // CORS headers para API
+        if ($request->is('api/*')) {
+            $response->header('Access-Control-Allow-Origin', '*');
+            $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+            $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+            $response->header('Access-Control-Max-Age', '86400');
+            
+            // Handle preflight OPTIONS requests
+            if ($request->getMethod() === 'OPTIONS') {
+                return response('', 200);
+            }
+        }
+
         return $response;
     }
 }

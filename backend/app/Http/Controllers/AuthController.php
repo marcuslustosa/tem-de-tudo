@@ -160,4 +160,23 @@ class AuthController extends Controller
         if ($pontos >= 1000) return 'Prata';
         return 'Bronze';
     }
+
+    /**
+     * Log de eventos para auditoria
+     */
+    private function logAuditEvent(string $event, int $userId, $request = null): void
+    {
+        try {
+            // Log simples - em produção, você pode usar um sistema mais robusto
+            Log::info("AUDIT: {$event}", [
+                'user_id' => $userId,
+                'ip' => $request ? $request->ip() : null,
+                'user_agent' => $request ? $request->userAgent() : null,
+                'timestamp' => now()
+            ]);
+        } catch (\Exception $e) {
+            // Falha silenciosa para não quebrar o fluxo principal
+            Log::error("Erro no log de auditoria: " . $e->getMessage());
+        }
+    }
 }

@@ -7,7 +7,7 @@
 // CONFIGURAÇÕES DE AUTENTICAÇÃO
 // ================================
 const AuthConfig = {
-    API_BASE: window.location.origin,
+    API_BASE: window.location.origin + '/api',
     STORAGE_KEYS: {
         TOKEN: 'tem_de_tudo_token',
         USER: 'tem_de_tudo_user',
@@ -18,11 +18,11 @@ const AuthConfig = {
     TOKEN_REFRESH_INTERVAL: 15 * 60 * 1000, // 15 minutos
     SESSION_CHECK_INTERVAL: 5 * 60 * 1000,  // 5 minutos
     ROUTES: {
-        LOGIN: '/api/auth/login',
-        ADMIN_LOGIN: '/api/admin/login',
-        REFRESH: '/api/auth/refresh',
-        LOGOUT: '/api/auth/logout',
-        VERIFY: '/api/auth/verify'
+        LOGIN: '/auth/login',
+        ADMIN_LOGIN: '/admin/login',
+        REFRESH: '/auth/refresh',
+        LOGOUT: '/auth/logout',
+        VERIFY: '/auth/verify'
     }
 };
 
