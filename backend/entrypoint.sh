@@ -3,13 +3,13 @@
 # Script de inicialização para Render - Apache
 echo "🚀 Iniciando Tem de Tudo no Render..."
 
+# Configurações críticas de ambiente
+export APP_ENV=production
+export APP_DEBUG=false
+
 # Aguarda banco de dados estar disponível
 echo "📡 Aguardando conexão com PostgreSQL..."
-sleep 10
-
-# Configura variáveis de ambiente se não estiverem definidas
-export APP_ENV=${APP_ENV:-production}
-export APP_DEBUG=${APP_DEBUG:-false}
+sleep 15
 
 # Limpa caches do Laravel
 echo "🧹 Limpando caches..."
@@ -19,24 +19,42 @@ php artisan view:clear
 php artisan cache:clear
 
 # Gera chave da aplicação se não estiver definida
-if [ -z "$APP_KEY" ]; then
-    echo "🔑 Gerando chave da aplicação..."
-    php artisan key:generate --force
+echo "🔑 Verificando APP_KEY..."
+if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
+    echo "Gerando nova APP_KEY..."
+    php artisan key:generate --force --no-interaction
 fi
+
+# Testa conexão com banco de dados
+echo "🗃️ Testando conexão com banco..."
+timeout 30 php artisan tinker --execute="DB::connection()->getPdo(); echo 'Database connected successfully!';" || {
+    echo "❌ Erro na conexão com banco de dados"
+    echo "🔧 Tentando criar banco local de fallback..."
+    touch /var/www/html/database/database.sqlite
+    export DB_CONNECTION=sqlite
+    export DB_DATABASE=/var/www/html/database/database.sqlite
+}
 
 # Executa migrations
 echo "📊 Executando migrations..."
-php artisan migrate --force
+php artisan migrate --force --no-interaction
 
 # Executa seeds para criar usuário admin
 echo "👤 Criando usuário administrador..."
-php artisan db:seed --force
+php artisan db:seed --force --no-interaction
 
 # Otimiza configurações para produção
 echo "⚡ Otimizando para produção..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+
+# Configura permissões finais
+echo "🔒 Configurando permissões..."
+chown -R www-data:www-data /var/www/html/storage
+chown -R www-data:www-data /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage
+chmod -R 775 /var/www/html/bootstrap/cache
 
 echo "✅ Aplicação pronta! Iniciando Apache..."
 

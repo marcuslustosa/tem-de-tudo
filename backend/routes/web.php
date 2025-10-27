@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+
+// Health check and API status routes
+Route::get('/api/status', [HomeController::class, 'index']);
+Route::get('/health', [HomeController::class, 'health']);
 
 // Rotas específicas para páginas HTML
 Route::get('/', function () {
