@@ -46,8 +46,15 @@ RUN mkdir -p /var/www/html/storage/framework/{sessions,views,cache} \
 # Create entrypoint script directly in container (Unix encoding guaranteed)
 RUN cat > /usr/local/bin/entrypoint.sh << 'EOF'
 #!/bin/bash
+set -e
 
-echo "Starting Tem de Tudo Production..."
+echo "=== Tem de Tudo - Starting ==="
+
+# Copy env file
+if [ -f "/var/www/html/.env.render" ]; then
+    echo "Using .env.render"
+    cp /var/www/html/.env.render /var/www/html/.env
+fi
 
 # Essential directories
 mkdir -p /var/www/html/storage/framework/{sessions,views,cache}
@@ -55,47 +62,34 @@ mkdir -p /var/www/html/storage/logs
 mkdir -p /var/www/html/bootstrap/cache
 mkdir -p /var/www/html/database
 
-# Permissions  
-chown -R www-data:www-data /var/www/html/storage
-chown -R www-data:www-data /var/www/html/bootstrap/cache
-chown -R www-data:www-data /var/www/html/database
-chmod -R 775 /var/www/html/storage
-chmod -R 775 /var/www/html/bootstrap/cache
+# Permissions - Very permissive for debugging
+chmod -R 777 /var/www/html/storage
+chmod -R 777 /var/www/html/bootstrap/cache
+chmod -R 777 /var/www/html/database
 
 # Clear caches
 php artisan config:clear || true
-php artisan route:clear || true
-php artisan view:clear || true
 php artisan cache:clear || true
+php artisan view:clear || true
 
-# Generate key
-if [ -z "$APP_KEY" ]; then
-    php artisan key:generate --force --no-interaction || true
+# ALWAYS use SQLite for now
+echo "Using SQLite database"
+touch /var/www/html/database/database.sqlite
+chmod 777 /var/www/html/database/database.sqlite
+
+# Update .env to use SQLite
+if [ -f "/var/www/html/.env" ]; then
+    sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=sqlite/' /var/www/html/.env
+    sed -i 's|DB_DATABASE=.*|DB_DATABASE=/var/www/html/database/database.sqlite|' /var/www/html/.env
 fi
 
-# Database setup - PostgreSQL preferred
-if [ -n "$DB_HOST" ] && [ -n "$DB_PASSWORD" ]; then
-    echo "Using PostgreSQL..."
-    export DB_CONNECTION=pgsql
-    export DB_SSL_MODE=require
-    php artisan migrate --force --no-interaction || true
-else
-    echo "Using SQLite fallback..."
-    export DB_CONNECTION=sqlite
-    export DB_DATABASE=/var/www/html/database/database.sqlite
-    touch /var/www/html/database/database.sqlite
-    chown www-data:www-data /var/www/html/database/database.sqlite
-    chmod 664 /var/www/html/database/database.sqlite
-    php artisan migrate --force --no-interaction || true
-fi
+# Run migrations
+php artisan migrate --force || echo "Migration failed"
 
-# Create test users
-php artisan db:seed --force --no-interaction || true
+# Seed database
+php artisan db:seed --force || echo "Seed failed"
 
-# Cache config
-php artisan config:cache || true
-
-echo "Starting Apache..."
+echo "=== Starting Apache ==="
 exec apache2-foreground
 EOF
 
