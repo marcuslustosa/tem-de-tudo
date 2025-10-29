@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Script simplificado para corrigir erro 500
 echo "🚀 Iniciando Tem de Tudo..."
 
 # Configura ambiente
@@ -32,39 +31,45 @@ if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
     php artisan key:generate --force --no-interaction || true
 fi
 
-# Tenta PostgreSQL, se falhar usa SQLite
-echo "🗃️ Configurando banco de dados..."
-if ! php artisan migrate --force --no-interaction 2>/dev/null; then
-    echo "⚠️ PostgreSQL indisponível, usando SQLite..."
+# Verifica se variáveis do PostgreSQL estão definidas
+if [ -n "$DB_HOST" ] && [ -n "$DB_PASSWORD" ]; then
+    echo "🗃️ Usando PostgreSQL..."
+    export DB_CONNECTION=pgsql
+    
+    # Tenta conectar ao PostgreSQL
+    if php artisan migrate --force --no-interaction 2>/dev/null; then
+        echo "✅ PostgreSQL conectado com sucesso!"
+    else
+        echo "❌ Erro no PostgreSQL, usando SQLite como fallback..."
+        export DB_CONNECTION=sqlite
+        export DB_DATABASE=/var/www/html/database/database.sqlite
+        
+        touch /var/www/html/database/database.sqlite
+        chown www-data:www-data /var/www/html/database/database.sqlite
+        chmod 664 /var/www/html/database/database.sqlite
+        
+        php artisan migrate --force --no-interaction
+    fi
+else
+    echo "🗃️ Usando SQLite (variáveis PostgreSQL não encontradas)..."
+    export DB_CONNECTION=sqlite
+    export DB_DATABASE=/var/www/html/database/database.sqlite
+    
     touch /var/www/html/database/database.sqlite
     chown www-data:www-data /var/www/html/database/database.sqlite
+    chmod 664 /var/www/html/database/database.sqlite
     
-    # Cria .env com SQLite
-    cat > /var/www/html/.env << EOF
-APP_NAME="Tem de Tudo"
-APP_ENV=production
-APP_DEBUG=false
-APP_KEY=base64:3cQV4S7tE8m2dR9wQ5lN6pK1jH0uI8yT7rE3wQ9pL5k=
-APP_URL=https://app-tem-de-tudo.onrender.com
-
-DB_CONNECTION=sqlite
-DB_DATABASE=/var/www/html/database/database.sqlite
-
-SESSION_DRIVER=file
-CACHE_STORE=file
-QUEUE_CONNECTION=sync
-LOG_LEVEL=error
-
-JWT_SECRET=t3md3tud0syst3mj4wt53cr3tk3y2024s3cur3h4shk3y
-EOF
-    
-    # Roda migrations com SQLite
     php artisan migrate --force --no-interaction
 fi
 
 # Seeds
 echo "🌱 Executando seeds..."
 php artisan db:seed --force --no-interaction || true
+
+# Cache final
+echo "⚡ Aplicando cache..."
+php artisan config:cache || true
+php artisan route:cache || true
 
 echo "✅ Aplicação configurada! Iniciando Apache..."
 

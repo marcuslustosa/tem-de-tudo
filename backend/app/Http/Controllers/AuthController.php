@@ -85,26 +85,99 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Login do usuário
+     */
     public function login(Request $request)
     {
+        // Rate limiting para login
+        $key = 'login-attempts:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Muitas tentativas de login. Tente novamente em ' . RateLimiter::availableIn($key) . ' segundos.'
+            ], 429);
+        }
+
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            throw ValidationException::withMessages([
-                'email' => ['As credenciais fornecidas estão incorretas.'],
-            ]);
+        $credentials = $request->only('email', 'password');
+
+        if (!$token = JWTAuth::attempt($credentials)) {
+            RateLimiter::hit($key, 300); // 5 minutos
+            return response()->json([
+                'success' => false,
+                'message' => 'Credenciais inválidas'
+            ], 401);
         }
 
         $user = Auth::user();
-        $token = JWTAuth::fromUser($user);
+        
+        // Verificar se usuário está ativo
+        if ($user->status !== 'ativo') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Conta desativada. Entre em contato com o suporte.'
+            ], 403);
+        }
+
+        // Calcular nível automaticamente
+        $nivel = $this->calcularNivel($user->pontos);
+        
+        // Log do evento
+        $this->logAuditEvent('user_login', $user->id, $request);
+
+        RateLimiter::clear($key);
 
         return response()->json([
-            'user' => $user,
-            'token' => $token,
+            'success' => true,
+            'message' => 'Login realizado com sucesso!',
+            'data' => [
+                'user' => array_merge($user->toArray(), ['nivel' => $nivel]),
+                'token' => $token,
+                'token_type' => 'Bearer',
+                'expires_in' => config('jwt.ttl') * 60,
+                'permissions' => $this->getUserPermissions($user->role)
+            ]
         ]);
+    }
+
+    /**
+     * Calcular nível VIP baseado nos pontos
+     */
+    private function calcularNivel($pontos)
+    {
+        if ($pontos >= 10000) return 'Diamante';
+        if ($pontos >= 5000) return 'Platina';
+        if ($pontos >= 2500) return 'Ouro';
+        if ($pontos >= 1000) return 'Prata';
+        return 'Bronze';
+    }
+
+    /**
+     * Obter permissões baseadas no role
+     */
+    private function getUserPermissions($role)
+    {
+        $permissions = [
+            'admin' => [
+                'manage_users', 'manage_companies', 'view_reports', 
+                'manage_points', 'manage_promotions', 'system_config'
+            ],
+            'empresa' => [
+                'manage_customers', 'create_promotions', 'view_sales', 
+                'generate_qrcode', 'manage_discounts'
+            ],
+            'cliente' => [
+                'earn_points', 'redeem_discounts', 'view_history', 
+                'qr_checkin', 'view_promotions'
+            ]
+        ];
+
+        return $permissions[$role] ?? $permissions['cliente'];
     }
 
     public function user(Request $request)
