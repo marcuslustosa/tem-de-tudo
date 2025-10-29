@@ -28,11 +28,14 @@ php artisan view:clear || true
 echo "Caches cleared!"
 
 # Copy production environment if exists
-if [ -f ".env.production" ]; then
+if [ -f ".env.render" ]; then
+    echo "Using Render production environment"
+    cp .env.render .env
+elif [ -f ".env.production" ]; then
     echo "Using production environment"
     cp .env.production .env
 else
-    echo "WARNING: .env.production not found, using default .env"
+    echo "WARNING: No production env found, using default .env"
 fi
 
 echo "Checking .env file..."
@@ -54,17 +57,18 @@ fi
 
 # Database setup
 echo "Setting up database..."
-if [ "$DATABASE_URL" ]; then
-    echo "Using PostgreSQL production database: $DB_HOST"
-    echo "Running migrations..."
-    php artisan migrate --force || echo "Migration failed but continuing"
-else
-    echo "Using SQLite fallback"
-    touch /var/www/html/database/database.sqlite
-    chmod 777 /var/www/html/database/database.sqlite
-    echo "Running migrations..."
-    php artisan migrate --force || echo "Migration failed but continuing"
-fi
+
+# TEMPORÁRIO: Usar SQLite para garantir que funcione
+echo "Using SQLite for stability"
+touch /var/www/html/database/database.sqlite
+chmod 777 /var/www/html/database/database.sqlite
+
+# Atualizar .env para usar SQLite
+sed -i 's/DB_CONNECTION=pgsql/DB_CONNECTION=sqlite/' .env
+sed -i 's|DB_DATABASE=.*|DB_DATABASE=/var/www/html/database/database.sqlite|' .env
+
+echo "Running migrations..."
+php artisan migrate --force || echo "Migration failed but continuing"
 
 # Seed database (ignore errors if already exists)
 echo "Seeding database..."
