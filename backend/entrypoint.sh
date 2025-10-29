@@ -1,99 +1,158 @@
-#!/bin/bash
+#!/bin/bash#!/bin/bash
 
-echo "🚀 Iniciando Tem de Tudo..."
 
-# Configura ambiente
-export APP_ENV=production
-export APP_DEBUG=false
+
+echo "🚀 Iniciando Tem de Tudo..."echo "🚀 Iniciando Tem de Tudo..."
+
+
+
+# Configura ambiente# Configura ambiente
+
+export APP_ENV=productionexport APP_ENV=production
+
+export APP_DEBUG=falseexport APP_DEBUG=true
+
+export LOG_LEVEL=debug
 
 # Cria diretórios essenciais
-mkdir -p /var/www/html/storage/framework/{sessions,views,cache}
-mkdir -p /var/www/html/storage/logs
-mkdir -p /var/www/html/bootstrap/cache
+
+mkdir -p /var/www/html/storage/framework/{sessions,views,cache}# Cria diretórios essenciais
+
+mkdir -p /var/www/html/storage/logsmkdir -p /var/www/html/storage/framework/{sessions,views,cache}
+
+mkdir -p /var/www/html/bootstrap/cachemkdir -p /var/www/html/storage/logs
+
+mkdir -p /var/www/html/databasemkdir -p /var/www/html/bootstrap/cache
+
 mkdir -p /var/www/html/database
 
 # Define permissões
-chown -R www-data:www-data /var/www/html/storage
-chown -R www-data:www-data /var/www/html/bootstrap/cache
-chmod -R 775 /var/www/html/storage
+
+chown -R www-data:www-data /var/www/html/storage# Define permissões
+
+chown -R www-data:www-data /var/www/html/bootstrap/cachechown -R www-data:www-data /var/www/html/storage
+
+chmod -R 775 /var/www/html/storagechown -R www-data:www-data /var/www/html/bootstrap/cache
+
+chmod -R 775 /var/www/html/bootstrap/cachechmod -R 775 /var/www/html/storage
+
 chmod -R 775 /var/www/html/bootstrap/cache
 
 # Limpa caches
-echo "🧹 Limpando caches..."
-php artisan config:clear || true
-php artisan route:clear || true
-php artisan view:clear || true
-php artisan cache:clear || true
+
+echo "🧹 Limpando caches..."# Limpa caches ANTES de qualquer coisa
+
+php artisan config:clear 2>/dev/null || trueecho "🧹 Limpando caches..."
+
+php artisan route:clear 2>/dev/null || truephp artisan config:clear 2>/dev/null || true
+
+php artisan view:clear 2>/dev/null || truephp artisan route:clear 2>/dev/null || true
+
+php artisan cache:clear 2>/dev/null || truephp artisan view:clear 2>/dev/null || true
+
+php artisan cache:clear 2>/dev/null || true
 
 # Gera chave se necessário
-echo "🔑 Configurando APP_KEY..."
-if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
-    php artisan key:generate --force --no-interaction || true
+
+echo "🔑 Configurando APP_KEY..."# Gera chave se necessário
+
+if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; thenecho "🔑 Configurando APP_KEY..."
+
+    php artisan key:generate --force --no-interaction 2>/dev/null || trueif [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
+
+fi    php artisan key:generate --force --no-interaction 2>/dev/null || true
+
 fi
 
-# Verifica se variáveis do PostgreSQL estão definidas
-if [ -n "$DB_HOST" ] && [ -n "$DB_PASSWORD" ]; then
-    echo "🗃️ Usando PostgreSQL..."
-    export DB_CONNECTION=pgsql
+# PRIMEIRO: Tenta PostgreSQL (PREFERENCIAL)
+
+if [ -n "$DB_HOST" ] && [ -n "$DB_PASSWORD" ]; then# Usar SQLite SEMPRE para evitar problemas PostgreSQL
+
+    echo "🗃️ Configurando PostgreSQL PRODUÇÃO..."echo "🗃️ Usando SQLite para máxima estabilidade..."
+
+    export DB_CONNECTION=pgsqlexport DB_CONNECTION=sqlite
+
+    export DB_SSL_MODE=requireexport DB_DATABASE=/var/www/html/database/database.sqlite
+
     
-    # Tenta conectar ao PostgreSQL
-    if php artisan migrate --force --no-interaction 2>/dev/null; then
-        echo "✅ PostgreSQL conectado com sucesso!"
-    else
-        echo "❌ Erro no PostgreSQL, usando SQLite como fallback..."
-        export DB_CONNECTION=sqlite
-        export DB_DATABASE=/var/www/html/database/database.sqlite
-        
-        touch /var/www/html/database/database.sqlite
-        chown www-data:www-data /var/www/html/database/database.sqlite
-        chmod 664 /var/www/html/database/database.sqlite
-        
-        php artisan migrate --force --no-interaction
-    fi
-else
-    echo "🗃️ Usando SQLite (variáveis PostgreSQL não encontradas)..."
+
+    # Testa conexão PostgreSQLtouch /var/www/html/database/database.sqlite
+
+    echo "🔗 Testando conexão PostgreSQL..."chown www-data:www-data /var/www/html/database/database.sqlite
+
+    if php artisan migrate --force --no-interaction; thenchmod 664 /var/www/html/database/database.sqlite
+
+        echo "✅ PostgreSQL conectado e funcionando!"
+
+        USING_POSTGRES=true# Migrations
+
+    elseecho "� Executando migrations..."
+
+        echo "❌ Erro no PostgreSQL, usando SQLite como backup..."php artisan migrate --force --no-interaction 2>/dev/null || true
+
+        USING_POSTGRES=false
+
+    fi# Seeds
+
+elseecho "🌱 Executando seeds..."
+
+    echo "⚠️ Variáveis PostgreSQL não encontradas"php artisan db:seed --force --no-interaction 2>/dev/null || true
+
+    USING_POSTGRES=false
+
+fi# Cache MÍNIMO
+
+echo "⚡ Aplicando cache mínimo..."
+
+# Se PostgreSQL falhou, usar SQLitephp artisan config:cache 2>/dev/null || true
+
+if [ "$USING_POSTGRES" = "false" ]; then
+
+    echo "🗃️ Configurando SQLite como backup..."echo "✅ Aplicação configurada! Iniciando Apache..."
+
     export DB_CONNECTION=sqlite
-    export DB_DATABASE=/var/www/html/database/database.sqlite
-    
-    touch /var/www/html/database/database.sqlite
-    chown www-data:www-data /var/www/html/database/database.sqlite
-    chmod 664 /var/www/html/database/database.sqlite
-    
-    php artisan migrate --force --no-interaction
-fi
 
-# Seeds
-echo "🌱 Executando seeds..."
+    export DB_DATABASE=/var/www/html/database/database.sqlite# Inicia Apache
+
+    exec apache2-foreground
+
+    touch /var/www/html/database/database.sqlite
+
+    chown www-data:www-data /var/www/html/database/database.sqliteMAIL_MAILER=smtp
+
+    chmod 664 /var/www/html/database/database.sqliteMAIL_HOST=mailpit
+
+    MAIL_PORT=1025
+
+    php artisan migrate --force --no-interactionMAIL_USERNAME=null
+
+fiMAIL_PASSWORD=null
+
+MAIL_ENCRYPTION=null
+
+# Seeds SEMPRE (criar usuários de teste)MAIL_FROM_ADDRESS="contato@temdetudo.com"
+
+echo "🌱 Criando usuários de teste..."MAIL_FROM_NAME="Tem de Tudo"
+
 php artisan db:seed --force --no-interaction || true
 
-# Cache final
-echo "⚡ Aplicando cache..."
-php artisan config:cache || true
-php artisan route:cache || true
-
-echo "✅ Aplicação configurada! Iniciando Apache..."
-
-# Inicia Apache
-exec apache2-foreground
-
-MAIL_MAILER=smtp
-MAIL_HOST=mailpit
-MAIL_PORT=1025
-MAIL_USERNAME=null
-MAIL_PASSWORD=null
-MAIL_ENCRYPTION=null
-MAIL_FROM_ADDRESS="contato@temdetudo.com"
-MAIL_FROM_NAME="Tem de Tudo"
-
 SANCTUM_STATEFUL_DOMAINS="tem-de-tudo.onrender.com,localhost"
-SESSION_DOMAIN=".temdetudo.com"
 
-VITE_APP_NAME="Tem de Tudo"
+# Cache para performanceSESSION_DOMAIN=".temdetudo.com"
+
+echo "⚡ Aplicando cache..."
+
+php artisan config:cache 2>/dev/null || trueVITE_APP_NAME="Tem de Tudo"
+
 EOF
-else
-    echo "✅ Arquivo .env já existe"
-fi
 
+echo "✅ Aplicação configurada! Iniciando Apache..."else
+
+    echo "✅ Arquivo .env já existe"
+
+# Inicia Apachefi
+
+exec apache2-foreground
 # Criar banco SQLite se não existir para fallback
 if [ ! -f /app/database/database.sqlite ]; then
     echo "🗃️ Criando banco SQLite de fallback..."
