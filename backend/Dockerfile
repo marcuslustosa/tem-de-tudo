@@ -23,10 +23,8 @@ RUN chmod -R 777 storage
 RUN chmod -R 777 bootstrap/cache
 RUN chmod +x entrypoint.sh
 
-# Definir script de entrada
-ENTRYPOINT ["./entrypoint.sh"]
-    && chmod +x /usr/local/bin/start.sh
-
+# Expor porta
 EXPOSE 80
 
-CMD ["/usr/local/bin/start.sh"]
+# Definir script de entrada
+ENTRYPOINT ["./entrypoint.sh"]
