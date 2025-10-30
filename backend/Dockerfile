@@ -62,29 +62,49 @@ apache2ctl -M || { log "ERRO: Apache não está configurado corretamente"; exit 
 \n\
 cd /var/www/html\n\
 \n\
+# Debug - listar arquivos\n\
+log "Arquivos no diretório atual:"\n\
+ls -la\n\
+\n\
 # Configuração do ambiente\n\
+log "Procurando arquivo de configuração..."\n\
+\n\
 if [ -f ".env.render" ]; then\n\
-    echo "Usando .env.render..."\n\
+    log "Encontrado .env.render - copiando para .env"\n\
     cp .env.render .env\n\
+elif [ -f ".env.example" ]; then\n\
+    log "Usando .env.example como fallback"\n\
+    cp .env.example .env\n\
+else\n\
+    log "Criando .env básico"\n\
+    echo "APP_NAME=TemDeTudo" > .env\n\
+    echo "APP_ENV=production" >> .env\n\
+    echo "APP_DEBUG=false" >> .env\n\
+    echo "APP_URL=https://tem-de-tudo.onrender.com" >> .env\n\
+    echo "DB_CONNECTION=sqlite" >> .env\n\
+    echo "CACHE_DRIVER=file" >> .env\n\
+    echo "SESSION_DRIVER=file" >> .env\n\
+fi\n\
+\n\
+# Configuração do banco de dados\n\
+log "Configurando banco de dados..."\n\
+if [ ! -z "$DATABASE_URL" ]; then\n\
+    log "Configurando PostgreSQL com DATABASE_URL"\n\
+    sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=pgsql/" .env\n\
     \n\
-    # Configuração do banco de dados\n\
-    if [ ! -z "$DATABASE_URL" ]; then\n\
-        echo "Configurando PostgreSQL..."\n\
-        sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=pgsql/" .env\n\
+    if [ ! -z "$DB_HOST" ]; then\n\
         sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/" .env\n\
-        sed -i "s/DB_PORT=.*/DB_PORT=$DB_PORT/" .env\n\
+        sed -i "s/DB_PORT=.*/DB_PORT=${DB_PORT:-5432}/" .env\n\
         sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/" .env\n\
         sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/" .env\n\
         sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env\n\
-    else\n\
-        echo "Configurando SQLite (fallback)..."\n\
-        sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=sqlite/" .env\n\
-        touch database/database.sqlite\n\
-        chmod 775 database/database.sqlite\n\
     fi\n\
 else\n\
-    echo "ERRO: .env.render não encontrado!"\n\
-    exit 1\n\
+    log "Usando SQLite (fallback)"\n\
+    sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=sqlite/" .env || echo "DB_CONNECTION=sqlite" >> .env\n\
+    mkdir -p database\n\
+    touch database/database.sqlite\n\
+    chmod 775 database/database.sqlite\n\
 fi\n\
 \n\
 # Limpar e otimizar\n\
