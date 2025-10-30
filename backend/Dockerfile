@@ -85,7 +85,7 @@ else\n\
     echo "DB_CONNECTION=pgsql" >> .env\n\
     echo "CACHE_DRIVER=file" >> .env\n\
     echo "SESSION_DRIVER=file" >> .env\n\
-fi
+fi\n\
 \n\
 # PASSO 1: Garantir APP_KEY existe e está correta\n\
 log "Configurando APP_KEY..."\n\
