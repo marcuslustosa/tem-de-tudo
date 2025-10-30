@@ -1,22 +1,19 @@
 FROM php:8.2-apache
 
-RUN apt-get update && apt-get install -y libpq-dev
-RUN docker-php-ext-install pdo pdo_pgsql
-RUN a2enmod rewrite
+RUN apt-get update && apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql \
+    && a2enmod rewrite
 
 COPY . /var/www/html/
-
 COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
 
-RUN chmod -R 777 /var/www/html/storage
-RUN chmod -R 777 /var/www/html/bootstrap
+RUN mkdir -p /var/www/html/storage/framework/sessions \
+    && mkdir -p /var/www/html/storage/framework/views \
+    && mkdir -p /var/www/html/storage/framework/cache \
+    && chmod -R 777 /var/www/html/storage \
+    && chmod -R 777 /var/www/html/bootstrap
 
 CMD ["apache2-foreground"]
-sed -i "/^DB_HOST=/d" .env 2>/dev/null || true\n\
-sed -i "/^DB_PORT=/d" .env 2>/dev/null || true\n\
-sed -i "/^DB_DATABASE=/d" .env 2>/dev/null || true\n\
-sed -i "/^DB_USERNAME=/d" .env 2>/dev/null || true\n\
-sed -i "/^DB_PASSWORD=/d" .env 2>/dev/null || true\n\
 \n\
 # FORÇAR valores hardcoded do render.yaml\n\
 echo "DB_CONNECTION=pgsql" >> .env\n\
