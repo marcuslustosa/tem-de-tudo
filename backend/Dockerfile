@@ -2,7 +2,7 @@ FROM php:8.2-apache
 
 # Instalar dependências e extensões PHP
 RUN apt-get update
-RUN apt-get install -y libpq-dev
+RUN apt-get install -y libpq-dev dos2unix
 RUN docker-php-ext-install pdo pdo_pgsql
 RUN a2enmod rewrite
 
@@ -22,9 +22,10 @@ RUN mkdir -p bootstrap/cache
 RUN chmod -R 777 storage
 RUN chmod -R 777 bootstrap/cache
 RUN chmod +x entrypoint.sh
+RUN dos2unix entrypoint.sh
 
 # Expor porta
 EXPOSE 80
 
 # Definir script de entrada
-ENTRYPOINT ["./entrypoint.sh"]
+CMD ["/bin/bash", "/var/www/html/entrypoint.sh"]

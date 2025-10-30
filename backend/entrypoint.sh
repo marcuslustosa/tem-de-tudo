@@ -3,12 +3,15 @@ set -e
 
 echo "=== Iniciando Tem de Tudo ==="
 
+cd /var/www/html
+
 # 1. Preparar diretórios
 echo "Configurando diretórios..."
-mkdir -p storage/framework/{sessions,views,cache}
+mkdir -p storage/framework/sessions
+mkdir -p storage/framework/views
+mkdir -p storage/framework/cache
 mkdir -p storage/logs
 mkdir -p bootstrap/cache
-mkdir -p database
 chmod -R 777 storage
 chmod -R 777 bootstrap/cache
 
@@ -25,46 +28,14 @@ sed -i 's/APP_DEBUG=.*/APP_DEBUG=false/' .env
 sed -i 's/LOG_CHANNEL=.*/LOG_CHANNEL=errorlog/' .env
 sed -i 's/LOG_LEVEL=.*/LOG_LEVEL=error/' .env
 sed -i 's/SESSION_DRIVER=.*/SESSION_DRIVER=database/' .env
-
-# 4. Configurar PostgreSQL
-echo "Configurando PostgreSQL..."
 sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
-sed -i "s|DB_HOST=.*|DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com|" .env
-sed -i "s|DB_PORT=.*|DB_PORT=5432|" .env
-sed -i "s|DB_DATABASE=.*|DB_DATABASE=tem_de_tudo_database|" .env
-sed -i "s|DB_USERNAME=.*|DB_USERNAME=tem_de_tudo_database_user|" .env
 
-# 5. Verificar APP_KEY
-if ! grep -q "^APP_KEY=" .env || grep -q "^APP_KEY=$" .env; then
-    echo "Gerando nova APP_KEY..."
-    php artisan key:generate --force
-fi
-
-# 6. Limpar caches
-echo "Limpando caches..."
-php artisan config:clear
-php artisan cache:clear
-php artisan view:clear
-
-# 7. Executar migrations
+# 4. Executar migrations
 echo "Executando migrations..."
-php artisan migrate --force || {
-    echo "❌ Erro nas migrations"
-    php artisan migrate:status
-    exit 1
-}
+php artisan migrate --force
 
-# 8. Verificar conexão
-echo "Verificando banco de dados..."
-php artisan db:monitor || {
-    echo "❌ Erro no banco de dados"
-    cat storage/logs/laravel.log
-    exit 1
-}
-
-# 9. Iniciar Apache
-echo "✓ Iniciando servidor Apache..."
-exec apache2-foreground
+# 5. Iniciar Apache
+apache2-foreground
 sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
 sed -i 's/DB_DATABASE=.*/DB_DATABASE=tem_de_tudo_database/' .env
 sed -i 's/DB_USERNAME=.*/DB_USERNAME=tem_de_tudo_database_user/' .env
