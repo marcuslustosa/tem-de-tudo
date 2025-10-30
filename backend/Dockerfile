@@ -12,12 +12,6 @@ COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
 RUN chmod +x entrypoint.sh
 
 ENTRYPOINT ["./entrypoint.sh"]
-fi\n\
-\n\
-# Instalar tabela migrations\n\
-echo "Instalando tabela migrations..."\n\
-LARAVEL_ENV=production php artisan migrate:install --force\n\
-\n\
 # Executar migrations\n\
 echo "Executando migrations..."\n\
 LARAVEL_ENV=production php artisan migrate --force --verbose\n\
