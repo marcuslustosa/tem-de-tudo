@@ -85,25 +85,51 @@ sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
 sed -i 's/DB_DATABASE=.*/DB_DATABASE=tem_de_tudo_database/' .env
 sed -i 's/DB_USERNAME=.*/DB_USERNAME=tem_de_tudo_database_user/' .env
 
-echo "Configuração do PostgreSQL:"
+echo "=== DIAGNÓSTICO DO BANCO DE DADOS ==="
+echo "1. Configuração:"
+echo "Connection: $(grep DB_CONNECTION .env)"
 echo "Host: $(grep DB_HOST .env)"
-echo "Port: $(grep DB_PORT .env)"
 echo "Database: $(grep DB_DATABASE .env)"
-echo "Username: $(grep DB_USERNAME .env)"
 
-echo "Executando migrations..."
-php artisan migrate --force || {
-    echo "❌ Erro ao executar migrations"
-    php artisan migrate:status
-    cat storage/logs/laravel.log || true
+echo "2. Testando conexão..."
+php artisan db:monitor --verbose || {
+    echo "❌ ERRO DE CONEXÃO"
+    php artisan db:show
+    echo "Logs do Laravel:"
+    tail -n 50 storage/logs/laravel.log || true
     exit 1
 }
 
-echo "✓ Migrations executadas com sucesso!"
-php artisan db:monitor
+echo "3. Status das migrations..."
+php artisan migrate:status || {
+    echo "❌ ERRO AO VERIFICAR MIGRATIONS"
+    exit 1
+}
+
+echo "4. Executando migrations..."
+php artisan migrate --force --no-interaction || {
+    echo "❌ ERRO AO EXECUTAR MIGRATIONS"
+    echo "Logs do Laravel:"
+    tail -n 50 storage/logs/laravel.log || true
+    exit 1
+}
+
+echo "5. Verificando tabelas criadas..."
+php artisan db:table || {
+    echo "❌ ERRO AO LISTAR TABELAS"
+    exit 1
+}
+
+echo "6. Testando tabela sessions..."
+php artisan db:table sessions || {
+    echo "❌ TABELA SESSIONS NÃO ENCONTRADA"
+    exit 1
+}
+
+echo "✓ Banco de dados configurado com sucesso!"
 
 # Seed database (ignore errors if already exists)
-echo "Executando seeds..."
+echo "7. Executando seeds..."
 php artisan db:seed --force || echo "Seeds já existem"
 
 echo "=== Sistema Pronto ==="
