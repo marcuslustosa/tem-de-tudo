@@ -5,68 +5,53 @@ echo "=== Iniciando Tem de Tudo ==="
 
 cd /var/www/html
 
-# 1. Preparar diretórios
-echo "Configurando diretórios..."
-mkdir -p storage/framework/sessions \
-    storage/framework/views \
-    storage/framework/cache \
-    storage/logs \
-    bootstrap/cache
-chmod -R 777 storage
-chmod -R 777 bootstrap/cache
-
-# 2. Configurar ambiente
-if [ ! -f ".env" ]; then
-    echo "Criando arquivo .env..."
-    cp .env.example .env
+echo "Verificando diretório vendor..."
+if [ ! -d "vendor" ] || [ ! -f "vendor/autoload.php" ]; then
+    echo "❌ ERRO: Dependências não foram instaladas corretamente no build"
+    ls -la
+    exit 1
 fi
 
-# 3. Configurar variáveis
-echo "Configurando variáveis de ambiente..."
+# 1. Configurar ambiente
+echo "Configurando ambiente..."
 {
+    echo "APP_NAME='Tem de Tudo'"
     echo "APP_ENV=production"
     echo "APP_DEBUG=false"
+    echo "APP_URL=https://tem-de-tudo.onrender.com"
     echo "APP_KEY="
     echo "LOG_CHANNEL=errorlog"
     echo "LOG_LEVEL=debug"
-    echo "SESSION_DRIVER=database"
     echo "DB_CONNECTION=pgsql"
     echo "DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com"
     echo "DB_PORT=5432"
     echo "DB_DATABASE=tem_de_tudo_database"
     echo "DB_USERNAME=tem_de_tudo_database_user"
+    echo "SESSION_DRIVER=database"
+    echo "FILESYSTEM_DISK=local"
+    echo "QUEUE_CONNECTION=sync"
+    echo "BROADCAST_DRIVER=log"
+    echo "CACHE_DRIVER=file"
 } > .env
 
-# 4. Gerar chave da aplicação
+echo "Gerando chave da aplicação..."
 php artisan key:generate --force
 
-# 5. Verificar dependências
-echo "Verificando dependências..."
-if [ ! -d "vendor" ] || [ ! -f "vendor/autoload.php" ]; then
-    echo "Instalando dependências..."
-    composer install --no-dev --prefer-dist --no-scripts --no-progress
-fi
-
-# 6. Otimizar autoloader
-composer dump-autoload --optimize --no-dev
-
-# 7. Configurar cache
-echo "Configurando cache..."
+echo "Limpando e cacheando configurações..."
+php artisan config:clear
+php artisan cache:clear
 php artisan config:cache
-php artisan route:cache
 php artisan view:cache
 
-# 8. Executar migrations
 echo "Executando migrations..."
 php artisan migrate --force
 
-# 9. Ajustar permissões finais
+echo "Ajustando permissões finais..."
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
 
-# 10. Iniciar Apache
-echo "Iniciando servidor..."
-apache2-foreground
+echo "✓ Iniciando Apache..."
+exec apache2-foreground
 sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
 sed -i 's/DB_DATABASE=.*/DB_DATABASE=tem_de_tudo_database/' .env
 sed -i 's/DB_USERNAME=.*/DB_USERNAME=tem_de_tudo_database_user/' .env
