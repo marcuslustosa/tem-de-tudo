@@ -118,13 +118,16 @@ else\n\
     log "APP_KEY gerada: ${NEW_KEY:0:20}..."\n\
 fi\n\
 \n\
-# PASSO 2: Configurar APP_URL e APP_ENV\n\
+# PASSO 2: Configurar APP_URL e APP_ENV (modo debug)\n\
 log "Configurando APP_URL e APP_ENV..."\n\
 sed -i "/^APP_URL=/d" .env 2>/dev/null || true\n\
 sed -i "/^APP_ENV=/d" .env 2>/dev/null || true\n\
+sed -i "/^APP_DEBUG=/d" .env 2>/dev/null || true\n\
 echo "APP_URL=https://app-tem-de-tudo.onrender.com" >> .env\n\
 echo "APP_ENV=production" >> .env\n\
-echo "APP_DEBUG=false" >> .env\n\
+echo "APP_DEBUG=true" >> .env\n\
+echo "LOG_LEVEL=debug" >> .env\n\
+echo "DISPLAY_ERRORS=true" >> .env\n\
 \n\
 # PASSO 3: FORÇAR PostgreSQL SEMPRE\n\
 log "========================================"\n\
@@ -182,20 +185,70 @@ log "========================================"\n\
 log "MIGRATIONS SERÃO EXECUTADAS APÓS INICIAR"\n\
 log "========================================"\n\
 \n\
-# Criar script para rodar migrations depois do Apache iniciar\n\
+# Criar script para diagnosticar ambiente e rodar migrations\n\
 cat > /var/www/html/run-migrations.sh << 'MIGRATION_SCRIPT'\n\
 #!/bin/bash\n\
+set -e\n\
+\n\
+echo "=== Script de Migrations e Diagnóstico ==="\n\
+echo "$(date) - Iniciando..."\n\
+\n\
+# Aguardar Apache iniciar\n\
 echo "Aguardando Apache iniciar completamente..."\n\
 sleep 5\n\
 \n\
 cd /var/www/html\n\
-echo "Executando migrations..."\n\
-php artisan migrate:install --force 2>&1\n\
-php artisan migrate --force 2>&1\n\
 \n\
-echo "Migrations concluídas!"\n\
-echo "Tabelas criadas:"\n\
-php artisan tinker --execute="DB::select('SELECT tablename FROM pg_tables WHERE schemaname = \\'public\\'')" 2>&1 | grep tablename || echo "Erro ao listar tabelas"\n\
+# Verificar ambiente\n\
+echo "=== Verificando Ambiente ==="\n\
+if [ ! -f ".env" ]; then\n\
+    echo "ERRO CRÍTICO: .env não encontrado!"\n\
+    ls -la\n\
+    exit 1\n\
+fi\n\
+\n\
+echo "Conteúdo do .env:"\n\
+cat .env | grep -v "PASSWORD"\n\
+\n\
+# Garantir storage está gravável\n\
+chown -R www-data:www-data storage bootstrap/cache\n\
+chmod -R 775 storage bootstrap/cache\n\
+\n\
+# Limpar caches\n\
+echo "Limpando caches..."\n\
+LARAVEL_ENV=production php artisan config:clear\n\
+LARAVEL_ENV=production php artisan cache:clear\n\
+\n\
+# Forçar recarregar config\n\
+echo "Recarregando configuração..."\n\
+LARAVEL_ENV=production php artisan config:cache\n\
+\n\
+# Verificar conexão PostgreSQL\n\
+echo "Testando conexão com PostgreSQL..."\n\
+if LARAVEL_ENV=production php artisan db:show 2>&1; then\n\
+    echo "✓ Conexão PostgreSQL OK"\n\
+else\n\
+    echo "✗ ERRO conectando ao PostgreSQL"\n\
+    exit 1\n\
+fi\n\
+\n\
+# Instalar tabela migrations\n\
+echo "Instalando tabela migrations..."\n\
+LARAVEL_ENV=production php artisan migrate:install --force\n\
+\n\
+# Executar migrations\n\
+echo "Executando migrations..."\n\
+LARAVEL_ENV=production php artisan migrate --force --verbose\n\
+\n\
+# Seeds essenciais\n\
+echo "Executando seeds essenciais..."\n\
+LARAVEL_ENV=production php artisan db:seed --force --class=AdminUserSeeder\n\
+\n\
+# Verificar tabelas\n\
+echo "=== Verificando Tabelas Criadas ==="\n\
+PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USERNAME -d $DB_DATABASE -c "\dt" || echo "Erro listando tabelas"\n\
+\n\
+echo "Script concluído em $(date)"\n\
 MIGRATION_SCRIPT\n\
 \n\
 chmod +x /var/www/html/run-migrations.sh\n\
