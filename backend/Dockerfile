@@ -66,7 +66,7 @@ cd /var/www/html\n\
 log "Arquivos no diretório atual:"\n\
 ls -la\n\
 \n\
-# Configuração do ambiente\n\
+# Configuração do ambiente
 log "Procurando arquivo de configuração..."\n\
 \n\
 if [ -f ".env.render" ]; then\n\
@@ -81,10 +81,11 @@ else\n\
     echo "APP_ENV=production" >> .env\n\
     echo "APP_DEBUG=false" >> .env\n\
     echo "APP_URL=https://tem-de-tudo.onrender.com" >> .env\n\
-    echo "DB_CONNECTION=sqlite" >> .env\n\
+    # Usar pgsql por padrão, será sobrescrito se necessário\n\
+    echo "DB_CONNECTION=pgsql" >> .env\n\
     echo "CACHE_DRIVER=file" >> .env\n\
     echo "SESSION_DRIVER=file" >> .env\n\
-fi\n\
+fi
 \n\
 # PASSO 1: Garantir APP_KEY existe e está correta\n\
 log "Configurando APP_KEY..."\n\
@@ -130,18 +131,26 @@ log "Variáveis recebidas: DB_HOST=$DB_HOST DB_DATABASE=$DB_DATABASE"\n\
 if [ ! -z "$DB_HOST" ] && [ ! -z "$DB_DATABASE" ]; then\n\
     log "✓ Configurando PostgreSQL com credenciais fornecidas"\n\
     \n\
-    # Forçar PostgreSQL\n\
-    sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=pgsql/" .env || echo "DB_CONNECTION=pgsql" >> .env\n\
-    sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/" .env || echo "DB_HOST=$DB_HOST" >> .env\n\
-    sed -i "s/DB_PORT=.*/DB_PORT=${DB_PORT:-5432}/" .env || echo "DB_PORT=${DB_PORT:-5432}" >> .env\n\
-    sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/" .env || echo "DB_DATABASE=$DB_DATABASE" >> .env\n\
-    sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/" .env || echo "DB_USERNAME=$DB_USERNAME" >> .env\n\
-    sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env || echo "DB_PASSWORD=$DB_PASSWORD" >> .env\n\
+    # FORÇAR PostgreSQL - remover linhas antigas e adicionar novas\n\
+    sed -i "/^DB_CONNECTION=/d" .env\n\
+    sed -i "/^DB_HOST=/d" .env\n\
+    sed -i "/^DB_PORT=/d" .env\n\
+    sed -i "/^DB_DATABASE=/d" .env\n\
+    sed -i "/^DB_USERNAME=/d" .env\n\
+    sed -i "/^DB_PASSWORD=/d" .env\n\
+    \n\
+    echo "DB_CONNECTION=pgsql" >> .env\n\
+    echo "DB_HOST=$DB_HOST" >> .env\n\
+    echo "DB_PORT=${DB_PORT:-5432}" >> .env\n\
+    echo "DB_DATABASE=$DB_DATABASE" >> .env\n\
+    echo "DB_USERNAME=$DB_USERNAME" >> .env\n\
+    echo "DB_PASSWORD=$DB_PASSWORD" >> .env\n\
     \n\
     log "PostgreSQL configurado: $DB_USERNAME@$DB_HOST:${DB_PORT:-5432}/$DB_DATABASE"\n\
 else\n\
     log "✗ Credenciais PostgreSQL não fornecidas, usando SQLite"\n\
-    sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=sqlite/" .env || echo "DB_CONNECTION=sqlite" >> .env\n\
+    sed -i "/^DB_CONNECTION=/d" .env\n\
+    echo "DB_CONNECTION=sqlite" >> .env\n\
     mkdir -p database\n\
     touch database/database.sqlite\n\
     chmod 775 database/database.sqlite\n\
