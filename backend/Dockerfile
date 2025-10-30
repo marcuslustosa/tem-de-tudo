@@ -46,58 +46,15 @@ RUN mkdir -p /var/www/html/storage/framework/{sessions,views,cache} \
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+# Configure Apache to start in foreground
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+
 # Set entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-set -e\n\
-\n\
-echo "=== TemDeTudo Iniciando $(date) ==="\n\
-\n\
-# Função para log
-log() {\n\
-    echo "[$(date +"%Y-%m-%d %H:%M:%S")] $1"\n\
-}\n\
-\n\
-# Verificar ambiente PHP\n\
-log "Verificando PHP..."\n\
-php -v\n\
-\n\
-# Verificar módulos do Apache (não falha)\n\
-log "Módulos Apache carregados:"\n\
-apache2ctl -M 2>&1 | grep -i "rewrite\\|headers" || true\n\
-\n\
-cd /var/www/html\n\
-\n\
-# Debug - listar arquivos\n\
-log "Arquivos no diretório atual:"\n\
-ls -la\n\
-\n\
-# Configuração do ambiente
-log "Procurando arquivo de configuração..."\n\
-\n\
-if [ -f ".env.render" ]; then\n\
-    log "Encontrado .env.render - copiando para .env"\n\
-    cp .env.render .env\n\
-elif [ -f ".env.example" ]; then\n\
-    log "Usando .env.example como fallback"\n\
-    cp .env.example .env\n\
-else\n\
-    log "Criando .env básico"\n\
-    echo "APP_NAME=TemDeTudo" > .env\n\
-    echo "APP_ENV=production" >> .env\n\
-    echo "APP_DEBUG=false" >> .env\n\
-    echo "APP_URL=https://tem-de-tudo.onrender.com" >> .env\n\
-    # Usar pgsql por padrão, será sobrescrito se necessário\n\
-    echo "DB_CONNECTION=pgsql" >> .env\n\
-    echo "CACHE_DRIVER=file" >> .env\n\
-    echo "SESSION_DRIVER=file" >> .env\n\
-fi\n\
-\n\
-# PASSO 1: Garantir APP_KEY existe e está correta\n\
-log "Configurando APP_KEY..."\n\
-\n\
-# Se APP_KEY vem da variável de ambiente do Render\n\
-if [ ! -z "$APP_KEY" ]; then\n\
-    log "APP_KEY fornecida via variável de ambiente: ${APP_KEY:0:20}..."\n\
+CMD ["apache2-foreground"]
+
     # Garantir que está no formato correto\n\
     if [[ "$APP_KEY" == base64:* ]]; then\n\
         log "APP_KEY já está em formato base64"\n\
