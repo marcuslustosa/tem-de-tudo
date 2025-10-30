@@ -4,30 +4,17 @@ RUN apt-get update && apt-get install -y libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql \
     && a2enmod rewrite
 
-COPY . /var/www/html/
+WORKDIR /var/www/html
+COPY . .
 COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
 
-RUN mkdir -p /var/www/html/storage/framework/sessions \
-    && mkdir -p /var/www/html/storage/framework/views \
-    && mkdir -p /var/www/html/storage/framework/cache \
-    && chmod -R 777 /var/www/html/storage \
-    && chmod -R 777 /var/www/html/bootstrap
+RUN mkdir -p storage/framework/sessions \
+    storage/framework/views \
+    storage/framework/cache \
+    && chmod -R 777 storage \
+    && chmod -R 777 bootstrap
 
 CMD ["apache2-foreground"]
-\n\
-# FORÇAR valores hardcoded do render.yaml\n\
-echo "DB_CONNECTION=pgsql" >> .env\n\
-echo "DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com" >> .env\n\
-echo "DB_PORT=5432" >> .env\n\
-echo "DB_DATABASE=tem_de_tudo_database" >> .env\n\
-echo "DB_USERNAME=tem_de_tudo_database_user" >> .env\n\
-echo "DB_PASSWORD=9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA" >> .env\n\
-\n\
-log "✓ PostgreSQL FORÇADO:"\n\
-log "  Host: dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com"\n\
-log "  Database: tem_de_tudo_database"\n\
-log "  User: tem_de_tudo_database_user"\n\
-log "  Port: 5432"\n\
 \n\
 # Verificação e exibição da configuração\n\
 log "========================================"\n\
