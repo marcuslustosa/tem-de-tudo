@@ -5,12 +5,12 @@ echo "=== Iniciando Tem de Tudo ==="
 
 # 1. Preparar diretórios
 echo "Configurando diretórios..."
-mkdir -p /var/www/html/storage/framework/{sessions,views,cache}
-mkdir -p /var/www/html/storage/logs
-mkdir -p /var/www/html/bootstrap/cache
-mkdir -p /var/www/html/database
-chmod -R 777 /var/www/html/storage
-chmod -R 777 /var/www/html/bootstrap/cache
+mkdir -p storage/framework/{sessions,views,cache}
+mkdir -p storage/logs
+mkdir -p bootstrap/cache
+mkdir -p database
+chmod -R 777 storage
+chmod -R 777 bootstrap/cache
 
 # 2. Configurar ambiente
 if [ ! -f ".env" ]; then
@@ -65,39 +65,6 @@ php artisan db:monitor || {
 # 9. Iniciar Apache
 echo "✓ Iniciando servidor Apache..."
 exec apache2-foreground
-    sed -i 's/SESSION_DRIVER=.*/SESSION_DRIVER=database/' .env
-    sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
-    
-    echo "Environment configured for production"
-else
-    echo "ERROR: .env file not found!"
-    exit 1
-fi
-
-# Testar conexão com o banco
-echo "Testing database connection..."
-php artisan db:monitor || {
-    echo "ERROR: Database connection failed!"
-    php artisan db:show || true
-    cat storage/logs/laravel.log || true
-    exit 1
-}
-
-# Generate application key if not exists
-if ! grep -q "APP_KEY=base64:" .env; then
-    echo "Generating application key"
-    php artisan key:generate --force
-else
-    echo "APP_KEY already set"
-fi
-
-# Database setup
-echo "=== Configurando Banco de Dados ==="
-echo "Driver: PostgreSQL (forçado)"
-
-# Garantir que estamos usando PostgreSQL
-sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
-sed -i 's/DB_HOST=.*/DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com/' .env
 sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
 sed -i 's/DB_DATABASE=.*/DB_DATABASE=tem_de_tudo_database/' .env
 sed -i 's/DB_USERNAME=.*/DB_USERNAME=tem_de_tudo_database_user/' .env

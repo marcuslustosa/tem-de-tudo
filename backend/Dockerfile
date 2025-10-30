@@ -1,6 +1,7 @@
 FROM php:8.2-apache
 
-RUN apt-get update && apt-get install -y libpq-dev \
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql \
     && a2enmod rewrite
 
@@ -8,96 +9,9 @@ WORKDIR /var/www/html
 COPY . .
 COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
 
-RUN mkdir -p storage/framework/sessions \
-    storage/framework/views \
-    storage/framework/cache \
-    && chmod -R 777 storage \
-    && chmod -R 777 bootstrap
+RUN chmod +x entrypoint.sh
 
-CMD ["apache2-foreground"]
-\n\
-# Verificação e exibição da configuração\n\
-log "========================================"\n\
-log "VERIFICAÇÃO FINAL DO .ENV"\n\
-log "========================================"\n\
-log "Caminho: $(pwd)/.env"\n\
-log "Arquivo existe: $([ -f .env ] && echo SIM || echo NAO)"\n\
-log "Tamanho: $([ -f .env ] && wc -c < .env || echo 0) bytes"\n\
-log "Permissões: $([ -f .env ] && ls -l .env | awk {print \\$1} || echo N/A)"\n\
-log ""\n\
-log "Conteúdo das chaves principais:"\n\
-APP_KEY_LINE=$(grep "^APP_KEY=" .env 2>/dev/null || echo "APP_KEY=NOT_FOUND")\n\
-log "APP_KEY: ${APP_KEY_LINE:0:30}..."\n\
-log "APP_URL: $(grep ^APP_URL= .env 2>/dev/null || echo NOT_SET)"\n\
-log "APP_ENV: $(grep ^APP_ENV= .env 2>/dev/null || echo NOT_SET)"\n\
-log "DB_CONNECTION: $(grep ^DB_CONNECTION= .env 2>/dev/null || echo NOT_SET)"\n\
-log "========================================"\n\
-\n\
-# Copiar .env para public para debug (será removido depois)\n\
-log "Criando arquivo de diagnóstico..."\n\
-cat .env > public/.env-copy.txt 2>/dev/null || true\n\
-chmod 644 public/.env-copy.txt 2>/dev/null || true\n\
-\n\
-# PASSO 4: Criar tabelas críticas ANTES do Apache\n\
-log "========================================"\n\
-log "CRIANDO TABELAS CRÍTICAS"\n\
-log "========================================"\n\
-\n\
-log "Criando tabela sessions via SQL..."\n\
-\n\
-# Criar tabela sessions\n\
-PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USERNAME -d $DB_DATABASE << 'SQL_SCRIPT'\n\
-CREATE TABLE IF NOT EXISTS sessions (\n\
-    id VARCHAR(255) PRIMARY KEY,\n\
-    user_id BIGINT,\n\
-    ip_address VARCHAR(45),\n\
-    user_agent TEXT,\n\
-    payload TEXT NOT NULL,\n\
-    last_activity INTEGER NOT NULL\n\
-);\n\
-\n\
-CREATE INDEX IF NOT EXISTS sessions_user_id_index ON sessions(user_id);\n\
-CREATE INDEX IF NOT EXISTS sessions_last_activity_index ON sessions(last_activity);\n\
-ALTER TABLE sessions OWNER TO tem_de_tudo_database_user;\n\
-SQL_SCRIPT\n\
-\n\
-log "✓ Tabela sessions criada com sucesso!"\n\
-\n\
-# Listar tabelas\n\
-log "Verificando tabelas:"\n\
-PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USERNAME -d $DB_DATABASE -c "\dt"\n\
-\n\
-# Verificar ambiente\n\
-echo "=== Verificando Ambiente ==="\n\
-if [ ! -f ".env" ]; then\n\
-    echo "ERRO CRÍTICO: .env não encontrado!"\n\
-    ls -la\n\
-    exit 1\n\
-fi\n\
-\n\
-echo "Conteúdo do .env:"\n\
-cat .env | grep -v "PASSWORD"\n\
-\n\
-# Garantir storage está gravável\n\
-chown -R www-data:www-data storage bootstrap/cache\n\
-chmod -R 775 storage bootstrap/cache\n\
-\n\
-# Limpar caches\n\
-echo "Limpando caches..."\n\
-LARAVEL_ENV=production php artisan config:clear\n\
-LARAVEL_ENV=production php artisan cache:clear\n\
-\n\
-# Forçar recarregar config\n\
-echo "Recarregando configuração..."\n\
-LARAVEL_ENV=production php artisan config:cache\n\
-\n\
-# Verificar conexão PostgreSQL\n\
-echo "Testando conexão com PostgreSQL..."\n\
-if LARAVEL_ENV=production php artisan db:show 2>&1; then\n\
-    echo "✓ Conexão PostgreSQL OK"\n\
-else\n\
-    echo "✗ ERRO conectando ao PostgreSQL"\n\
-    exit 1\n\
+ENTRYPOINT ["./entrypoint.sh"]
 fi\n\
 \n\
 # Instalar tabela migrations\n\
