@@ -118,10 +118,13 @@ else\n\
     log "APP_KEY gerada: ${NEW_KEY:0:20}..."\n\
 fi\n\
 \n\
-# PASSO 2: Configurar APP_URL\n\
-if [ ! -z "$APP_URL" ]; then\n\
-    sed -i "s|^APP_URL=.*|APP_URL=$APP_URL|" .env 2>/dev/null || echo "APP_URL=$APP_URL" >> .env\n\
-fi\n\
+# PASSO 2: Configurar APP_URL e APP_ENV\n\
+log "Configurando APP_URL e APP_ENV..."\n\
+sed -i "/^APP_URL=/d" .env 2>/dev/null || true\n\
+sed -i "/^APP_ENV=/d" .env 2>/dev/null || true\n\
+echo "APP_URL=https://app-tem-de-tudo.onrender.com" >> .env\n\
+echo "APP_ENV=production" >> .env\n\
+echo "APP_DEBUG=false" >> .env\n\
 \n\
 # PASSO 3: FORÇAR PostgreSQL SEMPRE\n\
 log "========================================"\n\
@@ -172,56 +175,30 @@ log "Criando arquivo de diagnóstico..."\n\
 cat .env > public/.env-copy.txt 2>/dev/null || true\n\
 chmod 644 public/.env-copy.txt 2>/dev/null || true\n\
 \n\
-# PASSO 4: Limpar caches e FORÇAR recarga da configuração\n\
+# PASSO 4: Configuração pronta - NÃO rodar artisan ainda\n\   
+\n\
+# PASSO 5: Executar Migrations em BACKGROUND (não bloquear deploy)\n\
 log "========================================"\n\
-log "LIMPANDO CACHES E RECARREGANDO CONFIG"\n\
-log "========================================"\n\
-php artisan config:clear || log "Falha ao limpar config"\n\
-php artisan cache:clear || log "Falha ao limpar cache"\n\
-php artisan view:clear || log "Falha ao limpar views"\n\
-php artisan route:clear || log "Falha ao limpar routes"\n\
-\n\
-# FORÇAR Laravel a recarregar .env\n\
-php artisan config:cache || log "Falha ao cachear config"\n\
-\n\
-log "Verificando configuração carregada pelo Laravel:"\n\
-php artisan tinker --execute="echo 'DB Connection: ' . config('database.default'); echo PHP_EOL; echo 'DB Host: ' . config('database.connections.pgsql.host');" 2>&1 || log "Falha ao verificar config"\n\
-\n\
-# Forçar reload da configuração\n\
-log "Recarregando configuração do Laravel..."\n\
-php artisan config:cache || log "Falha ao cachear config"\n\
-\n\
-# PASSO 5: Executar Migrations (CRÍTICO)\n\
-log "========================================"\n\
-log "EXECUTANDO MIGRATIONS NO POSTGRESQL"\n\
+log "MIGRATIONS SERÃO EXECUTADAS APÓS INICIAR"\n\
 log "========================================"\n\
 \n\
-# Verificar conexão com banco - MODO DETALHADO\n\
-log "Testando conexão PostgreSQL..."\n\
-php artisan db:show 2>&1 | head -30\n\
+# Criar script para rodar migrations depois do Apache iniciar\n\
+cat > /var/www/html/run-migrations.sh << 'MIGRATION_SCRIPT'\n\
+#!/bin/bash\n\
+echo "Aguardando Apache iniciar completamente..."\n\
+sleep 5\n\
 \n\
-# Instalar tabela de migrations primeiro\n\
-log "Instalando tabela de controle de migrations..."\n\
+cd /var/www/html\n\
+echo "Executando migrations..."\n\
 php artisan migrate:install --force 2>&1\n\
+php artisan migrate --force 2>&1\n\
 \n\
-# Listar migrations disponíveis\n\
-log "Migrations disponíveis:"\n\
-ls -la database/migrations/ 2>&1 | head -20\n\
+echo "Migrations concluídas!"\n\
+echo "Tabelas criadas:"\n\
+php artisan tinker --execute="DB::select('SELECT tablename FROM pg_tables WHERE schemaname = \\'public\\'')" 2>&1 | grep tablename || echo "Erro ao listar tabelas"\n\
+MIGRATION_SCRIPT\n\
 \n\
-# Executar migrations com MÁXIMO detalhe\n\
-log "Executando TODAS as migrations..."\n\
-php artisan migrate --force --verbose 2>&1\n\
-\n\
-# Verificar se deu certo\n\
-log "Verificando tabelas criadas no PostgreSQL:"\n\
-php artisan tinker --execute="\n\
-  \\$tables = DB::select('SELECT tablename FROM pg_tables WHERE schemaname = \\'public\\'');\n\
-  foreach(\\$tables as \\$table) { echo \\$table->tablename . PHP_EOL; }\n\
-" 2>&1\n\
-\n\
-# Seeds (opcional, não crítico)\n\
-log "Executando seeds..."\n\
-php artisan db:seed --force 2>&1 || log "⚠ Seeding pulado (não crítico)"\n\
+chmod +x /var/www/html/run-migrations.sh\n\
 \n\
 log "========================================"\n\
 \n\
@@ -263,8 +240,11 @@ find /var/www/html/storage -type f -exec chmod 664 {} \\; 2>/dev/null || true\n\
 mkdir -p /var/www/html/storage/logs\n\
 echo "$(date) - Ambiente pronto" > /var/www/html/storage/logs/startup.log 2>/dev/null || true\n\
 \n\
-log "=== Iniciando Apache ==="\n\
+log "=== Iniciando Apache e Migrations em Background ==="\n\
 log "Aplicação disponível na porta 80"\n\
+\n\
+# Rodar migrations em background\n\
+/var/www/html/run-migrations.sh > /var/www/html/storage/logs/migrations.log 2>&1 &\n\
 \n\
 # Iniciar Apache\n\
 exec apache2-foreground' > /usr/local/bin/start.sh \
