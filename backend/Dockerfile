@@ -124,19 +124,23 @@ fi\n\
 \n\
 # PASSO 3: Configurar banco de dados\n\
 log "Configurando banco de dados..."\n\
-if [ ! -z "$DATABASE_URL" ]; then\n\
-    log "Configurando PostgreSQL"\n\
-    sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=pgsql/" .env\n\
+log "Variáveis recebidas: DB_HOST=$DB_HOST DB_DATABASE=$DB_DATABASE"\n\
+\n\
+# Se temos credenciais do PostgreSQL, usar elas\n\
+if [ ! -z "$DB_HOST" ] && [ ! -z "$DB_DATABASE" ]; then\n\
+    log "✓ Configurando PostgreSQL com credenciais fornecidas"\n\
     \n\
-    if [ ! -z "$DB_HOST" ]; then\n\
-        sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/" .env || echo "DB_HOST=$DB_HOST" >> .env\n\
-        sed -i "s/DB_PORT=.*/DB_PORT=${DB_PORT:-5432}/" .env || echo "DB_PORT=${DB_PORT:-5432}" >> .env\n\
-        sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/" .env || echo "DB_DATABASE=$DB_DATABASE" >> .env\n\
-        sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/" .env || echo "DB_USERNAME=$DB_USERNAME" >> .env\n\
-        sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env || echo "DB_PASSWORD=$DB_PASSWORD" >> .env\n\
-    fi\n\
+    # Forçar PostgreSQL\n\
+    sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=pgsql/" .env || echo "DB_CONNECTION=pgsql" >> .env\n\
+    sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/" .env || echo "DB_HOST=$DB_HOST" >> .env\n\
+    sed -i "s/DB_PORT=.*/DB_PORT=${DB_PORT:-5432}/" .env || echo "DB_PORT=${DB_PORT:-5432}" >> .env\n\
+    sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/" .env || echo "DB_DATABASE=$DB_DATABASE" >> .env\n\
+    sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/" .env || echo "DB_USERNAME=$DB_USERNAME" >> .env\n\
+    sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env || echo "DB_PASSWORD=$DB_PASSWORD" >> .env\n\
+    \n\
+    log "PostgreSQL configurado: $DB_USERNAME@$DB_HOST:${DB_PORT:-5432}/$DB_DATABASE"\n\
 else\n\
-    log "Usando SQLite (fallback)"\n\
+    log "✗ Credenciais PostgreSQL não fornecidas, usando SQLite"\n\
     sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=sqlite/" .env || echo "DB_CONNECTION=sqlite" >> .env\n\
     mkdir -p database\n\
     touch database/database.sqlite\n\
@@ -165,12 +169,16 @@ log "Criando arquivo de diagnóstico..."\n\
 cat .env > public/.env-copy.txt 2>/dev/null || true\n\
 chmod 644 public/.env-copy.txt 2>/dev/null || true\n\
 \n\
-# PASSO 4: Agora sim, limpar caches (com .env válido)\n\
-log "Limpando caches..."\n\
-php artisan config:clear 2>/dev/null || true\n\
-php artisan cache:clear 2>/dev/null || true\n\
-php artisan view:clear 2>/dev/null || true\n\
-php artisan route:clear 2>/dev/null || true\n\
+# PASSO 4: Limpar caches e recarregar configuração\n\
+log "Limpando todos os caches..."\n\
+php artisan config:clear || log "Falha ao limpar config"\n\
+php artisan cache:clear || log "Falha ao limpar cache"\n\
+php artisan view:clear || log "Falha ao limpar views"\n\
+php artisan route:clear || log "Falha ao limpar routes"\n\
+\n\
+# Forçar reload da configuração\n\
+log "Recarregando configuração do Laravel..."\n\
+php artisan config:cache || log "Falha ao cachear config"\n\
 \n\
 # PASSO 5: Executar Migrations (CRÍTICO)\n\
 log "========================================"\n\
