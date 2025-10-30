@@ -118,10 +118,24 @@ php artisan route:clear 2>/dev/null || true\n\
 log "Extensões PHP instaladas:"\n\
 php -m | grep -i "pdo\\|json\\|openssl\\|mbstring" || true\n\
 \n\
-# Gerar chave se necessário\n\
-if ! grep -q "^APP_KEY=" .env || grep -q "^APP_KEY=base64:$" .env; then\n\
-    log "Gerando APP_KEY..."\n\
-    php artisan key:generate --force 2>/dev/null || true\n\
+# Garantir APP_KEY\n\
+log "Verificando APP_KEY..."\n\
+\n\
+# Se APP_KEY existe na variável de ambiente, usar ela\n\
+if [ ! -z "$APP_KEY" ]; then\n\
+    log "Usando APP_KEY da variável de ambiente"\n\
+    sed -i "s|^APP_KEY=.*|APP_KEY=$APP_KEY|" .env 2>/dev/null || echo "APP_KEY=$APP_KEY" >> .env\n\
+# Se não existe no .env, gerar\n\
+elif ! grep -q "^APP_KEY=base64:" .env 2>/dev/null; then\n\
+    log "Gerando nova APP_KEY..."\n\
+    php artisan key:generate --force\n\
+fi\n\
+\n\
+# Verificar se realmente existe agora\n\
+if grep -q "^APP_KEY=base64:" .env; then\n\
+    log "APP_KEY configurada com sucesso"\n\
+else\n\
+    log "AVISO: APP_KEY pode estar faltando"\n\
 fi\n\
 \n\
 # Migrations e Seeds (não falha se houver erro)\n\
