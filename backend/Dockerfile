@@ -42,8 +42,12 @@ RUN mkdir -p /var/www/html/storage/framework/{sessions,views,cache} \
     && mkdir -p /var/www/html/bootstrap/cache \
     && mkdir -p /var/www/html/database
 
-# Criar script de inicialização robusto com logs detalhados
-RUN echo '#!/bin/bash\n\
+# Copy and set permissions for entrypoint script
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Set entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 set -e\n\
 \n\
 echo "=== TemDeTudo Iniciando $(date) ==="\n\
