@@ -42,10 +42,29 @@ echo "Checking .env file..."
 if [ -f ".env" ]; then
     echo ".env exists"
     echo "APP_KEY status: $(grep APP_KEY .env | head -n 1)"
+
+    # Configurar ambiente de produção
+    sed -i 's/APP_ENV=.*/APP_ENV=production/' .env
+    sed -i 's/APP_DEBUG=.*/APP_DEBUG=false/' .env
+    sed -i 's/LOG_CHANNEL=.*/LOG_CHANNEL=errorlog/' .env
+    sed -i 's/LOG_LEVEL=.*/LOG_LEVEL=error/' .env
+    sed -i 's/SESSION_DRIVER=.*/SESSION_DRIVER=database/' .env
+    sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
+    
+    echo "Environment configured for production"
 else
     echo "ERROR: .env file not found!"
     exit 1
 fi
+
+# Testar conexão com o banco
+echo "Testing database connection..."
+php artisan db:monitor || {
+    echo "ERROR: Database connection failed!"
+    php artisan db:show || true
+    cat storage/logs/laravel.log || true
+    exit 1
+}
 
 # Generate application key if not exists
 if ! grep -q "APP_KEY=base64:" .env; then
