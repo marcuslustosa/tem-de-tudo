@@ -178,26 +178,34 @@ log "Criando arquivo de diagnóstico..."\n\
 cat .env > public/.env-copy.txt 2>/dev/null || true\n\
 chmod 644 public/.env-copy.txt 2>/dev/null || true\n\
 \n\
-# PASSO 4: Configuração pronta - NÃO rodar artisan ainda\n\   
-\n\
-# PASSO 5: Executar Migrations em BACKGROUND (não bloquear deploy)\n\
+# PASSO 4: Criar tabelas críticas ANTES do Apache\n\
 log "========================================"\n\
-log "MIGRATIONS SERÃO EXECUTADAS APÓS INICIAR"\n\
+log "CRIANDO TABELAS CRÍTICAS"\n\
 log "========================================"\n\
 \n\
-# Criar script para diagnosticar ambiente e rodar migrations\n\
-cat > /var/www/html/run-migrations.sh << 'MIGRATION_SCRIPT'\n\
-#!/bin/bash\n\
-set -e\n\
+log "Criando tabela sessions via SQL..."\n\
 \n\
-echo "=== Script de Migrations e Diagnóstico ==="\n\
-echo "$(date) - Iniciando..."\n\
+# Criar tabela sessions\n\
+PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USERNAME -d $DB_DATABASE << 'SQL_SCRIPT'\n\
+CREATE TABLE IF NOT EXISTS sessions (\n\
+    id VARCHAR(255) PRIMARY KEY,\n\
+    user_id BIGINT,\n\
+    ip_address VARCHAR(45),\n\
+    user_agent TEXT,\n\
+    payload TEXT NOT NULL,\n\
+    last_activity INTEGER NOT NULL\n\
+);\n\
 \n\
-# Aguardar Apache iniciar\n\
-echo "Aguardando Apache iniciar completamente..."\n\
-sleep 5\n\
+CREATE INDEX IF NOT EXISTS sessions_user_id_index ON sessions(user_id);\n\
+CREATE INDEX IF NOT EXISTS sessions_last_activity_index ON sessions(last_activity);\n\
+ALTER TABLE sessions OWNER TO tem_de_tudo_database_user;\n\
+SQL_SCRIPT\n\
 \n\
-cd /var/www/html\n\
+log "✓ Tabela sessions criada com sucesso!"\n\
+\n\
+# Listar tabelas\n\
+log "Verificando tabelas:"\n\
+PGPASSWORD=$DB_PASSWORD psql -h $DB_HOST -U $DB_USERNAME -d $DB_DATABASE -c "\dt"\n\
 \n\
 # Verificar ambiente\n\
 echo "=== Verificando Ambiente ==="\n\
