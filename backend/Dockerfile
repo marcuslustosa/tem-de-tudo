@@ -21,14 +21,18 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files
+# Copy existing source
 COPY . /var/www/html/
 
-# Copy Apache configuration
+# Configure Apache
 COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install dependencies and optimize
+RUN composer install --no-dev --optimize-autoloader \
+    && php artisan config:clear \
+    && php artisan cache:clear \
+    && php artisan route:clear \
+    && php artisan view:clear
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
@@ -36,68 +40,24 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/database
 
-# Create directories
+# Create required directories
 RUN mkdir -p /var/www/html/storage/framework/{sessions,views,cache} \
     && mkdir -p /var/www/html/storage/logs \
     && mkdir -p /var/www/html/bootstrap/cache \
     && mkdir -p /var/www/html/database
 
-# Copy and set permissions for entrypoint script
+# Copy and setup entrypoint
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Configure Apache to start in foreground
+# Configure Apache
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
 
-# Set entrypoint
+# Start script
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["apache2-foreground"]
-
-    # Garantir que está no formato correto\n\
-    if [[ "$APP_KEY" == base64:* ]]; then\n\
-        log "APP_KEY já está em formato base64"\n\
-    else\n\
-        log "Adicionando prefixo base64: à APP_KEY"\n\
-        APP_KEY="base64:$APP_KEY"\n\
-    fi\n\
-    # Atualizar ou adicionar no .env\n\
-    if grep -q "^APP_KEY=" .env 2>/dev/null; then\n\
-        sed -i "s|^APP_KEY=.*|APP_KEY=$APP_KEY|" .env\n\
-    else\n\
-        echo "APP_KEY=$APP_KEY" >> .env\n\
-    fi\n\
-else\n\
-    # Gerar nova chave usando openssl\n\
-    log "Gerando nova APP_KEY com openssl..."\n\
-    NEW_KEY="base64:$(openssl rand -base64 32)"\n\
-    if grep -q "^APP_KEY=" .env 2>/dev/null; then\n\
-        sed -i "s|^APP_KEY=.*|APP_KEY=$NEW_KEY|" .env\n\
-    else\n\
-        echo "APP_KEY=$NEW_KEY" >> .env\n\
-    fi\n\
-    log "APP_KEY gerada: ${NEW_KEY:0:20}..."\n\
-fi\n\
-\n\
-# PASSO 2: Configurar APP_URL e APP_ENV (modo debug)\n\
-log "Configurando APP_URL e APP_ENV..."\n\
-sed -i "/^APP_URL=/d" .env 2>/dev/null || true\n\
-sed -i "/^APP_ENV=/d" .env 2>/dev/null || true\n\
-sed -i "/^APP_DEBUG=/d" .env 2>/dev/null || true\n\
-echo "APP_URL=https://app-tem-de-tudo.onrender.com" >> .env\n\
-echo "APP_ENV=production" >> .env\n\
-echo "APP_DEBUG=true" >> .env\n\
-echo "LOG_LEVEL=debug" >> .env\n\
-echo "DISPLAY_ERRORS=true" >> .env\n\
-\n\
-# PASSO 3: FORÇAR PostgreSQL SEMPRE\n\
-log "========================================"\n\
-log "CONFIGURANDO POSTGRESQL (FORÇADO)"\n\
-log "========================================"\n\
-\n\
-# Remover qualquer configuração DB antiga\n\
-sed -i "/^DB_CONNECTION=/d" .env 2>/dev/null || true\n\
 sed -i "/^DB_HOST=/d" .env 2>/dev/null || true\n\
 sed -i "/^DB_PORT=/d" .env 2>/dev/null || true\n\
 sed -i "/^DB_DATABASE=/d" .env 2>/dev/null || true\n\

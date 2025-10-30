@@ -1,53 +1,70 @@
 ﻿#!/bin/bash
 set -e
 
-echo "=== Tem de Tudo - Starting ==="
-echo "PHP Version: $(php -v | head -n 1)"
-echo "Current directory: $(pwd)"
-echo "Files: $(ls -la)"
+echo "=== Iniciando Tem de Tudo ==="
 
-# Create directories
-echo "Creating storage directories..."
+# 1. Preparar diretórios
+echo "Configurando diretórios..."
 mkdir -p /var/www/html/storage/framework/{sessions,views,cache}
 mkdir -p /var/www/html/storage/logs
 mkdir -p /var/www/html/bootstrap/cache
 mkdir -p /var/www/html/database
-echo "Directories created!"
-
-# Set permissions (more permissive for Render)
-echo "Setting permissions..."
 chmod -R 777 /var/www/html/storage
 chmod -R 777 /var/www/html/bootstrap/cache
-echo "Permissions set!"
 
-# Clear any cached config that might cause issues
-echo "Clearing caches..."
-php artisan config:clear || true
-php artisan cache:clear || true
-php artisan view:clear || true
-echo "Caches cleared!"
-
-# Copy production environment if exists
-if [ -f ".env.render" ]; then
-    echo "Using Render production environment"
-    cp .env.render .env
-elif [ -f ".env.production" ]; then
-    echo "Using production environment"
-    cp .env.production .env
-else
-    echo "WARNING: No production env found, using default .env"
+# 2. Configurar ambiente
+if [ ! -f ".env" ]; then
+    echo "Criando arquivo .env..."
+    cp .env.example .env
 fi
 
-echo "Checking .env file..."
-if [ -f ".env" ]; then
-    echo ".env exists"
-    echo "APP_KEY status: $(grep APP_KEY .env | head -n 1)"
+# 3. Configurar variáveis
+echo "Configurando variáveis de ambiente..."
+sed -i 's/APP_ENV=.*/APP_ENV=production/' .env
+sed -i 's/APP_DEBUG=.*/APP_DEBUG=false/' .env
+sed -i 's/LOG_CHANNEL=.*/LOG_CHANNEL=errorlog/' .env
+sed -i 's/LOG_LEVEL=.*/LOG_LEVEL=error/' .env
+sed -i 's/SESSION_DRIVER=.*/SESSION_DRIVER=database/' .env
 
-    # Configurar ambiente de produção
-    sed -i 's/APP_ENV=.*/APP_ENV=production/' .env
-    sed -i 's/APP_DEBUG=.*/APP_DEBUG=false/' .env
-    sed -i 's/LOG_CHANNEL=.*/LOG_CHANNEL=errorlog/' .env
-    sed -i 's/LOG_LEVEL=.*/LOG_LEVEL=error/' .env
+# 4. Configurar PostgreSQL
+echo "Configurando PostgreSQL..."
+sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
+sed -i "s|DB_HOST=.*|DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com|" .env
+sed -i "s|DB_PORT=.*|DB_PORT=5432|" .env
+sed -i "s|DB_DATABASE=.*|DB_DATABASE=tem_de_tudo_database|" .env
+sed -i "s|DB_USERNAME=.*|DB_USERNAME=tem_de_tudo_database_user|" .env
+
+# 5. Verificar APP_KEY
+if ! grep -q "^APP_KEY=" .env || grep -q "^APP_KEY=$" .env; then
+    echo "Gerando nova APP_KEY..."
+    php artisan key:generate --force
+fi
+
+# 6. Limpar caches
+echo "Limpando caches..."
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+
+# 7. Executar migrations
+echo "Executando migrations..."
+php artisan migrate --force || {
+    echo "❌ Erro nas migrations"
+    php artisan migrate:status
+    exit 1
+}
+
+# 8. Verificar conexão
+echo "Verificando banco de dados..."
+php artisan db:monitor || {
+    echo "❌ Erro no banco de dados"
+    cat storage/logs/laravel.log
+    exit 1
+}
+
+# 9. Iniciar Apache
+echo "✓ Iniciando servidor Apache..."
+exec apache2-foreground
     sed -i 's/SESSION_DRIVER=.*/SESSION_DRIVER=database/' .env
     sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
     
