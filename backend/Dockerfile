@@ -123,38 +123,32 @@ if [ ! -z "$APP_URL" ]; then\n\
     sed -i "s|^APP_URL=.*|APP_URL=$APP_URL|" .env 2>/dev/null || echo "APP_URL=$APP_URL" >> .env\n\
 fi\n\
 \n\
-# PASSO 3: Configurar banco de dados\n\
-log "Configurando banco de dados..."\n\
-log "Variáveis recebidas: DB_HOST=$DB_HOST DB_DATABASE=$DB_DATABASE"\n\
+# PASSO 3: FORÇAR PostgreSQL SEMPRE\n\
+log "========================================"\n\
+log "CONFIGURANDO POSTGRESQL (FORÇADO)"\n\
+log "========================================"\n\
 \n\
-# Se temos credenciais do PostgreSQL, usar elas\n\
-if [ ! -z "$DB_HOST" ] && [ ! -z "$DB_DATABASE" ]; then\n\
-    log "✓ Configurando PostgreSQL com credenciais fornecidas"\n\
-    \n\
-    # FORÇAR PostgreSQL - remover linhas antigas e adicionar novas\n\
-    sed -i "/^DB_CONNECTION=/d" .env\n\
-    sed -i "/^DB_HOST=/d" .env\n\
-    sed -i "/^DB_PORT=/d" .env\n\
-    sed -i "/^DB_DATABASE=/d" .env\n\
-    sed -i "/^DB_USERNAME=/d" .env\n\
-    sed -i "/^DB_PASSWORD=/d" .env\n\
-    \n\
-    echo "DB_CONNECTION=pgsql" >> .env\n\
-    echo "DB_HOST=$DB_HOST" >> .env\n\
-    echo "DB_PORT=${DB_PORT:-5432}" >> .env\n\
-    echo "DB_DATABASE=$DB_DATABASE" >> .env\n\
-    echo "DB_USERNAME=$DB_USERNAME" >> .env\n\
-    echo "DB_PASSWORD=$DB_PASSWORD" >> .env\n\
-    \n\
-    log "PostgreSQL configurado: $DB_USERNAME@$DB_HOST:${DB_PORT:-5432}/$DB_DATABASE"\n\
-else\n\
-    log "✗ Credenciais PostgreSQL não fornecidas, usando SQLite"\n\
-    sed -i "/^DB_CONNECTION=/d" .env\n\
-    echo "DB_CONNECTION=sqlite" >> .env\n\
-    mkdir -p database\n\
-    touch database/database.sqlite\n\
-    chmod 775 database/database.sqlite\n\
-fi\n\
+# Remover qualquer configuração DB antiga\n\
+sed -i "/^DB_CONNECTION=/d" .env 2>/dev/null || true\n\
+sed -i "/^DB_HOST=/d" .env 2>/dev/null || true\n\
+sed -i "/^DB_PORT=/d" .env 2>/dev/null || true\n\
+sed -i "/^DB_DATABASE=/d" .env 2>/dev/null || true\n\
+sed -i "/^DB_USERNAME=/d" .env 2>/dev/null || true\n\
+sed -i "/^DB_PASSWORD=/d" .env 2>/dev/null || true\n\
+\n\
+# FORÇAR valores hardcoded do render.yaml\n\
+echo "DB_CONNECTION=pgsql" >> .env\n\
+echo "DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com" >> .env\n\
+echo "DB_PORT=5432" >> .env\n\
+echo "DB_DATABASE=tem_de_tudo_database" >> .env\n\
+echo "DB_USERNAME=tem_de_tudo_database_user" >> .env\n\
+echo "DB_PASSWORD=9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA" >> .env\n\
+\n\
+log "✓ PostgreSQL FORÇADO:"\n\
+log "  Host: dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com"\n\
+log "  Database: tem_de_tudo_database"\n\
+log "  User: tem_de_tudo_database_user"\n\
+log "  Port: 5432"\n\
 \n\
 # Verificação e exibição da configuração\n\
 log "========================================"\n\
@@ -178,12 +172,20 @@ log "Criando arquivo de diagnóstico..."\n\
 cat .env > public/.env-copy.txt 2>/dev/null || true\n\
 chmod 644 public/.env-copy.txt 2>/dev/null || true\n\
 \n\
-# PASSO 4: Limpar caches e recarregar configuração\n\
-log "Limpando todos os caches..."\n\
+# PASSO 4: Limpar caches e FORÇAR recarga da configuração\n\
+log "========================================"\n\
+log "LIMPANDO CACHES E RECARREGANDO CONFIG"\n\
+log "========================================"\n\
 php artisan config:clear || log "Falha ao limpar config"\n\
 php artisan cache:clear || log "Falha ao limpar cache"\n\
 php artisan view:clear || log "Falha ao limpar views"\n\
 php artisan route:clear || log "Falha ao limpar routes"\n\
+\n\
+# FORÇAR Laravel a recarregar .env\n\
+php artisan config:cache || log "Falha ao cachear config"\n\
+\n\
+log "Verificando configuração carregada pelo Laravel:"\n\
+php artisan tinker --execute="echo 'DB Connection: ' . config('database.default'); echo PHP_EOL; echo 'DB Host: ' . config('database.connections.pgsql.host');" 2>&1 || log "Falha ao verificar config"\n\
 \n\
 # Forçar reload da configuração\n\
 log "Recarregando configuração do Laravel..."\n\
