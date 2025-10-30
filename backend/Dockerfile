@@ -172,12 +172,34 @@ php artisan cache:clear 2>/dev/null || true\n\
 php artisan view:clear 2>/dev/null || true\n\
 php artisan route:clear 2>/dev/null || true\n\
 \n\
-# Migrations e Seeds (não falha se houver erro)\n\
-log "Executando migrations..."\n\
-php artisan migrate --force 2>/dev/null || log "AVISO: Migration pulada"\n\
+# PASSO 5: Executar Migrations (CRÍTICO)\n\
+log "========================================"\n\
+log "EXECUTANDO MIGRATIONS"\n\
+log "========================================"\n\
 \n\
+# Verificar conexão com banco\n\
+log "Testando conexão com banco de dados..."\n\
+php artisan db:show 2>&1 || log "Falha ao conectar no banco"\n\
+\n\
+# Executar migrations com output completo\n\
+log "Rodando migrations..."\n\
+if php artisan migrate --force 2>&1; then\n\
+    log "✓ Migrations executadas com sucesso"\n\
+else\n\
+    log "✗ ERRO nas migrations - Tentando criar apenas tabelas essenciais"\n\
+    # Se falhar, tentar criar pelo menos a tabela de sessions\n\
+    php artisan migrate:install --force 2>&1 || true\n\
+    php artisan migrate --path=database/migrations/0001_01_01_000001_create_cache_table.php --force 2>&1 || true\n\
+fi\n\
+\n\
+log "Listando tabelas criadas:"\n\
+php artisan db:table --database=pgsql 2>&1 | head -20 || log "Não foi possível listar tabelas"\n\
+\n\
+# Seeds (opcional, não crítico)\n\
 log "Executando seeds..."\n\
-php artisan db:seed --force 2>/dev/null || log "AVISO: Seeding pulado"\n\
+php artisan db:seed --force 2>&1 || log "⚠ Seeding pulado (não crítico)"\n\
+\n\
+log "========================================"\n\
 \n\
 # Verificar e ajustar permissões e diretórios\n\
 log "Verificando diretórios e permissões..."\n\
