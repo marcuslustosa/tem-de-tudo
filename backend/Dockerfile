@@ -1,62 +1,24 @@
 FROM php:8.2-apache
 
-# System dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
     libpq-dev \
-    postgresql-client \
-    && docker-php-ext-install pdo pdo_pgsql pgsql mbstring exif pcntl bcmath gd \
-    && a2enmod rewrite headers \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && docker-php-ext-install pdo pdo_pgsql \
+    && a2enmod rewrite \
+    && apt-get clean
 
-# Get latest Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Set document root
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Copy existing source
+# Copy files
 COPY . /var/www/html/
-
-# Configure Apache
-COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
-
-# Install dependencies and optimize
-RUN composer install --no-dev --optimize-autoloader \
-    && php artisan config:clear \
-    && php artisan cache:clear \
-    && php artisan route:clear \
-    && php artisan view:clear
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/database
+    && chmod -R 777 /var/www/html/storage \
+    && chmod -R 777 /var/www/html/bootstrap
 
-# Create required directories
-RUN mkdir -p /var/www/html/storage/framework/{sessions,views,cache} \
-    && mkdir -p /var/www/html/storage/logs \
-    && mkdir -p /var/www/html/bootstrap/cache \
-    && mkdir -p /var/www/html/database
-
-# Copy and setup entrypoint
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# Configure Apache
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
-
-# Start script
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["apache2-foreground"]
 sed -i "/^DB_HOST=/d" .env 2>/dev/null || true\n\
 sed -i "/^DB_PORT=/d" .env 2>/dev/null || true\n\
