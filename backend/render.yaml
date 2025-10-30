@@ -23,7 +23,7 @@ services:
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        value: dpg-d3vps0k9c44c738q64gg-a
+        value: dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com
       - key: DB_PORT
         value: 5432
       - key: DB_DATABASE
@@ -32,6 +32,14 @@ services:
         value: tem_de_tudo_database_user
       - key: DB_PASSWORD
         value: 9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA
+        
+      # Cache e Session em Database
+      - key: CACHE_STORE
+        value: database
+      - key: SESSION_DRIVER
+        value: database
+      - key: SESSION_LIFETIME
+        value: 120
 
       - key: SESSION_DRIVER
         value: database
@@ -46,8 +54,8 @@ services:
       - key: JWT_REFRESH_TTL
         value: 20160
 
-    postDeployCommand: |
-      php artisan migrate --force
+    buildCommand: chmod +x deploy.sh
+    postDeployCommand: ./deploy.sh
       php artisan db:seed --force
       php artisan config:cache
       php artisan route:cache
