@@ -1,8 +1,7 @@
 FROM php:8.2-apache
 
 # Instalar dependências e extensões PHP
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
+RUN apt-get update && apt-get install -y libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql \
     && a2enmod rewrite
 
@@ -14,15 +13,10 @@ COPY . .
 COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Configurar permissões e diretórios
-RUN mkdir -p \
-    storage/framework/sessions \
-    storage/framework/views \
-    storage/framework/cache \
-    storage/logs \
-    bootstrap/cache \
-    && chmod -R 777 storage \
-    && chmod -R 777 bootstrap/cache \
-    && chmod +x entrypoint.sh
+RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache storage/logs bootstrap/cache
+RUN chmod -R 777 storage
+RUN chmod -R 777 bootstrap/cache
+RUN chmod +x entrypoint.sh
 
 # Definir script de entrada
 ENTRYPOINT ["./entrypoint.sh"]
