@@ -7,11 +7,11 @@ cd /var/www/html
 
 # 1. Preparar diretórios
 echo "Configurando diretórios..."
-mkdir -p storage/framework/sessions
-mkdir -p storage/framework/views
-mkdir -p storage/framework/cache
-mkdir -p storage/logs
-mkdir -p bootstrap/cache
+mkdir -p storage/framework/sessions \
+    storage/framework/views \
+    storage/framework/cache \
+    storage/logs \
+    bootstrap/cache
 chmod -R 777 storage
 chmod -R 777 bootstrap/cache
 
@@ -30,11 +30,25 @@ sed -i 's/LOG_LEVEL=.*/LOG_LEVEL=error/' .env
 sed -i 's/SESSION_DRIVER=.*/SESSION_DRIVER=database/' .env
 sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
 
-# 4. Executar migrations
+# 4. Verificar dependências
+echo "Verificando dependências..."
+if [ ! -d "vendor" ]; then
+    echo "Instalando dependências..."
+    composer install --no-interaction --optimize-autoloader
+fi
+
+# 5. Limpar caches
+echo "Limpando caches..."
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+
+# 6. Executar migrations
 echo "Executando migrations..."
 php artisan migrate --force
 
-# 5. Iniciar Apache
+# 7. Iniciar Apache
 apache2-foreground
 sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
 sed -i 's/DB_DATABASE=.*/DB_DATABASE=tem_de_tudo_database/' .env
