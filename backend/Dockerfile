@@ -86,18 +86,35 @@ else\n\
     echo "SESSION_DRIVER=file" >> .env\n\
 fi\n\
 \n\
-# Configuração do banco de dados\n\
+# PASSO 1: Configurar APP_KEY PRIMEIRO (antes de qualquer comando artisan)\n\
+log "Configurando APP_KEY..."\n\
+if [ ! -z "$APP_KEY" ]; then\n\
+    log "Usando APP_KEY da variável de ambiente"\n\
+    sed -i "s|^APP_KEY=.*|APP_KEY=$APP_KEY|" .env 2>/dev/null || echo "APP_KEY=$APP_KEY" >> .env\n\
+elif ! grep -q "^APP_KEY=" .env 2>/dev/null; then\n\
+    log "Gerando APP_KEY simples (sem artisan)"\n\
+    NEW_KEY="base64:$(openssl rand -base64 32)"\n\
+    echo "APP_KEY=$NEW_KEY" >> .env\n\
+    log "APP_KEY gerada"\n\
+fi\n\
+\n\
+# PASSO 2: Configurar APP_URL\n\
+if [ ! -z "$APP_URL" ]; then\n\
+    sed -i "s|^APP_URL=.*|APP_URL=$APP_URL|" .env 2>/dev/null || echo "APP_URL=$APP_URL" >> .env\n\
+fi\n\
+\n\
+# PASSO 3: Configurar banco de dados\n\
 log "Configurando banco de dados..."\n\
 if [ ! -z "$DATABASE_URL" ]; then\n\
-    log "Configurando PostgreSQL com DATABASE_URL"\n\
+    log "Configurando PostgreSQL"\n\
     sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=pgsql/" .env\n\
     \n\
     if [ ! -z "$DB_HOST" ]; then\n\
-        sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/" .env\n\
-        sed -i "s/DB_PORT=.*/DB_PORT=${DB_PORT:-5432}/" .env\n\
-        sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/" .env\n\
-        sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/" .env\n\
-        sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env\n\
+        sed -i "s/DB_HOST=.*/DB_HOST=$DB_HOST/" .env || echo "DB_HOST=$DB_HOST" >> .env\n\
+        sed -i "s/DB_PORT=.*/DB_PORT=${DB_PORT:-5432}/" .env || echo "DB_PORT=${DB_PORT:-5432}" >> .env\n\
+        sed -i "s/DB_DATABASE=.*/DB_DATABASE=$DB_DATABASE/" .env || echo "DB_DATABASE=$DB_DATABASE" >> .env\n\
+        sed -i "s/DB_USERNAME=.*/DB_USERNAME=$DB_USERNAME/" .env || echo "DB_USERNAME=$DB_USERNAME" >> .env\n\
+        sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASSWORD/" .env || echo "DB_PASSWORD=$DB_PASSWORD" >> .env\n\
     fi\n\
 else\n\
     log "Usando SQLite (fallback)"\n\
@@ -107,36 +124,19 @@ else\n\
     chmod 775 database/database.sqlite\n\
 fi\n\
 \n\
-# Limpar caches (não falha se houver erro)\n\
+# Mostrar configuração final\n\
+log ".env configurado:"\n\
+grep "^APP_KEY=" .env | head -c 30 || echo "APP_KEY não encontrada!"\n\
+echo "..."\n\
+grep "^APP_URL=" .env || echo "APP_URL não configurada"\n\
+grep "^DB_CONNECTION=" .env || echo "DB_CONNECTION não configurada"\n\
+\n\
+# PASSO 4: Agora sim, limpar caches (com .env válido)\n\
 log "Limpando caches..."\n\
 php artisan config:clear 2>/dev/null || true\n\
 php artisan cache:clear 2>/dev/null || true\n\
 php artisan view:clear 2>/dev/null || true\n\
 php artisan route:clear 2>/dev/null || true\n\
-\n\
-# Mostrar extensões PHP instaladas (apenas informativo)\n\
-log "Extensões PHP instaladas:"\n\
-php -m | grep -i "pdo\\|json\\|openssl\\|mbstring" || true\n\
-\n\
-# Garantir APP_KEY\n\
-log "Verificando APP_KEY..."\n\
-\n\
-# Se APP_KEY existe na variável de ambiente, usar ela\n\
-if [ ! -z "$APP_KEY" ]; then\n\
-    log "Usando APP_KEY da variável de ambiente"\n\
-    sed -i "s|^APP_KEY=.*|APP_KEY=$APP_KEY|" .env 2>/dev/null || echo "APP_KEY=$APP_KEY" >> .env\n\
-# Se não existe no .env, gerar\n\
-elif ! grep -q "^APP_KEY=base64:" .env 2>/dev/null; then\n\
-    log "Gerando nova APP_KEY..."\n\
-    php artisan key:generate --force\n\
-fi\n\
-\n\
-# Verificar se realmente existe agora\n\
-if grep -q "^APP_KEY=base64:" .env; then\n\
-    log "APP_KEY configurada com sucesso"\n\
-else\n\
-    log "AVISO: APP_KEY pode estar faltando"\n\
-fi\n\
 \n\
 # Migrations e Seeds (não falha se houver erro)\n\
 log "Executando migrations..."\n\
