@@ -6,15 +6,8 @@ echo "$(date) - Iniciando..."
 
 cd /var/www/html
 
-# Criar tabela sessions diretamente via SQL
-echo "Criando tabela sessions via SQL..."
-
-# Conexão PostgreSQL com valores explícitos
-PGPASSWORD=$DB_PASSWORD psql \
-  -h "dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com" \
-  -U "tem_de_tudo_database_user" \
-  -d "tem_de_tudo_database" \
-  -p 5432 << 'SQL_SCRIPT'
+# Criar arquivo SQL temporário
+cat > sessions.sql << 'SQLEND'
 -- Criar tabela sessions se não existir
 CREATE TABLE IF NOT EXISTS sessions (
     id VARCHAR(255) PRIMARY KEY,
@@ -31,17 +24,32 @@ CREATE INDEX IF NOT EXISTS sessions_last_activity_index ON sessions(last_activit
 
 -- Ajustar permissões
 ALTER TABLE sessions OWNER TO tem_de_tudo_database_user;
-SQL_SCRIPT
+SQLEND
 
-echo "✓ Tabela sessions criada com sucesso!"
+echo "Criando tabela sessions via SQL..."
 
-# Listar tabelas para confirmar
-echo "Tabelas no banco:"
-PGPASSWORD=$DB_PASSWORD psql \
-  -h "dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com" \
-  -U "tem_de_tudo_database_user" \
-  -d "tem_de_tudo_database" \
-  -p 5432 \
-  -c "\dt"
+# Exportar variáveis de ambiente PostgreSQL
+export PGPASSWORD="$DB_PASSWORD"
+export PGHOST="dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com"
+export PGUSER="tem_de_tudo_database_user"
+export PGDATABASE="tem_de_tudo_database"
+export PGPORT="5432"
+
+# Executar o arquivo SQL
+psql -f sessions.sql
+
+if [ $? -eq 0 ]; then
+    echo "✓ Tabela sessions criada com sucesso!"
+    
+    # Listar tabelas para confirmar
+    echo "Tabelas no banco:"
+    psql -c "\dt"
+    
+    # Limpar arquivo temporário
+    rm sessions.sql
+else
+    echo "❌ Erro ao criar tabela sessions"
+    exit 1
+fi
 
 echo "Script concluído em $(date)"
