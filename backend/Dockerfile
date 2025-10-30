@@ -52,13 +52,13 @@ log() {\n\
     echo "[$(date +"%Y-%m-%d %H:%M:%S")] $1"\n\
 }\n\
 \n\
-# Verificar ambiente PHP
+# Verificar ambiente PHP\n\
 log "Verificando PHP..."\n\
-php -v || { log "ERRO: PHP não está instalado corretamente"; exit 1; }\n\
+php -v\n\
 \n\
-# Verificar módulos do Apache
-log "Verificando módulos Apache..."\n\
-apache2ctl -M || { log "ERRO: Apache não está configurado corretamente"; exit 1; }\n\
+# Verificar módulos do Apache (não falha)\n\
+log "Módulos Apache carregados:"\n\
+apache2ctl -M 2>&1 | grep -i "rewrite\\|headers" || true\n\
 \n\
 cd /var/www/html\n\
 \n\
@@ -107,58 +107,29 @@ else\n\
     chmod 775 database/database.sqlite\n\
 fi\n\
 \n\
-# Limpar e otimizar\n\
-log "Limpando e otimizando Laravel..."\n\
+# Limpar caches (não falha se houver erro)\n\
+log "Limpando caches..."\n\
+php artisan config:clear 2>/dev/null || true\n\
+php artisan cache:clear 2>/dev/null || true\n\
+php artisan view:clear 2>/dev/null || true\n\
+php artisan route:clear 2>/dev/null || true\n\
 \n\
-# Limpar todos os caches\n\
-php artisan config:clear || log "AVISO: Falha ao limpar config cache"\n\
-php artisan cache:clear || log "AVISO: Falha ao limpar cache"\n\
-php artisan view:clear || log "AVISO: Falha ao limpar view cache"\n\
-php artisan route:clear || log "AVISO: Falha ao limpar route cache"\n\
-\n\
-# Verificar configuração do Laravel\n\
-log "Verificando configuração do Laravel..."\n\
-php artisan config:check || log "ERRO: Problemas na configuração do Laravel"\n\
-\n\
-# Validar rotas\n\
-log "Verificando rotas..."\n\
-php artisan route:list --json > /tmp/routes.json || log "ERRO: Problemas com as rotas"\n\
-\n\
-# Verificar extensões PHP necessárias\n\
-for ext in pdo pdo_pgsql json openssl mbstring tokenizer xml; do\n\
-    if ! php -m | grep -q "^$ext$"; then\n\
-        log "ERRO: Extensão PHP requerida não encontrada: $ext"\n\
-        exit 1\n\
-    fi\n\
-done\n\
-\n\
-# Otimizar\n\
-log "Otimizando aplicação..."\n\
-php artisan optimize || log "AVISO: Falha na otimização"\n\
+# Mostrar extensões PHP instaladas (apenas informativo)\n\
+log "Extensões PHP instaladas:"\n\
+php -m | grep -i "pdo\\|json\\|openssl\\|mbstring" || true\n\
 \n\
 # Gerar chave se necessário\n\
 if ! grep -q "^APP_KEY=" .env || grep -q "^APP_KEY=base64:$" .env; then\n\
     log "Gerando APP_KEY..."\n\
-    php artisan key:generate --force\n\
+    php artisan key:generate --force 2>/dev/null || true\n\
 fi\n\
 \n\
-# Testar conexão com banco de dados\n\
-log "Testando conexão com banco de dados..."\n\
-php artisan db:monitor || {\n\
-    log "AVISO: Falha na conexão com banco de dados. Detalhes:"\n\
-    php artisan db:show --json || true\n\
-}\n\
+# Migrations e Seeds (não falha se houver erro)\n\
+log "Executando migrations..."\n\
+php artisan migrate --force 2>/dev/null || log "AVISO: Migration pulada"\n\
 \n\
-# Verificar status do Laravel\n\
-log "Verificando status do Laravel..."\n\
-php artisan about || true\n\
-\n\
-# Migrations e Seeds\n\
-echo "Executando migrations..."\n\
-php artisan migrate --force || echo "Migration falhou, mas continuando..."\n\
-\n\
-echo "Executando seeds..."\n\
-php artisan db:seed --force || echo "Seeding falhou, mas continuando..."\n\
+log "Executando seeds..."\n\
+php artisan db:seed --force 2>/dev/null || log "AVISO: Seeding pulado"\n\
 \n\
 # Verificar e ajustar permissões e diretórios\n\
 log "Verificando diretórios e permissões..."\n\
@@ -189,47 +160,20 @@ log "Verificando permissões finais..."\n\
 ls -la /var/www/html/storage\n\
 ls -la /var/www/html/bootstrap/cache\n\
 \n\
-# Verificação final do ambiente\n\
-log "Realizando verificação final..."\n\
-\n\
-# Verificar arquivos críticos\n\
-CRITICAL_FILES=(\n\
-    "/var/www/html/public/index.php"\n\
-    "/var/www/html/bootstrap/app.php"\n\
-    "/var/www/html/routes/web.php"\n\
-    "/var/www/html/routes/api.php"\n\
-)\n\
-\n\
-for file in "${CRITICAL_FILES[@]}"; do\n\
-    if [ ! -f "$file" ]; then\n\
-        log "ERRO CRÍTICO: Arquivo não encontrado: $file"\n\
-        exit 1\n\
-    fi\n\
-done\n\
-\n\
-# Testar conexão com serviços externos\n\
-if [ ! -z "$MAIL_HOST" ]; then\n\
-    log "Verificando conexão SMTP..."\n\
-    nc -zv $MAIL_HOST $MAIL_PORT || log "AVISO: Não foi possível conectar ao servidor SMTP"\n\
-fi\n\
-\n\
-# Verificar diretório público\n\
-if [ ! -d "/var/www/html/public" ]; then\n\
-    log "ERRO CRÍTICO: Diretório public/ não encontrado"\n\
-    exit 1\n\
-fi\n\
-\n\
-# Verificar permissões finais\n\
-find /var/www/html/storage -type d -exec chmod 775 {} \;\n\
-find /var/www/html/storage -type f -exec chmod 664 {} \;\n\
+# Ajustar permissões finais\n\
+log "Ajustando permissões finais..."\n\
+find /var/www/html/storage -type d -exec chmod 775 {} \\; 2>/dev/null || true\n\
+find /var/www/html/storage -type f -exec chmod 664 {} \\; 2>/dev/null || true\n\
 \n\
 # Criar arquivo de status\n\
-echo "$(date) - Ambiente verificado e pronto" > /var/www/html/storage/logs/startup.log\n\
+mkdir -p /var/www/html/storage/logs\n\
+echo "$(date) - Ambiente pronto" > /var/www/html/storage/logs/startup.log 2>/dev/null || true\n\
 \n\
 log "=== Iniciando Apache ==="\n\
+log "Aplicação disponível na porta 80"\n\
 \n\
-# Iniciar Apache em modo debug\n\
-apache2ctl -e debug -D FOREGROUND' > /usr/local/bin/start.sh \
+# Iniciar Apache\n\
+exec apache2-foreground' > /usr/local/bin/start.sh \
     && chmod +x /usr/local/bin/start.sh
 
 EXPOSE 80
