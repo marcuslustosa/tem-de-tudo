@@ -193,26 +193,31 @@ php artisan config:cache || log "Falha ao cachear config"\n\
 \n\
 # PASSO 5: Executar Migrations (CRÍTICO)\n\
 log "========================================"\n\
-log "EXECUTANDO MIGRATIONS"\n\
+log "EXECUTANDO MIGRATIONS NO POSTGRESQL"\n\
 log "========================================"\n\
 \n\
-# Verificar conexão com banco\n\
-log "Testando conexão com banco de dados..."\n\
-php artisan db:show 2>&1 || log "Falha ao conectar no banco"\n\
+# Verificar conexão com banco - MODO DETALHADO\n\
+log "Testando conexão PostgreSQL..."\n\
+php artisan db:show 2>&1 | head -30\n\
 \n\
-# Executar migrations com output completo\n\
-log "Rodando migrations..."\n\
-if php artisan migrate --force 2>&1; then\n\
-    log "✓ Migrations executadas com sucesso"\n\
-else\n\
-    log "✗ ERRO nas migrations - Tentando criar apenas tabelas essenciais"\n\
-    # Se falhar, tentar criar pelo menos a tabela de sessions\n\
-    php artisan migrate:install --force 2>&1 || true\n\
-    php artisan migrate --path=database/migrations/0001_01_01_000001_create_cache_table.php --force 2>&1 || true\n\
-fi\n\
+# Instalar tabela de migrations primeiro\n\
+log "Instalando tabela de controle de migrations..."\n\
+php artisan migrate:install --force 2>&1\n\
 \n\
-log "Listando tabelas criadas:"\n\
-php artisan db:table --database=pgsql 2>&1 | head -20 || log "Não foi possível listar tabelas"\n\
+# Listar migrations disponíveis\n\
+log "Migrations disponíveis:"\n\
+ls -la database/migrations/ 2>&1 | head -20\n\
+\n\
+# Executar migrations com MÁXIMO detalhe\n\
+log "Executando TODAS as migrations..."\n\
+php artisan migrate --force --verbose 2>&1\n\
+\n\
+# Verificar se deu certo\n\
+log "Verificando tabelas criadas no PostgreSQL:"\n\
+php artisan tinker --execute="\n\
+  \\$tables = DB::select('SELECT tablename FROM pg_tables WHERE schemaname = \\'public\\'');\n\
+  foreach(\\$tables as \\$table) { echo \\$table->tablename . PHP_EOL; }\n\
+" 2>&1\n\
 \n\
 # Seeds (opcional, não crítico)\n\
 log "Executando seeds..."\n\
