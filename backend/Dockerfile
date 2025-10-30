@@ -86,16 +86,35 @@ else\n\
     echo "SESSION_DRIVER=file" >> .env\n\
 fi\n\
 \n\
-# PASSO 1: Configurar APP_KEY PRIMEIRO (antes de qualquer comando artisan)\n\
+# PASSO 1: Garantir APP_KEY existe e está correta\n\
 log "Configurando APP_KEY..."\n\
+\n\
+# Se APP_KEY vem da variável de ambiente do Render\n\
 if [ ! -z "$APP_KEY" ]; then\n\
-    log "Usando APP_KEY da variável de ambiente"\n\
-    sed -i "s|^APP_KEY=.*|APP_KEY=$APP_KEY|" .env 2>/dev/null || echo "APP_KEY=$APP_KEY" >> .env\n\
-elif ! grep -q "^APP_KEY=" .env 2>/dev/null; then\n\
-    log "Gerando APP_KEY simples (sem artisan)"\n\
+    log "APP_KEY fornecida via variável de ambiente: ${APP_KEY:0:20}..."\n\
+    # Garantir que está no formato correto\n\
+    if [[ "$APP_KEY" == base64:* ]]; then\n\
+        log "APP_KEY já está em formato base64"\n\
+    else\n\
+        log "Adicionando prefixo base64: à APP_KEY"\n\
+        APP_KEY="base64:$APP_KEY"\n\
+    fi\n\
+    # Atualizar ou adicionar no .env\n\
+    if grep -q "^APP_KEY=" .env 2>/dev/null; then\n\
+        sed -i "s|^APP_KEY=.*|APP_KEY=$APP_KEY|" .env\n\
+    else\n\
+        echo "APP_KEY=$APP_KEY" >> .env\n\
+    fi\n\
+else\n\
+    # Gerar nova chave usando openssl\n\
+    log "Gerando nova APP_KEY com openssl..."\n\
     NEW_KEY="base64:$(openssl rand -base64 32)"\n\
-    echo "APP_KEY=$NEW_KEY" >> .env\n\
-    log "APP_KEY gerada"\n\
+    if grep -q "^APP_KEY=" .env 2>/dev/null; then\n\
+        sed -i "s|^APP_KEY=.*|APP_KEY=$NEW_KEY|" .env\n\
+    else\n\
+        echo "APP_KEY=$NEW_KEY" >> .env\n\
+    fi\n\
+    log "APP_KEY gerada: ${NEW_KEY:0:20}..."\n\
 fi\n\
 \n\
 # PASSO 2: Configurar APP_URL\n\
@@ -124,12 +143,27 @@ else\n\
     chmod 775 database/database.sqlite\n\
 fi\n\
 \n\
-# Mostrar configuração final\n\
-log ".env configurado:"\n\
-grep "^APP_KEY=" .env | head -c 30 || echo "APP_KEY não encontrada!"\n\
-echo "..."\n\
-grep "^APP_URL=" .env || echo "APP_URL não configurada"\n\
-grep "^DB_CONNECTION=" .env || echo "DB_CONNECTION não configurada"\n\
+# Verificação e exibição da configuração\n\
+log "========================================"\n\
+log "VERIFICAÇÃO FINAL DO .ENV"\n\
+log "========================================"\n\
+log "Caminho: $(pwd)/.env"\n\
+log "Arquivo existe: $([ -f .env ] && echo SIM || echo NAO)"\n\
+log "Tamanho: $([ -f .env ] && wc -c < .env || echo 0) bytes"\n\
+log "Permissões: $([ -f .env ] && ls -l .env | awk {print \\$1} || echo N/A)"\n\
+log ""\n\
+log "Conteúdo das chaves principais:"\n\
+APP_KEY_LINE=$(grep "^APP_KEY=" .env 2>/dev/null || echo "APP_KEY=NOT_FOUND")\n\
+log "APP_KEY: ${APP_KEY_LINE:0:30}..."\n\
+log "APP_URL: $(grep ^APP_URL= .env 2>/dev/null || echo NOT_SET)"\n\
+log "APP_ENV: $(grep ^APP_ENV= .env 2>/dev/null || echo NOT_SET)"\n\
+log "DB_CONNECTION: $(grep ^DB_CONNECTION= .env 2>/dev/null || echo NOT_SET)"\n\
+log "========================================"\n\
+\n\
+# Copiar .env para public para debug (será removido depois)\n\
+log "Criando arquivo de diagnóstico..."\n\
+cat .env > public/.env-copy.txt 2>/dev/null || true\n\
+chmod 644 public/.env-copy.txt 2>/dev/null || true\n\
 \n\
 # PASSO 4: Agora sim, limpar caches (com .env válido)\n\
 log "Limpando caches..."\n\
