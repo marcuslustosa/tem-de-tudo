@@ -75,23 +75,36 @@ else
 fi
 
 # Database setup
-echo "Setting up database..."
+echo "=== Configurando Banco de Dados ==="
+echo "Driver: PostgreSQL (forçado)"
 
-# TEMPORÁRIO: Usar SQLite para garantir que funcione
-echo "Using SQLite for stability"
-touch /var/www/html/database/database.sqlite
-chmod 777 /var/www/html/database/database.sqlite
+# Garantir que estamos usando PostgreSQL
+sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
+sed -i 's/DB_HOST=.*/DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com/' .env
+sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
+sed -i 's/DB_DATABASE=.*/DB_DATABASE=tem_de_tudo_database/' .env
+sed -i 's/DB_USERNAME=.*/DB_USERNAME=tem_de_tudo_database_user/' .env
 
-# Atualizar .env para usar SQLite
-sed -i 's/DB_CONNECTION=pgsql/DB_CONNECTION=sqlite/' .env
-sed -i 's|DB_DATABASE=.*|DB_DATABASE=/var/www/html/database/database.sqlite|' .env
+echo "Configuração do PostgreSQL:"
+echo "Host: $(grep DB_HOST .env)"
+echo "Port: $(grep DB_PORT .env)"
+echo "Database: $(grep DB_DATABASE .env)"
+echo "Username: $(grep DB_USERNAME .env)"
 
-echo "Running migrations..."
-php artisan migrate --force || echo "Migration failed but continuing"
+echo "Executando migrations..."
+php artisan migrate --force || {
+    echo "❌ Erro ao executar migrations"
+    php artisan migrate:status
+    cat storage/logs/laravel.log || true
+    exit 1
+}
+
+echo "✓ Migrations executadas com sucesso!"
+php artisan db:monitor
 
 # Seed database (ignore errors if already exists)
-echo "Seeding database..."
-php artisan db:seed --force || echo "Seed completed or already exists"
+echo "Executando seeds..."
+php artisan db:seed --force || echo "Seeds já existem"
 
 echo "=== Sistema Pronto ==="
 echo "Starting Apache..."
