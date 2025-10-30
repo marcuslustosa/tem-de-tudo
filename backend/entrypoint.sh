@@ -23,32 +23,49 @@ fi
 
 # 3. Configurar variáveis
 echo "Configurando variáveis de ambiente..."
-sed -i 's/APP_ENV=.*/APP_ENV=production/' .env
-sed -i 's/APP_DEBUG=.*/APP_DEBUG=false/' .env
-sed -i 's/LOG_CHANNEL=.*/LOG_CHANNEL=errorlog/' .env
-sed -i 's/LOG_LEVEL=.*/LOG_LEVEL=error/' .env
-sed -i 's/SESSION_DRIVER=.*/SESSION_DRIVER=database/' .env
-sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
+{
+    echo "APP_ENV=production"
+    echo "APP_DEBUG=false"
+    echo "APP_KEY="
+    echo "LOG_CHANNEL=errorlog"
+    echo "LOG_LEVEL=debug"
+    echo "SESSION_DRIVER=database"
+    echo "DB_CONNECTION=pgsql"
+    echo "DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com"
+    echo "DB_PORT=5432"
+    echo "DB_DATABASE=tem_de_tudo_database"
+    echo "DB_USERNAME=tem_de_tudo_database_user"
+} > .env
 
-# 4. Verificar dependências
+# 4. Gerar chave da aplicação
+php artisan key:generate --force
+
+# 5. Verificar dependências
 echo "Verificando dependências..."
-if [ ! -d "vendor" ]; then
+if [ ! -d "vendor" ] || [ ! -f "vendor/autoload.php" ]; then
     echo "Instalando dependências..."
-    composer install --no-interaction --optimize-autoloader
+    composer install --no-dev --prefer-dist --no-scripts --no-progress
 fi
 
-# 5. Limpar caches
-echo "Limpando caches..."
-php artisan config:clear
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
+# 6. Otimizar autoloader
+composer dump-autoload --optimize --no-dev
 
-# 6. Executar migrations
+# 7. Configurar cache
+echo "Configurando cache..."
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# 8. Executar migrations
 echo "Executando migrations..."
 php artisan migrate --force
 
-# 7. Iniciar Apache
+# 9. Ajustar permissões finais
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+
+# 10. Iniciar Apache
+echo "Iniciando servidor..."
 apache2-foreground
 sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
 sed -i 's/DB_DATABASE=.*/DB_DATABASE=tem_de_tudo_database/' .env

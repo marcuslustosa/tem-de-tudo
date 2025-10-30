@@ -6,11 +6,15 @@ RUN apt-get update && apt-get install -y \
     dos2unix \
     git \
     unzip \
+    zip \
     && docker-php-ext-install pdo pdo_pgsql \
     && a2enmod rewrite
 
+# Configurar PHP
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory-limit.ini
+
 # Instalar Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Configurar diretório de trabalho
 WORKDIR /var/www/html
@@ -18,26 +22,21 @@ WORKDIR /var/www/html
 # Copiar composer.json primeiro
 COPY composer.json composer.lock ./
 
-# Instalar dependências
-RUN composer install --no-scripts --no-autoloader
-
 # Copiar o resto dos arquivos
 COPY . .
-
-# Gerar autoloader otimizado
-RUN composer dump-autoload --optimize
 
 # Configurar Apache
 COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Configurar permissões e diretórios
-RUN mkdir -p storage/framework/sessions \
+RUN mkdir -p \
+    storage/framework/sessions \
     storage/framework/views \
     storage/framework/cache \
     storage/logs \
     bootstrap/cache \
-    && chmod -R 777 storage \
-    && chmod -R 777 bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache \
     && chmod +x entrypoint.sh \
     && dos2unix entrypoint.sh
 
