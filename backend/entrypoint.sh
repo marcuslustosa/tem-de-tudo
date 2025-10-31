@@ -78,28 +78,30 @@ php artisan migrate --force --no-interaction || {
     exit 1
 }
 
-echo "5. Configurando ambiente e limpando cache..."
+echo "5. Configurando ambiente SQLite..."
+touch database/database.sqlite
+chmod 777 database/database.sqlite
+
+echo "6. Configurando variáveis de ambiente..."
+cat >> .env << EOF
+DB_CONNECTION=sqlite
+DB_DATABASE=/var/www/html/database/database.sqlite
+SESSION_DRIVER=file
+EOF
+
+echo "7. Limpando cache..."
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 php artisan route:clear
 
-echo "6. Verificando conexão com banco..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "SELECT version();" || {
-    echo "❌ Erro ao conectar no banco"
-    exit 1
+echo "8. Executando migrações SQLite..."
+php artisan migrate:fresh --force --no-interaction || {
+    echo "⚠️ Erro nas migrações, tentando migrate simples..."
+    php artisan migrate --force --no-interaction
 }
 
-echo "7. Aplicando schema SQL..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" < database/schema.sql
-
-echo "8. Verificando tabelas criadas..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\dt"
-
-# Desabilitar migrations completamente
-php artisan config:set database.migrations=false
-
-echo "✓ Banco configurado manualmente com sucesso!"
+echo "✓ Ambiente SQLite configurado!"
 
 echo "✓ Setup do banco concluído"
 

@@ -2,12 +2,11 @@ FROM php:8.2-apache
 
 # Instalar dependências e extensões PHP
 RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    postgresql-client \
+    libsqlite3-dev \
     git \
     unzip \
     dos2unix \
-    && docker-php-ext-install pdo pdo_pgsql \
+    && docker-php-ext-install pdo pdo_sqlite \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
 
