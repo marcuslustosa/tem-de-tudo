@@ -78,16 +78,25 @@ php artisan migrate --force --no-interaction || {
     exit 1
 }
 
-echo "5. Configurando ambiente SQLite..."
-touch database/database.sqlite
-chmod 777 database/database.sqlite
+echo "5. Verificando drivers disponíveis..."
+php -m | grep -E "pdo|sqlite|pgsql"
 
-echo "6. Configurando variáveis de ambiente..."
-cat >> .env << EOF
+echo "6. Configurando ambiente..."
+if [ -n "${DB_CONNECTION}" ] && [ "${DB_CONNECTION}" = "pgsql" ]; then
+    echo "Usando PostgreSQL..."
+    # Configuração PostgreSQL mantida do .env
+else
+    echo "Usando SQLite..."
+    touch database/database.sqlite
+    chmod 777 database/database.sqlite
+    cat >> .env << EOF
 DB_CONNECTION=sqlite
 DB_DATABASE=/var/www/html/database/database.sqlite
-SESSION_DRIVER=file
 EOF
+fi
+
+# Usar sessões em arquivo para evitar problemas com banco
+echo "SESSION_DRIVER=file" >> .env
 
 echo "7. Limpando cache..."
 php artisan config:clear
