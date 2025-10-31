@@ -14,7 +14,17 @@ mkdir -p storage/logs
 mkdir -p bootstrap/cache
 chmod -R 777 storage bootstrap/cache
 
-# 2. Criar e configurar .env
+# 2. Configurar banco de dados
+echo "Verificando conexão PostgreSQL..."
+export PGPASSWORD="9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA"
+if psql -h dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com -U tem_de_tudo_database_user -d tem_de_tudo_database -c '\l' >/dev/null 2>&1; then
+    echo "✓ Conexão PostgreSQL OK"
+else
+    echo "❌ ERRO: Não foi possível conectar ao PostgreSQL"
+    exit 1
+fi
+
+# 3. Criar e configurar .env
 echo "Configurando ambiente..."
 cat > .env << EOF
 APP_NAME="Tem de Tudo"
@@ -30,36 +40,32 @@ DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com
 DB_PORT=5432
 DB_DATABASE=tem_de_tudo_database
 DB_USERNAME=tem_de_tudo_database_user
-DB_PASSWORD=${DB_PASSWORD}
+DB_PASSWORD=9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA
 
-SESSION_DRIVER=database
-FILESYSTEM_DISK=local
-QUEUE_CONNECTION=sync
-BROADCAST_DRIVER=log
 CACHE_DRIVER=file
+SESSION_DRIVER=database
+QUEUE_CONNECTION=sync
 EOF
 
-# 3. Gerar APP_KEY
+# 4. Gerar APP_KEY
 echo "Gerando APP_KEY..."
 php artisan key:generate --force
 
-# 4. Exibir configuração atual
-echo "Verificando configuração do banco de dados..."
-php artisan config:get database.connections.pgsql
-
-# 5. Testar conexão
-echo "Testando conexão com o banco de dados..."
-php artisan db:monitor || {
-    echo "❌ ERRO: Falha na conexão com o banco de dados"
-    php artisan tinker --execute="dump(config('database.connections.pgsql'));"
-    exit 1
-}
+# 5. Limpar caches
+echo "Limpando caches..."
+php artisan config:clear
+php artisan cache:clear
 
 # 6. Executar migrations
 echo "Executando migrations..."
 php artisan migrate --force
 
-# 7. Iniciar Apache
+# 7. Verificar tabelas
+echo "Verificando tabelas..."
+export PGPASSWORD="9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA"
+psql -h dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com -U tem_de_tudo_database_user -d tem_de_tudo_database -c '\dt'
+
+# 8. Iniciar Apache
 echo "✓ Iniciando servidor Apache..."
 exec apache2-foreground
 sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
