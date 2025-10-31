@@ -18,6 +18,7 @@ cat > .env << EOF
 APP_NAME="Tem de Tudo"
 APP_ENV=production
 APP_DEBUG=false
+SESSION_DRIVER=array
 APP_KEY=
 
 LOG_CHANNEL=errorlog
@@ -77,21 +78,16 @@ php artisan migrate --force --no-interaction || {
     exit 1
 }
 
-echo "5. Limpando cache..."
+echo "5. Limpando cache do Laravel..."
 php artisan config:clear
 php artisan cache:clear
+php artisan view:clear
 
-echo "6. Removendo tabela sessions..."
-php artisan tinker --execute="DB::statement('DROP TABLE IF EXISTS sessions CASCADE');"
+echo "6. Executando migrações (sem sessions)..."
+php artisan migrate --force --no-interaction || echo "⚠️ Algumas migrações já existem"
 
-echo "7. Executando migrations fresh..."
-php artisan migrate:fresh --force --no-interaction --seed || {
-    echo "⚠️ Erro na migração, tentando método alternativo..."
-    php artisan migrate --force --no-interaction --seed
-}
-
-echo "8. Verificando conexão..."
-php artisan tinker --execute="try { DB::connection()->getPdo(); echo '✓ Conexão OK!'; } catch (\Exception \$e) { echo '❌ '.\$e->getMessage(); }"
+echo "7. Verificando status do banco..."
+php artisan migrate:status
 
 echo "✓ Setup do banco concluído"
 
