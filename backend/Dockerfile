@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     git \
     unzip \
+    dos2unix \
     && docker-php-ext-install pdo pdo_pgsql \
     && a2enmod rewrite \
     && rm -rf /var/lib/apt/lists/*
