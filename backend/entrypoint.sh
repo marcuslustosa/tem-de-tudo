@@ -77,15 +77,14 @@ php artisan migrate --force --no-interaction || {
     exit 1
 }
 
-echo "5. Executando migrações com --force..."
-php artisan migrate --force || {
-    echo "⚠️ Algumas migrações já existem (isso é normal)"
-}
+echo "5. Tentando limpar cache de migrations..."
+php artisan config:clear
+php artisan cache:clear
 
-echo "6. Verificando conexão com o banco..."
-php artisan db:table || {
-    echo "✓ Banco conectado, tabelas existem"
-}
+echo "6. Executando migrations (ignorando erros)..."
+php artisan migrate --force --no-interaction || true
+
+echo "✓ Setup do banco concluído (erros de tabelas existentes são normais)"
 
 echo "✓ Banco de dados configurado com sucesso!"
 
