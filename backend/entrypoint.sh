@@ -78,25 +78,27 @@ php artisan migrate --force --no-interaction || {
     exit 1
 }
 
-echo "5. Verificando drivers disponíveis..."
-php -m | grep -E "pdo|sqlite|pgsql"
+echo "5. Forçando limpeza do banco..."
+echo "Executando reset completo do banco..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -f database/reset_db.sql
 
 echo "6. Configurando ambiente..."
-if [ -n "${DB_CONNECTION}" ] && [ "${DB_CONNECTION}" = "pgsql" ]; then
-    echo "Usando PostgreSQL..."
-    # Configuração PostgreSQL mantida do .env
-else
-    echo "Usando SQLite..."
-    touch database/database.sqlite
-    chmod 777 database/database.sqlite
-    cat >> .env << EOF
-DB_CONNECTION=sqlite
-DB_DATABASE=/var/www/html/database/database.sqlite
-EOF
-fi
-
-# Usar sessões em arquivo para evitar problemas com banco
+# Forçar driver de sessão para file
 echo "SESSION_DRIVER=file" >> .env
+echo "SESSION_LIFETIME=120" >> .env
+
+# Limpar todos os caches
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+php artisan route:clear
+
+echo "7. Criando tabelas do zero..."
+php artisan migrate:fresh --force --seed || {
+    echo "⚠️ Erro na migração, tentando método alternativo..."
+    php artisan migrate:install
+    php artisan migrate --force
+}
 
 echo "7. Limpando cache..."
 php artisan config:clear
