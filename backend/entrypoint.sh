@@ -7,36 +7,12 @@ cd /var/www/html
 
 # 1. Preparar diretórios
 echo "Configurando diretórios..."
-mkdir -p storage/framework/sessions
-mkdir -p storage/framework/views
-mkdir -p storage/framework/cache
+mkdir -p storage/framework/{sessions,views,cache}
 mkdir -p storage/logs
 mkdir -p bootstrap/cache
 chmod -R 777 storage bootstrap/cache
 
-# 2. Configurar banco de dados
-echo "Verificando conexão PostgreSQL..."
-export PGPASSWORD="9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA"
-
-echo "Testando conexão..."
-if ! pg_isready -h dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com -p 5432; then
-    echo "❌ ERRO: Servidor PostgreSQL não está respondendo"
-    exit 1
-fi
-
-echo "Tentando conectar ao banco..."
-if psql -h dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com -U tem_de_tudo_database_user -d tem_de_tudo_database -c '\l'; then
-    echo "✓ Conexão PostgreSQL OK"
-else
-    echo "❌ ERRO: Falha na autenticação PostgreSQL"
-    # Tentar ping no host
-    ping -c 1 dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com || echo "❌ Host não responde ao ping"
-    # Verificar resolução DNS
-    nslookup dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com || echo "❌ Falha na resolução DNS"
-    exit 1
-fi
-
-# 3. Criar e configurar .env
+# 2. Configurar .env
 echo "Configurando ambiente..."
 cat > .env << EOF
 APP_NAME="Tem de Tudo"
@@ -54,30 +30,18 @@ DB_DATABASE=tem_de_tudo_database
 DB_USERNAME=tem_de_tudo_database_user
 DB_PASSWORD=9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA
 
-CACHE_DRIVER=file
 SESSION_DRIVER=database
-QUEUE_CONNECTION=sync
 EOF
 
-# 4. Gerar APP_KEY
+# 3. Gerar APP_KEY
 echo "Gerando APP_KEY..."
 php artisan key:generate --force
 
-# 5. Limpar caches
-echo "Limpando caches..."
-php artisan config:clear
-php artisan cache:clear
-
-# 6. Executar migrations
+# 4. Executar migrations
 echo "Executando migrations..."
 php artisan migrate --force
 
-# 7. Verificar tabelas
-echo "Verificando tabelas..."
-export PGPASSWORD="9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA"
-psql -h dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com -U tem_de_tudo_database_user -d tem_de_tudo_database -c '\dt'
-
-# 8. Iniciar Apache
+# 5. Iniciar Apache
 echo "✓ Iniciando servidor Apache..."
 exec apache2-foreground
 sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
