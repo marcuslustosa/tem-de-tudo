@@ -78,26 +78,27 @@ php artisan migrate --force --no-interaction || {
     exit 1
 }
 
-echo "5. Removendo tabela sessions via PSQL..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "DROP TABLE IF EXISTS sessions CASCADE;" || true
-
-echo "6. Limpando cache do Laravel..."
+echo "5. Configurando ambiente e limpando cache..."
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 php artisan route:clear
-php artisan config:cache
 
-echo "7. Executando migrações..."
-# Primeira tentativa - apenas novas migrações
-php artisan migrate --force --no-interaction || {
-    echo "⚠️ Erro na primeira tentativa, tentando migrate:fresh..."
-    # Segunda tentativa - recria tudo
-    php artisan migrate:fresh --force --no-interaction
+echo "6. Verificando conexão com banco..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "SELECT version();" || {
+    echo "❌ Erro ao conectar no banco"
+    exit 1
 }
 
-echo "8. Verificando tabelas..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\dt" || true
+echo "7. Recriando schema do banco..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" << 'EOF'
+DROP SCHEMA IF EXISTS public CASCADE;
+CREATE SCHEMA public;
+GRANT ALL ON SCHEMA public TO public;
+EOF
+
+echo "8. Executando migrações sem sessions..."
+php artisan migrate --force --no-interaction --path=database/migrations/[0-9]*
 
 echo "✓ Setup do banco concluído"
 
