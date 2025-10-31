@@ -5,51 +5,68 @@ echo "=== Iniciando Tem de Tudo ==="
 
 cd /var/www/html
 
-echo "Verificando diretório vendor..."
+# 1. Verificar dependências
+echo "Verificando dependências..."
 if [ ! -d "vendor" ] || [ ! -f "vendor/autoload.php" ]; then
-    echo "❌ ERRO: Dependências não foram instaladas corretamente no build"
-    ls -la
+    echo "❌ ERRO: vendor/autoload.php não encontrado"
     exit 1
 fi
 
-# 1. Configurar ambiente
-echo "Configurando ambiente..."
-{
-    echo "APP_NAME='Tem de Tudo'"
-    echo "APP_ENV=production"
-    echo "APP_DEBUG=false"
-    echo "APP_URL=https://tem-de-tudo.onrender.com"
-    echo "APP_KEY="
-    echo "LOG_CHANNEL=errorlog"
-    echo "LOG_LEVEL=debug"
-    echo "DB_CONNECTION=pgsql"
-    echo "DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com"
-    echo "DB_PORT=5432"
-    echo "DB_DATABASE=tem_de_tudo_database"
-    echo "DB_USERNAME=tem_de_tudo_database_user"
-    echo "SESSION_DRIVER=database"
-    echo "FILESYSTEM_DISK=local"
-    echo "QUEUE_CONNECTION=sync"
-    echo "BROADCAST_DRIVER=log"
-    echo "CACHE_DRIVER=file"
-} > .env
-
-echo "Gerando chave da aplicação..."
-php artisan key:generate --force
-
-echo "Limpando e cacheando configurações..."
-php artisan config:clear
-php artisan cache:clear
-php artisan config:cache
-php artisan view:cache
-
-echo "Executando migrations..."
-php artisan migrate --force
-
-echo "Ajustando permissões finais..."
+# 2. Configurar diretórios
+echo "Configurando diretórios..."
+mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
 
+# 3. Configurar ambiente
+echo "Configurando ambiente..."
+cat > .env << 'EOF'
+APP_NAME=Tem de Tudo
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://tem-de-tudo.onrender.com
+
+LOG_CHANNEL=errorlog
+LOG_LEVEL=error
+
+DB_CONNECTION=pgsql
+DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com
+DB_PORT=5432
+DB_DATABASE=tem_de_tudo_database
+DB_USERNAME=tem_de_tudo_database_user
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=database
+
+SANCTUM_STATEFUL_DOMAINS=tem-de-tudo.onrender.com
+SESSION_DOMAIN=.tem-de-tudo.onrender.com
+EOF
+
+# 4. Gerar chave
+echo "Gerando APP_KEY..."
+php artisan key:generate --show --no-ansi | grep -oP '^.*$' >> .env
+
+# 5. Configurar Laravel
+echo "Configurando Laravel..."
+LARAVEL_ENV=production php artisan config:cache --no-ansi
+LARAVEL_ENV=production php artisan route:cache --no-ansi
+LARAVEL_ENV=production php artisan view:cache --no-ansi
+
+# 6. Verificar banco de dados
+echo "Verificando banco de dados..."
+until LARAVEL_ENV=production php artisan db:monitor --no-ansi; do
+    echo "🔄 Aguardando banco de dados..."
+    sleep 2
+done
+
+# 7. Executar migrations
+echo "Executando migrations..."
+LARAVEL_ENV=production php artisan migrate --force --no-ansi
+
+# 8. Iniciar Apache
 echo "✓ Iniciando Apache..."
 exec apache2-foreground
 sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
