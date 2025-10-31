@@ -17,10 +17,22 @@ chmod -R 777 storage bootstrap/cache
 # 2. Configurar banco de dados
 echo "Verificando conexão PostgreSQL..."
 export PGPASSWORD="9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA"
-if psql -h dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com -U tem_de_tudo_database_user -d tem_de_tudo_database -c '\l' >/dev/null 2>&1; then
+
+echo "Testando conexão..."
+if ! pg_isready -h dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com -p 5432; then
+    echo "❌ ERRO: Servidor PostgreSQL não está respondendo"
+    exit 1
+fi
+
+echo "Tentando conectar ao banco..."
+if psql -h dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com -U tem_de_tudo_database_user -d tem_de_tudo_database -c '\l'; then
     echo "✓ Conexão PostgreSQL OK"
 else
-    echo "❌ ERRO: Não foi possível conectar ao PostgreSQL"
+    echo "❌ ERRO: Falha na autenticação PostgreSQL"
+    # Tentar ping no host
+    ping -c 1 dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com || echo "❌ Host não responde ao ping"
+    # Verificar resolução DNS
+    nslookup dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com || echo "❌ Falha na resolução DNS"
     exit 1
 fi
 

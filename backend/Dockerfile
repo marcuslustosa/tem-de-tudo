@@ -1,8 +1,14 @@
 FROM php:8.2-apache
 
+# Adicionar repositório PostgreSQL e instalar dependências
+RUN apt-get update && apt-get install -y gnupg2 \
+    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
+    && echo "deb http://apt.postgresql.org/pub/repos/apt/ bullseye-pgdg main" > /etc/apt/sources.list.d/postgresql.list
+
 # Instalar dependências e extensões PHP
 RUN apt-get update && apt-get install -y \
     libpq-dev \
+    postgresql-client \
     dos2unix \
     git \
     unzip \
