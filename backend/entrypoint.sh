@@ -12,36 +12,48 @@ mkdir -p storage/framework/views
 mkdir -p storage/framework/cache
 mkdir -p storage/logs
 mkdir -p bootstrap/cache
-chmod -R 777 storage
-chmod -R 777 bootstrap/cache
+chmod -R 777 storage bootstrap/cache
 
-# 2. Configurar ambiente
-if [ ! -f ".env" ]; then
-    echo "Criando arquivo .env..."
-    cp .env.example .env
-fi
+# 2. Criar e configurar .env
+echo "Configurando ambiente..."
+cat > .env << EOF
+APP_NAME="Tem de Tudo"
+APP_ENV=production
+APP_DEBUG=false
+APP_KEY=
 
-# 3. Configurar variáveis
-echo "Configurando variáveis de ambiente..."
-sed -i "s/APP_NAME=.*/APP_NAME=\"Tem de Tudo\"/" .env
-sed -i "s/APP_ENV=.*/APP_ENV=production/" .env
-sed -i "s/APP_DEBUG=.*/APP_DEBUG=false/" .env
-sed -i "s/LOG_CHANNEL=.*/LOG_CHANNEL=errorlog/" .env
-sed -i "s/LOG_LEVEL=.*/LOG_LEVEL=error/" .env
-sed -i "s/SESSION_DRIVER=.*/SESSION_DRIVER=database/" .env
-sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=pgsql/" .env
+LOG_CHANNEL=errorlog
+LOG_LEVEL=error
 
-# 4. Gerar chave da aplicação se necessário
-if ! grep -q "^APP_KEY=base64:" .env; then
-    echo "Gerando nova APP_KEY..."
-    php artisan key:generate --force
-fi
+DB_CONNECTION=pgsql
+DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com
+DB_PORT=5432
+DB_DATABASE=tem_de_tudo_database
+DB_USERNAME=tem_de_tudo_database_user
+DB_PASSWORD=${DB_PASSWORD}
 
-# 5. Limpar caches
-echo "Limpando caches..."
-php artisan config:clear
-php artisan cache:clear
-php artisan view:clear
+SESSION_DRIVER=database
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=sync
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+EOF
+
+# 3. Gerar APP_KEY
+echo "Gerando APP_KEY..."
+php artisan key:generate --force
+
+# 4. Exibir configuração atual
+echo "Verificando configuração do banco de dados..."
+php artisan config:get database.connections.pgsql
+
+# 5. Testar conexão
+echo "Testando conexão com o banco de dados..."
+php artisan db:monitor || {
+    echo "❌ ERRO: Falha na conexão com o banco de dados"
+    php artisan tinker --execute="dump(config('database.connections.pgsql'));"
+    exit 1
+}
 
 # 6. Executar migrations
 echo "Executando migrations..."
