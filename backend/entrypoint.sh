@@ -90,15 +90,16 @@ PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DA
     exit 1
 }
 
-echo "7. Recriando schema do banco..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" << 'EOF'
-DROP SCHEMA IF EXISTS public CASCADE;
-CREATE SCHEMA public;
-GRANT ALL ON SCHEMA public TO public;
-EOF
+echo "7. Aplicando schema SQL..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" < database/schema.sql
 
-echo "8. Executando migrações sem sessions..."
-php artisan migrate --force --no-interaction --path=database/migrations/[0-9]*
+echo "8. Verificando tabelas criadas..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\dt"
+
+# Desabilitar migrations completamente
+php artisan config:set database.migrations=false
+
+echo "✓ Banco configurado manualmente com sucesso!"
 
 echo "✓ Setup do banco concluído"
 
