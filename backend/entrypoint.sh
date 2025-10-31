@@ -78,16 +78,26 @@ php artisan migrate --force --no-interaction || {
     exit 1
 }
 
-echo "5. Limpando cache do Laravel..."
+echo "5. Removendo tabela sessions via PSQL..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "DROP TABLE IF EXISTS sessions CASCADE;" || true
+
+echo "6. Limpando cache do Laravel..."
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
+php artisan route:clear
+php artisan config:cache
 
-echo "6. Executando migrações (sem sessions)..."
-php artisan migrate --force --no-interaction || echo "⚠️ Algumas migrações já existem"
+echo "7. Executando migrações..."
+# Primeira tentativa - apenas novas migrações
+php artisan migrate --force --no-interaction || {
+    echo "⚠️ Erro na primeira tentativa, tentando migrate:fresh..."
+    # Segunda tentativa - recria tudo
+    php artisan migrate:fresh --force --no-interaction
+}
 
-echo "7. Verificando status do banco..."
-php artisan migrate:status
+echo "8. Verificando tabelas..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\dt" || true
 
 echo "✓ Setup do banco concluído"
 
