@@ -77,18 +77,21 @@ php artisan migrate --force --no-interaction || {
     exit 1
 }
 
-echo "5. Removendo cache e migrations..."
+echo "5. Limpando cache..."
 php artisan config:clear
 php artisan cache:clear
-rm -f database/migrations/*_create_sessions_table.php
 
-echo "6. Executando migrations com tratamento especial..."
-php artisan migrate:refresh --force --no-interaction --path=database/migrations --exclude=create_sessions_table || {
-    echo "⚠️ Alguns erros de migração ocorreram (esperado)"
+echo "6. Removendo tabela sessions..."
+php artisan tinker --execute="DB::statement('DROP TABLE IF EXISTS sessions CASCADE');"
+
+echo "7. Executando migrations fresh..."
+php artisan migrate:fresh --force --no-interaction --seed || {
+    echo "⚠️ Erro na migração, tentando método alternativo..."
+    php artisan migrate --force --no-interaction --seed
 }
 
-echo "7. Verificando conexão..."
-php artisan tinker --execute="try { DB::connection()->getPdo(); echo 'Conexão OK!'; } catch (\Exception \$e) { echo \$e->getMessage(); }"
+echo "8. Verificando conexão..."
+php artisan tinker --execute="try { DB::connection()->getPdo(); echo '✓ Conexão OK!'; } catch (\Exception \$e) { echo '❌ '.\$e->getMessage(); }"
 
 echo "✓ Setup do banco concluído"
 
