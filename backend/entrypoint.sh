@@ -5,11 +5,38 @@ echo "=== Iniciando Tem de Tudo ==="
 
 cd /var/www/html
 
-# Garantir que temos as variáveis necessárias
-if [ -z "${DB_CONNECTION}" ] || [ -z "${DB_HOST}" ] || [ -z "${DB_DATABASE}" ] || [ -z "${DB_USERNAME}" ] || [ -z "${DB_PASSWORD}" ]; then
-    echo "❌ Erro: Variáveis de ambiente do banco não configuradas"
-    exit 1
+# Configurar variáveis do banco se não existirem
+if [ -z "${DB_CONNECTION}" ]; then
+    echo "⚠️ DB_CONNECTION não definida, usando padrão: pgsql"
+    DB_CONNECTION="pgsql"
 fi
+
+if [ -z "${DB_HOST}" ]; then
+    echo "⚠️ DB_HOST não definida, usando padrão do Render"
+    DB_HOST="dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com"
+fi
+
+if [ -z "${DB_DATABASE}" ]; then
+    echo "⚠️ DB_DATABASE não definida, usando padrão do Render"
+    DB_DATABASE="tem_de_tudo_database"
+fi
+
+if [ -z "${DB_USERNAME}" ]; then
+    echo "⚠️ DB_USERNAME não definida, usando padrão do Render"
+    DB_USERNAME="tem_de_tudo_database_user"
+fi
+
+if [ -z "${DB_PASSWORD}" ]; then
+    echo "⚠️ DB_PASSWORD não definida, usando padrão do Render"
+    DB_PASSWORD="9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA"
+fi
+
+echo "✓ Configuração do banco:"
+echo "- Conexão: ${DB_CONNECTION}"
+echo "- Host: ${DB_HOST}"
+echo "- Database: ${DB_DATABASE}"
+echo "- Username: ${DB_USERNAME}"
+echo "- Password: ***********"
 
 # 1. Preparar diretórios
 echo "Configurando diretórios..."
@@ -36,6 +63,13 @@ APP_ENV=production
 APP_DEBUG=false
 JWT_SECRET=${JWT_SECRET}
 JWT_TTL=60
+
+DB_CONNECTION=${DB_CONNECTION}
+DB_HOST=${DB_HOST}
+DB_PORT=5432
+DB_DATABASE=${DB_DATABASE}
+DB_USERNAME=${DB_USERNAME}
+DB_PASSWORD=${DB_PASSWORD}
 SESSION_DRIVER=array
 APP_KEY=
 
