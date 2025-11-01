@@ -129,13 +129,32 @@ php artisan migrate:status || {
     exit 1
 }
 
-echo "4. Executando migrations..."
-php artisan migrate --force --no-interaction || {
-    echo "❌ ERRO AO EXECUTAR MIGRATIONS"
-    echo "Logs do Laravel:"
-    tail -n 50 storage/logs/laravel.log || true
-    exit 1
+echo "4. Verificando status atual das migrations..."
+php artisan migrate:status || true
+
+echo "4.1 Aumentando tempo limite do PHP..."
+php -d max_execution_time=300 artisan config:clear
+
+echo "4.2 Executando migrations (modo seguro)..."
+php -d max_execution_time=300 artisan migrate --force --seed --no-interaction || {
+    echo "⚠️ Aviso: Primeiro método falhou, tentando alternativa..."
+    
+    echo "4.3 Verificando problemas no banco..."
+    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\d+" || true
+    
+    echo "4.4 Tentando migração sem seed..."
+    php -d max_execution_time=300 artisan migrate --force --no-interaction || {
+        echo "❌ ERRO FATAL AO EXECUTAR MIGRATIONS"
+        echo "Logs do Laravel:"
+        tail -n 50 storage/logs/laravel.log || true
+        echo "Status final das migrations:"
+        php artisan migrate:status || true
+        exit 1
+    }
 }
+
+echo "4.5 Verificando status final das migrations..."
+php artisan migrate:status || true
 
 echo "5. Configurando ambiente..."
 # Garante diretório de sessões
@@ -171,34 +190,14 @@ php artisan migrate:refresh --force --no-interaction || {
     php artisan migrate:fresh --force --no-interaction
 }
 
-echo "7. Criando tabelas do zero..."
-php artisan migrate:fresh --force --seed || {
-    echo "⚠️ Erro na migração, tentando método alternativo..."
-    php artisan migrate:install
-    php artisan migrate --force
-}
-
-echo "7. Limpando cache..."
+echo "7. Limpando cache final..."
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 php artisan route:clear
 
-echo "8. Executando migrações SQLite..."
-php artisan migrate:fresh --force --no-interaction || {
-    echo "⚠️ Erro nas migrações, tentando migrate simples..."
-    php artisan migrate --force --no-interaction
-}
-
-echo "✓ Ambiente SQLite configurado!"
-
 echo "✓ Setup do banco concluído"
-
 echo "✓ Banco de dados configurado com sucesso!"
-
-# Seed database (ignore errors if already exists)
-echo "7. Executando seeds..."
-php artisan db:seed --force || echo "Seeds já existem"
 
 echo "=== Sistema Pronto ==="
 echo "Starting Apache..."
