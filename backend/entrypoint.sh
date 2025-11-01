@@ -46,11 +46,18 @@ mkdir -p bootstrap/cache
 chmod -R 777 storage bootstrap/cache
 
 # 2. Verificar conexão com banco
-echo "Testando conexão com banco..."
-php database/test_connection.php || {
+echo "Testando conexão com PostgreSQL..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\l" || {
     echo "❌ Erro ao conectar no banco"
-    exit 1
+    echo "Tentando conexão alternativa..."
+    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "postgres" -c "CREATE DATABASE ${DB_DATABASE};" || true
+    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\l" || {
+        echo "❌ Erro fatal ao conectar no banco"
+        exit 1
+    }
 }
+
+echo "✓ Conexão PostgreSQL estabelecida"
 
 # 2. Configurar .env
 echo "Configurando ambiente..."
