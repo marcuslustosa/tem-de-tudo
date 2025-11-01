@@ -78,20 +78,39 @@ php artisan migrate --force --no-interaction || {
     exit 1
 }
 
-echo "5. Forçando limpeza do banco..."
-echo "Executando reset completo do banco..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -f database/reset_db.sql
+echo "5. Configurando ambiente..."
+# Garante diretório de sessões
+mkdir -p storage/framework/sessions
+chmod -R 777 storage/framework/sessions
 
-echo "6. Configurando ambiente..."
-# Forçar driver de sessão para file
-echo "SESSION_DRIVER=file" >> .env
-echo "SESSION_LIFETIME=120" >> .env
+echo "6. Configurando variáveis de ambiente..."
+# Força uso de arquivo para sessões
+cat >> .env << EOF
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+CACHE_DRIVER=file
+EOF
 
-# Limpar todos os caches
+echo "7. Limpando cache e configurações..."
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 php artisan route:clear
+
+echo "8. Verificando conexão com banco..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\d" || {
+    echo "❌ Erro ao conectar no banco"
+    exit 1
+}
+
+echo "9. Removendo tabela sessions se existir..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "DROP TABLE IF EXISTS sessions CASCADE;"
+
+echo "10. Executando migrações (sem sessions)..."
+php artisan migrate:refresh --force --no-interaction || {
+    echo "⚠️ Tentando método alternativo..."
+    php artisan migrate:fresh --force --no-interaction
+}
 
 echo "7. Criando tabelas do zero..."
 php artisan migrate:fresh --force --seed || {
