@@ -5,6 +5,12 @@ echo "=== Iniciando Tem de Tudo ==="
 
 cd /var/www/html
 
+# Garantir que temos as variáveis necessárias
+if [ -z "${DB_CONNECTION}" ] || [ -z "${DB_HOST}" ] || [ -z "${DB_DATABASE}" ] || [ -z "${DB_USERNAME}" ] || [ -z "${DB_PASSWORD}" ]; then
+    echo "❌ Erro: Variáveis de ambiente do banco não configuradas"
+    exit 1
+fi
+
 # 1. Preparar diretórios
 echo "Configurando diretórios..."
 mkdir -p storage/framework/{sessions,views,cache}
@@ -12,12 +18,24 @@ mkdir -p storage/logs
 mkdir -p bootstrap/cache
 chmod -R 777 storage bootstrap/cache
 
+# 2. Verificar conexão com banco
+echo "Testando conexão com banco..."
+php database/test_connection.php || {
+    echo "❌ Erro ao conectar no banco"
+    exit 1
+}
+
 # 2. Configurar .env
 echo "Configurando ambiente..."
+# Gerar chave JWT se não existir
+JWT_SECRET=$(php -r "echo bin2hex(random_bytes(32));")
+
 cat > .env << EOF
 APP_NAME="Tem de Tudo"
 APP_ENV=production
 APP_DEBUG=false
+JWT_SECRET=${JWT_SECRET}
+JWT_TTL=60
 SESSION_DRIVER=array
 APP_KEY=
 
