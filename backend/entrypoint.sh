@@ -129,36 +129,39 @@ php artisan migrate:status || {
     exit 1
 }
 
-echo "4.0 Removendo tabela sessions..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "DROP TABLE IF EXISTS sessions CASCADE;" || true
-
-echo "4.1 Removendo migrations da sessions..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "DELETE FROM migrations WHERE migration LIKE '%create_sessions_table%';" || true
-
-echo "4.2 Limpando cache do Laravel..."
+echo "4.0 Limpando ambiente..."
 php artisan config:clear
 php artisan cache:clear
 php artisan route:clear
 php artisan view:clear
 
-echo "4.3 Aumentando tempo limite do PHP..."
+echo "4.1 Aumentando tempo limite do PHP..."
+export PHP_CLI_SERVER_WORKERS=1
 php -d max_execution_time=300 artisan config:clear
 
-echo "4.4 Executando migrations em modo seguro..."
-php -d max_execution_time=300 artisan migrate --force --no-interaction || {
-    echo "⚠️ Primeira tentativa falhou, tentando método alternativo..."
-    
-    echo "4.5 Verificando status do banco..."
-    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\dt" || true
-    
-    echo "4.6 Executando migrate específica para sessions..."
-    php -d max_execution_time=300 artisan migrate --path=database/migrations/*_create_sessions_table.php --force --no-interaction || {
+echo "4.2 Removendo tabelas e migrations..."
+php artisan migrate:reset --force --no-interaction || {
+    echo "⚠️ Reset falhou, tentando remover manualmente..."
+    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "
+        DROP TABLE IF EXISTS sessions CASCADE;
+        DROP TABLE IF EXISTS migrations CASCADE;
+    " || true
+}
+
+echo "4.3 Recriando migrations do zero..."
+php -d max_execution_time=300 artisan migrate:install || true
+php -d max_execution_time=300 artisan migrate:fresh --force --no-interaction || {
+    echo "⚠️ Fresh falhou, tentando migrate simples..."
+    php -d max_execution_time=300 artisan migrate --force --no-interaction || {
         echo "❌ ERRO FATAL NAS MIGRATIONS"
         echo "Logs do Laravel:"
         tail -n 50 storage/logs/laravel.log || true
         exit 1
     }
 }
+
+echo "4.4 Verificando tabelas criadas..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\dt" || true
 
 echo "4.5 Verificando status final das migrations..."
 php artisan migrate:status || true
