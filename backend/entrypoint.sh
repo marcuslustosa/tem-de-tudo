@@ -129,31 +129,50 @@ php artisan migrate:status || {
     exit 1
 }
 
-echo "4.0 Limpando ambiente..."
+echo "4.0 Limpando ambiente Laravel..."
 php artisan config:clear
 php artisan cache:clear
 php artisan route:clear
 php artisan view:clear
 
-echo "4.1 Aumentando tempo limite do PHP..."
+echo "4.1 Configurando PHP..."
 export PHP_CLI_SERVER_WORKERS=1
 php -d max_execution_time=300 artisan config:clear
 
-echo "4.2 Removendo tabelas e migrations..."
-php artisan migrate:reset --force --no-interaction || {
-    echo "⚠️ Reset falhou, tentando remover manualmente..."
-    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "
-        DROP TABLE IF EXISTS sessions CASCADE;
-        DROP TABLE IF EXISTS migrations CASCADE;
-    " || true
-}
+echo "4.2 Desconectando usuários e limpando banco..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "
+    SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${DB_DATABASE}' AND pid <> pg_backend_pid();
+    DROP SCHEMA public CASCADE;
+    CREATE SCHEMA public;
+    GRANT ALL ON SCHEMA public TO public;
+" || true
 
-echo "4.3 Recriando migrations do zero..."
+echo "4.3 Removendo objetos do banco..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "
+    DROP TABLE IF EXISTS sessions CASCADE;
+    DROP TABLE IF EXISTS migrations CASCADE;
+    DROP TYPE IF EXISTS sessions_type CASCADE;
+    DROP VIEW IF EXISTS sessions_view CASCADE;
+" || true
+
+echo "4.4 Verificando estado atual..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\dt" || true
+
+echo "4.5 Recriando migrations do zero..."
 php -d max_execution_time=300 artisan migrate:install || true
-php -d max_execution_time=300 artisan migrate:fresh --force --no-interaction || {
-    echo "⚠️ Fresh falhou, tentando migrate simples..."
-    php -d max_execution_time=300 artisan migrate --force --no-interaction || {
+
+echo "4.6 Executando migrations limpo..."
+php -d max_execution_time=300 artisan migrate:fresh --force --no-interaction --drop-views --drop-types || {
+    echo "⚠️ Fresh falhou, tentando alternativa..."
+    
+    echo "4.7 Removendo sessions manualmente..."
+    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "DROP TABLE IF EXISTS sessions;" || true
+    
+    echo "4.8 Tentando migrate individual..."
+    php -d max_execution_time=300 artisan migrate --force --no-interaction --path=database/migrations/2023_01_01_000000_create_sessions_table.php || {
         echo "❌ ERRO FATAL NAS MIGRATIONS"
+        echo "Diagnóstico final:"
+        PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\d sessions" || true
         echo "Logs do Laravel:"
         tail -n 50 storage/logs/laravel.log || true
         exit 1
