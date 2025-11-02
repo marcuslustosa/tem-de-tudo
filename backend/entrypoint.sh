@@ -129,26 +129,33 @@ php artisan migrate:status || {
     exit 1
 }
 
-echo "4. Verificando status atual das migrations..."
-php artisan migrate:status || true
+echo "4.0 Removendo tabela sessions..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "DROP TABLE IF EXISTS sessions CASCADE;" || true
 
-echo "4.1 Aumentando tempo limite do PHP..."
+echo "4.1 Removendo migrations da sessions..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "DELETE FROM migrations WHERE migration LIKE '%create_sessions_table%';" || true
+
+echo "4.2 Limpando cache do Laravel..."
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+
+echo "4.3 Aumentando tempo limite do PHP..."
 php -d max_execution_time=300 artisan config:clear
 
-echo "4.2 Executando migrations (modo seguro)..."
-php -d max_execution_time=300 artisan migrate --force --seed --no-interaction || {
-    echo "⚠️ Aviso: Primeiro método falhou, tentando alternativa..."
+echo "4.4 Executando migrations em modo seguro..."
+php -d max_execution_time=300 artisan migrate --force --no-interaction || {
+    echo "⚠️ Primeira tentativa falhou, tentando método alternativo..."
     
-    echo "4.3 Verificando problemas no banco..."
-    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\d+" || true
+    echo "4.5 Verificando status do banco..."
+    PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\dt" || true
     
-    echo "4.4 Tentando migração sem seed..."
-    php -d max_execution_time=300 artisan migrate --force --no-interaction || {
-        echo "❌ ERRO FATAL AO EXECUTAR MIGRATIONS"
+    echo "4.6 Executando migrate específica para sessions..."
+    php -d max_execution_time=300 artisan migrate --path=database/migrations/*_create_sessions_table.php --force --no-interaction || {
+        echo "❌ ERRO FATAL NAS MIGRATIONS"
         echo "Logs do Laravel:"
         tail -n 50 storage/logs/laravel.log || true
-        echo "Status final das migrations:"
-        php artisan migrate:status || true
         exit 1
     }
 }
