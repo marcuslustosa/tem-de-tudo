@@ -135,33 +135,39 @@ php artisan cache:clear
 php artisan route:clear
 php artisan view:clear
 
-echo "4.1 Configurando PHP..."
+echo "4.1 Alterando driver de sessão temporariamente..."
+sed -i 's/SESSION_DRIVER=.*/SESSION_DRIVER=file/' .env
+
+echo "4.2 Configurando PHP..."
 export PHP_CLI_SERVER_WORKERS=1
 php -d max_execution_time=300 artisan config:clear
 
-echo "4.2 Desconectando usuários e limpando banco..."
+echo "4.3 Tentando remover tabela sessions..."
 PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "
-    SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${DB_DATABASE}' AND pid <> pg_backend_pid();
-    DROP SCHEMA public CASCADE;
-    CREATE SCHEMA public;
-    GRANT ALL ON SCHEMA public TO public;
+    DO \$\$ 
+    BEGIN
+        EXECUTE 
+            (SELECT 'DROP TABLE IF EXISTS ' || string_agg(quote_ident(schemaname) || '.' || quote_ident(tablename), ', ') 
+             FROM pg_tables 
+             WHERE tablename = 'sessions');
+    END \$\$;
 " || true
 
-echo "4.3 Removendo objetos do banco..."
+echo "4.4 Removendo dependências da sessions..."
 PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "
-    DROP TABLE IF EXISTS sessions CASCADE;
     DROP TABLE IF EXISTS migrations CASCADE;
-    DROP TYPE IF EXISTS sessions_type CASCADE;
-    DROP VIEW IF EXISTS sessions_view CASCADE;
+    DELETE FROM migrations WHERE migration LIKE '%_create_sessions_table%';
 " || true
 
-echo "4.4 Verificando estado atual..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\dt" || true
+echo "4.5 Verificando estado atual..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\d sessions" || true
 
-echo "4.5 Recriando migrations do zero..."
-php -d max_execution_time=300 artisan migrate:install || true
+echo "4.6 Executando apenas a migration da sessions..."
+rm -f database/migrations/*_create_sessions_table.php
+php artisan make:migration create_sessions_table --create=sessions || true
+php artisan migrate --force --path=database/migrations/*_create_sessions_table.php || true
 
-echo "4.6 Executando migrations limpo..."
+echo "4.7 Executando restante das migrations..."
 php -d max_execution_time=300 artisan migrate:fresh --force --no-interaction --drop-views --drop-types || {
     echo "⚠️ Fresh falhou, tentando alternativa..."
     
