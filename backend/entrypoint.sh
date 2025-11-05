@@ -5,11 +5,13 @@ echo "=== Iniciando Tem de Tudo ==="
 
 cd /var/www/html
 
-# Verificar variáveis do banco
-if [ -z "${DB_CONNECTION}" ] || [ -z "${DB_HOST}" ] || [ -z "${DB_DATABASE}" ] || [ -z "${DB_USERNAME}" ] || [ -z "${DB_PASSWORD}" ]; then
-    echo "❌ Erro: Variáveis de banco de dados não configuradas"
-    exit 1
-fi
+# Configurar variáveis do banco
+export DB_CONNECTION=pgsql
+export DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com
+export DB_PORT=5432
+export DB_DATABASE=tem_de_tudo_database
+export DB_USERNAME=tem_de_tudo_database_user
+export DB_PASSWORD=9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA
 
 echo "✓ Configuração do banco:"
 echo "- Conexão: ${DB_CONNECTION}"

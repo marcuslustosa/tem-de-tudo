@@ -2,17 +2,22 @@ services:
   - type: web
     name: tem-de-tudo
     env: php
+    region: oregon
+    plan: free
     buildCommand: |
       cd backend &&
       composer install --no-dev --optimize-autoloader &&
-      cp .env.render .env &&
+      echo "DB_CONNECTION=pgsql" > .env &&
+      echo "DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com" >> .env &&
+      echo "DB_PORT=5432" >> .env &&
+      echo "DB_DATABASE=tem_de_tudo_database" >> .env &&
+      echo "DB_USERNAME=tem_de_tudo_database_user" >> .env &&
+      echo "DB_PASSWORD=9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA" >> .env &&
       php artisan key:generate --force &&
       php artisan config:cache &&
       php artisan route:cache &&
       php artisan view:cache &&
-      touch database/database.sqlite &&
-      php artisan migrate --force &&
-      php artisan db:seed --force
+      php artisan migrate --force
     startCommand: |
       cd backend &&
       php artisan serve --host=0.0.0.0 --port=$PORT
