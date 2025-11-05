@@ -5,30 +5,10 @@ echo "=== Iniciando Tem de Tudo ==="
 
 cd /var/www/html
 
-# Configurar variáveis do banco se não existirem
-if [ -z "${DB_CONNECTION}" ]; then
-    echo "⚠️ DB_CONNECTION não definida, usando padrão: pgsql"
-    DB_CONNECTION="pgsql"
-fi
-
-if [ -z "${DB_HOST}" ]; then
-    echo "⚠️ DB_HOST não definida, usando padrão do Render"
-    DB_HOST="dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com"
-fi
-
-if [ -z "${DB_DATABASE}" ]; then
-    echo "⚠️ DB_DATABASE não definida, usando padrão do Render"
-    DB_DATABASE="tem_de_tudo_database"
-fi
-
-if [ -z "${DB_USERNAME}" ]; then
-    echo "⚠️ DB_USERNAME não definida, usando padrão do Render"
-    DB_USERNAME="tem_de_tudo_database_user"
-fi
-
-if [ -z "${DB_PASSWORD}" ]; then
-    echo "⚠️ DB_PASSWORD não definida, usando padrão do Render"
-    DB_PASSWORD="9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA"
+# Verificar variáveis do banco
+if [ -z "${DB_CONNECTION}" ] || [ -z "${DB_HOST}" ] || [ -z "${DB_DATABASE}" ] || [ -z "${DB_USERNAME}" ] || [ -z "${DB_PASSWORD}" ]; then
+    echo "❌ Erro: Variáveis de banco de dados não configuradas"
+    exit 1
 fi
 
 echo "✓ Configuração do banco:"
