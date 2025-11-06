@@ -29,11 +29,18 @@ return new class extends Migration
         });
 
         // 3. Adicionamos campos relacionados a pontos em outras tabelas
-        if (Schema::hasTable('users') && !Schema::hasColumn('users', 'pontos')) {
+        if (Schema::hasTable('users')) {
             Schema::table('users', function (Blueprint $table) {
-                $table->integer('pontos')->default(0)->after('email');
-                $table->integer('pontos_pendentes')->default(0)->after('pontos');
-                $table->string('nivel')->default('Bronze')->after('pontos_pendentes');
+                // Adiciona cada coluna individualmente se ela não existir
+                if (!Schema::hasColumn('users', 'pontos')) {
+                    $table->integer('pontos')->default(0)->after('email');
+                }
+                if (!Schema::hasColumn('users', 'pontos_pendentes')) {
+                    $table->integer('pontos_pendentes')->default(0)->after('pontos');
+                }
+                if (!Schema::hasColumn('users', 'nivel')) {
+                    $table->string('nivel')->default('Bronze')->after('pontos_pendentes');
+                }
             });
         }
 
