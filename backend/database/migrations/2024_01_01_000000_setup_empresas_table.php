@@ -3,13 +3,12 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
     public function up()
     {
-        // 1. Primeiro remove todas as foreign keys que apontam para empresas
+        // 1. Primeiro tenta remover as foreign keys que apontam para empresas
         $tables = [
             'check_ins',
             'coupons',
@@ -22,13 +21,14 @@ return new class extends Migration
 
         foreach ($tables as $table) {
             if (Schema::hasTable($table)) {
-                Schema::table($table, function (Blueprint $table) {
-                    // Remove a constraint da foreign key se existir
-                    $foreignKey = "{$table->getTable()}_empresa_id_foreign";
-                    if (DB::getSchemaBuilder()->getConnection()->getDoctrineSchemaManager()->listTableForeignKeys($table->getTable())) {
-                        $table->dropForeign($foreignKey);
-                    }
-                });
+                try {
+                    Schema::table($table, function (Blueprint $table) {
+                        $table->dropForeign(["{$table->getTable()}_empresa_id_foreign"]);
+                    });
+                } catch (\Exception $e) {
+                    // Se não conseguir dropar a foreign key, continua
+                    continue;
+                }
             }
         }
 
