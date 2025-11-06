@@ -29,28 +29,61 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Recria as foreign keys para empresas
+        // Adiciona ou atualiza as colunas empresa_id em todas as tabelas relacionadas
+        if (Schema::hasTable('check_ins') && !Schema::hasColumn('check_ins', 'empresa_id')) {
+            Schema::table('check_ins', function (Blueprint $table) {
+                $table->foreignId('empresa_id')->nullable()->after('id');
+            });
+        }
+        
+        if (Schema::hasTable('coupons') && !Schema::hasColumn('coupons', 'empresa_id')) {
+            Schema::table('coupons', function (Blueprint $table) {
+                $table->foreignId('empresa_id')->nullable()->after('id');
+            });
+        }
+        
+        if (Schema::hasTable('qr_codes') && !Schema::hasColumn('qr_codes', 'empresa_id')) {
+            Schema::table('qr_codes', function (Blueprint $table) {
+                $table->foreignId('empresa_id')->nullable()->after('id');
+            });
+        }
+
+        if (Schema::hasTable('pontos') && !Schema::hasColumn('pontos', 'empresa_id')) {
+            Schema::table('pontos', function (Blueprint $table) {
+                $table->foreignId('empresa_id')->nullable()->after('id');
+            });
+        }
+
+        // Agora adiciona as foreign keys
         if (Schema::hasTable('check_ins')) {
             Schema::table('check_ins', function (Blueprint $table) {
-                $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
+                if (!Schema::hasColumn('check_ins', 'empresa_id_foreign')) {
+                    $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
+                }
             });
         }
         
         if (Schema::hasTable('coupons')) {
             Schema::table('coupons', function (Blueprint $table) {
-                $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
+                if (!Schema::hasColumn('coupons', 'empresa_id_foreign')) {
+                    $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
+                }
             });
         }
         
         if (Schema::hasTable('qr_codes')) {
             Schema::table('qr_codes', function (Blueprint $table) {
-                $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
+                if (!Schema::hasColumn('qr_codes', 'empresa_id_foreign')) {
+                    $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
+                }
             });
         }
 
         if (Schema::hasTable('pontos')) {
             Schema::table('pontos', function (Blueprint $table) {
-                $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
+                if (!Schema::hasColumn('pontos', 'empresa_id_foreign')) {
+                    $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
+                }
             });
         }
     }
