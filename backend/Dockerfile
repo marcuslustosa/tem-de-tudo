@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     dos2unix \
     && docker-php-ext-install pdo pdo_sqlite pdo_pgsql \
     && a2enmod rewrite \
+    && a2enmod headers \
     && rm -rf /var/lib/apt/lists/*
 
 # Configurar PHP
