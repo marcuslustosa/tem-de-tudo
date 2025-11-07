@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
                 'pontos' => 1000,
                 'pontos_pendentes' => 0,
                 'telefone' => '(11) 99999-0001',
-                'email_verified_at' => now(),
-                'status' => 'ativo'
+                'status' => 'ativo',
+                'email_verified_at' => now()
             ]
         );
 
@@ -39,8 +39,8 @@ class DatabaseSeeder extends Seeder
                 'pontos' => 250,
                 'pontos_pendentes' => 50,
                 'telefone' => '(11) 99999-0002',
-                'email_verified_at' => now(),
-                'status' => 'ativo'
+                'status' => 'ativo',
+                'email_verified_at' => now()
             ]
         );
 
@@ -54,8 +54,8 @@ class DatabaseSeeder extends Seeder
                 'pontos' => 0,
                 'pontos_pendentes' => 0,
                 'telefone' => '(11) 99999-0003',
-                'email_verified_at' => now(),
-                'status' => 'ativo'
+                'status' => 'ativo',
+                'email_verified_at' => now()
             ]
         );
 
@@ -69,36 +69,8 @@ class DatabaseSeeder extends Seeder
                 'pontos' => 2500, // Nível Gold
                 'pontos_pendentes' => 100,
                 'telefone' => '(11) 99999-0004',
-                'email_verified_at' => now(),
-                'status' => 'ativo'
-            ]
-        );
-
-        // Cliente Teste
-        User::firstOrCreate(
-            ['email' => 'cliente@teste.com'],
-            [
-                'name' => 'Cliente Teste',
-                'password' => Hash::make('123456'),
-                'role' => 'cliente',
-                'pontos' => 150,
-                'pontos_pendentes' => 50,
-                'telefone' => '(11) 77777-7777',
-                'email_verified_at' => now(),
-            ]
-        );
-
-        // Empresa Teste
-        User::firstOrCreate(
-            ['email' => 'empresa@teste.com'],
-            [
-                'name' => 'Empresa Teste',
-                'password' => Hash::make('123456'),
-                'role' => 'empresa',
-                'pontos' => 0,
-                'pontos_pendentes' => 0,
-                'telefone' => '(11) 88888-8888',
-                'email_verified_at' => now(),
+                'status' => 'ativo',
+                'email_verified_at' => now()
             ]
         );
 

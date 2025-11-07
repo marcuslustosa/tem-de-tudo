@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
@@ -26,7 +27,15 @@ class User extends Authenticatable
         'pontos',
         'pontos_pendentes',
         'telefone',
+        'status',
         'nivel',
+        'fcm_token',
+        'email_notifications',
+        'points_notifications',
+        'security_notifications',
+        'promotional_notifications',
+        'ultimo_login',
+        'ip_ultimo_login'
     ];
 
     /**
@@ -51,7 +60,36 @@ class User extends Authenticatable
             'password' => 'hashed',
             'pontos' => 'integer',
             'pontos_pendentes' => 'integer',
+            'ultimo_login' => 'datetime',
+            'email_notifications' => 'boolean',
+            'points_notifications' => 'boolean',
+            'security_notifications' => 'boolean',
+            'promotional_notifications' => 'boolean',
         ];
+    }
+
+    /**
+     * Relacionamento com empresas (se for empresa)
+     */
+    public function empresa()
+    {
+        return $this->hasOne(Empresa::class);
+    }
+
+    /**
+     * Relacionamento com audit logs
+     */
+    public function auditLogs()
+    {
+        return $this->hasMany(AuditLog::class);
+    }
+
+    /**
+     * Relacionamento com push notifications
+     */
+    public function pushNotifications()
+    {
+        return $this->hasMany(PushNotification::class);
     }
 
     /**
@@ -84,18 +122,16 @@ class User extends Authenticatable
     public function calcularNivel(): array
     {
         $pontos = $this->pontos ?? 0;
-        
+
         if ($pontos >= 10000) {
             return ['nome' => 'Diamante', 'cor' => '#b9f2ff', 'min' => 10000, 'proximo' => null, 'multiplicador' => 3.0];
         } elseif ($pontos >= 5000) {
             return ['nome' => 'Ouro', 'cor' => '#ffd700', 'min' => 5000, 'proximo' => 10000, 'multiplicador' => 2.0];
-        } elseif ($pontos >= 2500) {
-            return ['nome' => 'Prata', 'cor' => '#c0c0c0', 'min' => 2500, 'proximo' => 5000, 'multiplicador' => 1.5];
         } elseif ($pontos >= 1000) {
-            return ['nome' => 'Bronze', 'cor' => '#cd7f32', 'min' => 1000, 'proximo' => 2500, 'multiplicador' => 1.2];
+            return ['nome' => 'Prata', 'cor' => '#c0c0c0', 'min' => 1000, 'proximo' => 5000, 'multiplicador' => 1.5];
         }
-        
-        return ['nome' => 'Iniciante', 'cor' => '#8b8b8b', 'min' => 0, 'proximo' => 1000, 'multiplicador' => 1.0];
+
+        return ['nome' => 'Bronze', 'cor' => '#cd7f32', 'min' => 0, 'proximo' => 1000, 'multiplicador' => 1.0];
     }
 
     /**
@@ -104,6 +140,22 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 
     /**
@@ -121,7 +173,13 @@ class User extends Authenticatable
                 $user->pontos_pendentes = 0;
             }
             if (is_null($user->role)) {
-                $user->role = 'user';
+                $user->role = 'cliente';
+            }
+            if (is_null($user->nivel)) {
+                $user->nivel = 'Iniciante';
+            }
+            if (is_null($user->type)) {
+                $user->type = 'client';
             }
         });
     }

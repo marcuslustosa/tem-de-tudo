@@ -36,7 +36,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'phone' => 'nullable|string|max:20',
+            'telefone' => 'nullable|string|max:20',
         ]);
 
         try {
@@ -48,8 +48,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => 'cliente',
                 'pontos' => 100, // Bônus de boas-vindas
-                'telefone' => $request->phone,
-                'status' => 'ativo'
+                'telefone' => $request->telefone
             ]);
 
             // Gerar JWT token
@@ -116,13 +115,7 @@ class AuthController extends Controller
 
         $user = Auth::user();
         
-        // Verificar se usuário está ativo
-        if ($user->status !== 'ativo') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Conta desativada. Entre em contato com o suporte.'
-            ], 403);
-        }
+        // Verificar se usuário está ativo (removido pois coluna status não existe)
 
         // Calcular nível automaticamente
         $nivel = $this->calcularNivel($user->pontos);
@@ -151,8 +144,7 @@ class AuthController extends Controller
     private function calcularNivel($pontos)
     {
         if ($pontos >= 10000) return 'Diamante';
-        if ($pontos >= 5000) return 'Platina';
-        if ($pontos >= 2500) return 'Ouro';
+        if ($pontos >= 5000) return 'Ouro';
         if ($pontos >= 1000) return 'Prata';
         return 'Bronze';
     }
@@ -183,17 +175,10 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = $request->user();
-        
+
         // Calcular nível baseado nos pontos
-        $nivel = 'Bronze';
-        if ($user->pontos >= 10000) {
-            $nivel = 'Diamante';
-        } elseif ($user->pontos >= 5000) {
-            $nivel = 'Ouro';
-        } elseif ($user->pontos >= 1000) {
-            $nivel = 'Prata';
-        }
-        
+        $nivel = $this->calcularNivel($user->pontos);
+
         return response()->json([
             'user' => array_merge($user->toArray(), ['nivel' => $nivel])
         ]);
@@ -214,24 +199,16 @@ class AuthController extends Controller
             'pontos' => 'required|integer|min:1',
             'descricao' => 'nullable|string|max:255',
         ]);
-        
+
         $user = $request->user();
         $user->pontos += $request->pontos;
         $user->save();
-        
+
         return response()->json([
             'message' => "Você ganhou {$request->pontos} pontos!",
             'pontos_total' => $user->pontos,
-            'nivel' => $this->calculateLevel($user->pontos)
+            'nivel' => $this->calcularNivel($user->pontos)
         ]);
-    }
-    
-    private function calculateLevel($pontos)
-    {
-        if ($pontos >= 10000) return 'Diamante';
-        if ($pontos >= 5000) return 'Ouro';
-        if ($pontos >= 1000) return 'Prata';
-        return 'Bronze';
     }
 
     /**

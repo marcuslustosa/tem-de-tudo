@@ -10,23 +10,27 @@ class Empresa extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'nome',
         'cnpj',
-        'address',
-        'phone',
+        'endereco',
+        'telefone',
         'email',
         'photos',
         'services',
         'user_id',
-        'category',
-        'descricao',
-        'ativo'
+        'qr_code',
+        'plan',
+        'settings',
+        'active',
+        'points_multiplier'
     ];
 
     protected $casts = [
         'photos' => 'array',
         'services' => 'array',
-        'ativo' => 'boolean'
+        'active' => 'boolean',
+        'points_multiplier' => 'decimal:2',
+        'settings' => 'array'
     ];
 
     public function user()
@@ -63,8 +67,8 @@ class Empresa extends Model
      */
     public function getPointsMultiplier(float $valorCompra = 0): float
     {
-        // Lógica simples: R$ 1,00 = 1 ponto
-        return 1;
+        // Usar multiplicador configurado ou padrão de 1.0
+        return $this->points_multiplier ?? 1.0;
     }
 
     /**
@@ -72,6 +76,22 @@ class Empresa extends Model
      */
     public function isAtiva(): bool
     {
-        return $this->ativo ?? true;
+        return $this->active ?? true;
+    }
+
+    /**
+     * Relacionamento com QR codes
+     */
+    public function qrCodes()
+    {
+        return $this->hasMany(QRCode::class);
+    }
+
+    /**
+     * Relacionamento com discount levels
+     */
+    public function discountLevels()
+    {
+        return $this->hasMany(DiscountLevel::class);
     }
 }

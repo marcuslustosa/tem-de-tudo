@@ -66,11 +66,11 @@ class PontosController extends Controller
                 'valor_compra' => $request->valor_compra,
                 'pontos_calculados' => $pontosCalculados,
                 'foto_cupom' => $fotoPath,
+                'status' => 'pending',
+                'codigo_validacao' => strtoupper(Str::random(8)),
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
-                'observacoes' => $request->observacoes,
-                'status' => 'pending', // pending, approved, rejected
-                'codigo_validacao' => strtoupper(Str::random(8))
+                'observacoes' => $request->observacoes
             ]);
 
             // Adicionar pontos pendentes ao usuário
@@ -422,13 +422,11 @@ class PontosController extends Controller
         if ($pontos >= 10000) {
             return ['nome' => 'Diamante', 'cor' => '#b9f2ff', 'min' => 10000, 'proximo' => null];
         } elseif ($pontos >= 5000) {
-            return ['nome' => 'Platina', 'cor' => '#e5e4e2', 'min' => 5000, 'proximo' => 10000];
-        } elseif ($pontos >= 2500) {
-            return ['nome' => 'Ouro', 'cor' => '#ffd700', 'min' => 2500, 'proximo' => 5000];
+            return ['nome' => 'Ouro', 'cor' => '#ffd700', 'min' => 5000, 'proximo' => 10000];
         } elseif ($pontos >= 1000) {
-            return ['nome' => 'Prata', 'cor' => '#c0c0c0', 'min' => 1000, 'proximo' => 2500];
+            return ['nome' => 'Prata', 'cor' => '#c0c0c0', 'min' => 1000, 'proximo' => 5000];
         }
-        
+
         return ['nome' => 'Bronze', 'cor' => '#cd7f32', 'min' => 0, 'proximo' => 1000];
     }
 

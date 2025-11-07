@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('payload');
             $table->integer('last_activity')->index();
         });
+    }
 
     public function down()
     {
