@@ -9,10 +9,7 @@ return new class extends Migration
 {
     public function up()
     {
-        // Desativa verificação de chaves estrangeiras
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-
-        // Drop todas as tabelas existentes com CASCADE para limpar tudo
+        // No PostgreSQL, o CASCADE no DROP já cuida das dependências
         $tables = [
             'users',
             'password_reset_tokens',
@@ -28,6 +25,9 @@ return new class extends Migration
             'push_notifications',
             'migrations'
         ];
+
+        // Desativa temporariamente as restrições de todas as tabelas
+        DB::statement('SET session_replication_role = replica');
 
         foreach ($tables as $table) {
             DB::statement("DROP TABLE IF EXISTS $table CASCADE");
@@ -172,8 +172,8 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Reativa verificação de chaves estrangeiras
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        // Reativa as restrições
+        DB::statement('SET session_replication_role = DEFAULT');
     }
 
     public function down()
