@@ -4,17 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CheckIn extends Model
 {
     use HasFactory;
 
-    protected $table = 'check_ins';
-
     protected $fillable = [
         'user_id',
         'empresa_id',
+        'qr_code_id',
         'valor_compra',
         'pontos_calculados',
         'foto_cupom',
@@ -27,95 +25,97 @@ class CheckIn extends Model
         'aprovado_por',
         'rejeitado_em',
         'rejeitado_por',
-        'motivo_rejeicao'
+        'motivo_rejeicao',
+        'bonus_applied'
     ];
 
     protected $casts = [
         'valor_compra' => 'decimal:2',
-        'latitude' => 'decimal:8,6',
-        'longitude' => 'decimal:8,6',
+        'pontos_calculados' => 'integer',
+        'latitude' => 'decimal:8',
+        'longitude' => 'decimal:8',
         'aprovado_em' => 'datetime',
-        'rejeitado_em' => 'datetime'
+        'rejeitado_em' => 'datetime',
+        'bonus_applied' => 'boolean'
     ];
 
     /**
-     * Relacionamento com User
+     * Relacionamento com usuário
      */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
     /**
-     * Relacionamento com Empresa
+     * Relacionamento com empresa
      */
-    public function empresa(): BelongsTo
+    public function empresa()
     {
         return $this->belongsTo(Empresa::class);
     }
 
     /**
-     * Relacionamento com o usuário que aprovou
+     * Relacionamento com QR code
      */
-    public function aprovadoPor(): BelongsTo
+    public function qrCode()
     {
-        return $this->belongsTo(User::class, 'aprovado_por');
+        return $this->belongsTo(QRCode::class);
     }
 
     /**
-     * Relacionamento com o usuário que rejeitou
+     * Relacionamento com pontos
      */
-    public function rejeitadoPor(): BelongsTo
+    public function pontos()
     {
-        return $this->belongsTo(User::class, 'rejeitado_por');
+        return $this->hasMany(Ponto::class);
     }
 
     /**
-     * Scopes
+     * Relacionamento com cupons
+     */
+    public function cupons()
+    {
+        return $this->hasMany(Coupon::class);
+    }
+
+    /**
+     * Scope para check-ins pendentes
      */
     public function scopePendentes($query)
     {
         return $query->where('status', 'pending');
     }
 
+    /**
+     * Scope para check-ins aprovados
+     */
     public function scopeAprovados($query)
     {
         return $query->where('status', 'approved');
     }
 
+    /**
+     * Scope para check-ins rejeitados
+     */
     public function scopeRejeitados($query)
     {
         return $query->where('status', 'rejected');
     }
 
     /**
-     * Acessors
+     * Verificar se check-in pode ser aprovado
      */
-    public function getStatusLabelAttribute(): string
+    public function podeSerAprovado(): bool
     {
-        return match($this->status) {
-            'pending' => 'Pendente',
-            'approved' => 'Aprovado',
-            'rejected' => 'Rejeitado',
-            default => 'Desconhecido'
-        };
-    }
-
-    public function getStatusColorAttribute(): string
-    {
-        return match($this->status) {
-            'pending' => '#f59e0b',
-            'approved' => '#10b981',
-            'rejected' => '#ef4444',
-            default => '#6b7280'
-        };
+        return $this->status === 'pending';
     }
 
     /**
-     * URL da foto do cupom
+     * Verificar se check-in está aprovado
      */
-    public function getFotoCupomUrlAttribute(): ?string
+    public function estaAprovado(): bool
     {
-        return $this->foto_cupom ? asset('storage/' . $this->foto_cupom) : null;
+        return $this->status === 'approved';
     }
 }

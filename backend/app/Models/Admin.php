@@ -5,28 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-// use Tymon\JWTAuth\Contracts\JWTSubject;
+use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Admin extends Authenticatable // implements JWTSubject
+class Admin extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
-
-    protected $table = 'admins';
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'nome',
-        'email', 
-        'telefone',
+        'name',
+        'email',
         'password',
-        'nivel',
-        'empresa',
-        'cnpj',
-        'permissoes',
-        'criado_por',
+        'role',
         'status',
-        'senha_temporaria',
-        'ultimo_login',
-        'ip_ultimo_login'
+        'permissions',
+        'last_login_at',
+        'last_login_ip'
     ];
 
     protected $hidden = [
@@ -36,90 +30,55 @@ class Admin extends Authenticatable // implements JWTSubject
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'permissoes' => 'array',
-        'senha_temporaria' => 'boolean',
-        'ultimo_login' => 'datetime'
+        'password' => 'hashed',
+        'permissions' => 'array',
+        'last_login_at' => 'datetime'
     ];
 
     /**
-     * JWT Methods - Commented out until JWT is properly configured
+     * Get the identifier that will be stored in the subject claim of the JWT.
      */
-    /*
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     */
     public function getJWTCustomClaims()
     {
-        return [
-            'tipo' => 'admin',
-            'nivel' => $this->nivel,
-            'permissoes' => $this->permissoes
-        ];
-    }
-    */
-
-    /**
-     * Relacionamentos
-     */
-    public function criadoPor()
-    {
-        return $this->belongsTo(Admin::class, 'criado_por');
-    }
-
-    public function adminsCriados()
-    {
-        return $this->hasMany(Admin::class, 'criado_por');
-    }
-
-    public function auditLogs()
-    {
-        return $this->hasMany(AuditLog::class, 'user_id');
+        return [];
     }
 
     /**
-     * Scopes
+     * Verificar se admin tem permissão
      */
-    public function scopeAtivos($query)
+    public function hasPermission(string $permission): bool
     {
-        return $query->where('status', 'ativo');
-    }
+        if (!$this->permissions) {
+            return false;
+        }
 
-    public function scopeMasters($query)
-    {
-        return $query->where('nivel', 'Master');
-    }
-
-    /**
-     * Verificar se tem permissão específica
-     */
-    public function hasPermission($permission)
-    {
-        return in_array($permission, $this->permissoes ?? []);
+        return in_array($permission, $this->permissions);
     }
 
     /**
-     * Verificar se pode criar administradores
+     * Verificar se admin está ativo
      */
-    public function canCreateAdmins()
+    public function isActive(): bool
     {
-        return $this->hasPermission('criar_administradores');
+        return $this->status === 'ativo';
     }
 
     /**
-     * Verificar se é master admin
+     * Atualizar último login
      */
-    public function isMaster()
+    public function updateLastLogin(): void
     {
-        return $this->nivel === 'Master';
-    }
-
-    /**
-     * Obter nome para display
-     */
-    public function getDisplayNameAttribute()
-    {
-        return $this->nome ?? $this->name ?? 'Administrador';
+        $this->update([
+            'last_login_at' => now(),
+            'last_login_ip' => request()->ip()
+        ]);
     }
 }

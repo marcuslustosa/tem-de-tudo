@@ -176,10 +176,10 @@ class User extends Authenticatable implements JWTSubject
                 $user->role = 'cliente';
             }
             if (is_null($user->nivel)) {
-                $user->nivel = 'Iniciante';
+                $user->nivel = 'Bronze';
             }
-            if (is_null($user->type)) {
-                $user->type = 'client';
+            if (is_null($user->status)) {
+                $user->status = 'ativo';
             }
         });
     }

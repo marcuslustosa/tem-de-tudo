@@ -4,14 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Carbon\Carbon;
 
 class Coupon extends Model
 {
     use HasFactory;
-
-    protected $table = 'coupons';
 
     protected $fillable = [
         'user_id',
@@ -30,38 +26,48 @@ class Coupon extends Model
     ];
 
     protected $casts = [
+        'custo_pontos' => 'integer',
         'valor_desconto' => 'decimal:2',
+        'porcentagem_desconto' => 'decimal:2',
         'expira_em' => 'datetime',
         'usado_em' => 'datetime',
         'dados_extra' => 'array'
     ];
 
     /**
-     * Relacionamento com User
+     * Relacionamento com usuário
      */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
     /**
-     * Relacionamento com Empresa (opcional)
+     * Relacionamento com empresa
      */
-    public function empresa(): BelongsTo
+    public function empresa()
     {
         return $this->belongsTo(Empresa::class);
     }
 
     /**
-     * Relacionamento com CheckIn (opcional)
+     * Relacionamento com check-in
      */
-    public function checkin(): BelongsTo
+    public function checkin()
     {
         return $this->belongsTo(CheckIn::class);
     }
 
     /**
-     * Scopes
+     * Relacionamento com pontos
+     */
+    public function pontos()
+    {
+        return $this->hasMany(Ponto::class);
+    }
+
+    /**
+     * Scope para cupons ativos
      */
     public function scopeAtivos($query)
     {
@@ -72,86 +78,33 @@ class Coupon extends Model
                     });
     }
 
-    public function scopeUsados($query)
-    {
-        return $query->where('status', 'used');
-    }
-
+    /**
+     * Scope para cupons expirados
+     */
     public function scopeExpirados($query)
     {
         return $query->where('status', 'expired')
                     ->orWhere('expira_em', '<=', now());
     }
 
-    public function scopeDoUsuario($query, $userId)
+    /**
+     * Scope para cupons usados
+     */
+    public function scopeUsados($query)
     {
-        return $query->where('user_id', $userId);
+        return $query->where('status', 'used');
     }
 
     /**
-     * Acessors
+     * Verificar se cupom está ativo
      */
-    public function getStatusLabelAttribute(): string
-    {
-        if ($this->status === 'active' && $this->expira_em && Carbon::now()->gt($this->expira_em)) {
-            return 'Expirado';
-        }
-
-        return match($this->status) {
-            'active' => 'Ativo',
-            'used' => 'Usado',
-            'expired' => 'Expirado',
-            default => 'Desconhecido'
-        };
-    }
-
-    public function getStatusColorAttribute(): string
-    {
-        if ($this->status === 'active' && $this->expira_em && Carbon::now()->gt($this->expira_em)) {
-            return '#ef4444';
-        }
-
-        return match($this->status) {
-            'active' => '#10b981',
-            'used' => '#6b7280',
-            'expired' => '#ef4444',
-            default => '#6b7280'
-        };
-    }
-
-    public function getTipoLabelAttribute(): string
-    {
-        return match($this->tipo) {
-            'discount-10' => '10% OFF',
-            'discount-20' => '20% OFF',
-            'burger-free' => 'Burger Grátis',
-            'haircut-50' => 'Corte 50% OFF',
-            'dinner-2' => 'Jantar para 2',
-            'tshirt-exclusive' => 'Camiseta Exclusiva',
-            default => $this->descricao
-        };
-    }
-
-    public function getDiasRestantesAttribute(): ?int
-    {
-        if (!$this->expira_em || $this->status !== 'active') {
-            return null;
-        }
-
-        $dias = Carbon::now()->diffInDays($this->expira_em, false);
-        return max(0, $dias);
-    }
-
-    /**
-     * Verificar se o cupom está válido
-     */
-    public function isValido(): bool
+    public function estaAtivo(): bool
     {
         if ($this->status !== 'active') {
             return false;
         }
 
-        if ($this->expira_em && Carbon::now()->gt($this->expira_em)) {
+        if ($this->expira_em && $this->expira_em->isPast()) {
             return false;
         }
 
@@ -159,43 +112,27 @@ class Coupon extends Model
     }
 
     /**
-     * Marcar cupom como usado
+     * Verificar se cupom expirou
      */
-    public function marcarComoUsado(): bool
+    public function expirou(): bool
     {
-        if (!$this->isValido()) {
+        return $this->expira_em && $this->expira_em->isPast();
+    }
+
+    /**
+     * Usar cupom
+     */
+    public function usar(): bool
+    {
+        if (!$this->estaAtivo()) {
             return false;
         }
 
-        return $this->update([
+        $this->update([
             'status' => 'used',
             'usado_em' => now()
         ]);
-    }
 
-    /**
-     * Gerar código único para o cupom
-     */
-    public static function gerarCodigo(): string
-    {
-        do {
-            $codigo = 'TDT' . strtoupper(\Illuminate\Support\Str::random(6));
-        } while (self::where('codigo', $codigo)->exists());
-
-        return $codigo;
-    }
-
-    /**
-     * Boot model para gerar código automaticamente
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($coupon) {
-            if (empty($coupon->codigo)) {
-                $coupon->codigo = self::gerarCodigo();
-            }
-        });
+        return true;
     }
 }

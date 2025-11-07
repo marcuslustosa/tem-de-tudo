@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Ponto extends Model
 {
@@ -21,81 +20,64 @@ class Ponto extends Model
     ];
 
     protected $casts = [
-        'pontos' => 'integer'
+        'pontos' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
 
     /**
-     * Relacionamento com User
+     * Relacionamento com usuário
      */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
     /**
-     * Relacionamento com Empresa
+     * Relacionamento com empresa
      */
-    public function empresa(): BelongsTo
+    public function empresa()
     {
         return $this->belongsTo(Empresa::class);
     }
 
     /**
-     * Relacionamento com CheckIn
+     * Relacionamento com check-in
      */
-    public function checkin(): BelongsTo
+    public function checkin()
     {
         return $this->belongsTo(CheckIn::class);
     }
 
     /**
-     * Relacionamento com Coupon
+     * Relacionamento com cupom
      */
-    public function coupon(): BelongsTo
+    public function coupon()
     {
         return $this->belongsTo(Coupon::class);
     }
 
     /**
-     * Scopes
+     * Scope para pontos positivos (ganhos)
      */
     public function scopeGanhos($query)
     {
         return $query->where('pontos', '>', 0);
     }
 
+    /**
+     * Scope para pontos negativos (resgates)
+     */
     public function scopeResgates($query)
     {
         return $query->where('pontos', '<', 0);
     }
 
-    public function scopeDoUsuario($query, $userId)
-    {
-        return $query->where('user_id', $userId);
-    }
-
     /**
-     * Accessors
+     * Scope por tipo
      */
-    public function getTipoLabelAttribute(): string
+    public function scopePorTipo($query, $tipo)
     {
-        return match($this->tipo) {
-            'earn' => 'Ganho',
-            'redeem' => 'Resgate',
-            'bonus' => 'Bônus',
-            'adjustment' => 'Ajuste',
-            default => 'Outros'
-        };
-    }
-
-    public function getTipoColorAttribute(): string
-    {
-        return match($this->tipo) {
-            'earn' => '#10b981',
-            'redeem' => '#f59e0b',
-            'bonus' => '#8b5cf6',
-            'adjustment' => '#6b7280',
-            default => '#6b7280'
-        };
+        return $query->where('tipo', $tipo);
     }
 }
