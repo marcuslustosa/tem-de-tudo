@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Visual - Tem de Tudo</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/" class="logo">
+                    <img src="/img/logo.png" alt="Tem de Tudo" class="logo-image">
+                    <span>Tem de Tudo</span>
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="#" class="active"><i class="fas fa-home icon-sm"></i> Início</a>
+                    <a href="#"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                    <a href="#"><i class="fas fa-user icon-sm"></i> Perfil</a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-menu">
+                <a href="#" class="active"><i class="fas fa-home icon-sm"></i> Início</a>
+                <a href="#"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
+                <a href="#"><i class="fas fa-user icon-sm"></i> Perfil</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Hero Section -->
+            <section style="background: var(--gradient-primary); color: white; padding: var(--space-16) var(--space-6); text-align: center;">
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem;">
+                        <i class="fas fa-check-circle" style="color: var(--accent-orange);"></i>
+                        Correções Visuais Aplicadas!
+                    </h1>
+                    <p style="font-size: 1.25rem; opacity: 0.9;">Teste todos os componentes visuais corrigidos</p>
+                </div>
+            </section>
+
+            <!-- Component Showcase -->
+            <section style="padding: var(--space-12) var(--space-6); max-width: 1200px; margin: 0 auto;">
+                
+                <!-- Buttons -->
+                <div class="card" style="margin-bottom: var(--space-8);">
+                    <div class="card-body">
+                        <h2 style="margin-bottom: var(--space-6); color: var(--primary-purple);">
+                            <i class="fas fa-hand-pointer"></i> Botões
+                        </h2>
+                        <div style="display: flex; gap: var(--space-4); flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="showToast('Botão primário clicado!', 'success')">
+                                <i class="fas fa-star"></i> Primário
+                            </button>
+                            <button class="btn btn-success">
+                                <i class="fas fa-check"></i> Sucesso
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-heart"></i> Outline
+                            </button>
+                            <button class="btn btn-ghost">
+                                <i class="fas fa-ghost"></i> Ghost
+                            </button>
+                            <button class="btn btn-accent">
+                                <i class="fas fa-bolt"></i> Accent
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Chips -->
+                <div class="card" style="margin-bottom: var(--space-8);">
+                    <div class="card-body">
+                        <h2 style="margin-bottom: var(--space-6); color: var(--primary-purple);">
+                            <i class="fas fa-filter"></i> Filtros
+                        </h2>
+                        <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                            <button class="filter-chip active" data-filter="all" onclick="setFilter('all')">
+                                <i class="fas fa-th-large icon-sm"></i> Todos
+                            </button>
+                            <button class="filter-chip" data-filter="restaurantes" onclick="setFilter('restaurantes')">
+                                <i class="fas fa-utensils icon-sm"></i> Restaurantes
+                            </button>
+                            <button class="filter-chip" data-filter="lojas" onclick="setFilter('lojas')">
+                                <i class="fas fa-shopping-bag icon-sm"></i> Lojas
+                            </button>
+                            <button class="filter-chip" data-filter="servicos" onclick="setFilter('servicos')">
+                                <i class="fas fa-cogs icon-sm"></i> Serviços
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Badges -->
+                <div class="card" style="margin-bottom: var(--space-8);">
+                    <div class="card-body">
+                        <h2 style="margin-bottom: var(--space-6); color: var(--primary-purple);">
+                            <i class="fas fa-tag"></i> Badges
+                        </h2>
+                        <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center;">
+                            <span class="badge badge-primary">Primário</span>
+                            <span class="badge badge-success">Ativo</span>
+                            <span class="badge badge-warning">Pendente</span>
+                            <span class="badge badge-danger">Cancelado</span>
+                            <span class="badge badge-info">Informação</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stat Cards -->
+                <div class="card" style="margin-bottom: var(--space-8);">
+                    <div class="card-body">
+                        <h2 style="margin-bottom: var(--space-6); color: var(--primary-purple);">
+                            <i class="fas fa-chart-line"></i> Cards de Estatísticas
+                        </h2>
+                        <div class="grid grid-cols-4" style="gap: var(--space-4);">
+                            <div class="stat-card">
+                                <i class="fas fa-users" style="font-size: 2rem; color: var(--primary-purple); margin-bottom: var(--space-2);"></i>
+                                <div class="stat-value">1,234</div>
+                                <div class="stat-label">Usuários</div>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-store" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: var(--space-2);"></i>
+                                <div class="stat-value">567</div>
+                                <div class="stat-label">Estabelecimentos</div>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-coins" style="font-size: 2rem; color: var(--accent-green); margin-bottom: var(--space-2);"></i>
+                                <div class="stat-value">89K</div>
+                                <div class="stat-label">Pontos</div>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-trophy" style="font-size: 2rem; color: var(--accent-pink); margin-bottom: var(--space-2);"></i>
+                                <div class="stat-value">432</div>
+                                <div class="stat-label">Resgates</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerts -->
+                <div class="card" style="margin-bottom: var(--space-8);">
+                    <div class="card-body">
+                        <h2 style="margin-bottom: var(--space-6); color: var(--primary-purple);">
+                            <i class="fas fa-bell"></i> Alertas
+                        </h2>
+                        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Operação realizada com sucesso!</span>
+                            </div>
+                            <div class="alert alert-error">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>Erro ao processar a solicitação.</span>
+                            </div>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Atenção: Verificação necessária.</span>
+                            </div>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Informação importante sobre o sistema.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toast Demo -->
+                <div class="card" style="margin-bottom: var(--space-8);">
+                    <div class="card-body">
+                        <h2 style="margin-bottom: var(--space-6); color: var(--primary-purple);">
+                            <i class="fas fa-comment-dots"></i> Toast Notifications
+                        </h2>
+                        <div style="display: flex; gap: var(--space-4); flex-wrap: wrap;">
+                            <button class="btn btn-success" onclick="showToast('Operação realizada com sucesso!', 'success')">
+                                <i class="fas fa-check"></i> Success Toast
+                            </button>
+                            <button class="btn btn-outline" style="border-color: #ef4444; color: #ef4444;" onclick="showToast('Erro ao processar', 'error')">
+                                <i class="fas fa-times"></i> Error Toast
+                            </button>
+                            <button class="btn btn-outline" style="border-color: #f59e0b; color: #f59e0b;" onclick="showToast('Atenção necessária', 'warning')">
+                                <i class="fas fa-exclamation-triangle"></i> Warning Toast
+                            </button>
+                            <button class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6;" onclick="showToast('Informação importante', 'info')">
+                                <i class="fas fa-info-circle"></i> Info Toast
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="card" style="margin-bottom: var(--space-8);">
+                    <div class="card-body">
+                        <h2 style="margin-bottom: var(--space-6); color: var(--primary-purple);">
+                            <i class="fas fa-tasks"></i> Barra de Progresso
+                        </h2>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%;"></div>
+                        </div>
+                        <p style="margin-top: var(--space-2); color: var(--gray-600); font-size: 0.875rem;">
+                            75% Completo
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Form Elements -->
+                <div class="card">
+                    <div class="card-body">
+                        <h2 style="margin-bottom: var(--space-6); color: var(--primary-purple);">
+                            <i class="fas fa-edit"></i> Formulários
+                        </h2>
+                        <form>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-user"></i> Nome Completo
+                                </label>
+                                <input type="text" placeholder="Digite seu nome">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-envelope"></i> E-mail
+                                </label>
+                                <input type="email" placeholder="seu@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="fas fa-comment"></i> Mensagem
+                                </label>
+                                <textarea rows="4" placeholder="Digite sua mensagem"></textarea>
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="showToast('Formulário enviado!', 'success')">
+                                <i class="fas fa-paper-plane"></i> Enviar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <script src="/js/global.js"></script>
+</body>
+</html>
