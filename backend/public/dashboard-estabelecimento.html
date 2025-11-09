@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Estabelecimento - Tem de Tudo</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/dashboard-estabelecimento.html" class="logo">
+                    <img src="/img/logo.png" alt="Tem de Tudo" class="logo-image">
+                    <span>Tem de Tudo</span>
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/dashboard-estabelecimento.html" class="active">
+                        <i class="fas fa-home icon-sm"></i> Dashboard
+                    </a>
+                    <a href="/gerenciar-descontos.html">
+                        <i class="fas fa-ticket-alt icon-sm"></i> Descontos
+                    </a>
+                    <a href="/relatorios-estabelecimento.html">
+                        <i class="fas fa-chart-bar icon-sm"></i> Relatórios
+                    </a>
+                    <a href="/perfil-estabelecimento.html">
+                        <i class="fas fa-store icon-sm"></i> Meu Perfil
+                    </a>
+                    <a href="/login.html">
+                        <i class="fas fa-sign-out-alt icon-sm"></i> Sair
+                    </a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-menu">
+                <a href="/dashboard-estabelecimento.html" class="active">
+                    <i class="fas fa-home icon-sm"></i> Dashboard
+                </a>
+                <a href="/gerenciar-descontos.html">
+                    <i class="fas fa-ticket-alt icon-sm"></i> Descontos
+                </a>
+                <a href="/relatorios-estabelecimento.html">
+                    <i class="fas fa-chart-bar icon-sm"></i> Relatórios
+                </a>
+                <a href="/perfil-estabelecimento.html">
+                    <i class="fas fa-store icon-sm"></i> Meu Perfil
+                </a>
+                <a href="/login.html">
+                    <i class="fas fa-sign-out-alt icon-sm"></i> Sair
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div style="max-width: 1200px; margin: 0 auto; padding: var(--space-6);">
+                <!-- Welcome Section -->
+                <div class="glass-container" style="margin-bottom: var(--space-8);">
+                    <div style="display: flex; align-items: center; gap: var(--space-4);">
+                        <div style="background: var(--gradient-primary); width: 64px; height: 64px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-store" style="font-size: 24px; color: white;"></i>
+                        </div>
+                        <div>
+                            <h1 style="margin: 0; font-size: 1.5rem; color: var(--gray-900);">
+                                Bem-vindo(a), <span class="text-primary">Loja XYZ</span>!
+                            </h1>
+                            <p style="margin: 0; color: var(--gray-600);">
+                                Aqui está o resumo do seu estabelecimento
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-4" style="gap: var(--space-6); margin-bottom: var(--space-8);">
+                    <div class="stat-card">
+                        <i class="fas fa-users" style="font-size: 2rem; color: var(--primary-purple); margin-bottom: var(--space-2);"></i>
+                        <div class="stat-value">1,234</div>
+                        <div class="stat-label">Clientes Totais</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <i class="fas fa-ticket-alt" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: var(--space-2);"></i>
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Descontos Ativos</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--accent-green); margin-bottom: var(--space-2);"></i>
+                        <div class="stat-value">432</div>
+                        <div class="stat-label">Resgates no Mês</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <i class="fas fa-star" style="font-size: 2rem; color: var(--accent-pink); margin-bottom: var(--space-2);"></i>
+                        <div class="stat-value">4.8</div>
+                        <div class="stat-label">Avaliação Média</div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card" style="margin-bottom: var(--space-8);">
+                    <div class="card-body">
+                        <h2 style="margin: 0 0 var(--space-6); color: var(--primary-purple); display: flex; align-items: center; gap: var(--space-2);">
+                            <i class="fas fa-clock"></i>
+                            Atividade Recente
+                        </h2>
+
+                        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+                            <!-- Activity Item -->
+                            <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-lg);">
+                                <div style="background: var(--primary-purple); width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-ticket-alt" style="color: white;"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--gray-900);">
+                                        Desconto resgatado
+                                    </div>
+                                    <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                        Cliente: Maria Silva - 15% OFF
+                                    </div>
+                                </div>
+                                <div style="color: var(--gray-500); font-size: 0.875rem;">
+                                    Há 30 minutos
+                                </div>
+                            </div>
+
+                            <!-- Activity Item -->
+                            <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-lg);">
+                                <div style="background: var(--accent-orange); width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-star" style="color: white;"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--gray-900);">
+                                        Nova avaliação
+                                    </div>
+                                    <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                        5 estrelas - "Ótimo atendimento!"
+                                    </div>
+                                </div>
+                                <div style="color: var(--gray-500); font-size: 0.875rem;">
+                                    Há 2 horas
+                                </div>
+                            </div>
+
+                            <!-- Activity Item -->
+                            <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-lg);">
+                                <div style="background: var(--accent-green); width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-user-plus" style="color: white;"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--gray-900);">
+                                        Novo cliente fidelizado
+                                    </div>
+                                    <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                        João Santos adicionou aos favoritos
+                                    </div>
+                                </div>
+                                <div style="color: var(--gray-500); font-size: 0.875rem;">
+                                    Há 1 dia
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: var(--space-6); text-align: center;">
+                            <a href="#" class="btn btn-outline">
+                                <i class="fas fa-history"></i>
+                                Ver Histórico Completo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Discounts -->
+                <div class="card">
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6);">
+                            <h2 style="margin: 0; color: var(--primary-purple); display: flex; align-items: center; gap: var(--space-2);">
+                                <i class="fas fa-ticket-alt"></i>
+                                Descontos Ativos
+                            </h2>
+                            <a href="/gerenciar-descontos.html" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus"></i>
+                                Novo Desconto
+                            </a>
+                        </div>
+
+                        <div class="grid grid-cols-3" style="gap: var(--space-4);">
+                            <!-- Discount Card -->
+                            <div class="glass-card" style="padding: var(--space-4);">
+                                <div style="display: flex; justify-content: space-between; align-items: start;">
+                                    <div style="background: var(--primary-purple); padding: var(--space-2) var(--space-4); border-radius: var(--radius-full); color: white; font-weight: 600;">
+                                        15% OFF
+                                    </div>
+                                    <div class="badge badge-success">Ativo</div>
+                                </div>
+                                <div style="margin: var(--space-4) 0;">
+                                    <div style="font-weight: 600; color: var(--gray-900);">Desconto Primeira Compra</div>
+                                    <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                        <i class="fas fa-clock"></i> Expira em 7 dias
+                                    </div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 45%;"></div>
+                                </div>
+                                <div style="color: var(--gray-600); font-size: 0.875rem; margin-top: var(--space-2);">
+                                    45/100 resgates
+                                </div>
+                            </div>
+
+                            <!-- Discount Card -->
+                            <div class="glass-card" style="padding: var(--space-4);">
+                                <div style="display: flex; justify-content: space-between; align-items: start;">
+                                    <div style="background: var(--accent-orange); padding: var(--space-2) var(--space-4); border-radius: var(--radius-full); color: white; font-weight: 600;">
+                                        20% OFF
+                                    </div>
+                                    <div class="badge badge-success">Ativo</div>
+                                </div>
+                                <div style="margin: var(--space-4) 0;">
+                                    <div style="font-weight: 600; color: var(--gray-900);">Black Friday</div>
+                                    <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                        <i class="fas fa-clock"></i> Expira em 15 dias
+                                    </div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%;"></div>
+                                </div>
+                                <div style="color: var(--gray-600); font-size: 0.875rem; margin-top: var(--space-2);">
+                                    75/100 resgates
+                                </div>
+                            </div>
+
+                            <!-- Discount Card -->
+                            <div class="glass-card" style="padding: var(--space-4);">
+                                <div style="display: flex; justify-content: space-between; align-items: start;">
+                                    <div style="background: var(--accent-green); padding: var(--space-2) var(--space-4); border-radius: var(--radius-full); color: white; font-weight: 600;">
+                                        10% OFF
+                                    </div>
+                                    <div class="badge badge-warning">Expirando</div>
+                                </div>
+                                <div style="margin: var(--space-4) 0;">
+                                    <div style="font-weight: 600; color: var(--gray-900);">Desconto Fidelidade</div>
+                                    <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                        <i class="fas fa-clock"></i> Expira em 2 dias
+                                    </div>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 90%;"></div>
+                                </div>
+                                <div style="color: var(--gray-600); font-size: 0.875rem; margin-top: var(--space-2);">
+                                    90/100 resgates
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: var(--space-6); text-align: center;">
+                            <a href="/gerenciar-descontos.html" class="btn btn-outline">
+                                <i class="fas fa-ticket-alt"></i>
+                                Gerenciar Todos os Descontos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/global.js"></script>
+</body>
+</html>

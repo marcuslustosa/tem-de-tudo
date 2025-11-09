@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cliente - Tem de Tudo</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/dashboard-cliente.html" class="logo">
+                    <img src="/img/logo.png" alt="Tem de Tudo" class="logo-image">
+                    <span>Tem de Tudo</span>
+                </a>
+                
+                <nav class="nav-menu">
+                    <a href="/dashboard-cliente.html" class="active">
+                        <i class="fas fa-home icon-sm"></i> Dashboard
+                    </a>
+                    <a href="/meus-pontos.html">
+                        <i class="fas fa-star icon-sm"></i> Meus Pontos
+                    </a>
+                    <a href="/meus-favoritos.html">
+                        <i class="fas fa-heart icon-sm"></i> Favoritos
+                    </a>
+                    <a href="/perfil-cliente.html">
+                        <i class="fas fa-user icon-sm"></i> Meu Perfil
+                    </a>
+                    <a href="/login.html">
+                        <i class="fas fa-sign-out-alt icon-sm"></i> Sair
+                    </a>
+                </nav>
+                
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-menu">
+                <a href="/dashboard-cliente.html" class="active">
+                    <i class="fas fa-home icon-sm"></i> Dashboard
+                </a>
+                <a href="/meus-pontos.html">
+                    <i class="fas fa-star icon-sm"></i> Meus Pontos
+                </a>
+                <a href="/meus-favoritos.html">
+                    <i class="fas fa-heart icon-sm"></i> Favoritos
+                </a>
+                <a href="/perfil-cliente.html">
+                    <i class="fas fa-user icon-sm"></i> Meu Perfil
+                </a>
+                <a href="/login.html">
+                    <i class="fas fa-sign-out-alt icon-sm"></i> Sair
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div style="max-width: 1200px; margin: 0 auto; padding: var(--space-6);">
+                <!-- Welcome Section -->
+                <div class="glass-container" style="margin-bottom: var(--space-8);">
+                    <div style="display: flex; align-items: center; gap: var(--space-4);">
+                        <div style="background: var(--gradient-primary); width: 64px; height: 64px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user" style="font-size: 24px; color: white;"></i>
+                        </div>
+                        <div>
+                            <h1 style="margin: 0; font-size: 1.5rem; color: var(--gray-900);">
+                                Bem-vindo(a), <span class="text-primary">João Silva</span>!
+                            </h1>
+                            <p style="margin: 0; color: var(--gray-600);">
+                                Aqui está o resumo da sua conta
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-4" style="gap: var(--space-6); margin-bottom: var(--space-8);">
+                    <div class="stat-card">
+                        <i class="fas fa-star" style="font-size: 2rem; color: var(--primary-purple); margin-bottom: var(--space-2);"></i>
+                        <div class="stat-value">1,234</div>
+                        <div class="stat-label">Pontos Totais</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <i class="fas fa-ticket-alt" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: var(--space-2);"></i>
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Descontos Ativos</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <i class="fas fa-store" style="font-size: 2rem; color: var(--accent-green); margin-bottom: var(--space-2);"></i>
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Lojas Favoritas</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <i class="fas fa-shopping-bag" style="font-size: 2rem; color: var(--accent-pink); margin-bottom: var(--space-2);"></i>
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Compras Realizadas</div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card" style="margin-bottom: var(--space-8);">
+                    <div class="card-body">
+                        <h2 style="margin: 0 0 var(--space-6); color: var(--primary-purple); display: flex; align-items: center; gap: var(--space-2);">
+                            <i class="fas fa-clock"></i>
+                            Atividade Recente
+                        </h2>
+
+                        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+                            <!-- Activity Item -->
+                            <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-lg);">
+                                <div style="background: var(--primary-purple); width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-star" style="color: white;"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--gray-900);">
+                                        Ganhou 100 pontos
+                                    </div>
+                                    <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                        Compra na Loja XYZ
+                                    </div>
+                                </div>
+                                <div style="color: var(--gray-500); font-size: 0.875rem;">
+                                    Há 2 horas
+                                </div>
+                            </div>
+
+                            <!-- Activity Item -->
+                            <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-lg);">
+                                <div style="background: var(--accent-orange); width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-ticket-alt" style="color: white;"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--gray-900);">
+                                        Resgatou desconto de 15%
+                                    </div>
+                                    <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                        Válido até 15/11/2025
+                                    </div>
+                                </div>
+                                <div style="color: var(--gray-500); font-size: 0.875rem;">
+                                    Há 1 dia
+                                </div>
+                            </div>
+
+                            <!-- Activity Item -->
+                            <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-lg);">
+                                <div style="background: var(--accent-pink); width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-heart" style="color: white;"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--gray-900);">
+                                        Favoritou uma loja
+                                    </div>
+                                    <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                        Restaurante ABC
+                                    </div>
+                                </div>
+                                <div style="color: var(--gray-500); font-size: 0.875rem;">
+                                    Há 3 dias
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: var(--space-6); text-align: center;">
+                            <a href="#" class="btn btn-outline">
+                                <i class="fas fa-history"></i>
+                                Ver Histórico Completo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favorite Stores -->
+                <div class="card">
+                    <div class="card-body">
+                        <h2 style="margin: 0 0 var(--space-6); color: var(--primary-purple); display: flex; align-items: center; gap: var(--space-2);">
+                            <i class="fas fa-heart"></i>
+                            Lojas Favoritas
+                        </h2>
+
+                        <div class="grid grid-cols-3" style="gap: var(--space-4);">
+                            <!-- Store Card -->
+                            <div class="glass-card" style="padding: var(--space-4);">
+                                <div style="display: flex; align-items: center; gap: var(--space-3);">
+                                    <div style="width: 48px; height: 48px; border-radius: var(--radius-lg); background: var(--gray-100); display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-store" style="font-size: 24px; color: var(--primary-purple);"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--gray-900);">Loja XYZ</div>
+                                        <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                            <i class="fas fa-map-marker-alt"></i> 2.5 km
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: var(--space-3); display: flex; gap: var(--space-2);">
+                                    <span class="badge badge-primary">15% OFF</span>
+                                    <span class="badge badge-success">Aberto</span>
+                                </div>
+                            </div>
+
+                            <!-- Store Card -->
+                            <div class="glass-card" style="padding: var(--space-4);">
+                                <div style="display: flex; align-items: center; gap: var(--space-3);">
+                                    <div style="width: 48px; height: 48px; border-radius: var(--radius-lg); background: var(--gray-100); display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-utensils" style="font-size: 24px; color: var(--accent-orange);"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--gray-900);">Restaurante ABC</div>
+                                        <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                            <i class="fas fa-map-marker-alt"></i> 1.8 km
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: var(--space-3); display: flex; gap: var(--space-2);">
+                                    <span class="badge badge-primary">20% OFF</span>
+                                    <span class="badge badge-success">Aberto</span>
+                                </div>
+                            </div>
+
+                            <!-- Store Card -->
+                            <div class="glass-card" style="padding: var(--space-4);">
+                                <div style="display: flex; align-items: center; gap: var(--space-3);">
+                                    <div style="width: 48px; height: 48px; border-radius: var(--radius-lg); background: var(--gray-100); display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-shopping-bag" style="font-size: 24px; color: var(--accent-green);"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--gray-900);">Loja 123</div>
+                                        <div style="color: var(--gray-600); font-size: 0.875rem;">
+                                            <i class="fas fa-map-marker-alt"></i> 3.2 km
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: var(--space-3); display: flex; gap: var(--space-2);">
+                                    <span class="badge badge-primary">10% OFF</span>
+                                    <span class="badge badge-warning">Fechando</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: var(--space-6); text-align: center;">
+                            <a href="#" class="btn btn-outline">
+                                <i class="fas fa-heart"></i>
+                                Ver Todas as Favoritas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/global.js"></script>
+</body>
+</html>

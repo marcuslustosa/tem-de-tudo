@@ -25,8 +25,21 @@ WORKDIR /var/www/html
 # Copiar composer.json e composer.lock
 COPY composer.json composer.lock ./
 
+# Copiar arquivos do projeto
+COPY . .
+
+# Copiar configuração do Apache
+COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
+
 # Instalar dependências do Composer
 RUN composer install --no-dev --no-scripts --no-autoloader
+
+# Otimizar autoloader
+RUN composer dump-autoload --optimize
+
+# Ajustar permissões
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage
 
 # Copiar o resto dos arquivos
 COPY . .
