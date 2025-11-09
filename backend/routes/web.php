@@ -3,6 +3,12 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    // Serve index.html if it exists, otherwise use blade template
+    $indexPath = public_path('index.html');
+    if (file_exists($indexPath)) {
+        return response()->file($indexPath);
+    }
+    
     try {
         return view('welcome');
     } catch (\Exception $e) {
