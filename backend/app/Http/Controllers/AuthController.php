@@ -37,6 +37,11 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'telefone' => 'nullable|string|max:20',
+            'fcm_token' => 'nullable|string',
+            'email_notifications' => 'nullable|boolean',
+            'points_notifications' => 'nullable|boolean',
+            'security_notifications' => 'nullable|boolean',
+            'promotional_notifications' => 'nullable|boolean',
         ]);
 
         try {
@@ -48,7 +53,12 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => 'cliente',
                 'pontos' => 100, // Bônus de boas-vindas
-                'telefone' => $request->telefone
+                'telefone' => $request->telefone,
+                'fcm_token' => $request->fcm_token,
+                'email_notifications' => $request->email_notifications ?? true,
+                'points_notifications' => $request->points_notifications ?? true,
+                'security_notifications' => $request->security_notifications ?? true,
+                'promotional_notifications' => $request->promotional_notifications ?? false,
             ]);
 
             // Gerar JWT token
@@ -114,12 +124,24 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
-        
-        // Verificar se usuário está ativo (removido pois coluna status não existe)
+
+        // Verificar se usuário está ativo
+        if ($user->status !== 'ativo') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sua conta está inativa. Entre em contato com o suporte.'
+            ], 403);
+        }
+
+        // Atualizar último login
+        $user->update([
+            'ultimo_login' => now(),
+            'ip_ultimo_login' => $request->ip()
+        ]);
 
         // Calcular nível automaticamente
         $nivel = $this->calcularNivel($user->pontos);
-        
+
         // Log do evento
         $this->logAuditEvent('user_login', $user->id, $request);
 
@@ -180,17 +202,28 @@ class AuthController extends Controller
         $nivel = $this->calcularNivel($user->pontos);
 
         return response()->json([
-            'user' => array_merge($user->toArray(), ['nivel' => $nivel])
+            'success' => true,
+            'data' => [
+                'user' => array_merge($user->toArray(), ['nivel' => $nivel])
+            ]
         ]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
 
-        return response()->json([
-            'message' => 'Logout realizado com sucesso'
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Logout realizado com sucesso'
+            ]);
+        } catch (JWTException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao fazer logout'
+            ], 500);
+        }
     }
     
     public function addPontos(Request $request)
@@ -201,13 +234,23 @@ class AuthController extends Controller
         ]);
 
         $user = $request->user();
-        $user->pontos += $request->pontos;
-        $user->save();
+        $user->increment('pontos', $request->pontos);
+
+        // Registrar no histórico
+        \App\Models\Ponto::create([
+            'user_id' => $user->id,
+            'pontos' => $request->pontos,
+            'descricao' => $request->descricao ?? 'Pontos adicionados manualmente',
+            'tipo' => 'earn'
+        ]);
 
         return response()->json([
+            'success' => true,
             'message' => "Você ganhou {$request->pontos} pontos!",
-            'pontos_total' => $user->pontos,
-            'nivel' => $this->calcularNivel($user->pontos)
+            'data' => [
+                'pontos_total' => $user->fresh()->pontos,
+                'nivel' => $this->calcularNivel($user->pontos)
+            ]
         ]);
     }
 

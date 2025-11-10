@@ -46,6 +46,13 @@ return new class extends Migration
                 $table->string('role')->default('cliente'); // cliente, empresa, admin, funcionario
                 $table->string('telefone')->nullable();
                 $table->string('status')->default('ativo');
+                $table->string('fcm_token')->nullable();
+                $table->boolean('email_notifications')->default(true);
+                $table->boolean('points_notifications')->default(true);
+                $table->boolean('security_notifications')->default(true);
+                $table->boolean('promotional_notifications')->default(false);
+                $table->timestamp('ultimo_login')->nullable();
+                $table->string('ip_ultimo_login')->nullable();
                 $table->rememberToken();
                 $table->timestamps();
             });
@@ -102,19 +109,18 @@ return new class extends Migration
             Schema::create('empresas', function (Blueprint $table) {
                 $table->id();
                 $table->string('nome');
-                $table->string('cnpj')->unique();
-                $table->text('endereco');
+                $table->string('endereco');
                 $table->string('telefone');
-                $table->string('email');
-                $table->json('photos')->nullable();
-                $table->json('services')->nullable();
-                $table->foreignId('user_id')->constrained()->onDelete('cascade');
-                $table->string('qr_code')->nullable();
-                $table->string('plan')->default('free');
-                $table->json('settings')->nullable();
-                $table->boolean('active')->default(true);
+                $table->string('cnpj')->unique();
+                $table->string('logo')->nullable();
+                $table->text('descricao')->nullable();
                 $table->decimal('points_multiplier', 3, 2)->default(1.00);
+                $table->boolean('ativo')->default(true);
+                $table->foreignId('owner_id')->references('id')->on('users')->onDelete('cascade');
                 $table->timestamps();
+
+                $table->index(['ativo', 'created_at']);
+                $table->index('cnpj');
             });
         }
 
@@ -161,6 +167,7 @@ return new class extends Migration
 
                 $table->index(['status', 'created_at']);
                 $table->index(['user_id', 'created_at']);
+                $table->index(['empresa_id', 'created_at']);
             });
         }
 

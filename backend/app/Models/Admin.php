@@ -1,4 +1,4 @@
-<?php
+php
 
 namespace App\Models;
 
@@ -13,14 +13,19 @@ class Admin extends Authenticatable implements JWTSubject
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-        'name',
+        'nome',
         'email',
+        'telefone',
         'password',
-        'role',
+        'nivel',
+        'empresa',
+        'cnpj',
+        'permissoes',
+        'criado_por',
         'status',
-        'permissions',
-        'last_login_at',
-        'last_login_ip'
+        'senha_temporaria',
+        'ultimo_login',
+        'ip_ultimo_login'
     ];
 
     protected $hidden = [
@@ -31,8 +36,8 @@ class Admin extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'permissions' => 'array',
-        'last_login_at' => 'datetime'
+        'permissoes' => 'array',
+        'ultimo_login' => 'datetime'
     ];
 
     /**
@@ -56,11 +61,11 @@ class Admin extends Authenticatable implements JWTSubject
      */
     public function hasPermission(string $permission): bool
     {
-        if (!$this->permissions) {
+        if (!$this->permissoes) {
             return false;
         }
 
-        return in_array($permission, $this->permissions);
+        return in_array($permission, $this->permissoes);
     }
 
     /**
@@ -77,8 +82,40 @@ class Admin extends Authenticatable implements JWTSubject
     public function updateLastLogin(): void
     {
         $this->update([
-            'last_login_at' => now(),
-            'last_login_ip' => request()->ip()
+            'ultimo_login' => now(),
+            'ip_ultimo_login' => request()->ip()
         ]);
+    }
+
+    /**
+     * Relacionamento com admin criador
+     */
+    public function criadoPor()
+    {
+        return $this->belongsTo(Admin::class, 'criado_por');
+    }
+
+    /**
+     * Relacionamento com admins criados por este admin
+     */
+    public function adminsCriados()
+    {
+        return $this->hasMany(Admin::class, 'criado_por');
+    }
+
+    /**
+     * Relacionamento com audit logs
+     */
+    public function auditLogs()
+    {
+        return $this->hasMany(AuditLog::class);
+    }
+
+    /**
+     * Relacionamento com push notifications
+     */
+    public function pushNotifications()
+    {
+        return $this->hasMany(PushNotification::class, 'admin_id');
     }
 }
