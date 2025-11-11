@@ -1167,7 +1167,7 @@
         }
 
         // Sistema de Filtros e Avaliações
-        let currentFilter = 'all';
+        // currentFilter is already declared in global.js
         let allEstablishments = [];
         let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
 
@@ -1607,8 +1607,8 @@
         }
 
         // CSS para animações
-        const style = document.createElement('style');
-        style.textContent = `
+        const estabelecimentosStyle = document.createElement('style');
+        estabelecimentosStyle.textContent = `
             @keyframes slideIn {
                 from { transform: translateX(100%); opacity: 0; }
                 to { transform: translateX(0); opacity: 1; }
@@ -1630,7 +1630,7 @@
                 to { transform: translateY(0); opacity: 1; }
             }
         `;
-        document.head.appendChild(style);
+        document.head.appendChild(estabelecimentosStyle);
     </script>
     <script src="/js/global.js"></script>
 </body>
