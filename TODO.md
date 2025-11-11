@@ -16,7 +16,7 @@
 
 ### 3. **MODELOS (MODELS)**
 - [ ] Corrigir User.php (campos, relacionamentos)
-- [ ] Corrigir Empresa.php (campos, métodos)
+- [x] Corrigir Empresa.php (campos, métodos)
 - [ ] Corrigir CheckIn.php (relacionamentos)
 - [ ] Corrigir Ponto.php (relacionamentos)
 - [ ] Corrigir Coupon.php (relacionamentos)
@@ -85,6 +85,10 @@
 
 ## ✅ STATUS ATUAL
 - [x] Análise completa do projeto
-- [ ] Correções iniciadas
+- [x] Correções iniciadas
+- [x] Migração principal corrigida (campos users, check_ins)
+- [x] Modelo Admin corrigido (campos e relacionamentos)
+- [x] AuthController corrigido (validações e campos)
+- [x] PontosController corrigido (QRCode import e campos)
 - [ ] Testes pendentes
 - [ ] Deploy pendente

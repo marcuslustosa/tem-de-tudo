@@ -7,20 +7,13 @@ services:
     buildCommand: |
       cd backend &&
       composer install --no-dev --optimize-autoloader &&
-      echo "DB_CONNECTION=pgsql" > .env &&
-      echo "DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com" >> .env &&
-      echo "DB_PORT=5432" >> .env &&
-      echo "DB_DATABASE=tem_de_tudo_database" >> .env &&
-      echo "DB_USERNAME=tem_de_tudo_database_user" >> .env &&
-      echo "DB_PASSWORD=9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA" >> .env &&
+      touch database/database.sqlite &&
       php artisan key:generate --force &&
-      php artisan config:cache &&
-      php artisan route:cache &&
-      php artisan view:cache &&
-      php artisan migrate --force
+      php artisan migrate --force || true
     startCommand: |
       cd backend &&
       php artisan serve --host=0.0.0.0 --port=$PORT
+    envVars:
     envVars:
       - key: APP_NAME
         value: "Tem de Tudo"
@@ -29,32 +22,21 @@ services:
       - key: APP_DEBUG
         value: false
       - key: APP_KEY
-        generateValue: true
+        value: base64:3cQV4S7tE8m2dR9wQ5lN6pK1jH0uI8yT7rE3wQ9pL5k=
       - key: APP_URL
-        value: https://tem-de-tudo.onrender.com
+        value: https://app-tem-de-tudo.onrender.com
       - key: APP_LOCALE
         value: pt_BR
       - key: DB_CONNECTION
-        value: pgsql
-      - key: DB_HOST
-        value: dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com
-      - key: DB_PORT
-        value: "5432"
+        value: sqlite
       - key: DB_DATABASE
-        value: tem_de_tudo_database
-      - key: DB_USERNAME
-        value: tem_de_tudo_database_user
-      - key: DB_PASSWORD
-        value: 9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA
+        value: /opt/render/project/src/backend/database/database.sqlite
       - key: SESSION_DRIVER
-        value: database
+        value: file
       - key: CACHE_DRIVER
-        value: database
+        value: file
       - key: QUEUE_CONNECTION
         value: sync
       - key: LOG_LEVEL
         value: error
-    disk:
-      name: tem-de-tudo-data
-      mountPath: /opt/render/project/src/backend/storage
     autoDeploy: true

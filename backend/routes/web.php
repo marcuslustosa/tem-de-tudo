@@ -3,23 +3,33 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    // Serve index.html if it exists, otherwise use blade template
     $indexPath = public_path('index.html');
     if (file_exists($indexPath)) {
         return response()->file($indexPath);
     }
-    
-    try {
-        return view('welcome');
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => 'Failed to load welcome view',
-            'message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine()
-        ], 500);
-    }
+    return response()->json(['error' => 'Index page not found'], 404);
 });
+
+// Rotas para todas as páginas HTML
+$htmlPages = [
+    'admin-configuracoes', 'admin-create-user', 'admin-login', 'admin-relatorios', 'admin',
+    'ajuda', 'aplicar-desconto', 'app', 'checkin', 'checkout-pontos',
+    'configurar-descontos', 'contato', 'empresa-qrcode', 'estabelecimentos-fixed',
+    'estabelecimentos', 'faq', 'login', 'meus-descontos', 'planos', 'pontos',
+    'preview-glass', 'privacidade', 'profile-client', 'profile-company',
+    'register-admin', 'register-company-success', 'register-company', 'register',
+    'relatorios-descontos', 'relatorios-financeiros', 'teste'
+];
+
+foreach ($htmlPages as $page) {
+    Route::get("/{$page}", function () use ($page) {
+        $filePath = public_path("{$page}.html");
+        if (file_exists($filePath)) {
+            return response()->file($filePath);
+        }
+        return abort(404);
+    });
+}
 
 Route::get('/health', function () {
     return response()->json(['status' => 'OK']);

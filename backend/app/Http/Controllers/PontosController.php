@@ -14,6 +14,7 @@ use App\Models\Empresa;
 use App\Models\Ponto;
 use App\Models\CheckIn;
 use App\Models\Coupon;
+use App\Models\QRCode;
 
 class PontosController extends Controller
 {
@@ -29,7 +30,8 @@ class PontosController extends Controller
                 'foto_cupom' => 'required|file|mimes:jpeg,jpg,png|max:5120', // 5MB
                 'latitude' => 'nullable|numeric',
                 'longitude' => 'nullable|numeric',
-                'observacoes' => 'nullable|string|max:500'
+                'observacoes' => 'nullable|string|max:500',
+                'qr_code_id' => 'nullable|exists:qr_codes,id'
             ]);
 
             $user = Auth::user();
@@ -63,6 +65,7 @@ class PontosController extends Controller
             $checkin = CheckIn::create([
                 'user_id' => $user->id,
                 'empresa_id' => $empresa->id,
+                'qr_code_id' => $request->qr_code_id,
                 'valor_compra' => $request->valor_compra,
                 'pontos_calculados' => $pontosCalculados,
                 'foto_cupom' => $fotoPath,
@@ -70,15 +73,16 @@ class PontosController extends Controller
                 'codigo_validacao' => strtoupper(Str::random(8)),
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
-                'observacoes' => $request->observacoes
+                'observacoes' => $request->observacoes,
+                'bonus_applied' => false
             ]);
 
             // Adicionar pontos pendentes ao usuário
             $user->increment('pontos_pendentes', $pontosCalculados);
 
             // Log da atividade
-            $this->registrarAtividade($user->id, 'checkin_pending', 
-                "Check-in pendente no {$empresa->nome} - R$ " . number_format($request->valor_compra, 2, ',', '.'), 
+            $this->registrarAtividade($user->id, 'checkin_pending',
+                "Check-in pendente no {$empresa->nome} - R$ " . number_format($request->valor_compra, 2, ',', '.'),
                 $pontosCalculados);
 
             return response()->json([
@@ -95,6 +99,7 @@ class PontosController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            Log::error('Erro no check-in', ['error' => $e->getMessage(), 'request' => $request->all()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Erro interno do servidor: ' . $e->getMessage()
@@ -159,6 +164,14 @@ class PontosController extends Controller
                 // Transferir pontos
                 $user->decrement('pontos_pendentes', $checkin->pontos_calculados);
                 $user->increment('pontos', $checkin->pontos_calculados);
+
+                // Atualizar QR code se foi usado
+                if ($checkin->qr_code_id) {
+                    $qrCode = QRCode::find($checkin->qr_code_id);
+                    if ($qrCode) {
+                        $qrCode->incrementarUso();
+                    }
+                }
 
                 // Registrar no histórico de pontos
                 Ponto::create([

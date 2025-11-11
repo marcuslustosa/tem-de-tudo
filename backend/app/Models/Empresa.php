@@ -11,31 +11,24 @@ class Empresa extends Model
 
     protected $fillable = [
         'nome',
-        'cnpj',
         'endereco',
         'telefone',
-        'email',
-        'photos',
-        'services',
-        'user_id',
-        'qr_code',
-        'plan',
-        'settings',
-        'active',
-        'points_multiplier'
+        'cnpj',
+        'logo',
+        'descricao',
+        'points_multiplier',
+        'ativo',
+        'owner_id'
     ];
 
     protected $casts = [
-        'photos' => 'array',
-        'services' => 'array',
-        'active' => 'boolean',
-        'points_multiplier' => 'decimal:2',
-        'settings' => 'array'
+        'ativo' => 'boolean',
+        'points_multiplier' => 'decimal:2'
     ];
 
-    public function user()
+    public function owner()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     /**
@@ -76,7 +69,7 @@ class Empresa extends Model
      */
     public function isAtiva(): bool
     {
-        return $this->active ?? true;
+        return $this->ativo ?? true;
     }
 
     /**
