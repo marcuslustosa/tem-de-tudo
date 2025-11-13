@@ -7,14 +7,23 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     git \
     unzip \
+    curl \
+    zip \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
     dos2unix \
-    && docker-php-ext-install pdo pdo_sqlite pdo_pgsql \
+    && docker-php-ext-install pdo pdo_sqlite pdo_pgsql pgsql mbstring exif pcntl bcmath gd \
     && a2enmod rewrite \
     && a2enmod headers \
+    && a2enmod expires \
     && rm -rf /var/lib/apt/lists/*
 
-# Configurar PHP
-RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory-limit.ini
+# Configurar PHP para produção
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory-limit.ini \
+    && echo "upload_max_filesize=20M" > /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size=20M" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -22,48 +31,36 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Configurar diretório de trabalho
 WORKDIR /var/www/html
 
-# Copiar composer.json e composer.lock
+# Copiar arquivos de dependências primeiro (melhor cache)
 COPY composer.json composer.lock ./
 
-# Copiar arquivos do projeto
+# Instalar dependências do Composer
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+
+# Copiar todos os arquivos do projeto
 COPY . .
+
+# Otimizar autoloader
+RUN composer dump-autoload --optimize --no-dev
 
 # Copiar configuração do Apache
 COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Instalar dependências do Composer
-RUN composer install --no-dev --no-scripts --no-autoloader
-
-# Otimizar autoloader
-RUN composer dump-autoload --optimize
-
-# Ajustar permissões
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage
-
-# Copiar o resto dos arquivos
-COPY . .
-
-# Gerar autoloader otimizado
-RUN composer dump-autoload --optimize --no-dev
-
-# Configurar Apache
-COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
-
-# Configurar permissões e diretórios
+# Criar diretórios necessários
 RUN mkdir -p \
     storage/framework/sessions \
     storage/framework/views \
     storage/framework/cache \
     storage/logs \
-    bootstrap/cache \
-    && chown -R www-data:www-data . \
-    && chmod -R 775 storage bootstrap/cache \
-    && chmod +x entrypoint.sh \
-    && dos2unix entrypoint.sh
+    bootstrap/cache
 
-# Expor porta
+# Configurar permissões corretas
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
+
+# Expor porta 80
 EXPOSE 80
 
-# Definir script de entrada
-CMD ["/bin/bash", "/var/www/html/entrypoint.sh"]
+# Iniciar Apache
+CMD ["apache2-foreground"]

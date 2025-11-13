@@ -12,20 +12,23 @@ services:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: false
+        value: "false"
       - key: APP_KEY
         value: base64:3cQV4S7tE8m2dR9wQ5lN6pK1jH0uI8yT7rE3wQ9pL5k=
       - key: APP_URL
         value: https://app-tem-de-tudo.onrender.com
       - key: APP_LOCALE
         value: pt_BR
+      - key: APP_TIMEZONE
+        value: America/Sao_Paulo
 
+      # Database PostgreSQL
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
         value: dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com
       - key: DB_PORT
-        value: 5432
+        value: "5432"
       - key: DB_DATABASE
         value: tem_de_tudo_database
       - key: DB_USERNAME
@@ -33,47 +36,26 @@ services:
       - key: DB_PASSWORD
         value: 9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA
         
-      # Cache e Session em Database
-      - key: CACHE_STORE
+      # Cache e Session
+      - key: CACHE_DRIVER
         value: database
       - key: SESSION_DRIVER
         value: database
       - key: SESSION_LIFETIME
-        value: 120
-
-      - key: SESSION_DRIVER
-        value: database
-      - key: CACHE_DRIVER
-        value: database
+        value: "120"
       - key: QUEUE_CONNECTION
         value: database
+      
+      # JWT
       - key: JWT_SECRET
         value: t3md3tud0syst3mj4wt53cr3tk3y2024s3cur3h4shk3y
       - key: JWT_TTL
-        value: 60
+        value: "60"
       - key: JWT_REFRESH_TTL
-        value: 20160
-
-    buildCommand: chmod +x deploy.sh
-    postDeployCommand: ./deploy.sh
-      php artisan db:seed --force
-      php artisan config:cache
-      php artisan route:cache
-      php artisan view:cache
-
-  - type: worker
-    name: tem-de-tudo-worker
-    env: docker
-    rootDir: backend
-    dockerfilePath: backend/Dockerfile
-    envVars:
-      - key: QUEUE_CONNECTION
-        value: database
-    startCommand: php artisan queue:work --verbose --tries=3 --timeout=90
-
-databases:
-  - name: temdetudo-db
-    region: oregon
-    plan: free
-    databaseName: temdetudo
-    user: temdetudo_user
+        value: "20160"
+      
+      # Log
+      - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_LEVEL
+        value: error

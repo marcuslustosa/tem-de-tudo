@@ -18,7 +18,8 @@ $htmlPages = [
     'estabelecimentos', 'faq', 'login', 'meus-descontos', 'planos', 'pontos',
     'preview-glass', 'privacidade', 'profile-client', 'profile-company',
     'register-admin', 'register-company-success', 'register-company', 'register',
-    'relatorios-descontos', 'relatorios-financeiros', 'teste'
+    'relatorios-descontos', 'relatorios-financeiros', 'teste',
+    'dashboard-cliente', 'dashboard-estabelecimento'
 ];
 
 foreach ($htmlPages as $page) {

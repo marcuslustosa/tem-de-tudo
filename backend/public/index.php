@@ -2,7 +2,6 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 // Enable error reporting for debugging
 error_reporting(E_ALL);
@@ -23,20 +22,7 @@ try {
     /** @var Application $app */
     $app = require_once __DIR__.'/../bootstrap/app.php';
 
-    $request = Request::capture();
-    
-    // Check if the request is for an HTML file that exists
-    $requestPath = $request->getPathInfo();
-    if (preg_match('/\.html$/', $requestPath)) {
-        $filePath = __DIR__ . $requestPath;
-        if (file_exists($filePath)) {
-            header('Content-Type: text/html');
-            readfile($filePath);
-            exit;
-        }
-    }
-    
-    $app->handleRequest($request);
+    $app->handleRequest(Request::capture());
 
 } catch (\Throwable $e) {
     http_response_code(500);
