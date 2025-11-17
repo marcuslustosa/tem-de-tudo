@@ -37,6 +37,9 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 });
 
+// Rota para listar empresas (pública para funcionários se cadastrarem)
+Route::get('/empresas', [EmpresaController::class, 'listEmpresas']);
+
 // Rotas de admin com JWT
 Route::prefix('admin')->group(function () {
     // Login de admin (público)

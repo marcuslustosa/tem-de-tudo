@@ -124,21 +124,21 @@ return new class extends Migration
             });
         }
 
-        // 6. Cria tabela pontos - apenas se não existir
-        if (!Schema::hasTable('pontos')) {
-            Schema::create('pontos', function (Blueprint $table) {
+        // 6. Cria tabela qr_codes - apenas se não existir (movida para antes de check_ins)
+        if (!Schema::hasTable('qr_codes')) {
+            Schema::create('qr_codes', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('user_id')->constrained()->onDelete('cascade');
                 $table->foreignId('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
-                $table->foreignId('checkin_id')->nullable()->references('id')->on('check_ins')->onDelete('set null');
-                $table->foreignId('coupon_id')->nullable()->references('id')->on('coupons')->onDelete('set null');
-                $table->integer('pontos');
-                $table->string('descricao');
-                $table->string('tipo'); // earn, redeem, bonus, adjustment
+                $table->string('name');
+                $table->string('code')->unique();
+                $table->text('location')->nullable();
+                $table->boolean('active')->default(true);
+                $table->json('active_offers')->nullable();
+                $table->integer('usage_count')->default(0);
+                $table->timestamp('last_used_at')->nullable();
                 $table->timestamps();
 
-                $table->index(['user_id', 'created_at']);
-                $table->index(['empresa_id', 'created_at']);
+                $table->index(['empresa_id', 'active']);
             });
         }
 
@@ -196,30 +196,30 @@ return new class extends Migration
             });
         }
 
-        // 9. Cria tabela qr_codes - apenas se não existir
-        if (!Schema::hasTable('qr_codes')) {
-            Schema::create('qr_codes', function (Blueprint $table) {
+        // 9. Cria tabela pontos - apenas se não existir
+        if (!Schema::hasTable('pontos')) {
+            Schema::create('pontos', function (Blueprint $table) {
                 $table->id();
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');
                 $table->foreignId('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
-                $table->string('name');
-                $table->string('code')->unique();
-                $table->text('location')->nullable();
-                $table->boolean('active')->default(true);
-                $table->json('active_offers')->nullable();
-                $table->integer('usage_count')->default(0);
-                $table->timestamp('last_used_at')->nullable();
+                $table->foreignId('checkin_id')->nullable()->references('id')->on('check_ins')->onDelete('set null');
+                $table->foreignId('coupon_id')->nullable()->references('id')->on('coupons')->onDelete('set null');
+                $table->integer('pontos');
+                $table->string('descricao');
+                $table->string('tipo'); // earn, redeem, bonus, adjustment
                 $table->timestamps();
 
-                $table->index(['empresa_id', 'active']);
+                $table->index(['user_id', 'created_at']);
+                $table->index(['empresa_id', 'created_at']);
             });
         }
 
-        // 10. Cria tabela audit_logs - apenas se não existir
+        // 10. Cria tabela audit_logs - apenas se não existir (removida referência a admins)
         if (!Schema::hasTable('audit_logs')) {
             Schema::create('audit_logs', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
-                $table->foreignId('admin_id')->nullable()->references('id')->on('admins')->onDelete('set null');
+                $table->unsignedBigInteger('admin_id')->nullable();
                 $table->string('action');
                 $table->string('ip_address')->nullable();
                 $table->text('user_agent')->nullable();
@@ -231,12 +231,12 @@ return new class extends Migration
             });
         }
 
-        // 11. Cria tabela push_notifications - apenas se não existir
+        // 11. Cria tabela push_notifications - apenas se não existir (removida referência a admins)
         if (!Schema::hasTable('push_notifications')) {
             Schema::create('push_notifications', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
-                $table->foreignId('admin_id')->nullable()->references('id')->on('admins')->onDelete('set null');
+                $table->unsignedBigInteger('admin_id')->nullable();
                 $table->string('user_type')->default('client'); // client, admin
                 $table->string('title');
                 $table->text('body');
