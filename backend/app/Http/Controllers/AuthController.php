@@ -12,8 +12,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\AuditLog;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
+
 use Carbon\Carbon;
 
 class AuthController extends Controller
@@ -61,8 +60,8 @@ class AuthController extends Controller
                 'promotional_notifications' => $request->promotional_notifications ?? false,
             ]);
 
-            // Gerar JWT token
-            $token = JWTAuth::fromUser($user);
+            // Gerar Sanctum token
+            $token = $user->createToken('auth_token')->plainTextToken;
 
             DB::commit();
 
@@ -115,7 +114,7 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        if (!$token = JWTAuth::attempt($credentials)) {
+        if (!Auth::attempt($credentials)) {
             RateLimiter::hit($key, 300); // 5 minutos
             return response()->json([
                 'success' => false,
@@ -124,6 +123,7 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         // Verificar se usuário está ativo
         if ($user->status !== 'ativo') {
@@ -154,7 +154,6 @@ class AuthController extends Controller
                 'user' => array_merge($user->toArray(), ['nivel' => $nivel]),
                 'token' => $token,
                 'token_type' => 'Bearer',
-                'expires_in' => config('jwt.ttl') * 60,
                 'permissions' => $this->getUserPermissions($user->role)
             ]
         ]);
@@ -212,13 +211,13 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         try {
-            JWTAuth::invalidate(JWTAuth::getToken());
+            $request->user()->currentAccessToken()->delete();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Logout realizado com sucesso'
             ]);
-        } catch (JWTException $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Erro ao fazer logout'

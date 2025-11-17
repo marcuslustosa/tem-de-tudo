@@ -18,7 +18,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/login', [AuthController::class, 'adminLogin']);
     
     // Rotas protegidas por JWT
-    Route::middleware(['jwt.auth'])->group(function () {
+    Route::middleware(['sanctum.auth'])->group(function () {
         Route::post('/logout', [AuthController::class, 'adminLogout']);
         Route::get('/me', [AuthController::class, 'adminProfile']);
         Route::post('/refresh', [AuthController::class, 'refreshToken']);
@@ -108,7 +108,7 @@ Route::middleware('auth:sanctum')->prefix('pontos')->group(function () {
 });
 
 // Rotas administrativas do sistema de pontos (protegidas por JWT e admin)
-Route::middleware(['jwt.auth'])->prefix('admin/pontos')->group(function () {
+Route::middleware(['sanctum.auth'])->prefix('admin/pontos')->group(function () {
     // Aprovar/rejeitar check-ins
     Route::post('/checkin/{checkin}/aprovar', [PontosController::class, 'aprovarCheckin'])
         ->middleware(['admin.permission:manage_checkins']);
@@ -131,7 +131,7 @@ Route::prefix('qrcode')->group(function () {
     });
     
     // Rotas administrativas de QR Code
-    Route::middleware(['jwt.auth'])->group(function () {
+    Route::middleware(['sanctum.auth'])->group(function () {
         // Gerar QR Code para estabelecimento
         Route::post('/generate', [QRCodeController::class, 'generateQR'])
             ->middleware(['admin.permission:manage_qrcodes']);
@@ -160,7 +160,7 @@ Route::prefix('discounts')->group(function () {
     });
     
     // Rotas administrativas de descontos
-    Route::middleware(['jwt.auth'])->group(function () {
+    Route::middleware(['sanctum.auth'])->group(function () {
         // Configurar níveis de desconto
         Route::post('/configure', [DiscountController::class, 'configureCompanyDiscounts'])
             ->middleware(['admin.permission:manage_discounts']);

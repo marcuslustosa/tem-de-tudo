@@ -24,7 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         
         $middleware->alias([
             'auth.sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            'jwt.auth' => \App\Http\Middleware\JwtMiddleware::class,
+            'sanctum.auth' => \App\Http\Middleware\SanctumMiddleware::class,
             'admin.permission' => \App\Http\Middleware\AdminPermissionMiddleware::class,
             'security' => \App\Http\Middleware\SecurityMiddleware::class,
         ]);

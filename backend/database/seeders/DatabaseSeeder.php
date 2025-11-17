@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Admin Master
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'admin@temdetudo.com'],
             [
                 'name' => 'Administrador Master',
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         );
 
         // Cliente de Teste
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'cliente@teste.com'],
             [
                 'name' => 'Cliente Teste',
@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
         );
 
         // Empresa Parceira
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'empresa@teste.com'],
             [
                 'name' => 'Empresa Teste Ltda',
