@@ -50,10 +50,8 @@
                             onchange="toggleRoleFields()"
                         >
                             <option value="">Selecione o tipo de conta</option>
-                            <option value="administrador">Administrador - Acesso total ao sistema</option>
-                            <option value="gestor">Gestor - Gerenciar operações</option>
-                            <option value="recepcionista">Recepcionista - Atender clientes</option>
-                            <option value="usuario_comum">Usuário Comum - Acesso básico</option>
+                            <option value="cliente">Cliente - Ganhar pontos em compras</option>
+                            <option value="empresa">Empresa - Oferecer pontos aos clientes</option>
                         </select>
                     </div>
 
@@ -88,14 +86,14 @@
                     </div>
 
                     <!-- Campos Específicos por Perfil -->
-                    <div id="administradorFields" class="role-fields" style="display: none;">
+                    <div id="clienteFields" class="role-fields" style="display: none;">
                         <div class="form-group" style="margin-bottom: var(--space-6);">
                             <label for="telefone" class="form-label">
                                 <i class="fas fa-phone icon-sm"></i> Telefone (opcional)
                             </label>
                             <input
                                 type="tel"
-                                id="telefone_admin"
+                                id="telefone_cliente"
                                 name="telefone"
                                 class="form-control"
                                 placeholder="(11) 99999-9999"
@@ -104,49 +102,48 @@
                         </div>
                     </div>
 
-                    <div id="gestorFields" class="role-fields" style="display: none;">
+                    <div id="empresaFields" class="role-fields" style="display: none;">
                         <div class="form-group" style="margin-bottom: var(--space-6);">
-                            <label for="telefone" class="form-label">
-                                <i class="fas fa-phone icon-sm"></i> Telefone (opcional)
+                            <label for="cnpj" class="form-label">
+                                <i class="fas fa-building icon-sm"></i> CNPJ
                             </label>
                             <input
-                                type="tel"
-                                id="telefone_gestor"
-                                name="telefone"
+                                type="text"
+                                id="cnpj"
+                                name="cnpj"
                                 class="form-control"
-                                placeholder="(11) 99999-9999"
-                                autocomplete="tel"
+                                placeholder="00.000.000/0000-00"
+                                required
+                                autocomplete="organization"
                             >
                         </div>
-                    </div>
 
-                    <div id="recepcionistaFields" class="role-fields" style="display: none;">
                         <div class="form-group" style="margin-bottom: var(--space-6);">
-                            <label for="telefone" class="form-label">
-                                <i class="fas fa-phone icon-sm"></i> Telefone (opcional)
+                            <label for="endereco" class="form-label">
+                                <i class="fas fa-map-marker-alt icon-sm"></i> Endereço
                             </label>
                             <input
-                                type="tel"
-                                id="telefone_recepcionista"
-                                name="telefone"
+                                type="text"
+                                id="endereco"
+                                name="endereco"
                                 class="form-control"
-                                placeholder="(11) 99999-9999"
-                                autocomplete="tel"
+                                placeholder="Rua, número, bairro, cidade - UF"
+                                required
+                                autocomplete="address-line1"
                             >
                         </div>
-                    </div>
 
-                    <div id="usuario_comumFields" class="role-fields" style="display: none;">
                         <div class="form-group" style="margin-bottom: var(--space-6);">
                             <label for="telefone" class="form-label">
-                                <i class="fas fa-phone icon-sm"></i> Telefone (opcional)
+                                <i class="fas fa-phone icon-sm"></i> Telefone
                             </label>
                             <input
                                 type="tel"
-                                id="telefone_usuario"
+                                id="telefone_empresa"
                                 name="telefone"
                                 class="form-control"
                                 placeholder="(11) 99999-9999"
+                                required
                                 autocomplete="tel"
                             >
                         </div>
@@ -332,7 +329,11 @@
 
                 // Adicionar campos específicos baseado no perfil
                 const perfil = formData.get('perfil');
-                if (perfil === 'administrador' || perfil === 'gestor' || perfil === 'recepcionista' || perfil === 'usuario_comum') {
+                if (perfil === 'cliente') {
+                    requestData.telefone = formData.get('telefone');
+                } else if (perfil === 'empresa') {
+                    requestData.cnpj = formData.get('cnpj');
+                    requestData.endereco = formData.get('endereco');
                     requestData.telefone = formData.get('telefone');
                 }
 

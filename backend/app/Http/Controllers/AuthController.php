@@ -42,7 +42,7 @@ class AuthController extends Controller
         try {
             // Validação inicial do perfil
             $request->validate([
-                'perfil' => 'required|string|in:administrador,gestor,recepcionista,usuario_comum',
+                'perfil' => 'required|string|in:cliente,empresa',
             ]);
 
             $perfil = $request->perfil;
@@ -53,6 +53,14 @@ class AuthController extends Controller
 
             $validatedData = $request->validate($validationRules);
             Log::info('Validação passou', ['perfil' => $perfil, 'validated' => array_merge($validatedData, ['password' => '[HIDDEN]'])]);
+
+            // Mapear perfil para role no banco
+            $roleMapping = [
+                'cliente' => 'cliente',
+                'empresa' => 'empresa'
+            ];
+
+            $role = $roleMapping[$perfil] ?? 'cliente';
 
         } catch (ValidationException $e) {
             Log::warning('Erro de validação no registro', [
@@ -86,6 +94,21 @@ class AuthController extends Controller
             $user = User::create($userData);
 
             Log::info('Usuário criado no banco', ['user_id' => $user->id, 'email' => $user->email, 'perfil' => $perfil]);
+
+            // Se for empresa, criar registro na tabela empresas
+            if ($perfil === 'empresa') {
+                $empresa = \App\Models\Empresa::create([
+                    'nome' => $request->name,
+                    'endereco' => $request->endereco,
+                    'telefone' => $request->telefone,
+                    'cnpj' => $request->cnpj,
+                    'owner_id' => $user->id,
+                    'ativo' => true,
+                    'points_multiplier' => 1.0,
+                ]);
+
+                Log::info('Empresa criada com sucesso', ['empresa_id' => $empresa->id, 'user_id' => $user->id]);
+            }
 
             // Gerar Sanctum token
             $token = $user->createToken('auth_token')->plainTextToken;
@@ -411,16 +434,16 @@ class AuthController extends Controller
         ];
 
         switch ($perfil) {
-            case 'administrador':
-            case 'gestor':
-            case 'recepcionista':
+            case 'cliente':
                 return array_merge($baseRules, [
                     'telefone' => 'nullable|string|max:20',
                 ]);
 
-            case 'usuario_comum':
+            case 'empresa':
                 return array_merge($baseRules, [
-                    'telefone' => 'nullable|string|max:20',
+                    'telefone' => 'required|string|max:20',
+                    'cnpj' => 'required|string|size:14|unique:empresas',
+                    'endereco' => 'required|string|max:500',
                 ]);
 
             default:
@@ -437,19 +460,20 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'perfil' => $perfil,
+            'role' => $perfil,
             'status' => 'ativo',
+            'pontos' => 0,
+            'pontos_pendentes' => 0,
+            'nivel' => 'Bronze',
         ];
 
         switch ($perfil) {
-            case 'administrador':
-            case 'gestor':
-            case 'recepcionista':
+            case 'cliente':
                 return array_merge($baseData, [
                     'telefone' => $request->telefone,
                 ]);
 
-            case 'usuario_comum':
+            case 'empresa':
                 return array_merge($baseData, [
                     'telefone' => $request->telefone,
                 ]);
@@ -481,14 +505,10 @@ class AuthController extends Controller
     private function getSuccessMessageForPerfil(string $perfil): string
     {
         switch ($perfil) {
-            case 'administrador':
-                return 'Conta de administrador criada com sucesso! Você tem acesso total ao sistema.';
-            case 'gestor':
-                return 'Conta de gestor criada com sucesso! Você pode gerenciar operações.';
-            case 'recepcionista':
-                return 'Conta de recepcionista criada com sucesso! Você pode atender clientes.';
-            case 'usuario_comum':
-                return 'Conta criada com sucesso! Bem-vindo ao sistema.';
+            case 'cliente':
+                return 'Conta de cliente criada com sucesso! Você pode ganhar pontos em suas compras.';
+            case 'empresa':
+                return 'Conta de empresa criada com sucesso! Você pode oferecer pontos aos seus clientes.';
             default:
                 return 'Conta criada com sucesso!';
         }
@@ -500,16 +520,12 @@ class AuthController extends Controller
     private function getRedirectUrlForPerfil(string $perfil): string
     {
         switch ($perfil) {
-            case 'administrador':
-                return '/admin/dashboard.html';
-            case 'gestor':
-                return '/gestor/home.html';
-            case 'recepcionista':
-                return '/recepcao/index.html';
-            case 'usuario_comum':
-                return '/app/home.html';
+            case 'cliente':
+                return '/dashboard-cliente.html';
+            case 'empresa':
+                return '/dashboard-estabelecimento.html';
             default:
-                return '/app/home.html';
+                return '/dashboard-cliente.html';
         }
     }
 
@@ -519,13 +535,11 @@ class AuthController extends Controller
     private function getPerfilFromRole(string $role): string
     {
         $roleToPerfil = [
-            'admin' => 'administrador',
-            'gestor' => 'gestor',
-            'recepcionista' => 'recepcionista',
-            'cliente' => 'usuario_comum'
+            'cliente' => 'cliente',
+            'empresa' => 'empresa'
         ];
 
-        return $roleToPerfil[$role] ?? 'usuario_comum';
+        return $roleToPerfil[$role] ?? 'cliente';
     }
 
 
