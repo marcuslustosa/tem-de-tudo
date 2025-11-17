@@ -222,8 +222,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Add CSS animations
-const style = document.createElement('style');
-style.textContent = `
+const globalStyle = document.createElement('style');
+globalStyle.textContent = `
     @keyframes slideInRight {
         from {
             transform: translateX(400px);
@@ -234,7 +234,7 @@ style.textContent = `
             opacity: 1;
         }
     }
-    
+
     @keyframes slideOutRight {
         from {
             transform: translateX(0);
@@ -246,4 +246,4 @@ style.textContent = `
         }
     }
 `;
-document.head.appendChild(style);
+document.head.appendChild(globalStyle);
