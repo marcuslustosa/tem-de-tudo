@@ -237,7 +237,20 @@
             loadingOverlay.style.display = 'flex';
             
             try {
-                const response = await fetch('/api/auth/register', {
+                // Determinar URL base dinamicamente
+                const baseUrl = window.location.origin;
+                const apiUrl = `${baseUrl}/api/auth/register`;
+
+                console.log('Tentando cadastro em:', apiUrl);
+                console.log('Dados enviados:', {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    password: '[REDACTED]',
+                    terms: formData.get('terms') ? true : false
+                });
+
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -254,26 +267,73 @@
                     })
                 });
 
-                const data = await response.json();
+                console.log('Status da resposta:', response.status);
+                console.log('Headers da resposta:', Object.fromEntries(response.headers.entries()));
+
+                let data;
+                try {
+                    data = await response.json();
+                    console.log('Dados da resposta:', data);
+                } catch (jsonError) {
+                    console.error('Erro ao parsear JSON:', jsonError);
+                    const textResponse = await response.text();
+                    console.error('Resposta como texto:', textResponse);
+                    throw new Error(`Resposta inválida do servidor: ${textResponse.substring(0, 200)}`);
+                }
 
                 if (response.ok && data.success) {
                     if (data.data && data.data.token) {
                         localStorage.setItem('token', data.data.token);
                         localStorage.setItem('user', JSON.stringify(data.data.user));
+                        console.log('Token salvo no localStorage');
                     }
-                    
+
                     showMessage(data.message || 'Conta criada com sucesso! Você ganhou 100 pontos de bônus!', 'success');
-                    
+
                     setTimeout(() => {
                         window.location.href = data.data && data.data.token ? '/pontos.html' : '/login.html';
                     }, 2000);
                 } else {
-                    throw new Error(data.message || 'Erro ao criar conta');
+                    // Tratamento específico de erros
+                    let errorMessage = 'Erro ao criar conta';
+
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (response.status === 422 && data.errors) {
+                        // Erros de validação
+                        const validationErrors = Object.values(data.errors).flat();
+                        errorMessage = validationErrors.join('. ');
+                    } else if (response.status === 429) {
+                        errorMessage = 'Muitas tentativas. Aguarde alguns minutos.';
+                    } else if (response.status === 500) {
+                        errorMessage = 'Erro interno do servidor. Tente novamente em alguns instantes.';
+                    }
+
+                    console.error('Erro detalhado:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        data: data,
+                        url: apiUrl
+                    });
+
+                    throw new Error(errorMessage);
                 }
             } catch (error) {
-                console.error('Erro no cadastro:', error);
-                showMessage(error.message || 'Erro ao criar conta. Tente novamente.', 'error');
-            } finally {
+                console.error('Erro completo no cadastro:', error);
+
+                // Mensagens mais específicas baseadas no tipo de erro
+                let userMessage = 'Erro ao criar conta. Tente novamente.';
+
+                if (error.message.includes('fetch')) {
+                    userMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
+                } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+                    userMessage = 'Não foi possível conectar ao servidor. Tente novamente em alguns instantes.';
+                } else if (error.message) {
+                    userMessage = error.message;
+                }
+
+                showMessage(userMessage, 'error');
+            }
                 registerBtn.disabled = false;
                 registerBtn.innerHTML = '<i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>Criar conta';
                 loadingOverlay.style.display = 'none';

@@ -6,6 +6,31 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\NotificationController;
 
+// Debug route (remover em produção)
+Route::get('/debug', function () {
+    try {
+        $dbConnection = DB::connection();
+        $dbConnection->getPdo();
+
+        return response()->json([
+            'status' => 'OK',
+            'message' => 'API funcionando',
+            'database' => [
+                'connection' => config('database.default'),
+                'status' => 'connected'
+            ],
+            'timestamp' => now(),
+            'environment' => app()->environment()
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'ERROR',
+            'message' => 'Erro na API',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});
+
 // Rotas públicas de autenticação
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);

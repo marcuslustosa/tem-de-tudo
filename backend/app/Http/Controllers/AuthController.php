@@ -22,29 +22,63 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        Log::info('=== INÍCIO DO REGISTRO ===', [
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'headers' => $request->headers->all(),
+            'data' => $request->all()
+        ]);
+
         // Rate limiting para registro
         $key = 'register-attempts:' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 3)) {
+            Log::warning('Rate limit excedido para registro', ['ip' => $request->ip(), 'key' => $key]);
             return response()->json([
                 'success' => false,
                 'message' => 'Muitas tentativas de registro. Tente novamente em ' . RateLimiter::availableIn($key) . ' segundos.'
             ], 429);
         }
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'telefone' => 'nullable|string|max:20',
-            'fcm_token' => 'nullable|string',
-            'email_notifications' => 'nullable|boolean',
-            'points_notifications' => 'nullable|boolean',
-            'security_notifications' => 'nullable|boolean',
-            'promotional_notifications' => 'nullable|boolean',
-        ]);
+        try {
+            // Validação com logs detalhados
+            Log::info('Iniciando validação dos dados', ['data' => $request->all()]);
+
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8',
+                'phone' => 'nullable|string|max:20',
+                'terms' => 'required|boolean|accepted',
+            ]);
+
+            Log::info('Validação passou', ['validated' => array_merge($validatedData, ['password' => '[HIDDEN]'])]);
+
+        } catch (ValidationException $e) {
+            Log::warning('Erro de validação no registro', [
+                'errors' => $e->errors(),
+                'data' => $request->all()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Dados inválidos. Verifique os campos e tente novamente.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Erro inesperado na validação', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro na validação dos dados. Tente novamente.'
+            ], 400);
+        }
 
         try {
             DB::beginTransaction();
+            Log::info('Transação do banco iniciada');
 
             $user = User::create([
                 'name' => $request->name,
@@ -52,43 +86,86 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => 'cliente',
                 'pontos' => 100, // Bônus de boas-vindas
-                'telefone' => $request->telefone,
-                'fcm_token' => $request->fcm_token,
-                'email_notifications' => $request->email_notifications ?? true,
-                'points_notifications' => $request->points_notifications ?? true,
-                'security_notifications' => $request->security_notifications ?? true,
-                'promotional_notifications' => $request->promotional_notifications ?? false,
+                'telefone' => $request->phone,
+                'status' => 'ativo',
+                'nivel' => 'Bronze',
+                'email_notifications' => true,
+                'points_notifications' => true,
+                'security_notifications' => true,
+                'promotional_notifications' => false,
             ]);
+
+            Log::info('Usuário criado no banco', ['user_id' => $user->id, 'email' => $user->email]);
 
             // Gerar Sanctum token
             $token = $user->createToken('auth_token')->plainTextToken;
+            Log::info('Token Sanctum gerado', ['user_id' => $user->id]);
 
             DB::commit();
+            Log::info('Transação confirmada com sucesso');
 
-            // Log do evento
+            // Log do evento de auditoria
             $this->logAuditEvent('user_registered', $user->id, $request);
 
             RateLimiter::clear($key);
 
-            return response()->json([
+            $response = [
                 'success' => true,
                 'message' => 'Usuário criado com sucesso! Você ganhou 100 pontos de boas-vindas!',
                 'data' => [
                     'user' => $user,
                     'token' => $token,
                     'token_type' => 'Bearer',
-                    'expires_in' => config('jwt.ttl') * 60
+                    'expires_in' => 60 * 60 // 1 hora em segundos
                 ]
-            ], 201);
+            ];
+
+            Log::info('Registro concluído com sucesso', [
+                'user_id' => $user->id,
+                'response_size' => strlen(json_encode($response))
+            ]);
+
+            return response()->json($response, 201);
+
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            RateLimiter::hit($key, 300);
+
+            Log::error('Erro de banco de dados no registro', [
+                'error' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'sql' => $e->getSql(),
+                'bindings' => $e->getBindings()
+            ]);
+
+            // Verificar se é erro de email duplicado
+            if ($e->getCode() == 23000) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Este email já está cadastrado. Tente fazer login ou use outro email.'
+                ], 422);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro no banco de dados. Tente novamente em alguns instantes.'
+            ], 500);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            RateLimiter::hit($key, 300); // 5 minutos
-            Log::error('Erro no registro', ['error' => $e->getMessage(), 'request' => $request->all()]);
-            
+            RateLimiter::hit($key, 300);
+
+            Log::error('Erro geral no registro', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all()
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao criar usuário. Tente novamente.'
+                'message' => 'Erro interno do servidor. Nossa equipe foi notificada.'
             ], 500);
         }
     }
