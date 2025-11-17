@@ -23,19 +23,9 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'role',
-        'pontos',
-        'pontos_pendentes',
+        'perfil',
         'telefone',
-        'status',
-        'nivel',
-        'fcm_token',
-        'email_notifications',
-        'points_notifications',
-        'security_notifications',
-        'promotional_notifications',
-        'ultimo_login',
-        'ip_ultimo_login'
+        'status'
     ];
 
     /**
@@ -73,7 +63,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function empresa()
     {
-        return $this->hasOne(Empresa::class);
+        return $this->hasOne(Empresa::class, 'owner_id');
     }
 
     /**
@@ -158,29 +148,5 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    /**
-     * Inicializar valores padrão
-     */
-    protected static function boot()
-    {
-        parent::boot();
 
-        static::creating(function ($user) {
-            if (is_null($user->pontos)) {
-                $user->pontos = 0;
-            }
-            if (is_null($user->pontos_pendentes)) {
-                $user->pontos_pendentes = 0;
-            }
-            if (is_null($user->role)) {
-                $user->role = 'cliente';
-            }
-            if (is_null($user->nivel)) {
-                $user->nivel = 'Bronze';
-            }
-            if (is_null($user->status)) {
-                $user->status = 'ativo';
-            }
-        });
-    }
 }

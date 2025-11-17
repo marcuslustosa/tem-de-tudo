@@ -54,13 +54,7 @@ class AuthController extends Controller
             $validatedData = $request->validate($validationRules);
             Log::info('Validação passou', ['perfil' => $perfil, 'validated' => array_merge($validatedData, ['password' => '[HIDDEN]'])]);
 
-            // Mapear perfil para role no banco
-            $roleMapping = [
-                'cliente' => 'cliente',
-                'empresa' => 'empresa'
-            ];
-
-            $role = $roleMapping[$perfil] ?? 'cliente';
+            // Perfil será usado diretamente
 
         } catch (ValidationException $e) {
             Log::warning('Erro de validação no registro', [
@@ -103,8 +97,8 @@ class AuthController extends Controller
                     'telefone' => $request->telefone,
                     'cnpj' => $request->cnpj,
                     'owner_id' => $user->id,
-                    'ativo' => true,
-                    'points_multiplier' => 1.0,
+                    'ativo' => \DB::raw('true'),
+                    'points_multiplier' => \DB::raw('1.0'),
                 ]);
 
                 Log::info('Empresa criada com sucesso', ['empresa_id' => $empresa->id, 'user_id' => $user->id]);
@@ -272,11 +266,11 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'Login realizado com sucesso!',
                 'data' => [
-                    'user' => array_merge($user->toArray(), ['perfil' => $this->getPerfilFromRole($user->role)]),
+                    'user' => array_merge($user->toArray(), ['perfil' => $user->perfil]),
                     'token' => $token,
                     'token_type' => 'Bearer',
                     'expires_in' => 60 * 60, // 1 hora em segundos
-                    'redirect_to' => $this->getRedirectUrlForPerfil($this->getPerfilFromRole($user->role))
+                    'redirect_to' => $this->getRedirectUrlForPerfil($user->perfil)
                 ]
             ];
 
@@ -460,11 +454,8 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $perfil,
+            'perfil' => $perfil,
             'status' => 'ativo',
-            'pontos' => 0,
-            'pontos_pendentes' => 0,
-            'nivel' => 'Bronze',
         ];
 
         switch ($perfil) {
@@ -494,8 +485,8 @@ class AuthController extends Controller
             'telefone' => $request->telefone,
             'cnpj' => $request->cnpj,
             'owner_id' => $user->id,
-            'ativo' => true,
-            'points_multiplier' => 1.0,
+            'ativo' => \DB::raw('true'),
+            'points_multiplier' => \DB::raw('1.0'),
         ]);
     }
 
@@ -534,12 +525,234 @@ class AuthController extends Controller
      */
     private function getPerfilFromRole(string $role): string
     {
-        $roleToPerfil = [
-            'cliente' => 'cliente',
-            'empresa' => 'empresa'
-        ];
+        return $role;
+    }
 
-        return $roleToPerfil[$role] ?? 'cliente';
+    /**
+     * Login de admin
+     */
+    public function adminLogin(Request $request)
+    {
+        Log::info('=== INÍCIO DO LOGIN ADMIN ===', [
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'email' => $request->email
+        ]);
+
+        // Rate limiting para login admin
+        $key = 'admin-login-attempts:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($key, 3)) {
+            Log::warning('Rate limit excedido para login admin', ['ip' => $request->ip(), 'key' => $key]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Muitas tentativas de login. Tente novamente em ' . RateLimiter::availableIn($key) . ' segundos.'
+            ], 429);
+        }
+
+        try {
+            $validatedData = $request->validate([
+                'email' => 'required|string|email',
+                'password' => 'required|string',
+            ]);
+
+            Log::info('Validação do login admin passou', ['email' => $request->email]);
+
+        } catch (ValidationException $e) {
+            Log::warning('Erro de validação no login admin', [
+                'errors' => $e->errors(),
+                'email' => $request->email
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Email ou senha inválidos.',
+                'errors' => $e->errors()
+            ], 422);
+        }
+
+        try {
+            // Buscar usuário admin
+            $user = User::where('email', $request->email)->where('perfil', 'admin')->first();
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                RateLimiter::hit($key, 300); // 5 minutos
+                Log::warning('Tentativa de login admin falhou', [
+                    'email' => $request->email,
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent()
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email ou senha incorretos.'
+                ], 401);
+            }
+
+            // Verificar se usuário está ativo
+            if ($user->status !== 'ativo') {
+                Log::warning('Tentativa de login admin com usuário inativo', [
+                    'user_id' => $user->id,
+                    'email' => $user->email,
+                    'status' => $user->status
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sua conta está inativa. Entre em contato com o suporte.'
+                ], 403);
+            }
+
+            // Gerar token Sanctum
+            $token = $user->createToken('admin_auth_token')->plainTextToken;
+
+            // Log do evento de auditoria
+            $this->logAuditEvent('admin_login', $user->id, $request);
+
+            RateLimiter::clear($key);
+
+            $response = [
+                'success' => true,
+                'message' => 'Login administrativo realizado com sucesso!',
+                'data' => [
+                    'user' => array_merge($user->toArray(), ['perfil' => 'admin']),
+                    'token' => $token,
+                    'token_type' => 'Bearer',
+                    'expires_in' => 60 * 60, // 1 hora em segundos
+                    'redirect_to' => '/admin.html'
+                ]
+            ];
+
+            Log::info('Login admin realizado com sucesso', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'ip' => $request->ip()
+            ]);
+
+            return response()->json($response, 200);
+
+        } catch (\Exception $e) {
+            RateLimiter::hit($key, 300);
+
+            Log::error('Erro geral no login admin', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+                'email' => $request->email,
+                'ip' => $request->ip()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno do servidor. Tente novamente em alguns instantes.'
+            ], 500);
+        }
+    }
+
+    /**
+     * Logout de admin
+     */
+    public function adminLogout(Request $request)
+    {
+        try {
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logout administrativo realizado com sucesso'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao fazer logout'
+            ], 500);
+        }
+    }
+
+    /**
+     * Perfil do admin
+     */
+    public function adminProfile(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'user' => array_merge($user->toArray(), ['perfil' => 'admin'])
+            ]
+        ]);
+    }
+
+    /**
+     * Refresh token
+     */
+    public function refreshToken(Request $request)
+    {
+        try {
+            $user = $request->user();
+
+            // Revogar token atual
+            $request->user()->currentAccessToken()->delete();
+
+            // Gerar novo token
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Token renovado com sucesso',
+                'data' => [
+                    'token' => $token,
+                    'token_type' => 'Bearer',
+                    'expires_in' => 60 * 60
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao renovar token'
+            ], 500);
+        }
+    }
+
+    /**
+     * Dashboard data para cliente
+     */
+    public function clienteDashboard(Request $request)
+    {
+        try {
+            $user = $request->user();
+
+            // Dados básicos do cliente
+            $pontos = $user->pontos ?? 0;
+            $nivel = $this->calcularNivel($pontos);
+
+            // Contar cupons ativos
+            $cuponsAtivos = \App\Models\Cupom::where('user_id', $user->id)
+                ->where('status', 'ativo')
+                ->where('validade', '>', now())
+                ->count();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'pontos_totais' => $pontos,
+                    'nivel' => $nivel,
+                    'cupons_ativos' => $cuponsAtivos,
+                    'user' => $user
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erro ao carregar dashboard cliente', [
+                'error' => $e->getMessage(),
+                'user_id' => $request->user()->id ?? null
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao carregar dados do dashboard'
+            ], 500);
+        }
     }
 
 

@@ -141,7 +141,7 @@ class AdminReportController extends Controller
     public function cleanupLogs(Request $request)
     {
         $user = $request->get('authenticated_user');
-        
+
         // Verificar se é super admin
         if ($user->role !== 'super_admin') {
             return response()->json([
@@ -164,5 +164,103 @@ class AdminReportController extends Controller
             'message' => "Foram removidos {$deletedCount} logs antigos",
             'deleted_count' => $deletedCount
         ]);
+    }
+
+    /**
+     * Dashboard stats para admin
+     */
+    public function dashboardStats(Request $request)
+    {
+        try {
+            $stats = [
+                'total_users' => \App\Models\User::count(),
+                'total_empresas' => \App\Models\Empresa::count(),
+                'total_pontos_distribuidos' => \DB::table('pontos')->sum('pontos'),
+                'total_checkins' => \DB::table('checkins')->count(),
+                'users_ativos_hoje' => \App\Models\User::where('updated_at', '>=', today())->count(),
+                'empresas_ativas' => \App\Models\Empresa::where('ativo', true)->count()
+            ];
+
+            return response()->json([
+                'success' => true,
+                'data' => $stats
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Erro ao carregar dashboard admin', [
+                'error' => $e->getMessage(),
+                'user_id' => $request->user()->id ?? null
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao carregar dados do dashboard'
+            ], 500);
+        }
+    }
+
+    /**
+     * Atividade recente para admin
+     */
+    public function recentActivity(Request $request)
+    {
+        try {
+            $activities = \DB::table('audit_logs')
+                ->join('users', 'audit_logs.user_id', '=', 'users.id')
+                ->select(
+                    'audit_logs.id',
+                    'audit_logs.action',
+                    'audit_logs.details',
+                    'audit_logs.created_at',
+                    'users.name as user_name',
+                    'users.perfil'
+                )
+                ->orderBy('audit_logs.created_at', 'desc')
+                ->limit(20)
+                ->get()
+                ->map(function ($activity) {
+                    return [
+                        'id' => $activity->id,
+                        'acao' => $this->formatAction($activity->action),
+                        'usuario' => $activity->user_name,
+                        'perfil' => $activity->perfil,
+                        'detalhes' => $activity->details,
+                        'created_at' => $activity->created_at
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => $activities
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Erro ao carregar atividade recente', [
+                'error' => $e->getMessage(),
+                'user_id' => $request->user()->id ?? null
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao carregar atividade recente'
+            ], 500);
+        }
+    }
+
+    /**
+     * Formatar ação para exibição
+     */
+    private function formatAction($action)
+    {
+        $actions = [
+            'user_registered' => 'Novo usuário registrado',
+            'user_login' => 'Login realizado',
+            'admin_login' => 'Login administrativo',
+            'user_logout' => 'Logout realizado',
+            'pontos_ganhos' => 'Pontos ganhos',
+            'cupom_resgatado' => 'Cupom resgatado',
+            'qr_code_criado' => 'QR Code criado',
+            'empresa_criada' => 'Empresa criada'
+        ];
+
+        return $actions[$action] ?? ucfirst(str_replace('_', ' ', $action));
     }
 }

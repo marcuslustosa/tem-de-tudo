@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AdminReportController;
@@ -112,6 +113,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications/fcm-token', [NotificationController::class, 'updateFcmToken']);
     Route::get('/notifications/settings', [NotificationController::class, 'getNotificationSettings']);
     Route::put('/notifications/settings', [NotificationController::class, 'updateNotificationSettings']);
+});
+
+// Rotas específicas por perfil
+Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente')->group(function () {
+    // Rotas exclusivas para clientes
+    Route::get('/dashboard-data', [AuthController::class, 'clienteDashboard']);
+});
+
+Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa')->group(function () {
+    // Rotas exclusivas para empresas
+    Route::get('/dashboard-stats', [EmpresaController::class, 'dashboardStats']);
+    Route::get('/recent-checkins', [EmpresaController::class, 'recentCheckins']);
+    Route::get('/top-clients', [EmpresaController::class, 'topClients']);
+});
+
+Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->group(function () {
+    // Rotas exclusivas para administradores
+    Route::get('/dashboard-stats', [AdminReportController::class, 'dashboardStats']);
+    Route::get('/recent-activity', [AdminReportController::class, 'recentActivity']);
 });
 
 // Importar o controller de pontos

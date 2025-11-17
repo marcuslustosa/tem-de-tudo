@@ -26,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'sanctum.auth' => \App\Http\Middleware\SanctumMiddleware::class,
             'admin.permission' => \App\Http\Middleware\AdminPermissionMiddleware::class,
+            'role.permission' => \App\Http\Middleware\RolePermissionMiddleware::class,
             'security' => \App\Http\Middleware\SecurityMiddleware::class,
         ]);
     })

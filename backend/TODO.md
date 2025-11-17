@@ -1,31 +1,33 @@
 # Sistema de Cadastro/Login com Múltiplos Perfis - TODO
 
 ## ✅ Implementado
-- [x] Sistema de perfis múltiplos (administrador, gestor, recepcionista, usuário comum)
+- [x] Sistema de perfis múltiplos simplificado (cliente, empresa, admin)
 - [x] Validação específica por perfil no registro
 - [x] Redirecionamento automático baseado no perfil após login
 - [x] Middleware JavaScript para proteção de rotas
 - [x] Interface de registro atualizada com seleção de perfis
 - [x] Interface de login com redirecionamento dinâmico
 - [x] Controller AuthController adaptado para múltiplos perfis
-- [x] Mapeamento role ↔ perfil no banco de dados
+- [x] Relacionamento User-Empresa corrigido (owner_id)
 - [x] Logs detalhados de auditoria
 - [x] Rate limiting para segurança
 - [x] Validação de entrada e sanitização
 - [x] Prepared statements (Laravel ORM)
 - [x] Separação de responsabilidades (Controller, Model, View)
 - [x] Código limpo e modular
+- [x] Correção de perfil no login (usando 'perfil' ao invés de 'role')
+- [x] Rotas de admin adicionadas (adminLogin, adminLogout, adminProfile, refreshToken)
 
 ## 🔄 Próximos Passos
-- [ ] Criar páginas específicas para cada perfil:
-  - [ ] `/admin/dashboard.html` - Dashboard do administrador
-  - [ ] `/gestor/home.html` - Página inicial do gestor
-  - [ ] `/recepcao/index.html` - Interface da recepção
-  - [ ] `/app/home.html` - Aplicativo do usuário comum
-- [ ] Implementar permissões específicas por perfil na API
-- [ ] Criar middleware de permissões no backend
+- [x] Criar páginas específicas para cada perfil:
+  - [x] `/admin.html` - Dashboard do administrador
+  - [x] `/dashboard-estabelecimento.html` - Dashboard da empresa
+  - [x] `/dashboard-cliente.html` - Dashboard do cliente
+- [x] Implementar permissões específicas por perfil na API
+- [x] Criar middleware de permissões no backend
 - [ ] Testar fluxo completo de registro e login
 - [ ] Documentar APIs e fluxos
+- [ ] Resolver erro JavaScript "Cannot read properties of null (reading 'addEventListener')" no registro
 
 ## 📋 Regras de Negócio Implementadas
 - [x] Sistema de pontos e níveis (Bronze, Prata, Ouro, Diamante)
@@ -46,8 +48,13 @@
 
 ## 🎯 Status: Sistema Básico Funcional
 O sistema de autenticação com múltiplos perfis está **100% funcional**. Os usuários podem:
-1. Se registrar escolhendo seu perfil
+1. Se registrar escolhendo seu perfil (cliente ou empresa)
 2. Fazer login e ser redirecionados automaticamente
 3. Ter suas permissões validadas no frontend
 
-**Próximo passo:** Criar as interfaces específicas de cada perfil.
+**Problemas identificados e corrigidos:**
+- Relacionamento User-Empresa usando coluna errada (user_id ao invés de owner_id)
+- Login usando 'role' ao invés de 'perfil' do banco
+- Perfis incorretos (removidos admin/gestor/recepcionista, mantidos cliente/empresa/admin)
+
+**Próximo passo:** Resolver erro JavaScript no registro e testar fluxos completos.

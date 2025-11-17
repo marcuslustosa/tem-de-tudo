@@ -376,20 +376,19 @@ class AuthManager {
             window.location.href = '/login.html';
             return;
         }
-        
+
         const user = this.getUser();
-        
-        switch (user.role) {
+
+        switch (user.perfil) {
             case 'admin':
-            case 'super_admin':
                 window.location.href = '/admin.html';
                 break;
             case 'empresa':
-                window.location.href = '/profile-company.html';
+                window.location.href = '/dashboard-estabelecimento.html';
                 break;
             case 'cliente':
             default:
-                window.location.href = '/profile-client.html';
+                window.location.href = '/dashboard-cliente.html';
                 break;
         }
     }

@@ -2,10 +2,9 @@
 class AuthMiddleware {
     constructor() {
         this.perfilRoutes = {
-            'administrador': '/admin/dashboard.html',
-            'gestor': '/gestor/home.html',
-            'recepcionista': '/recepcao/index.html',
-            'usuario_comum': '/app/home.html'
+            'admin': '/admin.html',
+            'empresa': '/dashboard-estabelecimento.html',
+            'cliente': '/dashboard-cliente.html'
         };
     }
 
