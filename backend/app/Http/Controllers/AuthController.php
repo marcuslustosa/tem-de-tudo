@@ -42,7 +42,7 @@ class AuthController extends Controller
         try {
             // Validação inicial do perfil
             $request->validate([
-                'role' => 'required|string|in:cliente,empresa,funcionario',
+                'role' => 'required|string|in:cliente,empresa',
             ]);
 
             $role = $request->role;
@@ -443,12 +443,6 @@ class AuthController extends Controller
                     'telefone' => 'required|string|max:20',
                 ]);
 
-            case 'funcionario':
-                return array_merge($baseRules, [
-                    'empresa_id' => 'required|exists:empresas,id',
-                    'phone' => 'nullable|string|max:20',
-                ]);
-
             default:
                 return $baseRules;
         }
@@ -488,14 +482,6 @@ class AuthController extends Controller
                     'telefone' => $request->telefone,
                 ]);
 
-            case 'funcionario':
-                return array_merge($baseData, [
-                    'pontos' => 0,
-                    'pontos_pendentes' => 0,
-                    'nivel' => 'Bronze',
-                    'telefone' => $request->phone,
-                ]);
-
             default:
                 return $baseData;
         }
@@ -527,8 +513,6 @@ class AuthController extends Controller
                 return 'Conta criada com sucesso! Você ganhou 100 pontos de boas-vindas!';
             case 'empresa':
                 return 'Conta empresarial criada com sucesso! Agora você pode gerenciar seus estabelecimentos.';
-            case 'funcionario':
-                return 'Conta de funcionário criada com sucesso! Bem-vindo à equipe.';
             default:
                 return 'Conta criada com sucesso!';
         }
@@ -544,8 +528,6 @@ class AuthController extends Controller
                 return '/dashboard-cliente.html';
             case 'empresa':
                 return '/dashboard-estabelecimento.html';
-            case 'funcionario':
-                return '/dashboard-funcionario.html';
             case 'admin':
                 return '/admin.html';
             default:
