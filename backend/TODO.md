@@ -25,9 +25,9 @@
   - [x] `/dashboard-cliente.html` - Dashboard do cliente
 - [x] Implementar permissões específicas por perfil na API
 - [x] Criar middleware de permissões no backend
+- [x] Resolver erro JavaScript "Cannot read properties of null (reading 'addEventListener')" no registro
 - [ ] Testar fluxo completo de registro e login
 - [ ] Documentar APIs e fluxos
-- [ ] Resolver erro JavaScript "Cannot read properties of null (reading 'addEventListener')" no registro
 
 ## 📋 Regras de Negócio Implementadas
 - [x] Sistema de pontos e níveis (Bronze, Prata, Ouro, Diamante)
