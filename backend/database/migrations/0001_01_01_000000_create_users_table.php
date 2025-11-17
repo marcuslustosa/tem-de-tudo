@@ -1,4 +1,4 @@
-<?php
+vo<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('perfil')->default('usuario_comum'); // administrador, gestor, recepcionista, usuario_comum
+            $table->string('telefone')->nullable();
+            $table->string('status')->default('ativo');
             $table->string('remember_token', 100)->nullable();
             $table->timestamps();
         });

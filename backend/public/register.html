@@ -43,16 +43,17 @@
                             <i class="fas fa-user-tag icon-sm"></i> Tipo de conta
                         </label>
                         <select
-                            id="role"
-                            name="role"
+                            id="perfil"
+                            name="perfil"
                             class="form-control"
                             required
                             onchange="toggleRoleFields()"
                         >
                             <option value="">Selecione o tipo de conta</option>
-                            <option value="cliente">Cliente - Ganhar pontos em compras</option>
-                            <option value="empresa">Empresa - Oferecer pontos aos clientes</option>
-                            <option value="funcionario">Funcionário - Aplicar descontos</option>
+                            <option value="administrador">Administrador - Acesso total ao sistema</option>
+                            <option value="gestor">Gestor - Gerenciar operações</option>
+                            <option value="recepcionista">Recepcionista - Atender clientes</option>
+                            <option value="usuario_comum">Usuário Comum - Acesso básico</option>
                         </select>
                     </div>
 
@@ -87,88 +88,66 @@
                     </div>
 
                     <!-- Campos Específicos por Perfil -->
-                    <div id="clienteFields" class="role-fields" style="display: none;">
+                    <div id="administradorFields" class="role-fields" style="display: none;">
                         <div class="form-group" style="margin-bottom: var(--space-6);">
-                            <label for="phone" class="form-label">
+                            <label for="telefone" class="form-label">
                                 <i class="fas fa-phone icon-sm"></i> Telefone (opcional)
                             </label>
                             <input
                                 type="tel"
-                                id="phone"
-                                name="phone"
+                                id="telefone_admin"
+                                name="telefone"
                                 class="form-control"
                                 placeholder="(11) 99999-9999"
                                 autocomplete="tel"
                             >
-                            <small style="color: var(--gray-600); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
-                                Para receber notificações por SMS
-                            </small>
                         </div>
                     </div>
 
-                    <div id="empresaFields" class="role-fields" style="display: none;">
-                        <div class="form-group" style="margin-bottom: var(--space-6);">
-                            <label for="cnpj" class="form-label">
-                                <i class="fas fa-building icon-sm"></i> CNPJ
-                            </label>
-                            <input
-                                type="text"
-                                id="cnpj"
-                                name="cnpj"
-                                class="form-control"
-                                placeholder="00.000.000/0000-00"
-                                maxlength="18"
-                            >
-                            <small style="color: var(--gray-600); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
-                                Apenas números, 14 dígitos
-                            </small>
-                        </div>
-                        <div class="form-group" style="margin-bottom: var(--space-6);">
-                            <label for="endereco" class="form-label">
-                                <i class="fas fa-map-marker-alt icon-sm"></i> Endereço do Estabelecimento
-                            </label>
-                            <input
-                                type="text"
-                                id="endereco"
-                                name="endereco"
-                                class="form-control"
-                                placeholder="Rua, número, bairro, cidade - UF"
-                            >
-                        </div>
+                    <div id="gestorFields" class="role-fields" style="display: none;">
                         <div class="form-group" style="margin-bottom: var(--space-6);">
                             <label for="telefone" class="form-label">
-                                <i class="fas fa-phone icon-sm"></i> Telefone do Estabelecimento
-                            </label>
-                            <input
-                                type="tel"
-                                id="telefone"
-                                name="telefone"
-                                class="form-control"
-                                placeholder="(11) 99999-9999"
-                            >
-                        </div>
-                    </div>
-
-                    <div id="funcionarioFields" class="role-fields" style="display: none;">
-                        <div class="form-group" style="margin-bottom: var(--space-6);">
-                            <label for="empresa_id" class="form-label">
-                                <i class="fas fa-building icon-sm"></i> Empresa
-                            </label>
-                            <select id="empresa_id" name="empresa_id" class="form-control">
-                                <option value="">Selecione a empresa</option>
-                                <!-- Empresas serão carregadas dinamicamente -->
-                            </select>
-                        </div>
-                        <div class="form-group" style="margin-bottom: var(--space-6);">
-                            <label for="phone" class="form-label">
                                 <i class="fas fa-phone icon-sm"></i> Telefone (opcional)
                             </label>
                             <input
                                 type="tel"
-                                id="phone"
-                                name="phone"
+                                id="telefone_gestor"
+                                name="telefone"
                                 class="form-control"
                                 placeholder="(11) 99999-9999"
+                                autocomplete="tel"
+                            >
+                        </div>
+                    </div>
+
+                    <div id="recepcionistaFields" class="role-fields" style="display: none;">
+                        <div class="form-group" style="margin-bottom: var(--space-6);">
+                            <label for="telefone" class="form-label">
+                                <i class="fas fa-phone icon-sm"></i> Telefone (opcional)
+                            </label>
+                            <input
+                                type="tel"
+                                id="telefone_recepcionista"
+                                name="telefone"
+                                class="form-control"
+                                placeholder="(11) 99999-9999"
+                                autocomplete="tel"
+                            >
+                        </div>
+                    </div>
+
+                    <div id="usuario_comumFields" class="role-fields" style="display: none;">
+                        <div class="form-group" style="margin-bottom: var(--space-6);">
+                            <label for="telefone" class="form-label">
+                                <i class="fas fa-phone icon-sm"></i> Telefone (opcional)
+                            </label>
+                            <input
+                                type="tel"
+                                id="telefone_usuario"
+                                name="telefone"
+                                class="form-control"
+                                placeholder="(11) 99999-9999"
+                                autocomplete="tel"
                             >
                         </div>
                     </div>
@@ -343,7 +322,7 @@
                 });
 
                 const requestData = {
-                    role: formData.get('role'),
+                    perfil: formData.get('perfil'),
                     name: formData.get('name'),
                     email: formData.get('email'),
                     password: password,
@@ -352,16 +331,9 @@
                 };
 
                 // Adicionar campos específicos baseado no perfil
-                const role = formData.get('role');
-                if (role === 'cliente') {
-                    requestData.phone = formData.get('phone');
-                } else if (role === 'empresa') {
-                    requestData.cnpj = formData.get('cnpj')?.replace(/\D/g, ''); // Limpar formatação
-                    requestData.endereco = formData.get('endereco');
+                const perfil = formData.get('perfil');
+                if (perfil === 'administrador' || perfil === 'gestor' || perfil === 'recepcionista' || perfil === 'usuario_comum') {
                     requestData.telefone = formData.get('telefone');
-                } else if (role === 'funcionario') {
-                    requestData.empresa_id = formData.get('empresa_id');
-                    requestData.phone = formData.get('phone');
                 }
 
                 const response = await fetch(apiUrl, {
@@ -501,23 +473,18 @@
 
         // Mostrar/ocultar campos baseado no perfil selecionado
         function toggleRoleFields() {
-            const role = document.getElementById('role').value;
+            const perfil = document.getElementById('perfil').value;
             const roleFields = document.querySelectorAll('.role-fields');
 
             // Ocultar todos os campos específicos
             roleFields.forEach(field => field.style.display = 'none');
 
             // Mostrar campos do perfil selecionado
-            if (role) {
-                const selectedFields = document.getElementById(role + 'Fields');
+            if (perfil) {
+                const selectedFields = document.getElementById(perfil + 'Fields');
                 if (selectedFields) {
                     selectedFields.style.display = 'block';
                 }
-            }
-
-            // Carregar empresas se for funcionário
-            if (role === 'funcionario') {
-                loadEmpresas();
             }
         }
 

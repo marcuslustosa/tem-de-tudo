@@ -42,17 +42,17 @@ class AuthController extends Controller
         try {
             // Validação inicial do perfil
             $request->validate([
-                'role' => 'required|string|in:cliente,empresa',
+                'perfil' => 'required|string|in:administrador,gestor,recepcionista,usuario_comum',
             ]);
 
-            $role = $request->role;
-            Log::info('Perfil selecionado', ['role' => $role]);
+            $perfil = $request->perfil;
+            Log::info('Perfil selecionado', ['perfil' => $perfil]);
 
             // Validações específicas por perfil
-            $validationRules = $this->getValidationRulesForRole($role);
+            $validationRules = $this->getValidationRulesForPerfil($perfil);
 
             $validatedData = $request->validate($validationRules);
-            Log::info('Validação passou', ['role' => $role, 'validated' => array_merge($validatedData, ['password' => '[HIDDEN]'])]);
+            Log::info('Validação passou', ['perfil' => $perfil, 'validated' => array_merge($validatedData, ['password' => '[HIDDEN]'])]);
 
         } catch (ValidationException $e) {
             Log::warning('Erro de validação no registro', [
@@ -79,19 +79,13 @@ class AuthController extends Controller
 
         try {
             DB::beginTransaction();
-            Log::info('Transação do banco iniciada para perfil: ' . $role);
+            Log::info('Transação do banco iniciada para perfil: ' . $perfil);
 
             // Criar usuário baseado no perfil
-            $userData = $this->prepareUserDataForRole($role, $request);
+            $userData = $this->prepareUserDataForPerfil($perfil, $request);
             $user = User::create($userData);
 
-            Log::info('Usuário criado no banco', ['user_id' => $user->id, 'email' => $user->email, 'role' => $role]);
-
-            // Lógica específica por perfil
-            if ($role === 'empresa') {
-                $empresa = $this->createEmpresaForUser($user, $request);
-                Log::info('Empresa criada', ['empresa_id' => $empresa->id, 'user_id' => $user->id]);
-            }
+            Log::info('Usuário criado no banco', ['user_id' => $user->id, 'email' => $user->email, 'perfil' => $perfil]);
 
             // Gerar Sanctum token
             $token = $user->createToken('auth_token')->plainTextToken;
@@ -107,19 +101,19 @@ class AuthController extends Controller
 
             $response = [
                 'success' => true,
-                'message' => $this->getSuccessMessageForRole($role),
+                'message' => $this->getSuccessMessageForPerfil($perfil),
                 'data' => [
-                    'user' => $user,
+                    'user' => array_merge($user->toArray(), ['perfil' => $perfil]),
                     'token' => $token,
                     'token_type' => 'Bearer',
                     'expires_in' => 60 * 60, // 1 hora em segundos
-                    'redirect_to' => $this->getRedirectUrlForRole($role)
+                    'redirect_to' => $this->getRedirectUrlForPerfil($perfil)
                 ]
             ];
 
             Log::info('Registro concluído com sucesso', [
                 'user_id' => $user->id,
-                'role' => $role,
+                'perfil' => $perfil,
                 'response_size' => strlen(json_encode($response))
             ]);
 
@@ -212,29 +206,21 @@ class AuthController extends Controller
         }
 
         try {
-            // Tentar login como usuário comum primeiro
+            // Buscar usuário por email
             $user = User::where('email', $request->email)->first();
 
             if (!$user || !Hash::check($request->password, $user->password)) {
-                // Se não encontrou como usuário comum, tentar como admin
-                $admin = Admin::where('email', $request->email)->first();
+                RateLimiter::hit($key, 300); // 5 minutos
+                Log::warning('Tentativa de login falhou', [
+                    'email' => $request->email,
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent()
+                ]);
 
-                if (!$admin || !Hash::check($request->password, $admin->password)) {
-                    RateLimiter::hit($key, 300); // 5 minutos
-                    Log::warning('Tentativa de login falhou', [
-                        'email' => $request->email,
-                        'ip' => $request->ip(),
-                        'user_agent' => $request->userAgent()
-                    ]);
-
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Email ou senha incorretos.'
-                    ], 401);
-                }
-
-                // Login como admin
-                return $this->handleAdminLogin($admin, $request, $key);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email ou senha incorretos.'
+                ], 401);
             }
 
             // Verificar se usuário está ativo
@@ -251,12 +237,6 @@ class AuthController extends Controller
                 ], 403);
             }
 
-            // Atualizar último login
-            $user->update([
-                'ultimo_login' => now(),
-                'ip_ultimo_login' => $request->ip()
-            ]);
-
             // Gerar token Sanctum
             $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -269,18 +249,18 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'Login realizado com sucesso!',
                 'data' => [
-                    'user' => $user,
+                    'user' => array_merge($user->toArray(), ['perfil' => $this->getPerfilFromRole($user->role)]),
                     'token' => $token,
                     'token_type' => 'Bearer',
                     'expires_in' => 60 * 60, // 1 hora em segundos
-                    'redirect_to' => $this->getRedirectUrlForRole($user->role)
+                    'redirect_to' => $this->getRedirectUrlForPerfil($this->getPerfilFromRole($user->role))
                 ]
             ];
 
             Log::info('Login realizado com sucesso', [
                 'user_id' => $user->id,
                 'email' => $user->email,
-                'role' => $user->role,
+                'perfil' => $user->perfil,
                 'ip' => $request->ip()
             ]);
 
@@ -421,7 +401,7 @@ class AuthController extends Controller
     /**
      * Obter regras de validação específicas por perfil
      */
-    private function getValidationRulesForRole(string $role): array
+    private function getValidationRulesForPerfil(string $perfil): array
     {
         $baseRules = [
             'name' => 'required|string|max:255',
@@ -430,17 +410,17 @@ class AuthController extends Controller
             'terms' => 'required|boolean|accepted',
         ];
 
-        switch ($role) {
-            case 'cliente':
+        switch ($perfil) {
+            case 'administrador':
+            case 'gestor':
+            case 'recepcionista':
                 return array_merge($baseRules, [
-                    'phone' => 'nullable|string|max:20',
+                    'telefone' => 'nullable|string|max:20',
                 ]);
 
-            case 'empresa':
+            case 'usuario_comum':
                 return array_merge($baseRules, [
-                    'cnpj' => 'required|string|size:14|unique:empresas',
-                    'endereco' => 'required|string|max:500',
-                    'telefone' => 'required|string|max:20',
+                    'telefone' => 'nullable|string|max:20',
                 ]);
 
             default:
@@ -451,34 +431,26 @@ class AuthController extends Controller
     /**
      * Preparar dados do usuário baseado no perfil
      */
-    private function prepareUserDataForRole(string $role, Request $request): array
+    private function prepareUserDataForPerfil(string $perfil, Request $request): array
     {
         $baseData = [
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $role,
+            'perfil' => $perfil,
             'status' => 'ativo',
-            'email_notifications' => true,
-            'points_notifications' => true,
-            'security_notifications' => true,
-            'promotional_notifications' => false,
         ];
 
-        switch ($role) {
-            case 'cliente':
+        switch ($perfil) {
+            case 'administrador':
+            case 'gestor':
+            case 'recepcionista':
                 return array_merge($baseData, [
-                    'pontos' => 100, // Bônus de boas-vindas
-                    'pontos_pendentes' => 0,
-                    'nivel' => 'Bronze',
-                    'telefone' => $request->phone,
+                    'telefone' => $request->telefone,
                 ]);
 
-            case 'empresa':
+            case 'usuario_comum':
                 return array_merge($baseData, [
-                    'pontos' => 0,
-                    'pontos_pendentes' => 0,
-                    'nivel' => 'Bronze',
                     'telefone' => $request->telefone,
                 ]);
 
@@ -506,13 +478,17 @@ class AuthController extends Controller
     /**
      * Obter mensagem de sucesso baseada no perfil
      */
-    private function getSuccessMessageForRole(string $role): string
+    private function getSuccessMessageForPerfil(string $perfil): string
     {
-        switch ($role) {
-            case 'cliente':
-                return 'Conta criada com sucesso! Você ganhou 100 pontos de boas-vindas!';
-            case 'empresa':
-                return 'Conta empresarial criada com sucesso! Agora você pode gerenciar seus estabelecimentos.';
+        switch ($perfil) {
+            case 'administrador':
+                return 'Conta de administrador criada com sucesso! Você tem acesso total ao sistema.';
+            case 'gestor':
+                return 'Conta de gestor criada com sucesso! Você pode gerenciar operações.';
+            case 'recepcionista':
+                return 'Conta de recepcionista criada com sucesso! Você pode atender clientes.';
+            case 'usuario_comum':
+                return 'Conta criada com sucesso! Bem-vindo ao sistema.';
             default:
                 return 'Conta criada com sucesso!';
         }
@@ -521,62 +497,36 @@ class AuthController extends Controller
     /**
      * Obter URL de redirecionamento baseada no perfil
      */
-    private function getRedirectUrlForRole(string $role): string
+    private function getRedirectUrlForPerfil(string $perfil): string
     {
-        switch ($role) {
-            case 'cliente':
-                return '/dashboard-cliente.html';
-            case 'empresa':
-                return '/dashboard-estabelecimento.html';
-            case 'admin':
-                return '/admin.html';
+        switch ($perfil) {
+            case 'administrador':
+                return '/admin/dashboard.html';
+            case 'gestor':
+                return '/gestor/home.html';
+            case 'recepcionista':
+                return '/recepcao/index.html';
+            case 'usuario_comum':
+                return '/app/home.html';
             default:
-                return '/dashboard-cliente.html';
+                return '/app/home.html';
         }
     }
 
     /**
-     * Handle login para administradores
+     * Obter perfil baseado no role do banco
      */
-    private function handleAdminLogin(Admin $admin, Request $request, string $key)
+    private function getPerfilFromRole(string $role): string
     {
-        // Verificar se admin está ativo
-        if (!$admin->isActive()) {
-            Log::warning('Tentativa de login com admin inativo', [
-                'admin_id' => $admin->id,
-                'email' => $admin->email,
-                'status' => $admin->status
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Sua conta administrativa está inativa.'
-            ], 403);
-        }
-
-        // Atualizar último login
-        $admin->updateLastLogin();
-
-        // Gerar token Sanctum (se Admin usar Sanctum, senão criar JWT)
-        // Por enquanto, vamos usar uma resposta simples para admin
-        RateLimiter::clear($key);
-
-        $response = [
-            'success' => true,
-            'message' => 'Login administrativo realizado com sucesso!',
-            'data' => [
-                'admin' => $admin,
-                'role' => 'admin',
-                'redirect_to' => '/admin.html'
-            ]
+        $roleToPerfil = [
+            'admin' => 'administrador',
+            'gestor' => 'gestor',
+            'recepcionista' => 'recepcionista',
+            'cliente' => 'usuario_comum'
         ];
 
-        Log::info('Login administrativo realizado com sucesso', [
-            'admin_id' => $admin->id,
-            'email' => $admin->email,
-            'ip' => $request->ip()
-        ]);
-
-        return response()->json($response, 200);
+        return $roleToPerfil[$role] ?? 'usuario_comum';
     }
+
+
 }

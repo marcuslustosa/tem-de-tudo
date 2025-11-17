@@ -231,9 +231,10 @@
 
                     showMessage(data.message || 'Login realizado com sucesso!', 'success');
 
-                    // Redirect after short delay
+                    // Redirect after short delay baseado no perfil
                     setTimeout(() => {
-                        window.location.href = '/pontos.html';
+                        const redirectUrl = data.data?.redirect_to || '/app/home.html';
+                        window.location.href = redirectUrl;
                     }, 1500);
                 } else {
                     // Tratamento específico de erros

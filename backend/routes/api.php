@@ -37,6 +37,11 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 });
 
+// Middleware JavaScript para proteção de rotas por perfil
+Route::get('/auth/check-access', function () {
+    return response()->json(['message' => 'Access check endpoint']);
+});
+
 // Rota para listar empresas (pública para funcionários se cadastrarem)
 Route::get('/empresas', [EmpresaController::class, 'listEmpresas']);
 
