@@ -174,19 +174,29 @@
         // Handle login form submission
         async function handleLogin(event) {
             event.preventDefault();
-            
+
             const form = event.target;
             const formData = new FormData(form);
             const loginBtn = document.getElementById('loginBtn');
             const loadingOverlay = document.getElementById('loadingOverlay');
-            
+
             // Show loading
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>Entrando...';
             loadingOverlay.style.display = 'flex';
-            
+
             try {
-                const response = await fetch('/api/auth/login', {
+                // Determinar URL base dinamicamente
+                const baseUrl = window.location.origin;
+                const apiUrl = `${baseUrl}/api/auth/login`;
+
+                console.log('Tentando login em:', apiUrl);
+                console.log('Dados enviados:', {
+                    email: formData.get('email'),
+                    password: '[REDACTED]'
+                });
+
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -199,25 +209,72 @@
                     })
                 });
 
-                const data = await response.json();
+                console.log('Status da resposta:', response.status);
+                console.log('Headers da resposta:', Object.fromEntries(response.headers.entries()));
 
-                if (response.ok && data.token) {
-                    // Save token
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    
-                    showMessage('Login realizado com sucesso!', 'success');
-                    
+                let data;
+                try {
+                    data = await response.json();
+                    console.log('Dados da resposta:', data);
+                } catch (jsonError) {
+                    console.error('Erro ao parsear JSON:', jsonError);
+                    const textResponse = await response.text();
+                    console.error('Resposta como texto:', textResponse);
+                    throw new Error(`Resposta inválida do servidor: ${textResponse.substring(0, 200)}`);
+                }
+
+                if (response.ok && data.success && data.data && data.data.token) {
+                    // Save token and user data
+                    localStorage.setItem('token', data.data.token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                    console.log('Token e dados salvos no localStorage');
+
+                    showMessage(data.message || 'Login realizado com sucesso!', 'success');
+
                     // Redirect after short delay
                     setTimeout(() => {
                         window.location.href = '/pontos.html';
                     }, 1500);
                 } else {
-                    throw new Error(data.message || 'Erro ao fazer login');
+                    // Tratamento específico de erros
+                    let errorMessage = 'Erro ao fazer login';
+
+                    if (data.message) {
+                        errorMessage = data.message;
+                    } else if (response.status === 401) {
+                        errorMessage = 'Email ou senha incorretos';
+                    } else if (response.status === 403) {
+                        errorMessage = 'Sua conta está inativa. Entre em contato com o suporte.';
+                    } else if (response.status === 429) {
+                        errorMessage = 'Muitas tentativas. Aguarde alguns minutos.';
+                    } else if (response.status === 500) {
+                        errorMessage = 'Erro interno do servidor. Tente novamente em alguns instantes.';
+                    }
+
+                    console.error('Erro detalhado:', {
+                        status: response.status,
+                        statusText: response.statusText,
+                        data: data,
+                        url: apiUrl
+                    });
+
+                    throw new Error(errorMessage);
                 }
             } catch (error) {
-                console.error('Erro no login:', error);
-                showMessage(error.message || 'Erro ao fazer login. Tente novamente.', 'error');
+                console.error('Erro completo no login:', error);
+
+                // Mensagens mais específicas baseadas no tipo de erro
+                let userMessage = 'Erro ao fazer login. Tente novamente.';
+
+                if (error.message.includes('fetch')) {
+                    userMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
+                } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+                    userMessage = 'Não foi possível conectar ao servidor. Tente novamente em alguns instantes.';
+                } else if (error.message) {
+                    userMessage = error.message;
+                }
+
+                showMessage(userMessage, 'error');
             } finally {
                 // Hide loading
                 loginBtn.disabled = false;
