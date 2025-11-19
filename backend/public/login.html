@@ -180,6 +180,25 @@
             const loginBtn = document.getElementById('loginBtn');
             const loadingOverlay = document.getElementById('loadingOverlay');
 
+            // Validações frontend
+            const email = formData.get('email')?.trim();
+            const password = formData.get('password')?.trim();
+
+            if (!email) {
+                showMessage('Por favor, informe seu email.', 'error');
+                return;
+            }
+
+            if (!password) {
+                showMessage('Por favor, informe sua senha.', 'error');
+                return;
+            }
+
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showMessage('Por favor, informe um email válido.', 'error');
+                return;
+            }
+
             // Show loading
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>Entrando...';
@@ -191,10 +210,6 @@
                 const apiUrl = `${baseUrl}/api/auth/login`;
 
                 console.log('Tentando login em:', apiUrl);
-                console.log('Dados enviados:', {
-                    email: formData.get('email'),
-                    password: '[REDACTED]'
-                });
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -204,43 +219,52 @@
                         'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({
-                        email: formData.get('email'),
-                        password: formData.get('password')
+                        email: email,
+                        password: password
                     })
                 });
 
                 console.log('Status da resposta:', response.status);
-                console.log('Headers da resposta:', Object.fromEntries(response.headers.entries()));
 
                 let data;
                 try {
-                    data = await response.json();
+                    const responseText = await response.text();
+                    console.log('Resposta bruta:', responseText);
+                    data = JSON.parse(responseText);
                     console.log('Dados da resposta:', data);
                 } catch (jsonError) {
                     console.error('Erro ao parsear JSON:', jsonError);
-                    const textResponse = await response.text();
-                    console.error('Resposta como texto:', textResponse);
-                    throw new Error(`Resposta inválida do servidor: ${textResponse.substring(0, 200)}`);
+                    throw new Error('Resposta inválida do servidor. Tente novamente.');
                 }
 
-                if (response.ok && data.success && data.data && data.data.token) {
-                    // Save token and user data
-                    localStorage.setItem('token', data.data.token);
-                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                if (response.ok && data.success === true && data.data && data.data.token) {
+                    // Save token and user data using the same keys as auth.js
+                    localStorage.setItem('tem_de_tudo_token', data.data.token);
+                    localStorage.setItem('tem_de_tudo_user', JSON.stringify(data.data.user));
                     console.log('Token e dados salvos no localStorage');
 
                     showMessage(data.message || 'Login realizado com sucesso!', 'success');
 
                     // Redirect after short delay baseado no perfil
                     setTimeout(() => {
-                        const redirectUrl = data.data?.redirect_to || '/app/home.html';
+                        const user = data.data.user;
+                        let redirectUrl = '/dashboard-cliente.html'; // default
+
+                        if (user.perfil === 'empresa') {
+                            redirectUrl = '/dashboard-estabelecimento.html';
+                        } else if (user.perfil === 'admin') {
+                            redirectUrl = '/admin.html';
+                        }
+
                         window.location.href = redirectUrl;
                     }, 1500);
                 } else {
                     // Tratamento específico de erros
                     let errorMessage = 'Erro ao fazer login';
 
-                    if (data.message) {
+                    if (data && data.error) {
+                        errorMessage = data.error;
+                    } else if (data && data.message) {
                         errorMessage = data.message;
                     } else if (response.status === 401) {
                         errorMessage = 'Email ou senha incorretos';

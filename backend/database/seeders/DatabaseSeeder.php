@@ -20,9 +20,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Administrador Master',
                 'password' => Hash::make('admin123'),
-                'role' => 'admin',
-                'pontos' => 1000,
-                'pontos_pendentes' => 0,
+                'perfil' => 'admin',
                 'telefone' => '(11) 99999-0001',
                 'status' => 'ativo',
                 'email_verified_at' => now()
@@ -35,9 +33,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Cliente Teste',
                 'password' => Hash::make('123456'),
-                'role' => 'cliente',
-                'pontos' => 250,
-                'pontos_pendentes' => 50,
+                'perfil' => 'cliente',
                 'telefone' => '(11) 99999-0002',
                 'status' => 'ativo',
                 'email_verified_at' => now()
@@ -50,9 +46,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Empresa Teste Ltda',
                 'password' => Hash::make('123456'),
-                'role' => 'empresa',
-                'pontos' => 0,
-                'pontos_pendentes' => 0,
+                'perfil' => 'empresa',
                 'telefone' => '(11) 99999-0003',
                 'status' => 'ativo',
                 'email_verified_at' => now()
@@ -65,9 +59,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Cliente VIP',
                 'password' => Hash::make('123456'),
-                'role' => 'cliente',
-                'pontos' => 2500, // Nível Gold
-                'pontos_pendentes' => 100,
+                'perfil' => 'cliente',
                 'telefone' => '(11) 99999-0004',
                 'status' => 'ativo',
                 'email_verified_at' => now()

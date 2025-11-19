@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OpenAIController;
 
 // Debug route (remover em produção)
 Route::get('/debug', function () {
@@ -221,5 +222,16 @@ Route::prefix('discounts')->group(function () {
         // Buscar cliente para aplicar desconto
         Route::post('/find-customer', [DiscountController::class, 'findCustomerForDiscount'])
             ->middleware(['admin.permission:manage_discounts']);
+    });
+
+    // Rotas OpenAI (admin apenas)
+    Route::prefix('openai')->group(function () {
+        Route::get('/status', [OpenAIController::class, 'status']);
+        Route::get('/test', [OpenAIController::class, 'test'])
+            ->middleware(['admin.permission:manage_system']);
+        Route::post('/chat', [OpenAIController::class, 'chat'])
+            ->middleware(['admin.permission:manage_system']);
+        Route::post('/suggest', [OpenAIController::class, 'suggest'])
+            ->middleware(['admin.permission:manage_system']);
     });
 });

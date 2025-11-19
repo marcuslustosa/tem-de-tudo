@@ -440,20 +440,20 @@ const AuthMiddleware = {
 window.Auth = new AuthManager();
 window.AuthMiddleware = AuthMiddleware;
 
-// Event listeners para formulários de login
+// Event listeners para formulários de login - apenas se não houver onsubmit inline
 document.addEventListener('DOMContentLoaded', function() {
-    // Formulário de login comum
+    // Formulário de login comum - apenas adicionar se não tiver onsubmit inline
     const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
+    if (loginForm && !loginForm.hasAttribute('onsubmit')) {
         loginForm.addEventListener('submit', handleUserLogin);
     }
-    
-    // Formulário de login admin
+
+    // Formulário de login admin - apenas adicionar se não tiver onsubmit inline
     const adminLoginForm = document.getElementById('adminLoginForm');
-    if (adminLoginForm) {
+    if (adminLoginForm && !adminLoginForm.hasAttribute('onsubmit')) {
         adminLoginForm.addEventListener('submit', handleAdminLogin);
     }
-    
+
     // Botões de logout
     document.querySelectorAll('[data-action="logout"]').forEach(button => {
         button.addEventListener('click', () => window.Auth.logout());
@@ -571,8 +571,8 @@ function updateAuthUI() {
             el.textContent = user.email;
         });
         
-        document.querySelectorAll('[data-user="role"]').forEach(el => {
-            el.textContent = user.role;
+        document.querySelectorAll('[data-user="perfil"]').forEach(el => {
+            el.textContent = user.perfil;
         });
     }
 }

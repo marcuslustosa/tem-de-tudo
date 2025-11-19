@@ -51,8 +51,21 @@ class AuthController extends Controller
             // Validações específicas por perfil
             $validationRules = $this->getValidationRulesForPerfil($perfil);
 
-            $validatedData = $request->validate($validationRules);
-            Log::info('Validação passou', ['perfil' => $perfil, 'validated' => array_merge($validatedData, ['password' => '[HIDDEN]'])]);
+            try {
+                $validatedData = $request->validate($validationRules);
+                Log::info('Validação passou', ['perfil' => $perfil, 'validated' => array_merge($validatedData, ['password' => '[HIDDEN]'])]);
+            } catch (ValidationException $e) {
+                Log::warning('Erro de validação no registro', [
+                    'errors' => $e->errors(),
+                    'data' => $request->all()
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Dados inválidos. Verifique os campos e tente novamente.',
+                    'errors' => $e->errors()
+                ], 422);
+            }
 
             // Perfil será usado diretamente
 
@@ -91,17 +104,22 @@ class AuthController extends Controller
 
             // Se for empresa, criar registro na tabela empresas
             if ($perfil === 'empresa') {
-                $empresa = \App\Models\Empresa::create([
-                    'nome' => $request->name,
-                    'endereco' => $request->endereco,
-                    'telefone' => $request->telefone,
-                    'cnpj' => $request->cnpj,
-                    'owner_id' => $user->id,
-                    'ativo' => \DB::raw('true'),
-                    'points_multiplier' => \DB::raw('1.0'),
-                ]);
+                try {
+                    $empresa = \App\Models\Empresa::create([
+                        'nome' => $request->name,
+                        'endereco' => $request->endereco,
+                        'telefone' => $request->telefone,
+                        'cnpj' => $request->cnpj,
+                        'owner_id' => $user->id,
+                        'ativo' => true,
+                        'points_multiplier' => 1.0,
+                    ]);
 
-                Log::info('Empresa criada com sucesso', ['empresa_id' => $empresa->id, 'user_id' => $user->id]);
+                    Log::info('Empresa criada com sucesso', ['empresa_id' => $empresa->id, 'user_id' => $user->id]);
+                } catch (\Exception $e) {
+                    Log::error('Erro ao criar empresa', ['error' => $e->getMessage(), 'user_id' => $user->id]);
+                    throw $e;
+                }
             }
 
             // Gerar Sanctum token
@@ -314,26 +332,26 @@ class AuthController extends Controller
     }
 
     /**
-     * Obter permissões baseadas no role
+     * Obter permissões baseadas no perfil
      */
-    private function getUserPermissions($role)
+    private function getUserPermissions($perfil)
     {
         $permissions = [
             'admin' => [
-                'manage_users', 'manage_companies', 'view_reports', 
+                'manage_users', 'manage_companies', 'view_reports',
                 'manage_points', 'manage_promotions', 'system_config'
             ],
             'empresa' => [
-                'manage_customers', 'create_promotions', 'view_sales', 
+                'manage_customers', 'create_promotions', 'view_sales',
                 'generate_qrcode', 'manage_discounts'
             ],
             'cliente' => [
-                'earn_points', 'redeem_discounts', 'view_history', 
+                'earn_points', 'redeem_discounts', 'view_history',
                 'qr_checkin', 'view_promotions'
             ]
         ];
 
-        return $permissions[$role] ?? $permissions['cliente'];
+        return $permissions[$perfil] ?? $permissions['cliente'];
     }
 
     public function user(Request $request)
@@ -423,7 +441,8 @@ class AuthController extends Controller
         $baseRules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed',
+            'password_confirmation' => 'required|string|min:8',
             'terms' => 'required|boolean|accepted',
         ];
 
@@ -435,9 +454,9 @@ class AuthController extends Controller
 
             case 'empresa':
                 return array_merge($baseRules, [
-                    'telefone' => 'required|string|max:20',
-                    'cnpj' => 'required|string|size:14|unique:empresas',
+                    'cnpj' => 'required|string|regex:/^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/|unique:empresas',
                     'endereco' => 'required|string|max:500',
+                    'telefone' => 'required|string|max:20',
                 ]);
 
             default:

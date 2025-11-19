@@ -43,7 +43,7 @@ return new class extends Migration
                 $table->integer('pontos')->default(0);
                 $table->integer('pontos_pendentes')->default(0);
                 $table->string('nivel')->default('Bronze');
-                $table->string('role')->default('cliente'); // cliente, empresa, admin, funcionario
+                $table->string('perfil')->default('cliente'); // cliente, empresa, admin
                 $table->string('telefone')->nullable();
                 $table->string('status')->default('ativo');
                 $table->string('fcm_token')->nullable();

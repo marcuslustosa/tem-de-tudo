@@ -25,7 +25,17 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'perfil',
         'telefone',
-        'status'
+        'status',
+        'pontos',
+        'pontos_pendentes',
+        'nivel',
+        'fcm_token',
+        'email_notifications',
+        'points_notifications',
+        'security_notifications',
+        'promotional_notifications',
+        'ultimo_login',
+        'ip_ultimo_login'
     ];
 
     /**
@@ -129,7 +139,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->perfil === 'admin';
     }
 
     /**

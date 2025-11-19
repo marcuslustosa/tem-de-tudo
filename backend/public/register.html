@@ -289,6 +289,13 @@
             const registerBtn = document.getElementById('registerBtn');
             const loadingOverlay = document.getElementById('loadingOverlay');
 
+            // Validações básicas no frontend
+            const perfil = formData.get('perfil');
+            if (!perfil) {
+                showMessage('Selecione o tipo de conta', 'error');
+                return;
+            }
+
             const password = formData.get('password');
             const passwordConfirmation = formData.get('password_confirmation');
 
@@ -297,6 +304,31 @@
                 return;
             }
 
+            if (password.length < 8) {
+                showMessage('A senha deve ter pelo menos 8 caracteres', 'error');
+                return;
+            }
+
+            // Validações específicas por perfil
+            if (perfil === 'empresa') {
+                const cnpj = formData.get('cnpj');
+                const endereco = formData.get('endereco');
+                const telefone = formData.get('telefone');
+
+                if (!cnpj || !endereco || !telefone) {
+                    showMessage('Para empresas, CNPJ, endereço e telefone são obrigatórios', 'error');
+                    return;
+                }
+
+                // Validar formato CNPJ básico
+                const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/;
+                if (!cnpjRegex.test(cnpj)) {
+                    showMessage('CNPJ deve estar no formato 00.000.000/0000-00', 'error');
+                    return;
+                }
+            }
+
+            // Mostrar loading
             registerBtn.disabled = true;
             registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>Criando conta...';
             loadingOverlay.style.display = 'flex';
@@ -307,16 +339,9 @@
                 const apiUrl = `${baseUrl}/api/auth/register`;
 
                 console.log('Tentando cadastro em:', apiUrl);
-                console.log('Dados enviados:', {
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    phone: formData.get('phone'),
-                    password: '[REDACTED]',
-                    terms: formData.get('terms') ? true : false
-                });
 
                 const requestData = {
-                    perfil: formData.get('perfil'),
+                    perfil: perfil,
                     name: formData.get('name'),
                     email: formData.get('email'),
                     password: password,
@@ -325,14 +350,15 @@
                 };
 
                 // Adicionar campos específicos baseado no perfil
-                const perfil = formData.get('perfil');
                 if (perfil === 'cliente') {
-                    requestData.telefone = formData.get('telefone');
+                    requestData.telefone = formData.get('telefone') || null;
                 } else if (perfil === 'empresa') {
                     requestData.cnpj = formData.get('cnpj');
                     requestData.endereco = formData.get('endereco');
                     requestData.telefone = formData.get('telefone');
                 }
+
+                console.log('Dados enviados:', { ...requestData, password: '[REDACTED]' });
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -345,20 +371,22 @@
                 });
 
                 console.log('Status da resposta:', response.status);
-                console.log('Headers da resposta:', Object.fromEntries(response.headers.entries()));
 
+                // Sempre tentar parsear JSON, mesmo em erro
                 let data;
+                const responseText = await response.text();
+                console.log('Resposta como texto:', responseText);
+
                 try {
-                    data = await response.json();
-                    console.log('Dados da resposta:', data);
+                    data = JSON.parse(responseText);
+                    console.log('Dados da resposta JSON:', data);
                 } catch (jsonError) {
                     console.error('Erro ao parsear JSON:', jsonError);
-                    const textResponse = await response.text();
-                    console.error('Resposta como texto:', textResponse);
-                    throw new Error(`Resposta inválida do servidor: ${textResponse.substring(0, 200)}`);
+                    throw new Error(`Resposta inválida do servidor: ${responseText.substring(0, 200)}`);
                 }
 
                 if (response.ok && data.success) {
+                    // Sucesso
                     if (data.data && data.data.token) {
                         localStorage.setItem('token', data.data.token);
                         localStorage.setItem('user', JSON.stringify(data.data.user));
@@ -367,19 +395,18 @@
 
                     showMessage(data.message || 'Conta criada com sucesso!', 'success');
 
-                    // Redirecionar baseado no perfil e resposta da API
-                    const redirectUrl = data.data?.redirect_to || '/dashboard-cliente.html';
+                    // Redirecionar baseado no perfil
+                    const redirectUrl = data.data?.redirect_to || (perfil === 'empresa' ? '/dashboard-estabelecimento.html' : '/dashboard-cliente.html');
                     setTimeout(() => {
                         window.location.href = redirectUrl;
                     }, 2000);
-                } else {
-                    // Tratamento específico de erros
-                    let errorMessage = 'Erro ao criar conta';
 
-                    if (data.message) {
-                        errorMessage = data.message;
-                    } else if (response.status === 422 && data.errors) {
-                        // Erros de validação
+                } else {
+                    // Erro - usar mensagem específica do backend
+                    let errorMessage = data.message || 'Erro ao criar conta';
+
+                    if (response.status === 422 && data.errors) {
+                        // Erros de validação específicos
                         const validationErrors = Object.values(data.errors).flat();
                         errorMessage = validationErrors.join('. ');
                     } else if (response.status === 429) {
@@ -390,29 +417,28 @@
 
                     console.error('Erro detalhado:', {
                         status: response.status,
-                        statusText: response.statusText,
-                        data: data,
-                        url: apiUrl
+                        data: data
                     });
 
-                    throw new Error(errorMessage);
+                    showMessage(errorMessage, 'error');
                 }
+
             } catch (error) {
                 console.error('Erro completo no cadastro:', error);
 
-                // Mensagens mais específicas baseadas no tipo de erro
                 let userMessage = 'Erro ao criar conta. Tente novamente.';
 
-                if (error.message.includes('fetch')) {
+                if (error.message.includes('fetch') || error.message.includes('NetworkError')) {
                     userMessage = 'Erro de conexão. Verifique sua internet e tente novamente.';
-                } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
-                    userMessage = 'Não foi possível conectar ao servidor. Tente novamente em alguns instantes.';
+                } else if (error.message.includes('JSON')) {
+                    userMessage = 'Resposta inválida do servidor. Tente novamente.';
                 } else if (error.message) {
                     userMessage = error.message;
                 }
 
                 showMessage(userMessage, 'error');
             } finally {
+                // Sempre restaurar estado do botão
                 registerBtn.disabled = false;
                 registerBtn.innerHTML = '<i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>Criar conta';
                 loadingOverlay.style.display = 'none';
