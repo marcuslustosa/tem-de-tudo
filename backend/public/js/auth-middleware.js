@@ -10,8 +10,8 @@ class AuthMiddleware {
 
     // Verificar se usuário está logado e tem token válido
     isAuthenticated() {
-        const token = localStorage.getItem('token');
-        const user = localStorage.getItem('user');
+        const token = localStorage.getItem('tem_de_tudo_token');
+        const user = localStorage.getItem('tem_de_tudo_user');
 
         if (!token || !user) {
             return false;
@@ -95,12 +95,12 @@ class AuthMiddleware {
 
     // Atualizar dados do usuário (após refresh do token, etc.)
     updateUserData(userData) {
-        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('tem_de_tudo_user', JSON.stringify(userData));
     }
 
     // Verificar se token ainda é válido (chamada para API)
     async validateToken() {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('tem_de_tudo_token');
         if (!token) {
             return false;
         }

@@ -6,7 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\OpenAIController;
+
 
 // Debug route (remover em produção)
 Route::get('/debug', function () {
