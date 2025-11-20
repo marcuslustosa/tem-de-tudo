@@ -4,7 +4,8 @@ class AuthMiddleware {
         this.perfilRoutes = {
             'admin': '/admin.html',
             'empresa': '/dashboard-estabelecimento.html',
-            'cliente': '/dashboard-cliente.html'
+            'cliente': '/dashboard-cliente.html',
+            'funcionario': '/dashboard-funcionario.html'
         };
     }
 
