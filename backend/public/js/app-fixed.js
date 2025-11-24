@@ -162,13 +162,15 @@ async function handleRegister(event) {
     event.preventDefault();
     
     const formData = new FormData(event.target);
+    const perfil = formData.get('perfil');
+    
     const registerData = {
         name: formData.get('name'),
         email: formData.get('email'),
-        telefone: formData.get('telefone'),
+        telefone: perfil === 'cliente' ? formData.get('telefone_cliente') : formData.get('telefone'),
         password: formData.get('password'),
         password_confirmation: formData.get('password_confirmation'),
-        perfil: formData.get('perfil')
+        perfil: perfil
     };
     
     // Validações básicas
