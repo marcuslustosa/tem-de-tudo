@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Funcionário - Tem de Tudo</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <a href="/dashboard-funcionario.html" class="logo">
+                    <img src="/img/logo.png" alt="Tem de Tudo" class="logo-image">
+                    <span>Tem de Tudo</span>
+                </a>
+
+                <nav class="nav-menu">
+                    <a href="/dashboard-funcionario.html" class="active">
+                        <i class="fas fa-home icon-sm"></i> Início
+                    </a>
+                    <a href="/funcionario/pontos.html">
+                        <i class="fas fa-coins icon-sm"></i> Meus Pontos
+                    </a>
+                    <a href="/funcionario/cupons.html">
+                        <i class="fas fa-ticket-alt icon-sm"></i> Cupons
+                    </a>
+                    <a href="/funcionario/historico.html">
+                        <i class="fas fa-history icon-sm"></i> Histórico
+                    </a>
+                    <a href="/funcionario/perfil.html">
+                        <i class="fas fa-user icon-sm"></i> Perfil
+                    </a>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt icon-sm"></i> Sair
+                    </a>
+                </nav>
+
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-menu">
+                <a href="/dashboard-funcionario.html" class="active">
+                    <i class="fas fa-home icon-sm"></i> Início
+                </a>
+                <a href="/funcionario/pontos.html">
+                    <i class="fas fa-coins icon-sm"></i> Meus Pontos
+                </a>
+                <a href="/funcionario/cupons.html">
+                    <i class="fas fa-ticket-alt icon-sm"></i> Cupons
+                </a>
+                <a href="/funcionario/historico.html">
+                    <i class="fas fa-history icon-sm"></i> Histórico
+                </a>
+                <a href="/funcionario/perfil.html">
+                    <i class="fas fa-user icon-sm"></i> Perfil
+                </a>
+                <a href="#" onclick="logout()">
+                    <i class="fas fa-sign-out-alt icon-sm"></i> Sair
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div style="max-width: 1200px; margin: 0 auto; padding: var(--space-6);">
+                <!-- Welcome Section -->
+                <div class="glass-container" style="margin-bottom: var(--space-8);">
+                    <div style="display: flex; align-items: center; gap: var(--space-4);">
+                        <div style="background: var(--gradient-primary); width: 64px; height: 64px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user-tie" style="font-size: 24px; color: white;"></i>
+                        </div>
+                        <div>
+                            <h1 style="margin: 0; font-size: 1.5rem; color: var(--gray-900);">
+                                Olá, <span id="userName">Funcionário</span>!
+                            </h1>
+                            <p style="margin: 0; color: var(--gray-600);">
+                                Bem-vindo ao seu painel de funcionário
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Points Overview -->
+                <div class="grid grid-cols-3" style="gap: var(--space-6); margin-bottom: var(--space-8);">
+                    <div class="stat-card">
+                        <i class="fas fa-coins" style="font-size: 2rem; color: var(--primary-purple); margin-bottom: var(--space-2);"></i>
+                        <div class="stat-value" id="totalPontos">0</div>
+                        <div class="stat-label">Pontos Totais</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <i class="fas fa-star" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: var(--space-2);"></i>
+                        <div class="stat-value" id="nivel">Bronze</div>
+                        <div class="stat-label">Seu Nível</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <i class="fas fa-ticket-alt" style="font-size: 2rem; color: var(--accent-green); margin-bottom: var(--space-2);"></i>
+                        <div class="stat-value" id="cuponsAtivos">0</div>
+                        <div class="stat-label">Cupons Ativos</div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card" style="margin-bottom: var(--space-8);">
+                    <div class="card-body">
+                        <h2 style="margin: 0 0 var(--space-6); color: var(--primary-purple); display: flex; align-items: center; gap: var(--space-2);">
+                            <i class="fas fa-clock"></i>
+                            Atividade Recente
+                        </h2>
+
+                        <div id="recentActivity" style="display: flex; flex-direction: column; gap: var(--space-4);">
+                            <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
+                                <p>Carregando atividades...</p>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: var(--space-6); text-align: center;">
+                            <a href="/funcionario/historico.html" class="btn btn-outline">
+                                <i class="fas fa-history"></i>
+                                Ver Histórico Completo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Available Coupons -->
+                <div class="card">
+                    <div class="card-body">
+                        <h2 style="margin: 0 0 var(--space-6); color: var(--primary-purple); display: flex; align-items: center; gap: var(--space-2);">
+                            <i class="fas fa-ticket-alt"></i>
+                            Cupons Disponíveis
+                        </h2>
+
+                        <div id="availableCoupons" class="grid grid-cols-2" style="gap: var(--space-4);">
+                            <div style="text-align: center; color: var(--gray-500); padding: var(--space-8); grid-column: span 2;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
+                                <p>Carregando cupons...</p>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: var(--space-6); text-align: center;">
+                            <a href="/funcionario/cupons.html" class="btn btn-outline">
+                                <i class="fas fa-ticket-alt"></i>
+                                Ver Todos os Cupons
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/global.js"></script>
+    <script src="/js/auth-middleware.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        // Verificar autenticação e autorização
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!authMiddleware.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            const tokenValid = await authMiddleware.validateToken();
+            if (!tokenValid) {
+                return;
+            }
+
+            if (!authMiddleware.hasAccessToCurrentRoute()) {
+                authMiddleware.redirectToCorrectRoute();
+                return;
+            }
+
+            loadDashboardData();
+            loadRecentActivity();
+            loadAvailableCoupons();
+        });
+
+        async function loadDashboardData() {
+            try {
+                const token = localStorage.getItem('tem_de_tudo_token') || sessionStorage.getItem('tem_de_tudo_token');
+                const response = await fetch('/api/pontos/meus-dados', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        document.getElementById('totalPontos').textContent = data.data.pontos_totais || 0;
+                        document.getElementById('nivel').textContent = data.data.nivel || 'Bronze';
+                        document.getElementById('cuponsAtivos').textContent = data.data.cupons_ativos || 0;
+
+                        const user = authMiddleware.getCurrentUser();
+                        if (user && user.name) {
+                            document.getElementById('userName').textContent = user.name;
+                        }
+                    }
+                } else if (response.status === 401) {
+                    authMiddleware.logout();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados do dashboard:', error);
+            }
+        }
+
+        async function loadRecentActivity() {
+            try {
+                const token = localStorage.getItem('tem_de_tudo_token') || sessionStorage.getItem('tem_de_tudo_token');
+                const response = await fetch('/api/pontos/historico?limit=5', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        displayRecentActivity(data.data);
+                    }
+                } else if (response.status === 401) {
+                    authMiddleware.logout();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar atividade recente:', error);
+                document.getElementById('recentActivity').innerHTML = `
+                    <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
+                        <p>Erro ao carregar atividades recentes</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayRecentActivity(activities) {
+            const container = document.getElementById('recentActivity');
+
+            if (!activities || activities.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
+                        <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
+                        <p>Nenhuma atividade recente</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = activities.map(activity => `
+                <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-lg);">
+                    <div style="background: ${getActivityColor(activity.tipo)}; width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-${getActivityIcon(activity.tipo)}" style="color: white;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; color: var(--gray-900);">
+                            ${activity.descricao}
+                        </div>
+                        <div style="color: var(--gray-600); font-size: 0.875rem;">
+                            ${activity.pontos ? `${activity.pontos} pontos` : ''}
+                        </div>
+                    </div>
+                    <div style="color: var(--gray-500); font-size: 0.875rem;">
+                        ${formatTimeAgo(activity.created_at)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getActivityIcon(tipo) {
+            const icons = {
+                'ganho': 'plus-circle',
+                'gasto': 'minus-circle',
+                'resgate': 'gift',
+                'expiracao': 'clock'
+            };
+            return icons[tipo] || 'info-circle';
+        }
+
+        function getActivityColor(tipo) {
+            const colors = {
+                'ganho': 'var(--accent-green)',
+                'gasto': 'var(--accent-orange)',
+                'resgate': 'var(--primary-purple)',
+                'expiracao': 'var(--accent-pink)'
+            };
+            return colors[tipo] || 'var(--gray-500)';
+        }
+
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+
+            if (diffInMinutes < 1) return 'Agora';
+            if (diffInMinutes < 60) return `${diffInMinutes}min atrás`;
+
+            const diffInHours = Math.floor(diffInMinutes / 60);
+            if (diffInHours < 24) return `${diffInHours}h atrás`;
+
+            const diffInDays = Math.floor(diffInHours / 24);
+            return `${diffInDays}d atrás`;
+        }
+
+        function logout() {
+            authMiddleware.logout();
+        }
+
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
