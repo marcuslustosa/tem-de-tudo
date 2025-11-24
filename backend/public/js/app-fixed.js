@@ -163,12 +163,12 @@ async function handleRegister(event) {
     
     const formData = new FormData(event.target);
     const registerData = {
-        nome: formData.get('nome'),
+        name: formData.get('name'),
         email: formData.get('email'),
         telefone: formData.get('telefone'),
         password: formData.get('password'),
         password_confirmation: formData.get('password_confirmation'),
-        tipo_conta: formData.get('tipo_conta')
+        perfil: formData.get('perfil')
     };
     
     // Validações básicas
