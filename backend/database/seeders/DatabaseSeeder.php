@@ -14,7 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Admin Master
+        $this->call([
+            AdminUserSeeder::class,
+            DataSeeder::class,
+        ]);
         User::updateOrCreate(
             ['email' => 'admin@temdetudo.com'],
             [
