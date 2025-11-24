@@ -229,11 +229,25 @@
     <!-- Scripts -->
     <script src="/js/global.js"></script>
     <script src="/js/auth-middleware.js"></script>
+    <script src="/js/auth.js"></script>
     <script>
         // Verificar autenticação
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!window.Auth || !window.Auth.isAuthenticated()) {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Verificar se está autenticado
+            if (!authMiddleware.isAuthenticated()) {
                 window.location.href = '/login.html';
+                return;
+            }
+
+            // Validar token com o servidor
+            const tokenValid = await authMiddleware.validateToken();
+            if (!tokenValid) {
+                return; // Já foi redirecionado pelo validateToken
+            }
+
+            // Verificar se tem acesso à rota
+            if (!authMiddleware.hasAccessToCurrentRoute()) {
+                authMiddleware.redirectToCorrectRoute();
                 return;
             }
 
@@ -245,9 +259,10 @@
 
         async function loadDashboardData() {
             try {
+                const token = localStorage.getItem('tem_de_tudo_token') || sessionStorage.getItem('tem_de_tudo_token');
                 const response = await fetch('/api/pontos/meus-dados', {
                     headers: {
-                        'Authorization': `Bearer ${window.Auth.getToken()}`,
+                        'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
                     }
                 });
@@ -260,11 +275,14 @@
                         document.getElementById('cuponsAtivos').textContent = data.data.cupons_ativos || 0;
 
                         // Atualizar nome do usuário
-                        const user = window.Auth.getUser();
+                        const user = authMiddleware.getCurrentUser();
                         if (user && user.name) {
                             document.getElementById('userName').textContent = user.name;
                         }
                     }
+                } else if (response.status === 401) {
+                    // Token inválido, fazer logout
+                    authMiddleware.logout();
                 }
             } catch (error) {
                 console.error('Erro ao carregar dados do dashboard:', error);
@@ -273,9 +291,10 @@
 
         async function loadRecentActivity() {
             try {
+                const token = localStorage.getItem('tem_de_tudo_token') || sessionStorage.getItem('tem_de_tudo_token');
                 const response = await fetch('/api/pontos/historico?limit=5', {
                     headers: {
-                        'Authorization': `Bearer ${window.Auth.getToken()}`,
+                        'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
                     }
                 });
@@ -285,6 +304,9 @@
                     if (data.success) {
                         displayRecentActivity(data.data);
                     }
+                } else if (response.status === 401) {
+                    // Token inválido, fazer logout
+                    authMiddleware.logout();
                 }
             } catch (error) {
                 console.error('Erro ao carregar atividade recente:', error);
@@ -439,12 +461,7 @@
         }
 
         function logout() {
-            if (window.Auth) {
-                window.Auth.logout();
-            } else {
-                localStorage.clear();
-                window.location.href = '/login.html';
-            }
+            authMiddleware.logout();
         }
 
         function toggleMobileMenu() {

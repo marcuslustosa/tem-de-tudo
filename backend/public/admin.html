@@ -201,18 +201,34 @@
 
     <!-- Scripts -->
     <script src="/js/global.js"></script>
+    <script src="/js/auth-middleware.js"></script>
     <script src="/js/auth.js"></script>
     <script>
         // Verificar autenticação de admin
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!window.Auth || !window.Auth.isAuthenticated()) {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Verificar se está autenticado
+            if (!authMiddleware.isAuthenticated()) {
                 window.location.href = '/admin-login.html';
                 return;
             }
 
-            if (!window.Auth.isAdmin()) {
+            // Validar token com o servidor
+            const tokenValid = await authMiddleware.validateToken();
+            if (!tokenValid) {
+                return; // Já foi redirecionado pelo validateToken
+            }
+
+            // Verificar se tem acesso à rota
+            if (!authMiddleware.hasAccessToCurrentRoute()) {
+                authMiddleware.redirectToCorrectRoute();
+                return;
+            }
+
+            // Verificar se é admin
+            const user = authMiddleware.getCurrentUser();
+            if (!user || user.perfil !== 'admin') {
                 alert('Acesso negado. Você não tem permissões administrativas.');
-                window.location.href = '/login.html';
+                authMiddleware.logout();
                 return;
             }
 
@@ -223,9 +239,10 @@
 
         async function loadDashboardData() {
             try {
+                const token = localStorage.getItem('tem_de_tudo_token') || sessionStorage.getItem('tem_de_tudo_token');
                 const response = await fetch('/api/admin/dashboard-stats', {
                     headers: {
-                        'Authorization': `Bearer ${window.Auth.getToken()}`,
+                        'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
                     }
                 });
@@ -239,11 +256,14 @@
                         document.getElementById('alertas').textContent = data.data.alertas || 0;
 
                         // Atualizar nome do admin
-                        const user = window.Auth.getUser();
+                        const user = authMiddleware.getCurrentUser();
                         if (user && user.name) {
                             document.getElementById('adminName').textContent = user.name;
                         }
                     }
+                } else if (response.status === 401) {
+                    // Token inválido, fazer logout
+                    authMiddleware.logout();
                 }
             } catch (error) {
                 console.error('Erro ao carregar dados do dashboard:', error);

@@ -704,6 +704,31 @@ class AuthController extends Controller
     }
 
     /**
+     * Verificar se o token é válido
+     */
+    public function verify(Request $request)
+    {
+        try {
+            $user = $request->user();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Token válido',
+                'data' => [
+                    'user' => array_merge($user->toArray(), ['perfil' => $user->perfil]),
+                    'valid' => true
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Token inválido',
+                'valid' => false
+            ], 401);
+        }
+    }
+
+    /**
      * Refresh token
      */
     public function refreshToken(Request $request)

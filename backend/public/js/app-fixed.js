@@ -134,16 +134,16 @@ async function handleLogin(event) {
         
         if (response.ok) {
             // Login bem-sucedido
-            localStorage.setItem('auth_token', data.token);
-            currentUser = data.user;
-            userPoints = data.user.pontos || 0;
+            localStorage.setItem('auth_token', data.data.token);
+            currentUser = data.data.user;
+            userPoints = data.data.user.pontos || 0;
             userLevel = calculateUserLevel(userPoints);
             
             showSuccess('Login realizado com sucesso! 🎉');
             
-            // Redirecionar após 1.5 segundos
+            // Redirecionar após 1.5 segundos usando URL do backend
             setTimeout(() => {
-                window.location.href = '/';
+                window.location.href = data.data.redirect_to || '/';
             }, 1500);
             
         } else {
@@ -192,11 +192,17 @@ async function handleRegister(event) {
         const data = await response.json();
         
         if (response.ok) {
+            // Salvar token e usuário retornados
+            localStorage.setItem('auth_token', data.data.token);
+            currentUser = data.data.user;
+            userPoints = data.data.user.pontos || 0;
+            userLevel = calculateUserLevel(userPoints);
+            
             showSuccess('Cadastro realizado com sucesso! 🎉');
             
-            // Redirecionar para login após 2 segundos
+            // Redirecionar após 2 segundos usando URL do backend
             setTimeout(() => {
-                window.location.href = '/login.html';
+                window.location.href = data.data.redirect_to || '/login.html';
             }, 2000);
             
         } else {
