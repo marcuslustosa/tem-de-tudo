@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Models\Admin;
 use App\Models\AuditLog;
+use App\Models\Cupom;
 
 use Carbon\Carbon;
 
@@ -100,6 +101,11 @@ class AuthController extends Controller
             $userData = $this->prepareUserDataForPerfil($perfil, $request);
             $user = User::create($userData);
 
+            // Garantir que $user->id está definido antes de criar empresa
+            if (!$user || !$user->id) {
+                Log::error('Usuário criado, mas ID não disponível para criação de empresa', ['user' => $user]);
+                throw new \Exception('Erro interno: falha ao criar usuário.');
+            }
             Log::info('Usuário criado no banco', ['user_id' => $user->id, 'email' => $user->email, 'perfil' => $perfil]);
 
             // Se for empresa, criar registro na tabela empresas
