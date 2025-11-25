@@ -1,636 +1,130 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Empresa - Tem de Tudo</title>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="/css/modern-theme.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard Estabelecimento - Tem de Tudo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        header { margin-bottom: 2rem; }
+        h1 { color: #333; }
+        section { margin-bottom: 2rem; }
+        .welcome { font-size: 1.2rem; }
+        .stats { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .card { background: #f5f5f5; padding: 1rem; border-radius: 6px; flex: 1 1 250px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        ul { list-style: none; padding-left: 0; }
+        li { margin-bottom: 0.5rem; }
+    </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="app-header">
-            <div class="header-container">
-                <a href="/dashboard-estabelecimento.html" class="logo">
-                    <img src="/img/logo.png" alt="Tem de Tudo" class="logo-image">
-                    <span>Tem de Tudo</span>
-                </a>
+    <header>
+        <h1>Dashboard Estabelecimento</h1>
+        <p class="welcome" id="welcome-message">Carregando informações...</p>
+    </header>
 
-                <nav class="nav-menu">
-                    <a href="/dashboard-estabelecimento.html" class="active">
-                        <i class="fas fa-home icon-sm"></i> Dashboard
-                    </a>
-                    <a href="/empresa/clientes.html">
-                        <i class="fas fa-users icon-sm"></i> Clientes
-                    </a>
-                    <a href="/empresa/qrcodes.html">
-                        <i class="fas fa-qrcode icon-sm"></i> QR Codes
-                    </a>
-                    <a href="/empresa/relatorios.html">
-                        <i class="fas fa-chart-bar icon-sm"></i> Relatórios
-                    </a>
-                    <a href="/empresa/perfil.html">
-                        <i class="fas fa-building icon-sm"></i> Minha Empresa
-                    </a>
-                    <a href="#" onclick="logout()">
-                        <i class="fas fa-sign-out-alt icon-sm"></i> Sair
-                    </a>
-                </nav>
-
-                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </header>
-
-        <!-- Mobile Navigation -->
-        <div class="mobile-nav" id="mobileNav">
-            <div class="mobile-nav-menu">
-                <a href="/dashboard-estabelecimento.html" class="active">
-                    <i class="fas fa-home icon-sm"></i> Dashboard
-                </a>
-                <a href="/empresa/clientes.html">
-                    <i class="fas fa-users icon-sm"></i> Clientes
-                </a>
-                <a href="/empresa/qrcodes.html">
-                    <i class="fas fa-qrcode icon-sm"></i> QR Codes
-                </a>
-                <a href="/empresa/relatorios.html">
-                    <i class="fas fa-chart-bar icon-sm"></i> Relatórios
-                </a>
-                <a href="/empresa/perfil.html">
-                    <i class="fas fa-building icon-sm"></i> Minha Empresa
-                </a>
-                <a href="#" onclick="logout()">
-                    <i class="fas fa-sign-out-alt icon-sm"></i> Sair
-                </a>
-            </div>
+    <section>
+        <h2>Estatísticas</h2>
+        <div class="stats" id="dashboard-stats">
+            <div class="card" id="total-clientes">Total de Clientes: ...</div>
+            <div class="card" id="pontos-distribuidos">Pontos Distribuídos: ...</div>
+            <div class="card" id="qrcodes-ativos">QRCodes Ativos: ...</div>
+            <div class="card" id="checkins-hoje">Checkins Hoje: ...</div>
         </div>
+    </section>
 
-        <!-- Main Content -->
-        <main class="app-main">
-            <div style="max-width: 1200px; margin: 0 auto; padding: var(--space-6);">
-                <!-- Welcome Section -->
-                <div class="glass-container" style="margin-bottom: var(--space-8);">
-                    <div style="display: flex; align-items: center; gap: var(--space-4);">
-                        <div style="background: var(--gradient-primary); width: 64px; height: 64px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-building" style="font-size: 24px; color: white;"></i>
-                        </div>
-                        <div>
-                            <h1 style="margin: 0; font-size: 1.5rem; color: var(--gray-900);">
-                                <span id="empresaNome">Minha Empresa</span>
-                            </h1>
-                            <p style="margin: 0; color: var(--gray-600);">
-                                Gerencie seus pontos e clientes
-                            </p>
-                        </div>
-                    </div>
-                </div>
+    <section>
+        <h2>Checkins Recentes</h2>
+        <ul id="recent-checkins">
+            <li>Carregando checkins...</li>
+        </ul>
+    </section>
 
-                <!-- Stats Grid -->
-                <div class="grid grid-cols-4" style="gap: var(--space-6); margin-bottom: var(--space-8);">
-                    <div class="stat-card">
-                        <i class="fas fa-users" style="font-size: 2rem; color: var(--primary-purple); margin-bottom: var(--space-2);"></i>
-                        <div class="stat-value" id="totalClientes">0</div>
-                        <div class="stat-label">Clientes Ativos</div>
-                    </div>
+    <section>
+        <h2>Top Clientes</h2>
+        <ul id="top-clientes">
+            <li>Carregando clientes...</li>
+        </ul>
+    </section>
 
-                    <div class="stat-card">
-                        <i class="fas fa-coins" style="font-size: 2rem; color: var(--accent-orange); margin-bottom: var(--space-2);"></i>
-                        <div class="stat-value" id="pontosDistribuidos">0</div>
-                        <div class="stat-label">Pontos Distribuídos</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <i class="fas fa-qrcode" style="font-size: 2rem; color: var(--accent-green); margin-bottom: var(--space-2);"></i>
-                        <div class="stat-value" id="qrcodesAtivos">0</div>
-                        <div class="stat-label">QR Codes Ativos</div>
-                    </div>
-
-                    <div class="stat-card">
-                        <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--accent-pink); margin-bottom: var(--space-2);"></i>
-                        <div class="stat-value" id="checkinsHoje">0</div>
-                        <div class="stat-label">Check-ins Hoje</div>
-                    </div>
-                </div>
-
-                <!-- QR Code Management -->
-                <div class="card" style="margin-bottom: var(--space-8);">
-                    <div class="card-body">
-                        <h2 style="margin: 0 0 var(--space-6); color: var(--primary-purple); display: flex; align-items: center; gap: var(--space-2);">
-                            <i class="fas fa-qrcode"></i>
-                            Gerenciar QR Codes
-                        </h2>
-
-                        <div id="qrCodesList" style="display: flex; flex-direction: column; gap: var(--space-4);">
-                            <!-- QR Code items will be loaded here -->
-                            <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
-                                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
-                                <p>Carregando QR Codes...</p>
-                            </div>
-                        </div>
-
-                        <div style="margin-top: var(--space-6); text-align: center;">
-                            <button class="btn btn-primary" onclick="openCreateQRModal()">
-                                <i class="fas fa-plus"></i>
-                                Criar Novo QR Code
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Check-ins -->
-                <div class="card" style="margin-bottom: var(--space-8);">
-                    <div class="card-body">
-                        <h2 style="margin: 0 0 var(--space-6); color: var(--primary-purple); display: flex; align-items: center; gap: var(--space-2);">
-                            <i class="fas fa-clock"></i>
-                            Check-ins Recentes
-                        </h2>
-
-                        <div id="recentCheckins" style="display: flex; flex-direction: column; gap: var(--space-4);">
-                            <!-- Check-in items will be loaded here -->
-                            <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
-                                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
-                                <p>Carregando check-ins...</p>
-                            </div>
-                        </div>
-
-                        <div style="margin-top: var(--space-6); text-align: center;">
-                            <a href="/empresa/relatorios.html" class="btn btn-outline">
-                                <i class="fas fa-history"></i>
-                                Ver Relatório Completo
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Top Clients -->
-                <div class="card">
-                    <div class="card-body">
-                        <h2 style="margin: 0 0 var(--space-6); color: var(--primary-purple); display: flex; align-items: center; gap: var(--space-2);">
-                            <i class="fas fa-crown"></i>
-                            Clientes Mais Ativos
-                        </h2>
-
-                        <div id="topClients" style="display: flex; flex-direction: column; gap: var(--space-4);">
-                            <!-- Client items will be loaded here -->
-                            <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
-                                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
-                                <p>Carregando clientes...</p>
-                            </div>
-                        </div>
-
-                        <div style="margin-top: var(--space-6); text-align: center;">
-                            <a href="/empresa/clientes.html" class="btn btn-outline">
-                                <i class="fas fa-users"></i>
-                                Ver Todos os Clientes
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Create QR Code Modal -->
-    <div id="createQRModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Criar Novo QR Code</h3>
-                <button onclick="closeCreateQRModal()" class="close-btn">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="createQRForm" onsubmit="createQRCode(event)">
-                    <div class="form-group" style="margin-bottom: var(--space-6);">
-                        <label for="qrNome" class="form-label">
-                            <i class="fas fa-tag icon-sm"></i> Nome do QR Code
-                        </label>
-                        <input
-                            type="text"
-                            id="qrNome"
-                            name="nome"
-                            class="form-control"
-                            placeholder="Ex: Mesa 01, Balcão, etc."
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: var(--space-6);">
-                        <label for="qrPontos" class="form-label">
-                            <i class="fas fa-coins icon-sm"></i> Pontos por Check-in
-                        </label>
-                        <input
-                            type="number"
-                            id="qrPontos"
-                            name="pontos"
-                            class="form-control"
-                            placeholder="10"
-                            min="1"
-                            max="100"
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: var(--space-6);">
-                        <label for="qrDescricao" class="form-label">
-                            <i class="fas fa-info-circle icon-sm"></i> Descrição (opcional)
-                        </label>
-                        <textarea
-                            id="qrDescricao"
-                            name="descricao"
-                            class="form-control"
-                            placeholder="Descrição do local ou promoção..."
-                            rows="3"
-                        ></textarea>
-                    </div>
-
-                    <div style="display: flex; gap: var(--space-4); justify-content: flex-end;">
-                        <button type="button" class="btn btn-outline" onclick="closeCreateQRModal()">
-                            Cancelar
-                        </button>
-                        <button type="submit" class="btn btn-primary" id="createQRBtn">
-                            <i class="fas fa-plus"></i>
-                            Criar QR Code
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="/js/global.js"></script>
-    <script src="/js/auth-middleware.js"></script>
-    <script src="/js/auth.js"></script>
     <script>
-        // Verificar autenticação
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Verificar se está autenticado
-            if (!authMiddleware.isAuthenticated()) {
-                window.location.href = '/login.html';
-                return;
-            }
-
-            // Validar token com o servidor
-            const tokenValid = await authMiddleware.validateToken();
-            if (!tokenValid) {
-                return; // Já foi redirecionado pelo validateToken
-            }
-
-            // Verificar se tem acesso à rota
-            if (!authMiddleware.hasAccessToCurrentRoute()) {
-                authMiddleware.redirectToCorrectRoute();
-                return;
-            }
-
-            // Carregar dados do dashboard
-            loadDashboardData();
-            loadQRCodes();
-            loadRecentCheckins();
-            loadTopClients();
-        });
-
-        async function loadDashboardData() {
+        async function loadDashboard() {
             try {
-                const token = localStorage.getItem('tem_de_tudo_token') || sessionStorage.getItem('tem_de_tudo_token');
-                const response = await fetch('/api/empresa/dashboard-stats', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
+                const [statsRes, checkinsRes, clientesRes, userRes] = await Promise.all([
+                    fetch('/api/empresa/dashboard-stats', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' }}),
+                    fetch('/api/empresa/recent-checkins', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' }}),
+                    fetch('/api/empresa/top-clientes', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' }}),
+                    fetch('/api/user', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' }})
+                ]);
 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        document.getElementById('totalClientes').textContent = data.data.total_clientes || 0;
-                        document.getElementById('pontosDistribuidos').textContent = data.data.pontos_distribuidos || 0;
-                        document.getElementById('qrcodesAtivos').textContent = data.data.qrcodes_ativos || 0;
-                        document.getElementById('checkinsHoje').textContent = data.data.checkins_hoje || 0;
-
-                        // Atualizar nome da empresa
-                        if (data.data.empresa && data.data.empresa.nome) {
-                            document.getElementById('empresaNome').textContent = data.data.empresa.nome;
-                        }
-                    }
-                } else if (response.status === 401) {
-                    // Token inválido, fazer logout
-                    authMiddleware.logout();
+                if (!statsRes.ok || !checkinsRes.ok || !clientesRes.ok || !userRes.ok) {
+                    throw new Error('Erro ao carregar dados do dashboard.');
                 }
-            } catch (error) {
-                console.error('Erro ao carregar dados do dashboard:', error);
-            }
-        }
 
-        async function loadQRCodes() {
-            try {
-                const response = await fetch('/api/qrcode/list', {
-                    headers: {
-                        'Authorization': `Bearer ${window.Auth.getToken()}`,
-                        'Accept': 'application/json'
-                    }
-                });
+                const statsData = await statsRes.json();
+                const checkinsData = await checkinsRes.json();
+                const clientesData = await clientesRes.json();
+                const userData = await userRes.json();
 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        displayQRCodes(data.data);
-                    }
-                }
-            } catch (error) {
-                console.error('Erro ao carregar QR Codes:', error);
-                document.getElementById('qrCodesList').innerHTML = `
-                    <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
-                        <p>Erro ao carregar QR Codes</p>
-                    </div>
-                `;
-            }
-        }
-
-        function displayQRCodes(qrcodes) {
-            const container = document.getElementById('qrCodesList');
-
-            if (!qrcodes || qrcodes.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
-                        <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
-                        <p>Nenhum QR Code criado ainda</p>
-                        <p style="font-size: 0.875rem;">Crie seu primeiro QR Code para começar a distribuir pontos!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = qrcodes.slice(0, 3).map(qr => `
-                <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-lg);">
-                    <div style="background: var(--primary-purple); width: 50px; height: 50px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-qrcode" style="color: white; font-size: 1.25rem;"></i>
-                    </div>
-                    <div style="flex: 1;">
-                        <div style="font-weight: 600; color: var(--gray-900);">
-                            ${qr.nome}
-                        </div>
-                        <div style="color: var(--gray-600); font-size: 0.875rem;">
-                            ${qr.pontos} pontos por check-in
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: var(--space-2);">
-                        <button class="btn btn-sm btn-outline" onclick="downloadQR('${qr.id}')">
-                            <i class="fas fa-download"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline" onclick="viewQRStats('${qr.id}')">
-                            <i class="fas fa-chart-bar"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-
-            if (qrcodes.length > 3) {
-                container.innerHTML += `
-                    <div style="text-align: center; margin-top: var(--space-4);">
-                        <a href="/empresa/qrcodes.html" class="btn btn-outline btn-sm">
-                            Ver todos os QR Codes (${qrcodes.length})
-                        </a>
-                    </div>
-                `;
-            }
-        }
-
-        async function loadRecentCheckins() {
-            try {
-                const response = await fetch('/api/empresa/recent-checkins', {
-                    headers: {
-                        'Authorization': `Bearer ${window.Auth.getToken()}`,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        displayRecentCheckins(data.data);
-                    }
-                }
-            } catch (error) {
-                console.error('Erro ao carregar check-ins recentes:', error);
-                document.getElementById('recentCheckins').innerHTML = `
-                    <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
-                        <p>Erro ao carregar check-ins recentes</p>
-                    </div>
-                `;
-            }
-        }
-
-        function displayRecentCheckins(checkins) {
-            const container = document.getElementById('recentCheckins');
-
-            if (!checkins || checkins.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
-                        <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
-                        <p>Nenhum check-in recente</p>
-                        <p style="font-size: 0.875rem;">Os check-ins aparecerão aqui quando clientes escanearem seus QR Codes</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = checkins.map(checkin => `
-                <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-lg);">
-                    <div style="background: var(--accent-green); width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-check-circle" style="color: white;"></i>
-                    </div>
-                    <div style="flex: 1;">
-                        <div style="font-weight: 600; color: var(--gray-900);">
-                            ${checkin.cliente_nome}
-                        </div>
-                        <div style="color: var(--gray-600); font-size: 0.875rem;">
-                            ${checkin.qr_nome} • ${checkin.pontos} pontos
-                        </div>
-                    </div>
-                    <div style="color: var(--gray-500); font-size: 0.875rem;">
-                        ${formatTimeAgo(checkin.created_at)}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        async function loadTopClients() {
-            try {
-                const response = await fetch('/api/empresa/top-clients', {
-                    headers: {
-                        'Authorization': `Bearer ${window.Auth.getToken()}`,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        displayTopClients(data.data);
-                    }
-                }
-            } catch (error) {
-                console.error('Erro ao carregar top clientes:', error);
-                document.getElementById('topClients').innerHTML = `
-                    <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
-                        <p>Erro ao carregar clientes</p>
-                    </div>
-                `;
-            }
-        }
-
-        function displayTopClients(clients) {
-            const container = document.getElementById('topClients');
-
-            if (!clients || clients.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; color: var(--gray-500); padding: var(--space-8);">
-                        <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
-                        <p>Nenhum cliente ativo ainda</p>
-                        <p style="font-size: 0.875rem;">Os clientes aparecerão aqui após fazerem check-in</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = clients.map((client, index) => `
-                <div style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-lg);">
-                    <div style="background: ${getRankColor(index)}; width: 40px; height: 40px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;">
-                        ${index + 1}
-                    </div>
-                    <div style="flex: 1;">
-                        <div style="font-weight: 600; color: var(--gray-900);">
-                            ${client.nome}
-                        </div>
-                        <div style="color: var(--gray-600); font-size: 0.875rem;">
-                            ${client.total_pontos} pontos • ${client.total_checkins} check-ins
-                        </div>
-                    </div>
-                    <div style="color: var(--gray-500); font-size: 0.875rem;">
-                        ${client.nivel}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function getRankColor(index) {
-            const colors = ['var(--accent-gold)', 'var(--accent-silver)', 'var(--accent-bronze)'];
-            return colors[index] || 'var(--gray-400)';
-        }
-
-        function openCreateQRModal() {
-            document.getElementById('createQRModal').style.display = 'flex';
-        }
-
-        function closeCreateQRModal() {
-            document.getElementById('createQRModal').style.display = 'none';
-            document.getElementById('createQRForm').reset();
-        }
-
-        async function createQRCode(event) {
-            event.preventDefault();
-
-            const form = event.target;
-            const formData = new FormData(form);
-            const createBtn = document.getElementById('createQRBtn');
-
-            createBtn.disabled = true;
-            createBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando...';
-
-            try {
-                const response = await fetch('/api/qrcode/generate', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${window.Auth.getToken()}`,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        nome: formData.get('nome'),
-                        pontos: parseInt(formData.get('pontos')),
-                        descricao: formData.get('descricao')
-                    })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        showMessage('QR Code criado com sucesso!', 'success');
-                        closeCreateQRModal();
-                        loadQRCodes(); // Recarregar lista
-                        loadDashboardData(); // Atualizar estatísticas
-                    } else {
-                        throw new Error(data.message || 'Erro ao criar QR Code');
-                    }
+                // Welcome message
+                const welcomeMsg = document.getElementById('welcome-message');
+                if(userData.success) {
+                    welcomeMsg.textContent = `Bem-vindo, ${userData.data.user.name}!`;
                 } else {
-                    const error = await response.json();
-                    throw new Error(error.message || 'Erro ao criar QR Code');
+                    welcomeMsg.textContent = 'Bem-vindo, usuário!';
                 }
+
+                // Estatísticas
+                if (statsData.success) {
+                    document.getElementById('total-clientes').textContent = `Total de Clientes: ${statsData.data.total_clientes}`;
+                    document.getElementById('pontos-distribuidos').textContent = `Pontos Distribuídos: ${statsData.data.pontos_distribuidos}`;
+                    document.getElementById('qrcodes-ativos').textContent = `QRCodes Ativos: ${statsData.data.qrcodes_ativos}`;
+                    document.getElementById('checkins-hoje').textContent = `Checkins Hoje: ${statsData.data.checkins_hoje}`;
+                } else {
+                    document.getElementById('total-clientes').textContent = 'Erro ao carregar estatísticas';
+                    document.getElementById('pontos-distribuidos').textContent = '';
+                    document.getElementById('qrcodes-ativos').textContent = '';
+                    document.getElementById('checkins-hoje').textContent = '';
+                }
+
+                // Checkins recentes
+                const checkinsList = document.getElementById('recent-checkins');
+                checkinsList.innerHTML = '';
+                if (checkinsData.success && checkinsData.data.length > 0) {
+                    checkinsData.data.forEach(c => {
+                        const li = document.createElement('li');
+                        li.textContent = `${c.cliente_nome} fez checkin em ${new Date(c.created_at).toLocaleString()}`;
+                        checkinsList.appendChild(li);
+                    });
+                } else {
+                    checkinsList.textContent = 'Nenhum checkin recente.';
+                }
+
+                // Top clientes
+                const clientesList = document.getElementById('top-clientes');
+                clientesList.innerHTML = '';
+                if (clientesData.success && clientesData.data.length > 0) {
+                    clientesData.data.forEach(c => {
+                        const li = document.createElement('li');
+                        li.textContent = `${c.name} - ${c.total_pontos} pontos`;
+                        clientesList.appendChild(li);
+                    });
+                } else {
+                    clientesList.textContent = 'Nenhum cliente encontrado.';
+                }
+
             } catch (error) {
-                console.error('Erro:', error);
-                showMessage(error.message, 'error');
-            } finally {
-                createBtn.disabled = false;
-                createBtn.innerHTML = '<i class="fas fa-plus"></i> Criar QR Code';
+                document.getElementById('welcome-message').textContent = 'Erro ao carregar dashboard.';
+                document.getElementById('total-clientes').textContent = '';
+                document.getElementById('pontos-distribuidos').textContent = '';
+                document.getElementById('qrcodes-ativos').textContent = '';
+                document.getElementById('checkins-hoje').textContent = '';
+                document.getElementById('recent-checkins').textContent = '';
+                document.getElementById('top-clientes').textContent = '';
+                console.error(error);
             }
         }
 
-        function downloadQR(qrId) {
-            // Implementar download do QR Code
-            window.open(`/api/qrcode/download/${qrId}`, '_blank');
-        }
-
-        function viewQRStats(qrId) {
-            // Implementar visualização de estatísticas
-            window.location.href = `/empresa/qrcodes.html?view=${qrId}`;
-        }
-
-        function formatTimeAgo(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffInMinutes = Math.floor((now - date) / (1000 * 60));
-
-            if (diffInMinutes < 1) return 'Agora';
-            if (diffInMinutes < 60) return `${diffInMinutes}min atrás`;
-
-            const diffInHours = Math.floor(diffInMinutes / 60);
-            if (diffInHours < 24) return `${diffInHours}h atrás`;
-
-            const diffInDays = Math.floor(diffInHours / 24);
-            return `${diffInDays}d atrás`;
-        }
-
-        function showMessage(message, type = 'info') {
-            // Implementar sistema de mensagens
-            alert(message);
-        }
-
-        function logout() {
-            authMiddleware.logout();
-        }
-
-        function toggleMobileMenu() {
-            const mobileNav = document.getElementById('mobileNav');
-            mobileNav.classList.toggle('active');
-        }
+        loadDashboard();
     </script>
 </body>
 </html>

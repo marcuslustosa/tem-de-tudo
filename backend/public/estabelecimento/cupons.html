@@ -4,10 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Cupons - Estabelecimento - Tem de Tudo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        h1 { color: #333; }
+        ul { list-style: none; padding-left: 0; }
+        li { background: #f0f0f0; margin-bottom: 1rem; padding: 1rem; border-radius: 4px; }
+        .cupon-nome { font-weight: bold; }
+        .error { color: red; margin-top: 1rem; }
+        a { display: inline-block; margin-top: 2rem; color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
     <h1>Cupons - Estabelecimento</h1>
-    <p>Esta página exibirá os cupons ativos do estabelecimento.</p>
+    <div id="cupons-list">Carregando cupons...</div>
     <a href="/dashboard-estabelecimento.html">Voltar ao Dashboard</a>
+
+    <script>
+        async function fetchCupons() {
+            try {
+                const response = await fetch('/api/empresa/dashboard-stats', {
+                    credentials: 'include',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao obter dados: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // The backend EmpresaController does not return cupons in dashboard-stats,
+                    // so here we simulate or inform no coupons on establishment side.
+                    const container = document.getElementById('cupons-list');
+                    container.textContent = 'Funcionalidade de cupons para estabelecimentos ainda não implementada.';
+                } else {
+                    throw new Error(data.message || 'Falha ao carregar dados.');
+                }
+            } catch (error) {
+                const container = document.getElementById('cupons-list');
+                container.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = error.message;
+                container.appendChild(errorDiv);
+            }
+        }
+
+        fetchCupons();
+    </script>
 </body>
 </html>

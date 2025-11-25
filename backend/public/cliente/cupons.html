@@ -4,10 +4,67 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Cupons - Cliente - Tem de Tudo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        h1 { color: #333; }
+        ul { list-style: none; padding-left: 0; }
+        li { background: #f0f0f0; margin-bottom: 1rem; padding: 1rem; border-radius: 4px; }
+        .cupon-code { font-weight: bold; }
+        .error { color: red; margin-top: 1rem; }
+        a { display: inline-block; margin-top: 2rem; color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
     <h1>Cupons - Cliente</h1>
-    <p>Esta página exibirá os cupons ativos do cliente.</p>
+    <div id="cupons-list">Carregando cupons...</div>
     <a href="/dashboard-cliente.html">Voltar ao Dashboard</a>
+
+    <script>
+        async function fetchCupons() {
+            try {
+                const response = await fetch('/api/pontos/meus-cupons', {
+                    credentials: 'include',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao obter cupons: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const cupons = data.data;
+                    const container = document.getElementById('cupons-list');
+                    
+                    if (cupons.length === 0) {
+                        container.textContent = 'Nenhum cupom ativo no momento.';
+                        return;
+                    }
+                    
+                    const ul = document.createElement('ul');
+                    cupons.forEach(c => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<span class="cupon-code">${c.codigo}</span> - ${c.descricao} <br/> Validade: ${new Date(c.validade).toLocaleDateString()}`;
+                        ul.appendChild(li);
+                    });
+                    container.textContent = '';
+                    container.appendChild(ul);
+                } else {
+                    throw new Error(data.message || 'Falha ao carregar cupons.');
+                }
+            } catch (error) {
+                const container = document.getElementById('cupons-list');
+                container.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = error.message;
+                container.appendChild(errorDiv);
+            }
+        }
+
+        fetchCupons();
+    </script>
 </body>
 </html>

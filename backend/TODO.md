@@ -1,46 +1,28 @@
-# Correção Completa do Fluxo de Autenticação
+# TODO List - Correções Sistema Tem de Tudo
 
-## ✅ Análise Concluída
-- [x] Identificar inconsistências entre 'perfil' e 'role'
-- [x] Analisar erro JavaScript "listener asynchronous"
-- [x] Verificar validações frontend/backend
-- [x] Revisar estrutura do banco de dados
+- [x] Remover suporte e páginas para perfil inexistente "funcionario"
+  - Apagar diretório backend/public/funcionario/
+  - Apagar arquivo backend/public/dashboard-funcionario.html
+  - Remover caso 'funcionario' de redirecionamentos no frontend (/public/js/auth.js e auth-middleware.js)
 
-## ✅ Correções Realizadas
+- [ ] Revisar e corrigir funcionamento das páginas e APIs para perfis existentes:
+  - cliente
+  - estabelecimento (empresa)
+  - admin master
 
-### 1. Padronizar Campo de Perfil
-- [x] Atualizar migração para usar 'perfil' ao invés de 'role'
-- [x] Corrigir modelo User.php com todos os campos fillable
-- [x] Atualizar AuthController para usar 'perfil' consistentemente
-- [x] Verificar seeders e testes
+- [ ] Garantir dados fictícios suficientes para popular dashboards e perfis dos usuários existentes:
+  - Atualizar backend/database/seeders/DataSeeder.php para incluir dados robustos para cliente e empresa
+  - Garantir users criados para estes perfis em DatabaseSeeder.php
 
-### 2. Reescrever JavaScript Frontend
-- [x] Corrigir handleRegister() para aguardar fetch corretamente
-- [x] Melhorar validações antes do envio
-- [x] Garantir tratamento adequado de respostas JSON
+- [ ] Revisar e ajustar:
+  - Registros de usuário (AuthController.php) para atender os perfis citados, garantir funcionamento correto
+  - Login e redirecionamento para perfis corretos
+  - APIs de dashboard para cliente e empresa com dados completos e consistentes
 
-### 3. Corrigir Validações Backend
-- [x] Ajustar getValidationRulesForPerfil() para campos obrigatórios corretos
-- [x] Adicionar validação de password_confirmation
-- [x] Melhorar regex CNPJ
-- [x] Garantir resposta JSON consistente (success/error)
-- [x] Melhorar tratamento de erros
-- [x] Corrigir campos obrigatórios por perfil
+- [ ] Garantir que o código modificado seja commitado corretamente e com mensagens descritivas
 
-### 4. Atualizar Banco de Dados
-- [x] Criar nova migração para padronizar campos
-- [x] Atualizar schema.sql se necessário
-- [x] Verificar compatibilidade com dados existentes
+- [ ] Testes básicos para validar fluxo de cadastro, login, redirecionamento e visualização dados nos dashboards dos três perfis válidos
 
-## 🔄 Próximos Passos
-- [x] Testar registro de cliente
-- [x] Testar registro de empresa
-- [x] Testar login de ambos perfis
-- [x] Verificar redirecionamentos
-- [x] Testar validações de campos obrigatórios
-- [x] Corrigir conflitos de event listeners entre auth.js e páginas HTML
+- [ ] Remover qualquer código legado, comentários e arquivos desnecessários que possam gerar confusão
 
-### 6. Documentação Final
-- [ ] Criar checklist para deploy no Render
-- [ ] Documentar APIs
-- [ ] Explicar mudanças feitas
+- [ ] Documentar melhorias feitas para facilitar manutenção futura

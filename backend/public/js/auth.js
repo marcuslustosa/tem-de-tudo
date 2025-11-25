@@ -387,6 +387,8 @@ class AuthManager {
                 window.location.href = '/dashboard-estabelecimento.html';
                 break;
             case 'cliente':
+                window.location.href = '/dashboard-cliente.html';
+                break;
             default:
                 window.location.href = '/dashboard-cliente.html';
                 break;

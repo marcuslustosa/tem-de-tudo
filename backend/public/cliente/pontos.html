@@ -4,10 +4,52 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Pontos - Cliente - Tem de Tudo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        h1 { color: #333; }
+        #points-display { font-size: 1.5rem; margin-top: 1rem; }
+        a { display: inline-block; margin-top: 2rem; color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .error { color: red; margin-top: 1rem; }
+    </style>
 </head>
 <body>
     <h1>Pontos - Cliente</h1>
-    <p>Esta página exibirá os pontos acumulados pelo cliente.</p>
+    <div id="points-display">Carregando pontos...</div>
     <a href="/dashboard-cliente.html">Voltar ao Dashboard</a>
+
+    <script>
+        async function fetchPoints() {
+            try {
+                const response = await fetch('/api/pontos/meus-dados', {
+                    credentials: 'include',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao obter pontos: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const pointsData = data.data;
+                    const display = document.getElementById('points-display');
+                    display.textContent = `Você tem ${pointsData.pontos} pontos acumulados (Nível: ${pointsData.nivel}).`;
+                } else {
+                    throw new Error(data.message || 'Falha ao carregar dados de pontos.');
+                }
+            } catch (error) {
+                const display = document.getElementById('points-display');
+                display.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = error.message;
+                display.appendChild(errorDiv);
+            }
+        }
+
+        fetchPoints();
+    </script>
 </body>
 </html>

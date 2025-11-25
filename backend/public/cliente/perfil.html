@@ -4,10 +4,63 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Perfil - Cliente - Tem de Tudo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        h1 { color: #333; }
+        dl { max-width: 400px; }
+        dt { font-weight: bold; margin-top: 1rem; }
+        dd { margin: 0 0 1rem 0; }
+        .error { color: red; margin-top: 1rem; }
+        a { display: inline-block; margin-top: 2rem; color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
     <h1>Perfil - Cliente</h1>
-    <p>Esta página exibirá os dados do perfil do cliente.</p>
+    <div id="profile-data">Carregando dados do perfil...</div>
     <a href="/dashboard-cliente.html">Voltar ao Dashboard</a>
+
+    <script>
+        async function fetchProfile() {
+            try {
+                const response = await fetch('/api/cliente/profile', {
+                    credentials: 'include',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao obter perfil: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const profile = data.data;
+                    const container = document.getElementById('profile-data');
+
+                    container.innerHTML = `
+                        <dl>
+                            <dt>Nome:</dt><dd>${profile.name}</dd>
+                            <dt>Email:</dt><dd>${profile.email}</dd>
+                            <dt>Telefone:</dt><dd>${profile.telefone}</dd>
+                            <dt>Status:</dt><dd>${profile.status}</dd>
+                            <dt>Perfil:</dt><dd>${profile.perfil}</dd>
+                        </dl>
+                    `;
+                } else {
+                    throw new Error(data.message || 'Falha ao carregar dados do perfil.');
+                }
+            } catch (error) {
+                const container = document.getElementById('profile-data');
+                container.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = error.message;
+                container.appendChild(errorDiv);
+            }
+        }
+
+        fetchProfile();
+    </script>
 </body>
 </html>

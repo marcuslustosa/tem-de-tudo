@@ -111,6 +111,13 @@ class AuthController extends Controller
             // Se for empresa, criar registro na tabela empresas
             if ($perfil === 'empresa') {
                 try {
+                    Log::info('Tentando criar empresa com dados:', [
+                        'nome' => $request->name,
+                        'endereco' => $request->endereco,
+                        'telefone' => $request->telefone,
+                        'cnpj' => $request->cnpj,
+                        'owner_id' => $user->id,
+                    ]);
                     $empresa = \App\Models\Empresa::create([
                         'nome' => $request->name,
                         'endereco' => $request->endereco,
@@ -123,7 +130,7 @@ class AuthController extends Controller
 
                     Log::info('Empresa criada com sucesso', ['empresa_id' => $empresa->id, 'user_id' => $user->id]);
                 } catch (\Exception $e) {
-                    Log::error('Erro ao criar empresa', ['error' => $e->getMessage(), 'user_id' => $user->id]);
+                    Log::error('Erro ao criar empresa', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString(), 'user_id' => $user->id]);
                     throw $e;
                 }
             }

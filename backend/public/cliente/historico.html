@@ -4,10 +4,69 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Histórico - Cliente - Tem de Tudo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        h1 { color: #333; }
+        ul { list-style: none; padding-left: 0; }
+        li { background: #f9f9f9; margin-bottom: 1rem; padding: 1rem; border-radius: 4px; border: 1px solid #ddd; }
+        .acao { font-weight: bold; }
+        .data { color: #666; font-size: 0.9rem; }
+        .detalhes { margin-top: 0.5rem; }
+        .error { color: red; margin-top: 1rem; }
+        a { display: inline-block; margin-top: 2rem; color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
     <h1>Histórico - Cliente</h1>
-    <p>Esta página exibirá o histórico de atividades do cliente.</p>
+    <div id="historico-list">Carregando histórico...</div>
     <a href="/dashboard-cliente.html">Voltar ao Dashboard</a>
+
+    <script>
+        async function fetchHistorico() {
+            try {
+                const response = await fetch('/api/pontos/historico', {
+                    credentials: 'include',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao obter histórico: ' + response.statusText);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const historicos = data.data;
+                    const container = document.getElementById('historico-list');
+                    
+                    if (historicos.length === 0) {
+                        container.textContent = 'Nenhum registro de histórico encontrado.';
+                        return;
+                    }
+                    
+                    const ul = document.createElement('ul');
+                    historicos.forEach(h => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<div class="acao">${h.acao}</div><div class="data">${new Date(h.data).toLocaleDateString()}</div><div class="detalhes">${h.detalhes}</div>`;
+                        ul.appendChild(li);
+                    });
+                    container.textContent = '';
+                    container.appendChild(ul);
+                } else {
+                    throw new Error(data.message || 'Falha ao carregar histórico.');
+                }
+            } catch (error) {
+                const container = document.getElementById('historico-list');
+                container.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = error.message;
+                container.appendChild(errorDiv);
+            }
+        }
+
+        fetchHistorico();
+    </script>
 </body>
 </html>
