@@ -7,22 +7,24 @@
     <link rel="stylesheet" href="/css/modern-theme.css" />
 </head>
 <body>
-    <header class="header">
-        <h1 class="title">Perfil - Estabelecimento</h1>
+    <header class="header flex items-center justify-between p-4 bg-white shadow">
+        <h1 class="title text-2xl font-bold">Perfil - Estabelecimento</h1>
         <nav>
             <a href="/dashboard-estabelecimento.html" class="btn btn-primary">Voltar ao Dashboard</a>
         </nav>
     </header>
-    <main class="container glass-card p-4">
+    <main class="container glass-card p-6 my-6 max-w-4xl mx-auto">
         <section>
-            <div id="profile-data" class="space-y-4 text-base">Carregando dados do perfil...</div>
+            <div id="profile-info" class="space-y-4">
+                <p>Carregando dados do perfil...</p>
+            </div>
         </section>
     </main>
 
     <script>
         async function fetchProfile() {
-            const container = document.getElementById('profile-data');
-            container.textContent = 'Carregando dados do perfil...';
+            const container = document.getElementById('profile-info');
+            container.innerHTML = '<p>Carregando dados do perfil...</p>';
             try {
                 const response = await fetch('/api/empresa/profile', {
                     credentials: 'include',
@@ -37,20 +39,17 @@
 
                 if (data.success) {
                     const profile = data.data;
-                    container.innerHTML = `
-                        <dl class="grid grid-cols-1 gap-y-4 gap-x-8 sm:grid-cols-2">
-                            <div><dt class="font-semibold">Nome:</dt><dd>${profile.nome}</dd></div>
-                            <div><dt class="font-semibold">Email:</dt><dd>${profile.email}</dd></div>
-                            <div><dt class="font-semibold">Telefone:</dt><dd>${profile.telefone}</dd></div>
-                            <div><dt class="font-semibold">Status:</dt><dd>${profile.status}</dd></div>
-                            <div><dt class="font-semibold">Perfil:</dt><dd>empresa</dd></div>
-                        </dl>
-                    `;
+                    container.innerHTML =
+                        "<p><strong>Nome:</strong> " + profile.nome + "</p>" +
+                        "<p><strong>Endereço:</strong> " + profile.endereco + "</p>" +
+                        "<p><strong>Telefone:</strong> " + profile.telefone + "</p>" +
+                        "<p><strong>CNPJ:</strong> " + profile.cnpj + "</p>" +
+                        "<p><strong>Status:</strong> " + (profile.ativo ? 'Ativo' : 'Inativo') + "</p>";
                 } else {
                     throw new Error(data.message || 'Falha ao carregar dados do perfil.');
                 }
             } catch (error) {
-                container.textContent = '';
+                container.innerHTML = '';
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'error text-error mt-4';
                 errorDiv.textContent = error.message;
