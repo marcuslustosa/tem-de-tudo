@@ -4,26 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Perfil - Estabelecimento - Tem de Tudo</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2rem; }
-        h1 { color: #333; }
-        dl { max-width: 400px; }
-        dt { font-weight: bold; margin-top: 1rem; }
-        dd { margin: 0 0 1rem 0; }
-        .error { color: red; margin-top: 1rem; }
-        a { display: inline-block; margin-top: 2rem; color: #007bff; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    </style>
+    <link rel="stylesheet" href="/css/modern-theme.css" />
 </head>
 <body>
-    <h1>Perfil - Estabelecimento</h1>
-    <div id="profile-data">Carregando dados do perfil...</div>
-    <a href="/dashboard-estabelecimento.html">Voltar ao Dashboard</a>
+    <header class="header">
+        <h1 class="title">Perfil - Estabelecimento</h1>
+        <nav>
+            <a href="/dashboard-estabelecimento.html" class="btn btn-primary">Voltar ao Dashboard</a>
+        </nav>
+    </header>
+    <main class="container glass-card p-4">
+        <section>
+            <div id="profile-data" class="space-y-4 text-base">Carregando dados do perfil...</div>
+        </section>
+    </main>
 
     <script>
         async function fetchProfile() {
+            const container = document.getElementById('profile-data');
+            container.textContent = 'Carregando dados do perfil...';
             try {
-                const response = await fetch('/api/empresas/empresa-logada', {
+                const response = await fetch('/api/empresa/profile', {
                     credentials: 'include',
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 });
@@ -36,25 +37,22 @@
 
                 if (data.success) {
                     const profile = data.data;
-                    const container = document.getElementById('profile-data');
-
                     container.innerHTML = `
-                        <dl>
-                            <dt>Nome:</dt><dd>${profile.nome}</dd>
-                            <dt>Email:</dt><dd>${profile.email}</dd>
-                            <dt>Telefone:</dt><dd>${profile.telefone}</dd>
-                            <dt>Status:</dt><dd>${profile.status}</dd>
-                            <dt>Perfil:</dt><dd>Estabelecimento</dd>
+                        <dl class="grid grid-cols-1 gap-y-4 gap-x-8 sm:grid-cols-2">
+                            <div><dt class="font-semibold">Nome:</dt><dd>${profile.nome}</dd></div>
+                            <div><dt class="font-semibold">Email:</dt><dd>${profile.email}</dd></div>
+                            <div><dt class="font-semibold">Telefone:</dt><dd>${profile.telefone}</dd></div>
+                            <div><dt class="font-semibold">Status:</dt><dd>${profile.status}</dd></div>
+                            <div><dt class="font-semibold">Perfil:</dt><dd>empresa</dd></div>
                         </dl>
                     `;
                 } else {
                     throw new Error(data.message || 'Falha ao carregar dados do perfil.');
                 }
             } catch (error) {
-                const container = document.getElementById('profile-data');
                 container.textContent = '';
                 const errorDiv = document.createElement('div');
-                errorDiv.className = 'error';
+                errorDiv.className = 'error text-error mt-4';
                 errorDiv.textContent = error.message;
                 container.appendChild(errorDiv);
             }
