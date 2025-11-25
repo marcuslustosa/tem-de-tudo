@@ -4,41 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Dashboard Cliente - Tem de Tudo</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2rem; }
-        header { margin-bottom: 2rem; }
-        h1 { color: #333; }
-        section { margin-bottom: 2rem; }
-        .welcome { font-size: 1.2rem; }
-        .stats { display: flex; gap: 1.5rem; }
-        .card { background: #f5f5f5; padding: 1rem; border-radius: 6px; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    </style>
+    <link rel="stylesheet" href="/css/modern-theme.css" />
 </head>
 <body>
-    <header>
-        <h1>Dashboard Cliente</h1>
-        <p class="welcome" id="welcome-message">Carregando informações...</p>
+    <header class="header">
+        <h1 class="title">Dashboard Cliente</h1>
+        <p class="welcome text-lg" id="welcome-message">Carregando informações...</p>
     </header>
 
-    <section>
-        <h2>Seus Pontos</h2>
-        <div class="stats" id="pontos-stats">
-            <div class="card" id="total-pontos">Total de Pontos: ...</div>
-            <div class="card" id="nivel-pontos">Nível: ...</div>
+    <section class="container glass-card p-4 mb-4">
+        <h2 class="text-xl font-semibold mb-3">Seus Pontos</h2>
+        <div class="grid grid-cols-2 gap-4" id="pontos-stats">
+            <div class="card p-4 shadow rounded" id="total-pontos">Total de Pontos: ...</div>
+            <div class="card p-4 shadow rounded" id="nivel-pontos">Nível: ...</div>
         </div>
     </section>
 
-    <section>
-        <h2>Seus Cupons Ativos</h2>
-        <ul id="cupons-list">
-            <li>Carregando cupons...</li>
+    <section class="container glass-card p-4 mb-4">
+        <h2 class="text-xl font-semibold mb-3">Seus Cupons Ativos</h2>
+        <ul class="divide-y divide-gray-300" id="cupons-list">
+            <li class="py-2">Carregando cupons...</li>
         </ul>
     </section>
 
-    <section>
-        <h2>Histórico de Atividades</h2>
-        <ul id="historico-list">
-            <li>Carregando histórico...</li>
+    <section class="container glass-card p-4">
+        <h2 class="text-xl font-semibold mb-3">Histórico de Atividades</h2>
+        <ul class="divide-y divide-gray-300" id="historico-list">
+            <li class="py-2">Carregando histórico...</li>
         </ul>
     </section>
 
@@ -84,11 +76,15 @@
                 if (cuponsData.success && cuponsData.data.length > 0) {
                     cuponsData.data.forEach(c => {
                         const li = document.createElement('li');
+                        li.className = 'py-2';
                         li.textContent = `${c.codigo} - ${c.descricao} (Validade: ${new Date(c.validade).toLocaleDateString()})`;
                         cuponsList.appendChild(li);
                     });
                 } else {
-                    cuponsList.textContent = 'Nenhum cupom ativo.';
+                    const li = document.createElement('li');
+                    li.className = 'py-2';
+                    li.textContent = 'Nenhum cupom ativo.';
+                    cuponsList.appendChild(li);
                 }
 
                 // Histórico
@@ -97,15 +93,20 @@
                 if (historicoData.success && historicoData.data.length > 0) {
                     historicoData.data.forEach(h => {
                         const li = document.createElement('li');
+                        li.className = 'py-2';
                         li.textContent = `${h.acao} em ${new Date(h.data).toLocaleDateString()}`;
                         historicoList.appendChild(li);
                     });
                 } else {
-                    historicoList.textContent = 'Nenhum histórico disponível.';
+                    const li = document.createElement('li');
+                    li.className = 'py-2';
+                    li.textContent = 'Nenhum histórico disponível.';
+                    historicoList.appendChild(li);
                 }
 
             } catch (error) {
-                document.getElementById('welcome-message').textContent = 'Erro ao carregar dashboard.';
+                const welcomeMsg = document.getElementById('welcome-message');
+                welcomeMsg.textContent = 'Erro ao carregar dashboard.';
                 document.getElementById('total-pontos').textContent = '';
                 document.getElementById('nivel-pontos').textContent = '';
                 document.getElementById('cupons-list').textContent = '';

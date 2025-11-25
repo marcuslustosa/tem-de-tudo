@@ -4,70 +4,65 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Dashboard Estabelecimento - Tem de Tudo</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2rem; }
-        header { margin-bottom: 2rem; }
-        h1 { color: #333; }
-        section { margin-bottom: 2rem; }
-        .welcome { font-size: 1.2rem; }
-        .stats { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-        .card { background: #f5f5f5; padding: 1rem; border-radius: 6px; flex: 1 1 250px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        ul { list-style: none; padding-left: 0; }
-        li { margin-bottom: 0.5rem; }
-    </style>
+    <link rel="stylesheet" href="/css/modern-theme.css" />
 </head>
 <body>
-    <header>
-        <h1>Dashboard Estabelecimento</h1>
-        <p class="welcome" id="welcome-message">Carregando informações...</p>
+    <header class="header">
+        <h1 class="title">Dashboard Estabelecimento</h1>
+        <p class="welcome text-lg" id="welcome-message">Carregando informações...</p>
     </header>
 
-    <section>
-        <h2>Estatísticas</h2>
-        <div class="stats" id="dashboard-stats">
-            <div class="card" id="total-clientes">Total de Clientes: ...</div>
-            <div class="card" id="pontos-distribuidos">Pontos Distribuídos: ...</div>
-            <div class="card" id="qrcodes-ativos">QRCodes Ativos: ...</div>
-            <div class="card" id="checkins-hoje">Checkins Hoje: ...</div>
+    <section class="container glass-card p-4 mb-4">
+        <h2 class="text-xl font-semibold mb-3">Estatísticas</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="stats-cards">
+            <div class="card p-4 shadow rounded" id="total-clientes">Total de Clientes: ...</div>
+            <div class="card p-4 shadow rounded" id="pontos-distribuidos">Pontos Distribuídos: ...</div>
+            <div class="card p-4 shadow rounded" id="qrcodes-ativos">QRCodes Ativos: ...</div>
+            <div class="card p-4 shadow rounded" id="checkins-hoje">Checkins Hoje: ...</div>
         </div>
     </section>
 
-    <section>
-        <h2>Checkins Recentes</h2>
-        <ul id="recent-checkins">
-            <li>Carregando checkins...</li>
+    <section class="container glass-card p-4 mb-4">
+        <h2 class="text-xl font-semibold mb-3">Checkins Recentes</h2>
+        <ul class="divide-y divide-gray-300" id="recent-checkins-list">
+            <li class="py-2">Carregando checkins...</li>
         </ul>
     </section>
 
-    <section>
-        <h2>Top Clientes</h2>
-        <ul id="top-clientes">
-            <li>Carregando clientes...</li>
+    <section class="container glass-card p-4">
+        <h2 class="text-xl font-semibold mb-3">Top Clientes</h2>
+        <ul class="divide-y divide-gray-300" id="top-clientes-list">
+            <li class="py-2">Carregando top clientes...</li>
         </ul>
     </section>
 
     <script>
         async function loadDashboard() {
             try {
-                const [statsRes, checkinsRes, clientesRes, userRes] = await Promise.all([
-                    fetch('/api/empresa/dashboard-stats', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' }}),
-                    fetch('/api/empresa/recent-checkins', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' }}),
-                    fetch('/api/empresa/top-clientes', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' }}),
-                    fetch('/api/user', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' }})
+                const [
+                    statsRes,
+                    recentCheckinsRes,
+                    topClientesRes,
+                    userRes
+                ] = await Promise.all([
+                    fetch('/api/empresa/dashboard-stats', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' } }),
+                    fetch('/api/empresa/recent-checkins', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' } }),
+                    fetch('/api/empresa/top-clientes', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' } }),
+                    fetch('/api/user', { credentials: 'include', headers: { 'X-Requested-With': 'XMLHttpRequest' } }),
                 ]);
 
-                if (!statsRes.ok || !checkinsRes.ok || !clientesRes.ok || !userRes.ok) {
+                if (!statsRes.ok || !recentCheckinsRes.ok || !topClientesRes.ok || !userRes.ok) {
                     throw new Error('Erro ao carregar dados do dashboard.');
                 }
 
                 const statsData = await statsRes.json();
-                const checkinsData = await checkinsRes.json();
-                const clientesData = await clientesRes.json();
+                const recentCheckinsData = await recentCheckinsRes.json();
+                const topClientesData = await topClientesRes.json();
                 const userData = await userRes.json();
 
                 // Welcome message
                 const welcomeMsg = document.getElementById('welcome-message');
-                if(userData.success) {
+                if (userData.success) {
                     welcomeMsg.textContent = `Bem-vindo, ${userData.data.user.name}!`;
                 } else {
                     welcomeMsg.textContent = 'Bem-vindo, usuário!';
@@ -87,39 +82,48 @@
                 }
 
                 // Checkins recentes
-                const checkinsList = document.getElementById('recent-checkins');
-                checkinsList.innerHTML = '';
-                if (checkinsData.success && checkinsData.data.length > 0) {
-                    checkinsData.data.forEach(c => {
+                const recentCheckinsList = document.getElementById('recent-checkins-list');
+                recentCheckinsList.innerHTML = '';
+                if (recentCheckinsData.success && recentCheckinsData.data.length > 0) {
+                    recentCheckinsData.data.forEach(c => {
                         const li = document.createElement('li');
-                        li.textContent = `${c.cliente_nome} fez checkin em ${new Date(c.created_at).toLocaleString()}`;
-                        checkinsList.appendChild(li);
+                        li.className = 'py-2';
+                        li.textContent = `${c.cliente_nome} - ${new Date(c.data_checkin).toLocaleDateString()}`;
+                        recentCheckinsList.appendChild(li);
                     });
                 } else {
-                    checkinsList.textContent = 'Nenhum checkin recente.';
+                    const li = document.createElement('li');
+                    li.className = 'py-2';
+                    li.textContent = 'Nenhum checkin recente.';
+                    recentCheckinsList.appendChild(li);
                 }
 
                 // Top clientes
-                const clientesList = document.getElementById('top-clientes');
-                clientesList.innerHTML = '';
-                if (clientesData.success && clientesData.data.length > 0) {
-                    clientesData.data.forEach(c => {
+                const topClientesList = document.getElementById('top-clientes-list');
+                topClientesList.innerHTML = '';
+                if (topClientesData.success && topClientesData.data.length > 0) {
+                    topClientesData.data.forEach(c => {
                         const li = document.createElement('li');
-                        li.textContent = `${c.name} - ${c.total_pontos} pontos`;
-                        clientesList.appendChild(li);
+                        li.className = 'py-2';
+                        li.textContent = `${c.nome} - ${c.pontos} pontos`;
+                        topClientesList.appendChild(li);
                     });
                 } else {
-                    clientesList.textContent = 'Nenhum cliente encontrado.';
+                    const li = document.createElement('li');
+                    li.className = 'py-2';
+                    li.textContent = 'Nenhum cliente para exibir.';
+                    topClientesList.appendChild(li);
                 }
 
             } catch (error) {
-                document.getElementById('welcome-message').textContent = 'Erro ao carregar dashboard.';
+                const welcomeMsg = document.getElementById('welcome-message');
+                welcomeMsg.textContent = 'Erro ao carregar dashboard.';
                 document.getElementById('total-clientes').textContent = '';
                 document.getElementById('pontos-distribuidos').textContent = '';
                 document.getElementById('qrcodes-ativos').textContent = '';
                 document.getElementById('checkins-hoje').textContent = '';
-                document.getElementById('recent-checkins').textContent = '';
-                document.getElementById('top-clientes').textContent = '';
+                document.getElementById('recent-checkins-list').textContent = '';
+                document.getElementById('top-clientes-list').textContent = '';
                 console.error(error);
             }
         }
