@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Cadastro - Tem de Tudo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #e7f3ff;
+            color: #004085;
+            border-left: 4px solid #0066cc;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .response-box {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .response-box pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .badge-required {
+            background: #dc3545;
+            color: white;
+        }
+
+        .badge-optional {
+            background: #6c757d;
+            color: white;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 6px 6px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Debug - Sistema de Cadastro</h1>
+            <p>Teste detalhado de requisições de cadastro com visualização completa</p>
+        </div>
+
+        <div id="messageBox"></div>
+
+        <div class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('cliente')">Cliente</button>
+                <button class="tab" onclick="switchTab('empresa')">Empresa</button>
+            </div>
+
+            <!-- CLIENTE -->
+            <div id="tab-cliente" class="tab-content active">
+                <h2>Cadastro Cliente</h2>
+                <form id="formCliente" onsubmit="testRegister(event, 'cliente')">
+                    <div class="form-group">
+                        <label>Nome Completo <span class="badge badge-required">OBRIGATÓRIO</span></label>
+                        <input type="text" name="name" value="Cliente Teste" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email <span class="badge badge-required">OBRIGATÓRIO</span></label>
+                        <input type="email" name="email" value="cliente.teste@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Senha (mínimo 8 caracteres) <span class="badge badge-required">OBRIGATÓRIO</span></label>
+                        <input type="password" name="password" value="senha123456" required minlength="8">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirmar Senha <span class="badge badge-required">OBRIGATÓRIO</span></label>
+                        <input type="password" name="password_confirmation" value="senha123456" required minlength="8">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Telefone <span class="badge badge-optional">OPCIONAL</span></label>
+                        <input type="tel" name="telefone" value="(11) 98765-4321">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="terms" checked required>
+                            Aceito os termos de uso <span class="badge badge-required">OBRIGATÓRIO</span>
+                        </label>
+                    </div>
+
+                    <button type="submit">Testar Cadastro Cliente</button>
+                </form>
+
+                <div id="responseCliente" class="response-box" style="display:none;">
+                    <strong>Resposta da API:</strong>
+                    <pre id="responseContentCliente"></pre>
+                </div>
+            </div>
+
+            <!-- EMPRESA -->
+            <div id="tab-empresa" class="tab-content">
+                <h2>Cadastro Empresa</h2>
+                <form id="formEmpresa" onsubmit="testRegister(event, 'empresa')">
+                    <div class="form-group">
+                        <label>Nome da Empresa <span class="badge badge-required">OBRIGATÓRIO</span></label>
+                        <input type="text" name="name" value="Empresa Teste LTDA" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email <span class="badge badge-required">OBRIGATÓRIO</span></label>
+                        <input type="email" name="email" value="empresa.teste@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>CNPJ (formato: 00.000.000/0000-00) <span class="badge badge-required">OBRIGATÓRIO</span></label>
+                        <input type="text" name="cnpj" value="12.345.678/0001-90" required pattern="\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Endereço Completo <span class="badge badge-required">OBRIGATÓRIO</span></label>
+                        <textarea name="endereco" required>Rua Teste, 123 - Centro - São Paulo - SP - CEP: 01234-567</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Telefone <span class="badge badge-required">OBRIGATÓRIO</span></label>
+                        <input type="tel" name="telefone" value="(11) 3333-4444" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Senha (mínimo 8 caracteres) <span class="badge badge-required">OBRIGATÓRIO</span></label>
+                        <input type="password" name="password" value="senha123456" required minlength="8">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirmar Senha <span class="badge badge-required">OBRIGATÓRIO</span></label>
+                        <input type="password" name="password_confirmation" value="senha123456" required minlength="8">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="terms" checked required>
+                            Aceito os termos de uso <span class="badge badge-required">OBRIGATÓRIO</span>
+                        </label>
+                    </div>
+
+                    <button type="submit">Testar Cadastro Empresa</button>
+                </form>
+
+                <div id="responseEmpresa" class="response-box" style="display:none;">
+                    <strong>Resposta da API:</strong>
+                    <pre id="responseContentEmpresa"></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Requisitos de Validação Backend</h2>
+            
+            <div class="alert alert-info">
+                <strong>Todos os Perfis (Cliente e Empresa):</strong>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>name: obrigatório, string, máximo 255 caracteres</li>
+                    <li>email: obrigatório, formato de email válido, único no banco</li>
+                    <li>password: obrigatório, mínimo 8 caracteres, deve ser confirmado</li>
+                    <li>password_confirmation: obrigatório, deve ser igual a password</li>
+                    <li>terms: obrigatório, booleano true</li>
+                </ul>
+            </div>
+
+            <div class="grid">
+                <div class="alert alert-success">
+                    <strong>Perfil CLIENTE:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>telefone: opcional</li>
+                    </ul>
+                </div>
+
+                <div class="alert alert-error">
+                    <strong>Perfil EMPRESA:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>cnpj: obrigatório, formato 00.000.000/0000-00, único</li>
+                        <li>endereco: obrigatório, máximo 500 caracteres</li>
+                        <li>telefone: obrigatório</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+
+        function switchTab(perfil) {
+            // Remove active de todas as abas
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Adiciona active na aba clicada
+            event.target.classList.add('active');
+            document.getElementById(`tab-${perfil}`).classList.add('active');
+        }
+
+        function showMessage(message, type = 'info') {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                messageBox.innerHTML = '';
+            }, 5000);
+        }
+
+        async function testRegister(event, perfil) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const button = form.querySelector('button[type="submit"]');
+            const responseBox = document.getElementById(`response${perfil.charAt(0).toUpperCase() + perfil.slice(1)}`);
+            const responseContent = document.getElementById(`responseContent${perfil.charAt(0).toUpperCase() + perfil.slice(1)}`);
+
+            // Preparar dados
+            const requestData = {
+                perfil: perfil,
+                name: formData.get('name'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                password_confirmation: formData.get('password_confirmation'),
+                terms: formData.get('terms') ? true : false
+            };
+
+            // Adicionar campos específicos
+            if (perfil === 'cliente') {
+                requestData.telefone = formData.get('telefone') || null;
+            } else if (perfil === 'empresa') {
+                requestData.cnpj = formData.get('cnpj');
+                requestData.endereco = formData.get('endereco');
+                requestData.telefone = formData.get('telefone');
+            }
+
+            // Desabilitar botão
+            button.disabled = true;
+            button.textContent = 'Enviando...';
+
+            try {
+                console.log('📤 Enviando requisição:', {
+                    ...requestData,
+                    password: '[REDACTED]',
+                    password_confirmation: '[REDACTED]'
+                });
+
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const responseText = await response.text();
+                console.log('📥 Status:', response.status);
+                console.log('📥 Resposta bruta:', responseText);
+
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    data = { error: 'Resposta não é JSON válido', rawResponse: responseText };
+                }
+
+                // Exibir resposta
+                responseBox.style.display = 'block';
+                responseContent.textContent = JSON.stringify({
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: {
+                        'content-type': response.headers.get('content-type')
+                    },
+                    data: data
+                }, null, 2);
+
+                if (response.ok && data.success) {
+                    showMessage('✅ Cadastro realizado com sucesso!', 'success');
+                } else {
+                    let errorMessage = '❌ Erro no cadastro:\n\n';
+                    
+                    if (data.message) {
+                        errorMessage += `Mensagem: ${data.message}\n\n`;
+                    }
+                    
+                    if (data.errors) {
+                        errorMessage += 'Erros de validação:\n';
+                        Object.entries(data.errors).forEach(([field, messages]) => {
+                            errorMessage += `• ${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}\n`;
+                        });
+                    }
+                    
+                    showMessage(errorMessage, 'error');
+                }
+
+            } catch (error) {
+                console.error('❌ Erro:', error);
+                responseBox.style.display = 'block';
+                responseContent.textContent = `ERRO DE REDE:\n${error.message}\n\nStack:\n${error.stack}`;
+                showMessage(`❌ Erro de conexão: ${error.message}`, 'error');
+            } finally {
+                button.disabled = false;
+                button.textContent = `Testar Cadastro ${perfil.charAt(0).toUpperCase() + perfil.slice(1)}`;
+            }
+        }
+
+        // Log inicial
+        console.log('🔍 Página de debug carregada');
+        console.log('🌐 API Base:', API_BASE);
+        console.log('🔗 URL atual:', window.location.href);
+    </script>
+</body>
+</html>
