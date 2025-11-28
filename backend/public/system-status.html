@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status do Sistema - Tem de Tudo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #333;
+            margin: 20px 0 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .status {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .status-ok {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+        .info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>🔍 Diagnóstico do Sistema</h1>
+            <p>Verificando status dos componentes...</p>
+            
+            <div style="margin: 20px 0;">
+                <button onclick="checkAll()">🔄 Atualizar Status</button>
+                <button onclick="testRegister()">📝 Testar Cadastro</button>
+                <button onclick="testLogin()">🔑 Testar Login</button>
+            </div>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+
+        async function checkAll() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="card"><div class="loading"><div class="spinner"></div><p style="margin-top: 20px;">Verificando...</p></div></div>';
+
+            const checks = {
+                api: await checkAPI(),
+                routes: await checkRoutes(),
+                db: await checkDatabase(),
+                env: await checkEnvironment()
+            };
+
+            displayResults(checks);
+        }
+
+        async function checkAPI() {
+            try {
+                const response = await fetch('/');
+                return {
+                    status: response.ok ? 'ok' : 'error',
+                    message: response.ok ? 'API está respondendo' : `Status HTTP: ${response.status}`,
+                    details: {
+                        status: response.status,
+                        statusText: response.statusText,
+                        headers: {
+                            'content-type': response.headers.get('content-type')
+                        }
+                    }
+                };
+            } catch (error) {
+                return {
+                    status: 'error',
+                    message: 'API não está acessível',
+                    details: error.message
+                };
+            }
+        }
+
+        async function checkRoutes() {
+            const routes = [
+                '/api/auth/register',
+                '/api/auth/login',
+                '/api/user'
+            ];
+
+            const results = [];
+            for (const route of routes) {
+                try {
+                    const response = await fetch(route, {
+                        method: 'OPTIONS'
+                    });
+                    results.push({
+                        route,
+                        available: true,
+                        status: response.status
+                    });
+                } catch (error) {
+                    results.push({
+                        route,
+                        available: false,
+                        error: error.message
+                    });
+                }
+            }
+
+            const allOk = results.every(r => r.available);
+            return {
+                status: allOk ? 'ok' : 'warning',
+                message: allOk ? 'Todas as rotas estão disponíveis' : 'Algumas rotas não estão disponíveis',
+                details: results
+            };
+        }
+
+        async function checkDatabase() {
+            try {
+                // Tentar fazer uma requisição que acessa o banco
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'test@nonexistent.com',
+                        password: 'test123'
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Se retornar erro de credenciais, significa que o banco está OK
+                // Se retornar erro 500, pode ser problema de conexão
+                if (data.message && data.message.includes('interno')) {
+                    return {
+                        status: 'error',
+                        message: 'Possível erro de conexão com o banco',
+                        details: data
+                    };
+                }
+
+                return {
+                    status: 'ok',
+                    message: 'Banco de dados está respondendo',
+                    details: 'Login test executado com sucesso'
+                };
+            } catch (error) {
+                return {
+                    status: 'error',
+                    message: 'Erro ao testar banco de dados',
+                    details: error.message
+                };
+            }
+        }
+
+        async function checkEnvironment() {
+            try {
+                const response = await fetch('/check-env.php');
+                const ok = response.ok;
+                
+                return {
+                    status: ok ? 'ok' : 'warning',
+                    message: ok ? 'Ambiente configurado' : 'Arquivo check-env.php não encontrado',
+                    details: {
+                        url: window.location.origin,
+                        protocol: window.location.protocol,
+                        host: window.location.host
+                    }
+                };
+            } catch (error) {
+                return {
+                    status: 'warning',
+                    message: 'Não foi possível verificar ambiente',
+                    details: error.message
+                };
+            }
+        }
+
+        async function testRegister() {
+            const results = document.getElementById('results');
+            results.innerHTML += '<div class="card"><h2>🔄 Testando Cadastro...</h2></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        perfil: 'cliente',
+                        name: 'Teste Debug',
+                        email: `test${Date.now()}@example.com`,
+                        password: 'senha123456',
+                        password_confirmation: 'senha123456',
+                        terms: true
+                    })
+                });
+
+                const data = await response.json();
+                
+                results.innerHTML += `
+                    <div class="card">
+                        <h2>📝 Resultado do Cadastro</h2>
+                        <div class="status ${data.success ? 'status-ok' : 'status-error'}">
+                            <span class="status-icon">${data.success ? '✅' : '❌'}</span>
+                            <div>
+                                <strong>Status HTTP:</strong> ${response.status}<br>
+                                <strong>Mensagem:</strong> ${data.message}
+                            </div>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML += `
+                    <div class="card">
+                        <h2>❌ Erro no Teste de Cadastro</h2>
+                        <pre>${error.message}\n${error.stack}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        async function testLogin() {
+            const results = document.getElementById('results');
+            results.innerHTML += '<div class="card"><h2>🔄 Testando Login...</h2></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@temdetudo.com',
+                        password: 'admin123'
+                    })
+                });
+
+                const data = await response.json();
+                
+                results.innerHTML += `
+                    <div class="card">
+                        <h2>🔑 Resultado do Login</h2>
+                        <div class="status ${data.success ? 'status-ok' : 'status-error'}">
+                            <span class="status-icon">${data.success ? '✅' : '❌'}</span>
+                            <div>
+                                <strong>Status HTTP:</strong> ${response.status}<br>
+                                <strong>Mensagem:</strong> ${data.message}
+                            </div>
+                        </div>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                results.innerHTML += `
+                    <div class="card">
+                        <h2>❌ Erro no Teste de Login</h2>
+                        <pre>${error.message}\n${error.stack}</pre>
+                    </div>
+                `;
+            }
+        }
+
+        function displayResults(checks) {
+            const results = document.getElementById('results');
+            
+            let html = '<div class="card"><h2>📊 Resultados da Verificação</h2>';
+
+            for (const [name, check] of Object.entries(checks)) {
+                const statusClass = check.status === 'ok' ? 'status-ok' : 
+                                  check.status === 'error' ? 'status-error' : 'status-warning';
+                const icon = check.status === 'ok' ? '✅' : 
+                           check.status === 'error' ? '❌' : '⚠️';
+
+                html += `
+                    <div class="status ${statusClass}">
+                        <span class="status-icon">${icon}</span>
+                        <div>
+                            <strong>${name.toUpperCase()}:</strong> ${check.message}
+                        </div>
+                    </div>
+                `;
+
+                if (check.details) {
+                    html += `<pre>${JSON.stringify(check.details, null, 2)}</pre>`;
+                }
+            }
+
+            html += '</div>';
+            results.innerHTML = html;
+        }
+
+        // Executar verificação ao carregar
+        window.addEventListener('load', checkAll);
+    </script>
+</body>
+</html>
