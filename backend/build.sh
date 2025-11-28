@@ -3,23 +3,17 @@
 # Script de build otimizado para Render.com
 echo "🚀 Iniciando build para Render..."
 
-# Navegar para o diretório backend
-cd backend
-
 echo "📦 Instalando dependências do Composer..."
 composer install --no-dev --optimize-autoloader --no-interaction
 
 echo "⚙️ Configurando ambiente..."
 cp .env.render .env
+echo "✅ Arquivo .env criado com credenciais do PostgreSQL"
 
 echo "🔑 Gerando chave da aplicação..."
 php artisan key:generate --force
 
-echo "🗄️ Preparando banco SQLite..."
-touch database/database.sqlite
-chmod 664 database/database.sqlite
-
-echo "📋 Executando migrações..."
+echo "📋 Executando migrações no PostgreSQL..."
 php artisan migrate --force
 
 echo "🌱 Executando seeders..."
