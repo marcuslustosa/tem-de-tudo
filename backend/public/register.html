@@ -334,11 +334,10 @@
             loadingOverlay.style.display = 'flex';
 
             try {
-                // Determinar URL base dinamicamente
-                const baseUrl = window.location.origin;
-                const apiUrl = `${baseUrl}/api/auth/register`;
+                // URL relativa - funciona em qualquer ambiente
+                const apiUrl = '/api/auth/register';
 
-                console.log('Tentando cadastro em:', apiUrl);
+                console.log('Tentando cadastro em:', window.location.origin + apiUrl);
 
                 const requestData = {
                     perfil: perfil,
@@ -479,8 +478,7 @@
         // Carregar empresas para funcionários
         async function loadEmpresas() {
             try {
-                const baseUrl = window.location.origin;
-                const response = await fetch(`${baseUrl}/api/empresas`);
+                const response = await fetch('/api/empresas');
                 const result = await response.json();
                 if (result.success) {
                     const select = document.getElementById('empresa_id');

@@ -205,11 +205,10 @@
             loadingOverlay.style.display = 'flex';
 
             try {
-                // Determinar URL base dinamicamente
-                const baseUrl = window.location.origin;
-                const apiUrl = `${baseUrl}/api/auth/login`;
+                // URL relativa - funciona em qualquer ambiente
+                const apiUrl = '/api/auth/login';
 
-                console.log('Tentando login em:', apiUrl);
+                console.log('Tentando login em:', window.location.origin + apiUrl);
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
