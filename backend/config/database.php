@@ -85,23 +85,17 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DB_URL'),
-            'host' => env('DB_HOST', 'dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com'),
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'tem_de_tudo_database'),
-            'username' => env('DB_USERNAME', 'tem_de_tudo_database_user'),
-            'password' => env('DB_PASSWORD', '9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => env('DB_SSLMODE', 'prefer'),
-            'options' => extension_loaded('pdo_pgsql') ? [
-                PDO::ATTR_EMULATE_PREPARES => true,
-                PDO::ATTR_PERSISTENT => false,
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ] : [],
         ],
 
 
