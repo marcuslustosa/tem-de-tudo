@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Empresa;
 use App\Models\Ponto;
 use App\Models\CupomModel as Cupom;
 use App\Models\HistoricoModel as Historico;
@@ -18,20 +19,50 @@ class DataSeeder extends Seeder
 
         // Vamos garantir que o seeding seja idempotente
         DB::table('pontos')->delete();
-        DB::table('cupons')->delete();
+        DB::table('coupons')->delete();
         DB::table('historicos')->delete();
 
         // Buscar usuários já existentes (seeders anteriores já criaram usuários)
         $clientes = User::where('perfil', 'cliente')->get();
-        $empresas = User::where('perfil', 'empresa')->get();
+        $empresas = Empresa::all();
+
+        // Create a default empresa if none exists
+        if ($empresas->isEmpty()) {
+            // Create a default empresa owner user first
+            $ownerUser = User::firstOrCreate(
+                ['email' => 'empresa_owner@default.com'],
+                [
+                    'name' => 'Empresa Owner Default',
+                    'password' => Hash::make('password'),
+                    'perfil' => 'empresa',
+                    'telefone' => '(00) 00000-0000',
+                    'status' => 'ativo',
+                ]
+            );
+
+            $empresa = Empresa::create([
+                'nome' => 'Empresa Default',
+                'endereco' => 'Endereço padrão',
+                'telefone' => '(00) 00000-0000',
+                'cnpj' => '00.000.000/0000-00',
+                'ativo' => true,
+                'owner_id' => $ownerUser->id,
+            ]);
+            $empresas = Empresa::all();
+        }
 
         // Criar pontos fictícios para clientes
         foreach ($clientes as $cliente) {
+            // Assign a random empresa_id to the cliente pontos, assuming empresas is not empty
+            $empresaId = $empresas->isNotEmpty() ? $empresas->random()->id : null;
+
             Ponto::updateOrCreate(
                 ['user_id' => $cliente->id],
                 [
                     'pontos' => rand(100, 1500),
-                    'nivel' => $this->calcularNivel(rand(100, 1500)),
+                    'empresa_id' => $empresaId,
+                    'descricao' => 'Pontos iniciais para o usuário',
+                    'tipo' => 'earn',
                 ]
             );
 
@@ -42,7 +73,8 @@ class DataSeeder extends Seeder
                     'codigo' => 'CUPOM' . $cliente->id . $i,
                     'descricao' => 'Desconto de ' . (10 * $i) . '% em compras',
                     'status' => 'ativo',
-                    'validade' => now()->addDays(30 + $i * 5),
+                    'custo_pontos' => 100 * $i,
+                    'expira_em' => now()->addDays(30 + $i * 5),
                 ]);
             }
 

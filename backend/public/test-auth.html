@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Auth - TemDeTudo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .test-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        .test-section h2 {
+            color: #495057;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            border-left: 4px solid #667eea;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { border-left-color: #28a745; }
+        .error { border-left-color: #dc3545; }
+        input, select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #495057;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste de Autenticação - TemDeTudo</h1>
+        
+        <!-- Teste de Cadastro -->
+        <div class="test-section">
+            <h2>1. Teste de Cadastro</h2>
+            <label>Perfil:</label>
+            <select id="registerPerfil">
+                <option value="cliente">Cliente</option>
+                <option value="empresa">Empresa</option>
+            </select>
+            
+            <label>Nome:</label>
+            <input type="text" id="registerName" value="Teste Usuario" placeholder="Nome completo">
+            
+            <label>Email:</label>
+            <input type="email" id="registerEmail" value="teste@email.com" placeholder="email@exemplo.com">
+            
+            <label>Senha:</label>
+            <input type="password" id="registerPassword" value="12345678" placeholder="Mínimo 8 caracteres">
+            
+            <label>Confirmar Senha:</label>
+            <input type="password" id="registerPasswordConfirmation" value="12345678" placeholder="Repita a senha">
+            
+            <div id="empresaFields" style="display:none;">
+                <label>CNPJ:</label>
+                <input type="text" id="registerCnpj" value="12.345.678/0001-90" placeholder="00.000.000/0000-00">
+                
+                <label>Endereço:</label>
+                <input type="text" id="registerEndereco" value="Rua Teste, 123" placeholder="Endereço completo">
+                
+                <label>Telefone:</label>
+                <input type="text" id="registerTelefone" value="(11) 98765-4321" placeholder="(00) 00000-0000">
+            </div>
+            
+            <button onclick="testRegister()">🚀 Testar Cadastro</button>
+            <button onclick="clearRegisterFields()">🔄 Limpar</button>
+            <div id="registerResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Teste de Login -->
+        <div class="test-section">
+            <h2>2. Teste de Login</h2>
+            <label>Email:</label>
+            <input type="email" id="loginEmail" value="teste@email.com" placeholder="email@exemplo.com">
+            
+            <label>Senha:</label>
+            <input type="password" id="loginPassword" value="12345678" placeholder="Senha">
+            
+            <button onclick="testLogin()">🔐 Testar Login</button>
+            <button onclick="clearLoginFields()">🔄 Limpar</button>
+            <div id="loginResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Teste de Usuário Autenticado -->
+        <div class="test-section">
+            <h2>3. Verificar Usuário Autenticado</h2>
+            <button onclick="testAuthUser()">👤 Ver Dados do Usuário</button>
+            <button onclick="clearToken()">🗑️ Limpar Token</button>
+            <div id="userResult" class="result" style="display:none;"></div>
+        </div>
+
+        <!-- Logs -->
+        <div class="test-section">
+            <h2>📋 Logs do Sistema</h2>
+            <div id="logs" class="result">Aguardando ações...</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin + '/api/auth';
+        
+        // Toggle empresa fields
+        document.getElementById('registerPerfil').addEventListener('change', function() {
+            const empresaFields = document.getElementById('empresaFields');
+            empresaFields.style.display = this.value === 'empresa' ? 'block' : 'none';
+        });
+
+        function log(message, type = 'info') {
+            const logsDiv = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+            logsDiv.innerHTML += `[${timestamp}] ${icon} ${message}\n`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        async function testRegister() {
+            log('Iniciando teste de cadastro...', 'info');
+            const resultDiv = document.getElementById('registerResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Processando cadastro...';
+
+            const perfil = document.getElementById('registerPerfil').value;
+            const data = {
+                perfil: perfil,
+                name: document.getElementById('registerName').value,
+                email: document.getElementById('registerEmail').value,
+                password: document.getElementById('registerPassword').value,
+                password_confirmation: document.getElementById('registerPasswordConfirmation').value,
+                terms: true
+            };
+
+            if (perfil === 'empresa') {
+                data.cnpj = document.getElementById('registerCnpj').value;
+                data.endereco = document.getElementById('registerEndereco').value;
+                data.telefone = document.getElementById('registerTelefone').value;
+            } else {
+                data.telefone = document.getElementById('registerTelefone')?.value || '';
+            }
+
+            log(`Enviando requisição de cadastro para: ${API_BASE}/register`, 'info');
+            log(`Dados: ${JSON.stringify(data, null, 2)}`, 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const responseData = await response.json();
+                
+                if (response.ok && responseData.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = JSON.stringify(responseData, null, 2);
+                    log(`✅ Cadastro realizado com sucesso! Token: ${responseData.data?.token?.substring(0, 20)}...`, 'success');
+                    
+                    if (responseData.data?.token) {
+                        localStorage.setItem('tem_de_tudo_token', responseData.data.token);
+                        localStorage.setItem('tem_de_tudo_user', JSON.stringify(responseData.data.user));
+                        log('Token salvo no localStorage', 'success');
+                    }
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = JSON.stringify(responseData, null, 2);
+                    log(`❌ Erro no cadastro: ${responseData.message || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Erro: ${error.message}`;
+                log(`❌ Erro de conexão: ${error.message}`, 'error');
+            }
+        }
+
+        async function testLogin() {
+            log('Iniciando teste de login...', 'info');
+            const resultDiv = document.getElementById('loginResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Processando login...';
+
+            const data = {
+                email: document.getElementById('loginEmail').value,
+                password: document.getElementById('loginPassword').value
+            };
+
+            log(`Enviando requisição de login para: ${API_BASE}/login`, 'info');
+            log(`Email: ${data.email}`, 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const responseData = await response.json();
+                
+                if (response.ok && responseData.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = JSON.stringify(responseData, null, 2);
+                    log(`✅ Login realizado com sucesso! Token: ${responseData.data?.token?.substring(0, 20)}...`, 'success');
+                    
+                    if (responseData.data?.token) {
+                        localStorage.setItem('tem_de_tudo_token', responseData.data.token);
+                        localStorage.setItem('tem_de_tudo_user', JSON.stringify(responseData.data.user));
+                        log('Token salvo no localStorage', 'success');
+                    }
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = JSON.stringify(responseData, null, 2);
+                    log(`❌ Erro no login: ${responseData.message || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Erro: ${error.message}`;
+                log(`❌ Erro de conexão: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAuthUser() {
+            log('Verificando usuário autenticado...', 'info');
+            const resultDiv = document.getElementById('userResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Carregando dados...';
+
+            const token = localStorage.getItem('tem_de_tudo_token');
+            
+            if (!token) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = 'Nenhum token encontrado. Faça login primeiro.';
+                log('❌ Nenhum token encontrado no localStorage', 'error');
+                return;
+            }
+
+            log(`Token encontrado: ${token.substring(0, 20)}...`, 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/../user`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const responseData = await response.json();
+                
+                if (response.ok && responseData.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = JSON.stringify(responseData, null, 2);
+                    log(`✅ Usuário autenticado: ${responseData.data?.user?.name}`, 'success');
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = JSON.stringify(responseData, null, 2);
+                    log(`❌ Erro ao verificar usuário: ${responseData.message || 'Token inválido'}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Erro: ${error.message}`;
+                log(`❌ Erro de conexão: ${error.message}`, 'error');
+            }
+        }
+
+        function clearToken() {
+            localStorage.removeItem('tem_de_tudo_token');
+            localStorage.removeItem('tem_de_tudo_user');
+            log('🗑️ Token removido do localStorage', 'info');
+            document.getElementById('userResult').style.display = 'none';
+        }
+
+        function clearRegisterFields() {
+            document.getElementById('registerName').value = '';
+            document.getElementById('registerEmail').value = '';
+            document.getElementById('registerPassword').value = '';
+            document.getElementById('registerPasswordConfirmation').value = '';
+            document.getElementById('registerCnpj').value = '';
+            document.getElementById('registerEndereco').value = '';
+            document.getElementById('registerTelefone').value = '';
+            document.getElementById('registerResult').style.display = 'none';
+            log('🔄 Campos de cadastro limpos', 'info');
+        }
+
+        function clearLoginFields() {
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginResult').style.display = 'none';
+            log('🔄 Campos de login limpos', 'info');
+        }
+
+        // Log inicial
+        log('Sistema de teste carregado. Pronto para uso!', 'success');
+        log(`API Base: ${API_BASE}`, 'info');
+    </script>
+</body>
+</html>

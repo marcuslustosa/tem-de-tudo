@@ -1,0 +1,422 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Descontos - Sistema de Pontos</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    
+    <style>
+        .user-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius-2xl);
+            margin-bottom: 2rem;
+        }
+        
+        .points-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .points-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--gray-200);
+        }
+        
+        .points-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        
+        .discount-timeline {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding: 1.5rem 0 1.5rem 3rem;
+            border-left: 3px solid var(--gray-200);
+        }
+        
+        .timeline-item:last-child {
+            border-left-color: transparent;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -8px;
+            top: 2rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--success-green);
+        }
+        
+        .timeline-dot.used {
+            background: var(--primary-purple);
+        }
+        
+        .timeline-dot.expired {
+            background: var(--gray-400);
+        }
+        
+        .discount-card {
+            background: var(--success-50);
+            border: 2px solid var(--success-200);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .discount-card.used {
+            background: var(--blue-50);
+            border-color: var(--blue-200);
+        }
+        
+        .discount-card.expired {
+            background: var(--gray-50);
+            border-color: var(--gray-200);
+        }
+        
+        .discount-level {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .level-bronze { background: var(--orange-100); color: var(--orange-700); }
+        .level-prata { background: var(--gray-200); color: var(--gray-700); }
+        .level-ouro { background: var(--yellow-200); color: var(--yellow-700); }
+        .level-platina { background: var(--purple-200); color: var(--purple-700); }
+        
+        .savings-counter {
+            background: var(--gradient-success);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius-xl);
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .next-level-progress {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            margin: 2rem 0;
+        }
+        
+        .progress-bar {
+            background: var(--gray-200);
+            height: 20px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            background: var(--gradient-primary);
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header do Usuário -->
+        <div class="user-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
+                <div>
+                    <h2 style="margin: 0 0 0.5rem 0;">💰 Meus Descontos</h2>
+                    <p style="margin: 0; opacity: 0.9;">Acompanhe suas economias e pontos</p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 0.875rem; opacity: 0.8;">Bem-vindo,</div>
+                    <div style="font-weight: 600; font-size: 1.125rem;" id="user-name">João Silva</div>
+                </div>
+            </div>
+        </div>
+
+        <main style="padding: 0 2rem 2rem; max-width: 1200px; margin: 0 auto;">
+            
+            <!-- Resumo dos Pontos -->
+            <div class="points-summary">
+                <div class="points-card">
+                    <div class="points-value" style="color: var(--success-green);" id="current-points">1,250</div>
+                    <div style="color: var(--gray-600);">Pontos Atuais</div>
+                </div>
+                
+                <div class="points-card">
+                    <div class="points-value" style="color: var(--primary-purple);" id="points-used">3,750</div>
+                    <div style="color: var(--gray-600);">Pontos Utilizados</div>
+                </div>
+                
+                <div class="points-card">
+                    <div class="points-value" style="color: var(--blue-500);" id="total-discounts">24</div>
+                    <div style="color: var(--gray-600);">Descontos Aplicados</div>
+                </div>
+                
+                <div class="points-card">
+                    <div class="points-value" style="color: var(--orange-500);" id="next-level-points">750</div>
+                    <div style="color: var(--gray-600);">Para Próximo Nível</div>
+                </div>
+            </div>
+
+            <!-- Economia Total -->
+            <div class="savings-counter">
+                <h3 style="margin-bottom: 1rem;">🎯 Total Economizado</h3>
+                <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem;" id="total-savings">R$ 487,30</div>
+                <div style="opacity: 0.9;">Com o sistema de pontos desde setembro/2024</div>
+            </div>
+
+            <!-- Progresso para Próximo Nível -->
+            <div class="next-level-progress">
+                <h4 style="margin-bottom: 1rem; color: var(--primary-purple);">
+                    <i class="fas fa-trophy"></i> Próximo Nível: Ouro (15% de desconto)
+                </h4>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <span style="font-weight: 600;">1.250 pontos</span>
+                    <span style="color: var(--gray-600);">2.000 pontos</span>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 62.5%;"></div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 1rem; color: var(--gray-600);">
+                    Faltam apenas <strong>750 pontos</strong> para o próximo nível!
+                </div>
+            </div>
+
+            <!-- Timeline de Descontos -->
+            <div class="discount-timeline">
+                <h4 style="margin-bottom: 2rem; color: var(--primary-purple);">
+                    <i class="fas fa-history"></i> Histórico de Descontos
+                </h4>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot used"></div>
+                    <div class="discount-card used">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <div>
+                                <div style="font-weight: 600; color: var(--blue-700);">Desconto Utilizado</div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">15/12/2024 às 14:32</div>
+                            </div>
+                            <span class="discount-level level-prata">
+                                <i class="fas fa-medal"></i> PRATA 10%
+                            </span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; text-align: center;">
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">Valor Original:</div>
+                                <div style="font-weight: 600;">R$ 89,50</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">Desconto:</div>
+                                <div style="font-weight: 600; color: var(--success-green);">- R$ 8,95</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">Pontos Gastos:</div>
+                                <div style="font-weight: 600; color: var(--blue-600);">1.000 pts</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--blue-200);">
+                            <div style="font-size: 0.875rem; color: var(--gray-600);">
+                                <i class="fas fa-store"></i> Restaurante Premium
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot used"></div>
+                    <div class="discount-card used">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <div>
+                                <div style="font-weight: 600; color: var(--blue-700);">Desconto Utilizado</div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">12/12/2024 às 19:15</div>
+                            </div>
+                            <span class="discount-level level-ouro">
+                                <i class="fas fa-crown"></i> OURO 15%
+                            </span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; text-align: center;">
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">Valor Original:</div>
+                                <div style="font-weight: 600;">R$ 156,00</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">Desconto:</div>
+                                <div style="font-weight: 600; color: var(--success-green);">- R$ 23,40</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">Pontos Gastos:</div>
+                                <div style="font-weight: 600; color: var(--blue-600);">2.000 pts</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--blue-200);">
+                            <div style="font-size: 0.875rem; color: var(--gray-600);">
+                                <i class="fas fa-store"></i> Cafeteria Central
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot used"></div>
+                    <div class="discount-card used">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <div>
+                                <div style="font-weight: 600; color: var(--blue-700);">Desconto Utilizado</div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">10/12/2024 às 12:30</div>
+                            </div>
+                            <span class="discount-level level-bronze">
+                                <i class="fas fa-award"></i> BRONZE 5%
+                            </span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; text-align: center;">
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">Valor Original:</div>
+                                <div style="font-weight: 600;">R$ 47,80</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">Desconto:</div>
+                                <div style="font-weight: 600; color: var(--success-green);">- R$ 2,39</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.875rem; color: var(--gray-600);">Pontos Gastos:</div>
+                                <div style="font-weight: 600; color: var(--blue-600);">500 pts</div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--orange-200);">
+                            <div style="font-size: 0.875rem; color: var(--gray-600);">
+                                <i class="fas fa-store"></i> Lanchonete do Bairro
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-outline" onclick="loadMoreHistory()">
+                        <i class="fas fa-chevron-down"></i> Carregar Mais Histórico
+                    </button>
+                </div>
+            </div>
+
+            <!-- CTA para Acumular Pontos -->
+            <div style="background: var(--gradient-primary); color: white; padding: 2rem; border-radius: var(--radius-xl); text-align: center; margin: 2rem 0;">
+                <h3 style="margin-bottom: 1rem;">🚀 Continue Acumulando Pontos!</h3>
+                <p style="margin-bottom: 1.5rem; opacity: 0.9;">
+                    Visite nossos estabelecimentos parceiros e continue acumulando pontos para descontos ainda maiores!
+                </p>
+                <button class="btn btn-accent btn-lg" onclick="location.href='estabelecimentos.html'">
+                    <i class="fas fa-map-marker-alt"></i> Ver Estabelecimentos
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Carregar dados do usuário
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            updateProgressBar();
+        });
+
+        async function loadUserData() {
+            try {
+                // Aqui você faria a chamada real para a API
+                // const response = await fetch('/api/user/discount-history');
+                // const data = await response.json();
+                
+                // Por enquanto, dados simulados
+                const userData = {
+                    name: 'João Silva',
+                    current_points: 1250,
+                    points_used: 3750,
+                    total_discounts: 24,
+                    next_level_points: 750,
+                    total_savings: 487.30,
+                    next_level: {
+                        name: 'Ouro',
+                        percentage: 15,
+                        points_required: 2000
+                    }
+                };
+
+                // Preencher interface
+                document.getElementById('user-name').textContent = userData.name;
+                document.getElementById('current-points').textContent = userData.current_points.toLocaleString('pt-BR');
+                document.getElementById('points-used').textContent = userData.points_used.toLocaleString('pt-BR');
+                document.getElementById('total-discounts').textContent = userData.total_discounts;
+                document.getElementById('next-level-points').textContent = userData.next_level_points;
+                document.getElementById('total-savings').textContent = `R$ ${userData.total_savings.toFixed(2).replace('.', ',')}`;
+
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        function updateProgressBar() {
+            const currentPoints = 1250;
+            const targetPoints = 2000;
+            const progress = (currentPoints / targetPoints) * 100;
+            
+            document.querySelector('.progress-fill').style.width = progress + '%';
+        }
+
+        function loadMoreHistory() {
+            alert('Carregando mais itens do histórico...');
+            // Implementar paginação da API
+        }
+
+        function shareAchievement() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Minha Economia com Pontos',
+                    text: 'Já economizei R$ 487,30 com o sistema de pontos!',
+                    url: window.location.href
+                });
+            } else {
+                alert('Função de compartilhamento não disponível neste navegador');
+            }
+        }
+    </script>
+    <script src="/js/global.js"></script>
+</body>
+</html>

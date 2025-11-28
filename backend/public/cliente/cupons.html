@@ -5,64 +5,227 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Cupons - Cliente - Tem de Tudo</title>
     <link rel="stylesheet" href="/css/modern-theme.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-dark) 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+        .nav-bar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .nav-bar ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .nav-bar a {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-bar a:hover {
+            color: var(--primary-light);
+        }
+        .page-header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin: 0;
+        }
+        .page-subtitle {
+            color: var(--gray-600);
+            margin: 0.5rem 0 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+        .cupons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        .cupom-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 4px solid var(--primary-purple);
+        }
+        .cupom-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        .cupom-codigo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 0.5rem;
+        }
+        .cupom-descricao {
+            color: var(--gray-700);
+            margin-bottom: 1rem;
+        }
+        .cupom-validade {
+            color: var(--gray-500);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .empty-state {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--gray-300);
+            margin-bottom: 1rem;
+        }
+        .empty-state p {
+            color: var(--gray-600);
+            font-size: 1.1rem;
+        }
+        @media (max-width: 768px) {
+            .nav-bar ul {
+                gap: 1rem;
+            }
+            .container {
+                padding: 0 1rem 1rem;
+            }
+            .cupons-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header class="header">
-        <h1 class="title">Cupons - Cliente</h1>
-        <nav>
-            <a href="/dashboard-cliente.html" class="btn btn-primary">Voltar ao Dashboard</a>
-        </nav>
-    </header>
-    <main class="container glass-card p-4">
-        <section>
-            <div id="cupons-list" class="space-y-4 text-base">Carregando cupons...</div>
-        </section>
-    </main>
+    <nav class="nav-bar">
+        <ul>
+            <li><a href="/dashboard-cliente.html"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="/cliente/perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
+            <li><a href="/cliente/pontos.html"><i class="fas fa-star"></i> Pontos</a></li>
+            <li><a href="/cliente/cupons.html"><i class="fas fa-ticket-alt"></i> Cupons</a></li>
+            <li><a href="/cliente/historico.html"><i class="fas fa-history"></i> Histórico</a></li>
+            <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-ticket-alt"></i> Meus Cupons</h1>
+        <p class="page-subtitle">Seus cupons de desconto disponíveis</p>
+    </div>
+
+    <div class="container">
+        <div id="cupons-list" class="cupons-grid">
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Carregando cupons...</p>
+            </div>
+        </div>
+    </div>
 
     <script>
+        function logout() {
+            localStorage.removeItem('tem_de_tudo_token');
+            localStorage.removeItem('tem_de_tudo_user');
+            window.location.href = '/login.html';
+        }
+
         async function fetchCupons() {
             const container = document.getElementById('cupons-list');
-            container.textContent = 'Carregando cupons...';
+            const token = localStorage.getItem('tem_de_tudo_token');
+            
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
             try {
-                const response = await fetch('/api/pontos/meus-cupons', {
-                    credentials: 'include',
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                const response = await fetch('/api/cupons', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
                 });
 
                 if (!response.ok) {
-                    throw new Error('Erro ao obter cupons: ' + response.statusText);
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
+                    throw new Error('Erro ao carregar cupons');
                 }
 
                 const data = await response.json();
 
-                if (data.success) {
-                    const cupons = data.data;
-
-                    if (cupons.length === 0) {
-                        container.textContent = 'Nenhum cupom ativo no momento.';
-                        return;
-                    }
-
-                    container.textContent = '';
-                    cupons.forEach(c => {
-                        const div = document.createElement('div');
-                        div.className = 'card p-3 bg-secondary rounded shadow';
-                        div.innerHTML = `<span class="text-xl font-bold">${c.codigo}</span> - ${c.descricao} <br/> <small>Validade: ${new Date(c.validade).toLocaleDateString()}</small>`;
-                        container.appendChild(div);
+                if (data.success && data.data && data.data.length > 0) {
+                    container.innerHTML = '';
+                    data.data.forEach(cupom => {
+                        const card = document.createElement('div');
+                        card.className = 'cupom-card';
+                        card.innerHTML = `
+                            <div class="cupom-codigo">${cupom.codigo || 'CUPOM'}</div>
+                            <div class="cupom-descricao">${cupom.descricao || 'Sem descrição'}</div>
+                            <div class="cupom-validade">
+                                <i class="fas fa-calendar-alt"></i>
+                                Válido até: ${cupom.validade ? new Date(cupom.validade).toLocaleDateString('pt-BR') : 'Indeterminado'}
+                            </div>
+                        `;
+                        container.appendChild(card);
                     });
                 } else {
-                    throw new Error(data.message || 'Falha ao carregar cupons.');
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-ticket-alt"></i>
+                            <p>Você ainda não possui cupons ativos.</p>
+                        </div>
+                    `;
                 }
             } catch (error) {
-                container.textContent = '';
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error text-error mt-4';
-                errorDiv.textContent = error.message;
-                container.appendChild(errorDiv);
+                console.error('Erro ao carregar cupons:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Erro ao carregar cupons. Tente novamente.</p>
+                    </div>
+                `;
             }
         }
 
-        fetchCupons();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fetchCupons);
+        } else {
+            fetchCupons();
+        }
     </script>
 </body>
 </html>

@@ -5,52 +5,214 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Pontos - Cliente - Tem de Tudo</title>
     <link rel="stylesheet" href="/css/modern-theme.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-dark) 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+        .nav-bar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .nav-bar ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .nav-bar a {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-bar a:hover {
+            color: var(--primary-light);
+        }
+        .page-header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+        .points-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            color: white;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+        }
+        .points-value {
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+        .points-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .nivel-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .info-card h3 {
+            color: var(--primary-purple);
+            margin: 0 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .info-card p {
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+        @media (max-width: 768px) {
+            .nav-bar ul {
+                gap: 1rem;
+            }
+            .container {
+                padding: 0 1rem 1rem;
+            }
+            .points-value {
+                font-size: 3rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header class="header">
-        <h1 class="title">Pontos - Cliente</h1>
-        <nav>
-            <a href="/dashboard-cliente.html" class="btn btn-primary">Voltar ao Dashboard</a>
-        </nav>
-    </header>
-    <main class="container glass-card p-4">
-        <section>
-            <div id="points-display" class="text-lg font-semibold">Carregando pontos...</div>
-        </section>
-    </main>
+    <nav class="nav-bar">
+        <ul>
+            <li><a href="/dashboard-cliente.html"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="/cliente/perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
+            <li><a href="/cliente/pontos.html"><i class="fas fa-star"></i> Pontos</a></li>
+            <li><a href="/cliente/cupons.html"><i class="fas fa-ticket-alt"></i> Cupons</a></li>
+            <li><a href="/cliente/historico.html"><i class="fas fa-history"></i> Histórico</a></li>
+            <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-star"></i> Meus Pontos</h1>
+    </div>
+
+    <div class="container">
+        <div class="points-card">
+            <div class="points-label">Seus Pontos Acumulados</div>
+            <div class="points-value" id="points-value">0</div>
+            <div class="nivel-badge" id="nivel-badge">Nível Bronze</div>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-card">
+                <h3><i class="fas fa-trophy"></i> Como Ganhar Pontos</h3>
+                <p>Acumule pontos a cada compra realizada nos estabelecimentos parceiros. Quanto mais você compra, mais pontos ganha!</p>
+            </div>
+            <div class="info-card">
+                <h3><i class="fas fa-gift"></i> Troque por Cupons</h3>
+                <p>Use seus pontos para trocar por cupons de desconto exclusivos. Aproveite as melhores ofertas!</p>
+            </div>
+            <div class="info-card">
+                <h3><i class="fas fa-level-up-alt"></i> Suba de Nível</h3>
+                <p>Conforme acumula pontos, você avança nos níveis: Bronze, Prata, Ouro e Diamante, desbloqueando benefícios exclusivos!</p>
+            </div>
+        </div>
+    </div>
 
     <script>
+        function logout() {
+            localStorage.removeItem('tem_de_tudo_token');
+            localStorage.removeItem('tem_de_tudo_user');
+            window.location.href = '/login.html';
+        }
+
         async function fetchPoints() {
-            const display = document.getElementById('points-display');
-            display.textContent = 'Carregando pontos...';
+            const token = localStorage.getItem('tem_de_tudo_token');
+            
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
             try {
-                const response = await fetch('/api/pontos/meus-dados', {
-                    credentials: 'include',
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                const response = await fetch('/api/user', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
                 });
 
                 if (!response.ok) {
-                    throw new Error('Erro ao obter pontos: ' + response.statusText);
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
+                    throw new Error('Erro ao carregar dados');
                 }
 
                 const data = await response.json();
 
                 if (data.success) {
-                    const pointsData = data.data;
-                    display.textContent = `Você tem ${pointsData.pontos} pontos acumulados (Nível: ${pointsData.nivel}).`;
-                } else {
-                    throw new Error(data.message || 'Falha ao carregar dados de pontos.');
+                    const user = data.data.user || data.data;
+                    const pontos = user.pontos || 0;
+                    const nivel = user.nivel || 'Bronze';
+                    
+                    document.getElementById('points-value').textContent = pontos.toLocaleString('pt-BR');
+                    document.getElementById('nivel-badge').textContent = `Nível ${nivel}`;
                 }
             } catch (error) {
-                display.textContent = '';
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error text-error mt-4';
-                errorDiv.textContent = error.message;
-                display.appendChild(errorDiv);
+                console.error('Erro ao carregar pontos:', error);
+                document.getElementById('points-value').textContent = '0';
+                document.getElementById('nivel-badge').textContent = 'Nível Bronze';
             }
         }
 
-        fetchPoints();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fetchPoints);
+        } else {
+            fetchPoints();
+        }
     </script>
 </body>
 </html>

@@ -5,60 +5,264 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Perfil - Cliente - Tem de Tudo</title>
     <link rel="stylesheet" href="/css/modern-theme.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-dark) 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+        .nav-bar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .nav-bar ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .nav-bar a {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-bar a:hover {
+            color: var(--primary-light);
+        }
+        .page-header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        .profile-info {
+            flex: 1;
+        }
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin: 0 0 0.5rem;
+        }
+        .profile-email {
+            color: var(--gray-600);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        .info-row {
+            display: flex;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            flex: 0 0 150px;
+            font-weight: 600;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .info-value {
+            flex: 1;
+            color: var(--gray-900);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .status-ativo {
+            background: #d4edda;
+            color: #155724;
+        }
+        @media (max-width: 768px) {
+            .nav-bar ul {
+                gap: 1rem;
+            }
+            .container {
+                padding: 0 1rem 1rem;
+            }
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .info-row {
+                flex-direction: column;
+            }
+            .info-label {
+                flex: 1;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header class="header">
-        <h1 class="title">Perfil - Cliente</h1>
-        <nav>
-            <a href="/dashboard-cliente.html" class="btn btn-primary">Voltar ao Dashboard</a>
-        </nav>
-    </header>
-    <main class="container glass-card p-4">
-        <section>
-            <div id="profile-data" class="space-y-4 text-base">Carregando dados do perfil...</div>
-        </section>
-    </main>
+    <nav class="nav-bar">
+        <ul>
+            <li><a href="/dashboard-cliente.html"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="/cliente/perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
+            <li><a href="/cliente/pontos.html"><i class="fas fa-star"></i> Pontos</a></li>
+            <li><a href="/cliente/cupons.html"><i class="fas fa-ticket-alt"></i> Cupons</a></li>
+            <li><a href="/cliente/historico.html"><i class="fas fa-history"></i> Histórico</a></li>
+            <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-user-circle"></i> Meu Perfil</h1>
+    </div>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar" id="avatar-initial">?</div>
+                <div class="profile-info">
+                    <h2 class="profile-name" id="profile-name">Carregando...</h2>
+                    <p class="profile-email" id="profile-email">—</p>
+                </div>
+            </div>
+
+            <div id="profile-details">
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-phone"></i> Telefone:</div>
+                    <div class="info-value" id="profile-telefone">Carregando...</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-user-tag"></i> Perfil:</div>
+                    <div class="info-value" id="profile-perfil">—</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-check-circle"></i> Status:</div>
+                    <div class="info-value"><span class="status-badge status-ativo" id="profile-status">—</span></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-star"></i> Pontos:</div>
+                    <div class="info-value" id="profile-pontos">0</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label"><i class="fas fa-trophy"></i> Nível:</div>
+                    <div class="info-value" id="profile-nivel">Bronze</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
+        function logout() {
+            localStorage.removeItem('tem_de_tudo_token');
+            localStorage.removeItem('tem_de_tudo_user');
+            window.location.href = '/login.html';
+        }
+
         async function fetchProfile() {
-            const container = document.getElementById('profile-data');
-            container.textContent = 'Carregando dados do perfil...';
+            const token = localStorage.getItem('tem_de_tudo_token');
+            
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
             try {
-                const response = await fetch('/api/cliente/profile', {
-                    credentials: 'include',
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                const response = await fetch('/api/user', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
                 });
 
                 if (!response.ok) {
-                    throw new Error('Erro ao obter perfil: ' + response.statusText);
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
+                    throw new Error('Erro ao carregar perfil');
                 }
 
                 const data = await response.json();
 
                 if (data.success) {
-                    const profile = data.data;
-                    container.innerHTML = `
-                        <dl class="grid grid-cols-1 gap-y-4 gap-x-8 sm:grid-cols-2">
-                            <div><dt class="font-semibold">Nome:</dt><dd>${profile.name}</dd></div>
-                            <div><dt class="font-semibold">Email:</dt><dd>${profile.email}</dd></div>
-                            <div><dt class="font-semibold">Telefone:</dt><dd>${profile.telefone}</dd></div>
-                            <div><dt class="font-semibold">Status:</dt><dd>${profile.status}</dd></div>
-                            <div><dt class="font-semibold">Perfil:</dt><dd>${profile.perfil}</dd></div>
-                        </dl>
-                    `;
-                } else {
-                    throw new Error(data.message || 'Falha ao carregar dados do perfil.');
+                    const user = data.data.user || data.data;
+                    
+                    // Atualizar informações
+                    document.getElementById('profile-name').textContent = user.name || 'Usuário';
+                    document.getElementById('profile-email').textContent = user.email || '—';
+                    document.getElementById('profile-telefone').textContent = user.telefone || 'Não informado';
+                    document.getElementById('profile-perfil').textContent = user.perfil || 'cliente';
+                    document.getElementById('profile-status').textContent = user.status || 'ativo';
+                    document.getElementById('profile-pontos').textContent = (user.pontos || 0).toLocaleString('pt-BR');
+                    document.getElementById('profile-nivel').textContent = user.nivel || 'Bronze';
+                    
+                    // Atualizar avatar com inicial do nome
+                    const initial = (user.name || '?').charAt(0).toUpperCase();
+                    document.getElementById('avatar-initial').textContent = initial;
                 }
             } catch (error) {
-                container.textContent = '';
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error text-error mt-4';
-                errorDiv.textContent = error.message;
-                container.appendChild(errorDiv);
+                console.error('Erro ao carregar perfil:', error);
             }
         }
 
-        fetchProfile();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fetchProfile);
+        } else {
+            fetchProfile();
+        }
     </script>
 </body>
 </html>

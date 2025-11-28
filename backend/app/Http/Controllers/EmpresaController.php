@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Empresa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Models\Empresa;
 
 class EmpresaController extends Controller
 {
     public function index()
     {
-        $empresas = Empresa::all(['id', 'name', 'services']);
+        $empresas = Empresa::all(['id', 'nome', 'services']);
         return response()->json($empresas);
     }
 
@@ -29,7 +31,7 @@ class EmpresaController extends Controller
                 'data' => $empresas
             ]);
         } catch (\Exception $e) {
-            \Log::error('Erro ao listar empresas: ' . $e->getMessage());
+            Log::error('Erro ao listar empresas: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -63,22 +65,22 @@ class EmpresaController extends Controller
             }
 
             // Estatísticas básicas
-            $totalClientes = \DB::table('pontos')
+            $totalClientes = DB::table('pontos')
                 ->where('empresa_id', $empresa->id)
                 ->distinct('user_id')
                 ->count('user_id');
 
-            $pontosDistribuidos = \DB::table('pontos')
+            $pontosDistribuidos = DB::table('pontos')
                 ->where('empresa_id', $empresa->id)
                 ->where('tipo', 'earn')
                 ->sum('pontos');
 
-            $qrcodesAtivos = \DB::table('qrcodes')
+            $qrcodesAtivos = DB::table('qrcodes')
                 ->where('empresa_id', $empresa->id)
                 ->where('ativo', true)
                 ->count();
 
-            $checkinsHoje = \DB::table('checkins')
+            $checkinsHoje = DB::table('checkins')
                 ->where('empresa_id', $empresa->id)
                 ->whereDate('created_at', today())
                 ->count();
@@ -94,7 +96,7 @@ class EmpresaController extends Controller
                 ]
             ]);
         } catch (\Exception $e) {
-            \Log::error('Erro ao carregar dashboard empresa', [
+            Log::error('Erro ao carregar dashboard empresa', [
                 'error' => $e->getMessage(),
                 'user_id' => $request->user()->id ?? null
             ]);
@@ -122,7 +124,7 @@ class EmpresaController extends Controller
                 ], 404);
             }
 
-            $checkins = \DB::table('checkins')
+            $checkins = DB::table('checkins')
                 ->join('users', 'checkins.user_id', '=', 'users.id')
                 ->join('qrcodes', 'checkins.qrcode_id', '=', 'qrcodes.id')
                 ->where('checkins.empresa_id', $empresa->id)
@@ -142,7 +144,7 @@ class EmpresaController extends Controller
                 'data' => $checkins
             ]);
         } catch (\Exception $e) {
-            \Log::error('Erro ao carregar check-ins recentes', [
+            Log::error('Erro ao carregar check-ins recentes', [
                 'error' => $e->getMessage(),
                 'user_id' => $request->user()->id ?? null
             ]);
@@ -170,14 +172,14 @@ class EmpresaController extends Controller
                 ], 404);
             }
 
-            $topClients = \DB::table('pontos')
+            $topClients = DB::table('pontos')
                 ->join('users', 'pontos.user_id', '=', 'users.id')
                 ->where('pontos.empresa_id', $empresa->id)
                 ->select(
                     'users.id',
                     'users.name',
-                    \DB::raw('SUM(pontos.pontos) as total_pontos'),
-                    \DB::raw('COUNT(pontos.id) as total_checkins')
+                    DB::raw('SUM(pontos.pontos) as total_pontos'),
+                    DB::raw('COUNT(pontos.id) as total_checkins')
                 )
                 ->groupBy('users.id', 'users.name')
                 ->orderBy('total_pontos', 'desc')
@@ -193,7 +195,7 @@ class EmpresaController extends Controller
                 'data' => $topClients
             ]);
         } catch (\Exception $e) {
-            \Log::error('Erro ao carregar top clientes', [
+            Log::error('Erro ao carregar top clientes', [
                 'error' => $e->getMessage(),
                 'user_id' => $request->user()->id ?? null
             ]);

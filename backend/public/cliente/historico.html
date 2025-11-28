@@ -5,68 +5,275 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Histórico - Cliente - Tem de Tudo</title>
     <link rel="stylesheet" href="/css/modern-theme.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-dark) 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+        .nav-bar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .nav-bar ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .nav-bar a {
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-bar a:hover {
+            color: var(--primary-light);
+        }
+        .page-header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin: 0;
+        }
+        .page-subtitle {
+            color: var(--gray-600);
+            margin: 0.5rem 0 0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gray-300);
+        }
+        .timeline-item {
+            position: relative;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .timeline-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.5rem;
+            top: 1.5rem;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary-purple);
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--primary-purple);
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+        .history-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin: 0;
+        }
+        .history-date {
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+        .history-description {
+            color: var(--gray-700);
+            line-height: 1.6;
+        }
+        .history-points {
+            display: inline-block;
+            background: #d4edda;
+            color: #155724;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        .history-points.negative {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .empty-state {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--gray-300);
+            margin-bottom: 1rem;
+        }
+        .empty-state p {
+            color: var(--gray-600);
+            font-size: 1.1rem;
+        }
+        @media (max-width: 768px) {
+            .nav-bar ul {
+                gap: 1rem;
+            }
+            .container {
+                padding: 0 1rem 1rem;
+            }
+            .timeline {
+                padding-left: 2rem;
+            }
+            .timeline::before {
+                left: 0.5rem;
+            }
+            .timeline-item::before {
+                left: -1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header class="header">
-        <h1 class="title">Histórico - Cliente</h1>
-        <nav>
-            <a href="/dashboard-cliente.html" class="btn btn-primary">Voltar ao Dashboard</a>
-        </nav>
-    </header>
-    <main class="container glass-card p-4">
-        <section>
-            <div id="historico-list" class="space-y-4 text-base">Carregando histórico...</div>
-        </section>
-    </main>
+    <nav class="nav-bar">
+        <ul>
+            <li><a href="/dashboard-cliente.html"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="/cliente/perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
+            <li><a href="/cliente/pontos.html"><i class="fas fa-star"></i> Pontos</a></li>
+            <li><a href="/cliente/cupons.html"><i class="fas fa-ticket-alt"></i> Cupons</a></li>
+            <li><a href="/cliente/historico.html"><i class="fas fa-history"></i> Histórico</a></li>
+            <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-header">
+        <h1 class="page-title"><i class="fas fa-history"></i> Histórico de Atividades</h1>
+        <p class="page-subtitle">Acompanhe todas as suas transações e atividades</p>
+    </div>
+
+    <div class="container">
+        <div id="historico-list" class="timeline">
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Carregando histórico...</p>
+            </div>
+        </div>
+    </div>
 
     <script>
+        function logout() {
+            localStorage.removeItem('tem_de_tudo_token');
+            localStorage.removeItem('tem_de_tudo_user');
+            window.location.href = '/login.html';
+        }
+
         async function fetchHistorico() {
             const container = document.getElementById('historico-list');
-            container.textContent = 'Carregando histórico...';
+            const token = localStorage.getItem('tem_de_tudo_token');
+            
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
             try {
                 const response = await fetch('/api/pontos/historico', {
-                    credentials: 'include',
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
                 });
 
                 if (!response.ok) {
-                    throw new Error('Erro ao obter histórico: ' + response.statusText);
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
+                    throw new Error('Erro ao carregar histórico');
                 }
 
                 const data = await response.json();
 
-                if (data.success) {
-                    const historicos = data.data;
-
-                    if (historicos.length === 0) {
-                        container.textContent = 'Nenhum registro de histórico encontrado.';
-                        return;
-                    }
-
-                    container.textContent = '';
-                    historicos.forEach(h => {
+                if (data.success && data.data && data.data.length > 0) {
+                    container.innerHTML = '';
+                    data.data.forEach(item => {
                         const div = document.createElement('div');
-                        div.className = 'card p-3 bg-secondary rounded shadow';
+                        div.className = 'timeline-item';
+                        
+                        const pontos = item.pontos || 0;
+                        const isPositive = pontos > 0;
+                        
                         div.innerHTML = `
-                            <div class="font-bold">${h.acao}</div>
-                            <div class="text-gray-600 text-sm">${new Date(h.data).toLocaleDateString()}</div>
-                            <div class="mt-2">${h.detalhes}</div>
+                            <div class="history-header">
+                                <h3 class="history-title">${item.descricao || item.acao || 'Atividade'}</h3>
+                                <span class="history-date">${item.created_at ? new Date(item.created_at).toLocaleString('pt-BR') : 'Data desconhecida'}</span>
+                            </div>
+                            <p class="history-description">${item.detalhes || 'Sem detalhes adicionais'}</p>
+                            ${pontos !== 0 ? `<span class="history-points ${!isPositive ? 'negative' : ''}">${isPositive ? '+' : ''}${pontos} pontos</span>` : ''}
                         `;
                         container.appendChild(div);
                     });
                 } else {
-                    throw new Error(data.message || 'Falha ao carregar histórico.');
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <p>Você ainda não possui histórico de atividades.</p>
+                        </div>
+                    `;
                 }
             } catch (error) {
-                container.textContent = '';
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error text-error mt-4';
-                errorDiv.textContent = error.message;
-                container.appendChild(errorDiv);
+                console.error('Erro ao carregar histórico:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Erro ao carregar histórico. Tente novamente.</p>
+                    </div>
+                `;
             }
         }
 
-        fetchHistorico();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fetchHistorico);
+        } else {
+            fetchHistorico();
+        }
     </script>
 </body>
 </html>
