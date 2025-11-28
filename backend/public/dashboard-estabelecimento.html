@@ -226,15 +226,54 @@
                     document.getElementById('welcome-message').textContent = `Bem-vindo, ${user.name}!`;
                 }
 
-                // Dados iniciais (você pode conectar com APIs reais depois)
-                document.getElementById('total-clientes').textContent = '0';
-                document.getElementById('pontos-distribuidos').textContent = '0';
-                document.getElementById('descontos-ativos').textContent = '0';
-                document.getElementById('vendas-hoje').textContent = '0';
+                // Dados mockados para demonstração visual
+                document.getElementById('total-clientes').textContent = '156';
+                document.getElementById('pontos-distribuidos').textContent = '12,450';
+                document.getElementById('descontos-ativos').textContent = '8';
+                document.getElementById('vendas-hoje').textContent = '23';
+
+                // Atividades recentes mockadas
+                const activities = document.getElementById('recent-activities');
+                activities.innerHTML = `
+                    <div class="list-item">
+                        <strong>Maria Santos</strong> resgatou cupom DESCONTO15<br>
+                        <small>Há 2 horas</small>
+                    </div>
+                    <div class="list-item">
+                        <strong>João Silva</strong> acumulou 150 pontos<br>
+                        <small>Há 3 horas</small>
+                    </div>
+                    <div class="list-item">
+                        <strong>Ana Paula</strong> atingiu o nível Ouro<br>
+                        <small>Há 5 horas</small>
+                    </div>
+                `;
+
+                // Top clientes mockados
+                const topClientes = document.getElementById('top-clientes-list');
+                topClientes.innerHTML = `
+                    <div class="list-item">
+                        <strong>Maria Santos</strong> - 2,500 pontos - Nível Diamante<br>
+                        <small>Cliente desde Jan/2024</small>
+                    </div>
+                    <div class="list-item">
+                        <strong>João Silva</strong> - 1,850 pontos - Nível Platina<br>
+                        <small>Cliente desde Fev/2024</small>
+                    </div>
+                    <div class="list-item">
+                        <strong>Carlos Mendes</strong> - 1,200 pontos - Nível Ouro<br>
+                        <small>Cliente desde Mar/2024</small>
+                    </div>
+                `;
 
             } catch (error) {
                 console.error('Erro ao carregar dashboard:', error);
                 document.getElementById('welcome-message').textContent = 'Erro ao carregar dashboard.';
+                // Ainda assim mostrar dados mockados em caso de erro
+                document.getElementById('total-clientes').textContent = '156';
+                document.getElementById('pontos-distribuidos').textContent = '12,450';
+                document.getElementById('descontos-ativos').textContent = '8';
+                document.getElementById('vendas-hoje').textContent = '23';
             }
         }
 

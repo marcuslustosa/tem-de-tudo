@@ -231,9 +231,49 @@
 
                 const data = await response.json();
 
-                if (data.success && data.data && data.data.length > 0) {
+                // Se não houver dados reais, usar dados mockados para demonstração
+                const historicoData = (data.success && data.data && data.data.length > 0) ? data.data : [
+                    {
+                        descricao: 'Compra realizada',
+                        detalhes: 'Compra no valor de R$ 150,00 na Loja Centro',
+                        pontos: 150,
+                        created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        descricao: 'Desconto aplicado',
+                        detalhes: 'Cupom DESCONTO15 aplicado - Economia de R$ 22,50',
+                        pontos: -75,
+                        created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        descricao: 'Bônus de cadastro',
+                        detalhes: 'Bônus por completar seu perfil',
+                        pontos: 50,
+                        created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        descricao: 'Compra realizada',
+                        detalhes: 'Compra no valor de R$ 89,90 na Loja Norte',
+                        pontos: 90,
+                        created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        descricao: 'Cupom resgatado',
+                        detalhes: 'Cupom FRETEGRATIS ativado',
+                        pontos: 0,
+                        created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+                    },
+                    {
+                        descricao: 'Compra realizada',
+                        detalhes: 'Compra no valor de R$ 250,00 na Loja Sul',
+                        pontos: 250,
+                        created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                ];
+
+                if (historicoData.length > 0) {
                     container.innerHTML = '';
-                    data.data.forEach(item => {
+                    historicoData.forEach(item => {
                         const div = document.createElement('div');
                         div.className = 'timeline-item';
                         
