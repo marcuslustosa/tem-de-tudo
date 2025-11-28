@@ -238,6 +238,17 @@
                 }
 
                 if (response.ok && data.success === true && data.data && data.data.token) {
+                    const user = data.data.user;
+                    
+                    // BLOQUEAR LOGIN DE ADMIN - Admin deve usar /admin-login.html
+                    if (user.perfil === 'admin') {
+                        showMessage('⚠️ Administradores devem usar o painel administrativo', 'warning');
+                        setTimeout(() => {
+                            window.location.href = '/admin-login.html';
+                        }, 2000);
+                        return;
+                    }
+                    
                     // Save token and user data using the same keys as auth.js
                     localStorage.setItem('tem_de_tudo_token', data.data.token);
                     localStorage.setItem('tem_de_tudo_user', JSON.stringify(data.data.user));
@@ -247,13 +258,10 @@
 
                     // Redirect after short delay baseado no perfil
                     setTimeout(() => {
-                        const user = data.data.user;
                         let redirectUrl = '/dashboard-cliente.html'; // default
 
                         if (user.perfil === 'empresa') {
                             redirectUrl = '/dashboard-estabelecimento.html';
-                        } else if (user.perfil === 'admin') {
-                            redirectUrl = '/admin.html';
                         }
 
                         window.location.href = redirectUrl;
