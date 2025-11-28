@@ -82,14 +82,23 @@ class AuthController extends Controller
                 'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
-            Log::error('Erro inesperado na validação', [
+            Log::error('Erro CRÍTICO na validação do registro', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->except(['password', 'password_confirmation'])
             ]);
 
+            // Em produção, retornar erro detalhado para debug
             return response()->json([
                 'success' => false,
-                'message' => 'Erro na validação dos dados. Tente novamente.'
+                'message' => 'Erro na validação dos dados: ' . $e->getMessage(),
+                'error_details' => [
+                    'message' => $e->getMessage(),
+                    'file' => basename($e->getFile()),
+                    'line' => $e->getLine()
+                ]
             ], 400);
         }
 
@@ -195,17 +204,24 @@ class AuthController extends Controller
             DB::rollBack();
             RateLimiter::hit($key, 300);
 
-            Log::error('Erro geral no registro', [
+            Log::error('Erro CRÍTICO no registro', [
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString(),
-                'request_data' => $request->all()
+                'request_data' => $request->except(['password', 'password_confirmation'])
             ]);
 
+            // Retornar erro detalhado para debug
             return response()->json([
                 'success' => false,
-                'message' => 'Erro interno do servidor. Nossa equipe foi notificada.'
+                'message' => 'Erro ao criar conta: ' . $e->getMessage(),
+                'error_details' => [
+                    'type' => get_class($e),
+                    'message' => $e->getMessage(),
+                    'file' => basename($e->getFile()),
+                    'line' => $e->getLine()
+                ]
             ], 500);
         }
     }
@@ -317,7 +333,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             RateLimiter::hit($key, 300);
 
-            Log::error('Erro geral no login', [
+            Log::error('Erro CRÍTICO no login', [
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
@@ -326,9 +342,16 @@ class AuthController extends Controller
                 'ip' => $request->ip()
             ]);
 
+            // Retornar erro detalhado para debug
             return response()->json([
                 'success' => false,
-                'message' => 'Erro interno do servidor. Tente novamente em alguns instantes.'
+                'message' => 'Erro no login: ' . $e->getMessage(),
+                'error_details' => [
+                    'type' => get_class($e),
+                    'message' => $e->getMessage(),
+                    'file' => basename($e->getFile()),
+                    'line' => $e->getLine()
+                ]
             ], 500);
         }
     }
