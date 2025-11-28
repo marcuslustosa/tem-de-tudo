@@ -224,11 +224,15 @@
                 });
 
                 console.log('Status da resposta:', response.status);
+                console.log('Headers da resposta:', {
+                    'content-type': response.headers.get('content-type'),
+                    'content-length': response.headers.get('content-length')
+                });
 
                 let data;
                 try {
                     const responseText = await response.text();
-                    console.log('Resposta bruta:', responseText);
+                    console.log('Resposta bruta:', responseText.substring(0, 500));
                     data = JSON.parse(responseText);
                     console.log('Dados da resposta:', data);
                 } catch (jsonError) {
