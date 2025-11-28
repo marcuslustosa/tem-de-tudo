@@ -7,36 +7,59 @@ services:
     buildCommand: |
       cd backend &&
       composer install --no-dev --optimize-autoloader &&
-      touch database/database.sqlite &&
       php artisan key:generate --force &&
-      php artisan migrate --force || true
+      php artisan config:clear &&
+      php artisan migrate --force
     startCommand: |
       cd backend &&
       php artisan serve --host=0.0.0.0 --port=$PORT
-    envVars:
     envVars:
       - key: APP_NAME
         value: "Tem de Tudo"
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: false
+        value: "false"
       - key: APP_KEY
         value: base64:3cQV4S7tE8m2dR9wQ5lN6pK1jH0uI8yT7rE3wQ9pL5k=
       - key: APP_URL
         value: https://app-tem-de-tudo.onrender.com
       - key: APP_LOCALE
         value: pt_BR
+      - key: APP_TIMEZONE
+        value: America/Sao_Paulo
+      
+      # Database PostgreSQL
       - key: DB_CONNECTION
-        value: sqlite
+        value: pgsql
+      - key: DB_HOST
+        value: dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com
+      - key: DB_PORT
+        value: "5432"
       - key: DB_DATABASE
-        value: /opt/render/project/src/backend/database/database.sqlite
+        value: tem_de_tudo_database
+      - key: DB_USERNAME
+        value: tem_de_tudo_database_user
+      - key: DB_PASSWORD
+        value: 9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA
+      - key: DB_SSLMODE
+        value: prefer
+      
+      # Cache e Session
       - key: SESSION_DRIVER
         value: file
       - key: CACHE_DRIVER
         value: file
       - key: QUEUE_CONNECTION
-        value: sync
+        value: database
+      
+      # JWT
+      - key: JWT_SECRET
+        value: t3md3tud0syst3mj4wt53cr3tk3y2024s3cur3h4shk3y
+      - key: JWT_TTL
+        value: "60"
+      
+      # Log
       - key: LOG_LEVEL
         value: error
     autoDeploy: true
