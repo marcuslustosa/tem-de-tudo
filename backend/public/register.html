@@ -432,8 +432,15 @@
 
                     console.error('Erro detalhado:', {
                         status: response.status,
-                        data: data
+                        data: data,
+                        fullResponse: JSON.stringify(data, null, 2)
                     });
+
+                    // Se tiver erro_details, mostrar no console
+                    if (data.error_details) {
+                        console.error('Detalhes do erro do servidor:', data.error_details);
+                        alert('ERRO DO BANCO:\n' + JSON.stringify(data.error_details, null, 2));
+                    }
 
                     showMessage(errorMessage, 'error');
                 }
