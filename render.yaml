@@ -6,9 +6,15 @@ services:
     plan: free
     buildCommand: |
       cd backend &&
+      rm -rf bootstrap/cache/*.php &&
       composer install --no-dev --optimize-autoloader &&
-      php artisan key:generate --force &&
       php artisan config:clear &&
+      php artisan cache:clear &&
+      php artisan route:clear &&
+      php artisan view:clear &&
+      php artisan key:generate --force &&
+      echo "DB_CONNECTION=${DB_CONNECTION}" &&
+      echo "DB_HOST=${DB_HOST}" &&
       php artisan migrate --force
     startCommand: |
       cd backend &&
