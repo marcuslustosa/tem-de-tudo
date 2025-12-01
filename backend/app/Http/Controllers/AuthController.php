@@ -195,9 +195,20 @@ class AuthController extends Controller
                 ], 422);
             }
 
+            // Retornar erro detalhado do banco de dados
             return response()->json([
                 'success' => false,
-                'message' => 'Erro no banco de dados. Tente novamente em alguns instantes.'
+                'message' => 'Erro no banco de dados. Tente novamente em alguns instantes.',
+                'error_details' => [
+                    'type' => 'QueryException',
+                    'message' => $e->getMessage(),
+                    'code' => $e->getCode(),
+                    'sql_state' => $e->errorInfo[0] ?? null,
+                    'driver_code' => $e->errorInfo[1] ?? null,
+                    'driver_message' => $e->errorInfo[2] ?? null,
+                    'file' => basename($e->getFile()),
+                    'line' => $e->getLine()
+                ]
             ], 500);
 
         } catch (\Exception $e) {
