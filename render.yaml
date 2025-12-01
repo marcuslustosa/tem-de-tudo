@@ -6,6 +6,7 @@ services:
     plan: free
     buildCommand: |
       cd backend &&
+      cp -f .env.render .env &&
       rm -rf bootstrap/cache/*.php &&
       composer install --no-dev --optimize-autoloader &&
       php artisan config:clear &&
@@ -13,8 +14,11 @@ services:
       php artisan route:clear &&
       php artisan view:clear &&
       php artisan key:generate --force &&
+      echo "=== VERIFICANDO CONFIGURAÇÃO ===" &&
       echo "DB_CONNECTION=${DB_CONNECTION}" &&
       echo "DB_HOST=${DB_HOST}" &&
+      echo "DB_DATABASE=${DB_DATABASE}" &&
+      cat .env | grep DB_ &&
       php artisan migrate --force
     startCommand: |
       cd backend &&
