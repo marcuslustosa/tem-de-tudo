@@ -133,8 +133,8 @@ class AuthController extends Controller
                         'telefone' => $request->telefone,
                         'cnpj' => $request->cnpj,
                         'owner_id' => $user->id,
-                        'ativo' => true,
-                        'points_multiplier' => 1.0,
+                        'ativo' => (bool) true,
+                        'points_multiplier' => (float) 1.0,
                     ]);
 
                     Log::info('Empresa criada com sucesso', ['empresa_id' => $empresa->id, 'user_id' => $user->id]);
@@ -551,8 +551,8 @@ class AuthController extends Controller
             'telefone' => $request->telefone,
             'cnpj' => $request->cnpj,
             'owner_id' => $user->id,
-            'ativo' => \DB::raw('true'),
-            'points_multiplier' => \DB::raw('1.0'),
+            'ativo' => (bool) true,
+            'points_multiplier' => (float) 1.0,
         ]);
     }
 

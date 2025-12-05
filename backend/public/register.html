@@ -436,10 +436,53 @@
                         fullResponse: JSON.stringify(data, null, 2)
                     });
 
-                    // Se tiver erro_details, mostrar no console
+                    // Se tiver erro_details, mostrar na tela de forma copiável
                     if (data.error_details) {
                         console.error('Detalhes do erro do servidor:', data.error_details);
-                        alert('ERRO DO BANCO:\n' + JSON.stringify(data.error_details, null, 2));
+                        
+                        // Criar div com erro copiável
+                        const errorDiv = document.createElement('div');
+                        errorDiv.style.cssText = `
+                            position: fixed;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            background: white;
+                            padding: 30px;
+                            border-radius: 10px;
+                            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                            max-width: 90%;
+                            max-height: 80vh;
+                            overflow: auto;
+                            z-index: 10000;
+                            font-family: monospace;
+                        `;
+                        errorDiv.innerHTML = `
+                            <h3 style="color: #ef4444; margin: 0 0 20px 0;">🔴 Erro do Banco de Dados</h3>
+                            <div style="background: #f3f4f6; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                                <pre style="margin: 0; white-space: pre-wrap; word-break: break-all; font-size: 12px;">${JSON.stringify(data.error_details, null, 2)}</pre>
+                            </div>
+                            <button onclick="this.parentElement.remove()" style="
+                                background: #667eea;
+                                color: white;
+                                border: none;
+                                padding: 10px 20px;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                font-size: 14px;
+                            ">Fechar</button>
+                            <button onclick="navigator.clipboard.writeText(JSON.stringify(${JSON.stringify(data.error_details)}, null, 2))" style="
+                                background: #10b981;
+                                color: white;
+                                border: none;
+                                padding: 10px 20px;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                font-size: 14px;
+                                margin-left: 10px;
+                            ">Copiar Erro</button>
+                        `;
+                        document.body.appendChild(errorDiv);
                     }
 
                     showMessage(errorMessage, 'error');
