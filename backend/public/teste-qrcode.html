@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste QR Code - i9Plus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .qr-container {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .qr-image {
+            max-width: 400px;
+            margin: 20px auto;
+            display: block;
+            border: 5px solid #667eea;
+            border-radius: 10px;
+        }
+
+        .code-display {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+            border: 2px dashed #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #2196F3;
+        }
+
+        .error {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+        }
+
+        .success {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-qrcode"></i> Teste QR Code - i9Plus</h1>
+
+        <div class="info">
+            <strong>ℹ️ Instruções:</strong><br>
+            1. Faça login primeiro (cliente ou empresa)<br>
+            2. Clique em "Carregar Meu QR Code"<br>
+            3. O QR Code será gerado automaticamente se ainda não existir
+        </div>
+
+        <div style="text-align: center;">
+            <button onclick="carregarQRCode()">
+                <i class="fas fa-qrcode"></i> Carregar Meu QR Code
+            </button>
+            <button onclick="logout()" style="background: #dc3545;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin;
+
+        async function carregarQRCode() {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = '<div class="loading"><div class="spinner"></div><p>Carregando QR Code...</p></div>';
+
+            try {
+                const token = localStorage.getItem('tem_de_tudo_token');
+                const user = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
+
+                if (!token) {
+                    resultado.innerHTML = '<div class="error">❌ Você precisa fazer login primeiro!</div>';
+                    setTimeout(() => {
+                        window.location.href = '/login.html';
+                    }, 2000);
+                    return;
+                }
+
+                // Determinar endpoint baseado no perfil
+                let endpoint = '/api/cliente/meu-qrcode';
+                if (user.perfil === 'empresa') {
+                    endpoint = '/api/empresa/meu-qrcode';
+                }
+
+                const response = await fetch(API_URL + endpoint, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultado.innerHTML = `
+                        <div class="success">
+                            ✅ QR Code carregado com sucesso!
+                        </div>
+                        <div class="qr-container">
+                            <h2>Seu QR Code</h2>
+                            <img src="${data.data.qr_image}" alt="QR Code" class="qr-image">
+                            <div class="code-display">
+                                <strong>Código:</strong><br>
+                                ${data.data.code}
+                            </div>
+                            ${user.perfil === 'cliente' ? `
+                                <p style="margin-top: 20px; color: #666;">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Mostre este QR Code para a empresa acumular pontos!
+                                </p>
+                            ` : `
+                                <p style="margin-top: 20px; color: #666;">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Clientes escanearão este QR Code para se cadastrar na sua empresa!
+                                </p>
+                            `}
+                        </div>
+                    `;
+                } else {
+                    resultado.innerHTML = `<div class="error">❌ Erro: ${data.message}</div>`;
+                }
+
+            } catch (error) {
+                console.error('Erro:', error);
+                resultado.innerHTML = `<div class="error">❌ Erro ao carregar QR Code: ${error.message}</div>`;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('tem_de_tudo_token');
+            localStorage.removeItem('tem_de_tudo_user');
+            window.location.href = '/login.html';
+        }
+
+        // Carregar automaticamente ao abrir a página
+        window.onload = function() {
+            const token = localStorage.getItem('tem_de_tudo_token');
+            if (token) {
+                carregarQRCode();
+            } else {
+                document.getElementById('resultado').innerHTML = 
+                    '<div class="info">Por favor, faça login para ver seu QR Code.</div>';
+            }
+        };
+    </script>
+</body>
+</html>
