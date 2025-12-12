@@ -18,12 +18,20 @@ class Empresa extends Model
         'descricao',
         'points_multiplier',
         'ativo',
-        'owner_id'
+        'owner_id',
+        'ramo',
+        'whatsapp',
+        'instagram',
+        'facebook',
+        'avaliacao_media',
+        'total_avaliacoes'
     ];
 
     protected $casts = [
         'ativo' => 'boolean',
-        'points_multiplier' => 'decimal:2'
+        'points_multiplier' => 'decimal:2',
+        'avaliacao_media' => 'decimal:2',
+        'total_avaliacoes' => 'integer'
     ];
 
     public function owner()
@@ -86,5 +94,73 @@ class Empresa extends Model
     public function discountLevels()
     {
         return $this->hasMany(DiscountLevel::class);
+    }
+
+    /**
+     * Relacionamento com inscrições de clientes
+     */
+    public function inscricoes()
+    {
+        return $this->hasMany(InscricaoEmpresa::class);
+    }
+
+    /**
+     * Relacionamento com bônus de adesão
+     */
+    public function bonusAdesao()
+    {
+        return $this->hasOne(BonusAdesao::class);
+    }
+
+    /**
+     * Relacionamento com cartões fidelidade
+     */
+    public function cartoesFidelidade()
+    {
+        return $this->hasMany(CartaoFidelidade::class);
+    }
+
+    /**
+     * Relacionamento com promoções
+     */
+    public function promocoes()
+    {
+        return $this->hasMany(Promocao::class);
+    }
+
+    /**
+     * Relacionamento com bônus aniversário
+     */
+    public function bonusAniversario()
+    {
+        return $this->hasOne(BonusAniversario::class);
+    }
+
+    /**
+     * Relacionamento com lembretes de ausência
+     */
+    public function lembretesAusencia()
+    {
+        return $this->hasMany(LembreteAusencia::class);
+    }
+
+    /**
+     * Relacionamento com avaliações
+     */
+    public function avaliacoes()
+    {
+        return $this->hasMany(Avaliacao::class);
+    }
+
+    /**
+     * Atualizar média de avaliação
+     */
+    public function atualizarAvaliacaoMedia()
+    {
+        $this->total_avaliacoes = $this->avaliacoes()->count();
+        $this->avaliacao_media = $this->total_avaliacoes > 0 
+            ? $this->avaliacoes()->avg('estrelas') 
+            : 0;
+        $this->save();
     }
 }

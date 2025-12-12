@@ -12,25 +12,20 @@ class QRCode extends Model
     protected $table = 'qr_codes';
 
     protected $fillable = [
-        'empresa_id',
-        'name',
         'code',
-        'location',
-        'active',
-        'active_offers',
-        'usage_count',
-        'last_used_at'
+        'type',
+        'empresa_id',
+        'user_id',
+        'qr_image',
+        'ativo'
     ];
 
     protected $casts = [
-        'active' => 'boolean',
-        'active_offers' => 'array',
-        'usage_count' => 'integer',
-        'last_used_at' => 'datetime'
+        'ativo' => 'boolean',
     ];
 
     /**
-     * Relacionamento com empresa
+     * Relacionamento com Empresa
      */
     public function empresa()
     {
@@ -38,16 +33,22 @@ class QRCode extends Model
     }
 
     /**
-     * Relacionamento com check-ins
+     * Relacionamento com User (Cliente)
      */
-    public function checkIns()
+    public function user()
     {
-        return $this->hasMany(CheckIn::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
-     * Scope para QR codes ativos
+     * Gerar código único para QR Code
      */
+    public static function gerarCodigoUnico($type, $id)
+    {
+        // Formato: TIPO-ID-TIMESTAMP-RANDOM
+        return strtoupper($type) . '-' . $id . '-' . time() . '-' . strtoupper(substr(md5(uniqid()), 0, 6));
+    }
+}
     public function scopeAtivos($query)
     {
         return $query->where('active', true);

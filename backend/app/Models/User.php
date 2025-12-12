@@ -25,6 +25,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'perfil',
         'telefone',
+        'data_nascimento',
         'status',
         'pontos',
         'pontos_pendentes',
@@ -58,6 +59,7 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'data_nascimento' => 'date',
             'pontos' => 'integer',
             'pontos_pendentes' => 'integer',
             'ultimo_login' => 'datetime',
@@ -140,6 +142,70 @@ class User extends Authenticatable implements JWTSubject
     public function isAdmin(): bool
     {
         return $this->perfil === 'admin';
+    }
+
+    /**
+     * Relacionamento com inscrições em empresas
+     */
+    public function inscricoes()
+    {
+        return $this->hasMany(InscricaoEmpresa::class);
+    }
+
+    /**
+     * Relacionamento com empresas inscritas (através de inscricoes)
+     */
+    public function empresasInscritas()
+    {
+        return $this->belongsToMany(Empresa::class, 'inscricoes_empresa')
+            ->withPivot('data_inscricao', 'ultima_visita', 'bonus_adesao_resgatado')
+            ->withTimestamps();
+    }
+
+    /**
+     * Relacionamento com QR Code do cliente
+     */
+    public function qrCode()
+    {
+        return $this->hasOne(QRCode::class);
+    }
+
+    /**
+     * Relacionamento com progressos de cartões fidelidade
+     */
+    public function cartoesFidelidadeProgresso()
+    {
+        return $this->hasMany(CartaoFidelidadeProgresso::class);
+    }
+
+    /**
+     * Relacionamento com avaliações feitas
+     */
+    public function avaliacoes()
+    {
+        return $this->hasMany(Avaliacao::class);
+    }
+
+    /**
+     * Relacionamento com notificações push recebidas
+     */
+    public function notificacoesPush()
+    {
+        return $this->hasMany(NotificacaoPush::class);
+    }
+
+    /**
+     * Verificar se hoje é aniversário
+     */
+    public function ehAniversarioHoje(): bool
+    {
+        if (!$this->data_nascimento) {
+            return false;
+        }
+        
+        $hoje = now();
+        return $this->data_nascimento->month == $hoje->month 
+            && $this->data_nascimento->day == $hoje->day;
     }
 
     /**
