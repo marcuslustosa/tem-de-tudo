@@ -421,7 +421,18 @@
                                 'endereco': 'Endereço'
                             }[field] || field;
                             const msgs = Array.isArray(messages) ? messages : [messages];
-                            errorList.push(`${fieldName}: ${msgs.join(', ')}`);
+                            
+                            // Traduzir mensagens do Laravel
+                            const translatedMsgs = msgs.map(msg => {
+                                if (msg.includes('has already been taken')) return 'já está cadastrado';
+                                if (msg.includes('required')) return 'é obrigatório';
+                                if (msg.includes('email')) return 'deve ser um email válido';
+                                if (msg.includes('confirmed')) return 'confirmação não confere';
+                                if (msg.includes('min')) return 'muito curto';
+                                return msg;
+                            });
+                            
+                            errorList.push(`${fieldName}: ${translatedMsgs.join(', ')}`);
                         });
                         errorMessage = errorList.join('\n');
                     } else if (response.status === 429) {
