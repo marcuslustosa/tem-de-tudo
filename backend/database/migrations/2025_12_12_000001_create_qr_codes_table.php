@@ -11,20 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('qr_codes', function (Blueprint $table) {
-            $table->id();
-            $table->string('code')->unique(); // Código único do QR
-            $table->enum('type', ['empresa', 'cliente']); // Tipo: empresa ou cliente
-            $table->foreignId('empresa_id')->nullable()->constrained('empresas')->onDelete('cascade'); // Se for QR de empresa
-            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade'); // Se for QR de cliente
-            $table->text('qr_image')->nullable(); // Base64 da imagem do QR Code
-            $table->boolean('ativo')->default(true);
-            $table->timestamps();
-            
-            // Garantir que apenas um campo (empresa_id OU user_id) esteja preenchido
-            $table->index(['type', 'empresa_id']);
-            $table->index(['type', 'user_id']);
-        });
+        if (!Schema::hasTable('qr_codes')) {
+            Schema::create('qr_codes', function (Blueprint $table) {
+                $table->id();
+                $table->string('code')->unique(); // Código único do QR
+                $table->enum('type', ['empresa', 'cliente']); // Tipo: empresa ou cliente
+                $table->foreignId('empresa_id')->nullable()->constrained('empresas')->onDelete('cascade'); // Se for QR de empresa
+                $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade'); // Se for QR de cliente
+                $table->text('qr_image')->nullable(); // Base64 da imagem do QR Code
+                $table->boolean('ativo')->default(true);
+                $table->timestamps();
+                
+                // Garantir que apenas um campo (empresa_id OU user_id) esteja preenchido
+                $table->index(['type', 'empresa_id']);
+                $table->index(['type', 'user_id']);
+            });
+        }
     }
 
     /**

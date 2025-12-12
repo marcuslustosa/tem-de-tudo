@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bonus_adesao', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
-            $table->string('titulo'); // Ex: "10% de desconto"
-            $table->text('descricao')->nullable();
-            $table->enum('tipo_desconto', ['porcentagem', 'valor_fixo']); // % ou R$
-            $table->decimal('valor_desconto', 10, 2); // 10 ou 5.00
-            $table->string('imagem')->nullable(); // Path da imagem
-            $table->boolean('ativo')->default(true);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('bonus_adesao')) {
+            Schema::create('bonus_adesao', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
+                $table->string('titulo'); // Ex: "10% de desconto"
+                $table->text('descricao')->nullable();
+                $table->enum('tipo_desconto', ['porcentagem', 'valor_fixo']); // % ou R$
+                $table->decimal('valor_desconto', 10, 2); // 10 ou 5.00
+                $table->string('imagem')->nullable(); // Path da imagem
+                $table->boolean('ativo')->default(true);
+                $table->timestamps();
+            });
+        }
     }
 
     /**

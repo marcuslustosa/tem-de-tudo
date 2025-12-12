@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->date('data_nascimento')->nullable()->after('email'); // Para bônus aniversário
-            $table->string('fcm_token')->nullable()->after('remember_token'); // Firebase Cloud Messaging token
+            if (!Schema::hasColumn('users', 'data_nascimento')) {
+                $table->date('data_nascimento')->nullable()->after('email'); // Para bônus aniversário
+            }
+            if (!Schema::hasColumn('users', 'fcm_token')) {
+                $table->string('fcm_token')->nullable()->after('remember_token'); // Firebase Cloud Messaging token
+            }
         });
     }
 

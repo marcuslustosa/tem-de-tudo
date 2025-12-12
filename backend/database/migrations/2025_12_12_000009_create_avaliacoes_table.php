@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('avaliacoes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Cliente
-            $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
-            $table->integer('estrelas'); // 1 a 5
-            $table->text('comentario')->nullable();
-            $table->timestamps();
-            
-            // Cliente pode avaliar cada empresa apenas 1x
-            $table->unique(['user_id', 'empresa_id']);
-        });
+        if (!Schema::hasTable('avaliacoes')) {
+            Schema::create('avaliacoes', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Cliente
+                $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
+                $table->integer('estrelas'); // 1 a 5
+                $table->text('comentario')->nullable();
+                $table->timestamps();
+                
+                // Cliente pode avaliar cada empresa apenas 1x
+                $table->unique(['user_id', 'empresa_id']);
+            });
+        }
     }
 
     /**

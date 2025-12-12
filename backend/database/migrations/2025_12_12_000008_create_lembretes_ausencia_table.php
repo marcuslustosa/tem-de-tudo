@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lembretes_ausencia', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
-            $table->integer('dias_ausencia'); // 45, 30 ou 20
-            $table->string('titulo'); // Ex: "Sentimos sua falta!"
-            $table->text('mensagem'); // Ex: "Venha aproveitar nossas promoções..."
-            $table->boolean('ativo')->default(true);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('lembretes_ausencia')) {
+            Schema::create('lembretes_ausencia', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
+                $table->integer('dias_ausencia'); // 45, 30 ou 20
+                $table->string('titulo'); // Ex: "Sentimos sua falta!"
+                $table->text('mensagem'); // Ex: "Venha aproveitar nossas promoções..."
+                $table->boolean('ativo')->default(true);
+                $table->timestamps();
+            });
+        }
     }
 
     /**

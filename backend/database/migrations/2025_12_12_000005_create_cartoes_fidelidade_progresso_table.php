@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cartoes_fidelidade_progresso', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Cliente
-            $table->foreignId('cartao_fidelidade_id')->constrained('cartoes_fidelidade')->onDelete('cascade');
-            $table->integer('pontos_atuais')->default(0); // Ex: 3
-            $table->integer('vezes_resgatado')->default(0); // Quantas vezes completou o cartão
-            $table->timestamp('ultimo_ponto')->nullable(); // Última vez que ganhou ponto
-            $table->timestamps();
-            
-            // Cliente tem 1 progresso por cartão
-            $table->unique(['user_id', 'cartao_fidelidade_id']);
-        });
+        if (!Schema::hasTable('cartoes_fidelidade_progresso')) {
+            Schema::create('cartoes_fidelidade_progresso', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Cliente
+                $table->foreignId('cartao_fidelidade_id')->constrained('cartoes_fidelidade')->onDelete('cascade');
+                $table->integer('pontos_atuais')->default(0); // Ex: 3
+                $table->integer('vezes_resgatado')->default(0); // Quantas vezes completou o cartão
+                $table->timestamp('ultimo_ponto')->nullable(); // Última vez que ganhou ponto
+                $table->timestamps();
+                
+                // Cliente tem 1 progresso por cartão
+                $table->unique(['user_id', 'cartao_fidelidade_id']);
+            });
+        }
     }
 
     /**

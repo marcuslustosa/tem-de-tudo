@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cartoes_fidelidade', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
-            $table->string('titulo'); // Ex: "GANHE 1 PONTO A CADA VISITA"
-            $table->text('descricao'); // Ex: "Com 15 pontos: Ganhe 1 Porção..."
-            $table->integer('meta_pontos'); // Ex: 15
-            $table->string('recompensa'); // Ex: "1 Porção de Fritas ou 1 Lanche"
-            $table->boolean('ativo')->default(true);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('cartoes_fidelidade')) {
+            Schema::create('cartoes_fidelidade', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
+                $table->string('titulo'); // Ex: "GANHE 1 PONTO A CADA VISITA"
+                $table->text('descricao'); // Ex: "Com 15 pontos: Ganhe 1 Porção..."
+                $table->integer('meta_pontos'); // Ex: 15
+                $table->string('recompensa'); // Ex: "1 Porção de Fritas ou 1 Lanche"
+                $table->boolean('ativo')->default(true);
+                $table->timestamps();
+            });
+        }
     }
 
     /**

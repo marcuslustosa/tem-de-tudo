@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('promocoes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
-            $table->string('titulo', 100); // Limite de caracteres
-            $table->text('descricao'); // Limite será validado no backend (ex: 500 chars)
-            $table->string('imagem'); // OBRIGATÓRIO
-            $table->boolean('ativo')->default(true);
-            $table->timestamp('data_envio')->nullable(); // Quando foi enviada a notificação
-            $table->integer('total_envios')->default(0); // Quantos clientes receberam
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('promocoes')) {
+            Schema::create('promocoes', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
+                $table->string('titulo', 100); // Limite de caracteres
+                $table->text('descricao'); // Limite será validado no backend (ex: 500 chars)
+                $table->string('imagem'); // OBRIGATÓRIO
+                $table->boolean('ativo')->default(true);
+                $table->timestamp('data_envio')->nullable(); // Quando foi enviada a notificação
+                $table->integer('total_envios')->default(0); // Quantos clientes receberam
+                $table->timestamps();
+            });
+        }
     }
 
     /**

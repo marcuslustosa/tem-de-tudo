@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bonus_aniversario', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
-            $table->string('titulo'); // Ex: "Parabéns! Você ganhou 10% de desconto"
-            $table->text('descricao'); // Ex: "Comemore seu aniversário conosco..."
-            $table->string('presente'); // Ex: "10% de desconto"
-            $table->string('imagem')->nullable(); // Imagem do card "Feliz Aniversário"
-            $table->boolean('ativo')->default(true);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('bonus_aniversario')) {
+            Schema::create('bonus_aniversario', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
+                $table->string('titulo'); // Ex: "Parabéns! Você ganhou 10% de desconto"
+                $table->text('descricao'); // Ex: "Comemore seu aniversário conosco..."
+                $table->string('presente'); // Ex: "10% de desconto"
+                $table->string('imagem')->nullable(); // Imagem do card "Feliz Aniversário"
+                $table->boolean('ativo')->default(true);
+                $table->timestamps();
+            });
+        }
     }
 
     /**
