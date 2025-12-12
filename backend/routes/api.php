@@ -236,3 +236,25 @@ Route::prefix('discounts')->group(function () {
             ->middleware(['admin.permission:manage_system']);
     });
 });
+
+// ============================================
+// ROTAS DO SISTEMA i9Plus (QR Code + Fidelidade)
+// ============================================
+
+// Rotas do Cliente (autenticado)
+Route::middleware('auth:sanctum')->prefix('cliente')->group(function () {
+    // QR Code do cliente
+    Route::get('/meu-qrcode', [QRCodeController::class, 'meuQRCode']);
+    
+    // Escanear QR Code da empresa (inscrição)
+    Route::post('/escanear-empresa', [QRCodeController::class, 'escanearEmpresa']);
+});
+
+// Rotas da Empresa (autenticada)
+Route::middleware('auth:sanctum')->prefix('empresa')->group(function () {
+    // QR Code da empresa
+    Route::get('/meu-qrcode', [QRCodeController::class, 'qrCodeEmpresa']);
+    
+    // Escanear QR Code do cliente (adicionar ponto)
+    Route::post('/escanear-cliente', [QRCodeController::class, 'escanearCliente']);
+});
