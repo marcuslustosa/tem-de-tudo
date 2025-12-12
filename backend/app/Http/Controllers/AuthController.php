@@ -148,6 +148,34 @@ class AuthController extends Controller
             $token = $user->createToken('auth_token')->plainTextToken;
             Log::info('Token Sanctum gerado', ['user_id' => $user->id]);
 
+            // Gerar QR Code para cliente
+            if ($perfil === 'cliente') {
+                try {
+                    $qrCodeService = app(\App\Services\QRCodeService::class);
+                    $qrCodeService->gerarQRCodeCliente($user);
+                    Log::info('QR Code do cliente gerado', ['user_id' => $user->id]);
+                } catch (\Exception $e) {
+                    Log::warning('Erro ao gerar QR Code do cliente', [
+                        'user_id' => $user->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
+            // Gerar QR Code para empresa (se aplicável)
+            if ($perfil === 'empresa' && isset($empresa)) {
+                try {
+                    $qrCodeService = app(\App\Services\QRCodeService::class);
+                    $qrCodeService->gerarQRCodeEmpresa($empresa);
+                    Log::info('QR Code da empresa gerado', ['empresa_id' => $empresa->id]);
+                } catch (\Exception $e) {
+                    Log::warning('Erro ao gerar QR Code da empresa', [
+                        'empresa_id' => $empresa->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
+            }
+
             DB::commit();
             Log::info('Transação confirmada com sucesso');
 
