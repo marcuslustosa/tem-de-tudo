@@ -10,6 +10,7 @@ use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\BonusAdesaoController;
 use App\Http\Controllers\CartaoFidelidadeController;
+use App\Http\Controllers\PromocaoController;
 
 
 // Debug route (remover em produção)
@@ -259,6 +260,9 @@ Route::middleware('auth:sanctum')->prefix('cliente')->group(function () {
     // Cartão Fidelidade (Cliente)
     Route::get('/meu-progresso', [CartaoFidelidadeController::class, 'meuProgresso']);
     Route::get('/progresso-empresa/{empresa_id}', [CartaoFidelidadeController::class, 'progressoPorEmpresa']);
+    
+    // Promoções (Cliente)
+    Route::get('/promocoes/{empresa_id}', [PromocaoController::class, 'listarPorEmpresa']);
 });
 
 // Rotas da Empresa (autenticada)
@@ -283,4 +287,12 @@ Route::middleware('auth:sanctum')->prefix('empresa')->group(function () {
     Route::put('/cartoes-fidelidade/{id}', [CartaoFidelidadeController::class, 'update']);
     Route::delete('/cartoes-fidelidade/{id}', [CartaoFidelidadeController::class, 'destroy']);
     Route::post('/adicionar-ponto', [CartaoFidelidadeController::class, 'adicionarPonto']);
+    
+    // Promoções (CRUD - Empresa)
+    Route::get('/promocoes', [PromocaoController::class, 'index']);
+    Route::post('/promocoes', [PromocaoController::class, 'store']);
+    Route::get('/promocoes/{id}', [PromocaoController::class, 'show']);
+    Route::put('/promocoes/{id}', [PromocaoController::class, 'update']);
+    Route::delete('/promocoes/{id}', [PromocaoController::class, 'destroy']);
+    Route::post('/promocoes/{id}/enviar-push', [PromocaoController::class, 'enviarPush']);
 });
