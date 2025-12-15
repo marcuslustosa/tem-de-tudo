@@ -6,1031 +6,365 @@
     <title>Empresa - Tem de Tudo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; padding-bottom: 70px; }
+        
+        .company-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding-bottom: 100px;
-        }
-
-        .header {
-            background: white;
+            color: white;
             padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            padding-top: 40px;
+            position: relative;
         }
-
-        .header-content {
-            max-width: 800px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .btn-back {
-            background: none;
+        
+        .back-button {
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            background: rgba(255,255,255,0.3);
             border: none;
-            font-size: 24px;
-            color: #667eea;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
         }
-
-        .header-title {
-            flex: 1;
-            font-size: 20px;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        .empresa-header {
-            background: white;
+        
+        .company-logo-lg {
+            width: 80px;
+            height: 80px;
             border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .empresa-logo {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 48px;
+            background: white;
             margin: 0 auto 15px;
-        }
-
-        .empresa-name {
-            font-size: 28px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .empresa-ramo {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-
-        .empresa-rating {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
-            font-size: 18px;
-        }
-
-        .stars {
-            color: #ffd700;
-        }
-
-        .rating-count {
-            color: #999;
-        }
-
-        .empresa-contatos {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        .contatos-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        .contato-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            background: #f8f9fa;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .contato-item:hover {
-            background: #e9ecef;
-        }
-
-        .contato-icon {
-            font-size: 20px;
-            width: 40px;
-            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-        }
-
-        .whatsapp { color: #25D366; background: #dcf8c6; }
-        .instagram { color: #E4405F; background: #ffe6ea; }
-        .facebook { color: #1877F2; background: #e7f3ff; }
-
-        .section {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title i {
+            font-size: 35px;
             color: #667eea;
         }
-
-        .bonus-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-        }
-
-        .bonus-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .bonus-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .bonus-valor {
+        
+        .company-title {
+            text-align: center;
             font-size: 24px;
             font-weight: bold;
-        }
-
-        .btn-resgatar {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .btn-resgatar:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .cartao-fidelidade {
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .cartao-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .cartao-title {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .cartao-pontos {
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.3s;
-        }
-
-        .cartao-descricao {
-            color: #666;
-            font-size: 14px;
             margin-bottom: 5px;
         }
-
-        .cartao-recompensa {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #333;
+        
+        .company-category {
+            text-align: center;
+            opacity: 0.9;
+            margin-bottom: 15px;
         }
-
-        .promocao-card {
-            border: 2px solid #e0e0e0;
+        
+        .company-rating {
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .section {
+            padding: 20px;
+        }
+        
+        .section-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .promo-card {
+            background: white;
             border-radius: 12px;
             overflow: hidden;
             margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
-        .promocao-imagem {
+        
+        .promo-image {
             width: 100%;
             height: 150px;
             object-fit: cover;
-            background: #f0f0f0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-
-        .promocao-content {
+        
+        .promo-content {
             padding: 15px;
         }
-
-        .promocao-title {
+        
+        .promo-title {
             font-weight: 600;
-            color: #333;
+            font-size: 16px;
             margin-bottom: 5px;
         }
-
-        .promocao-descricao {
+        
+        .promo-desc {
             color: #666;
             font-size: 14px;
-        }
-
-        .avaliacoes-summary {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .avaliacao-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px;
             margin-bottom: 10px;
         }
-
-        .avaliacao-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .avaliacao-user {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .avaliacao-comentario {
-            color: #666;
-            line-height: 1.5;
-        }
-
-        .btn-avaliar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .btn-deletar {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+        
+        .promo-valid {
             font-size: 12px;
-            cursor: pointer;
+            color: #999;
         }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
+        
+        .card-fidelidade {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .card-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .card-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            height: 25px;
+            background: #f0f0f0;
+            border-radius: 25px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-        }
-
-        .modal-title {
-            font-size: 24px;
+            color: white;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 20px;
+            font-size: 12px;
         }
-
-        .rating-input {
+        
+        .info-item {
             display: flex;
+            align-items: center;
             gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-item i {
+            color: #667eea;
+            width: 20px;
+        }
+        
+        .review-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .review-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
-            font-size: 32px;
+            font-weight: 600;
         }
-
-        .rating-input i {
-            cursor: pointer;
-            color: #e0e0e0;
-            transition: color 0.3s;
+        
+        .review-name {
+            flex: 1;
+            font-weight: 600;
         }
-
-        .rating-input i.active {
+        
+        .review-stars {
             color: #ffd700;
         }
-
-        textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+        
+        .review-text {
             font-size: 14px;
-            font-family: inherit;
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .btn-cancel {
-            flex: 1;
-            background: #e0e0e0;
-            color: #333;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-submit {
-            flex: 1;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .empty-message {
-            text-align: center;
-            color: #999;
-            padding: 30px;
-            font-style: italic;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 15px;
-            }
+            color: #666;
         }
     </style>
-    <link rel="stylesheet" href="/css/temdetudo-theme.css">
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="header-content">
-            <button class="btn-back" onclick="window.history.back()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <div class="header-title" id="headerTitle">Carregando...</div>
+    <div class="company-header">
+        <button class="back-button" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="company-logo-lg">
+            <i class="fas fa-store"></i>
+        </div>
+        
+        <div class="company-title" id="empresaNome">Carregando...</div>
+        <div class="company-category" id="empresaCategoria"></div>
+        <div class="company-rating">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <span id="empresaRating">5.0</span>
         </div>
     </div>
 
-    <!-- Loading -->
-    <div id="loadingState" class="loading">
-        <i class="fas fa-spinner fa-spin fa-3x"></i>
-        <p>Carregando informações...</p>
+    <div class="section">
+        <div class="section-header">
+            <i class="fas fa-tag"></i>
+            Promoções Ativas
+        </div>
+        <div id="promocoes"></div>
     </div>
 
-    <!-- Container -->
-    <div id="mainContent" class="container" style="display: none;">
-        <!-- Empresa Header -->
-        <div class="empresa-header">
-            <div class="empresa-logo" id="empresaLogo"></div>
-            <div class="empresa-name" id="empresaName"></div>
-            <div class="empresa-ramo" id="empresaRamo"></div>
-            <div class="empresa-rating">
-                <div class="stars" id="empresaStars"></div>
-                <span class="rating-count" id="empresaRatingCount"></span>
-            </div>
+    <div class="section">
+        <div class="section-header">
+            <i class="fas fa-credit-card"></i>
+            Cartão Fidelidade
         </div>
+        <div id="cartoes"></div>
+    </div>
 
-        <!-- Contatos -->
-        <div class="empresa-contatos" id="empresaContatos" style="display: none;">
-            <div class="contatos-title">
-                <i class="fas fa-address-book"></i> Contatos
-            </div>
-            <div id="contatosList"></div>
+    <div class="section">
+        <div class="section-header">
+            <i class="fas fa-info-circle"></i>
+            Informações
         </div>
-
-        <!-- Bônus de Adesão -->
-        <div class="section" id="bonusSection" style="display: none;">
-            <div class="section-title">
-                <i class="fas fa-gift"></i> Bônus de Boas-Vindas
+        <div class="card-fidelidade">
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span id="empresaEndereco">-</span>
             </div>
-            <div id="bonusContent"></div>
-        </div>
-
-        <!-- Cartões Fidelidade -->
-        <div class="section" id="cartoesSection" style="display: none;">
-            <div class="section-title">
-                <i class="fas fa-credit-card"></i> Cartões Fidelidade
+            <div class="info-item">
+                <i class="fab fa-whatsapp"></i>
+                <a href="#" id="empresaWhatsapp" style="color:#666;text-decoration:none;">-</a>
             </div>
-            <div id="cartoesContent"></div>
-        </div>
-
-        <!-- Promoções -->
-        <div class="section" id="promocoesSection" style="display: none;">
-            <div class="section-title">
-                <i class="fas fa-tags"></i> Promoções Ativas
+            <div class="info-item">
+                <i class="fab fa-instagram"></i>
+                <a href="#" id="empresaInstagram" style="color:#666;text-decoration:none;">-</a>
             </div>
-            <div id="promocoesContent"></div>
-        </div>
-
-        <!-- Avaliações -->
-        <div class="section">
-            <div class="section-title">
-                <i class="fas fa-star"></i> Avaliações
+            <div class="info-item">
+                <i class="fab fa-facebook"></i>
+                <a href="#" id="empresaFacebook" style="color:#666;text-decoration:none;">-</a>
             </div>
-            <div class="avaliacoes-summary" id="avaliacoesSummary"></div>
-            <button class="btn-avaliar" id="btnAvaliar" onclick="abrirModalAvaliacao()">
-                <i class="fas fa-star"></i> Deixar Avaliação
-            </button>
-            <div id="avaliacoesContent"></div>
         </div>
     </div>
 
-    <!-- Modal Avaliação -->
-    <div class="modal" id="modalAvaliacao">
-        <div class="modal-content">
-            <div class="modal-title">Avaliar Empresa</div>
-            <div class="rating-input" id="ratingInput">
-                <i class="far fa-star" data-value="1"></i>
-                <i class="far fa-star" data-value="2"></i>
-                <i class="far fa-star" data-value="3"></i>
-                <i class="far fa-star" data-value="4"></i>
-                <i class="far fa-star" data-value="5"></i>
-            </div>
-            <textarea id="comentario" placeholder="Deixe seu comentário (opcional)"></textarea>
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="fecharModalAvaliacao()">Cancelar</button>
-                <button class="btn-submit" onclick="enviarAvaliacao()">Enviar</button>
-            </div>
+    <div class="section">
+        <div class="section-header">
+            <i class="fas fa-comments"></i>
+            Avaliações
         </div>
+        <div id="avaliacoes"></div>
     </div>
 
     <script>
-        const API_BASE = window.location.origin;
-        const urlParams = new URLSearchParams(window.location.search);
-        const empresaId = urlParams.get('id');
-        let estrelasSelecionadas = 0;
-        let minhaAvaliacaoExistente = null;
+        const empresaId = new URLSearchParams(window.location.search).get('id');
+        const token = localStorage.getItem('token');
 
-        document.addEventListener('DOMContentLoaded', () => {
+        async function carregarEmpresa() {
             if (!empresaId) {
                 alert('Empresa não encontrada');
                 window.history.back();
                 return;
             }
-            
-            carregarEmpresa();
-            configurarRatingInput();
-        });
 
-        async function carregarEmpresa() {
-            const token = localStorage.getItem('token');
-            
             try {
-                // Carregar detalhes da inscrição
-                const response = await fetch(`${API_BASE}/api/cliente/inscricao/${empresaId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
+                const res = await fetch(`/api/empresas/${empresaId}`);
+                const data = await res.json();
+                
+                if (data.success) {
+                    const empresa = data.data;
+                    document.getElementById('empresaNome').textContent = empresa.nome;
+                    document.getElementById('empresaCategoria').textContent = empresa.categoria || 'Estabelecimento';
+                    document.getElementById('empresaEndereco').textContent = empresa.endereco || 'Não informado';
+                    
+                    if (empresa.telefone) {
+                        document.getElementById('empresaWhatsapp').textContent = empresa.telefone;
+                        document.getElementById('empresaWhatsapp').href = `https://wa.me/${empresa.telefone.replace(/\D/g, '')}`;
                     }
-                });
 
-                if (!response.ok) throw new Error('Erro ao carregar empresa');
-
-                const data = await response.json();
-                renderizarEmpresa(data);
-                
-                // Carregar bônus disponível
-                await carregarBonus();
-                
-                // Carregar promoções
-                await carregarPromocoes();
-                
-                // Carregar avaliações
-                await carregarAvaliacoes();
-                
-                document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
+                    verificarBonusAdesao();
+                }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao carregar empresa');
-                window.history.back();
             }
         }
 
-        function renderizarEmpresa(data) {
-            const empresa = data.empresa;
-            const inscricao = data.inscricao;
-            
-            // Header
-            document.getElementById('headerTitle').textContent = empresa.nome;
-            document.getElementById('empresaLogo').innerHTML = getIconeRamo(empresa.ramo);
-            document.getElementById('empresaName').textContent = empresa.nome;
-            document.getElementById('empresaRamo').innerHTML = `
-                <i class="fas ${getIconClassRamo(empresa.ramo)}"></i> ${empresa.ramo || 'Não informado'}
-            `;
-            document.getElementById('empresaStars').innerHTML = renderStars(empresa.avaliacao_media || 0);
-            document.getElementById('empresaRatingCount').textContent = `(${empresa.total_avaliacoes || 0})`;
-            
-            // Contatos
-            let hasContatos = false;
-            let contatosHTML = '';
-            
-            if (empresa.whatsapp) {
-                hasContatos = true;
-                contatosHTML += `
-                    <a href="https://wa.me/55${empresa.whatsapp}" target="_blank" style="text-decoration: none; color: inherit;">
-                        <div class="contato-item">
-                            <div class="contato-icon whatsapp"><i class="fab fa-whatsapp"></i></div>
-                            <div>${empresa.whatsapp}</div>
-                        </div>
-                    </a>
-                `;
+        async function verificarBonusAdesao() {
+            if (!token) return;
+
+            try {
+                const res = await fetch(`/api/cliente/bonus-adesao/${empresaId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                if (data.temBonus) {
+                    mostrarPopupBonus(data.bonus);
+                }
+            } catch (error) {
+                console.error('Erro ao verificar bônus:', error);
             }
-            
-            if (empresa.instagram) {
-                hasContatos = true;
-                contatosHTML += `
-                    <a href="https://instagram.com/${empresa.instagram}" target="_blank" style="text-decoration: none; color: inherit;">
-                        <div class="contato-item">
-                            <div class="contato-icon instagram"><i class="fab fa-instagram"></i></div>
-                            <div>@${empresa.instagram}</div>
-                        </div>
-                    </a>
-                `;
-            }
-            
-            if (empresa.facebook) {
-                hasContatos = true;
-                contatosHTML += `
-                    <a href="${empresa.facebook}" target="_blank" style="text-decoration: none; color: inherit;">
-                        <div class="contato-item">
-                            <div class="contato-icon facebook"><i class="fab fa-facebook"></i></div>
-                            <div>Facebook</div>
-                        </div>
-                    </a>
-                `;
-            }
-            
-            if (hasContatos) {
-                document.getElementById('empresaContatos').style.display = 'block';
-                document.getElementById('contatosList').innerHTML = contatosHTML;
-            }
-            
-            // Cartões Fidelidade
-            if (inscricao.progresso_cartoes && inscricao.progresso_cartoes.length > 0) {
-                document.getElementById('cartoesSection').style.display = 'block';
-                document.getElementById('cartoesContent').innerHTML = inscricao.progresso_cartoes.map(prog => `
-                    <div class="cartao-fidelidade">
-                        <div class="cartao-header">
-                            <div class="cartao-title">${prog.cartao.titulo}</div>
-                            <div class="cartao-pontos">${prog.pontos_atuais}/${prog.cartao.meta_pontos}</div>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${(prog.pontos_atuais / prog.cartao.meta_pontos * 100).toFixed(0)}%"></div>
-                        </div>
-                        <div class="cartao-descricao">${prog.cartao.descricao}</div>
-                        <div class="cartao-recompensa">
-                            <i class="fas fa-trophy"></i> Recompensa: ${prog.cartao.recompensa}
-                        </div>
-                        ${prog.vezes_resgatado > 0 ? `<div style="margin-top: 10px; color: #667eea; font-weight: 600;">
-                            <i class="fas fa-check-circle"></i> Resgatado ${prog.vezes_resgatado}x
-                        </div>` : ''}
+        }
+
+        function mostrarPopupBonus(bonus) {
+            const popup = document.createElement('div');
+            popup.innerHTML = `
+                <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;">
+                    <div style="background:white;border-radius:20px;padding:30px;text-align:center;max-width:350px;">
+                        <div style="font-size:60px;margin-bottom:15px;">🎉</div>
+                        <h2 style="color:#333;margin-bottom:10px;">Parabéns!</h2>
+                        <p style="color:#666;margin-bottom:20px;">Você ganhou ${bonus.descricao}!</p>
+                        ${bonus.imagem ? `<img src="${bonus.imagem}" style="width:100%;border-radius:12px;margin-bottom:20px;">` : ''}
+                        <button onclick="resgatarBonus(${bonus.id}, this.parentElement.parentElement)" style="width:100%;padding:15px;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;border:none;border-radius:12px;font-weight:600;cursor:pointer;">
+                            Resgatar Bônus
+                        </button>
                     </div>
-                `).join('');
-            }
+                </div>
+            `;
+            document.body.appendChild(popup);
         }
 
-        async function carregarBonus() {
-            const token = localStorage.getItem('token');
-            
+        async function resgatarBonus(bonusId, popup) {
             try {
-                const response = await fetch(`${API_BASE}/api/cliente/bonus-disponivel/${empresaId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (!response.ok) return;
-
-                const data = await response.json();
-                
-                if (data.disponivel && data.bonus) {
-                    document.getElementById('bonusSection').style.display = 'block';
-                    const bonus = data.bonus;
-                    const valorTexto = bonus.tipo_desconto === 'porcentagem' 
-                        ? `${bonus.valor_desconto}% OFF`
-                        : `R$ ${bonus.valor_desconto} OFF`;
-                    
-                    document.getElementById('bonusContent').innerHTML = `
-                        <div class="bonus-card">
-                            ${bonus.imagem ? `<img src="${bonus.imagem}" style="width: 100%; border-radius: 8px; margin-bottom: 10px;" />` : ''}
-                            <div class="bonus-header">
-                                <div class="bonus-title">${bonus.titulo}</div>
-                                <div class="bonus-valor">${valorTexto}</div>
-                            </div>
-                            <div>${bonus.descricao || ''}</div>
-                            <button class="btn-resgatar" onclick="resgatarBonus()">
-                                <i class="fas fa-gift"></i> Resgatar Bônus
-                            </button>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('Erro ao carregar bônus:', error);
-            }
-        }
-
-        async function carregarPromocoes() {
-            const token = localStorage.getItem('token');
-            
-            try {
-                const response = await fetch(`${API_BASE}/api/cliente/promocoes/${empresaId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (!response.ok) return;
-
-                const data = await response.json();
-                
-                if (data.promocoes && data.promocoes.length > 0) {
-                    document.getElementById('promocoesSection').style.display = 'block';
-                    document.getElementById('promocoesContent').innerHTML = data.promocoes.map(promo => `
-                        <div class="promocao-card">
-                            ${promo.imagem ? `<img src="${promo.imagem}" class="promocao-imagem" />` : ''}
-                            <div class="promocao-content">
-                                <div class="promocao-title">${promo.titulo}</div>
-                                <div class="promocao-descricao">${promo.descricao || ''}</div>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-            } catch (error) {
-                console.error('Erro ao carregar promoções:', error);
-            }
-        }
-
-        async function carregarAvaliacoes() {
-            const token = localStorage.getItem('token');
-            
-            try {
-                // Verificar se já avaliei
-                const minhaResponse = await fetch(`${API_BASE}/api/cliente/minha-avaliacao/${empresaId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (minhaResponse.ok) {
-                    const minhaData = await minhaResponse.json();
-                    if (minhaData.avaliacao) {
-                        minhaAvaliacaoExistente = minhaData.avaliacao;
-                        document.getElementById('btnAvaliar').innerHTML = '<i class="fas fa-edit"></i> Editar Minha Avaliação';
-                    }
-                }
-                
-                // Listar todas as avaliações
-                const response = await fetch(`${API_BASE}/api/cliente/avaliacoes/empresa/${empresaId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (!response.ok) return;
-
-                const data = await response.json();
-                
-                // Summary
-                document.getElementById('avaliacoesSummary').innerHTML = `
-                    <div style="font-size: 24px; font-weight: bold; color: #333;">${data.estatisticas.media_estrelas.toFixed(1)}</div>
-                    <div class="stars" style="font-size: 20px;">${renderStars(data.estatisticas.media_estrelas)}</div>
-                    <div style="color: #666; margin-top: 5px;">${data.estatisticas.total_avaliacoes} avaliações</div>
-                `;
-                
-                // Lista
-                if (data.avaliacoes && data.avaliacoes.length > 0) {
-                    document.getElementById('avaliacoesContent').innerHTML = data.avaliacoes.map(aval => `
-                        <div class="avaliacao-card">
-                            <div class="avaliacao-header">
-                                <div>
-                                    <div class="avaliacao-user">${aval.user?.name || 'Anônimo'}</div>
-                                    <div class="stars">${renderStars(aval.estrelas)}</div>
-                                </div>
-                                ${aval.user_id == localStorage.getItem('user_id') ? `
-                                    <button class="btn-deletar" onclick="deletarAvaliacao()">
-                                        <i class="fas fa-trash"></i> Excluir
-                                    </button>
-                                ` : ''}
-                            </div>
-                            ${aval.comentario ? `<div class="avaliacao-comentario">${aval.comentario}</div>` : ''}
-                        </div>
-                    `).join('');
-                } else {
-                    document.getElementById('avaliacoesContent').innerHTML = '<div class="empty-message">Nenhuma avaliação ainda. Seja o primeiro!</div>';
-                }
-            } catch (error) {
-                console.error('Erro ao carregar avaliações:', error);
-            }
-        }
-
-        async function resgatarBonus() {
-            const token = localStorage.getItem('token');
-            
-            if (!confirm('Deseja resgatar este bônus? Esta ação não pode ser desfeita.')) return;
-            
-            try {
-                const response = await fetch(`${API_BASE}/api/cliente/resgatar-bonus/${empresaId}`, {
+                const res = await fetch(`/api/cliente/resgatar-bonus/${bonusId}`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
+                        'Content-Type': 'application/json'
                     }
                 });
-
-                const data = await response.json();
                 
-                if (response.ok) {
-                    alert(data.message);
-                    document.getElementById('bonusSection').style.display = 'none';
-                } else {
-                    alert(data.message || 'Erro ao resgatar bônus');
+                if (res.ok) {
+                    popup.remove();
+                    alert('Bônus resgatado! Mostre esta tela para o estabelecimento.');
                 }
             } catch (error) {
-                console.error('Erro:', error);
                 alert('Erro ao resgatar bônus');
             }
         }
 
-        function configurarRatingInput() {
-            const stars = document.querySelectorAll('#ratingInput i');
-            
-            stars.forEach(star => {
-                star.addEventListener('click', () => {
-                    estrelasSelecionadas = parseInt(star.dataset.value);
-                    atualizarStars();
-                });
-                
-                star.addEventListener('mouseenter', () => {
-                    const value = parseInt(star.dataset.value);
-                    stars.forEach((s, idx) => {
-                        if (idx < value) {
-                            s.classList.remove('far');
-                            s.classList.add('fas', 'active');
-                        } else {
-                            s.classList.remove('fas', 'active');
-                            s.classList.add('far');
-                        }
-                    });
-                });
-            });
-            
-            document.getElementById('ratingInput').addEventListener('mouseleave', () => {
-                atualizarStars();
-            });
-        }
-
-        function atualizarStars() {
-            const stars = document.querySelectorAll('#ratingInput i');
-            stars.forEach((star, idx) => {
-                if (idx < estrelasSelecionadas) {
-                    star.classList.remove('far');
-                    star.classList.add('fas', 'active');
-                } else {
-                    star.classList.remove('fas', 'active');
-                    star.classList.add('far');
-                }
-            });
-        }
-
-        function abrirModalAvaliacao() {
-            if (minhaAvaliacaoExistente) {
-                estrelasSelecionadas = minhaAvaliacaoExistente.estrelas;
-                document.getElementById('comentario').value = minhaAvaliacaoExistente.comentario || '';
-                atualizarStars();
-            } else {
-                estrelasSelecionadas = 0;
-                document.getElementById('comentario').value = '';
-            }
-            
-            document.getElementById('modalAvaliacao').classList.add('active');
-        }
-
-        function fecharModalAvaliacao() {
-            document.getElementById('modalAvaliacao').classList.remove('active');
-        }
-
-        async function enviarAvaliacao() {
-            if (estrelasSelecionadas === 0) {
-                alert('Por favor, selecione uma avaliação de 1 a 5 estrelas');
-                return;
-            }
-            
-            const token = localStorage.getItem('token');
-            const comentario = document.getElementById('comentario').value;
-            
-            try {
-                const response = await fetch(`${API_BASE}/api/cliente/avaliacoes`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        empresa_id: empresaId,
-                        estrelas: estrelasSelecionadas,
-                        comentario: comentario
-                    })
-                });
-
-                const data = await response.json();
-                
-                if (response.ok) {
-                    alert(data.message);
-                    fecharModalAvaliacao();
-                    await carregarAvaliacoes();
-                } else {
-                    alert(data.message || 'Erro ao enviar avaliação');
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao enviar avaliação');
-            }
-        }
-
-        async function deletarAvaliacao() {
-            if (!confirm('Deseja realmente excluir sua avaliação?')) return;
-            
-            const token = localStorage.getItem('token');
-            
-            try {
-                const response = await fetch(`${API_BASE}/api/cliente/avaliacoes/${empresaId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const data = await response.json();
-                
-                if (response.ok) {
-                    alert(data.message);
-                    minhaAvaliacaoExistente = null;
-                    await carregarAvaliacoes();
-                } else {
-                    alert(data.message || 'Erro ao excluir avaliação');
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao excluir avaliação');
-            }
-        }
-
-        function renderStars(rating) {
-            const fullStars = Math.floor(rating);
-            const halfStar = rating % 1 >= 0.5;
-            let stars = '';
-            
-            for (let i = 0; i < fullStars; i++) {
-                stars += '<i class="fas fa-star"></i>';
-            }
-            
-            if (halfStar) {
-                stars += '<i class="fas fa-star-half-alt"></i>';
-            }
-            
-            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-            for (let i = 0; i < emptyStars; i++) {
-                stars += '<i class="far fa-star"></i>';
-            }
-            
-            return stars;
-        }
-
-        function getIconeRamo(ramo) {
-            const icones = {
-                'Restaurante': '<i class="fas fa-utensils"></i>',
-                'Bar': '<i class="fas fa-beer"></i>',
-                'Salão': '<i class="fas fa-cut"></i>',
-                'Academia': '<i class="fas fa-dumbbell"></i>',
-                'Cafeteria': '<i class="fas fa-coffee"></i>',
-                'Loja': '<i class="fas fa-shopping-bag"></i>',
-                'Serviços': '<i class="fas fa-tools"></i>'
-            };
-            return icones[ramo] || '<i class="fas fa-store"></i>';
-        }
-
-        function getIconClassRamo(ramo) {
-            const classes = {
-                'Restaurante': 'fa-utensils',
-                'Bar': 'fa-beer',
-                'Salão': 'fa-cut',
-                'Academia': 'fa-dumbbell',
-                'Cafeteria': 'fa-coffee',
-                'Loja': 'fa-shopping-bag',
-                'Serviços': 'fa-tools'
-            };
-            return classes[ramo] || 'fa-store';
-        }
+        carregarEmpresa();
     </script>
 </body>
 </html>

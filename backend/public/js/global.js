@@ -39,9 +39,8 @@ function setFilter(filter) {
 }
 
 // Set FAQ Filter
-let currentFAQFilter = 'all';
 function setFAQFilter(filter) {
-    currentFAQFilter = filter;
+    const currentFAQFilter = filter;
     
     // Update active state on buttons
     const buttons = document.querySelectorAll('.filter-chip[data-filter]');

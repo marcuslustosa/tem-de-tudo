@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorias - Tem de Tudo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; padding-bottom: 70px; }
+        
+        .category-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .category-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .companies-list {
+            padding: 20px;
+        }
+        
+        .company-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            cursor: pointer;
+        }
+        
+        .company-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .company-info {
+            flex: 1;
+        }
+        
+        .company-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .company-category {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .company-rating {
+            color: #ffd700;
+            font-size: 14px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: #999;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        
+        .nav-item.active {
+            color: #667eea;
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="category-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="category-title" id="categoryTitle">Categoria</div>
+    </div>
+
+    <div class="companies-list" id="companiesList"></div>
+
+    <div class="bottom-nav">
+        <a href="/app.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            Início
+        </a>
+        <a href="/buscar.html" class="nav-item active">
+            <i class="fas fa-search"></i>
+            Buscar
+        </a>
+        <a href="/cupons.html" class="nav-item">
+            <i class="fas fa-ticket-alt"></i>
+            Cupons
+        </a>
+        <a href="/perfil.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            Perfil
+        </a>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('cat');
+        
+        const categoryNames = {
+            'restaurantes': 'Restaurantes',
+            'sorveterias': 'Sorveterias',
+            'bares': 'Bares',
+            'japonesa': 'Culinária Japonesa',
+            'petshops': 'Petshops',
+            'beleza': 'Beleza & Estética'
+        };
+        
+        const categoryIcons = {
+            'restaurantes': 'fa-utensils',
+            'sorveterias': 'fa-ice-cream',
+            'bares': 'fa-beer',
+            'japonesa': 'fa-fish',
+            'petshops': 'fa-paw',
+            'beleza': 'fa-cut'
+        };
+
+        document.getElementById('categoryTitle').textContent = categoryNames[category] || 'Categoria';
+
+        async function carregarEmpresas() {
+            try {
+                const res = await fetch(`/api/empresas?categoria=${category}`);
+                const data = await res.json();
+                
+                const container = document.getElementById('companiesList');
+                
+                if (data.success && data.data.length > 0) {
+                    container.innerHTML = data.data.map(empresa => `
+                        <div class="company-card" onclick="window.location.href='/empresa.html?id=${empresa.id}'">
+                            <div class="company-logo">
+                                <i class="fas ${categoryIcons[category] || 'fa-store'}"></i>
+                            </div>
+                            <div class="company-info">
+                                <div class="company-name">${empresa.nome}</div>
+                                <div class="company-category">${empresa.categoria || categoryNames[category]}</div>
+                                <div class="company-rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    5.0
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas ${categoryIcons[category] || 'fa-store'}"></i>
+                            <p>Nenhum estabelecimento encontrado nesta categoria</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+            }
+        }
+
+        carregarEmpresas();
+    </script>
+</body>
+</html>

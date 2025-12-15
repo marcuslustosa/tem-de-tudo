@@ -413,7 +413,7 @@ class NotificationManager {
     async registerServiceWorker() {
         if ('serviceWorker' in navigator) {
             try {
-                this.swRegistration = await navigator.serviceWorker.register('/service-worker.js');
+                this.swRegistration = await navigator.serviceWorker.register('/sw.js');
                 console.log('Service Worker registrado:', this.swRegistration);
             } catch (error) {
                 console.error('Erro ao registrar Service Worker:', error);
