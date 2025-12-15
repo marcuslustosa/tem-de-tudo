@@ -131,7 +131,7 @@ class ClienteController extends Controller
 
             // Adicionar pontos ao usuário
             User::where('id', $user->id)->increment('pontos', $pontosBonus);
-            $user->refresh();
+            $user = User::find($user->id);
 
             return response()->json([
                 'success' => true,
@@ -289,7 +289,7 @@ class ClienteController extends Controller
 
             // Adicionar pontos
             User::where('id', $user->id)->increment('pontos', $bonus->pontos);
-            $user->refresh();
+            $user = User::find($user->id);
 
             return response()->json([
                 'success' => true,
