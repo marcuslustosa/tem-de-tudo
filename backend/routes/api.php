@@ -11,6 +11,7 @@ use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\BonusAdesaoController;
 use App\Http\Controllers\CartaoFidelidadeController;
 use App\Http\Controllers\PromocaoController;
+use App\Http\Controllers\AvaliacaoController;
 
 
 // Debug route (remover em produção)
@@ -263,6 +264,12 @@ Route::middleware('auth:sanctum')->prefix('cliente')->group(function () {
     
     // Promoções (Cliente)
     Route::get('/promocoes/{empresa_id}', [PromocaoController::class, 'listarPorEmpresa']);
+    
+    // Avaliações (Cliente)
+    Route::post('/avaliacoes', [AvaliacaoController::class, 'store']);
+    Route::get('/avaliacoes/empresa/{empresa_id}', [AvaliacaoController::class, 'listarPorEmpresa']);
+    Route::get('/minha-avaliacao/{empresa_id}', [AvaliacaoController::class, 'minhaAvaliacao']);
+    Route::delete('/avaliacoes/{empresa_id}', [AvaliacaoController::class, 'destroy']);
 });
 
 // Rotas da Empresa (autenticada)
@@ -295,4 +302,7 @@ Route::middleware('auth:sanctum')->prefix('empresa')->group(function () {
     Route::put('/promocoes/{id}', [PromocaoController::class, 'update']);
     Route::delete('/promocoes/{id}', [PromocaoController::class, 'destroy']);
     Route::post('/promocoes/{id}/enviar-push', [PromocaoController::class, 'enviarPush']);
+    
+    // Avaliações (Empresa - apenas visualizar)
+    Route::get('/avaliacoes/estatisticas', [AvaliacaoController::class, 'estatisticas']);
 });
