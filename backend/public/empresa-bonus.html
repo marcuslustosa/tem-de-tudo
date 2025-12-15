@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Bônus - i9Plus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/i9plus-theme.css">
+    <style>
+        body { background: var(--gray-50); }
+        .page-container { max-width: 1200px; margin: 0 auto; padding: var(--spacing-xl); }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-2xl); }
+        .bonus-grid { display: grid; gap: var(--spacing-lg); }
+        .bonus-card { background: white; border-radius: var(--radius-lg); padding: var(--spacing-xl); box-shadow: var(--shadow-md); display: flex; gap: var(--spacing-lg); }
+        .bonus-image { width: 150px; height: 150px; border-radius: var(--radius-md); object-fit: cover; background: var(--gray-200); }
+        .bonus-content { flex: 1; }
+        .bonus-title { font-size: var(--font-size-xl); font-weight: 700; margin-bottom: var(--spacing-sm); }
+        .bonus-valor { font-size: var(--font-size-2xl); font-weight: 900; background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: var(--spacing-sm); }
+        .bonus-actions { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-md); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); }
+        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .bonus-card { flex-direction: column; } .bonus-image { width: 100%; height: 200px; } }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="page-header">
+            <div>
+                <h1 style="font-size: var(--font-size-3xl); font-weight: 800; background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    <i class="fas fa-gift"></i> Bônus de Adesão
+                </h1>
+                <p style="color: var(--gray-600); margin-top: var(--spacing-sm);">Gerencie os bônus de boas-vindas para novos clientes</p>
+            </div>
+            <div style="display: flex; gap: var(--spacing-md);">
+                <a href="/dashboard-empresa.html" class="i9-btn i9-btn-outline"><i class="fas fa-arrow-left"></i> Voltar</a>
+                <button onclick="abrirModalCriar()" class="i9-btn i9-btn-primary"><i class="fas fa-plus"></i> Novo Bônus</button>
+            </div>
+        </div>
+
+        <div id="loadingState" class="i9-loading" style="min-height: 400px;"><div class="i9-spinner"></div><p>Carregando bônus...</p></div>
+        
+        <div id="bonusList" class="bonus-grid" style="display: none;"></div>
+        
+        <div id="emptyState" class="i9-empty" style="display: none;">
+            <div class="i9-empty-icon"><i class="fas fa-gift"></i></div>
+            <h3 class="i9-empty-title">Nenhum bônus criado</h3>
+            <p class="i9-empty-text">Crie seu primeiro bônus de boas-vindas para atrair novos clientes</p>
+            <button onclick="abrirModalCriar()" class="i9-btn i9-btn-primary"><i class="fas fa-plus"></i> Criar Primeiro Bônus</button>
+        </div>
+    </div>
+
+    <div class="i9-modal" id="modalBonus">
+        <div class="i9-modal-content" style="max-width: 700px;">
+            <h2 class="i9-modal-title" id="modalTitle">Novo Bônus</h2>
+            <form id="formBonus" onsubmit="salvarBonus(event)">
+                <div class="form-grid">
+                    <div class="i9-input-group">
+                        <label class="i9-label">Título *</label>
+                        <input type="text" class="i9-input" id="titulo" required>
+                    </div>
+                    <div class="i9-input-group">
+                        <label class="i9-label">Tipo de Desconto *</label>
+                        <select class="i9-input" id="tipoDesconto" onchange="atualizarTipoDesconto()" required>
+                            <option value="porcentagem">Porcentagem (%)</option>
+                            <option value="valor_fixo">Valor Fixo (R$)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="i9-input-group">
+                    <label class="i9-label">Valor do Desconto *</label>
+                    <input type="number" class="i9-input" id="valorDesconto" step="0.01" min="0" required>
+                </div>
+                <div class="i9-input-group">
+                    <label class="i9-label">Descrição</label>
+                    <textarea class="i9-input" id="descricao" rows="3"></textarea>
+                </div>
+                <div class="i9-input-group">
+                    <label class="i9-label">Imagem</label>
+                    <input type="file" class="i9-input" id="imagem" accept="image/*">
+                </div>
+                <div class="i9-input-group">
+                    <label style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+                        <input type="checkbox" id="ativo" checked>
+                        <span>Bônus ativo</span>
+                    </label>
+                </div>
+                <div style="display: flex; gap: var(--spacing-md); margin-top: var(--spacing-xl);">
+                    <button type="button" onclick="fecharModal()" class="i9-btn i9-btn-outline" style="flex: 1;">Cancelar</button>
+                    <button type="submit" class="i9-btn i9-btn-primary" style="flex: 1;" id="btnSalvar"><i class="fas fa-save"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let bonusAtual = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token || localStorage.getItem('user_type') !== 'empresa') {
+                window.location.href = '/login.html';
+                return;
+            }
+            carregarBonus();
+        });
+
+        async function carregarBonus() {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${API_BASE}/api/empresa/bonus-adesao`, {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                });
+                const data = await res.json();
+                
+                document.getElementById('loadingState').style.display = 'none';
+                
+                if (data.bonus && data.bonus.length > 0) {
+                    document.getElementById('bonusList').style.display = 'grid';
+                    renderizarBonus(data.bonus);
+                } else {
+                    document.getElementById('emptyState').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao carregar bônus');
+            }
+        }
+
+        function renderizarBonus(bonus) {
+            const html = bonus.map(b => {
+                const valorTexto = b.tipo_desconto === 'porcentagem' ? `${b.valor_desconto}% OFF` : `R$ ${b.valor_desconto} OFF`;
+                return `
+                    <div class="bonus-card">
+                        ${b.imagem ? `<img src="${b.imagem}" class="bonus-image">` : `<div class="bonus-image" style="display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--gray-400);"><i class="fas fa-gift"></i></div>`}
+                        <div class="bonus-content">
+                            <div class="bonus-title">${b.titulo}</div>
+                            <div class="bonus-valor">${valorTexto}</div>
+                            <p style="color: var(--gray-600); margin-bottom: var(--spacing-md);">${b.descricao || 'Sem descrição'}</p>
+                            <div class="i9-badge ${b.ativo ? 'i9-badge-success' : 'i9-badge-error'}">${b.ativo ? 'Ativo' : 'Inativo'}</div>
+                            <div class="bonus-actions">
+                                <button onclick="editarBonus(${b.id})" class="i9-btn i9-btn-sm i9-btn-secondary"><i class="fas fa-edit"></i> Editar</button>
+                                <button onclick="excluirBonus(${b.id})" class="i9-btn i9-btn-sm i9-btn-error"><i class="fas fa-trash"></i> Excluir</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('bonusList').innerHTML = html;
+        }
+
+        function abrirModalCriar() {
+            bonusAtual = null;
+            document.getElementById('modalTitle').textContent = 'Novo Bônus';
+            document.getElementById('formBonus').reset();
+            document.getElementById('ativo').checked = true;
+            document.getElementById('modalBonus').classList.add('active');
+        }
+
+        async function editarBonus(id) {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${API_BASE}/api/empresa/bonus-adesao/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                });
+                const data = await res.json();
+                bonusAtual = data.bonus;
+                
+                document.getElementById('modalTitle').textContent = 'Editar Bônus';
+                document.getElementById('titulo').value = bonusAtual.titulo;
+                document.getElementById('tipoDesconto').value = bonusAtual.tipo_desconto;
+                document.getElementById('valorDesconto').value = bonusAtual.valor_desconto;
+                document.getElementById('descricao').value = bonusAtual.descricao || '';
+                document.getElementById('ativo').checked = bonusAtual.ativo;
+                document.getElementById('modalBonus').classList.add('active');
+            } catch (error) {
+                alert('Erro ao carregar bônus');
+            }
+        }
+
+        async function salvarBonus(e) {
+            e.preventDefault();
+            const token = localStorage.getItem('token');
+            const btn = document.getElementById('btnSalvar');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+            
+            const formData = new FormData();
+            formData.append('titulo', document.getElementById('titulo').value);
+            formData.append('tipo_desconto', document.getElementById('tipoDesconto').value);
+            formData.append('valor_desconto', document.getElementById('valorDesconto').value);
+            formData.append('descricao', document.getElementById('descricao').value);
+            formData.append('ativo', document.getElementById('ativo').checked ? 1 : 0);
+            
+            const imagem = document.getElementById('imagem').files[0];
+            if (imagem) formData.append('imagem', imagem);
+            
+            try {
+                const url = bonusAtual ? `${API_BASE}/api/empresa/bonus-adesao/${bonusAtual.id}` : `${API_BASE}/api/empresa/bonus-adesao`;
+                const method = bonusAtual ? 'POST' : 'POST';
+                
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' },
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    alert('Bônus salvo com sucesso!');
+                    fecharModal();
+                    location.reload();
+                } else {
+                    const data = await res.json();
+                    alert(data.message || 'Erro ao salvar bônus');
+                }
+            } catch (error) {
+                alert('Erro ao salvar bônus');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Salvar';
+            }
+        }
+
+        async function excluirBonus(id) {
+            if (!confirm('Deseja realmente excluir este bônus?')) return;
+            
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${API_BASE}/api/empresa/bonus-adesao/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                });
+                
+                if (res.ok) {
+                    alert('Bônus excluído com sucesso!');
+                    location.reload();
+                } else {
+                    alert('Erro ao excluir bônus');
+                }
+            } catch (error) {
+                alert('Erro ao excluir bônus');
+            }
+        }
+
+        function fecharModal() {
+            document.getElementById('modalBonus').classList.remove('active');
+        }
+
+        document.getElementById('modalBonus').addEventListener('click', (e) => {
+            if (e.target.id === 'modalBonus') fecharModal();
+        });
+    </script>
+</body>
+</html>
