@@ -320,11 +320,11 @@ class DiscountController extends Controller
             $search = $request->input('search');
             $empresaId = $request->input('empresa_id');
 
-            // Buscar usuário por CPF, telefone ou email
+            // Buscar usuário por telefone, email ou nome
             $user = User::where(function($query) use ($search) {
-                $query->where('cpf', 'like', "%{$search}%")
-                      ->orWhere('phone', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
+                $query->where('telefone', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhere('name', 'like', "%{$search}%");
             })->first();
 
             if (!$user) {
@@ -348,7 +348,7 @@ class DiscountController extends Controller
                         'id' => $user->id,
                         'name' => $user->name,
                         'email' => $user->email,
-                        'phone' => $user->phone
+                        'telefone' => $user->telefone
                     ],
                     'points' => $userPoints,
                     'available_discount' => $bestDiscount ? [

@@ -19,21 +19,17 @@ class AdminUserSeeder extends Seeder
             [
                 'name' => 'Administrador Principal',
                 'email' => 'admin@temdetudo.com',
-                'password' => Hash::make('TemDeTudo2024!'),
-                'role' => 'admin',
-                'nivel_acesso' => 'super_admin',
+                'password' => Hash::make('admin123'),
+                'perfil' => 'admin',
                 'pontos' => 0,
+                'pontos_pendentes' => 0,
+                'nivel' => 'Diamante',
                 'telefone' => '(11) 99999-9999',
                 'status' => 'ativo',
-                'is_active' => true,
-                'permissions' => json_encode([
-                    'create_users',
-                    'manage_users', 
-                    'view_reports',
-                    'manage_companies',
-                    'system_settings',
-                    'audit_logs'
-                ]),
+                'email_notifications' => true,
+                'points_notifications' => true,
+                'security_notifications' => true,
+                'promotional_notifications' => true,
                 'email_verified_at' => now()
             ]
         );
@@ -44,34 +40,38 @@ class AdminUserSeeder extends Seeder
             [
                 'name' => 'Operador Sistema',
                 'email' => 'operador@temdetudo.com',
-                'password' => Hash::make('Operador2024!'),
-                'role' => 'admin',
-                'nivel_acesso' => 'admin',
+                'password' => Hash::make('operador123'),
+                'perfil' => 'admin',
                 'pontos' => 0,
+                'pontos_pendentes' => 0,
+                'nivel' => 'Ouro',
                 'telefone' => '(11) 88888-8888',
                 'status' => 'ativo',
-                'is_active' => true,
-                'permissions' => json_encode([
-                    'view_reports',
-                    'manage_users',
-                    'manage_companies'
-                ]),
+                'email_notifications' => true,
+                'points_notifications' => true,
+                'security_notifications' => true,
+                'promotional_notifications' => false,
                 'email_verified_at' => now()
             ]
         );
 
         // Criar usuário cliente teste
         User::updateOrCreate(
-            ['email' => 'cliente@teste.com'],
+            ['email' => 'cliente.extra@teste.com'],
             [
-                'name' => 'Cliente Teste',
-                'email' => 'cliente@teste.com',
+                'name' => 'Cliente Extra',
+                'email' => 'cliente.extra@teste.com',
                 'password' => Hash::make('cliente123'),
-                'role' => 'cliente',
+                'perfil' => 'cliente',
                 'pontos' => 500,
+                'pontos_pendentes' => 0,
+                'nivel' => 'Bronze',
                 'telefone' => '(11) 77777-7777',
                 'status' => 'ativo',
-                'is_active' => true,
+                'email_notifications' => true,
+                'points_notifications' => true,
+                'security_notifications' => false,
+                'promotional_notifications' => true,
                 'email_verified_at' => now()
             ]
         );
