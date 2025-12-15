@@ -1,12 +1,12 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ConfiguraÃ§Ãµes do Sistema - Admin - Tem de Tudo</title>
+    <title>Configurações do Sistema - Admin - Tem de Tudo</title>
     
     <!-- Meta Tags PWA -->
-    <meta name="description" content="Painel de configuraÃ§Ãµes administrativas do sistema Tem de Tudo">
+    <meta name="description" content="Painel de configurações administrativas do sistema Tem de Tudo">
     <meta name="theme-color" content="#1e40af">
     
     <!-- Fonts -->
@@ -26,6 +26,7 @@
     
     <!-- Manifest PWA -->
     <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="/css/i9plus-theme.css">
 </head>
 <body>
     <div class="app-container">
@@ -40,8 +41,8 @@
                 <nav class="nav-menu">
                     <a href="/admin.html"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
                     <a href="/profile-company.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
-                    <a href="/admin-relatorios.html"><i class="fas fa-chart-line icon-sm"></i> RelatÃ³rios</a>
-                    <a href="#" class="active"><i class="fas fa-cogs icon-sm"></i> ConfiguraÃ§Ãµes</a>
+                    <a href="/admin-relatorios.html"><i class="fas fa-chart-line icon-sm"></i> Relatórios</a>
+                    <a href="#" class="active"><i class="fas fa-cogs icon-sm"></i> Configurações</a>
                     <a href="/login.html"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
                 </nav>
                 
@@ -58,8 +59,8 @@
             <div class="mobile-nav-menu">
                 <a href="/admin.html"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
                 <a href="/profile-company.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
-                <a href="/admin-relatorios.html"><i class="fas fa-chart-line icon-sm"></i> RelatÃ³rios</a>
-                <a href="#" class="active"><i class="fas fa-cogs icon-sm"></i> ConfiguraÃ§Ãµes</a>
+                <a href="/admin-relatorios.html"><i class="fas fa-chart-line icon-sm"></i> Relatórios</a>
+                <a href="#" class="active"><i class="fas fa-cogs icon-sm"></i> Configurações</a>
                 <a href="/login.html"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
             </div>
         </div>
@@ -72,8 +73,8 @@
                 <div class="card mb-4">
                     <div class="card-header text-center">
                         <i class="fas fa-cogs icon-lg" style="color: white; font-size: 3rem; margin-bottom: 1rem;"></i>
-                        <h1 style="color: white; margin-bottom: 0.5rem;">ConfiguraÃ§Ãµes do Sistema</h1>
-                        <p style="color: rgba(255,255,255,0.9);">Gerenciar configuraÃ§Ãµes globais e parÃ¢metros do sistema</p>
+                        <h1 style="color: white; margin-bottom: 0.5rem;">Configurações do Sistema</h1>
+                        <p style="color: rgba(255,255,255,0.9);">Gerenciar configurações globais e parâmetros do sistema</p>
                     </div>
                 </div>
 
@@ -85,16 +86,16 @@
                                 <i class="fas fa-coins icon-sm"></i> Sistema de Pontos
                             </button>
                             <button class="btn btn-outline setting-tab" onclick="showSettingSection('usuarios')" data-section="usuarios">
-                                <i class="fas fa-users icon-sm"></i> UsuÃ¡rios
+                                <i class="fas fa-users icon-sm"></i> Usuários
                             </button>
                             <button class="btn btn-outline setting-tab" onclick="showSettingSection('estabelecimentos')" data-section="estabelecimentos">
                                 <i class="fas fa-store icon-sm"></i> Estabelecimentos
                             </button>
                             <button class="btn btn-outline setting-tab" onclick="showSettingSection('notificacoes')" data-section="notificacoes">
-                                <i class="fas fa-bell icon-sm"></i> NotificaÃ§Ãµes
+                                <i class="fas fa-bell icon-sm"></i> Notificações
                             </button>
                             <button class="btn btn-outline setting-tab" onclick="showSettingSection('seguranca')" data-section="seguranca">
-                                <i class="fas fa-shield-alt icon-sm"></i> SeguranÃ§a
+                                <i class="fas fa-shield-alt icon-sm"></i> Segurança
                             </button>
                         </div>
                     </div>
@@ -105,14 +106,14 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 style="color: white; margin: 0;">
-                                <i class="fas fa-coins icon-sm"></i> ConfiguraÃ§Ãµes do Sistema de Pontos
+                                <i class="fas fa-coins icon-sm"></i> Configurações do Sistema de Pontos
                             </h3>
                         </div>
                         <div class="card-body">
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4);">
                                 
                                 <div>
-                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">ConversÃ£o de Pontos</label>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Conversão de Pontos</label>
                                     <div style="display: flex; align-items: center; gap: var(--space-2);">
                                         <span style="color: var(--gray-600);">R$</span>
                                         <input type="number" class="form-control" value="1.00" step="0.01" style="width: 100px;">
@@ -120,22 +121,22 @@
                                         <input type="number" class="form-control" value="1" style="width: 80px;">
                                         <span style="color: var(--gray-600);">ponto</span>
                                     </div>
-                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-top: 0.5rem;">Defina quantos pontos o usuÃ¡rio ganha por real gasto</p>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-top: 0.5rem;">Defina quantos pontos o usuário ganha por real gasto</p>
                                 </div>
 
                                 <div>
                                     <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Validade dos Pontos (meses)</label>
                                     <input type="number" class="form-control" value="12" min="1" max="60">
-                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-top: 0.5rem;">Pontos expiram apÃ³s este perÃ­odo</p>
+                                    <p style="color: var(--gray-600); font-size: 0.875rem; margin-top: 0.5rem;">Pontos expiram após este período</p>
                                 </div>
                             </div>
 
                             <div style="margin-top: var(--space-6);">
-                                <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">NÃ­veis de Fidelidade</h4>
+                                <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">Níveis de Fidelidade</h4>
                                 <div style="display: grid; gap: var(--space-3);">
                                     
                                     <div style="background: var(--gray-50); padding: var(--space-3); border-radius: var(--radius-lg); display: grid; grid-template-columns: 150px 150px 100px 1fr 80px; gap: var(--space-2); align-items: center;">
-                                        <input type="text" class="form-control" value="Bronze" placeholder="Nome do nÃ­vel">
+                                        <input type="text" class="form-control" value="Bronze" placeholder="Nome do nível">
                                         <div style="display: flex; align-items: center; gap: 0.5rem;">
                                             <input type="number" class="form-control" value="0" min="0" style="width: 70px;">
                                             <span style="color: var(--gray-600);">-</span>
@@ -145,14 +146,14 @@
                                             <input type="number" class="form-control" value="1.0" step="0.1" style="width: 60px;">
                                             <span style="color: var(--gray-600); font-size: 0.875rem;">x</span>
                                         </div>
-                                        <input type="text" class="form-control" value="BenefÃ­cios bÃ¡sicos" placeholder="DescriÃ§Ã£o dos benefÃ­cios">
+                                        <input type="text" class="form-control" value="Benefícios básicos" placeholder="Descrição dos benefícios">
                                         <button class="btn btn-sm btn-outline" onclick="removeLevel(this)">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
 
                                     <div style="background: var(--gray-50); padding: var(--space-3); border-radius: var(--radius-lg); display: grid; grid-template-columns: 150px 150px 100px 1fr 80px; gap: var(--space-2); align-items: center;">
-                                        <input type="text" class="form-control" value="Silver" placeholder="Nome do nÃ­vel">
+                                        <input type="text" class="form-control" value="Silver" placeholder="Nome do nível">
                                         <div style="display: flex; align-items: center; gap: 0.5rem;">
                                             <input type="number" class="form-control" value="250" min="0" style="width: 70px;">
                                             <span style="color: var(--gray-600);">-</span>
@@ -162,14 +163,14 @@
                                             <input type="number" class="form-control" value="1.2" step="0.1" style="width: 60px;">
                                             <span style="color: var(--gray-600); font-size: 0.875rem;">x</span>
                                         </div>
-                                        <input type="text" class="form-control" value="Pontos 1.2x + ofertas semanais" placeholder="DescriÃ§Ã£o dos benefÃ­cios">
+                                        <input type="text" class="form-control" value="Pontos 1.2x + ofertas semanais" placeholder="Descrição dos benefícios">
                                         <button class="btn btn-sm btn-outline" onclick="removeLevel(this)">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
 
                                     <div style="background: var(--gray-50); padding: var(--space-3); border-radius: var(--radius-lg); display: grid; grid-template-columns: 150px 150px 100px 1fr 80px; gap: var(--space-2); align-items: center;">
-                                        <input type="text" class="form-control" value="Gold" placeholder="Nome do nÃ­vel">
+                                        <input type="text" class="form-control" value="Gold" placeholder="Nome do nível">
                                         <div style="display: flex; align-items: center; gap: 0.5rem;">
                                             <input type="number" class="form-control" value="500" min="0" style="width: 70px;">
                                             <span style="color: var(--gray-600);">-</span>
@@ -179,7 +180,7 @@
                                             <input type="number" class="form-control" value="1.5" step="0.1" style="width: 60px;">
                                             <span style="color: var(--gray-600); font-size: 0.875rem;">x</span>
                                         </div>
-                                        <input type="text" class="form-control" value="Pontos 1.5x + frete grÃ¡tis" placeholder="DescriÃ§Ã£o dos benefÃ­cios">
+                                        <input type="text" class="form-control" value="Pontos 1.5x + frete grátis" placeholder="Descrição dos benefícios">
                                         <button class="btn btn-sm btn-outline" onclick="removeLevel(this)">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -187,7 +188,7 @@
                                 </div>
 
                                 <button class="btn btn-outline" onclick="addLevel()" style="margin-top: var(--space-3);">
-                                    <i class="fas fa-plus"></i> Adicionar NÃ­vel
+                                    <i class="fas fa-plus"></i> Adicionar Nível
                                 </button>
                             </div>
                         </div>
@@ -199,14 +200,14 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 style="color: white; margin: 0;">
-                                <i class="fas fa-users icon-sm"></i> ConfiguraÃ§Ãµes de UsuÃ¡rios
+                                <i class="fas fa-users icon-sm"></i> Configurações de Usuários
                             </h3>
                         </div>
                         <div class="card-body">
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6);">
                                 
                                 <div>
-                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">Cadastro de UsuÃ¡rios</h4>
+                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">Cadastro de Usuários</h4>
                                     
                                     <div style="margin-bottom: var(--space-4);">
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
@@ -218,42 +219,42 @@
                                     <div style="margin-bottom: var(--space-4);">
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox" checked>
-                                            <span>Exigir validaÃ§Ã£o de email</span>
+                                            <span>Exigir validação de email</span>
                                         </label>
                                     </div>
 
                                     <div style="margin-bottom: var(--space-4);">
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox">
-                                            <span>Exigir validaÃ§Ã£o de celular</span>
+                                            <span>Exigir validação de celular</span>
                                         </label>
                                     </div>
 
                                     <div>
-                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Idade mÃ­nima para cadastro</label>
+                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Idade mínima para cadastro</label>
                                         <input type="number" class="form-control" value="16" min="13" max="21" style="width: 100px;">
                                     </div>
                                 </div>
 
                                 <div>
-                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">PolÃ­tica de Senha</h4>
+                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">Política de Senha</h4>
                                     
                                     <div style="margin-bottom: var(--space-4);">
-                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Comprimento mÃ­nimo</label>
+                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Comprimento mínimo</label>
                                         <input type="number" class="form-control" value="8" min="6" max="20" style="width: 100px;">
                                     </div>
 
                                     <div style="margin-bottom: var(--space-4);">
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox" checked>
-                                            <span>Exigir letras maiÃºsculas</span>
+                                            <span>Exigir letras maiúsculas</span>
                                         </label>
                                     </div>
 
                                     <div style="margin-bottom: var(--space-4);">
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox" checked>
-                                            <span>Exigir nÃºmeros</span>
+                                            <span>Exigir números</span>
                                         </label>
                                     </div>
 
@@ -274,19 +275,19 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 style="color: white; margin: 0;">
-                                <i class="fas fa-store icon-sm"></i> ConfiguraÃ§Ãµes de Estabelecimentos
+                                <i class="fas fa-store icon-sm"></i> Configurações de Estabelecimentos
                             </h3>
                         </div>
                         <div class="card-body">
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6);">
                                 
                                 <div>
-                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">AprovaÃ§Ã£o de Estabelecimentos</h4>
+                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">Aprovação de Estabelecimentos</h4>
                                     
                                     <div style="margin-bottom: var(--space-4);">
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox" checked>
-                                            <span>Exigir aprovaÃ§Ã£o manual</span>
+                                            <span>Exigir aprovação manual</span>
                                         </label>
                                     </div>
 
@@ -298,7 +299,7 @@
                                     </div>
 
                                     <div>
-                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Taxa de comissÃ£o padrÃ£o (%)</label>
+                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Taxa de comissão padrão (%)</label>
                                         <input type="number" class="form-control" value="2.5" step="0.1" min="0" max="10" style="width: 120px;">
                                     </div>
                                 </div>
@@ -309,7 +310,7 @@
                                     <div style="display: grid; gap: var(--space-2);">
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox" checked>
-                                            <span>AlimentaÃ§Ã£o</span>
+                                            <span>Alimentação</span>
                                         </label>
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox" checked>
@@ -317,11 +318,11 @@
                                         </label>
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox" checked>
-                                            <span>SaÃºde e Bem-estar</span>
+                                            <span>Saúde e Bem-estar</span>
                                         </label>
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox" checked>
-                                            <span>ServiÃ§os</span>
+                                            <span>Serviços</span>
                                         </label>
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox">
@@ -329,7 +330,7 @@
                                         </label>
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox">
-                                            <span>EducaÃ§Ã£o</span>
+                                            <span>Educação</span>
                                         </label>
                                     </div>
                                 </div>
@@ -343,14 +344,14 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 style="color: white; margin: 0;">
-                                <i class="fas fa-bell icon-sm"></i> ConfiguraÃ§Ãµes de NotificaÃ§Ãµes
+                                <i class="fas fa-bell icon-sm"></i> Configurações de Notificações
                             </h3>
                         </div>
                         <div class="card-body">
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6);">
                                 
                                 <div>
-                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">NotificaÃ§Ãµes Push</h4>
+                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">Notificações Push</h4>
                                     
                                     <div style="margin-bottom: var(--space-4);">
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
@@ -369,7 +370,7 @@
                                     <div style="margin-bottom: var(--space-4);">
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox">
-                                            <span>Pontos prÃ³ximos ao vencimento</span>
+                                            <span>Pontos próximos ao vencimento</span>
                                         </label>
                                     </div>
 
@@ -382,7 +383,7 @@
                                 </div>
 
                                 <div>
-                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">Emails AutomÃ¡ticos</h4>
+                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">Emails Automáticos</h4>
                                     
                                     <div style="margin-bottom: var(--space-4);">
                                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Servidor SMTP</label>
@@ -409,31 +410,31 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h3 style="color: white; margin: 0;">
-                                <i class="fas fa-shield-alt icon-sm"></i> ConfiguraÃ§Ãµes de SeguranÃ§a
+                                <i class="fas fa-shield-alt icon-sm"></i> Configurações de Segurança
                             </h3>
                         </div>
                         <div class="card-body">
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6);">
                                 
                                 <div>
-                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">AutenticaÃ§Ã£o</h4>
+                                    <h4 style="color: var(--gray-800); margin-bottom: var(--space-3);">Autenticação</h4>
                                     
                                     <div style="margin-bottom: var(--space-4);">
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox" checked>
-                                            <span>AutenticaÃ§Ã£o de dois fatores (2FA)</span>
+                                            <span>Autenticação de dois fatores (2FA)</span>
                                         </label>
                                     </div>
 
                                     <div style="margin-bottom: var(--space-4);">
-                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Tempo de sessÃ£o (minutos)</label>
+                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Tempo de sessão (minutos)</label>
                                         <input type="number" class="form-control" value="120" min="30" max="480" style="width: 120px;">
                                     </div>
 
                                     <div>
                                         <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Tentativas de login</label>
                                         <input type="number" class="form-control" value="3" min="3" max="10" style="width: 100px;">
-                                        <p style="color: var(--gray-600); font-size: 0.875rem; margin-top: 0.5rem;">Bloqueio apÃ³s tentativas falhadas</p>
+                                        <p style="color: var(--gray-600); font-size: 0.875rem; margin-top: 0.5rem;">Bloqueio após tentativas falhadas</p>
                                     </div>
                                 </div>
 
@@ -450,12 +451,12 @@
                                     <div style="margin-bottom: var(--space-4);">
                                         <label style="display: flex; align-items: center; gap: var(--space-2); cursor: pointer;">
                                             <input type="checkbox" checked>
-                                            <span>Log de transaÃ§Ãµes</span>
+                                            <span>Log de transações</span>
                                         </label>
                                     </div>
 
                                     <div>
-                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">RetenÃ§Ã£o de logs (dias)</label>
+                                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700);">Retenção de logs (dias)</label>
                                         <input type="number" class="form-control" value="90" min="30" max="365" style="width: 120px;">
                                     </div>
                                 </div>
@@ -468,10 +469,10 @@
                 <div class="card">
                     <div class="card-body text-center">
                         <button class="btn btn-primary btn-lg" onclick="saveSettings()" style="min-width: 200px;">
-                            <i class="fas fa-save"></i> Salvar ConfiguraÃ§Ãµes
+                            <i class="fas fa-save"></i> Salvar Configurações
                         </button>
                         <button class="btn btn-outline btn-lg" onclick="resetSettings()" style="min-width: 200px; margin-left: var(--space-3);">
-                            <i class="fas fa-undo"></i> Restaurar PadrÃ£o
+                            <i class="fas fa-undo"></i> Restaurar Padrão
                         </button>
                     </div>
                 </div>
@@ -514,7 +515,7 @@
             newLevel.style.cssText = 'background: var(--gray-50); padding: var(--space-3); border-radius: var(--radius-lg); display: grid; grid-template-columns: 150px 150px 100px 1fr 80px; gap: var(--space-2); align-items: center;';
             
             newLevel.innerHTML = `
-                <input type="text" class="form-control" value="Novo NÃ­vel" placeholder="Nome do nÃ­vel">
+                <input type="text" class="form-control" value="Novo Nível" placeholder="Nome do nível">
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                     <input type="number" class="form-control" value="1000" min="0" style="width: 70px;">
                     <span style="color: var(--gray-600);">-</span>
@@ -524,7 +525,7 @@
                     <input type="number" class="form-control" value="2.0" step="0.1" style="width: 60px;">
                     <span style="color: var(--gray-600); font-size: 0.875rem;">x</span>
                 </div>
-                <input type="text" class="form-control" value="BenefÃ­cios exclusivos" placeholder="DescriÃ§Ã£o dos benefÃ­cios">
+                <input type="text" class="form-control" value="Benefícios exclusivos" placeholder="Descrição dos benefícios">
                 <button class="btn btn-sm btn-outline" onclick="removeLevel(this)">
                     <i class="fas fa-trash"></i>
                 </button>
@@ -534,7 +535,7 @@
         }
 
         function removeLevel(button) {
-            if (confirm('Deseja realmente remover este nÃ­vel?')) {
+            if (confirm('Deseja realmente remover este nível?')) {
                 button.parentElement.remove();
             }
         }
@@ -559,14 +560,14 @@
                     saveBtn.disabled = false;
                 }, 2000);
                 
-                alert('ConfiguraÃ§Ãµes salvas com sucesso!\n\nAs alteraÃ§Ãµes jÃ¡ estÃ£o ativas no sistema.');
+                alert('Configurações salvas com sucesso!\n\nAs alterações já estão ativas no sistema.');
             }, 1500);
         }
 
         function resetSettings() {
-            if (confirm('Deseja restaurar todas as configuraÃ§Ãµes para os valores padrÃ£o?\n\nEsta aÃ§Ã£o nÃ£o pode ser desfeita.')) {
+            if (confirm('Deseja restaurar todas as configurações para os valores padrão?\n\nEsta ação não pode ser desfeita.')) {
                 // Simulate reset
-                alert('ConfiguraÃ§Ãµes restauradas para os valores padrÃ£o!\n\nRecarregue a pÃ¡gina para ver as alteraÃ§Ãµes.');
+                alert('Configurações restauradas para os valores padrão!\n\nRecarregue a página para ver as alterações.');
                 location.reload();
             }
         }

@@ -1,0 +1,25 @@
+# Script para adicionar i9plus-theme.css em todas as paginas HTML
+
+$htmlFiles = Get-ChildItem -Path "public" -Filter "*.html" -Recurse
+
+$linkTag = '    <link rel="stylesheet" href="/css/i9plus-theme.css">'
+
+foreach ($file in $htmlFiles) {
+    $content = Get-Content $file.FullName -Raw
+    
+    # Verificar se ja tem o link
+    if ($content -notmatch 'i9plus-theme\.css') {
+        # Adicionar antes do </head>
+        if ($content -match '</head>') {
+            $content = $content -replace '</head>', "$linkTag`n</head>"
+            Set-Content -Path $file.FullName -Value $content -NoNewline
+            Write-Host "Atualizado: $($file.Name)" -ForegroundColor Green
+        }
+    } else {
+        Write-Host "Ja atualizado: $($file.Name)" -ForegroundColor Yellow
+    }
+}
+
+Write-Host ""
+Write-Host "Processo concluido!" -ForegroundColor Cyan
+Write-Host "Total de arquivos processados: $($htmlFiles.Count)" -ForegroundColor Cyan

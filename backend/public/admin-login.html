@@ -1,12 +1,12 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administra√ß√£o - TemDeTudo</title>
+    <title>AdministraÁ„o - TemDeTudo</title>
     
     <!-- Meta Tags -->
-    <meta name="description" content="Acesso restrito - Administra√ß√£o TemDeTudo">
+    <meta name="description" content="Acesso restrito - AdministraÁ„o TemDeTudo">
     <meta name="theme-color" content="#4c1d95">
     <meta name="robots" content="noindex, nofollow">
     
@@ -189,6 +189,7 @@
             margin-right: 0.5rem;
         }
     </style>
+    <link rel="stylesheet" href="/css/i9plus-theme.css">
 </head>
 <body style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
     
@@ -200,8 +201,8 @@
                 <div style="margin-bottom: 1.5rem;">
                     <img src="/img/logo.png" alt="TemDeTudo" style="width: 64px; height: 64px; border-radius: var(--radius-full); border: 3px solid white;">
                 </div>
-                <h1 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">Administra√ß√£o</h1>
-                <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">Sistema de Gest√£o TemDeTudo</p>
+                <h1 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">AdministraÁ„o</h1>
+                <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">Sistema de Gest„o TemDeTudo</p>
             </div>
             
             <!-- Login Form -->
@@ -234,7 +235,7 @@
                                 id="adminPassword" 
                                 name="password" 
                                 class="form-control" 
-                                placeholder="‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢"
+                                placeholder="ïïïïïïïï"
                                 required
                                 autocomplete="current-password"
                             >
@@ -251,7 +252,7 @@
                     <!-- Security Code (2FA simulation) -->
                     <div class="form-group" style="margin-bottom: var(--space-6);">
                         <label for="securityCode" class="form-label">
-                            <i class="fas fa-shield-alt icon-sm"></i> C√≥digo de Seguran√ßa
+                            <i class="fas fa-shield-alt icon-sm"></i> CÛdigo de SeguranÁa
                         </label>
                         <input 
                             type="text" 
@@ -261,10 +262,10 @@
                             placeholder="000000"
                             maxlength="6"
                             pattern="[0-9]{6}"
-                            title="Digite um c√≥digo de 6 d√≠gitos"
+                            title="Digite um cÛdigo de 6 dÌgitos"
                         >
                         <small style="color: var(--gray-600); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
-                            <i class="fas fa-info-circle"></i> Para demonstra√ß√£o, use: 123456
+                            <i class="fas fa-info-circle"></i> Para demonstraÁ„o, use: 123456
                         </small>
                     </div>
                     
@@ -293,9 +294,9 @@
                         <div>
                             <h4 style="font-size: 0.875rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem;">Acesso Seguro</h4>
                             <p style="font-size: 0.75rem; color: var(--gray-600); line-height: 1.4;">
-                                ‚Ä¢ Todas as a√ß√µes s√£o registradas<br>
-                                ‚Ä¢ Conex√£o criptografada SSL<br>
-                                ‚Ä¢ Monitoramento de seguran√ßa ativo
+                                ï Todas as aÁıes s„o registradas<br>
+                                ï Conex„o criptografada SSL<br>
+                                ï Monitoramento de seguranÁa ativo
                             </p>
                         </div>
                     </div>
@@ -314,7 +315,7 @@
 
     <!-- Scripts -->
     <script>
-        // Configura√ß√µes da API
+        // ConfiguraÁıes da API
         const API_BASE = window.location.origin;
         
         // Toggle password visibility
@@ -412,7 +413,7 @@
                         window.location.href = '/admin.html';
                     }, 1500);
                 } else {
-                    showMessage('Credenciais inv√°lidas. Verifique email e senha.', 'error');
+                    showMessage('Credenciais inv·lidas. Verifique email e senha.', 'error');
                 }
                 
                 if (response.ok && result.success) {
@@ -439,11 +440,11 @@
                     if (result.error_code === 'INVALID_CREDENTIALS') {
                         errorMessage = 'Email ou senha incorretos';
                     } else if (result.error_code === 'INVALID_SECURITY_CODE') {
-                        errorMessage = 'C√≥digo de seguran√ßa inv√°lido';
+                        errorMessage = 'CÛdigo de seguranÁa inv·lido';
                     } else if (result.error_code === 'ACCOUNT_LOCKED') {
-                        errorMessage = 'Conta temporariamente bloqueada por seguran√ßa';
+                        errorMessage = 'Conta temporariamente bloqueada por seguranÁa';
                     } else if (result.error_code === 'ACCESS_DENIED') {
-                        errorMessage = 'Acesso negado - Permiss√µes insuficientes';
+                        errorMessage = 'Acesso negado - Permissıes insuficientes';
                     }
                     
                     showMessage(errorMessage, 'error');
@@ -477,7 +478,7 @@
                     }, 1500);
                     
                 } else {
-                    showMessage('Erro de conex√£o. Verifique suas credenciais e tente novamente.', 'error');
+                    showMessage('Erro de conex„o. Verifique suas credenciais e tente novamente.', 'error');
                 }
             } finally {
                 // Reset button state
@@ -491,7 +492,7 @@
         window.addEventListener('DOMContentLoaded', function() {
             const adminToken = localStorage.getItem('admin_token');
             if (adminToken) {
-                showMessage('Voc√™ j√° est√° logado. Redirecionando...', 'success');
+                showMessage('VocÍ j· est· logado. Redirecionando...', 'success');
                 setTimeout(() => {
                     window.location.href = '/admin.html';
                 }, 2000);

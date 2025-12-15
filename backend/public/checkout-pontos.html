@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -25,6 +25,7 @@
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/modern-theme.css">
+    <link rel="stylesheet" href="/css/i9plus-theme.css">
 </head>
 <body>
     <div class="app-container">
@@ -37,7 +38,7 @@
                 
                 <nav class="nav-menu">
                     <a href="/profile-client.html"><i class="fas fa-arrow-left icon-sm"></i> Voltar</a>
-                    <a href="/"><i class="fas fa-home icon-sm"></i> InÃ­cio</a>
+                    <a href="/"><i class="fas fa-home icon-sm"></i> Início</a>
                 </nav>
                 
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
@@ -68,7 +69,7 @@
                         <div style="display: flex; align-items: center; justify-content: center; gap: var(--space-4); margin-bottom: var(--space-4);">
                             <div>
                                 <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary-blue);" id="userPoints">2,850</div>
-                                <p style="color: var(--gray-600); margin: 0;">pontos disponÃ­veis</p>
+                                <p style="color: var(--gray-600); margin: 0;">pontos disponíveis</p>
                             </div>
                             <div style="font-size: 2rem; color: var(--gray-400);">=</div>
                             <div>
@@ -78,12 +79,12 @@
                         </div>
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle"></i>
-                            <strong>ConversÃ£o:</strong> 100 pontos = R$ 1,00
+                            <strong>Conversão:</strong> 100 pontos = R$ 1,00
                         </div>
                     </div>
                 </div>
 
-                <!-- OpÃ§Ãµes de Resgate -->
+                <!-- Opções de Resgate -->
                 <div class="card mb-4">
                     <div class="card-header">
                         <h3 style="color: white; margin: 0;">
@@ -99,7 +100,7 @@
                                 type="number" 
                                 id="pointsToRedeem" 
                                 class="form-control" 
-                                placeholder="MÃ­nimo 500 pontos" 
+                                placeholder="Mínimo 500 pontos" 
                                 min="500" 
                                 max="2850"
                                 step="100"
@@ -107,7 +108,7 @@
                                 oninput="calculateAmount()"
                             >
                             <small style="color: var(--gray-600); margin-top: 0.5rem; display: block;">
-                                Resgate mÃ­nimo: 500 pontos (R$ 5,00)
+                                Resgate mínimo: 500 pontos (R$ 5,00)
                             </small>
                         </div>
 
@@ -127,7 +128,7 @@
                             </div>
                         </div>
 
-                        <!-- BotÃµes de valores prÃ©-definidos -->
+                        <!-- Botões de valores pré-definidos -->
                         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); margin-bottom: var(--space-4);">
                             <button class="btn btn-outline btn-sm" onclick="setRedeemAmount(500)">
                                 500 pts<br><small>R$ 4,90</small>
@@ -142,7 +143,7 @@
                     </div>
                 </div>
 
-                <!-- MÃ©todo de Pagamento -->
+                <!-- Método de Pagamento -->
                 <div class="card mb-4">
                     <div class="card-header">
                         <h3 style="color: white; margin: 0;">
@@ -161,7 +162,7 @@
                                          style="width: 40px; height: 40px; object-fit: contain;">
                                     <div>
                                         <h4 style="margin: 0; color: var(--gray-900);">Mercado Pago</h4>
-                                        <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Receba na hora â€¢ Sem taxas extras</p>
+                                        <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Receba na hora • Sem taxas extras</p>
                                     </div>
                                 </div>
                                 <div style="margin-top: var(--space-3);">
@@ -184,7 +185,7 @@
                                     </div>
                                     <div>
                                         <h4 style="margin: 0; color: var(--gray-900);">PIX</h4>
-                                        <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">TransferÃªncia instantÃ¢nea</p>
+                                        <p style="margin: 0; color: var(--gray-600); font-size: 0.875rem;">Transferência instantânea</p>
                                     </div>
                                 </div>
                                 <div style="margin-top: var(--space-3); display: none;" id="pixFields">
@@ -193,7 +194,7 @@
                                             <option value="email">Email</option>
                                             <option value="phone">Telefone</option>
                                             <option value="cpf">CPF</option>
-                                            <option value="random">Chave aleatÃ³ria</option>
+                                            <option value="random">Chave aleatória</option>
                                         </select>
                                     </div>
                                     <input type="text" 
@@ -215,7 +216,7 @@
                 <div style="margin-top: var(--space-4); text-align: center;">
                     <p style="color: var(--gray-600); font-size: 0.875rem;">
                         <i class="fas fa-shield-alt"></i>
-                        TransaÃ§Ã£o 100% segura â€¢ Processamento em atÃ© 1 hora Ãºtil
+                        Transação 100% segura • Processamento em até 1 hora útil
                     </p>
                 </div>
             </div>
@@ -231,7 +232,7 @@
     </div>
 
     <script>
-        // Mercado Pago Public Key (exemplo - usar chave real em produÃ§Ã£o)
+        // Mercado Pago Public Key (exemplo - usar chave real em produção)
         const mp = new MercadoPago('TEST-your-public-key-here', {locale: 'pt-BR'});
 
         function toggleMobileMenu() {
@@ -251,11 +252,11 @@
             document.getElementById('processingFee').textContent = '- R$ ' + processingFee.toFixed(2).replace('.', ',');
             document.getElementById('finalAmount').textContent = 'R$ ' + finalAmount.toFixed(2).replace('.', ',');
 
-            // ValidaÃ§Ã£o
+            // Validação
             const button = document.querySelector('.btn-success');
             if (points < 500) {
                 button.disabled = true;
-                button.textContent = 'MÃ­nimo 500 pontos';
+                button.textContent = 'Mínimo 500 pontos';
             } else if (points > 2850) {
                 button.disabled = true;
                 button.textContent = 'Saldo insuficiente';
@@ -287,7 +288,7 @@
             const loadingOverlay = document.getElementById('loadingOverlay');
 
             if (points < 500) {
-                alert('Resgate mÃ­nimo de 500 pontos');
+                alert('Resgate mínimo de 500 pontos');
                 return;
             }
 
@@ -321,9 +322,9 @@
             const amount = (points / 100) * 0.98; // Descontando taxa de 2%
             
             // Simular resposta de sucesso
-            alert(`âœ… Resgate processado com sucesso!\n\nValor: R$ ${amount.toFixed(2).replace('.', ',')}\nDestino: ${email}\n\nO dinheiro serÃ¡ creditado em sua conta Mercado Pago em atÃ© 1 hora Ãºtil.\n\nID da transaÃ§Ã£o: MP${Date.now()}`);
+            alert(`? Resgate processado com sucesso!\n\nValor: R$ ${amount.toFixed(2).replace('.', ',')}\nDestino: ${email}\n\nO dinheiro será creditado em sua conta Mercado Pago em até 1 hora útil.\n\nID da transação: MP${Date.now()}`);
             
-            // Atualizar pontos do usuÃ¡rio
+            // Atualizar pontos do usuário
             const currentPoints = parseInt(document.getElementById('userPoints').textContent.replace(',', ''));
             const newPoints = currentPoints - points;
             
@@ -348,7 +349,7 @@
 
             const amount = (points / 100) * 0.98;
             
-            alert(`âœ… Resgate via PIX processado!\n\nValor: R$ ${amount.toFixed(2).replace('.', ',')}\nChave PIX: ${pixKey}\n\nTransferÃªncia serÃ¡ realizada em atÃ© 1 hora Ãºtil.\n\nID da transaÃ§Ã£o: PIX${Date.now()}`);
+            alert(`? Resgate via PIX processado!\n\nValor: R$ ${amount.toFixed(2).replace('.', ',')}\nChave PIX: ${pixKey}\n\nTransferência será realizada em até 1 hora útil.\n\nID da transação: PIX${Date.now()}`);
             
             // Atualizar pontos
             const currentPoints = parseInt(document.getElementById('userPoints').textContent.replace(',', ''));
@@ -365,7 +366,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             calculateAmount();
             
-            // Carregar pontos do usuÃ¡rio (simulado)
+            // Carregar pontos do usuário (simulado)
             const userPoints = localStorage.getItem('userPoints') || '2850';
             document.getElementById('userPoints').textContent = userPoints;
             document.getElementById('pointsToRedeem').max = userPoints;

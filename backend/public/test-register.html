@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -62,15 +62,16 @@
             color: #721c24;
         }
     </style>
+    <link rel="stylesheet" href="/css/i9plus-theme.css">
 </head>
 <body>
     <div class="form-container">
-        <h1>🧪 Teste de Cadastro - TemDeTudo</h1>
+        <h1>?? Teste de Cadastro - TemDeTudo</h1>
         
         <form id="testForm" onsubmit="testRegister(event)">
             <div class="form-group">
                 <label for="name">Nome completo:</label>
-                <input type="text" id="name" name="name" value="João da Silva" required>
+                <input type="text" id="name" name="name" value="Jo�o da Silva" required>
             </div>
             
             <div class="form-group">
@@ -88,13 +89,13 @@
                 <input type="password" id="password" name="password" value="12345678" required>
             </div>
             
-            <button type="submit" id="submitBtn">🚀 Testar Cadastro</button>
+            <button type="submit" id="submitBtn">?? Testar Cadastro</button>
         </form>
         
         <div id="messageArea"></div>
         
         <div style="margin-top: 30px; padding: 20px; background: #e9ecef; border-radius: 5px;">
-            <h3>🔍 Debug Info:</h3>
+            <h3>?? Debug Info:</h3>
             <div id="debugInfo"></div>
         </div>
     </div>
@@ -111,9 +112,9 @@
             
             // Show loading
             submitBtn.disabled = true;
-            submitBtn.textContent = '⏳ Testando...';
+            submitBtn.textContent = '? Testando...';
             messageArea.innerHTML = '';
-            debugInfo.innerHTML = 'Enviando requisição...';
+            debugInfo.innerHTML = 'Enviando requisi��o...';
             
             const requestData = {
                 name: formData.get('name'),
@@ -145,12 +146,12 @@
                 try {
                     data = JSON.parse(responseText);
                 } catch (e) {
-                    throw new Error('Resposta não é JSON válido: ' + responseText);
+                    throw new Error('Resposta n�o � JSON v�lido: ' + responseText);
                 }
 
                 if (response.ok && data.success) {
-                    showMessage('✅ Cadastro realizado com sucesso!', 'success');
-                    debugInfo.innerHTML += `<br><strong>✅ SUCESSO!</strong> Token recebido: ${data.data?.token ? 'SIM' : 'NÃO'}`;
+                    showMessage('? Cadastro realizado com sucesso!', 'success');
+                    debugInfo.innerHTML += `<br><strong>? SUCESSO!</strong> Token recebido: ${data.data?.token ? 'SIM' : 'N�O'}`;
                     
                     // Change email for next test
                     document.getElementById('email').value = 'user' + Date.now() + '@teste.com';
@@ -160,11 +161,11 @@
                 
             } catch (error) {
                 console.error('Erro:', error);
-                showMessage('❌ Erro: ' + error.message, 'error');
-                debugInfo.innerHTML += `<br><strong>❌ ERRO:</strong> ${error.message}`;
+                showMessage('? Erro: ' + error.message, 'error');
+                debugInfo.innerHTML += `<br><strong>? ERRO:</strong> ${error.message}`;
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = '🚀 Testar Cadastro';
+                submitBtn.textContent = '?? Testar Cadastro';
             }
         }
 
