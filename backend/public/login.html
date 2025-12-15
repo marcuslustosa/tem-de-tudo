@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - i9Plus</title>
+    <title>Login - Tem de Tudo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/i9plus-theme.css">
+    <link rel="stylesheet" href="/css/temdetudo-theme.css">
     
     <style>
         .auth-container {
@@ -247,7 +247,7 @@
     <div class="auth-container">
         <div class="auth-box i9-animate-fadeIn">
             <div class="auth-logo">
-                <div class="auth-logo-text">i9Plus</div>
+                <div class="auth-logo-text">Tem de Tudo</div>
                 <div class="auth-logo-subtitle">Sistema de Fidelidade</div>
             </div>
 
@@ -256,7 +256,7 @@
 
             <div id="alert" class="alert"></div>
 
-            <!-- Seletor de Tipo de Usu√°rio -->
+            <!-- Seletor de Tipo de Usu·rio -->
             <div class="user-type-selector">
                 <button type="button" class="user-type-btn active" data-type="cliente" onclick="selectUserType('cliente')">
                     <div class="user-type-icon"><i class="fas fa-user"></i></div>
@@ -281,7 +281,7 @@
                     <label class="form-label">Senha</label>
                     <div class="form-input-icon">
                         <i class="fas fa-lock"></i>
-                        <input type="password" class="form-input" id="password" placeholder="‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢" required>
+                        <input type="password" class="form-input" id="password" placeholder="ïïïïïïïï" required>
                     </div>
                     <div class="forgot-password">
                         <a href="#">Esqueceu a senha?</a>
@@ -298,7 +298,7 @@
             </div>
 
             <div class="auth-footer">
-                N√£o tem uma conta?
+                N„o tem uma conta?
                 <a href="/register.html" id="registerLink">Cadastre-se</a>
             </div>
         </div>
@@ -311,7 +311,7 @@
         function selectUserType(type) {
             userType = type;
             
-            // Atualizar bot√µes
+            // Atualizar botıes
             document.querySelectorAll('.user-type-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -348,7 +348,7 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Salvar token e dados do usu√°rio
+                    // Salvar token e dados do usu·rio
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
                     localStorage.setItem('user_id', data.user.id);
@@ -357,7 +357,7 @@
                     // Mostrar sucesso
                     showAlert('Login realizado com sucesso!', 'success');
 
-                    // Redirecionar baseado no tipo de usu√°rio
+                    // Redirecionar baseado no tipo de usu·rio
                     setTimeout(() => {
                         if (data.user.tipo_usuario === 'admin') {
                             window.location.href = '/admin.html';
@@ -386,7 +386,7 @@
             alert.textContent = message;
         }
 
-        // Verificar se j√° est√° logado
+        // Verificar se j· est· logado
         if (localStorage.getItem('token')) {
             const userType = localStorage.getItem('user_type');
             if (userType === 'admin') {
