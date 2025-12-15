@@ -1,323 +1,562 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard Cliente - Tem de Tudo</title>
-    <link rel="stylesheet" href="/css/modern-theme.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Empresas - i9Plus</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body {
-            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-dark) 100%);
-            min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-        }
-        .dashboard-header {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1.5rem 2rem;
-            margin-bottom: 2rem;
-        }
-        .dashboard-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary-purple);
-            margin-bottom: 0.5rem;
-        }
-        .welcome-text {
-            color: var(--gray-600);
-            font-size: 1.1rem;
-        }
-        .dashboard-nav {
-            background: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        .dashboard-nav ul {
-            list-style: none;
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        .dashboard-nav a {
-            color: var(--primary-purple);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
-        .dashboard-nav a:hover {
-            color: var(--primary-light);
-        }
-        .dashboard-container {
+
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem 2rem;
         }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .stat-card {
+
+        .header {
             background: white;
-            border-radius: 12px;
-            padding: 2rem;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
-        .stat-card.pontos {
+
+        .header h1 {
+            color: #667eea;
+            font-size: 24px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-icon {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
         }
-        .stat-card.nivel {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
+
+        .btn-icon:hover {
+            transform: scale(1.05);
         }
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0.5rem 0;
-        }
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-        .section-card {
+
+        .search-filter {
             background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-purple);
-            margin-bottom: 1.5rem;
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
         }
-        .list-item {
-            padding: 1rem;
-            border-bottom: 1px solid var(--gray-200);
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
         }
-        .list-item:last-child {
-            border-bottom: none;
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
         }
+
+        .filter-chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .chip.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .empresas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 80px;
+        }
+
+        .empresa-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .empresa-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .empresa-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .empresa-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+            margin: 0 auto 15px;
+        }
+
+        .empresa-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .empresa-ramo {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .empresa-rating {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .stars {
+            color: #ffd700;
+        }
+
+        .rating-count {
+            color: #999;
+            font-size: 14px;
+        }
+
+        .cartoes-progress {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .cartao-item {
+            margin-bottom: 10px;
+        }
+
+        .cartao-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .cartao-title {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .cartao-pontos {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 18px;
+        }
+
+        .loading i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 768px) {
-            .dashboard-container {
-                padding: 0 1rem 1rem;
-            }
-            .dashboard-nav ul {
-                gap: 1rem;
-            }
-            .stats-grid {
+            .empresas-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .header {
+                text-align: center;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard-nav">
-        <nav>
-            <ul>
-                <li><a href="/dashboard-cliente.html"><i class="fas fa-home"></i> Início</a></li>
-                <li><a href="/cliente/perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
-                <li><a href="/cliente/pontos.html"><i class="fas fa-star"></i> Pontos</a></li>
-                <li><a href="/cliente/cupons.html"><i class="fas fa-ticket-alt"></i> Cupons</a></li>
-                <li><a href="/cliente/historico.html"><i class="fas fa-history"></i> Histórico</a></li>
-                <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
-            </ul>
-        </nav>
-    </div>
-
-    <div class="dashboard-header">
-        <h1 class="dashboard-title">Dashboard Cliente</h1>
-        <p class="welcome-text" id="welcome-message">Carregando informações...</p>
-    </div>
-
-    <div class="dashboard-container">
-        <div class="stats-grid">
-            <div class="stat-card pontos">
-                <div class="stat-label">Total de Pontos</div>
-                <div class="stat-value" id="total-pontos">...</div>
-            </div>
-            <div class="stat-card nivel">
-                <div class="stat-label">Nível Atual</div>
-                <div class="stat-value" id="nivel-pontos">...</div>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-store"></i> Minhas Empresas</h1>
+            <div class="header-actions">
+                <button class="btn-icon" onclick="window.location.href='scanner.html'" title="Scanner QR Code">
+                    <i class="fas fa-qrcode"></i>
+                </button>
+                <button class="btn-icon" onclick="window.location.href='app.html'" title="Menu Principal">
+                    <i class="fas fa-home"></i>
+                </button>
+                <button class="btn-icon" onclick="logout()" title="Sair" style="background: #ff4757;">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
             </div>
         </div>
 
-        <div class="section-card">
-            <h2 class="section-title">Seus Cupons Ativos</h2>
-            <div id="cupons-list">
-                <div class="list-item">Carregando cupons...</div>
+        <!-- Search and Filter -->
+        <div class="search-filter">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar empresa..." onkeyup="filtrarEmpresas()">
+                <button class="btn-icon" onclick="filtrarEmpresas()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="filter-chips">
+                <div class="chip active" data-ramo="todos" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-list"></i> Todos
+                </div>
+                <div class="chip" data-ramo="Restaurante" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-utensils"></i> Restaurantes
+                </div>
+                <div class="chip" data-ramo="Bar" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-beer"></i> Bares
+                </div>
+                <div class="chip" data-ramo="Salão" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-cut"></i> Salões
+                </div>
+                <div class="chip" data-ramo="Academia" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-dumbbell"></i> Academias
+                </div>
             </div>
         </div>
 
-        <div class="section-card">
-            <h2 class="section-title">Histórico de Atividades</h2>
-            <div id="historico-list">
-                <div class="list-item">Carregando histórico...</div>
-            </div>
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div><i class="fas fa-spinner"></i></div>
+            <div>Carregando suas empresas...</div>
+        </div>
+
+        <!-- Empresas Grid -->
+        <div id="empresasGrid" class="empresas-grid" style="display: none;"></div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-store-slash"></i>
+            <h3>Nenhuma Empresa Encontrada</h3>
+            <p>Você ainda não está inscrito em nenhuma empresa.</p>
+            <button class="btn-primary" onclick="window.location.href='scanner.html'">
+                <i class="fas fa-qrcode"></i> Escanear QR Code
+            </button>
         </div>
     </div>
-
 
     <script>
-        // Verificar autenticação
-        function checkAuth() {
-            const token = localStorage.getItem('tem_de_tudo_token');
+        const API_BASE = window.location.origin;
+        let todasEmpresas = [];
+        let filtroAtual = 'todos';
+
+        // Carregar empresas ao iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarEmpresas();
+        });
+
+        async function carregarEmpresas() {
+            const token = localStorage.getItem('token');
             if (!token) {
-                window.location.href = '/login.html';
-                return false;
+                window.location.href = 'login.html';
+                return;
             }
-            return token;
-        }
-
-        function logout() {
-            localStorage.removeItem('tem_de_tudo_token');
-            localStorage.removeItem('tem_de_tudo_user');
-            window.location.href = '/login.html';
-        }
-
-        async function loadDashboard() {
-            const token = checkAuth();
-            if (!token) return;
 
             try {
-                // Carregar dados do usuário
-                const userRes = await fetch('/api/user', {
+                const response = await fetch(`${API_BASE}/api/cliente/empresas-inscritas`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'Accept': 'application/json'
                     }
                 });
 
-                if (!userRes.ok) {
-                    if (userRes.status === 401) {
-                        logout();
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        window.location.href = 'login.html';
                         return;
                     }
-                    throw new Error('Erro ao carregar dados do usuário');
+                    throw new Error('Erro ao carregar empresas');
                 }
 
-                const userData = await userRes.json();
+                const data = await response.json();
+                todasEmpresas = data.empresas || [];
                 
-                if (userData.success) {
-                    const user = userData.data.user || userData.data;
-                    document.getElementById('welcome-message').textContent = `Bem-vindo, ${user.name}!`;
-                    
-                    // Exibir pontos
-                    const pontos = user.pontos || 0;
-                    const nivel = user.nivel || 'Bronze';
-                    
-                    document.getElementById('total-pontos').textContent = pontos;
-                    document.getElementById('nivel-pontos').textContent = nivel;
+                document.getElementById('loadingState').style.display = 'none';
+                
+                if (todasEmpresas.length === 0) {
+                    document.getElementById('emptyState').style.display = 'block';
+                } else {
+                    document.getElementById('empresasGrid').style.display = 'grid';
+                    renderizarEmpresas(todasEmpresas);
                 }
-
-                // Tentar carregar cupons
-                try {
-                    const cuponsRes = await fetch('/api/cupons', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-
-                    if (cuponsRes.ok) {
-                        const cuponsData = await cuponsRes.json();
-                        const cuponsList = document.getElementById('cupons-list');
-                        cuponsList.innerHTML = '';
-                        
-                        const cupons = (cuponsData.success && cuponsData.data && cuponsData.data.length > 0) ? cuponsData.data : [
-                            { codigo: 'DESCONTO15', descricao: '15% OFF em compras acima de R$ 100', validade: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() },
-                            { codigo: 'FRETEGRATIS', descricao: 'Frete grátis', validade: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString() }
-                        ];
-                        
-                        if (cupons.length > 0) {
-                            cupons.forEach(c => {
-                                const div = document.createElement('div');
-                                div.className = 'list-item';
-                                div.innerHTML = `
-                                    <strong>${c.codigo || 'Cupom'}</strong><br>
-                                    ${c.descricao || 'Sem descrição'}<br>
-                                    <small>Validade: ${c.validade ? new Date(c.validade).toLocaleDateString() : 'Indeterminada'}</small>
-                                `;
-                                cuponsList.appendChild(div);
-                            });
-                        } else {
-                            cuponsList.innerHTML = '<div class="list-item">Nenhum cupom ativo no momento.</div>';
-                        }
-                    } else {
-                        document.getElementById('cupons-list').innerHTML = '<div class="list-item">Não foi possível carregar cupons.</div>';
-                    }
-                } catch (e) {
-                    console.error('Erro ao carregar cupons:', e);
-                    document.getElementById('cupons-list').innerHTML = '<div class="list-item">Erro ao carregar cupons.</div>';
-                }
-
-                // Tentar carregar histórico
-                try {
-                    const historicoRes = await fetch('/api/pontos/historico', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    });
-
-                    if (historicoRes.ok) {
-                        const historicoData = await historicoRes.json();
-                        const historicoList = document.getElementById('historico-list');
-                        historicoList.innerHTML = '';
-                        
-                        const historico = (historicoData.success && historicoData.data && historicoData.data.length > 0) ? historicoData.data : [
-                            { descricao: 'Compra realizada', created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
-                            { descricao: 'Desconto aplicado', created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() },
-                            { descricao: 'Bônus de cadastro', created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() }
-                        ];
-                        
-                        if (historico.length > 0) {
-                            historico.forEach(h => {
-                                const div = document.createElement('div');
-                                div.className = 'list-item';
-                                div.innerHTML = `
-                                    ${h.descricao || h.acao || 'Atividade'}<br>
-                                    <small>${h.created_at ? new Date(h.created_at).toLocaleString() : 'Data desconhecida'}</small>
-                                `;
-                                historicoList.appendChild(div);
-                            });
-                        } else {
-                            historicoList.innerHTML = '<div class="list-item">Nenhuma atividade recente.</div>';
-                        }
-                    } else {
-                        document.getElementById('historico-list').innerHTML = '<div class="list-item">Não foi possível carregar histórico.</div>';
-                    }
-                } catch (e) {
-                    console.error('Erro ao carregar histórico:', e);
-                    document.getElementById('historico-list').innerHTML = '<div class="list-item">Erro ao carregar histórico.</div>';
-                }
-
             } catch (error) {
-                console.error('Erro ao carregar dashboard:', error);
-                document.getElementById('welcome-message').textContent = 'Erro ao carregar dashboard.';
-                document.getElementById('total-pontos').textContent = '0';
-                document.getElementById('nivel-pontos').textContent = 'Bronze';
-                document.getElementById('cupons-list').innerHTML = '<div class="list-item">Erro ao carregar dados.</div>';
-                document.getElementById('historico-list').innerHTML = '<div class="list-item">Erro ao carregar dados.</div>';
+                console.error('Erro:', error);
+                document.getElementById('loadingState').innerHTML = `
+                    <div style="color: white;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Erro ao carregar empresas. Tente novamente.</p>
+                        <button class="btn-primary" onclick="location.reload()">Recarregar</button>
+                    </div>
+                `;
             }
         }
 
-        // Carregar dashboard quando a página estiver pronta
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadDashboard);
-        } else {
-            loadDashboard();
+        function renderizarEmpresas(empresas) {
+            const grid = document.getElementById('empresasGrid');
+            
+            if (empresas.length === 0) {
+                grid.innerHTML = '';
+                document.getElementById('emptyState').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('emptyState').style.display = 'none';
+            
+            grid.innerHTML = empresas.map(empresa => `
+                <div class="empresa-card" onclick="abrirEmpresa(${empresa.id})">
+                    ${empresa.progresso_cartoes && empresa.progresso_cartoes.length > 0 ? 
+                        `<div class="empresa-badge">${empresa.progresso_cartoes.length} ${empresa.progresso_cartoes.length === 1 ? 'Cartão' : 'Cartões'}</div>` 
+                        : ''}
+                    
+                    <div class="empresa-logo">
+                        ${getIconeRamo(empresa.ramo)}
+                    </div>
+                    
+                    <div class="empresa-name">${empresa.nome}</div>
+                    <div class="empresa-ramo">
+                        <i class="fas ${getIconClassRamo(empresa.ramo)}"></i> ${empresa.ramo || 'Não informado'}
+                    </div>
+                    
+                    <div class="empresa-rating">
+                        <div class="stars">${renderStars(empresa.avaliacao_media || 0)}</div>
+                        <span class="rating-count">(${empresa.total_avaliacoes || 0})</span>
+                    </div>
+                    
+                    ${empresa.progresso_cartoes && empresa.progresso_cartoes.length > 0 ? `
+                        <div class="cartoes-progress">
+                            ${empresa.progresso_cartoes.map(cartao => `
+                                <div class="cartao-item">
+                                    <div class="cartao-header">
+                                        <span class="cartao-title">${cartao.cartao.titulo}</span>
+                                        <span class="cartao-pontos">${cartao.pontos_atuais}/${cartao.cartao.meta_pontos}</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${(cartao.pontos_atuais / cartao.cartao.meta_pontos * 100).toFixed(0)}%"></div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderStars(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            
+            if (halfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+
+        function getIconeRamo(ramo) {
+            const icones = {
+                'Restaurante': '<i class="fas fa-utensils"></i>',
+                'Bar': '<i class="fas fa-beer"></i>',
+                'Salão': '<i class="fas fa-cut"></i>',
+                'Academia': '<i class="fas fa-dumbbell"></i>',
+                'Cafeteria': '<i class="fas fa-coffee"></i>',
+                'Loja': '<i class="fas fa-shopping-bag"></i>',
+                'Serviços': '<i class="fas fa-tools"></i>'
+            };
+            return icones[ramo] || '<i class="fas fa-store"></i>';
+        }
+
+        function getIconClassRamo(ramo) {
+            const classes = {
+                'Restaurante': 'fa-utensils',
+                'Bar': 'fa-beer',
+                'Salão': 'fa-cut',
+                'Academia': 'fa-dumbbell',
+                'Cafeteria': 'fa-coffee',
+                'Loja': 'fa-shopping-bag',
+                'Serviços': 'fa-tools'
+            };
+            return classes[ramo] || 'fa-store';
+        }
+
+        function selecionarFiltro(element) {
+            // Remove active de todos os chips
+            document.querySelectorAll('.chip').forEach(chip => chip.classList.remove('active'));
+            
+            // Adiciona active no chip selecionado
+            element.classList.add('active');
+            
+            // Atualiza filtro atual
+            filtroAtual = element.dataset.ramo;
+            
+            // Filtra empresas
+            filtrarEmpresas();
+        }
+
+        function filtrarEmpresas() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            const empresasFiltradas = todasEmpresas.filter(empresa => {
+                const matchSearch = empresa.nome.toLowerCase().includes(searchTerm);
+                const matchRamo = filtroAtual === 'todos' || empresa.ramo === filtroAtual;
+                return matchSearch && matchRamo;
+            });
+            
+            renderizarEmpresas(empresasFiltradas);
+        }
+
+        function abrirEmpresa(empresaId) {
+            window.location.href = `empresa.html?id=${empresaId}`;
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
         }
     </script>
 </body>
