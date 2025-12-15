@@ -373,6 +373,28 @@
                 console.log('Service Worker registration failed:', err);
             });
         }
+        
+        // Verificar bônus de aniversário
+        async function verificarBonusAniversario() {
+            try {
+                const res = await fetch('/api/cliente/verificar-aniversario', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                if (data.success && data.tem_bonus) {
+                    // Redirecionar para página de parabéns
+                    setTimeout(() => {
+                        window.location.href = '/bonus-aniversario.html';
+                    }, 2000); // 2 segundos após carregar
+                }
+            } catch (error) {
+                console.error('Erro ao verificar aniversário:', error);
+            }
+        }
+        
+        // Verificar aniversário ao carregar
+        verificarBonusAniversario();
     </script>
 </body>
 </html>

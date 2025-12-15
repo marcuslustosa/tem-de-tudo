@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parabéns! - Tem de Tudo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; }
+        
+        .birthday-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .birthday-card {
+            background: white;
+            border-radius: 25px;
+            padding: 40px 30px;
+            text-align: center;
+            max-width: 380px;
+            margin: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            animation: confettiFall 3s linear infinite;
+        }
+        
+        @keyframes confettiFall {
+            to { transform: translateY(400px) rotate(360deg); opacity: 0; }
+        }
+        
+        .birthday-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 50px;
+            animation: bounce 1s ease infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .birthday-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .birthday-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .bonus-box {
+            background: linear-gradient(135deg, #fff4e6 0%, #ffe0b2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .bonus-label {
+            font-size: 14px;
+            color: #e65100;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .bonus-value {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .bonus-desc {
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+        }
+        
+        .btn-claim {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+        
+        .btn-claim:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-later {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: #999;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="birthday-overlay" id="birthdayOverlay">
+        <div class="birthday-card">
+            <!-- Confetti animado -->
+            <div class="confetti" style="left:10%;animation-delay:0s;background:#667eea;"></div>
+            <div class="confetti" style="left:20%;animation-delay:0.2s;background:#764ba2;"></div>
+            <div class="confetti" style="left:30%;animation-delay:0.4s;background:#ff9800;"></div>
+            <div class="confetti" style="left:40%;animation-delay:0.6s;background:#667eea;"></div>
+            <div class="confetti" style="left:50%;animation-delay:0.8s;background:#764ba2;"></div>
+            <div class="confetti" style="left:60%;animation-delay:1s;background:#ff9800;"></div>
+            <div class="confetti" style="left:70%;animation-delay:1.2s;background:#667eea;"></div>
+            <div class="confetti" style="left:80%;animation-delay:1.4s;background:#764ba2;"></div>
+            <div class="confetti" style="left:90%;animation-delay:1.6s;background:#ff9800;"></div>
+            
+            <div class="birthday-icon">
+                🎂
+            </div>
+            
+            <div class="birthday-title">Parabéns!</div>
+            <div class="birthday-subtitle">
+                Hoje é seu dia especial e preparamos um presente para você! 🎉
+            </div>
+            
+            <div class="bonus-box">
+                <div class="bonus-label">SEU PRESENTE DE ANIVERSÁRIO</div>
+                <div class="bonus-value" id="bonusValue">100</div>
+                <div class="bonus-desc">pontos extras para usar onde quiser!</div>
+            </div>
+            
+            <button class="btn-claim" onclick="resgatarBonus()">
+                <i class="fas fa-gift"></i> Resgatar Presente
+            </button>
+            
+            <button class="btn-later" onclick="fecharPopup()">
+                Resgatar depois
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('user_id');
+
+        async function verificarAniversario() {
+            try {
+                const res = await fetch('/api/cliente/verificar-aniversario', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                if (data.success && data.tem_bonus) {
+                    document.getElementById('bonusValue').textContent = data.pontos;
+                    document.getElementById('birthdayOverlay').style.display = 'flex';
+                } else {
+                    // Não é aniversário ou já resgatou
+                    window.location.href = '/app.html';
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                window.location.href = '/app.html';
+            }
+        }
+
+        async function resgatarBonus() {
+            try {
+                const res = await fetch('/api/cliente/resgatar-bonus-aniversario', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    // Animação de sucesso
+                    const btn = event.target;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Presente Resgatado!';
+                    btn.style.background = '#4caf50';
+                    
+                    setTimeout(() => {
+                        window.location.href = '/app.html';
+                    }, 1500);
+                } else {
+                    alert(data.message || 'Erro ao resgatar bônus');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao resgatar bônus');
+            }
+        }
+
+        function fecharPopup() {
+            // Salvar que usuário viu mas não resgatou (pode resgatar depois)
+            localStorage.setItem('birthday_popup_shown', new Date().toISOString());
+            window.location.href = '/app.html';
+        }
+
+        // Verificar ao carregar
+        if (token) {
+            verificarAniversario();
+        } else {
+            window.location.href = '/login.html';
+        }
+    </script>
+</body>
+</html>

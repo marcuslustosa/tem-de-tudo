@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Clientes - Tem de Tudo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; padding-bottom: 70px; }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px 20px;
+            color: white;
+        }
+        
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .btn-back {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .search-bar {
+            padding: 15px 20px;
+            background: white;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 15px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            padding: 15px 20px;
+            overflow-x: auto;
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #666;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .clients-list {
+            padding: 20px;
+        }
+        
+        .client-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .client-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .client-info {
+            flex: 1;
+        }
+        
+        .client-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .client-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .meta-item i {
+            color: #667eea;
+        }
+        
+        .client-points {
+            background: #f0f9ff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        
+        .points-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .points-label {
+            font-size: 11px;
+            color: #999;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-top">
+            <button class="btn-back" onclick="window.location.href='/empresa-dashboard.html'">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="header-title">Meus Clientes</div>
+        </div>
+        <p style="opacity:0.9;">Gerencie sua base de clientes</p>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalClientes">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="ativosHoje">0</div>
+                <div class="stat-label">Hoje</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="novosEsteMes">0</div>
+                <div class="stat-label">Este Mês</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" class="search-input" id="searchInput" placeholder="Buscar cliente...">
+    </div>
+
+    <div class="filters">
+        <button class="filter-btn active" onclick="filtrar('todos')">Todos</button>
+        <button class="filter-btn" onclick="filtrar('ativos')">Ativos</button>
+        <button class="filter-btn" onclick="filtrar('inativos')">Inativos</button>
+        <button class="filter-btn" onclick="filtrar('vip')">VIP</button>
+    </div>
+
+    <div class="clients-list" id="clientsList"></div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/login.html';
+        }
+
+        let clientes = [];
+        let currentFilter = 'todos';
+
+        async function carregarClientes() {
+            try {
+                const res = await fetch('/api/empresa/clientes', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    clientes = data.data;
+                    atualizarEstatisticas(data.stats);
+                    renderClientes();
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+            }
+        }
+
+        function atualizarEstatisticas(stats) {
+            document.getElementById('totalClientes').textContent = stats.total || 0;
+            document.getElementById('ativosHoje').textContent = stats.hoje || 0;
+            document.getElementById('novosEsteMes').textContent = stats.mes || 0;
+        }
+
+        function filtrar(tipo) {
+            currentFilter = tipo;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderClientes();
+        }
+
+        function renderClientes() {
+            let filtered = clientes;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (searchTerm) {
+                filtered = filtered.filter(c => 
+                    c.nome.toLowerCase().includes(searchTerm) || 
+                    c.email.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (currentFilter !== 'todos') {
+                filtered = filtered.filter(c => {
+                    if (currentFilter === 'ativos') return c.ultimo_checkin_dias <= 7;
+                    if (currentFilter === 'inativos') return c.ultimo_checkin_dias > 30;
+                    if (currentFilter === 'vip') return c.pontos >= 100;
+                    return true;
+                });
+            }
+            
+            const container = document.getElementById('clientsList');
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <p>Nenhum cliente encontrado</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filtered.map(cliente => {
+                const iniciais = cliente.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                const diasAtras = cliente.ultimo_checkin_dias;
+                const ultimoCheckin = diasAtras === 0 ? 'Hoje' : 
+                                     diasAtras === 1 ? 'Ontem' : 
+                                     `${diasAtras} dias atrás`;
+                
+                return `
+                    <div class="client-card">
+                        <div class="client-avatar">${iniciais}</div>
+                        <div class="client-info">
+                            <div class="client-name">${cliente.nome}</div>
+                            <div class="client-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>${ultimoCheckin}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>${cliente.total_checkins || 0} visitas</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="client-points">
+                            <div class="points-value">${cliente.pontos || 0}</div>
+                            <div class="points-label">pontos</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', renderClientes);
+
+        carregarClientes();
+    </script>
+</body>
+</html>
