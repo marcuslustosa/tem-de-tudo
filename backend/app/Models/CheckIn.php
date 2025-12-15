@@ -13,6 +13,8 @@ class CheckIn extends Model
         'user_id',
         'empresa_id',
         'qr_code_id',
+        'pontos',
+        'data',
         'valor_compra',
         'pontos_calculados',
         'foto_cupom',
@@ -30,6 +32,8 @@ class CheckIn extends Model
     ];
 
     protected $casts = [
+        'pontos' => 'integer',
+        'data' => 'datetime',
         'valor_compra' => 'decimal:2',
         'pontos_calculados' => 'integer',
         'latitude' => 'decimal:8',

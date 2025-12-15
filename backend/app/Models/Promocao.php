@@ -15,13 +15,28 @@ class Promocao extends Model
         'empresa_id',
         'titulo',
         'descricao',
+        'desconto',
+        'pontos_necessarios',
+        'data_inicio',
+        'validade',
         'imagem',
+        'status',
+        'visualizacoes',
+        'resgates',
+        'usos',
         'ativo',
         'data_envio',
         'total_envios'
     ];
 
     protected $casts = [
+        'desconto' => 'decimal:2',
+        'pontos_necessarios' => 'integer',
+        'data_inicio' => 'date',
+        'validade' => 'date',
+        'visualizacoes' => 'integer',
+        'resgates' => 'integer',
+        'usos' => 'integer',
         'ativo' => 'boolean',
         'data_envio' => 'datetime',
         'total_envios' => 'integer',

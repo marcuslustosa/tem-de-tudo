@@ -12,7 +12,11 @@ class BonusAniversario extends Model
     protected $table = 'bonus_aniversario';
 
     protected $fillable = [
+        'user_id',
         'empresa_id',
+        'pontos',
+        'data_resgate',
+        'ano',
         'titulo',
         'descricao',
         'presente',
@@ -22,7 +26,18 @@ class BonusAniversario extends Model
 
     protected $casts = [
         'ativo' => 'boolean',
+        'data_resgate' => 'datetime',
+        'ano' => 'integer',
+        'pontos' => 'integer'
     ];
+
+    /**
+     * Relacionamento com User (Cliente)
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Relacionamento com Empresa

@@ -13,6 +13,8 @@ use App\Http\Controllers\CartaoFidelidadeController;
 use App\Http\Controllers\PromocaoController;
 use App\Http\Controllers\AvaliacaoController;
 use App\Http\Controllers\InscricaoController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\EmpresaPromocaoController;
 
 
 // Debug route (remover em produção)
@@ -274,6 +276,18 @@ Route::middleware('auth:sanctum')->prefix('cliente')->group(function () {
     // Inscrições (Cliente)
     Route::get('/empresas-inscritas', [InscricaoController::class, 'minhasInscricoes']);
     Route::get('/inscricao/{empresa_id}', [InscricaoController::class, 'detalhesInscricao']);
+    
+    // ========== ROTAS i9Plus - Cliente ==========
+    // Bônus de Aniversário
+    Route::get('/verificar-aniversario', [ClienteController::class, 'verificarAniversario']);
+    Route::post('/resgatar-bonus-aniversario', [ClienteController::class, 'resgatarBonusAniversario']);
+    
+    // Cartões Fidelidade
+    Route::get('/cartoes-fidelidade', [ClienteController::class, 'cartoesFidelidade']);
+    
+    // Bônus de Adesão
+    Route::get('/bonus-adesao/{empresa_id}', [ClienteController::class, 'verificarBonusAdesao']);
+    Route::post('/resgatar-bonus/{bonus_id}', [ClienteController::class, 'resgatarBonusAdesao']);
 });
 
 // Rotas da Empresa (autenticada)
@@ -309,4 +323,24 @@ Route::middleware('auth:sanctum')->prefix('empresa')->group(function () {
     
     // Avaliações (Empresa - apenas visualizar)
     Route::get('/avaliacoes/estatisticas', [AvaliacaoController::class, 'estatisticas']);
+    
+    // ========== ROTAS i9Plus - Empresa ==========
+    // Scanner QR Code para Check-in
+    Route::post('/registrar-checkin', [EmpresaPromocaoController::class, 'registrarCheckin']);
+    
+    // Promoções (CRUD Completo)
+    Route::get('/promocoes', [EmpresaPromocaoController::class, 'index']);
+    Route::post('/promocoes', [EmpresaPromocaoController::class, 'store']);
+    Route::get('/promocoes/{id}', [PromocaoController::class, 'show']); // Reutiliza controller existente
+    Route::put('/promocoes/{id}', [EmpresaPromocaoController::class, 'update']);
+    Route::patch('/promocoes/{id}/pausar', [EmpresaPromocaoController::class, 'pausar']);
+    Route::patch('/promocoes/{id}/ativar', [EmpresaPromocaoController::class, 'ativar']);
+    Route::delete('/promocoes/{id}', [EmpresaPromocaoController::class, 'destroy']);
+    
+    // Clientes
+    Route::get('/clientes', [EmpresaPromocaoController::class, 'clientes']);
+    
+    // Notificações Push
+    Route::get('/notificacoes/stats', [EmpresaPromocaoController::class, 'notificacoesStats']);
+    Route::post('/notificacoes/enviar', [EmpresaPromocaoController::class, 'enviarNotificacao']);
 });
