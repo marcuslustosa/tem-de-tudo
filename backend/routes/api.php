@@ -9,6 +9,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\BonusAdesaoController;
+use App\Http\Controllers\CartaoFidelidadeController;
 
 
 // Debug route (remover em produção)
@@ -254,6 +255,10 @@ Route::middleware('auth:sanctum')->prefix('cliente')->group(function () {
     // Bônus de Adesão (Cliente)
     Route::get('/bonus-disponivel/{empresa_id}', [BonusAdesaoController::class, 'bonusDisponivel']);
     Route::post('/resgatar-bonus/{empresa_id}', [BonusAdesaoController::class, 'resgatar']);
+    
+    // Cartão Fidelidade (Cliente)
+    Route::get('/meu-progresso', [CartaoFidelidadeController::class, 'meuProgresso']);
+    Route::get('/progresso-empresa/{empresa_id}', [CartaoFidelidadeController::class, 'progressoPorEmpresa']);
 });
 
 // Rotas da Empresa (autenticada)
@@ -270,4 +275,12 @@ Route::middleware('auth:sanctum')->prefix('empresa')->group(function () {
     Route::get('/bonus-adesao/{id}', [BonusAdesaoController::class, 'show']);
     Route::put('/bonus-adesao/{id}', [BonusAdesaoController::class, 'update']);
     Route::delete('/bonus-adesao/{id}', [BonusAdesaoController::class, 'destroy']);
+    
+    // Cartão Fidelidade (CRUD - Empresa)
+    Route::get('/cartoes-fidelidade', [CartaoFidelidadeController::class, 'index']);
+    Route::post('/cartoes-fidelidade', [CartaoFidelidadeController::class, 'store']);
+    Route::get('/cartoes-fidelidade/{id}', [CartaoFidelidadeController::class, 'show']);
+    Route::put('/cartoes-fidelidade/{id}', [CartaoFidelidadeController::class, 'update']);
+    Route::delete('/cartoes-fidelidade/{id}', [CartaoFidelidadeController::class, 'destroy']);
+    Route::post('/adicionar-ponto', [CartaoFidelidadeController::class, 'adicionarPonto']);
 });
