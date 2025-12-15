@@ -12,6 +12,7 @@ use App\Http\Controllers\BonusAdesaoController;
 use App\Http\Controllers\CartaoFidelidadeController;
 use App\Http\Controllers\PromocaoController;
 use App\Http\Controllers\AvaliacaoController;
+use App\Http\Controllers\InscricaoController;
 
 
 // Debug route (remover em produção)
@@ -270,6 +271,10 @@ Route::middleware('auth:sanctum')->prefix('cliente')->group(function () {
     Route::get('/avaliacoes/empresa/{empresa_id}', [AvaliacaoController::class, 'listarPorEmpresa']);
     Route::get('/minha-avaliacao/{empresa_id}', [AvaliacaoController::class, 'minhaAvaliacao']);
     Route::delete('/avaliacoes/{empresa_id}', [AvaliacaoController::class, 'destroy']);
+    
+    // Inscrições (Cliente)
+    Route::get('/empresas-inscritas', [InscricaoController::class, 'minhasInscricoes']);
+    Route::get('/inscricao/{empresa_id}', [InscricaoController::class, 'detalhesInscricao']);
 });
 
 // Rotas da Empresa (autenticada)
