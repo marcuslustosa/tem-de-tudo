@@ -245,7 +245,7 @@ Route::prefix('discounts')->group(function () {
 });
 
 // ============================================
-// ROTAS DO SISTEMA i9Plus (QR Code + Fidelidade)
+// ROTAS DO SISTEMA (QR Code + Fidelidade)
 // ============================================
 
 // Rotas do Cliente (autenticado)
@@ -277,7 +277,7 @@ Route::middleware('auth:sanctum')->prefix('cliente')->group(function () {
     Route::get('/empresas-inscritas', [InscricaoController::class, 'minhasInscricoes']);
     Route::get('/inscricao/{empresa_id}', [InscricaoController::class, 'detalhesInscricao']);
     
-    // ========== ROTAS i9Plus - Cliente ==========
+    // ========== ROTAS CLIENTE - Fidelidade ==========
     // Bônus de Aniversário
     Route::get('/verificar-aniversario', [ClienteController::class, 'verificarAniversario']);
     Route::post('/resgatar-bonus-aniversario', [ClienteController::class, 'resgatarBonusAniversario']);
@@ -324,7 +324,7 @@ Route::middleware('auth:sanctum')->prefix('empresa')->group(function () {
     // Avaliações (Empresa - apenas visualizar)
     Route::get('/avaliacoes/estatisticas', [AvaliacaoController::class, 'estatisticas']);
     
-    // ========== ROTAS i9Plus - Empresa ==========
+    // ========== ROTAS EMPRESA - Promoções e Clientes ==========
     // Scanner QR Code para Check-in
     Route::post('/registrar-checkin', [EmpresaPromocaoController::class, 'registrarCheckin']);
     

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Adicionar campos i9Plus à tabela promocoes
+        // Adicionar campos de fidelidade à tabela promocoes
         if (Schema::hasTable('promocoes') && !Schema::hasColumn('promocoes', 'desconto')) {
             Schema::table('promocoes', function (Blueprint $table) {
                 $table->decimal('desconto', 5, 2)->nullable()->after('pontos_necessarios');
@@ -26,7 +26,7 @@ return new class extends Migration
             });
         }
         
-        // Adicionar campos i9Plus à tabela check_ins
+        // Adicionar campos de pontos à tabela check_ins
         if (Schema::hasTable('check_ins') && !Schema::hasColumn('check_ins', 'pontos')) {
             Schema::table('check_ins', function (Blueprint $table) {
                 $table->integer('pontos')->default(0)->after('empresa_id');
