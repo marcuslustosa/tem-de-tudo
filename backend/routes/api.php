@@ -144,7 +144,6 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->g
 
 // Importar o controller de pontos
 use App\Http\Controllers\PontosController;
-use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\DiscountController;
 
 // Rotas do sistema de pontos (protegidas por Sanctum)

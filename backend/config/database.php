@@ -85,6 +85,7 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
+            'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'laravel'),
@@ -93,17 +94,22 @@ return [
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
-            'search_path' => 'public',
+            'search_path' => env('DB_SEARCH_PATH', 'public'),
             'sslmode' => env('DB_SSLMODE', 'require'),
             'sslcert' => env('DB_SSLCERT'),
             'sslkey' => env('DB_SSLKEY'),
             'sslrootcert' => env('DB_SSLROOTCERT'),
             'options' => extension_loaded('pdo_pgsql') ? array_filter([
-                PDO::ATTR_TIMEOUT => 60,
+                PDO::ATTR_TIMEOUT => env('DB_TIMEOUT', 60),
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_EMULATE_PREPARES => true,
                 PDO::ATTR_PERSISTENT => false,
+                PDO::ATTR_STRINGIFY_FETCHES => false,
             ]) : [],
+            'pool' => [
+                'min' => env('DB_POOL_MIN', 2),
+                'max' => env('DB_POOL_MAX', 10),
+            ],
         ],
 
 

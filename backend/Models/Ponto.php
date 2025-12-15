@@ -12,16 +12,62 @@ class Ponto extends Model
     protected $fillable = [
         'user_id',
         'empresa_id',
-        'points',
+        'checkin_id',
+        'coupon_id',
+        'pontos',
+        'descricao',
+        'tipo'
     ];
 
+    protected $casts = [
+        'pontos' => 'integer'
+    ];
+
+    /**
+     * Relacionamento com usuário
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Relacionamento com empresa
+     */
     public function empresa()
     {
         return $this->belongsTo(Empresa::class);
+    }
+
+    /**
+     * Relacionamento com check-in
+     */
+    public function checkin()
+    {
+        return $this->belongsTo(CheckIn::class);
+    }
+
+    /**
+     * Relacionamento com cupom
+     */
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
+    }
+
+    /**
+     * Scope para pontos ganhos
+     */
+    public function scopeGanhos($query)
+    {
+        return $query->whereIn('tipo', ['earn', 'bonus']);
+    }
+
+    /**
+     * Scope para pontos resgatados
+     */
+    public function scopeResgatados($query)
+    {
+        return $query->where('tipo', 'redeem');
     }
 }

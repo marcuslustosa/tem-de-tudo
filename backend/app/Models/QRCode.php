@@ -12,16 +12,21 @@ class QRCode extends Model
     protected $table = 'qr_codes';
 
     protected $fillable = [
-        'code',
-        'type',
         'empresa_id',
-        'user_id',
-        'qr_image',
-        'ativo'
+        'name',
+        'code',
+        'location',
+        'active',
+        'active_offers',
+        'usage_count',
+        'last_used_at'
     ];
 
     protected $casts = [
-        'ativo' => 'boolean',
+        'active' => 'boolean',
+        'active_offers' => 'array',
+        'usage_count' => 'integer',
+        'last_used_at' => 'datetime'
     ];
 
     /**
@@ -33,19 +38,36 @@ class QRCode extends Model
     }
 
     /**
-     * Relacionamento com User (Cliente)
+     * Relacionamento com check-ins
      */
-    public function user()
+    public function checkIns()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(CheckIn::class);
+    }
+
+    /**
+     * Scope para QR codes ativos
+     */
+    public function scopeAtivos($query)
+    {
+        return $query->where('active', true);
+    }
+
+    /**
+     * Incrementar contador de uso
+     */
+    public function incrementarUso()
+    {
+        $this->increment('usage_count');
+        $this->update(['last_used_at' => now()]);
     }
 
     /**
      * Gerar código único para QR Code
      */
-    public static function gerarCodigoUnico($type, $id)
+    public static function gerarCodigoUnico($empresaId)
     {
-        // Formato: TIPO-ID-TIMESTAMP-RANDOM
-        return strtoupper($type) . '-' . $id . '-' . time() . '-' . strtoupper(substr(md5(uniqid()), 0, 6));
+        // Formato: EMP-ID-TIMESTAMP-RANDOM
+        return 'QR-' . $empresaId . '-' . time() . '-' . strtoupper(substr(md5(uniqid()), 0, 6));
     }
 }
