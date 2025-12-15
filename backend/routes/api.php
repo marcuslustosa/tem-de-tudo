@@ -7,6 +7,8 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OpenAIController;
+use App\Http\Controllers\QRCodeController;
+use App\Http\Controllers\BonusAdesaoController;
 
 
 // Debug route (remover em produção)
@@ -248,6 +250,10 @@ Route::middleware('auth:sanctum')->prefix('cliente')->group(function () {
     
     // Escanear QR Code da empresa (inscrição)
     Route::post('/escanear-empresa', [QRCodeController::class, 'escanearEmpresa']);
+    
+    // Bônus de Adesão (Cliente)
+    Route::get('/bonus-disponivel/{empresa_id}', [BonusAdesaoController::class, 'bonusDisponivel']);
+    Route::post('/resgatar-bonus/{empresa_id}', [BonusAdesaoController::class, 'resgatar']);
 });
 
 // Rotas da Empresa (autenticada)
@@ -257,4 +263,11 @@ Route::middleware('auth:sanctum')->prefix('empresa')->group(function () {
     
     // Escanear QR Code do cliente (adicionar ponto)
     Route::post('/escanear-cliente', [QRCodeController::class, 'escanearCliente']);
+    
+    // Bônus de Adesão (CRUD - Empresa)
+    Route::get('/bonus-adesao', [BonusAdesaoController::class, 'index']);
+    Route::post('/bonus-adesao', [BonusAdesaoController::class, 'store']);
+    Route::get('/bonus-adesao/{id}', [BonusAdesaoController::class, 'show']);
+    Route::put('/bonus-adesao/{id}', [BonusAdesaoController::class, 'update']);
+    Route::delete('/bonus-adesao/{id}', [BonusAdesaoController::class, 'destroy']);
 });
