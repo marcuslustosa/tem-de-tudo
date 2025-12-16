@@ -2,230 +2,397 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - Tem de Tudo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#667eea">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Cadastro - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/temdetudo-theme.css"></head>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 80px;
+        }
+        
+        .register-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 32px;
+            max-width: 420px;
+            margin: 0 auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 40px;
+            color: white;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        
+        .logo-subtitle {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .welcome {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .welcome h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 8px;
+        }
+        
+        .welcome p {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 18px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .terms {
+            display: flex;
+            align-items: start;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #6c757d;
+        }
+        
+        .terms input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin-top: 2px;
+        }
+        
+        .terms a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .register-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            transition: transform 0.2s;
+        }
+        
+        .register-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .register-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            background: #e9ecef;
+        }
+        
+        .divider span {
+            position: relative;
+            background: white;
+            padding: 0 16px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .login-link {
+            text-align: center;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        
+        .error-message {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #856404;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
 <body>
-    <a href="/" class="back-home">
+    <button class="back-btn" onclick="window.location.href='index.html'">
         <i class="fas fa-arrow-left"></i>
-        <span>Voltar</span>
-    </a>
-
+    </button>
+    
     <div class="register-container">
-        <div class="register-card">
-            <!-- Logo -->
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <i class="fas fa-sparkles"></i>
+        <div class="logo">
+            <div class="logo-icon">💜</div>
+            <div class="logo-text">Tem de Tudo</div>
+            <div class="logo-subtitle">Crie sua conta grátis</div>
+        </div>
+        
+        <div class="welcome">
+            <h1>Comece sua jornada</h1>
+            <p>Preencha seus dados para criar sua conta</p>
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+        </div>
+        
+        <form id="registerForm" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label class="form-label">Nome Completo</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" class="form-input" placeholder="João Silva" required>
                 </div>
-                <div class="logo-text">Tem de Tudo</div>
-                <div class="logo-subtitle">Crie sua conta gr�tis</div>
             </div>
-
-            <!-- Welcome -->
-            <div class="welcome-text">
-                <h2>Comece sua jornada</h2>
-                <p>Preencha seus dados para criar sua conta</p>
-            </div>
-
-            <!-- Messages -->
-            <div class="error-message" id="errorMessage">
-                <i class="fas fa-exclamation-circle"></i>
-                <span id="errorText"></span>
-            </div>
-
-            <div class="success-message" id="successMessage">
-                <i class="fas fa-check-circle"></i>
-                <span id="successText"></span>
-            </div>
-
-            <!-- Form -->
-            <form id="registerForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Nome</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-user input-icon"></i>
-                            <input 
-                                type="text" 
-                                class="form-input" 
-                                id="nome"
-                                placeholder="Seu nome"
-                                required
-                            >
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">CPF</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-id-card input-icon"></i>
-                            <input 
-                                type="text" 
-                                class="form-input" 
-                                id="cpf"
-                                placeholder="000.000.000-00"
-                                required
-                            >
-                        </div>
-                    </div>
+            
+            <div class="form-group">
+                <label class="form-label">E-mail</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" class="form-input" placeholder="seu@email.com" required>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-envelope input-icon"></i>
-                        <input 
-                            type="email" 
-                            class="form-input" 
-                            id="email"
-                            placeholder="seu@email.com"
-                            required
-                            autocomplete="username"
-                        >
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Telefone</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-phone input-icon"></i>
-                            <input 
-                                type="tel" 
-                                class="form-input" 
-                                id="telefone"
-                                placeholder="(00) 00000-0000"
-                                required
-                            >
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Data de Nascimento</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-calendar input-icon"></i>
-                            <input 
-                                type="date" 
-                                class="form-input" 
-                                id="data_nascimento"
-                                required
-                            >
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Senha</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input 
-                            type="password" 
-                            class="form-input" 
-                            id="password"
-                            placeholder="M�nimo 8 caracteres"
-                            required
-                            autocomplete="new-password"
-                        >
-                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
-                            <i class="fas fa-eye" id="toggleIcon1"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Confirmar Senha</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input 
-                            type="password" 
-                            class="form-input" 
-                            id="password_confirmation"
-                            placeholder="Digite a senha novamente"
-                            required
-                            autocomplete="new-password"
-                        >
-                        <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation')">
-                            <i class="fas fa-eye" id="toggleIcon2"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="terms-wrapper">
-                    <input type="checkbox" id="terms" required>
-                    <label for="terms">
-                        Concordo com os <a href="/termos-de-uso" target="_blank">Termos de Uso</a> e 
-                        <a href="/privacidade" target="_blank">Pol�tica de Privacidade</a>
-                    </label>
-                </div>
-
-                <button type="submit" class="btn-register" id="registerBtn">
-                    <span>Criar minha conta</span>
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </form>
-
-            <!-- Divider -->
-            <div class="divider">
-                <span>ou cadastre-se com</span>
             </div>
-
-            <!-- Social Register -->
-            <div class="social-register">
-                <button class="btn-social" onclick="registerWithGoogle()">
-                    <i class="fab fa-google" style="color: #EA4335;"></i>
-                    <span>Google</span>
-                </button>
-                <button class="btn-social" onclick="registerWithFacebook()">
-                    <i class="fab fa-facebook" style="color: #1877F2;"></i>
-                    <span>Facebook</span>
-                </button>
+            
+            <div class="form-group">
+                <label class="form-label">Telefone</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" class="form-input" placeholder="(00) 00000-0000" required>
+                </div>
             </div>
-
-            <!-- Login Link -->
-            <div class="login-link">
-                J� tem uma conta? <a href="/entrar.html">Fa�a login</a>
+            
+            <div class="form-group">
+                <label class="form-label">Data de Nascimento</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-calendar"></i>
+                    <input type="date" class="form-input" required>
+                </div>
             </div>
+            
+            <div class="form-group">
+                <label class="form-label">Senha</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('password', 'toggleIcon1')">
+                        <i class="fas fa-eye" id="toggleIcon1"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Confirmar Senha</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirmPassword" class="form-input" placeholder="••••••••" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword', 'toggleIcon2')">
+                        <i class="fas fa-eye" id="toggleIcon2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <label class="terms">
+                <input type="checkbox" id="termsCheck" required>
+                <span>
+                    Eu aceito os <a href="#">Termos de Uso</a> e a <a href="#">Política de Privacidade</a>
+                </span>
+            </label>
+            
+            <button type="submit" class="register-btn" id="registerBtn">
+                <i class="fas fa-user-plus"></i> Criar Conta
+            </button>
+        </form>
+        
+        <div class="divider">
+            <span>ou</span>
+        </div>
+        
+        <div class="login-link">
+            Já tem uma conta? <a href="entrar.html">Entrar</a>
         </div>
     </div>
 
     <script>
-        function togglePassword(fieldId) {
-            const passwordInput = document.getElementById(fieldId);
-            const iconNumber = fieldId === 'password' ? '1' : '2';
-            const toggleIcon = document.getElementById('toggleIcon' + iconNumber);
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
             
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.className = 'fas fa-eye-slash';
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
             } else {
-                passwordInput.type = 'password';
-                toggleIcon.className = 'fas fa-eye';
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
         }
-
-        // M�scaras
-        document.getElementById('cpf').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-            e.target.value = value;
-        });
-
-        document.getElementById('telefone').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            value = value.replace(/(\d{2})(\d)/, '($1) $2');
-            value = value.replace(/(\d{5})(\d)/, '$1-$2');
-            e.target.value = value;
-        });
-
+        
+        function handleRegister(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsCheck = document.getElementById('termsCheck').checked;
+            
+            // Validações
+            if (password !== confirmPassword) {
+                showError('As senhas não coincidem');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('A senha deve ter no mínimo 6 caracteres');
+                return;
+            }
+            
+            if (!termsCheck) {
+                showError('Você deve aceitar os termos de uso');
+                return;
+            }
+            
+            // Simulação de cadastro - integrar com backend depois
+            const formData = {
+                name: e.target[0].value,
+                email: e.target[1].value,
+                phone: e.target[2].value,
+                birthday: e.target[3].value,
+                password: password
+            };
+            
+            console.log('Cadastro:', formData);
+            
+            // Simular sucesso
+            alert('Cadastro realizado com sucesso!');
+            window.location.href = 'entrar.html';
+        }
+        
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
             const errorText = document.getElementById('errorText');
@@ -234,92 +401,8 @@
             
             setTimeout(() => {
                 errorDiv.classList.remove('show');
-            }, 5000);
-        }
-
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            const successText = document.getElementById('successText');
-            successText.textContent = message;
-            successDiv.classList.add('show');
-            
-            setTimeout(() => {
-                successDiv.classList.remove('show');
             }, 3000);
         }
-
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const password = document.getElementById('password').value;
-            const password_confirmation = document.getElementById('password_confirmation').value;
-            
-            if (password !== password_confirmation) {
-                showError('As senhas n�o coincidem');
-                return;
-            }
-            
-            if (password.length < 8) {
-                showError('A senha deve ter no m�nimo 8 caracteres');
-                return;
-            }
-            
-            const formData = {
-                name: document.getElementById('nome').value,
-                cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
-                email: document.getElementById('email').value,
-                telefone: document.getElementById('telefone').value.replace(/\D/g, ''),
-                data_nascimento: document.getElementById('data_nascimento').value,
-                password: password,
-                password_confirmation: password_confirmation,
-                perfil: 'cliente'
-            };
-            
-            const registerBtn = document.getElementById('registerBtn');
-            registerBtn.disabled = true;
-            registerBtn.innerHTML = '<div class="loading"></div><span>Criando conta...</span>';
-            
-            try {
-                const response = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showSuccess('Cadastro realizado com sucesso!');
-                    
-                    setTimeout(() => {
-                        window.location.href = '/entrar';
-                    }, 2000);
-                } else {
-                    showError(data.message || 'Erro ao criar conta. Tente novamente.');
-                    registerBtn.disabled = false;
-                    registerBtn.innerHTML = '<span>Criar minha conta</span><i class="fas fa-arrow-right"></i>';
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                showError('Erro ao conectar com o servidor. Tente novamente.');
-                registerBtn.disabled = false;
-                registerBtn.innerHTML = '<span>Criar minha conta</span><i class="fas fa-arrow-right"></i>';
-            }
-        });
-
-        function registerWithGoogle() {
-            showError('Cadastro com Google em desenvolvimento');
-        }
-
-        function registerWithFacebook() {
-            showError('Cadastro com Facebook em desenvolvimento');
-        }
-
-        // Auto-focus no primeiro campo
-        document.getElementById('nome').focus();
     </script>
 </body>
 </html>

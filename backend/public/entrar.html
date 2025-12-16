@@ -2,136 +2,344 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrar - Tem de Tudo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#667eea">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Entrar - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/temdetudo-theme.css"></head>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 32px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 40px;
+            color: white;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        
+        .logo-subtitle {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .welcome {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .welcome h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 8px;
+        }
+        
+        .welcome p {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 18px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .remember-me input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .forgot-password {
+            font-size: 14px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            transition: transform 0.2s;
+        }
+        
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 1px;
+            background: #e9ecef;
+        }
+        
+        .divider span {
+            position: relative;
+            background: white;
+            padding: 0 16px;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .register-link {
+            text-align: center;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        
+        .error-message {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #856404;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
 <body>
-    <a href="/" class="back-home">
+    <button class="back-btn" onclick="window.location.href='index.html'">
         <i class="fas fa-arrow-left"></i>
-        <span>Voltar</span>
-    </a>
-
+    </button>
+    
     <div class="login-container">
-        <div class="login-card">
-            <!-- Logo -->
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <i class="fas fa-sparkles"></i>
+        <div class="logo">
+            <div class="logo-icon">💜</div>
+            <div class="logo-text">Tem de Tudo</div>
+            <div class="logo-subtitle">Fidelidade Inteligente</div>
+        </div>
+        
+        <div class="welcome">
+            <h1>Bem-vindo de volta!</h1>
+            <p>Entre na sua conta para continuar</p>
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+        </div>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label class="form-label">E-mail</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" class="form-input" placeholder="seu@email.com" required>
                 </div>
-                <div class="logo-text">Tem de Tudo</div>
-                <div class="logo-subtitle">Sistema de Fidelidade Inteligente</div>
             </div>
-
-            <!-- Welcome -->
-            <div class="welcome-text">
-                <h2>Bem-vindo de volta!</h2>
-                <p>Entre na sua conta para continuar</p>
-            </div>
-
-            <!-- Messages -->
-            <div class="error-message" id="errorMessage">
-                <i class="fas fa-exclamation-circle"></i>
-                <span id="errorText"></span>
-            </div>
-
-            <div class="success-message" id="successMessage">
-                <i class="fas fa-check-circle"></i>
-                <span id="successText"></span>
-            </div>
-
-            <!-- Form -->
-            <form id="loginForm">
-                <div class="form-group">
-                    <label class="form-label">Email ou CPF</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-envelope input-icon"></i>
-                        <input 
-                            type="text" 
-                            class="form-input" 
-                            id="email"
-                            placeholder="seu@email.com ou 000.000.000-00"
-                            required
-                            autocomplete="username"
-                        >
-                    </div>
+            
+            <div class="form-group">
+                <label class="form-label">Senha</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="toggleIcon"></i>
+                    </button>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label">Senha</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input 
-                            type="password" 
-                            class="form-input" 
-                            id="password"
-                            placeholder="Digite sua senha"
-                            required
-                            autocomplete="current-password"
-                        >
-                        <button type="button" class="password-toggle" onclick="togglePassword()">
-                            <i class="fas fa-eye" id="toggleIcon"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-options">
-                    <div class="checkbox-wrapper">
-                        <input type="checkbox" id="remember">
-                        <label for="remember">Lembrar-me</label>
-                    </div>
-                    <a href="/recuperar-senha" class="forgot-link">Esqueceu a senha?</a>
-                </div>
-
-                <button type="submit" class="btn-login" id="loginBtn">
-                    <span>Entrar</span>
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </form>
-
-            <!-- Divider -->
-            <div class="divider">
-                <span>ou continue com</span>
             </div>
-
-            <!-- Social Login -->
-            <div class="social-login">
-                <button class="btn-social" onclick="loginWithGoogle()">
-                    <i class="fab fa-google" style="color: #EA4335;"></i>
-                    <span>Google</span>
-                </button>
-                <button class="btn-social" onclick="loginWithFacebook()">
-                    <i class="fab fa-facebook" style="color: #1877F2;"></i>
-                    <span>Facebook</span>
-                </button>
+            
+            <div class="options">
+                <label class="remember-me">
+                    <input type="checkbox">
+                    <span>Lembrar-me</span>
+                </label>
+                <a href="#" class="forgot-password">Esqueci a senha</a>
             </div>
-
-            <!-- Register Link -->
-            <div class="register-link">
-                N�o tem uma conta? <a href="/cadastro">Cadastre-se gr�tis</a>
-            </div>
+            
+            <button type="submit" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
+        </form>
+        
+        <div class="divider">
+            <span>ou</span>
+        </div>
+        
+        <div class="register-link">
+            Não tem uma conta? <a href="cadastro.html">Cadastre-se grátis</a>
         </div>
     </div>
 
     <script>
         function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.getElementById('toggleIcon');
+            const input = document.getElementById('password');
+            const icon = document.getElementById('toggleIcon');
             
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.className = 'fas fa-eye-slash';
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
             } else {
-                passwordInput.type = 'password';
-                toggleIcon.className = 'fas fa-eye';
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
         }
-
+        
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            // Simulação de login - integrar com backend depois
+            const email = e.target[0].value;
+            const password = e.target[1].value;
+            
+            if (email && password) {
+                // Simular sucesso
+                localStorage.setItem('user', JSON.stringify({ email, name: 'João Silva' }));
+                window.location.href = 'app-inicio.html';
+            } else {
+                showError('Por favor, preencha todos os campos');
+            }
+        }
+        
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
             const errorText = document.getElementById('errorText');
@@ -140,82 +348,8 @@
             
             setTimeout(() => {
                 errorDiv.classList.remove('show');
-            }, 5000);
-        }
-
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            const successText = document.getElementById('successText');
-            successText.textContent = message;
-            successDiv.classList.add('show');
-            
-            setTimeout(() => {
-                successDiv.classList.remove('show');
             }, 3000);
         }
-
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const loginBtn = document.getElementById('loginBtn');
-            
-            // Disable button
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<div class="loading"></div><span>Entrando...</span>';
-            
-            try {
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    localStorage.setItem('token', data.access_token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    
-                    showSuccess('Login realizado com sucesso!');
-                    
-                    setTimeout(() => {
-                        // Redirecionar baseado no perfil
-                        if (data.user.perfil === 'admin') {
-                            window.location.href = '/admin/painel';
-                        } else if (data.user.perfil === 'empresa') {
-                            window.location.href = '/empresa/painel';
-                        } else {
-                            window.location.href = '/inicio';
-                        }
-                    }, 1000);
-                } else {
-                    showError(data.message || 'Email ou senha incorretos');
-                    loginBtn.disabled = false;
-                    loginBtn.innerHTML = '<span>Entrar</span><i class="fas fa-arrow-right"></i>';
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                showError('Erro ao conectar com o servidor. Tente novamente.');
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = '<span>Entrar</span><i class="fas fa-arrow-right"></i>';
-            }
-        });
-
-        function loginWithGoogle() {
-            showError('Login com Google em desenvolvimento');
-        }
-
-        function loginWithFacebook() {
-            showError('Login com Facebook em desenvolvimento');
-        }
-
-        // Auto-focus no primeiro campo
-        document.getElementById('email').focus();
     </script>
 </body>
 </html>
