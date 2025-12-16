@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Painel Empresa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/temdetudo-theme.css">
+    
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            color: white;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #212529;
+        }
+        
+        .filters {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: end;
+        }
+        
+        .filter-group {
+            flex: 1;
+        }
+        
+        .filter-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .filter-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+            font-weight: 700;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-box {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 900;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        th {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-store"></i> Painel Empresa
+        </div>
+        
+        <nav>
+            <a href="empresa-dashboard.html" class="menu-item">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="empresa-clientes.html" class="menu-item">
+                <i class="fas fa-users"></i> Clientes
+            </a>
+            <a href="empresa-promocoes.html" class="menu-item">
+                <i class="fas fa-tag"></i> Promoções
+            </a>
+            <a href="empresa-qrcode.html" class="menu-item">
+                <i class="fas fa-qrcode"></i> QR Code
+            </a>
+            <a href="empresa-relatorios.html" class="menu-item active">
+                <i class="fas fa-file-alt"></i> Relatórios
+            </a>
+            <a href="empresa-configuracoes.html" class="menu-item">
+                <i class="fas fa-cog"></i> Configurações
+            </a>
+            <div style="height: 1px; background: rgba(255,255,255,0.2); margin: 16px 0;"></div>
+            <a href="app-inicio.html" class="menu-item">
+                <i class="fas fa-mobile-alt"></i> Ver App
+            </a>
+            <a href="entrar.html" class="menu-item">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+        </nav>
+    </div>
+    
+    <div class="main-content">
+        <div class="header">
+            <h1 class="page-title">Relatórios</h1>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label class="filter-label">Período</label>
+                <select class="filter-input">
+                    <option>Últimos 7 dias</option>
+                    <option>Últimos 30 dias</option>
+                    <option selected>Últimos 90 dias</option>
+                    <option>Último ano</option>
+                    <option>Personalizado</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Data Inicial</label>
+                <input type="date" class="filter-input" value="2024-02-01">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Data Final</label>
+                <input type="date" class="filter-input" value="2024-05-01">
+            </div>
+            
+            <button class="btn btn-primary">
+                <i class="fas fa-search"></i> Filtrar
+            </button>
+        </div>
+        
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-value">1.247</div>
+                <div class="stat-label">Total de Clientes</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-value">5.892</div>
+                <div class="stat-label">Visitas Registradas</div>
+            </div>
+            
+            <div class="stat-box">
+                <div class="stat-box">
+                <div class="stat-value">62%</div>
+                <div class="stat-label">Taxa de Retenção</div>
+            </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-chart-line"></i> Crescimento de Clientes
+            </div>
+            <div class="chart-placeholder">
+                <i class="fas fa-chart-area" style="font-size: 48px; margin-right: 16px;"></i>
+                Gráfico de crescimento (integrar biblioteca de gráficos)
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-trophy"></i> Promoções Mais Efetivas
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Promoção</th>
+                        <th>Visualizações</th>
+                        <th>Resgates</th>
+                        <th>Taxa de Conversão</th>
+                        <th>Período</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Combo Família</strong></td>
+                        <td>2.450</td>
+                        <td>1.523</td>
+                        <td style="color: #26de81; font-weight: 700;">62.2%</td>
+                        <td>01/04 - 30/04</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Happy Hour</strong></td>
+                        <td>1.890</td>
+                        <td>987</td>
+                        <td style="color: #26de81; font-weight: 700;">52.2%</td>
+                        <td>15/04 - 15/05</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Terça Especial</strong></td>
+                        <td>1.234</td>
+                        <td>456</td>
+                        <td style="color: #ffc107; font-weight: 700;">37.0%</td>
+                        <td>10/03 - 30/04</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-calendar-alt"></i> Visitas por Dia da Semana
+            </div>
+            <div class="chart-placeholder">
+                <i class="fas fa-chart-bar" style="font-size: 48px; margin-right: 16px;"></i>
+                Gráfico de barras (integrar biblioteca de gráficos)
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-users"></i> Top 10 Clientes Mais Fiéis
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Pontos</th>
+                        <th>Visitas</th>
+                        <th>Último Acesso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Maria Souza</strong></td>
+                        <td>maria.s@email.com</td>
+                        <td>(11) 99999-8888</td>
+                        <td style="color: #667eea; font-weight: 700;">47</td>
+                        <td>52</td>
+                        <td>Hoje</td>
+                    </tr>
+                    <tr>
+                        <td><strong>João Silva</strong></td>
+                        <td>joao@email.com</td>
+                        <td>(11) 98888-7777</td>
+                        <td style="color: #667eea; font-weight: 700;">38</td>
+                        <td>43</td>
+                        <td>Ontem</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ana Costa</strong></td>
+                        <td>ana.costa@email.com</td>
+                        <td>(11) 97777-6666</td>
+                        <td style="color: #667eea; font-weight: 700;">32</td>
+                        <td>35</td>
+                        <td>3 dias atrás</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pedro Oliveira</strong></td>
+                        <td>pedro.o@email.com</td>
+                        <td>(11) 96666-5555</td>
+                        <td style="color: #667eea; font-weight: 700;">28</td>
+                        <td>31</td>
+                        <td>5 dias atrás</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Carla Mendes</strong></td>
+                        <td>carla.m@email.com</td>
+                        <td>(11) 95555-4444</td>
+                        <td style="color: #667eea; font-weight: 700;">25</td>
+                        <td>28</td>
+                        <td>1 semana atrás</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="export-buttons">
+            <button class="btn btn-primary" onclick="exportarPDF()">
+                <i class="fas fa-file-pdf"></i> Exportar PDF
+            </button>
+            <button class="btn btn-primary" onclick="exportarExcel()">
+                <i class="fas fa-file-excel"></i> Exportar Excel
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function exportarPDF() {
+            alert('Exportando relatório em PDF...');
+        }
+        
+        function exportarExcel() {
+            alert('Exportando relatório em Excel...');
+        }
+    </script>
+</body>
+</html>

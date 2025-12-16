@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bônus de Adesão - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .bonus-modal {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .bonus-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+        
+        .bonus-title {
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        
+        .bonus-subtitle {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 24px;
+        }
+        
+        .bonus-value {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .bonus-value-number {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+        
+        .bonus-value-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .bonus-description {
+            font-size: 14px;
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        
+        .resgatar-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 20px rgba(38, 222, 129, 0.3);
+        }
+        
+        .fechar-btn {
+            width: 100%;
+            padding: 18px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 12px;
+            color: #6c757d;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="bonus-modal">
+        <div class="bonus-icon">🎁</div>
+        
+        <h1 class="bonus-title">Bônus de Adesão!</h1>
+        
+        <p class="bonus-subtitle">Parabéns! Você acabou de ganhar um desconto exclusivo!</p>
+        
+        <div class="bonus-value">
+            <div class="bonus-value-number">10% OFF</div>
+            <div class="bonus-value-text">na sua primeira compra</div>
+        </div>
+        
+        <p class="bonus-description">
+            Mostre este cupom para o atendente na hora do pagamento e ganhe 10% de desconto em qualquer produto!
+        </p>
+        
+        <button class="resgatar-btn" onclick="resgatarBonus()">
+            <i class="fas fa-check-circle"></i> Resgatar Bônus
+        </button>
+        
+        <button class="fechar-btn" onclick="window.location.href='app-inicio.html'">
+            Resgatar Depois
+        </button>
+    </div>
+
+    <script>
+        function resgatarBonus() {
+            alert('Bônus resgatado! Mostre esta tela para o estabelecimento.');
+            // Salvar no localStorage que o bônus foi resgatado
+            localStorage.setItem('bonus_adesao_resgatado', 'true');
+            window.location.href = 'app-estabelecimento.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Painel Empresa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/temdetudo-theme.css">
+    
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            color: white;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #212529;
+        }
+        
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .upload-area {
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+        
+        .logo-preview {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: white;
+        }
+        
+        .btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .horario-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 2fr;
+            gap: 16px;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .toggle {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-store"></i> Painel Empresa
+        </div>
+        
+        <nav>
+            <a href="empresa-dashboard.html" class="menu-item">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="empresa-clientes.html" class="menu-item">
+                <i class="fas fa-users"></i> Clientes
+            </a>
+            <a href="empresa-promocoes.html" class="menu-item">
+                <i class="fas fa-tag"></i> Promoções
+            </a>
+            <a href="empresa-qrcode.html" class="menu-item">
+                <i class="fas fa-qrcode"></i> QR Code
+            </a>
+            <a href="empresa-relatorios.html" class="menu-item">
+                <i class="fas fa-file-alt"></i> Relatórios
+            </a>
+            <a href="empresa-configuracoes.html" class="menu-item active">
+                <i class="fas fa-cog"></i> Configurações
+            </a>
+            <div style="height: 1px; background: rgba(255,255,255,0.2); margin: 16px 0;"></div>
+            <a href="app-inicio.html" class="menu-item">
+                <i class="fas fa-mobile-alt"></i> Ver App
+            </a>
+            <a href="entrar.html" class="menu-item">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+        </nav>
+    </div>
+    
+    <div class="main-content">
+        <div class="header">
+            <h1 class="page-title">Configurações</h1>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-image"></i> Logo do Estabelecimento</h2>
+            
+            <div class="logo-preview">🍔</div>
+            
+            <div class="upload-area" onclick="document.getElementById('logoUpload').click()">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #667eea; margin-bottom: 16px;"></i>
+                <div style="font-weight: 600; margin-bottom: 8px;">Clique para fazer upload do logo</div>
+                <div style="font-size: 13px; color: #6c757d;">PNG, JPG ou SVG (máx. 2MB)</div>
+                <input type="file" id="logoUpload" accept="image/*" style="display: none;" onchange="previewLogo(event)">
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-info-circle"></i> Informações do Estabelecimento</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Nome do Estabelecimento *</label>
+                <input type="text" class="form-input" value="POPEYE HAMBURGUERIA" placeholder="Digite o nome">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                    <label class="form-label">Categoria *</label>
+                    <select class="form-input">
+                        <option>Restaurante</option>
+                        <option>Bar</option>
+                        <option>Sorveteria</option>
+                        <option>Japonesa</option>
+                        <option>Petshop</option>
+                        <option>Beleza</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">CNPJ</label>
+                    <input type="text" class="form-input" value="12.345.678/0001-90" placeholder="00.000.000/0000-00">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Endereço Completo *</label>
+                <input type="text" class="form-input" value="Rua Coronel Souza Franco, 215, Centro, Mogi das Cruzes, São Paulo" placeholder="Rua, número, bairro, cidade, estado">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                    <label class="form-label">WhatsApp *</label>
+                    <input type="tel" class="form-input" value="(11) 98525-3676" placeholder="(00) 00000-0000">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Telefone</label>
+                    <input type="tel" class="form-input" value="(13) 2312-6515" placeholder="(00) 0000-0000">
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                    <label class="form-label">Instagram</label>
+                    <input type="text" class="form-input" value="@popeyehamburgueria" placeholder="@seuinstagram">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Facebook</label>
+                    <input type="text" class="form-input" value="popeyehamburgueria" placeholder="Nome da página">
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-clock"></i> Horário de Funcionamento</h2>
+            
+            <div class="horario-grid" style="font-weight: 700; background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+                <div>Dia</div>
+                <div>Abertura</div>
+                <div>Fechamento</div>
+            </div>
+            
+            <div class="horario-grid">
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+                <span>Segunda-feira</span>
+                <div style="display: flex; gap: 12px;">
+                    <input type="time" class="form-input" value="11:00">
+                    <input type="time" class="form-input" value="23:00">
+                </div>
+            </div>
+            
+            <div class="horario-grid">
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+                <span>Terça-feira</span>
+                <div style="display: flex; gap: 12px;">
+                    <input type="time" class="form-input" value="11:00">
+                    <input type="time" class="form-input" value="23:00">
+                </div>
+            </div>
+            
+            <div class="horario-grid">
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+                <span>Quarta-feira</span>
+                <div style="display: flex; gap: 12px;">
+                    <input type="time" class="form-input" value="11:00">
+                    <input type="time" class="form-input" value="23:00">
+                </div>
+            </div>
+            
+            <div class="horario-grid">
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+                <span>Quinta-feira</span>
+                <div style="display: flex; gap: 12px;">
+                    <input type="time" class="form-input" value="11:00">
+                    <input type="time" class="form-input" value="23:00">
+                </div>
+            </div>
+            
+            <div class="horario-grid">
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+                <span>Sexta-feira</span>
+                <div style="display: flex; gap: 12px;">
+                    <input type="time" class="form-input" value="11:00">
+                    <input type="time" class="form-input" value="01:00">
+                </div>
+            </div>
+            
+            <div class="horario-grid">
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+                <span>Sábado</span>
+                <div style="display: flex; gap: 12px;">
+                    <input type="time" class="form-input" value="11:00">
+                    <input type="time" class="form-input" value="02:00">
+                </div>
+            </div>
+            
+            <div class="horario-grid">
+                <label class="toggle">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+                <span>Domingo</span>
+                <div style="display: flex; gap: 12px;">
+                    <input type="time" class="form-input" value="11:00" disabled>
+                    <input type="time" class="form-input" value="22:00" disabled>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-star"></i> Programa de Fidelidade</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Pontos necessários para recompensa *</label>
+                <input type="number" class="form-input" value="10" placeholder="10">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Descrição da recompensa *</label>
+                <input type="text" class="form-input" value="Ganhe 1 Porção de Fritas ou 1 Lanche Dhegep" placeholder="Ex: Ganhe 1 produto grátis">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                    <label class="form-label">Bônus de Adesão (%)</label>
+                    <input type="number" class="form-input" value="10" placeholder="10">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Bônus de Aniversário</label>
+                    <input type="text" class="form-input" value="1 Sobremesa Grátis" placeholder="Ex: Desconto de 20%">
+                </div>
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 16px; justify-content: flex-end;">
+            <button class="btn btn-secondary">Cancelar</button>
+            <button class="btn btn-primary" onclick="salvarConfiguracoes()">
+                <i class="fas fa-save"></i> Salvar Alterações
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function previewLogo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.querySelector('.logo-preview').innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function salvarConfiguracoes() {
+            alert('Configurações salvas com sucesso!');
+        }
+        
+        // Toggle horários
+        document.querySelectorAll('.toggle input').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const inputs = this.closest('.horario-grid').querySelectorAll('.form-input');
+                inputs.forEach(input => input.disabled = !this.checked);
+            });
+        });
+    </script>
+</body>
+</html>

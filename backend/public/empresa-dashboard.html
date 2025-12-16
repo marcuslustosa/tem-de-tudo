@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Painel Empresa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/temdetudo-theme.css">
+    
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            color: white;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #212529;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        th {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        .badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-store"></i> Painel Empresa
+        </div>
+        
+        <nav>
+            <a href="empresa-dashboard.html" class="menu-item active">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="empresa-clientes.html" class="menu-item">
+                <i class="fas fa-users"></i> Clientes
+            </a>
+            <a href="empresa-promocoes.html" class="menu-item">
+                <i class="fas fa-tag"></i> Promoções
+            </a>
+            <a href="empresa-qrcode.html" class="menu-item">
+                <i class="fas fa-qrcode"></i> QR Code
+            </a>
+            <a href="empresa-relatorios.html" class="menu-item">
+                <i class="fas fa-file-alt"></i> Relatórios
+            </a>
+            <a href="empresa-configuracoes.html" class="menu-item">
+                <i class="fas fa-cog"></i> Configurações
+            </a>
+            <div style="height: 1px; background: rgba(255,255,255,0.2); margin: 16px 0;"></div>
+            <a href="app-inicio.html" class="menu-item">
+                <i class="fas fa-mobile-alt"></i> Ver App
+            </a>
+            <a href="entrar.html" class="menu-item">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </a>
+        </nav>
+    </div>
+    
+    <div class="main-content">
+        <div class="header">
+            <h1 class="page-title">Dashboard</h1>
+            <div class="user-menu">
+                <span>Popeye Hamburgueria</span>
+                <div class="avatar">PH</div>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-value">1.247</div>
+                <div class="stat-label">Total de Clientes</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #26de81, #20bf6b); color: white;">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-value">+143</div>
+                <div class="stat-label">Novos este mês</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #45b7d1, #4ecdc4); color: white;">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-value">8.523</div>
+                <div class="stat-label">Pontos distribuídos</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #fc5c65, #fd79a8); color: white;">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="stat-value">62%</div>
+                <div class="stat-label">Taxa de conversão</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title">Últimos Clientes Cadastrados</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Pontos</th>
+                        <th>Cadastro</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ana Silva</strong></td>
+                        <td>ana.silva@email.com</td>
+                        <td>(11) 98888-7777</td>
+                        <td>8 pontos</td>
+                        <td>01/05/2024</td>
+                        <td><span class="badge badge-success">Ativo</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Carlos Mendes</strong></td>
+                        <td>carlos.m@email.com</td>
+                        <td>(11) 97777-6666</td>
+                        <td>3 pontos</td>
+                        <td>28/04/2024</td>
+                        <td><span class="badge badge-success">Ativo</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Juliana Costa</strong></td>
+                        <td>juliana@email.com</td>
+                        <td>(11) 96666-5555</td>
+                        <td>0 pontos</td>
+                        <td>25/04/2024</td>
+                        <td><span class="badge badge-warning">Aguardando visita</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pedro Santos</strong></td>
+                        <td>pedro.s@email.com</td>
+                        <td>(11) 95555-4444</td>
+                        <td>12 pontos</td>
+                        <td>20/04/2024</td>
+                        <td><span class="badge badge-success">Ativo</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mariana Oliveira</strong></td>
+                        <td>mariana.o@email.com</td>
+                        <td>(11) 94444-3333</td>
+                        <td>5 pontos</td>
+                        <td>15/04/2024</td>
+                        <td><span class="badge badge-success">Ativo</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="card">
+                <h2 class="card-title">Promoções Ativas</h2>
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #f8f9fa; border-radius: 12px;">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px;"></div>
+                        <div style="flex: 1;">
+                            <strong>Combo Família</strong>
+                            <div style="font-size: 13px; color: #6c757d;">Válido até 30/05/2024</div>
+                        </div>
+                        <span class="badge badge-success">Ativa</span>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #f8f9fa; border-radius: 12px;">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #26de81, #20bf6b); border-radius: 8px;"></div>
+                        <div style="flex: 1;">
+                            <strong>Happy Hour</strong>
+                            <div style="font-size: 13px; color: #6c757d;">Válido até 15/05/2024</div>
+                        </div>
+                        <span class="badge badge-success">Ativa</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title">Ações Rápidas</h2>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button style="width: 100%; padding: 16px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer;" onclick="window.location.href='empresa-promocoes.html'">
+                        <i class="fas fa-plus"></i> Criar Nova Promoção
+                    </button>
+                    
+                    <button style="width: 100%; padding: 16px; background: white; border: 2px solid #667eea; border-radius: 12px; color: #667eea; font-weight: 700; cursor: pointer;" onclick="window.location.href='empresa-clientes.html'">
+                        <i class="fas fa-users"></i> Ver Todos os Clientes
+                    </button>
+                    
+                    <button style="width: 100%; padding: 16px; background: white; border: 2px solid #667eea; border-radius: 12px; color: #667eea; font-weight: 700; cursor: pointer;" onclick="window.location.href='empresa-relatorios.html'">
+                        <i class="fas fa-file-alt"></i> Gerar Relatório
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

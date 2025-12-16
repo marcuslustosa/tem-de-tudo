@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Notificações - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 60px 20px 24px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .header-title {
+            font-size: 28px;
+            font-weight: 900;
+        }
+        
+        .tabs {
+            display: flex;
+            background: white;
+            padding: 0 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .notifications-list {
+            padding: 20px;
+        }
+        
+        .notification-item {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+        }
+        
+        .notification-item.unread {
+            background: linear-gradient(135deg, #667eea05, #764ba205);
+        }
+        
+        .notification-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .notification-icon.promo {
+            background: linear-gradient(135deg, #26de81, #20bf6b);
+        }
+        
+        .notification-icon.gift {
+            background: linear-gradient(135deg, #fc5c65, #fd79a8);
+        }
+        
+        .notification-icon.points {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .notification-icon.info {
+            background: linear-gradient(135deg, #45b7d1, #4ecdc4);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .notification-message {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .notification-time {
+            font-size: 12px;
+            color: #adb5bd;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="header-title">Notificações</div>
+    </div>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="filtrarTab('todas')">Todas</div>
+        <div class="tab" onclick="filtrarTab('promos')">Promoções</div>
+        <div class="tab" onclick="filtrarTab('pontos')">Pontos</div>
+    </div>
+    
+    <div class="notifications-list" id="notificationsList">
+        <div class="notification-item unread" onclick="verNotificacao(1)">
+            <div class="notification-icon promo">🎉</div>
+            <div class="notification-content">
+                <div class="notification-title">Nova Promoção!</div>
+                <div class="notification-message">Popeye Hamburgueria: COMBO FAMÍLIA com 20% OFF até 30/05</div>
+                <div class="notification-time">2 horas atrás</div>
+            </div>
+        </div>
+        
+        <div class="notification-item unread" onclick="verNotificacao(2)">
+            <div class="notification-icon points">⭐</div>
+            <div class="notification-content">
+                <div class="notification-title">Pontos Adicionados</div>
+                <div class="notification-message">Você ganhou 2 pontos no Malagueta Galpão!</div>
+                <div class="notification-time">5 horas atrás</div>
+            </div>
+        </div>
+        
+        <div class="notification-item" onclick="verNotificacao(3)">
+            <div class="notification-icon gift">🎁</div>
+            <div class="notification-content">
+                <div class="notification-title">Recompensa Disponível!</div>
+                <div class="notification-message">Você tem 10 pontos no Popeye! Resgate sua recompensa</div>
+                <div class="notification-time">Ontem</div>
+            </div>
+        </div>
+        
+        <div class="notification-item" onclick="verNotificacao(4)">
+            <div class="notification-icon promo">💆</div>
+            <div class="notification-content">
+                <div class="notification-title">Promoção Exclusiva</div>
+                <div class="notification-message">Florenza Boutique: Corte + Escova R$ 59,90 válido de segunda a quinta</div>
+                <div class="notification-time">Ontem</div>
+            </div>
+        </div>
+        
+        <div class="notification-item" onclick="verNotificacao(5)">
+            <div class="notification-icon info">💬</div>
+            <div class="notification-content">
+                <div class="notification-title">Nova Mensagem</div>
+                <div class="notification-message">Sushi Master respondeu sua avaliação</div>
+                <div class="notification-time">2 dias atrás</div>
+            </div>
+        </div>
+        
+        <div class="notification-item" onclick="verNotificacao(6)">
+            <div class="notification-icon points">⭐</div>
+            <div class="notification-content">
+                <div class="notification-title">Visita Registrada</div>
+                <div class="notification-message">Sua visita ao Pet Love foi registrada. +1 ponto!</div>
+                <div class="notification-time">3 dias atrás</div>
+            </div>
+        </div>
+        
+        <div class="notification-item" onclick="verNotificacao(7)">
+            <div class="notification-icon gift">🎂</div>
+            <div class="notification-content">
+                <div class="notification-title">Feliz Aniversário!</div>
+                <div class="notification-message">i9Plus tem um presente especial para você! 🎉</div>
+                <div class="notification-time">1 semana atrás</div>
+            </div>
+        </div>
+        
+        <div class="notification-item" onclick="verNotificacao(8)">
+            <div class="notification-icon info">📍</div>
+            <div class="notification-content">
+                <div class="notification-title">Novo Estabelecimento Próximo</div>
+                <div class="notification-message">Texano Burger acabou de se cadastrar perto de você!</div>
+                <div class="notification-time">1 semana atrás</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filtrarTab(tipo) {
+            // Remover active de todas as tabs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            // Adicionar active na tab clicada
+            event.target.classList.add('active');
+            
+            console.log('Filtrar notificações:', tipo);
+            // Aqui viria a lógica de filtrar notificações por tipo
+        }
+        
+        function verNotificacao(id) {
+            console.log('Ver notificação:', id);
+            // Marcar como lida
+            event.currentTarget.classList.remove('unread');
+            // Aqui viria a navegação para o conteúdo da notificação
+        }
+    </script>
+</body>
+</html>
