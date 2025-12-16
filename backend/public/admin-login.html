@@ -1,12 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administraï¿½ï¿½o - TemDeTudo</title>
+    <title>Administra��o - TemDeTudo</title>
     
     <!-- Meta Tags -->
-    <meta name="description" content="Acesso restrito - AdministraÃ§Ã£o TemDeTudo">
+    <meta name="description" content="Acesso restrito - Administração TemDeTudo">
     <meta name="theme-color" content="#667eea">
     <meta name="robots" content="noindex, nofollow">
     
@@ -34,8 +34,8 @@
                 <div style="margin-bottom: 1.5rem;">
                     <img src="/img/logo.png" alt="TemDeTudo" style="width: 64px; height: 64px; border-radius: var(--radius-full); border: 3px solid white;">
                 </div>
-                <h1 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">Administraï¿½ï¿½o</h1>
-                <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">Sistema de Gestï¿½o TemDeTudo</p>
+                <h1 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">Administra��o</h1>
+                <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">Sistema de Gest�o TemDeTudo</p>
             </div>
             
             <!-- Login Form -->
@@ -68,7 +68,7 @@
                                 id="adminPassword" 
                                 name="password" 
                                 class="form-control" 
-                                placeholder="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
+                                placeholder="��������"
                                 required
                                 autocomplete="current-password"
                             >
@@ -85,7 +85,7 @@
                     <!-- Security Code (2FA simulation) -->
                     <div class="form-group" style="margin-bottom: var(--space-6);">
                         <label for="securityCode" class="form-label">
-                            <i class="fas fa-shield-alt icon-sm"></i> Cï¿½digo de Seguranï¿½a
+                            <i class="fas fa-shield-alt icon-sm"></i> C�digo de Seguran�a
                         </label>
                         <input 
                             type="text" 
@@ -95,10 +95,10 @@
                             placeholder="000000"
                             maxlength="6"
                             pattern="[0-9]{6}"
-                            title="Digite um cï¿½digo de 6 dï¿½gitos"
+                            title="Digite um c�digo de 6 d�gitos"
                         >
                         <small style="color: var(--gray-600); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
-                            <i class="fas fa-info-circle"></i> Para demonstraï¿½ï¿½o, use: 123456
+                            <i class="fas fa-info-circle"></i> Para demonstra��o, use: 123456
                         </small>
                     </div>
                     
@@ -127,9 +127,9 @@
                         <div>
                             <h4 style="font-size: 0.875rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem;">Acesso Seguro</h4>
                             <p style="font-size: 0.75rem; color: var(--gray-600); line-height: 1.4;">
-                                ï¿½ Todas as aï¿½ï¿½es sï¿½o registradas<br>
-                                ï¿½ Conexï¿½o criptografada SSL<br>
-                                ï¿½ Monitoramento de seguranï¿½a ativo
+                                � Todas as a��es s�o registradas<br>
+                                � Conex�o criptografada SSL<br>
+                                � Monitoramento de seguran�a ativo
                             </p>
                         </div>
                     </div>
@@ -148,7 +148,7 @@
 
     <!-- Scripts -->
     <script>
-        // Configuraï¿½ï¿½es da API
+        // Configura��es da API
         const API_BASE = window.location.origin;
         
         // Toggle password visibility
@@ -246,7 +246,7 @@
                         window.location.href = '/admin.html';
                     }, 1500);
                 } else {
-                    showMessage('Credenciais invï¿½lidas. Verifique email e senha.', 'error');
+                    showMessage('Credenciais inv�lidas. Verifique email e senha.', 'error');
                 }
                 
                 if (response.ok && result.success) {
@@ -273,11 +273,11 @@
                     if (result.error_code === 'INVALID_CREDENTIALS') {
                         errorMessage = 'Email ou senha incorretos';
                     } else if (result.error_code === 'INVALID_SECURITY_CODE') {
-                        errorMessage = 'Cï¿½digo de seguranï¿½a invï¿½lido';
+                        errorMessage = 'C�digo de seguran�a inv�lido';
                     } else if (result.error_code === 'ACCOUNT_LOCKED') {
-                        errorMessage = 'Conta temporariamente bloqueada por seguranï¿½a';
+                        errorMessage = 'Conta temporariamente bloqueada por seguran�a';
                     } else if (result.error_code === 'ACCESS_DENIED') {
-                        errorMessage = 'Acesso negado - Permissï¿½es insuficientes';
+                        errorMessage = 'Acesso negado - Permiss�es insuficientes';
                     }
                     
                     showMessage(errorMessage, 'error');
@@ -311,7 +311,7 @@
                     }, 1500);
                     
                 } else {
-                    showMessage('Erro de conexï¿½o. Verifique suas credenciais e tente novamente.', 'error');
+                    showMessage('Erro de conex�o. Verifique suas credenciais e tente novamente.', 'error');
                 }
             } finally {
                 // Reset button state
@@ -325,7 +325,7 @@
         window.addEventListener('DOMContentLoaded', function() {
             const adminToken = localStorage.getItem('admin_token');
             if (adminToken) {
-                showMessage('Vocï¿½ jï¿½ estï¿½ logado. Redirecionando...', 'success');
+                showMessage('Voc� j� est� logado. Redirecionando...', 'success');
                 setTimeout(() => {
                     window.location.href = '/admin.html';
                 }, 2000);

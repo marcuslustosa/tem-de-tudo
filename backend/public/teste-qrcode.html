@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -130,10 +130,10 @@
         <h1><i class="fas fa-qrcode"></i> Teste QR Code - Tem de Tudo</h1>
 
         <div class="info">
-            <strong>‚ÑπÔ∏è Instru√ß√µes:</strong><br>
-            1. Fa√ßa login primeiro (cliente ou empresa)<br>
+            <strong>?? InstruÁıes:</strong><br>
+            1. FaÁa login primeiro (cliente ou empresa)<br>
             2. Clique em "Carregar Meu QR Code"<br>
-            3. O QR Code ser√° gerado automaticamente se ainda n√£o existir
+            3. O QR Code ser· gerado automaticamente se ainda n„o existir
         </div>
 
         <div style="text-align: center;">
@@ -160,7 +160,7 @@
                 const user = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
 
                 if (!token) {
-                    resultado.innerHTML = '<div class="error">‚ùå Voc√™ precisa fazer login primeiro!</div>';
+                    resultado.innerHTML = '<div class="error">? VocÍ precisa fazer login primeiro!</div>';
                     setTimeout(() => {
                         window.location.href = '/entrar.html';
                     }, 2000);
@@ -186,13 +186,13 @@
                 if (data.success) {
                     resultado.innerHTML = `
                         <div class="success">
-                            ‚úÖ QR Code carregado com sucesso!
+                            ? QR Code carregado com sucesso!
                         </div>
                         <div class="qr-container">
                             <h2>Seu QR Code</h2>
                             <img src="${data.data.qr_image}" alt="QR Code" class="qr-image">
                             <div class="code-display">
-                                <strong>C√≥digo:</strong><br>
+                                <strong>CÛdigo:</strong><br>
                                 ${data.data.code}
                             </div>
                             ${user.perfil === 'cliente' ? `
@@ -203,18 +203,18 @@
                             ` : `
                                 <p style="margin-top: 20px; color: #666;">
                                     <i class="fas fa-info-circle"></i> 
-                                    Clientes escanear√£o este QR Code para se cadastrar na sua empresa!
+                                    Clientes escanear„o este QR Code para se cadastrar na sua empresa!
                                 </p>
                             `}
                         </div>
                     `;
                 } else {
-                    resultado.innerHTML = `<div class="error">‚ùå Erro: ${data.message}</div>`;
+                    resultado.innerHTML = `<div class="error">? Erro: ${data.message}</div>`;
                 }
 
             } catch (error) {
                 console.error('Erro:', error);
-                resultado.innerHTML = `<div class="error">‚ùå Erro ao carregar QR Code: ${error.message}</div>`;
+                resultado.innerHTML = `<div class="error">? Erro ao carregar QR Code: ${error.message}</div>`;
             }
         }
 
@@ -224,14 +224,14 @@
             window.location.href = '/entrar.html';
         }
 
-        // Carregar automaticamente ao abrir a p√°gina
+        // Carregar automaticamente ao abrir a p·gina
         window.onload = function() {
             const token = localStorage.getItem('tem_de_tudo_token');
             if (token) {
                 carregarQRCode();
             } else {
                 document.getElementById('resultado').innerHTML = 
-                    '<div class="info">Por favor, fa√ßa login para ver seu QR Code.</div>';
+                    '<div class="info">Por favor, faÁa login para ver seu QR Code.</div>';
             }
         };
     </script>

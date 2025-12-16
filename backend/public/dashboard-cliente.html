@@ -1,10 +1,11 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minhas Empresas - Tem de Tudo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="/css/temdetudo-theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/temdetudo-theme.css">
 </head>
 <body>
     <div class="container">
@@ -42,8 +43,8 @@
                 <div class="chip" data-ramo="Bar" onclick="selecionarFiltro(this)">
                     <i class="fas fa-beer"></i> Bares
                 </div>
-                <div class="chip" data-ramo="Sal√£o" onclick="selecionarFiltro(this)">
-                    <i class="fas fa-cut"></i> Sal√µes
+                <div class="chip" data-ramo="Sal„o" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-cut"></i> Salıes
                 </div>
                 <div class="chip" data-ramo="Academia" onclick="selecionarFiltro(this)">
                     <i class="fas fa-dumbbell"></i> Academias
@@ -64,7 +65,7 @@
         <div id="emptyState" class="empty-state" style="display: none;">
             <i class="fas fa-store-slash"></i>
             <h3>Nenhuma Empresa Encontrada</h3>
-            <p>Voc√™ ainda n√£o est√° inscrito em nenhuma empresa.</p>
+            <p>VocÍ ainda n„o est· inscrito em nenhuma empresa.</p>
             <button class="btn-primary" onclick="window.location.href='scanner.html'">
                 <i class="fas fa-qrcode"></i> Escanear QR Code
             </button>
@@ -142,7 +143,7 @@
             grid.innerHTML = empresas.map(empresa => `
                 <div class="empresa-card" onclick="abrirEmpresa(${empresa.id})">
                     ${empresa.progresso_cartoes && empresa.progresso_cartoes.length > 0 ? 
-                        `<div class="empresa-badge">${empresa.progresso_cartoes.length} ${empresa.progresso_cartoes.length === 1 ? 'Cart√£o' : 'Cart√µes'}</div>` 
+                        `<div class="empresa-badge">${empresa.progresso_cartoes.length} ${empresa.progresso_cartoes.length === 1 ? 'Cart„o' : 'Cartıes'}</div>` 
                         : ''}
                     
                     <div class="empresa-logo">
@@ -151,7 +152,7 @@
                     
                     <div class="empresa-name">${empresa.nome}</div>
                     <div class="empresa-ramo">
-                        <i class="fas ${getIconClassRamo(empresa.ramo)}"></i> ${empresa.ramo || 'N√£o informado'}
+                        <i class="fas ${getIconClassRamo(empresa.ramo)}"></i> ${empresa.ramo || 'N„o informado'}
                     </div>
                     
                     <div class="empresa-rating">
@@ -203,11 +204,11 @@
             const icones = {
                 'Restaurante': '<i class="fas fa-utensils"></i>',
                 'Bar': '<i class="fas fa-beer"></i>',
-                'Sal√£o': '<i class="fas fa-cut"></i>',
+                'Sal„o': '<i class="fas fa-cut"></i>',
                 'Academia': '<i class="fas fa-dumbbell"></i>',
                 'Cafeteria': '<i class="fas fa-coffee"></i>',
                 'Loja': '<i class="fas fa-shopping-bag"></i>',
-                'Servi√ßos': '<i class="fas fa-tools"></i>'
+                'ServiÁos': '<i class="fas fa-tools"></i>'
             };
             return icones[ramo] || '<i class="fas fa-store"></i>';
         }
@@ -216,11 +217,11 @@
             const classes = {
                 'Restaurante': 'fa-utensils',
                 'Bar': 'fa-beer',
-                'Sal√£o': 'fa-cut',
+                'Sal„o': 'fa-cut',
                 'Academia': 'fa-dumbbell',
                 'Cafeteria': 'fa-coffee',
                 'Loja': 'fa-shopping-bag',
-                'Servi√ßos': 'fa-tools'
+                'ServiÁos': 'fa-tools'
             };
             return classes[ramo] || 'fa-store';
         }

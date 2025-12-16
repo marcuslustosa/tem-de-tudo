@@ -1,10 +1,11 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Empresa - Tem de Tudo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="/css/temdetudo-theme.css"></head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/temdetudo-theme.css"></head>
 <body>
     <div class="company-header">
         <button class="back-button" onclick="window.history.back()">
@@ -30,7 +31,7 @@
     <div class="section">
         <div class="section-header">
             <i class="fas fa-tag"></i>
-            PromoÃ§Ãµes Ativas
+            Promoções Ativas
         </div>
         <div id="promocoes"></div>
     </div>
@@ -38,7 +39,7 @@
     <div class="section">
         <div class="section-header">
             <i class="fas fa-credit-card"></i>
-            CartÃ£o Fidelidade
+            Cartão Fidelidade
         </div>
         <div id="cartoes"></div>
     </div>
@@ -46,7 +47,7 @@
     <div class="section">
         <div class="section-header">
             <i class="fas fa-info-circle"></i>
-            InformaÃ§Ãµes
+            Informações
         </div>
         <div class="card-fidelidade">
             <div class="info-item">
@@ -71,7 +72,7 @@
     <div class="section">
         <div class="section-header">
             <i class="fas fa-comments"></i>
-            AvaliaÃ§Ãµes
+            Avaliações
         </div>
         <div id="avaliacoes"></div>
     </div>
@@ -82,7 +83,7 @@
 
         async function carregarEmpresa() {
             if (!empresaId) {
-                alert('Empresa nÃ£o encontrada');
+                alert('Empresa não encontrada');
                 window.history.back();
                 return;
             }
@@ -95,7 +96,7 @@
                     const empresa = data.data;
                     document.getElementById('empresaNome').textContent = empresa.nome;
                     document.getElementById('empresaCategoria').textContent = empresa.categoria || 'Estabelecimento';
-                    document.getElementById('empresaEndereco').textContent = empresa.endereco || 'NÃ£o informado';
+                    document.getElementById('empresaEndereco').textContent = empresa.endereco || 'Não informado';
                     
                     if (empresa.telefone) {
                         document.getElementById('empresaWhatsapp').textContent = empresa.telefone;
@@ -122,7 +123,7 @@
                     mostrarPopupBonus(data.bonus);
                 }
             } catch (error) {
-                console.error('Erro ao verificar bÃ´nus:', error);
+                console.error('Erro ao verificar bônus:', error);
             }
         }
 
@@ -131,12 +132,12 @@
             popup.innerHTML = `
                 <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;">
                     <div style="background:white;border-radius:20px;padding:30px;text-align:center;max-width:350px;">
-                        <div style="font-size:60px;margin-bottom:15px;">ðŸŽ‰</div>
-                        <h2 style="color:#333;margin-bottom:10px;">ParabÃ©ns!</h2>
-                        <p style="color:#666;margin-bottom:20px;">VocÃª ganhou ${bonus.descricao}!</p>
+                        <div style="font-size:60px;margin-bottom:15px;">??</div>
+                        <h2 style="color:#333;margin-bottom:10px;">Parabéns!</h2>
+                        <p style="color:#666;margin-bottom:20px;">Você ganhou ${bonus.descricao}!</p>
                         ${bonus.imagem ? `<img src="${bonus.imagem}" style="width:100%;border-radius:12px;margin-bottom:20px;">` : ''}
                         <button onclick="resgatarBonus(${bonus.id}, this.parentElement.parentElement)" style="width:100%;padding:15px;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;border:none;border-radius:12px;font-weight:600;cursor:pointer;">
-                            Resgatar BÃ´nus
+                            Resgatar Bônus
                         </button>
                     </div>
                 </div>
@@ -156,10 +157,10 @@
                 
                 if (res.ok) {
                     popup.remove();
-                    alert('BÃ´nus resgatado! Mostre esta tela para o estabelecimento.');
+                    alert('Bônus resgatado! Mostre esta tela para o estabelecimento.');
                 }
             } catch (error) {
-                alert('Erro ao resgatar bÃ´nus');
+                alert('Erro ao resgatar bônus');
             }
         }
 
