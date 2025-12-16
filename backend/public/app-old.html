@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Tem de Tudo - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/modern-theme.css">
+    <style>
+        body {
+            padding-bottom: 70px;
+            background: #f5f7fa;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            padding-top: 40px;
+        }
+
+        .app-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .app-logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qr-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .qr-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .section {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .companies-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .company-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .company-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .company-info {
+            flex: 1;
+        }
+
+        .company-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .company-category {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 10px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #999;
+            text-decoration: none;
+            font-size: 11px;
+        }
+
+        .nav-item.active {
+            color: #667eea;
+        }
+
+        .nav-item i {
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-header">
+        <div class="app-header-top">
+            <div class="app-logo">
+                <i class="fas fa-gift"></i>
+                <span>Tem de Tudo</span>
+            </div>
+            <div>Olá, <span id="userName">Usuário</span>!</div>
+        </div>
+        <div class="qr-buttons">
+            <button class="qr-btn" onclick="window.location.href='/scanner.html'">
+                <i class="fas fa-qrcode"></i> Ler QR Code
+            </button>
+            <button class="qr-btn" onclick="window.location.href='/meu-qrcode.html'">
+                <i class="fas fa-id-card"></i> Meu QR Code
+            </button>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><i class="fas fa-star"></i> Minhas Empresas</div>
+        <div class="companies-grid" id="minhasEmpresas">
+            <div style="text-align:center;padding:40px;color:#999;">
+                <i class="fas fa-spinner fa-spin" style="font-size:40px;"></i>
+                <p>Carregando...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><i class="fas fa-th-large"></i> Categorias</div>
+        <div class="categories-grid">
+            <a href="/categorias.html?cat=restaurantes" class="category-card">
+                <div class="category-icon"><i class="fas fa-utensils"></i></div>
+                <div>Restaurantes</div>
+            </a>
+            <a href="/categorias.html?cat=sorveterias" class="category-card">
+                <div class="category-icon"><i class="fas fa-ice-cream"></i></div>
+                <div>Sorveterias</div>
+            </a>
+            <a href="/categorias.html?cat=bares" class="category-card">
+                <div class="category-icon"><i class="fas fa-beer"></i></div>
+                <div>Bares</div>
+            </a>
+            <a href="/categorias.html?cat=japonesa" class="category-card">
+                <div class="category-icon"><i class="fas fa-fish"></i></div>
+                <div>Japonesa</div>
+            </a>
+            <a href="/categorias.html?cat=petshops" class="category-card">
+                <div class="category-icon"><i class="fas fa-paw"></i></div>
+                <div>Petshops</div>
+            </a>
+            <a href="/categorias.html?cat=beleza" class="category-card">
+                <div class="category-icon"><i class="fas fa-cut"></i></div>
+                <div>Beleza</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title"><i class="fas fa-fire"></i> Em Destaque</div>
+        <div class="companies-grid" id="empresasDestaque"></div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="/app.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/buscar.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Buscar</span>
+        </a>
+        <a href="/cupons.html" class="nav-item">
+            <i class="fas fa-ticket-alt"></i>
+            <span>Cupons</span>
+        </a>
+        <a href="/perfil.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/global.js"></script>
+    <script>
+        async function init() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const user = await res.json();
+                document.getElementById('userName').textContent = user.name.split(' ')[0];
+
+                // Carregar empresas
+                const empresasRes = await fetch('/api/cliente/minhas-empresas', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const empresas = await empresasRes.json();
+                
+                const container = document.getElementById('minhasEmpresas');
+                if (empresas.data && empresas.data.length > 0) {
+                    container.innerHTML = empresas.data.map(e => `
+                        <a href="/empresa.html?id=${e.id}" class="company-card">
+                            <div class="company-logo">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <div class="company-info">
+                                <div class="company-name">${e.nome}</div>
+                                <div class="company-category">${e.categoria || 'Estabelecimento'}</div>
+                            </div>
+                        </a>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div style="text-align:center;padding:40px;color:#999;"><i class="fas fa-store-slash" style="font-size:50px;margin-bottom:10px;"></i><p>Escaneie um QR Code para começar!</p></div>';
+                }
+            } catch (error) {
+                window.location.href = '/login.html';
+            }
+        }
+
+        init();
+    </script>
+    
+    <!-- PWA Install Prompt -->
+    <script>
+        let deferredPrompt;
+        let installPromptShown = localStorage.getItem('installPromptShown');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Mostrar popup após 3 segundos (apenas na primeira vez)
+            if (!installPromptShown) {
+                setTimeout(() => {
+                    mostrarPopupPWA();
+                }, 3000);
+            }
+        });
+        
+        function mostrarPopupPWA() {
+            const popup = document.createElement('div');
+            popup.innerHTML = `
+                <div style="position:fixed;bottom:80px;left:20px;right:20px;background:white;border-radius:15px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.2);z-index:9999;animation:slideUp 0.3s ease;">
+                    <div style="display:flex;align-items:center;gap:15px;">
+                        <div style="width:50px;height:50px;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:24px;">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <h3 style="margin:0 0 5px 0;font-size:16px;">Instalar Tem de Tudo</h3>
+                            <p style="margin:0;font-size:13px;color:#666;">Adicione à tela inicial para acesso rápido!</p>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:10px;margin-top:15px;">
+                        <button onclick="fecharPopupPWA()" style="flex:1;padding:12px;background:#f0f0f0;border:none;border-radius:8px;font-weight:600;cursor:pointer;">
+                            Agora Não
+                        </button>
+                        <button onclick="instalarPWA()" style="flex:1;padding:12px;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">
+                            Instalar
+                        </button>
+                    </div>
+                </div>
+                <style>
+                    @keyframes slideUp {
+                        from { transform: translateY(100%); opacity: 0; }
+                        to { transform: translateY(0); opacity: 1; }
+                    }
+                </style>
+            `;
+            popup.id = 'pwa-popup';
+            document.body.appendChild(popup);
+        }
+        
+        function fecharPopupPWA() {
+            document.getElementById('pwa-popup')?.remove();
+            localStorage.setItem('installPromptShown', 'true');
+        }
+        
+        async function instalarPWA() {
+            if (!deferredPrompt) return;
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                console.log('PWA instalado!');
+            }
+            
+            deferredPrompt = null;
+            fecharPopupPWA();
+        }
+        
+        // Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(err => {
+                console.log('Service Worker registration failed:', err);
+            });
+        }
+        
+        // Verificar bônus de aniversário
+        async function verificarBonusAniversario() {
+            try {
+                const res = await fetch('/api/cliente/verificar-aniversario', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                if (data.success && data.tem_bonus) {
+                    // Redirecionar para página de parabéns
+                    setTimeout(() => {
+                        window.location.href = '/bonus-aniversario.html';
+                    }, 2000); // 2 segundos após carregar
+                }
+            } catch (error) {
+                console.error('Erro ao verificar aniversário:', error);
+            }
+        }
+        
+        // Verificar aniversário ao carregar
+        verificarBonusAniversario();
+    </script>
+</body>
+</html>

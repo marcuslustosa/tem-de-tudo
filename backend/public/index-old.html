@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tem de Tudo - Sistema de Fidelidade Inteligente</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Transforme seu negócio com o sistema de fidelidade mais moderno do Brasil">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/temdetudo-theme.css">
+    
+    <style>
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: i9-pulse 4s infinite;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.1;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .hero-title .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.125rem, 3vw, 1.5rem);
+            color: rgba(255,255,255,0.95);
+            margin-bottom: var(--spacing-2xl);
+            font-weight: 400;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn {
+            padding: 18px 36px;
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            transition: all var(--transition-normal);
+            box-shadow: 0 6px 30px rgba(0,0,0,0.2);
+        }
+
+        .hero-btn-primary {
+            background: white;
+            color: var(--primary-start);
+        }
+
+        .hero-btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(255,255,255,0.3);
+        }
+
+        .hero-btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid white;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-4px);
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: var(--spacing-2xl) var(--spacing-lg);
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: var(--spacing-sm);
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray-600);
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-xl);
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-start);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .feature-title {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .feature-text {
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: var(--spacing-2xl) var(--spacing-lg);
+            background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
+            text-align: center;
+            color: white;
+        }
+
+        .cta-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .cta-text {
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--spacing-2xl);
+            opacity: 0.95;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--gray-900);
+            color: white;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-2xl);
+        }
+
+        .footer-section h3 {
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--spacing-md);
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .footer-links a {
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: color var(--transition-normal);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-start);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+            border-top: 1px solid var(--gray-800);
+            color: var(--gray-500);
+        }
+
+        /* Stats */
+        .stats-section {
+            background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
+            padding: var(--spacing-2xl) var(--spacing-lg);
+            color: white;
+        }
+
+        .stats-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: var(--spacing-lg);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: var(--spacing-sm);
+            text-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-lg);
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content i9-animate-fadeIn">
+            <h1 class="hero-title">
+                <span class="gradient-text">Tem de Tudo</span>
+            </h1>
+            <p class="hero-subtitle">
+                Sistema de Fidelidade Digital - Conecte seu negócio aos clientes com QR Code, cartões digitais e recompensas inteligentes
+            </p>
+            <div class="hero-buttons">
+                <a href="/register-company.html" class="hero-btn hero-btn-primary">
+                    <i class="fas fa-rocket"></i>
+                    Começar Grátis
+                </a>
+                <a href="/login.html" class="hero-btn hero-btn-secondary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Fazer Login
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">5.000+</div>
+                <div class="stat-label">Empresas Parceiras</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">150K+</div>
+                <div class="stat-label">Clientes Ativos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1M+</div>
+                <div class="stat-label">Pontos Distribuídos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Satisfação</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features-section">
+        <h2 class="section-title">Por que escolher Tem de Tudo?</h2>
+        <p class="section-subtitle">Tudo que você precisa para fidelizar clientes em um só lugar</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <h3 class="feature-title">QR Code Inteligente</h3>
+                <p class="feature-text">
+                    Sistema de check-in por QR Code único. Cliente escaneia, ganha pontos e você rastreia tudo em tempo real.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h3 class="feature-title">Cartões Digitais</h3>
+                <p class="feature-text">
+                    Crie cartões fidelidade personalizados: "A cada 10 cafés, ganhe 1 grátis". Tudo automatizado.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3 class="feature-title">Bônus de Boas-Vindas</h3>
+                <p class="feature-text">
+                    Conquiste novos clientes com descontos especiais no primeiro check-in. Aumente conversão em 40%.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <h3 class="feature-title">Promoções Flash</h3>
+                <p class="feature-text">
+                    Envie promoções instantâneas para seus clientes via push notification. Resultados em minutos.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3 class="feature-title">Avaliações</h3>
+                <p class="feature-text">
+                    Sistema completo de reviews. Saiba o que seus clientes pensam e melhore continuamente.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="feature-title">Dashboards</h3>
+                <p class="feature-text">
+                    Relatórios completos: frequência de visitas, produtos favoritos, horários de pico e muito mais.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-birthday-cake"></i>
+                </div>
+                <h3 class="feature-title">Aniversário Automático</h3>
+                <p class="feature-text">
+                    Envie bônus especiais automaticamente no aniversário do cliente. Eles vão amar!
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3 class="feature-title">Lembrete de Ausência</h3>
+                <p class="feature-text">
+                    Cliente sumiu? Sistema avisa automaticamente com promoção personalizada para trazê-lo de volta.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title">100% Mobile</h3>
+                <p class="feature-text">
+                    App web responsivo que funciona perfeitamente em qualquer dispositivo. Sem instalação necessária.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <h2 class="cta-title">Pronto para Crescer?</h2>
+        <p class="cta-text">Cadastre sua empresa agora e comece a fidelizar clientes hoje mesmo</p>
+        <a href="/register-company.html" class="hero-btn hero-btn-primary" style="background: white; color: var(--primary-start);">
+            <i class="fas fa-rocket"></i>
+            Criar Conta Grátis
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Tem de Tudo</h3>
+                <p style="color: var(--gray-400); margin-top: var(--spacing-md);">
+                    O sistema de fidelidade mais moderno e completo do Brasil.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Empresa</h3>
+                <ul class="footer-links">
+                    <li><a href="/register-company.html">Cadastrar Empresa</a></li>
+                    <li><a href="/login.html">Fazer Login</a></li>
+                    <li><a href="/planos.html">Planos e Preços</a></li>
+                    <li><a href="/contato.html">Contato</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Cliente</h3>
+                <ul class="footer-links">
+                    <li><a href="/register.html">Criar Conta</a></li>
+                    <li><a href="/login.html">Entrar</a></li>
+                    <li><a href="/scanner.html">Escanear QR Code</a></li>
+                    <li><a href="/faq.html">Perguntas Frequentes</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Suporte</h3>
+                <ul class="footer-links">
+                    <li><a href="/ajuda.html">Central de Ajuda</a></li>
+                    <li><a href="/privacidade.html">Política de Privacidade</a></li>
+                    <li><a href="/contato.html">Fale Conosco</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            &copy; 2025 Tem de Tudo. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <script>
+        // Animação suave ao scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Animação de entrada dos cards
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'i9-fadeIn 0.6s ease-out forwards';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.feature-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
