@@ -4,23 +4,500 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tem de Tudo - Sistema de Fidelidade Premium</title>
-    
     <meta name="description" content="Sistema completo de fidelização digital para empresas">
-    <meta name="theme-color" content="#667eea">
     
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="css/temdetudo-theme.css">
+    
+    <style>
+        /* Estilos específicos da Landing Page */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 16px 32px;
+            border-radius: 50px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            z-index: 1000;
+        }
+        
+        .navbar-logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .navbar-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar-links a {
+            color: #495057;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+        
+        .navbar-links a:hover {
+            color: #667eea;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.3);
+        }
+        
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        
+        .hero-title {
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -2px;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            opacity: 0.95;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-hero {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 36px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .btn-hero.btn-primary {
+            background: white;
+            color: #667eea;
+        }
+        
+        .btn-hero.btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-hero.btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-hero.btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        .stats {
+            background: white;
+            padding: 80px 20px;
+        }
+        
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        
+        .stat-card {
+            text-align: center;
+        }
+        
+        .stat-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .features {
+            padding: 100px 20px;
+            background: #f8f9fa;
+        }
+        
+        .section-header {
+            max-width: 700px;
+            margin: 0 auto 60px;
+            text-align: center;
+        }
+        
+        .section-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: #212529;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+        
+        .section-description {
+            font-size: 18px;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.15);
+        }
+        
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            margin-bottom: 24px;
+        }
+        
+        .feature-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 12px;
+        }
+        
+        .feature-description {
+            font-size: 16px;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        
+        .pricing {
+            padding: 100px 20px;
+            background: white;
+        }
+        
+        .pricing-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+        }
+        
+        .pricing-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .pricing-card:hover {
+            border-color: #667eea;
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(102, 126, 234, 0.2);
+        }
+        
+        .pricing-featured {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+        }
+        
+        .pricing-featured .pricing-title,
+        .pricing-featured .pricing-features li {
+            color: white;
+        }
+        
+        .pricing-badge {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #26de81;
+            color: white;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .pricing-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .pricing-price {
+            margin: 24px 0;
+        }
+        
+        .price-currency {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .price-value {
+            font-size: 56px;
+            font-weight: 900;
+        }
+        
+        .price-period {
+            font-size: 18px;
+            color: #6c757d;
+        }
+        
+        .pricing-featured .price-period {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 32px 0;
+        }
+        
+        .pricing-features li {
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #495057;
+        }
+        
+        .pricing-features i {
+            color: #26de81;
+        }
+        
+        .pricing-featured .pricing-features i {
+            color: white;
+        }
+        
+        .btn-pricing {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .pricing-featured .btn-pricing {
+            background: white;
+            color: #667eea;
+        }
+        
+        .btn-pricing:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+        
+        .footer {
+            background: #212529;
+            color: white;
+            padding: 60px 20px 20px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        
+        .footer-section h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .footer-section p {
+            color: #adb5bd;
+            line-height: 1.6;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 12px;
+        }
+        
+        .footer-section a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section a:hover {
+            color: #667eea;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid #343a40;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+                border-radius: 20px;
+            }
+            
+            .navbar-links {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: 40px;
+            }
+            
+            .features-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navbar -->
+    <!-- Navbar Flutuante -->
     <nav class="navbar">
         <div class="navbar-logo">💜 Tem de Tudo</div>
         <ul class="navbar-links">
             <li><a href="#features">Recursos</a></li>
-            <li><a href="#benefits">Benefícios</a></li>
             <li><a href="#pricing">Planos</a></li>
             <li><a href="entrar.html" class="btn-primary">Entrar</a></li>
         </ul>
@@ -31,23 +508,23 @@
         <div class="hero-content">
             <div class="hero-badge">
                 <i class="fas fa-rocket"></i>
-                <span>Sistema #1 em Fidelização Digital</span>
+                Sistema #1 em Fidelização Digital
             </div>
             
             <h1 class="hero-title">Fidelidade que<br>Transforma Negócios</h1>
             
             <p class="hero-subtitle">
-                Plataforma completa de fidelização inteligente. Aumente vendas, engaje clientes e cresça seu negócio.
+                Plataforma completa de fidelização inteligente. Aumente vendas, engaje clientes e cresça seu negócio com tecnologia de ponta.
             </p>
             
             <div class="hero-buttons">
                 <a href="cadastro-empresa.html" class="btn-hero btn-primary">
                     <i class="fas fa-rocket"></i>
-                    <span>Começar Grátis</span>
+                    Começar Grátis
                 </a>
                 <a href="#features" class="btn-hero btn-secondary">
                     <i class="fas fa-play-circle"></i>
-                    <span>Ver Demo</span>
+                    Ver Demo
                 </a>
             </div>
         </div>
@@ -167,13 +644,11 @@
 
         <div class="pricing-grid">
             <div class="pricing-card">
-                <div class="pricing-header">
-                    <h3 class="pricing-title">Básico</h3>
-                    <div class="pricing-price">
-                        <span class="price-currency">R$</span>
-                        <span class="price-value">49</span>
-                        <span class="price-period">/mês</span>
-                    </div>
+                <h3 class="pricing-title">Básico</h3>
+                <div class="pricing-price">
+                    <span class="price-currency">R$</span>
+                    <span class="price-value">49</span>
+                    <span class="price-period">/mês</span>
                 </div>
                 <ul class="pricing-features">
                     <li><i class="fas fa-check"></i> Até 500 clientes</li>
@@ -186,13 +661,11 @@
 
             <div class="pricing-card pricing-featured">
                 <div class="pricing-badge">Mais Popular</div>
-                <div class="pricing-header">
-                    <h3 class="pricing-title">Premium</h3>
-                    <div class="pricing-price">
-                        <span class="price-currency">R$</span>
-                        <span class="price-value">99</span>
-                        <span class="price-period">/mês</span>
-                    </div>
+                <h3 class="pricing-title">Premium</h3>
+                <div class="pricing-price">
+                    <span class="price-currency">R$</span>
+                    <span class="price-value">99</span>
+                    <span class="price-period">/mês</span>
                 </div>
                 <ul class="pricing-features">
                     <li><i class="fas fa-check"></i> Até 2.000 clientes</li>
@@ -201,17 +674,15 @@
                     <li><i class="fas fa-check"></i> Notificações push</li>
                     <li><i class="fas fa-check"></i> Suporte prioritário</li>
                 </ul>
-                <a href="cadastro-empresa.html" class="btn-pricing btn-primary">Começar Grátis</a>
+                <a href="cadastro-empresa.html" class="btn-pricing">Começar Grátis</a>
             </div>
 
             <div class="pricing-card">
-                <div class="pricing-header">
-                    <h3 class="pricing-title">Enterprise</h3>
-                    <div class="pricing-price">
-                        <span class="price-currency">R$</span>
-                        <span class="price-value">299</span>
-                        <span class="price-period">/mês</span>
-                    </div>
+                <h3 class="pricing-title">Enterprise</h3>
+                <div class="pricing-price">
+                    <span class="price-currency">R$</span>
+                    <span class="price-value">299</span>
+                    <span class="price-period">/mês</span>
                 </div>
                 <ul class="pricing-features">
                     <li><i class="fas fa-check"></i> Clientes ilimitados</li>
@@ -266,7 +737,7 @@
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    target.scrollIntoView({ behavior: 'smooth' });
                 }
             });
         });
