@@ -1,2 +1,253 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Notifica��es - Tem de Tudo</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">`n    <link rel="stylesheet" href="css/temdetudo-theme.css"></head><body style="margin:0;font-family:Inter,sans-serif;background:#f8f9ff;"><header style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:24px 20px;text-align:center;"><h1 style="font-size:22px;font-weight:900;margin:0;"><i class="fas fa-bell"></i> Notifica��es</h1></header><div style="max-width:800px;margin:0 auto;padding:32px 20px;text-align:center;"><div style="background:white;border-radius:20px;padding:40px;box-shadow:0 8px 24px rgba(102,126,234,0.08);"><i class="fas fa-bell-slash" style="font-size:60px;color:#e5e9f2;margin-bottom:16px;"></i><p style="color:#7c8db0;margin:0;">Nenhuma notifica��o</p></div></div></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificações - Tem de Tudo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f; color: #ffffff; display: flex; min-height: 100vh;
+        }
+        .sidebar {
+            width: 260px; background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-right: 1px solid rgba(74, 144, 226, 0.1);
+            padding: 24px 0; position: fixed; height: 100vh; overflow-y: auto;
+        }
+        .logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(74, 144, 226, 0.1); margin-bottom: 24px; }
+        .logo h1 { font-size: 24px; font-weight: 900; color: #4a90e2; }
+        .logo p { font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-top: 4px; }
+        .nav-menu { list-style: none; }
+        .nav-item { padding: 0 16px; margin-bottom: 4px; }
+        .nav-link {
+            display: flex; align-items: center; padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.7); text-decoration: none;
+            border-radius: 12px; transition: all 0.3s; font-size: 14px; font-weight: 500;
+        }
+        .nav-link i { margin-right: 12px; font-size: 18px; width: 24px; }
+        .nav-link:hover { background: rgba(74, 144, 226, 0.1); color: #4a90e2; }
+        .nav-link.active { background: rgba(74, 144, 226, 0.15); color: #4a90e2; box-shadow: 0 0 20px rgba(74, 144, 226, 0.2); }
+        .main-content { margin-left: 260px; flex: 1; padding: 32px; }
+        .header { margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
+        .header-left h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+        .header-left p { color: rgba(255, 255, 255, 0.6); font-size: 14px; }
+        .create-btn {
+            padding: 14px 32px; background: linear-gradient(135deg, #4a90e2, #357abd);
+            border: none; border-radius: 12px; color: white; font-size: 14px; font-weight: 700;
+            cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+        }
+        .create-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4); }
+        .notif-list { max-width: 800px; }
+        .notif-item {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            border-radius: 16px; padding: 24px; margin-bottom: 16px;
+            display: flex; align-items: flex-start; gap: 16px; transition: all 0.3s;
+        }
+        .notif-item:hover { border-color: rgba(74, 144, 226, 0.3); }
+        .notif-icon {
+            width: 48px; height: 48px; background: rgba(74, 144, 226, 0.1);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; flex-shrink: 0;
+        }
+        .notif-content { flex: 1; }
+        .notif-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .notif-title { font-size: 16px; font-weight: 700; }
+        .notif-time { font-size: 12px; color: rgba(255, 255, 255, 0.5); }
+        .notif-message { font-size: 14px; color: rgba(255, 255, 255, 0.7); line-height: 1.6; margin-bottom: 16px; }
+        .notif-actions { display: flex; gap: 12px; }
+        .notif-btn {
+            padding: 8px 16px; background: rgba(74, 144, 226, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 8px;
+            color: #4a90e2; font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .notif-btn:hover { background: #4a90e2; color: white; }
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8); z-index: 1000;
+            align-items: center; justify-content: center; padding: 24px;
+        }
+        .modal-content {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            border-radius: 24px; padding: 32px; max-width: 500px; width: 100%;
+        }
+        .modal-title { font-size: 24px; font-weight: 800; margin-bottom: 24px; color: #4a90e2; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .form-input, .form-textarea {
+            width: 100%; padding: 12px 16px;
+            background: rgba(74, 144, 226, 0.05);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            border-radius: 12px; color: white; font-size: 14px; font-family: inherit;
+        }
+        .form-textarea { min-height: 120px; resize: vertical; }
+        .form-input::placeholder, .form-textarea::placeholder { color: rgba(255, 255, 255, 0.4); }
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+        .modal-btn {
+            padding: 12px 24px; border: none; border-radius: 12px;
+            font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s;
+        }
+        .modal-btn.primary {
+            background: linear-gradient(135deg, #4a90e2, #357abd); color: white;
+        }
+        .modal-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4); }
+        .modal-btn.secondary {
+            background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.7);
+        }
+        .modal-btn.secondary:hover { background: rgba(255, 255, 255, 0.15); }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 16px; }
+            .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo">
+            <h1>Tem de Tudo</h1>
+            <p>Painel Empresa</p>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="empresa-dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i>Dashboard</a></li>
+            <li class="nav-item"><a href="empresa-qrcode.html" class="nav-link"><i class="fas fa-qrcode"></i>QR Code</a></li>
+            <li class="nav-item"><a href="empresa-scanner.html" class="nav-link"><i class="fas fa-camera"></i>Scanner</a></li>
+            <li class="nav-item"><a href="empresa-clientes.html" class="nav-link"><i class="fas fa-users"></i>Clientes</a></li>
+            <li class="nav-item"><a href="empresa-promocoes.html" class="nav-link"><i class="fas fa-gift"></i>Promoções</a></li>
+            <li class="nav-item"><a href="empresa-bonus.html" class="nav-link"><i class="fas fa-star"></i>Bônus</a></li>
+            <li class="nav-item"><a href="empresa-notificacoes.html" class="nav-link active"><i class="fas fa-bell"></i>Notificações</a></li>
+            <li class="nav-item"><a href="empresa-relatorios.html" class="nav-link"><i class="fas fa-file-alt"></i>Relatórios</a></li>
+            <li class="nav-item"><a href="empresa-configuracoes.html" class="nav-link"><i class="fas fa-cog"></i>Configurações</a></li>
+        </ul>
+    </aside>
 
+    <main class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <h2>Notificações Push</h2>
+                <p>Envie comunicados para seus clientes</p>
+            </div>
+            <button class="create-btn" onclick="openModal()">
+                <i class="fas fa-plus"></i> Nova Notificação
+            </button>
+        </div>
+
+        <div class="notif-list">
+            <div class="notif-item">
+                <div class="notif-icon" style="color: #4a90e2;">🎁</div>
+                <div class="notif-content">
+                    <div class="notif-header">
+                        <div class="notif-title">Promoção: Dobro de Pontos</div>
+                        <div class="notif-time">Hoje, 10:30</div>
+                    </div>
+                    <div class="notif-message">
+                        "🔥 Aproveite! Dobro de pontos em compras acima de R$ 50 até domingo. Não perca!"
+                    </div>
+                    <div class="notif-actions">
+                        <button class="notif-btn">📊 Ver Estatísticas (1.247 visualizações)</button>
+                        <button class="notif-btn">🔁 Reenviar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notif-item">
+                <div class="notif-icon" style="color: #e74c3c;">🍕</div>
+                <div class="notif-content">
+                    <div class="notif-header">
+                        <div class="notif-title">Nova Promoção Pizza</div>
+                        <div class="notif-time">Ontem, 15:45</div>
+                    </div>
+                    <div class="notif-message">
+                        "🍕 Compre 2 pizzas grandes e ganhe 1 broto grátis! Válido até sexta-feira."
+                    </div>
+                    <div class="notif-actions">
+                        <button class="notif-btn">📊 Ver Estatísticas (856 visualizações)</button>
+                        <button class="notif-btn">🔁 Reenviar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notif-item">
+                <div class="notif-icon" style="color: #f39c12;">⭐</div>
+                <div class="notif-content">
+                    <div class="notif-header">
+                        <div class="notif-title">Avalie Nossa Experiência</div>
+                        <div class="notif-time">Há 3 dias</div>
+                    </div>
+                    <div class="notif-message">
+                        "⭐ Nos ajude a melhorar! Avalie sua última visita e ganhe 100 pontos de bônus."
+                    </div>
+                    <div class="notif-actions">
+                        <button class="notif-btn">📊 Ver Estatísticas (423 visualizações)</button>
+                        <button class="notif-btn">🔁 Reenviar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notif-item">
+                <div class="notif-icon" style="color: #27ae60;">🎂</div>
+                <div class="notif-content">
+                    <div class="notif-header">
+                        <div class="notif-title">Bônus de Aniversário Ativo</div>
+                        <div class="notif-time">Há 1 semana</div>
+                    </div>
+                    <div class="notif-message">
+                        "🎂 Aniversariantes do mês ganham 500 pontos! Comemore com a gente."
+                    </div>
+                    <div class="notif-actions">
+                        <button class="notif-btn">📊 Ver Estatísticas (2.134 visualizações)</button>
+                        <button class="notif-btn">🔁 Reenviar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal" id="notifModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Nova Notificação Push</h3>
+            <div class="form-group">
+                <label class="form-label">Título da Notificação</label>
+                <input type="text" class="form-input" placeholder="Ex: Promoção Especial de Fim de Semana">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Mensagem</label>
+                <textarea class="form-textarea" placeholder="Ex: Aproveite 30% de desconto em todo cardápio neste sábado e domingo!"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Enviar para</label>
+                <select class="form-input">
+                    <option>Todos os clientes (2.847)</option>
+                    <option>Apenas clientes Premium (487)</option>
+                    <option>Clientes inativos há 30 dias (124)</option>
+                    <option>Clientes frequentes (698)</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeModal()">Cancelar</button>
+                <button class="modal-btn primary" onclick="sendNotif()">Enviar Agora</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('notifModal').style.display = 'flex';
+        }
+        function closeModal() {
+            document.getElementById('notifModal').style.display = 'none';
+        }
+        function sendNotif() {
+            alert('Notificação enviada com sucesso!');
+            closeModal();
+        }
+    </script>
+</body>
+</html>

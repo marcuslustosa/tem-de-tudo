@@ -3,154 +3,527 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Clientes - Tem de Tudo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">`n    <link rel="stylesheet" href="css/temdetudo-theme.css"></head>
+    <title>Clientes - Tem de Tudo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f;
+            color: #ffffff;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-right: 1px solid rgba(74, 144, 226, 0.1);
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 900;
+            color: #4a90e2;
+        }
+
+        .logo p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 0 16px;
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
+        }
+
+        .nav-link:hover {
+            background: rgba(74, 144, 226, 0.1);
+            color: #4a90e2;
+        }
+
+        .nav-link.active {
+            background: rgba(74, 144, 226, 0.15);
+            color: #4a90e2;
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.2);
+        }
+
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 32px;
+        }
+
+        .header {
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .header-left p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            flex: 1;
+            max-width: 400px;
+            padding: 12px 16px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4);
+        }
+
+        .clients-table {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #4a90e2;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px;
+            border-top: 1px solid rgba(74, 144, 226, 0.1);
+            font-size: 14px;
+        }
+
+        tbody tr {
+            transition: all 0.3s;
+        }
+
+        tbody tr:hover {
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .client-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .client-details {
+            flex: 1;
+        }
+
+        .client-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .client-email {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge.premium {
+            background: rgba(243, 156, 18, 0.2);
+            color: #f39c12;
+        }
+
+        .badge.regular {
+            background: rgba(74, 144, 226, 0.2);
+            color: #4a90e2;
+        }
+
+        .points-value {
+            font-weight: 700;
+            color: #4a90e2;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            background: rgba(74, 144, 226, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            border-radius: 8px;
+            color: #4a90e2;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: #4a90e2;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-input {
+                max-width: 100%;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
 <body>
-    <div class="header">
-        <div class="header-top">
-            <button class="btn-back" onclick="window.location.href='/empresa-dashboard.html'">
-                <i class="fas fa-arrow-left"></i>
+    <aside class="sidebar">
+        <div class="logo">
+            <h1>Tem de Tudo</h1>
+            <p>Painel Empresa</p>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="empresa-dashboard.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-qrcode.html" class="nav-link">
+                    <i class="fas fa-qrcode"></i>
+                    QR Code
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-scanner.html" class="nav-link">
+                    <i class="fas fa-camera"></i>
+                    Scanner
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-clientes.html" class="nav-link active">
+                    <i class="fas fa-users"></i>
+                    Clientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-promocoes.html" class="nav-link">
+                    <i class="fas fa-gift"></i>
+                    Promoções
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-bonus.html" class="nav-link">
+                    <i class="fas fa-star"></i>
+                    Bônus
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-notificacoes.html" class="nav-link">
+                    <i class="fas fa-bell"></i>
+                    Notificações
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-relatorios.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    Relatórios
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-configuracoes.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    Configurações
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <h2>Clientes</h2>
+                <p>Gerencie seus clientes e pontuações</p>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="🔍 Buscar cliente por nome ou email..." id="searchInput" oninput="searchClients()">
+            <button class="filter-btn">
+                <i class="fas fa-filter"></i> Filtros
             </button>
-            <div class="header-title">Meus Clientes</div>
         </div>
-        <p style="opacity:0.9;">Gerencie sua base de clientes</p>
-        
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="totalClientes">0</div>
-                <div class="stat-label">Total</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="ativosHoje">0</div>
-                <div class="stat-label">Hoje</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="novosEsteMes">0</div>
-                <div class="stat-label">Este Mês</div>
-            </div>
-        </div>
-    </div>
 
-    <div class="search-bar">
-        <input type="text" class="search-input" id="searchInput" placeholder="Buscar cliente...">
-    </div>
-
-    <div class="filters">
-        <button class="filter-btn active" onclick="filtrar('todos')">Todos</button>
-        <button class="filter-btn" onclick="filtrar('ativos')">Ativos</button>
-        <button class="filter-btn" onclick="filtrar('inativos')">Inativos</button>
-        <button class="filter-btn" onclick="filtrar('vip')">VIP</button>
-    </div>
-
-    <div class="clients-list" id="clientsList"></div>
-
-    <script>
-        const token = localStorage.getItem('token');
-        if (!token) {
-            window.location.href = '/entrar.html';
-        }
-
-        let clientes = [];
-        let currentFilter = 'todos';
-
-        async function carregarClientes() {
-            try {
-                const res = await fetch('/api/empresa/clientes', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await res.json();
-                
-                if (data.success) {
-                    clientes = data.data;
-                    atualizarEstatisticas(data.stats);
-                    renderClientes();
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-            }
-        }
-
-        function atualizarEstatisticas(stats) {
-            document.getElementById('totalClientes').textContent = stats.total || 0;
-            document.getElementById('ativosHoje').textContent = stats.hoje || 0;
-            document.getElementById('novosEsteMes').textContent = stats.mes || 0;
-        }
-
-        function filtrar(tipo) {
-            currentFilter = tipo;
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            renderClientes();
-        }
-
-        function renderClientes() {
-            let filtered = clientes;
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            if (searchTerm) {
-                filtered = filtered.filter(c => 
-                    c.nome.toLowerCase().includes(searchTerm) || 
-                    c.email.toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            if (currentFilter !== 'todos') {
-                filtered = filtered.filter(c => {
-                    if (currentFilter === 'ativos') return c.ultimo_checkin_dias <= 7;
-                    if (currentFilter === 'inativos') return c.ultimo_checkin_dias > 30;
-                    if (currentFilter === 'vip') return c.pontos >= 100;
-                    return true;
-                });
-            }
-            
-            const container = document.getElementById('clientsList');
-            
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-users"></i>
-                        <p>Nenhum cliente encontrado</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = filtered.map(cliente => {
-                const iniciais = cliente.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                const diasAtras = cliente.ultimo_checkin_dias;
-                const ultimoCheckin = diasAtras === 0 ? 'Hoje' : 
-                                     diasAtras === 1 ? 'Ontem' : 
-                                     `${diasAtras} dias atrás`;
-                
-                return `
-                    <div class="client-card">
-                        <div class="client-avatar">${iniciais}</div>
-                        <div class="client-info">
-                            <div class="client-name">${cliente.nome}</div>
-                            <div class="client-meta">
-                                <div class="meta-item">
-                                    <i class="fas fa-clock"></i>
-                                    <span>${ultimoCheckin}</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span>${cliente.total_checkins || 0} visitas</span>
+        <div class="clients-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Tipo</th>
+                        <th>Pontos</th>
+                        <th>Visitas</th>
+                        <th>Última Visita</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="clientsTableBody">
+                    <tr>
+                        <td>
+                            <div class="client-info">
+                                <div class="client-avatar">👤</div>
+                                <div class="client-details">
+                                    <div class="client-name">Maria Silva</div>
+                                    <div class="client-email">maria.silva@email.com</div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="client-points">
-                            <div class="points-value">${cliente.pontos || 0}</div>
-                            <div class="points-label">pontos</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+                        </td>
+                        <td><span class="badge premium">Premium</span></td>
+                        <td><span class="points-value">1.247</span></td>
+                        <td>38</td>
+                        <td>Hoje, 14:23</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn" title="Ver perfil"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn" title="Editar"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn" title="Mensagem"><i class="fas fa-envelope"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="client-info">
+                                <div class="client-avatar">👤</div>
+                                <div class="client-details">
+                                    <div class="client-name">João Santos</div>
+                                    <div class="client-email">joao.santos@email.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge regular">Regular</span></td>
+                        <td><span class="points-value">856</span></td>
+                        <td>24</td>
+                        <td>Ontem, 18:45</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn" title="Ver perfil"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn" title="Editar"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn" title="Mensagem"><i class="fas fa-envelope"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="client-info">
+                                <div class="client-avatar">👤</div>
+                                <div class="client-details">
+                                    <div class="client-name">Ana Costa</div>
+                                    <div class="client-email">ana.costa@email.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge premium">Premium</span></td>
+                        <td><span class="points-value">2.134</span></td>
+                        <td>52</td>
+                        <td>Há 3 dias</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn" title="Ver perfil"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn" title="Editar"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn" title="Mensagem"><i class="fas fa-envelope"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="client-info">
+                                <div class="client-avatar">👤</div>
+                                <div class="client-details">
+                                    <div class="client-name">Pedro Oliveira</div>
+                                    <div class="client-email">pedro.oliveira@email.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge regular">Regular</span></td>
+                        <td><span class="points-value">423</span></td>
+                        <td>15</td>
+                        <td>Há 1 semana</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn" title="Ver perfil"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn" title="Editar"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn" title="Mensagem"><i class="fas fa-envelope"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="client-info">
+                                <div class="client-avatar">👤</div>
+                                <div class="client-details">
+                                    <div class="client-name">Carla Mendes</div>
+                                    <div class="client-email">carla.mendes@email.com</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge regular">Regular</span></td>
+                        <td><span class="points-value">698</span></td>
+                        <td>19</td>
+                        <td>Há 2 dias</td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn" title="Ver perfil"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn" title="Editar"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn" title="Mensagem"><i class="fas fa-envelope"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        function searchClients() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#clientsTableBody tr');
+
+            rows.forEach(row => {
+                const name = row.querySelector('.client-name').textContent.toLowerCase();
+                const email = row.querySelector('.client-email').textContent.toLowerCase();
+                
+                if (name.includes(searchValue) || email.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
-
-        document.getElementById('searchInput').addEventListener('input', renderClientes);
-
-        carregarClientes();
     </script>
 </body>
 </html>
-

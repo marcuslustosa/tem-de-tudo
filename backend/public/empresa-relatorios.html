@@ -3,418 +3,327 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios - Painel Empresa</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Relatórios - Tem de Tudo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/temdetudo-theme.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #f8f9fa;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f; color: #ffffff; display: flex; min-height: 100vh;
         }
-        
         .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 260px;
-            height: 100vh;
-            background: linear-gradient(180deg, #667eea, #764ba2);
-            color: white;
-            padding: 24px;
-            overflow-y: auto;
+            width: 260px; background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-right: 1px solid rgba(74, 144, 226, 0.1);
+            padding: 24px 0; position: fixed; height: 100vh; overflow-y: auto;
         }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: 900;
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(74, 144, 226, 0.1); margin-bottom: 24px; }
+        .logo h1 { font-size: 24px; font-weight: 900; color: #4a90e2; }
+        .logo p { font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-top: 4px; }
+        .nav-menu { list-style: none; }
+        .nav-item { padding: 0 16px; margin-bottom: 4px; }
+        .nav-link {
+            display: flex; align-items: center; padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.7); text-decoration: none;
+            border-radius: 12px; transition: all 0.3s; font-size: 14px; font-weight: 500;
         }
-        
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            color: white;
-        }
-        
-        .menu-item:hover, .menu-item.active {
-            background: rgba(255,255,255,0.2);
-        }
-        
-        .main-content {
-            margin-left: 260px;
-            padding: 40px;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-        
-        .page-title {
-            font-size: 32px;
-            font-weight: 900;
-            color: #212529;
-        }
-        
+        .nav-link i { margin-right: 12px; font-size: 18px; width: 24px; }
+        .nav-link:hover { background: rgba(74, 144, 226, 0.1); color: #4a90e2; }
+        .nav-link.active { background: rgba(74, 144, 226, 0.15); color: #4a90e2; box-shadow: 0 0 20px rgba(74, 144, 226, 0.2); }
+        .main-content { margin-left: 260px; flex: 1; padding: 32px; }
+        .header { margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
+        .header-left h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+        .header-left p { color: rgba(255, 255, 255, 0.6); font-size: 14px; }
         .filters {
-            background: white;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 24px;
-            display: flex;
-            gap: 16px;
-            align-items: end;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            border-radius: 16px; padding: 24px; margin-bottom: 24px;
+            display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
         }
-        
-        .filter-group {
-            flex: 1;
+        .filter-group { flex: 1; min-width: 200px; }
+        .filter-label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; color: #4a90e2; }
+        .filter-select {
+            width: 100%; padding: 12px 16px;
+            background: rgba(74, 144, 226, 0.05);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            border-radius: 12px; color: white; font-size: 14px; font-family: inherit;
         }
-        
-        .filter-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
+        .export-btn {
+            padding: 12px 24px; background: linear-gradient(135deg, #4a90e2, #357abd);
+            border: none; border-radius: 12px; color: white; font-size: 13px; font-weight: 700;
+            cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;
         }
-        
-        .filter-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 14px;
+        .export-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4); }
+        .reports-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; }
+        .report-card {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            border-radius: 16px; padding: 24px; transition: all 0.3s;
         }
-        
-        .btn {
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
+        .report-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3); border-color: rgba(74, 144, 226, 0.3); }
+        .report-header {
+            display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;
         }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+        .report-icon {
+            width: 56px; height: 56px; background: rgba(74, 144, 226, 0.1);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 28px;
         }
-        
-        .card {
-            background: white;
-            padding: 32px;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 24px;
+        .report-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+        .report-desc { font-size: 13px; color: rgba(255, 255, 255, 0.6); }
+        .report-metrics { margin-bottom: 20px; }
+        .metric-row {
+            display: flex; justify-content: space-between; padding: 12px 0;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.1); font-size: 14px;
         }
-        
-        .card-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .metric-row:last-child { border-bottom: none; }
+        .metric-label { color: rgba(255, 255, 255, 0.6); }
+        .metric-value { font-weight: 700; color: #4a90e2; }
+        .report-btn {
+            width: 100%; padding: 12px; background: rgba(74, 144, 226, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 10px;
+            color: #4a90e2; font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: all 0.3s;
         }
-        
-        .chart-placeholder {
-            height: 300px;
-            background: linear-gradient(135deg, #667eea20, #764ba220);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #667eea;
-            font-weight: 700;
-        }
-        
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-        
-        .stat-box {
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 32px;
-            font-weight: 900;
-            color: #667eea;
-            margin-bottom: 8px;
-        }
-        
-        .stat-label {
-            font-size: 14px;
-            color: #6c757d;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        th {
-            font-weight: 600;
-            color: #6c757d;
-            font-size: 13px;
-        }
-        
-        .export-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 24px;
+        .report-btn:hover { background: #4a90e2; color: white; }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 16px; }
+            .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .filters { flex-direction: column; }
+            .reports-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <aside class="sidebar">
         <div class="logo">
-            <i class="fas fa-store"></i> Painel Empresa
+            <h1>Tem de Tudo</h1>
+            <p>Painel Empresa</p>
         </div>
-        
-        <nav>
-            <a href="empresa-dashboard.html" class="menu-item">
-                <i class="fas fa-chart-line"></i> Dashboard
-            </a>
-            <a href="empresa-clientes.html" class="menu-item">
-                <i class="fas fa-users"></i> Clientes
-            </a>
-            <a href="empresa-promocoes.html" class="menu-item">
-                <i class="fas fa-tag"></i> Promoções
-            </a>
-            <a href="empresa-qrcode.html" class="menu-item">
-                <i class="fas fa-qrcode"></i> QR Code
-            </a>
-            <a href="empresa-relatorios.html" class="menu-item active">
-                <i class="fas fa-file-alt"></i> Relatórios
-            </a>
-            <a href="empresa-configuracoes.html" class="menu-item">
-                <i class="fas fa-cog"></i> Configurações
-            </a>
-            <div style="height: 1px; background: rgba(255,255,255,0.2); margin: 16px 0;"></div>
-            <a href="app-inicio.html" class="menu-item">
-                <i class="fas fa-mobile-alt"></i> Ver App
-            </a>
-            <a href="entrar.html" class="menu-item">
-                <i class="fas fa-sign-out-alt"></i> Sair
-            </a>
-        </nav>
-    </div>
-    
-    <div class="main-content">
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="empresa-dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i>Dashboard</a></li>
+            <li class="nav-item"><a href="empresa-qrcode.html" class="nav-link"><i class="fas fa-qrcode"></i>QR Code</a></li>
+            <li class="nav-item"><a href="empresa-scanner.html" class="nav-link"><i class="fas fa-camera"></i>Scanner</a></li>
+            <li class="nav-item"><a href="empresa-clientes.html" class="nav-link"><i class="fas fa-users"></i>Clientes</a></li>
+            <li class="nav-item"><a href="empresa-promocoes.html" class="nav-link"><i class="fas fa-gift"></i>Promoções</a></li>
+            <li class="nav-item"><a href="empresa-bonus.html" class="nav-link"><i class="fas fa-star"></i>Bônus</a></li>
+            <li class="nav-item"><a href="empresa-notificacoes.html" class="nav-link"><i class="fas fa-bell"></i>Notificações</a></li>
+            <li class="nav-item"><a href="empresa-relatorios.html" class="nav-link active"><i class="fas fa-file-alt"></i>Relatórios</a></li>
+            <li class="nav-item"><a href="empresa-configuracoes.html" class="nav-link"><i class="fas fa-cog"></i>Configurações</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
         <div class="header">
-            <h1 class="page-title">Relatórios</h1>
+            <div class="header-left">
+                <h2>Relatórios</h2>
+                <p>Análises e estatísticas do seu negócio</p>
+            </div>
         </div>
-        
+
         <div class="filters">
             <div class="filter-group">
                 <label class="filter-label">Período</label>
-                <select class="filter-input">
+                <select class="filter-select">
                     <option>Últimos 7 dias</option>
-                    <option>Últimos 30 dias</option>
-                    <option selected>Últimos 90 dias</option>
-                    <option>Último ano</option>
+                    <option selected>Últimos 30 dias</option>
+                    <option>Últimos 90 dias</option>
+                    <option>Este ano</option>
                     <option>Personalizado</option>
                 </select>
             </div>
-            
             <div class="filter-group">
-                <label class="filter-label">Data Inicial</label>
-                <input type="date" class="filter-input" value="2024-02-01">
+                <label class="filter-label">Tipo de Cliente</label>
+                <select class="filter-select">
+                    <option selected>Todos</option>
+                    <option>Premium</option>
+                    <option>Regular</option>
+                </select>
             </div>
-            
-            <div class="filter-group">
-                <label class="filter-label">Data Final</label>
-                <input type="date" class="filter-input" value="2024-05-01">
-            </div>
-            
-            <button class="btn btn-primary">
-                <i class="fas fa-search"></i> Filtrar
+            <button class="export-btn">
+                <i class="fas fa-download"></i>
+                Exportar PDF
             </button>
         </div>
-        
-        <div class="stats-row">
-            <div class="stat-box">
-                <div class="stat-value">1.247</div>
-                <div class="stat-label">Total de Clientes</div>
-            </div>
-            
-            <div class="stat-box">
-                <div class="stat-value">5.892</div>
-                <div class="stat-label">Visitas Registradas</div>
-            </div>
-            
-            <div class="stat-box">
-                <div class="stat-box">
-                <div class="stat-value">62%</div>
-                <div class="stat-label">Taxa de Retenção</div>
-            </div>
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-title">
-                <i class="fas fa-chart-line"></i> Crescimento de Clientes
-            </div>
-            <div class="chart-placeholder">
-                <i class="fas fa-chart-area" style="font-size: 48px; margin-right: 16px;"></i>
-                Gráfico de crescimento (integrar biblioteca de gráficos)
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-title">
-                <i class="fas fa-trophy"></i> Promoções Mais Efetivas
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Promoção</th>
-                        <th>Visualizações</th>
-                        <th>Resgates</th>
-                        <th>Taxa de Conversão</th>
-                        <th>Período</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Combo Família</strong></td>
-                        <td>2.450</td>
-                        <td>1.523</td>
-                        <td style="color: #26de81; font-weight: 700;">62.2%</td>
-                        <td>01/04 - 30/04</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Happy Hour</strong></td>
-                        <td>1.890</td>
-                        <td>987</td>
-                        <td style="color: #26de81; font-weight: 700;">52.2%</td>
-                        <td>15/04 - 15/05</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Terça Especial</strong></td>
-                        <td>1.234</td>
-                        <td>456</td>
-                        <td style="color: #ffc107; font-weight: 700;">37.0%</td>
-                        <td>10/03 - 30/04</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="card">
-            <div class="card-title">
-                <i class="fas fa-calendar-alt"></i> Visitas por Dia da Semana
-            </div>
-            <div class="chart-placeholder">
-                <i class="fas fa-chart-bar" style="font-size: 48px; margin-right: 16px;"></i>
-                Gráfico de barras (integrar biblioteca de gráficos)
-            </div>
-        </div>
-        
-        <div class="card">
-            <div class="card-title">
-                <i class="fas fa-users"></i> Top 10 Clientes Mais Fiéis
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Email</th>
-                        <th>Telefone</th>
-                        <th>Pontos</th>
-                        <th>Visitas</th>
-                        <th>Último Acesso</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Maria Souza</strong></td>
-                        <td>maria.s@email.com</td>
-                        <td>(11) 99999-8888</td>
-                        <td style="color: #667eea; font-weight: 700;">47</td>
-                        <td>52</td>
-                        <td>Hoje</td>
-                    </tr>
-                    <tr>
-                        <td><strong>João Silva</strong></td>
-                        <td>joao@email.com</td>
-                        <td>(11) 98888-7777</td>
-                        <td style="color: #667eea; font-weight: 700;">38</td>
-                        <td>43</td>
-                        <td>Ontem</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Ana Costa</strong></td>
-                        <td>ana.costa@email.com</td>
-                        <td>(11) 97777-6666</td>
-                        <td style="color: #667eea; font-weight: 700;">32</td>
-                        <td>35</td>
-                        <td>3 dias atrás</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Pedro Oliveira</strong></td>
-                        <td>pedro.o@email.com</td>
-                        <td>(11) 96666-5555</td>
-                        <td style="color: #667eea; font-weight: 700;">28</td>
-                        <td>31</td>
-                        <td>5 dias atrás</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Carla Mendes</strong></td>
-                        <td>carla.m@email.com</td>
-                        <td>(11) 95555-4444</td>
-                        <td style="color: #667eea; font-weight: 700;">25</td>
-                        <td>28</td>
-                        <td>1 semana atrás</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="export-buttons">
-            <button class="btn btn-primary" onclick="exportarPDF()">
-                <i class="fas fa-file-pdf"></i> Exportar PDF
-            </button>
-            <button class="btn btn-primary" onclick="exportarExcel()">
-                <i class="fas fa-file-excel"></i> Exportar Excel
-            </button>
-        </div>
-    </div>
 
-    <script>
-        function exportarPDF() {
-            alert('Exportando relatório em PDF...');
-        }
-        
-        function exportarExcel() {
-            alert('Exportando relatório em Excel...');
-        }
-    </script>
+        <div class="reports-grid">
+            <div class="report-card">
+                <div class="report-header">
+                    <div>
+                        <div class="report-title">Desempenho Geral</div>
+                        <div class="report-desc">Métricas principais do período</div>
+                    </div>
+                    <div class="report-icon" style="color: #4a90e2;">📊</div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Total de Visitas:</span>
+                        <span class="metric-value">1.234</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Novos Clientes:</span>
+                        <span class="metric-value">347</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Pontos Distribuídos:</span>
+                        <span class="metric-value">45.678</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Crescimento:</span>
+                        <span class="metric-value">+18%</span>
+                    </div>
+                </div>
+                <button class="report-btn"><i class="fas fa-eye"></i> Ver Relatório Completo</button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-header">
+                    <div>
+                        <div class="report-title">Promoções</div>
+                        <div class="report-desc">Performance das campanhas</div>
+                    </div>
+                    <div class="report-icon" style="color: #e74c3c;">🎁</div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Promoções Ativas:</span>
+                        <span class="metric-value">3</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Total Ativações:</span>
+                        <span class="metric-value">560</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Taxa Conversão:</span>
+                        <span class="metric-value">45%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">ROI Estimado:</span>
+                        <span class="metric-value">+230%</span>
+                    </div>
+                </div>
+                <button class="report-btn"><i class="fas fa-eye"></i> Ver Relatório Completo</button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-header">
+                    <div>
+                        <div class="report-title">Fidelidade</div>
+                        <div class="report-desc">Retenção e engajamento</div>
+                    </div>
+                    <div class="report-icon" style="color: #f39c12;">🏆</div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Taxa Retorno:</span>
+                        <span class="metric-value">68%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Clientes Fiéis:</span>
+                        <span class="metric-value">1.847</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Visitas Médias/Mês:</span>
+                        <span class="metric-value">4.2</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Churn Rate:</span>
+                        <span class="metric-value">-8%</span>
+                    </div>
+                </div>
+                <button class="report-btn"><i class="fas fa-eye"></i> Ver Relatório Completo</button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-header">
+                    <div>
+                        <div class="report-title">Recompensas</div>
+                        <div class="report-desc">Pontos e resgates</div>
+                    </div>
+                    <div class="report-icon" style="color: #27ae60;">🎯</div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Pontos Emitidos:</span>
+                        <span class="metric-value">45.678</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Pontos Resgatados:</span>
+                        <span class="metric-value">12.345</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Taxa Resgate:</span>
+                        <span class="metric-value">27%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Recompensa Popular:</span>
+                        <span class="metric-value">Hamburguer</span>
+                    </div>
+                </div>
+                <button class="report-btn"><i class="fas fa-eye"></i> Ver Relatório Completo</button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-header">
+                    <div>
+                        <div class="report-title">Horários de Pico</div>
+                        <div class="report-desc">Análise de tráfego</div>
+                    </div>
+                    <div class="report-icon" style="color: #9b59b6;">⏰</div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Melhor Horário:</span>
+                        <span class="metric-value">18h - 20h</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Melhor Dia:</span>
+                        <span class="metric-value">Sábado</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Pico de Visitas:</span>
+                        <span class="metric-value">19:30</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Capacidade Média:</span>
+                        <span class="metric-value">73%</span>
+                    </div>
+                </div>
+                <button class="report-btn"><i class="fas fa-eye"></i> Ver Relatório Completo</button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-header">
+                    <div>
+                        <div class="report-title">Avaliações</div>
+                        <div class="report-desc">Feedback dos clientes</div>
+                    </div>
+                    <div class="report-icon" style="color: #f39c12;">⭐</div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Avaliação Média:</span>
+                        <span class="metric-value">4.9 ⭐</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Total Avaliações:</span>
+                        <span class="metric-value">847</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">5 Estrelas:</span>
+                        <span class="metric-value">89%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">NPS Score:</span>
+                        <span class="metric-value">92</span>
+                    </div>
+                </div>
+                <button class="report-btn"><i class="fas fa-eye"></i> Ver Relatório Completo</button>
+            </div>
+        </div>
+    </main>
 </body>
 </html>

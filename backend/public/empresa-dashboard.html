@@ -3,352 +3,442 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Painel Empresa</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Dashboard Empresa - Tem de Tudo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/temdetudo-theme.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: #f8f9fa;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f;
+            color: #ffffff;
+            display: flex;
+            min-height: 100vh;
+        }
+
         .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
             width: 260px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-right: 1px solid rgba(74, 144, 226, 0.1);
+            padding: 24px 0;
+            position: fixed;
             height: 100vh;
-            background: linear-gradient(180deg, #667eea, #764ba2);
-            color: white;
-            padding: 24px;
             overflow-y: auto;
         }
-        
+
         .logo {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .logo h1 {
             font-size: 24px;
             font-weight: 900;
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            color: #4a90e2;
         }
-        
-        .menu-item {
+
+        .logo p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 0 16px;
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
             display: flex;
             align-items: center;
-            gap: 12px;
             padding: 12px 16px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            color: white;
+            border-radius: 12px;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
         }
-        
-        .menu-item:hover, .menu-item.active {
-            background: rgba(255,255,255,0.2);
+
+        .nav-link i {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
         }
-        
+
+        .nav-link:hover {
+            background: rgba(74, 144, 226, 0.1);
+            color: #4a90e2;
+        }
+
+        .nav-link.active {
+            background: rgba(74, 144, 226, 0.15);
+            color: #4a90e2;
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.2);
+        }
+
         .main-content {
             margin-left: 260px;
-            padding: 40px;
+            flex: 1;
+            padding: 32px;
         }
-        
+
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
-        
-        .page-title {
+
+        .header h2 {
             font-size: 32px;
-            font-weight: 900;
-            color: #212529;
+            font-weight: 800;
+            margin-bottom: 8px;
         }
-        
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 16px;
+
+        .header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
         }
-        
-        .avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-        }
-        
+
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 24px;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
-        
+
         .stat-card {
-            background: white;
-            padding: 24px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.1);
             border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 24px;
+            transition: all 0.3s;
         }
-        
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
+            border-color: rgba(74, 144, 226, 0.3);
+        }
+
         .stat-icon {
             width: 48px;
             height: 48px;
+            background: rgba(74, 144, 226, 0.1);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
+            color: #4a90e2;
             margin-bottom: 16px;
         }
-        
+
         .stat-value {
             font-size: 32px;
-            font-weight: 900;
-            margin-bottom: 8px;
+            font-weight: 800;
+            color: #4a90e2;
+            margin-bottom: 4px;
         }
-        
+
         .stat-label {
             font-size: 14px;
-            color: #6c757d;
+            color: rgba(255, 255, 255, 0.6);
         }
-        
-        .card {
-            background: white;
-            padding: 32px;
+
+        .chart-card {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.1);
             border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 24px;
             margin-bottom: 24px;
         }
-        
-        .card-title {
-            font-size: 20px;
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 24px;
         }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
+
+        .chart-filter {
+            display: flex;
+            gap: 8px;
         }
-        
-        th, td {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        th {
-            font-weight: 600;
-            color: #6c757d;
-            font-size: 13px;
-        }
-        
-        .badge {
-            padding: 4px 12px;
-            border-radius: 12px;
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: rgba(74, 144, 226, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 12px;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
-        
-        .badge-success {
-            background: #d4edda;
-            color: #155724;
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #4a90e2;
+            color: white;
         }
-        
-        .badge-warning {
-            background: #fff3cd;
-            color: #856404;
+
+        .recent-activity {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(74, 144, 226, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 18px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .activity-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #4a90e2;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
+    <aside class="sidebar">
         <div class="logo">
-            <i class="fas fa-store"></i> Painel Empresa
+            <h1>Tem de Tudo</h1>
+            <p>Painel Empresa</p>
         </div>
-        
-        <nav>
-            <a href="empresa-dashboard.html" class="menu-item active">
-                <i class="fas fa-chart-line"></i> Dashboard
-            </a>
-            <a href="empresa-clientes.html" class="menu-item">
-                <i class="fas fa-users"></i> Clientes
-            </a>
-            <a href="empresa-promocoes.html" class="menu-item">
-                <i class="fas fa-tag"></i> Promoções
-            </a>
-            <a href="empresa-qrcode.html" class="menu-item">
-                <i class="fas fa-qrcode"></i> QR Code
-            </a>
-            <a href="empresa-relatorios.html" class="menu-item">
-                <i class="fas fa-file-alt"></i> Relatórios
-            </a>
-            <a href="empresa-configuracoes.html" class="menu-item">
-                <i class="fas fa-cog"></i> Configurações
-            </a>
-            <div style="height: 1px; background: rgba(255,255,255,0.2); margin: 16px 0;"></div>
-            <a href="app-inicio.html" class="menu-item">
-                <i class="fas fa-mobile-alt"></i> Ver App
-            </a>
-            <a href="entrar.html" class="menu-item">
-                <i class="fas fa-sign-out-alt"></i> Sair
-            </a>
-        </nav>
-    </div>
-    
-    <div class="main-content">
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="empresa-dashboard.html" class="nav-link active">
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-qrcode.html" class="nav-link">
+                    <i class="fas fa-qrcode"></i>
+                    QR Code
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-scanner.html" class="nav-link">
+                    <i class="fas fa-camera"></i>
+                    Scanner
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-clientes.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    Clientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-promocoes.html" class="nav-link">
+                    <i class="fas fa-gift"></i>
+                    Promoções
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-bonus.html" class="nav-link">
+                    <i class="fas fa-star"></i>
+                    Bônus
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-notificacoes.html" class="nav-link">
+                    <i class="fas fa-bell"></i>
+                    Notificações
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-relatorios.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    Relatórios
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-configuracoes.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    Configurações
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
         <div class="header">
-            <h1 class="page-title">Dashboard</h1>
-            <div class="user-menu">
-                <span>Popeye Hamburgueria</span>
-                <div class="avatar">PH</div>
-            </div>
+            <h2>Dashboard</h2>
+            <p>Visão geral do seu negócio</p>
         </div>
-        
+
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+                <div class="stat-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <div class="stat-value">1.247</div>
-                <div class="stat-label">Total de Clientes</div>
+                <div class="stat-value">2.847</div>
+                <div class="stat-label">Clientes Ativos</div>
             </div>
-            
+
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #26de81, #20bf6b); color: white;">
+                <div class="stat-icon">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <div class="stat-value">1.234</div>
+                <div class="stat-label">Scans Hoje</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-value">45.678</div>
+                <div class="stat-label">Pontos Distribuídos</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
                     <i class="fas fa-chart-line"></i>
                 </div>
-                <div class="stat-value">+143</div>
-                <div class="stat-label">Novos este mês</div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #45b7d1, #4ecdc4); color: white;">
-                    <i class="fas fa-star"></i>
-                </div>
-                <div class="stat-value">8.523</div>
-                <div class="stat-label">Pontos distribuídos</div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #fc5c65, #fd79a8); color: white;">
-                    <i class="fas fa-percentage"></i>
-                </div>
-                <div class="stat-value">62%</div>
-                <div class="stat-label">Taxa de conversão</div>
+                <div class="stat-value">+18%</div>
+                <div class="stat-label">Crescimento Mês</div>
             </div>
         </div>
-        
-        <div class="card">
-            <h2 class="card-title">Últimos Clientes Cadastrados</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>Telefone</th>
-                        <th>Pontos</th>
-                        <th>Cadastro</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Ana Silva</strong></td>
-                        <td>ana.silva@email.com</td>
-                        <td>(11) 98888-7777</td>
-                        <td>8 pontos</td>
-                        <td>01/05/2024</td>
-                        <td><span class="badge badge-success">Ativo</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Carlos Mendes</strong></td>
-                        <td>carlos.m@email.com</td>
-                        <td>(11) 97777-6666</td>
-                        <td>3 pontos</td>
-                        <td>28/04/2024</td>
-                        <td><span class="badge badge-success">Ativo</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Juliana Costa</strong></td>
-                        <td>juliana@email.com</td>
-                        <td>(11) 96666-5555</td>
-                        <td>0 pontos</td>
-                        <td>25/04/2024</td>
-                        <td><span class="badge badge-warning">Aguardando visita</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Pedro Santos</strong></td>
-                        <td>pedro.s@email.com</td>
-                        <td>(11) 95555-4444</td>
-                        <td>12 pontos</td>
-                        <td>20/04/2024</td>
-                        <td><span class="badge badge-success">Ativo</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Mariana Oliveira</strong></td>
-                        <td>mariana.o@email.com</td>
-                        <td>(11) 94444-3333</td>
-                        <td>5 pontos</td>
-                        <td>15/04/2024</td>
-                        <td><span class="badge badge-success">Ativo</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-            <div class="card">
-                <h2 class="card-title">Promoções Ativas</h2>
-                <div style="display: flex; flex-direction: column; gap: 16px;">
-                    <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #f8f9fa; border-radius: 12px;">
-                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px;"></div>
-                        <div style="flex: 1;">
-                            <strong>Combo Família</strong>
-                            <div style="font-size: 13px; color: #6c757d;">Válido até 30/05/2024</div>
-                        </div>
-                        <span class="badge badge-success">Ativa</span>
-                    </div>
-                    
-                    <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: #f8f9fa; border-radius: 12px;">
-                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #26de81, #20bf6b); border-radius: 8px;"></div>
-                        <div style="flex: 1;">
-                            <strong>Happy Hour</strong>
-                            <div style="font-size: 13px; color: #6c757d;">Válido até 15/05/2024</div>
-                        </div>
-                        <span class="badge badge-success">Ativa</span>
-                    </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3 class="chart-title">Visitas nos Últimos Dias</h3>
+                <div class="chart-filter">
+                    <button class="filter-btn">7 dias</button>
+                    <button class="filter-btn active">30 dias</button>
+                    <button class="filter-btn">90 dias</button>
                 </div>
             </div>
+            <div style="text-align: center; padding: 80px 0; color: rgba(255,255,255,0.4);">
+                <i class="fas fa-chart-bar" style="font-size: 48px; margin-bottom: 16px;"></i>
+                <p>Gráfico de visitas (integração pendente)</p>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <h3 class="chart-title" style="margin-bottom: 16px;">Atividade Recente</h3>
             
-            <div class="card">
-                <h2 class="card-title">Ações Rápidas</h2>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <button style="width: 100%; padding: 16px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer;" onclick="window.location.href='empresa-promocoes.html'">
-                        <i class="fas fa-plus"></i> Criar Nova Promoção
-                    </button>
-                    
-                    <button style="width: 100%; padding: 16px; background: white; border: 2px solid #667eea; border-radius: 12px; color: #667eea; font-weight: 700; cursor: pointer;" onclick="window.location.href='empresa-clientes.html'">
-                        <i class="fas fa-users"></i> Ver Todos os Clientes
-                    </button>
-                    
-                    <button style="width: 100%; padding: 16px; background: white; border: 2px solid #667eea; border-radius: 12px; color: #667eea; font-weight: 700; cursor: pointer;" onclick="window.location.href='empresa-relatorios.html'">
-                        <i class="fas fa-file-alt"></i> Gerar Relatório
-                    </button>
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-user-plus" style="color: #4a90e2;"></i>
                 </div>
+                <div class="activity-content">
+                    <div class="activity-title">Novo cliente cadastrado</div>
+                    <div class="activity-time">Há 5 minutos</div>
+                </div>
+                <div class="activity-value">Maria Silva</div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-qrcode" style="color: #4a90e2;"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">QR Code escaneado</div>
+                    <div class="activity-time">Há 12 minutos</div>
+                </div>
+                <div class="activity-value">+50 pts</div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-gift" style="color: #f39c12;"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Recompensa resgatada</div>
+                    <div class="activity-time">Há 32 minutos</div>
+                </div>
+                <div class="activity-value">Hamburguer Grátis</div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-percentage" style="color: #9b59b6;"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Promoção ativada</div>
+                    <div class="activity-time">Há 1 hora</div>
+                </div>
+                <div class="activity-value">Dobro de Pontos</div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-star" style="color: #f39c12;"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Avaliação recebida</div>
+                    <div class="activity-time">Há 2 horas</div>
+                </div>
+                <div class="activity-value">⭐⭐⭐⭐⭐</div>
             </div>
         </div>
-    </div>
+    </main>
 </body>
 </html>

@@ -1,18 +1,549 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Promo��es - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">`n    <link rel="stylesheet" href="css/temdetudo-theme.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promoções - Tem de Tudo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f;
+            color: #ffffff;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-right: 1px solid rgba(74, 144, 226, 0.1);
+            padding: 24px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 0 24px 24px;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 900;
+            color: #4a90e2;
+        }
+
+        .logo p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 0 16px;
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            margin-right: 12px;
+            font-size: 18px;
+            width: 24px;
+        }
+
+        .nav-link:hover {
+            background: rgba(74, 144, 226, 0.1);
+            color: #4a90e2;
+        }
+
+        .nav-link.active {
+            background: rgba(74, 144, 226, 0.15);
+            color: #4a90e2;
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.2);
+        }
+
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 32px;
+        }
+
+        .header {
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .header-left p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .create-btn {
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4);
+        }
+
+        .promos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .promo-card {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .promo-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
+            border-color: rgba(74, 144, 226, 0.3);
+        }
+
+        .promo-header {
+            padding: 24px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            position: relative;
+        }
+
+        .promo-header.red {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .promo-header.purple {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .promo-header.green {
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+
+        .promo-status {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .promo-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .promo-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .promo-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .promo-body {
+            padding: 24px;
+        }
+
+        .promo-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .promo-stat {
+            text-align: center;
+        }
+
+        .promo-stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #4a90e2;
+            margin-bottom: 4px;
+        }
+
+        .promo-stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .promo-details {
+            margin-bottom: 24px;
+        }
+
+        .promo-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+            font-size: 14px;
+        }
+
+        .promo-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .promo-detail-label {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .promo-detail-value {
+            font-weight: 600;
+        }
+
+        .promo-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .promo-btn {
+            padding: 12px;
+            background: rgba(74, 144, 226, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            border-radius: 10px;
+            color: #4a90e2;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .promo-btn:hover {
+            background: #4a90e2;
+            color: white;
+        }
+
+        .promo-btn.danger {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .promo-btn.danger:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .promos-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-<body style="margin:0;padding:0;font-family:'Inter',sans-serif;background:#f8f9ff;padding-bottom:90px;">
-<header style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:24px 20px;"><div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;"><div style="display:flex;align-items:center;gap:12px;"><div style="width:42px;height:42px;background:rgba(255,255,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-sparkles" style="font-size:20px;"></i></div><div><div style="font-size:18px;font-weight:900;">Promo��es</div><div style="font-size:12px;opacity:0.8;">Gerencie suas ofertas</div></div></div><a href="/empresa/painel" style="color:white;text-decoration:none;"><i class="fas fa-times" style="font-size:24px;"></i></a></div></header>
-<div style="max-width:1200px;margin:0 auto;padding:24px 20px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;"><div><h1 style="font-size:28px;font-weight:900;color:#1a1a2e;margin:0 0 8px 0;">Minhas Promo��es</h1><p style="color:#7c8db0;margin:0;font-size:14px;">Crie e gerencie ofertas para seus clientes</p></div><button onclick="showCreateModal()" style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;padding:14px 28px;border-radius:50px;cursor:pointer;font-weight:700;font-size:15px;box-shadow:0 8px 20px rgba(102,126,234,0.3);"><i class="fas fa-plus"></i> Nova Promo��o</button></div>
-<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;" id="promocoesList"></div></div>
-<nav style="position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid rgba(102,126,234,0.1);display:flex;justify-content:space-around;padding:12px 0;box-shadow:0 -10px 40px rgba(102,126,234,0.08);"><a href="/empresa/painel" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:#7c8db0;padding:8px;"><i class="fas fa-home" style="font-size:22px;"></i><span style="font-size:11px;font-weight:700;">In�cio</span></a><a href="/empresa/promocoes" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:#667eea;background:rgba(102,126,234,0.08);padding:8px;border-radius:12px;"><i class="fas fa-tags" style="font-size:22px;"></i><span style="font-size:11px;font-weight:700;">Promo��es</span></a><a href="/empresa/scanner" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:#7c8db0;padding:8px;"><i class="fas fa-qrcode" style="font-size:22px;"></i><span style="font-size:11px;font-weight:700;">Scanner</span></a><a href="/empresa/clientes" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:#7c8db0;padding:8px;"><i class="fas fa-users" style="font-size:22px;"></i><span style="font-size:11px;font-weight:700;">Clientes</span></a><a href="/empresa/configuracoes" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:#7c8db0;padding:8px;"><i class="fas fa-cog" style="font-size:22px;"></i><span style="font-size:11px;font-weight:700;">Config</span></a></nav>
-<script>async function loadPromocoes(){const token=localStorage.getItem('token');const list=document.getElementById('promocoesList');try{const r=await fetch('/api/empresa/promocoes',{headers:{'Authorization':`Bearer ${token}`}});if(r.ok){const data=await r.json();list.innerHTML=data.length?data.map(p=>`<div style="background:white;border-radius:20px;padding:24px;box-shadow:0 8px 24px rgba(102,126,234,0.08);"><h3 style="font-size:18px;font-weight:800;color:#1a1a2e;">${p.titulo}</h3><p style="color:#7c8db0;">${p.descricao}</p></div>`).join(''):''}}catch(e){}}loadPromocoes();</script>
+<body>
+    <aside class="sidebar">
+        <div class="logo">
+            <h1>Tem de Tudo</h1>
+            <p>Painel Empresa</p>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="empresa-dashboard.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-qrcode.html" class="nav-link">
+                    <i class="fas fa-qrcode"></i>
+                    QR Code
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-scanner.html" class="nav-link">
+                    <i class="fas fa-camera"></i>
+                    Scanner
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-clientes.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    Clientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-promocoes.html" class="nav-link active">
+                    <i class="fas fa-gift"></i>
+                    Promoções
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-bonus.html" class="nav-link">
+                    <i class="fas fa-star"></i>
+                    Bônus
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-notificacoes.html" class="nav-link">
+                    <i class="fas fa-bell"></i>
+                    Notificações
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-relatorios.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i>
+                    Relatórios
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="empresa-configuracoes.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    Configurações
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <h2>Promoções</h2>
+                <p>Gerencie suas promoções ativas e crie novas</p>
+            </div>
+            <button class="create-btn" onclick="location.href='empresa-nova-promocao.html'">
+                <i class="fas fa-plus"></i>
+                Nova Promoção
+            </button>
+        </div>
+
+        <div class="promos-grid">
+            <div class="promo-card">
+                <div class="promo-header">
+                    <span class="promo-status">🔥 Ativa</span>
+                    <div class="promo-icon">🎁</div>
+                    <div class="promo-title">Dobro de Pontos</div>
+                    <div class="promo-subtitle">Compras acima de R$ 50</div>
+                </div>
+                <div class="promo-body">
+                    <div class="promo-stats">
+                        <div class="promo-stat">
+                            <div class="promo-stat-value">347</div>
+                            <div class="promo-stat-label">Ativações</div>
+                        </div>
+                        <div class="promo-stat">
+                            <div class="promo-stat-value">2 dias</div>
+                            <div class="promo-stat-label">Restantes</div>
+                        </div>
+                    </div>
+                    <div class="promo-details">
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Início:</span>
+                            <span class="promo-detail-value">15/01/2024</span>
+                        </div>
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Término:</span>
+                            <span class="promo-detail-value">22/01/2024</span>
+                        </div>
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Benefício:</span>
+                            <span class="promo-detail-value">2x pontos</span>
+                        </div>
+                    </div>
+                    <div class="promo-actions">
+                        <button class="promo-btn"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="promo-btn danger"><i class="fas fa-pause"></i> Pausar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="promo-card">
+                <div class="promo-header red">
+                    <span class="promo-status">🔥 Ativa</span>
+                    <div class="promo-icon">🍕</div>
+                    <div class="promo-title">Pizza Grátis</div>
+                    <div class="promo-subtitle">Na compra de 2 grandes</div>
+                </div>
+                <div class="promo-body">
+                    <div class="promo-stats">
+                        <div class="promo-stat">
+                            <div class="promo-stat-value">89</div>
+                            <div class="promo-stat-label">Ativações</div>
+                        </div>
+                        <div class="promo-stat">
+                            <div class="promo-stat-value">5 dias</div>
+                            <div class="promo-stat-label">Restantes</div>
+                        </div>
+                    </div>
+                    <div class="promo-details">
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Início:</span>
+                            <span class="promo-detail-value">10/01/2024</span>
+                        </div>
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Término:</span>
+                            <span class="promo-detail-value">25/01/2024</span>
+                        </div>
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Benefício:</span>
+                            <span class="promo-detail-value">1 pizza grátis</span>
+                        </div>
+                    </div>
+                    <div class="promo-actions">
+                        <button class="promo-btn"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="promo-btn danger"><i class="fas fa-pause"></i> Pausar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="promo-card">
+                <div class="promo-header purple">
+                    <span class="promo-status">⏸ Pausada</span>
+                    <div class="promo-icon">💆</div>
+                    <div class="promo-title">30% Desconto</div>
+                    <div class="promo-subtitle">Em todos os tratamentos</div>
+                </div>
+                <div class="promo-body">
+                    <div class="promo-stats">
+                        <div class="promo-stat">
+                            <div class="promo-stat-value">124</div>
+                            <div class="promo-stat-label">Ativações</div>
+                        </div>
+                        <div class="promo-stat">
+                            <div class="promo-stat-value">15 dias</div>
+                            <div class="promo-stat-label">Restantes</div>
+                        </div>
+                    </div>
+                    <div class="promo-details">
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Início:</span>
+                            <span class="promo-detail-value">05/01/2024</span>
+                        </div>
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Término:</span>
+                            <span class="promo-detail-value">05/02/2024</span>
+                        </div>
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Benefício:</span>
+                            <span class="promo-detail-value">30% desconto</span>
+                        </div>
+                    </div>
+                    <div class="promo-actions">
+                        <button class="promo-btn"><i class="fas fa-play"></i> Ativar</button>
+                        <button class="promo-btn danger"><i class="fas fa-trash"></i> Excluir</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="promo-card">
+                <div class="promo-header green">
+                    <span class="promo-status">✓ Agendada</span>
+                    <div class="promo-icon">🏋️</div>
+                    <div class="promo-title">Mês Grátis</div>
+                    <div class="promo-subtitle">Para novos alunos</div>
+                </div>
+                <div class="promo-body">
+                    <div class="promo-stats">
+                        <div class="promo-stat">
+                            <div class="promo-stat-value">0</div>
+                            <div class="promo-stat-label">Ativações</div>
+                        </div>
+                        <div class="promo-stat">
+                            <div class="promo-stat-value">-</div>
+                            <div class="promo-stat-label">Aguardando</div>
+                        </div>
+                    </div>
+                    <div class="promo-details">
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Início:</span>
+                            <span class="promo-detail-value">01/02/2024</span>
+                        </div>
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Término:</span>
+                            <span class="promo-detail-value">28/02/2024</span>
+                        </div>
+                        <div class="promo-detail-row">
+                            <span class="promo-detail-label">Benefício:</span>
+                            <span class="promo-detail-value">1 mês grátis</span>
+                        </div>
+                    </div>
+                    <div class="promo-actions">
+                        <button class="promo-btn"><i class="fas fa-edit"></i> Editar</button>
+                        <button class="promo-btn danger"><i class="fas fa-trash"></i> Excluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
-

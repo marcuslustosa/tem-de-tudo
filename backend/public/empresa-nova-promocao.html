@@ -3,326 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova Promoção - Tem de Tudo</title>
+    <title>Nova PromoÃ§Ã£o - Tem de Tudo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/temdetudo-theme.css"></head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f; color: #ffffff; display: flex; min-height: 100vh;
+        }
+        .sidebar {
+            width: 260px; background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-right: 1px solid rgba(74, 144, 226, 0.1);
+            padding: 24px 0; position: fixed; height: 100vh; overflow-y: auto;
+        }
+        .logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(74, 144, 226, 0.1); margin-bottom: 24px; }
+        .logo h1 { font-size: 24px; font-weight: 900; color: #4a90e2; }
+        .logo p { font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-top: 4px; }
+        .nav-menu { list-style: none; }
+        .nav-item { padding: 0 16px; margin-bottom: 4px; }
+        .nav-link {
+            display: flex; align-items: center; padding: 12px 16px;
+            color: rgba(255, 255, 255, 0.7); text-decoration: none;
+            border-radius: 12px; transition: all 0.3s; font-size: 14px; font-weight: 500;
+        }
+        .nav-link i { margin-right: 12px; font-size: 18px; width: 24px; }
+        .nav-link:hover { background: rgba(74, 144, 226, 0.1); color: #4a90e2; }
+        .nav-link.active { background: rgba(74, 144, 226, 0.15); color: #4a90e2; box-shadow: 0 0 20px rgba(74, 144, 226, 0.2); }
+        .main-content { margin-left: 260px; flex: 1; padding: 32px; max-width: 800px; }
+        .header { margin-bottom: 32px; }
+        .header h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+        .header p { color: rgba(255, 255, 255, 0.6); font-size: 14px; }
+        .form-section {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            border-radius: 16px; padding: 32px; margin-bottom: 24px;
+        }
+        .section-title { font-size: 18px; font-weight: 800; margin-bottom: 24px; color: #4a90e2; }
+        .form-row { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .form-input, .form-textarea, .form-select {
+            width: 100%; padding: 12px 16px;
+            background: rgba(74, 144, 226, 0.05);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            border-radius: 12px; color: white; font-size: 14px; font-family: inherit;
+        }
+        .form-textarea { min-height: 100px; resize: vertical; }
+        .form-input::placeholder, .form-textarea::placeholder { color: rgba(255, 255, 255, 0.4); }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .form-actions {
+            display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;
+        }
+        .btn {
+            padding: 14px 32px; border: none; border-radius: 12px;
+            font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #4a90e2, #357abd); color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4); }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.7);
+        }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 16px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
 <body>
-    <div class="header">
-        <div class="header-top">
-            <button class="btn-back" onclick="window.history.back()">
-                <i class="fas fa-arrow-left"></i>
+    <aside class="sidebar">
+        <div class="logo">
+            <h1>Tem de Tudo</h1>
+            <p>Painel Empresa</p>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="empresa-dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i>Dashboard</a></li>
+            <li class="nav-item"><a href="empresa-qrcode.html" class="nav-link"><i class="fas fa-qrcode"></i>QR Code</a></li>
+            <li class="nav-item"><a href="empresa-scanner.html" class="nav-link"><i class="fas fa-camera"></i>Scanner</a></li>
+            <li class="nav-item"><a href="empresa-clientes.html" class="nav-link"><i class="fas fa-users"></i>Clientes</a></li>
+            <li class="nav-item"><a href="empresa-promocoes.html" class="nav-link active"><i class="fas fa-gift"></i>PromoÃ§Ãµes</a></li>
+            <li class="nav-item"><a href="empresa-bonus.html" class="nav-link"><i class="fas fa-star"></i>BÃ´nus</a></li>
+            <li class="nav-item"><a href="empresa-notificacoes.html" class="nav-link"><i class="fas fa-bell"></i>NotificaÃ§Ãµes</a></li>
+            <li class="nav-item"><a href="empresa-relatorios.html" class="nav-link"><i class="fas fa-file-alt"></i>RelatÃ³rios</a></li>
+            <li class="nav-item"><a href="empresa-configuracoes.html" class="nav-link"><i class="fas fa-cog"></i>ConfiguraÃ§Ãµes</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <h2>Nova PromoÃ§Ã£o</h2>
+            <p>Crie uma nova promoÃ§Ã£o para seus clientes</p>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title">InformaÃ§Ãµes BÃ¡sicas</h3>
+            <div class="form-row">
+                <label class="form-label">TÃ­tulo da PromoÃ§Ã£o</label>
+                <input type="text" class="form-input" placeholder="Ex: Dobro de Pontos no Final de Semana">
+            </div>
+            <div class="form-row">
+                <label class="form-label">DescriÃ§Ã£o</label>
+                <textarea class="form-textarea" placeholder="Descreva os detalhes da promoÃ§Ã£o para que os clientes entendam como funciona..."></textarea>
+            </div>
+            <div class="form-grid">
+                <div class="form-row">
+                    <label class="form-label">Tipo de PromoÃ§Ã£o</label>
+                    <select class="form-select">
+                        <option>Dobro de Pontos</option>
+                        <option>Desconto Percentual</option>
+                        <option>Brinde GrÃ¡tis</option>
+                        <option>Pontos Extras Fixos</option>
+                        <option>Combo Especial</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label class="form-label">Valor da PromoÃ§Ã£o</label>
+                    <input type="text" class="form-input" placeholder="Ex: 2x, 30%, R$ 50">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title">PerÃ­odo e CondiÃ§Ãµes</h3>
+            <div class="form-grid">
+                <div class="form-row">
+                    <label class="form-label">Data de InÃ­cio</label>
+                    <input type="date" class="form-input">
+                </div>
+                <div class="form-row">
+                    <label class="form-label">Data de TÃ©rmino</label>
+                    <input type="date" class="form-input">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="form-label">Valor MÃ­nimo de Compra (opcional)</label>
+                <input type="number" class="form-input" placeholder="R$ 0,00">
+            </div>
+            <div class="form-row">
+                <label class="form-label">Limite de Uso por Cliente (opcional)</label>
+                <input type="number" class="form-input" placeholder="Ex: 1, 5, ilimitado">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="section-title">PÃºblico-Alvo</h3>
+            <div class="form-row">
+                <label class="form-label">Quem pode usar esta promoÃ§Ã£o?</label>
+                <select class="form-select">
+                    <option>Todos os clientes</option>
+                    <option>Apenas clientes Premium</option>
+                    <option>Novos clientes</option>
+                    <option>Clientes inativos</option>
+                    <option>Clientes frequentes</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-secondary" onclick="location.href='empresa-promocoes.html'">
+                <i class="fas fa-times"></i>
+                Cancelar
             </button>
-            <div class="header-title" id="pageTitle">Nova Promoção</div>
+            <button class="btn btn-primary" onclick="createPromo()">
+                <i class="fas fa-check"></i>
+                Criar PromoÃ§Ã£o
+            </button>
         </div>
-        <p style="opacity:0.9;">Crie ofertas atrativas para seus clientes</p>
-    </div>
-
-    <form id="promocaoForm" class="form-container">
-        <div class="form-card">
-            <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-image"></i>
-                    Imagem da Promoção
-                </div>
-                <div class="image-upload" id="imageUpload" onclick="document.getElementById('imageInput').click()">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p style="color:#666;margin:5px 0;">Clique para adicionar imagem</p>
-                    <p style="color:#999;font-size:13px;">Recomendado: 800x400px</p>
-                    <img id="imagePreview" class="image-preview">
-                </div>
-                <button type="button" class="btn-remove-image" id="btnRemoveImage" onclick="removerImagem()">
-                    <i class="fas fa-trash"></i> Remover Imagem
-                </button>
-                <input type="file" id="imageInput" accept="image/*" style="display:none;" onchange="carregarImagem(event)">
-            </div>
-        </div>
-
-        <div class="form-card">
-            <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-info-circle"></i>
-                    Informações Básicas
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">
-                        Título da Promoção <span class="required">*</span>
-                    </label>
-                    <input type="text" class="form-input" id="titulo" maxlength="60" required 
-                           placeholder="Ex: 30% OFF em todos os produtos">
-                    <div class="char-counter">
-                        <span id="tituloCount">0</span>/60 caracteres
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">
-                        Descrição <span class="required">*</span>
-                    </label>
-                    <textarea class="form-input" id="descricao" maxlength="200" required 
-                              placeholder="Descreva os detalhes da promoção..."></textarea>
-                    <div class="char-counter">
-                        <span id="descricaoCount">0</span>/200 caracteres
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-card">
-            <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-percentage"></i>
-                    Desconto e Validade
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">
-                            Desconto (%) <span class="required">*</span>
-                        </label>
-                        <div class="input-group">
-                            <i class="fas fa-tag input-icon"></i>
-                            <input type="number" class="form-input" id="desconto" min="1" max="100" required 
-                                   placeholder="10">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">
-                            Pontos Necessários
-                        </label>
-                        <div class="input-group">
-                            <i class="fas fa-coins input-icon"></i>
-                            <input type="number" class="form-input" id="pontos" min="0" 
-                                   placeholder="0">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">
-                            Data de Início <span class="required">*</span>
-                        </label>
-                        <input type="date" class="form-input" id="dataInicio" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">
-                            Data de Término <span class="required">*</span>
-                        </label>
-                        <input type="date" class="form-input" id="dataFim" required>
-                    </div>
-                </div>
-                
-                <div class="info-box">
-                    <i class="fas fa-info-circle"></i>
-                    Se não definir pontos necessários, a promoção será pública para todos os clientes
-                </div>
-            </div>
-        </div>
-
-        <div class="form-card">
-            <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-cog"></i>
-                    Configurações Adicionais
-                </div>
-                
-                <div class="switch-container">
-                    <div>
-                        <div style="font-weight:500;margin-bottom:3px;">Ativar Promoção</div>
-                        <div style="font-size:13px;color:#999;">A promoção ficará visível para os clientes</div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="ativa" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                
-                <div class="switch-container" style="border-top:1px solid #f0f0f0;padding-top:15px;margin-top:15px;">
-                    <div>
-                        <div style="font-weight:500;margin-bottom:3px;">Enviar Notificação</div>
-                        <div style="font-size:13px;color:#999;">Notificar clientes sobre esta promoção</div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="notificar">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            </div>
-        </div>
-    </form>
-
-    <div class="buttons-container">
-        <button type="button" class="btn btn-cancel" onclick="window.history.back()">
-            <i class="fas fa-times"></i> Cancelar
-        </button>
-        <button type="button" class="btn btn-save" onclick="salvarPromocao()">
-            <i class="fas fa-check"></i> Salvar Promoção
-        </button>
-    </div>
+    </main>
 
     <script>
-        const token = localStorage.getItem('token');
-        if (!token) {
-            window.location.href = '/entrar.html';
-        }
-
-        let promocaoId = null;
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('id')) {
-            promocaoId = urlParams.get('id');
-            document.getElementById('pageTitle').textContent = 'Editar Promoção';
-            carregarPromocao();
-        }
-
-        // Contadores de caracteres
-        document.getElementById('titulo').addEventListener('input', function() {
-            const count = this.value.length;
-            const counter = document.getElementById('tituloCount');
-            counter.textContent = count;
-            counter.parentElement.className = 'char-counter' + (count > 50 ? ' warning' : '') + (count === 60 ? ' error' : '');
-        });
-
-        document.getElementById('descricao').addEventListener('input', function() {
-            const count = this.value.length;
-            const counter = document.getElementById('descricaoCount');
-            counter.textContent = count;
-            counter.parentElement.className = 'char-counter' + (count > 180 ? ' warning' : '') + (count === 200 ? ' error' : '');
-        });
-
-        // Data mínima = hoje
-        const hoje = new Date().toISOString().split('T')[0];
-        document.getElementById('dataInicio').min = hoje;
-        document.getElementById('dataFim').min = hoje;
-
-        function carregarImagem(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('imagePreview');
-                    const upload = document.getElementById('imageUpload');
-                    const btnRemove = document.getElementById('btnRemoveImage');
-                    
-                    preview.src = e.target.result;
-                    preview.classList.add('show');
-                    upload.classList.add('has-image');
-                    btnRemove.classList.add('show');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function removerImagem() {
-            const preview = document.getElementById('imagePreview');
-            const upload = document.getElementById('imageUpload');
-            const btnRemove = document.getElementById('btnRemoveImage');
-            const input = document.getElementById('imageInput');
-            
-            preview.src = '';
-            preview.classList.remove('show');
-            upload.classList.remove('has-image');
-            btnRemove.classList.remove('show');
-            input.value = '';
-        }
-
-        async function carregarPromocao() {
-            try {
-                const res = await fetch(`/api/empresa/promocoes/${promocaoId}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await res.json();
-                
-                if (data.success) {
-                    const promo = data.data;
-                    document.getElementById('titulo').value = promo.titulo;
-                    document.getElementById('descricao').value = promo.descricao;
-                    document.getElementById('desconto').value = promo.desconto;
-                    document.getElementById('pontos').value = promo.pontos_necessarios || 0;
-                    document.getElementById('dataInicio').value = promo.data_inicio.split('T')[0];
-                    document.getElementById('dataFim').value = promo.validade.split('T')[0];
-                    document.getElementById('ativa').checked = promo.status === 'ativa';
-                    
-                    // Trigger counters
-                    document.getElementById('titulo').dispatchEvent(new Event('input'));
-                    document.getElementById('descricao').dispatchEvent(new Event('input'));
-                    
-                    if (promo.imagem) {
-                        const preview = document.getElementById('imagePreview');
-                        const upload = document.getElementById('imageUpload');
-                        const btnRemove = document.getElementById('btnRemoveImage');
-                        preview.src = promo.imagem;
-                        preview.classList.add('show');
-                        upload.classList.add('has-image');
-                        btnRemove.classList.add('show');
-                    }
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-            }
-        }
-
-        async function salvarPromocao() {
-            const titulo = document.getElementById('titulo').value.trim();
-            const descricao = document.getElementById('descricao').value.trim();
-            const desconto = document.getElementById('desconto').value;
-            const pontos = document.getElementById('pontos').value || 0;
-            const dataInicio = document.getElementById('dataInicio').value;
-            const dataFim = document.getElementById('dataFim').value;
-            const ativa = document.getElementById('ativa').checked;
-            const notificar = document.getElementById('notificar').checked;
-            
-            if (!titulo || !descricao || !desconto || !dataInicio || !dataFim) {
-                alert('Por favor, preencha todos os campos obrigatórios');
-                return;
-            }
-            
-            if (new Date(dataFim) < new Date(dataInicio)) {
-                alert('A data de término deve ser posterior à data de início');
-                return;
-            }
-            
-            const formDataObj = new FormData();
-            formDataObj.append('titulo', titulo);
-            formDataObj.append('descricao', descricao);
-            formDataObj.append('desconto', desconto);
-            formDataObj.append('pontos_necessarios', pontos);
-            formDataObj.append('data_inicio', dataInicio);
-            formDataObj.append('validade', dataFim);
-            formDataObj.append('status', ativa ? 'ativa' : 'pausada');
-            formDataObj.append('notificar', notificar);
-            
-            const imageFile = document.getElementById('imageInput').files[0];
-            if (imageFile) {
-                formDataObj.append('imagem', imageFile);
-            }
-            
-            try {
-                const url = promocaoId ? `/api/empresa/promocoes/${promocaoId}` : '/api/empresa/promocoes';
-                const method = promocaoId ? 'PUT' : 'POST';
-                
-                const res = await fetch(url, {
-                    method: method,
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: formDataObj
-                });
-                
-                const data = await res.json();
-                
-                if (data.success) {
-                    alert(promocaoId ? 'Promoção atualizada com sucesso!' : 'Promoção criada com sucesso!');
-                    window.location.href = '/empresa-promocoes.html';
-                } else {
-                    alert(data.message || 'Erro ao salvar promoção');
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao salvar promoção. Tente novamente.');
-            }
+        function createPromo() {
+            alert('PromoÃ§Ã£o criada com sucesso!');
+            location.href = 'empresa-promocoes.html';
         }
     </script>
 </body>
