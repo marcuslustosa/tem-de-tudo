@@ -2,478 +2,91 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Popeye Hamburgueria - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Estabelecimento - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f8f9fa;
-            padding-bottom: 80px;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            padding: 60px 20px 40px;
-            color: white;
-            position: relative;
-        }
-        
-        .back-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        
-        .star-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        
-        .header-content {
-            text-align: center;
-        }
-        
-        .logo {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 16px;
-            background: white;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        }
-        
-        .empresa-nome {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        
-        .empresa-rating {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 16px;
-        }
-        
-        .rating-number {
-            font-weight: 700;
-            font-size: 32px;
-        }
-        
-        .content {
-            padding: 20px;
-        }
-        
-        .section {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #212529;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        /* Cartão Fidelidade */
-        .fidelidade-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 24px;
-            border-radius: 16px;
-            margin-bottom: 16px;
-        }
-        
-        .fidelidade-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-        
-        .fidelidade-progress {
-            text-align: center;
-            margin-bottom: 16px;
-        }
-        
-        .fidelidade-number {
-            font-size: 48px;
-            font-weight: 900;
-            margin-bottom: 8px;
-        }
-        
-        .fidelidade-stars {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        
-        .fidelidade-star {
-            font-size: 24px;
-            color: rgba(255,255,255,0.3);
-        }
-        
-        .fidelidade-star.filled {
-            color: #ffc107;
-        }
-        
-        .fidelidade-description {
-            font-size: 13px;
-            opacity: 0.9;
-            text-align: center;
-        }
-        
-        /* Promoções */
-        .promocao-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 16px;
-            overflow: hidden;
-            margin-bottom: 12px;
-            color: white;
-        }
-        
-        .promocao-image {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .promocao-content {
-            padding: 16px;
-        }
-        
-        .promocao-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        
-        .promocao-description {
-            font-size: 13px;
-            opacity: 0.9;
-            margin-bottom: 12px;
-        }
-        
-        .promocao-validity {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-        
-        /* Avaliações */
-        .avaliacao-card {
-            border-bottom: 1px solid #e9ecef;
-            padding-bottom: 16px;
-            margin-bottom: 16px;
-        }
-        
-        .avaliacao-card:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-        
-        .avaliacao-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-        
-        .avaliacao-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
-        
-        .avaliacao-info {
-            flex: 1;
-        }
-        
-        .avaliacao-nome {
-            font-weight: 600;
-            font-size: 14px;
-            color: #212529;
-        }
-        
-        .avaliacao-stars {
-            color: #ffc107;
-            font-size: 12px;
-        }
-        
-        .avaliacao-texto {
-            font-size: 13px;
-            color: #6c757d;
-            line-height: 1.5;
-        }
-        
-        /* Informações */
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .info-item:last-child {
-            border-bottom: none;
-        }
-        
-        .info-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-        }
-        
-        .info-text {
-            flex: 1;
-        }
-        
-        .info-label {
-            font-size: 12px;
-            color: #6c757d;
-        }
-        
-        .info-value {
-            font-size: 14px;
-            color: #212529;
-            font-weight: 500;
-        }
-        
-        .avaliar-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 16px;
-        }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0f; min-height: 100vh; color: #fff; }
+        .hero { background: linear-gradient(145deg, #1a1a2e, #16213e); padding: 20px 20px 40px; position: relative; }
+        .back-btn { width: 44px; height: 44px; background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 12px; color: #fff; font-size: 18px; cursor: pointer; margin-bottom: 20px; }
+        .hero-icon { width: 120px; height: 120px; background: linear-gradient(135deg, #4a90e2, #357abd); border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 64px; margin: 0 auto 24px; box-shadow: 0 12px 40px rgba(74, 144, 226, 0.4); }
+        .hero-title { font-size: 32px; font-weight: 900; text-align: center; margin-bottom: 8px; }
+        .hero-category { font-size: 15px; color: #b0b0b0; text-align: center; margin-bottom: 20px; }
+        .hero-stats { display: flex; justify-content: center; gap: 32px; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 24px; font-weight: 900; color: #4a90e2; }
+        .stat-label { font-size: 12px; color: #b0b0b0; margin-top: 4px; }
+        .content { padding: 24px 20px; }
+        .info-card { background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid rgba(74, 144, 226, 0.1); }
+        .info-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .info-title i { color: #4a90e2; }
+        .info-text { font-size: 14px; color: #b0b0b0; line-height: 1.7; }
+        .rewards-list { display: grid; gap: 12px; margin-top: 12px; }
+        .reward-item { background: rgba(74, 144, 226, 0.05); border: 1px solid rgba(74, 144, 226, 0.1); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .reward-info h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+        .reward-info p { font-size: 12px; color: #b0b0b0; }
+        .reward-points { font-size: 18px; font-weight: 900; color: #4a90e2; }
+        .action-btn { width: 100%; padding: 18px; background: linear-gradient(135deg, #4a90e2, #357abd); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3); margin-top: 24px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <button class="back-btn" onclick="history.back()">
-            <i class="fas fa-arrow-left"></i>
-        </button>
-        <button class="star-btn">
-            <i class="fas fa-star"></i>
-        </button>
-        
-        <div class="header-content">
-            <div class="logo">🍔</div>
-            <h1 class="empresa-nome">POPEYE HAMBURGUERIA</h1>
-            <div class="empresa-rating">
-                <div class="rating-number">5</div>
-                <div>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <div style="font-size: 12px; opacity: 0.9;">4 total</div>
-                </div>
-            </div>
+    <div class="hero">
+        <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+        <div class="hero-icon">🍔</div>
+        <h1 class="hero-title">Popeye Hamburguer</h1>
+        <p class="hero-category">Restaurante • Fast Food</p>
+        <div class="hero-stats">
+            <div class="stat"><div class="stat-value">4.9</div><div class="stat-label">Avaliação</div></div>
+            <div class="stat"><div class="stat-value">1.247</div><div class="stat-label">Seus Pontos</div></div>
+            <div class="stat"><div class="stat-value">1.2km</div><div class="stat-label">Distância</div></div>
         </div>
     </div>
-
     <div class="content">
-        <!-- Cartão Fidelidade -->
-        <div class="fidelidade-card">
-            <div class="fidelidade-title">GANHE 1 PONTO A CADA VISITA</div>
-            <div class="fidelidade-progress">
-                <div class="fidelidade-number">0</div>
-                <div class="fidelidade-stars">
-                    <i class="fas fa-star fidelidade-star"></i>
-                    <i class="fas fa-star fidelidade-star"></i>
-                    <i class="fas fa-star fidelidade-star"></i>
-                    <i class="fas fa-star fidelidade-star"></i>
-                    <i class="fas fa-star fidelidade-star"></i>
-                    <i class="fas fa-star fidelidade-star"></i>
-                    <i class="fas fa-star fidelidade-star"></i>
-                    <i class="fas fa-star fidelidade-star"></i>
-                    <i class="fas fa-star fidelidade-star"></i>
-                    <i class="fas fa-star fidelidade-star"></i>
-                </div>
-                <div>de 10 pontos</div>
-            </div>
-            <div class="fidelidade-description">
-                Com 15 pontos: Ganhe 1 Porção de Fritas ou 1 Lanche Dhegep
+        <div class="info-card">
+            <div class="info-title"><i class="fas fa-info-circle"></i> Sobre</div>
+            <div class="info-text">
+                O melhor hamburguer artesanal da região. Ingredientes frescos e selecionados, ambiente aconchegante e atendimento excepcional.
             </div>
         </div>
-
-        <!-- Promoções -->
-        <div class="section">
-            <div class="section-title">
-                <i class="fas fa-gift"></i>
-                Promoções Instantâneas
-            </div>
-            
-            <div class="promocao-card">
-                <div class="promocao-image" style="background: linear-gradient(135deg, #ff6b6b, #ffa500);">
-                    <img src="/img/hamburgueria-anunciante.jpg" alt="Promoção" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                </div>
-                <div class="promocao-content">
-                    <div class="promocao-title">HAMBURGUERIA ANUNCIANTE</div>
-                    <div class="promocao-description">Promoção válida de 21/06/2019 até 31/01/2020</div>
-                </div>
+        <div class="info-card">
+            <div class="info-title"><i class="fas fa-map-marker-alt"></i> Endereço</div>
+            <div class="info-text">
+                Av. Paulista, 1000 - Bela Vista, São Paulo - SP<br>
+                Seg-Dom: 11h-23h
             </div>
         </div>
-
-        <!-- Avaliações -->
-        <div class="section">
-            <div class="section-title">
-                <i class="fas fa-comments"></i>
-                Avaliações dos usuários
-            </div>
-            
-            <div class="avaliacao-card">
-                <div class="avaliacao-header">
-                    <div class="avaliacao-avatar">JP</div>
-                    <div class="avaliacao-info">
-                        <div class="avaliacao-nome">Joyce Santos</div>
-                        <div class="avaliacao-stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
+        <div class="info-card">
+            <div class="info-title"><i class="fas fa-gift"></i> Recompensas</div>
+            <div class="rewards-list">
+                <div class="reward-item">
+                    <div class="reward-info">
+                        <h4>Hamburguer Grátis</h4>
+                        <p>Qualquer hamburguer do cardápio</p>
                     </div>
+                    <div class="reward-points">500 pts</div>
                 </div>
-                <div class="avaliacao-texto">
-                    Excelente atendimento e os lanches são maravilhosos! Recomendo muito!
-                </div>
-            </div>
-            
-            <div class="avaliacao-card">
-                <div class="avaliacao-header">
-                    <div class="avaliacao-avatar">AP</div>
-                    <div class="avaliacao-info">
-                        <div class="avaliacao-nome">Alexandre Plus</div>
-                        <div class="avaliacao-stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
+                <div class="reward-item">
+                    <div class="reward-info">
+                        <h4>Refrigerante Grátis</h4>
+                        <p>Refrigerante 350ml</p>
                     </div>
+                    <div class="reward-points">150 pts</div>
                 </div>
-                <div class="avaliacao-texto">
-                    Melhor hamburgueria da região! Sempre volto aqui.
-                </div>
-            </div>
-            
-            <div class="avaliacao-card">
-                <div class="avaliacao-header">
-                    <div class="avaliacao-avatar">DC</div>
-                    <div class="avaliacao-info">
-                        <div class="avaliacao-nome">David Cruz</div>
-                        <div class="avaliacao-stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
+                <div class="reward-item">
+                    <div class="reward-info">
+                        <h4>Batata Frita Grande</h4>
+                        <p>Porção grande batata frita</p>
                     </div>
-                </div>
-            </div>
-            
-            <button class="avaliar-btn">
-                <i class="fas fa-star"></i> Avaliar Estabelecimento
-            </button>
-        </div>
-
-        <!-- Informações de Contato -->
-        <div class="section">
-            <div class="section-title">
-                <i class="fas fa-info-circle"></i>
-                Informações
-            </div>
-            
-            <div class="info-item">
-                <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
-                <div class="info-text">
-                    <div class="info-label">Endereço</div>
-                    <div class="info-value">Rua Coronel Souza Franco, 215, Centro, Mogi das Cruzes, São Paulo</div>
-                </div>
-            </div>
-            
-            <div class="info-item">
-                <div class="info-icon"><i class="fab fa-whatsapp"></i></div>
-                <div class="info-text">
-                    <div class="info-label">WhatsApp</div>
-                    <div class="info-value">(11)98525-3676</div>
-                </div>
-            </div>
-            
-            <div class="info-item">
-                <div class="info-icon"><i class="fas fa-phone"></i></div>
-                <div class="info-text">
-                    <div class="info-label">Telefone</div>
-                    <div class="info-value">(11)98525-3676</div>
-                </div>
-            </div>
-            
-            <div class="info-item">
-                <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
-                <div class="info-text">
-                    <div class="info-label">Telefone 2</div>
-                    <div class="info-value">(13)2312-6515</div>
+                    <div class="reward-points">200 pts</div>
                 </div>
             </div>
         </div>
+        <button class="action-btn" onclick="location.href='app-scanner.html'">
+            <i class="fas fa-qrcode"></i> Acumular Pontos Agora
+        </button>
     </div>
 </body>
 </html>

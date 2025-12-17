@@ -2,204 +2,44 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
     <title>Feliz Aniversário! - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            color: white;
-            margin-bottom: 40px;
-        }
-        
-        .back-btn {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        
-        .header-title {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            margin-bottom: 16px;
-        }
-        
-        .card-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #45b7d1, #4ecdc4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            color: white;
-        }
-        
-        .card-image i {
-            font-size: 80px;
-            margin-bottom: 16px;
-        }
-        
-        .card-image-text {
-            font-size: 32px;
-            font-weight: 900;
-        }
-        
-        .card-content {
-            padding: 32px;
-            text-align: center;
-        }
-        
-        .empresa-logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 16px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            color: white;
-        }
-        
-        .empresa-nome {
-            font-size: 20px;
-            font-weight: 700;
-            color: #212529;
-            margin-bottom: 24px;
-        }
-        
-        .message-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #212529;
-            margin-bottom: 8px;
-        }
-        
-        .message-text {
-            font-size: 14px;
-            color: #6c757d;
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
-        
-        .bonus-box {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .bonus-title {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 8px;
-        }
-        
-        .bonus-value {
-            font-size: 32px;
-            font-weight: 900;
-        }
-        
-        .validity {
-            background: #fff3cd;
-            color: #856404;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        
-        .ok-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #45b7d1, #4ecdc4);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-        }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; color: #fff; position: relative; overflow: hidden; }
+        body::before { content: '🎈🎊🎉🎂🎁'; font-size: 60px; position: absolute; top: 0; left: 0; right: 0; text-align: center; padding: 20px; opacity: 0.3; animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .container { max-width: 520px; width: 100%; text-align: center; position: relative; z-index: 1; }
+        .cake-icon { font-size: 140px; margin-bottom: 32px; animation: spin 3s ease-in-out infinite; }
+        @keyframes spin { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-10deg); } 75% { transform: rotate(10deg); } }
+        h1 { font-size: 48px; font-weight: 900; margin-bottom: 16px; text-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .subtitle { font-size: 20px; margin-bottom: 40px; opacity: 0.95; }
+        .bonus-card { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); border-radius: 28px; padding: 48px 36px; margin-bottom: 28px; border: 2px solid rgba(255, 255, 255, 0.3); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4); }
+        .points-value { font-size: 88px; font-weight: 900; margin-bottom: 16px; text-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .points-label { font-size: 18px; opacity: 0.95; }
+        .message { background: rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 24px; margin-bottom: 28px; font-size: 16px; line-height: 1.7; }
+        .action-btn { width: 100%; padding: 22px; background: rgba(255, 255, 255, 0.25); backdrop-filter: blur(10px); color: white; border: 2px solid rgba(255, 255, 255, 0.4); border-radius: 18px; font-size: 18px; font-weight: 900; cursor: pointer; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3); transition: all 0.3s; }
+        .action-btn:hover { background: rgba(255, 255, 255, 0.35); transform: translateY(-2px); }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <button class="back-btn" onclick="history.back()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <h1 class="header-title">Notificações</h1>
+        <div class="cake-icon">🎂</div>
+        <h1>Parabéns!</h1>
+        <p class="subtitle">Hoje é seu dia especial 🎉</p>
+        <div class="bonus-card">
+            <div class="points-value">500</div>
+            <div class="points-label">Pontos de Aniversário</div>
         </div>
-
-        <div class="card">
-            <div class="card-image">
-                <i class="fas fa-gift"></i>
-                <div class="card-image-text">FELIZ ANIVERSÁRIO!</div>
-            </div>
-            
-            <div class="card-content">
-                <div class="empresa-logo">💜</div>
-                <div class="empresa-nome">i9Plus</div>
-                
-                <div class="message-title">FELIZ ANIVERSÁRIO!</div>
-                <div class="message-text">
-                    Comemore seu aniversário conosco e ganhe uma cortesia!
-                </div>
-                
-                <div class="bonus-box">
-                    <div class="bonus-title">Seu presente:</div>
-                    <div class="bonus-value">1 Sobremesa Grátis</div>
-                </div>
-                
-                <div class="validity">
-                    <i class="fas fa-calendar"></i> Válido até 30 dias após seu aniversário
-                </div>
-                
-                <button class="ok-btn" onclick="window.location.href='app-estabelecimento.html'">
-                    OK
-                </button>
-                
-                <div style="margin-top: 16px;">
-                    <label style="display: flex; align-items: center; gap: 8px; justify-content: center; font-size: 13px; color: #6c757d;">
-                        <input type="checkbox" style="width: 18px; height: 18px;">
-                        Não perguntar novamente
-                    </label>
-                </div>
-            </div>
+        <div class="message">
+            💝 A equipe <strong>Tem de Tudo</strong> deseja um feliz aniversário! Aproveite seus pontos extras para resgatar aquela recompensa que você tanto queria.
         </div>
+        <button class="action-btn" onclick="location.href='app-inicio.html'">
+            🎁 RESGATAR MEU PRESENTE
+        </button>
     </div>
 </body>
 </html>

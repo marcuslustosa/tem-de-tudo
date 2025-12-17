@@ -2,228 +2,104 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
     <title>Chat - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f8f9fa;
-            padding-bottom: 80px;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            padding: 60px 20px 24px;
-            color: white;
-        }
-        
-        .header-title {
-            font-size: 28px;
-            font-weight: 900;
-        }
-        
-        .chat-list {
-            padding: 20px;
-        }
-        
-        .chat-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: white;
-            padding: 16px;
-            border-radius: 16px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        
-        .chat-avatar {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            flex-shrink: 0;
-        }
-        
-        .chat-info {
-            flex: 1;
-        }
-        
-        .chat-nome {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        
-        .chat-mensagem {
-            font-size: 14px;
-            color: #6c757d;
-        }
-        
-        .chat-meta {
-            text-align: right;
-        }
-        
-        .chat-hora {
-            font-size: 12px;
-            color: #6c757d;
-            margin-bottom: 4px;
-        }
-        
-        .chat-badge {
-            background: #667eea;
-            color: white;
-            width: 20px;
-            height: 20px;
-            border-radius: 10px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .nav-item {
-            text-align: center;
-            color: #6c757d;
-            text-decoration: none;
-            padding: 8px 20px;
-            border-radius: 12px;
-            transition: all 0.2s;
-        }
-        
-        .nav-item.active {
-            color: #667eea;
-            background: linear-gradient(135deg, #667eea20, #764ba220);
-        }
-        
-        .nav-item i {
-            display: block;
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-        
-        .nav-item span {
-            display: block;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
-        
-        .empty-state i {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0f; height: 100vh; display: flex; flex-direction: column; color: #fff; }
+        .header { background: linear-gradient(145deg, #1a1a2e, #16213e); padding: 20px; border-bottom: 1px solid rgba(74, 144, 226, 0.1); display: flex; align-items: center; gap: 16px; }
+        .back-btn { width: 44px; height: 44px; background: rgba(74, 144, 226, 0.1); border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 12px; color: #4a90e2; font-size: 18px; cursor: pointer; }
+        .header-info { flex: 1; }
+        .header-info h1 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+        .header-info p { font-size: 12px; color: #4a90e2; }
+        .messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+        .message { display: flex; gap: 12px; max-width: 80%; }
+        .message.sent { align-self: flex-end; flex-direction: row-reverse; }
+        .message-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #4a90e2, #357abd); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .message.sent .message-avatar { background: linear-gradient(145deg, #1a1a2e, #16213e); border: 2px solid #4a90e2; }
+        .message-bubble { background: linear-gradient(145deg, #1a1a2e, #16213e); padding: 14px 16px; border-radius: 18px; font-size: 14px; line-height: 1.6; border: 1px solid rgba(74, 144, 226, 0.1); }
+        .message.sent .message-bubble { background: linear-gradient(135deg, #4a90e2, #357abd); border: none; }
+        .message-time { font-size: 11px; color: #666; margin-top: 6px; }
+        .input-area { background: linear-gradient(145deg, #1a1a2e, #16213e); padding: 16px 20px; border-top: 1px solid rgba(74, 144, 226, 0.2); display: flex; gap: 12px; }
+        .input-area input { flex: 1; background: rgba(10, 10, 15, 0.6); border: 2px solid rgba(74, 144, 226, 0.2); border-radius: 24px; padding: 14px 20px; font-size: 14px; color: #fff; font-family: 'Inter', sans-serif; }
+        .input-area input:focus { outline: none; border-color: #4a90e2; }
+        .send-btn { width: 48px; height: 48px; background: linear-gradient(135deg, #4a90e2, #357abd); border: none; border-radius: 50%; color: white; font-size: 18px; cursor: pointer; box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3); }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="header-title">Conversas</div>
+        <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+        <div class="header-info">
+            <h1>Suporte Tem de Tudo</h1>
+            <p>● Online agora</p>
+        </div>
     </div>
-    
-    <div class="chat-list">
-        <div class="chat-item" onclick="abrirChat('Popeye Hamburgueria')">
-            <div class="chat-avatar">🍔</div>
-            <div class="chat-info">
-                <div class="chat-nome">Popeye Hamburgueria</div>
-                <div class="chat-mensagem">Obrigado pela sua avaliação! 💜</div>
-            </div>
-            <div class="chat-meta">
-                <div class="chat-hora">14:30</div>
-                <span class="chat-badge">2</span>
+    <div class="messages" id="messages">
+        <div class="message">
+            <div class="message-avatar">🤖</div>
+            <div>
+                <div class="message-bubble">Olá! Como posso ajudar você hoje?</div>
+                <div class="message-time">14:23</div>
             </div>
         </div>
-        
-        <div class="chat-item" onclick="abrirChat('Florenza Boutique')">
-            <div class="chat-avatar" style="background: linear-gradient(135deg, #26de81, #20bf6b);">💆</div>
-            <div class="chat-info">
-                <div class="chat-nome">Florenza Boutique</div>
-                <div class="chat-mensagem">Seu horário está confirmado para amanhã às 15h</div>
-            </div>
-            <div class="chat-meta">
-                <div class="chat-hora">Ontem</div>
+        <div class="message sent">
+            <div class="message-avatar"><i class="fas fa-user"></i></div>
+            <div>
+                <div class="message-bubble">Olá! Quero saber como funciona o acúmulo de pontos</div>
+                <div class="message-time">14:24</div>
             </div>
         </div>
-        
-        <div class="chat-item" onclick="abrirChat('Malagueta Galpão')">
-            <div class="chat-avatar" style="background: linear-gradient(135deg, #fc5c65, #fd79a8);">🍺</div>
-            <div class="chat-info">
-                <div class="chat-nome">Malagueta Galpão</div>
-                <div class="chat-mensagem">Temos promoção especial hoje! 🍻</div>
-            </div>
-            <div class="chat-meta">
-                <div class="chat-hora">Sex</div>
-                <span class="chat-badge">1</span>
-            </div>
-        </div>
-        
-        <div class="chat-item" onclick="abrirChat('Sushi Master')">
-            <div class="chat-avatar" style="background: linear-gradient(135deg, #45b7d1, #4ecdc4);">🍱</div>
-            <div class="chat-info">
-                <div class="chat-nome">Sushi Master</div>
-                <div class="chat-mensagem">Parabéns! Você ganhou uma recompensa 🎉</div>
-            </div>
-            <div class="chat-meta">
-                <div class="chat-hora">Qui</div>
+        <div class="message">
+            <div class="message-avatar">🤖</div>
+            <div>
+                <div class="message-bubble">
+                    É simples! Apresente seu QR Code no caixa do estabelecimento parceiro. A cada compra, você acumula pontos que podem ser trocados por recompensas. 😊
+                </div>
+                <div class="message-time">14:24</div>
             </div>
         </div>
     </div>
-    
-    <div class="bottom-nav">
-        <a href="app-inicio.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="app-buscar.html" class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>Buscar</span>
-        </a>
-        <a href="app-promocoes.html" class="nav-item">
-            <i class="fas fa-tag"></i>
-            <span>Promoções</span>
-        </a>
-        <a href="app-chat.html" class="nav-item active">
-            <i class="fas fa-comment"></i>
-            <span>Chat</span>
-        </a>
-        <a href="app-perfil.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
+    <div class="input-area">
+        <input type="text" id="messageInput" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter') sendMessage()">
+        <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
     </div>
-
     <script>
-        function abrirChat(nome) {
-            alert(`Abrindo chat com ${nome}`);
-            // Aqui viria a navegação para a tela de mensagens
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            const messagesDiv = document.getElementById('messages');
+            const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            
+            messagesDiv.innerHTML += `
+                <div class="message sent">
+                    <div class="message-avatar"><i class="fas fa-user"></i></div>
+                    <div>
+                        <div class="message-bubble">${text}</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                </div>
+            `;
+            
+            input.value = '';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            setTimeout(() => {
+                messagesDiv.innerHTML += `
+                    <div class="message">
+                        <div class="message-avatar">🤖</div>
+                        <div>
+                            <div class="message-bubble">Obrigado pela mensagem! Nossa equipe responderá em breve.</div>
+                            <div class="message-time">${time}</div>
+                        </div>
+                    </div>
+                `;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 1000);
         }
     </script>
 </body>

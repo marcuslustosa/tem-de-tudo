@@ -2,327 +2,106 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
     <title>Promoções - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f8f9fa;
-            padding-bottom: 80px;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            padding: 60px 20px 24px;
-            color: white;
-        }
-        
-        .header-title {
-            font-size: 28px;
-            font-weight: 900;
-            margin-bottom: 8px;
-        }
-        
-        .header-subtitle {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        
-        .filters {
-            display: flex;
-            gap: 12px;
-            padding: 20px;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-        
-        .filter-btn {
-            padding: 10px 20px;
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .filter-btn.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-color: transparent;
-        }
-        
-        .promocoes-list {
-            padding: 0 20px 20px;
-        }
-        
-        .promocao-card {
-            background: white;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            cursor: pointer;
-        }
-        
-        .promocao-image {
-            width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 60px;
-        }
-        
-        .promocao-content {
-            padding: 16px;
-        }
-        
-        .promocao-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        
-        .empresa-logo {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-        
-        .empresa-nome {
-            font-size: 13px;
-            color: #6c757d;
-        }
-        
-        .promocao-titulo {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        
-        .promocao-descricao {
-            font-size: 14px;
-            color: #6c757d;
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-        
-        .promocao-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .validade {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: #6c757d;
-        }
-        
-        .resgatar-btn {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #26de81, #20bf6b);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .nav-item {
-            text-align: center;
-            color: #6c757d;
-            text-decoration: none;
-            padding: 8px 20px;
-            border-radius: 12px;
-            transition: all 0.2s;
-        }
-        
-        .nav-item.active {
-            color: #667eea;
-            background: linear-gradient(135deg, #667eea20, #764ba220);
-        }
-        
-        .nav-item i {
-            display: block;
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-        
-        .nav-item span {
-            display: block;
-            font-size: 11px;
-            font-weight: 600;
-        }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0f; min-height: 100vh; padding-bottom: 90px; color: #fff; }
+        .header { background: linear-gradient(145deg, #1a1a2e, #16213e); padding: 20px; border-bottom: 1px solid rgba(74, 144, 226, 0.1); text-align: center; }
+        .header h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+        .header p { font-size: 13px; color: #b0b0b0; }
+        .section { padding: 20px; }
+        .section-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+        .promocoes-grid { display: grid; gap: 16px; }
+        .promo-card { background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 18px; overflow: hidden; border: 1px solid rgba(74, 144, 226, 0.1); transition: all 0.3s; }
+        .promo-card:hover { border-color: #4a90e2; transform: translateY(-4px); box-shadow: 0 12px 40px rgba(74, 144, 226, 0.3); }
+        .promo-header { background: linear-gradient(135deg, #4a90e2, #357abd); padding: 20px; position: relative; }
+        .promo-badge { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .promo-title { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
+        .promo-subtitle { font-size: 14px; opacity: 0.95; }
+        .promo-body { padding: 20px; }
+        .promo-details { font-size: 14px; color: #b0b0b0; line-height: 1.7; margin-bottom: 16px; }
+        .promo-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid rgba(74, 144, 226, 0.1); }
+        .promo-countdown { font-size: 13px; color: #f39c12; font-weight: 700; }
+        .promo-btn { background: linear-gradient(135deg, #4a90e2, #357abd); color: white; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(145deg, #1a1a2e, #16213e); border-top: 1px solid rgba(74, 144, 226, 0.2); padding: 12px 8px 20px; display: flex; justify-content: space-around; box-shadow: 0 -10px 40px rgba(0,0,0,0.3); }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: #b0b0b0; font-size: 11px; font-weight: 600; padding: 8px; }
+        .nav-item i { font-size: 22px; }
+        .nav-item.active { color: #4a90e2; }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="header-title">Promoções</div>
-        <div class="header-subtitle">Aproveite as melhores ofertas</div>
+        <h1>Promoções Ativas</h1>
+        <p>Aproveite as ofertas exclusivas</p>
     </div>
-    
-    <div class="filters">
-        <button class="filter-btn active">Todas</button>
-        <button class="filter-btn">Restaurantes</button>
-        <button class="filter-btn">Beleza</button>
-        <button class="filter-btn">Petshops</button>
-        <button class="filter-btn">Expirando</button>
-    </div>
-    
-    <div class="promocoes-list">
-        <div class="promocao-card" onclick="window.location.href='app-estabelecimento.html'">
-            <div class="promocao-image">🍔</div>
-            <div class="promocao-content">
-                <div class="promocao-header">
-                    <div class="empresa-logo">🍔</div>
-                    <div class="empresa-nome">Popeye Hamburgueria</div>
+    <div class="section">
+        <h3 class="section-title">🔥 Destaques</h3>
+        <div class="promocoes-grid">
+            <div class="promo-card">
+                <div class="promo-header">
+                    <span class="promo-badge">🔥 Quente</span>
+                    <div class="promo-title">Dobro de Pontos</div>
+                    <div class="promo-subtitle">Popeye Hamburguer</div>
                 </div>
-                <div class="promocao-titulo">COMBO FAMÍLIA - 20% OFF</div>
-                <div class="promocao-descricao">
-                    2 Hambúrgueres + Batata Grande + 2 Refrigerantes com 20% de desconto!
-                </div>
-                <div class="promocao-footer">
-                    <div class="validade">
-                        <i class="fas fa-calendar"></i> Válido até 30/05/2024
+                <div class="promo-body">
+                    <div class="promo-details">
+                        Ganhe 2x pontos em compras acima de R$ 50,00. Válido para delivery e retirada no local.
                     </div>
-                    <button class="resgatar-btn">Resgatar</button>
+                    <div class="promo-footer">
+                        <div class="promo-countdown">⏰ Termina em 2 dias</div>
+                        <button class="promo-btn" onclick="ativarPromo(1)">Ativar</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="promocao-card" onclick="window.location.href='app-estabelecimento.html'">
-            <div class="promocao-image" style="background: linear-gradient(135deg, #26de81, #20bf6b);">💆</div>
-            <div class="promocao-content">
-                <div class="promocao-header">
-                    <div class="empresa-logo" style="background: linear-gradient(135deg, #26de81, #20bf6b);">💆</div>
-                    <div class="empresa-nome">Florenza Boutique</div>
+            <div class="promo-card">
+                <div class="promo-header" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+                    <span class="promo-badge">💥 Novo</span>
+                    <div class="promo-title">Pizza Grátis</div>
+                    <div class="promo-subtitle">Texano Pizzaria</div>
                 </div>
-                <div class="promocao-titulo">CORTE + ESCOVA R$ 59,90</div>
-                <div class="promocao-descricao">
-                    Corte de cabelo + escova por apenas R$ 59,90. Válido de segunda a quinta!
-                </div>
-                <div class="promocao-footer">
-                    <div class="validade">
-                        <i class="fas fa-calendar"></i> Válido até 15/05/2024
+                <div class="promo-body">
+                    <div class="promo-details">
+                        Na compra de 2 pizzas grandes, ganhe 1 pizza média grátis. Não acumulativo com outras promoções.
                     </div>
-                    <button class="resgatar-btn">Resgatar</button>
+                    <div class="promo-footer">
+                        <div class="promo-countdown">⏰ Termina em 5 dias</div>
+                        <button class="promo-btn">Ativar</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="promocao-card" onclick="window.location.href='app-estabelecimento.html'">
-            <div class="promocao-image" style="background: linear-gradient(135deg, #fc5c65, #fd79a8);">🍺</div>
-            <div class="promocao-content">
-                <div class="promocao-header">
-                    <div class="empresa-logo" style="background: linear-gradient(135deg, #fc5c65, #fd79a8);">🍺</div>
-                    <div class="empresa-nome">Malagueta Galpão</div>
+            <div class="promo-card">
+                <div class="promo-header" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                    <span class="promo-badge">💆 Relax</span>
+                    <div class="promo-title">30% de Desconto</div>
+                    <div class="promo-subtitle">Florenza Spa</div>
                 </div>
-                <div class="promocao-titulo">HAPPY HOUR - DOBRO DE PONTOS</div>
-                <div class="promocao-descricao">
-                    Das 17h às 19h ganhe o dobro de pontos em todas as compras!
-                </div>
-                <div class="promocao-footer">
-                    <div class="validade">
-                        <i class="fas fa-calendar"></i> Válido até 31/05/2024
+                <div class="promo-body">
+                    <div class="promo-details">
+                        Desconto de 30% em todos os tratamentos faciais e massagens relaxantes durante todo o mês.
                     </div>
-                    <button class="resgatar-btn">Resgatar</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="promocao-card" onclick="window.location.href='app-estabelecimento.html'">
-            <div class="promocao-image" style="background: linear-gradient(135deg, #45b7d1, #4ecdc4);">🍱</div>
-            <div class="promocao-content">
-                <div class="promocao-header">
-                    <div class="empresa-logo" style="background: linear-gradient(135deg, #45b7d1, #4ecdc4);">🍱</div>
-                    <div class="empresa-nome">Sushi Master</div>
-                </div>
-                <div class="promocao-titulo">COMBO 40 PEÇAS - R$ 89,90</div>
-                <div class="promocao-descricao">
-                    Combo especial com 40 peças variadas por apenas R$ 89,90!
-                </div>
-                <div class="promocao-footer">
-                    <div class="validade">
-                        <i class="fas fa-calendar"></i> Válido até 20/05/2024
+                    <div class="promo-footer">
+                        <div class="promo-countdown">⏰ Termina em 15 dias</div>
+                        <button class="promo-btn">Ativar</button>
                     </div>
-                    <button class="resgatar-btn">Resgatar</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="promocao-card" onclick="window.location.href='app-estabelecimento.html'">
-            <div class="promocao-image" style="background: linear-gradient(135deg, #f7b731, #fed330);">🐕</div>
-            <div class="promocao-content">
-                <div class="promocao-header">
-                    <div class="empresa-logo" style="background: linear-gradient(135deg, #f7b731, #fed330);">🐕</div>
-                    <div class="empresa-nome">Pet Love</div>
-                </div>
-                <div class="promocao-titulo">BANHO E TOSA - 15% OFF</div>
-                <div class="promocao-descricao">
-                    Banho e tosa para cães de todos os portes com 15% de desconto!
-                </div>
-                <div class="promocao-footer">
-                    <div class="validade">
-                        <i class="fas fa-calendar"></i> Válido até 25/05/2024
-                    </div>
-                    <button class="resgatar-btn">Resgatar</button>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class="bottom-nav">
-        <a href="app-inicio.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="app-buscar.html" class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>Buscar</span>
-        </a>
-        <a href="app-promocoes.html" class="nav-item active">
-            <i class="fas fa-tag"></i>
-            <span>Promoções</span>
-        </a>
-        <a href="app-chat.html" class="nav-item">
-            <i class="fas fa-comment"></i>
-            <span>Chat</span>
-        </a>
-        <a href="app-perfil.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
-    </div>
+    <nav class="bottom-nav">
+        <a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="app-buscar.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
+        <a href="app-promocoes.html" class="nav-item active"><i class="fas fa-gift"></i><span>Promoções</span></a>
+        <a href="app-notificacoes.html" class="nav-item"><i class="fas fa-bell"></i><span>Avisos</span></a>
+        <a href="app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
+    </nav>
+    <script>
+        function ativarPromo(id) {
+            alert('Promoção ativada! Apresente no estabelecimento.');
+        }
+    </script>
 </body>
 </html>
