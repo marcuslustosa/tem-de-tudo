@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 280px;
+            background: linear-gradient(180deg, #1a1a2e, #16213e);
+            padding: 24px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            overflow-y: auto;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .logo-section img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+        }
+        
+        .logo-section h1 {
+            font-size: 20px;
+            font-weight: 900;
+        }
+        
+        .admin-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-bottom: 8px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            color: #b0b0b0;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(74, 144, 226, 0.1);
+            color: #4a90e2;
+        }
+        
+        .nav-link i {
+            font-size: 18px;
+            width: 24px;
+        }
+        
+        .logout-btn {
+            margin-top: 40px;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .main-content {
+            margin-left: 280px;
+            padding: 32px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        
+        .header h2 {
+            font-size: 32px;
+            font-weight: 900;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+        
+        .stat-change {
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        
+        .stat-change.positive {
+            color: #4caf50;
+        }
+        
+        .stat-change.negative {
+            color: #e74c3c;
+        }
+        
+        .content-section {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            padding: 32px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .section-header h3 {
+            font-size: 24px;
+            font-weight: 900;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            background: rgba(74, 144, 226, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            color: #4a90e2;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: #4a90e2;
+            color: white;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table thead {
+            background: rgba(74, 144, 226, 0.1);
+        }
+        
+        .table th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 800;
+            border-bottom: 2px solid rgba(74, 144, 226, 0.3);
+        }
+        
+        .table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .table tr:hover {
+            background: rgba(74, 144, 226, 0.05);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .status-active {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        
+        .status-suspended {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+        
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .action-approve {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+        
+        .action-approve:hover {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .action-suspend {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+        
+        .action-suspend:hover {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .action-view {
+            background: rgba(74, 144, 226, 0.2);
+            color: #4a90e2;
+        }
+        
+        .action-view:hover {
+            background: #4a90e2;
+            color: white;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(53, 122, 189, 0.1));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a90e2;
+            font-weight: 700;
+            border: 2px dashed rgba(74, 144, 226, 0.3);
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .sidebar .logo-section span, .sidebar .nav-link span {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo-section">
+            <img src="img/logo.png" alt="Logo">
+            <div>
+                <h1>Tem de Tudo</h1>
+                <span class="admin-badge">Admin Master</span>
+            </div>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" onclick="showSection('overview')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Visão Geral</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('establishments')">
+                    <i class="fas fa-store"></i>
+                    <span>Estabelecimentos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('clients')">
+                    <i class="fas fa-users"></i>
+                    <span>Clientes</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('approvals')">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Aprovações</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('reports')">
+                    <i class="fas fa-file-chart-line"></i>
+                    <span>Relatórios</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="showSection('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </a>
+            </li>
+        </ul>
+        
+        <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+    </aside>
+    
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <div class="header">
+            <h2 id="pageTitle">Visão Geral do Sistema</h2>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="exportData()">
+                    <i class="fas fa-download"></i> Exportar Dados
+                </button>
+            </div>
+        </div>
+        
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="stat-value">847</div>
+                <div class="stat-label">Estabelecimentos Ativos</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> +12% este mês
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #4caf50, #45a049);">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-value">45.2K</div>
+                <div class="stat-label">Clientes Totais</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> +8% este mês
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #ffc107, #ff9800);">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-value">23</div>
+                <div class="stat-label">Aguardando Aprovação</div>
+                <div class="stat-change">
+                    <i class="fas fa-minus"></i> Sem mudanças
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #9c27b0, #7b1fa2);">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-value">R$ 89K</div>
+                <div class="stat-label">Receita Mensal</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> +23% este mês
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHARTS -->
+        <div class="charts-grid">
+            <div class="content-section">
+                <div class="section-header">
+                    <h3>Crescimento de Usuários</h3>
+                </div>
+                <div class="chart-placeholder">
+                    <i class="fas fa-chart-area" style="font-size: 48px;"></i>
+                    <span style="margin-left: 16px;">Gráfico de Crescimento (Integrar Chart.js)</span>
+                </div>
+            </div>
+            
+            <div class="content-section">
+                <div class="section-header">
+                    <h3>Top Categorias</h3>
+                </div>
+                <div class="chart-placeholder">
+                    <i class="fas fa-chart-pie" style="font-size: 48px;"></i>
+                    <span style="margin-left: 16px;">Gráfico Pizza (Integrar Chart.js)</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ESTABELECIMENTOS PENDENTES -->
+        <div class="content-section" id="approvalsSection">
+            <div class="section-header">
+                <h3>Estabelecimentos Aguardando Aprovação</h3>
+                <div class="filters">
+                    <button class="filter-btn active">Todos (23)</button>
+                    <button class="filter-btn">Restaurantes (12)</button>
+                    <button class="filter-btn">Salões (6)</button>
+                    <button class="filter-btn">Outros (5)</button>
+                </div>
+            </div>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Empresa</th>
+                        <th>Categoria</th>
+                        <th>CNPJ</th>
+                        <th>Plano</th>
+                        <th>Data Solicitação</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pizzaria Bella Napoli</strong><br><small style="color: #b0b0b0;">contato@bellanapoli.com.br</small></td>
+                        <td>Restaurante</td>
+                        <td>12.345.678/0001-90</td>
+                        <td><span class="status-badge" style="background: rgba(74, 144, 226, 0.2); color: #4a90e2;">Professional</span></td>
+                        <td>15/12/2025</td>
+                        <td><span class="status-badge status-pending">Pendente</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn action-approve" onclick="approveEstablishment(1)">
+                                    <i class="fas fa-check"></i> Aprovar
+                                </button>
+                                <button class="action-btn action-suspend" onclick="rejectEstablishment(1)">
+                                    <i class="fas fa-times"></i> Reprovar
+                                </button>
+                                <button class="action-btn action-view" onclick="viewDetails(1)">
+                                    <i class="fas fa-eye"></i> Ver
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Studio Beleza Total</strong><br><small style="color: #b0b0b0;">contato@belezatotal.com.br</small></td>
+                        <td>Salão de Beleza</td>
+                        <td>98.765.432/0001-10</td>
+                        <td><span class="status-badge" style="background: rgba(74, 144, 226, 0.2); color: #4a90e2;">Starter</span></td>
+                        <td>14/12/2025</td>
+                        <td><span class="status-badge status-pending">Pendente</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn action-approve" onclick="approveEstablishment(2)">
+                                    <i class="fas fa-check"></i> Aprovar
+                                </button>
+                                <button class="action-btn action-suspend" onclick="rejectEstablishment(2)">
+                                    <i class="fas fa-times"></i> Reprovar
+                                </button>
+                                <button class="action-btn action-view" onclick="viewDetails(2)">
+                                    <i class="fas fa-eye"></i> Ver
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Academia Fitness Pro</strong><br><small style="color: #b0b0b0;">contato@fitnesspro.com.br</small></td>
+                        <td>Academia</td>
+                        <td>45.678.901/0001-23</td>
+                        <td><span class="status-badge" style="background: rgba(156, 39, 176, 0.2); color: #9c27b0;">Enterprise</span></td>
+                        <td>13/12/2025</td>
+                        <td><span class="status-badge status-pending">Pendente</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn action-approve" onclick="approveEstablishment(3)">
+                                    <i class="fas fa-check"></i> Aprovar
+                                </button>
+                                <button class="action-btn action-suspend" onclick="rejectEstablishment(3)">
+                                    <i class="fas fa-times"></i> Reprovar
+                                </button>
+                                <button class="action-btn action-view" onclick="viewDetails(3)">
+                                    <i class="fas fa-eye"></i> Ver
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- ESTABELECIMENTOS ATIVOS -->
+        <div class="content-section">
+            <div class="section-header">
+                <h3>Estabelecimentos Ativos</h3>
+                <div class="filters">
+                    <button class="filter-btn active">Todos</button>
+                    <button class="filter-btn">Professional</button>
+                    <button class="filter-btn">Enterprise</button>
+                </div>
+            </div>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Empresa</th>
+                        <th>Categoria</th>
+                        <th>Plano</th>
+                        <th>Clientes</th>
+                        <th>Receita/Mês</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Popeye Hamburgueria</strong><br><small style="color: #b0b0b0;">Ativo desde 10/01/2024</small></td>
+                        <td>Restaurante</td>
+                        <td><span class="status-badge" style="background: rgba(74, 144, 226, 0.2); color: #4a90e2;">Professional</span></td>
+                        <td>1.247</td>
+                        <td>R$ 197</td>
+                        <td><span class="status-badge status-active">Ativo</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn action-view" onclick="viewEstablishment(1)">
+                                    <i class="fas fa-eye"></i> Ver
+                                </button>
+                                <button class="action-btn action-suspend" onclick="suspendEstablishment(1)">
+                                    <i class="fas fa-ban"></i> Suspender
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Texano Burger</strong><br><small style="color: #b0b0b0;">Ativo desde 15/02/2024</small></td>
+                        <td>Restaurante</td>
+                        <td><span class="status-badge" style="background: rgba(156, 39, 176, 0.2); color: #9c27b0;">Enterprise</span></td>
+                        <td>2.834</td>
+                        <td>R$ 397</td>
+                        <td><span class="status-badge status-active">Ativo</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="action-btn action-view" onclick="viewEstablishment(2)">
+                                    <i class="fas fa-eye"></i> Ver
+                                </button>
+                                <button class="action-btn action-suspend" onclick="suspendEstablishment(2)">
+                                    <i class="fas fa-ban"></i> Suspender
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        function showSection(section) {
+            // Remove active de todos
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Adiciona active ao clicado
+            event.target.closest('.nav-link').classList.add('active');
+            
+            // Muda título
+            const titles = {
+                overview: 'Visão Geral do Sistema',
+                establishments: 'Gerenciar Estabelecimentos',
+                clients: 'Gerenciar Clientes',
+                approvals: 'Aprovações Pendentes',
+                reports: 'Relatórios Gerenciais',
+                settings: 'Configurações do Sistema'
+            };
+            
+            document.getElementById('pageTitle').textContent = titles[section];
+            
+            // Aqui você carregaria o conteúdo específico de cada seção
+            console.log('Carregando seção:', section);
+        }
+        
+        function approveEstablishment(id) {
+            if (confirm('Aprovar este estabelecimento?')) {
+                alert(`Estabelecimento #${id} aprovado com sucesso!`);
+                // TODO: Integrar com API Laravel
+                // fetch(`/api/admin/establishments/${id}/approve`, { method: 'POST' })
+            }
+        }
+        
+        function rejectEstablishment(id) {
+            const reason = prompt('Motivo da reprovação:');
+            if (reason) {
+                alert(`Estabelecimento #${id} reprovado. Email de notificação enviado.`);
+                // TODO: Integrar com API Laravel
+                // fetch(`/api/admin/establishments/${id}/reject`, {
+                //     method: 'POST',
+                //     body: JSON.stringify({ reason })
+                // })
+            }
+        }
+        
+        function viewDetails(id) {
+            alert(`Visualizando detalhes do estabelecimento #${id}`);
+            // TODO: Abrir modal ou redirecionar para página de detalhes
+        }
+        
+        function viewEstablishment(id) {
+            window.location.href = `empresa-dashboard.html?id=${id}`;
+        }
+        
+        function suspendEstablishment(id) {
+            if (confirm('Tem certeza que deseja suspender este estabelecimento?')) {
+                alert(`Estabelecimento #${id} suspenso. Acesso bloqueado.`);
+                // TODO: Integrar com API Laravel
+            }
+        }
+        
+        function exportData() {
+            alert('Exportando dados em CSV...');
+            // TODO: Gerar CSV com dados do dashboard
+        }
+        
+        function logout() {
+            if (confirm('Deseja sair do painel administrativo?')) {
+                window.location.href = 'entrar.html';
+            }
+        }
+    </script>
+</body>
+</html>
