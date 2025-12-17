@@ -1,2 +1,550 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Planos - Tem de Tudo</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">`n    <link rel="stylesheet" href="css/temdetudo-theme.css"></head><body style="margin:0;font-family:Inter,sans-serif;background:#f8f9ff;"><header style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:40px 20px;text-align:center;"><h1 style="font-size:32px;font-weight:900;margin:0;">Nossos Planos</h1></header><div style="max-width:1200px;margin:0 auto;padding:32px 20px;"><div style="background:white;border-radius:24px;padding:40px;text-align:center;box-shadow:0 12px 40px rgba(102,126,234,0.08);"><h2 style="font-size:28px;font-weight:900;color:#667eea;margin:0 0 16px;">Plano Premium</h2><div style="font-size:48px;font-weight:900;color:#1a1a2e;margin-bottom:8px;">R$ 99</div><p style="color:#7c8db0;">por mês</p></div></div></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planos e Preços - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)" /></svg>');
+            opacity: 0.3;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 24px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+        
+        .back-link:hover {
+            opacity: 1;
+        }
+        
+        .header h1 {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header p {
+            font-size: 20px;
+            opacity: 0.85;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: -60px auto 80px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+        
+        .plan-card {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-radius: 24px;
+            padding: 40px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0f3460, #1a1a2e);
+        }
+        
+        .plan-card:hover {
+            border-color: #0f3460;
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(15, 52, 96, 0.4);
+        }
+        
+        .plan-card.featured {
+            background: linear-gradient(145deg, #0f3460, #1a1a2e);
+            border-color: #4a90e2;
+            transform: scale(1.05);
+        }
+        
+        .plan-card.featured::before {
+            background: linear-gradient(90deg, #4a90e2, #357abd);
+        }
+        
+        .plan-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+        
+        .plan-name {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        
+        .plan-description {
+            color: #b0b0b0;
+            margin-bottom: 24px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .plan-price {
+            margin-bottom: 32px;
+        }
+        
+        .price-value {
+            font-size: 48px;
+            font-weight: 900;
+            color: #fff;
+        }
+        
+        .price-value small {
+            font-size: 24px;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+        
+        .price-period {
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin-bottom: 32px;
+        }
+        
+        .plan-features li {
+            padding: 12px 0;
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+        
+        .plan-features i {
+            color: #4a90e2;
+            font-size: 18px;
+            margin-top: 2px;
+        }
+        
+        .plan-features .disabled {
+            opacity: 0.3;
+        }
+        
+        .plan-features .disabled i {
+            color: #666;
+        }
+        
+        .btn-plan {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-plan-primary {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
+        }
+        
+        .btn-plan-primary:hover {
+            box-shadow: 0 12px 32px rgba(74, 144, 226, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn-plan-secondary {
+            background: transparent;
+            border: 2px solid #4a90e2;
+            color: #4a90e2;
+        }
+        
+        .btn-plan-secondary:hover {
+            background: #4a90e2;
+            color: white;
+        }
+        
+        .comparison-section {
+            margin-top: 80px;
+            padding: 60px 40px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-radius: 24px;
+        }
+        
+        .comparison-section h2 {
+            font-size: 36px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            background: #0f3460;
+            padding: 16px;
+            text-align: left;
+            font-weight: 800;
+            border-bottom: 2px solid #4a90e2;
+        }
+        
+        .comparison-table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .comparison-table tr:hover {
+            background: rgba(74, 144, 226, 0.05);
+        }
+        
+        .check-icon {
+            color: #4caf50;
+            font-size: 20px;
+        }
+        
+        .x-icon {
+            color: #666;
+            font-size: 20px;
+            opacity: 0.3;
+        }
+        
+        .faq-section {
+            margin-top: 80px;
+            padding: 60px 40px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-radius: 24px;
+        }
+        
+        .faq-section h2 {
+            font-size: 36px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .faq-item {
+            padding: 24px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+        
+        .faq-item h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #4a90e2;
+            margin-bottom: 12px;
+        }
+        
+        .faq-item p {
+            color: #b0b0b0;
+            line-height: 1.8;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        @media (max-width: 1024px) {
+            .plans-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .plan-card.featured {
+                transform: scale(1);
+            }
+            
+            .header h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Voltar para Home
+            </a>
+            <h1>Planos e Preços</h1>
+            <p>Escolha o plano ideal para o seu negócio. Sem taxas ocultas, sem pegadinhas.</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="plans-grid">
+            <!-- PLANO STARTER -->
+            <div class="plan-card">
+                <div class="plan-name">Starter</div>
+                <div class="plan-description">Ideal para começar e testar o sistema</div>
+                
+                <div class="plan-price">
+                    <div class="price-value">R$ <small>97</small></div>
+                    <div class="price-period">/mês</div>
+                </div>
+                
+                <ul class="plan-features">
+                    <li><i class="fas fa-check-circle"></i> <span>Até 500 clientes</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Sistema de pontos ilimitado</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>QR Code personalizado</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>App PWA completo</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Dashboard básico</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Suporte via email</span></li>
+                    <li class="disabled"><i class="fas fa-times-circle"></i> <span>Notificações push</span></li>
+                    <li class="disabled"><i class="fas fa-times-circle"></i> <span>Relatórios avançados</span></li>
+                    <li class="disabled"><i class="fas fa-times-circle"></i> <span>API integração</span></li>
+                </ul>
+                
+                <button class="btn-plan btn-plan-secondary" onclick="selectPlan('starter')">
+                    Começar Agora
+                </button>
+            </div>
+            
+            <!-- PLANO PROFESSIONAL (DESTAQUE) -->
+            <div class="plan-card featured">
+                <span class="plan-badge">🔥 Mais Popular</span>
+                <div class="plan-name">Professional</div>
+                <div class="plan-description">Para negócios que querem resultados sérios</div>
+                
+                <div class="plan-price">
+                    <div class="price-value">R$ <small>197</small></div>
+                    <div class="price-period">/mês</div>
+                </div>
+                
+                <ul class="plan-features">
+                    <li><i class="fas fa-check-circle"></i> <span>Até 2.000 clientes</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Sistema de pontos ilimitado</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>QR Code personalizado</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>App PWA completo</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Dashboard completo</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Notificações push ilimitadas</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Relatórios avançados</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Suporte prioritário WhatsApp</span></li>
+                    <li class="disabled"><i class="fas fa-times-circle"></i> <span>API integração</span></li>
+                </ul>
+                
+                <button class="btn-plan btn-plan-primary" onclick="selectPlan('professional')">
+                    Começar Agora
+                </button>
+            </div>
+            
+            <!-- PLANO ENTERPRISE -->
+            <div class="plan-card">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-description">Para redes e franquias que precisam de poder total</div>
+                
+                <div class="plan-price">
+                    <div class="price-value">R$ <small>397</small></div>
+                    <div class="price-period">/mês</div>
+                </div>
+                
+                <ul class="plan-features">
+                    <li><i class="fas fa-check-circle"></i> <span>Clientes ilimitados</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Multi-estabelecimentos</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>QR Code personalizado</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>App PWA white-label</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Dashboard completo + BI</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Notificações push ilimitadas</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Relatórios customizados</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>API integração completa</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Suporte 24/7 dedicado</span></li>
+                </ul>
+                
+                <button class="btn-plan btn-plan-secondary" onclick="selectPlan('enterprise')">
+                    Falar com Consultor
+                </button>
+            </div>
+        </div>
+        
+        <!-- TABELA COMPARAÇÃO -->
+        <div class="comparison-section">
+            <h2>Comparação Completa de Recursos</h2>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Recurso</th>
+                        <th>Starter</th>
+                        <th>Professional</th>
+                        <th>Enterprise</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Clientes cadastrados</strong></td>
+                        <td>Até 500</td>
+                        <td>Até 2.000</td>
+                        <td>Ilimitado</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estabelecimentos</strong></td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>Ilimitado</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Notificações push/mês</strong></td>
+                        <td class="x-icon"><i class="fas fa-times"></i></td>
+                        <td>Ilimitadas</td>
+                        <td>Ilimitadas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Relatórios exportação</strong></td>
+                        <td class="check-icon"><i class="fas fa-check"></i></td>
+                        <td class="check-icon"><i class="fas fa-check"></i></td>
+                        <td class="check-icon"><i class="fas fa-check"></i></td>
+                    </tr>
+                    <tr>
+                        <td><strong>API de integração</strong></td>
+                        <td class="x-icon"><i class="fas fa-times"></i></td>
+                        <td class="x-icon"><i class="fas fa-times"></i></td>
+                        <td class="check-icon"><i class="fas fa-check"></i></td>
+                    </tr>
+                    <tr>
+                        <td><strong>White-label</strong></td>
+                        <td class="x-icon"><i class="fas fa-times"></i></td>
+                        <td class="x-icon"><i class="fas fa-times"></i></td>
+                        <td class="check-icon"><i class="fas fa-check"></i></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Suporte</strong></td>
+                        <td>Email</td>
+                        <td>WhatsApp prioritário</td>
+                        <td>24/7 dedicado</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- FAQ -->
+        <div class="faq-section">
+            <h2>Perguntas Frequentes sobre Planos</h2>
+            
+            <div class="faq-item">
+                <h3>💳 Quais formas de pagamento vocês aceitam?</h3>
+                <p>Aceitamos cartão de crédito (Visa, Mastercard, Elo, Amex) e boleto bancário. Pagamento via Pix disponível para planos anuais.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>🔄 Posso mudar de plano depois?</h3>
+                <p>Sim! Você pode fazer upgrade ou downgrade a qualquer momento. Mudanças são efetivadas no próximo ciclo de faturamento.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>💰 Tem desconto para pagamento anual?</h3>
+                <p>Sim! Pagamento anual à vista tem 20% de desconto. Plano Professional anual sai por R$ 1.893 (equivalente a R$ 157/mês).</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>🎁 Posso testar antes de pagar?</h3>
+                <p>Sim! Oferecemos 14 dias grátis em todos os planos. Não pedimos cartão de crédito no teste.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3>🚫 Como funciona o cancelamento?</h3>
+                <p>Sem multa, sem burocracia. Cancele quando quiser com 7 dias de antecedência. Dados são mantidos por 90 dias após cancelamento.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
+        <p><a href="index.html" style="color: #4a90e2; text-decoration: none;">Voltar para Home</a></p>
+    </div>
+
+    <script>
+        function selectPlan(plan) {
+            // Redireciona para cadastro com parâmetro do plano
+            const planNames = {
+                starter: 'Starter - R$ 97/mês',
+                professional: 'Professional - R$ 197/mês',
+                enterprise: 'Enterprise - R$ 397/mês'
+            };
+            
+            if (confirm(`Você selecionou o plano ${planNames[plan]}.\n\nDeseja prosseguir para o cadastro?`)) {
+                window.location.href = `cadastro-empresa.html?plan=${plan}`;
+            }
+        }
+    </script>
+</body>
+</html>
 
