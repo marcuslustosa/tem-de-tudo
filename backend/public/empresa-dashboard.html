@@ -440,5 +440,28 @@
             </div>
         </div>
     </main>
+    
+    <script>
+        // Proteção de autenticação
+        window.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!token || user.user_type !== 'empresa') {
+                alert('Acesso negado. Faça login como empresa.');
+                window.location.href = 'entrar.html';
+                return;
+            }
+            
+            // Carregar dados do usuário se necessário
+            console.log('Empresa autenticada:', user);
+        });
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'entrar.html';
+        }
+    </script>
 </body>
 </html>
