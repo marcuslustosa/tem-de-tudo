@@ -3,38 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
     <title>Selecione seu perfil - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(74, 144, 226, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(74, 144, 226, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             width: 100%;
+            position: relative;
+            z-index: 1;
         }
         
         .header {
             text-align: center;
-            color: white;
-            margin-bottom: 40px;
+            margin-bottom: 56px;
         }
         
         .logo {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 24px;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 28px;
         }
         
         .logo img {
@@ -44,182 +66,325 @@
         }
         
         .header h1 {
-            font-size: 36px;
+            font-size: 42px;
             font-weight: 900;
-            margin-bottom: 12px;
+            color: #fff;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
         }
         
         .header p {
-            font-size: 18px;
-            opacity: 0.95;
+            font-size: 19px;
+            color: #b0b0b0;
+            max-width: 600px;
+            margin: 0 auto;
         }
         
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-bottom: 40px;
         }
         
         .profile-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-radius: 24px;
+            padding: 48px 36px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            border: 2px solid rgba(74, 144, 226, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4a90e2, #357abd);
+            transform: scaleX(0);
+            transition: transform 0.4s;
         }
         
         .profile-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transform: translateY(-12px);
+            box-shadow: 0 20px 60px rgba(74, 144, 226, 0.3);
+            border-color: #4a90e2;
+        }
+        
+        .profile-card:hover::before {
+            transform: scaleX(1);
         }
         
         .profile-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 20px;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
+            font-size: 48px;
             color: white;
+            transition: all 0.4s;
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
+        }
+        
+        .profile-card:hover .profile-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 12px 36px rgba(74, 144, 226, 0.5);
         }
         
         .profile-card h2 {
-            font-size: 24px;
-            margin-bottom: 12px;
-            color: #212529;
+            font-size: 28px;
+            margin-bottom: 14px;
+            color: #fff;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
         
         .profile-card p {
-            color: #6c757d;
-            line-height: 1.6;
-            margin-bottom: 20px;
+            color: #b0b0b0;
+            line-height: 1.7;
+            margin-bottom: 28px;
+            font-size: 15px;
         }
         
         .profile-features {
+            list-style: none;
             text-align: left;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
         }
         
         .profile-features li {
+            color: #b0b0b0;
+            margin-bottom: 12px;
+            padding-left: 32px;
+            position: relative;
             font-size: 14px;
-            color: #6c757d;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         
-        .profile-features i {
-            color: #667eea;
-            font-size: 16px;
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 12px;
-            color: white;
+        .profile-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4a90e2;
             font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
+            font-size: 18px;
         }
         
-        .btn:hover {
-            transform: scale(1.05);
-        }
-        
-        .back-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 50px;
-            height: 50px;
-            background: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 50%;
+        .btn-select {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
             color: white;
-            font-size: 20px;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(74, 144, 226, 0.5);
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(74, 144, 226, 0.2);
+            color: #4a90e2;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 32px;
+        }
+        
+        .back-link a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s;
+            padding: 12px 24px;
+            border-radius: 12px;
+            background: rgba(26, 26, 46, 0.5);
+        }
+        
+        .back-link a:hover {
+            color: #4a90e2;
+            background: rgba(74, 144, 226, 0.1);
+        }
+        
+        @media (max-width: 968px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+                max-width: 480px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .header p {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
-    <button class="back-btn" onclick="window.location.href='index.html'">
-        <i class="fas fa-arrow-left"></i>
-    </button>
-    
     <div class="container">
         <div class="header">
             <div class="logo">
                 <img src="img/logo.png" alt="Tem de Tudo">
             </div>
-            <h1>Como você quer usar o Tem de Tudo?</h1>
-            <p>Selecione o perfil que melhor se encaixa</p>
+            <h1>Como você quer usar o sistema?</h1>
+            <p>Escolha o perfil que melhor se encaixa com suas necessidades</p>
         </div>
         
         <div class="cards-grid">
             <!-- CLIENTE -->
-            <div class="profile-card" onclick="window.location.href='app-inicio.html'">
-                <div class="profile-icon">👤</div>
+            <div class="profile-card" onclick="selectProfile('cliente')">
+                <span class="badge">Mais Popular</span>
+                <div class="profile-icon">
+                    <i class="fas fa-user"></i>
+                </div>
                 <h2>Sou Cliente</h2>
-                <p>Acumule pontos e ganhe recompensas nos seus estabelecimentos favoritos</p>
-                
+                <p>Acumule pontos e ganhe recompensas em estabelecimentos parceiros</p>
                 <ul class="profile-features">
-                    <li><i class="fas fa-check-circle"></i> Cartão fidelidade digital</li>
-                    <li><i class="fas fa-check-circle"></i> Promoções exclusivas</li>
-                    <li><i class="fas fa-check-circle"></i> Bônus de aniversário</li>
-                    <li><i class="fas fa-check-circle"></i> QR Code pessoal</li>
+                    <li>Acumule pontos a cada compra</li>
+                    <li>Resgate recompensas exclusivas</li>
+                    <li>QR Code pessoal para validação</li>
+                    <li>Acompanhe seu histórico</li>
+                    <li>Receba promoções personalizadas</li>
                 </ul>
-                
-                <button class="btn">
-                    <i class="fas fa-mobile-alt"></i> Acessar App
+                <button class="btn-select">
+                    CONTINUAR COMO CLIENTE
                 </button>
             </div>
             
             <!-- EMPRESA -->
-            <div class="profile-card" onclick="window.location.href='empresa-dashboard.html'">
-                <div class="profile-icon" style="background: linear-gradient(135deg, #26de81, #20bf6b);">🏪</div>
-                <h2>Tenho uma Empresa</h2>
-                <p>Fidelize seus clientes e aumente suas vendas com nosso sistema completo</p>
-                
+            <div class="profile-card" onclick="selectProfile('empresa')">
+                <span class="badge">Para Negócios</span>
+                <div class="profile-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <h2>Tenho Empresa</h2>
+                <p>Fidelize seus clientes e aumente suas vendas com nosso sistema</p>
                 <ul class="profile-features">
-                    <li><i class="fas fa-check-circle"></i> Dashboard de métricas</li>
-                    <li><i class="fas fa-check-circle"></i> Gerenciar promoções</li>
-                    <li><i class="fas fa-check-circle"></i> Scanner QR Code</li>
-                    <li><i class="fas fa-check-circle"></i> Relatórios completos</li>
+                    <li>Dashboard completo de métricas</li>
+                    <li>Gerencie clientes e pontos</li>
+                    <li>Crie promoções personalizadas</li>
+                    <li>Scanner QR Code integrado</li>
+                    <li>Relatórios detalhados de vendas</li>
                 </ul>
-                
-                <button class="btn" style="background: linear-gradient(135deg, #26de81, #20bf6b);">
-                    <i class="fas fa-chart-line"></i> Acessar Painel
+                <button class="btn-select">
+                    CONTINUAR COMO EMPRESA
                 </button>
             </div>
             
             <!-- ADMIN -->
-            <div class="profile-card" onclick="window.location.href='admin-dashboard.html'">
-                <div class="profile-icon" style="background: linear-gradient(135deg, #fc5c65, #fd79a8);">⚙️</div>
+            <div class="profile-card" onclick="selectProfile('admin')">
+                <span class="badge">Administração</span>
+                <div class="profile-icon">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
                 <h2>Sou Administrador</h2>
-                <p>Gerencie todo o sistema, usuários e estabelecimentos cadastrados</p>
-                
+                <p>Gerencie toda a plataforma e aprove novos estabelecimentos</p>
                 <ul class="profile-features">
-                    <li><i class="fas fa-check-circle"></i> Gerenciar usuários</li>
-                    <li><i class="fas fa-check-circle"></i> Aprovar empresas</li>
-                    <li><i class="fas fa-check-circle"></i> Relatórios gerais</li>
-                    <li><i class="fas fa-check-circle"></i> Configurações sistema</li>
+                    <li>Painel master de controle</li>
+                    <li>Aprovar/reprovar estabelecimentos</li>
+                    <li>Gerenciar todos os usuários</li>
+                    <li>Relatórios globais da plataforma</li>
+                    <li>Configurações avançadas do sistema</li>
                 </ul>
-                
-                <button class="btn" style="background: linear-gradient(135deg, #fc5c65, #fd79a8);">
-                    <i class="fas fa-cog"></i> Acessar Admin
+                <button class="btn-select">
+                    ACESSAR PAINEL ADMIN
                 </button>
             </div>
         </div>
+        
+        <div class="back-link">
+            <a href="index.html">
+                <i class="fas fa-arrow-left"></i>
+                Voltar para a página inicial
+            </a>
+        </div>
     </div>
+    
+    <script>
+        function selectProfile(tipo) {
+            // Verificar se usuário está autenticado
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (token && user.user_type) {
+                // Usuário já logado, redirecionar direto
+                redirectByType(user.user_type);
+            } else {
+                // Usuário não logado, salvar escolha e ir para cadastro
+                localStorage.setItem('selectedProfile', tipo);
+                
+                if (tipo === 'admin') {
+                    // Admin precisa de credenciais especiais
+                    window.location.href = 'entrar.html';
+                } else if (tipo === 'empresa') {
+                    window.location.href = 'cadastro-empresa.html';
+                } else {
+                    window.location.href = 'cadastro.html';
+                }
+            }
+        }
+        
+        function redirectByType(type) {
+            switch(type) {
+                case 'admin':
+                    window.location.href = 'admin-dashboard.html';
+                    break;
+                case 'empresa':
+                    window.location.href = 'empresa-dashboard.html';
+                    break;
+                case 'cliente':
+                default:
+                    window.location.href = 'app-inicio.html';
+                    break;
+            }
+        }
+        
+        // Se usuário já está logado, pode mostrar apenas o card dele
+        window.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (token && user.user_type) {
+                // Opcional: mostrar apenas o perfil do usuário logado
+                // ou adicionar um botão "Continuar" em destaque
+                console.log('Usuário já logado como:', user.user_type);
+            }
+        });
+    </script>
 </body>
 </html>
