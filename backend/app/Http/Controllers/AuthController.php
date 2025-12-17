@@ -352,18 +352,18 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'Login realizado com sucesso!',
                 'data' => [
-                    'user' => array_merge($user->toArray(), ['perfil' => $user->perfil]),
+                    'user' => array_merge($user->toArray(), ['perfil' => $user->user_type]),  // Corrigido: era $user->perfil
                     'token' => $token,
                     'token_type' => 'Bearer',
                     'expires_in' => 60 * 60, // 1 hora em segundos
-                    'redirect_to' => $this->getRedirectUrlForPerfil($user->perfil)
+                    'redirect_to' => $this->getRedirectUrlForPerfil($user->user_type)  // Corrigido: era $user->perfil
                 ]
             ];
 
             Log::info('Login realizado com sucesso', [
                 'user_id' => $user->id,
                 'email' => $user->email,
-                'perfil' => $user->perfil,
+                'perfil' => $user->user_type,  // Corrigido: era $user->perfil
                 'ip' => $request->ip()
             ]);
 
@@ -548,7 +548,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'perfil' => $perfil,
+            'user_type' => $perfil,  // Corrigido: era 'perfil', agora 'user_type' (nome da coluna no banco)
             'status' => 'ativo',
         ];
 
