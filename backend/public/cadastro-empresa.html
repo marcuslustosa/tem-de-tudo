@@ -408,25 +408,37 @@
                 return;
             }
             
+            // Formatar dados para a API (usando auth/register com perfil empresa)
+            const userData = {
+                name: data.razao_social,
+                email: data.email,
+                phone: data.telefone.replace(/\D/g, ''),
+                password: data.senha,
+                perfil: 'empresa',
+                cnpj: data.cnpj.replace(/\D/g, ''),
+                endereco: data.endereco,
+                telefone: data.telefone.replace(/\D/g, '')
+            };
+            
             // Adiciona plano se houver
             if (planParam) {
-                data.plano = planParam;
+                userData.plano = planParam;
             }
             
             try {
-                const response = await fetch('/api/empresa/register', {
+                const response = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(userData)
                 });
                 
                 const result = await response.json();
                 
                 if (response.ok) {
-                    alert('Empresa cadastrada com sucesso! Redirecionando...');
-                    window.location.href = 'empresa-dashboard.html';
+                    alert('Empresa cadastrada com sucesso! Redirecionando para login...');
+                    window.location.href = 'entrar.html';
                 } else {
                     alert(result.message || 'Erro ao cadastrar empresa. Tente novamente.');
                 }
