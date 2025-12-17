@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selecione seu perfil - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 24px;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .header h1 {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .profile-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .profile-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+        }
+        
+        .profile-card h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #212529;
+        }
+        
+        .profile-card p {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .profile-features {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+        
+        .profile-features li {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .profile-features i {
+            color: #667eea;
+            font-size: 16px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+    
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="img/logo.png" alt="Tem de Tudo">
+            </div>
+            <h1>Como você quer usar o Tem de Tudo?</h1>
+            <p>Selecione o perfil que melhor se encaixa</p>
+        </div>
+        
+        <div class="cards-grid">
+            <!-- CLIENTE -->
+            <div class="profile-card" onclick="window.location.href='app-inicio.html'">
+                <div class="profile-icon">👤</div>
+                <h2>Sou Cliente</h2>
+                <p>Acumule pontos e ganhe recompensas nos seus estabelecimentos favoritos</p>
+                
+                <ul class="profile-features">
+                    <li><i class="fas fa-check-circle"></i> Cartão fidelidade digital</li>
+                    <li><i class="fas fa-check-circle"></i> Promoções exclusivas</li>
+                    <li><i class="fas fa-check-circle"></i> Bônus de aniversário</li>
+                    <li><i class="fas fa-check-circle"></i> QR Code pessoal</li>
+                </ul>
+                
+                <button class="btn">
+                    <i class="fas fa-mobile-alt"></i> Acessar App
+                </button>
+            </div>
+            
+            <!-- EMPRESA -->
+            <div class="profile-card" onclick="window.location.href='empresa-dashboard.html'">
+                <div class="profile-icon" style="background: linear-gradient(135deg, #26de81, #20bf6b);">🏪</div>
+                <h2>Tenho uma Empresa</h2>
+                <p>Fidelize seus clientes e aumente suas vendas com nosso sistema completo</p>
+                
+                <ul class="profile-features">
+                    <li><i class="fas fa-check-circle"></i> Dashboard de métricas</li>
+                    <li><i class="fas fa-check-circle"></i> Gerenciar promoções</li>
+                    <li><i class="fas fa-check-circle"></i> Scanner QR Code</li>
+                    <li><i class="fas fa-check-circle"></i> Relatórios completos</li>
+                </ul>
+                
+                <button class="btn" style="background: linear-gradient(135deg, #26de81, #20bf6b);">
+                    <i class="fas fa-chart-line"></i> Acessar Painel
+                </button>
+            </div>
+            
+            <!-- ADMIN -->
+            <div class="profile-card" onclick="window.location.href='admin-dashboard.html'">
+                <div class="profile-icon" style="background: linear-gradient(135deg, #fc5c65, #fd79a8);">⚙️</div>
+                <h2>Sou Administrador</h2>
+                <p>Gerencie todo o sistema, usuários e estabelecimentos cadastrados</p>
+                
+                <ul class="profile-features">
+                    <li><i class="fas fa-check-circle"></i> Gerenciar usuários</li>
+                    <li><i class="fas fa-check-circle"></i> Aprovar empresas</li>
+                    <li><i class="fas fa-check-circle"></i> Relatórios gerais</li>
+                    <li><i class="fas fa-check-circle"></i> Configurações sistema</li>
+                </ul>
+                
+                <button class="btn" style="background: linear-gradient(135deg, #fc5c65, #fd79a8);">
+                    <i class="fas fa-cog"></i> Acessar Admin
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
