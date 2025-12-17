@@ -59,6 +59,40 @@
             letter-spacing: -1px;
         }
         
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .nav-menu a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-menu a:hover {
+            color: #fff;
+        }
+        
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            transition: width 0.3s;
+        }
+        
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+        
         .nav-buttons {
             display: flex;
             gap: 16px;
@@ -404,8 +438,13 @@
         <div class="header-content">
             <a href="index.html" class="logo">
                 <img src="img/logo.png" alt="Tem de Tudo">
-                <span class="logo-text">Tem de Tudo</span>
             </a>
+            
+            <nav class="nav-menu">
+                <a href="#como-funciona">Como Funciona</a>
+                <a href="planos.html">Planos</a>
+                <a href="contato.html">Contato</a>
+            </nav>
             
             <div class="nav-buttons">
                 <a href="entrar.html" class="btn btn-outline">Entrar</a>
