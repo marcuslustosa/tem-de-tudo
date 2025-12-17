@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#667eea">
+    <meta name="theme-color" content="#0a0a0f">
     <title>Início - Tem de Tudo</title>
     
     <link rel="manifest" href="/manifest.json">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -21,193 +21,239 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            background: #0a0a0f;
             min-height: 100vh;
-            padding-bottom: 80px;
+            padding-bottom: 90px;
+            color: #fff;
         }
         
         /* Header */
         .header {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 16px 20px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+        }
+        
+        .header-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            color: white;
+            margin-bottom: 20px;
         }
         
         .header-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
         
         .logo {
-            width: 40px;
-            height: 40px;
-            background: white;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+            width: 52px;
+            height: 52px;
         }
         
-        .user-name {
-            font-weight: 600;
-            font-size: 16px;
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
         
-        .user-subtitle {
-            font-size: 12px;
-            opacity: 0.9;
+        .user-info h2 {
+            font-weight: 700;
+            font-size: 17px;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        
+        .user-info p {
+            font-size: 13px;
+            color: #b0b0b0;
         }
         
         .settings-btn {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 18px;
+            width: 48px;
+            height: 48px;
+            background: rgba(74, 144, 226, 0.1);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            border-radius: 12px;
+            color: #4a90e2;
+            font-size: 20px;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .settings-btn:hover {
+            background: rgba(74, 144, 226, 0.2);
+            transform: rotate(90deg);
+        }
+        
+        /* Stats Card */
+        .points-card {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(74, 144, 226, 0.3);
+        }
+        
+        .points-label {
+            font-size: 13px;
+            opacity: 0.95;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .points-value {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 6px;
+            letter-spacing: -1px;
+        }
+        
+        .points-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
         }
         
         /* QR Code Buttons */
         .qr-buttons {
-            display: flex;
-            gap: 12px;
-            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 24px 20px;
         }
         
         .qr-btn {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 2px solid rgba(74, 144, 226, 0.2);
             color: white;
-            padding: 20px;
-            border-radius: 16px;
+            padding: 24px 16px;
+            border-radius: 18px;
             text-decoration: none;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            font-weight: 600;
+            gap: 12px;
+            font-weight: 700;
             font-size: 14px;
             transition: all 0.3s;
+            text-align: center;
         }
         
-        .qr-btn:active {
-            transform: scale(0.95);
+        .qr-btn:hover {
+            border-color: #4a90e2;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(74, 144, 226, 0.3);
         }
         
         .qr-btn i {
             font-size: 32px;
+            color: #4a90e2;
         }
         
-        /* Content */
-        .content {
-            background: #f8f9fa;
-            border-radius: 30px 30px 0 0;
-            padding: 24px 20px;
-            min-height: calc(100vh - 200px);
+        /* Section Title */
+        .section {
+            padding: 0 20px 24px;
         }
         
         .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #212529;
+            font-size: 20px;
+            font-weight: 800;
             margin-bottom: 16px;
+            color: #fff;
         }
         
-        /* Estabelecimentos Grid */
-        .estabelecimentos-grid {
+        /* Mini Stats */
+        .mini-stats {
             display: grid;
-            gap: 16px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
             margin-bottom: 32px;
         }
         
+        .mini-stat {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            padding: 18px 12px;
+            border-radius: 14px;
+            text-align: center;
+            border: 1px solid rgba(74, 144, 226, 0.1);
+        }
+        
+        .mini-stat-value {
+            font-size: 24px;
+            font-weight: 900;
+            color: #4a90e2;
+            margin-bottom: 4px;
+        }
+        
+        .mini-stat-label {
+            font-size: 11px;
+            color: #b0b0b0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Estabelecimentos */
+        .estabelecimentos-grid {
+            display: grid;
+            gap: 16px;
+        }
+        
         .estabelecimento-card {
-            background: white;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
             border-radius: 16px;
             padding: 16px;
             display: flex;
             gap: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             text-decoration: none;
-            color: inherit;
+            color: white;
+            transition: all 0.3s;
+            border: 1px solid rgba(74, 144, 226, 0.1);
         }
         
-        .estabelecimento-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 12px;
-            object-fit: cover;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .estabelecimento-card:hover {
+            transform: translateX(4px);
+            border-color: #4a90e2;
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.2);
+        }
+        
+        .estabelecimento-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            flex-shrink: 0;
         }
         
         .estabelecimento-info {
             flex: 1;
         }
         
-        .estabelecimento-nome {
-            font-weight: 700;
+        .estabelecimento-name {
             font-size: 16px;
-            color: #212529;
+            font-weight: 700;
             margin-bottom: 4px;
         }
         
         .estabelecimento-categoria {
             font-size: 13px;
-            color: #6c757d;
+            color: #b0b0b0;
             margin-bottom: 8px;
         }
         
-        .estabelecimento-rating {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            color: #ffc107;
+        .estabelecimento-pontos {
             font-size: 14px;
-        }
-        
-        /* Categorias */
-        .categorias-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 32px;
-        }
-        
-        .categoria-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            text-decoration: none;
-            color: #212529;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        
-        .categoria-icon {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 12px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            color: white;
-        }
-        
-        .categoria-nome {
+            color: #4a90e2;
             font-weight: 600;
-            font-size: 14px;
+        }
+        
+        .estabelecimento-pontos i {
+            margin-right: 4px;
         }
         
         /* Bottom Nav */
@@ -216,147 +262,138 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: white;
-            padding: 12px 20px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-top: 1px solid rgba(74, 144, 226, 0.2);
+            padding: 12px 8px 20px;
             display: flex;
             justify-content: space-around;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
         }
         
         .nav-item {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: #6c757d;
+            gap: 6px;
             text-decoration: none;
+            color: #b0b0b0;
             font-size: 11px;
-            font-weight: 500;
-        }
-        
-        .nav-item.active {
-            color: #667eea;
+            font-weight: 600;
+            transition: all 0.3s;
+            padding: 8px;
+            border-radius: 12px;
         }
         
         .nav-item i {
-            font-size: 20px;
+            font-size: 22px;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            color: #4a90e2;
+        }
+        
+        .nav-item.active i {
+            transform: scale(1.15);
+        }
+        
+        .nav-item:hover:not(.active) {
+            color: #fff;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #b0b0b0;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .empty-state p {
+            font-size: 14px;
+        }
+        
+        @media (max-width: 480px) {
+            .qr-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .mini-stats {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Header -->
     <div class="header">
-        <div class="header-left">
-            <div class="logo">💜</div>
-            <div>
-                <div class="user-name">Olá, Usuário!</div>
-                <div class="user-subtitle">Bem-vindo de volta</div>
+        <div class="header-top">
+            <div class="header-left">
+                <div class="logo">
+                    <img src="img/logo.png" alt="Tem de Tudo">
+                </div>
+                <div class="user-info">
+                    <h2 id="userName">Olá, Cliente!</h2>
+                    <p>Bem-vindo de volta 👋</p>
+                </div>
             </div>
+            <button class="settings-btn" onclick="location.href='app-perfil.html'">
+                <i class="fas fa-cog"></i>
+            </button>
         </div>
-        <button class="settings-btn">
-            <i class="fas fa-cog"></i>
-        </button>
+        
+        <!-- Points Card -->
+        <div class="points-card">
+            <div class="points-label">Seus Pontos</div>
+            <div class="points-value" id="userPoints">1.247</div>
+            <div class="points-subtitle">Continue acumulando para resgatar!</div>
+        </div>
     </div>
-
+    
     <!-- QR Code Buttons -->
     <div class="qr-buttons">
-        <a href="app-scanner.html" class="qr-btn">
-            <i class="fas fa-qrcode"></i>
-            Ler QR Code
-        </a>
         <a href="app-meu-qrcode.html" class="qr-btn">
             <i class="fas fa-qrcode"></i>
-            Meu QR Code
+            <span>Meu QR Code</span>
+        </a>
+        <a href="app-scanner.html" class="qr-btn">
+            <i class="fas fa-camera"></i>
+            <span>Escanear QR</span>
         </a>
     </div>
-
-    <!-- Content -->
-    <div class="content">
-        <!-- Meus Estabelecimentos -->
-        <h2 class="section-title">Meus Estabelecimentos</h2>
-        <div class="estabelecimentos-grid">
-            <a href="app-estabelecimento.html?id=1" class="estabelecimento-card">
-                <div class="estabelecimento-logo"></div>
-                <div class="estabelecimento-info">
-                    <div class="estabelecimento-nome">Malagueta Galpão</div>
-                    <div class="estabelecimento-categoria">Confeitaria profissional</div>
-                    <div class="estabelecimento-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                </div>
-            </a>
-
-            <a href="app-estabelecimento.html?id=2" class="estabelecimento-card">
-                <div class="estabelecimento-logo"></div>
-                <div class="estabelecimento-info">
-                    <div class="estabelecimento-nome">Texano Burger</div>
-                    <div class="estabelecimento-categoria">Hamburgueria</div>
-                    <div class="estabelecimento-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                    </div>
-                </div>
-            </a>
-
-            <a href="app-estabelecimento.html?id=3" class="estabelecimento-card">
-                <div class="estabelecimento-logo"></div>
-                <div class="estabelecimento-info">
-                    <div class="estabelecimento-nome">Florenza Boutique</div>
-                    <div class="estabelecimento-categoria">Moda feminina</div>
-                    <div class="estabelecimento-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="far fa-star"></i>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <!-- Categorias -->
-        <h2 class="section-title">Categorias</h2>
-        <div class="categorias-grid">
-            <a href="app-categorias.html?cat=restaurantes" class="categoria-card">
-                <div class="categoria-icon">🍽️</div>
-                <div class="categoria-nome">Restaurantes</div>
-            </a>
-
-            <a href="app-categorias.html?cat=sorveterias" class="categoria-card">
-                <div class="categoria-icon">🍦</div>
-                <div class="categoria-nome">Sorveterias</div>
-            </a>
-
-            <a href="app-categorias.html?cat=bares" class="categoria-card">
-                <div class="categoria-icon">🍺</div>
-                <div class="categoria-nome">Bares</div>
-            </a>
-
-            <a href="app-categorias.html?cat=japonesa" class="categoria-card">
-                <div class="categoria-icon">🍱</div>
-                <div class="categoria-nome">Japonesa</div>
-            </a>
-
-            <a href="app-categorias.html?cat=petshops" class="categoria-card">
-                <div class="categoria-icon">🐕</div>
-                <div class="categoria-nome">Petshops</div>
-            </a>
-
-            <a href="app-categorias.html?cat=beleza" class="categoria-card">
-                <div class="categoria-icon">💄</div>
-                <div class="categoria-nome">Beleza</div>
-            </a>
+    
+    <!-- Mini Stats -->
+    <div class="section">
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <div class="mini-stat-value" id="totalVisits">34</div>
+                <div class="mini-stat-label">Visitas</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-value" id="totalRewards">12</div>
+                <div class="mini-stat-label">Resgates</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-value" id="totalSaved">R$ 487</div>
+                <div class="mini-stat-label">Economizou</div>
+            </div>
         </div>
     </div>
-
+    
+    <!-- Estabelecimentos Frequentes -->
+    <div class="section">
+        <h3 class="section-title">Seus Estabelecimentos</h3>
+        <div class="estabelecimentos-grid" id="estabelecimentosGrid">
+            <!-- Será preenchido via JavaScript -->
+        </div>
+    </div>
+    
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <a href="app-inicio.html" class="nav-item active">
@@ -371,25 +408,132 @@
             <i class="fas fa-gift"></i>
             <span>Promoções</span>
         </a>
-        <a href="app-chat.html" class="nav-item">
-            <i class="fas fa-comment"></i>
-            <span>Chat</span>
+        <a href="app-notificacoes.html" class="nav-item">
+            <i class="fas fa-bell"></i>
+            <span>Avisos</span>
         </a>
         <a href="app-perfil.html" class="nav-item">
             <i class="fas fa-user"></i>
             <span>Perfil</span>
         </a>
     </nav>
-
+    
     <script>
+        // Carregar dados do usuário
+        async function loadUserData() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!token) {
+                window.location.href = 'entrar.html';
+                return;
+            }
+            
+            // Atualizar nome do usuário
+            if (user.name) {
+                document.getElementById('userName').textContent = `Olá, ${user.name.split(' ')[0]}!`;
+            }
+            
+            try {
+                // Buscar pontos do usuário
+                const pointsResponse = await fetch('/api/client/points', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (pointsResponse.ok) {
+                    const pointsData = await pointsResponse.json();
+                    document.getElementById('userPoints').textContent = pointsData.total_points.toLocaleString('pt-BR');
+                }
+                
+                // Buscar estabelecimentos frequentes
+                const estabResponse = await fetch('/api/client/frequent-establishments', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (estabResponse.ok) {
+                    const estabelecimentos = await estabResponse.json();
+                    renderEstabelecimentos(estabelecimentos);
+                } else {
+                    renderEmptyState();
+                }
+                
+                // Buscar estatísticas
+                const statsResponse = await fetch('/api/client/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (statsResponse.ok) {
+                    const stats = await statsResponse.json();
+                    document.getElementById('totalVisits').textContent = stats.total_visits || '0';
+                    document.getElementById('totalRewards').textContent = stats.total_rewards || '0';
+                    document.getElementById('totalSaved').textContent = `R$ ${stats.total_saved || '0'}`;
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                renderEmptyState();
+            }
+        }
+        
+        function renderEstabelecimentos(estabelecimentos) {
+            const grid = document.getElementById('estabelecimentosGrid');
+            
+            if (!estabelecimentos || estabelecimentos.length === 0) {
+                renderEmptyState();
+                return;
+            }
+            
+            const icons = ['🍔', '🍕', '💆', '🍱', '☕', '🏋️'];
+            const colors = [
+                'linear-gradient(135deg, #4a90e2, #357abd)',
+                'linear-gradient(135deg, #e74c3c, #c0392b)',
+                'linear-gradient(135deg, #9b59b6, #8e44ad)',
+                'linear-gradient(135deg, #16a085, #0e6655)',
+                'linear-gradient(135deg, #f39c12, #d68910)',
+                'linear-gradient(135deg, #34495e, #2c3e50)'
+            ];
+            
+            grid.innerHTML = estabelecimentos.map((estab, index) => `
+                <a href="app-estabelecimento.html?id=${estab.id}" class="estabelecimento-card">
+                    <div class="estabelecimento-icon" style="background: ${colors[index % colors.length]}">
+                        ${estab.emoji || icons[index % icons.length]}
+                    </div>
+                    <div class="estabelecimento-info">
+                        <div class="estabelecimento-name">${estab.name}</div>
+                        <div class="estabelecimento-categoria">${estab.category || 'Estabelecimento'}</div>
+                        <div class="estabelecimento-pontos">
+                            <i class="fas fa-star"></i>
+                            ${estab.points || 0} pontos acumulados
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+        
+        function renderEmptyState() {
+            const grid = document.getElementById('estabelecimentosGrid');
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-store-slash"></i>
+                    <p>Você ainda não visitou nenhum estabelecimento</p>
+                </div>
+            `;
+        }
+        
+        // Inicializar ao carregar página
+        document.addEventListener('DOMContentLoaded', loadUserData);
+        
         // Registrar Service Worker
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
-        }
-
-        // Pedir permissão para notificações
-        if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission();
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker registrado'))
+                .catch(err => console.log('Erro ao registrar SW:', err));
         }
     </script>
 </body>
