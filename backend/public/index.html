@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#667eea">
-    <title>Tem de Tudo - Sistema de Fidelidade Digital</title>
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Tem de Tudo - Sistema de Fidelidade Digital Premium</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -13,6 +13,8 @@
         
         body {
             font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #fff;
             overflow-x: hidden;
         }
         
@@ -22,16 +24,17 @@
             top: 0;
             left: 0;
             right: 0;
-            background: white;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             z-index: 1000;
-            padding: 16px 0;
+            padding: 20px 0;
         }
         
         .header-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -40,219 +43,255 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             text-decoration: none;
         }
         
         .logo img {
-            height: 40px;
+            height: 48px;
             width: auto;
         }
         
         .logo-text {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 900;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #fff;
+            letter-spacing: -1px;
         }
         
         .nav-buttons {
             display: flex;
-            gap: 12px;
+            gap: 16px;
         }
         
         .btn {
-            padding: 12px 24px;
+            padding: 14px 28px;
             border-radius: 12px;
             font-weight: 700;
             text-decoration: none;
-            transition: all 0.2s;
+            transition: all 0.3s;
             border: none;
             cursor: pointer;
+            font-size: 15px;
         }
         
         .btn-outline {
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.2);
         }
         
         .btn-outline:hover {
-            background: #667eea;
-            color: white;
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.4);
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #4a90e2, #357abd);
             color: white;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 12px 32px rgba(74, 144, 226, 0.4);
         }
         
         /* HERO */
         .hero {
-            padding: 120px 20px 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            text-align: center;
+            padding: 160px 40px 100px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0a0a0f 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)" /></svg>');
+            opacity: 0.5;
         }
         
         .hero-content {
-            max-width: 800px;
+            max-width: 1400px;
             margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
         }
         
         .hero h1 {
-            font-size: 56px;
+            font-size: 72px;
             font-weight: 900;
             margin-bottom: 24px;
-            line-height: 1.2;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #fff, #b0b0b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .hero p {
-            font-size: 20px;
-            margin-bottom: 40px;
-            opacity: 0.95;
+            font-size: 22px;
+            margin-bottom: 48px;
+            color: #b0b0b0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
         }
         
         .hero-buttons {
             display: flex;
-            gap: 16px;
+            gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
         }
         
         .btn-large {
-            padding: 18px 40px;
+            padding: 20px 48px;
             font-size: 18px;
-        }
-        
-        .btn-white {
-            background: white;
-            color: #667eea;
+            border-radius: 14px;
         }
         
         /* FEATURES */
         .features {
-            padding: 80px 20px;
-            background: white;
+            padding: 120px 40px;
+            background: #0a0a0f;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
         .section-title {
             text-align: center;
-            font-size: 40px;
+            font-size: 48px;
             font-weight: 900;
             margin-bottom: 16px;
-            color: #212529;
+            letter-spacing: -1px;
         }
         
         .section-subtitle {
             text-align: center;
-            font-size: 18px;
-            color: #6c757d;
-            margin-bottom: 60px;
+            font-size: 20px;
+            color: #b0b0b0;
+            margin-bottom: 80px;
         }
         
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 32px;
         }
         
         .feature-card {
-            padding: 32px;
-            border-radius: 16px;
-            background: #f8f9fa;
-            transition: transform 0.2s;
+            padding: 40px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4a90e2, #357abd);
         }
         
         .feature-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-8px);
+            border-color: rgba(74, 144, 226, 0.3);
+            box-shadow: 0 20px 60px rgba(74, 144, 226, 0.2);
         }
         
         .feature-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
             border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            color: white;
-            margin-bottom: 20px;
+            font-size: 36px;
+            margin-bottom: 24px;
         }
         
         .feature-card h3 {
-            font-size: 22px;
-            margin-bottom: 12px;
+            font-size: 24px;
+            margin-bottom: 16px;
+            font-weight: 800;
         }
         
         .feature-card p {
-            color: #6c757d;
-            line-height: 1.6;
+            color: #b0b0b0;
+            line-height: 1.7;
+            font-size: 16px;
         }
         
         /* ESTABELECIMENTOS */
         .estabelecimentos {
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #667eea10, #764ba210);
+            padding: 120px 40px;
+            background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 100%);
         }
         
         .estabelecimentos-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 40px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 60px;
         }
         
         .estabelecimento-card {
-            background: white;
-            border-radius: 16px;
+            background: linear-gradient(145deg, #16213e, #1a1a2e);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
             cursor: pointer;
         }
         
         .estabelecimento-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-8px);
+            border-color: rgba(74, 144, 226, 0.3);
+            box-shadow: 0 20px 60px rgba(74, 144, 226, 0.2);
         }
         
         .estabelecimento-image {
             width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 200px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 64px;
+            font-size: 72px;
         }
         
         .estabelecimento-info {
-            padding: 20px;
+            padding: 28px;
         }
         
         .estabelecimento-nome {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 20px;
+            font-weight: 800;
             margin-bottom: 8px;
         }
         
         .estabelecimento-categoria {
-            font-size: 14px;
-            color: #6c757d;
-            margin-bottom: 12px;
+            font-size: 15px;
+            color: #b0b0b0;
+            margin-bottom: 16px;
         }
         
         .rating {
@@ -263,58 +302,99 @@
         
         .stars {
             color: #ffc107;
+            font-size: 16px;
+        }
+        
+        .rating span {
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+        
+        .view-all {
+            text-align: center;
+            margin-top: 60px;
         }
         
         /* CTA */
         .cta {
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+            padding: 120px 40px;
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid2" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid2)" /></svg>');
+        }
+        
+        .cta-content {
+            position: relative;
+            z-index: 1;
         }
         
         .cta h2 {
-            font-size: 40px;
+            font-size: 48px;
             font-weight: 900;
             margin-bottom: 24px;
+            letter-spacing: -1px;
         }
         
         .cta p {
-            font-size: 18px;
-            margin-bottom: 40px;
-            opacity: 0.95;
+            font-size: 20px;
+            margin-bottom: 48px;
+            color: #b0b0b0;
         }
         
         /* FOOTER */
         .footer {
-            padding: 40px 20px;
-            background: #212529;
-            color: white;
+            padding: 60px 40px;
+            background: #1a1a2e;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
             text-align: center;
         }
         
         .footer-links {
             display: flex;
-            gap: 32px;
+            gap: 40px;
             justify-content: center;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
             flex-wrap: wrap;
         }
         
         .footer-links a {
-            color: white;
+            color: #b0b0b0;
             text-decoration: none;
-            opacity: 0.8;
+            font-weight: 600;
+            transition: color 0.2s;
         }
         
         .footer-links a:hover {
-            opacity: 1;
+            color: #4a90e2;
         }
         
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 36px; }
-            .section-title { font-size: 32px; }
-            .nav-buttons { flex-direction: column; }
+        .footer p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 1024px) {
+            .hero h1 { font-size: 48px; }
+            .section-title { font-size: 36px; }
+            .features-grid, .estabelecimentos-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -329,7 +409,7 @@
             
             <div class="nav-buttons">
                 <a href="entrar.html" class="btn btn-outline">Entrar</a>
-                <a href="cadastro.html" class="btn btn-primary">Cadastrar Grátis</a>
+                <a href="cadastro.html" class="btn btn-primary">Começar Grátis</a>
             </div>
         </div>
     </header>
@@ -337,14 +417,14 @@
     <!-- HERO -->
     <section class="hero">
         <div class="hero-content">
-            <h1>Fidelize seus clientes com o poder do digital</h1>
-            <p>Sistema completo de fidelização para restaurantes, bares, salões e muito mais. Aumente suas vendas em até 45%.</p>
+            <h1>Fidelize e Lucre Mais com Inteligência</h1>
+            <p>Transforme clientes ocasionais em frequentes com o sistema mais robusto de fidelização digital. Aumente suas vendas em até 45% com decisões baseadas em dados reais.</p>
             
             <div class="hero-buttons">
-                <a href="cadastro.html" class="btn btn-large btn-white">
-                    <i class="fas fa-rocket"></i> Começar Grátis
+                <a href="cadastro.html" class="btn btn-large btn-primary">
+                    <i class="fas fa-rocket"></i> Testar 14 Dias Grátis
                 </a>
-                <a href="#estabelecimentos" class="btn btn-large btn-outline" style="border-color: white; color: white;">
+                <a href="#estabelecimentos" class="btn btn-large btn-outline">
                     <i class="fas fa-store"></i> Ver Estabelecimentos
                 </a>
             </div>
@@ -352,10 +432,10 @@
     </section>
     
     <!-- FEATURES -->
-    <section class="features">
+    <section class="features" id="features">
         <div class="container">
-            <h2 class="section-title">Tudo que você precisa para fidelizar</h2>
-            <p class="section-subtitle">Recursos poderosos para aumentar suas vendas e reter clientes</p>
+            <h2 class="section-title">Benefícios Reais, Resultados Comprovados</h2>
+            <p class="section-subtitle">Pare de adivinhar, comece a lucrar com dados</p>
             
             <div class="features-grid">
                 <div class="feature-card">
@@ -389,7 +469,7 @@
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">�</div>
+                    <div class="feature-icon">🎯</div>
                     <h3>Recupere Clientes Perdidos</h3>
                     <p>Sistema identifica clientes inativos e envia oferta personalizada automaticamente. Reative 60% dos clientes em 30 dias.</p>
                 </div>
@@ -401,7 +481,7 @@
     <section class="estabelecimentos" id="estabelecimentos">
         <div class="container">
             <h2 class="section-title">Estabelecimentos Parceiros</h2>
-            <p class="section-subtitle">Mais de 200 empresas já usam nosso sistema</p>
+            <p class="section-subtitle">Mais de 200 empresas já confiam no Tem de Tudo</p>
             
             <div class="estabelecimentos-grid">
                 <div class="estabelecimento-card" onclick="mostrarCadastro()">
@@ -417,7 +497,7 @@
                 </div>
                 
                 <div class="estabelecimento-card" onclick="mostrarCadastro()">
-                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #fc5c65, #fd79a8);">🍕</div>
+                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">🍕</div>
                     <div class="estabelecimento-info">
                         <div class="estabelecimento-nome">Texano Burger</div>
                         <div class="estabelecimento-categoria">Restaurante</div>
@@ -429,7 +509,7 @@
                 </div>
                 
                 <div class="estabelecimento-card" onclick="mostrarCadastro()">
-                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #26de81, #20bf6b);">💆</div>
+                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">💆</div>
                     <div class="estabelecimento-info">
                         <div class="estabelecimento-nome">Florenza Boutique</div>
                         <div class="estabelecimento-categoria">Salão de Beleza</div>
@@ -441,7 +521,7 @@
                 </div>
                 
                 <div class="estabelecimento-card" onclick="mostrarCadastro()">
-                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #45b7d1, #4ecdc4);">🍱</div>
+                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #16a085, #1abc9c);">🍱</div>
                     <div class="estabelecimento-info">
                         <div class="estabelecimento-nome">Sushi Master</div>
                         <div class="estabelecimento-categoria">Restaurante Japonês</div>
@@ -453,7 +533,7 @@
                 </div>
                 
                 <div class="estabelecimento-card" onclick="mostrarCadastro()">
-                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #f7b731, #fed330);">🐕</div>
+                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #f39c12, #e67e22);">🐕</div>
                     <div class="estabelecimento-info">
                         <div class="estabelecimento-nome">Pet Love</div>
                         <div class="estabelecimento-categoria">Petshop</div>
@@ -465,7 +545,7 @@
                 </div>
                 
                 <div class="estabelecimento-card" onclick="mostrarCadastro()">
-                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #a55eea, #8854d0);">🍺</div>
+                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #34495e, #2c3e50);">🍺</div>
                     <div class="estabelecimento-info">
                         <div class="estabelecimento-nome">Malagueta Galpão</div>
                         <div class="estabelecimento-categoria">Bar e Restaurante</div>
@@ -477,8 +557,8 @@
                 </div>
             </div>
             
-            <div style="text-align: center; margin-top: 40px;">
-                <a href="cadastro.html" class="btn btn-primary btn-large">
+            <div class="view-all">
+                <a href="cadastro.html" class="btn btn-large btn-primary">
                     Ver Todos os Estabelecimentos <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -487,16 +567,16 @@
     
     <!-- CTA -->
     <section class="cta">
-        <div class="container">
-            <h2>Pronto para começar?</h2>
-            <p>Cadastre-se grátis e comece a fidelizar seus clientes hoje mesmo</p>
+        <div class="cta-content">
+            <h2>Pronto para Crescer?</h2>
+            <p>14 dias grátis. Sem cartão de crédito. Cancele quando quiser.</p>
             
             <div class="hero-buttons">
-                <a href="cadastro.html" class="btn btn-large btn-white">
-                    <i class="fas fa-user-plus"></i> Criar Conta Grátis
+                <a href="cadastro.html" class="btn btn-large btn-primary">
+                    <i class="fas fa-rocket"></i> Começar Agora
                 </a>
-                <a href="entrar.html" class="btn btn-large btn-outline" style="border-color: white; color: white;">
-                    <i class="fas fa-sign-in-alt"></i> Já tenho conta
+                <a href="planos.html" class="btn btn-large btn-outline">
+                    <i class="fas fa-tag"></i> Ver Planos
                 </a>
             </div>
         </div>
@@ -504,15 +584,16 @@
     
     <!-- FOOTER -->
     <footer class="footer">
-        <div class="footer-links">
-            <a href="#estabelecimentos">Sobre</a>
-            <a href="#features">Recursos</a>
-            <a href="planos.html">Planos</a>
-            <a href="contato.html">Contato</a>
-            <a href="termos-de-uso.html">Termos de Uso</a>
-            <a href="politica-de-privacidade.html">Privacidade</a>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#features">Recursos</a>
+                <a href="planos.html">Planos</a>
+                <a href="contato.html">Contato</a>
+                <a href="termos-de-uso.html">Termos de Uso</a>
+                <a href="politica-de-privacidade.html">Privacidade</a>
+            </div>
+            <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
         </div>
-        <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
     </footer>
 
     <script>
