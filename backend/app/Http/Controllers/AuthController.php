@@ -790,7 +790,7 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'Token válido',
                 'data' => [
-                    'user' => array_merge($user->toArray(), ['perfil' => $user->perfil]),
+                    'user' => array_merge($user->toArray(), ['perfil' => $user->user_type]),  // Corrigido
                     'valid' => true
                 ]
             ]);
