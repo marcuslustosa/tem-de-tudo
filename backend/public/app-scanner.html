@@ -398,14 +398,15 @@
                 const token = localStorage.getItem('token');
                 
                 // Enviar para API validar
-                const response = await fetch('/api/client/validate-qr', {
+                const response = await fetch('/api/cliente/escanear-qrcode', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                        qr_data: qrData
+                        qrcode: qrData.code || decodedText
                     })
                 });
                 

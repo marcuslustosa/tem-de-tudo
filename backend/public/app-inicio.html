@@ -436,9 +436,10 @@
             
             try {
                 // Buscar pontos do usuário
-                const pointsResponse = await fetch('/api/client/points', {
+                const pointsResponse = await fetch('/api/cliente/dashboard', {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
                     }
                 });
                 
@@ -448,9 +449,10 @@
                 }
                 
                 // Buscar estabelecimentos frequentes
-                const estabResponse = await fetch('/api/client/frequent-establishments', {
+                const estabResponse = await fetch('/api/cliente/empresas', {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
                     }
                 });
                 
@@ -462,9 +464,10 @@
                 }
                 
                 // Buscar estatísticas
-                const statsResponse = await fetch('/api/client/stats', {
+                const statsResponse = await fetch('/api/cliente/historico-pontos', {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
                     }
                 });
                 

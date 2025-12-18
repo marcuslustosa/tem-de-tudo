@@ -43,8 +43,8 @@
                 <div class="chip" data-ramo="Bar" onclick="selecionarFiltro(this)">
                     <i class="fas fa-beer"></i> Bares
                 </div>
-                <div class="chip" data-ramo="Salão" onclick="selecionarFiltro(this)">
-                    <i class="fas fa-cut"></i> Salões
+                <div class="chip" data-ramo="Salï¿½o" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-cut"></i> Salï¿½es
                 </div>
                 <div class="chip" data-ramo="Academia" onclick="selecionarFiltro(this)">
                     <i class="fas fa-dumbbell"></i> Academias
@@ -65,7 +65,7 @@
         <div id="emptyState" class="empty-state" style="display: none;">
             <i class="fas fa-store-slash"></i>
             <h3>Nenhuma Empresa Encontrada</h3>
-            <p>Você ainda não está inscrito em nenhuma empresa.</p>
+            <p>Vocï¿½ ainda nï¿½o estï¿½ inscrito em nenhuma empresa.</p>
             <button class="btn-primary" onclick="window.location.href='scanner.html'">
                 <i class="fas fa-qrcode"></i> Escanear QR Code
             </button>
@@ -90,7 +90,7 @@
             }
 
             try {
-                const response = await fetch(`${API_BASE}/api/cliente/empresas-inscritas`, {
+                const response = await fetch(`${API_BASE}/api/cliente/empresas`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
@@ -143,7 +143,7 @@
             grid.innerHTML = empresas.map(empresa => `
                 <div class="empresa-card" onclick="abrirEmpresa(${empresa.id})">
                     ${empresa.progresso_cartoes && empresa.progresso_cartoes.length > 0 ? 
-                        `<div class="empresa-badge">${empresa.progresso_cartoes.length} ${empresa.progresso_cartoes.length === 1 ? 'Cartão' : 'Cartões'}</div>` 
+                        `<div class="empresa-badge">${empresa.progresso_cartoes.length} ${empresa.progresso_cartoes.length === 1 ? 'Cartï¿½o' : 'Cartï¿½es'}</div>` 
                         : ''}
                     
                     <div class="empresa-logo">
@@ -152,7 +152,7 @@
                     
                     <div class="empresa-name">${empresa.nome}</div>
                     <div class="empresa-ramo">
-                        <i class="fas ${getIconClassRamo(empresa.ramo)}"></i> ${empresa.ramo || 'Não informado'}
+                        <i class="fas ${getIconClassRamo(empresa.ramo)}"></i> ${empresa.ramo || 'Nï¿½o informado'}
                     </div>
                     
                     <div class="empresa-rating">
@@ -204,11 +204,11 @@
             const icones = {
                 'Restaurante': '<i class="fas fa-utensils"></i>',
                 'Bar': '<i class="fas fa-beer"></i>',
-                'Salão': '<i class="fas fa-cut"></i>',
+                'Salï¿½o': '<i class="fas fa-cut"></i>',
                 'Academia': '<i class="fas fa-dumbbell"></i>',
                 'Cafeteria': '<i class="fas fa-coffee"></i>',
                 'Loja': '<i class="fas fa-shopping-bag"></i>',
-                'Serviços': '<i class="fas fa-tools"></i>'
+                'Serviï¿½os': '<i class="fas fa-tools"></i>'
             };
             return icones[ramo] || '<i class="fas fa-store"></i>';
         }
@@ -217,11 +217,11 @@
             const classes = {
                 'Restaurante': 'fa-utensils',
                 'Bar': 'fa-beer',
-                'Salão': 'fa-cut',
+                'Salï¿½o': 'fa-cut',
                 'Academia': 'fa-dumbbell',
                 'Cafeteria': 'fa-coffee',
                 'Loja': 'fa-shopping-bag',
-                'Serviços': 'fa-tools'
+                'Serviï¿½os': 'fa-tools'
             };
             return classes[ramo] || 'fa-store';
         }

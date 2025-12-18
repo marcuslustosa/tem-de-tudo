@@ -260,20 +260,26 @@
         <button class="filter-btn active" onclick="filterCategory('todos')">
             Todos
         </button>
-        <button class="filter-btn" onclick="filterCategory('restaurantes')">
-            🍔 Restaurantes
+        <button class="filter-btn" onclick="filterCategory('restaurante')">
+            🍔 Restaurante
         </button>
-        <button class="filter-btn" onclick="filterCategory('beleza')">
-            💆 Beleza
+        <button class="filter-btn" onclick="filterCategory('academia')">
+            🏋️ Academia
         </button>
-        <button class="filter-btn" onclick="filterCategory('fitness')">
-            🏋️ Fitness
+        <button class="filter-btn" onclick="filterCategory('cafeteria')">
+            ☕ Cafeteria
         </button>
-        <button class="filter-btn" onclick="filterCategory('servicos')">
-            🔧 Serviços
+        <button class="filter-btn" onclick="filterCategory('pet_shop')">
+            🐾 Pet Shop
         </button>
-        <button class="filter-btn" onclick="filterCategory('lazer')">
-            🎮 Lazer
+        <button class="filter-btn" onclick="filterCategory('salao')">
+            💆 Salão
+        </button>
+        <button class="filter-btn" onclick="filterCategory('mercado')">
+            🛒 Mercado
+        </button>
+        <button class="filter-btn" onclick="filterCategory('farmacia')">
+            💊 Farmácia
         </button>
     </div>
     
@@ -320,16 +326,20 @@
             }
             
             try {
-                const response = await fetch('/api/client/establishments', {
+                const response = await fetch('/api/cliente/empresas', {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
                     }
                 });
                 
                 if (response.ok) {
-                    allEstablishments = await response.json();
+                    const result = await response.json();
+                    // API retorna {success: true, data: [...]}
+                    allEstablishments = result.data || result;
                     renderEstablishments(allEstablishments);
                 } else {
+                    console.error('Erro na resposta:', response.status);
                     renderEmptyState();
                 }
             } catch (error) {
@@ -347,11 +357,21 @@
             }
             
             const icons = {
-                'restaurantes': '🍔',
-                'beleza': '💆',
-                'fitness': '🏋️',
-                'servicos': '🔧',
-                'lazer': '🎮',
+                'restaurante': '🍔',
+                'academia': '🏋️',
+                'cafeteria': '☕',
+                'pet_shop': '🐾',
+                'salao': '💆',
+                'mercado': '🛒',
+                'farmacia': '💊',
+                'padaria': '🥖',
+                'lanchonete': '🍕',
+                'sorveteria': '🍦',
+                'lavanderia': '👕',
+                'auto_center': '🚗',
+                'otica': '👓',
+                'livraria': '📚',
+                'papelaria': '✏️',
                 'default': '🏪'
             };
             
@@ -367,19 +387,19 @@
             grid.innerHTML = establishments.map((estab, index) => `
                 <a href="app-estabelecimento.html?id=${estab.id}" class="estabelecimento-card">
                     <div class="estabelecimento-icon" style="background: ${colors[index % colors.length]}">
-                        ${estab.emoji || icons[estab.category] || icons.default}
+                        ${icons[estab.ramo] || icons.default}
                     </div>
                     <div class="estabelecimento-info">
-                        <div class="estabelecimento-name">${estab.name}</div>
-                        <div class="estabelecimento-categoria">${estab.category || 'Estabelecimento'}</div>
+                        <div class="estabelecimento-name">${estab.nome}</div>
+                        <div class="estabelecimento-categoria">${estab.ramo_formatado || estab.ramo || 'Estabelecimento'}</div>
                         <div class="estabelecimento-meta">
                             <div class="meta-item">
                                 <i class="fas fa-star"></i>
-                                <span class="rating">${estab.rating || '5.0'}</span>
+                                <span class="rating">${estab.avaliacao_media || '5.0'}</span>
                             </div>
                             <div class="meta-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>${estab.distance || '1.2 km'}</span>
+                                <i class="fas fa-coins"></i>
+                                <span>${estab.pontos_cliente || 0} pts</span>
                             </div>
                         </div>
                     </div>
@@ -411,7 +431,7 @@
             if (category === 'todos') {
                 renderEstablishments(allEstablishments);
             } else {
-                const filtered = allEstablishments.filter(e => e.category === category);
+                const filtered = allEstablishments.filter(e => e.ramo === category);
                 renderEstablishments(filtered);
             }
         }
@@ -423,16 +443,17 @@
                 if (currentCategory === 'todos') {
                     renderEstablishments(allEstablishments);
                 } else {
-                    const filtered = allEstablishments.filter(e => e.category === currentCategory);
+                    const filtered = allEstablishments.filter(e => e.ramo === currentCategory);
                     renderEstablishments(filtered);
                 }
                 return;
             }
             
             const filtered = allEstablishments.filter(e => {
-                const matchesSearch = e.name.toLowerCase().includes(searchTerm) ||
-                                    (e.category && e.category.toLowerCase().includes(searchTerm));
-                const matchesCategory = currentCategory === 'todos' || e.category === currentCategory;
+                const matchesSearch = e.nome.toLowerCase().includes(searchTerm) ||
+                                    (e.ramo && e.ramo.toLowerCase().includes(searchTerm)) ||
+                                    (e.endereco && e.endereco.toLowerCase().includes(searchTerm));
+                const matchesCategory = currentCategory === 'todos' || e.ramo === currentCategory;
                 return matchesSearch && matchesCategory;
             });
             

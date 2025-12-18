@@ -418,9 +418,10 @@
             document.getElementById('userEmail').textContent = user.email || '';
             
             try {
-                const response = await fetch('/api/client/stats', {
+                const response = await fetch('/api/cliente/dashboard', {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
                     }
                 });
                 
