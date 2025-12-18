@@ -6,9 +6,40 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ClienteAPIController extends Controller
 {
+    /**
+     * Gerar QR Code do cliente para empresa escanear
+     */
+    public function meuQRCode()
+    {
+        $user = Auth::user();
+        
+        // Código único do cliente
+        $codigo = 'CLIENT_' . $user->id . '_' . md5($user->email);
+        
+        // Gerar QR Code em SVG
+        $qrCodeSvg = QrCode::size(300)
+            ->format('svg')
+            ->generate($codigo);
+        
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'codigo' => $codigo,
+                'qrcode_svg' => $qrCodeSvg,
+                'usuario' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'pontos' => $user->pontos
+                ]
+            ]
+        ]);
+    }
+    
     /**
      * Dashboard do cliente com todas as informações
      */

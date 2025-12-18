@@ -129,6 +129,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Rotas específicas por perfil
 Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente')->group(function () {
+    // QR Code do Cliente
+    Route::get('/meu-qrcode', [ClienteAPIController::class, 'meuQRCode']);
+    
     // Dashboard do Cliente
     Route::get('/dashboard', [ClienteAPIController::class, 'dashboard']);
     
@@ -153,6 +156,9 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
 });
 
 Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa')->group(function () {
+    // Escanear QR do Cliente
+    Route::post('/escanear-cliente', [EmpresaAPIController::class, 'escanearCliente']);
+    
     // Dashboard da Empresa
     Route::get('/dashboard', [EmpresaAPIController::class, 'dashboard']);
     

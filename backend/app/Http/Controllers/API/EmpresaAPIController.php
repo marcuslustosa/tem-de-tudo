@@ -420,4 +420,120 @@ class EmpresaAPIController extends Controller
             ]
         ]);
     }
+    
+    /**
+     * Escanear QR Code do cliente e dar pontos
+     */
+    public function escanearCliente(Request $request)
+    {
+        $request->validate([
+            'qrcode' => 'required|string'
+        ]);
+        
+        $user = Auth::user();
+        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
+        
+        if (!$empresa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa não encontrada'
+            ], 404);
+        }
+        
+        // Extrair ID do cliente do QR Code
+        // Formato: CLIENT_{id}_{hash}
+        $qrcode = $request->qrcode;
+        if (!preg_match('/^CLIENT_(\d+)_/', $qrcode, $matches)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'QR Code inválido'
+            ], 400);
+        }
+        
+        $clienteId = $matches[1];
+        
+        // Verificar se cliente existe
+        $cliente = DB::table('users')
+            ->where('id', $clienteId)
+            ->where('perfil', 'cliente')
+            ->first();
+        
+        if (!$cliente) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cliente não encontrado'
+            ], 404);
+        }
+        
+        // Verificar limite de scans (3 por dia)
+        $scansHoje = DB::table('pontos')
+            ->where('user_id', $clienteId)
+            ->where('empresa_id', $empresa->id)
+            ->whereDate('created_at', today())
+            ->where('tipo', 'ganho')
+            ->where('descricao', 'LIKE', '%Check-in%')
+            ->count();
+        
+        if ($scansHoje >= 3) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cliente já fez 3 check-ins hoje nesta empresa. Limite diário atingido.'
+            ], 429);
+        }
+        
+        // Calcular pontos
+        $pontosBase = 100;
+        $multiplicador = $empresa->points_multiplier ?? 1.0;
+        $pontosGanhos = $pontosBase * $multiplicador;
+        
+        DB::beginTransaction();
+        try {
+            // Inserir transação de pontos
+            DB::table('pontos')->insert([
+                'user_id' => $clienteId,
+                'empresa_id' => $empresa->id,
+                'pontos' => $pontosGanhos,
+                'tipo' => 'ganho',
+                'descricao' => 'Check-in via QR Code - ' . $empresa->nome,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+            
+            // Atualizar saldo do cliente
+            DB::table('users')
+                ->where('id', $clienteId)
+                ->increment('pontos', $pontosGanhos);
+            
+            DB::commit();
+            
+            // Buscar saldo atualizado
+            $novoSaldo = DB::table('users')
+                ->where('id', $clienteId)
+                ->value('pontos');
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Check-in registrado com sucesso!',
+                'data' => [
+                    'cliente' => [
+                        'id' => $cliente->id,
+                        'nome' => $cliente->name,
+                        'email' => $cliente->email
+                    ],
+                    'pontos_ganhos' => $pontosGanhos,
+                    'saldo_atual' => $novoSaldo,
+                    'scans_hoje' => $scansHoje + 1,
+                    'scans_restantes' => 2 - $scansHoje
+                ]
+            ]);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao processar check-in',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
