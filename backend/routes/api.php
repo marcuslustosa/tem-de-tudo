@@ -15,6 +15,8 @@ use App\Http\Controllers\AvaliacaoController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaPromocaoController;
+use App\Http\Controllers\API\ClienteAPIController;
+use App\Http\Controllers\API\EmpresaAPIController;
 
 
 // Debug route (remover em produção)
@@ -127,12 +129,52 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Rotas específicas por perfil
 Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente')->group(function () {
-    // Rotas exclusivas para clientes
+    // Dashboard do Cliente
+    Route::get('/dashboard', [ClienteAPIController::class, 'dashboard']);
+    
+    // Empresas
+    Route::get('/empresas', [ClienteAPIController::class, 'listarEmpresas']);
+    Route::get('/empresas/{id}', [ClienteAPIController::class, 'empresaDetalhes']);
+    
+    // QR Code
+    Route::post('/escanear-qrcode', [ClienteAPIController::class, 'escanearQRCode']);
+    
+    // Promoções
+    Route::post('/resgatar-promocao/{id}', [ClienteAPIController::class, 'resgatarPromocao']);
+    
+    // Avaliações
+    Route::post('/avaliar', [ClienteAPIController::class, 'avaliar']);
+    
+    // Histórico
+    Route::get('/historico-pontos', [ClienteAPIController::class, 'historicoPontos']);
+    
+    // Legacy route (manter compatibilidade)
     Route::get('/dashboard-data', [AuthController::class, 'clienteDashboard']);
 });
 
 Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa')->group(function () {
-    // Rotas exclusivas para empresas
+    // Dashboard da Empresa
+    Route::get('/dashboard', [EmpresaAPIController::class, 'dashboard']);
+    
+    // Clientes
+    Route::get('/clientes', [EmpresaAPIController::class, 'clientes']);
+    
+    // Promoções
+    Route::get('/promocoes', [EmpresaAPIController::class, 'promocoes']);
+    Route::post('/promocoes', [EmpresaAPIController::class, 'criarPromocao']);
+    Route::put('/promocoes/{id}', [EmpresaAPIController::class, 'atualizarPromocao']);
+    Route::delete('/promocoes/{id}', [EmpresaAPIController::class, 'deletarPromocao']);
+    
+    // QR Codes
+    Route::get('/qrcodes', [EmpresaAPIController::class, 'qrCodes']);
+    
+    // Avaliações
+    Route::get('/avaliacoes', [EmpresaAPIController::class, 'avaliacoes']);
+    
+    // Relatórios
+    Route::get('/relatorio-pontos', [EmpresaAPIController::class, 'relatorioPontos']);
+    
+    // Legacy routes (manter compatibilidade)
     Route::get('/dashboard-stats', [EmpresaController::class, 'dashboardStats']);
     Route::get('/recent-checkins', [EmpresaController::class, 'recentCheckins']);
     Route::get('/top-clients', [EmpresaController::class, 'topClients']);
