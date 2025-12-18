@@ -14,15 +14,40 @@ echo "🚀 SEED MASSIVO - SISTEMA COMPLETO\n";
 echo "==================================\n\n";
 
 try {
-    // LIMPAR DADOS EXISTENTES (exceto admin)
+    // LIMPAR DADOS EXISTENTES
     echo "🗑️  Limpando dados antigos...\n";
     DB::table('avaliacoes')->delete();
     DB::table('pontos')->delete();
     DB::table('qr_codes')->delete();
     DB::table('promocoes')->delete();
     DB::table('empresas')->delete();
-    DB::table('users')->where('perfil', '!=', 'admin')->delete();
+    DB::table('users')->delete();
     echo "✅ Dados limpos!\n\n";
+    
+    // CRIAR 3 ADMINS
+    echo "👨‍💼 Criando administradores...\n";
+    $admins = [];
+    $adminData = [
+        ['name' => 'Admin Master', 'email' => 'admin@sistema.com'],
+        ['name' => 'Admin Suporte', 'email' => 'suporte@sistema.com'],
+        ['name' => 'Admin Gestor', 'email' => 'gestor@sistema.com']
+    ];
+    
+    foreach ($adminData as $admin) {
+        $adminId = DB::table('users')->insertGetId([
+            'name' => $admin['name'],
+            'email' => $admin['email'],
+            'password' => Hash::make('admin123'),
+            'perfil' => 'admin',
+            'telefone' => '(11) 3000-0000',
+            'pontos' => 0,
+            'status' => 'ativo',
+            'created_at' => now()->subDays(365),
+            'updated_at' => now()
+        ]);
+        $admins[] = $adminId;
+    }
+    echo "✅ 3 administradores criados!\n\n";
 
     // CRIAR 50 CLIENTES
     echo "👥 Criando 50 clientes...\n";
@@ -299,6 +324,7 @@ try {
     echo "╚══════════════════════════════════════════╝\n\n";
     
     echo "📊 RESUMO:\n";
+    echo "   �‍💼 3 administradores\n";
     echo "   👥 50 clientes\n";
     echo "   🏢 20 empresas\n";
     echo "   📱 60 QR Codes\n";
@@ -307,9 +333,16 @@ try {
     echo "   ⭐ {$totalAvaliacoes} avaliações\n\n";
     
     echo "🔑 CREDENCIAIS:\n";
-    echo "   Clientes: cliente1@email.com até cliente50@email.com\n";
-    echo "   Empresas: empresa1@email.com até empresa20@email.com\n";
-    echo "   Senha: senha123 (TODAS)\n\n";
+    echo "   👨‍💼 ADMIN:\n";
+    echo "      admin@sistema.com / admin123\n";
+    echo "      suporte@sistema.com / admin123\n";
+    echo "      gestor@sistema.com / admin123\n\n";
+    echo "   👥 CLIENTES:\n";
+    echo "      cliente1@email.com até cliente50@email.com\n";
+    echo "      Senha: senha123\n\n";
+    echo "   🏢 EMPRESAS:\n";
+    echo "      empresa1@email.com até empresa20@email.com\n";
+    echo "      Senha: senha123\n\n";
     
     echo "✅ Sistema totalmente populado e pronto para uso!\n\n";
 

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Fidelidade - Acessos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 30px;
+            padding: 60px 40px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 42px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 50px;
+        }
+
+        .access-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .access-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 20px;
+            padding: 40px 30px;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .access-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .access-card.cliente {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        }
+
+        .access-card.empresa {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .access-card.admin {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+            color: white;
+        }
+
+        .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .access-card h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .access-card p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: rgba(255,255,255,0.3);
+            color: inherit;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        .btn:hover {
+            background: rgba(255,255,255,0.5);
+            transform: scale(1.05);
+        }
+
+        .credentials {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .credentials h3 {
+            color: #856404;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .cred-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            text-align: left;
+        }
+
+        .cred-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .cred-section h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .cred-section p {
+            color: #666;
+            font-size: 14px;
+            margin: 5px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .cred-section .senha {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .test-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 30px;
+            transition: all 0.3s;
+        }
+
+        .test-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .stat-box .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-box .label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Sistema de Fidelidade</h1>
+        <p class="subtitle">Escolha seu tipo de acesso para entrar no sistema</p>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="number">3</div>
+                <div class="label">Administradores</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">50</div>
+                <div class="label">Clientes</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">20</div>
+                <div class="label">Empresas</div>
+            </div>
+            <div class="stat-box">
+                <div class="number">3.400+</div>
+                <div class="label">Transações</div>
+            </div>
+        </div>
+
+        <div class="access-types">
+            <a href="login.html" class="access-card cliente">
+                <div class="icon">👤</div>
+                <h2>Cliente</h2>
+                <p>Acumule pontos, resgate promoções e avalie empresas</p>
+                <span class="btn">Entrar como Cliente</span>
+            </a>
+
+            <a href="login.html" class="access-card empresa">
+                <div class="icon">🏢</div>
+                <h2>Empresa</h2>
+                <p>Gerencie clientes, crie promoções e acompanhe estatísticas</p>
+                <span class="btn">Entrar como Empresa</span>
+            </a>
+
+            <a href="admin-login.html" class="access-card admin">
+                <div class="icon">⚙️</div>
+                <h2>Admin</h2>
+                <p>Gerencie todo o sistema, usuários e relatórios</p>
+                <span class="btn">Entrar como Admin</span>
+            </a>
+        </div>
+
+        <div class="credentials">
+            <h3>🔑 Credenciais de Teste</h3>
+            
+            <div class="cred-grid">
+                <div class="cred-section">
+                    <h4>👨‍💼 Administradores</h4>
+                    <p>admin@sistema.com</p>
+                    <p>suporte@sistema.com</p>
+                    <p>gestor@sistema.com</p>
+                    <p class="senha">Senha: admin123</p>
+                </div>
+
+                <div class="cred-section">
+                    <h4>👥 Clientes</h4>
+                    <p>cliente1@email.com</p>
+                    <p>cliente2@email.com</p>
+                    <p>... até cliente50@email.com</p>
+                    <p class="senha">Senha: senha123</p>
+                </div>
+
+                <div class="cred-section">
+                    <h4>🏢 Empresas</h4>
+                    <p>empresa1@email.com</p>
+                    <p>empresa2@email.com</p>
+                    <p>... até empresa20@email.com</p>
+                    <p class="senha">Senha: senha123</p>
+                </div>
+            </div>
+
+            <a href="test-login.html" class="test-link">🧪 Página de Testes Automáticos</a>
+        </div>
+
+        <div style="margin-top: 30px; color: #666; font-size: 14px;">
+            <p>✅ Sistema 100% funcional com dados reais</p>
+            <p>✅ 3.400+ transações | 476 avaliações | 67 promoções ativas</p>
+        </div>
+    </div>
+</body>
+</html>

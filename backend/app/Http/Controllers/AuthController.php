@@ -609,8 +609,10 @@ class AuthController extends Controller
                 return '/dashboard-cliente.html';
             case 'empresa':
                 return '/dashboard-estabelecimento.html';
+            case 'admin':
+                return '/admin-dashboard.html';
             default:
-                return '/dashboard-cliente.html';
+                return '/login.html';
         }
     }
 
