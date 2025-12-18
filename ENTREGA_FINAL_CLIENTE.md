@@ -29,21 +29,51 @@ Sistema completo de fidelidade com programa de pontos, promoções, avaliações
 **Produção (Render.com):**
 - 🔗 Backend API: `https://tem-de-tudo-backend.onrender.com`
 - 🔗 Frontend: `https://tem-de-tudo.onrender.com`
+- 🔗 **Página de Acessos:** `https://tem-de-tudo-backend.onrender.com/acessos.html`
 - 🔗 Teste de Login: `https://tem-de-tudo-backend.onrender.com/test-login.html`
 
-### Credenciais de Acesso
+### 🔑 Credenciais de Acesso
 
-**50 Clientes:**
+#### 👨‍💼 **ADMINISTRADORES (3 contas)**
+
+**Painel:** `/admin-dashboard.html` ou `/acessos.html`
+
 ```
-cliente1@email.com
-cliente2@email.com
-...
-cliente50@email.com
-
-Senha: senha123
+admin@sistema.com / admin123
+suporte@sistema.com / admin123
+gestor@sistema.com / admin123
 ```
 
-**20 Empresas:**
+**Recursos disponíveis:**
+- ✅ Gestão completa de usuários
+- ✅ Estatísticas do sistema  
+- ✅ Relatórios e moderação
+- ✅ Configurações globais
+
+---
+
+#### 👥 **CLIENTES (50 contas)**
+
+**Painel:** `/dashboard-cliente.html` ou `/acessos.html`
+
+```
+cliente1@email.com até cliente50@email.com
+Senha: senha123 (todas as contas)
+```
+
+**Recursos disponíveis:**
+- ✅ Buscar 20 empresas parceiras
+- ✅ Ganhar pontos por check-in
+- ✅ Resgatar 67 promoções disponíveis
+- ✅ Avaliar empresas
+- ✅ QR Code bidirecional
+
+---
+
+#### 🏢 **EMPRESAS (20 contas)**
+
+**Painel:** `/dashboard-estabelecimento.html` ou `/acessos.html`
+
 ```
 empresa1@email.com  - Restaurante Sabor da Terra
 empresa2@email.com  - Academia FitLife
@@ -66,8 +96,15 @@ empresa18@email.com - Ótica Visão Clara
 empresa19@email.com - Livraria Ler & Saber
 empresa20@email.com - Papelaria Office Plus
 
-Senha: senha123
+Senha: senha123 (todas as contas)
 ```
+
+**Recursos disponíveis:**
+- ✅ Dashboard com estatísticas
+- ✅ Lista de 50 clientes ativos
+- ✅ Criar/editar promoções
+- ✅ QR Code para check-in
+- ✅ Relatórios completos
 
 ---
 
@@ -181,6 +218,11 @@ Senha: senha123
 ### Estatísticas do Sistema
 
 ```
+�‍💼 3 ADMINISTRADORES
+   - Acesso total ao sistema
+   - Gestão de usuários
+   - Relatórios completos
+
 👥 50 CLIENTES
    - Saldos entre 500 e 5.000 pontos
    - Média de 6 empresas frequentadas
@@ -190,25 +232,25 @@ Senha: senha123
    - 10 ramos diferentes
    - Multiplicadores de 1.0x a 2.0x
    - Média de 4,5 estrelas
-   - 19 avaliações por empresa
+   - 24 avaliações por empresa
 
 📱 60 QR CODES
    - 3 por empresa
    - Localizações: Entrada, Caixa, Balcão
    - 50 a 500 usos cada
 
-🎁 58 PROMOÇÕES
+🎁 67 PROMOÇÕES
    - Descontos de 10% a 50%
    - 85% ativas
    - Média de 150 visualizações
    - Média de 20 resgates
 
-💰 3.403 TRANSAÇÕES
+💰 3.404 TRANSAÇÕES
    - 80% ganho de pontos
    - 20% resgate de promoções
    - Últimos 90 dias
 
-⭐ 378 AVALIAÇÕES
+⭐ 476 AVALIAÇÕES
    - 60% com 5 estrelas
    - 25% com 4 estrelas
    - 15% com 3 estrelas
