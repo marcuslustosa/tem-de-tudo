@@ -10,44 +10,358 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; min-height: 100vh; padding-bottom: 90px; color: #fff; }
-        .header { background: linear-gradient(145deg, #1a1a2e, #16213e); padding: 20px; border-bottom: 1px solid rgba(74, 144, 226, 0.1); text-align: center; }
+        
+        .header { 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            padding: 16px 20px 20px; 
+            border-bottom: 1px solid rgba(74, 144, 226, 0.1); 
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
         .header h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
         .header p { font-size: 13px; color: #b0b0b0; }
+        
         .section { padding: 20px; }
-        .section-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+        .section-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        
         .promocoes-grid { display: grid; gap: 16px; }
-        .promo-card { background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 18px; overflow: hidden; border: 1px solid rgba(74, 144, 226, 0.1); transition: all 0.3s; }
-        .promo-card:hover { border-color: #4a90e2; transform: translateY(-4px); box-shadow: 0 12px 40px rgba(74, 144, 226, 0.3); }
-        .promo-header { background: linear-gradient(135deg, #4a90e2, #357abd); padding: 20px; position: relative; }
-        .promo-badge { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        
+        .promo-card { 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            border-radius: 18px; 
+            overflow: hidden; 
+            border: 1px solid rgba(74, 144, 226, 0.1); 
+            transition: all 0.3s; 
+        }
+        .promo-card:hover { 
+            border-color: #4a90e2; 
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 40px rgba(74, 144, 226, 0.3); 
+        }
+        
+        .promo-header { 
+            background: linear-gradient(135deg, #4a90e2, #357abd); 
+            padding: 20px; 
+            position: relative; 
+        }
+        .promo-header.tipo-desconto { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .promo-header.tipo-dobro { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .promo-header.tipo-brinde { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        
+        .promo-badge { 
+            position: absolute; 
+            top: 12px; 
+            right: 12px; 
+            background: rgba(255,255,255,0.2); 
+            backdrop-filter: blur(10px); 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            font-size: 11px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+        }
+        
         .promo-title { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
-        .promo-subtitle { font-size: 14px; opacity: 0.95; }
+        .promo-subtitle { font-size: 14px; opacity: 0.95; display: flex; align-items: center; gap: 8px; }
+        
+        .empresa-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
         .promo-body { padding: 20px; }
-        .promo-details { font-size: 14px; color: #b0b0b0; line-height: 1.7; margin-bottom: 16px; }
-        .promo-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid rgba(74, 144, 226, 0.1); }
-        .promo-countdown { font-size: 13px; color: #f39c12; font-weight: 700; }
-        .promo-btn { background: linear-gradient(135deg, #4a90e2, #357abd); color: white; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(145deg, #1a1a2e, #16213e); border-top: 1px solid rgba(74, 144, 226, 0.2); padding: 12px 8px 20px; display: flex; justify-content: space-around; box-shadow: 0 -10px 40px rgba(0,0,0,0.3); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: #b0b0b0; font-size: 11px; font-weight: 600; padding: 8px; }
+        .promo-details { 
+            font-size: 14px; 
+            color: #b0b0b0; 
+            line-height: 1.7; 
+            margin-bottom: 16px; 
+        }
+        
+        .promo-footer { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding-top: 16px; 
+            border-top: 1px solid rgba(74, 144, 226, 0.1); 
+        }
+        
+        .promo-countdown { 
+            font-size: 13px; 
+            color: #f39c12; 
+            font-weight: 700; 
+        }
+        .promo-countdown.urgente { color: #e74c3c; }
+        
+        .promo-btn { 
+            background: linear-gradient(135deg, #4a90e2, #357abd); 
+            color: white; 
+            padding: 12px 24px; 
+            border-radius: 10px; 
+            font-size: 14px; 
+            font-weight: 700; 
+            border: none; 
+            cursor: pointer; 
+            transition: all 0.3s;
+        }
+        .promo-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(74, 144, 226, 0.4);
+        }
+        .promo-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #b0b0b0;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #b0b0b0;
+        }
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            border-top: 1px solid rgba(74, 144, 226, 0.2); 
+            padding: 12px 8px 20px; 
+            display: flex; 
+            justify-content: space-around; 
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.3); 
+        }
+        .nav-item { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 6px; 
+            text-decoration: none; 
+            color: #b0b0b0; 
+            font-size: 11px; 
+            font-weight: 600; 
+            padding: 8px; 
+        }
         .nav-item i { font-size: 22px; }
         .nav-item.active { color: #4a90e2; }
+        
+        @media (max-width: 480px) {
+            .header { padding: 12px 16px; }
+            .promo-title { font-size: 18px; }
+            .promo-footer { flex-direction: column; gap: 12px; align-items: stretch; }
+            .promo-btn { width: 100%; }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Promoções Ativas</h1>
+        <h1>🎁 Promoções</h1>
         <p>Aproveite as ofertas exclusivas</p>
     </div>
+    
     <div class="section">
-        <h3 class="section-title">🔥 Destaques</h3>
-        <div class="promocoes-grid">
-            <div class="promo-card">
-                <div class="promo-header">
-                    <span class="promo-badge">🔥 Quente</span>
-                    <div class="promo-title">Dobro de Pontos</div>
-                    <div class="promo-subtitle">Popeye Hamburguer</div>
-                </div>
-                <div class="promo-body">
+        <h3 class="section-title">
+            <i class="fas fa-fire"></i>
+            <span id="promocoes-count">Carregando...</span>
+        </h3>
+        
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin" style="font-size: 32px;"></i>
+            <p>Carregando promoções...</p>
+        </div>
+        
+        <div id="promocoes-grid" class="promocoes-grid" style="display: none;"></div>
+        
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <i class="fas fa-gift"></i>
+            <h3>Nenhuma promoção disponível</h3>
+            <p>As empresas ainda não criaram promoções.</p>
+        </div>
+    </div>
+    
+    <nav class="bottom-nav">
+        <a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="app-buscar.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
+        <a href="app-promocoes.html" class="nav-item active"><i class="fas fa-gift"></i><span>Promoções</span></a>
+        <a href="app-notificacoes.html" class="nav-item"><i class="fas fa-bell"></i><span>Avisos</span></a>
+        <a href="app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
+    </nav>
+    
+    <script>
+        let promocoes = [];
+        
+        // Ícones por tipo de promoção
+        const tipoIcons = {
+            'desconto': '💥',
+            'dobro': '🔥',
+            'brinde': '🎁',
+            'cashback': '💰',
+            'default': '✨'
+        };
+        
+        // Carregar promoções da API
+        async function loadPromocoes() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = 'entrar.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/cliente/promocoes', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    promocoes = result.data || [];
+                    
+                    console.log('Promoções carregadas:', promocoes.length);
+                    
+                    if (promocoes.length > 0) {
+                        renderPromocoes();
+                    } else {
+                        showEmptyState();
+                    }
+                } else if (response.status === 401) {
+                    window.location.href = 'entrar.html';
+                } else {
+                    console.error('Erro na resposta:', response.status);
+                    showEmptyState();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar promoções:', error);
+                showEmptyState();
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        // Renderizar promoções
+        function renderPromocoes() {
+            const grid = document.getElementById('promocoes-grid');
+            const count = document.getElementById('promocoes-count');
+            
+            count.textContent = `${promocoes.length} ${promocoes.length === 1 ? 'Promoção Ativa' : 'Promoções Ativas'}`;
+            
+            grid.innerHTML = promocoes.map(promo => {
+                const tipoClass = promo.tipo ? `tipo-${promo.tipo}` : '';
+                const icon = tipoIcons[promo.tipo] || tipoIcons.default;
+                const urgente = promo.dias_restantes !== null && promo.dias_restantes <= 3;
+                
+                let countdownText = '';
+                if (promo.dias_restantes !== null) {
+                    if (promo.dias_restantes === 0) {
+                        countdownText = '⏰ Termina hoje!';
+                    } else if (promo.dias_restantes === 1) {
+                        countdownText = '⏰ Termina amanhã';
+                    } else {
+                        countdownText = `⏰ Termina em ${promo.dias_restantes} dias`;
+                    }
+                } else {
+                    countdownText = '⏰ Sem prazo';
+                }
+                
+                return `
+                    <div class="promo-card">
+                        <div class="promo-header ${tipoClass}">
+                            <span class="promo-badge">${icon} ${promo.tipo || 'Oferta'}</span>
+                            <div class="promo-title">${promo.nome}</div>
+                            <div class="promo-subtitle">
+                                ${promo.empresa_logo ? 
+                                    `<img src="${promo.empresa_logo}" alt="${promo.empresa_nome}" class="empresa-logo" onerror="this.style.display='none'">` 
+                                    : ''}
+                                <span>${promo.empresa_nome}</span>
+                            </div>
+                        </div>
+                        <div class="promo-body">
+                            <div class="promo-details">${promo.descricao || 'Promoção especial!'}</div>
+                            ${promo.pontos_necessarios ? `
+                                <div class="promo-details" style="color: #4a90e2; font-weight: 700;">
+                                    💎 ${promo.pontos_necessarios} pontos necessários
+                                </div>
+                            ` : ''}
+                            <div class="promo-footer">
+                                <div class="promo-countdown ${urgente ? 'urgente' : ''}">${countdownText}</div>
+                                <button class="promo-btn" onclick="resgatarPromo(${promo.id}, '${promo.nome}')">
+                                    Resgatar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            grid.style.display = 'grid';
+        }
+        
+        // Mostrar estado vazio
+        function showEmptyState() {
+            document.getElementById('empty-state').style.display = 'block';
+            document.getElementById('promocoes-count').textContent = '0 Promoções';
+        }
+        
+        // Resgatar promoção
+        async function resgatarPromo(id, nome) {
+            const token = localStorage.getItem('token');
+            
+            if (!confirm(`Deseja resgatar a promoção "${nome}"?\n\nApós resgatar, você terá que apresentar no estabelecimento.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/cliente/resgatar-promocao/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    alert(`✅ Promoção resgatada!\n\n${result.message || 'Apresente no estabelecimento para utilizar.'}`);
+                    loadPromocoes(); // Recarregar lista
+                } else {
+                    alert(`❌ Erro: ${result.message || 'Não foi possível resgatar a promoção.'}`);
+                }
+            } catch (error) {
+                console.error('Erro ao resgatar:', error);
+                alert('❌ Erro ao resgatar promoção. Tente novamente.');
+            }
+        }
+        
+        // Carregar ao iniciar
+        document.addEventListener('DOMContentLoaded', loadPromocoes);
+    </script>
+</body>
+</html>
                     <div class="promo-details">
                         Ganhe 2x pontos em compras acima de R$ 50,00. Válido para delivery e retirada no local.
                     </div>

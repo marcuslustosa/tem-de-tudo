@@ -354,27 +354,11 @@
                     const result = await response.json();
                     // API retorna {success: true, data: [...]}
                     allEstablishments = result.data || result;
+                    
+                    // SEMPRE mostrar todas as empresas ao carregar
                     renderEstablishments(allEstablishments);
-                } else {
-                    console.error('Erro na resposta:', response.status);
-                    renderEmptyState();
-                }
-            } catch (error) {
-                console.error('Erro ao carregar estabelecimentos:', error);
-                renderEmptyState();
-            }
-        }
-        
-        function renderEstablishments(establishments) {
-            const grid = document.getElementById('estabelecimentosGrid');
-            
-            if (!establishments || establishments.length === 0) {
-                renderEmptyState();
-                return;
-            }
-            
-            const icons = {
-                'restaurante': '🍔',
+                    
+                    console.log('Empresas carregadas:', allEstablishments.length);
                 'academia': '🏋️',
                 'cafeteria': '☕',
                 'pet_shop': '🐾',
@@ -444,36 +428,35 @@
             });
             event.target.classList.add('active');
             
-            // Filtrar estabelecimentos
-            if (category === 'todos') {
-                renderEstablishments(allEstablishments);
-            } else {
-                const filtered = allEstablishments.filter(e => e.ramo === category);
-                renderEstablishments(filtered);
-            }
+            // Refiltrar mantendo busca atual
+            searchEstablishments();
         }
         
         function searchEstablishments() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             
-            if (!searchTerm) {
-                if (currentCategory === 'todos') {
-                    renderEstablishments(allEstablishments);
-                } else {
-                    const filtered = allEstablishments.filter(e => e.ramo === currentCategory);
-                    renderEstablishments(filtered);
-                }
-                return;
+            // SEMPRE filtrar do array completo (estilo iFood)
+            let filtered = allEstablishments;
+            
+            // Se tem termo de busca, filtrar
+            if (searchTerm) {
+                filtered = allEstablishments.filter(e => {
+                    const matchesSearch = 
+                        (e.nome && e.nome.toLowerCase().includes(searchTerm)) ||
+                        (e.ramo && e.ramo.toLowerCase().includes(searchTerm)) ||
+                        (e.endereco && e.endereco.toLowerCase().includes(searchTerm)) ||
+                        (e.descricao && e.descricao.toLowerCase().includes(searchTerm));
+                    
+                    return matchesSearch;
+                });
             }
             
-            const filtered = allEstablishments.filter(e => {
-                const matchesSearch = e.nome.toLowerCase().includes(searchTerm) ||
-                                    (e.ramo && e.ramo.toLowerCase().includes(searchTerm)) ||
-                                    (e.endereco && e.endereco.toLowerCase().includes(searchTerm));
-                const matchesCategory = currentCategory === 'todos' || e.ramo === currentCategory;
-                return matchesSearch && matchesCategory;
-            });
+            // Se tem categoria selecionada, filtrar também
+            if (currentCategory !== 'todos') {
+                filtered = filtered.filter(e => e.ramo === currentCategory);
+            }
             
+            console.log('Busca:', searchTerm, 'Categoria:', currentCategory, 'Resultados:', filtered.length);
             renderEstablishments(filtered);
         }
         

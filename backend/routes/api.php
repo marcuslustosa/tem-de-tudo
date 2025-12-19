@@ -143,6 +143,7 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     Route::post('/escanear-qrcode', [ClienteAPIController::class, 'escanearQRCode']);
     
     // Promoções
+    Route::get('/promocoes', [ClienteAPIController::class, 'listarPromocoes']);
     Route::post('/resgatar-promocao/{id}', [ClienteAPIController::class, 'resgatarPromocao']);
     
     // Avaliações

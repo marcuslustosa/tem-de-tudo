@@ -10,83 +10,358 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; min-height: 100vh; color: #fff; }
-        .hero { background: linear-gradient(145deg, #1a1a2e, #16213e); padding: 20px 20px 40px; position: relative; }
-        .back-btn { width: 44px; height: 44px; background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 12px; color: #fff; font-size: 18px; cursor: pointer; margin-bottom: 20px; }
-        .hero-icon { width: 120px; height: 120px; background: linear-gradient(135deg, #4a90e2, #357abd); border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 64px; margin: 0 auto 24px; box-shadow: 0 12px 40px rgba(74, 144, 226, 0.4); }
+        
+        .hero { 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            padding: 20px 20px 40px; 
+            position: relative; 
+        }
+        
+        .back-btn { 
+            width: 44px; 
+            height: 44px; 
+            background: rgba(10, 10, 15, 0.8); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(74, 144, 226, 0.2); 
+            border-radius: 12px; 
+            color: #fff; 
+            font-size: 18px; 
+            cursor: pointer; 
+            margin-bottom: 20px; 
+            border: none;
+        }
+        
+        .hero-icon { 
+            width: 120px; 
+            height: 120px; 
+            background: linear-gradient(135deg, #4a90e2, #357abd); 
+            border-radius: 30px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 64px; 
+            margin: 0 auto 24px; 
+            box-shadow: 0 12px 40px rgba(74, 144, 226, 0.4);
+            overflow: hidden;
+        }
+        .hero-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
         .hero-title { font-size: 32px; font-weight: 900; text-align: center; margin-bottom: 8px; }
-        .hero-category { font-size: 15px; color: #b0b0b0; text-align: center; margin-bottom: 20px; }
+        .hero-category { font-size: 15px; color: #b0b0b0; text-align: center; margin-bottom: 20px; text-transform: capitalize; }
         .hero-stats { display: flex; justify-content: center; gap: 32px; }
         .stat { text-align: center; }
         .stat-value { font-size: 24px; font-weight: 900; color: #4a90e2; }
         .stat-label { font-size: 12px; color: #b0b0b0; margin-top: 4px; }
+        
         .content { padding: 24px 20px; }
-        .info-card { background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid rgba(74, 144, 226, 0.1); }
-        .info-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        
+        .info-card { 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            border-radius: 16px; 
+            padding: 20px; 
+            margin-bottom: 16px; 
+            border: 1px solid rgba(74, 144, 226, 0.1); 
+        }
+        .info-title { 
+            font-size: 16px; 
+            font-weight: 700; 
+            margin-bottom: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
         .info-title i { color: #4a90e2; }
         .info-text { font-size: 14px; color: #b0b0b0; line-height: 1.7; }
-        .rewards-list { display: grid; gap: 12px; margin-top: 12px; }
-        .reward-item { background: rgba(74, 144, 226, 0.05); border: 1px solid rgba(74, 144, 226, 0.1); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .reward-info h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-        .reward-info p { font-size: 12px; color: #b0b0b0; }
-        .reward-points { font-size: 18px; font-weight: 900; color: #4a90e2; }
-        .action-btn { width: 100%; padding: 18px; background: linear-gradient(135deg, #4a90e2, #357abd); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3); margin-top: 24px; }
+        
+        .promocoes-list { display: grid; gap: 12px; margin-top: 12px; }
+        .promo-item { 
+            background: rgba(74, 144, 226, 0.05); 
+            border: 1px solid rgba(74, 144, 226, 0.1); 
+            border-radius: 12px; 
+            padding: 16px; 
+        }
+        .promo-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; color: #4a90e2; }
+        .promo-item p { font-size: 12px; color: #b0b0b0; }
+        .promo-badge { 
+            display: inline-block; 
+            background: rgba(74, 144, 226, 0.2); 
+            padding: 4px 10px; 
+            border-radius: 8px; 
+            font-size: 11px; 
+            font-weight: 700; 
+            margin-top: 8px; 
+        }
+        
+        .reviews-list { display: grid; gap: 12px; margin-top: 12px; }
+        .review-item { 
+            background: rgba(74, 144, 226, 0.05); 
+            border: 1px solid rgba(74, 144, 226, 0.1); 
+            border-radius: 12px; 
+            padding: 16px; 
+        }
+        .review-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .review-author { font-size: 14px; font-weight: 700; }
+        .review-rating { color: #f39c12; font-size: 14px; }
+        .review-comment { font-size: 13px; color: #b0b0b0; line-height: 1.5; }
+        .review-date { font-size: 11px; color: #666; margin-top: 8px; }
+        
+        .action-btn { 
+            width: 100%; 
+            padding: 18px; 
+            background: linear-gradient(135deg, #4a90e2, #357abd); 
+            color: white; 
+            border: none; 
+            border-radius: 14px; 
+            font-size: 16px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3); 
+            margin-top: 24px; 
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(74, 144, 226, 0.4);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #b0b0b0;
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title { font-size: 26px; }
+            .hero-stats { gap: 20px; }
+            .stat-value { font-size: 20px; }
+        }
     </style>
 </head>
 <body>
-    <div class="hero">
-        <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
-        <div class="hero-icon">🍔</div>
-        <h1 class="hero-title">Popeye Hamburguer</h1>
-        <p class="hero-category">Restaurante • Fast Food</p>
-        <div class="hero-stats">
-            <div class="stat"><div class="stat-value">4.9</div><div class="stat-label">Avaliação</div></div>
-            <div class="stat"><div class="stat-value">1.247</div><div class="stat-label">Seus Pontos</div></div>
-            <div class="stat"><div class="stat-value">1.2km</div><div class="stat-label">Distância</div></div>
+    <div id="loading" class="loading">
+        <i class="fas fa-spinner fa-spin" style="font-size: 48px;"></i>
+        <p style="margin-top: 20px;">Carregando estabelecimento...</p>
+    </div>
+    
+    <div id="content" style="display: none;">
+        <div class="hero">
+            <button class="back-btn" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            
+            <div class="hero-icon" id="heroIcon">🏪</div>
+            
+            <h1 class="hero-title" id="empresaNome">Carregando...</h1>
+            <p class="hero-category" id="empresaCategoria">...</p>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-value" id="empresaRating">-</div>
+                    <div class="stat-label">Avaliação</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="meusPontos">0</div>
+                    <div class="stat-label">Meus Pontos</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalClientes">-</div>
+                    <div class="stat-label">Clientes</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="info-card" id="sobreCard">
+                <div class="info-title"><i class="fas fa-info-circle"></i> Sobre</div>
+                <div class="info-text" id="empresaDescricao">-</div>
+            </div>
+            
+            <div class="info-card" id="enderecoCard">
+                <div class="info-title"><i class="fas fa-map-marker-alt"></i> Endereço</div>
+                <div class="info-text" id="empresaEndereco">-</div>
+            </div>
+            
+            <div class="info-card" id="promocoesCard" style="display: none;">
+                <div class="info-title"><i class="fas fa-gift"></i> Promoções Ativas</div>
+                <div class="promocoes-list" id="promocoesList"></div>
+            </div>
+            
+            <div class="info-card" id="avaliacoesCard" style="display: none;">
+                <div class="info-title"><i class="fas fa-star"></i> Avaliações Recentes</div>
+                <div class="reviews-list" id="reviewsList"></div>
+            </div>
+            
+            <button class="action-btn" onclick="location.href='app-scanner.html'">
+                <i class="fas fa-qrcode"></i> Acumular Pontos Agora
+            </button>
         </div>
     </div>
-    <div class="content">
-        <div class="info-card">
-            <div class="info-title"><i class="fas fa-info-circle"></i> Sobre</div>
-            <div class="info-text">
-                O melhor hamburguer artesanal da região. Ingredientes frescos e selecionados, ambiente aconchegante e atendimento excepcional.
-            </div>
-        </div>
-        <div class="info-card">
-            <div class="info-title"><i class="fas fa-map-marker-alt"></i> Endereço</div>
-            <div class="info-text">
-                Av. Paulista, 1000 - Bela Vista, São Paulo - SP<br>
-                Seg-Dom: 11h-23h
-            </div>
-        </div>
-        <div class="info-card">
-            <div class="info-title"><i class="fas fa-gift"></i> Recompensas</div>
-            <div class="rewards-list">
-                <div class="reward-item">
-                    <div class="reward-info">
-                        <h4>Hamburguer Grátis</h4>
-                        <p>Qualquer hamburguer do cardápio</p>
+    
+    <script>
+        let empresaId = null;
+        let empresaData = null;
+        
+        // Ícones por ramo
+        const ramoIcons = {
+            'restaurante': '🍽️',
+            'lanchonete': '🍔',
+            'pizzaria': '🍕',
+            'cafeteria': '☕',
+            'padaria': '🥖',
+            'academia': '💪',
+            'farmacia': '💊',
+            'petshop': '🐕',
+            'salao': '💇',
+            'mercado': '🛒',
+            'default': '🏪'
+        };
+        
+        // Pegar ID da URL
+        function getEmpresaId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+        
+        // Carregar detalhes da empresa
+        async function loadEmpresa() {
+            empresaId = getEmpresaId();
+            
+            if (!empresaId) {
+                alert('Empresa não especificada');
+                history.back();
+                return;
+            }
+            
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                window.location.href = 'entrar.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/cliente/empresas/${empresaId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    empresaData = result.data;
+                    
+                    console.log('Empresa carregada:', empresaData);
+                    renderEmpresa();
+                } else if (response.status === 404) {
+                    alert('Empresa não encontrada');
+                    history.back();
+                } else if (response.status === 401) {
+                    window.location.href = 'entrar.html';
+                } else {
+                    console.error('Erro na resposta:', response.status);
+                    alert('Erro ao carregar empresa');
+                    history.back();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar empresa:', error);
+                alert('Erro ao carregar empresa');
+                history.back();
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            }
+        }
+        
+        // Renderizar empresa
+        function renderEmpresa() {
+            const { empresa, meus_pontos, promocoes, avaliacoes } = empresaData;
+            
+            // Header
+            document.getElementById('empresaNome').textContent = empresa.nome;
+            document.getElementById('empresaCategoria').textContent = empresa.ramo || 'Estabelecimento';
+            
+            // Ícone/Logo
+            const iconEl = document.getElementById('heroIcon');
+            if (empresa.logo) {
+                iconEl.innerHTML = `<img src="${empresa.logo}" alt="${empresa.nome}" onerror="this.parentElement.innerHTML='${ramoIcons[empresa.ramo] || ramoIcons.default}'">`;
+            } else {
+                iconEl.textContent = ramoIcons[empresa.ramo] || ramoIcons.default;
+            }
+            
+            // Stats
+            document.getElementById('empresaRating').textContent = empresa.avaliacao_media || '5.0';
+            document.getElementById('meusPontos').textContent = meus_pontos || 0;
+            document.getElementById('totalClientes').textContent = empresa.total_clientes || '-';
+            
+            // Sobre
+            document.getElementById('empresaDescricao').textContent = empresa.descricao || 'Sem descrição disponível.';
+            
+            // Endereço
+            document.getElementById('empresaEndereco').innerHTML = `
+                ${empresa.endereco || 'Endereço não informado'}<br>
+                ${empresa.cidade ? `${empresa.cidade}, ${empresa.estado || ''}` : ''}
+            `;
+            
+            // Promoções
+            if (promocoes && promocoes.length > 0) {
+                document.getElementById('promocoesCard').style.display = 'block';
+                renderPromocoes(promocoes);
+            }
+            
+            // Avaliações
+            if (avaliacoes && avaliacoes.length > 0) {
+                document.getElementById('avaliacoesCard').style.display = 'block';
+                renderAvaliacoes(avaliacoes);
+            }
+        }
+        
+        // Renderizar promoções
+        function renderPromocoes(promocoes) {
+            const list = document.getElementById('promocoesList');
+            
+            list.innerHTML = promocoes.map(promo => {
+                let badge = '';
+                if (promo.pontos_necessarios) {
+                    badge = `<span class="promo-badge">💎 ${promo.pontos_necessarios} pts</span>`;
+                }
+                
+                return `
+                    <div class="promo-item">
+                        <h4>${promo.nome}</h4>
+                        <p>${promo.descricao || 'Promoção especial!'}</p>
+                        ${badge}
                     </div>
-                    <div class="reward-points">500 pts</div>
-                </div>
-                <div class="reward-item">
-                    <div class="reward-info">
-                        <h4>Refrigerante Grátis</h4>
-                        <p>Refrigerante 350ml</p>
+                `;
+            }).join('');
+        }
+        
+        // Renderizar avaliações
+        function renderAvaliacoes(avaliacoes) {
+            const list = document.getElementById('reviewsList');
+            
+            list.innerHTML = avaliacoes.slice(0, 5).map(review => {
+                const stars = '⭐'.repeat(review.nota);
+                const date = new Date(review.created_at).toLocaleDateString('pt-BR');
+                
+                return `
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-author">${review.cliente_nome || 'Anônimo'}</span>
+                            <span class="review-rating">${stars}</span>
+                        </div>
+                        ${review.comentario ? `<p class="review-comment">${review.comentario}</p>` : ''}
+                        <p class="review-date">${date}</p>
                     </div>
-                    <div class="reward-points">150 pts</div>
-                </div>
-                <div class="reward-item">
-                    <div class="reward-info">
-                        <h4>Batata Frita Grande</h4>
-                        <p>Porção grande batata frita</p>
-                    </div>
-                    <div class="reward-points">200 pts</div>
-                </div>
-            </div>
-        </div>
-        <button class="action-btn" onclick="location.href='app-scanner.html'">
-            <i class="fas fa-qrcode"></i> Acumular Pontos Agora
-        </button>
-    </div>
+                `;
+            }).join('');
+        }
+        
+        // Carregar ao iniciar
+        document.addEventListener('DOMContentLoaded', loadEmpresa);
+    </script>
 </body>
 </html>

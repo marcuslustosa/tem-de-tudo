@@ -465,4 +465,54 @@ class ClienteAPIController extends Controller
             'data' => $historico
         ]);
     }
+    
+    /**
+     * Listar todas as promoções ativas
+     */
+    public function listarPromocoes(Request $request)
+    {
+        $query = DB::table('promocoes')
+            ->join('empresas', 'promocoes.empresa_id', '=', 'empresas.id')
+            ->select(
+                'promocoes.*',
+                'empresas.nome as empresa_nome',
+                'empresas.ramo as empresa_ramo',
+                'empresas.logo as empresa_logo'
+            )
+            ->where('promocoes.ativo', true)
+            ->where('promocoes.status', 'ativa')
+            ->where('empresas.ativo', true);
+        
+        // Filtro por empresa
+        if ($request->has('empresa_id')) {
+            $query->where('promocoes.empresa_id', $request->empresa_id);
+        }
+        
+        // Filtro por tipo de promoção
+        if ($request->has('tipo')) {
+            $query->where('promocoes.tipo', $request->tipo);
+        }
+        
+        $promocoes = $query
+            ->orderByDesc('promocoes.created_at')
+            ->get();
+        
+        // Adicionar contagem de dias restantes
+        foreach ($promocoes as $promo) {
+            if ($promo->data_fim) {
+                $diasRestantes = now()->diffInDays($promo->data_fim, false);
+                $promo->dias_restantes = $diasRestantes > 0 ? $diasRestantes : 0;
+                $promo->expirada = $diasRestantes < 0;
+            } else {
+                $promo->dias_restantes = null;
+                $promo->expirada = false;
+            }
+        }
+        
+        return response()->json([
+            'success' => true,
+            'data' => $promocoes,
+            'total' => $promocoes->count()
+        ]);
+    }
 }
