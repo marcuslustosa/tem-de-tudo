@@ -21,8 +21,18 @@
         
         .header {
             background: linear-gradient(145deg, #1a1a2e, #16213e);
-            padding: 20px;
+            padding: 16px 20px 20px;
             border-bottom: 1px solid rgba(74, 144, 226, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #fff;
         }
         
         .search-box {
@@ -138,8 +148,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
+            overflow: hidden;
             flex-shrink: 0;
+        }
+        
+        .estabelecimento-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .estabelecimento-info {
@@ -245,6 +261,7 @@
 </head>
 <body>
     <div class="header">
+        <h1 class="header-title">🔍 Buscar Empresas</h1>
         <div class="search-box">
             <i class="fas fa-search"></i>
             <input 
@@ -387,7 +404,7 @@
             grid.innerHTML = establishments.map((estab, index) => `
                 <a href="app-estabelecimento.html?id=${estab.id}" class="estabelecimento-card">
                     <div class="estabelecimento-icon" style="background: ${colors[index % colors.length]}">
-                        ${icons[estab.ramo] || icons.default}
+                        ${estab.logo ? `<img src="${estab.logo}" alt="${estab.nome}" onerror="this.parentElement.innerHTML='${icons[estab.ramo] || icons.default}'">` : icons[estab.ramo] || icons.default}
                     </div>
                     <div class="estabelecimento-info">
                         <div class="estabelecimento-name">${estab.nome}</div>
