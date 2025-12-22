@@ -3,547 +3,599 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promoções - Tem de Tudo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Gerenciar Promoções - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0a0a0f;
-            color: #ffffff;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-right: 1px solid rgba(74, 144, 226, 0.1);
-            padding: 24px 0;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .logo {
-            padding: 0 24px 24px;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0f; min-height: 100vh; color: #fff; padding-bottom: 40px; }
+        
+        .header { 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            padding: 20px; 
             border-bottom: 1px solid rgba(74, 144, 226, 0.1);
-            margin-bottom: 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 900;
-            color: #4a90e2;
-        }
-
-        .logo p {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 4px;
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            padding: 0 16px;
-            margin-bottom: 4px;
-        }
-
-        .nav-link {
+        .header-top {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            border-radius: 12px;
-            transition: all 0.3s;
-            font-size: 14px;
-            font-weight: 500;
+            gap: 16px;
+            margin-bottom: 16px;
         }
-
-        .nav-link i {
-            margin-right: 12px;
-            font-size: 18px;
-            width: 24px;
-        }
-
-        .nav-link:hover {
+        .back-btn {
+            width: 44px;
+            height: 44px;
             background: rgba(74, 144, 226, 0.1);
-            color: #4a90e2;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
         }
-
-        .nav-link.active {
-            background: rgba(74, 144, 226, 0.15);
-            color: #4a90e2;
-            box-shadow: 0 0 20px rgba(74, 144, 226, 0.2);
-        }
-
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 32px;
-        }
-
-        .header {
-            margin-bottom: 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-left h2 {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .header-left p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-        }
-
-        .create-btn {
-            padding: 14px 32px;
+        .header h1 { font-size: 24px; font-weight: 900; }
+        .header p { font-size: 13px; color: #b0b0b0; margin-top: 4px; }
+        
+        .add-btn {
+            width: 100%;
             background: linear-gradient(135deg, #4a90e2, #357abd);
             border: none;
             border-radius: 12px;
-            color: white;
-            font-size: 14px;
+            padding: 16px;
+            color: #fff;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
+            margin-top: 16px;
         }
-
-        .create-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4);
-        }
-
-        .promos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-        }
-
+        
+        .content { padding: 20px; }
+        
+        .promo-list { display: grid; gap: 12px; }
+        
         .promo-card {
             background: linear-gradient(145deg, #1a1a2e, #16213e);
             border: 1px solid rgba(74, 144, 226, 0.1);
             border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-
-        .promo-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
-            border-color: rgba(74, 144, 226, 0.3);
-        }
-
-        .promo-header {
-            padding: 24px;
-            background: linear-gradient(135deg, #4a90e2, #357abd);
+            padding: 20px;
             position: relative;
         }
-
-        .promo-header.red {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }
-
-        .promo-header.purple {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        }
-
-        .promo-header.green {
-            background: linear-gradient(135deg, #27ae60, #229954);
-        }
-
-        .promo-status {
+        
+        .promo-badge {
             position: absolute;
             top: 16px;
             right: 16px;
             padding: 6px 12px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
             border-radius: 8px;
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
         }
-
-        .promo-icon {
-            font-size: 48px;
+        .badge-ativo { background: rgba(76, 175, 80, 0.2); color: #4caf50; border: 1px solid #4caf50; }
+        .badge-inativo { background: rgba(244, 67, 54, 0.2); color: #f44336; border: 1px solid #f44336; }
+        
+        .promo-header {
             margin-bottom: 12px;
         }
-
-        .promo-title {
-            font-size: 20px;
+        .promo-nome {
+            font-size: 17px;
             font-weight: 800;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
-
-        .promo-subtitle {
-            font-size: 14px;
-            opacity: 0.9;
+        .promo-descricao {
+            font-size: 13px;
+            color: #b0b0b0;
+            line-height: 1.5;
         }
-
-        .promo-body {
-            padding: 24px;
-        }
-
-        .promo-stats {
+        
+        .promo-info {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
+            gap: 12px;
+            margin: 16px 0;
+            padding: 16px 0;
+            border-top: 1px solid rgba(74, 144, 226, 0.1);
+            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
         }
-
-        .promo-stat {
-            text-align: center;
+        .promo-info-item {
+            font-size: 12px;
         }
-
-        .promo-stat-value {
-            font-size: 24px;
-            font-weight: 800;
-            color: #4a90e2;
+        .promo-info-label {
+            color: #666;
             margin-bottom: 4px;
         }
-
-        .promo-stat-label {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .promo-details {
-            margin-bottom: 24px;
-        }
-
-        .promo-detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
-            font-size: 14px;
-        }
-
-        .promo-detail-row:last-child {
-            border-bottom: none;
-        }
-
-        .promo-detail-label {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .promo-detail-value {
-            font-weight: 600;
-        }
-
-        .promo-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .promo-btn {
-            padding: 12px;
-            background: rgba(74, 144, 226, 0.1);
-            border: 1px solid rgba(74, 144, 226, 0.2);
-            border-radius: 10px;
+        .promo-info-value {
+            font-weight: 700;
             color: #4a90e2;
-            font-size: 13px;
+        }
+        
+        .promo-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 6px;
+        }
+        .btn-edit {
+            background: rgba(74, 144, 226, 0.1);
+            color: #4a90e2;
+            border: 1px solid rgba(74, 144, 226, 0.3);
+        }
+        .btn-delete {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .modal.show { display: flex; align-items: center; justify-content: center; }
+        
+        .modal-content {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .modal-header h2 { font-size: 20px; font-weight: 900; }
+        .close-btn {
+            width: 36px;
+            height: 36px;
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            border-radius: 10px;
+            color: #f44336;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #b0b0b0;
+            margin-bottom: 8px;
+        }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            background: rgba(74, 144, 226, 0.05);
+            border: 1px solid rgba(74, 144, 226, 0.1);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-checkbox {
+            display: flex;
+            align-items: center;
             gap: 8px;
         }
-
-        .promo-btn:hover {
-            background: #4a90e2;
-            color: white;
+        
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
         }
-
-        .promo-btn.danger {
-            background: rgba(231, 76, 60, 0.1);
-            border-color: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
+        
+        .loading, .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #b0b0b0;
         }
-
-        .promo-btn.danger:hover {
-            background: #e74c3c;
-            color: white;
+        .loading i, .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.5;
         }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 16px;
-            }
-
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
-            }
-
-            .promos-grid {
-                grid-template-columns: 1fr;
-            }
+        
+        @media (max-width: 480px) {
+            .header h1 { font-size: 20px; }
+            .promo-info { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <aside class="sidebar">
-        <div class="logo">
-            <h1>Tem de Tudo</h1>
-            <p>Painel Empresa</p>
-        </div>
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="empresa-dashboard.html" class="nav-link">
-                    <i class="fas fa-chart-line"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-qrcode.html" class="nav-link">
-                    <i class="fas fa-qrcode"></i>
-                    QR Code
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-scanner.html" class="nav-link">
-                    <i class="fas fa-camera"></i>
-                    Scanner
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-clientes.html" class="nav-link">
-                    <i class="fas fa-users"></i>
-                    Clientes
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-promocoes.html" class="nav-link active">
-                    <i class="fas fa-gift"></i>
-                    Promoções
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-bonus.html" class="nav-link">
-                    <i class="fas fa-star"></i>
-                    Bônus
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-notificacoes.html" class="nav-link">
-                    <i class="fas fa-bell"></i>
-                    Notificações
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-relatorios.html" class="nav-link">
-                    <i class="fas fa-file-alt"></i>
-                    Relatórios
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-configuracoes.html" class="nav-link">
-                    <i class="fas fa-cog"></i>
-                    Configurações
-                </a>
-            </li>
-        </ul>
-    </aside>
-
-    <main class="main-content">
-        <div class="header">
-            <div class="header-left">
-                <h2>Promoções</h2>
-                <p>Gerencie suas promoções ativas e crie novas</p>
-            </div>
-            <button class="create-btn" onclick="location.href='empresa-nova-promocao.html'">
-                <i class="fas fa-plus"></i>
-                Nova Promoção
+    <div class="header">
+        <div class="header-top">
+            <button class="back-btn" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
             </button>
-        </div>
-
-        <div class="promos-grid">
-            <div class="promo-card">
-                <div class="promo-header">
-                    <span class="promo-status">🔥 Ativa</span>
-                    <div class="promo-icon">🎁</div>
-                    <div class="promo-title">Dobro de Pontos</div>
-                    <div class="promo-subtitle">Compras acima de R$ 50</div>
-                </div>
-                <div class="promo-body">
-                    <div class="promo-stats">
-                        <div class="promo-stat">
-                            <div class="promo-stat-value">347</div>
-                            <div class="promo-stat-label">Ativações</div>
-                        </div>
-                        <div class="promo-stat">
-                            <div class="promo-stat-value">2 dias</div>
-                            <div class="promo-stat-label">Restantes</div>
-                        </div>
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Início:</span>
-                            <span class="promo-detail-value">15/01/2024</span>
-                        </div>
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Término:</span>
-                            <span class="promo-detail-value">22/01/2024</span>
-                        </div>
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Benefício:</span>
-                            <span class="promo-detail-value">2x pontos</span>
-                        </div>
-                    </div>
-                    <div class="promo-actions">
-                        <button class="promo-btn"><i class="fas fa-edit"></i> Editar</button>
-                        <button class="promo-btn danger"><i class="fas fa-pause"></i> Pausar</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="promo-card">
-                <div class="promo-header red">
-                    <span class="promo-status">🔥 Ativa</span>
-                    <div class="promo-icon">🍕</div>
-                    <div class="promo-title">Pizza Grátis</div>
-                    <div class="promo-subtitle">Na compra de 2 grandes</div>
-                </div>
-                <div class="promo-body">
-                    <div class="promo-stats">
-                        <div class="promo-stat">
-                            <div class="promo-stat-value">89</div>
-                            <div class="promo-stat-label">Ativações</div>
-                        </div>
-                        <div class="promo-stat">
-                            <div class="promo-stat-value">5 dias</div>
-                            <div class="promo-stat-label">Restantes</div>
-                        </div>
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Início:</span>
-                            <span class="promo-detail-value">10/01/2024</span>
-                        </div>
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Término:</span>
-                            <span class="promo-detail-value">25/01/2024</span>
-                        </div>
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Benefício:</span>
-                            <span class="promo-detail-value">1 pizza grátis</span>
-                        </div>
-                    </div>
-                    <div class="promo-actions">
-                        <button class="promo-btn"><i class="fas fa-edit"></i> Editar</button>
-                        <button class="promo-btn danger"><i class="fas fa-pause"></i> Pausar</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="promo-card">
-                <div class="promo-header purple">
-                    <span class="promo-status">⏸ Pausada</span>
-                    <div class="promo-icon">💆</div>
-                    <div class="promo-title">30% Desconto</div>
-                    <div class="promo-subtitle">Em todos os tratamentos</div>
-                </div>
-                <div class="promo-body">
-                    <div class="promo-stats">
-                        <div class="promo-stat">
-                            <div class="promo-stat-value">124</div>
-                            <div class="promo-stat-label">Ativações</div>
-                        </div>
-                        <div class="promo-stat">
-                            <div class="promo-stat-value">15 dias</div>
-                            <div class="promo-stat-label">Restantes</div>
-                        </div>
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Início:</span>
-                            <span class="promo-detail-value">05/01/2024</span>
-                        </div>
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Término:</span>
-                            <span class="promo-detail-value">05/02/2024</span>
-                        </div>
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Benefício:</span>
-                            <span class="promo-detail-value">30% desconto</span>
-                        </div>
-                    </div>
-                    <div class="promo-actions">
-                        <button class="promo-btn"><i class="fas fa-play"></i> Ativar</button>
-                        <button class="promo-btn danger"><i class="fas fa-trash"></i> Excluir</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="promo-card">
-                <div class="promo-header green">
-                    <span class="promo-status">✓ Agendada</span>
-                    <div class="promo-icon">🏋️</div>
-                    <div class="promo-title">Mês Grátis</div>
-                    <div class="promo-subtitle">Para novos alunos</div>
-                </div>
-                <div class="promo-body">
-                    <div class="promo-stats">
-                        <div class="promo-stat">
-                            <div class="promo-stat-value">0</div>
-                            <div class="promo-stat-label">Ativações</div>
-                        </div>
-                        <div class="promo-stat">
-                            <div class="promo-stat-value">-</div>
-                            <div class="promo-stat-label">Aguardando</div>
-                        </div>
-                    </div>
-                    <div class="promo-details">
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Início:</span>
-                            <span class="promo-detail-value">01/02/2024</span>
-                        </div>
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Término:</span>
-                            <span class="promo-detail-value">28/02/2024</span>
-                        </div>
-                        <div class="promo-detail-row">
-                            <span class="promo-detail-label">Benefício:</span>
-                            <span class="promo-detail-value">1 mês grátis</span>
-                        </div>
-                    </div>
-                    <div class="promo-actions">
-                        <button class="promo-btn"><i class="fas fa-edit"></i> Editar</button>
-                        <button class="promo-btn danger"><i class="fas fa-trash"></i> Excluir</button>
-                    </div>
-                </div>
+            <div>
+                <h1>Promoções</h1>
+                <p id="totalInfo">Carregando...</p>
             </div>
         </div>
-    </main>
+        
+        <button class="add-btn" onclick="openModal()">
+            <i class="fas fa-plus"></i> Nova Promoção
+        </button>
+    </div>
+    
+    <div class="content">
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando promoções...</p>
+        </div>
+        
+        <div id="promo-list" class="promo-list" style="display: none;"></div>
+        
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <i class="fas fa-gift"></i>
+            <p>Nenhuma promoção cadastrada</p>
+            <small style="display: block; margin-top: 8px; color: #666;">Clique em "Nova Promoção" para criar</small>
+        </div>
+    </div>
+    
+    <!-- Modal de Criar/Editar -->
+    <div id="promoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Nova Promoção</h2>
+                <button class="close-btn" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="promoForm" onsubmit="handleSubmit(event)">
+                <input type="hidden" id="promoId">
+                
+                <div class="form-group">
+                    <label class="form-label">Nome da Promoção *</label>
+                    <input type="text" id="nome" class="form-input" placeholder="Ex: Desconto de 15%" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <textarea id="descricao" class="form-textarea" placeholder="Descreva os detalhes da promoção..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Tipo de Promoção *</label>
+                    <select id="tipo" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        <option value="desconto">Desconto</option>
+                        <option value="dobro">Dobro de Pontos</option>
+                        <option value="brinde">Brinde</option>
+                        <option value="cashback">Cashback</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Pontos Necessários</label>
+                    <input type="number" id="pontos_necessarios" class="form-input" placeholder="0" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Data de Início</label>
+                    <input type="date" id="data_inicio" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Data de Término</label>
+                    <input type="date" id="data_fim" class="form-input">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" id="ativo" checked>
+                        <span>Promoção ativa</span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <i class="fas fa-save"></i> Salvar Promoção
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de Confirmação -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>Confirmar Exclusão</h2>
+                <button class="close-btn" onclick="closeConfirmModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <p style="margin-bottom: 24px; color: #b0b0b0;">Tem certeza que deseja excluir esta promoção?</p>
+            
+            <div style="display: flex; gap: 8px;">
+                <button onclick="closeConfirmModal()" class="btn-action btn-edit" style="flex: 1;">
+                    Cancelar
+                </button>
+                <button onclick="confirmDelete()" class="btn-action btn-delete" style="flex: 1;">
+                    Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let promocoes = [];
+        let deleteId = null;
+        
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'entrar.html';
+                return false;
+            }
+            return token;
+        }
+        
+        async function loadPromocoes() {
+            const token = checkAuth();
+            if (!token) return;
+
+            try {
+                const response = await fetch('/api/empresa/promocoes', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    promocoes = result.data || [];
+                    
+                    if (promocoes.length > 0) {
+                        renderPromocoes();
+                    } else {
+                        showEmptyState();
+                    }
+                } else if (response.status === 401) {
+                    window.location.href = 'entrar.html';
+                } else {
+                    showEmptyState();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar promoções:', error);
+                showEmptyState();
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        function renderPromocoes() {
+            const list = document.getElementById('promo-list');
+            
+            list.innerHTML = promocoes.map(promo => {
+                const ativo = promo.ativo == 1;
+                const dataInicio = promo.data_inicio ? new Date(promo.data_inicio).toLocaleDateString('pt-BR') : 'Não definida';
+                const dataFim = promo.data_fim ? new Date(promo.data_fim).toLocaleDateString('pt-BR') : 'Não definida';
+                
+                return `
+                    <div class="promo-card">
+                        <div class="promo-badge ${ativo ? 'badge-ativo' : 'badge-inativo'}">
+                            ${ativo ? 'Ativa' : 'Inativa'}
+                        </div>
+                        
+                        <div class="promo-header">
+                            <div class="promo-nome">${promo.nome}</div>
+                            ${promo.descricao ? `<div class="promo-descricao">${promo.descricao}</div>` : ''}
+                        </div>
+                        
+                        <div class="promo-info">
+                            <div class="promo-info-item">
+                                <div class="promo-info-label">Tipo</div>
+                                <div class="promo-info-value">${getTipoLabel(promo.tipo)}</div>
+                            </div>
+                            <div class="promo-info-item">
+                                <div class="promo-info-label">Pontos</div>
+                                <div class="promo-info-value">${promo.pontos_necessarios || 0}</div>
+                            </div>
+                            <div class="promo-info-item">
+                                <div class="promo-info-label">Início</div>
+                                <div class="promo-info-value" style="font-size: 11px;">${dataInicio}</div>
+                            </div>
+                            <div class="promo-info-item">
+                                <div class="promo-info-label">Fim</div>
+                                <div class="promo-info-value" style="font-size: 11px;">${dataFim}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="promo-actions">
+                            <button class="btn-action btn-edit" onclick="editPromocao(${promo.id})">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deletePromocao(${promo.id})">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            list.style.display = 'grid';
+            document.getElementById('totalInfo').textContent = `${promocoes.length} ${promocoes.length === 1 ? 'promoção' : 'promoções'}`;
+        }
+        
+        function getTipoLabel(tipo) {
+            const tipos = {
+                'desconto': 'Desconto',
+                'dobro': 'Dobro de Pontos',
+                'brinde': 'Brinde',
+                'cashback': 'Cashback'
+            };
+            return tipos[tipo] || tipo;
+        }
+        
+        function openModal(promo = null) {
+            const modal = document.getElementById('promoModal');
+            const form = document.getElementById('promoForm');
+            
+            form.reset();
+            
+            if (promo) {
+                document.getElementById('modalTitle').textContent = 'Editar Promoção';
+                document.getElementById('promoId').value = promo.id;
+                document.getElementById('nome').value = promo.nome;
+                document.getElementById('descricao').value = promo.descricao || '';
+                document.getElementById('tipo').value = promo.tipo;
+                document.getElementById('pontos_necessarios').value = promo.pontos_necessarios || 0;
+                document.getElementById('data_inicio').value = promo.data_inicio || '';
+                document.getElementById('data_fim').value = promo.data_fim || '';
+                document.getElementById('ativo').checked = promo.ativo == 1;
+                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Atualizar Promoção';
+            } else {
+                document.getElementById('modalTitle').textContent = 'Nova Promoção';
+                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Salvar Promoção';
+            }
+            
+            modal.classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('promoModal').classList.remove('show');
+        }
+        
+        function editPromocao(id) {
+            const promo = promocoes.find(p => p.id === id);
+            if (promo) {
+                openModal(promo);
+            }
+        }
+        
+        function deletePromocao(id) {
+            deleteId = id;
+            document.getElementById('confirmModal').classList.add('show');
+        }
+        
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+            deleteId = null;
+        }
+        
+        async function confirmDelete() {
+            if (!deleteId) return;
+            
+            const token = checkAuth();
+            if (!token) return;
+
+            try {
+                const response = await fetch(`/api/empresa/promocoes/${deleteId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    closeConfirmModal();
+                    loadPromocoes();
+                } else {
+                    alert('Erro ao excluir promoção');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir:', error);
+                alert('Erro ao excluir promoção');
+            }
+        }
+        
+        async function handleSubmit(e) {
+            e.preventDefault();
+            
+            const token = checkAuth();
+            if (!token) return;
+            
+            const id = document.getElementById('promoId').value;
+            const data = {
+                nome: document.getElementById('nome').value,
+                descricao: document.getElementById('descricao').value,
+                tipo: document.getElementById('tipo').value,
+                pontos_necessarios: document.getElementById('pontos_necessarios').value || 0,
+                data_inicio: document.getElementById('data_inicio').value,
+                data_fim: document.getElementById('data_fim').value,
+                ativo: document.getElementById('ativo').checked ? 1 : 0
+            };
+            
+            try {
+                const url = id ? `/api/empresa/promocoes/${id}` : '/api/empresa/promocoes';
+                const method = id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    closeModal();
+                    loadPromocoes();
+                } else {
+                    alert('Erro ao salvar promoção');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                alert('Erro ao salvar promoção');
+            }
+        }
+        
+        function showEmptyState() {
+            document.getElementById('empty-state').style.display = 'block';
+            document.getElementById('totalInfo').textContent = '0 promoções';
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadPromocoes);
+    </script>
 </body>
 </html>

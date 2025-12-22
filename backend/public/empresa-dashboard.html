@@ -3,465 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
     <title>Dashboard Empresa - Tem de Tudo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0f; min-height: 100vh; color: #fff; }
+        
+        .header { 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            padding: 24px 20px; 
+            border-bottom: 1px solid rgba(74, 144, 226, 0.1); 
         }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0a0a0f;
-            color: #ffffff;
-            display: flex;
-            min-height: 100vh;
+        .header h1 { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+        .header p { font-size: 14px; color: #b0b0b0; }
+        
+        .stats-grid { 
+            padding: 20px; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 16px; 
         }
-
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-right: 1px solid rgba(74, 144, 226, 0.1);
-            padding: 24px 0;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
+        
+        .stat-card { 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            border-radius: 16px; 
+            padding: 24px; 
+            border: 1px solid rgba(74, 144, 226, 0.1); 
         }
-
-        .logo {
-            padding: 0 24px 24px;
-            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
-            margin-bottom: 24px;
+        .stat-label { font-size: 13px; color: #b0b0b0; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 36px; font-weight: 900; color: #4a90e2; }
+        .stat-subtitle { font-size: 12px; color: #666; margin-top: 8px; }
+        
+        .content { padding: 0 20px 40px; }
+        
+        .section-card { 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            border-radius: 16px; 
+            padding: 24px; 
+            margin-bottom: 20px; 
+            border: 1px solid rgba(74, 144, 226, 0.1); 
         }
-
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 900;
-            color: #4a90e2;
+        .section-title { 
+            font-size: 18px; 
+            font-weight: 800; 
+            margin-bottom: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
         }
-
-        .logo p {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 4px;
+        .section-title i { color: #4a90e2; }
+        
+        .list-item { 
+            background: rgba(74, 144, 226, 0.05); 
+            border: 1px solid rgba(74, 144, 226, 0.1); 
+            border-radius: 12px; 
+            padding: 16px; 
+            margin-bottom: 12px; 
         }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            padding: 0 16px;
-            margin-bottom: 4px;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            border-radius: 12px;
-            transition: all 0.3s;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .nav-link i {
-            margin-right: 12px;
-            font-size: 18px;
-            width: 24px;
-        }
-
-        .nav-link:hover {
-            background: rgba(74, 144, 226, 0.1);
-            color: #4a90e2;
-        }
-
-        .nav-link.active {
-            background: rgba(74, 144, 226, 0.15);
-            color: #4a90e2;
-            box-shadow: 0 0 20px rgba(74, 144, 226, 0.2);
-        }
-
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 32px;
-        }
-
-        .header {
-            margin-bottom: 32px;
-        }
-
-        .header h2 {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .header p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-        }
-
-        .stats-grid {
+        .list-item:last-child { margin-bottom: 0; }
+        .list-item strong { color: #4a90e2; font-size: 15px; }
+        .list-item small { color: #666; font-size: 12px; }
+        .list-item .points { color: #f39c12; font-weight: 700; }
+        
+        .nav-buttons {
+            padding: 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
         }
-
-        .stat-card {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(74, 144, 226, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
-            border-color: rgba(74, 144, 226, 0.3);
-        }
-
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(74, 144, 226, 0.1);
+        .nav-btn {
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            color: white;
+            padding: 16px;
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #4a90e2;
-            margin-bottom: 16px;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            color: #4a90e2;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .chart-card {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(74, 144, 226, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .chart-title {
-            font-size: 18px;
+            text-align: center;
+            text-decoration: none;
             font-weight: 700;
-        }
-
-        .chart-filter {
-            display: flex;
-            gap: 8px;
-        }
-
-        .filter-btn {
-            padding: 8px 16px;
-            background: rgba(74, 144, 226, 0.1);
-            border: 1px solid rgba(74, 144, 226, 0.2);
-            border-radius: 8px;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 12px;
-            font-weight: 600;
+            border: none;
             cursor: pointer;
             transition: all 0.3s;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: #4a90e2;
-            color: white;
-        }
-
-        .recent-activity {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(74, 144, 226, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            background: rgba(74, 144, 226, 0.1);
-            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 16px;
-            font-size: 18px;
+            gap: 8px;
         }
-
-        .activity-content {
-            flex: 1;
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
         }
-
-        .activity-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 4px;
+        .logout-btn { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #b0b0b0;
         }
-
-        .activity-time {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .activity-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #4a90e2;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 16px;
-            }
+        
+        @media (max-width: 480px) {
+            .header h1 { font-size: 24px; }
+            .stat-value { font-size: 28px; }
+            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <aside class="sidebar">
-        <div class="logo">
-            <h1>Tem de Tudo</h1>
-            <p>Painel Empresa</p>
-        </div>
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="empresa-dashboard.html" class="nav-link active">
-                    <i class="fas fa-chart-line"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-qrcode.html" class="nav-link">
-                    <i class="fas fa-qrcode"></i>
-                    QR Code
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-scanner.html" class="nav-link">
-                    <i class="fas fa-camera"></i>
-                    Scanner
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-clientes.html" class="nav-link">
-                    <i class="fas fa-users"></i>
-                    Clientes
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-promocoes.html" class="nav-link">
-                    <i class="fas fa-gift"></i>
-                    Promoções
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-bonus.html" class="nav-link">
-                    <i class="fas fa-star"></i>
-                    Bônus
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-notificacoes.html" class="nav-link">
-                    <i class="fas fa-bell"></i>
-                    Notificações
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-relatorios.html" class="nav-link">
-                    <i class="fas fa-file-alt"></i>
-                    Relatórios
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-configuracoes.html" class="nav-link">
-                    <i class="fas fa-cog"></i>
-                    Configurações
-                </a>
-            </li>
-        </ul>
-    </aside>
-
-    <main class="main-content">
-        <div class="header">
-            <h2>Dashboard</h2>
-            <p>Visão geral do seu negócio</p>
-        </div>
-
+    <div class="header">
+        <h1 id="empresaNome">Dashboard Empresa</h1>
+        <p id="empresaInfo">Carregando...</p>
+    </div>
+    
+    <div id="loading" class="loading">
+        <i class="fas fa-spinner fa-spin" style="font-size: 48px;"></i>
+        <p style="margin-top: 20px;">Carregando dashboard...</p>
+    </div>
+    
+    <div id="content" style="display: none;">
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stat-value">2.847</div>
-                <div class="stat-label">Clientes Ativos</div>
+                <div class="stat-label"><i class="fas fa-users"></i> Total Clientes</div>
+                <div class="stat-value" id="totalClientes">0</div>
+                <div class="stat-subtitle">Clientes únicos</div>
             </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-qrcode"></i>
-                </div>
-                <div class="stat-value">1.234</div>
-                <div class="stat-label">Scans Hoje</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-coins"></i>
-                </div>
-                <div class="stat-value">45.678</div>
-                <div class="stat-label">Pontos Distribuídos</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="stat-value">+18%</div>
-                <div class="stat-label">Crescimento Mês</div>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <div class="chart-header">
-                <h3 class="chart-title">Visitas nos Últimos Dias</h3>
-                <div class="chart-filter">
-                    <button class="filter-btn">7 dias</button>
-                    <button class="filter-btn active">30 dias</button>
-                    <button class="filter-btn">90 dias</button>
-                </div>
-            </div>
-            <div style="text-align: center; padding: 80px 0; color: rgba(255,255,255,0.4);">
-                <i class="fas fa-chart-bar" style="font-size: 48px; margin-bottom: 16px;"></i>
-                <p>Gráfico de visitas (integração pendente)</p>
-            </div>
-        </div>
-
-        <div class="recent-activity">
-            <h3 class="chart-title" style="margin-bottom: 16px;">Atividade Recente</h3>
             
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-user-plus" style="color: #4a90e2;"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">Novo cliente cadastrado</div>
-                    <div class="activity-time">Há 5 minutos</div>
-                </div>
-                <div class="activity-value">Maria Silva</div>
+            <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-coins"></i> Pontos Distribuídos</div>
+                <div class="stat-value" id="pontosDistribuidos">0</div>
+                <div class="stat-subtitle">Total de pontos</div>
             </div>
-
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-qrcode" style="color: #4a90e2;"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">QR Code escaneado</div>
-                    <div class="activity-time">Há 12 minutos</div>
-                </div>
-                <div class="activity-value">+50 pts</div>
+            
+            <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-qrcode"></i> Check-ins Hoje</div>
+                <div class="stat-value" id="checkinsHoje">0</div>
+                <div class="stat-subtitle">Últimas 24h</div>
             </div>
-
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-gift" style="color: #f39c12;"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">Recompensa resgatada</div>
-                    <div class="activity-time">Há 32 minutos</div>
-                </div>
-                <div class="activity-value">Hamburguer Grátis</div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-percentage" style="color: #9b59b6;"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">Promoção ativada</div>
-                    <div class="activity-time">Há 1 hora</div>
-                </div>
-                <div class="activity-value">Dobro de Pontos</div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon">
-                    <i class="fas fa-star" style="color: #f39c12;"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">Avaliação recebida</div>
-                    <div class="activity-time">Há 2 horas</div>
-                </div>
-                <div class="activity-value">⭐⭐⭐⭐⭐</div>
+            
+            <div class="stat-card">
+                <div class="stat-label"><i class="fas fa-star"></i> Avaliação Média</div>
+                <div class="stat-value" id="avaliacaoMedia">5.0</div>
+                <div class="stat-subtitle">Baseado em avaliações</div>
             </div>
         </div>
-    </main>
+        
+        <div class="nav-buttons">
+            <a href="empresa-scanner.html" class="nav-btn">
+                <i class="fas fa-qrcode"></i> Escanear Cliente
+            </a>
+            <a href="empresa-clientes.html" class="nav-btn">
+                <i class="fas fa-users"></i> Ver Clientes
+            </a>
+            <a href="empresa-promocoes.html" class="nav-btn">
+                <i class="fas fa-gift"></i> Promoções
+            </a>
+            <a href="empresa-qrcode.html" class="nav-btn">
+                <i class="fas fa-qrcode"></i> Meus QR Codes
+            </a>
+            <a href="empresa-relatorios.html" class="nav-btn">
+                <i class="fas fa-chart-bar"></i> Relatórios
+            </a>
+            <button onclick="logout()" class="nav-btn logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </div>
+        
+        <div class="content">
+            <div class="section-card" id="clientesCard" style="display: none;">
+                <h3 class="section-title">
+                    <i class="fas fa-crown"></i>
+                    <span>Top Clientes</span>
+                </h3>
+                <div id="topClientesList"></div>
+            </div>
+            
+            <div class="section-card" id="avaliacoesCard" style="display: none;">
+                <h3 class="section-title">
+                    <i class="fas fa-star"></i>
+                    <span>Avaliações Recentes</span>
+                </h3>
+                <div id="avaliacoesList"></div>
+            </div>
+        </div>
+    </div>
     
     <script>
-        // Proteção de autenticação
-        window.addEventListener('DOMContentLoaded', function() {
+        let dashboardData = null;
+        
+        function checkAuth() {
             const token = localStorage.getItem('token');
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
-            
-            if (!token || user.user_type !== 'empresa') {
-                alert('Acesso negado. Faça login como empresa.');
+            if (!token) {
                 window.location.href = 'entrar.html';
-                return;
+                return false;
             }
-            
-            // Carregar dados do usuário se necessário
-            console.log('Empresa autenticada:', user);
-        });
+            return token;
+        }
         
         function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = 'entrar.html';
+            if (confirm('Deseja realmente sair?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'entrar.html';
+            }
         }
+        
+        async function loadDashboard() {
+            const token = checkAuth();
+            if (!token) return;
+
+            try {
+                const response = await fetch('/api/empresa/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    dashboardData = result.data;
+                    
+                    console.log('Dashboard carregado:', dashboardData);
+                    renderDashboard();
+                } else if (response.status === 401) {
+                    logout();
+                } else {
+                    console.error('Erro na resposta:', response.status);
+                    showError();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+                showError();
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            }
+        }
+        
+        function renderDashboard() {
+            const { empresa, total_clientes, pontos_distribuidos, checkins_hoje, avaliacao_media, top_clientes, avaliacoes_recentes } = dashboardData;
+            
+            document.getElementById('empresaNome').textContent = empresa.nome;
+            document.getElementById('empresaInfo').textContent = `${empresa.ramo} • ${empresa.cidade || 'São Paulo'}`;
+            
+            document.getElementById('totalClientes').textContent = total_clientes || 0;
+            document.getElementById('pontosDistribuidos').textContent = (pontos_distribuidos || 0).toLocaleString('pt-BR');
+            document.getElementById('checkinsHoje').textContent = checkins_hoje || 0;
+            document.getElementById('avaliacaoMedia').textContent = (avaliacao_media || 5.0).toFixed(1);
+            
+            if (top_clientes && top_clientes.length > 0) {
+                document.getElementById('clientesCard').style.display = 'block';
+                renderTopClientes(top_clientes);
+            }
+            
+            if (avaliacoes_recentes && avaliacoes_recentes.length > 0) {
+                document.getElementById('avaliacoesCard').style.display = 'block';
+                renderAvaliacoes(avaliacoes_recentes);
+            }
+        }
+        
+        function renderTopClientes(clientes) {
+            const list = document.getElementById('topClientesList');
+            
+            list.innerHTML = clientes.slice(0, 5).map((cliente, index) => {
+                const medals = ['🥇', '🥈', '🥉'];
+                const medal = medals[index] || '🏅';
+                
+                return `
+                    <div class="list-item">
+                        <strong>${medal} ${cliente.cliente_nome}</strong><br>
+                        <span class="points">${cliente.total_pontos} pontos</span> •
+                        <small>${cliente.total_transacoes} transações</small>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderAvaliacoes(avaliacoes) {
+            const list = document.getElementById('avaliacoesList');
+            
+            list.innerHTML = avaliacoes.slice(0, 5).map(av => {
+                const stars = '⭐'.repeat(av.nota);
+                const date = new Date(av.created_at).toLocaleDateString('pt-BR');
+                
+                return `
+                    <div class="list-item">
+                        <strong>${av.cliente_nome}</strong> • ${stars}<br>
+                        ${av.comentario ? `<p style="margin: 8px 0; color: #b0b0b0;">${av.comentario}</p>` : ''}
+                        <small>${date}</small>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function showError() {
+            document.getElementById('empresaNome').textContent = 'Erro ao carregar';
+            document.getElementById('empresaInfo').textContent = 'Tente novamente mais tarde';
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadDashboard);
     </script>
 </body>
 </html>

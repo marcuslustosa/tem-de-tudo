@@ -22,14 +22,9 @@ class AdminUserSeeder extends Seeder
                 'password' => Hash::make('admin123'),
                 'perfil' => 'admin',
                 'pontos' => 0,
-                'pontos_pendentes' => 0,
                 'nivel' => 'Diamante',
                 'telefone' => '(11) 99999-9999',
                 'status' => 'ativo',
-                'email_notifications' => true,
-                'points_notifications' => true,
-                'security_notifications' => true,
-                'promotional_notifications' => true,
                 'email_verified_at' => now()
             ]
         );
@@ -43,14 +38,9 @@ class AdminUserSeeder extends Seeder
                 'password' => Hash::make('operador123'),
                 'perfil' => 'admin',
                 'pontos' => 0,
-                'pontos_pendentes' => 0,
                 'nivel' => 'Ouro',
                 'telefone' => '(11) 88888-8888',
                 'status' => 'ativo',
-                'email_notifications' => true,
-                'points_notifications' => true,
-                'security_notifications' => true,
-                'promotional_notifications' => false,
                 'email_verified_at' => now()
             ]
         );
@@ -64,14 +54,9 @@ class AdminUserSeeder extends Seeder
                 'password' => Hash::make('cliente123'),
                 'perfil' => 'cliente',
                 'pontos' => 500,
-                'pontos_pendentes' => 0,
                 'nivel' => 'Bronze',
                 'telefone' => '(11) 77777-7777',
                 'status' => 'ativo',
-                'email_notifications' => true,
-                'points_notifications' => true,
-                'security_notifications' => false,
-                'promotional_notifications' => true,
                 'email_verified_at' => now()
             ]
         );

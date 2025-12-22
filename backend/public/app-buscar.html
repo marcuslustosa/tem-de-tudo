@@ -359,6 +359,25 @@
                     renderEstablishments(allEstablishments);
                     
                     console.log('Empresas carregadas:', allEstablishments.length);
+                } else {
+                    console.error('Erro ao carregar empresas');
+                    renderEmptyState();
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                renderEmptyState();
+            }
+        }
+        
+        function renderEstablishments(establishments) {
+            const grid = document.getElementById('estabelecimentosGrid');
+            
+            if (!establishments || establishments.length === 0) {
+                renderEmptyState();
+                return;
+            }
+            
+            const icons = {
                 'academia': '🏋️',
                 'cafeteria': '☕',
                 'pet_shop': '🐾',
