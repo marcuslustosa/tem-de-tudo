@@ -1,11 +1,17 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aplicar Desconto - Tem de Tudo</title>
     <link rel="stylesheet" href="/css/modern-theme.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/mobile-native.css">
+    <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="css/temdetudo-theme.css">
 </head>
 <body>
@@ -71,11 +77,11 @@
             >
 
             <div class="calc-row">
-                <span class="calc-label">Nível do Cliente:</span>
+                <span class="calc-label">Nï¿½vel do Cliente:</span>
                 <span class="calc-value" id="calcLevel">Bronze</span>
             </div>
             <div class="calc-row">
-                <span class="calc-label">Desconto Aplicável:</span>
+                <span class="calc-label">Desconto Aplicï¿½vel:</span>
                 <span class="calc-value" id="calcDiscount">5%</span>
             </div>
             <div class="calc-row">
@@ -119,9 +125,9 @@
                 return;
             }
 
-            // Simulação de busca (integre com sua API)
+            // Simulaï¿½ï¿½o de busca (integre com sua API)
             currentCustomer = {
-                name: 'João da Silva',
+                name: 'Joï¿½o da Silva',
                 email: 'joao.silva@email.com',
                 points: 5500,
                 level: 'Ouro',
@@ -144,7 +150,7 @@
             const levelBadge = document.getElementById('customerLevel');
             levelBadge.textContent = customer.level;
             
-            // Cores dos níveis
+            // Cores dos nï¿½veis
             const levelColors = {
                 'Bronze': '#CD7F32',
                 'Prata': '#C0C0C0',
@@ -178,14 +184,14 @@
             const purchaseValue = parseFloat(document.getElementById('purchaseValue').value) || 0;
             
             if (purchaseValue <= 0) {
-                alert('Por favor, informe um valor de compra válido.');
+                alert('Por favor, informe um valor de compra vï¿½lido.');
                 return;
             }
 
-            if (confirm(`Confirmar aplicação do desconto de ${currentCustomer.discount}% para ${currentCustomer.name}?`)) {
+            if (confirm(`Confirmar aplicaï¿½ï¿½o do desconto de ${currentCustomer.discount}% para ${currentCustomer.name}?`)) {
                 alert('Desconto aplicado com sucesso! ?');
                 
-                // Limpar formulário
+                // Limpar formulï¿½rio
                 document.getElementById('searchInput').value = '';
                 document.getElementById('purchaseValue').value = '';
                 document.getElementById('customerInfo').style.display = 'none';
