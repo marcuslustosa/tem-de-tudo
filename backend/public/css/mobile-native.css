@@ -1,0 +1,363 @@
+/* ==============================================
+   OTIMIZAÇÃO MOBILE NATIVA - TEM DE TUDO APP
+   ============================================== */
+
+/* Reset e Base Mobile-First */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+input, textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+html, body {
+    /* Previne scroll bounce no iOS */
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    
+    /* Smooth scroll */
+    scroll-behavior: smooth;
+    
+    /* Altura 100% real (considera notch) */
+    height: 100%;
+    height: -webkit-fill-available;
+}
+
+body {
+    /* Safe area para dispositivos com notch */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    
+    /* Previne zoom em duplo toque */
+    touch-action: manipulation;
+    
+    /* Fonte mais suave em mobile */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Botões e elementos interativos */
+button, a, .clickable {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    touch-action: manipulation;
+    
+    /* Feedback visual nativo */
+    -webkit-tap-highlight-color: rgba(74, 144, 226, 0.1);
+}
+
+button:active, a:active, .clickable:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+}
+
+/* Inputs otimizados */
+input, textarea, select {
+    /* Previne zoom ao focar em iOS */
+    font-size: 16px !important;
+    
+    /* Border radius para iOS */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 8px;
+}
+
+/* Scroll suave e natural */
+.scrollable {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
+/* Header fixo com safe area */
+.header {
+    position: sticky;
+    top: 0;
+    padding-top: max(16px, env(safe-area-inset-top));
+    z-index: 1000;
+}
+
+/* Bottom Navigation com safe area */
+.bottom-nav, .floating-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 1000;
+}
+
+/* Previne pull-to-refresh em áreas específicas */
+.no-pull-refresh {
+    overscroll-behavior-y: contain;
+}
+
+/* Loader e transições suaves */
+.loading {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    perspective: 1000;
+}
+
+/* Cards e containers interativos */
+.card, .item, .list-item {
+    /* Hardware acceleration */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+.card:active, .item:active {
+    transform: scale(0.98) translateZ(0);
+}
+
+/* Modal e overlay */
+.modal, .overlay {
+    /* Previne scroll do body */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Tabs e navegação horizontal */
+.tabs, .horizontal-scroll {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.tabs::-webkit-scrollbar,
+.horizontal-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-item, .scroll-item {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+}
+
+/* Grid responsivo */
+.grid-responsive {
+    display: grid;
+    gap: 16px;
+    padding: 16px;
+}
+
+@media (min-width: 320px) {
+    .grid-responsive { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 480px) {
+    .grid-responsive { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 768px) {
+    .grid-responsive { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Ripple effect para feedback tátil */
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Pull to refresh customizado */
+.pull-to-refresh {
+    overscroll-behavior-y: contain;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Skeleton loading */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Toasts e notificações */
+.toast {
+    position: fixed;
+    bottom: calc(80px + env(safe-area-inset-bottom));
+    left: 16px;
+    right: 16px;
+    z-index: 9999;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Otimizações específicas para iOS */
+@supports (-webkit-touch-callout: none) {
+    /* iOS Safari */
+    .ios-safe-bottom {
+        padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"] {
+        /* Previne zoom em iOS */
+        font-size: max(16px, 1rem);
+    }
+}
+
+/* Media Queries para dispositivos específicos */
+
+/* iPhone SE, 12/13 Mini */
+@media (max-width: 375px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .header h1 {
+        font-size: 18px !important;
+    }
+    
+    .btn {
+        padding: 12px 20px !important;
+        font-size: 14px !important;
+    }
+}
+
+/* iPhone 12/13/14 Pro Max, Galaxy S21+ */
+@media (min-width: 428px) {
+    .container {
+        max-width: 428px;
+        margin: 0 auto;
+    }
+}
+
+/* Landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .header {
+        padding: 8px 16px;
+    }
+    
+    .bottom-nav {
+        display: none;
+    }
+    
+    body {
+        padding-bottom: 0;
+    }
+}
+
+/* Dark mode nativo (se disponível) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+    }
+}
+
+/* Animações reduzidas para acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* PWA Standalone mode */
+@media (display-mode: standalone) {
+    body {
+        /* App está em modo standalone (instalado) */
+        user-select: none;
+    }
+    
+    /* Esconde endereço quando instalado */
+    .pwa-install-banner {
+        display: none;
+    }
+}
+
+/* Vibration API helper classes */
+.vibrate-light {
+    /* navigator.vibrate(10) */
+}
+
+.vibrate-medium {
+    /* navigator.vibrate(50) */
+}
+
+.vibrate-strong {
+    /* navigator.vibrate([100, 50, 100]) */
+}
+
+/* Gesture helpers */
+.swipeable {
+    touch-action: pan-y;
+}
+
+.pinch-zoom {
+    touch-action: pinch-zoom;
+}
+
+.no-scroll {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
