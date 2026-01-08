@@ -1,14 +1,14 @@
-# Script para adicionar i9plus-theme.css em todas as paginas HTML
+# Script para adicionar temdetudo-theme.css em todas as páginas HTML
 
 $htmlFiles = Get-ChildItem -Path "public" -Filter "*.html" -Recurse
 
-$linkTag = '    <link rel="stylesheet" href="/css/theme.css">'
+$linkTag = '    <link rel="stylesheet" href="/css/temdetudo-theme.css">'
 
 foreach ($file in $htmlFiles) {
     $content = Get-Content $file.FullName -Raw
     
     # Verificar se ja tem o link
-    if ($content -notmatch 'theme\.css') {
+    if ($content -notmatch 'temdetudo-theme\.css') {
         # Adicionar antes do </head>
         if ($content -match '</head>') {
             $content = $content -replace '</head>', "$linkTag`n</head>"

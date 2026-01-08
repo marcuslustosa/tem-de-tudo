@@ -326,6 +326,10 @@ Route::middleware('auth:sanctum')->prefix('cliente')->group(function () {
     Route::get('/empresas-inscritas', [InscricaoController::class, 'minhasInscricoes']);
     Route::get('/inscricao/{empresa_id}', [InscricaoController::class, 'detalhesInscricao']);
     
+    // Listar TODAS as empresas para busca e navegação
+    Route::get('/empresas', [ClienteController::class, 'listarEmpresas']);
+    Route::get('/historico-pontos', [ClienteController::class, 'historicoPontos']);
+    
     // ========== ROTAS CLIENTE - Fidelidade ==========
     // Bônus de Aniversário
     Route::get('/verificar-aniversario', [ClienteController::class, 'verificarAniversario']);

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\Empresa;
 use App\Models\BonusAniversario;
 use App\Models\CartaoFidelidade;
 use App\Models\BonusAdesao;
@@ -302,6 +304,150 @@ class ClienteController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erro ao resgatar bônus: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Listar TODAS as empresas para busca
+     */
+    public function listarEmpresas(Request $request)
+    {
+        try {
+            $empresas = Empresa::where('ativo', true)
+                ->select(
+                    'id',
+                    'nome',
+                    'ramo',
+                    'descricao',
+                    'endereco',
+                    'telefone',
+                    'logo',
+                    'avaliacao_media',
+                    'total_avaliacoes',
+                    'created_at'
+                )
+                ->orderBy('nome')
+                ->get()
+                ->map(function($empresa) use ($request) {
+                    // Buscar pontos do usuário nesta empresa
+                    $user = $request->user();
+                    $pontosCliente = 0;
+                    
+                    if ($user) {
+                        $pontosCliente = DB::table('pontos')
+                            ->where('user_id', $user->id)
+                            ->where('empresa_id', $empresa->id)
+                            ->where('tipo', 'ganho')
+                            ->sum('pontos');
+                        
+                        $pontosGastos = DB::table('pontos')
+                            ->where('user_id', $user->id)
+                            ->where('empresa_id', $empresa->id)
+                            ->where('tipo', 'resgate')
+                            ->sum('pontos');
+                        
+                        $pontosCliente = $pontosCliente - $pontosGastos;
+                    }
+                    
+                    // Formatar ramo
+                    $ramosFormatados = [
+                        'restaurante' => 'Restaurante',
+                        'academia' => 'Academia',
+                        'cafeteria' => 'Cafeteria',
+                        'pet_shop' => 'Pet Shop',
+                        'salao' => 'Salão de Beleza',
+                        'mercado' => 'Mercado',
+                        'farmacia' => 'Farmácia',
+                        'padaria' => 'Padaria',
+                        'lanchonete' => 'Lanchonete',
+                        'pizzaria' => 'Pizzaria',
+                        'churrascaria' => 'Churrascaria',
+                        'hamburgueria' => 'Hamburgueria',
+                        'sushi_bar' => 'Sushi Bar',
+                        'sorveteria' => 'Sorveteria',
+                        'acai' => 'Açaí',
+                        'lavanderia' => 'Lavanderia',
+                        'auto_center' => 'Auto Center',
+                        'otica' => 'Ótica',
+                        'livraria' => 'Livraria',
+                        'papelaria' => 'Papelaria'
+                    ];
+                    
+                    return [
+                        'id' => $empresa->id,
+                        'nome' => $empresa->nome,
+                        'ramo' => $empresa->ramo,
+                        'ramo_formatado' => $ramosFormatados[$empresa->ramo] ?? ucfirst($empresa->ramo),
+                        'descricao' => $empresa->descricao,
+                        'endereco' => $empresa->endereco,
+                        'telefone' => $empresa->telefone,
+                        'logo' => $empresa->logo,
+                        'avaliacao_media' => $empresa->avaliacao_media ?? 5.0,
+                        'total_avaliacoes' => $empresa->total_avaliacoes ?? 0,
+                        'pontos_cliente' => $pontosCliente
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'data' => $empresas
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao carregar empresas: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Histórico de pontos do cliente
+     */
+    public function historicoPontos(Request $request)
+    {
+        try {
+            $user = $request->user();
+            
+            if (!$user || $user->perfil !== 'cliente') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuário não autorizado'
+                ], 403);
+            }
+
+            // Total de visitas (check-ins)
+            $totalVisits = DB::table('pontos')
+                ->where('user_id', $user->id)
+                ->where('tipo', 'ganho')
+                ->count();
+
+            // Total de recompensas resgatadas
+            $totalRewards = DB::table('pontos')
+                ->where('user_id', $user->id)
+                ->where('tipo', 'resgate')
+                ->count();
+
+            // Total economizado (estimativa: 10% dos pontos gastos)
+            $pontosGastos = DB::table('pontos')
+                ->where('user_id', $user->id)
+                ->where('tipo', 'resgate')
+                ->sum('pontos');
+            
+            $totalSaved = round($pontosGastos * 0.10, 2);
+
+            return response()->json([
+                'success' => true,
+                'total_visits' => $totalVisits,
+                'total_rewards' => $totalRewards,
+                'total_saved' => $totalSaved
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao carregar histórico: ' . $e->getMessage()
             ], 500);
         }
     }
