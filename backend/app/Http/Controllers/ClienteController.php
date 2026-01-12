@@ -392,7 +392,7 @@ class ClienteController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $empresas
-            ]);
+            ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -442,7 +442,7 @@ class ClienteController extends Controller
                 'total_visits' => $totalVisits,
                 'total_rewards' => $totalRewards,
                 'total_saved' => $totalSaved
-            ]);
+            ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
 
         } catch (\Exception $e) {
             return response()->json([

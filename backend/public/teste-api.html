@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste API</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #0a0a0f; color: #fff; }
+        .result { background: #1a1a2e; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        .empresa { background: #16213e; padding: 15px; margin: 10px 0; border-left: 4px solid #667eea; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        button { background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #764ba2; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste API - Tem de Tudo</h1>
+    
+    <div class="result">
+        <h3>1. Testar Conexão</h3>
+        <button onclick="testarConexao()">Testar</button>
+        <div id="conexao"></div>
+    </div>
+    
+    <div class="result">
+        <h3>2. Fazer Login</h3>
+        <button onclick="fazerLogin()">Login cliente1@email.com</button>
+        <div id="login"></div>
+    </div>
+    
+    <div class="result">
+        <h3>3. Buscar Empresas</h3>
+        <button onclick="buscarEmpresas()">Buscar</button>
+        <div id="empresas"></div>
+    </div>
+
+    <script>
+        let token = null;
+
+        async function testarConexao() {
+            const div = document.getElementById('conexao');
+            try {
+                const response = await fetch('/api/debug');
+                const data = await response.json();
+                div.innerHTML = `<p class="success">✅ Servidor funcionando! Status: ${data.status}</p>`;
+            } catch (error) {
+                div.innerHTML = `<p class="error">❌ Erro: ${error.message}</p>`;
+            }
+        }
+
+        async function fazerLogin() {
+            const div = document.getElementById('login');
+            div.innerHTML = '<p>🔄 Fazendo login...</p>';
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'cliente1@email.com',
+                        password: 'senha123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.token) {
+                    token = data.token;
+                    localStorage.setItem('token', token);
+                    div.innerHTML = `
+                        <p class="success">✅ Login OK!</p>
+                        <p>Token: ${token.substring(0, 20)}...</p>
+                        <p>User: ${data.user?.name || 'N/A'}</p>
+                    `;
+                } else {
+                    div.innerHTML = `<p class="error">❌ Erro: ${data.message || 'Login falhou'}</p>`;
+                }
+            } catch (error) {
+                div.innerHTML = `<p class="error">❌ Erro: ${error.message}</p>`;
+            }
+        }
+
+        async function buscarEmpresas() {
+            const div = document.getElementById('empresas');
+            
+            if (!token) {
+                token = localStorage.getItem('token');
+            }
+            
+            if (!token) {
+                div.innerHTML = '<p class="error">❌ Faça login primeiro!</p>';
+                return;
+            }
+            
+            div.innerHTML = '<p>🔄 Buscando empresas...</p>';
+            
+            try {
+                const response = await fetch('/api/cliente/empresas', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    const empresas = data.data;
+                    div.innerHTML = `
+                        <p class="success">✅ ${empresas.length} empresas encontradas!</p>
+                        ${empresas.map(e => `
+                            <div class="empresa">
+                                <h4>${e.nome}</h4>
+                                <p>📍 ${e.endereco || 'Sem endereço'}</p>
+                                <p>🏷️ ${e.ramo_formatado}</p>
+                                <p>⭐ ${e.avaliacao_media} (${e.total_avaliacoes} avaliações)</p>
+                                <p>💰 ${e.pontos_cliente} pontos</p>
+                            </div>
+                        `).slice(0, 5).join('')}
+                        ${empresas.length > 5 ? `<p>... e mais ${empresas.length - 5}</p>` : ''}
+                    `;
+                } else {
+                    div.innerHTML = `<p class="error">❌ Erro: ${data.message || 'Falha ao buscar'}</p>`;
+                }
+            } catch (error) {
+                div.innerHTML = `<p class="error">❌ Erro: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

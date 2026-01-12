@@ -29,7 +29,7 @@ class EmpresaController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $empresas
-            ]);
+            ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             Log::error('Erro ao listar empresas: ' . $e->getMessage());
 
