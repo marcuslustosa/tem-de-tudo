@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/mobile-native.css">
     <link rel="manifest" href="/manifest.json">
+    <script src="/js/config.js"></script>
     
     <style>
         * { 
@@ -335,7 +336,7 @@
                         type="password" 
                         id="password" 
                         name="password" 
-                        placeholder="••••••••"
+                        placeholder="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
                         required
                     >
                 </div>
@@ -351,13 +352,13 @@
         </form>
         
         <div class="register-link">
-            <p>Ainda não tem conta? <a href="cadastro.html">Cadastre-se grátis</a></p>
+            <p>Ainda nï¿½o tem conta? <a href="cadastro.html">Cadastre-se grï¿½tis</a></p>
         </div>
         
         <div class="back-link">
             <a href="index.html">
                 <i class="fas fa-arrow-left"></i>
-                Voltar para início
+                Voltar para inï¿½cio
             </a>
         </div>
     </div>
@@ -369,11 +370,19 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
+            if (!email || !password) {
+                alert('Por favor, preencha email e senha.');
+                return;
+            }
+            
             try {
-                const response = await fetch('/api/auth/login', {
+                console.log('ðŸ”‘ Tentando login:', { email, api: API_CONFIG.login });
+                
+                const response = await fetch(API_CONFIG.login, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({ email, password })
                 });
@@ -387,7 +396,7 @@
                     localStorage.setItem('token', data.data.token);
                     localStorage.setItem('user', JSON.stringify(data.data.user));
                     
-                    // Redirecionar baseado no tipo de usuário
+                    // Redirecionar baseado no tipo de usuï¿½rio
                     if (data.data.user.user_type === 'admin') {
                         window.location.href = 'admin-dashboard.html';
                     } else if (data.data.user.user_type === 'empresa') {
@@ -405,16 +414,16 @@
         }
         
         function loginGoogle() {
-            alert('Login com Google será implementado em breve!');
+            alert('Login com Google serï¿½ implementado em breve!');
         }
         
         function loginFacebook() {
-            alert('Login com Facebook será implementado em breve!');
+            alert('Login com Facebook serï¿½ implementado em breve!');
         }
         
         function recuperarSenha(event) {
             event.preventDefault();
-            alert('Funcionalidade de recuperação de senha será implementada em breve!');
+            alert('Funcionalidade de recuperaï¿½ï¿½o de senha serï¿½ implementada em breve!');
         }
     </script>
 </body>

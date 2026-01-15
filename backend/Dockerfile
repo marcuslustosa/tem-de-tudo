@@ -59,8 +59,21 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
+# Criar script de inicialização para Render
+RUN echo '#!/bin/bash\n\
+echo "🚀 Iniciando aplicação..."\n\
+echo "⏳ Aguardando banco de dados..."\n\
+sleep 5\n\
+echo "📦 Executando migrations..."\n\
+php artisan migrate --force\n\
+echo "🌱 Executando seeders..."\n\
+php artisan db:seed --force --class=DatabaseSeeder\n\
+echo "✅ Aplicação pronta!"\n\
+apache2-foreground\n\
+' > /start.sh && chmod +x /start.sh
+
 # Expor porta 80
 EXPOSE 80
 
-# Iniciar Apache
-CMD ["apache2-foreground"]
+# Usar script de inicialização
+CMD ["/start.sh"]
