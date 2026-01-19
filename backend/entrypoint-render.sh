@@ -13,7 +13,7 @@ sleep 10
 echo "📦 Executando migrations..."
 php artisan migrate --force --no-interaction
 
-# Executar seeders
+# Executar seeders SEMPRE (usa updateOrCreate, não duplica)
 echo "🌱 Populando banco de dados..."
 php artisan db:seed --force --class=DatabaseSeeder --no-interaction
 
@@ -28,7 +28,6 @@ php artisan view:clear
 echo "⚡ Otimizando aplicação..."
 php artisan config:cache
 php artisan route:cache
-php artisan view:cache
 
 echo "✅ Deploy concluído! Iniciando servidor..."
 echo "========================================="
