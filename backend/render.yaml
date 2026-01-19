@@ -12,11 +12,11 @@ services:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: "false"
+        value: "true"
       - key: APP_KEY
         value: base64:3cQV4S7tE8m2dR9wQ5lN6pK1jH0uI8yT7rE3wQ9pL5k=
       - key: APP_URL
-        value: https://app-tem-de-tudo.onrender.com
+        value: https://aplicativo-tem-de-tudo.onrender.com
       - key: APP_LOCALE
         value: pt_BR
       - key: APP_TIMEZONE
@@ -26,17 +26,51 @@ services:
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        value: dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com
+        value: dpg-d5dqrch5pdvs73dg81ig-a.virginia-postgres.render.com
       - key: DB_PORT
         value: "5432"
       - key: DB_DATABASE
-        value: tem_de_tudo_database
+        value: aplicativo_tem_de_tudo
       - key: DB_USERNAME
-        value: tem_de_tudo_database_user
+        value: temdetudo
       - key: DB_PASSWORD
-        value: 9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA
+        value: 8lBmP4LBS1rKAgAYZRdEdBYfHlpHSX99
       - key: DB_SSLMODE
-        value: prefer
+        value: require
+        
+      # Cache e Session
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: SESSION_LIFETIME
+        value: "120"
+      - key: QUEUE_CONNECTION
+        value: database
+      
+      # JWT
+      - key: JWT_SECRET
+        value: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9aGFzaGVkX3NlY3JldF9rZXlfZm9yX3Byb2R1Y3Rpb24
+      - key: JWT_TTL
+        value: "60"
+      - key: JWT_REFRESH_TTL
+        value: "20160"
+      - key: JWT_ALGO
+        value: HS256
+      - key: JWT_BLACKLIST_ENABLED
+        value: "true"
+      
+      # CORS
+      - key: SANCTUM_STATEFUL_DOMAINS
+        value: aplicativo-tem-de-tudo.onrender.com,localhost,127.0.0.1
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://aplicativo-tem-de-tudo.onrender.com,http://localhost
+      
+      # Log
+      - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_LEVEL
+        value: debug
         
       # Cache e Session
       - key: CACHE_DRIVER

@@ -14,11 +14,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            AdminUserSeeder::class,
-            DataSeeder::class,
-        ]);
-        User::updateOrCreate(
+        echo "\n========================================\n";
+        echo "🌱 SEEDER - Populando banco de dados\n";
+        echo "========================================\n\n";
+
+        // Admin Master
+        $admin = User::updateOrCreate(
             ['email' => 'admin@temdetudo.com'],
             [
                 'name' => 'Administrador Master',
@@ -26,12 +27,14 @@ class DatabaseSeeder extends Seeder
                 'perfil' => 'admin',
                 'telefone' => '(11) 99999-0001',
                 'status' => 'ativo',
+                'pontos' => 0,
                 'email_verified_at' => now()
             ]
         );
+        echo "✅ Admin criado: admin@temdetudo.com / admin123\n";
 
         // Cliente de Teste
-        User::updateOrCreate(
+        $cliente = User::updateOrCreate(
             ['email' => 'cliente@teste.com'],
             [
                 'name' => 'Cliente Teste',
@@ -39,12 +42,14 @@ class DatabaseSeeder extends Seeder
                 'perfil' => 'cliente',
                 'telefone' => '(11) 99999-0002',
                 'status' => 'ativo',
+                'pontos' => 250,
                 'email_verified_at' => now()
             ]
         );
+        echo "✅ Cliente criado: cliente@teste.com / 123456\n";
 
         // Empresa Parceira
-        User::updateOrCreate(
+        $empresa = User::updateOrCreate(
             ['email' => 'empresa@teste.com'],
             [
                 'name' => 'Empresa Teste Ltda',
@@ -52,27 +57,53 @@ class DatabaseSeeder extends Seeder
                 'perfil' => 'empresa',
                 'telefone' => '(11) 99999-0003',
                 'status' => 'ativo',
+                'pontos' => 0,
                 'email_verified_at' => now()
             ]
         );
+        echo "✅ Empresa criada: empresa@teste.com / 123456\n";
 
-        // Usuário VIP Gold
-        User::firstOrCreate(
-            ['email' => 'vip@teste.com'],
-            [
-                'name' => 'Cliente VIP',
-                'password' => Hash::make('123456'),
-                'perfil' => 'cliente',
-                'telefone' => '(11) 99999-0004',
-                'status' => 'ativo',
-                'email_verified_at' => now()
-            ]
-        );
+        // Criar 50 clientes (cliente1@email.com até cliente50@email.com)
+        echo "\n📝 Criando 50 clientes...\n";
+        for ($i = 1; $i <= 50; $i++) {
+            User::updateOrCreate(
+                ['email' => "cliente{$i}@email.com"],
+                [
+                    'name' => "Cliente {$i}",
+                    'password' => Hash::make('senha123'),
+                    'perfil' => 'cliente',
+                    'telefone' => sprintf('(11) 9%04d-%04d', rand(1000, 9999), rand(1000, 9999)),
+                    'status' => 'ativo',
+                    'pontos' => rand(0, 1000),
+                    'email_verified_at' => now()
+                ]
+            );
+            if ($i % 10 == 0) {
+                echo "  ✓ {$i} clientes criados...\n";
+            }
+        }
+        echo "✅ 50 clientes criados (cliente1@email.com até cliente50@email.com / senha123)\n";
 
-        echo "✅ Usuários padrão criados!\n";
-        echo "👤 Admin: admin@temdetudo.com / admin123\n";
-        echo "👥 Cliente: cliente@teste.com / 123456\n";
-        echo "🏪 Empresa: empresa@teste.com / 123456\n";
-        echo "⭐ VIP: vip@teste.com / 123456\n";
+        // Chamar DataSeeder para criar empresas e dados adicionais
+        echo "\n📊 Populando dados adicionais...\n";
+        $this->call([
+            DataSeeder::class,
+        ]);
+
+        echo "\n========================================\n";
+        echo "✅ SEEDER CONCLUÍDO COM SUCESSO!\n";
+        echo "========================================\n";
+        echo "\n📋 CREDENCIAIS DE ACESSO:\n";
+        echo "┌─────────────────────────────────────────────┐\n";
+        echo "│ Admin:   admin@temdetudo.com / admin123     │\n";
+        echo "│ Cliente: cliente@teste.com / 123456         │\n";
+        echo "│ Empresa: empresa@teste.com / 123456         │\n";
+        echo "│ Clientes: cliente1-50@email.com / senha123  │\n";
+        echo "└─────────────────────────────────────────────┘\n";
+        echo "\n";
+        
+        $totalUsers = User::count();
+        echo "📊 Total de usuários: {$totalUsers}\n";
+        echo "========================================\n\n";
     }
 }
