@@ -84,6 +84,37 @@ class DatabaseSeeder extends Seeder
         }
         echo "✅ 50 clientes criados (cliente1@email.com até cliente50@email.com / senha123)\n";
 
+        // Criar empresas fictícias na tabela empresas
+        echo "\n🏪 Criando empresas parceiras...\n";
+        
+        $empresasData = [
+            ['nome' => 'Restaurante Sabor & Arte', 'ramo' => 'restaurante', 'owner_id' => $empresa->id],
+            ['nome' => 'Academia Corpo Forte', 'ramo' => 'academia', 'owner_id' => $empresa->id],
+            ['nome' => 'Cafeteria Aroma Premium', 'ramo' => 'cafeteria', 'owner_id' => $empresa->id],
+            ['nome' => 'Pet Shop Amigo Fiel', 'ramo' => 'pet_shop', 'owner_id' => $empresa->id],
+            ['nome' => 'Salão Beleza Total', 'ramo' => 'salao', 'owner_id' => $empresa->id],
+            ['nome' => 'Mercado Bom Preço', 'ramo' => 'mercado', 'owner_id' => $empresa->id],
+            ['nome' => 'Farmácia Saúde Mais', 'ramo' => 'farmacia', 'owner_id' => $empresa->id],
+            ['nome' => 'Padaria Pão Quentinho', 'ramo' => 'padaria', 'owner_id' => $empresa->id],
+        ];
+        
+        foreach ($empresasData as $empData) {
+            \App\Models\Empresa::updateOrCreate(
+                ['nome' => $empData['nome']],
+                [
+                    'owner_id' => $empData['owner_id'],
+                    'ramo' => $empData['ramo'],
+                    'endereco' => 'Rua Exemplo, ' . rand(100, 9999) . ' - São Paulo, SP',
+                    'telefone' => sprintf('(11) 9%04d-%04d', rand(1000, 9999), rand(1000, 9999)),
+                    'cnpj' => sprintf('%02d.%03d.%03d/%04d-%02d', rand(10, 99), rand(100, 999), rand(100, 999), rand(1000, 9999), rand(10, 99)),
+                    'descricao' => 'Empresa parceira do programa de fidelidade Tem de Tudo',
+                    'ativo' => true,
+                    'points_multiplier' => 1.0,
+                ]
+            );
+        }
+        echo "✅ 8 empresas parceiras criadas\n";
+
         // Chamar DataSeeder para criar empresas e dados adicionais
         echo "\n📊 Populando dados adicionais...\n";
         $this->call([
@@ -103,7 +134,9 @@ class DatabaseSeeder extends Seeder
         echo "\n";
         
         $totalUsers = User::count();
+        $totalEmpresas = \App\Models\Empresa::count();
         echo "📊 Total de usuários: {$totalUsers}\n";
+        echo "📊 Total de empresas: {$totalEmpresas}\n";
         echo "========================================\n\n";
     }
 }
