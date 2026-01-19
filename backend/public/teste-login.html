@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Login Direto</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #1a1a2e; color: #fff; }
+        .resultado { background: #2a2a3e; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        button { padding: 12px 24px; background: #667eea; color: #fff; border: none; border-radius: 6px; cursor: pointer; margin: 5px; }
+        button:hover { background: #764ba2; }
+        .erro { color: #f44336; }
+        .sucesso { color: #4caf50; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Teste de Login Direto</h1>
+    <p>API Base: <strong id="apiBase"></strong></p>
+    
+    <h2>Testes Disponíveis:</h2>
+    <button onclick="testarConexao()">1. Testar Conexão</button>
+    <button onclick="testarLoginAdmin()">2. Login Admin</button>
+    <button onclick="testarLoginCliente()">3. Login Cliente</button>
+    <button onclick="testarLoginCliente1()">4. Login Cliente1</button>
+    <button onclick="testarCadastro()">5. Teste Cadastro</button>
+    
+    <div id="resultados"></div>
+
+    <script>
+        // Detectar ambiente
+        const API_BASE = window.location.hostname.includes('onrender.com') 
+            ? window.location.origin 
+            : 'http://127.0.0.1:8000';
+        
+        document.getElementById('apiBase').textContent = API_BASE;
+        
+        function log(msg, tipo = 'info') {
+            const div = document.createElement('div');
+            div.className = 'resultado ' + tipo;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${msg}`;
+            document.getElementById('resultados').insertBefore(div, document.getElementById('resultados').firstChild);
+        }
+
+        async function testarConexao() {
+            log('Testando conexão com API...');
+            try {
+                const response = await fetch(API_BASE + '/api/debug');
+                const data = await response.json();
+                if (data.status === 'OK') {
+                    log('✅ CONEXÃO OK: ' + JSON.stringify(data), 'sucesso');
+                } else {
+                    log('⚠️ Resposta inesperada: ' + JSON.stringify(data), 'erro');
+                }
+            } catch (error) {
+                log('❌ ERRO: ' + error.message, 'erro');
+            }
+        }
+
+        async function testarLogin(email, senha, nome) {
+            log(`Testando login ${nome}: ${email} / ${senha}`);
+            try {
+                const response = await fetch(API_BASE + '/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password: senha })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    log(`✅ LOGIN OK ${nome}: ${data.data.user.name} (${data.data.user.perfil})`, 'sucesso');
+                    log(`Token: ${data.data.token.substring(0, 50)}...`, 'sucesso');
+                    localStorage.setItem('token', data.data.token);
+                } else {
+                    log(`❌ LOGIN FALHOU ${nome}: ${data.message || JSON.stringify(data)}`, 'erro');
+                }
+            } catch (error) {
+                log(`❌ ERRO ${nome}: ${error.message}`, 'erro');
+            }
+        }
+
+        function testarLoginAdmin() {
+            testarLogin('admin@temdetudo.com', 'admin123', 'Admin');
+        }
+
+        function testarLoginCliente() {
+            testarLogin('cliente@teste.com', '123456', 'Cliente');
+        }
+
+        function testarLoginCliente1() {
+            testarLogin('cliente1@email.com', 'senha123', 'Cliente1');
+        }
+
+        async function testarCadastro() {
+            log('Testando cadastro de novo usuário...');
+            const randomEmail = `teste${Date.now()}@email.com`;
+            try {
+                const response = await fetch(API_BASE + '/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: 'Teste Usuario',
+                        email: randomEmail,
+                        phone: '(11) 99999-9999',
+                        cpf: '12345678900',
+                        password: '123456',
+                        perfil: 'cliente'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    log(`✅ CADASTRO OK: ${data.data.user.email}`, 'sucesso');
+                } else {
+                    log(`❌ CADASTRO FALHOU: ${data.message || JSON.stringify(data)}`, 'erro');
+                }
+            } catch (error) {
+                log(`❌ ERRO: ${error.message}`, 'erro');
+            }
+        }
+
+        // Auto-testar ao carregar
+        window.addEventListener('load', () => {
+            log('Página carregada. Clique nos botões para testar.');
+        });
+    </script>
+</body>
+</html>
