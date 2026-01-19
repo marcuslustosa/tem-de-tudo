@@ -335,6 +335,7 @@
         </a>
     </nav>
     
+    <script src="/js/config.js"></script>
     <script>
         let allEstablishments = [];
         let currentCategory = 'todos';
@@ -348,28 +349,36 @@
             }
             
             try {
-                const response = await fetch('/api/cliente/empresas', {
+                const apiUrl = API_CONFIG.getBaseURL() + '/api/cliente/empresas';
+                console.log('🔍 Buscando empresas em:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
                     }
                 });
                 
+                console.log('📥 Status resposta:', response.status);
+                
                 if (response.ok) {
                     const result = await response.json();
+                    console.log('📦 Dados recebidos:', result);
+                    
                     // API retorna {success: true, data: [...]}
-                    allEstablishments = result.data || result;
+                    allEstablishments = result.data || result.empresas || result;
+                    
+                    console.log('✅ Empresas carregadas:', allEstablishments.length);
                     
                     // SEMPRE mostrar todas as empresas ao carregar
                     renderEstablishments(allEstablishments);
-                    
-                    console.log('Empresas carregadas:', allEstablishments.length);
                 } else {
-                    console.error('Erro ao carregar empresas');
+                    const errorText = await response.text();
+                    console.error('❌ Erro ao carregar empresas:', response.status, errorText);
                     renderEmptyState();
                 }
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('❌ Erro na requisição:', error);
                 renderEmptyState();
             }
         }
