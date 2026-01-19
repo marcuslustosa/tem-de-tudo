@@ -392,15 +392,15 @@
                 console.log('Resposta do login:', data); // DEBUG
                 
                 if (response.ok && data.success) {
-                    // API retorna { success: true, data: { user: {...}, token: '...' } }
                     localStorage.setItem('token', data.data.token);
                     localStorage.setItem('user', JSON.stringify(data.data.user));
                     
-                    // Redirecionar baseado no tipo de usu�rio
-                    if (data.data.user.user_type === 'admin') {
-                        window.location.href = 'admin-dashboard.html';
-                    } else if (data.data.user.user_type === 'empresa') {
-                        window.location.href = 'empresa-dashboard.html';
+                    // Redirecionar baseado no perfil
+                    const perfil = data.data.user.perfil;
+                    if (perfil === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else if (perfil === 'empresa') {
+                        window.location.href = 'empresa.html';
                     } else {
                         window.location.href = 'app-inicio.html';
                     }

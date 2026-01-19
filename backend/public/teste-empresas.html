@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TESTE REAL - Empresas</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #000; color: #0f0; }
+        .log { margin: 5px 0; padding: 10px; background: #111; border-left: 3px solid #0f0; }
+        .error { border-left-color: #f00; color: #f00; }
+        .success { border-left-color: #0f0; color: #0f0; }
+        .info { border-left-color: #00f; color: #0ff; }
+        pre { background: #222; padding: 10px; overflow-x: auto; }
+        button { padding: 15px 30px; margin: 10px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🔥 TESTE REAL - EMPRESAS 🔥</h1>
+    
+    <button onclick="fazerLogin()">1. FAZER LOGIN</button>
+    <button onclick="buscarEmpresas()">2. BUSCAR EMPRESAS</button>
+    <button onclick="limparLogs()">LIMPAR LOGS</button>
+    
+    <div id="logs"></div>
+    
+    <script src="/js/config.js"></script>
+    <script>
+        function log(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.className = 'log ' + type;
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            document.getElementById('logs').appendChild(div);
+            console.log(msg);
+        }
+        
+        function limparLogs() {
+            document.getElementById('logs').innerHTML = '';
+        }
+        
+        async function fazerLogin() {
+            try {
+                const baseURL = API_CONFIG.getBaseURL();
+                log(`🌍 Base URL: ${baseURL}`, 'info');
+                
+                const url = `${baseURL}/api/auth/login`;
+                log(`📡 POST ${url}`, 'info');
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'cliente@teste.com',
+                        password: '123456'
+                    })
+                });
+                
+                log(`📥 Status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                const data = await response.json();
+                log(`📦 Resposta: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'info');
+                
+                if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    log(`✅ TOKEN SALVO! ${data.token.substring(0, 30)}...`, 'success');
+                } else {
+                    log(`❌ SEM TOKEN NA RESPOSTA!`, 'error');
+                }
+            } catch (error) {
+                log(`❌ ERRO: ${error.message}`, 'error');
+            }
+        }
+        
+        async function buscarEmpresas() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    log(`❌ FAÇA LOGIN PRIMEIRO!`, 'error');
+                    return;
+                }
+                
+                log(`🔑 Token: ${token.substring(0, 30)}...`, 'info');
+                
+                const baseURL = API_CONFIG.getBaseURL();
+                const url = `${baseURL}/api/cliente/empresas`;
+                log(`📡 GET ${url}`, 'info');
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                log(`📥 Status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                const text = await response.text();
+                log(`📄 Resposta RAW (primeiros 500 chars): <pre>${text.substring(0, 500)}</pre>`, 'info');
+                
+                try {
+                    const data = JSON.parse(text);
+                    log(`📦 JSON Parseado: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'info');
+                    
+                    if (data.success && data.data) {
+                        log(`✅ SUCESSO! ${data.data.length} empresas encontradas`, 'success');
+                        
+                        data.data.forEach((emp, i) => {
+                            log(`  ${i+1}. ${emp.nome} (${emp.ramo}) - ${emp.meus_pontos || 0} pontos`, 'success');
+                        });
+                    } else {
+                        log(`⚠️ Resposta não tem success=true ou data`, 'error');
+                    }
+                } catch (parseError) {
+                    log(`❌ ERRO AO FAZER PARSE DO JSON: ${parseError.message}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ ERRO NA REQUISIÇÃO: ${error.message}`, 'error');
+            }
+        }
+        
+        // Auto-detectar token existente
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                log(`ℹ️ Token encontrado no localStorage: ${token.substring(0, 30)}...`, 'info');
+            } else {
+                log(`⚠️ Nenhum token no localStorage. Clique em "FAZER LOGIN" primeiro.`, 'info');
+            }
+        });
+    </script>
+</body>
+</html>
