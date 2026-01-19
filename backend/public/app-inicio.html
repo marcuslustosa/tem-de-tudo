@@ -533,7 +533,17 @@
                 return;
             }
             
-            const icons = ['🍔', '🍕', '💆', '🍱', '☕', '🏋️'];
+            const icons = {
+                'academia': '🏋️',
+                'cafeteria': '☕',
+                'pet_shop': '🐾',
+                'salao': '💆',
+                'mercado': '🛒',
+                'farmacia': '💊',
+                'padaria': '🥖',
+                'restaurante': '🍔',
+                'default': '🏪'
+            };
             const colors = [
                 'linear-gradient(135deg, #667eea, #764ba2)',
                 'linear-gradient(135deg, #e74c3c, #c0392b)',
@@ -546,14 +556,14 @@
             grid.innerHTML = estabelecimentos.map((estab, index) => `
                 <a href="app-estabelecimento.html?id=${estab.id}" class="estabelecimento-card">
                     <div class="estabelecimento-icon" style="background: ${colors[index % colors.length]}">
-                        ${estab.emoji || icons[index % icons.length]}
+                        ${estab.logo ? `<img src="${estab.logo}" alt="${estab.nome}" style="width:100%;height:100%;object-fit:cover;">` : icons[estab.ramo] || icons.default}
                     </div>
                     <div class="estabelecimento-info">
-                        <div class="estabelecimento-name">${estab.name}</div>
-                        <div class="estabelecimento-categoria">${estab.category || 'Estabelecimento'}</div>
+                        <div class="estabelecimento-name">${estab.nome}</div>
+                        <div class="estabelecimento-categoria">${estab.ramo || 'Estabelecimento'}</div>
                         <div class="estabelecimento-pontos">
-                            <i class="fas fa-star"></i>
-                            ${estab.points || 0} pontos acumulados
+                            <i class="fas fa-coins"></i>
+                            ${estab.meus_pontos || 0} pontos acumulados
                         </div>
                     </div>
                 </a>
