@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/mobile-native.css">
+    <script src="/js/config.js"></script>
     
     <style>
         * {
@@ -470,8 +471,10 @@
             }
             
             try {
+                const baseURL = API_CONFIG.getBaseURL();
+                
                 // Buscar pontos do usuário
-                const pointsResponse = await fetch('/api/cliente/dashboard', {
+                const pointsResponse = await fetch(`${baseURL}/api/cliente/dashboard`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
@@ -484,7 +487,7 @@
                 }
                 
                 // Buscar estabelecimentos frequentes
-                const estabResponse = await fetch('/api/cliente/empresas', {
+                const estabResponse = await fetch(`${baseURL}/api/cliente/empresas`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
@@ -492,14 +495,17 @@
                 });
                 
                 if (estabResponse.ok) {
-                    const estabelecimentos = await estabResponse.json();
+                    const result = await estabResponse.json();
+                    const estabelecimentos = result.data || result.empresas || result;
+                    console.log('✅ Empresas carregadas:', estabelecimentos.length);
                     renderEstabelecimentos(estabelecimentos);
                 } else {
+                    console.error('❌ Erro ao buscar empresas:', estabResponse.status);
                     renderEmptyState();
                 }
                 
                 // Buscar estatísticas
-                const statsResponse = await fetch('/api/cliente/historico-pontos', {
+                const statsResponse = await fetch(`${baseURL}/api/cliente/historico-pontos`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
