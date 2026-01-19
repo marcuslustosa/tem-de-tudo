@@ -17,6 +17,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaPromocaoController;
 use App\Http\Controllers\API\ClienteAPIController;
 use App\Http\Controllers\API\EmpresaAPIController;
+use App\Http\Controllers\SetupController;
 
 
 // Debug route (remover em produção)
@@ -43,6 +44,9 @@ Route::get('/debug', function () {
         ], 500);
     }
 });
+
+// Setup database manual (APENAS PRODUÇÃO - RENDER)
+Route::get('/setup-database', [SetupController::class, 'setupDatabase']);
 
 // Rotas públicas de autenticação
 Route::prefix('auth')->group(function () {
