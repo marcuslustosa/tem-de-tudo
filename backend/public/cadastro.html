@@ -510,10 +510,12 @@
             const formData = {
                 name: document.getElementById('nome').value + ' ' + document.getElementById('sobrenome').value,
                 email: document.getElementById('email').value,
-                phone: document.getElementById('telefone').value,
+                telefone: document.getElementById('telefone').value,
                 cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
                 password: password,
-                perfil: 'cliente'  // Corrigido: era user_type, agora é perfil
+                password_confirmation: confirmPassword,
+                terms: document.getElementById('terms').checked,
+                perfil: 'cliente'
             };
             
             try {
