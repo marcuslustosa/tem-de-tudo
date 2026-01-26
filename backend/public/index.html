@@ -4,126 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tem de Tudo - Sistema de Fidelidade</title>
-    <script>
-        // Redirecionar automaticamente para login
-        window.location.href = '/entrar.html';
-    </script>
-</head>
-<body>
-    <p style="text-align: center; padding: 50px; font-family: Arial;">
-        Redirecionando...
-    </p>
-</body>
-</html>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Inter', sans-serif;
-            background: #0a0a0f;
-            color: #fff;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
             overflow-x: hidden;
         }
         
-        /* HEADER */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(26, 26, 46, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            z-index: 1000;
-            padding: 20px 0;
-        }
-        
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 40px 24px;
+            text-align: center;
         }
         
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            text-decoration: none;
+            font-size: 80px;
+            margin-bottom: 24px;
+            animation: float 3s ease-in-out infinite;
         }
         
-        .logo img {
-            height: 90px;
-            width: auto;
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
         
-        .logo-text {
-            font-size: 26px;
+        h1 {
+            font-size: 42px;
             font-weight: 900;
-            color: #fff;
-            letter-spacing: -1px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
         }
         
-        .nav-menu {
+        .subtitle {
+            font-size: 18px;
+            color: #b0b0b0;
+            margin-bottom: 48px;
+            line-height: 1.5;
+        }
+        
+        .features {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+        
+        .feature {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 20px;
             display: flex;
             align-items: center;
-            gap: 40px;
-        }
-        
-        .nav-menu a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            transition: color 0.3s;
-            position: relative;
-        }
-        
-        .nav-menu a:hover {
-            color: #667eea;
-        }
-        
-        .nav-menu a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            transition: width 0.3s;
-        }
-        
-        .nav-menu a:hover::after {
-            width: 100%;
-        }
-        
-        .nav-buttons {
-            display: flex;
             gap: 16px;
+            transition: all 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateX(4px);
+            border-color: #667eea;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+        }
+        
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+        
+        .feature-text {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .feature-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .feature-desc {
+            font-size: 13px;
+            color: #b0b0b0;
+        }
+        
+        .cta-buttons {
+            display: grid;
+            gap: 12px;
         }
         
         .btn {
-            padding: 14px 28px;
-            border-radius: 12px;
+            padding: 18px 32px;
+            border-radius: 14px;
+            font-size: 16px;
             font-weight: 700;
             text-decoration: none;
+            display: inline-block;
             transition: all 0.3s;
             border: none;
             cursor: pointer;
-            font-size: 15px;
-        }
-        
-        .btn-outline {
-            background: transparent;
-            color: #fff;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-        
-        .btn-outline:hover {
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.4);
+            font-family: 'Inter', sans-serif;
         }
         
         .btn-primary {
@@ -137,522 +136,100 @@
             box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
         }
         
-        /* HERO */
-        .hero {
-            padding: 160px 40px 100px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #0a0a0f 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)" /></svg>');
-            opacity: 0.5;
-        }
-        
-        .hero-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .hero h1 {
-            font-size: 72px;
-            font-weight: 900;
-            margin-bottom: 24px;
-            line-height: 1.1;
-            letter-spacing: -2px;
-            background: linear-gradient(135deg, #fff, #b0b0b0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .hero p {
-            font-size: 22px;
-            margin-bottom: 48px;
-            color: #b0b0b0;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-        }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .btn-large {
-            padding: 20px 48px;
-            font-size: 18px;
-            border-radius: 14px;
-        }
-        
-        /* FEATURES */
-        .features {
-            padding: 120px 40px;
-            background: #0a0a0f;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .section-title {
-            text-align: center;
-            font-size: 48px;
-            font-weight: 900;
-            margin-bottom: 16px;
-            letter-spacing: -1px;
-        }
-        
-        .section-subtitle {
-            text-align: center;
-            font-size: 20px;
-            color: #b0b0b0;
-            margin-bottom: 80px;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
-        }
-        
-        .feature-card {
-            padding: 40px;
-            border-radius: 20px;
+        .btn-secondary {
             background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            color: white;
+            border: 2px solid rgba(102, 126, 234, 0.3);
         }
         
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+        .btn-secondary:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
         }
         
-        .feature-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(102, 126, 234, 0.3);
-            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2);
+        .footer-text {
+            margin-top: 32px;
+            font-size: 13px;
+            color: #666;
         }
         
-        .feature-icon {
-            width: 72px;
-            height: 72px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            margin-bottom: 24px;
-        }
-        
-        .feature-card h3 {
-            font-size: 24px;
-            margin-bottom: 16px;
-            font-weight: 800;
-        }
-        
-        .feature-card p {
-            color: #b0b0b0;
-            line-height: 1.7;
-            font-size: 16px;
-        }
-        
-        /* ESTABELECIMENTOS */
-        .estabelecimentos {
-            padding: 120px 40px;
-            background: linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 100%);
-        }
-        
-        .estabelecimentos-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
-            margin-top: 60px;
-        }
-        
-        .estabelecimento-card {
-            background: linear-gradient(145deg, #16213e, #1a1a2e);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .estabelecimento-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(102, 126, 234, 0.3);
-            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2);
-        }
-        
-        .estabelecimento-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 72px;
-        }
-        
-        .estabelecimento-info {
-            padding: 28px;
-        }
-        
-        .estabelecimento-nome {
-            font-size: 20px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-        
-        .estabelecimento-categoria {
-            font-size: 15px;
-            color: #b0b0b0;
-            margin-bottom: 16px;
-        }
-        
-        .rating {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .stars {
-            color: #ffc107;
-            font-size: 16px;
-        }
-        
-        .rating span {
-            color: #b0b0b0;
-            font-size: 14px;
-        }
-        
-        .view-all {
-            text-align: center;
-            margin-top: 60px;
-        }
-        
-        /* CTA */
-        .cta {
-            padding: 120px 40px;
-            background: linear-gradient(135deg, #1a1a2e, #0f3460);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .cta::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid2" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid2)" /></svg>');
-        }
-        
-        .cta-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .cta h2 {
-            font-size: 48px;
-            font-weight: 900;
-            margin-bottom: 24px;
-            letter-spacing: -1px;
-        }
-        
-        .cta p {
-            font-size: 20px;
-            margin-bottom: 48px;
-            color: #b0b0b0;
-        }
-        
-        /* FOOTER */
-        .footer {
-            padding: 60px 40px;
-            background: #1a1a2e;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        
-        .footer-links {
-            display: flex;
-            gap: 40px;
-            justify-content: center;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
-        }
-        
-        .footer-links a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.2s;
-        }
-        
-        .footer-links a:hover {
-            color: #667eea;
-        }
-        
-        .footer p {
-            color: #fff;
-            font-size: 14px;
-        }
-        
-        @media (max-width: 1024px) {
-            .hero h1 { font-size: 48px; }
-            .section-title { font-size: 36px; }
-            .features-grid, .estabelecimentos-grid {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 480px) {
+            .container { padding: 24px 20px; }
+            h1 { font-size: 36px; }
+            .logo { font-size: 64px; }
+            .subtitle { font-size: 16px; }
         }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
-    <header class="header">
-        <div class="header-content">
-            <a href="index.html" class="logo">
-                <img src="img/logo.png" alt="Tem de Tudo">
+    <div class="container">
+        <div class="logo">🎁</div>
+        
+        <h1>Tem de Tudo</h1>
+        <p class="subtitle">
+            O sistema de fidelidade mais completo.<br>
+            Acumule pontos e ganhe recompensas!
+        </p>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">💳</div>
+                <div class="feature-text">
+                    <div class="feature-title">QR Code Exclusivo</div>
+                    <div class="feature-desc">Seu cartão de fidelidade digital</div>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-text">
+                    <div class="feature-title">Acumule Pontos</div>
+                    <div class="feature-desc">A cada compra você ganha pontos</div>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🎁</div>
+                <div class="feature-text">
+                    <div class="feature-title">Ganhe Prêmios</div>
+                    <div class="feature-desc">Troque pontos por descontos</div>
+                </div>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">🏪</div>
+                <div class="feature-text">
+                    <div class="feature-title">Várias Empresas</div>
+                    <div class="feature-desc">Um único app, várias lojas parceiras</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cta-buttons">
+            <a href="entrar.html" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Entrar no Sistema
             </a>
-            
-            <nav class="nav-menu">
-                <a href="#features">Benefàcios</a>
-                <a href="planos.html">Planos</a>
-                <a href="contato.html">Contato</a>
-            </nav>
-            
-            <div class="nav-buttons">
-                <a href="entrar.html" class="btn btn-outline">Entrar</a>
-                <a href="cadastro.html" class="btn btn-outline" style="background: transparent; border: 2px solid rgba(255,255,255,0.3);">
-                    <i class="fas fa-user"></i> Sou Cliente
-                </a>
-                <a href="planos.html" class="btn btn-primary">
-                    <i class="fas fa-building"></i> Sou Empresa
-                </a>
-            </div>
+            <a href="cadastro.html" class="btn btn-secondary">
+                <i class="fas fa-user-plus"></i> Criar Nova Conta
+            </a>
         </div>
-    </header>
+        
+        <p class="footer-text">
+            Tem de Tudo © 2026 - Sistema de Fidelidade
+        </p>
+    </div>
     
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Fidelize e Lucre Mais com Inteligància</h1>
-            <p>Transforme clientes ocasionais em frequentes com o sistema mais robusto de fidelizaàào digital. Aumente suas vendas em atà 45% com decisàes baseadas em dados reais.</p>
-            
-            <div class="hero-buttons">
-                <a href="planos.html" class="btn btn-large btn-primary">
-                    <i class="fas fa-building"></i> Cadastrar Empresa
-                </a>
-                <a href="cadastro.html" class="btn btn-large btn-outline">
-                    <i class="fas fa-user"></i> Sou Cliente
-                </a>
-            </div>
-        </div>
-    </section>
-    
-    <!-- FEATURES -->
-    <section class="features" id="features">
-        <div class="container">
-            <h2 class="section-title">Benefàcios Reais, Resultados Comprovados</h2>
-            <p class="section-subtitle">Pare de adivinhar, comece a lucrar com dados</p>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">?</div>
-                    <h3>Fidelizaàào em Segundos</h3>
-                    <p>Clientes acumulam pontos automaticamente via QR Code. Zero burocracia, zero papel, 100% digital.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">??</div>
-                    <h3>Clientes Voltam 3x Mais</h3>
-                    <p>Sistema de recompensas que transforma clientes ocasionais em frequentes. Aumento comprovado de 300% na retenàào.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">??</div>
-                    <h3>Decisàes Baseadas em Dados</h3>
-                    <p>Descubra quais promoções convertem, horàrios de pico e perfil dos clientes. Pare de adivinhar, comece a lucrar.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">??</div>
-                    <h3>Validaàào Instantànea</h3>
-                    <p>Escaneie o QR Code do cliente em 2 segundos. Sistema detecta fraudes e valida pontos automaticamente.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">??</div>
-                    <h3>Aumento de 45% nas Vendas</h3>
-                    <p>Crie promoções segmentadas e envie direto pro celular dos clientes. Horàrios vazios? Envie oferta e lote em 15min.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">??</div>
-                    <h3>Recupere Clientes Perdidos</h3>
-                    <p>Sistema identifica clientes inativos e envia oferta personalizada automaticamente. Reative 60% dos clientes em 30 dias.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- ESTABELECIMENTOS -->
-    <section class="estabelecimentos" id="estabelecimentos">
-        <div class="container">
-            <h2 class="section-title">Estabelecimentos Parceiros</h2>
-            <p class="section-subtitle">Mais de 200 empresas jà confiam no Tem de Tudo</p>
-            
-            <div class="estabelecimentos-grid">
-                <div class="estabelecimento-card" onclick="mostrarCadastro()">
-                    <div class="estabelecimento-image">??</div>
-                    <div class="estabelecimento-info">
-                        <div class="estabelecimento-nome">Popeye Hamburgueria</div>
-                        <div class="estabelecimento-categoria">Restaurante</div>
-                        <div class="rating">
-                            <span class="stars">?????</span>
-                            <span>5.0 (127 avaliaààes)</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="estabelecimento-card" onclick="mostrarCadastro()">
-                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">??</div>
-                    <div class="estabelecimento-info">
-                        <div class="estabelecimento-nome">Texano Burger</div>
-                        <div class="estabelecimento-categoria">Restaurante</div>
-                        <div class="rating">
-                            <span class="stars">?????</span>
-                            <span>4.9 (89 avaliaààes)</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="estabelecimento-card" onclick="mostrarCadastro()">
-                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">??</div>
-                    <div class="estabelecimento-info">
-                        <div class="estabelecimento-nome">Florenza Boutique</div>
-                        <div class="estabelecimento-categoria">Salào de Beleza</div>
-                        <div class="rating">
-                            <span class="stars">?????</span>
-                            <span>4.8 (156 avaliaààes)</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="estabelecimento-card" onclick="mostrarCadastro()">
-                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #16a085, #1abc9c);">??</div>
-                    <div class="estabelecimento-info">
-                        <div class="estabelecimento-nome">Sushi Master</div>
-                        <div class="estabelecimento-categoria">Restaurante Japonàs</div>
-                        <div class="rating">
-                            <span class="stars">?????</span>
-                            <span>4.8 (143 avaliaààes)</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="estabelecimento-card" onclick="mostrarCadastro()">
-                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #f39c12, #e67e22);">??</div>
-                    <div class="estabelecimento-info">
-                        <div class="estabelecimento-nome">Pet Love</div>
-                        <div class="estabelecimento-categoria">Petshop</div>
-                        <div class="rating">
-                            <span class="stars">?????</span>
-                            <span>4.9 (201 avaliaààes)</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="estabelecimento-card" onclick="mostrarCadastro()">
-                    <div class="estabelecimento-image" style="background: linear-gradient(135deg, #34495e, #2c3e50);">??</div>
-                    <div class="estabelecimento-info">
-                        <div class="estabelecimento-nome">Malagueta Galpào</div>
-                        <div class="estabelecimento-categoria">Bar e Restaurante</div>
-                        <div class="rating">
-                            <span class="stars">?????</span>
-                            <span>4.7 (98 avaliaààes)</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="view-all">
-                <a href="cadastro.html" class="btn btn-large btn-primary">
-                    Ver Todos os Estabelecimentos <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-    
-    <!-- CTA -->
-    <section class="cta">
-        <div class="cta-content">
-            <h2>Pronto para Crescer?</h2>
-            <p>14 dias gràtis. Sem cartào de cràdito. Cancele quando quiser.</p>
-            
-            <div class="hero-buttons">
-                <a href="cadastro.html" class="btn btn-large btn-primary">
-                    <i class="fas fa-rocket"></i> Comeàar Agora
-                </a>
-                <a href="planos.html" class="btn btn-large btn-outline">
-                    <i class="fas fa-tag"></i> Ver Planos
-                </a>
-            </div>
-        </div>
-    </section>
-    
-    <!-- FOOTER -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#features">Recursos</a>
-                <a href="planos.html">Planos</a>
-                <a href="contato.html">Contato</a>
-                <a href="termos-de-uso.html">Termos de Uso</a>
-                <a href="politica-de-privacidade.html">Privacidade</a>
-            </div>
-            <p>&copy; 2025 Tem de Tudo. Todos os direitos reservados.</p>
-        </div>
-    </footer>
-
     <script>
-        function mostrarCadastro() {
-            if (confirm('Faàa login para acessar os estabelecimentos!')) {
-                window.location.href = 'cadastro.html';
-            }
-        }
+        // Efeito parallax suave no scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            document.querySelector('.logo').style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+        
+        // Animação de entrada
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.container').style.animation = 'fadeIn 0.6s ease-out';
+        });
     </script>
 </body>
 </html>
