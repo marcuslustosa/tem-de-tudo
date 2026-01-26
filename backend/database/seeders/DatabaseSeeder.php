@@ -88,14 +88,62 @@ class DatabaseSeeder extends Seeder
         echo "\n🏪 Criando empresas parceiras...\n";
         
         $empresasData = [
-            ['nome' => 'Restaurante Sabor & Arte', 'ramo' => 'restaurante', 'owner_id' => $empresa->id],
-            ['nome' => 'Academia Corpo Forte', 'ramo' => 'academia', 'owner_id' => $empresa->id],
-            ['nome' => 'Cafeteria Aroma Premium', 'ramo' => 'cafeteria', 'owner_id' => $empresa->id],
-            ['nome' => 'Pet Shop Amigo Fiel', 'ramo' => 'pet_shop', 'owner_id' => $empresa->id],
-            ['nome' => 'Salão Beleza Total', 'ramo' => 'salao', 'owner_id' => $empresa->id],
-            ['nome' => 'Mercado Bom Preço', 'ramo' => 'mercado', 'owner_id' => $empresa->id],
-            ['nome' => 'Farmácia Saúde Mais', 'ramo' => 'farmacia', 'owner_id' => $empresa->id],
-            ['nome' => 'Padaria Pão Quentinho', 'ramo' => 'padaria', 'owner_id' => $empresa->id],
+            [
+                'nome' => 'Restaurante Sabor & Arte', 
+                'ramo' => 'restaurante', 
+                'owner_id' => $empresa->id,
+                'logo' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop',
+                'descricao' => 'Restaurante contemporâneo com pratos autorais e ambiente sofisticado. Especialidade em gastronomia italiana e brasileira.'
+            ],
+            [
+                'nome' => 'Academia Corpo Forte', 
+                'ramo' => 'academia', 
+                'owner_id' => $empresa->id,
+                'logo' => 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=400&fit=crop',
+                'descricao' => 'Academia completa com musculação, funcional, pilates e aulas coletivas. Profissionais qualificados e equipamentos de última geração.'
+            ],
+            [
+                'nome' => 'Cafeteria Aroma Premium', 
+                'ramo' => 'cafeteria', 
+                'owner_id' => $empresa->id,
+                'logo' => 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=400&fit=crop',
+                'descricao' => 'Cafés especiais, doces artesanais e ambiente aconchegante. Grãos selecionados e métodos de preparo tradicionais.'
+            ],
+            [
+                'nome' => 'Pet Shop Amigo Fiel', 
+                'ramo' => 'pet_shop', 
+                'owner_id' => $empresa->id,
+                'logo' => 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=400&fit=crop',
+                'descricao' => 'Tudo para seu pet: ração, acessórios, banho e tosa. Veterinário disponível e produtos premium.'
+            ],
+            [
+                'nome' => 'Salão Beleza Total', 
+                'ramo' => 'salao', 
+                'owner_id' => $empresa->id,
+                'logo' => 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop',
+                'descricao' => 'Salão de beleza completo: cabelo, unhas, estética e maquiagem. Profissionais especializados e produtos de qualidade.'
+            ],
+            [
+                'nome' => 'Mercado Bom Preço', 
+                'ramo' => 'mercado', 
+                'owner_id' => $empresa->id,
+                'logo' => 'https://images.unsplash.com/photo-1583736902931-063382c8e67f?w=400&h=400&fit=crop',
+                'descricao' => 'Supermercado com variedade de produtos, hortifruti fresquinho e ofertas diárias. Delivery disponível.'
+            ],
+            [
+                'nome' => 'Farmácia Saúde Mais', 
+                'ramo' => 'farmacia', 
+                'owner_id' => $empresa->id,
+                'logo' => 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=400&fit=crop',
+                'descricao' => 'Farmácia completa com medicamentos, dermocosméticos e atendimento farmacêutico personalizado.'
+            ],
+            [
+                'nome' => 'Padaria Pão Quentinho', 
+                'ramo' => 'padaria', 
+                'owner_id' => $empresa->id,
+                'logo' => 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop',
+                'descricao' => 'Padaria artesanal com pães frescos, bolos caseiros e salgados deliciosos. Fabricação própria diária.'
+            ],
         ];
         
         foreach ($empresasData as $empData) {
@@ -104,10 +152,11 @@ class DatabaseSeeder extends Seeder
                 [
                     'owner_id' => $empData['owner_id'],
                     'ramo' => $empData['ramo'],
+                    'logo' => $empData['logo'],
+                    'descricao' => $empData['descricao'],
                     'endereco' => 'Rua Exemplo, ' . rand(100, 9999) . ' - São Paulo, SP',
                     'telefone' => sprintf('(11) 9%04d-%04d', rand(1000, 9999), rand(1000, 9999)),
                     'cnpj' => sprintf('%02d.%03d.%03d/%04d-%02d', rand(10, 99), rand(100, 999), rand(100, 999), rand(1000, 9999), rand(10, 99)),
-                    'descricao' => 'Empresa parceira do programa de fidelidade Tem de Tudo',
                     'ativo' => true,
                     'points_multiplier' => 1.0,
                 ]
