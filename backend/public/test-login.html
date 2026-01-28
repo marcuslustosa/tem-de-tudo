@@ -1,6 +1,7 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <link rel="stylesheet" href="/css/app-unified.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -149,13 +150,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Teste de Login</h1>
-        <p class="subtitle">Sistema de Fidelidade - Validação de Autenticação</p>
+        <h1>?? Teste de Login</h1>
+        <p class="subtitle">Sistema de Fidelidade - Valida��o de Autentica��o</p>
 
         <div class="credentials">
-            <h3>📋 Credenciais de Teste</h3>
-            <p><strong>Clientes:</strong> cliente1@email.com até cliente50@email.com</p>
-            <p><strong>Empresas:</strong> empresa1@email.com até empresa20@email.com</p>
+            <h3>?? Credenciais de Teste</h3>
+            <p><strong>Clientes:</strong> cliente1@email.com at� cliente50@email.com</p>
+            <p><strong>Empresas:</strong> empresa1@email.com at� empresa20@email.com</p>
             <p><strong>Senha (todas):</strong> senha123</p>
         </div>
 
@@ -179,9 +180,9 @@
         </div>
 
         <div class="btn-group">
-            <button class="btn-login" onclick="testarLogin()">🔓 Testar Login</button>
-            <button class="btn-register" onclick="testarRegistro()">📝 Testar Registro</button>
-            <button class="btn-clear" onclick="limpar()">🗑️ Limpar</button>
+            <button class="btn-login" onclick="testarLogin()">?? Testar Login</button>
+            <button class="btn-register" onclick="testarRegistro()">?? Testar Registro</button>
+            <button class="btn-clear" onclick="limpar()">??? Limpar</button>
         </div>
 
         <div id="result"></div>
@@ -208,7 +209,7 @@
             const password = document.getElementById('password').value;
             const resultDiv = document.getElementById('result');
 
-            resultDiv.innerHTML = '<p>⏳ Testando login...</p>';
+            resultDiv.innerHTML = '<p>? Testando login...</p>';
             resultDiv.className = '';
             resultDiv.style.display = 'block';
 
@@ -227,8 +228,8 @@
                 if (response.ok && data.success) {
                     resultDiv.className = 'success';
                     resultDiv.innerHTML = `
-                        <h3>✅ Login realizado com sucesso!</h3>
-                        <p><strong>Usuário:</strong> ${data.data.user.name}</p>
+                        <h3>? Login realizado com sucesso!</h3>
+                        <p><strong>Usu�rio:</strong> ${data.data.user.name}</p>
                         <p><strong>Email:</strong> ${data.data.user.email}</p>
                         <p><strong>Perfil:</strong> ${data.data.user.perfil}</p>
                         <p><strong>Token:</strong> ${data.data.token.substring(0, 50)}...</p>
@@ -237,7 +238,7 @@
                 } else {
                     resultDiv.className = 'error';
                     resultDiv.innerHTML = `
-                        <h3>❌ Erro no login</h3>
+                        <h3>? Erro no login</h3>
                         <p><strong>Mensagem:</strong> ${data.message || 'Erro desconhecido'}</p>
                         <div class="json-output">${JSON.stringify(data, null, 2)}</div>
                     `;
@@ -245,7 +246,7 @@
             } catch (error) {
                 resultDiv.className = 'error';
                 resultDiv.innerHTML = `
-                    <h3>❌ Erro de conexão</h3>
+                    <h3>? Erro de conex�o</h3>
                     <p><strong>Erro:</strong> ${error.message}</p>
                 `;
             }
@@ -265,7 +266,7 @@
                 telefone: '(11) 99999-9999'
             };
 
-            resultDiv.innerHTML = '<p>⏳ Testando registro...</p>';
+            resultDiv.innerHTML = '<p>? Testando registro...</p>';
             resultDiv.className = '';
             resultDiv.style.display = 'block';
 
@@ -284,20 +285,20 @@
                 if (response.ok && data.success) {
                     resultDiv.className = 'success';
                     resultDiv.innerHTML = `
-                        <h3>✅ Registro realizado com sucesso!</h3>
-                        <p><strong>Usuário criado:</strong> ${data.data.user.name}</p>
+                        <h3>? Registro realizado com sucesso!</h3>
+                        <p><strong>Usu�rio criado:</strong> ${data.data.user.name}</p>
                         <p><strong>Email:</strong> ${data.data.user.email}</p>
                         <p><strong>Perfil:</strong> ${data.data.user.perfil}</p>
                         <div class="json-output">${JSON.stringify(data, null, 2)}</div>
                     `;
                     
-                    // Atualizar campos com novo usuário
+                    // Atualizar campos com novo usu�rio
                     document.getElementById('email').value = novoUsuario.email;
                     document.getElementById('password').value = novoUsuario.password;
                 } else {
                     resultDiv.className = 'error';
                     resultDiv.innerHTML = `
-                        <h3>❌ Erro no registro</h3>
+                        <h3>? Erro no registro</h3>
                         <p><strong>Mensagem:</strong> ${data.message || 'Erro desconhecido'}</p>
                         <div class="json-output">${JSON.stringify(data, null, 2)}</div>
                     `;
@@ -305,7 +306,7 @@
             } catch (error) {
                 resultDiv.className = 'error';
                 resultDiv.innerHTML = `
-                    <h3>❌ Erro de conexão</h3>
+                    <h3>? Erro de conex�o</h3>
                     <p><strong>Erro:</strong> ${error.message}</p>
                 `;
             }
