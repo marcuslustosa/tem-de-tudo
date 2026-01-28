@@ -1,0 +1,447 @@
+/**
+ * TEM DE TUDO - CSS Unificado
+ * Design System Único para Todas as Páginas
+ */
+
+/* ========================================
+   RESET E VARIÁVEIS
+======================================== */
+:root {
+    /* Cores Primárias */
+    --primary: #667eea;
+    --primary-dark: #5568d3;
+    --primary-light: #818cf8;
+    
+    /* Cores Secundárias */
+    --secondary: #764ba2;
+    --accent: #f093fb;
+    --orange: #f59e0b;
+    
+    /* Gradientes */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #667eea 100%);
+    --gradient-dark: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+    
+    /* Tons de Cinza */
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    
+    /* Estados */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --info: #3b82f6;
+    
+    /* Espaçamentos */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    
+    /* Bordas */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+    --radius-full: 9999px;
+    
+    /* Sombras */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    
+    /* Transições */
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+    color: var(--gray-900);
+}
+
+/* ========================================
+   BACKGROUNDS
+======================================== */
+.bg-gradient-primary {
+    background: var(--gradient-primary);
+}
+
+.bg-gradient-dark {
+    background: var(--gradient-dark);
+}
+
+.bg-pattern {
+    position: relative;
+}
+
+.bg-pattern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(102, 126, 234, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(102, 126, 234, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* ========================================
+   CONTAINERS E LAYOUT
+======================================== */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+}
+
+.container-sm {
+    max-width: 640px;
+}
+
+.container-md {
+    max-width: 768px;
+}
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6);
+    background: var(--gradient-dark);
+}
+
+/* ========================================
+   CARDS
+======================================== */
+.card {
+    background: white;
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-2xl);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.card-header {
+    padding: var(--space-8);
+    background: var(--gradient-primary);
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+.card-body {
+    padding: var(--space-8);
+}
+
+.card-footer {
+    padding: var(--space-6);
+    background: var(--gray-50);
+    border-top: 1px solid var(--gray-200);
+}
+
+/* ========================================
+   FORMULÁRIOS
+======================================== */
+.form-group {
+    margin-bottom: var(--space-6);
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--space-2);
+}
+
+.form-control {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: 1rem;
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-lg);
+    transition: var(--transition);
+    background: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-control::placeholder {
+    color: var(--gray-400);
+}
+
+.form-control.error {
+    border-color: var(--error);
+}
+
+.form-error {
+    color: var(--error);
+    font-size: 0.875rem;
+    margin-top: var(--space-2);
+    display: block;
+}
+
+.form-help {
+    color: var(--gray-500);
+    font-size: 0.875rem;
+    margin-top: var(--space-2);
+}
+
+/* ========================================
+   BOTÕES
+======================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+}
+
+.btn-secondary:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-outline {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-outline:hover {
+    background: white;
+    color: var(--primary);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn-lg {
+    padding: var(--space-4) var(--space-8);
+    font-size: 1.125rem;
+}
+
+.btn-sm {
+    padding: var(--space-2) var(--space-4);
+    font-size: 0.875rem;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   ALERTAS E MENSAGENS
+======================================== */
+.alert {
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    border-left: 4px solid var(--success);
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border-left: 4px solid var(--error);
+}
+
+.alert-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border-left: 4px solid var(--warning);
+}
+
+.alert-info {
+    background: #dbeafe;
+    color: #1e40af;
+    border-left: 4px solid var(--info);
+}
+
+/* ========================================
+   LOADING E ESTADOS
+======================================== */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-md);
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ========================================
+   UTILITÁRIOS
+======================================== */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: var(--space-2); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+
+.mt-2 { margin-top: var(--space-2); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-8 { margin-top: var(--space-8); }
+
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.mb-8 { margin-bottom: var(--space-8); }
+
+.hidden { display: none; }
+.block { display: block; }
+
+/* ========================================
+   RESPONSIVO
+======================================== */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: var(--space-4);
+    }
+    
+    .card-body {
+        padding: var(--space-6);
+    }
+    
+    .btn-lg {
+        padding: var(--space-3) var(--space-6);
+        font-size: 1rem;
+    }
+    
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.5rem; }
+}
+
+/* ========================================
+   ANIMAÇÕES
+======================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in-right {
+    animation: slideInRight 0.4s ease-out;
+}
