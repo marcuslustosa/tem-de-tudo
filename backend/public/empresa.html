@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Empresa - Tem de Tudo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/mobile-native.css">
+    <link rel="stylesheet" href="/css/app-unified.css">
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="css/temdetudo-theme.css"></head>
 <body>
@@ -37,7 +37,7 @@
     <div class="section">
         <div class="section-header">
             <i class="fas fa-tag"></i>
-            Promo√ß√µes Ativas
+            PromoÁıes Ativas
         </div>
         <div id="promocoes"></div>
     </div>
@@ -45,7 +45,7 @@
     <div class="section">
         <div class="section-header">
             <i class="fas fa-credit-card"></i>
-            Cart√†o Fidelidade
+            Cart‡o Fidelidade
         </div>
         <div id="cartoes"></div>
     </div>
@@ -53,7 +53,7 @@
     <div class="section">
         <div class="section-header">
             <i class="fas fa-info-circle"></i>
-            Informa√†√†es
+            Informa‡‡es
         </div>
         <div class="card-fidelidade">
             <div class="info-item">
@@ -78,7 +78,7 @@
     <div class="section">
         <div class="section-header">
             <i class="fas fa-comments"></i>
-            Avalia√†√†es
+            Avalia‡‡es
         </div>
         <div id="avaliacoes"></div>
     </div>
@@ -89,7 +89,7 @@
 
         async function carregarEmpresa() {
             if (!empresaId) {
-                alert('Empresa n√£o encontrada');
+                alert('Empresa n„o encontrada');
                 window.history.back();
                 return;
             }
@@ -108,7 +108,7 @@
                     const empresa = result.data;
                     document.getElementById('empresaNome').textContent = empresa.nome;
                     document.getElementById('empresaCategoria').textContent = empresa.ramo_formatado || empresa.ramo || 'Estabelecimento';
-                    document.getElementById('empresaEndereco').textContent = empresa.endereco || 'N√£o informado';
+                    document.getElementById('empresaEndereco').textContent = empresa.endereco || 'N„o informado';
                     
                     if (empresa.telefone) {
                         document.getElementById('empresaWhatsapp').textContent = empresa.telefone;
@@ -135,7 +135,7 @@
                     mostrarPopupBonus(data.bonus);
                 }
             } catch (error) {
-                console.error('Erro ao verificar b√†nus:', error);
+                console.error('Erro ao verificar b‡nus:', error);
             }
         }
 
@@ -145,11 +145,11 @@
                 <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;">
                     <div style="background:white;border-radius:20px;padding:30px;text-align:center;max-width:350px;">
                         <div style="font-size:60px;margin-bottom:15px;">??</div>
-                        <h2 style="color:#333;margin-bottom:10px;">Parab√†ns!</h2>
-                        <p style="color:#666;margin-bottom:20px;">Voc√™ ganhou ${bonus.descricao}!</p>
+                        <h2 style="color:#333;margin-bottom:10px;">Parab‡ns!</h2>
+                        <p style="color:#666;margin-bottom:20px;">VocÍ ganhou ${bonus.descricao}!</p>
                         ${bonus.imagem ? `<img src="${bonus.imagem}" style="width:100%;border-radius:12px;margin-bottom:20px;">` : ''}
                         <button onclick="resgatarBonus(${bonus.id}, this.parentElement.parentElement)" style="width:100%;padding:15px;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;border:none;border-radius:12px;font-weight:600;cursor:pointer;">
-                            Resgatar B√†nus
+                            Resgatar B‡nus
                         </button>
                     </div>
                 </div>
@@ -169,10 +169,10 @@
                 
                 if (res.ok) {
                     popup.remove();
-                    alert('B√†nus resgatado! Mostre esta tela para o estabelecimento.');
+                    alert('B‡nus resgatado! Mostre esta tela para o estabelecimento.');
                 }
             } catch (error) {
-                alert('Erro ao resgatar b√†nus');
+                alert('Erro ao resgatar b‡nus');
             }
         }
 
