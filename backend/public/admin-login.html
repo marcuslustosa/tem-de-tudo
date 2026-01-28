@@ -30,123 +30,145 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/modern-theme.css"><link rel="stylesheet" href="css/temdetudo-theme.css">
 </head>
-<body style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+<body style="background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative;">
+    
+    <!-- Background Grid Pattern -->
+    <div style="content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: linear-gradient(rgba(102, 126, 234, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(102, 126, 234, 0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none;"></div>
     
     <!-- Admin Login Container -->
-    <div class="login-container" style="width: 100%; max-width: 450px; margin: 2rem;">
-        <div class="card" style="border: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
-            <!-- Header -->
-            <div class="card-header text-center" style="background: var(--gradient-primary); padding: var(--space-8);">
-                <div style="margin-bottom: 1.5rem;">
-                    <img src="/img/logo.png" alt="TemDeTudo" style="width: 96px; height: 96px; border-radius: var(--radius-full); border: 3px solid white;">
+    <div class="login-container" style="width: 100%; max-width: 450px; margin: 2rem; background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 1px rgba(102, 126, 234, 0.3); border: 1px solid rgba(102, 126, 234, 0.1); position: relative; z-index: 1; padding: 48px 40px;">
+        
+        <!-- Logo -->
+        <div style="text-align: center; margin-bottom: 40px;">
+            <img src="/img/logo.png" alt="TemDeTudo" style="width: 96px; height: 96px; margin: 0 auto; display: block; border-radius: 16px; box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);">
+        </div>
+        
+        <!-- Welcome Section -->
+        <div style="text-align: center; margin-bottom: 36px;">
+            <h1 style="color: #ffffff; font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px;">Administração</h1>
+            <p style="color: rgba(255,255,255,0.6); font-size: 15px; font-weight: 500;">Sistema de Gestão TemDeTudo</p>
+        </div>
+        
+        <!-- Login Form -->
+        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+            <!-- Email -->
+            <div style="margin-bottom: 24px;">
+                <label for="adminEmail" style="display: block; margin-bottom: 10px; color: #fff; font-weight: 600; font-size: 14px;">
+                    Email Administrativo
+                </label>
+                <div style="position: relative;">
+                    <i class="fas fa-envelope" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #667eea; font-size: 16px;"></i>
+                    <input 
+                        type="email" 
+                        id="adminEmail" 
+                        name="email" 
+                        placeholder="admin@temdetudo.com"
+                        required
+                        autocomplete="username"
+                        style="width: 100%; padding: 16px 18px 16px 52px; border: 2px solid rgba(102, 126, 234, 0.2); border-radius: 14px; font-size: 15px; font-family: 'Inter', sans-serif; background: rgba(255,255,255,0.05); color: #fff; transition: all 0.3s ease; outline: none;"
+                        onfocus="this.style.borderColor='#667eea'; this.style.background='rgba(255,255,255,0.08)'"
+                        onblur="this.style.borderColor='rgba(102, 126, 234, 0.2)'; this.style.background='rgba(255,255,255,0.05)'"
+                    >
                 </div>
-                <h1 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem;">Administração</h1>
-                <p style="color: rgba(255,255,255,0.9); font-size: 0.875rem;">Sistema de Gestão TemDeTudo</p>
             </div>
             
-            <!-- Login Form -->
-            <div class="card-body" style="padding: var(--space-8);">
-                <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
-                    <!-- Email -->
-                    <div class="form-group" style="margin-bottom: var(--space-6);">
-                        <label for="adminEmail" class="form-label">
-                            <i class="fas fa-envelope icon-sm"></i> Email Administrativo
-                        </label>
-                        <input 
-                            type="email" 
-                            id="adminEmail" 
-                            name="email" 
-                            class="form-control" 
-                            placeholder="admin@temdetudo.com"
-                            required
-                            autocomplete="username"
-                        >
-                    </div>
-                    
-                    <!-- Password -->
-                    <div class="form-group" style="margin-bottom: var(--space-6);">
-                        <label for="adminPassword" class="form-label">
-                            <i class="fas fa-lock icon-sm"></i> Senha
-                        </label>
-                        <div style="position: relative;">
-                            <input 
-                                type="password" 
-                                id="adminPassword" 
-                                name="password" 
-                                class="form-control" 
-                                placeholder="Digite sua senha"
-                                required
-                                autocomplete="current-password"
-                            >
-                            <button 
-                                type="button" 
-                                onclick="togglePasswordVisibility()" 
-                                style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--gray-500); cursor: pointer;"
-                            >
-                                <i id="passwordToggleIcon" class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Security Code (2FA simulation) -->
-                    <div class="form-group" style="margin-bottom: var(--space-6);">
-                        <label for="securityCode" class="form-label">
-                            <i class="fas fa-shield-alt icon-sm"></i> Código de Segurança
-                        </label>
-                        <input 
-                            type="text" 
-                            id="securityCode" 
-                            name="security_code" 
-                            class="form-control" 
-                            placeholder="000000"
-                            maxlength="6"
-                            pattern="[0-9]{6}"
-                            title="Digite um código de 6 dígitos"
-                        >
-                        <small style="color: var(--gray-600); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
-                            <i class="fas fa-info-circle"></i> Para demonstração, use: 123456
-                        </small>
-                    </div>
-                    
-                    <!-- Remember Me -->
-                    <div class="form-group" style="margin-bottom: var(--space-6);">
-                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                            <input type="checkbox" id="rememberMe" name="remember" style="margin: 0;">
-                            <span style="font-size: 0.875rem; color: var(--gray-600);">Manter conectado por 30 dias</span>
-                        </label>
-                    </div>
-                    
-                    <!-- Login Button -->
-                    <button type="submit" class="btn btn-primary w-full btn-lg" id="adminLoginBtn">
-                        <i class="fas fa-sign-in-alt icon-sm"></i>
-                        <span id="loginBtnText">Acessar Sistema</span>
+            <!-- Password -->
+            <div style="margin-bottom: 24px;">
+                <label for="adminPassword" style="display: block; margin-bottom: 10px; color: #fff; font-weight: 600; font-size: 14px;">
+                    Senha
+                </label>
+                <div style="position: relative;">
+                    <i class="fas fa-lock" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #667eea; font-size: 16px;"></i>
+                    <input 
+                        type="password" 
+                        id="adminPassword" 
+                        name="password" 
+                        placeholder="Digite sua senha"
+                        required
+                        autocomplete="current-password"
+                        style="width: 100%; padding: 16px 52px 16px 52px; border: 2px solid rgba(102, 126, 234, 0.2); border-radius: 14px; font-size: 15px; font-family: 'Inter', sans-serif; background: rgba(255,255,255,0.05); color: #fff; transition: all 0.3s ease; outline: none;"
+                        onfocus="this.style.borderColor='#667eea'; this.style.background='rgba(255,255,255,0.08)'"
+                        onblur="this.style.borderColor='rgba(102, 126, 234, 0.2)'; this.style.background='rgba(255,255,255,0.05)'"
+                    >
+                    <button 
+                        type="button" 
+                        onclick="togglePasswordVisibility()" 
+                        style="position: absolute; right: 18px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 16px;"
+                    >
+                        <i id="passwordToggleIcon" class="fas fa-eye"></i>
                     </button>
-                </form>
-                
-                <!-- Error/Success Messages -->
-                <div id="loginMessage" style="margin-top: var(--space-4); padding: var(--space-4); border-radius: var(--radius-md); display: none;"></div>
-                
-                <!-- Security Info -->
-                <div style="margin-top: var(--space-6); padding: var(--space-4); background: var(--gray-50); border-radius: var(--radius-md); border-left: 4px solid var(--primary-purple);">
-                    <div style="display: flex; align-items: start; gap: 0.75rem;">
-                        <i class="fas fa-shield-alt" style="color: var(--primary-purple); margin-top: 0.25rem;"></i>
-                        <div>
-                            <h4 style="font-size: 0.875rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem;">Acesso Seguro</h4>
-                            <p style="font-size: 0.75rem; color: var(--gray-600); line-height: 1.4;">
-                                • Todas as ações são registradas<br>
-                                • Conexão criptografada SSL<br>
-                                • Monitoramento de Segurança ativo
-                            </p>
-                        </div>
-                    </div>
+                </div>
+            </div>
+
+            <!-- Security Code (2FA simulation) -->
+            <div style="margin-bottom: 24px;">
+                <label for="securityCode" style="display: block; margin-bottom: 10px; color: #fff; font-weight: 600; font-size: 14px;">
+                    Código de Segurança
+                </label>
+                <div style="position: relative;">
+                    <i class="fas fa-shield-alt" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #667eea; font-size: 16px;"></i>
+                    <input 
+                        type="text" 
+                        id="securityCode" 
+                        name="security_code" 
+                        placeholder="000000"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                        title="Digite um código de 6 dígitos"
+                        style="width: 100%; padding: 16px 18px 16px 52px; border: 2px solid rgba(102, 126, 234, 0.2); border-radius: 14px; font-size: 15px; font-family: 'Inter', sans-serif; background: rgba(255,255,255,0.05); color: #fff; transition: all 0.3s ease; outline: none;"
+                        onfocus="this.style.borderColor='#667eea'; this.style.background='rgba(255,255,255,0.08)'"
+                        onblur="this.style.borderColor='rgba(102, 126, 234, 0.2)'; this.style.background='rgba(255,255,255,0.05)'"
+                    >
+                </div>
+                <small style="color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 6px; display: block;">
+                    <i class="fas fa-info-circle"></i> Para demonstração, use: 123456
+                </small>
+            </div>
+            
+            <!-- Remember Me -->
+            <div style="margin-bottom: 28px;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: rgba(255,255,255,0.7); font-size: 14px;">
+                    <input type="checkbox" id="rememberMe" name="remember" style="margin: 0; width: 18px; height: 18px; cursor: pointer;">
+                    <span>Manter conectado por 30 dias</span>
+                </label>
+            </div>
+            
+            <!-- Login Button -->
+            <button 
+                type="submit" 
+                id="adminLoginBtn"
+                style="width: 100%; padding: 18px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3); letter-spacing: 0.5px; font-family: 'Inter', sans-serif;"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 32px rgba(102, 126, 234, 0.4)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 24px rgba(102, 126, 234, 0.3)'"
+                onmousedown="this.style.transform='translateY(0)'"
+            >
+                <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
+                <span id="loginBtnText">Acessar Sistema</span>
+            </button>
+        </form>
+        
+        <!-- Error/Success Messages -->
+        <div id="loginMessage" style="margin-top: 20px; padding: 14px; border-radius: 12px; display: none; font-size: 14px;"></div>
+        
+        <!-- Security Info -->
+        <div style="margin-top: 28px; padding: 16px; background: rgba(102, 126, 234, 0.08); border-radius: 12px; border-left: 4px solid #667eea;">
+            <div style="display: flex; align-items: start; gap: 12px;">
+                <i class="fas fa-shield-alt" style="color: #667eea; margin-top: 2px; font-size: 18px;"></i>
+                <div>
+                    <h4 style="font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 8px;">Acesso Seguro</h4>
+                    <p style="font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.6; margin: 0;">
+                        • Todas as ações são registradas<br>
+                        • Conexão criptografada SSL<br>
+                        • Monitoramento de Segurança ativo
+                    </p>
                 </div>
             </div>
         </div>
         
         <!-- Footer -->
-        <div style="text-align: center; margin-top: var(--space-6); color: rgba(255,255,255,0.7);">
-            <p style="font-size: 0.75rem;">
-                <i class="fas fa-lock icon-sm"></i>
+        <div style="text-align: center; margin-top: 32px; color: rgba(255,255,255,0.5);">
+            <p style="font-size: 13px;">
+                <i class="fas fa-lock" style="margin-right: 4px;"></i>
                 Sistema Administrativo TemDeTudo &copy; 2025
             </p>
         </div>
@@ -266,44 +288,6 @@
             }
         }
         
-        // Check if already logged in
-        window.addEventListener('DOMContentLoaded', function() {
-            const adminToken = localStorage.getItem('admin_token');
-            if (adminToken) {
-                // Validar se o token ainda é válido antes de redirecionar
-                fetch(`${API_CONFIG.getBaseURL()}/api/admin/verify-token`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${adminToken}`,
-                        'Accept': 'application/json'
-                    }
-                }).then(response => {
-                    if (response.ok) {
-                        // Token válido, redirecionar
-                        const adminUser = JSON.parse(localStorage.getItem('admin_user') || '{}');
-                        const userRole = adminUser.role || adminUser.tipo;
-                        
-                        let redirectUrl = '/admin.html'; // Padrão
-                        if (userRole === 'empresa') {
-                            redirectUrl = '/empresa.html';
-                        }
-                        
-                        showMessage('Você já está logado. Redirecionando...', 'success');
-                        setTimeout(() => {
-                            window.location.href = redirectUrl;
-                        }, 1000);
-                    } else {
-                        // Token inválido, limpar storage
-                        localStorage.removeItem('admin_token');
-                        localStorage.removeItem('admin_user');
-                    }
-                }).catch(() => {
-                    // Erro na validação, limpar storage
-                    localStorage.removeItem('admin_token');
-                    localStorage.removeItem('admin_user');
-                });
-            }
-        });
     </script>
     <script src="/js/global.js"></script>
 </body>
