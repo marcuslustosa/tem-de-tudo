@@ -254,15 +254,16 @@
                 console.log('Resposta admin:', result);
                 
                 if (response.ok && result.success) {
-                    localStorage.setItem('admin_token', result.data.token);
-                    localStorage.setItem('admin_user', JSON.stringify(result.data.user));
+                    // Salvar com as mesmas chaves que o authMiddleware espera
+                    localStorage.setItem('tem_de_tudo_token', result.data.token);
+                    localStorage.setItem('tem_de_tudo_user', JSON.stringify(result.data.user));
                     
                     // Redirecionar baseado no role do usuário
-                    const userRole = result.data.user.role || result.data.user.tipo;
+                    const userRole = result.data.user.role || result.data.user.tipo || result.data.user.perfil;
                     let redirectUrl = '/admin.html'; // Padrão para admin
                     
                     if (userRole === 'empresa') {
-                        redirectUrl = '/empresa.html';
+                        redirectUrl = '/dashboard-estabelecimento.html';
                         showMessage('Bem-vindo! Redirecionando para painel da empresa...', 'success');
                     } else if (userRole === 'admin') {
                         redirectUrl = '/admin.html';

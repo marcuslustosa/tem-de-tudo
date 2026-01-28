@@ -72,9 +72,11 @@ class AuthMiddleware {
 
     // Logout do usuário
     logout() {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login.html';
+        localStorage.removeItem('tem_de_tudo_token');
+        localStorage.removeItem('tem_de_tudo_user');
+        sessionStorage.removeItem('tem_de_tudo_token');
+        sessionStorage.removeItem('tem_de_tudo_user');
+        window.location.href = '/admin-login.html';
     }
 
     // Verificar acesso na inicialização da página

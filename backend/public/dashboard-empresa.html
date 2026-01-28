@@ -275,7 +275,7 @@
         });
 
         function verificarAutenticacao() {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('tem_de_tudo_token');
             const userType = localStorage.getItem('user_type');
 
             if (!token || userType !== 'empresa') {
@@ -285,8 +285,8 @@
         }
 
         async function carregarDashboard() {
-            const token = localStorage.getItem('token');
-            const user = JSON.parse(localStorage.getItem('user'));
+            const token = localStorage.getItem('tem_de_tudo_token');
+            const user = JSON.parse(localStorage.getItem('tem_de_tudo_user'));
 
             // Atualizar nome da empresa
             document.getElementById('empresaNome').textContent = user.name || 'Empresa';
@@ -329,8 +329,8 @@
         }
 
         function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
+            localStorage.removeItem('tem_de_tudo_token');
+            localStorage.removeItem('tem_de_tudo_user');
             localStorage.removeItem('user_id');
             localStorage.removeItem('user_type');
             window.location.href = '/entrar.html';

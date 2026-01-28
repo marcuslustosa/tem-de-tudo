@@ -392,17 +392,18 @@
                 console.log('Resposta do login:', data); // DEBUG
                 
                 if (response.ok && data.success) {
-                    localStorage.setItem('token', data.data.token);
-                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                    // Usar as mesmas chaves que authMiddleware espera
+                    localStorage.setItem('tem_de_tudo_token', data.data.token);
+                    localStorage.setItem('tem_de_tudo_user', JSON.stringify(data.data.user));
                     
                     // Redirecionar baseado no perfil
                     const perfil = data.data.user.perfil;
                     if (perfil === 'admin') {
-                        window.location.href = 'admin.html';
+                        window.location.href = '/admin.html';
                     } else if (perfil === 'empresa') {
-                        window.location.href = 'empresa.html';
+                        window.location.href = '/dashboard-estabelecimento.html';
                     } else {
-                        window.location.href = 'app-inicio.html';
+                        window.location.href = '/dashboard-cliente.html';
                     }
                 } else {
                     alert(data.message || 'Erro ao fazer login. Verifique suas credenciais.');

@@ -411,8 +411,8 @@
     
     <script>
         async function loadProfile() {
-            const token = localStorage.getItem('token');
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const token = localStorage.getItem('tem_de_tudo_token');
+            const user = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
             
             if (!token) {
                 window.location.href = 'entrar.html';
@@ -458,8 +458,8 @@
         
         function logout() {
             if (confirm('Tem certeza que deseja sair?')) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
+                localStorage.removeItem('tem_de_tudo_token');
+                localStorage.removeItem('tem_de_tudo_user');
                 window.location.href = 'index.html';
             }
         }

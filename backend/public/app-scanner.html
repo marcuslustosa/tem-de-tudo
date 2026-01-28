@@ -400,7 +400,7 @@
             
             try {
                 const qrData = JSON.parse(decodedText);
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('tem_de_tudo_token');
                 
                 // Enviar para API validar
                 const response = await fetch('/api/cliente/escanear-qrcode', {
@@ -441,7 +441,7 @@
         }
         
         // Verificar autenticação
-        if (!localStorage.getItem('token')) {
+        if (!localStorage.getItem('tem_de_tudo_token')) {
             window.location.href = 'entrar.html';
         }
     </script>
