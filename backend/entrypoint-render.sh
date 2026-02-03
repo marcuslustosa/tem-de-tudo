@@ -36,11 +36,7 @@ EOF
 
 echo "✅ .env criado com SQLite!"
 
-# Aguardar PostgreSQL estar pronto
-echo "⏳ Aguardando PostgreSQL..."
-sleep 10
-
-# Executar migrations
+# Executar migrations (SQLite não precisa aguardar)
 echo "📦 Executando migrations..."
 php artisan migrate --force --no-interaction
 
