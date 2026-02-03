@@ -233,11 +233,12 @@
                 
                 console.log('Resposta completa:', result);
                 
-                if (!response.ok) {
+                // VERIFICAR SUCESSO PRIMEIRO
+                if (!response.ok || result.success === false) {
                     throw new Error(result.message || 'Erro ao fazer login');
                 }
                 
-                // VERIFICAR: API pode retornar data diretamente OU dentro de result
+                // AGORA SIM extrair data (só se success === true)
                 let data = result.data || result;
                 
                 // Se success === true e tem data, usar data

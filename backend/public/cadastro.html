@@ -392,7 +392,8 @@
                 const result = await response.json();
                 console.log('Resposta do servidor:', result);
                 
-                if (!response.ok) {
+                // VERIFICAR SUCESSO
+                if (!response.ok || result.success === false) {
                     // Mostrar erros de validação se existirem
                     if (result.errors) {
                         const errorMessages = Object.values(result.errors).flat().join('\n');
