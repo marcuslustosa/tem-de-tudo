@@ -5,13 +5,35 @@ echo "========================================="
 echo "🚀 TEM DE TUDO - Deploy Render.com"
 echo "========================================="
 
-# Substituir variáveis de ambiente no .env
+# Criar .env dinâmico com variáveis do Render
 echo "🔧 Configurando variáveis de ambiente..."
-sed -i "s/\${PGHOST}/$PGHOST/g" .env
-sed -i "s/\${PGPORT}/$PGPORT/g" .env
-sed -i "s/\${PGDATABASE}/$PGDATABASE/g" .env
-sed -i "s/\${PGUSER}/$PGUSER/g" .env
-sed -i "s/\${PGPASSWORD}/$PGPASSWORD/g" .env
+cat > .env << EOF
+APP_NAME="Tem de Tudo"
+APP_ENV=production
+APP_KEY=base64:4KqJxMzRlNTBiZWItNGY5OC00YzY3LWJhOTEtYmU5ZTc2MGE2YjA1
+APP_DEBUG=false
+APP_URL=https://aplicativo-tem-de-tudo.onrender.com
+
+LOG_CHANNEL=stack
+LOG_LEVEL=error
+
+DB_CONNECTION=pgsql
+DB_HOST=$PGHOST
+DB_PORT=$PGPORT
+DB_DATABASE=$PGDATABASE
+DB_USERNAME=$PGUSER
+DB_PASSWORD=$PGPASSWORD
+
+SESSION_DRIVER=database
+CACHE_DRIVER=database
+QUEUE_CONNECTION=database
+
+SESSION_SECURE_COOKIE=true
+SANCTUM_STATEFUL_DOMAINS=aplicativo-tem-de-tudo.onrender.com
+EOF
+
+echo "✅ .env criado com sucesso!"
+echo "📊 Conexão: $PGUSER@$PGHOST:$PGPORT/$PGDATABASE"
 
 # Aguardar PostgreSQL estar pronto
 echo "⏳ Aguardando PostgreSQL..."
