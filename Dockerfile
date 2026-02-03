@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libpq-dev \
+    postgresql-client \
     zip \
     unzip \
     && docker-php-ext-install pdo pdo_pgsql pgsql mbstring exif pcntl bcmath gd \
@@ -26,24 +27,25 @@ COPY backend /var/www/html
 # Instalar dependências
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Copiar .env.render para .env
-RUN cp .env.render .env || true
+# Configurar Apache para porta 8080
+RUN sed -i 's/80/8080/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf \
+    && a2enmod rewrite \
+    && echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Gerar chave da aplicação
-RUN php artisan key:generate --force || true
+# Criar diretórios necessários
+RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache
 
 # Permissões
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Configurar Apache
-RUN a2enmod rewrite
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+# Copiar entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Expor porta
 EXPOSE 8080
 
-# Comando de inicialização
-CMD php artisan config:clear && \
-    php artisan cache:clear && \
-    php artisan migrate --force && \
-    php artisan serve --host=0.0.0.0 --port=8080
+# Usar Apache em foreground
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["apache2-foreground"]
