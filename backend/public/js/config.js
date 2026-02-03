@@ -11,7 +11,7 @@ const API_CONFIG = {
         
         // Desenvolvimento local
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
-            return 'http://127.0.0.1:8000';
+            return 'http://127.0.0.1:8001';
         }
         
         // Fallback

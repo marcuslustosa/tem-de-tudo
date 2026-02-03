@@ -1,0 +1,419 @@
+/* ==========================================
+   SISTEMA TEM DE TUDO - CSS UNIFICADO
+   Identidade visual única para todas as páginas
+   ========================================== */
+
+/* RESET E BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Cores principais - ROXO */
+    --primary: #667eea;
+    --primary-dark: #5568d3;
+    --primary-light: #7c8ff0;
+    --secondary: #764ba2;
+    
+    /* Cores de suporte */
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    
+    /* Tons de cinza */
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    
+    /* Backgrounds */
+    --bg-dark: #0a0a0f;
+    --bg-dark-secondary: #1a1a2e;
+    --bg-light: #ffffff;
+    
+    /* Tipografia */
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    
+    /* Bordas */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    
+    /* Sombras */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-purple: 0 20px 60px rgba(102, 126, 234, 0.3);
+}
+
+body {
+    font-family: var(--font-family);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    min-height: 100vh;
+    color: var(--gray-900);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* CONTAINERS */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.card {
+    background: var(--bg-light);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    box-shadow: var(--shadow-purple);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-dark {
+    background: linear-gradient(145deg, var(--bg-dark-secondary), #16213e);
+    color: white;
+}
+
+/* FORMULÁRIOS PADRONIZADOS */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--gray-700);
+    letter-spacing: 0.3px;
+}
+
+.card-dark .form-group label {
+    color: white;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+    font-size: 16px;
+    z-index: 1;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 16px 14px 48px;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-family: var(--font-family);
+    background: var(--gray-50);
+    color: var(--gray-900);
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.form-control::placeholder {
+    color: var(--gray-400);
+}
+
+.card-dark .form-control {
+    background: rgba(10, 10, 15, 0.6);
+    border-color: rgba(102, 126, 234, 0.2);
+    color: white;
+}
+
+.card-dark .form-control:focus {
+    background: rgba(10, 10, 15, 0.8);
+    border-color: var(--primary);
+}
+
+.card-dark .form-control::placeholder {
+    color: var(--gray-500);
+}
+
+/* BOTÕES PADRONIZADOS */
+.btn {
+    display: inline-block;
+    padding: 14px 32px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 15px;
+    font-weight: 700;
+    font-family: var(--font-family);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-block {
+    width: 100%;
+    display: block;
+}
+
+.btn-secondary {
+    background: var(--gray-100);
+    color: var(--gray-700);
+}
+
+.btn-secondary:hover {
+    background: var(--gray-200);
+}
+
+.btn-success {
+    background: var(--success);
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+/* GRID SISTEMA */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-grid .form-group {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* TÍTULOS PADRONIZADOS */
+h1 {
+    font-size: 32px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    letter-spacing: -1px;
+}
+
+.card-dark h1 {
+    background: linear-gradient(135deg, #fff, #e0e0e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+}
+
+.card-dark h2 {
+    color: white;
+}
+
+/* LINKS */
+a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--primary-dark);
+}
+
+.card-dark a {
+    color: var(--primary-light);
+}
+
+/* CHECKBOX/RADIO */
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-top: 4px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+.checkbox-group label {
+    font-size: 14px;
+    color: var(--gray-600);
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.card-dark .checkbox-group label {
+    color: var(--gray-300);
+}
+
+/* TOAST/NOTIFICAÇÕES */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 16px 24px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+    z-index: 9999;
+    animation: slideIn 0.3s ease;
+    max-width: 400px;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.toast-success {
+    border-left: 4px solid var(--success);
+}
+
+.toast-error {
+    border-left: 4px solid var(--danger);
+}
+
+.toast-info {
+    border-left: 4px solid var(--info);
+}
+
+/* LOADING STATES */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid white;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* UTILITÁRIOS */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
+
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+
+.text-muted { color: var(--gray-500); }
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+
+/* LOGO PADRÃO */
+.logo {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.logo-img {
+    width: 55px;
+    height: 55px;
+    margin: 0 auto;
+    display: block;
+}
+
+/* RESPONSIVO */
+@media (max-width: 640px) {
+    .card {
+        padding: 24px 20px;
+    }
+    
+    h1 {
+        font-size: 24px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+    
+    .btn {
+        padding: 12px 24px;
+    }
+}

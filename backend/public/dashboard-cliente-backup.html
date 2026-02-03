@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minhas Empresas - Tem de Tudo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="manifest" href="/manifest.json">
+    
+    <script src="/js/config.js"></script>
+    <script src="/js/auth-manager.js" defer></script>
+    <script src="/js/api-client.js" defer></script>
+    <script src="/js/validators.js" defer></script>
+    <script src="/js/ui-helpers.js" defer></script>
+    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
+        <link rel="stylesheet" href="/css/global-unified.css">
+    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-store"></i> Minhas Empresas</h1>
+            <div class="header-actions">
+                <button class="btn-icon" onclick="window.location.href='scanner.html'" title="Scanner QR Code">
+                    <i class="fas fa-qrcode"></i>
+                </button>
+                <button class="btn-icon" onclick="window.location.href='app.html'" title="Menu Principal">
+                    <i class="fas fa-home"></i>
+                </button>
+                <button class="btn-icon" onclick="logout()" title="Sair" style="background: #ff4757;">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="search-filter">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar empresa..." onkeyup="filtrarEmpresas()">
+                <button class="btn-icon" onclick="filtrarEmpresas()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="filter-chips">
+                <div class="chip active" data-ramo="todos" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-list"></i> Todos
+                </div>
+                <div class="chip" data-ramo="Restaurante" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-utensils"></i> Restaurantes
+                </div>
+                <div class="chip" data-ramo="Bar" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-beer"></i> Bares
+                </div>
+                <div class="chip" data-ramo="Sal�o" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-cut"></i> Sal�es
+                </div>
+                <div class="chip" data-ramo="Academia" onclick="selecionarFiltro(this)">
+                    <i class="fas fa-dumbbell"></i> Academias
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div><i class="fas fa-spinner"></i></div>
+            <div>Carregando suas empresas...</div>
+        </div>
+
+        <!-- Empresas Grid -->
+        <div id="empresasGrid" class="empresas-grid" style="display: none;"></div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-store-slash"></i>
+            <h3>Nenhuma Empresa Encontrada</h3>
+            <p>Voc� ainda n�o est� inscrito em nenhuma empresa.</p>
+            <button class="btn-primary" onclick="window.location.href='scanner.html'">
+                <i class="fas fa-qrcode"></i> Escanear QR Code
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let todasEmpresas = [];
+        let filtroAtual = 'todos';
+
+        // Carregar empresas ao iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarEmpresas();
+        });
+
+        async function carregarEmpresas() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/entrar.html';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/cliente/empresas`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        window.location.href = '/entrar.html';
+                        return;
+                    }
+                    throw new Error('Erro ao carregar empresas');
+                }
+
+                const data = await response.json();
+                todasEmpresas = data.empresas || [];
+                
+                document.getElementById('loadingState').style.display = 'none';
+                
+                if (todasEmpresas.length === 0) {
+                    document.getElementById('emptyState').style.display = 'block';
+                } else {
+                    document.getElementById('empresasGrid').style.display = 'grid';
+                    renderizarEmpresas(todasEmpresas);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('loadingState').innerHTML = `
+                    <div style="color: white;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Erro ao carregar empresas. Tente novamente.</p>
+                        <button class="btn-primary" onclick="location.reload()">Recarregar</button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderizarEmpresas(empresas) {
+            const grid = document.getElementById('empresasGrid');
+            
+            if (empresas.length === 0) {
+                grid.innerHTML = '';
+                document.getElementById('emptyState').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('emptyState').style.display = 'none';
+            
+            grid.innerHTML = empresas.map(empresa => `
+                <div class="empresa-card" onclick="abrirEmpresa(${empresa.id})">
+                    ${empresa.progresso_cartoes && empresa.progresso_cartoes.length > 0 ? 
+                        `<div class="empresa-badge">${empresa.progresso_cartoes.length} ${empresa.progresso_cartoes.length === 1 ? 'Cart�o' : 'Cart�es'}</div>` 
+                        : ''}
+                    
+                    <div class="empresa-logo">
+                        ${getIconeRamo(empresa.ramo)}
+                    </div>
+                    
+                    <div class="empresa-name">${empresa.nome}</div>
+                    <div class="empresa-ramo">
+                        <i class="fas ${getIconClassRamo(empresa.ramo)}"></i> ${empresa.ramo || 'N�o informado'}
+                    </div>
+                    
+                    <div class="empresa-rating">
+                        <div class="stars">${renderStars(empresa.avaliacao_media || 0)}</div>
+                        <span class="rating-count">(${empresa.total_avaliacoes || 0})</span>
+                    </div>
+                    
+                    ${empresa.progresso_cartoes && empresa.progresso_cartoes.length > 0 ? `
+                        <div class="cartoes-progress">
+                            ${empresa.progresso_cartoes.map(cartao => `
+                                <div class="cartao-item">
+                                    <div class="cartao-header">
+                                        <span class="cartao-title">${cartao.cartao.titulo}</span>
+                                        <span class="cartao-pontos">${cartao.pontos_atuais}/${cartao.cartao.meta_pontos}</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${(cartao.pontos_atuais / cartao.cartao.meta_pontos * 100).toFixed(0)}%"></div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderStars(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            
+            if (halfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+
+        function getIconeRamo(ramo) {
+            const icones = {
+                'Restaurante': '<i class="fas fa-utensils"></i>',
+                'Bar': '<i class="fas fa-beer"></i>',
+                'Sal�o': '<i class="fas fa-cut"></i>',
+                'Academia': '<i class="fas fa-dumbbell"></i>',
+                'Cafeteria': '<i class="fas fa-coffee"></i>',
+                'Loja': '<i class="fas fa-shopping-bag"></i>',
+                'Servi�os': '<i class="fas fa-tools"></i>'
+            };
+            return icones[ramo] || '<i class="fas fa-store"></i>';
+        }
+
+        function getIconClassRamo(ramo) {
+            const classes = {
+                'Restaurante': 'fa-utensils',
+                'Bar': 'fa-beer',
+                'Sal�o': 'fa-cut',
+                'Academia': 'fa-dumbbell',
+                'Cafeteria': 'fa-coffee',
+                'Loja': 'fa-shopping-bag',
+                'Servi�os': 'fa-tools'
+            };
+            return classes[ramo] || 'fa-store';
+        }
+
+        function selecionarFiltro(element) {
+            // Remove active de todos os chips
+            document.querySelectorAll('.chip').forEach(chip => chip.classList.remove('active'));
+            
+            // Adiciona active no chip selecionado
+            element.classList.add('active');
+            
+            // Atualiza filtro atual
+            filtroAtual = element.dataset.ramo;
+            
+            // Filtra empresas
+            filtrarEmpresas();
+        }
+
+        function filtrarEmpresas() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            const empresasFiltradas = todasEmpresas.filter(empresa => {
+                const matchSearch = empresa.nome.toLowerCase().includes(searchTerm);
+                const matchRamo = filtroAtual === 'todos' || empresa.ramo === filtroAtual;
+                return matchSearch && matchRamo;
+            });
+            
+            renderizarEmpresas(empresasFiltradas);
+        }
+
+        function abrirEmpresa(empresaId) {
+            window.location.href = `empresa.html?id=${empresaId}`;
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/entrar.html';
+        }
+    </script>
+</body>
+</html>
+

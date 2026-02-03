@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Entrar - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="manifest" href="/manifest.json">
+    <script src="/js/config.js"></script>
+    <script src="/js/auth-manager.js" defer></script>
+    <script src="/js/api-client.js" defer></script>
+    <script src="/js/validators.js" defer></script>
+    <script src="/js/ui-helpers.js" defer></script>
+    <link rel="stylesheet" href="/css/global-unified.css">
+    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+<body>
+    <div class="form-container">
+        <div class="logo">
+            <img src="img/logo.png" alt="Tem de Tudo" class="logo-img">
+        </div>
+        
+        <div class="welcome">
+            <h1>Bem-vindo de volta!</h1>
+            <p>Entre para acessar sua conta</p>
+        </div>
+        
+        <div class="social-login">
+            <button class="btn-social" onclick="loginGoogle()">
+                <i class="fab fa-google"></i> Google
+            </button>
+            <button class="btn-social" onclick="loginFacebook()">
+                <i class="fab fa-facebook-f"></i> Facebook
+            </button>
+        </div>
+        
+        <div class="divider">
+            <span>ou continue com e-mail</span>
+        </div>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope"></i>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="Digite seu e-mail"
+                        required
+                    >
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Digite sua senha"
+                        required
+                    >
+                </div>
+            </div>
+            
+            <div class="forgot-password">
+                <a href="#" onclick="recuperarSenha(event)">Esqueceu sua senha?</a>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                ENTRAR
+            </button>
+        </form>
+        
+        <div class="register-link">
+            <p>Ainda não tem conta? <a href="cadastro.html">Cadastre-se gràtis</a></p>
+        </div>
+        
+        <div class="back-link">
+            <a href="index.html">
+                <i class="fas fa-arrow-left"></i>
+                Voltar para inàcio
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            
+            // Validações
+            if (!Validators.required(email) || !Validators.required(password)) {
+                showToast('Por favor, preencha email e senha.', 'warning');
+                return;
+            }
+            
+            if (!Validators.email(email)) {
+                showToast('Email inválido. Verifique e tente novamente.', 'error');
+                return;
+            }
+            
+            if (!Validators.password(password)) {
+                showToast('A senha deve ter no mínimo 6 caracteres.', 'error');
+                return;
+            }
+            
+            // Loading state
+            setLoading(submitBtn, true);
+            
+            try {
+                // Usar AuthManager
+                const result = await authManager.login({ email, password });
+                
+                if (result.success) {
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Sucesso!';
+                    submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    
+                    showToast('Login realizado com sucesso!', 'success');
+                    
+                    // Redirecionar
+                    setTimeout(() => {
+                        window.location.href = result.redirect;
+                    }, 500);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('❌ Erro no login:', error);
+                showToast(error.message || 'Erro ao conectar com o servidor.', 'error');
+                setLoading(submitBtn, false);
+            }
+        }
+        
+        function loginGoogle() {
+            showToast('Login com Google será implementado em breve!', 'info');
+        }
+        
+        function loginFacebook() {
+            showToast('Login com Facebook será implementado em breve!', 'info');
+        }
+        
+        function recuperarSenha(event) {
+            event.preventDefault();
+            showToast('Funcionalidade de recuperação de senha será implementada em breve!', 'info');
+        }
+    </script>
+</body>
+</html>
+
