@@ -1,6 +1,7 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <link rel="stylesheet" href="/css/app-unified.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -57,7 +58,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🐛 DEBUG - Teste de Cadastro e Login</h1>
+        <h1>?? DEBUG - Teste de Cadastro e Login</h1>
         
         <h2>1. CADASTRO</h2>
         <input type="text" id="reg_name" placeholder="Nome" value="Teste Debug">
@@ -71,7 +72,7 @@
         <input type="password" id="login_password" placeholder="Senha" value="senha123">
         <button onclick="testLogin()">LOGIN</button>
         
-        <h2>📊 OUTPUT:</h2>
+        <h2>?? OUTPUT:</h2>
         <div id="output">Aguardando teste...</div>
     </div>
 
@@ -87,7 +88,7 @@
             const output = document.getElementById('output');
             output.innerHTML = '';
             
-            log('🔄 INICIANDO CADASTRO...', 'info');
+            log('?? INICIANDO CADASTRO...', 'info');
             
             const data = {
                 name: document.getElementById('reg_name').value,
@@ -97,7 +98,7 @@
                 perfil: 'cliente'
             };
             
-            log('📤 DADOS ENVIADOS:', 'info');
+            log('?? DADOS ENVIADOS:', 'info');
             log(JSON.stringify(data, null, 2), 'info');
             
             try {
@@ -109,23 +110,23 @@
                     body: JSON.stringify(data)
                 });
                 
-                log(`📥 STATUS: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                log(`?? STATUS: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
                 
                 const result = await response.json();
                 
-                log('📥 RESPOSTA COMPLETA:', 'info');
+                log('?? RESPOSTA COMPLETA:', 'info');
                 log(JSON.stringify(result, null, 2), response.ok ? 'success' : 'error');
                 
                 if (response.ok && result.success) {
-                    log('✅ CADASTRO OK! Dados salvos:', 'success');
+                    log('? CADASTRO OK! Dados salvos:', 'success');
                     log(`Token: ${result.data.token.substring(0, 20)}...`, 'success');
                     log(`User ID: ${result.data.user.id}`, 'success');
                     log(`User Type: ${result.data.user.user_type}`, 'success');
                 } else {
-                    log('❌ CADASTRO FALHOU!', 'error');
+                    log('? CADASTRO FALHOU!', 'error');
                 }
             } catch (error) {
-                log('💥 ERRO DE CONEXÃO:', 'error');
+                log('?? ERRO DE CONEX�O:', 'error');
                 log(error.message, 'error');
             }
         }
@@ -134,14 +135,14 @@
             const output = document.getElementById('output');
             output.innerHTML = '';
             
-            log('🔄 INICIANDO LOGIN...', 'info');
+            log('?? INICIANDO LOGIN...', 'info');
             
             const data = {
                 email: document.getElementById('login_email').value,
                 password: document.getElementById('login_password').value
             };
             
-            log('📤 DADOS ENVIADOS:', 'info');
+            log('?? DADOS ENVIADOS:', 'info');
             log(JSON.stringify(data, null, 2), 'info');
             
             try {
@@ -153,25 +154,25 @@
                     body: JSON.stringify(data)
                 });
                 
-                log(`📥 STATUS: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                log(`?? STATUS: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
                 
                 const result = await response.json();
                 
-                log('📥 RESPOSTA COMPLETA:', 'info');
+                log('?? RESPOSTA COMPLETA:', 'info');
                 log(JSON.stringify(result, null, 2), response.ok ? 'success' : 'error');
                 
                 if (response.ok && result.success) {
-                    log('✅ LOGIN OK!', 'success');
+                    log('? LOGIN OK!', 'success');
                     log(`Token: ${result.data.token.substring(0, 20)}...`, 'success');
                     log(`User ID: ${result.data.user.id}`, 'success');
                     log(`User Type: ${result.data.user.user_type}`, 'success');
                     log(`Redirect: ${result.data.redirect_to}`, 'success');
                 } else {
-                    log('❌ LOGIN FALHOU!', 'error');
+                    log('? LOGIN FALHOU!', 'error');
                     log(`Mensagem: ${result.message}`, 'error');
                 }
             } catch (error) {
-                log('💥 ERRO DE CONEXÃO:', 'error');
+                log('?? ERRO DE CONEX�O:', 'error');
                 log(error.message, 'error');
             }
         }

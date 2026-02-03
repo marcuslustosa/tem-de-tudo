@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="/css/app-unified.css">
     <meta charset="UTF-8">
     <title>TESTE REAL - Empresas</title>
     <style>
@@ -68,7 +69,7 @@
                 log(`📦 Resposta: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'info');
                 
                 if (data.token) {
-                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('tem_de_tudo_token', data.token);
                     log(`✅ TOKEN SALVO! ${data.token.substring(0, 30)}...`, 'success');
                 } else {
                     log(`❌ SEM TOKEN NA RESPOSTA!`, 'error');
@@ -80,7 +81,7 @@
         
         async function buscarEmpresas() {
             try {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('tem_de_tudo_token');
                 if (!token) {
                     log(`❌ FAÇA LOGIN PRIMEIRO!`, 'error');
                     return;
@@ -129,7 +130,7 @@
         
         // Auto-detectar token existente
         window.addEventListener('load', () => {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('tem_de_tudo_token');
             if (token) {
                 log(`ℹ️ Token encontrado no localStorage: ${token.substring(0, 30)}...`, 'info');
             } else {

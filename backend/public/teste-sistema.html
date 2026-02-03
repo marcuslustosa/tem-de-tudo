@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <link rel="stylesheet" href="/css/app-unified.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔧 Teste Sistema - Tem de Tudo</title>
@@ -271,8 +272,8 @@
                 const data = await response.json();
                 
                 if (response.ok && data.success) {
-                    localStorage.setItem('token', data.data.token);
-                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                    localStorage.setItem('tem_de_tudo_token', data.data.token);
+                    localStorage.setItem('tem_de_tudo_user', JSON.stringify(data.data.user));
                     
                     resultDiv.innerHTML = `
                         <span class="success">✅ LOGIN SUCESSO!</span><br><br>
@@ -292,7 +293,7 @@
 
         async function testEmpresas() {
             const resultDiv = document.getElementById('empresasResult');
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('tem_de_tudo_token');
             
             if (!token) {
                 resultDiv.style.display = 'block';

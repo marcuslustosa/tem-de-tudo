@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <link rel="stylesheet" href="/css/app-unified.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teste Login Direto</title>
@@ -79,7 +80,7 @@
                 if (response.ok && data.success) {
                     log(`✅ LOGIN OK ${nome}: ${data.data.user.name} (${data.data.user.perfil})`, 'sucesso');
                     log(`Token: ${data.data.token.substring(0, 50)}...`, 'sucesso');
-                    localStorage.setItem('token', data.data.token);
+                    localStorage.setItem('tem_de_tudo_token', data.data.token);
                 } else {
                     log(`❌ LOGIN FALHOU ${nome}: ${data.message || JSON.stringify(data)}`, 'erro');
                 }

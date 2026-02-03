@@ -41,7 +41,7 @@ const API_CONFIG = {
     
     // Helper para fazer requisições autenticadas
     async fetchWithAuth(url, options = {}) {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('tem_de_tudo_token');
         
         const defaultOptions = {
             headers: {
@@ -66,8 +66,8 @@ const API_CONFIG = {
             
             // Se token expirado, redirecionar para login
             if (response.status === 401) {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
+                localStorage.removeItem('tem_de_tudo_token');
+                localStorage.removeItem('tem_de_tudo_user');
                 window.location.href = '/entrar.html';
             }
             

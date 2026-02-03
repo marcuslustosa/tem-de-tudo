@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <link rel="stylesheet" href="/css/app-unified.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teste API</title>
@@ -73,7 +74,7 @@
                 
                 if (response.ok && data.token) {
                     token = data.token;
-                    localStorage.setItem('token', token);
+                    localStorage.setItem('tem_de_tudo_token', token);
                     div.innerHTML = `
                         <p class="success">✅ Login OK!</p>
                         <p>Token: ${token.substring(0, 20)}...</p>
@@ -91,7 +92,7 @@
             const div = document.getElementById('empresas');
             
             if (!token) {
-                token = localStorage.getItem('token');
+                token = localStorage.getItem('tem_de_tudo_token');
             }
             
             if (!token) {
