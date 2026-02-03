@@ -5,6 +5,14 @@ echo "========================================="
 echo "🚀 TEM DE TUDO - Deploy Render.com"
 echo "========================================="
 
+# Substituir variáveis de ambiente no .env
+echo "🔧 Configurando variáveis de ambiente..."
+sed -i "s/\${PGHOST}/$PGHOST/g" .env
+sed -i "s/\${PGPORT}/$PGPORT/g" .env
+sed -i "s/\${PGDATABASE}/$PGDATABASE/g" .env
+sed -i "s/\${PGUSER}/$PGUSER/g" .env
+sed -i "s/\${PGPASSWORD}/$PGPASSWORD/g" .env
+
 # Aguardar PostgreSQL estar pronto
 echo "⏳ Aguardando PostgreSQL..."
 sleep 10
