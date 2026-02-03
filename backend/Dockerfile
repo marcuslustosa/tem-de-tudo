@@ -63,8 +63,25 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN rm -f bootstrap/cache/config.php bootstrap/cache/services.php bootstrap/cache/packages.php \
     && rm -f .env .env.* || true
 
-# Criar .env VAZIO para evitar erros no build
-RUN touch .env && echo "APP_KEY=base64:4KqJxMzRlNTBiZWItNGY5OC00YzY3LWJhOTEtYmU5ZTc2MGE2YjA1" > .env
+# Criar .env com credenciais PostgreSQL hardcoded
+RUN echo 'APP_NAME="Tem de Tudo"' > .env \
+    && echo 'APP_ENV=production' >> .env \
+    && echo 'APP_KEY=base64:4KqJxMzRlNTBiZWItNGY5OC00YzY3LWJhOTEtYmU5ZTc2MGE2YjA1' >> .env \
+    && echo 'APP_DEBUG=false' >> .env \
+    && echo 'APP_URL=https://tem-de-tudo.onrender.com' >> .env \
+    && echo 'LOG_CHANNEL=stack' >> .env \
+    && echo 'LOG_LEVEL=error' >> .env \
+    && echo 'DB_CONNECTION=pgsql' >> .env \
+    && echo 'DB_HOST=dpg-d6145d94tr6s73e18v90-a' >> .env \
+    && echo 'DB_PORT=5432' >> .env \
+    && echo 'DB_DATABASE=aplicativo_tem_de_tudo_qbvf' >> .env \
+    && echo 'DB_USERNAME=temdetudo' >> .env \
+    && echo 'DB_PASSWORD=Iq1zsYYCvzIHWSXCVCTIFPVofuNoZPuj' >> .env \
+    && echo 'SESSION_DRIVER=database' >> .env \
+    && echo 'CACHE_DRIVER=database' >> .env \
+    && echo 'QUEUE_CONNECTION=database' >> .env \
+    && echo 'SESSION_SECURE_COOKIE=true' >> .env \
+    && echo 'SANCTUM_STATEFUL_DOMAINS=tem-de-tudo.onrender.com' >> .env
 
 # Copiar e configurar entrypoint
 COPY entrypoint-render.sh /entrypoint.sh
