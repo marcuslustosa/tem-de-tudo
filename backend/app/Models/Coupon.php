@@ -12,6 +12,7 @@ class Coupon extends Model
     protected $fillable = [
         'user_id',
         'empresa_id',
+        'promocao_id',
         'checkin_id',
         'codigo',
         'tipo',
@@ -19,6 +20,11 @@ class Coupon extends Model
         'custo_pontos',
         'valor_desconto',
         'porcentagem_desconto',
+        'percentual_desconto',
+        'tipo_recompensa',
+        'data_validade',
+        'usado',
+        'data_uso',
         'status',
         'expira_em',
         'usado_em',
@@ -29,6 +35,10 @@ class Coupon extends Model
         'custo_pontos' => 'integer',
         'valor_desconto' => 'decimal:2',
         'porcentagem_desconto' => 'decimal:2',
+        'percentual_desconto' => 'decimal:2',
+        'usado' => 'boolean',
+        'data_validade' => 'datetime',
+        'data_uso' => 'datetime',
         'expira_em' => 'datetime',
         'usado_em' => 'datetime',
         'dados_extra' => 'array'
@@ -48,6 +58,14 @@ class Coupon extends Model
     public function empresa()
     {
         return $this->belongsTo(Empresa::class);
+    }
+
+    /**
+     * Relacionamento com promoção
+     */
+    public function promocao()
+    {
+        return $this->belongsTo(Promocao::class);
     }
 
     /**

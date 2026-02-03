@@ -16,6 +16,7 @@ class Empresa extends Model
         'cnpj',
         'logo',
         'descricao',
+        'categoria',
         'points_multiplier',
         'ativo',
         'owner_id',

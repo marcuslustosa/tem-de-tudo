@@ -19,6 +19,11 @@ use App\Http\Controllers\API\ClienteAPIController;
 use App\Http\Controllers\API\EmpresaAPIController;
 use App\Http\Controllers\SetupController;
 
+// NOVOS CONTROLLERS - SISTEMA COMPLETO
+use App\Http\Controllers\Api\AuthController as ApiAuthController;
+use App\Http\Controllers\Api\EmpresaController as ApiEmpresaController;
+use App\Http\Controllers\Api\PromocaoController as ApiPromocaoController;
+use App\Http\Controllers\Api\CheckInController;
 
 // Debug route (remover em produção)
 Route::get('/debug', function () {
@@ -47,6 +52,50 @@ Route::get('/debug', function () {
 
 // Setup database manual (APENAS PRODUÇÃO - RENDER)
 Route::get('/setup-database', [SetupController::class, 'setupDatabase']);
+
+// ============================================
+// ROTAS PÚBLICAS (SEM AUTENTICAÇÃO)
+// ============================================
+
+// Autenticação
+Route::post('/register', [ApiAuthController::class, 'register']);
+Route::post('/login', [ApiAuthController::class, 'login']);
+
+// Empresas (leitura pública)
+Route::get('/empresas', [ApiEmpresaController::class, 'index']);
+Route::get('/empresas/{id}', [ApiEmpresaController::class, 'show']);
+
+// Promoções (leitura pública)
+Route::get('/promocoes', [ApiPromocaoController::class, 'index']);
+Route::get('/promocoes/{id}', [ApiPromocaoController::class, 'show']);
+
+// ============================================
+// ROTAS PROTEGIDAS (REQUER AUTENTICAÇÃO)
+// ============================================
+
+Route::middleware('auth:sanctum')->group(function () {
+    
+    // Autenticação e Perfil
+    Route::post('/logout', [ApiAuthController::class, 'logout']);
+    Route::get('/me', [ApiAuthController::class, 'me']);
+    Route::put('/usuario/atualizar', [ApiAuthController::class, 'updateProfile']);
+    Route::post('/usuario/alterar-senha', [ApiAuthController::class, 'changePassword']);
+
+    // Check-ins
+    Route::post('/check-in', [CheckInController::class, 'checkIn']);
+    Route::get('/check-ins', [CheckInController::class, 'history']);
+    Route::get('/check-ins/{id}', [CheckInController::class, 'show']);
+
+    // Empresas (escrita - apenas donos/admin)
+    Route::post('/empresas', [ApiEmpresaController::class, 'store']);
+    Route::put('/empresas/{id}', [ApiEmpresaController::class, 'update']);
+
+    // Promoções (resgate e cupons)
+    Route::post('/promocoes/{id}/resgatar', [ApiPromocaoController::class, 'resgatar']);
+    Route::get('/cupons', [ApiPromocaoController::class, 'meusCupons']);
+    Route::post('/cupons/{id}/usar', [ApiPromocaoController::class, 'usarCupom']);
+
+});
 
 // Rotas públicas de autenticação
 Route::prefix('auth')->group(function () {

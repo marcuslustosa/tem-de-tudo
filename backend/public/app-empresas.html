@@ -299,170 +299,95 @@
             'http://localhost:8000/api' : 
             'https://tem-de-tudo.onrender.com/api';
         
-        // Dados fictícios de empresas com fotos reais
-        const empresasFicticias = [
-            {
-                id: 1,
-                nome: 'Restaurante Sabor & Arte',
-                categoria: 'alimentacao',
-                descricao: 'Culinária brasileira contemporânea',
-                imagem: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
-                pontos_checkin: 10,
-                total_clientes: 1247,
-                avaliacoes: 4.8,
-                aberto: true,
-                promocao: {
-                    titulo: '🎉 Desconto de 20% no almoço',
-                    descricao: 'Válido de segunda a sexta até 15h'
-                }
-            },
-            {
-                id: 2,
-                nome: 'Pizzaria Bella Napoli',
-                categoria: 'alimentacao',
-                descricao: 'Pizzas artesanais no forno a lenha',
-                imagem: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800',
-                pontos_checkin: 15,
-                total_clientes: 2893,
-                avaliacoes: 4.9,
-                aberto: true,
-                promocao: {
-                    titulo: '🍕 Compre 1 leve 2 às terças',
-                    descricao: 'Pizza grande na compra de qualquer tamanho'
-                }
-            },
-            {
-                id: 3,
-                nome: 'Boutique Style Fashion',
-                categoria: 'moda',
-                descricao: 'Moda feminina e acessórios',
-                imagem: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800',
-                pontos_checkin: 20,
-                total_clientes: 856,
-                avaliacoes: 4.7,
-                aberto: true,
-                promocao: {
-                    titulo: '👗 30% OFF em peças selecionadas',
-                    descricao: 'Coleção verão com super desconto'
-                }
-            },
-            {
-                id: 4,
-                nome: 'Academia Corpo & Mente',
-                categoria: 'saude',
-                descricao: 'Fitness, musculação e pilates',
-                imagem: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800',
-                pontos_checkin: 25,
-                total_clientes: 1523,
-                avaliacoes: 4.9,
-                aberto: true,
-                promocao: {
-                    titulo: '💪 1 mês grátis na matrícula anual',
-                    descricao: 'Personal trainer incluso nos 3 primeiros meses'
-                }
-            },
-            {
-                id: 5,
-                nome: 'Salão Beleza Pura',
-                categoria: 'beleza',
-                descricao: 'Cabelo, maquiagem e estética',
-                imagem: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800',
-                pontos_checkin: 18,
-                total_clientes: 2156,
-                avaliacoes: 4.8,
-                aberto: true,
-                promocao: {
-                    titulo: '💇 Corte + Escova por R$ 59',
-                    descricao: 'Válido de segunda a quinta-feira'
-                }
-            },
-            {
-                id: 6,
-                nome: 'Cafeteria Aroma & Grão',
-                categoria: 'alimentacao',
-                descricao: 'Cafés especiais e doces artesanais',
-                imagem: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800',
-                pontos_checkin: 8,
-                total_clientes: 3421,
-                avaliacoes: 4.9,
-                aberto: true,
-                promocao: {
-                    titulo: '☕ Café + Bolo R$ 15',
-                    descricao: 'Combo especial da tarde'
-                }
-            },
-            {
-                id: 7,
-                nome: 'Pet Shop Amigo Fiel',
-                categoria: 'servicos',
-                descricao: 'Banho, tosa e produtos pet',
-                imagem: 'https://images.unsplash.com/photo-1548681528-6a5c45b66b42?w=800',
-                pontos_checkin: 12,
-                total_clientes: 967,
-                avaliacoes: 4.7,
-                aberto: true,
-                promocao: {
-                    titulo: '🐶 Banho e tosa com 25% OFF',
-                    descricao: 'Agendamento online com desconto extra'
-                }
-            },
-            {
-                id: 8,
-                nome: 'Farmácia Vida & Saúde',
-                categoria: 'saude',
-                descricao: 'Medicamentos e produtos naturais',
-                imagem: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800',
-                pontos_checkin: 10,
-                total_clientes: 4532,
-                avaliacoes: 4.6,
-                aberto: true,
-                promocao: {
-                    titulo: '💊 Genéricos com até 40% OFF',
-                    descricao: 'Entrega grátis acima de R$ 50'
-                }
-            },
-            {
-                id: 9,
-                nome: 'Hamburgueria Urban Grill',
-                categoria: 'alimentacao',
-                descricao: 'Hambúrgueres artesanais premium',
-                imagem: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800',
-                pontos_checkin: 15,
-                total_clientes: 1876,
-                avaliacoes: 4.8,
-                aberto: true,
-                promocao: {
-                    titulo: '🍔 Combo Duplo por R$ 39,90',
-                    descricao: '2 hambúrgueres + fritas + refrigerante'
-                }
-            },
-            {
-                id: 10,
-                nome: 'Loja Tech Store',
-                categoria: 'servicos',
-                descricao: 'Eletrônicos e acessórios',
-                imagem: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800',
-                pontos_checkin: 30,
-                total_clientes: 2341,
-                avaliacoes: 4.7,
-                aberto: true,
-                promocao: {
-                    titulo: '📱 Fones Bluetooth R$ 99',
-                    descricao: 'Últimas unidades com desconto'
-                }
-            }
-        ];
-        
+        let todasEmpresas = [];
         let categoriaAtual = 'todas';
-        let empresasFiltradas = empresasFicticias;
+        let empresasFiltradas = [];
         
-        // Carrega empresas ao iniciar
+        // Carrega empresas da API ao iniciar
         document.addEventListener('DOMContentLoaded', () => {
-            carregarEmpresas();
+            carregarEmpresasAPI();
         });
-        
-        function carregarEmpresas() {
+
+        async function carregarEmpresasAPI() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/empresas`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    todasEmpresas = data.data.empresas.map(emp => ({
+                        id: emp.id,
+                        nome: emp.nome,
+                        categoria: emp.categoria || 'servicos',
+                        descricao: emp.descricao || '',
+                        imagem: emp.logo || 'https://via.placeholder.com/800x400/667eea/ffffff',
+                        pontos_checkin: emp.pontos_checkin || 10,
+                        total_clientes: Math.floor(Math.random() * 5000), // Temporário
+                        avaliacoes: (4.5 + Math.random() * 0.5).toFixed(1),
+                        aberto: true,
+                        promocao: null // Pode buscar promoções depois
+                    }));
+                    empresasFiltradas = todasEmpresas;
+                    renderizarEmpresas(empresasFiltradas);
+                } else {
+                    console.error('Erro ao carregar empresas:', data.message);
+                    mostrarErro('Não foi possível carregar as empresas');
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                // Fallback para dados fictícios em caso de erro
+                carregarDadosFicticios();
+            }
+        }
+
+        function carregarDadosFicticios() {
+            // Dados de fallback
+            todasEmpresas = [
+                {
+                    id: 1,
+                    nome: 'Restaurante Sabor & Arte',
+                    categoria: 'alimentacao',
+                    descricao: 'Culinária brasileira contemporânea',
+                    imagem: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
+                    pontos_checkin: 10,
+                    total_clientes: 1247,
+                    avaliacoes: 4.8,
+                    aberto: true,
+                    promocao: {
+                        titulo: '🎉 Desconto de 20% no almoço',
+                        descricao: 'Válido de segunda a sexta até 15h'
+                    }
+                },
+                {
+                    id: 2,
+                    nome: 'Pizzaria Bella Napoli',
+                    categoria: 'alimentacao',
+                    descricao: 'Pizzas artesanais no forno a lenha',
+                    imagem: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800',
+                    pontos_checkin: 15,
+                    total_clientes: 2893,
+                    avaliacoes: 4.9,
+                    aberto: true,
+                    promocao: {
+                        titulo: '🍕 Compre 1 leve 2 às terças',
+                        descricao: 'Pizza grande na compra de qualquer tamanho'
+                    }
+                }
+            ];
+            empresasFiltradas = todasEmpresas;
             renderizarEmpresas(empresasFiltradas);
+        }
+
+        function mostrarErro(mensagem) {
+            const container = document.getElementById('empresasList');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>${mensagem}</p>
+                    <button class="btn-primary" onclick="carregarEmpresasAPI()">
+                        <i class="fas fa-redo"></i> Tentar novamente
+                    </button>
+                </div>
+            `;
         }
         
         function renderizarEmpresas(empresas) {
@@ -532,7 +457,7 @@
         function filtrarEmpresas() {
             const termo = document.getElementById('searchInput').value.toLowerCase();
             
-            empresasFiltradas = empresasFicticias.filter(empresa => {
+            empresasFiltradas = todasEmpresas.filter(empresa => {
                 const matchCategoria = categoriaAtual === 'todas' || empresa.categoria === categoriaAtual;
                 const matchBusca = termo === '' || 
                     empresa.nome.toLowerCase().includes(termo) ||
@@ -589,20 +514,44 @@
             window.location.href = `/app-empresa-detalhes.html?id=${id}`;
         }
         
-        function fazerCheckin(id) {
-            const empresa = empresasFicticias.find(e => e.id === id);
-            if (empresa) {
-                alert(`✅ Check-in realizado em ${empresa.nome}!\n\nVocê ganhou +${empresa.pontos_checkin} pontos! 🎉`);
-                
-                // Adiciona notificação
-                if (window.NotificationSystem) {
-                    NotificationSystem.add({
-                        title: '✅ Check-in Realizado!',
-                        message: `Você ganhou ${empresa.pontos_checkin} pontos em ${empresa.nome}`,
-                        icon: 'fa-check-circle',
-                        type: 'success'
-                    });
+        async function fazerCheckin(id) {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('❌ Você precisa estar logado para fazer check-in');
+                    window.location.href = '/entrar.html';
+                    return;
                 }
+
+                const response = await fetch(`${API_BASE_URL}/api/check-in`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ empresa_id: id })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`✅ Check-in realizado!\n\nVocê ganhou +${data.data.pontos_ganhos} pontos! 🎉\nTotal: ${data.data.pontos_totais} pontos`);
+                    
+                    // Adiciona notificação
+                    if (window.NotificationSystem) {
+                        NotificationSystem.add({
+                            title: '✅ Check-in Realizado!',
+                            message: `Você ganhou ${data.data.pontos_ganhos} pontos`,
+                            icon: 'fa-check-circle',
+                            type: 'success'
+                        });
+                    }
+                } else {
+                    alert('❌ Erro ao fazer check-in: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao fazer check-in. Tente novamente.');
             }
         }
         

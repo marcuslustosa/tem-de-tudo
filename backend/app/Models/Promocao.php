@@ -18,6 +18,7 @@ class Promocao extends Model
         'desconto',
         'pontos_necessarios',
         'data_inicio',
+        'data_fim',
         'validade',
         'imagem',
         'status',
@@ -26,13 +27,17 @@ class Promocao extends Model
         'usos',
         'ativo',
         'data_envio',
-        'total_envios'
+        'total_envios',
+        'percentual_desconto',
+        'valor_desconto',
+        'tipo_recompensa'
     ];
 
     protected $casts = [
         'desconto' => 'decimal:2',
         'pontos_necessarios' => 'integer',
         'data_inicio' => 'date',
+        'data_fim' => 'date',
         'validade' => 'date',
         'visualizacoes' => 'integer',
         'resgates' => 'integer',
@@ -40,6 +45,8 @@ class Promocao extends Model
         'ativo' => 'boolean',
         'data_envio' => 'datetime',
         'total_envios' => 'integer',
+        'percentual_desconto' => 'decimal:2',
+        'valor_desconto' => 'decimal:2',
     ];
 
     /**
