@@ -60,7 +60,11 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
 # Limpar qualquer cache de configuração que possa existir
-RUN rm -f bootstrap/cache/config.php bootstrap/cache/services.php bootstrap/cache/packages.php
+RUN rm -f bootstrap/cache/config.php bootstrap/cache/services.php bootstrap/cache/packages.php \
+    && rm -f .env .env.* || true
+
+# Criar .env VAZIO para evitar erros no build
+RUN touch .env && echo "APP_KEY=base64:4KqJxMzRlNTBiZWItNGY5OC00YzY3LWJhOTEtYmU5ZTc2MGE2YjA1" > .env
 
 # Copiar e configurar entrypoint
 COPY entrypoint-render.sh /entrypoint.sh

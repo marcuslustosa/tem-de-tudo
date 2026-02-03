@@ -27,17 +27,18 @@ php artisan migrate --force --no-interaction
 echo "🌱 Populando banco de dados..."
 php artisan db:seed --force --class=DatabaseSeeder --no-interaction
 
-# Limpar cache
-echo "🧹 Limpando caches..."
-php artisan config:clear
-php artisan cache:clear
-php artisan route:clear
-php artisan view:clear
+# Limpar TODOS os caches (incluindo os gerados no build)
+echo "🧹 Limpando TODOS os caches..."
+php artisan config:clear || true
+php artisan cache:clear || true
+php artisan route:clear || true
+php artisan view:clear || true
+rm -f bootstrap/cache/config.php
+rm -f bootstrap/cache/services.php
+rm -f bootstrap/cache/packages.php
 
-# Otimizar para produção
-echo "⚡ Otimizando aplicação..."
-php artisan config:cache
-php artisan route:cache
+# NÃO gerar config:cache - Laravel vai ler variáveis em runtime
+echo "⚠️ Rodando SEM cache de configuração (leitura direta de variáveis)"
 
 echo "✅ Deploy concluído! Iniciando servidor..."
 echo "========================================="
