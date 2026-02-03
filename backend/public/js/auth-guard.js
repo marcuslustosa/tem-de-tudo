@@ -1,53 +1,133 @@
-// ================================================
-// AUTH-GUARD.JS - Proteção de Rotas por Perfil
-// ================================================
-// Este arquivo contém funções para proteger páginas
-// baseadas no perfil do usuário autenticado
-// ================================================
-
 /**
- * Verifica se o usuário está autenticado E tem o perfil correto
- * @param {string} requiredProfile - Perfil necessário ('cliente', 'empresa', 'admin')
- * @returns {boolean} - true se autenticado e perfil correto, false caso contrário
+ * AUTH GUARD - TEM DE TUDO
+ * Proteção automática de rotas
+ * 
+ * @version 2.0.0
+ * @author Tem de Tudo Team
+ * 
+ * USO:
+ * <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
+ * 
+ * Tipos suportados: cliente, empresa, admin
  */
-function checkAuthAndProfile(requiredProfile) {
-    const token = localStorage.getItem('tem_de_tudo_token');
-    const userStr = localStorage.getItem('tem_de_tudo_user');
+
+(function() {
+    'use strict';
     
-    // Não tem token = não está logado
-    if (!token) {
-        console.warn('Usuário não autenticado. Redirecionando para login...');
-        window.location.href = '/login.html';
-        return false;
+    // Obter configuração do script
+    const currentScript = document.currentScript;
+    const requireAuth = currentScript ? currentScript.getAttribute('data-require-auth') : null;
+    const requireAdmin = currentScript ? currentScript.hasAttribute('data-require-admin') : false;
+    
+    /**
+     * Verificar autenticação
+     */
+    function checkAuth() {
+        // Verificar autenticação admin
+        if (requireAdmin) {
+            const adminToken = localStorage.getItem('admin_token');
+            const adminUser = localStorage.getItem('admin_user');
+            
+            if (!adminToken || !adminUser) {
+                console.warn('🔒 Acesso negado: Admin não autenticado');
+                window.location.href = '/admin-login.html';
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Verificar autenticação regular
+        const token = localStorage.getItem('token');
+        const userData = localStorage.getItem('user');
+        
+        if (!token || !userData) {
+            console.warn('🔒 Acesso negado: Usuário não autenticado');
+            window.location.href = '/entrar.html';
+            return false;
+        }
+        
+        // Se requer tipo específico de usuário
+        if (requireAuth) {
+            try {
+                const user = JSON.parse(userData);
+                
+                if (user.user_type !== requireAuth) {
+                    console.warn(`🔒 Acesso negado: Requer perfil ${requireAuth}, mas usuário é ${user.user_type}`);
+                    
+                    // Redirecionar para dashboard correto
+                    const redirectMap = {
+                        'cliente': '/app-inicio.html',
+                        'empresa': '/dashboard-empresa.html',
+                        'admin': '/admin.html'
+                    };
+                    
+                    window.location.href = redirectMap[user.user_type] || '/entrar.html';
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Erro ao validar usuário:', error);
+                localStorage.clear();
+                window.location.href = '/entrar.html';
+                return false;
+            }
+        }
+        
+        return true;
     }
     
-    // Verificar perfil do usuário
-    if (userStr) {
-        try {
-            const user = JSON.parse(userStr);
-            const userProfile = user.perfil || user.role || 'cliente'; // fallback para compatibilidade
+    /**
+     * Verificar token expirado periodicamente
+     */
+    function setupTokenCheck() {
+        // Verificar a cada 5 minutos
+        setInterval(async () => {
+            const token = localStorage.getItem('token');
             
-            console.log('Verificação de perfil:', {
-                required: requiredProfile,
-                current: userProfile,
-                user: user.name
-            });
+            if (!token) {
+                console.warn('🔒 Token não encontrado');
+                window.location.href = '/entrar.html';
+                return;
+            }
             
-            // Perfil incorreto = redirecionar para dashboard correto
-            if (userProfile !== requiredProfile) {
-                console.warn(`Perfil incorreto. Esperado: ${requiredProfile}, Atual: ${userProfile}`);
+            try {
+                // Fazer uma requisição leve para verificar se token é válido
+                const baseURL = API_CONFIG ? API_CONFIG.getBaseURL() : '';
+                const response = await fetch(`${baseURL}/api/user`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
                 
-                // Redirecionar para o dashboard correto do usuário
-                const redirectMap = {
-                    'cliente': '/dashboard-cliente.html',
-                    'empresa': '/dashboard-estabelecimento.html',
-                    'admin': '/admin.html'
-                };
-                
-                const correctDashboard = redirectMap[userProfile] || '/login.html';
-                
-                // Mostrar mensagem se disponível
-                if (typeof showMessage === 'function') {
+                if (response.status === 401) {
+                    console.warn('🔒 Token expirado');
+                    localStorage.clear();
+                    window.location.href = '/entrar.html';
+                }
+            } catch (error) {
+                // Ignorar erros de rede
+                console.debug('Erro ao verificar token:', error);
+            }
+        }, 5 * 60 * 1000); // 5 minutos
+    }
+    
+    // Executar verificação assim que possível
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAuth()) {
+                setupTokenCheck();
+            }
+        });
+    } else {
+        if (checkAuth()) {
+            setupTokenCheck();
+        }
+    }
+    
+    console.log('🛡️ Auth Guard ativo' + (requireAuth ? ` (requer: ${requireAuth})` : '') + (requireAdmin ? ' (admin)' : ''));
+})();
+
                     showMessage('Você não tem permissão para acessar esta página', 'warning');
                 }
                 

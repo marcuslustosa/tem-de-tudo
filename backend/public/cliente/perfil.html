@@ -158,6 +158,12 @@
         }
     </style>
     <link rel="stylesheet" href="/css/temdetudo-theme.css">
+    <script src="/js/config.js"></script>
+    <script src="/js/auth-manager.js" defer></script>
+    <script src="/js/api-client.js" defer></script>
+    <script src="/js/validators.js" defer></script>
+    <script src="/js/ui-helpers.js" defer></script>
+    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
 </head>
 <body>
     <nav class="nav-bar">
@@ -212,16 +218,14 @@
 
     <script>
         function logout() {
-            localStorage.removeItem('tem_de_tudo_token');
-            localStorage.removeItem('tem_de_tudo_user');
-            window.location.href = '/login.html';
+            authManager.logout();
         }
 
         async function fetchProfile() {
             const token = localStorage.getItem('tem_de_tudo_token');
             
             if (!token) {
-                window.location.href = '/login.html';
+                window.location.href = '/entrar.html';
                 return;
             }
 

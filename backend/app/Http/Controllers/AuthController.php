@@ -606,13 +606,13 @@ class AuthController extends Controller
     {
         switch ($perfil) {
             case 'cliente':
-                return '/dashboard-cliente.html';
+                return '/app-inicio.html';
             case 'empresa':
-                return '/dashboard-estabelecimento.html';
+                return '/dashboard-empresa.html';
             case 'admin':
-                return '/admin-dashboard.html';
+                return '/admin.html';
             default:
-                return '/login.html';
+                return '/entrar.html';
         }
     }
 

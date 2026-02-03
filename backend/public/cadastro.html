@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="/css/mobile-native.css">
     <link rel="manifest" href="/manifest.json">
     <script src="/js/config.js"></script>
+    <script src="/js/auth-manager.js" defer></script>
+    <script src="/js/api-client.js" defer></script>
+    <script src="/js/validators.js" defer></script>
+    <script src="/js/ui-helpers.js" defer></script>
     
     <style>
         * { 
@@ -563,55 +567,77 @@
             
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
+            const email = document.getElementById('email').value.trim();
+            const cpf = document.getElementById('cpf').value;
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            
+            // Validações
+            if (!Validators.email(email)) {
+                showToast('Email inválido.', 'error');
+                return;
+            }
+            
+            if (!Validators.password(password)) {
+                showToast('A senha deve ter no mínimo 6 caracteres.', 'error');
+                return;
+            }
             
             if (password !== confirmPassword) {
-                alert('As senhas não coincidem!');
+                showToast('As senhas não coincidem!', 'error');
+                return;
+            }
+            
+            if (!Validators.cpf(cpf)) {
+                showToast('CPF inválido. Verifique os dígitos.', 'error');
+                return;
+            }
+            
+            if (!document.getElementById('terms').checked) {
+                showToast('Você precisa aceitar os termos de uso.', 'warning');
                 return;
             }
             
             const formData = {
                 name: document.getElementById('nome').value + ' ' + document.getElementById('sobrenome').value,
-                email: document.getElementById('email').value,
+                email: email,
                 telefone: document.getElementById('telefone').value,
-                cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
+                cpf: cpf.replace(/\D/g, ''),
                 password: password,
                 password_confirmation: confirmPassword,
-                terms: document.getElementById('terms').checked,
+                terms: true,
                 perfil: 'cliente'
             };
             
+            // Loading state
+            setLoading(submitBtn, true);
+            
             try {
-                console.log('📝 Tentando cadastro:', { email: formData.email, api: API_CONFIG.register });
+                const result = await authManager.register(formData);
                 
-                const response = await fetch(API_CONFIG.register, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    alert('Cadastro realizado com sucesso! Redirecionando...');
-                    window.location.href = 'entrar.html';
+                if (result.success) {
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Sucesso!';
+                    submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    showToast('Cadastro realizado com sucesso!', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = result.redirect;
+                    }, 500);
                 } else {
-                    alert(data.message || 'Erro ao realizar cadastro. Tente novamente.');
+                    throw new Error(result.message);
                 }
             } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao conectar com o servidor. Tente novamente.');
+                console.error('❌ Erro:', error);
+                showToast(error.message || 'Erro ao criar conta.', 'error');
+                setLoading(submitBtn, false);
             }
         }
         
         function registerGoogle() {
-            alert('Cadastro com Google será implementado em breve!');
+            showToast('Cadastro com Google será implementado em breve!', 'info');
         }
         
         function registerFacebook() {
-            alert('Cadastro com Facebook será implementado em breve!');
+            showToast('Cadastro com Facebook será implementado em breve!', 'info');
         }
     </script>
 </body>

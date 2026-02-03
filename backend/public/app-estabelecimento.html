@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -144,6 +144,12 @@
             .stat-value { font-size: 20px; }
         }
     </style>
+    <script src="/js/config.js"></script>
+    <script src="/js/auth-manager.js" defer></script>
+    <script src="/js/api-client.js" defer></script>
+    <script src="/js/validators.js" defer></script>
+    <script src="/js/ui-helpers.js" defer></script>
+    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
 </head>
 <body>
     <div id="loading" class="loading">
@@ -243,7 +249,7 @@
             const token = localStorage.getItem('token');
             
             if (!token) {
-                window.location.href = 'entrar.html';
+                window.location.href = '/entrar.html';
                 return;
             }
 
@@ -265,7 +271,7 @@
                     alert('Empresa não encontrada');
                     history.back();
                 } else if (response.status === 401) {
-                    window.location.href = 'entrar.html';
+                    window.location.href = '/entrar.html';
                 } else {
                     console.error('Erro na resposta:', response.status);
                     alert('Erro ao carregar empresa');

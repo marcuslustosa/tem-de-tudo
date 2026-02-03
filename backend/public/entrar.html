@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="/css/mobile-native.css">
     <link rel="manifest" href="/manifest.json">
     <script src="/js/config.js"></script>
+    <script src="/js/auth-manager.js" defer></script>
+    <script src="/js/api-client.js" defer></script>
+    <script src="/js/validators.js" defer></script>
+    <script src="/js/ui-helpers.js" defer></script>
     
     <style>
         * { 
@@ -367,63 +371,64 @@
         async function handleLogin(event) {
             event.preventDefault();
             
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+            const submitBtn = event.target.querySelector('button[type="submit"]');
             
-            if (!email || !password) {
-                alert('Por favor, preencha email e senha.');
+            // Validações
+            if (!Validators.required(email) || !Validators.required(password)) {
+                showToast('Por favor, preencha email e senha.', 'warning');
                 return;
             }
             
+            if (!Validators.email(email)) {
+                showToast('Email inválido. Verifique e tente novamente.', 'error');
+                return;
+            }
+            
+            if (!Validators.password(password)) {
+                showToast('A senha deve ter no mínimo 6 caracteres.', 'error');
+                return;
+            }
+            
+            // Loading state
+            setLoading(submitBtn, true);
+            
             try {
-                console.log('🔑 Tentando login:', { email, api: API_CONFIG.login });
+                // Usar AuthManager
+                const result = await authManager.login({ email, password });
                 
-                const response = await fetch(API_CONFIG.login, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-                
-                const data = await response.json();
-                
-                console.log('Resposta do login:', data); // DEBUG
-                
-                if (response.ok && data.success) {
-                    localStorage.setItem('token', data.data.token);
-                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                if (result.success) {
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Sucesso!';
+                    submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
                     
-                    // Redirecionar baseado no perfil
-                    const perfil = data.data.user.perfil;
-                    if (perfil === 'admin') {
-                        window.location.href = 'admin.html';
-                    } else if (perfil === 'empresa') {
-                        window.location.href = 'empresa.html';
-                    } else {
-                        window.location.href = 'app-inicio.html';
-                    }
+                    showToast('Login realizado com sucesso!', 'success');
+                    
+                    // Redirecionar
+                    setTimeout(() => {
+                        window.location.href = result.redirect;
+                    }, 500);
                 } else {
-                    alert(data.message || 'Erro ao fazer login. Verifique suas credenciais.');
+                    throw new Error(result.message);
                 }
             } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao conectar com o servidor. Tente novamente.');
+                console.error('❌ Erro no login:', error);
+                showToast(error.message || 'Erro ao conectar com o servidor.', 'error');
+                setLoading(submitBtn, false);
             }
         }
         
         function loginGoogle() {
-            alert('Login com Google será implementado em breve!');
+            showToast('Login com Google será implementado em breve!', 'info');
         }
         
         function loginFacebook() {
-            alert('Login com Facebook será implementado em breve!');
+            showToast('Login com Facebook será implementado em breve!', 'info');
         }
         
         function recuperarSenha(event) {
             event.preventDefault();
-            alert('Funcionalidade de recuperação de senha será implementada em breve!');
+            showToast('Funcionalidade de recuperação de senha será implementada em breve!', 'info');
         }
     </script>
 </body>

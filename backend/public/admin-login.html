@@ -207,123 +207,53 @@
             
             const formData = new FormData(event.target);
             const loginData = {
-                email: formData.get('email'),
+                email: formData.get('email').trim(),
                 password: formData.get('password'),
                 security_code: formData.get('security_code') || '123456',
                 remember: formData.get('remember') ? true : false
             };
             
+            // Validações
+            if (!Validators.email(loginData.email)) {
+                showMessage('Email inválido.', 'error');
+                return;
+            }
+            
+            if (!Validators.password(loginData.password)) {
+                showMessage('Senha deve ter no mínimo 6 caracteres.', 'error');
+                return;
+            }
+            
             // UI Loading state
             const loginBtn = document.getElementById('adminLoginBtn');
             const btnText = document.getElementById('loginBtnText');
-            const originalText = btnText.textContent;
             
-            loginBtn.disabled = true;
-            btnText.textContent = 'Verificando...';
-            loginBtn.style.opacity = '0.7';
+            setLoading(loginBtn, true);
+            if (btnText) btnText.textContent = 'Verificando...';
             
             try {
-                // Simulate API call delay
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                const result = await authManager.adminLogin(loginData);
                 
-                // Check for valid admin credentials
-                const validCredentials = [
-                    { email: 'admin@temdetudo.com', password: 'TemDeTudo2024!' },
-                    { email: 'operador@temdetudo.com', password: 'Operador2024!' }
-                ];
-                
-                const isValid = validCredentials.some(cred => 
-                    cred.email === loginData.email && cred.password === loginData.password
-                );
-                
-                if (isValid) {
-                    // Store auth token
-                    localStorage.setItem('admin_token', 'admin_jwt_token_' + Date.now());
-                    localStorage.setItem('admin_user', JSON.stringify({
-                        email: loginData.email,
-                        name: loginData.email === 'admin@temdetudo.com' ? 'Administrador Principal' : 'Operador Sistema',
-                        role: 'admin'
-                    }));
-                    
-                    showMessage('Login realizado com sucesso! Redirecionando...', 'success');
-                    
-                    // Redirect after success
-                    setTimeout(() => {
-                        window.location.href = '/admin.html';
-                    }, 1500);
-                } else {
-                    showMessage('Credenciais invàlidas. Verifique email e senha.', 'error');
-                }
-                
-                if (response.ok && result.success) {
-                    // Store admin token
-                    localStorage.setItem('admin_token', result.token);
-                    localStorage.setItem('admin_user', JSON.stringify(result.admin));
-                    localStorage.setItem('admin_permissions', JSON.stringify(result.permissions));
-                    
+                if (result.success) {
                     if (loginData.remember) {
                         localStorage.setItem('admin_remember', 'true');
                     }
                     
-                    showMessage('Login realizado com sucesso! Redirecionando...', 'success');
+                    showMessage('Login administrativo realizado com sucesso!', 'success');
                     
-                    // Redirect to admin panel
+                    // Redirecionar usando o redirect do AuthManager
                     setTimeout(() => {
-                        window.location.href = '/admin.html';
-                    }, 1500);
-                    
+                        window.location.href = result.redirect;
+                    }, 1000);
                 } else {
-                    // Handle different error types
-                    let errorMessage = result.message || 'Erro ao fazer login';
-                    
-                    if (result.error_code === 'INVALID_CREDENTIALS') {
-                        errorMessage = 'Email ou senha incorretos';
-                    } else if (result.error_code === 'INVALID_SECURITY_CODE') {
-                        errorMessage = 'Código de seguranàa inválido';
-                    } else if (result.error_code === 'ACCOUNT_LOCKED') {
-                        errorMessage = 'Conta temporariamente bloqueada por seguranàa';
-                    } else if (result.error_code === 'ACCESS_DENIED') {
-                        errorMessage = 'Acesso negado - Permissàes insuficientes';
-                    }
-                    
-                    showMessage(errorMessage, 'error');
+                    throw new Error(result.message);
                 }
                 
             } catch (error) {
-                console.error('Login error:', error);
-                
-                // Fallback for demo purposes
-                if (loginData.email === 'admin@temdetudo.com' && 
-                    loginData.password === 'admin123' && 
-                    loginData.security_code === '123456') {
-                    
-                    // Demo success
-                    const demoAdmin = {
-                        id: 1,
-                        name: 'Super Administrador',
-                        email: 'admin@temdetudo.com',
-                        role: 'super_admin',
-                        permissions: ['all']
-                    };
-                    
-                    localStorage.setItem('admin_token', 'demo_token_' + Date.now());
-                    localStorage.setItem('admin_user', JSON.stringify(demoAdmin));
-                    localStorage.setItem('admin_permissions', JSON.stringify(['all']));
-                    
-                    showMessage('Login realizado com sucesso! (Modo Demo)', 'success');
-                    
-                    setTimeout(() => {
-                        window.location.href = '/admin.html';
-                    }, 1500);
-                    
-                } else {
-                    showMessage('Erro de conexào. Verifique suas credenciais e tente novamente.', 'error');
-                }
-            } finally {
-                // Reset button state
-                loginBtn.disabled = false;
-                btnText.textContent = originalText;
-                loginBtn.style.opacity = '1';
+                console.error('❌ Login error:', error);
+                showMessage(error.message || 'Erro ao fazer login. Verifique suas credenciais.', 'error');
+                setLoading(loginBtn, false);
+                if (btnText) btnText.textContent = 'Entrar como Admin';
             }
         }
         

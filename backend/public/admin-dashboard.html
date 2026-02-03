@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -173,6 +173,12 @@
             .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
+    <script src="/js/config.js"></script>
+    <script src="/js/auth-manager.js" defer></script>
+    <script src="/js/api-client.js" defer></script>
+    <script src="/js/validators.js" defer></script>
+    <script src="/js/ui-helpers.js" defer></script>
+    <script src="/js/auth-guard.js" data-require-admin></script>
 </head>
 <body>
     <div class="header">
@@ -277,7 +283,7 @@
         function checkAuth() {
             const token = localStorage.getItem('token');
             if (!token) {
-                window.location.href = 'admin-entrar.html';
+                window.location.href = '/admin-login.html';
                 return false;
             }
             return token;
@@ -304,7 +310,7 @@
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('mainContent').style.display = 'block';
                 } else if (response.status === 401) {
-                    window.location.href = 'admin-entrar.html';
+                    window.location.href = '/admin-login.html';
                 } else {
                     console.error('Erro na resposta:', response.status);
                     document.getElementById('loading').innerHTML = 
@@ -384,8 +390,7 @@
         }
         
         function logout() {
-            localStorage.removeItem('token');
-            window.location.href = 'admin-entrar.html';
+            authManager.adminLogout();
         }
         
         document.addEventListener('DOMContentLoaded', loadDashboard);
