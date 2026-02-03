@@ -7,6 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/theme-escuro.css">
+    
+    <!-- EmailJS SDK para notificações por email (GRÁTIS - 300 emails/mês) -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
         .main {
             padding: var(--space-6) var(--space-4);
@@ -543,6 +546,44 @@
             <span>Perfil</span>
         </a>
     </nav>
+    
+    <!-- Sistema de Notificações -->
+    <script src="/js/notification-system-simple.js"></script>
+    <script>
+        // Exemplo de uso: Notificação de boas-vindas ao carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cria notificação de boas-vindas (apenas na primeira visita)
+            const isFirstVisit = !localStorage.getItem('dashboard_visited');
+            
+            if (isFirstVisit) {
+                localStorage.setItem('dashboard_visited', 'true');
+                
+                // Aguarda 2 segundos para melhor experiência
+                setTimeout(() => {
+                    NotificationSystem.add({
+                        title: '🎉 Bem-vindo ao Tem de Tudo!',
+                        message: 'Explore empresas, ganhe bônus e aproveite promoções exclusivas!',
+                        icon: 'fa-rocket',
+                        type: 'info',
+                        url: '/app-empresas.html'
+                    });
+                }, 2000);
+            }
+        });
+        
+        // Função para demonstração de Push Notification quando cliente clica em algo
+        function demonstrarPushNotification() {
+            if (Notification.permission === 'default') {
+                // Pede permissão de forma educada
+                if (confirm('Quer receber notificações de promoções e bônus?\n\nClique em OK para ativar!')) {
+                    NotificationSystem.enablePush();
+                }
+            } else if (Notification.permission === 'granted') {
+                // Já tem permissão, mostra notificação
+                NotificationSystem.testPush();
+            }
+        }
+    </script>
 </body>
 </html>
 
