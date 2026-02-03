@@ -5,15 +5,9 @@ echo "========================================="
 echo "🚀 TEM DE TUDO - Deploy Render.com"
 echo "========================================="
 
-# Criar banco SQLite
-echo "📦 Criando banco SQLite..."
-mkdir -p database
-touch database/database.sqlite
-chmod 664 database/database.sqlite
-
-# Criar .env com SQLite
-echo "🔧 Configurando .env com SQLite..."
-cat > .env << 'EOF'
+# Criar .env com DATABASE_URL
+echo "🔧 Configurando .env com PostgreSQL..."
+cat > .env << EOF
 APP_NAME="Tem de Tudo"
 APP_ENV=production
 APP_KEY=base64:4KqJxMzRlNTBiZWItNGY5OC00YzY3LWJhOTEtYmU5ZTc2MGE2YjA1
@@ -23,8 +17,12 @@ APP_URL=https://aplicativo-tem-de-tudo.onrender.com
 LOG_CHANNEL=stack
 LOG_LEVEL=error
 
-DB_CONNECTION=sqlite
-DB_DATABASE=/var/www/html/database/database.sqlite
+DB_CONNECTION=pgsql
+DB_HOST=dpg-d6145d94tr6s73e18v90-a
+DB_PORT=5432
+DB_DATABASE=aplicativo_tem_de_tudo_qbvf
+DB_USERNAME=temdetudo
+DB_PASSWORD=Iq1zsYYCvzIHWSXCVCTIFPVofuNoZPuj
 
 SESSION_DRIVER=database
 CACHE_DRIVER=database
@@ -34,7 +32,7 @@ SESSION_SECURE_COOKIE=true
 SANCTUM_STATEFUL_DOMAINS=aplicativo-tem-de-tudo.onrender.com
 EOF
 
-echo "✅ .env criado com SQLite!"
+echo "✅ .env criado com PostgreSQL!"
 
 # Executar migrations (SQLite não precisa aguardar)
 echo "📦 Executando migrations..."
