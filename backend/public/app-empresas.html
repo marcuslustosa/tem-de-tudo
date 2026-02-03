@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"="width=device-width, initial-scale=1.0">
+    <title>Empresas Parceiras - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/theme-escuro.css">
+    <style>
+        body {
+            padding-bottom: 80px;
+        }
+        
+        .search-header {
+            position: sticky;
+            top: 0;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: var(--space-4);
+            z-index: 100;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 14px 48px 14px 48px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+        
+        .search-box input:focus {
+            border-color: var(--purple-1);
+            outline: none;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+        
+        .filter-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(102, 126, 234, 0.15);
+            color: var(--purple-1);
+            border: none;
+            border-radius: var(--radius-full);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover {
+            background: rgba(102, 126, 234, 0.25);
+        }
+        
+        .categories {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: var(--space-4);
+            scrollbar-width: none;
+        }
+        
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category-chip {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            white-space: nowrap;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+        }
+        
+        .category-chip:hover,
+        .category-chip.active {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: var(--purple-1);
+            color: var(--purple-1);
+        }
+        
+        .empresas-list {
+            padding: var(--space-4);
+        }
+        
+        .empresa-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            margin-bottom: var(--space-4);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .empresa-card:hover {
+            border-color: var(--border-hover);
+            transform: translateX(4px);
+        }
+        
+        .empresa-header {
+            display: flex;
+            gap: var(--space-4);
+            margin-bottom: var(--space-3);
+        }
+        
+        .empresa-logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .empresa-info {
+            flex: 1;
+        }
+        
+        .empresa-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .empresa-category {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .empresa-stats {
+            display: flex;
+            gap: var(--space-4);
+            margin-top: var(--space-2);
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .stat-item i {
+            font-size: 14px;
+            color: var(--purple-1);
+        }
+        
+        .empresa-address {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-3);
+            display: flex;
+            align-items: start;
+            gap: 8px;
+        }
+        
+        .empresa-address i {
+            margin-top: 3px;
+            color: var(--text-muted);
+        }
+        
+        .empresa-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--space-3);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .pontos-badge {
+            background: rgba(102, 126, 234, 0.15);
+            color: var(--purple-1);
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 700;
+        }
+        
+        .btn-ver-empresa {
+            background: transparent;
+            color: var(--purple-1);
+            border: 1px solid var(--purple-1);
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-ver-empresa:hover {
+            background: var(--purple-1);
+            color: white;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: var(--text-muted);
+            transition: all 0.3s;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+        }
+        
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--purple-1);
+        }
+        
+        .nav-item.active {
+            color: var(--purple-1);
+            background: rgba(102, 126, 234, 0.15);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+        }
+        
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .loading-container {
+            text-align: center;
+            padding: var(--space-8);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--space-8);
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: var(--space-4);
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-header">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Buscar empresas, restaurantes, lojas...">
+            <button class="filter-btn" onclick="toggleFilters()">
+                <i class="fas fa-sliders-h"></i>
+            </button>
+        </div>
+    </div>
+    
+    <div class="categories" id="categories">
+        <div class="category-chip active" data-category="todos">
+            <i class="fas fa-th"></i> Todos
+        </div>
+        <div class="category-chip" data-category="restaurante">
+            🍔 Restaurantes
+        </div>
+        <div class="category-chip" data-category="loja">
+            🛍️ Lojas
+        </div>
+        <div class="category-chip" data-category="servico">
+            💈 Serviços
+        </div>
+        <div class="category-chip" data-category="saude">
+            🏥 Saúde
+        </div>
+        <div class="category-chip" data-category="beleza">
+            💅 Beleza
+        </div>
+        <div class="category-chip" data-category="educacao">
+            📚 Educação
+        </div>
+    </div>
+    
+    <div class="empresas-list" id="empresasList">
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: var(--space-4);">Carregando empresas...</p>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/dashboard-cliente.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/app-empresas.html" class="nav-item active">
+            <i class="fas fa-store"></i>
+            <span>Empresas</span>
+        </a>
+        <a href="/app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Promoções</span>
+        </a>
+        <a href="/app-qrcode.html" class="nav-item">
+            <i class="fas fa-qrcode"></i>
+            <span>Meu QR</span>
+        </a>
+        <a href="/app-perfil-cliente.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
+    
+    <script>
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://127.0.0.1:8001/api'
+            : '/api';
+        
+        // Verificar autenticação
+        const token = localStorage.getItem('token');
+        const userStr = localStorage.getItem('user');
+        
+        if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
+            localStorage.clear();
+            window.location.href = '/entrar.html';
+        }
+        
+        let empresas = [];
+        let filteredEmpresas = [];
+        let currentCategory = 'todos';
+        
+        // Carregar empresas
+        async function loadEmpresas() {
+            try {
+                const response = await fetch(`${API_URL}/empresas`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Erro ao carregar empresas');
+                
+                const data = await response.json();
+                empresas = data.empresas || data.data || [];
+                filteredEmpresas = empresas;
+                renderEmpresas();
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('empresasList').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>Erro ao carregar empresas</h3>
+                        <p>Tente novamente mais tarde</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderEmpresas() {
+            const container = document.getElementById('empresasList');
+            
+            if (filteredEmpresas.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-store-slash"></i>
+                        <h3>Nenhuma empresa encontrada</h3>
+                        <p>Tente ajustar os filtros ou busca</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const html = filteredEmpresas.map(empresa => `
+                <div class="empresa-card" onclick="verEmpresa(${empresa.id})">
+                    <div class="empresa-header">
+                        <div class="empresa-logo">
+                            ${getEmpresaEmoji(empresa.categoria)}
+                        </div>
+                        <div class="empresa-info">
+                            <div class="empresa-name">${empresa.nome || empresa.name}</div>
+                            <div class="empresa-category">${empresa.categoria || 'Loja'}</div>
+                            <div class="empresa-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-star"></i>
+                                    <span>${empresa.avaliacao || '4.5'}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-users"></i>
+                                    <span>${empresa.total_clientes || '0'} clientes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="empresa-address">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${empresa.endereco || 'Endereço não informado'}</span>
+                    </div>
+                    
+                    <div class="empresa-footer">
+                        <div class="pontos-badge">
+                            <i class="fas fa-coins"></i> ${empresa.pontos_por_real || '10'} pts/R$
+                        </div>
+                        <button class="btn-ver-empresa" onclick="event.stopPropagation(); verEmpresa(${empresa.id})">
+                            Ver Detalhes
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = html;
+        }
+        
+        function getEmpresaEmoji(categoria) {
+            const emojis = {
+                'restaurante': '🍔',
+                'loja': '🛍️',
+                'servico': '💼',
+                'saude': '🏥',
+                'beleza': '💅',
+                'educacao': '📚',
+                'mercado': '🛒',
+                'farmacia': '💊'
+            };
+            return emojis[categoria?.toLowerCase()] || '🏪';
+        }
+        
+        function verEmpresa(id) {
+            window.location.href = `/empresa-detalhes.html?id=${id}`;
+        }
+        
+        // Filtros por categoria
+        document.querySelectorAll('.category-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                
+                currentCategory = this.dataset.category;
+                filterEmpresas();
+            });
+        });
+        
+        // Busca em tempo real
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            filterEmpresas();
+        });
+        
+        function filterEmpresas() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredEmpresas = empresas.filter(empresa => {
+                const matchCategory = currentCategory === 'todos' || 
+                                     empresa.categoria?.toLowerCase() === currentCategory;
+                const matchSearch = !searchTerm || 
+                                   empresa.nome?.toLowerCase().includes(searchTerm) ||
+                                   empresa.name?.toLowerCase().includes(searchTerm) ||
+                                   empresa.endereco?.toLowerCase().includes(searchTerm);
+                
+                return matchCategory && matchSearch;
+            });
+            
+            renderEmpresas();
+        }
+        
+        function toggleFilters() {
+            alert('Filtros avançados - implementar modal');
+        }
+        
+        // Carregar ao iniciar
+        loadEmpresas();
+    </script>
+</body>
+</html>

@@ -338,31 +338,31 @@
             <li class="nav-item">
                 <a href="empresa-promocoes.html" class="nav-link">
                     <i class="fas fa-gift"></i>
-                    Promoções
+                    Promoï¿½ï¿½es
                 </a>
             </li>
             <li class="nav-item">
                 <a href="empresa-bonus.html" class="nav-link">
                     <i class="fas fa-star"></i>
-                    Bônus
+                    Bï¿½nus
                 </a>
             </li>
             <li class="nav-item">
                 <a href="empresa-notificacoes.html" class="nav-link">
                     <i class="fas fa-bell"></i>
-                    Notificações
+                    Notificaï¿½ï¿½es
                 </a>
             </li>
             <li class="nav-item">
                 <a href="empresa-relatorios.html" class="nav-link">
                     <i class="fas fa-file-alt"></i>
-                    Relatórios
+                    Relatï¿½rios
                 </a>
             </li>
             <li class="nav-item">
                 <a href="empresa-configuracoes.html" class="nav-link">
                     <i class="fas fa-cog"></i>
-                    Configurações
+                    Configuraï¿½ï¿½es
                 </a>
             </li>
         </ul>
@@ -390,12 +390,12 @@
                 </div>
 
                 <div class="scanner-instructions">
-                    <h3><i class="fas fa-info-circle"></i> Instruções</h3>
+                    <h3><i class="fas fa-info-circle"></i> Instruï¿½ï¿½es</h3>
                     <ul>
                         <li>Clique em "Iniciar Scanner"</li>
-                        <li>Permita o acesso à câmera</li>
+                        <li>Permita o acesso ï¿½ cï¿½mera</li>
                         <li>Aponte para o QR Code do cliente</li>
-                        <li>Aguarde a confirmação automática</li>
+                        <li>Aguarde a confirmaï¿½ï¿½o automï¿½tica</li>
                     </ul>
                 </div>
             </div>
@@ -461,17 +461,17 @@
                 // Parar scanner
                 stopScanner();
             } catch (e) {
-                alert('QR Code inválido');
+                alert('QR Code invï¿½lido');
             }
         }
 
         function onScanFailure(error) {
-            // Ignorar erros de scan contínuo
+            // Ignorar erros de scan contï¿½nuo
         }
 
         function creditPoints(clientData) {
             // Mock data - integrar com API real
-            document.getElementById('clientName').textContent = clientData.name || 'João Silva';
+            document.getElementById('clientName').textContent = clientData.name || 'Joï¿½o Silva';
             document.getElementById('points').textContent = '+50 pontos';
             document.getElementById('totalPoints').textContent = '1.297 pontos';
             
@@ -490,6 +490,68 @@
             startScanner();
         }
     </script>
+    
+    <!-- Bottom Navigation -->
+    <style>
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid rgba(102,126,234,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: 0 -10px 40px rgba(102,126,234,0.08);
+        }
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #7c8db0;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .bottom-nav .nav-item.active {
+            color: #667eea;
+            background: rgba(102,126,234,0.08);
+        }
+        .bottom-nav .nav-item i {
+            font-size: 20px;
+        }
+        .bottom-nav .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+    </style>
+    <nav class="bottom-nav">
+        <a href="/dashboard-empresa.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="/empresa-scanner.html" class="nav-item active">
+            <i class="fas fa-qrcode"></i>
+            <span>Scanner</span>
+        </a>
+        <a href="/empresa-promocoes.html" class="nav-item">
+            <i class="fas fa-gift"></i>
+            <span>PromoÃ§Ãµes</span>
+        </a>
+        <a href="/empresa-clientes.html" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="/empresa-relatorios.html" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>RelatÃ³rios</span>
+        </a>
+    </nav>
 </body>
 </html>
 

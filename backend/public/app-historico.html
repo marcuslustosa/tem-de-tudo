@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Pontos - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/theme-escuro.css">
+    <style>
+        body {
+            padding-bottom: 80px;
+        }
+        
+        .header-historico {
+            background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+            padding: var(--space-6) var(--space-4);
+            color: white;
+        }
+        
+        .header-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: var(--space-2);
+        }
+        
+        .saldo-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            margin-top: var(--space-4);
+        }
+        
+        .saldo-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-4);
+        }
+        
+        .saldo-item {
+            text-align: center;
+        }
+        
+        .saldo-label {
+            font-size: 11px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-2);
+        }
+        
+        .saldo-value {
+            font-size: 32px;
+            font-weight: 900;
+        }
+        
+        .saldo-value.gain {
+            color: #22c55e;
+        }
+        
+        .saldo-value.loss {
+            color: #ef4444;
+        }
+        
+        .filters {
+            padding: var(--space-4);
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .filter-tabs {
+            display: flex;
+            gap: var(--space-2);
+            overflow-x: auto;
+            scrollbar-width: none;
+            margin-bottom: var(--space-4);
+        }
+        
+        .filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .filter-tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .filter-tab:hover,
+        .filter-tab.active {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: var(--purple-1);
+            color: var(--purple-1);
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        .timeline {
+            padding: var(--space-4);
+        }
+        
+        .timeline-date {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: var(--space-6) 0 var(--space-3);
+        }
+        
+        .timeline-date:first-child {
+            margin-top: 0;
+        }
+        
+        .transaction-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            margin-bottom: var(--space-3);
+            transition: all 0.3s;
+        }
+        
+        .transaction-card:hover {
+            border-color: var(--border-hover);
+            transform: translateX(4px);
+        }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-3);
+        }
+        
+        .transaction-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .transaction-icon.gain {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+        
+        .transaction-icon.loss {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+        
+        .transaction-info {
+            flex: 1;
+            padding: 0 var(--space-3);
+        }
+        
+        .transaction-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .transaction-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .transaction-points {
+            font-size: 20px;
+            font-weight: 700;
+            text-align: right;
+        }
+        
+        .transaction-points.gain {
+            color: #22c55e;
+        }
+        
+        .transaction-points.loss {
+            color: #ef4444;
+        }
+        
+        .transaction-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--space-3);
+            border-top: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .transaction-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: rgba(102, 126, 234, 0.15);
+            color: var(--purple-1);
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--space-8);
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: var(--space-4);
+            opacity: 0.3;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: var(--text-muted);
+            transition: all 0.3s;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+        }
+        
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--purple-1);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+        }
+        
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-historico">
+        <div class="header-title">📊 Histórico</div>
+        <div class="saldo-card">
+            <div class="saldo-row">
+                <div class="saldo-item">
+                    <div class="saldo-label">Total Ganho</div>
+                    <div class="saldo-value gain" id="totalGanho">0</div>
+                </div>
+                <div class="saldo-item">
+                    <div class="saldo-label">Total Usado</div>
+                    <div class="saldo-value loss" id="totalUsado">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="filters">
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="todas">Todas</button>
+            <button class="filter-tab" data-filter="ganho">Ganhos</button>
+            <button class="filter-tab" data-filter="resgate">Resgates</button>
+            <button class="filter-tab" data-filter="bonus">Bônus</button>
+            <button class="filter-tab" data-filter="expiracao">Expirações</button>
+        </div>
+        
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Buscar transações...">
+        </div>
+    </div>
+    
+    <div class="timeline" id="timeline">
+        <div class="empty-state">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: var(--space-4);">Carregando histórico...</p>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/dashboard-cliente.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/app-empresas.html" class="nav-item">
+            <i class="fas fa-store"></i>
+            <span>Empresas</span>
+        </a>
+        <a href="/app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Promoções</span>
+        </a>
+        <a href="/app-qrcode.html" class="nav-item">
+            <i class="fas fa-qrcode"></i>
+            <span>Meu QR</span>
+        </a>
+        <a href="/app-perfil-cliente.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
+    
+    <script>
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://127.0.0.1:8001/api'
+            : '/api';
+        
+        // Verificar autenticação
+        const token = localStorage.getItem('token');
+        const userStr = localStorage.getItem('user');
+        
+        if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
+            localStorage.clear();
+            window.location.href = '/entrar.html';
+        }
+        
+        let user;
+        try {
+            user = JSON.parse(userStr);
+            if (!user || !user.perfil || user.perfil !== 'cliente') {
+                localStorage.clear();
+                window.location.href = '/entrar.html';
+            }
+        } catch (e) {
+            localStorage.clear();
+            window.location.href = '/entrar.html';
+        }
+        
+        let transacoes = [];
+        let currentFilter = 'todas';
+        
+        // Carregar histórico
+        async function loadHistorico() {
+            try {
+                const response = await fetch(`${API_URL}/cliente/historico`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Erro ao carregar histórico');
+                
+                const data = await response.json();
+                transacoes = data.transacoes || data.data || [];
+                
+                // Calcular totais
+                let totalGanho = 0;
+                let totalUsado = 0;
+                
+                transacoes.forEach(t => {
+                    if (t.tipo === 'ganho' || t.tipo === 'bonus') {
+                        totalGanho += Math.abs(t.pontos || 0);
+                    } else if (t.tipo === 'resgate' || t.tipo === 'expiracao') {
+                        totalUsado += Math.abs(t.pontos || 0);
+                    }
+                });
+                
+                document.getElementById('totalGanho').textContent = totalGanho;
+                document.getElementById('totalUsado').textContent = totalUsado;
+                
+                renderTransacoes();
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('timeline').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>Erro ao carregar histórico</h3>
+                        <p>Tente novamente mais tarde</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderTransacoes() {
+            const timeline = document.getElementById('timeline');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Filtrar transações
+            let filtered = transacoes.filter(t => {
+                const matchFilter = currentFilter === 'todas' || t.tipo === currentFilter;
+                const matchSearch = !searchTerm || 
+                    t.descricao?.toLowerCase().includes(searchTerm) ||
+                    t.empresa_nome?.toLowerCase().includes(searchTerm);
+                return matchFilter && matchSearch;
+            });
+            
+            if (filtered.length === 0) {
+                timeline.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Nenhuma transação encontrada</h3>
+                        <p>Tente ajustar os filtros ou busca</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Agrupar por data
+            const grouped = {};
+            filtered.forEach(t => {
+                const date = new Date(t.created_at || t.data);
+                const key = date.toLocaleDateString('pt-BR', { 
+                    day: '2-digit', 
+                    month: 'long', 
+                    year: 'numeric' 
+                });
+                
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(t);
+            });
+            
+            // Renderizar
+            let html = '';
+            Object.keys(grouped).forEach(date => {
+                html += `<div class="timeline-date">${date}</div>`;
+                
+                grouped[date].forEach(t => {
+                    const isGain = t.tipo === 'ganho' || t.tipo === 'bonus';
+                    const pontos = Math.abs(t.pontos || 0);
+                    
+                    html += `
+                        <div class="transaction-card">
+                            <div class="transaction-header">
+                                <div class="transaction-icon ${isGain ? 'gain' : 'loss'}">
+                                    ${getTransactionIcon(t.tipo)}
+                                </div>
+                                <div class="transaction-info">
+                                    <div class="transaction-title">${t.descricao || 'Transação'}</div>
+                                    <div class="transaction-subtitle">
+                                        ${t.empresa_nome ? `<i class="fas fa-store"></i> ${t.empresa_nome}` : getTransactionSubtitle(t.tipo)}
+                                    </div>
+                                </div>
+                                <div class="transaction-points ${isGain ? 'gain' : 'loss'}">
+                                    ${isGain ? '+' : '-'}${pontos}
+                                </div>
+                            </div>
+                            <div class="transaction-footer">
+                                <span>
+                                    <i class="far fa-clock"></i>
+                                    ${new Date(t.created_at || t.data).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                                <span class="transaction-badge">
+                                    ${getTransactionBadge(t.tipo)}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+            
+            timeline.innerHTML = html;
+        }
+        
+        function getTransactionIcon(tipo) {
+            const icons = {
+                'ganho': '<i class="fas fa-plus-circle"></i>',
+                'resgate': '<i class="fas fa-gift"></i>',
+                'bonus': '<i class="fas fa-star"></i>',
+                'expiracao': '<i class="fas fa-clock"></i>'
+            };
+            return icons[tipo] || '<i class="fas fa-exchange-alt"></i>';
+        }
+        
+        function getTransactionSubtitle(tipo) {
+            const subtitles = {
+                'ganho': '<i class="fas fa-shopping-bag"></i> Compra',
+                'resgate': '<i class="fas fa-gift"></i> Resgate de promoção',
+                'bonus': '<i class="fas fa-star"></i> Bônus especial',
+                'expiracao': '<i class="fas fa-clock"></i> Pontos expirados'
+            };
+            return subtitles[tipo] || 'Transação';
+        }
+        
+        function getTransactionBadge(tipo) {
+            const badges = {
+                'ganho': 'Ganho',
+                'resgate': 'Resgate',
+                'bonus': 'Bônus',
+                'expiracao': 'Expirado'
+            };
+            return badges[tipo] || tipo;
+        }
+        
+        // Filtros
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.filter;
+                renderTransacoes();
+            });
+        });
+        
+        // Busca
+        document.getElementById('searchInput').addEventListener('input', function() {
+            renderTransacoes();
+        });
+        
+        // Carregar dados
+        loadHistorico();
+    </script>
+</body>
+</html>

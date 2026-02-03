@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu QR Code - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/theme-escuro.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
+            padding-bottom: 80px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .qr-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-6) var(--space-4);
+            text-align: center;
+        }
+        
+        .user-info {
+            color: white;
+            margin-bottom: var(--space-8);
+        }
+        
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto var(--space-4);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .user-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: var(--space-2);
+        }
+        
+        .user-id {
+            font-size: 14px;
+            opacity: 0.8;
+            font-family: monospace;
+        }
+        
+        .qr-box {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: var(--space-6);
+        }
+        
+        #qrcode {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+        }
+        
+        #qrcode img {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        .qr-instructions {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            color: white;
+            margin-bottom: var(--space-4);
+        }
+        
+        .instruction-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: var(--space-3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .instruction-list {
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .instruction-list li {
+            margin-bottom: var(--space-2);
+            display: flex;
+            align-items: start;
+            gap: 10px;
+        }
+        
+        .instruction-list i {
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+        
+        .pontos-info {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            color: white;
+            margin-bottom: var(--space-6);
+        }
+        
+        .pontos-label {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-2);
+        }
+        
+        .pontos-value {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: var(--space-2);
+        }
+        
+        .pontos-subtitle {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .btn-action {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-action i {
+            font-size: 24px;
+        }
+        
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(30, 30, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .nav-item.active {
+            color: white;
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+        }
+        
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="qr-container">
+        <div class="user-info">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-name" id="userName">Carregando...</div>
+            <div class="user-id">ID: <span id="userId">---</span></div>
+        </div>
+        
+        <div class="pontos-info">
+            <div class="pontos-label">Seus Pontos Disponíveis</div>
+            <div class="pontos-value" id="totalPontos">0</div>
+            <div class="pontos-subtitle">Ganhe mais pontos nas compras!</div>
+        </div>
+        
+        <div class="qr-box">
+            <div id="qrcode"></div>
+        </div>
+        
+        <div class="qr-instructions">
+            <div class="instruction-title">
+                <i class="fas fa-info-circle"></i>
+                Como usar seu QR Code
+            </div>
+            <ul class="instruction-list">
+                <li>
+                    <i class="fas fa-1"></i>
+                    <span>Mostre este QR Code no caixa do estabelecimento parceiro</span>
+                </li>
+                <li>
+                    <i class="fas fa-2"></i>
+                    <span>Aguarde a leitura do código</span>
+                </li>
+                <li>
+                    <i class="fas fa-3"></i>
+                    <span>Seus pontos serão creditados automaticamente!</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn-action" onclick="compartilhar()">
+                <i class="fas fa-share-alt"></i>
+                <span>Compartilhar</span>
+            </button>
+            <button class="btn-action" onclick="baixarQR()">
+                <i class="fas fa-download"></i>
+                <span>Baixar QR</span>
+            </button>
+            <button class="btn-action" onclick="aumentarBrilho()">
+                <i class="fas fa-sun"></i>
+                <span>+ Brilho</span>
+            </button>
+            <button class="btn-action" onclick="verHistorico()">
+                <i class="fas fa-history"></i>
+                <span>Histórico</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/dashboard-cliente.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/app-empresas.html" class="nav-item">
+            <i class="fas fa-store"></i>
+            <span>Empresas</span>
+        </a>
+        <a href="/app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Promoções</span>
+        </a>
+        <a href="/app-qrcode.html" class="nav-item active">
+            <i class="fas fa-qrcode"></i>
+            <span>Meu QR</span>
+        </a>
+        <a href="/app-perfil-cliente.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://127.0.0.1:8001/api'
+            : '/api';
+        
+        // Verificar autenticação
+        const token = localStorage.getItem('token');
+        const userStr = localStorage.getItem('user');
+        
+        if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
+            localStorage.clear();
+            window.location.href = '/entrar.html';
+        }
+        
+        let user;
+        try {
+            user = JSON.parse(userStr);
+            if (!user || !user.perfil || user.perfil !== 'cliente') {
+                localStorage.clear();
+                window.location.href = '/entrar.html';
+            }
+        } catch (e) {
+            localStorage.clear();
+            window.location.href = '/entrar.html';
+        }
+        
+        // Exibir dados do usuário
+        document.getElementById('userName').textContent = user.name || user.email;
+        document.getElementById('userId').textContent = user.id || '---';
+        
+        // Gerar QR Code
+        function generateQRCode() {
+            const qrcodeElement = document.getElementById('qrcode');
+            qrcodeElement.innerHTML = '';
+            
+            new QRCode(qrcodeElement, {
+                text: `TDT-USER-${user.id}`,
+                width: 280,
+                height: 280,
+                colorDark: '#1e293b',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+        
+        // Carregar pontos
+        async function loadPontos() {
+            try {
+                const response = await fetch(`${API_URL}/cliente/pontos`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const pontos = data.total || data.pontos || 0;
+                    document.getElementById('totalPontos').textContent = pontos;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar pontos:', error);
+            }
+        }
+        
+        function compartilhar() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Meu QR Code - Tem de Tudo',
+                    text: 'Confira meu QR Code de fidelidade!',
+                    url: window.location.href
+                }).catch(err => console.log('Erro ao compartilhar:', err));
+            } else {
+                alert('Compartilhamento não suportado neste navegador');
+            }
+        }
+        
+        function baixarQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (canvas) {
+                const url = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `qrcode-temdetudo-${user.id}.png`;
+                link.href = url;
+                link.click();
+            }
+        }
+        
+        function aumentarBrilho() {
+            if (document.body.style.filter === 'brightness(1.5)') {
+                document.body.style.filter = '';
+            } else {
+                document.body.style.filter = 'brightness(1.5)';
+            }
+        }
+        
+        function verHistorico() {
+            window.location.href = '/app-historico.html';
+        }
+        
+        // Inicializar
+        generateQRCode();
+        loadPontos();
+    </script>
+</body>
+</html>

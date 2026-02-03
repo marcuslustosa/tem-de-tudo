@@ -294,7 +294,7 @@
                             <div class="cliente-avatar">${inicial}</div>
                             <div class="cliente-info">
                                 <div class="cliente-nome">${cliente.cliente_nome}</div>
-                                <div class="cliente-email">${cliente.cliente_email || 'Email não informado'}</div>
+                                <div class="cliente-email">${cliente.cliente_email || 'Email nï¿½o informado'}</div>
                             </div>
                         </div>
                         
@@ -309,7 +309,7 @@
                             </div>
                             <div class="cliente-stat">
                                 <div class="cliente-stat-value" style="font-size: 12px;">${ultimaVisita}</div>
-                                <div class="cliente-stat-label">Última</div>
+                                <div class="cliente-stat-label">ï¿½ltima</div>
                             </div>
                         </div>
                     </div>
@@ -347,7 +347,71 @@
         
         document.addEventListener('DOMContentLoaded', loadClientes);
     </script>
+    
+    <!-- Bottom Navigation -->
+    <style>
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid rgba(102,126,234,0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: 0 -10px 40px rgba(102,126,234,0.08);
+        }
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #7c8db0;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .bottom-nav .nav-item.active {
+            color: #667eea;
+            background: rgba(102,126,234,0.08);
+        }
+        .bottom-nav .nav-item i {
+            font-size: 20px;
+        }
+        .bottom-nav .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        body { padding-bottom: 80px; }
+    </style>
+    <nav class="bottom-nav">
+        <a href="/dashboard-empresa.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="/empresa-scanner.html" class="nav-item">
+            <i class="fas fa-qrcode"></i>
+            <span>Scanner</span>
+        </a>
+        <a href="/empresa-promocoes.html" class="nav-item">
+            <i class="fas fa-gift"></i>
+            <span>PromoÃ§Ãµes</span>
+        </a>
+        <a href="/empresa-clientes.html" class="nav-item active">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="/empresa-relatorios.html" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>RelatÃ³rios</span>
+        </a>
+    </nav>
 </body>
+</html>
 </html>
 
 

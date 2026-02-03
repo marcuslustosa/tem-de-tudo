@@ -1,0 +1,106 @@
+<!-- Bottom Navigation Component -->
+<style>
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-card, #1e293b);
+    border-top: 1px solid var(--border-color, rgba(255,255,255,0.1));
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    z-index: 1000;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: var(--text-muted, rgba(255,255,255,0.6));
+    transition: all 0.3s;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.nav-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--purple-1, #667eea);
+}
+
+.nav-item.active {
+    color: var(--purple-1, #667eea);
+    background: rgba(102, 126, 234, 0.15);
+}
+
+.nav-item i {
+    font-size: 20px;
+}
+
+.nav-item span {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+body {
+    padding-bottom: 80px !important;
+}
+</style>
+
+<nav class="bottom-nav">
+    <a href="/dashboard-cliente.html" class="nav-item" id="nav-inicio">
+        <i class="fas fa-home"></i>
+        <span>Início</span>
+    </a>
+    <a href="/app-empresas.html" class="nav-item" id="nav-empresas">
+        <i class="fas fa-store"></i>
+        <span>Empresas</span>
+    </a>
+    <a href="/app-promocoes.html" class="nav-item" id="nav-promocoes">
+        <i class="fas fa-tags"></i>
+        <span>Promoções</span>
+    </a>
+    <a href="/app-qrcode.html" class="nav-item" id="nav-qrcode">
+        <i class="fas fa-qrcode"></i>
+        <span>Meu QR</span>
+    </a>
+    <a href="/app-perfil-cliente.html" class="nav-item" id="nav-perfil">
+        <i class="fas fa-user"></i>
+        <span>Perfil</span>
+    </a>
+</nav>
+
+<script>
+// Auto-detect active page
+(function() {
+    const currentPage = window.location.pathname;
+    const navItems = {
+        '/dashboard-cliente.html': 'nav-inicio',
+        '/app-empresas.html': 'nav-empresas',
+        '/app-promocoes.html': 'nav-promocoes',
+        '/app-qrcode.html': 'nav-qrcode',
+        '/app-perfil-cliente.html': 'nav-perfil',
+        '/app-historico.html': 'nav-perfil',
+        '/cliente/pontos.html': 'nav-inicio',
+        '/cliente/cupons.html': 'nav-promocoes',
+        '/cliente/historico.html': 'nav-perfil',
+        '/cliente/perfil.html': 'nav-perfil'
+    };
+    
+    Object.keys(navItems).forEach(path => {
+        if (currentPage.includes(path) || currentPage === path) {
+            const navId = navItems[path];
+            const navElement = document.getElementById(navId);
+            if (navElement) {
+                navElement.classList.add('active');
+            }
+        }
+    });
+})();
+</script>

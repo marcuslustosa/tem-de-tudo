@@ -194,6 +194,59 @@
             width: 100%;
             margin-top: var(--space-4);
         }
+        
+        /* Bottom Navigation (App Style) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: var(--text-muted);
+            transition: all 0.3s;
+            cursor: pointer;
+            border-radius: var(--radius-md);
+        }
+        
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--purple-1);
+        }
+        
+        .nav-item.active {
+            color: var(--purple-1);
+            background: rgba(102, 126, 234, 0.15);
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+        }
+        
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .main {
+            padding-bottom: 80px; /* Espaço para bottom nav */
+        }
     </style>
 </head>
 <body>
@@ -344,8 +397,8 @@
         }
         
         function showFullQR() {
-            // Implementar modal fullscreen com QR Code
-            alert('QR Code em tela cheia - implementar modal');
+            // Redirecionar para página fullscreen do QR Code
+            window.location.href = '/app-qrcode.html';
         }
         
         // Carregar dados
@@ -430,13 +483,66 @@
             document.getElementById('historicoList').innerHTML = html;
         }
         
-        function resgatarPromocao(id) {
-            alert(`Resgatar promoção ${id} - implementar API`);
+        async function resgatarPromocao(id) {
+            const promo = promocoes.find(p => p.id === id);
+            if (!promo) return;
+            
+            if (!confirm(`Deseja resgatar a promoção "${promo.nome}"?\n\nApós resgatar, você terá que apresentar no estabelecimento.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/cliente/resgatar-promocao/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    alert('✅ Promoção resgatada com sucesso!\n\nVocê já pode usar no estabelecimento. Confira em "Cupons".');
+                    // Recarregar dados
+                    loadData();
+                } else {
+                    alert('❌ ' + (result.message || 'Erro ao resgatar promoção'));
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao conectar com o servidor');
+            }
         }
         
         // Carregar dados ao iniciar
         loadData();
     </script>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/dashboard-cliente.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/app-empresas.html" class="nav-item">
+            <i class="fas fa-store"></i>
+            <span>Empresas</span>
+        </a>
+        <a href="/app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Promoções</span>
+        </a>
+        <a href="/app-qrcode.html" class="nav-item">
+            <i class="fas fa-qrcode"></i>
+            <span>Meu QR</span>
+        </a>
+        <a href="/app-perfil-cliente.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
 </body>
 </html>
 

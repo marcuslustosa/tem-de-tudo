@@ -285,7 +285,7 @@
     <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
 <body>
     <div class="header">
-        <button class="back-btn" onclick="location.href='app-inicio.html'">
+        <button class="back-btn" onclick="location.href='/dashboard-cliente.html'">
             <i class="fas fa-arrow-left"></i>
         </button>
         <div class="header-title">
@@ -300,7 +300,7 @@
             <div class="scanner-overlay">
                 <div class="scanner-status">
                     <i class="fas fa-qrcode"></i>
-                    <p id="statusText">Posicione o QR Code na câmera</p>
+                    <p id="statusText">Posicione o QR Code na cï¿½mera</p>
                 </div>
             </div>
         </div>
@@ -317,9 +317,9 @@
         <div class="instructions" style="margin-top: 24px;">
             <h3><i class="fas fa-info-circle"></i> Como escanear</h3>
             <ul>
-                <li>Permita o acesso à câmera do dispositivo</li>
-                <li>Aponte a câmera para o QR Code do estabelecimento</li>
-                <li>Aguarde a leitura automática</li>
+                <li>Permita o acesso ï¿½ cï¿½mera do dispositivo</li>
+                <li>Aponte a cï¿½mera para o QR Code do estabelecimento</li>
+                <li>Aguarde a leitura automï¿½tica</li>
                 <li>Confirme os pontos acumulados</li>
             </ul>
         </div>
@@ -331,7 +331,7 @@
             <div class="result-icon">
                 <i class="fas fa-check"></i>
             </div>
-            <div class="result-title">QR Code Válido!</div>
+            <div class="result-title">QR Code Vï¿½lido!</div>
             <div class="result-message" id="resultMessage">
                 Estabelecimento identificado com sucesso
             </div>
@@ -344,7 +344,7 @@
     <nav class="bottom-nav">
         <a href="app-inicio.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>Início</span>
+            <span>Inï¿½cio</span>
         </a>
         <a href="app-buscar.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -352,7 +352,7 @@
         </a>
         <a href="app-promocoes.html" class="nav-item">
             <i class="fas fa-gift"></i>
-            <span>Promoções</span>
+            <span>Promoï¿½ï¿½es</span>
         </a>
         <a href="app-notificacoes.html" class="nav-item">
             <i class="fas fa-bell"></i>
@@ -387,7 +387,7 @@
                 document.getElementById('statusText').textContent = 'Escaneando...';
             }).catch(err => {
                 console.error('Erro ao iniciar scanner:', err);
-                alert('Não foi possível acessar a câmera. Verifique as permissões.');
+                alert('Nï¿½o foi possï¿½vel acessar a cï¿½mera. Verifique as permissï¿½es.');
             });
         }
         
@@ -429,17 +429,17 @@
                         `${result.establishment_name} - ${result.points_earned} pontos creditados!`;
                     document.getElementById('resultModal').classList.add('show');
                 } else {
-                    alert(result.message || 'QR Code inválido');
+                    alert(result.message || 'QR Code invï¿½lido');
                 }
                 
             } catch (error) {
                 console.error('Erro ao processar QR:', error);
-                alert('QR Code inválido ou formato não reconhecido');
+                alert('QR Code invï¿½lido ou formato nï¿½o reconhecido');
             }
         }
         
         function onScanFailure(error) {
-            // Silencioso - não mostrar todos os erros de scan
+            // Silencioso - nï¿½o mostrar todos os erros de scan
         }
         
         function closeModal() {
@@ -447,7 +447,7 @@
             window.location.href = 'app-inicio.html';
         }
         
-        // Verificar autenticação
+        // Verificar autenticaï¿½ï¿½o
         if (!localStorage.getItem('token')) {
             window.location.href = '/entrar.html';
         }
