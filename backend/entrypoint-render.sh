@@ -5,15 +5,36 @@ echo "========================================="
 echo "🚀 TEM DE TUDO - Deploy Render.com"
 echo "========================================="
 
-# Debug: mostrar variáveis disponíveis
-echo "🔍 DEBUG - Variáveis PostgreSQL:"
-echo "PGHOST=$PGHOST"
-echo "PGPORT=$PGPORT"
-echo "PGDATABASE=$PGDATABASE"
-echo "PGUSER=$PGUSER"
+# Criar banco SQLite
+echo "📦 Criando banco SQLite..."
+mkdir -p database
+touch database/database.sqlite
+chmod 664 database/database.sqlite
 
-# NÃO criar .env - usar apenas variáveis de ambiente
-echo "⚠️ Usando APENAS variáveis de ambiente (sem .env)"
+# Criar .env com SQLite
+echo "🔧 Configurando .env com SQLite..."
+cat > .env << 'EOF'
+APP_NAME="Tem de Tudo"
+APP_ENV=production
+APP_KEY=base64:4KqJxMzRlNTBiZWItNGY5OC00YzY3LWJhOTEtYmU5ZTc2MGE2YjA1
+APP_DEBUG=false
+APP_URL=https://aplicativo-tem-de-tudo.onrender.com
+
+LOG_CHANNEL=stack
+LOG_LEVEL=error
+
+DB_CONNECTION=sqlite
+DB_DATABASE=/var/www/html/database/database.sqlite
+
+SESSION_DRIVER=database
+CACHE_DRIVER=database
+QUEUE_CONNECTION=database
+
+SESSION_SECURE_COOKIE=true
+SANCTUM_STATEFUL_DOMAINS=aplicativo-tem-de-tudo.onrender.com
+EOF
+
+echo "✅ .env criado com SQLite!"
 
 # Aguardar PostgreSQL estar pronto
 echo "⏳ Aguardando PostgreSQL..."
