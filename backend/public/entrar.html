@@ -231,12 +231,22 @@
                 
                 const result = await response.json();
                 
+                console.log('Resposta completa:', result);
+                
                 if (!response.ok) {
                     throw new Error(result.message || 'Erro ao fazer login');
                 }
                 
                 // A API retorna em result.data
                 const data = result.data;
+                
+                console.log('Data extraída:', data);
+                console.log('Token:', data?.token);
+                console.log('User:', data?.user);
+                
+                if (!data || !data.token || !data.user) {
+                    throw new Error('Resposta inválida do servidor');
+                }
                 
                 // Salvar token e dados do usuário
                 localStorage.setItem('token', data.token);

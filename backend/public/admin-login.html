@@ -283,12 +283,20 @@
                 
                 const result = await response.json();
                 
+                console.log('Resposta completa:', result);
+                
                 if (!response.ok) {
                     throw new Error(result.message || 'Erro ao fazer login');
                 }
                 
                 // A API retorna em result.data
                 const data = result.data;
+                
+                console.log('Data extraída:', data);
+                
+                if (!data || !data.token || !data.user) {
+                    throw new Error('Resposta inválida do servidor');
+                }
                 
                 // Verificar se é admin
                 if (data.user.perfil !== 'admin') {
