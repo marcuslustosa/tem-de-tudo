@@ -229,11 +229,14 @@
                     body: JSON.stringify({ email, password })
                 });
                 
-                const data = await response.json();
+                const result = await response.json();
                 
                 if (!response.ok) {
-                    throw new Error(data.message || 'Erro ao fazer login');
+                    throw new Error(result.message || 'Erro ao fazer login');
                 }
+                
+                // A API retorna em result.data
+                const data = result.data;
                 
                 // Salvar token e dados do usuário
                 localStorage.setItem('token', data.token);
@@ -241,11 +244,11 @@
                 
                 showAlert('Login realizado com sucesso!', 'success');
                 
-                // Redirecionar baseado no tipo de usuário
+                // Redirecionar baseado no perfil do usuário
                 setTimeout(() => {
-                    if (data.user.tipo === 'admin') {
+                    if (data.user.perfil === 'admin') {
                         window.location.href = '/admin-dashboard.html';
-                    } else if (data.user.tipo === 'empresa') {
+                    } else if (data.user.perfil === 'empresa') {
                         window.location.href = '/dashboard-empresa.html';
                     } else {
                         window.location.href = '/dashboard-cliente.html';

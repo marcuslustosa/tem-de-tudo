@@ -281,14 +281,17 @@
                     body: JSON.stringify({ email, password })
                 });
                 
-                const data = await response.json();
+                const result = await response.json();
                 
                 if (!response.ok) {
-                    throw new Error(data.message || 'Erro ao fazer login');
+                    throw new Error(result.message || 'Erro ao fazer login');
                 }
                 
+                // A API retorna em result.data
+                const data = result.data;
+                
                 // Verificar se é admin
-                if (data.user.tipo !== 'admin') {
+                if (data.user.perfil !== 'admin') {
                     throw new Error('Acesso negado. Apenas administradores podem acessar esta área.');
                 }
                 
