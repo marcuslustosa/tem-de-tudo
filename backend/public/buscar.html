@@ -1,17 +1,366 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes"><title>Buscar - Tem de Tudo</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">`n        <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head><body style="margin:0;font-family:Inter,sans-serif;background:#f8f9ff;"><header style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:24px 20px;"><div style="max-width:800px;margin:0 auto;"><input type="text" placeholder="Buscar estabelecimentos..." style="width:100%;padding:16px 20px;border:none;border-radius:50px;font-size:16px;box-sizing:border-box;"></ style="width:100%;padding:16px 20px;border:none;border-radius:50px;font-size:16px;box-sizing:border-box;"></div></header><div style="max-width:1200px;margin:0 auto;padding:24px 20px;"><p style="color:#7c8db0;text-align:center;">Digite para buscar...</p></div></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Estabelecimentos - Tem de Tudo</title>
+    <link rel="stylesheet" href="/css/theme-escuro.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .search-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 20px 40px;
+            color: white;
+        }
+        
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 18px 60px 18px 24px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .empresas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .empresa-card {
+            background: #1e293b;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .empresa-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+        
+        .empresa-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .empresa-info {
+            padding: 20px;
+        }
+        
+        .empresa-nome {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .empresa-categoria {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(102, 126, 234, 0.2);
+            color: #a78bfa;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .empresa-descricao {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        
+        .empresa-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #fbbf24;
+        }
+        
+        .clientes-count {
+            color: #64748b;
+            font-size: 13px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #94a3b8;
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-header">
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="Buscar restaurantes, lojas, serviços...">
+            <button class="search-btn" onclick="buscarEmpresas()">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        
+        <div class="filters">
+            <button class="filter-btn active" data-categoria="todos" onclick="filtrarCategoria('todos')">
+                <i class="fas fa-th"></i> Todos
+            </button>
+            <button class="filter-btn" data-categoria="restaurante" onclick="filtrarCategoria('restaurante')">
+                <i class="fas fa-utensils"></i> Restaurantes
+            </button>
+            <button class="filter-btn" data-categoria="loja" onclick="filtrarCategoria('loja')">
+                <i class="fas fa-shopping-bag"></i> Lojas
+            </button>
+            <button class="filter-btn" data-categoria="servico" onclick="filtrarCategoria('servico')">
+                <i class="fas fa-wrench"></i> Serviços
+            </button>
+            <button class="filter-btn" data-categoria="saude" onclick="filtrarCategoria('saude')">
+                <i class="fas fa-heartbeat"></i> Saúde
+            </button>
+        </div>
+    </div>
+
+    <div id="loadingState" class="loading" style="display: none;">
+        <i class="fas fa-circle-notch fa-spin" style="font-size: 48px;"></i>
+        <p style="margin-top: 20px;">Carregando estabelecimentos...</p>
+    </div>
+
+    <div id="empresasGrid" class="empresas-grid"></div>
+
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <h3>Nenhum estabelecimento encontrado</h3>
+        <p>Tente ajustar os filtros ou buscar por outro termo</p>
+    </div>
+
+    <script>
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://127.0.0.1:8001/api'
+            : '/api';
+        
+        let todasEmpresas = [];
+        let categoriaAtual = 'todos';
+        
+        // Carregar empresas ao iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            carregarEmpresas();
+            
+            // Buscar ao digitar (debounce)
+            let timeout;
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => buscarEmpresas(), 500);
+            });
+        });
+        
+        async function carregarEmpresas() {
+            const loadingState = document.getElementById('loadingState');
+            const empresasGrid = document.getElementById('empresasGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            loadingState.style.display = 'block';
+            empresasGrid.style.display = 'none';
+            emptyState.style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_URL}/empresas`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    todasEmpresas = data.data || [];
+                    renderizarEmpresas(todasEmpresas);
+                } else {
+                    throw new Error(data.message || 'Erro ao carregar empresas');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                emptyState.style.display = 'block';
+                emptyState.innerHTML = `
+                    <div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h3>Erro ao carregar estabelecimentos</h3>
+                    <p>${error.message}</p>
+                `;
+            } finally {
+                loadingState.style.display = 'none';
+            }
+        }
+        
+        function renderizarEmpresas(empresas) {
+            const empresasGrid = document.getElementById('empresasGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (!empresas || empresas.length === 0) {
+                empresasGrid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            empresasGrid.style.display = 'grid';
+            emptyState.style.display = 'none';
+            
+            empresasGrid.innerHTML = empresas.map(empresa => `
+                <div class="empresa-card" onclick="verEmpresa(${empresa.id})">
+                    <img class="empresa-img" 
+                         src="${empresa.foto || 'https://via.placeholder.com/400x200?text=' + encodeURIComponent(empresa.nome)}" 
+                         alt="${empresa.nome}"
+                         onerror="this.src='https://via.placeholder.com/400x200?text=${encodeURIComponent(empresa.nome)}'">
+                    <div class="empresa-info">
+                        <div class="empresa-nome">${empresa.nome}</div>
+                        <span class="empresa-categoria">
+                            <i class="fas ${getCategoriaIcon(empresa.categoria || 'restaurante')}"></i>
+                            ${empresa.categoria || 'Restaurante'}
+                        </span>
+                        <div class="empresa-descricao">
+                            ${empresa.descricao || 'Estabelecimento parceiro do programa de fidelidade Tem de Tudo'}
+                        </div>
+                        <div class="empresa-stats">
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <span>${(empresa.avaliacao_media || 4.5).toFixed(1)}</span>
+                                <span style="color: #64748b; font-size: 12px;">(${empresa.total_avaliacoes || 0})</span>
+                            </div>
+                            <div class="clientes-count">
+                                <i class="fas fa-users"></i>
+                                ${empresa.total_clientes || 0} clientes
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getCategoriaIcon(categoria) {
+            const icons = {
+                'restaurante': 'fa-utensils',
+                'loja': 'fa-shopping-bag',
+                'servico': 'fa-wrench',
+                'saude': 'fa-heartbeat',
+                'mercado': 'fa-shopping-cart',
+                'farmacia': 'fa-pills',
+                'academia': 'fa-dumbbell',
+                'beleza': 'fa-cut',
+                'pet': 'fa-paw',
+                'cafe': 'fa-coffee'
+            };
+            return icons[categoria.toLowerCase()] || 'fa-store';
+        }
+        
+        function filtrarCategoria(categoria) {
+            categoriaAtual = categoria;
+            
+            // Atualizar botões ativos
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.closest('.filter-btn').classList.add('active');
+            
+            // Filtrar e renderizar
+            buscarEmpresas();
+        }
+        
+        function buscarEmpresas() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let empresasFiltradas = todasEmpresas;
+            
+            // Filtrar por categoria
+            if (categoriaAtual !== 'todos') {
+                empresasFiltradas = empresasFiltradas.filter(e => 
+                    (e.categoria || '').toLowerCase() === categoriaAtual
+                );
+            }
+            
+            // Filtrar por termo de busca
+            if (searchTerm) {
+                empresasFiltradas = empresasFiltradas.filter(e => 
+                    e.nome.toLowerCase().includes(searchTerm) ||
+                    (e.descricao || '').toLowerCase().includes(searchTerm) ||
+                    (e.categoria || '').toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            renderizarEmpresas(empresasFiltradas);
+        }
+        
+        function verEmpresa(id) {
+            window.location.href = `/estabelecimento.html?id=${id}`;
+        }
+    </script>
+</body>
+</html>
 
 
 
