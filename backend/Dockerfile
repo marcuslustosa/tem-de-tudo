@@ -59,6 +59,9 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
+# Limpar qualquer cache de configuração que possa existir
+RUN rm -f bootstrap/cache/config.php bootstrap/cache/services.php bootstrap/cache/packages.php
+
 # Copiar e configurar entrypoint
 COPY entrypoint-render.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh && dos2unix /entrypoint.sh
