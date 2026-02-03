@@ -27,10 +27,18 @@ COPY backend /var/www/html
 # Instalar dependências
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Configurar Apache para porta 8080
+# Configurar Apache para porta 8080 e DocumentRoot para /public
 RUN sed -i 's/80/8080/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf \
+    && sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf \
     && a2enmod rewrite \
     && echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# Configurar .htaccess permissions
+RUN echo '<Directory /var/www/html/public>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' >> /etc/apache2/sites-available/000-default.conf
 
 # Criar diretórios necessários
 RUN mkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache
