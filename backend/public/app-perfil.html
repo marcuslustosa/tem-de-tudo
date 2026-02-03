@@ -322,15 +322,15 @@
     </div>
     
     <div class="section">
-        <h3 class="section-title">Preferências</h3>
+        <h3 class="section-title">Preferï¿½ncias</h3>
         <div class="menu-list">
             <a href="#" class="menu-item" onclick="notifications(event)">
                 <div class="menu-icon">
                     <i class="fas fa-bell"></i>
                 </div>
                 <div class="menu-content">
-                    <div class="menu-title">Notificações</div>
-                    <div class="menu-subtitle">Gerencie suas notificações</div>
+                    <div class="menu-title">Notificaï¿½ï¿½es</div>
+                    <div class="menu-subtitle">Gerencie suas notificaï¿½ï¿½es</div>
                 </div>
                 <i class="fas fa-chevron-right menu-arrow"></i>
             </a>
@@ -341,7 +341,7 @@
                 </div>
                 <div class="menu-content">
                     <div class="menu-title">Plano Premium</div>
-                    <div class="menu-subtitle">Benefícios exclusivos</div>
+                    <div class="menu-subtitle">Benefï¿½cios exclusivos</div>
                 </div>
                 <i class="fas fa-chevron-right menu-arrow"></i>
             </a>
@@ -379,7 +379,7 @@
                 </div>
                 <div class="menu-content">
                     <div class="menu-title">Privacidade</div>
-                    <div class="menu-subtitle">Política de privacidade</div>
+                    <div class="menu-subtitle">Polï¿½tica de privacidade</div>
                 </div>
                 <i class="fas fa-chevron-right menu-arrow"></i>
             </a>
@@ -396,7 +396,7 @@
     <nav class="bottom-nav">
         <a href="app-inicio.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>Início</span>
+            <span>Inï¿½cio</span>
         </a>
         <a href="app-buscar.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -404,7 +404,7 @@
         </a>
         <a href="app-promocoes.html" class="nav-item">
             <i class="fas fa-gift"></i>
-            <span>Promoções</span>
+            <span>Promoï¿½ï¿½es</span>
         </a>
         <a href="app-notificacoes.html" class="nav-item">
             <i class="fas fa-bell"></i>
@@ -419,14 +419,24 @@
     <script>
         async function loadProfile() {
             const token = localStorage.getItem('token');
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const userStr = localStorage.getItem('user');
+            if (userStr && userStr !== 'undefined' && userStr !== 'null') {
+                try {
+                    const user = JSON.parse(userStr);
+                    if (user) {
+                        // Usar dados do user
+                    }
+                } catch (e) {
+                    console.error('Erro ao parsear user:', e);
+                }
+            }
             
             if (!token) {
                 window.location.href = '/entrar.html';
                 return;
             }
             
-            document.getElementById('userName').textContent = user.name || 'Usuário';
+            document.getElementById('userName').textContent = user.name || 'Usuï¿½rio';
             document.getElementById('userEmail').textContent = user.email || '';
             
             try {
@@ -450,17 +460,17 @@
         
         function editProfile(e) {
             e.preventDefault();
-            alert('Funcionalidade de edição será implementada em breve!');
+            alert('Funcionalidade de ediï¿½ï¿½o serï¿½ implementada em breve!');
         }
         
         function changePassword(e) {
             e.preventDefault();
-            alert('Funcionalidade de alteração de senha será implementada em breve!');
+            alert('Funcionalidade de alteraï¿½ï¿½o de senha serï¿½ implementada em breve!');
         }
         
         function notifications(e) {
             e.preventDefault();
-            alert('Configurações de notificações serão implementadas em breve!');
+            alert('Configuraï¿½ï¿½es de notificaï¿½ï¿½es serï¿½o implementadas em breve!');
         }
         
         function logout() {

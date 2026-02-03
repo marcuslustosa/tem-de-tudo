@@ -332,9 +332,9 @@
             <h3><i class="fas fa-info-circle"></i> Como usar</h3>
             <ul>
                 <li>Apresente este QR Code ao caixa do estabelecimento</li>
-                <li>Aguarde a validação pelo scanner</li>
-                <li>Seus pontos serão creditados automaticamente</li>
-                <li>Mantenha o brilho da tela no máximo para melhor leitura</li>
+                <li>Aguarde a validaï¿½ï¿½o pelo scanner</li>
+                <li>Seus pontos serï¿½o creditados automaticamente</li>
+                <li>Mantenha o brilho da tela no mï¿½ximo para melhor leitura</li>
             </ul>
         </div>
         
@@ -351,7 +351,7 @@
     <nav class="bottom-nav">
         <a href="app-inicio.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>Início</span>
+            <span>Inï¿½cio</span>
         </a>
         <a href="app-buscar.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -359,7 +359,7 @@
         </a>
         <a href="app-promocoes.html" class="nav-item">
             <i class="fas fa-gift"></i>
-            <span>Promoções</span>
+            <span>Promoï¿½ï¿½es</span>
         </a>
         <a href="app-notificacoes.html" class="nav-item">
             <i class="fas fa-bell"></i>
@@ -372,13 +372,21 @@
     </nav>
     
     <script>
-        const user = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
+        const userStr = localStorage.getItem('tem_de_tudo_user');
+        let user = null;
+        if (userStr && userStr !== 'undefined' && userStr !== 'null') {
+            try {
+                user = JSON.parse(userStr);
+            } catch (e) {
+                console.error('Erro ao parsear user:', e);
+            }
+        }
         
         if (!user.id) {
             window.location.href = '/entrar.html';
         } else {
-            // Atualizar nome e ID do usuário
-            document.getElementById('userName').textContent = user.name || 'Usuário';
+            // Atualizar nome e ID do usuï¿½rio
+            document.getElementById('userName').textContent = user.name || 'Usuï¿½rio';
             document.getElementById('userId').textContent = `ID: #${String(user.id).padStart(4, '0')}`;
             
             // Gerar QR Code
@@ -422,7 +430,7 @@
                     text: 'Escaneie meu QR Code para acumular pontos!'
                 }).catch(err => console.log('Erro ao compartilhar:', err));
             } else {
-                alert('Compartilhamento não suportado neste navegador');
+                alert('Compartilhamento nï¿½o suportado neste navegador');
             }
         }
         

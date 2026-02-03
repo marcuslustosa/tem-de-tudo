@@ -274,7 +274,7 @@
             <div class="logo">
                 <img src="img/logo.png" alt="Tem de Tudo">
             </div>
-            <h1>Como você quer usar o sistema?</h1>
+            <h1>Como vocï¿½ quer usar o sistema?</h1>
             <p>Escolha o perfil que melhor se encaixa com suas necessidades</p>
         </div>
         
@@ -290,9 +290,9 @@
                 <ul class="profile-features">
                     <li>Acumule pontos a cada compra</li>
                     <li>Resgate recompensas exclusivas</li>
-                    <li>QR Code pessoal para validação</li>
-                    <li>Acompanhe seu histórico</li>
-                    <li>Receba promoções personalizadas</li>
+                    <li>QR Code pessoal para validaï¿½ï¿½o</li>
+                    <li>Acompanhe seu histï¿½rico</li>
+                    <li>Receba promoï¿½ï¿½es personalizadas</li>
                 </ul>
                 <button class="btn-select">
                     CONTINUAR COMO CLIENTE
@@ -301,18 +301,18 @@
             
             <!-- EMPRESA -->
             <div class="profile-card" onclick="selectProfile('empresa')">
-                <span class="badge">Para Negócios</span>
+                <span class="badge">Para Negï¿½cios</span>
                 <div class="profile-icon">
                     <i class="fas fa-store"></i>
                 </div>
                 <h2>Tenho Empresa</h2>
                 <p>Fidelize seus clientes e aumente suas vendas com nosso sistema</p>
                 <ul class="profile-features">
-                    <li>Dashboard completo de métricas</li>
+                    <li>Dashboard completo de mï¿½tricas</li>
                     <li>Gerencie clientes e pontos</li>
-                    <li>Crie promoções personalizadas</li>
+                    <li>Crie promoï¿½ï¿½es personalizadas</li>
                     <li>Scanner QR Code integrado</li>
-                    <li>Relatórios detalhados de vendas</li>
+                    <li>Relatï¿½rios detalhados de vendas</li>
                 </ul>
                 <button class="btn-select">
                     CONTINUAR COMO EMPRESA
@@ -321,7 +321,7 @@
             
             <!-- ADMIN -->
             <div class="profile-card" onclick="selectProfile('admin')">
-                <span class="badge">Administração</span>
+                <span class="badge">Administraï¿½ï¿½o</span>
                 <div class="profile-icon">
                     <i class="fas fa-shield-halved"></i>
                 </div>
@@ -330,9 +330,9 @@
                 <ul class="profile-features">
                     <li>Painel master de controle</li>
                     <li>Aprovar/reprovar estabelecimentos</li>
-                    <li>Gerenciar todos os usuários</li>
-                    <li>Relatórios globais da plataforma</li>
-                    <li>Configurações avançadas do sistema</li>
+                    <li>Gerenciar todos os usuï¿½rios</li>
+                    <li>Relatï¿½rios globais da plataforma</li>
+                    <li>Configuraï¿½ï¿½es avanï¿½adas do sistema</li>
                 </ul>
                 <button class="btn-select">
                     ACESSAR PAINEL ADMIN
@@ -343,22 +343,31 @@
         <div class="back-link">
             <a href="index.html">
                 <i class="fas fa-arrow-left"></i>
-                Voltar para a página inicial
+                Voltar para a pï¿½gina inicial
             </a>
         </div>
     </div>
     
     <script>
         function selectProfile(tipo) {
-            // Verificar se usuário está autenticado
+            // Verificar se usuï¿½rio estï¿½ autenticado
             const token = localStorage.getItem('tem_de_tudo_token');
-            const user = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
+            const userStr = localStorage.getItem('tem_de_tudo_user');
             
-            if (token && user.user_type) {
-                // Usuário já logado, redirecionar direto
+            let user = null;
+            if (userStr && userStr !== 'undefined' && userStr !== 'null') {
+                try {
+                    user = JSON.parse(userStr);
+                } catch (e) {
+                    console.error('Erro ao parsear user:', e);
+                }
+            }
+            
+            if (token && user && user.user_type) {
+                // Usuï¿½rio jï¿½ logado, redirecionar direto
                 redirectByType(user.user_type);
             } else {
-                // Usuário não logado, salvar escolha e ir para cadastro
+                // Usuï¿½rio nï¿½o logado, salvar escolha e ir para cadastro
                 localStorage.setItem('selectedProfile', tipo);
                 
                 if (tipo === 'admin') {
@@ -387,15 +396,22 @@
             }
         }
         
-        // Se usuário já está logado, pode mostrar apenas o card dele
+        // Se usuï¿½rio jï¿½ estï¿½ logado, pode mostrar apenas o card dele
         window.addEventListener('DOMContentLoaded', function() {
             const token = localStorage.getItem('tem_de_tudo_token');
-            const user = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
+            const userStr = localStorage.getItem('tem_de_tudo_user');
             
-            if (token && user.user_type) {
-                // Opcional: mostrar apenas o perfil do usuário logado
-                // ou adicionar um botão "Continuar" em destaque
-                console.log('Usuário já logado como:', user.user_type);
+            if (token && userStr && userStr !== 'undefined' && userStr !== 'null') {
+                try {
+                    const user = JSON.parse(userStr);
+                    if (user && user.user_type) {
+                        // Opcional: mostrar apenas o perfil do usuÃ¡rio logado
+                        // ou adicionar um botÃ£o "Continuar" em destaque
+                        console.log('UsuÃ¡rio jÃ¡ logado como:', user.user_type);
+                    }
+                } catch (e) {
+                    console.error('Erro ao parsear user:', e);
+                }
             }
         });
     </script>

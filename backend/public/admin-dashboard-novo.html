@@ -433,10 +433,22 @@
         
         // Verificar autenticação
         const token = localStorage.getItem('token');
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const userStr = localStorage.getItem('user');
         
-        if (!token || user.tipo !== 'admin') {
+        if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
+            localStorage.clear();
             window.location.href = '/admin-login.html';
+        } else {
+            try {
+                const user = JSON.parse(userStr);
+                if (!user || !user.perfil || user.perfil !== 'admin') {
+                    localStorage.clear();
+                    window.location.href = '/admin-login.html';
+                }
+            } catch (e) {
+                localStorage.clear();
+                window.location.href = '/admin-login.html';
+            }
         }
         
         // Exibir nome do usuário
@@ -505,7 +517,7 @@
                                 <tr>
                                     <td style="font-weight: 600;">${user.name}</td>
                                     <td style="color: #94a3b8;">${user.email}</td>
-                                    <td><span class="badge ${user.tipo}">${user.tipo}</span></td>
+                                    <td><span class="badge ${user.perfil}">${user.perfil}</span></td>
                                     <td><span class="badge ${user.ativo ? 'active' : 'inactive'}">${user.ativo ? 'Ativo' : 'Inativo'}</span></td>
                                     <td style="color: #64748b;">${new Date(user.created_at).toLocaleDateString('pt-BR')}</td>
                                 </tr>
