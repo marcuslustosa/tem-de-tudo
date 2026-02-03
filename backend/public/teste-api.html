@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     
@@ -23,10 +23,10 @@
         <link rel="stylesheet" href="/css/global-unified.css">
     <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
 <body>
-    <h1>🧪 Teste API - Tem de Tudo</h1>
+    <h1>?? Teste API - Tem de Tudo</h1>
     
     <div class="result">
-        <h3>1. Testar Conexão</h3>
+        <h3>1. Testar Conex�o</h3>
         <button onclick="testarConexao()">Testar</button>
         <div id="conexao"></div>
     </div>
@@ -51,15 +51,15 @@
             try {
                 const response = await fetch('/api/debug');
                 const data = await response.json();
-                div.innerHTML = `<p class="success">✅ Servidor funcionando! Status: ${data.status}</p>`;
+                div.innerHTML = `<p class="success">? Servidor funcionando! Status: ${data.status}</p>`;
             } catch (error) {
-                div.innerHTML = `<p class="error">❌ Erro: ${error.message}</p>`;
+                div.innerHTML = `<p class="error">? Erro: ${error.message}</p>`;
             }
         }
 
         async function fazerLogin() {
             const div = document.getElementById('login');
-            div.innerHTML = '<p>🔄 Fazendo login...</p>';
+            div.innerHTML = '<p>?? Fazendo login...</p>';
             
             try {
                 const response = await fetch('/api/auth/login', {
@@ -77,15 +77,15 @@
                     token = data.token;
                     localStorage.setItem('tem_de_tudo_token', token);
                     div.innerHTML = `
-                        <p class="success">✅ Login OK!</p>
+                        <p class="success">? Login OK!</p>
                         <p>Token: ${token.substring(0, 20)}...</p>
                         <p>User: ${data.user?.name || 'N/A'}</p>
                     `;
                 } else {
-                    div.innerHTML = `<p class="error">❌ Erro: ${data.message || 'Login falhou'}</p>`;
+                    div.innerHTML = `<p class="error">? Erro: ${data.message || 'Login falhou'}</p>`;
                 }
             } catch (error) {
-                div.innerHTML = `<p class="error">❌ Erro: ${error.message}</p>`;
+                div.innerHTML = `<p class="error">? Erro: ${error.message}</p>`;
             }
         }
 
@@ -97,11 +97,11 @@
             }
             
             if (!token) {
-                div.innerHTML = '<p class="error">❌ Faça login primeiro!</p>';
+                div.innerHTML = '<p class="error">? Fa�a login primeiro!</p>';
                 return;
             }
             
-            div.innerHTML = '<p>🔄 Buscando empresas...</p>';
+            div.innerHTML = '<p>?? Buscando empresas...</p>';
             
             try {
                 const response = await fetch('/api/cliente/empresas', {
@@ -116,26 +116,27 @@
                 if (response.ok && data.success) {
                     const empresas = data.data;
                     div.innerHTML = `
-                        <p class="success">✅ ${empresas.length} empresas encontradas!</p>
+                        <p class="success">? ${empresas.length} empresas encontradas!</p>
                         ${empresas.map(e => `
                             <div class="empresa">
                                 <h4>${e.nome}</h4>
-                                <p>📍 ${e.endereco || 'Sem endereço'}</p>
-                                <p>🏷️ ${e.ramo_formatado}</p>
-                                <p>⭐ ${e.avaliacao_media} (${e.total_avaliacoes} avaliações)</p>
-                                <p>💰 ${e.pontos_cliente} pontos</p>
+                                <p>?? ${e.endereco || 'Sem endere�o'}</p>
+                                <p>??? ${e.ramo_formatado}</p>
+                                <p>? ${e.avaliacao_media} (${e.total_avaliacoes} avalia��es)</p>
+                                <p>?? ${e.pontos_cliente} pontos</p>
                             </div>
                         `).slice(0, 5).join('')}
                         ${empresas.length > 5 ? `<p>... e mais ${empresas.length - 5}</p>` : ''}
                     `;
                 } else {
-                    div.innerHTML = `<p class="error">❌ Erro: ${data.message || 'Falha ao buscar'}</p>`;
+                    div.innerHTML = `<p class="error">? Erro: ${data.message || 'Falha ao buscar'}</p>`;
                 }
             } catch (error) {
-                div.innerHTML = `<p class="error">❌ Erro: ${error.message}</p>`;
+                div.innerHTML = `<p class="error">? Erro: ${error.message}</p>`;
             }
         }
     </script>
 </body>
 </html>
+
 

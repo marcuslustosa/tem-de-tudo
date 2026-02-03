@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -274,7 +274,7 @@
             <div class="logo">
                 <img src="img/logo.png" alt="Tem de Tudo">
             </div>
-            <h1>Como voc√™ quer usar o sistema?</h1>
+            <h1>Como vocÍ quer usar o sistema?</h1>
             <p>Escolha o perfil que melhor se encaixa com suas necessidades</p>
         </div>
         
@@ -290,9 +290,9 @@
                 <ul class="profile-features">
                     <li>Acumule pontos a cada compra</li>
                     <li>Resgate recompensas exclusivas</li>
-                    <li>QR Code pessoal para valida√ß√£o</li>
-                    <li>Acompanhe seu hist√≥rico</li>
-                    <li>Receba promo√ß√µes personalizadas</li>
+                    <li>QR Code pessoal para validaÁ„o</li>
+                    <li>Acompanhe seu histÛrico</li>
+                    <li>Receba promoÁıes personalizadas</li>
                 </ul>
                 <button class="btn-select">
                     CONTINUAR COMO CLIENTE
@@ -301,18 +301,18 @@
             
             <!-- EMPRESA -->
             <div class="profile-card" onclick="selectProfile('empresa')">
-                <span class="badge">Para Neg√≥cios</span>
+                <span class="badge">Para NegÛcios</span>
                 <div class="profile-icon">
                     <i class="fas fa-store"></i>
                 </div>
                 <h2>Tenho Empresa</h2>
                 <p>Fidelize seus clientes e aumente suas vendas com nosso sistema</p>
                 <ul class="profile-features">
-                    <li>Dashboard completo de m√©tricas</li>
+                    <li>Dashboard completo de mÈtricas</li>
                     <li>Gerencie clientes e pontos</li>
-                    <li>Crie promo√ß√µes personalizadas</li>
+                    <li>Crie promoÁıes personalizadas</li>
                     <li>Scanner QR Code integrado</li>
-                    <li>Relat√≥rios detalhados de vendas</li>
+                    <li>RelatÛrios detalhados de vendas</li>
                 </ul>
                 <button class="btn-select">
                     CONTINUAR COMO EMPRESA
@@ -321,7 +321,7 @@
             
             <!-- ADMIN -->
             <div class="profile-card" onclick="selectProfile('admin')">
-                <span class="badge">Administra√ß√£o</span>
+                <span class="badge">AdministraÁ„o</span>
                 <div class="profile-icon">
                     <i class="fas fa-shield-halved"></i>
                 </div>
@@ -330,9 +330,9 @@
                 <ul class="profile-features">
                     <li>Painel master de controle</li>
                     <li>Aprovar/reprovar estabelecimentos</li>
-                    <li>Gerenciar todos os usu√°rios</li>
-                    <li>Relat√≥rios globais da plataforma</li>
-                    <li>Configura√ß√µes avan√ßadas do sistema</li>
+                    <li>Gerenciar todos os usu·rios</li>
+                    <li>RelatÛrios globais da plataforma</li>
+                    <li>ConfiguraÁıes avanÁadas do sistema</li>
                 </ul>
                 <button class="btn-select">
                     ACESSAR PAINEL ADMIN
@@ -343,22 +343,22 @@
         <div class="back-link">
             <a href="index.html">
                 <i class="fas fa-arrow-left"></i>
-                Voltar para a p√°gina inicial
+                Voltar para a p·gina inicial
             </a>
         </div>
     </div>
     
     <script>
         function selectProfile(tipo) {
-            // Verificar se usu√°rio est√° autenticado
+            // Verificar se usu·rio est· autenticado
             const token = localStorage.getItem('tem_de_tudo_token');
             const user = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
             
             if (token && user.user_type) {
-                // Usu√°rio j√° logado, redirecionar direto
+                // Usu·rio j· logado, redirecionar direto
                 redirectByType(user.user_type);
             } else {
-                // Usu√°rio n√£o logado, salvar escolha e ir para cadastro
+                // Usu·rio n„o logado, salvar escolha e ir para cadastro
                 localStorage.setItem('selectedProfile', tipo);
                 
                 if (tipo === 'admin') {
@@ -387,18 +387,19 @@
             }
         }
         
-        // Se usu√°rio j√° est√° logado, pode mostrar apenas o card dele
+        // Se usu·rio j· est· logado, pode mostrar apenas o card dele
         window.addEventListener('DOMContentLoaded', function() {
             const token = localStorage.getItem('tem_de_tudo_token');
             const user = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
             
             if (token && user.user_type) {
-                // Opcional: mostrar apenas o perfil do usu√°rio logado
-                // ou adicionar um bot√£o "Continuar" em destaque
-                console.log('Usu√°rio j√° logado como:', user.user_type);
+                // Opcional: mostrar apenas o perfil do usu·rio logado
+                // ou adicionar um bot„o "Continuar" em destaque
+                console.log('Usu·rio j· logado como:', user.user_type);
             }
         });
     </script>
 </body>
 </html>
+
 

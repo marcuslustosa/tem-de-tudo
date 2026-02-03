@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -241,14 +241,14 @@
                             type="text" 
                             id="nome_fantasia" 
                             name="nome_fantasia" 
-                            placeholder="Seu NegÃ³cio Ltda"
+                            placeholder="Seu Negócio Ltda"
                             required
                         >
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="razao_social">RazÃ£o Social</label>
+                    <label for="razao_social">Razão Social</label>
                     <div class="input-wrapper">
                         <i class="fas fa-building"></i>
                         <input 
@@ -307,14 +307,14 @@
             </div>
             
             <div class="form-group full-width">
-                <label for="endereco">EndereÃ§o Completo</label>
+                <label for="endereco">Endereço Completo</label>
                 <div class="input-wrapper">
                     <i class="fas fa-map-marker-alt"></i>
                     <input 
                         type="text" 
                         id="endereco" 
                         name="endereco" 
-                        placeholder="Rua, NÃºmero, Bairro, Cidade - UF"
+                        placeholder="Rua, Número, Bairro, Cidade - UF"
                         required
                     >
                 </div>
@@ -329,7 +329,7 @@
                             type="password" 
                             id="senha" 
                             name="senha" 
-                            placeholder="Â•Â•Â•Â•Â•Â•Â•Â•"
+                            placeholder="????????"
                             required
                         >
                     </div>
@@ -343,7 +343,7 @@
                             type="password" 
                             id="senha_confirmation" 
                             name="senha_confirmation" 
-                            placeholder="Â•Â•Â•Â•Â•Â•Â•Â•"
+                            placeholder="????????"
                             required
                         >
                     </div>
@@ -355,7 +355,7 @@
             </button>
             
             <div class="login-link">
-                JÃ¡ tem uma conta? <a href="entrar.html">FaÃ§a login</a>
+                Já tem uma conta? <a href="entrar.html">Faça login</a>
             </div>
         </form>
     </div>
@@ -366,18 +366,18 @@
         const planParam = urlParams.get('plan');
         
         const planNames = {
-            starter: 'Starter - R$ 97/mÃªs',
-            professional: 'Professional - R$ 197/mÃªs',
-            enterprise: 'Enterprise - R$ 397/mÃªs'
+            starter: 'Starter - R$ 97/mês',
+            professional: 'Professional - R$ 197/mês',
+            enterprise: 'Enterprise - R$ 397/mês'
         };
         
         if (planParam && planNames[planParam]) {
             document.getElementById('planBadge').textContent = planNames[planParam];
         } else {
-            document.getElementById('planBadge').textContent = '14 Dias GrÃ¡tis';
+            document.getElementById('planBadge').textContent = '14 Dias Grátis';
         }
         
-        // MÃ¡scara CNPJ
+        // Máscara CNPJ
         document.getElementById('cnpj').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length <= 14) {
@@ -389,7 +389,7 @@
             }
         });
         
-        // MÃ¡scara Telefone
+        // Máscara Telefone
         document.getElementById('telefone').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length <= 11) {
@@ -406,24 +406,24 @@
             const data = Object.fromEntries(formData);
             const submitBtn = event.target.querySelector('button[type="submit"]');
             
-            // ValidaÃ§Ãµes
+            // Validações
             if (!Validators.email(data.email)) {
-                showToast('Email invÃ¡lido.', 'error');
+                showToast('Email inválido.', 'error');
                 return;
             }
             
             if (!Validators.cnpj(data.cnpj)) {
-                showToast('CNPJ invÃ¡lido. Verifique os dÃ­gitos.', 'error');
+                showToast('CNPJ inválido. Verifique os dígitos.', 'error');
                 return;
             }
             
             if (!Validators.password(data.senha)) {
-                showToast('A senha deve ter no mÃ­nimo 6 caracteres.', 'error');
+                showToast('A senha deve ter no mínimo 6 caracteres.', 'error');
                 return;
             }
             
             if (data.senha !== data.senha_confirmation) {
-                showToast('As senhas nÃ£o coincidem!', 'error');
+                showToast('As senhas não coincidem!', 'error');
                 return;
             }
             
@@ -463,7 +463,7 @@
                     throw new Error(result.message);
                 }
             } catch (error) {
-                console.error('âŒ Erro:', error);
+                console.error('? Erro:', error);
                 showToast(error.message || 'Erro ao cadastrar empresa.', 'error');
                 setLoading(submitBtn, false);
             }
@@ -471,5 +471,6 @@
     </script>
 </body>
 </html>
+
 
 

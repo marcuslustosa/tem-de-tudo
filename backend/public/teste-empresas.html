@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     
@@ -22,7 +22,7 @@
         <link rel="stylesheet" href="/css/global-unified.css">
     <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
 <body>
-    <h1>🔥 TESTE REAL - EMPRESAS 🔥</h1>
+    <h1>?? TESTE REAL - EMPRESAS ??</h1>
     
     <button onclick="fazerLogin()">1. FAZER LOGIN</button>
     <button onclick="buscarEmpresas()">2. BUSCAR EMPRESAS</button>
@@ -47,10 +47,10 @@
         async function fazerLogin() {
             try {
                 const baseURL = API_CONFIG.getBaseURL();
-                log(`🌍 Base URL: ${baseURL}`, 'info');
+                log(`?? Base URL: ${baseURL}`, 'info');
                 
                 const url = `${baseURL}/api/auth/login`;
-                log(`📡 POST ${url}`, 'info');
+                log(`?? POST ${url}`, 'info');
                 
                 const response = await fetch(url, {
                     method: 'POST',
@@ -64,19 +64,19 @@
                     })
                 });
                 
-                log(`📥 Status: ${response.status}`, response.ok ? 'success' : 'error');
+                log(`?? Status: ${response.status}`, response.ok ? 'success' : 'error');
                 
                 const data = await response.json();
-                log(`📦 Resposta: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'info');
+                log(`?? Resposta: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'info');
                 
                 if (data.token) {
                     localStorage.setItem('tem_de_tudo_token', data.token);
-                    log(`✅ TOKEN SALVO! ${data.token.substring(0, 30)}...`, 'success');
+                    log(`? TOKEN SALVO! ${data.token.substring(0, 30)}...`, 'success');
                 } else {
-                    log(`❌ SEM TOKEN NA RESPOSTA!`, 'error');
+                    log(`? SEM TOKEN NA RESPOSTA!`, 'error');
                 }
             } catch (error) {
-                log(`❌ ERRO: ${error.message}`, 'error');
+                log(`? ERRO: ${error.message}`, 'error');
             }
         }
         
@@ -84,15 +84,15 @@
             try {
                 const token = localStorage.getItem('tem_de_tudo_token');
                 if (!token) {
-                    log(`❌ FAÇA LOGIN PRIMEIRO!`, 'error');
+                    log(`? FA�A LOGIN PRIMEIRO!`, 'error');
                     return;
                 }
                 
-                log(`🔑 Token: ${token.substring(0, 30)}...`, 'info');
+                log(`?? Token: ${token.substring(0, 30)}...`, 'info');
                 
                 const baseURL = API_CONFIG.getBaseURL();
                 const url = `${baseURL}/api/cliente/empresas`;
-                log(`📡 GET ${url}`, 'info');
+                log(`?? GET ${url}`, 'info');
                 
                 const response = await fetch(url, {
                     method: 'GET',
@@ -103,29 +103,29 @@
                     }
                 });
                 
-                log(`📥 Status: ${response.status}`, response.ok ? 'success' : 'error');
+                log(`?? Status: ${response.status}`, response.ok ? 'success' : 'error');
                 
                 const text = await response.text();
-                log(`📄 Resposta RAW (primeiros 500 chars): <pre>${text.substring(0, 500)}</pre>`, 'info');
+                log(`?? Resposta RAW (primeiros 500 chars): <pre>${text.substring(0, 500)}</pre>`, 'info');
                 
                 try {
                     const data = JSON.parse(text);
-                    log(`📦 JSON Parseado: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'info');
+                    log(`?? JSON Parseado: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'info');
                     
                     if (data.success && data.data) {
-                        log(`✅ SUCESSO! ${data.data.length} empresas encontradas`, 'success');
+                        log(`? SUCESSO! ${data.data.length} empresas encontradas`, 'success');
                         
                         data.data.forEach((emp, i) => {
                             log(`  ${i+1}. ${emp.nome} (${emp.ramo}) - ${emp.meus_pontos || 0} pontos`, 'success');
                         });
                     } else {
-                        log(`⚠️ Resposta não tem success=true ou data`, 'error');
+                        log(`?? Resposta n�o tem success=true ou data`, 'error');
                     }
                 } catch (parseError) {
-                    log(`❌ ERRO AO FAZER PARSE DO JSON: ${parseError.message}`, 'error');
+                    log(`? ERRO AO FAZER PARSE DO JSON: ${parseError.message}`, 'error');
                 }
             } catch (error) {
-                log(`❌ ERRO NA REQUISIÇÃO: ${error.message}`, 'error');
+                log(`? ERRO NA REQUISI��O: ${error.message}`, 'error');
             }
         }
         
@@ -133,12 +133,13 @@
         window.addEventListener('load', () => {
             const token = localStorage.getItem('tem_de_tudo_token');
             if (token) {
-                log(`ℹ️ Token encontrado no localStorage: ${token.substring(0, 30)}...`, 'info');
+                log(`?? Token encontrado no localStorage: ${token.substring(0, 30)}...`, 'info');
             } else {
-                log(`⚠️ Nenhum token no localStorage. Clique em "FAZER LOGIN" primeiro.`, 'info');
+                log(`?? Nenhum token no localStorage. Clique em "FAZER LOGIN" primeiro.`, 'info');
             }
         });
     </script>
 </body>
 </html>
+
 

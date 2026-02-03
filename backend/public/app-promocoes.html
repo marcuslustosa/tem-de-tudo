@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
-    <title>Promo√ß√µes - Tem de Tudo</title>
+    <title>PromoÁıes - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -187,7 +187,7 @@
     <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
 <body>
     <div class="header">
-        <h1>üéÅ Promo√ß√µes</h1>
+        <h1>?? PromoÁıes</h1>
         <p>Aproveite as ofertas exclusivas</p>
     </div>
     
@@ -199,22 +199,22 @@
         
         <div id="loading" class="loading">
             <i class="fas fa-spinner fa-spin" style="font-size: 32px;"></i>
-            <p>Carregando promo√ß√µes...</p>
+            <p>Carregando promoÁıes...</p>
         </div>
         
         <div id="promocoes-grid" class="promocoes-grid" style="display: none;"></div>
         
         <div id="empty-state" class="empty-state" style="display: none;">
             <i class="fas fa-gift"></i>
-            <h3>Nenhuma promo√ß√£o dispon√≠vel</h3>
-            <p>As empresas ainda n√£o criaram promo√ß√µes.</p>
+            <h3>Nenhuma promoÁ„o disponÌvel</h3>
+            <p>As empresas ainda n„o criaram promoÁıes.</p>
         </div>
     </div>
     
     <nav class="bottom-nav">
-        <a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>In√≠cio</span></a>
+        <a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>InÌcio</span></a>
         <a href="app-buscar.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-        <a href="app-promocoes.html" class="nav-item active"><i class="fas fa-gift"></i><span>Promo√ß√µes</span></a>
+        <a href="app-promocoes.html" class="nav-item active"><i class="fas fa-gift"></i><span>PromoÁıes</span></a>
         <a href="app-notificacoes.html" class="nav-item"><i class="fas fa-bell"></i><span>Avisos</span></a>
         <a href="app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
     </nav>
@@ -222,16 +222,16 @@
     <script>
         let promocoes = [];
         
-        // √çcones por tipo de promo√ß√£o
+        // Õcones por tipo de promoÁ„o
         const tipoIcons = {
-            'desconto': 'üí•',
-            'dobro': 'üî•',
-            'brinde': 'üéÅ',
-            'cashback': 'üí∞',
-            'default': '‚ú®'
+            'desconto': '??',
+            'dobro': '??',
+            'brinde': '??',
+            'cashback': '??',
+            'default': '?'
         };
         
-        // Carregar promo√ß√µes da API
+        // Carregar promoÁıes da API
         async function loadPromocoes() {
             const token = localStorage.getItem('tem_de_tudo_token');
             
@@ -252,7 +252,7 @@
                     const result = await response.json();
                     promocoes = result.data || [];
                     
-                    console.log('Promo√ß√µes carregadas:', promocoes.length);
+                    console.log('PromoÁıes carregadas:', promocoes.length);
                     
                     if (promocoes.length > 0) {
                         renderPromocoes();
@@ -266,19 +266,19 @@
                     showEmptyState();
                 }
             } catch (error) {
-                console.error('Erro ao carregar promo√ß√µes:', error);
+                console.error('Erro ao carregar promoÁıes:', error);
                 showEmptyState();
             } finally {
                 document.getElementById('loading').style.display = 'none';
             }
         }
         
-        // Renderizar promo√ß√µes
+        // Renderizar promoÁıes
         function renderPromocoes() {
             const grid = document.getElementById('promocoes-grid');
             const count = document.getElementById('promocoes-count');
             
-            count.textContent = `${promocoes.length} ${promocoes.length === 1 ? 'Promo√ß√£o Ativa' : 'Promo√ß√µes Ativas'}`;
+            count.textContent = `${promocoes.length} ${promocoes.length === 1 ? 'PromoÁ„o Ativa' : 'PromoÁıes Ativas'}`;
             
             grid.innerHTML = promocoes.map(promo => {
                 const tipoClass = promo.tipo ? `tipo-${promo.tipo}` : '';
@@ -288,14 +288,14 @@
                 let countdownText = '';
                 if (promo.dias_restantes !== null) {
                     if (promo.dias_restantes === 0) {
-                        countdownText = '‚è∞ Termina hoje!';
+                        countdownText = '? Termina hoje!';
                     } else if (promo.dias_restantes === 1) {
-                        countdownText = '‚è∞ Termina amanh√£';
+                        countdownText = '? Termina amanh„';
                     } else {
-                        countdownText = `‚è∞ Termina em ${promo.dias_restantes} dias`;
+                        countdownText = `? Termina em ${promo.dias_restantes} dias`;
                     }
                 } else {
-                    countdownText = '‚è∞ Sem prazo';
+                    countdownText = '? Sem prazo';
                 }
                 
                 return `
@@ -311,10 +311,10 @@
                             </div>
                         </div>
                         <div class="promo-body">
-                            <div class="promo-details">${promo.descricao || 'Promo√ß√£o especial!'}</div>
+                            <div class="promo-details">${promo.descricao || 'PromoÁ„o especial!'}</div>
                             ${promo.pontos_necessarios ? `
                                 <div class="promo-details" style="color: #667eea; font-weight: 700;">
-                                    üíé ${promo.pontos_necessarios} pontos necess√°rios
+                                    ?? ${promo.pontos_necessarios} pontos necess·rios
                                 </div>
                             ` : ''}
                             <div class="promo-footer">
@@ -334,14 +334,14 @@
         // Mostrar estado vazio
         function showEmptyState() {
             document.getElementById('empty-state').style.display = 'block';
-            document.getElementById('promocoes-count').textContent = '0 Promo√ß√µes';
+            document.getElementById('promocoes-count').textContent = '0 PromoÁıes';
         }
         
-        // Resgatar promo√ß√£o
+        // Resgatar promoÁ„o
         async function resgatarPromo(id, nome) {
             const token = localStorage.getItem('tem_de_tudo_token');
             
-            if (!confirm(`Deseja resgatar a promo√ß√£o "${nome}"?\n\nAp√≥s resgatar, voc√™ ter√° que apresentar no estabelecimento.`)) {
+            if (!confirm(`Deseja resgatar a promoÁ„o "${nome}"?\n\nApÛs resgatar, vocÍ ter· que apresentar no estabelecimento.`)) {
                 return;
             }
             
@@ -358,14 +358,14 @@
                 const result = await response.json();
                 
                 if (response.ok && result.success) {
-                    alert(`‚úÖ Promo√ß√£o resgatada!\n\n${result.message || 'Apresente no estabelecimento para utilizar.'}`);
+                    alert(`? PromoÁ„o resgatada!\n\n${result.message || 'Apresente no estabelecimento para utilizar.'}`);
                     loadPromocoes(); // Recarregar lista
                 } else {
-                    alert(`‚ùå Erro: ${result.message || 'N√£o foi poss√≠vel resgatar a promo√ß√£o.'}`);
+                    alert(`? Erro: ${result.message || 'N„o foi possÌvel resgatar a promoÁ„o.'}`);
                 }
             } catch (error) {
                 console.error('Erro ao resgatar:', error);
-                alert('‚ùå Erro ao resgatar promo√ß√£o. Tente novamente.');
+                alert('? Erro ao resgatar promoÁ„o. Tente novamente.');
             }
         }
         
@@ -375,42 +375,42 @@
 </body>
 </html>
                     <div class="promo-details">
-                        Ganhe 2x pontos em compras acima de R$ 50,00. V√°lido para delivery e retirada no local.
+                        Ganhe 2x pontos em compras acima de R$ 50,00. V·lido para delivery e retirada no local.
                     </div>
                     <div class="promo-footer">
-                        <div class="promo-countdown">‚è∞ Termina em 2 dias</div>
+                        <div class="promo-countdown">? Termina em 2 dias</div>
                         <button class="promo-btn" onclick="ativarPromo(1)">Ativar</button>
                     </div>
                 </div>
             </div>
             <div class="promo-card">
                 <div class="promo-header" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
-                    <span class="promo-badge">üí• Novo</span>
-                    <div class="promo-title">Pizza Gr√°tis</div>
+                    <span class="promo-badge">?? Novo</span>
+                    <div class="promo-title">Pizza Gr·tis</div>
                     <div class="promo-subtitle">Texano Pizzaria</div>
                 </div>
                 <div class="promo-body">
                     <div class="promo-details">
-                        Na compra de 2 pizzas grandes, ganhe 1 pizza m√©dia gr√°tis. N√£o acumulativo com outras promo√ß√µes.
+                        Na compra de 2 pizzas grandes, ganhe 1 pizza mÈdia gr·tis. N„o acumulativo com outras promoÁıes.
                     </div>
                     <div class="promo-footer">
-                        <div class="promo-countdown">‚è∞ Termina em 5 dias</div>
+                        <div class="promo-countdown">? Termina em 5 dias</div>
                         <button class="promo-btn">Ativar</button>
                     </div>
                 </div>
             </div>
             <div class="promo-card">
                 <div class="promo-header" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
-                    <span class="promo-badge">üíÜ Relax</span>
+                    <span class="promo-badge">?? Relax</span>
                     <div class="promo-title">30% de Desconto</div>
                     <div class="promo-subtitle">Florenza Spa</div>
                 </div>
                 <div class="promo-body">
                     <div class="promo-details">
-                        Desconto de 30% em todos os tratamentos faciais e massagens relaxantes durante todo o m√™s.
+                        Desconto de 30% em todos os tratamentos faciais e massagens relaxantes durante todo o mÍs.
                     </div>
                     <div class="promo-footer">
-                        <div class="promo-countdown">‚è∞ Termina em 15 dias</div>
+                        <div class="promo-countdown">? Termina em 15 dias</div>
                         <button class="promo-btn">Ativar</button>
                     </div>
                 </div>
@@ -418,17 +418,18 @@
         </div>
     </div>
     <nav class="bottom-nav">
-        <a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>In√≠cio</span></a>
+        <a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>InÌcio</span></a>
         <a href="app-buscar.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-        <a href="app-promocoes.html" class="nav-item active"><i class="fas fa-gift"></i><span>Promo√ß√µes</span></a>
+        <a href="app-promocoes.html" class="nav-item active"><i class="fas fa-gift"></i><span>PromoÁıes</span></a>
         <a href="app-notificacoes.html" class="nav-item"><i class="fas fa-bell"></i><span>Avisos</span></a>
         <a href="app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
     </nav>
     <script>
         function ativarPromo(id) {
-            alert('Promo√ß√£o ativada! Apresente no estabelecimento.');
+            alert('PromoÁ„o ativada! Apresente no estabelecimento.');
         }
     </script>
 </body>
 </html>
+
 

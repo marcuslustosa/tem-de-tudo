@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AdministraÃ§Ã£o - Tem de Tudo</title>
+    <title>Administração - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -197,7 +197,7 @@
         
         <div class="welcome">
             <h1>Acesso Administrativo</h1>
-            <p>Ãrea restrita - apenas administradores</p>
+            <p>Área restrita - apenas administradores</p>
         </div>
         
         <div id="alertBox" class="alert"></div>
@@ -234,7 +234,7 @@
     <script>
         const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? 'http://127.0.0.1:8001/api'
-            : 'https://aplicativo-tem-de-tudo.onrender.com/api';
+            : '/api';
         
         const form = document.getElementById('loginForm');
         const btnSubmit = document.getElementById('btnSubmit');
@@ -287,12 +287,12 @@
                     throw new Error(data.message || 'Erro ao fazer login');
                 }
                 
-                // Verificar se Ã© admin
+                // Verificar se é admin
                 if (data.user.tipo !== 'admin') {
-                    throw new Error('Acesso negado. Apenas administradores podem acessar esta Ã¡rea.');
+                    throw new Error('Acesso negado. Apenas administradores podem acessar esta área.');
                 }
                 
-                // Salvar token e dados do usuÃ¡rio
+                // Salvar token e dados do usuário
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 
@@ -309,7 +309,7 @@
             }
         });
         
-        // Verificar se jÃ¡ estÃ¡ logado como admin
+        // Verificar se já está logado como admin
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         
@@ -319,3 +319,4 @@
     </script>
 </body>
 </html>
+

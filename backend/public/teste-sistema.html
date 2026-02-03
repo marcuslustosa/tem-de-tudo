@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔧 Teste Sistema - Tem de Tudo</title>
+    <title>?? Teste Sistema - Tem de Tudo</title>
     <script src="/js/config.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -137,31 +137,31 @@
     <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
 <body>
     <div class="container">
-        <h1>🔧 Painel de Testes - Sistema</h1>
+        <h1>?? Painel de Testes - Sistema</h1>
         <div id="statusBar" class="status">
-            <strong id="statusText">⏳ Verificando servidor...</strong><br>
+            <strong id="statusText">? Verificando servidor...</strong><br>
             <span id="apiUrl" style="font-size: 12px; opacity: 0.8;"></span>
         </div>
 
-        <!-- 1. TESTE DE CONEXÃO -->
+        <!-- 1. TESTE DE CONEX�O -->
         <div class="section">
-            <h2>1️⃣ Teste de Conexão</h2>
-            <button class="btn" onclick="testConnection()">🌐 Testar Conexão com API</button>
+            <h2>1?? Teste de Conex�o</h2>
+            <button class="btn" onclick="testConnection()">?? Testar Conex�o com API</button>
             <div id="connectionResult" class="result" style="display: none;"></div>
         </div>
 
         <!-- 2. TESTE DE LOGIN -->
         <div class="section">
-            <h2>2️⃣ Teste de Login</h2>
+            <h2>2?? Teste de Login</h2>
             <input type="email" id="loginEmail" placeholder="Email" value="cliente1@email.com">
             <input type="password" id="loginPassword" placeholder="Senha" value="senha123">
-            <button class="btn" onclick="testLogin()">🔑 Fazer Login</button>
+            <button class="btn" onclick="testLogin()">?? Fazer Login</button>
             
             <div class="grid" style="margin-top: 10px;">
-                <button class="btn btn-secondary" onclick="setCredentials('admin@temdetudo.com', 'admin123')">👤 Admin</button>
-                <button class="btn btn-secondary" onclick="setCredentials('cliente@teste.com', '123456')">👥 Cliente</button>
-                <button class="btn btn-secondary" onclick="setCredentials('empresa@teste.com', '123456')">🏪 Empresa</button>
-                <button class="btn btn-secondary" onclick="setCredentials('cliente1@email.com', 'senha123')">🎯 Cliente 1</button>
+                <button class="btn btn-secondary" onclick="setCredentials('admin@temdetudo.com', 'admin123')">?? Admin</button>
+                <button class="btn btn-secondary" onclick="setCredentials('cliente@teste.com', '123456')">?? Cliente</button>
+                <button class="btn btn-secondary" onclick="setCredentials('empresa@teste.com', '123456')">?? Empresa</button>
+                <button class="btn btn-secondary" onclick="setCredentials('cliente1@email.com', 'senha123')">?? Cliente 1</button>
             </div>
             
             <div id="loginResult" class="result" style="display: none;"></div>
@@ -169,26 +169,26 @@
 
         <!-- 3. TESTE DE EMPRESAS -->
         <div class="section">
-            <h2>3️⃣ Listar Empresas (Autenticado)</h2>
-            <button class="btn" onclick="testEmpresas()">🏪 Buscar Empresas</button>
+            <h2>3?? Listar Empresas (Autenticado)</h2>
+            <button class="btn" onclick="testEmpresas()">?? Buscar Empresas</button>
             <div id="empresasResult" class="result" style="display: none;"></div>
         </div>
 
         <!-- 4. TESTE DE CADASTRO -->
         <div class="section">
-            <h2>4️⃣ Teste de Cadastro</h2>
+            <h2>4?? Teste de Cadastro</h2>
             <input type="text" id="regName" placeholder="Nome Completo" value="Teste Usuario">
             <input type="email" id="regEmail" placeholder="Email" value="teste@email.com">
             <input type="tel" id="regPhone" placeholder="Telefone" value="(11) 99999-9999">
             <input type="text" id="regCpf" placeholder="CPF" value="123.456.789-00">
             <input type="password" id="regPassword" placeholder="Senha" value="123456">
-            <button class="btn" onclick="testRegister()">📝 Cadastrar</button>
+            <button class="btn" onclick="testRegister()">?? Cadastrar</button>
             <div id="registerResult" class="result" style="display: none;"></div>
         </div>
 
-        <!-- 5. CREDENCIAIS DISPONÍVEIS -->
+        <!-- 5. CREDENCIAIS DISPON�VEIS -->
         <div class="section">
-            <h2>5️⃣ Credenciais de Teste</h2>
+            <h2>5?? Credenciais de Teste</h2>
             <div class="credential">
                 <strong>Admin:</strong> admin@temdetudo.com / admin123
             </div>
@@ -199,7 +199,7 @@
                 <strong>Empresa:</strong> empresa@teste.com / 123456
             </div>
             <div class="credential">
-                <strong>Cliente 1-50:</strong> cliente1@email.com até cliente50@email.com / senha123
+                <strong>Cliente 1-50:</strong> cliente1@email.com at� cliente50@email.com / senha123
             </div>
         </div>
     </div>
@@ -214,10 +214,10 @@
             
             if (isOnline) {
                 statusBar.className = 'status online';
-                statusText.innerHTML = '✅ Servidor ONLINE e funcionando!';
+                statusText.innerHTML = '? Servidor ONLINE e funcionando!';
             } else {
                 statusBar.className = 'status offline';
-                statusText.innerHTML = '❌ Servidor OFFLINE ou com erro';
+                statusText.innerHTML = '? Servidor OFFLINE ou com erro';
             }
         });
 
@@ -229,7 +229,7 @@
         async function testConnection() {
             const resultDiv = document.getElementById('connectionResult');
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<span class="info">⏳ Testando conexão...</span>';
+            resultDiv.innerHTML = '<span class="info">? Testando conex�o...</span>';
             
             try {
                 const response = await fetch(API_CONFIG.debug);
@@ -237,7 +237,7 @@
                 
                 if (response.ok && data.status === 'OK') {
                     resultDiv.innerHTML = `
-                        <span class="success">✅ SUCESSO! Servidor respondendo</span><br><br>
+                        <span class="success">? SUCESSO! Servidor respondendo</span><br><br>
                         <strong>Status:</strong> ${data.status}<br>
                         <strong>Mensagem:</strong> ${data.message}<br>
                         <strong>Banco de Dados:</strong> ${data.database.connection} (${data.database.status})<br>
@@ -245,10 +245,10 @@
                         <strong>Timestamp:</strong> ${data.timestamp}
                     `;
                 } else {
-                    resultDiv.innerHTML = `<span class="warning">⚠️ Resposta inesperada:</span><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    resultDiv.innerHTML = `<span class="warning">?? Resposta inesperada:</span><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
                 }
             } catch (error) {
-                resultDiv.innerHTML = `<span class="error">❌ ERRO ao conectar:</span><br>${error.message}`;
+                resultDiv.innerHTML = `<span class="error">? ERRO ao conectar:</span><br>${error.message}`;
             }
         }
 
@@ -258,7 +258,7 @@
             const resultDiv = document.getElementById('loginResult');
             
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<span class="info">⏳ Fazendo login...</span>';
+            resultDiv.innerHTML = '<span class="info">? Fazendo login...</span>';
             
             try {
                 const response = await fetch(API_CONFIG.login, {
@@ -277,7 +277,7 @@
                     localStorage.setItem('tem_de_tudo_user', JSON.stringify(data.data.user));
                     
                     resultDiv.innerHTML = `
-                        <span class="success">✅ LOGIN SUCESSO!</span><br><br>
+                        <span class="success">? LOGIN SUCESSO!</span><br><br>
                         <strong>Nome:</strong> ${data.data.user.name}<br>
                         <strong>Email:</strong> ${data.data.user.email}<br>
                         <strong>Tipo:</strong> ${data.data.user.perfil || data.data.user.user_type}<br>
@@ -285,10 +285,10 @@
                         <strong>Pontos:</strong> ${data.data.user.pontos || 0}
                     `;
                 } else {
-                    resultDiv.innerHTML = `<span class="error">❌ ERRO no login:</span><br>${data.message || 'Credenciais inválidas'}`;
+                    resultDiv.innerHTML = `<span class="error">? ERRO no login:</span><br>${data.message || 'Credenciais inv�lidas'}`;
                 }
             } catch (error) {
-                resultDiv.innerHTML = `<span class="error">❌ ERRO:</span><br>${error.message}`;
+                resultDiv.innerHTML = `<span class="error">? ERRO:</span><br>${error.message}`;
             }
         }
 
@@ -298,12 +298,12 @@
             
             if (!token) {
                 resultDiv.style.display = 'block';
-                resultDiv.innerHTML = '<span class="warning">⚠️ Faça login primeiro!</span>';
+                resultDiv.innerHTML = '<span class="warning">?? Fa�a login primeiro!</span>';
                 return;
             }
             
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<span class="info">⏳ Buscando empresas...</span>';
+            resultDiv.innerHTML = '<span class="info">? Buscando empresas...</span>';
             
             try {
                 const response = await fetch(API_CONFIG.empresas, {
@@ -317,11 +317,11 @@
                 
                 if (response.ok && data.success) {
                     const empresas = data.data;
-                    let html = `<span class="success">✅ ${empresas.length} empresas encontradas!</span><br><br>`;
+                    let html = `<span class="success">? ${empresas.length} empresas encontradas!</span><br><br>`;
                     
                     empresas.slice(0, 5).forEach((emp, i) => {
                         html += `<strong>${i+1}. ${emp.nome}</strong><br>`;
-                        html += `Endereço: ${emp.endereco || 'N/A'}<br>`;
+                        html += `Endere�o: ${emp.endereco || 'N/A'}<br>`;
                         html += `Telefone: ${emp.telefone || 'N/A'}<br><br>`;
                     });
                     
@@ -331,10 +331,10 @@
                     
                     resultDiv.innerHTML = html;
                 } else {
-                    resultDiv.innerHTML = `<span class="error">❌ ERRO:</span><br>${data.message || 'Erro ao buscar empresas'}`;
+                    resultDiv.innerHTML = `<span class="error">? ERRO:</span><br>${data.message || 'Erro ao buscar empresas'}`;
                 }
             } catch (error) {
-                resultDiv.innerHTML = `<span class="error">❌ ERRO:</span><br>${error.message}`;
+                resultDiv.innerHTML = `<span class="error">? ERRO:</span><br>${error.message}`;
             }
         }
 
@@ -350,7 +350,7 @@
             };
             
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<span class="info">⏳ Cadastrando...</span>';
+            resultDiv.innerHTML = '<span class="info">? Cadastrando...</span>';
             
             try {
                 const response = await fetch(API_CONFIG.register, {
@@ -366,19 +366,20 @@
                 
                 if (response.ok && data.success) {
                     resultDiv.innerHTML = `
-                        <span class="success">✅ CADASTRO SUCESSO!</span><br><br>
+                        <span class="success">? CADASTRO SUCESSO!</span><br><br>
                         <strong>Nome:</strong> ${data.data.user.name}<br>
                         <strong>Email:</strong> ${data.data.user.email}<br>
                         <strong>Token:</strong> ${data.data.token.substring(0, 40)}...
                     `;
                 } else {
-                    resultDiv.innerHTML = `<span class="error">❌ ERRO:</span><br>${data.message || JSON.stringify(data)}`;
+                    resultDiv.innerHTML = `<span class="error">? ERRO:</span><br>${data.message || JSON.stringify(data)}`;
                 }
             } catch (error) {
-                resultDiv.innerHTML = `<span class="error">❌ ERRO:</span><br>${error.message}`;
+                resultDiv.innerHTML = `<span class="error">? ERRO:</span><br>${error.message}`;
             }
         }
     </script>
 </body>
 </html>
+
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     
@@ -131,11 +131,11 @@
     <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
 <body>
     <div class="container">
-        <h1>🎯 Tem de Tudo</h1>
+        <h1>?? Tem de Tudo</h1>
         <p class="subtitle">Sistema de Fidelidade Digital</p>
 
         <div class="status" id="statusBox">
-            <div class="status-indicator" id="statusIcon">⏳</div>
+            <div class="status-indicator" id="statusIcon">?</div>
             <div class="status-text" id="statusText">Verificando sistema...</div>
             <div class="status-detail" id="statusDetail">Aguarde um momento</div>
         </div>
@@ -147,21 +147,21 @@
 
         <div class="buttons">
             <a href="/entrar.html" class="btn">
-                🔐 Fazer Login
+                ?? Fazer Login
             </a>
             <a href="/cadastro.html" class="btn">
-                📝 Cadastrar-se
+                ?? Cadastrar-se
             </a>
             <a href="/teste-login.html" class="btn btn-secondary">
-                🧪 Testar Sistema
+                ?? Testar Sistema
             </a>
             <button onclick="inicializarSistema()" class="btn btn-secondary">
-                🚀 Inicializar Dados
+                ?? Inicializar Dados
             </button>
         </div>
 
         <div class="credentials">
-            <h3 style="margin-bottom: 15px; color: #667eea;">📋 Credenciais de Teste</h3>
+            <h3 style="margin-bottom: 15px; color: #667eea;">?? Credenciais de Teste</h3>
             <div class="credential-item">
                 <strong>Admin:</strong> admin@temdetudo.com / admin123
             </div>
@@ -188,7 +188,7 @@
                 const data = await response.json();
                 
                 if (data.status === 'OK') {
-                    document.getElementById('statusIcon').textContent = '✅';
+                    document.getElementById('statusIcon').textContent = '?';
                     document.getElementById('statusText').textContent = 'Sistema Online';
                     document.getElementById('statusDetail').textContent = 'Tudo funcionando perfeitamente!';
                     document.getElementById('statusBox').style.borderColor = 'rgba(76, 175, 80, 0.5)';
@@ -201,17 +201,17 @@
         }
 
         function mostrarErro() {
-            document.getElementById('statusIcon').textContent = '⚠️';
+            document.getElementById('statusIcon').textContent = '??';
             document.getElementById('statusText').textContent = 'Sistema Iniciando';
-            document.getElementById('statusDetail').textContent = 'Clique em "Inicializar Dados" para começar';
+            document.getElementById('statusDetail').textContent = 'Clique em "Inicializar Dados" para come�ar';
             document.getElementById('statusBox').style.borderColor = 'rgba(255, 152, 0, 0.5)';
         }
 
         async function inicializarSistema() {
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('statusIcon').textContent = '⏳';
+            document.getElementById('statusIcon').textContent = '?';
             document.getElementById('statusText').textContent = 'Inicializando...';
-            document.getElementById('statusDetail').textContent = 'Criando usuários e dados de teste';
+            document.getElementById('statusDetail').textContent = 'Criando usu�rios e dados de teste';
 
             try {
                 const response = await fetch(API_BASE + '/api/setup-database?secret=temdetudo2024');
@@ -220,24 +220,24 @@
                 document.getElementById('loading').style.display = 'none';
                 
                 if (data.success) {
-                    document.getElementById('statusIcon').textContent = '✅';
+                    document.getElementById('statusIcon').textContent = '?';
                     document.getElementById('statusText').textContent = 'Sistema Pronto!';
-                    document.getElementById('statusDetail').textContent = `${data.total_users} usuários criados. Faça login agora!`;
+                    document.getElementById('statusDetail').textContent = `${data.total_users} usu�rios criados. Fa�a login agora!`;
                     document.getElementById('statusBox').style.borderColor = 'rgba(76, 175, 80, 0.5)';
                     
-                    alert('✅ Sistema inicializado com sucesso!\n\nVocê já pode fazer login com:\n- admin@temdetudo.com / admin123\n- cliente@teste.com / 123456');
+                    alert('? Sistema inicializado com sucesso!\n\nVoc� j� pode fazer login com:\n- admin@temdetudo.com / admin123\n- cliente@teste.com / 123456');
                 } else {
-                    document.getElementById('statusIcon').textContent = '❌';
-                    document.getElementById('statusText').textContent = 'Erro na Inicialização';
+                    document.getElementById('statusIcon').textContent = '?';
+                    document.getElementById('statusText').textContent = 'Erro na Inicializa��o';
                     document.getElementById('statusDetail').textContent = data.error || 'Tente novamente em alguns segundos';
-                    alert('Erro: ' + (data.error || 'Falha na inicialização'));
+                    alert('Erro: ' + (data.error || 'Falha na inicializa��o'));
                 }
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('statusIcon').textContent = '❌';
-                document.getElementById('statusText').textContent = 'Erro de Conexão';
+                document.getElementById('statusIcon').textContent = '?';
+                document.getElementById('statusText').textContent = 'Erro de Conex�o';
                 document.getElementById('statusDetail').textContent = 'Servidor pode estar reiniciando. Aguarde 2 minutos.';
-                alert('Erro de conexão. O servidor pode estar reiniciando. Aguarde 2-3 minutos e tente novamente.');
+                alert('Erro de conex�o. O servidor pode estar reiniciando. Aguarde 2-3 minutos e tente novamente.');
             }
         }
 
@@ -246,4 +246,5 @@
     </script>
 </body>
 </html>
+
 

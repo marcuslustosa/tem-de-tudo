@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -285,7 +285,7 @@
     <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
 <body>
     <div class="header">
-        <h1 class="header-title">🔍 Buscar Empresas</h1>
+        <h1 class="header-title">?? Buscar Empresas</h1>
         <div class="search-box">
             <i class="fas fa-search"></i>
             <input 
@@ -302,25 +302,25 @@
             Todos
         </button>
         <button class="filter-btn" onclick="filterCategory('restaurante')">
-            🍔 Restaurante
+            ?? Restaurante
         </button>
         <button class="filter-btn" onclick="filterCategory('academia')">
-            🏋️ Academia
+            ??? Academia
         </button>
         <button class="filter-btn" onclick="filterCategory('cafeteria')">
-            ☕ Cafeteria
+            ? Cafeteria
         </button>
         <button class="filter-btn" onclick="filterCategory('pet_shop')">
-            🐾 Pet Shop
+            ?? Pet Shop
         </button>
         <button class="filter-btn" onclick="filterCategory('salao')">
-            💆 Salão
+            ?? Sal�o
         </button>
         <button class="filter-btn" onclick="filterCategory('mercado')">
-            🛒 Mercado
+            ?? Mercado
         </button>
         <button class="filter-btn" onclick="filterCategory('farmacia')">
-            💊 Farmácia
+            ?? Farm�cia
         </button>
     </div>
     
@@ -334,7 +334,7 @@
     <nav class="bottom-nav">
         <a href="app-inicio.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>Início</span>
+            <span>In�cio</span>
         </a>
         <a href="app-buscar.html" class="nav-item active">
             <i class="fas fa-search"></i>
@@ -342,7 +342,7 @@
         </a>
         <a href="app-promocoes.html" class="nav-item">
             <i class="fas fa-gift"></i>
-            <span>Promoções</span>
+            <span>Promo��es</span>
         </a>
         <a href="app-notificacoes.html" class="nav-item">
             <i class="fas fa-bell"></i>
@@ -369,7 +369,7 @@
             
             try {
                 const apiUrl = API_CONFIG.getBaseURL() + '/api/cliente/empresas';
-                console.log('🔍 Buscando empresas em:', apiUrl);
+                console.log('?? Buscando empresas em:', apiUrl);
                 
                 const response = await fetch(apiUrl, {
                     headers: {
@@ -378,26 +378,26 @@
                     }
                 });
                 
-                console.log('📥 Status resposta:', response.status);
+                console.log('?? Status resposta:', response.status);
                 
                 if (response.ok) {
                     const result = await response.json();
-                    console.log('📦 Dados recebidos:', result);
+                    console.log('?? Dados recebidos:', result);
                     
                     // API retorna {success: true, data: [...]}
                     allEstablishments = result.data || result.empresas || result;
                     
-                    console.log('✅ Empresas carregadas:', allEstablishments.length);
+                    console.log('? Empresas carregadas:', allEstablishments.length);
                     
                     // SEMPRE mostrar todas as empresas ao carregar
                     renderEstablishments(allEstablishments);
                 } else {
                     const errorText = await response.text();
-                    console.error('❌ Erro ao carregar empresas:', response.status, errorText);
+                    console.error('? Erro ao carregar empresas:', response.status, errorText);
                     renderEmptyState();
                 }
             } catch (error) {
-                console.error('❌ Erro na requisição:', error);
+                console.error('? Erro na requisi��o:', error);
                 renderEmptyState();
             }
         }
@@ -411,21 +411,21 @@
             }
             
             const icons = {
-                'academia': '🏋️',
-                'cafeteria': '☕',
-                'pet_shop': '🐾',
-                'salao': '💆',
-                'mercado': '🛒',
-                'farmacia': '💊',
-                'padaria': '🥖',
-                'lanchonete': '🍕',
-                'sorveteria': '🍦',
-                'lavanderia': '👕',
-                'auto_center': '🚗',
-                'otica': '👓',
-                'livraria': '📚',
-                'papelaria': '✏️',
-                'default': '🏪'
+                'academia': '???',
+                'cafeteria': '?',
+                'pet_shop': '??',
+                'salao': '??',
+                'mercado': '??',
+                'farmacia': '??',
+                'padaria': '??',
+                'lanchonete': '??',
+                'sorveteria': '??',
+                'lavanderia': '??',
+                'auto_center': '??',
+                'otica': '??',
+                'livraria': '??',
+                'papelaria': '??',
+                'default': '??'
             };
             
             const colors = [
@@ -474,7 +474,7 @@
         function filterCategory(category) {
             currentCategory = category;
             
-            // Atualizar botões ativos
+            // Atualizar bot�es ativos
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -503,7 +503,7 @@
                 });
             }
             
-            // Se tem categoria selecionada, filtrar também
+            // Se tem categoria selecionada, filtrar tamb�m
             if (currentCategory !== 'todos') {
                 filtered = filtered.filter(e => e.ramo === currentCategory);
             }
@@ -516,4 +516,5 @@
     </script>
 </body>
 </html>
+
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -318,8 +318,8 @@
     <div class="header">
         <div class="header-content">
             <div class="header-left">
-                <h1>Painel de AdministraÃ§Ã£o</h1>
-                <p>Bem-vindo ao sistema de gestÃ£o</p>
+                <h1>Painel de Administração</h1>
+                <p>Bem-vindo ao sistema de gestão</p>
             </div>
             <div class="header-right">
                 <div class="user-info">
@@ -339,7 +339,7 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-header">
-                    <span class="stat-label">Total de UsuÃ¡rios</span>
+                    <span class="stat-label">Total de Usuários</span>
                     <div class="stat-icon purple">
                         <i class="fas fa-users"></i>
                     </div>
@@ -347,7 +347,7 @@
                 <div class="stat-value" id="totalUsers">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>12% este mÃªs</span>
+                    <span>12% este mês</span>
                 </div>
             </div>
             
@@ -361,7 +361,7 @@
                 <div class="stat-value" id="totalEmpresas">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>8% este mÃªs</span>
+                    <span>8% este mês</span>
                 </div>
             </div>
             
@@ -375,7 +375,7 @@
                 <div class="stat-value" id="totalClientes">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>15% este mÃªs</span>
+                    <span>15% este mês</span>
                 </div>
             </div>
             
@@ -389,24 +389,24 @@
                 <div class="stat-value" id="totalPontos">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>22% este mÃªs</span>
+                    <span>22% este mês</span>
                 </div>
             </div>
         </div>
         
-        <!-- UsuÃ¡rios Recentes -->
+        <!-- Usuários Recentes -->
         <div class="section">
             <div class="section-header">
-                <h2 class="section-title">UsuÃ¡rios Recentes</h2>
+                <h2 class="section-title">Usuários Recentes</h2>
                 <button class="btn-primary" onclick="window.location.href='/admin-create-user.html'">
-                    <i class="fas fa-plus"></i> Novo UsuÃ¡rio
+                    <i class="fas fa-plus"></i> Novo Usuário
                 </button>
             </div>
             
             <div id="usersTable">
                 <div class="loading">
                     <div class="spinner"></div>
-                    <p style="margin-top: 16px;">Carregando usuÃ¡rios...</p>
+                    <p style="margin-top: 16px;">Carregando usuários...</p>
                 </div>
             </div>
         </div>
@@ -429,9 +429,9 @@
     <script>
         const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? 'http://127.0.0.1:8001/api'
-            : 'https://aplicativo-tem-de-tudo.onrender.com/api';
+            : '/api';
         
-        // Verificar autenticaÃ§Ã£o
+        // Verificar autenticação
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         
@@ -439,10 +439,10 @@
             window.location.href = '/admin-login.html';
         }
         
-        // Exibir nome do usuÃ¡rio
+        // Exibir nome do usuário
         document.getElementById('userName').textContent = user.name || user.email;
         
-        // FunÃ§Ã£o de logout
+        // Função de logout
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
@@ -457,7 +457,7 @@
                     'Accept': 'application/json'
                 };
                 
-                // Carregar usuÃ¡rios
+                // Carregar usuários
                 const usersResponse = await fetch(`${API_URL}/admin/users`, { headers });
                 const usersData = await usersResponse.json();
                 
@@ -478,7 +478,7 @@
                     const pontosData = await pontosResponse.json();
                     document.getElementById('totalPontos').textContent = pontosData.total || 0;
                     
-                    // Renderizar tabela de usuÃ¡rios
+                    // Renderizar tabela de usuários
                     renderUsersTable(users.slice(0, 10));
                     renderEmpresasTable(empresas);
                 }
@@ -550,3 +550,4 @@
     </script>
 </body>
 </html>
+

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0a0a0f">
-    <title>Início - Tem de Tudo</title>
+    <title>In�cio - Tem de Tudo</title>
     
     <link rel="manifest" href="/manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -389,8 +389,8 @@
                     <img src="img/logo.png" alt="Tem de Tudo">
                 </div>
                 <div class="user-info">
-                    <h2 id="userName">Olá, Cliente!</h2>
-                    <p>Bem-vindo de volta 👋</p>
+                    <h2 id="userName">Ol�, Cliente!</h2>
+                    <p>Bem-vindo de volta ??</p>
                 </div>
             </div>
             <button class="settings-btn" onclick="location.href='app-perfil.html'">
@@ -440,7 +440,7 @@
     <div class="section">
         <h3 class="section-title">Seus Estabelecimentos</h3>
         <div class="estabelecimentos-grid" id="estabelecimentosGrid">
-            <!-- Será preenchido via JavaScript -->
+            <!-- Ser� preenchido via JavaScript -->
         </div>
     </div>
     
@@ -448,7 +448,7 @@
     <nav class="bottom-nav">
         <a href="app-inicio.html" class="nav-item active">
             <i class="fas fa-home"></i>
-            <span>Início</span>
+            <span>In�cio</span>
         </a>
         <a href="app-buscar.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -456,7 +456,7 @@
         </a>
         <a href="app-promocoes.html" class="nav-item">
             <i class="fas fa-gift"></i>
-            <span>Promoções</span>
+            <span>Promo��es</span>
         </a>
         <a href="app-notificacoes.html" class="nav-item">
             <i class="fas fa-bell"></i>
@@ -469,7 +469,7 @@
     </nav>
     
     <script>
-        // Carregar dados do usuário
+        // Carregar dados do usu�rio
         async function loadUserData() {
             const token = localStorage.getItem('tem_de_tudo_token');
             const user = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
@@ -479,15 +479,15 @@
                 return;
             }
             
-            // Atualizar nome do usuário
+            // Atualizar nome do usu�rio
             if (user.name) {
-                document.getElementById('userName').textContent = `Olá, ${user.name.split(' ')[0]}!`;
+                document.getElementById('userName').textContent = `Ol�, ${user.name.split(' ')[0]}!`;
             }
             
             try {
                 const baseURL = API_CONFIG.getBaseURL();
                 
-                // Buscar pontos do usuário
+                // Buscar pontos do usu�rio
                 const pointsResponse = await fetch(`${baseURL}/api/cliente/dashboard`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -511,14 +511,14 @@
                 if (estabResponse.ok) {
                     const result = await estabResponse.json();
                     const estabelecimentos = result.data || result.empresas || result;
-                    console.log('✅ Empresas carregadas:', estabelecimentos.length);
+                    console.log('? Empresas carregadas:', estabelecimentos.length);
                     renderEstabelecimentos(estabelecimentos);
                 } else {
-                    console.error('❌ Erro ao buscar empresas:', estabResponse.status);
+                    console.error('? Erro ao buscar empresas:', estabResponse.status);
                     renderEmptyState();
                 }
                 
-                // Buscar estatísticas
+                // Buscar estat�sticas
                 const statsResponse = await fetch(`${baseURL}/api/cliente/historico-pontos`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -548,15 +548,15 @@
             }
             
             const icons = {
-                'academia': '🏋️',
-                'cafeteria': '☕',
-                'pet_shop': '🐾',
-                'salao': '💆',
-                'mercado': '🛒',
-                'farmacia': '💊',
-                'padaria': '🥖',
-                'restaurante': '🍔',
-                'default': '🏪'
+                'academia': '???',
+                'cafeteria': '?',
+                'pet_shop': '??',
+                'salao': '??',
+                'mercado': '??',
+                'farmacia': '??',
+                'padaria': '??',
+                'restaurante': '??',
+                'default': '??'
             };
             const colors = [
                 'linear-gradient(135deg, #667eea, #764ba2)',
@@ -589,12 +589,12 @@
             grid.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-store-slash"></i>
-                    <p>Você ainda não visitou nenhum estabelecimento</p>
+                    <p>Voc� ainda n�o visitou nenhum estabelecimento</p>
                 </div>
             `;
         }
         
-        // Inicializar ao carregar página
+        // Inicializar ao carregar p�gina
         document.addEventListener('DOMContentLoaded', loadUserData);
         
         // Registrar Service Worker
@@ -606,4 +606,5 @@
     </script>
 </body>
 </html>
+
 

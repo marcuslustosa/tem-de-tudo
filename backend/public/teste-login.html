@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     
@@ -22,11 +22,11 @@
         <link rel="stylesheet" href="/css/global-unified.css">
     <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
 <body>
-    <h1>🔧 Teste de Login Direto</h1>
+    <h1>?? Teste de Login Direto</h1>
     <p>API Base: <strong id="apiBase"></strong></p>
     
-    <h2>Testes Disponíveis:</h2>
-    <button onclick="testarConexao()">1. Testar Conexão</button>
+    <h2>Testes Dispon�veis:</h2>
+    <button onclick="testarConexao()">1. Testar Conex�o</button>
     <button onclick="testarLoginAdmin()">2. Login Admin</button>
     <button onclick="testarLoginCliente()">3. Login Cliente</button>
     <button onclick="testarLoginCliente1()">4. Login Cliente1</button>
@@ -50,17 +50,17 @@
         }
 
         async function testarConexao() {
-            log('Testando conexão com API...');
+            log('Testando conex�o com API...');
             try {
                 const response = await fetch(API_BASE + '/api/debug');
                 const data = await response.json();
                 if (data.status === 'OK') {
-                    log('✅ CONEXÃO OK: ' + JSON.stringify(data), 'sucesso');
+                    log('? CONEX�O OK: ' + JSON.stringify(data), 'sucesso');
                 } else {
-                    log('⚠️ Resposta inesperada: ' + JSON.stringify(data), 'erro');
+                    log('?? Resposta inesperada: ' + JSON.stringify(data), 'erro');
                 }
             } catch (error) {
-                log('❌ ERRO: ' + error.message, 'erro');
+                log('? ERRO: ' + error.message, 'erro');
             }
         }
 
@@ -79,14 +79,14 @@
                 const data = await response.json();
                 
                 if (response.ok && data.success) {
-                    log(`✅ LOGIN OK ${nome}: ${data.data.user.name} (${data.data.user.perfil})`, 'sucesso');
+                    log(`? LOGIN OK ${nome}: ${data.data.user.name} (${data.data.user.perfil})`, 'sucesso');
                     log(`Token: ${data.data.token.substring(0, 50)}...`, 'sucesso');
                     localStorage.setItem('tem_de_tudo_token', data.data.token);
                 } else {
-                    log(`❌ LOGIN FALHOU ${nome}: ${data.message || JSON.stringify(data)}`, 'erro');
+                    log(`? LOGIN FALHOU ${nome}: ${data.message || JSON.stringify(data)}`, 'erro');
                 }
             } catch (error) {
-                log(`❌ ERRO ${nome}: ${error.message}`, 'erro');
+                log(`? ERRO ${nome}: ${error.message}`, 'erro');
             }
         }
 
@@ -103,7 +103,7 @@
         }
 
         async function testarCadastro() {
-            log('Testando cadastro de novo usuário...');
+            log('Testando cadastro de novo usu�rio...');
             const randomEmail = `teste${Date.now()}@email.com`;
             try {
                 const response = await fetch(API_BASE + '/api/auth/register', {
@@ -125,20 +125,21 @@
                 const data = await response.json();
                 
                 if (response.ok && data.success) {
-                    log(`✅ CADASTRO OK: ${data.data.user.email}`, 'sucesso');
+                    log(`? CADASTRO OK: ${data.data.user.email}`, 'sucesso');
                 } else {
-                    log(`❌ CADASTRO FALHOU: ${data.message || JSON.stringify(data)}`, 'erro');
+                    log(`? CADASTRO FALHOU: ${data.message || JSON.stringify(data)}`, 'erro');
                 }
             } catch (error) {
-                log(`❌ ERRO: ${error.message}`, 'erro');
+                log(`? ERRO: ${error.message}`, 'erro');
             }
         }
 
         // Auto-testar ao carregar
         window.addEventListener('load', () => {
-            log('Página carregada. Clique nos botões para testar.');
+            log('P�gina carregada. Clique nos bot�es para testar.');
         });
     </script>
 </body>
 </html>
+
 

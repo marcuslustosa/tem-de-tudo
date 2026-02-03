@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -137,11 +137,11 @@
             <div class="stat-card">
                 <div class="stat-label"><i class="fas fa-users"></i> Total Clientes</div>
                 <div class="stat-value" id="totalClientes">0</div>
-                <div class="stat-subtitle">Clientes Ãºnicos</div>
+                <div class="stat-subtitle">Clientes únicos</div>
             </div>
             
             <div class="stat-card">
-                <div class="stat-label"><i class="fas fa-coins"></i> Pontos DistribuÃ­dos</div>
+                <div class="stat-label"><i class="fas fa-coins"></i> Pontos Distribuídos</div>
                 <div class="stat-value" id="pontosDistribuidos">0</div>
                 <div class="stat-subtitle">Total de pontos</div>
             </div>
@@ -149,13 +149,13 @@
             <div class="stat-card">
                 <div class="stat-label"><i class="fas fa-qrcode"></i> Check-ins Hoje</div>
                 <div class="stat-value" id="checkinsHoje">0</div>
-                <div class="stat-subtitle">Ãšltimas 24h</div>
+                <div class="stat-subtitle">Últimas 24h</div>
             </div>
             
             <div class="stat-card">
-                <div class="stat-label"><i class="fas fa-star"></i> AvaliaÃ§Ã£o MÃ©dia</div>
+                <div class="stat-label"><i class="fas fa-star"></i> Avaliação Média</div>
                 <div class="stat-value" id="avaliacaoMedia">5.0</div>
-                <div class="stat-subtitle">Baseado em avaliaÃ§Ãµes</div>
+                <div class="stat-subtitle">Baseado em avaliações</div>
             </div>
         </div>
         
@@ -167,13 +167,13 @@
                 <i class="fas fa-users"></i> Ver Clientes
             </a>
             <a href="empresa-promocoes.html" class="nav-btn">
-                <i class="fas fa-gift"></i> PromoÃ§Ãµes
+                <i class="fas fa-gift"></i> Promoções
             </a>
             <a href="empresa-qrcode.html" class="nav-btn">
                 <i class="fas fa-qrcode"></i> Meus QR Codes
             </a>
             <a href="empresa-relatorios.html" class="nav-btn">
-                <i class="fas fa-chart-bar"></i> RelatÃ³rios
+                <i class="fas fa-chart-bar"></i> Relatórios
             </a>
             <button onclick="logout()" class="nav-btn logout-btn">
                 <i class="fas fa-sign-out-alt"></i> Sair
@@ -192,7 +192,7 @@
             <div class="section-card" id="avaliacoesCard" style="display: none;">
                 <h3 class="section-title">
                     <i class="fas fa-star"></i>
-                    <span>AvaliaÃ§Ãµes Recentes</span>
+                    <span>Avaliações Recentes</span>
                 </h3>
                 <div id="avaliacoesList"></div>
             </div>
@@ -256,7 +256,7 @@
             const { empresa, total_clientes, pontos_distribuidos, checkins_hoje, avaliacao_media, top_clientes, avaliacoes_recentes } = dashboardData;
             
             document.getElementById('empresaNome').textContent = empresa.nome;
-            document.getElementById('empresaInfo').textContent = `${empresa.ramo} Â• ${empresa.cidade || 'SÃ£o Paulo'}`;
+            document.getElementById('empresaInfo').textContent = `${empresa.ramo} ? ${empresa.cidade || 'São Paulo'}`;
             
             document.getElementById('totalClientes').textContent = total_clientes || 0;
             document.getElementById('pontosDistribuidos').textContent = (pontos_distribuidos || 0).toLocaleString('pt-BR');
@@ -284,8 +284,8 @@
                 return `
                     <div class="list-item">
                         <strong>${medal} ${cliente.cliente_nome}</strong><br>
-                        <span class="points">${cliente.total_pontos} pontos</span> Â•
-                        <small>${cliente.total_transacoes} transaÃ§Ãµes</small>
+                        <span class="points">${cliente.total_pontos} pontos</span> ?
+                        <small>${cliente.total_transacoes} transações</small>
                     </div>
                 `;
             }).join('');
@@ -300,7 +300,7 @@
                 
                 return `
                     <div class="list-item">
-                        <strong>${av.cliente_nome}</strong> Â• ${stars}<br>
+                        <strong>${av.cliente_nome}</strong> ? ${stars}<br>
                         ${av.comentario ? `<p style="margin: 8px 0; color: #b0b0b0;">${av.comentario}</p>` : ''}
                         <small>${date}</small>
                     </div>
@@ -317,4 +317,5 @@
     </script>
 </body>
 </html>
+
 

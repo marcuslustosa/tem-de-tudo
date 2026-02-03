@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -24,7 +24,7 @@
         </div>
         
         <div class="welcome">
-            <h1>Crie sua conta gr√°tis</h1>
+            <h1>Crie sua conta gr·tis</h1>
             <p>Comece a fidelizar seus clientes hoje</p>
         </div>
         
@@ -125,7 +125,7 @@
                             type="password" 
                             id="password" 
                             name="password" 
-                            placeholder="M√≠nimo 8 caracteres"
+                            placeholder="MÌnimo 8 caracteres"
                             required
                             minlength="8"
                         >
@@ -152,29 +152,29 @@
                 <input type="checkbox" id="terms" name="terms" required>
                 <label for="terms">
                     Eu li e concordo com os <a href="termos-de-uso.html" target="_blank">Termos de Uso</a> 
-                    e a <a href="politica-de-privacidade.html" target="_blank">Pol√≠tica de Privacidade</a>
+                    e a <a href="politica-de-privacidade.html" target="_blank">PolÌtica de Privacidade</a>
                 </label>
             </div>
             
             <button type="submit" class="btn btn-primary">
-                CRIAR CONTA GR√ÅTIS
+                CRIAR CONTA GR¡TIS
             </button>
         </form>
         
         <div class="login-link">
-            <p>J√° tem uma conta? <a href="entrar.html">Entrar</a></p>
+            <p>J· tem uma conta? <a href="entrar.html">Entrar</a></p>
         </div>
         
         <div class="back-link">
             <a href="index.html">
                 <i class="fas fa-arrow-left"></i>
-                Voltar para in√≠cio
+                Voltar para inÌcio
             </a>
         </div>
     </div>
     
     <script>
-        // M√°scaras para CPF e telefone
+        // M·scaras para CPF e telefone
         document.getElementById('cpf').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
             value = value.replace(/(\d{3})(\d)/, '$1.$2');
@@ -199,29 +199,29 @@
             const cpf = document.getElementById('cpf').value;
             const submitBtn = event.target.querySelector('button[type="submit"]');
             
-            // Valida√ß√µes
+            // ValidaÁıes
             if (!Validators.email(email)) {
-                showToast('Email inv√°lido.', 'error');
+                showToast('Email inv·lido.', 'error');
                 return;
             }
             
             if (!Validators.password(password)) {
-                showToast('A senha deve ter no m√≠nimo 6 caracteres.', 'error');
+                showToast('A senha deve ter no mÌnimo 6 caracteres.', 'error');
                 return;
             }
             
             if (password !== confirmPassword) {
-                showToast('As senhas n√£o coincidem!', 'error');
+                showToast('As senhas n„o coincidem!', 'error');
                 return;
             }
             
             if (!Validators.cpf(cpf)) {
-                showToast('CPF inv√°lido. Verifique os d√≠gitos.', 'error');
+                showToast('CPF inv·lido. Verifique os dÌgitos.', 'error');
                 return;
             }
             
             if (!document.getElementById('terms').checked) {
-                showToast('Voc√™ precisa aceitar os termos de uso.', 'warning');
+                showToast('VocÍ precisa aceitar os termos de uso.', 'warning');
                 return;
             }
             
@@ -254,20 +254,21 @@
                     throw new Error(result.message);
                 }
             } catch (error) {
-                console.error('‚ùå Erro:', error);
+                console.error('? Erro:', error);
                 showToast(error.message || 'Erro ao criar conta.', 'error');
                 setLoading(submitBtn, false);
             }
         }
         
         function registerGoogle() {
-            showToast('Cadastro com Google ser√° implementado em breve!', 'info');
+            showToast('Cadastro com Google ser· implementado em breve!', 'info');
         }
         
         function registerFacebook() {
-            showToast('Cadastro com Facebook ser√° implementado em breve!', 'info');
+            showToast('Cadastro com Facebook ser· implementado em breve!', 'info');
         }
     </script>
 </body>
 </html>
+
 

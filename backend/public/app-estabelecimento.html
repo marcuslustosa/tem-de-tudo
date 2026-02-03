@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -164,7 +164,7 @@
                 <i class="fas fa-arrow-left"></i>
             </button>
             
-            <div class="hero-icon" id="heroIcon">ğŸª</div>
+            <div class="hero-icon" id="heroIcon">??</div>
             
             <h1 class="hero-title" id="empresaNome">Carregando...</h1>
             <p class="hero-category" id="empresaCategoria">...</p>
@@ -172,7 +172,7 @@
             <div class="hero-stats">
                 <div class="stat">
                     <div class="stat-value" id="empresaRating">-</div>
-                    <div class="stat-label">AvaliaÃ§Ã£o</div>
+                    <div class="stat-label">Avaliação</div>
                 </div>
                 <div class="stat">
                     <div class="stat-value" id="meusPontos">0</div>
@@ -192,17 +192,17 @@
             </div>
             
             <div class="info-card" id="enderecoCard">
-                <div class="info-title"><i class="fas fa-map-marker-alt"></i> EndereÃ§o</div>
+                <div class="info-title"><i class="fas fa-map-marker-alt"></i> Endereço</div>
                 <div class="info-text" id="empresaEndereco">-</div>
             </div>
             
             <div class="info-card" id="promocoesCard" style="display: none;">
-                <div class="info-title"><i class="fas fa-gift"></i> PromoÃ§Ãµes Ativas</div>
+                <div class="info-title"><i class="fas fa-gift"></i> Promoções Ativas</div>
                 <div class="promocoes-list" id="promocoesList"></div>
             </div>
             
             <div class="info-card" id="avaliacoesCard" style="display: none;">
-                <div class="info-title"><i class="fas fa-star"></i> AvaliaÃ§Ãµes Recentes</div>
+                <div class="info-title"><i class="fas fa-star"></i> Avaliações Recentes</div>
                 <div class="reviews-list" id="reviewsList"></div>
             </div>
             
@@ -216,19 +216,19 @@
         let empresaId = null;
         let empresaData = null;
         
-        // Ãcones por ramo
+        // Ícones por ramo
         const ramoIcons = {
-            'restaurante': 'ğŸ½ï¸',
-            'lanchonete': 'ğŸ”',
-            'pizzaria': 'ğŸ•',
-            'cafeteria': 'â˜•',
-            'padaria': 'ğŸ¥–',
-            'academia': 'ğŸ’ª',
-            'farmacia': 'ğŸ’Š',
-            'petshop': 'ğŸ•',
-            'salao': 'ğŸ’‡',
-            'mercado': 'ğŸ›’',
-            'default': 'ğŸª'
+            'restaurante': '???',
+            'lanchonete': '??',
+            'pizzaria': '??',
+            'cafeteria': '?',
+            'padaria': '??',
+            'academia': '??',
+            'farmacia': '??',
+            'petshop': '??',
+            'salao': '??',
+            'mercado': '??',
+            'default': '??'
         };
         
         // Pegar ID da URL
@@ -242,7 +242,7 @@
             empresaId = getEmpresaId();
             
             if (!empresaId) {
-                alert('Empresa nÃ£o especificada');
+                alert('Empresa não especificada');
                 history.back();
                 return;
             }
@@ -269,7 +269,7 @@
                     console.log('Empresa carregada:', empresaData);
                     renderEmpresa();
                 } else if (response.status === 404) {
-                    alert('Empresa nÃ£o encontrada');
+                    alert('Empresa não encontrada');
                     history.back();
                 } else if (response.status === 401) {
                     window.location.href = '/entrar.html';
@@ -296,7 +296,7 @@
             document.getElementById('empresaNome').textContent = empresa.nome;
             document.getElementById('empresaCategoria').textContent = empresa.ramo || 'Estabelecimento';
             
-            // Ãcone/Logo
+            // Ícone/Logo
             const iconEl = document.getElementById('heroIcon');
             if (empresa.logo) {
                 iconEl.innerHTML = `<img src="${empresa.logo}" alt="${empresa.nome}" onerror="this.parentElement.innerHTML='${ramoIcons[empresa.ramo] || ramoIcons.default}'">`;
@@ -310,59 +310,59 @@
             document.getElementById('totalClientes').textContent = empresa.total_clientes || '-';
             
             // Sobre
-            document.getElementById('empresaDescricao').textContent = empresa.descricao || 'Sem descriÃ§Ã£o disponÃ­vel.';
+            document.getElementById('empresaDescricao').textContent = empresa.descricao || 'Sem descrição disponível.';
             
-            // EndereÃ§o
+            // Endereço
             document.getElementById('empresaEndereco').innerHTML = `
-                ${empresa.endereco || 'EndereÃ§o nÃ£o informado'}<br>
+                ${empresa.endereco || 'Endereço não informado'}<br>
                 ${empresa.cidade ? `${empresa.cidade}, ${empresa.estado || ''}` : ''}
             `;
             
-            // PromoÃ§Ãµes
+            // Promoções
             if (promocoes && promocoes.length > 0) {
                 document.getElementById('promocoesCard').style.display = 'block';
                 renderPromocoes(promocoes);
             }
             
-            // AvaliaÃ§Ãµes
+            // Avaliações
             if (avaliacoes && avaliacoes.length > 0) {
                 document.getElementById('avaliacoesCard').style.display = 'block';
                 renderAvaliacoes(avaliacoes);
             }
         }
         
-        // Renderizar promoÃ§Ãµes
+        // Renderizar promoções
         function renderPromocoes(promocoes) {
             const list = document.getElementById('promocoesList');
             
             list.innerHTML = promocoes.map(promo => {
                 let badge = '';
                 if (promo.pontos_necessarios) {
-                    badge = `<span class="promo-badge">ğŸ’ ${promo.pontos_necessarios} pts</span>`;
+                    badge = `<span class="promo-badge">?? ${promo.pontos_necessarios} pts</span>`;
                 }
                 
                 return `
                     <div class="promo-item">
                         <h4>${promo.nome}</h4>
-                        <p>${promo.descricao || 'PromoÃ§Ã£o especial!'}</p>
+                        <p>${promo.descricao || 'Promoção especial!'}</p>
                         ${badge}
                     </div>
                 `;
             }).join('');
         }
         
-        // Renderizar avaliaÃ§Ãµes
+        // Renderizar avaliações
         function renderAvaliacoes(avaliacoes) {
             const list = document.getElementById('reviewsList');
             
             list.innerHTML = avaliacoes.slice(0, 5).map(review => {
-                const stars = 'â­'.repeat(review.nota);
+                const stars = '?'.repeat(review.nota);
                 const date = new Date(review.created_at).toLocaleDateString('pt-BR');
                 
                 return `
                     <div class="review-item">
                         <div class="review-header">
-                            <span class="review-author">${review.cliente_nome || 'AnÃ´nimo'}</span>
+                            <span class="review-author">${review.cliente_nome || 'Anônimo'}</span>
                             <span class="review-rating">${stars}</span>
                         </div>
                         ${review.comentario ? `<p class="review-comment">${review.comentario}</p>` : ''}
@@ -377,4 +377,5 @@
     </script>
 </body>
 </html>
+
 
