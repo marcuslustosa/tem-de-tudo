@@ -237,14 +237,23 @@
                     throw new Error(result.message || 'Erro ao fazer login');
                 }
                 
-                // A API retorna em result.data
-                const data = result.data;
+                // VERIFICAR: API pode retornar data diretamente OU dentro de result
+                let data = result.data || result;
+                
+                // Se success === true e tem data, usar data
+                if (result.success && result.data) {
+                    data = result.data;
+                } else if (result.token && result.user) {
+                    // API retornou token/user diretamente
+                    data = result;
+                }
                 
                 console.log('Data extraída:', data);
                 console.log('Token:', data?.token);
                 console.log('User:', data?.user);
                 
                 if (!data || !data.token || !data.user) {
+                    console.error('Estrutura inválida:', result);
                     throw new Error('Resposta inválida do servidor');
                 }
                 
