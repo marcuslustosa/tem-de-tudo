@@ -20,10 +20,6 @@ use App\Http\Controllers\API\EmpresaAPIController;
 use App\Http\Controllers\SetupController;
 
 // NOVOS CONTROLLERS - SISTEMA COMPLETO
-use App\Http\Controllers\Api\AuthController as ApiAuthController;
-use App\Http\Controllers\Api\EmpresaController as ApiEmpresaController;
-use App\Http\Controllers\Api\PromocaoController as ApiPromocaoController;
-use App\Http\Controllers\Api\CheckInController;
 use App\Http\Controllers\API\ProdutoController;
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\PagamentoController;
@@ -62,23 +58,17 @@ Route::get('/setup-database', [SetupController::class, 'setupDatabase']);
 // ============================================
 
 // Autenticação
-Route::post('/register', [ApiAuthController::class, 'register']);
-Route::post('/login', [ApiAuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 
 // Empresas (leitura pública)
-Route::get('/empresas', [ApiEmpresaController::class, 'index']);
-Route::get('/empresas/{id}', [ApiEmpresaController::class, 'show']);
+Route::get('/empresas', [EmpresaController::class, 'listEmpresas']);
+Route::get('/empresas/{id}', [EmpresaController::class, 'getEmpresa']);
 
-// Produtos das empresas (leitura pública)
+// Produtos das empresas (leitura pública) 
 Route::get('/empresas/{empresaId}/produtos', [ProdutoController::class, 'index']);
 Route::get('/empresas/{empresaId}/produtos/{id}', [ProdutoController::class, 'show']);
-
-// Promoções (leitura pública)
-Route::get('/promocoes', [ApiPromocaoController::class, 'index']);
-Route::get('/promocoes/{id}', [ApiPromocaoController::class, 'show']);
 
 // Badges (informações públicas)
 Route::get('/badges', [BadgeController::class, 'index']);
@@ -95,20 +85,9 @@ Route::post('/webhook/mercadopago', [PagamentoController::class, 'webhook'])->na
 Route::middleware('auth:sanctum')->group(function () {
     
     // Autenticação e Perfil
-    Route::post('/logout', [ApiAuthController::class, 'logout']);
-    Route::get('/me', [ApiAuthController::class, 'me']);
-    Route::put('/usuario/atualizar', [ApiAuthController::class, 'updateProfile']);
-    Route::post('/usuario/alterar-senha', [ApiAuthController::class, 'changePassword']);
-
-    // Check-ins
-    Route::post('/check-in', [CheckInController::class, 'checkIn']);
-    Route::get('/check-ins', [CheckInController::class, 'history']);
-    Route::get('/check-ins/{id}', [CheckInController::class, 'show']);
-
-    // ========== SISTEMA COMPLETO - CHECK-IN VIA QR CODE ==========
-    Route::post('/checkin/fazer', [MainCheckInController::class, 'fazerCheckIn']);
-    Route::get('/checkin/historico', [MainCheckInController::class, 'meuHistorico']);
-    Route::post('/checkin/validar-qr', [MainCheckInController::class, 'validarQRCode']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'user']);
+    Route::get('/auth/me', [AuthController::class, 'user']);
     
     // ========== SISTEMA VIP E BADGES ==========
     Route::get('/badges/meus', [BadgeController::class, 'meusBadges']);
@@ -120,23 +99,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pagamentos/meus', [PagamentoController::class, 'meusPagamentos']);
     Route::get('/pagamentos/{id}/status', [PagamentoController::class, 'consultarStatus']);
     Route::post('/pagamentos/{id}/cancelar', [PagamentoController::class, 'cancelar']);
-
-    // Empresas (escrita - apenas donos/admin)
-    Route::post('/empresas', [ApiEmpresaController::class, 'store']);
-    Route::put('/empresas/{id}', [ApiEmpresaController::class, 'update']);
+    
+    // ========== SISTEMA CHECK-IN QR CODE ==========
+    Route::post('/checkin/fazer', [MainCheckInController::class, 'fazerCheckIn']);
+    Route::get('/checkin/historico', [MainCheckInController::class, 'meuHistorico']);
+    Route::post('/checkin/validar-qr', [MainCheckInController::class, 'validarQRCode']);
     
     // ========== ROTAS PARA EMPRESAS ==========
-    Route::middleware('can:empresa')->group(function() {
-        // QR Code da empresa
-        Route::post('/empresa/qrcode/gerar', [MainCheckInController::class, 'gerarQRCode']);
-        Route::get('/empresa/checkins', [MainCheckInController::class, 'checkinsEmpresa']);
-        Route::get('/empresa/pagamentos/estatisticas', [PagamentoController::class, 'estatisticasEmpresa']);
-    });
-
-    // Promoções (resgate e cupons)
-    Route::post('/promocoes/{id}/resgatar', [ApiPromocaoController::class, 'resgatar']);
-    Route::get('/cupons', [ApiPromocaoController::class, 'meusCupons']);
-    Route::post('/cupons/{id}/usar', [ApiPromocaoController::class, 'usarCupom']);
+    Route::post('/empresa/qrcode/gerar', [MainCheckInController::class, 'gerarQRCode']);
+    Route::get('/empresa/checkins', [MainCheckInController::class, 'checkinsEmpresa']);
+    Route::get('/empresa/pagamentos/estatisticas', [PagamentoController::class, 'estatisticasEmpresa']);
 
 });
 

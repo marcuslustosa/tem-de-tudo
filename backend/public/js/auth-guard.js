@@ -128,36 +128,11 @@
     console.log('🛡️ Auth Guard ativo' + (requireAuth ? ` (requer: ${requireAuth})` : '') + (requireAdmin ? ' (admin)' : ''));
 })();
 
-                    showMessage('Você não tem permissão para acessar esta página', 'warning');
-                }
-                
-                setTimeout(() => {
-                    window.location.href = correctDashboard;
-                }, 1000);
-                
-                return false;
-            }
-            
-            // Tudo certo!
-            return true;
-            
-        } catch (error) {
-            console.error('Erro ao verificar perfil do usuário:', error);
-            // Em caso de erro, fazer logout
-            logout();
-            return false;
-        }
-    } else {
-        console.warn('Dados do usuário não encontrados. Fazendo logout...');
-        logout();
-        return false;
-    }
-}
-
 /**
  * Verifica apenas se está autenticado (sem verificar perfil)
  * Use apenas em páginas públicas ou comuns a todos
  * @returns {boolean}
+ */
  */
 function checkAuth() {
     const token = localStorage.getItem('tem_de_tudo_token');
