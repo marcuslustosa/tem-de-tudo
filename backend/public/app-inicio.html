@@ -67,7 +67,7 @@
             <div>
                 <div class="greeting">Olá, <span id="userName">...</span></div>
                 <div class="profile-type" id="profileType">
-                    <i class="fas fa-user-circle"></i> Perfil Vivo
+                    <i class="fas fa-spinner fa-spin"></i> Carregando...
                 </div>
             </div>
             <div class="saldo-badge" onclick="location.href='/app-meus-pontos.html'">
@@ -196,8 +196,11 @@
                     
                     if (data.success && data.user) {
                         // Atualizar UI com dados reais
-                        document.getElementById('userName').textContent = data.user.name || 'Usuário';
+                        document.getElementById('userName').textContent = data.user.name || data.user.nome || 'Usuário';
                         document.getElementById('saldoValue').textContent = (data.user.pontos || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                        
+                        // Atualizar perfil dinâmico
+                        updateProfileType(data.user);
                         
                         // Salvar no localStorage para cache
                         localStorage.setItem('user_data', JSON.stringify(data.user));
@@ -211,22 +214,57 @@
                 console.error('Erro ao carregar dados do usuário:', error);
                 
                 // Fallback: usar dados do cache se existir
-                const cachedUser = localStorage.getItem('user_data');
+                const cachedUser = localStorage.getItem('user');
                 if (cachedUser) {
                     try {
                         const user = JSON.parse(cachedUser);
-                        document.getElementById('userName').textContent = user.name || 'Usuário';
+                        document.getElementById('userName').textContent = user.name || user.nome || 'Usuário';
                         document.getElementById('saldoValue').textContent = (user.pontos || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                        updateProfileType(user);
                     } catch {
                         // Se cache inválido, usar dados padrão
-                        document.getElementById('userName').textContent = 'Usuário';
-                        document.getElementById('saldoValue').textContent = '0,00';
+                        setDefaultUserData();
                     }
                 } else {
-                    document.getElementById('userName').textContent = 'Usuário';
-                    document.getElementById('saldoValue').textContent = '0,00';
+                    setDefaultUserData();
                 }
             }
+        }
+
+        // Atualizar tipo de perfil dinamicamente
+        function updateProfileType(user) {
+            const profileTypeElement = document.getElementById('profileType');
+            const userType = user.perfil || user.tipo || user.user_type || 'cliente';
+            
+            let profileText = '';
+            let iconClass = '';
+            
+            switch(userType) {
+                case 'cliente':
+                    profileText = `Plano Cliente`;
+                    iconClass = 'fas fa-user';
+                    break;
+                case 'empresa':
+                    profileText = `Plano Empresa`;
+                    iconClass = 'fas fa-building';
+                    break;
+                case 'admin':
+                    profileText = `Administrador`;
+                    iconClass = 'fas fa-crown';
+                    break;
+                default:
+                    profileText = `Plano ${userType.charAt(0).toUpperCase() + userType.slice(1)}`;
+                    iconClass = 'fas fa-user-circle';
+            }
+            
+            profileTypeElement.innerHTML = `<i class="${iconClass}"></i> ${profileText}`;
+        }
+
+        // Definir dados padrão
+        function setDefaultUserData() {
+            document.getElementById('userName').textContent = 'Usuário';
+            document.getElementById('saldoValue').textContent = '0,00';
+            document.getElementById('profileType').innerHTML = '<i class="fas fa-user-circle"></i> Carregando...';
         }
 
         // Carregar empresas próximas
