@@ -25,10 +25,24 @@ return new class extends Migration
             $table->index('categoria');
             $table->index('ativo');
         });
+
+        // Adicionar foreign key na tabela pagamentos após produtos existir
+        if (Schema::hasTable('pagamentos')) {
+            Schema::table('pagamentos', function (Blueprint $table) {
+                $table->foreign('produto_id')->references('id')->on('produtos')->onDelete('set null');
+            });
+        }
     }
 
     public function down()
     {
+        // Remover foreign key primeiro se existir
+        if (Schema::hasTable('pagamentos')) {
+            Schema::table('pagamentos', function (Blueprint $table) {
+                $table->dropForeign(['produto_id']);
+            });
+        }
+        
         Schema::dropIfExists('produtos');
     }
 };

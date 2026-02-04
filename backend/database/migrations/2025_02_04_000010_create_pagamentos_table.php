@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('empresa_id')->constrained()->onDelete('cascade');
-            $table->foreignId('produto_id')->nullable()->constrained()->onDelete('set null');
+            $table->unsignedBigInteger('produto_id')->nullable(); // Temporariamente sem foreign key
             
             // Dados do Mercado Pago
             $table->string('mercadopago_payment_id')->nullable()->unique();
