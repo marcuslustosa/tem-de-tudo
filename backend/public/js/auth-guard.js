@@ -133,7 +133,6 @@
  * Use apenas em páginas públicas ou comuns a todos
  * @returns {boolean}
  */
- */
 function checkAuth() {
     const token = localStorage.getItem('tem_de_tudo_token');
     if (!token) {
