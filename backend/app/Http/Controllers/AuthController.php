@@ -160,6 +160,23 @@ class AuthController extends Controller
                         'error' => $e->getMessage()
                     ]);
                 }
+                
+                // Bônus de adesão: 195 pontos
+                try {
+                    \App\Models\Ponto::create([
+                        'user_id' => $user->id,
+                        'pontos' => 195,
+                        'tipo' => 'bonus_adesao',
+                        'descricao' => 'Bônus de boas-vindas Tem de Tudo',
+                        'data' => now()
+                    ]);
+                    Log::info('Bônus de adesão de 195 pontos creditado', ['user_id' => $user->id]);
+                } catch (\Exception $e) {
+                    Log::warning('Erro ao creditar bônus de adesão', [
+                        'user_id' => $user->id,
+                        'error' => $e->getMessage()
+                    ]);
+                }
             }
 
             // Gerar QR Code para empresa (se aplicável)
