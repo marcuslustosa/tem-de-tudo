@@ -3,214 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Painel - Tem de Tudo</title>
+    <title>Início - Vale Bônus</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">
-    
-    <!-- EmailJS SDK para notificações por email (GRÁTIS - 300 emails/mês) -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
-        .main {
-            padding: var(--space-6) var(--space-4);
-            max-width: 1200px;
-            margin: 0 auto;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
-        .stats-row {
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        /* Header com Gradiente */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 24px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        
+        .header-left p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Main Container */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Cards de Stats */
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--space-5);
-            margin-bottom: var(--space-8);
+            gap: 16px;
+            margin-bottom: 24px;
         }
         
         .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
+            background: #2a2a3e;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-radius: 16px;
+            padding: 20px;
             transition: all 0.3s;
         }
         
         .stat-card:hover {
-            border-color: var(--border-hover);
-            transform: translateY(-2px);
+            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateY(-4px);
         }
         
         .stat-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-4);
+            margin-bottom: 16px;
         }
         
         .stat-label {
-            font-size: 13px;
+            font-size: 12px;
             text-transform: uppercase;
-            color: var(--text-secondary);
+            color: #999;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
         
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-md);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(102, 126, 234, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            background: rgba(102, 126, 234, 0.15);
-            color: var(--purple-1);
+            color: #667eea;
+            font-size: 18px;
         }
         
         .stat-value {
-            font-size: 48px;
+            font-size: 36px;
             font-weight: 900;
-            background: var(--gradient-purple);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: var(--space-2);
+            margin-bottom: 4px;
         }
         
         .stat-subtitle {
             font-size: 13px;
-            color: var(--text-muted);
+            color: #999;
         }
         
-        .qrcode-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
+        /* Section */
+        .section {
+            background: #2a2a3e;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+        
+        /* QR Code */
+        .qrcode-container {
             text-align: center;
         }
         
         .qrcode-box {
             width: 200px;
             height: 200px;
-            margin: var(--space-6) auto;
-            background: white;
-            border-radius: var(--radius-md);
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 12px;
+            padding: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: var(--space-4);
         }
         
+        .qrcode-box canvas,
         .qrcode-box img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .btn-qr {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
             width: 100%;
-            height: 100%;
-        }
-        
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: var(--space-5);
-            color: var(--text-primary);
-        }
-        
-        .promocao-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-5);
-            margin-bottom: var(--space-4);
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             transition: all 0.3s;
         }
         
-        .promocao-card:hover {
-            border-color: var(--border-hover);
+        .btn-qr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Promoções */
+        .promo-card {
+            background: #1a1a2e;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+        
+        .promo-card:hover {
+            border-color: rgba(102, 126, 234, 0.3);
             transform: translateX(4px);
         }
         
-        .promocao-header {
+        .promo-header {
             display: flex;
             justify-content: space-between;
-            align-items: start;
-            margin-bottom: var(--space-3);
+            align-items: flex-start;
+            margin-bottom: 12px;
         }
         
-        .promocao-title {
-            font-size: 16px;
+        .promo-title {
+            font-size: 15px;
             font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: var(--space-1);
+            margin-bottom: 4px;
         }
         
-        .promocao-empresa {
+        .promo-empresa {
             font-size: 13px;
-            color: var(--text-secondary);
+            color: #999;
         }
         
-        .promocao-pontos {
+        .promo-badge {
             background: rgba(102, 126, 234, 0.15);
-            color: var(--purple-1);
+            color: #667eea;
             padding: 6px 12px;
-            border-radius: var(--radius-full);
-            font-size: 14px;
+            border-radius: 20px;
+            font-size: 13px;
             font-weight: 700;
+            white-space: nowrap;
         }
         
-        .transacao-item {
+        .promo-desc {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        
+        .btn-resgatar {
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-resgatar:hover {
+            background: rgba(102, 126, 234, 0.25);
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Histórico */
+        .historico-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: var(--space-4);
-            border-bottom: 1px solid var(--border-color);
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
         }
         
-        .transacao-item:last-child {
+        .historico-item:last-child {
             border-bottom: none;
         }
         
-        .transacao-info {
+        .historico-info {
             flex: 1;
         }
         
-        .transacao-title {
+        .historico-title {
             font-size: 14px;
             font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: var(--space-1);
+            margin-bottom: 4px;
         }
         
-        .transacao-date {
+        .historico-date {
             font-size: 12px;
-            color: var(--text-muted);
+            color: #999;
         }
         
-        .transacao-pontos {
+        .historico-pontos {
             font-size: 16px;
             font-weight: 700;
         }
         
-        .transacao-pontos.gain {
-            color: var(--success);
+        .historico-pontos.gain {
+            color: #10b981;
         }
         
-        .transacao-pontos.loss {
-            color: var(--error);
+        .historico-pontos.loss {
+            color: #ef4444;
         }
         
-        .btn-show-qr {
-            width: 100%;
-            margin-top: var(--space-4);
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
         }
         
-        /* Bottom Navigation (App Style) */
+        .empty-state i {
+            font-size: 48px;
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+        
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-color);
+            background: #2a2a3e;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
             display: flex;
             justify-content: space-around;
             padding: 12px 0;
             z-index: 1000;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
         }
         
         .nav-item {
@@ -220,20 +348,15 @@
             gap: 4px;
             padding: 8px 16px;
             text-decoration: none;
-            color: var(--text-muted);
+            color: #999;
             transition: all 0.3s;
-            cursor: pointer;
-            border-radius: var(--radius-md);
+            border-radius: 8px;
         }
         
-        .nav-item:hover {
-            background: rgba(102, 126, 234, 0.1);
-            color: var(--purple-1);
-        }
-        
+        .nav-item:hover,
         .nav-item.active {
-            color: var(--purple-1);
-            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
         }
         
         .nav-item i {
@@ -244,33 +367,48 @@
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
         }
         
-        .main {
-            padding-bottom: 80px; /* Espaço para bottom nav */
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(102, 126, 234, 0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <div class="header">
         <div class="header-content">
             <div class="header-left">
-                <h1>Meu Painel</h1>
-                <p>Bem-vindo de volta, <span id="userName">Cliente</span></p>
+                <h1>Olá, <span id="userName">Cliente</span>!</h1>
+                <p>Bem-vindo ao Vale Bônus</p>
             </div>
-            <div class="header-right">
-                <button class="btn-danger" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Sair
-                </button>
-            </div>
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Sair
+            </button>
         </div>
     </div>
     
     <div class="main">
         <!-- Stats -->
-        <div class="stats-row">
+        <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-header">
                     <span class="stat-label">Meus Pontos</span>
@@ -284,13 +422,13 @@
             
             <div class="stat-card">
                 <div class="stat-header">
-                    <span class="stat-label">Promoções Ativas</span>
+                    <span class="stat-label">Promoções</span>
                     <div class="stat-icon">
                         <i class="fas fa-tags"></i>
                     </div>
                 </div>
                 <div class="stat-value" id="totalPromocoes">0</div>
-                <div class="stat-subtitle">Disponíveis para resgatar</div>
+                <div class="stat-subtitle">Disponíveis agora</div>
             </div>
             
             <div class="stat-card">
@@ -301,49 +439,73 @@
                     </div>
                 </div>
                 <div class="stat-value" id="pontosMes">0</div>
-                <div class="stat-subtitle">Pontos acumulados</div>
+                <div class="stat-subtitle">Pontos ganhos</div>
             </div>
         </div>
         
         <!-- QR Code -->
-        <div class="qrcode-section">
-            <h3 class="section-title">Meu QR Code</h3>
-            <p style="color: var(--text-secondary); margin-bottom: var(--space-4);">
-                Apresente este código em estabelecimentos parceiros para ganhar pontos
-            </p>
-            <div class="qrcode-box" id="qrcodeBox">
-                <div class="loading-spinner"></div>
+        <div class="section">
+            <div class="qrcode-container">
+                <h3 class="section-title">Meu QR Code</h3>
+                <p style="color: #999; font-size: 14px; margin-bottom: 12px;">
+                    Apresente este código para ganhar pontos
+                </p>
+                <div class="qrcode-box" id="qrcodeBox">
+                    <div class="loading-spinner"></div>
+                </div>
+                <button class="btn-qr" onclick="showFullQR()">
+                    <i class="fas fa-expand"></i>
+                    Ver em Tela Cheia
+                </button>
             </div>
-            <button class="btn-primary btn-show-qr" onclick="showFullQR()">
-                <i class="fas fa-expand"></i>
-                Mostrar QR Code em Tela Cheia
-            </button>
         </div>
         
-        <!-- Promoções -->
-        <div style="margin-top: var(--space-8);">
+        <!-- Promoções Disponíveis -->
+        <div class="section">
             <h3 class="section-title">Promoções Disponíveis</h3>
             <div id="promocoesList">
-                <div class="loading" style="text-align: center; padding: var(--space-8);">
+                <div class="loading">
                     <div class="loading-spinner"></div>
-                    <p style="margin-top: var(--space-4); color: var(--text-muted);">Carregando promoções...</p>
+                    <p>Carregando promoções...</p>
                 </div>
             </div>
         </div>
         
-        <!-- Histórico -->
-        <div style="margin-top: var(--space-8);">
-            <h3 class="section-title">Histórico de Pontos</h3>
-            <div class="card">
-                <div id="historicoList">
-                    <div class="loading" style="text-align: center; padding: var(--space-8);">
-                        <div class="loading-spinner"></div>
-                        <p style="margin-top: var(--space-4); color: var(--text-muted);">Carregando histórico...</p>
-                    </div>
+        <!-- Histórico de Pontos -->
+        <div class="section">
+            <h3 class="section-title">Histórico Recente</h3>
+            <div id="historicoList">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando histórico...</p>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/app-inicio.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/app-buscar.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Buscar</span>
+        </a>
+        <a href="/app-meus-pontos.html" class="nav-item">
+            <i class="fas fa-wallet"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="/app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Promoções</span>
+        </a>
+        <a href="/app-perfil.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </nav>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
@@ -358,7 +520,6 @@
         if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
             localStorage.clear();
             window.location.href = '/entrar.html';
-            return;
         }
         
         let user;
@@ -367,21 +528,20 @@
             if (!user || !user.perfil || user.perfil !== 'cliente') {
                 localStorage.clear();
                 window.location.href = '/entrar.html';
-                return;
             }
         } catch (e) {
             localStorage.clear();
             window.location.href = '/entrar.html';
-            return;
         }
         
         // Exibir nome do usuário
-        document.getElementById('userName').textContent = user.name || user.email;
+        document.getElementById('userName').textContent = user.name || user.email.split('@')[0];
         
         function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/entrar.html';
+            if (confirm('Deseja realmente sair?')) {
+                localStorage.clear();
+                window.location.href = '/entrar.html';
+            }
         }
         
         // Gerar QR Code
@@ -400,7 +560,6 @@
         }
         
         function showFullQR() {
-            // Redirecionar para página fullscreen do QR Code
             window.location.href = '/app-qrcode.html';
         }
         
@@ -412,7 +571,7 @@
                     'Accept': 'application/json'
                 };
                 
-                // Carregar pontos do usuário
+                // Carregar pontos
                 const pontosResponse = await fetch(`${API_URL}/cliente/pontos`, { headers });
                 const pontosData = await pontosResponse.json();
                 
@@ -443,57 +602,67 @@
                 
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
+                // Dados de fallback para desenvolvimento
+                document.getElementById('totalPontos').textContent = '0';
+                document.getElementById('totalPromocoes').textContent = '0';
+                document.getElementById('pontosMes').textContent = '0';
+                renderPromocoes([]);
+                renderHistorico([]);
+                generateQRCode();
             }
         }
         
         function renderPromocoes(promocoes) {
             const html = promocoes.length > 0 ? promocoes.map(promo => `
-                <div class="promocao-card">
-                    <div class="promocao-header">
+                <div class="promo-card">
+                    <div class="promo-header">
                         <div>
-                            <div class="promocao-title">${promo.titulo}</div>
-                            <div class="promocao-empresa">${promo.empresa_nome || 'Estabelecimento'}</div>
+                            <div class="promo-title">${promo.titulo}</div>
+                            <div class="promo-empresa">${promo.empresa_nome || 'Estabelecimento Parceiro'}</div>
                         </div>
-                        <div class="promocao-pontos">
+                        <div class="promo-badge">
                             ${promo.pontos_necessarios} pts
                         </div>
                     </div>
-                    <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: var(--space-3);">
-                        ${promo.descricao || 'Sem descrição'}
+                    <p class="promo-desc">
+                        ${promo.descricao || 'Promoção exclusiva'}
                     </p>
-                    <button class="btn-primary" onclick="resgatarPromocao(${promo.id})">
+                    <button class="btn-resgatar" onclick="resgatarPromocao(${promo.id})">
                         <i class="fas fa-gift"></i> Resgatar
                     </button>
                 </div>
-            `).join('') : '<p style="color: var(--text-muted); text-align: center; padding: var(--space-6);">Nenhuma promoção disponível</p>';
+            `).join('') : `
+                <div class="empty-state">
+                    <i class="fas fa-tags"></i>
+                    <p>Nenhuma promoção disponível no momento</p>
+                </div>
+            `;
             
             document.getElementById('promocoesList').innerHTML = html;
         }
         
         function renderHistorico(transacoes) {
-            const html = transacoes.length > 0 ? transacoes.map(t => `
-                <div class="transacao-item">
-                    <div class="transacao-info">
-                        <div class="transacao-title">${t.descricao || 'Transação'}</div>
-                        <div class="transacao-date">${new Date(t.created_at).toLocaleDateString('pt-BR')}</div>
+            const html = transacoes.length > 0 ? transacoes.slice(0, 5).map(t => `
+                <div class="historico-item">
+                    <div class="historico-info">
+                        <div class="historico-title">${t.descricao || 'Transação'}</div>
+                        <div class="historico-date">${new Date(t.created_at).toLocaleDateString('pt-BR')}</div>
                     </div>
-                    <div class="transacao-pontos ${t.tipo === 'ganho' ? 'gain' : 'loss'}">
+                    <div class="historico-pontos ${t.tipo === 'ganho' ? 'gain' : 'loss'}">
                         ${t.tipo === 'ganho' ? '+' : '-'}${t.pontos}
                     </div>
                 </div>
-            `).join('') : '<p style="color: var(--text-muted); text-align: center; padding: var(--space-6);">Nenhuma transação ainda</p>';
+            `).join('') : `
+                <div class="empty-state">
+                    <i class="fas fa-history"></i>
+                    <p>Nenhuma transação ainda</p>
+                </div>
+            `;
             
             document.getElementById('historicoList').innerHTML = html;
         }
         
         async function resgatarPromocao(id) {
-            const promo = promocoes.find(p => p.id === id);
-            if (!promo) return;
-            
-            if (!confirm(`Deseja resgatar a promoção "${promo.nome}"?\n\nApós resgatar, você terá que apresentar no estabelecimento.`)) {
-                return;
-            }
-            
             try {
                 const response = await fetch(`${API_URL}/cliente/resgatar-promocao/${id}`, {
                     method: 'POST',
@@ -507,8 +676,7 @@
                 const result = await response.json();
                 
                 if (response.ok && result.success) {
-                    alert('✅ Promoção resgatada com sucesso!\n\nVocê já pode usar no estabelecimento. Confira em "Cupons".');
-                    // Recarregar dados
+                    alert('✅ Promoção resgatada com sucesso!\n\nConfira em "Cupons".');
                     loadData();
                 } else {
                     alert('❌ ' + (result.message || 'Erro ao resgatar promoção'));
@@ -521,68 +689,6 @@
         
         // Carregar dados ao iniciar
         loadData();
-    </script>
-    
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <a href="/dashboard-cliente.html" class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="/app-empresas.html" class="nav-item">
-            <i class="fas fa-store"></i>
-            <span>Empresas</span>
-        </a>
-        <a href="/app-promocoes.html" class="nav-item">
-            <i class="fas fa-tags"></i>
-            <span>Promoções</span>
-        </a>
-        <a href="/app-qrcode.html" class="nav-item">
-            <i class="fas fa-qrcode"></i>
-            <span>Meu QR</span>
-        </a>
-        <a href="/app-perfil-cliente.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
-    </nav>
-    
-    <!-- Sistema de Notificações -->
-    <script src="/js/notification-system-simple.js"></script>
-    <script>
-        // Exemplo de uso: Notificação de boas-vindas ao carregar
-        document.addEventListener('DOMContentLoaded', () => {
-            // Cria notificação de boas-vindas (apenas na primeira visita)
-            const isFirstVisit = !localStorage.getItem('dashboard_visited');
-            
-            if (isFirstVisit) {
-                localStorage.setItem('dashboard_visited', 'true');
-                
-                // Aguarda 2 segundos para melhor experiência
-                setTimeout(() => {
-                    NotificationSystem.add({
-                        title: '🎉 Bem-vindo ao Tem de Tudo!',
-                        message: 'Explore empresas, ganhe bônus e aproveite promoções exclusivas!',
-                        icon: 'fa-rocket',
-                        type: 'info',
-                        url: '/app-empresas.html'
-                    });
-                }, 2000);
-            }
-        });
-        
-        // Função para demonstração de Push Notification quando cliente clica em algo
-        function demonstrarPushNotification() {
-            if (Notification.permission === 'default') {
-                // Pede permissão de forma educada
-                if (confirm('Quer receber notificações de promoções e bônus?\n\nClique em OK para ativar!')) {
-                    NotificationSystem.enablePush();
-                }
-            } else if (Notification.permission === 'granted') {
-                // Já tem permissão, mostra notificação
-                NotificationSystem.testPush();
-            }
-        }
     </script>
 </body>
 </html>
