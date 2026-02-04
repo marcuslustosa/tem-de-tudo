@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class SimpleSeeder extends Seeder
+class SafeSeeder extends Seeder
 {
     /**
      * SEEDER SEGURO - PRESERVA TODOS OS DADOS REAIS

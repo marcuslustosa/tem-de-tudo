@@ -15,17 +15,164 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #0a0a0f; min-height: 100vh; padding-bottom: 90px; color: #fff; }
-        .header { background: linear-gradient(145deg, #1a1a2e, #16213e); padding: 20px; border-bottom: 1px solid rgba(102, 126, 234, 0.1); text-align: center; }
-        .header h1 { font-size: 22px; font-weight: 800; }
-        .categories-grid { padding: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-        .category-card { background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 20px; padding: 32px 20px; text-align: center; border: 2px solid rgba(102, 126, 234, 0.1); transition: all 0.3s; cursor: pointer; }
-        .category-card:hover { border-color: #667eea; transform: translateY(-8px); box-shadow: 0 16px 48px rgba(102, 126, 234, 0.3); }
-        .category-icon { font-size: 56px; margin-bottom: 16px; }
-        .category-name { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-        .category-count { font-size: 13px; color: #b0b0b0; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(145deg, #1a1a2e, #16213e); border-top: 1px solid rgba(102, 126, 234, 0.2); padding: 12px 8px 20px; display: flex; justify-content: space-around; box-shadow: 0 -10px 40px rgba(0,0,0,0.3); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; color: #b0b0b0; font-size: 11px; font-weight: 600; padding: 8px; }
-        .nav-item i { font-size: 22px; }
+        
+        .header { 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            padding: 20px; 
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1); 
+            text-align: center; 
+        }
+        .header h1 { 
+            font-size: 22px; 
+            font-weight: 800; 
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .categories-grid { 
+            padding: 20px; 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 16px; 
+        }
+        
+        .category-card { 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            border-radius: 20px; 
+            padding: 24px 16px; 
+            text-align: center; 
+            border: 2px solid rgba(102, 126, 234, 0.1); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .category-card:hover {
+            border-color: #667eea;
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        }
+        
+        .category-card:hover::before {
+            opacity: 1;
+        }
+        
+        .category-card:active {
+            transform: translateY(-4px) scale(1.01);
+        }
+        
+        .category-icon { 
+            font-size: 48px; 
+            margin-bottom: 16px; 
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        
+        .category-card:hover .category-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+        
+        .category-name { 
+            font-size: 16px; 
+            font-weight: 700; 
+            margin-bottom: 6px; 
+            position: relative;
+            z-index: 1;
+        }
+        
+        .category-count { 
+            font-size: 13px; 
+            color: #b0b0b0; 
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Cores especÃ­ficas para cada categoria */
+        .category-card[data-category="restaurantes"] .category-icon { color: #ff6b6b; }
+        .category-card[data-category="beleza"] .category-icon { color: #ff9ff3; }
+        .category-card[data-category="fitness"] .category-icon { color: #51cf66; }
+        .category-card[data-category="servicos"] .category-icon { color: #ffd43b; }
+        .category-card[data-category="lazer"] .category-icon { color: #74c0fc; }
+        .category-card[data-category="saude"] .category-icon { color: #ff8cc8; }
+        
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: linear-gradient(145deg, #1a1a2e, #16213e); 
+            border-top: 1px solid rgba(102, 126, 234, 0.2); 
+            padding: 12px 8px 20px; 
+            display: flex; 
+            justify-content: space-around; 
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.3); 
+        }
+        
+        .nav-item { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 6px; 
+            text-decoration: none; 
+            color: #b0b0b0; 
+            font-size: 11px; 
+            font-weight: 600; 
+            padding: 8px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+        
+        .nav-item.active {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+        
+        .nav-item i { 
+            font-size: 22px; 
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-item:hover i {
+            transform: scale(1.1);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 480px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .category-card {
+                padding: 20px 16px;
+            }
+            
+            .category-icon {
+                font-size: 40px;
+            }
+        }
     </style>
     <script src="/js/config.js"></script>
     <script src="/js/auth-manager.js" defer></script>
@@ -39,41 +186,41 @@
 <body>
     <div class="header"><h1>Categorias</h1></div>
     <div class="categories-grid">
-        <div class="category-card" onclick="location.href='app-empresas.html?cat=restaurantes'">
+        <div class="category-card" data-category="restaurantes" onclick="location.href='app-empresas.html?cat=restaurantes'">
             <div class="category-icon"><i class="fas fa-utensils"></i></div>
             <div class="category-name">Restaurantes</div>
-            <div class="category-count">47 estabelecimentos</div>
+            <div class="category-count">6 estabelecimentos</div>
         </div>
-        <div class="category-card" onclick="location.href='app-empresas.html?cat=beleza'">
+        <div class="category-card" data-category="beleza" onclick="location.href='app-empresas.html?cat=beleza'">
             <div class="category-icon"><i class="fas fa-spa"></i></div>
-            <div class="category-name">Beleza & Estética</div>
-            <div class="category-count">23 estabelecimentos</div>
+            <div class="category-name">Beleza & EstÃ©tica</div>
+            <div class="category-count">3 estabelecimentos</div>
         </div>
-        <div class="category-card" onclick="location.href='app-empresas.html?cat=fitness'">
+        <div class="category-card" data-category="fitness" onclick="location.href='app-empresas.html?cat=fitness'">
             <div class="category-icon"><i class="fas fa-dumbbell"></i></div>
             <div class="category-name">Fitness</div>
-            <div class="category-count">12 estabelecimentos</div>
+            <div class="category-count">2 estabelecimentos</div>
         </div>
-        <div class="category-card" onclick="location.href='app-empresas.html?cat=servicos'">
+        <div class="category-card" data-category="servicos" onclick="location.href='app-empresas.html?cat=servicos'">
             <div class="category-icon"><i class="fas fa-tools"></i></div>
-            <div class="category-name">Serviços</div>
-            <div class="category-count">31 estabelecimentos</div>
+            <div class="category-name">ServiÃ§os</div>
+            <div class="category-count">4 estabelecimentos</div>
         </div>
-        <div class="category-card" onclick="location.href='app-empresas.html?cat=lazer'">
+        <div class="category-card" data-category="lazer" onclick="location.href='app-empresas.html?cat=lazer'">
             <div class="category-icon"><i class="fas fa-ticket-alt"></i></div>
             <div class="category-name">Lazer</div>
-            <div class="category-count">18 estabelecimentos</div>
+            <div class="category-count">8 estabelecimentos</div>
         </div>
-        <div class="category-card" onclick="location.href='app-empresas.html?cat=saude'">
+        <div class="category-card" data-category="saude" onclick="location.href='app-empresas.html?cat=saude'">
             <div class="category-icon"><i class="fas fa-heartbeat"></i></div>
-            <div class="category-name">Saúde</div>
-            <div class="category-count">15 estabelecimentos</div>
+            <div class="category-name">SaÃºde</div>
+            <div class="category-count">5 estabelecimentos</div>
         </div>
     </div>
     <nav class="bottom-nav">
-        <a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>InÃ­cio</span></a>
         <a href="app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-        <a href="app-promocoes.html" class="nav-item"><i class="fas fa-gift"></i><span>Promoções</span></a>
+        <a href="app-promocoes.html" class="nav-item"><i class="fas fa-gift"></i><span>PromoÃ§Ãµes</span></a>
         <a href="app-notificacoes.html" class="nav-item"><i class="fas fa-bell"></i><span>Avisos</span></a>
         <a href="app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
     </nav>
