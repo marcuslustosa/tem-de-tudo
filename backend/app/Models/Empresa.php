@@ -49,6 +49,30 @@ class Empresa extends Model
     }
 
     /**
+     * Relacionamento com pagamentos
+     */
+    public function pagamentos()
+    {
+        return $this->hasMany(Pagamento::class);
+    }
+
+    /**
+     * Relacionamento com produtos
+     */
+    public function produtos()
+    {
+        return $this->hasMany(Produto::class);
+    }
+
+    /**
+     * Produtos ativos da empresa
+     */
+    public function produtosAtivos()
+    {
+        return $this->hasMany(Produto::class)->where('ativo', true);
+    }
+
+    /**
      * Relacionamento com pontos
      */
     public function pontos()

@@ -136,23 +136,122 @@
         let categoriaAtual = 'todos';
         let viewMode = 'grid';
 
-        // Dados mockados
-        const empresasMock = [
-            {id: 1, nome: 'Sabor e Arte', descricao: 'Restaurante brasileiro', categoria: 'alimentacao', logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400', points_multiplier: 1.5},
-            {id: 2, nome: 'Bella Napoli', descricao: 'Pizzaria artesanal', categoria: 'alimentacao', logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400', points_multiplier: 2},
-            {id: 3, nome: 'FitLife Academia', descricao: 'Academia completa', categoria: 'saude', logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', points_multiplier: 1},
-            {id: 4, nome: 'Beleza Total', descricao: 'Salão de beleza', categoria: 'beleza', logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', points_multiplier: 1.2},
-            {id: 5, nome: 'Café & Cia', descricao: 'Cafeteria premium', categoria: 'alimentacao', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', points_multiplier: 1.5},
-            {id: 6, nome: 'Pet Shop Amigo Fiel', descricao: 'Pet Shop completo', categoria: 'servicos', logo: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400', points_multiplier: 1},
-            {id: 7, nome: 'Farmácia Saúde Plus', descricao: 'Farmácia 24h', categoria: 'saude', logo: 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400', points_multiplier: 1.3},
-            {id: 8, nome: 'Burger Gourmet', descricao: 'Hamburgueria artesanal', categoria: 'alimentacao', logo: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400', points_multiplier: 2},
-            {id: 9, nome: 'Zen Spa', descricao: 'Spa e massagens', categoria: 'beleza', logo: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400', points_multiplier: 1.5},
-            {id: 10, nome: 'Auto Center Premium', descricao: 'Oficina mecânica', categoria: 'servicos', logo: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400', points_multiplier: 1}
-        ];
+        // Função para fazer requisições autenticadas
+        async function apiRequest(url, options = {}) {
+            const token = localStorage.getItem('auth_token');
+            
+            const headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            };
+            
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            
+            const response = await fetch(url, {
+                ...options,
+                headers: { ...headers, ...(options.headers || {}) }
+            });
+            
+            if (response.status === 401) {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('user_data');
+                window.location.href = '/entrar.html';
+                return null;
+            }
+            
+            return response;
+        }
+
+        // Carregar empresas da API
+        async function loadEmpresas() {
+            try {
+                // Construir URL com parâmetros
+                const urlParams = new URLSearchParams(window.location.search);
+                const query = urlParams.get('q') || '';
+                const category = urlParams.get('category') || '';
+                
+                let apiUrl = '/api/empresas?';
+                if (query) apiUrl += `search=${encodeURIComponent(query)}&`;
+                if (category) apiUrl += `categoria=${encodeURIComponent(category)}&`;
+                
+                const response = await apiRequest(apiUrl + 'limit=50');
+                
+                if (response && response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.success && data.empresas) {
+                        todasEmpresas = data.empresas;
+                        
+                        // Se veio categoria da URL, ativar filtro
+                        if (category) {
+                            categoriaAtual = category;
+                            const categoryChip = document.querySelector(`.filter-chip[data-category="${category}"]`);
+                            if (categoryChip) {
+                                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                                categoryChip.classList.add('active');
+                            }
+                        }
+                        
+                        // Se veio busca da URL, preencher campo
+                        if (query) {
+                            document.getElementById('searchInput').value = query;
+                        }
+                        
+                        filtrarEmpresas(query.toLowerCase());
+                        return;
+                    }
+                }
+                
+                // Se falhar, usar fallback
+                loadEmpresasFallback();
+            } catch (error) {
+                console.error('Erro ao carregar empresas:', error);
+                loadEmpresasFallback();
+            }
+        }
+
+        // Fallback com empresas mockadas
+        function loadEmpresasFallback() {
+            const empresasMock = [
+                {id: 1, nome: 'Sabor e Arte', descricao: 'Restaurante brasileiro', categoria: 'alimentacao', logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400', points_multiplier: 1.5},
+                {id: 2, nome: 'Bella Napoli', descricao: 'Pizzaria artesanal', categoria: 'alimentacao', logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400', points_multiplier: 2},
+                {id: 3, nome: 'FitLife Academia', descricao: 'Academia completa', categoria: 'saude', logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', points_multiplier: 1},
+                {id: 4, nome: 'Beleza Total', descricao: 'Salão de beleza', categoria: 'beleza', logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', points_multiplier: 1.2},
+                {id: 5, nome: 'Café & Cia', descricao: 'Cafeteria premium', categoria: 'alimentacao', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', points_multiplier: 1.5},
+                {id: 6, nome: 'Pet Shop Amigo Fiel', descricao: 'Pet Shop completo', categoria: 'servicos', logo: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400', points_multiplier: 1},
+                {id: 7, nome: 'Farmácia Saúde Plus', descricao: 'Farmácia 24h', categoria: 'saude', logo: 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400', points_multiplier: 1.3},
+                {id: 8, nome: 'Burger Gourmet', descricao: 'Hamburgueria artesanal', categoria: 'alimentacao', logo: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400', points_multiplier: 2},
+                {id: 9, nome: 'Zen Spa', descricao: 'Spa e massagens', categoria: 'beleza', logo: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400', points_multiplier: 1.5},
+                {id: 10, nome: 'Auto Center Premium', descricao: 'Oficina mecânica', categoria: 'servicos', logo: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400', points_multiplier: 1}
+            ];
+            
+            todasEmpresas = empresasMock;
+            
+            // Aplicar filtros da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('q') || '';
+            const category = urlParams.get('category') || '';
+            
+            if (category) {
+                categoriaAtual = category;
+                const categoryChip = document.querySelector(`.filter-chip[data-category="${category}"]`);
+                if (categoryChip) {
+                    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                    categoryChip.classList.add('active');
+                }
+            }
+            
+            if (query) {
+                document.getElementById('searchInput').value = query;
+            }
+            
+            filtrarEmpresas(query.toLowerCase());
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
-            todasEmpresas = empresasMock;
-            filtrarEmpresas();
+            loadEmpresas();
             
             // Filtros
             document.querySelectorAll('.filter-chip').forEach(chip => {
@@ -161,12 +260,35 @@
                     chip.classList.add('active');
                     categoriaAtual = chip.dataset.category;
                     filtrarEmpresas();
+                    
+                    // Atualizar URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (categoriaAtual === 'todos') {
+                        urlParams.delete('category');
+                    } else {
+                        urlParams.set('category', categoriaAtual);
+                    }
+                    const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
+                    window.history.replaceState({}, '', newUrl);
                 });
             });
 
             // Busca
             document.getElementById('searchInput').addEventListener('input', (e) => {
-                filtrarEmpresas(e.target.value.toLowerCase());
+                const searchTerm = e.target.value.toLowerCase();
+                filtrarEmpresas(searchTerm);
+                
+                // Atualizar URL
+                const urlParams = new URLSearchParams(window.location.search);
+                if (searchTerm.trim()) {
+                    urlParams.set('q', searchTerm.trim());
+                } else {
+                    urlParams.delete('q');
+                }
+                const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
+                window.history.replaceState({}, '', newUrl);
+            });
+        });
             });
         });
 

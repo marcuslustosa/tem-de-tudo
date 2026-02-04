@@ -36,7 +36,14 @@ class User extends Authenticatable implements JWTSubject
         'security_notifications',
         'promotional_notifications',
         'ultimo_login',
-        'ip_ultimo_login'
+        'ip_ultimo_login',
+        'pontos_lifetime',
+        'valor_gasto_total',
+        'dias_consecutivos',
+        'ultimo_checkin',
+        'empresas_visitadas',
+        'multiplicador_pontos',
+        'posicao_ranking'
     ];
 
     /**
@@ -67,6 +74,13 @@ class User extends Authenticatable implements JWTSubject
             'points_notifications' => 'boolean',
             'security_notifications' => 'boolean',
             'promotional_notifications' => 'boolean',
+            'pontos_lifetime' => 'integer',
+            'valor_gasto_total' => 'integer',
+            'dias_consecutivos' => 'integer',
+            'ultimo_checkin' => 'date',
+            'empresas_visitadas' => 'integer',
+            'multiplicador_pontos' => 'decimal:2',
+            'posicao_ranking' => 'integer'
         ];
     }
 
@@ -95,9 +109,17 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * Relacionamento com check-ins
+     * Relacionamento com pagamentos
      */
-    public function checkIns()
+    public function pagamentos()
+    {
+        return $this->hasMany(Pagamento::class);
+    }
+
+    /**
+     * Relacionamento com check-ins (alias)
+     */
+    public function checkins()
     {
         return $this->hasMany(CheckIn::class);
     }
@@ -119,21 +141,158 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * Calcular nível do usuário baseado em pontos
+     * Relacionamento com badges conquistados
+     */
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class, 'user_badges')
+                    ->withTimestamps()
+                    ->withPivot('conquistado_em');
+    }
+
+    /**
+     * Relacionamento com transações (para cálculo de valor gasto)
+     */
+    public function transacoes()
+    {
+        return $this->hasMany(Ponto::class)->where('tipo', 'like', '%compra%');
+    }
+
+    /**
+     * Calcular nível do usuário baseado em pontos lifetime
      */
     public function calcularNivel(): array
     {
-        $pontos = $this->pontos ?? 0;
+        $pontos = $this->pontos_lifetime ?? $this->pontos ?? 0;
 
-        if ($pontos >= 10000) {
-            return ['nome' => 'Diamante', 'cor' => '#b9f2ff', 'min' => 10000, 'proximo' => null, 'multiplicador' => 3.0];
+        if ($pontos >= 15000) {
+            return [
+                'id' => 4,
+                'nome' => 'Diamante', 
+                'cor' => '#b9f2ff', 
+                'icone' => '💎',
+                'min' => 15000, 
+                'proximo' => null, 
+                'multiplicador' => 3.0,
+                'beneficios' => ['Triplo de pontos', 'Descontos exclusivos', 'Atendimento VIP']
+            ];
         } elseif ($pontos >= 5000) {
-            return ['nome' => 'Ouro', 'cor' => '#ffd700', 'min' => 5000, 'proximo' => 10000, 'multiplicador' => 2.0];
-        } elseif ($pontos >= 1000) {
-            return ['nome' => 'Prata', 'cor' => '#c0c0c0', 'min' => 1000, 'proximo' => 5000, 'multiplicador' => 1.5];
+            return [
+                'id' => 3,
+                'nome' => 'Ouro', 
+                'cor' => '#ffd700', 
+                'icone' => '🥇',
+                'min' => 5000, 
+                'proximo' => 15000, 
+                'multiplicador' => 2.0,
+                'beneficios' => ['Dobro de pontos', 'Descontos especiais', 'Ofertas exclusivas']
+            ];
+        } elseif ($pontos >= 1500) {
+            return [
+                'id' => 2,
+                'nome' => 'Prata', 
+                'cor' => '#c0c0c0', 
+                'icone' => '🥈',
+                'min' => 1500, 
+                'proximo' => 5000, 
+                'multiplicador' => 1.5,
+                'beneficios' => ['50% mais pontos', 'Descontos especiais']
+            ];
         }
 
-        return ['nome' => 'Bronze', 'cor' => '#cd7f32', 'min' => 0, 'proximo' => 1000, 'multiplicador' => 1.0];
+        return [
+            'id' => 1,
+            'nome' => 'Bronze', 
+            'cor' => '#cd7f32', 
+            'icone' => '🥉',
+            'min' => 0, 
+            'proximo' => 1500, 
+            'multiplicador' => 1.0,
+            'beneficios' => ['Pontos básicos', 'Programa de fidelidade']
+        ];
+    }
+
+    /**
+     * Atualizar nível baseado em pontos lifetime
+     */
+    public function atualizarNivel()
+    {
+        $nivel_info = $this->calcularNivel();
+        $this->nivel = $nivel_info['id'];
+        $this->multiplicador_pontos = $nivel_info['multiplicador'];
+        $this->save();
+        
+        return $nivel_info;
+    }
+
+    /**
+     * Verificar e conquistar novos badges
+     */
+    public function verificarBadges()
+    {
+        $badges_conquistados = [];
+        $badges_disponiveis = Badge::where('ativo', true)->get();
+        
+        foreach ($badges_disponiveis as $badge) {
+            // Verifica se já tem o badge
+            if ($this->badges()->where('badge_id', $badge->id)->exists()) {
+                continue;
+            }
+            
+            // Verifica se conquistou o badge
+            if ($badge->verificarConquista($this)) {
+                $this->badges()->attach($badge->id, [
+                    'conquistado_em' => now()
+                ]);
+                $badges_conquistados[] = $badge;
+            }
+        }
+        
+        return $badges_conquistados;
+    }
+
+    /**
+     * Processar check-in e atualizar estatísticas
+     */
+    public function processarCheckin(CheckIn $checkin)
+    {
+        // Atualizar pontos lifetime
+        $this->pontos_lifetime += $checkin->pontos_ganhos;
+        
+        // Atualizar dias consecutivos
+        $hoje = now()->format('Y-m-d');
+        $ontem = now()->subDay()->format('Y-m-d');
+        
+        if ($this->ultimo_checkin?->format('Y-m-d') == $ontem) {
+            $this->dias_consecutivos += 1;
+        } elseif ($this->ultimo_checkin?->format('Y-m-d') != $hoje) {
+            $this->dias_consecutivos = 1;
+        }
+        
+        $this->ultimo_checkin = $hoje;
+        
+        // Atualizar contador de empresas visitadas
+        $empresas_unicas = $this->checkIns()->distinct('empresa_id')->count();
+        $this->empresas_visitadas = $empresas_unicas;
+        
+        $this->save();
+        
+        // Atualizar nível e verificar badges
+        $this->atualizarNivel();
+        return $this->verificarBadges();
+    }
+
+    /**
+     * Processar compra e atualizar valor gasto
+     */
+    public function processarCompra($valor_centavos)
+    {
+        $this->valor_gasto_total += $valor_centavos;
+        $this->save();
+        
+        // Atualizar nível e verificar badges
+        $this->atualizarNivel();
+        return $this->verificarBadges();
     }
 
     /**

@@ -172,123 +172,187 @@
     </div>
 
     <script>
-        // DADOS MOCKADOS DAS EMPRESAS
-        const empresasData = {
-            1: {
-                name: "Pizzaria Bella Napoli",
-                category: "🍕 Alimentação • Pizzaria",
-                logo: "🍕",
-                rating: "4.5 (234 avaliações)",
-                hours: "Seg-Dom: 18h - 00h",
-                address: "Rua das Pizzas, 123 - Centro",
-                phone: "(11) 98765-4321",
-                description: "A melhor pizzaria da região! Massas artesanais, ingredientes frescos e entrega rápida. Especializados em pizzas tradicionais e gourmet.",
-                banner: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&h=300&fit=crop",
-                services: [
-                    { id: 1, name: "Pizza Margherita", desc: "Molho, mussarela, tomate e manjericão", icon: "🍕", price: 45, points: 100 },
-                    { id: 2, name: "Pizza Calabresa", desc: "Molho, mussarela, calabresa e cebola", icon: "🍕", price: 48, points: 110 },
-                    { id: 3, name: "Pizza 4 Queijos", desc: "Mussarela, provolone, parmesão e catupiry", icon: "🧀", price: 52, points: 120 },
-                    { id: 4, name: "Calzone Especial", desc: "Recheio de presunto, queijo e tomate", icon: "🥟", price: 38, points: 85 },
-                    { id: 5, name: "Refrigerante 2L", desc: "Coca-Cola, Guaraná ou Fanta", icon: "🥤", price: 12, points: 25 }
-                ]
-            },
-            2: {
-                name: "Burger House Premium",
-                category: "🍔 Alimentação • Hamburgueria",
-                logo: "🍔",
-                rating: "4.7 (189 avaliações)",
-                hours: "Ter-Dom: 18h - 23h",
-                address: "Av. dos Burgers, 456 - Jardins",
-                phone: "(11) 97654-3210",
-                description: "Hambúrgueres artesanais com carne premium, pães caseiros e molhos especiais. Ambiente descontraído e família.",
-                banner: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&h=300&fit=crop",
-                services: [
-                    { id: 1, name: "Classic Burger", desc: "180g de carne, queijo, alface, tomate", icon: "🍔", price: 32, points: 75 },
-                    { id: 2, name: "Bacon Burger", desc: "180g de carne, bacon, queijo cheddar", icon: "🥓", price: 38, points: 90 },
-                    { id: 3, name: "Smash Burger", desc: "2x 100g smash, queijo, picles, molho especial", icon: "🍔", price: 42, points: 95 },
-                    { id: 4, name: "Batata Frita G", desc: "Porção grande de batatas crocantes", icon: "🍟", price: 18, points: 40 },
-                    { id: 5, name: "Milk Shake", desc: "Chocolate, Morango ou Baunilha", icon: "🥤", price: 15, points: 35 }
-                ]
-            },
-            3: {
-                name: "Salão Beleza Pura",
-                category: "💇 Beleza • Cabeleireiro",
-                logo: "💇",
-                rating: "4.8 (312 avaliações)",
-                hours: "Seg-Sáb: 9h - 19h",
-                address: "Rua da Beleza, 789 - Vila Nova",
-                phone: "(11) 96543-2109",
-                description: "Salão completo com profissionais especializados. Cortes, coloração, tratamentos e muito mais em ambiente acolhedor.",
-                banner: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=300&fit=crop",
-                services: [
-                    { id: 1, name: "Corte Feminino", desc: "Lavagem, corte e finalização", icon: "✂️", price: 65, points: 150 },
-                    { id: 2, name: "Corte Masculino", desc: "Corte tradicional ou degradê", icon: "💈", price: 45, points: 100 },
-                    { id: 3, name: "Coloração Completa", desc: "Tintura + tratamento + finalização", icon: "🎨", price: 180, points: 400 },
-                    { id: 4, name: "Escova Progressiva", desc: "Alisamento semi-permanente", icon: "💁", price: 220, points: 500 },
-                    { id: 5, name: "Hidratação", desc: "Tratamento intensivo para os fios", icon: "💆", price: 80, points: 180 }
-                ]
-            }
-        };
-
-        // Carrinho de compras
+        // Variáveis globais
         let selectedServices = [];
+        let empresaData = null;
+        let produtosData = [];
 
         // Pegar ID da empresa da URL
         const urlParams = new URLSearchParams(window.location.search);
         const empresaId = urlParams.get('id') || '1';
-        const empresa = empresasData[empresaId];
+
+        // Função para fazer requisições
+        async function apiRequest(url, options = {}) {
+            try {
+                const response = await fetch(`http://localhost:8888${url}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    ...options
+                });
+                
+                if (response.ok) {
+                    return await response.json();
+                }
+            } catch (error) {
+                console.error('Erro na API:', error);
+            }
+            return null;
+        }
 
         // Carregar dados da empresa
-        if (empresa) {
+        async function loadEmpresaData() {
+            try {
+                // Buscar dados da empresa
+                const empresaResponse = await apiRequest(`/api/empresas/${empresaId}`);
+                
+                if (empresaResponse && empresaResponse.success) {
+                    empresaData = empresaResponse.empresa;
+                    
+                    // Atualizar UI com dados reais
+                    document.getElementById('companyName').textContent = empresaData.nome;
+                    document.getElementById('companyCategory').textContent = `🏢 ${empresaData.categoria || 'Estabelecimento'}`;
+                    document.getElementById('companyLogo').textContent = getEmojiForCategory(empresaData.categoria);
+                    document.getElementById('companyRating').textContent = `${empresaData.avaliacao_media || '4.5'} (${empresaData.total_avaliacoes || '0'} avaliações)`;
+                    document.getElementById('companyHours').textContent = "Seg-Dom: 08h - 22h"; // Padrão
+                    document.getElementById('companyAddress').textContent = empresaData.endereco;
+                    document.getElementById('companyPhone').textContent = empresaData.telefone;
+                    document.getElementById('companyDescription').textContent = empresaData.descricao || 'Empresa parceira do programa de fidelidade Tem de Tudo.';
+                    
+                    // Atualizar banner se tiver logo
+                    if (empresaData.logo) {
+                        const headerImage = document.querySelector('.header-image img');
+                        if (headerImage) {
+                            headerImage.src = empresaData.logo;
+                        }
+                    }
+                } else {
+                    loadFallbackData();
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar empresa:', error);
+                loadFallbackData();
+            }
+        }
+
+        // Carregar produtos da empresa
+        async function loadProdutos() {
+            try {
+                const produtosResponse = await apiRequest(`/api/empresas/${empresaId}/produtos`);
+                
+                if (produtosResponse && produtosResponse.success && produtosResponse.produtos.length > 0) {
+                    produtosData = produtosResponse.produtos;
+                    renderProdutos(produtosData);
+                } else {
+                    loadFallbackProdutos();
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                loadFallbackProdutos();
+            }
+        }
+
+        // Função para obter emoji baseado na categoria
+        function getEmojiForCategory(categoria) {
+            const emojis = {
+                'alimentacao': '🍽️',
+                'beleza': '💄',
+                'saude': '💊',
+                'servicos': '🔧',
+                'automotivo': '🚗'
+            };
+            return emojis[categoria] || '🏢';
+        }
+
+        // Dados de fallback caso a API falhe
+        function loadFallbackData() {
+            const fallbackData = {
+                1: { name: "Pizzaria Bella Napoli", category: "🍕 Alimentação • Pizzaria", logo: "🍕", rating: "4.5 (234 avaliações)", description: "A melhor pizzaria da região! Massas artesanais e ingredientes frescos." },
+                2: { name: "Burger House Premium", category: "🍔 Alimentação • Hamburgueria", logo: "🍔", rating: "4.7 (189 avaliações)", description: "Hambúrgueres artesanais com carne premium e pães caseiros." },
+                3: { name: "Beauty Salon Elite", category: "💄 Beleza • Salão", logo: "💄", rating: "4.9 (156 avaliações)", description: "Salão completo com profissionais especializados em cortes e tratamentos." }
+            };
+            
+            const empresa = fallbackData[empresaId] || fallbackData[1];
+            
             document.getElementById('companyName').textContent = empresa.name;
             document.getElementById('companyCategory').textContent = empresa.category;
             document.getElementById('companyLogo').textContent = empresa.logo;
             document.getElementById('companyRating').textContent = empresa.rating;
-            document.getElementById('companyHours').textContent = empresa.hours;
-            document.getElementById('companyAddress').textContent = empresa.address;
-            document.getElementById('companyPhone').textContent = empresa.phone;
+            document.getElementById('companyHours').textContent = "Seg-Dom: 08h - 22h";
+            document.getElementById('companyAddress').textContent = "Rua das Empresas, 123 - Centro";
+            document.getElementById('companyPhone').textContent = "(11) 98765-4321";
             document.getElementById('companyDescription').textContent = empresa.description;
-            document.getElementById('companyBanner').src = empresa.banner;
-            document.title = empresa.name + ' - Tem de Tudo';
-
-            // Renderizar serviços
-            renderServices();
         }
 
-        function renderServices() {
+        // Produtos de fallback
+        function loadFallbackProdutos() {
+            const fallbackProdutos = {
+                1: [
+                    { id: 1, nome: "Pizza Margherita", descricao: "Molho, mussarela, tomate e manjericão", categoria: "alimentacao", preco: 45, pontos_calculados: 100 },
+                    { id: 2, nome: "Pizza Calabresa", descricao: "Molho, mussarela, calabresa e cebola", categoria: "alimentacao", preco: 48, pontos_calculados: 110 },
+                    { id: 3, nome: "Pizza 4 Queijos", descricao: "Mussarela, provolone, parmesão e catupiry", categoria: "alimentacao", preco: 52, pontos_calculados: 120 }
+                ],
+                2: [
+                    { id: 4, nome: "Burger Clássico", descricao: "Hambúrguer, queijo, alface e tomate", categoria: "alimentacao", preco: 35, pontos_calculados: 80 },
+                    { id: 5, nome: "Burger Premium", descricao: "Hambúrguer premium com bacon e molho especial", categoria: "alimentacao", preco: 42, pontos_calculados: 95 }
+                ],
+                3: [
+                    { id: 6, nome: "Corte Feminino", descricao: "Corte e escova profissional", categoria: "beleza", preco: 60, pontos_calculados: 140 },
+                    { id: 7, nome: "Coloração Completa", descricao: "Coloração + corte + hidratação", categoria: "beleza", preco: 120, pontos_calculados: 280 }
+        // Função para renderizar produtos
+        function renderProdutos(produtos) {
             const servicesList = document.getElementById('servicesList');
-            servicesList.innerHTML = empresa.services.map(service => `
-                <div class="service-item" data-id="${service.id}" onclick="toggleService(${service.id})">
-                    <div class="service-header">
-                        <div class="service-icon">${service.icon}</div>
-                        <div class="service-main">
-                            <div class="service-name">${service.name}</div>
-                            <div class="service-desc">${service.desc}</div>
+            servicesList.innerHTML = produtos.map(produto => {
+                const icon = getIconForCategory(produto.categoria);
+                return `
+                    <div class="service-item" data-id="${produto.id}" onclick="toggleService(${produto.id})">
+                        <div class="service-header">
+                            <div class="service-icon">${icon}</div>
+                            <div class="service-main">
+                                <div class="service-name">${produto.nome}</div>
+                                <div class="service-desc">${produto.descricao || 'Produto disponível'}</div>
+                            </div>
+                        </div>
+                        <div class="service-footer">
+                            <div>
+                                <div class="service-price">R$ ${produto.preco.toFixed(2)}</div>
+                                <div class="service-points">+${produto.pontos_calculados || Math.floor(produto.preco / 10)} pts</div>
+                            </div>
+                            <button class="add-btn">
+                                <i class="fas fa-check" style="display:none;"></i> Adicionar
+                            </button>
                         </div>
                     </div>
-                    <div class="service-footer">
-                        <div>
-                            <div class="service-price">R$ ${service.price.toFixed(2)}</div>
-                            <div class="service-points">+${service.points} pts VB</div>
-                        </div>
-                        <button class="add-btn">
-                            <i class="fas fa-check" style="display:none;"></i> Adicionar
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        function toggleService(serviceId) {
-            const serviceElement = document.querySelector(`.service-item[data-id="${serviceId}"]`);
-            const index = selectedServices.indexOf(serviceId);
+        // Função para obter ícone baseado na categoria do produto
+        function getIconForCategory(categoria) {
+            const icons = {
+                'alimentacao': '🍽️',
+                'bebidas': '🥤',
+                'doces': '🍰',
+                'beleza': '💄',
+                'servicos': '🔧',
+                'saude': '💊'
+            };
+            return icons[categoria] || '🛍️';
+        }
+
+        function toggleService(produtoId) {
+            const serviceElement = document.querySelector(`.service-item[data-id="${produtoId}"]`);
+            const index = selectedServices.indexOf(produtoId);
             
             if (index > -1) {
                 selectedServices.splice(index, 1);
                 serviceElement.classList.remove('selected');
                 serviceElement.querySelector('.add-btn').innerHTML = 'Adicionar';
             } else {
-                selectedServices.push(serviceId);
+                selectedServices.push(produtoId);
                 serviceElement.classList.add('selected');
                 serviceElement.querySelector('.add-btn').innerHTML = '<i class="fas fa-check"></i> Adicionado';
             }
@@ -305,9 +369,9 @@
                 cartFooter.classList.add('active');
                 cartCount.textContent = selectedServices.length;
                 
-                const total = selectedServices.reduce((sum, serviceId) => {
-                    const service = empresa.services.find(s => s.id === serviceId);
-                    return sum + (service ? service.points : 0);
+                const total = selectedServices.reduce((sum, produtoId) => {
+                    const produto = produtosData.find(p => p.id === produtoId);
+                    return sum + (produto ? (produto.pontos_calculados || Math.floor(produto.preco / 10)) : 0);
                 }, 0);
                 
                 cartTotal.textContent = total;
@@ -320,11 +384,13 @@
             if (selectedServices.length === 0) return;
             
             const items = selectedServices.map(id => {
-                const service = empresa.services.find(s => s.id === id);
-                return service ? service.name : '';
+                const produto = produtosData.find(p => p.id === id);
+                return produto ? produto.nome : '';
             }).filter(Boolean);
             
-            alert(`✅ Pedido confirmado!\n\nItens:\n${items.join('\n')}\n\nEmpresa: ${empresa.name}\n\nVocê receberá uma notificação quando o pedido for confirmado.`);
+            const empresa = empresaData || { nome: 'Empresa' };
+            
+            alert(`✅ Pedido confirmado!\n\nItens:\n${items.join('\n')}\n\nEmpresa: ${empresa.nome}\n\nVocê receberá uma notificação quando o pedido for confirmado.`);
             
             // Limpar carrinho
             selectedServices = [];
@@ -339,6 +405,12 @@
             const btn = document.querySelector('.fav-btn');
             btn.classList.toggle('active');
         }
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadEmpresaData();
+            await loadProdutos();
+        });
     </script>
 </body>
 </html>

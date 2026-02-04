@@ -144,38 +144,151 @@
     </nav>
 
     <script>
-        // Dados mockados para visualização
-        document.getElementById('userName').textContent = 'Marcus Vini';
-        document.getElementById('saldoValue').textContent = '195,00';
-        
-        const empresasMock = [
-            {id: 1, nome: 'Sabor e Arte', descricao: 'Restaurante brasileiro', logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400', points_multiplier: 1.5},
-            {id: 2, nome: 'Bella Napoli', descricao: 'Pizzaria artesanal', logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400', points_multiplier: 2},
-            {id: 3, nome: 'FitLife Academia', descricao: 'Academia completa', logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', points_multiplier: 1},
-            {id: 4, nome: 'Beleza Total', descricao: 'Salão de beleza', logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', points_multiplier: 1.2},
-            {id: 5, nome: 'Café & Cia', descricao: 'Cafeteria', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', points_multiplier: 1.5},
-            {id: 6, nome: 'Pet Shop Amigo Fiel', descricao: 'Pet Shop', logo: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400', points_multiplier: 1}
-        ];
-        
-        const grid = document.getElementById('empresasGrid');
-        grid.innerHTML = empresasMock.map(e => `
-            <a href="/app-empresa.html?id=${e.id}" class="empresa-card">
-                <img src="${e.logo}" alt="${e.nome}" class="empresa-img" onerror="this.src='https://via.placeholder.com/400x300?text=Sem+Logo'">
-                <div class="empresa-content">
-                    <div class="empresa-name">${e.nome}</div>
-                    <div class="empresa-category">${e.descricao}</div>
-                    <div class="empresa-footer">
-                        <div class="empresa-distance">
-                            <i class="fas fa-map-marker-alt"></i> ${Math.floor(Math.random() * 5) + 1} km
-                        </div>
-                        <div class="empresa-pontos">
-                            ${e.points_multiplier}x pontos
+        // Função para verificar autenticação
+        function checkAuth() {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                window.location.href = '/entrar.html';
+                return false;
+            }
+            return token;
+        }
+
+        // Função para fazer requisições autenticadas
+        async function apiRequest(url, options = {}) {
+            const token = localStorage.getItem('auth_token');
+            
+            const headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            };
+            
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            
+            const response = await fetch(url, {
+                ...options,
+                headers: { ...headers, ...(options.headers || {}) }
+            });
+            
+            if (response.status === 401) {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('user_data');
+                window.location.href = '/entrar.html';
+                return null;
+            }
+            
+            return response;
+        }
+
+        // Carregar dados do usuário
+        async function loadUserData() {
+            try {
+                const token = checkAuth();
+                if (!token) return;
+
+                // Primeiro tenta buscar dados da API
+                const response = await apiRequest('/api/auth/me');
+                
+                if (response && response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.success && data.user) {
+                        // Atualizar UI com dados reais
+                        document.getElementById('userName').textContent = data.user.name || 'Usuário';
+                        document.getElementById('saldoValue').textContent = (data.user.pontos || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                        
+                        // Salvar no localStorage para cache
+                        localStorage.setItem('user_data', JSON.stringify(data.user));
+                    } else {
+                        throw new Error('Dados do usuário inválidos');
+                    }
+                } else {
+                    throw new Error('Erro na API');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados do usuário:', error);
+                
+                // Fallback: usar dados do cache se existir
+                const cachedUser = localStorage.getItem('user_data');
+                if (cachedUser) {
+                    try {
+                        const user = JSON.parse(cachedUser);
+                        document.getElementById('userName').textContent = user.name || 'Usuário';
+                        document.getElementById('saldoValue').textContent = (user.pontos || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                    } catch {
+                        // Se cache inválido, usar dados padrão
+                        document.getElementById('userName').textContent = 'Usuário';
+                        document.getElementById('saldoValue').textContent = '0,00';
+                    }
+                } else {
+                    document.getElementById('userName').textContent = 'Usuário';
+                    document.getElementById('saldoValue').textContent = '0,00';
+                }
+            }
+        }
+
+        // Carregar empresas próximas
+        async function loadEmpresas() {
+            try {
+                const response = await apiRequest('/api/empresas?limit=6');
+                
+                if (response && response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.success && data.empresas) {
+                        renderEmpresas(data.empresas);
+                        return;
+                    }
+                }
+                
+                // Se falhar, usar empresas mockadas como fallback
+                loadEmpresasFallback();
+            } catch (error) {
+                console.error('Erro ao carregar empresas:', error);
+                loadEmpresasFallback();
+            }
+        }
+
+        // Fallback com empresas mockadas
+        function loadEmpresasFallback() {
+            const empresasMock = [
+                {id: 1, nome: 'Sabor e Arte', descricao: 'Restaurante brasileiro', logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400', points_multiplier: 1.5},
+                {id: 2, nome: 'Bella Napoli', descricao: 'Pizzaria artesanal', logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400', points_multiplier: 2},
+                {id: 3, nome: 'FitLife Academia', descricao: 'Academia completa', logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', points_multiplier: 1},
+                {id: 4, nome: 'Beleza Total', descricao: 'Salão de beleza', logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', points_multiplier: 1.2},
+                {id: 5, nome: 'Café & Cia', descricao: 'Cafeteria', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', points_multiplier: 1.5},
+                {id: 6, nome: 'Pet Shop Amigo Fiel', descricao: 'Pet Shop', logo: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400', points_multiplier: 1}
+            ];
+            renderEmpresas(empresasMock);
+        }
+
+        // Renderizar empresas na UI
+        function renderEmpresas(empresas) {
+            const grid = document.getElementById('empresasGrid');
+            grid.innerHTML = empresas.map(e => `
+                <a href="/app-empresa-detalhes.html?id=${e.id}" class="empresa-card">
+                    <img src="${e.logo || 'https://via.placeholder.com/400x300?text=Sem+Logo'}" 
+                         alt="${e.nome}" 
+                         class="empresa-img" 
+                         onerror="this.src='https://via.placeholder.com/400x300?text=Sem+Logo'">
+                    <div class="empresa-content">
+                        <div class="empresa-name">${e.nome}</div>
+                        <div class="empresa-category">${e.descricao || e.categoria || 'Estabelecimento'}</div>
+                        <div class="empresa-footer">
+                            <div class="empresa-distance">
+                                <i class="fas fa-map-marker-alt"></i> ${Math.floor(Math.random() * 5) + 1} km
+                            </div>
+                            <div class="empresa-pontos">
+                                ${e.points_multiplier || 1}x pontos
+                            </div>
                         </div>
                     </div>
-                </div>
-            </a>
-        `).join('');
-        
+                </a>
+            `).join('');
+        }
+
         // Busca
         document.getElementById('searchInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -184,6 +297,12 @@
                     window.location.href = `/app-empresas.html?q=${encodeURIComponent(query)}`;
                 }
             }
+        });
+
+        // Inicialização quando a página carrega
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            loadEmpresas();
         });
     </script>
 </body>

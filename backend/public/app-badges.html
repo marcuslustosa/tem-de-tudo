@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Badges | Tem de Tudo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #f59e0b;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+
+        .badge-emoji {
+            font-size: 1.8rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f59e0b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .badge-card {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .badge-card:hover {
+            transform: translateY(-5px);
+            border-color: #f59e0b;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-card.conquistado {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .badge-card.conquistado .badge-header {
+            background: linear-gradient(45deg, #10b981, #34d399);
+        }
+
+        .badge-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .badge-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+        }
+
+        .badge-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .badge-date {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .badge-description {
+            color: #d1d5db;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+
+        .badge-progress {
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.1);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .conquered-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #10b981;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .no-badges {
+            text-align: center;
+            padding: 3rem;
+            color: #9ca3af;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            color: #f59e0b;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .badges-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div style="display: flex; align-items: center;">
+                <button class="back-btn" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h1><span class="badge-emoji">🏆</span> Meus Badges</h1>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Estatísticas -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalBadges">-</div>
+                <div class="stat-label">Badges Conquistados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalPontos">-</div>
+                <div class="stat-label">Pontos Lifetime</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="nivelAtual">-</div>
+                <div class="stat-label">Nível Atual</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="diasConsecutivos">-</div>
+                <div class="stat-label">Dias Consecutivos</div>
+            </div>
+        </div>
+
+        <!-- Badges Conquistados -->
+        <h2 class="section-title">🏆 Badges Conquistados</h2>
+        <div class="badges-grid" id="badgesConquistados">
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+            </div>
+        </div>
+
+        <!-- Progresso Badges -->
+        <h2 class="section-title">🎯 Progresso dos Badges</h2>
+        <div class="badges-grid" id="progressoBadges">
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Verificar autenticação
+        const token = localStorage.getItem('auth_token');
+        if (!token) {
+            window.location.href = 'index.html';
+        }
+
+        // API Request helper
+        async function apiRequest(endpoint, options = {}) {
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+
+            const response = await fetch(`http://127.0.0.1:8000/api${endpoint}`, {
+                ...defaultOptions,
+                ...options,
+                headers: { ...defaultOptions.headers, ...options.headers }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            return await response.json();
+        }
+
+        // Carregar dados do usuário
+        async function carregarDadosUsuario() {
+            try {
+                const response = await apiRequest('/me');
+                const user = response;
+
+                // Atualizar estatísticas
+                document.getElementById('totalPontos').textContent = user.pontos_lifetime || user.pontos || 0;
+                
+                const nivel = calcularNivel(user.pontos_lifetime || user.pontos || 0);
+                document.getElementById('nivelAtual').textContent = nivel.nome;
+                document.getElementById('diasConsecutivos').textContent = user.dias_consecutivos || 0;
+
+            } catch (error) {
+                console.error('Erro ao carregar dados do usuário:', error);
+                showError('Erro ao carregar dados do usuário');
+            }
+        }
+
+        // Carregar badges conquistados
+        async function carregarBadgesConquistados() {
+            try {
+                const response = await apiRequest('/badges/meus');
+                const badges = response.badges || [];
+
+                document.getElementById('totalBadges').textContent = badges.length;
+
+                const container = document.getElementById('badgesConquistados');
+                
+                if (badges.length === 0) {
+                    container.innerHTML = '<div class="no-badges">Você ainda não conquistou nenhum badge. Continue usando o app!</div>';
+                    return;
+                }
+
+                container.innerHTML = badges.map(badge => `
+                    <div class="badge-card conquistado">
+                        <div class="conquered-badge">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="badge-header">
+                            <div class="badge-icon">${badge.icone}</div>
+                            <div class="badge-info">
+                                <h3>${badge.nome}</h3>
+                                <div class="badge-date">
+                                    Conquistado em ${formatDate(badge.pivot.conquistado_em)}
+                                </div>
+                            </div>
+                        </div>
+                        <p class="badge-description">${badge.descricao}</p>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Erro ao carregar badges conquistados:', error);
+                document.getElementById('badgesConquistados').innerHTML = 
+                    '<div class="error">Erro ao carregar badges conquistados</div>';
+            }
+        }
+
+        // Carregar progresso dos badges
+        async function carregarProgressoBadges() {
+            try {
+                const response = await apiRequest('/badges/progresso');
+                const progresso = response.progresso || [];
+
+                const container = document.getElementById('progressoBadges');
+                
+                if (progresso.length === 0) {
+                    container.innerHTML = '<div class="no-badges">Parabéns! Você conquistou todos os badges disponíveis! 🎉</div>';
+                    return;
+                }
+
+                container.innerHTML = progresso.map(item => {
+                    const badge = item.badge;
+                    const percentual = Math.min(100, item.progresso_percentual);
+                    
+                    return `
+                        <div class="badge-card">
+                            <div class="badge-header">
+                                <div class="badge-icon">${badge.icone}</div>
+                                <div class="badge-info">
+                                    <h3>${badge.nome}</h3>
+                                    <div class="badge-date">${getCondicaoTexto(badge)}</div>
+                                </div>
+                            </div>
+                            <p class="badge-description">${badge.descricao}</p>
+                            <div class="badge-progress">
+                                <div class="progress-text">
+                                    <span>Progresso</span>
+                                    <span>${Math.round(percentual)}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${percentual}%"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span>${item.progresso_atual} / ${badge.condicao_valor}</span>
+                                    <span>${getUnidadeCondicao(badge.condicao_tipo)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Erro ao carregar progresso dos badges:', error);
+                document.getElementById('progressoBadges').innerHTML = 
+                    '<div class="error">Erro ao carregar progresso dos badges</div>';
+            }
+        }
+
+        // Calcular nível baseado em pontos
+        function calcularNivel(pontos) {
+            if (pontos >= 15000) {
+                return { nome: 'Diamante 💎', cor: '#b9f2ff' };
+            } else if (pontos >= 5000) {
+                return { nome: 'Ouro 🥇', cor: '#ffd700' };
+            } else if (pontos >= 1500) {
+                return { nome: 'Prata 🥈', cor: '#c0c0c0' };
+            }
+            return { nome: 'Bronze 🥉', cor: '#cd7f32' };
+        }
+
+        // Obter texto da condição do badge
+        function getCondicaoTexto(badge) {
+            const tipos = {
+                'pontos': `Acumular ${badge.condicao_valor} pontos`,
+                'checkins': `Fazer ${badge.condicao_valor} check-ins`,
+                'empresas_visitadas': `Visitar ${badge.condicao_valor} empresas diferentes`,
+                'dias_consecutivos': `${badge.condicao_valor} dias consecutivos de check-in`,
+                'valor_gasto': `Gastar R$ ${(badge.condicao_valor / 100).toFixed(2)}`,
+                'nivel': `Alcançar nível ${badge.condicao_valor}`
+            };
+            
+            return tipos[badge.condicao_tipo] || 'Condição especial';
+        }
+
+        // Obter unidade da condição
+        function getUnidadeCondicao(tipo) {
+            const unidades = {
+                'pontos': 'pontos',
+                'checkins': 'check-ins',
+                'empresas_visitadas': 'empresas',
+                'dias_consecutivos': 'dias',
+                'valor_gasto': 'centavos',
+                'nivel': 'nível'
+            };
+            
+            return unidades[tipo] || '';
+        }
+
+        // Formatar data
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('pt-BR');
+        }
+
+        // Mostrar erro
+        function showError(message) {
+            console.error(message);
+        }
+
+        // Inicializar página
+        async function inicializarPagina() {
+            await Promise.all([
+                carregarDadosUsuario(),
+                carregarBadgesConquistados(),
+                carregarProgressoBadges()
+            ]);
+        }
+
+        // Iniciar quando a página carregar
+        document.addEventListener('DOMContentLoaded', inicializarPagina);
+    </script>
+</body>
+</html>
