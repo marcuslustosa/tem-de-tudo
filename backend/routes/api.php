@@ -24,6 +24,8 @@ use App\Http\Controllers\API\ProdutoController;
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\PagamentoController;
 use App\Http\Controllers\CheckInController as MainCheckInController;
+use App\Http\Controllers\PontosController;
+use App\Http\Controllers\DiscountController;
 
 // Debug route (remover em produção)
 Route::get('/debug', function () {
@@ -265,10 +267,6 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->g
     Route::get('/dashboard-stats', [AdminReportController::class, 'dashboardStats']);
     Route::get('/recent-activity', [AdminReportController::class, 'recentActivity']);
 });
-
-// Importar o controller de pontos
-use App\Http\Controllers\PontosController;
-use App\Http\Controllers\DiscountController;
 
 // Rotas do sistema de pontos (protegidas por Sanctum)
 Route::middleware('auth:sanctum')->prefix('pontos')->group(function () {
