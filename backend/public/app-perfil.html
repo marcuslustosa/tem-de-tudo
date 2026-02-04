@@ -83,11 +83,11 @@
                 const user = JSON.parse(userStr);
                 document.getElementById('profileName').textContent = user.name || user.nome || 'Usuário';
                 document.getElementById('profileEmail').textContent = user.email || 'email@exemplo.com';
-                const response = await fetch(`${API_BASE_URL}/api/perfil`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const response = await fetch(`${API_BASE_URL}/api/me`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const data = await response.json();
                 if (data.success && data.data) {
                     document.getElementById('statPontos').textContent = data.data.pontos || 0;
-                    const histResponse = await fetch(`${API_BASE_URL}/api/historico`, { headers: { 'Authorization': `Bearer ${token}` } });
+                    const histResponse = await fetch(`${API_BASE_URL}/api/pontos/historico`, { headers: { 'Authorization': `Bearer ${token}` } });
                     const histData = await histResponse.json();
                     if (histData.success && histData.data) { document.getElementById('statCheckins').textContent = histData.data.filter(h => h.tipo === 'checkin').length; }
                     const cuponsResponse = await fetch(`${API_BASE_URL}/api/cupons`, { headers: { 'Authorization': `Bearer ${token}` } });

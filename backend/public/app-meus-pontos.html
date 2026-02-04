@@ -363,7 +363,7 @@
             
             try {
                 // Carregar perfil com pontos
-                const perfilRes = await fetch(`${API_BASE_URL}/api/perfil`, {
+                const perfilRes = await fetch(`${API_BASE_URL}/api/me`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const perfilData = await perfilRes.json();
@@ -378,7 +378,7 @@
                 }
                 
                 // Carregar histórico de check-ins
-                const checkinRes = await fetch(`${API_BASE_URL}/api/checkins`, {
+                const checkinRes = await fetch(`${API_BASE_URL}/api/check-ins`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const checkinData = await checkinRes.json();
