@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Empresa - Tem de Tudo</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #1a1a2e; color: #fff; padding-bottom: 80px; }
+        
+        .cover-photo { 
+            width: 100%; 
+            height: 240px; 
+            object-fit: cover; 
+            background: linear-gradient(135deg, #667eea, #764ba2); 
+            position: relative; 
+        }
+        
+        .back-btn { 
+            position: absolute; 
+            top: 16px; 
+            left: 16px; 
+            width: 40px; 
+            height: 40px; 
+            background: rgba(0, 0, 0, 0.6); 
+            backdrop-filter: blur(10px); 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #fff; 
+            font-size: 18px; 
+            text-decoration: none; 
+            z-index: 10; 
+        }
+        
+        .empresa-header { 
+            position: relative; 
+            margin-top: -50px; 
+            padding: 0 20px; 
+        }
+        
+        .empresa-logo-wrapper { 
+            width: 100px; 
+            height: 100px; 
+            background: #2a2a3e; 
+            border: 4px solid #1a1a2e; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            margin-bottom: 16px; 
+        }
+        
+        .empresa-logo { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
+        
+        .empresa-name { 
+            font-size: 24px; 
+            font-weight: 900; 
+            margin-bottom: 8px; 
+        }
+        
+        .empresa-category { 
+            font-size: 14px; 
+            color: #888; 
+            margin-bottom: 16px; 
+        }
+        
+        .empresa-stats { 
+            display: flex; 
+            gap: 20px; 
+            margin-bottom: 20px; 
+        }
+        
+        .stat { 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            font-size: 13px; 
+            color: #667eea; 
+        }
+        
+        .stat i { 
+            font-size: 16px; 
+        }
+        
+        .empresa-description { 
+            padding: 20px; 
+            background: #2a2a3e; 
+            border-radius: 16px; 
+            margin: 0 20px 20px; 
+            line-height: 1.6; 
+            font-size: 14px; 
+            color: #ccc; 
+        }
+        
+        .info-section { 
+            padding: 0 20px 20px; 
+        }
+        
+        .info-title { 
+            font-size: 16px; 
+            font-weight: 700; 
+            margin-bottom: 12px; 
+        }
+        
+        .info-item { 
+            display: flex; 
+            align-items: flex-start; 
+            gap: 12px; 
+            padding: 12px 0; 
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1); 
+        }
+        
+        .info-item:last-child { 
+            border-bottom: none; 
+        }
+        
+        .info-icon { 
+            width: 40px; 
+            height: 40px; 
+            background: linear-gradient(135deg, #667eea20, #764ba220); 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #667eea; 
+            font-size: 16px; 
+            flex-shrink: 0; 
+        }
+        
+        .info-content { 
+            flex: 1; 
+        }
+        
+        .info-label { 
+            font-size: 12px; 
+            color: #888; 
+            margin-bottom: 4px; 
+        }
+        
+        .info-value { 
+            font-size: 14px; 
+            font-weight: 600; 
+        }
+        
+        .promocoes-section { 
+            padding: 0 20px 20px; 
+        }
+        
+        .promo-card { 
+            background: linear-gradient(135deg, #667eea10, #764ba210); 
+            border: 1px solid rgba(102, 126, 234, 0.2); 
+            border-radius: 16px; 
+            padding: 16px; 
+            margin-bottom: 12px; 
+        }
+        
+        .promo-title { 
+            font-size: 15px; 
+            font-weight: 700; 
+            margin-bottom: 6px; 
+        }
+        
+        .promo-desc { 
+            font-size: 13px; 
+            color: #aaa; 
+            margin-bottom: 10px; 
+        }
+        
+        .promo-pontos { 
+            display: inline-block; 
+            background: linear-gradient(135deg, #f39c12, #e67e22); 
+            padding: 6px 14px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            font-weight: 700; 
+        }
+        
+        .checkin-button { 
+            position: fixed; 
+            bottom: 20px; 
+            left: 20px; 
+            right: 20px; 
+            background: linear-gradient(135deg, #667eea, #764ba2); 
+            color: #fff; 
+            border: none; 
+            border-radius: 16px; 
+            padding: 18px; 
+            font-size: 16px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: transform 0.3s; 
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); 
+            z-index: 1000; 
+        }
+        
+        .checkin-button:active { 
+            transform: scale(0.95); 
+        }
+        
+        .checkin-button i { 
+            margin-right: 8px; 
+        }
+        
+        .loading { 
+            text-align: center; 
+            padding: 60px 20px; 
+        }
+        
+        .loading i { 
+            font-size: 48px; 
+            opacity: 0.2; 
+            animation: spin 1s linear infinite; 
+        }
+        
+        @keyframes spin { 
+            from { transform: rotate(0deg); } 
+            to { transform: rotate(360deg); } 
+        }
+        
+        .empty-promos { 
+            text-align: center; 
+            padding: 30px 20px; 
+            color: #888; 
+            font-size: 14px; 
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingState" class="loading">
+        <i class="fas fa-circle-notch"></i>
+        <p>Carregando...</p>
+    </div>
+    
+    <div id="empresaContent" style="display: none;">
+        <div class="cover-photo" id="coverPhoto">
+            <a href="/app-empresas.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
+        
+        <div class="empresa-header">
+            <div class="empresa-logo-wrapper">
+                <img src="" alt="Logo" class="empresa-logo" id="empresaLogo">
+            </div>
+            <h1 class="empresa-name" id="empresaNome">-</h1>
+            <div class="empresa-category" id="empresaCategoria">-</div>
+            <div class="empresa-stats">
+                <div class="stat">
+                    <i class="fas fa-star"></i>
+                    <span id="empresaRating">4.8</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="empresaDistancia">-</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-coins"></i>
+                    <span id="empresaPontos">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="empresa-description" id="empresaDescricao">
+            Carregando descrição...
+        </div>
+        
+        <div class="info-section">
+            <div class="info-title">Informações</div>
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="info-content">
+                    <div class="info-label">Endereço</div>
+                    <div class="info-value" id="empresaEndereco">-</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-clock"></i></div>
+                <div class="info-content">
+                    <div class="info-label">Horário</div>
+                    <div class="info-value" id="empresaHorario">-</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon"><i class="fas fa-phone"></i></div>
+                <div class="info-content">
+                    <div class="info-label">Telefone</div>
+                    <div class="info-value" id="empresaTelefone">-</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="promocoes-section">
+            <div class="info-title">Promoções Disponíveis</div>
+            <div id="promocoesContainer"></div>
+        </div>
+        
+        <button class="checkin-button" id="checkinBtn">
+            <i class="fas fa-check-circle"></i>
+            Fazer Check-in
+        </button>
+    </div>
+    
+    <script>
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : (window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8001' : 'https://tem-de-tudo.onrender.com');
+        
+        const categorias = {
+            alimentacao: '🍔 Alimentos',
+            automotivo: '🚗 Automotivo',
+            beleza: '💄 Beleza',
+            bemestar: '🧘 Bem-estar',
+            educacao: '📚 Educação',
+            servicos: '🛠️ Serviços'
+        };
+        
+        let empresaAtual = null;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/entrar.html';
+                return;
+            }
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const empresaId = urlParams.get('id');
+            
+            if (!empresaId) {
+                alert('Empresa não encontrada');
+                window.location.href = '/app-empresas.html';
+                return;
+            }
+            
+            await carregarEmpresa(empresaId);
+            
+            document.getElementById('checkinBtn').addEventListener('click', fazerCheckin);
+        });
+        
+        async function carregarEmpresa(id) {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/empresas/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Erro ao carregar empresa');
+                
+                const data = await response.json();
+                empresaAtual = data.data || data;
+                
+                renderizarEmpresa(empresaAtual);
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao carregar dados da empresa');
+                window.location.href = '/app-empresas.html';
+            }
+        }
+        
+        function renderizarEmpresa(empresa) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('empresaContent').style.display = 'block';
+            
+            document.getElementById('coverPhoto').style.backgroundImage = 
+                `url(${empresa.logo || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800'})`;
+            
+            document.getElementById('empresaLogo').src = 
+                empresa.logo || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200';
+            
+            document.getElementById('empresaNome').textContent = empresa.nome;
+            document.getElementById('empresaCategoria').textContent = 
+                categorias[empresa.ramo] || '🏪 Outros';
+            
+            document.getElementById('empresaRating').textContent = '4.8';
+            document.getElementById('empresaDistancia').textContent = 
+                `${Math.floor(Math.random() * 5) + 1} km`;
+            document.getElementById('empresaPontos').textContent = 
+                `+${Math.round(10 * (empresa.pontos_cliente || 1))} pts`;
+            
+            document.getElementById('empresaDescricao').textContent = 
+                empresa.descricao || 'Empresa parceira do programa Tem de Tudo. Faça check-in e acumule pontos!';
+            
+            document.getElementById('empresaEndereco').textContent = 
+                empresa.endereco || 'Não informado';
+            document.getElementById('empresaHorario').textContent = 
+                empresa.horario_funcionamento || 'Seg-Sex: 08:00-18:00';
+            document.getElementById('empresaTelefone').textContent = 
+                empresa.telefone || 'Não informado';
+            
+            renderizarPromocoes(empresa);
+        }
+        
+        function renderizarPromocoes(empresa) {
+            const container = document.getElementById('promocoesContainer');
+            
+            const promocoes = [
+                {
+                    titulo: 'Check-in Diário',
+                    descricao: `Ganhe ${Math.round(10 * (empresa.pontos_cliente || 1))} pontos a cada visita`,
+                    pontos: Math.round(10 * (empresa.pontos_cliente || 1))
+                },
+                {
+                    titulo: 'Primeira Visita',
+                    descricao: 'Bônus especial na primeira visita',
+                    pontos: Math.round(20 * (empresa.pontos_cliente || 1))
+                }
+            ];
+            
+            container.innerHTML = promocoes.map(promo => `
+                <div class="promo-card">
+                    <div class="promo-title">${promo.titulo}</div>
+                    <div class="promo-desc">${promo.descricao}</div>
+                    <span class="promo-pontos">+${promo.pontos} pontos</span>
+                </div>
+            `).join('');
+        }
+        
+        async function fazerCheckin() {
+            if (!empresaAtual) return;
+            
+            const token = localStorage.getItem('token');
+            const btn = document.getElementById('checkinBtn');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processando...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/check-ins`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        empresa_id: empresaAtual.id
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`✅ Check-in realizado!\n+${data.data.pontos_ganhos || 10} pontos`);
+                    window.location.href = '/app-meus-pontos.html';
+                } else {
+                    throw new Error(data.message || 'Erro ao fazer check-in');
+                }
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao fazer check-in: ' + error.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Fazer Check-in';
+            }
+        }
+    </script>
+</body>
+</html>
