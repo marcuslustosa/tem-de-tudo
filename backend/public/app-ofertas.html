@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ofertas - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #1a1a2e; 
+            color: #fff; 
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .filter-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #667eea;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        /* Barra de pesquisa */
+        .search-container {
+            padding: 0 20px 16px;
+        }
+        
+        .search-box {
+            background: #2a2a3e;
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-box input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+        }
+        
+        .search-box input::placeholder {
+            color: #888;
+        }
+        
+        .search-box i {
+            color: #667eea;
+            font-size: 18px;
+        }
+        
+        /* Categorias horizontais */
+        .categories-scroll {
+            padding: 0 20px 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        
+        .categories-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .categories-horizontal {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .category-chip {
+            background: #2a2a3e;
+            border-radius: 24px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .category-chip.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+        }
+        
+        .category-chip i {
+            font-size: 16px;
+        }
+        
+        /* Seções */
+        .section {
+            padding: 0 20px 24px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        
+        /* Cards de empresas próximas */
+        .nearby-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .nearby-card {
+            background: #2a2a3e;
+            border-radius: 16px;
+            overflow: hidden;
+            text-decoration: none;
+            color: #fff;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .nearby-card-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            position: relative;
+        }
+        
+        .nearby-card-content {
+            padding: 12px;
+        }
+        
+        .nearby-card-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .nearby-card-distance {
+            font-size: 12px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        /* Banner de marcas */
+        .brands-banner {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .brands-banner img {
+            width: 100%;
+            max-width: 200px;
+            border-radius: 12px;
+        }
+        
+        .brands-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #e74c3c;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1a1a2e;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 8px;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: #888;
+            font-size: 11px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-item.active {
+            color: #667eea;
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+        }
+        
+        .collapse-btn {
+            background: none;
+            border: none;
+            color: #667eea;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            margin: 0 auto;
+            padding: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Ofertas</h1>
+        <div class="filter-btn">
+            <i class="fas fa-sliders-h"></i>
+        </div>
+    </div>
+    
+    <!-- Barra de pesquisa -->
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="O que você está procurando?" id="searchInput">
+        </div>
+    </div>
+    
+    <!-- Categorias horizontais -->
+    <div class="categories-scroll">
+        <div class="categories-horizontal">
+            <div class="category-chip active" onclick="filtrarCategoria('todas')">
+                <i class="fas fa-th"></i>
+                <span>Todas</span>
+            </div>
+            <div class="category-chip" onclick="filtrarCategoria('alimentacao')">
+                <i class="fas fa-utensils"></i>
+                <span>Alimentos e Bebidas</span>
+            </div>
+            <div class="category-chip" onclick="filtrarCategoria('automotivo')">
+                <i class="fas fa-car"></i>
+                <span>Automotivo</span>
+            </div>
+            <div class="category-chip" onclick="filtrarCategoria('beleza')">
+                <i class="fas fa-cut"></i>
+                <span>Beleza e Cuidados</span>
+            </div>
+            <div class="category-chip" onclick="filtrarCategoria('bemestar')">
+                <i class="fas fa-heartbeat"></i>
+                <span>Bem-estar</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Perto de você -->
+    <div class="section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2 class="section-title" style="margin: 0;">Perto de você</h2>
+            <button class="collapse-btn" onclick="toggleSection('nearbySection')">
+                <i class="fas fa-chevron-up" id="nearbyChevron"></i>
+            </button>
+        </div>
+        
+        <div id="nearbySection">
+            <div class="nearby-grid" id="nearbyGrid">
+                <!-- Será preenchido via JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Marcas -->
+    <div class="section">
+        <h2 class="section-title">Marcas</h2>
+        <div class="brands-banner">
+            <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400" alt="Marca">
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/app-home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/app-shop.html" class="nav-item">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Shop</span>
+        </a>
+        <a href="/app-meus-pontos.html" class="nav-item">
+            <i class="fas fa-wallet"></i>
+            <span>Meus bônus</span>
+        </a>
+        <a href="/app-ofertas.html" class="nav-item active">
+            <i class="fas fa-tags"></i>
+            <span>Ofertas</span>
+        </a>
+        <a href="/app-mais.html" class="nav-item">
+            <i class="fas fa-bars"></i>
+            <span>Mais</span>
+        </a>
+    </nav>
+    
+    <script>
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 
+            'http://localhost:8000' : 
+            'https://tem-de-tudo.onrender.com';
+        
+        let empresas = [];
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/entrar.html';
+                return;
+            }
+            
+            await carregarEmpresas();
+            
+            // Busca
+            document.getElementById('searchInput').addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    const termo = e.target.value;
+                    window.location.href = `/app-buscar.html?q=${encodeURIComponent(termo)}`;
+                }
+            });
+        });
+        
+        async function carregarEmpresas() {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/empresas`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    empresas = data.data;
+                    renderizarEmpresas(empresas);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar empresas:', error);
+                // Dados fictícios para demonstração
+                empresas = [
+                    { id: 1, nome: 'Mooca Plaza Shopping', categoria: 'shopping', distancia: 1 },
+                    { id: 2, nome: 'Shopping Metrô Sant...', categoria: 'shopping', distancia: 4 },
+                    { id: 3, nome: 'Restaurante Sabor & Arte', categoria: 'alimentacao', distancia: 1.2 },
+                    { id: 4, nome: 'Pizzaria Bella Napoli', categoria: 'alimentacao', distancia: 2.3 }
+                ];
+                renderizarEmpresas(empresas);
+            }
+        }
+        
+        function renderizarEmpresas(lista) {
+            const grid = document.getElementById('nearbyGrid');
+            
+            if (lista.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #888;">Nenhuma empresa encontrada</p>';
+                return;
+            }
+            
+            grid.innerHTML = lista.map(empresa => `
+                <a href="/app-empresa.html?id=${empresa.id}" class="nearby-card">
+                    <div style="position: relative;">
+                        <img class="nearby-card-image" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400" alt="${empresa.nome}">
+                        <div class="brands-tag">20% OFF</div>
+                    </div>
+                    <div class="nearby-card-content">
+                        <div class="nearby-card-title">${empresa.nome}</div>
+                        <div class="nearby-card-distance">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${empresa.distancia || Math.floor(Math.random() * 5) + 1} km
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+        
+        function filtrarCategoria(categoria) {
+            // Atualizar visual dos chips
+            document.querySelectorAll('.category-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.closest('.category-chip').classList.add('active');
+            
+            // Filtrar empresas
+            if (categoria === 'todas') {
+                renderizarEmpresas(empresas);
+            } else {
+                const filtradas = empresas.filter(e => e.categoria === categoria);
+                renderizarEmpresas(filtradas);
+            }
+        }
+        
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const chevron = document.getElementById(sectionId.replace('Section', 'Chevron'));
+            
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                chevron.classList.remove('fa-chevron-down');
+                chevron.classList.add('fa-chevron-up');
+            } else {
+                section.style.display = 'none';
+                chevron.classList.remove('fa-chevron-up');
+                chevron.classList.add('fa-chevron-down');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Bônus - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #1a1a2e; 
+            color: #fff; 
+            padding-bottom: 80px;
+        }
+        
+        .header {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .help-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+            cursor: pointer;
+        }
+        
+        /* Card de saldo principal */
+        .saldo-card {
+            background: linear-gradient(145deg, #2a2a3e, #252538);
+            border-radius: 20px;
+            padding: 24px;
+            margin: 0 20px 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+        
+        .saldo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .saldo-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #b0b0b0;
+        }
+        
+        .ver-extrato-btn {
+            background: transparent;
+            border: 2px solid #f39c12;
+            color: #f39c12;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        .saldo-valor {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+        
+        .saldo-icon {
+            color: #f39c12;
+            margin-right: 8px;
+        }
+        
+        .ultima-recarga {
+            font-size: 13px;
+            color: #888;
+        }
+        
+        /* Card de pontos a expirar */
+        .expiring-card {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(192, 57, 43, 0.1));
+            border-radius: 20px;
+            padding: 20px;
+            margin: 0 20px 20px;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        
+        .expiring-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .expiring-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .expiring-valor {
+            font-size: 24px;
+            font-weight: 800;
+            color: #e74c3c;
+        }
+        
+        .expiring-date {
+            font-size: 13px;
+            color: #b0b0b0;
+            margin-bottom: 12px;
+        }
+        
+        .why-link {
+            font-size: 12px;
+            color: #e74c3c;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 12px;
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            background: #2a2a3e;
+            border: none;
+            color: #888;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+        
+        /* Lista de histórico */
+        .history-section {
+            padding: 0 20px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            color: #667eea;
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+        
+        .empty-state h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .history-item {
+            background: #2a2a3e;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+        
+        .history-info h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .history-info p {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .history-valor {
+            font-size: 18px;
+            font-weight: 800;
+        }
+        
+        .history-valor.positive {
+            color: #2ecc71;
+        }
+        
+        .history-valor.negative {
+            color: #e74c3c;
+        }
+        
+        .history-date {
+            font-size: 11px;
+            color: #666;
+            margin-top: 8px;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1a1a2e;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 8px;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: #888;
+            font-size: 11px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-item.active {
+            color: #667eea;
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Meus bônus</h1>
+        <div class="help-btn" onclick="window.location.href='/app-ajuda-faq.html'">
+            <i class="fas fa-question"></i>
+        </div>
+    </div>
+    
+    <!-- Card de saldo principal -->
+    <div class="saldo-card">
+        <div class="saldo-header">
+            <div class="saldo-title">Saldo de Vale Bonus:</div>
+            <button class="ver-extrato-btn" onclick="showTab('ativos')">VER EXTRATO</button>
+        </div>
+        <div class="saldo-valor">
+            <i class="fas fa-dollar-sign saldo-icon"></i><span id="saldoTotal">195,00</span>
+        </div>
+        <div class="ultima-recarga">Última recarga: <span id="ultimaRecarga">03/02/2026</span></div>
+    </div>
+    
+    <!-- Card de pontos a expirar -->
+    <div class="expiring-card">
+        <div class="expiring-header">
+            <div class="expiring-title">Saldo de Vale Bonus a expirar:</div>
+            <div class="expiring-valor">$<span id="saldoExpirar">60,00</span></div>
+        </div>
+        <div class="expiring-date">Válido até: <span id="dataExpiracao">02/08/2026</span></div>
+        <a class="why-link" onclick="alert('Pontos têm validade de 6 meses após o ganho. Use antes de expirar!')">Por que meu saldo expira? <i class="fas fa-question-circle"></i></a>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" id="tabAtivos" onclick="showTab('ativos')">Ativos</button>
+        <button class="tab" id="tabExpirados" onclick="showTab('expirados')">Expirados</button>
+    </div>
+    
+    <!-- Histórico -->
+    <div class="history-section">
+        <div id="historicoAtivos" class="history-list"></div>
+        <div id="historicoExpirados" class="history-list" style="display: none;"></div>
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-inbox"></i>
+            <h3>Nenhum bônus foi encontrado</h3>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="/app-home.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/app-shop.html" class="nav-item">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Shop</span>
+        </a>
+        <a href="/app-meus-pontos.html" class="nav-item active">
+            <i class="fas fa-wallet"></i>
+            <span>Meus bônus</span>
+        </a>
+        <a href="/app-ofertas.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Ofertas</span>
+        </a>
+        <a href="/app-mais.html" class="nav-item">
+            <i class="fas fa-bars"></i>
+            <span>Mais</span>
+        </a>
+    </nav>
+    
+    <script>
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 
+            'http://localhost:8000' : 
+            'https://tem-de-tudo.onrender.com';
+        
+        let historico = [];
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/entrar.html';
+                return;
+            }
+            
+            await carregarDados();
+        });
+        
+        async function carregarDados() {
+            const token = localStorage.getItem('token');
+            
+            try {
+                // Carregar perfil com pontos
+                const perfilRes = await fetch(`${API_BASE_URL}/api/perfil`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const perfilData = await perfilRes.json();
+                
+                if (perfilData.success && perfilData.data) {
+                    const pontos = perfilData.data.pontos || 0;
+                    document.getElementById('saldoTotal').textContent = pontos.toFixed(2);
+                    
+                    // Calcular pontos a expirar (simulação: 30% do total)
+                    const pontosExpirar = pontos * 0.3;
+                    document.getElementById('saldoExpirar').textContent = pontosExpirar.toFixed(2);
+                }
+                
+                // Carregar histórico de check-ins
+                const checkinRes = await fetch(`${API_BASE_URL}/api/checkins`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const checkinData = await checkinRes.json();
+                
+                if (checkinData.success && checkinData.data) {
+                    historico = checkinData.data.map(item => ({
+                        id: item.id,
+                        tipo: 'check-in',
+                        empresa: item.empresa?.nome || 'Empresa',
+                        pontos: 10,
+                        data: item.created_at,
+                        status: 'ativo'
+                    }));
+                }
+                
+                // Carregar cupons resgatados
+                const cuponsRes = await fetch(`${API_BASE_URL}/api/cupons`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const cuponsData = await cuponsRes.json();
+                
+                if (cuponsData.success && cuponsData.data) {
+                    cuponsData.data.forEach(cupom => {
+                        historico.push({
+                            id: cupom.id,
+                            tipo: 'resgate',
+                            empresa: cupom.promocao?.empresa?.nome || 'Promoção',
+                            pontos: -(cupom.promocao?.pontos_necessarios || 0),
+                            data: cupom.created_at,
+                            status: cupom.usado ? 'expirado' : 'ativo'
+                        });
+                    });
+                }
+                
+                renderizarHistorico();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+        
+        function renderizarHistorico() {
+            const ativos = historico.filter(h => h.status === 'ativo');
+            const expirados = historico.filter(h => h.status === 'expirado');
+            
+            const ativosContainer = document.getElementById('historicoAtivos');
+            const expiradosContainer = document.getElementById('historicoExpirados');
+            const emptyState = document.getElementById('emptyState');
+            
+            // Renderizar ativos
+            if (ativos.length > 0) {
+                ativosContainer.innerHTML = ativos.map(item => `
+                    <div class="history-item">
+                        <div class="history-header">
+                            <div class="history-info">
+                                <h4>${item.tipo === 'check-in' ? '✓ Check-in' : '🎟️ Resgate'}</h4>
+                                <p>${item.empresa}</p>
+                            </div>
+                            <div class="history-valor ${item.pontos > 0 ? 'positive' : 'negative'}">
+                                ${item.pontos > 0 ? '+' : ''}${item.pontos}
+                            </div>
+                        </div>
+                        <div class="history-date">${formatarData(item.data)}</div>
+                    </div>
+                `).join('');
+                emptyState.style.display = 'none';
+            } else {
+                ativosContainer.innerHTML = '';
+                emptyState.style.display = 'block';
+            }
+            
+            // Renderizar expirados
+            if (expirados.length > 0) {
+                expiradosContainer.innerHTML = expirados.map(item => `
+                    <div class="history-item">
+                        <div class="history-header">
+                            <div class="history-info">
+                                <h4>${item.tipo === 'check-in' ? '✓ Check-in' : '🎟️ Resgate'}</h4>
+                                <p>${item.empresa}</p>
+                            </div>
+                            <div class="history-valor negative">
+                                ${item.pontos}
+                            </div>
+                        </div>
+                        <div class="history-date">${formatarData(item.data)} • Expirado</div>
+                    </div>
+                `).join('');
+            } else {
+                expiradosContainer.innerHTML = '';
+            }
+        }
+        
+        function showTab(tab) {
+            const tabAtivos = document.getElementById('tabAtivos');
+            const tabExpirados = document.getElementById('tabExpirados');
+            const ativosContainer = document.getElementById('historicoAtivos');
+            const expiradosContainer = document.getElementById('historicoExpirados');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (tab === 'ativos') {
+                tabAtivos.classList.add('active');
+                tabExpirados.classList.remove('active');
+                ativosContainer.style.display = 'flex';
+                expiradosContainer.style.display = 'none';
+                emptyState.style.display = ativosContainer.children.length === 0 ? 'block' : 'none';
+            } else {
+                tabAtivos.classList.remove('active');
+                tabExpirados.classList.add('active');
+                ativosContainer.style.display = 'none';
+                expiradosContainer.style.display = 'flex';
+                emptyState.style.display = expiradosContainer.children.length === 0 ? 'block' : 'none';
+            }
+        }
+        
+        function formatarData(data) {
+            const date = new Date(data);
+            return date.toLocaleDateString('pt-BR', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+        }
+    </script>
+</body>
+</html>
