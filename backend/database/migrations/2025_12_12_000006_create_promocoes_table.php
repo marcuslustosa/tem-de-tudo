@@ -15,12 +15,25 @@ return new class extends Migration
             Schema::create('promocoes', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
-                $table->string('titulo', 100); // Limite de caracteres
-                $table->text('descricao'); // Limite será validado no backend (ex: 500 chars)
-                $table->string('imagem'); // OBRIGATÓRIO
+                $table->string('titulo', 100);
+                $table->text('descricao');
+                $table->string('imagem')->nullable(); // Tornando opcional
+                
+                // Campos de pontos e desconto
+                $table->integer('pontos_necessarios')->default(100);
+                $table->decimal('desconto_percentual', 5, 2)->nullable();
+                $table->decimal('desconto_valor', 10, 2)->nullable();
+                
+                // Campos de controle
+                $table->date('validade')->nullable();
+                $table->integer('quantidade_disponivel')->nullable();
+                $table->text('termos_condicoes')->nullable();
                 $table->boolean('ativo')->default(true);
-                $table->timestamp('data_envio')->nullable(); // Quando foi enviada a notificação
-                $table->integer('total_envios')->default(0); // Quantos clientes receberam
+                
+                // Campos de notificação
+                $table->timestamp('data_envio')->nullable();
+                $table->integer('total_envios')->default(0);
+                
                 $table->timestamps();
             });
         }

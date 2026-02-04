@@ -53,24 +53,24 @@
         <div class="section-title">Conta</div>
         <div class="menu-items">
             <a href="/app-editar-perfil.html" class="menu-item"><div class="menu-icon"><i class="fas fa-user-edit"></i></div><div class="menu-content"><div class="menu-title">Editar Perfil</div><div class="menu-subtitle">Nome, email, telefone</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
-            <a href="/app-meus-pontos.html" class="menu-item"><div class="menu-icon"><i class="fas fa-wallet"></i></div><div class="menu-content"><div class="menu-title">Meus Pontos</div><div class="menu-subtitle">Histórico e saldo</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
+            <a href="/app-meus-pontos.html" class="menu-item"><div class="menu-icon"><i class="fas fa-wallet"></i></div><div class="menu-content"><div class="menu-title">Meus Pontos</div><div class="menu-subtitle">HistÃ³rico e saldo</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
             <a href="/app-meus-cupons.html" class="menu-item"><div class="menu-icon"><i class="fas fa-ticket-alt"></i></div><div class="menu-content"><div class="menu-title">Meus Cupons</div><div class="menu-subtitle">Cupons ativos e usados</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
         </div>
     </div>
     <div class="menu-section">
-        <div class="section-title">Configurações</div>
+        <div class="section-title">ConfiguraÃ§Ãµes</div>
         <div class="menu-items">
-            <a href="/app-notificacoes.html" class="menu-item"><div class="menu-icon"><i class="fas fa-bell"></i></div><div class="menu-content"><div class="menu-title">Notificações</div><div class="menu-subtitle">Gerencie alertas</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
+            <a href="/app-notificacoes.html" class="menu-item"><div class="menu-icon"><i class="fas fa-bell"></i></div><div class="menu-content"><div class="menu-title">NotificaÃ§Ãµes</div><div class="menu-subtitle">Gerencie alertas</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
             <a href="/app-ajuda.html" class="menu-item"><div class="menu-icon"><i class="fas fa-question-circle"></i></div><div class="menu-content"><div class="menu-title">Ajuda</div><div class="menu-subtitle">FAQ e suporte</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
-            <a href="/app-termos.html" class="menu-item"><div class="menu-icon"><i class="fas fa-file-alt"></i></div><div class="menu-content"><div class="menu-title">Termos de Uso</div><div class="menu-subtitle">Políticas e privacidade</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
+            <a href="/app-termos.html" class="menu-item"><div class="menu-icon"><i class="fas fa-file-alt"></i></div><div class="menu-content"><div class="menu-title">Termos de Uso</div><div class="menu-subtitle">PolÃ­ticas e privacidade</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
         </div>
     </div>
     <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i>Sair da Conta</button>
     <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>InÃ­cio</span></a>
         <a href="/app-buscar.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
         <a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
+        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>PromoÃ§Ãµes</span></a>
         <a href="/app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
     </nav>
     <script>
@@ -81,7 +81,7 @@
             if (!token || !userStr) { window.location.href = '/entrar.html'; return; }
             try {
                 const user = JSON.parse(userStr);
-                document.getElementById('profileName').textContent = user.name || user.nome || 'Usuário';
+                document.getElementById('profileName').textContent = user.name || user.nome || 'UsuÃ¡rio';
                 document.getElementById('profileEmail').textContent = user.email || 'email@exemplo.com';
                 const response = await fetch(`${API_BASE_URL}/api/perfil`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const data = await response.json();

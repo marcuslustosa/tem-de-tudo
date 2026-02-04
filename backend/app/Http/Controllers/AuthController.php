@@ -893,5 +893,77 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Recuperar senha - enviar email
+     */
+    public function forgotPassword(Request $request)
+    {
+        try {
+            $request->validate([
+                'email' => 'required|email'
+            ]);
+
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                // Por segurança, não revelar se o email existe
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Se o e-mail existir, você receberá instruções de recuperação.'
+                ]);
+            }
+
+            // Gerar token de recuperação
+            $token = bin2hex(random_bytes(32));
+            
+            // Salvar token no banco
+            DB::table('password_resets')->updateOrInsert(
+                ['email' => $request->email],
+                [
+                    'token' => Hash::make($token),
+                    'created_at' => now()
+                ]
+            );
+
+            // Enviar e-mail com link de recuperação
+            try {
+                \Mail::to($user->email)->send(new \App\Mail\ResetPasswordMail($token, $user->email));
+                
+                Log::info('E-mail de recuperação enviado', [
+                    'email' => $user->email,
+                    'token_preview' => substr($token, 0, 10) . '...'
+                ]);
+            } catch (\Exception $mailError) {
+                Log::error('Erro ao enviar e-mail de recuperação', [
+                    'error' => $mailError->getMessage(),
+                    'email' => $user->email
+                ]);
+                
+                // Mesmo com erro no e-mail, retornar sucesso por segurança
+            }
+
+            Log::info('Solicitação de recuperação de senha', [
+                'email' => $request->email,
+                'user_id' => $user->id
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'E-mail de recuperação enviado com sucesso!',
+                'debug_token' => app()->environment('local') ? $token : null
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao processar recuperação de senha', [
+                'error' => $e->getMessage(),
+                'email' => $request->email ?? null
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao processar solicitação'
+            ], 500);
+        }
+    }
 
 }

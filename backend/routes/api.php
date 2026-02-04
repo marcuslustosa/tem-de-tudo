@@ -60,6 +60,9 @@ Route::get('/setup-database', [SetupController::class, 'setupDatabase']);
 // Autenticação
 Route::post('/register', [ApiAuthController::class, 'register']);
 Route::post('/login', [ApiAuthController::class, 'login']);
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 
 // Empresas (leitura pública)
 Route::get('/empresas', [ApiEmpresaController::class, 'index']);

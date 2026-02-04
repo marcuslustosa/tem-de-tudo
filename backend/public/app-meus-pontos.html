@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Bônus - Tem de Tudo</title>
+    <title>Meus BÃ´nus - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -157,7 +157,7 @@
             color: #fff;
         }
         
-        /* Lista de histórico */
+        /* Lista de histÃ³rico */
         .history-section {
             padding: 0 20px;
         }
@@ -273,7 +273,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>Meus bônus</h1>
+        <h1>Meus bÃ´nus</h1>
         <div class="help-btn" onclick="window.location.href='/app-ajuda-faq.html'">
             <i class="fas fa-question"></i>
         </div>
@@ -288,7 +288,7 @@
         <div class="saldo-valor">
             <i class="fas fa-dollar-sign saldo-icon"></i><span id="saldoTotal">195,00</span>
         </div>
-        <div class="ultima-recarga">Última recarga: <span id="ultimaRecarga">03/02/2026</span></div>
+        <div class="ultima-recarga">Ãšltima recarga: <span id="ultimaRecarga">03/02/2026</span></div>
     </div>
     
     <!-- Card de pontos a expirar -->
@@ -297,8 +297,8 @@
             <div class="expiring-title">Saldo de Vale Bonus a expirar:</div>
             <div class="expiring-valor">$<span id="saldoExpirar">60,00</span></div>
         </div>
-        <div class="expiring-date">Válido até: <span id="dataExpiracao">02/08/2026</span></div>
-        <a class="why-link" onclick="alert('Pontos têm validade de 6 meses após o ganho. Use antes de expirar!')">Por que meu saldo expira? <i class="fas fa-question-circle"></i></a>
+        <div class="expiring-date">VÃ¡lido atÃ©: <span id="dataExpiracao">02/08/2026</span></div>
+        <a class="why-link" onclick="alert('Pontos tÃªm validade de 6 meses apÃ³s o ganho. Use antes de expirar!')">Por que meu saldo expira? <i class="fas fa-question-circle"></i></a>
     </div>
     
     <!-- Tabs -->
@@ -307,13 +307,13 @@
         <button class="tab" id="tabExpirados" onclick="showTab('expirados')">Expirados</button>
     </div>
     
-    <!-- Histórico -->
+    <!-- HistÃ³rico -->
     <div class="history-section">
         <div id="historicoAtivos" class="history-list"></div>
         <div id="historicoExpirados" class="history-list" style="display: none;"></div>
         <div id="emptyState" class="empty-state" style="display: none;">
             <i class="fas fa-inbox"></i>
-            <h3>Nenhum bônus foi encontrado</h3>
+            <h3>Nenhum bÃ´nus foi encontrado</h3>
         </div>
     </div>
     
@@ -321,7 +321,7 @@
     <nav class="bottom-nav">
         <a href="/app-inicio.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>Início</span>
+            <span>InÃ­cio</span>
         </a>
         <a href="/app-buscar.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -333,7 +333,7 @@
         </a>
         <a href="/app-promocoes.html" class="nav-item">
             <i class="fas fa-gift"></i>
-            <span>Promoções</span>
+            <span>PromoÃ§Ãµes</span>
         </a>
         <a href="/app-perfil.html" class="nav-item">
             <i class="fas fa-user"></i>
@@ -372,12 +372,12 @@
                     const pontos = perfilData.data.pontos || 0;
                     document.getElementById('saldoTotal').textContent = pontos.toFixed(2);
                     
-                    // Calcular pontos a expirar (simulação: 30% do total)
+                    // Calcular pontos a expirar (simulaÃ§Ã£o: 30% do total)
                     const pontosExpirar = pontos * 0.3;
                     document.getElementById('saldoExpirar').textContent = pontosExpirar.toFixed(2);
                 }
                 
-                // Carregar histórico de check-ins
+                // Carregar histÃ³rico de check-ins
                 const checkinRes = await fetch(`${API_BASE_URL}/api/checkins`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -405,7 +405,7 @@
                         historico.push({
                             id: cupom.id,
                             tipo: 'resgate',
-                            empresa: cupom.promocao?.empresa?.nome || 'Promoção',
+                            empresa: cupom.promocao?.empresa?.nome || 'PromoÃ§Ã£o',
                             pontos: -(cupom.promocao?.pontos_necessarios || 0),
                             data: cupom.created_at,
                             status: cupom.usado ? 'expirado' : 'ativo'
@@ -463,7 +463,7 @@
                                 ${item.pontos}
                             </div>
                         </div>
-                        <div class="history-date">${formatarData(item.data)} • Expirado</div>
+                        <div class="history-date">${formatarData(item.data)} Â• Expirado</div>
                     </div>
                 `).join('');
             } else {
