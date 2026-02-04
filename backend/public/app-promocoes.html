@@ -88,23 +88,36 @@
                 }
             }
             
+            // Usuários FICTÍCIOS (para demonstração) vs REAIS (para uso)
+            const usuariosFicticios = ['maria@email.com', 'joao@email.com', 'saborearte@email.com', 'bellanapoli@email.com'];
+            const ehUsuarioFicticio = user && usuariosFicticios.includes(user.email);
+            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/promocoes`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const data = await response.json();
                 
                 if (data.success && data.data && data.data.length > 0) {
-                    // Usar dados reais da API
+                    // Se a API retornou dados reais, usar eles
                     todasPromocoes = data.data;
                     filtrarPromocoes();
+                } else if (ehUsuarioFicticio) {
+                    // Usuários FICTÍCIOS: dados fictícios para demonstração
+                    console.log('👤 Usuário fictício: usando dados de demonstração');
+                    todasPromocoes = [
+                        { id: 1, empresa: 'Sabor e Arte', titulo: 'R$50 por 50 Pontos', valor: 'Consulte regulamento', descricao: 'Troque seus pontos por créditos em qualquer produto.', validade: '2026-03-31', tipo: 'desconto', status: 'ativa' },
+                        { id: 2, empresa: 'Bella Napoli', titulo: '2 por 1 em Pizzas', valor: 'Terças e Quintas', descricao: 'Compre uma pizza grande e leve outra do mesmo tamanho grátis.', validade: '2026-02-28', tipo: 'brinde', status: 'ativa' },
+                        { id: 3, empresa: 'Academia FitLife', titulo: '20% OFF Mensalidade', valor: '3 primeiros meses', descricao: 'Desconto especial para novos alunos na matrícula.', validade: '2026-04-30', tipo: 'desconto', status: 'ativa' }
+                    ];
+                    filtrarPromocoes();
                 } else {
-                    // Se não há promoções no banco, mostrar lista vazia
-                    console.log('Nenhuma promoção encontrada no banco');
+                    // Usuários REAIS: começam limpos, dados crescem conforme o uso
+                    console.log('🔥 Usuário real: aguardando promoções reais do uso');
                     todasPromocoes = [];
                     filtrarPromocoes();
                 }
             } catch (error) {
                 console.error('Erro ao carregar promoções:', error);
-                // Em caso de erro, mostrar lista vazia em vez de dados fictícios
+                if (ehUsuarioFicticio) {
                     // Fallback para usuários de teste
                     todasPromocoes = [
                         { id: 1, empresa: 'Sabor e Arte', titulo: 'R$50 por 50 Pontos', valor: 'Consulte regulamento', descricao: 'Troque seus pontos por créditos em qualquer produto.', validade: '2026-03-31', tipo: 'desconto', status: 'ativa' },

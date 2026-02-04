@@ -60,6 +60,17 @@
     <script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         
+        // Dados fictícios para usuários de DEMONSTRAÇÃO
+        const cuponsDisponivelsFicticios = [
+            { id: 1, empresa: 'Sabor e Arte', desconto: '20% OFF', descricao: 'Em qualquer prato', validade: '2026-03-31', codigo: 'SABOR20', usado: false },
+            { id: 2, empresa: 'Bella Napoli', desconto: 'R$ 15 OFF', descricao: 'Pizza grande', validade: '2026-02-28', codigo: 'PIZZA15', usado: false },
+            { id: 3, empresa: 'Academia FitLife', desconto: '1 mês grátis', descricao: 'Na matrícula anual', validade: '2026-04-30', codigo: 'FIT1MES', usado: false }
+        ];
+        
+        const cuponsUsadosFicticios = [
+            { id: 4, empresa: 'Café & Cia', desconto: 'R$ 5 OFF', descricao: 'Em qualquer bebida', validade: '2026-01-31', codigo: 'CAFE5', usado: true, dataUso: '2026-01-15' }
+        ];
+        
         let cuponsDisponiveis = [];
         let cuponsUsados = [];
         let tabAtual = 'disponiveis';
@@ -71,8 +82,29 @@
                 return;
             }
             
-            // Sempre carregar dados reais da API
-            carregarCuponsAPI();
+            // Verificar se é usuário FICTÍCIO (demonstração) ou REAL (uso)
+            const userStr = localStorage.getItem('user');
+            const usuariosFicticios = ['maria@email.com', 'joao@email.com', 'saborearte@email.com', 'bellanapoli@email.com'];
+            let ehUsuarioFicticio = false;
+            
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    ehUsuarioFicticio = usuariosFicticios.includes(user.email);
+                } catch (e) {
+                    console.error('Erro ao parsear user:', e);
+                }
+            }
+            
+            if (ehUsuarioFicticio) {
+                console.log('👤 Usuário fictício: usando dados de demonstração');
+                cuponsDisponiveis = cuponsDisponivelsFicticios;
+                cuponsUsados = cuponsUsadosFicticios;
+                renderizarCupons();
+            } else {
+                console.log('🔥 Usuário real: carregando cupons reais da API');
+                carregarCuponsAPI();
+            }
             }
             
             // Tabs
