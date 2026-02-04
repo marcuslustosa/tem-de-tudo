@@ -281,21 +281,21 @@
             }
         });
         
-        // AUTO-LOGIN INSTANTÂNEO PARA TESTES
-        const mockToken = 'test_token_' + Date.now();
-        const mockUser = {
-            id: 1,
-            name: 'Maria Silva',
-            email: 'maria@email.com',
-            perfil: 'cliente',
-            pontos: 195
-        };
+        // Verificar se já está logado
+        const existingToken = localStorage.getItem('token');
+        const existingUser = localStorage.getItem('user');
         
-        localStorage.setItem('token', mockToken);
-        localStorage.setItem('user', JSON.stringify(mockUser));
-        
-        // Redirecionar imediatamente
-        window.location.href = '/app-inicio.html';
+        if (existingToken && existingUser) {
+            // Já está logado, redirecionar
+            const user = JSON.parse(existingUser);
+            if (user.perfil === 'admin') {
+                window.location.href = '/admin-dashboard.html';
+            } else if (user.perfil === 'empresa') {
+                window.location.href = '/dashboard-empresa.html';
+            } else {
+                window.location.href = '/app-inicio.html';
+            }
+        }
     </script>
 </body>
 </html>
