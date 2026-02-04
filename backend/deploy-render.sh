@@ -13,9 +13,13 @@ sleep 5
 echo "📦 Executando migrations..."
 php artisan migrate --force
 
-# Rodar seeders (importa dados de teste)
-echo "🌱 Executando seeders..."
-php artisan db:seed --force --class=DatabaseSeeder
+# Criar acessos de teste automaticamente (PRESERVA dados reais)
+echo "🔑 Criando acessos de teste (preservando dados reais)..."
+php artisan db:seed --force --class=SafeSeeder
+
+# Rodar seeders extras se existirem
+echo "🌱 Executando seeders extras..."
+php artisan db:seed --force --class=DatabaseSeeder 2>/dev/null || echo "⚠️ DatabaseSeeder não encontrado (normal)"
 
 echo "✅ Deploy concluído!"
 

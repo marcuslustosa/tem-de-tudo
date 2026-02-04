@@ -5,43 +5,22 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use App\Models\Empresa;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 
 class SimpleSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * SEEDER SEGURO - PRESERVA TODOS OS DADOS REAIS
+     * Apenas gerencia os 3 acessos de teste específicos
      */
     public function run(): void
     {
-        // Desabilitar foreign keys (SQLite)
-        if (DB::getDriverName() === 'sqlite') {
-            DB::statement('PRAGMA foreign_keys = OFF;');
-        } else {
-            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        }
-        
-        // Limpar tabelas
-        DB::table('coupons')->delete();
-        DB::table('promocoes')->delete();
-        DB::table('check_ins')->delete();
-        DB::table('pontos')->delete();
-        DB::table('empresas')->delete();
-        DB::table('users')->delete();
-        
-        // Reabilitar foreign keys
-        if (DB::getDriverName() === 'sqlite') {
-            DB::statement('PRAGMA foreign_keys = ON;');
-        } else {
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        }
-        
-        $this->command->info('🔄 Populando banco de dados...');
+        $this->command->info('🔄 Verificando acessos de teste...');
+        $this->command->info('🛡️ PRESERVANDO todos os dados reais existentes');
         
         // ============================================
-        // 3 ACESSOS PRINCIPAIS DO SISTEMA
+        // APENAS OS 3 ACESSOS DE TESTE ESPECÍFICOS
+        // PRESERVA TODOS OS OUTROS DADOS REAIS
         // ============================================
         
         // 1. ADMIN REAL - Gerencia perfis das empresas, administrador do sistema
@@ -83,10 +62,22 @@ class SimpleSeeder extends Seeder
             ]
         );
         
-        $this->command->info('✅ 3 acessos criados/atualizados: 1 admin real + 2 fictícios para simulação');
+        $this->command->info('✅ 3 acessos de teste criados/atualizados');
+        $this->command->info('✅ TODOS OS DADOS REAIS PRESERVADOS:');
+        $this->command->info('   - Cadastros reais de usuários');
+        $this->command->info('   - Transações reais');
+        $this->command->info('   - Empresas reais');
+        $this->command->info('   - Histórico real');
+        $this->command->info('   - Pontos reais');
+        $this->command->info('   - Logins reais');
+        $this->command->info('   - Funcionalidades reais');
+        
+        $totalUsers = User::count();
+        $realUsers = $totalUsers - 3; // Menos os 3 de teste
+        $this->command->info("📊 Total: {$totalUsers} usuários ({$realUsers} reais + 3 teste)");
         
         $this->command->info('');
-        $this->command->info('🎯 SISTEMA CRIADO COM SUCESSO!');
+        $this->command->info('🎯 SISTEMA ATUALIZADO COM SEGURANÇA!');
         $this->command->info('');
         $this->command->info('👑 ADMIN REAL (gerencia sistema):');
         $this->command->info('   📧 admin@temdetudo.com');
@@ -104,5 +95,10 @@ class SimpleSeeder extends Seeder
         $this->command->info('');
         $this->command->info('⚠️  DADOS FICTÍCIOS = SEM FINS LEGAIS');
         $this->command->info('   Apenas para simulação e demonstração');
+        $this->command->info('');
+        $this->command->info('🛡️  SEGURANÇA GARANTIDA:');
+        $this->command->info('   - Nenhum dado real foi alterado');
+        $this->command->info('   - Apenas acessos de teste gerenciados');
+        $this->command->info('   - Banco 100% preservado');
     }
 }

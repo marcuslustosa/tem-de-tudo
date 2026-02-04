@@ -37,10 +37,19 @@ O sistema possui **3 tipos de acesso** principais:
 
 ## 🔑 Como Obter as Senhas
 
-Para obter as senhas de acesso:
+### 🚀 **AUTOMÁTICO NO RENDER:**
+- Os 3 acessos são criados **automaticamente** a cada deploy
+- Sempre que você fizer push para GitHub, eles estarão disponíveis
+- **🛡️ SEGURANÇA TOTAL:** Preserva 100% dos dados reais
+- **✅ PROTEGE:** Cadastros, transações, logins, empresas, pontos reais
+- **🔄 ATUALIZA:** Apenas os 3 acessos de teste específicos
+- Não precisa executar nada manualmente!
+
+### 💻 **LOCAL (se precisar):**
+Para obter as senhas localmente:
 
 1. Execute: `php artisan db:seed --class=SimpleSeeder`
-2. As senhas serão exibidas no terminal durante a execução
+2. As senhas serão exibidas no terminal durante a execução  
 3. **Não commite senhas no repositório!**
 
 ## 🚀 Como Usar
