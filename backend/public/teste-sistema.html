@@ -143,10 +143,10 @@
             <span id="apiUrl" style="font-size: 12px; opacity: 0.8;"></span>
         </div>
 
-        <!-- 1. TESTE DE CONEX√O -->
+        <!-- 1. TESTE DE CONEX√ÉO -->
         <div class="section">
-            <h2>1?? Teste de Conex„o</h2>
-            <button class="btn" onclick="testConnection()">?? Testar Conex„o com API</button>
+            <h2>1?? Teste de Conex√£o</h2>
+            <button class="btn" onclick="testConnection()">?? Testar Conex√£o com API</button>
             <div id="connectionResult" class="result" style="display: none;"></div>
         </div>
 
@@ -186,7 +186,7 @@
             <div id="registerResult" class="result" style="display: none;"></div>
         </div>
 
-        <!-- 5. CREDENCIAIS DISPONÕVEIS -->
+        <!-- 5. CREDENCIAIS DISPON√çVEIS -->
         <div class="section">
             <h2>5?? Credenciais de Teste</h2>
             <div class="credential">
@@ -199,7 +199,7 @@
                 <strong>Empresa:</strong> empresa@teste.com / 123456
             </div>
             <div class="credential">
-                <strong>Cliente 1-50:</strong> cliente1@email.com atÈ cliente50@email.com / senha123
+                <strong>Cliente 1-50:</strong> cliente1@email.com at√© cliente50@email.com / senha123
             </div>
         </div>
     </div>
@@ -229,7 +229,7 @@
         async function testConnection() {
             const resultDiv = document.getElementById('connectionResult');
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<span class="info">? Testando conex„o...</span>';
+            resultDiv.innerHTML = '<span class="info">? Testando conex√£o...</span>';
             
             try {
                 const response = await fetch(API_CONFIG.debug);
@@ -285,7 +285,7 @@
                         <strong>Pontos:</strong> ${data.data.user.pontos || 0}
                     `;
                 } else {
-                    resultDiv.innerHTML = `<span class="error">? ERRO no login:</span><br>${data.message || 'Credenciais inv·lidas'}`;
+                    resultDiv.innerHTML = `<span class="error">? ERRO no login:</span><br>${data.message || 'Credenciais inv√°lidas'}`;
                 }
             } catch (error) {
                 resultDiv.innerHTML = `<span class="error">? ERRO:</span><br>${error.message}`;
@@ -298,7 +298,7 @@
             
             if (!token) {
                 resultDiv.style.display = 'block';
-                resultDiv.innerHTML = '<span class="warning">?? FaÁa login primeiro!</span>';
+                resultDiv.innerHTML = '<span class="warning">?? Fa√ßa login primeiro!</span>';
                 return;
             }
             
@@ -321,7 +321,7 @@
                     
                     empresas.slice(0, 5).forEach((emp, i) => {
                         html += `<strong>${i+1}. ${emp.nome}</strong><br>`;
-                        html += `EndereÁo: ${emp.endereco || 'N/A'}<br>`;
+                        html += `Endere√ßo: ${emp.endereco || 'N/A'}<br>`;
                         html += `Telefone: ${emp.telefone || 'N/A'}<br><br>`;
                     });
                     

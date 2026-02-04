@@ -47,6 +47,28 @@
             </div>
         </div>
     </header>
+    
+    <script>
+    // Carregar nome da empresa
+    document.addEventListener('DOMContentLoaded', () => {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            try {
+                const user = JSON.parse(userStr);
+                document.getElementById('companyName').textContent = user.nome || user.name || 'Empresa';
+            } catch(e) {
+                console.error('Erro ao carregar nome:', e);
+            }
+        }
+        
+        // Função logout
+        window.logout = function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/index.html';
+        };
+    });
+    </script>
 
     <!-- Stats Cards -->
     <div style="max-width:1200px;margin:-40px auto 0;padding:0 20px;">

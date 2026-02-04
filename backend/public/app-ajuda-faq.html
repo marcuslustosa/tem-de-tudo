@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuda e FAQ - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/theme-escuro.css">
+    <style>
+        body { background: #0a0a0f; color: #fff; padding-bottom: 100px; }
+        .header { background: linear-gradient(145deg, #667eea, #764ba2); padding: 60px 20px 30px; text-align: center; position: relative; }
+        .btn-back { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: none; width: 40px; height: 40px; border-radius: 12px; color: white; font-size: 18px; cursor: pointer; }
+        .container { max-width: 800px; margin: -20px auto 0; padding: 0 20px; }
+        .search-box { background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 20px; padding: 16px; margin-bottom: 24px; border: 1px solid rgba(102, 126, 234, 0.1); }
+        .search-input { width: 100%; padding: 14px 16px 14px 44px; background: rgba(0,0,0,0.3); border: 1px solid rgba(102, 126, 234, 0.2); border-radius: 12px; color: white; font-size: 15px; }
+        .search-icon { position: absolute; left: 32px; top: 30px; color: #667eea; }
+        .faq-category { background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 20px; padding: 24px; margin-bottom: 20px; border: 1px solid rgba(102, 126, 234, 0.1); }
+        .faq-category-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; color: #667eea; }
+        .faq-item { border-bottom: 1px solid rgba(102, 126, 234, 0.1); padding: 20px 0; cursor: pointer; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .faq-answer { font-size: 14px; color: #b0b0b0; line-height: 1.6; display: none; margin-top: 12px; }
+        .faq-answer.show { display: block; }
+        .faq-icon { color: #667eea; transition: transform 0.3s; }
+        .faq-icon.rotate { transform: rotate(180deg); }
+        .contact-box { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 32px; text-align: center; }
+        .contact-box h3 { font-size: 24px; margin-bottom: 12px; }
+        .contact-box p { opacity: 0.9; margin-bottom: 20px; }
+        .btn-contact { background: white; color: #667eea; padding: 14px 32px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="btn-back" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+        <h1><i class="fas fa-question-circle"></i> Ajuda e FAQ</h1>
+        <p>Encontre respostas para suas dúvidas</p>
+    </div>
+    
+    <div class="container">
+        <div class="search-box" style="position: relative;">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" id="searchFAQ" placeholder="Buscar perguntas..." oninput="filtrarFAQ()">
+        </div>
+        
+        <!-- Como Funciona -->
+        <div class="faq-category">
+            <div class="faq-category-title"><i class="fas fa-lightbulb"></i> Como Funciona</div>
+            
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-question">
+                    Como ganhar pontos?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>Há 2 formas de ganhar pontos:</strong><br><br>
+                    1. <strong>Check-in Manual:</strong> Ao visitar um estabelecimento parceiro, faça check-in pela aba "Empresas". Ganhe 10 pontos por check-in.<br><br>
+                    2. <strong>Check-in via QR Code:</strong> Peça ao estabelecimento para escanear seu QR Code (aba "Meu QR"). Ganhe 15 pontos (bônus de 5 pontos)!<br><br>
+                    <strong>Importante:</strong> Você pode fazer 1 check-in por dia em cada estabelecimento.
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-question">
+                    Como resgatar promoções?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>Passo a passo:</strong><br><br>
+                    1. Acesse a aba <strong>"Promoções"</strong><br>
+                    2. Escolha uma promoção que tenha pontos suficientes<br>
+                    3. Clique em <strong>"Resgatar"</strong><br>
+                    4. Seus pontos serão debitados e você receberá um <strong>cupom</strong><br>
+                    5. Vá ao estabelecimento e apresente o cupom antes de pagar<br><br>
+                    <strong>Dica:</strong> Verifique sempre a validade do cupom!
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-question">
+                    Meus pontos expiram?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>Não!</strong> Seus pontos são permanentes e não expiram. Acumule quantos quiser e use quando precisar.<br><br>
+                    <strong>Atenção:</strong> Os cupons resgatados têm data de validade. Fique atento!
+                </div>
+            </div>
+        </div>
+        
+        <!-- Usando o App -->
+        <div class="faq-category">
+            <div class="faq-category-title"><i class="fas fa-mobile-alt"></i> Usando o App</div>
+            
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-question">
+                    Como instalar o app no celular?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>Android (Chrome):</strong><br>
+                    1. Acesse o site pelo Chrome<br>
+                    2. Clique no botão roxo <strong>"Instalar App"</strong> que aparece<br>
+                    3. Ou clique nos 3 pontinhos > "Adicionar à tela inicial"<br>
+                    4. Confirme e pronto! O app estará instalado.<br><br>
+                    
+                    <strong>iPhone (Safari):</strong><br>
+                    1. Acesse o site pelo Safari<br>
+                    2. Clique no ícone de <strong>"Compartilhar"</strong> (quadrado com seta)<br>
+                    3. Role e selecione <strong>"Adicionar à Tela de Início"</strong><br>
+                    4. Confirme e o ícone aparecerá na tela inicial!
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-question">
+                    O app funciona offline?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>Parcialmente!</strong> Páginas que você já visitou funcionam offline. Seu QR Code também fica disponível sem internet.<br><br>
+                    <strong>Requer internet:</strong> Check-ins, resgatar promoções e atualizar saldo de pontos.
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-question">
+                    Como ativar notificações?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>Passo a passo:</strong><br><br>
+                    1. Acesse <strong>"Perfil"</strong> > <strong>"Notificações"</strong><br>
+                    2. Ative as notificações desejadas<br>
+                    3. Quando solicitado, permita notificações no navegador<br><br>
+                    <strong>Você receberá notificações sobre:</strong><br>
+                    • Novas promoções próximas a você<br>
+                    • Pontos prestes a expirar (se aplicável)<br>
+                    • Cupons prestes a vencer
+                </div>
+            </div>
+        </div>
+        
+        <!-- Problemas -->
+        <div class="faq-category">
+            <div class="faq-category-title"><i class="fas fa-exclamation-circle"></i> Problemas Comuns</div>
+            
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-question">
+                    Não consigo fazer login
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>Soluções:</strong><br><br>
+                    1. Verifique se digitou o email e senha corretamente<br>
+                    2. Tente clicar em <strong>"Esqueci minha senha"</strong><br>
+                    3. Limpe o cache do navegador<br>
+                    4. Se o problema persistir, entre em contato
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-question">
+                    Meu QR Code não está funcionando
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>Verifique:</strong><br><br>
+                    1. Se o QR Code está visível na tela (não em screenshot)<br>
+                    2. Se o brilho da tela está alto o suficiente<br>
+                    3. Se você está logado no app<br>
+                    4. Tente atualizar a página do QR Code<br><br>
+                    Se nada funcionar, peça para fazer check-in manual.
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-question">
+                    Cadastro não está salvando
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>Possíveis causas:</strong><br><br>
+                    1. <strong>Email já cadastrado:</strong> Tente fazer login em vez de cadastrar<br>
+                    2. <strong>Campos inválidos:</strong> Verifique se preencheu todos os campos obrigatórios<br>
+                    3. <strong>Conexão:</strong> Verifique sua internet<br>
+                    4. <strong>Cache:</strong> Limpe o cache e tente novamente<br><br>
+                    Se o erro persistir, entre em contato com nossa equipe.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Segurança -->
+        <div class="faq-category">
+            <div class="faq-category-title"><i class="fas fa-shield-alt"></i> Segurança e Privacidade</div>
+            
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-question">
+                    Meus dados estão seguros?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    <strong>Sim!</strong> Todos os seus dados são criptografados e armazenados com segurança. Nunca compartilhamos suas informações pessoais com terceiros.<br><br>
+                    <strong>Leia nossa</strong> <a href="/politica-de-privacidade.html" style="color: #667eea;">Política de Privacidade</a>
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFAQ(this)">
+                <div class="faq-question">
+                    Como excluir minha conta?
+                    <i class="fas fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-answer">
+                    Entre em contato conosco através do email <strong>suporte@temdetudo.com</strong> solicitando a exclusão.<br><br>
+                    <strong>Atenção:</strong> Ao excluir sua conta, você perderá todos os pontos e cupons.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contato -->
+        <div class="contact-box">
+            <h3>Não encontrou sua resposta?</h3>
+            <p>Nossa equipe está pronta para ajudar!</p>
+            <a href="mailto:suporte@temdetudo.com" class="btn-contact">
+                <i class="fas fa-envelope"></i> Falar com Suporte
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        function toggleFAQ(element) {
+            const answer = element.querySelector('.faq-answer');
+            const icon = element.querySelector('.faq-icon');
+            
+            // Fechar outros
+            document.querySelectorAll('.faq-answer').forEach(a => {
+                if (a !== answer) {
+                    a.classList.remove('show');
+                }
+            });
+            
+            document.querySelectorAll('.faq-icon').forEach(i => {
+                if (i !== icon) {
+                    i.classList.remove('rotate');
+                }
+            });
+            
+            // Toggle atual
+            answer.classList.toggle('show');
+            icon.classList.toggle('rotate');
+        }
+        
+        function filtrarFAQ() {
+            const termo = document.getElementById('searchFAQ').value.toLowerCase();
+            const items = document.querySelectorAll('.faq-item');
+            
+            items.forEach(item => {
+                const question = item.querySelector('.faq-question').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                
+                if (question.includes(termo) || answer.includes(termo)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

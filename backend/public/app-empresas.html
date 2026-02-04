@@ -295,9 +295,9 @@
     </nav>
     
     <script>
-        const API_URL = window.location.hostname === 'localhost' ? 
-            'http://localhost:8000/api' : 
-            'https://tem-de-tudo.onrender.com/api';
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 
+            'http://localhost:8000' : 
+            'https://tem-de-tudo.onrender.com';
         
         let todasEmpresas = [];
         let categoriaAtual = 'todas';
@@ -523,13 +523,18 @@
                     return;
                 }
 
-                const response = await fetch(`${API_BASE_URL}/api/check-in`, {
+                const response = await fetch(`${API_BASE_URL}/api/checkins`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ empresa_id: id })
+                    body: JSON.stringify({ 
+                        empresa_id: id,
+                        latitude: -23.550520,
+                        longitude: -46.633308,
+                        metodo: 'manual'
+                    })
                 });
 
                 const data = await response.json();

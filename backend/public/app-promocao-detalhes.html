@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Promoção - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/theme-escuro.css">
+    
+    <style>
+        body {
+            background: #0a0a0f;
+            color: #fff;
+            padding-bottom: 100px;
+        }
+        
+        .header {
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            padding: 60px 20px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .promo-badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+        
+        .promo-title {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+        
+        .promo-empresa {
+            font-size: 16px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .content {
+            max-width: 600px;
+            margin: -30px auto 0;
+            padding: 0 20px;
+        }
+        
+        .info-card {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+        
+        .info-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .description {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            font-size: 15px;
+            color: #e0e0e0;
+        }
+        
+        .terms {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #ffc107;
+        }
+        
+        .btn-resgatar {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .btn-resgatar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 48px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn-resgatar:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .countdown {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #f39c12;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="btn-back" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="promo-badge" id="promoBadge">PROMOÇÃO</div>
+        <h1 class="promo-title" id="promoTitle">Carregando...</h1>
+        <div class="promo-empresa">
+            <i class="fas fa-store"></i>
+            <span id="promoEmpresa">...</span>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="info-card">
+            <div class="info-row">
+                <span class="info-label">
+                    <i class="fas fa-coins"></i> Pontos Necessários
+                </span>
+                <span class="info-value" id="pontosNecessarios">0</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">
+                    <i class="fas fa-user"></i> Seus Pontos
+                </span>
+                <span class="info-value" id="seusPontos">0</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">
+                    <i class="fas fa-calendar"></i> Válido até
+                </span>
+                <span class="info-value" id="validade">--/--/----</span>
+            </div>
+        </div>
+        
+        <div class="description" id="descricao">
+            Carregando descrição...
+        </div>
+        
+        <div class="terms">
+            <i class="fas fa-exclamation-triangle"></i> 
+            <strong>Importante:</strong> Após resgatar, você terá um cupom disponível para usar no estabelecimento. Apresente o cupom no caixa antes de realizar o pagamento.
+        </div>
+        
+        <div class="countdown" id="countdown"></div>
+        
+        <button class="btn-resgatar" id="btnResgatar" onclick="resgatarPromocao()">
+            <i class="fas fa-gift"></i>
+            Resgatar Promoção
+        </button>
+    </div>
+    
+    <script>
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 
+            'http://localhost:8000' : 
+            'https://tem-de-tudo.onrender.com';
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const promocaoId = urlParams.get('id');
+        
+        let promocao = null;
+        let userPontos = 0;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!promocaoId) {
+                alert('Promoção não encontrada');
+                history.back();
+                return;
+            }
+            
+            carregarPromocao();
+            carregarPontosUsuario();
+        });
+        
+        async function carregarPromocao() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/promocoes/${promocaoId}`);
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    promocao = data.data;
+                    renderizarPromocao();
+                    iniciarCountdown();
+                } else {
+                    alert('Promoção não encontrada');
+                    history.back();
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao carregar promoção');
+                history.back();
+            }
+        }
+        
+        async function carregarPontosUsuario() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/perfil`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    userPontos = data.data.pontos || 0;
+                    document.getElementById('seusPontos').textContent = userPontos;
+                    verificarPontosSuficientes();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar pontos:', error);
+            }
+        }
+        
+        function renderizarPromocao() {
+            document.getElementById('promoTitle').textContent = promocao.titulo;
+            document.getElementById('promoEmpresa').textContent = promocao.empresa_nome || 'Estabelecimento';
+            document.getElementById('pontosNecessarios').textContent = promocao.pontos_necessarios;
+            document.getElementById('descricao').textContent = promocao.descricao || 'Sem descrição disponível';
+            
+            const validade = new Date(promocao.validade);
+            document.getElementById('validade').textContent = validade.toLocaleDateString('pt-BR');
+            
+            // Badge baseado no tipo
+            const badge = document.getElementById('promoBadge');
+            if (promocao.pontos_necessarios < 50) {
+                badge.textContent = '🔥 IMPERDÍVEL';
+                badge.style.background = 'rgba(239, 68, 68, 0.3)';
+            } else if (promocao.pontos_necessarios < 100) {
+                badge.textContent = '⭐ DESTAQUE';
+                badge.style.background = 'rgba(251, 191, 36, 0.3)';
+            } else {
+                badge.textContent = '👑 PREMIUM';
+                badge.style.background = 'rgba(168, 85, 247, 0.3)';
+            }
+        }
+        
+        function verificarPontosSuficientes() {
+            const btn = document.getElementById('btnResgatar');
+            
+            if (userPontos < promocao.pontos_necessarios) {
+                btn.disabled = true;
+                btn.innerHTML = `
+                    <i class="fas fa-times-circle"></i>
+                    Pontos Insuficientes (faltam ${promocao.pontos_necessarios - userPontos})
+                `;
+            }
+        }
+        
+        function iniciarCountdown() {
+            const validade = new Date(promocao.validade);
+            const agora = new Date();
+            const diff = validade - agora;
+            
+            if (diff <= 0) {
+                document.getElementById('countdown').innerHTML = '⏰ Promoção expirada';
+                document.getElementById('btnResgatar').disabled = true;
+                return;
+            }
+            
+            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+            
+            if (dias <= 7) {
+                document.getElementById('countdown').innerHTML = `⏰ Expira em ${dias} dia${dias !== 1 ? 's' : ''}!`;
+            }
+        }
+        
+        async function resgatarPromocao() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                alert('❌ Você precisa estar logado para resgatar promoções');
+                window.location.href = '/entrar.html';
+                return;
+            }
+            
+            if (!confirm(`Confirma o resgate desta promoção?\n\n${promocao.titulo}\nCusto: ${promocao.pontos_necessarios} pontos`)) {
+                return;
+            }
+            
+            const btn = document.getElementById('btnResgatar');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Resgatando...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/cupons/resgatar`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ promocao_id: promocaoId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`✅ Promoção resgatada com sucesso!\n\nCupom: ${data.data.codigo}\n\nVocê pode encontrá-lo na aba "Cupons" do seu perfil.`);
+                    window.location.href = '/app-perfil-cliente.html?tab=cupons';
+                } else {
+                    alert('❌ ' + (data.message || 'Erro ao resgatar promoção'));
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promoção';
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao conectar com o servidor');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promoção';
+            }
+        }
+    </script>
+</body>
+</html>

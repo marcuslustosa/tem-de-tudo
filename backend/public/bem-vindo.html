@@ -203,7 +203,7 @@
         function mostrarErro() {
             document.getElementById('statusIcon').textContent = '??';
             document.getElementById('statusText').textContent = 'Sistema Iniciando';
-            document.getElementById('statusDetail').textContent = 'Clique em "Inicializar Dados" para comeÁar';
+            document.getElementById('statusDetail').textContent = 'Clique em "Inicializar Dados" para come√ßar';
             document.getElementById('statusBox').style.borderColor = 'rgba(255, 152, 0, 0.5)';
         }
 
@@ -211,7 +211,7 @@
             document.getElementById('loading').style.display = 'block';
             document.getElementById('statusIcon').textContent = '?';
             document.getElementById('statusText').textContent = 'Inicializando...';
-            document.getElementById('statusDetail').textContent = 'Criando usu·rios e dados de teste';
+            document.getElementById('statusDetail').textContent = 'Criando usu√°rios e dados de teste';
 
             try {
                 const response = await fetch(API_BASE + '/api/setup-database?secret=temdetudo2024');
@@ -222,22 +222,22 @@
                 if (data.success) {
                     document.getElementById('statusIcon').textContent = '?';
                     document.getElementById('statusText').textContent = 'Sistema Pronto!';
-                    document.getElementById('statusDetail').textContent = `${data.total_users} usu·rios criados. FaÁa login agora!`;
+                    document.getElementById('statusDetail').textContent = `${data.total_users} usu√°rios criados. Fa√ßa login agora!`;
                     document.getElementById('statusBox').style.borderColor = 'rgba(76, 175, 80, 0.5)';
                     
-                    alert('? Sistema inicializado com sucesso!\n\nVocÍ j· pode fazer login com:\n- admin@temdetudo.com / admin123\n- cliente@teste.com / 123456');
+                    alert('? Sistema inicializado com sucesso!\n\nVoc√™ j√° pode fazer login com:\n- admin@temdetudo.com / admin123\n- cliente@teste.com / 123456');
                 } else {
                     document.getElementById('statusIcon').textContent = '?';
-                    document.getElementById('statusText').textContent = 'Erro na InicializaÁ„o';
+                    document.getElementById('statusText').textContent = 'Erro na Inicializa√ß√£o';
                     document.getElementById('statusDetail').textContent = data.error || 'Tente novamente em alguns segundos';
-                    alert('Erro: ' + (data.error || 'Falha na inicializaÁ„o'));
+                    alert('Erro: ' + (data.error || 'Falha na inicializa√ß√£o'));
                 }
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('statusIcon').textContent = '?';
-                document.getElementById('statusText').textContent = 'Erro de Conex„o';
+                document.getElementById('statusText').textContent = 'Erro de Conex√£o';
                 document.getElementById('statusDetail').textContent = 'Servidor pode estar reiniciando. Aguarde 2 minutos.';
-                alert('Erro de conex„o. O servidor pode estar reiniciando. Aguarde 2-3 minutos e tente novamente.');
+                alert('Erro de conex√£o. O servidor pode estar reiniciando. Aguarde 2-3 minutos e tente novamente.');
             }
         }
 

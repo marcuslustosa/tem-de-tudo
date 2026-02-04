@@ -25,8 +25,8 @@
     <h1>?? Teste de Login Direto</h1>
     <p>API Base: <strong id="apiBase"></strong></p>
     
-    <h2>Testes DisponÌveis:</h2>
-    <button onclick="testarConexao()">1. Testar Conex„o</button>
+    <h2>Testes Dispon√≠veis:</h2>
+    <button onclick="testarConexao()">1. Testar Conex√£o</button>
     <button onclick="testarLoginAdmin()">2. Login Admin</button>
     <button onclick="testarLoginCliente()">3. Login Cliente</button>
     <button onclick="testarLoginCliente1()">4. Login Cliente1</button>
@@ -50,12 +50,12 @@
         }
 
         async function testarConexao() {
-            log('Testando conex„o com API...');
+            log('Testando conex√£o com API...');
             try {
                 const response = await fetch(API_BASE + '/api/debug');
                 const data = await response.json();
                 if (data.status === 'OK') {
-                    log('? CONEX√O OK: ' + JSON.stringify(data), 'sucesso');
+                    log('? CONEX√ÉO OK: ' + JSON.stringify(data), 'sucesso');
                 } else {
                     log('?? Resposta inesperada: ' + JSON.stringify(data), 'erro');
                 }
@@ -103,7 +103,7 @@
         }
 
         async function testarCadastro() {
-            log('Testando cadastro de novo usu·rio...');
+            log('Testando cadastro de novo usu√°rio...');
             const randomEmail = `teste${Date.now()}@email.com`;
             try {
                 const response = await fetch(API_BASE + '/api/auth/register', {
@@ -136,7 +136,7 @@
 
         // Auto-testar ao carregar
         window.addEventListener('load', () => {
-            log('P·gina carregada. Clique nos botıes para testar.');
+            log('P√°gina carregada. Clique nos bot√µes para testar.');
         });
     </script>
 </body>

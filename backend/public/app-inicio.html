@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#0a0a0f">
-    <title>In�cio - Tem de Tudo</title>
+    <title>Inàcio - Tem de Tudo</title>
     
     <link rel="manifest" href="/manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -389,7 +389,7 @@
                     <img src="img/logo.png" alt="Tem de Tudo">
                 </div>
                 <div class="user-info">
-                    <h2 id="userName">Ol�, Cliente!</h2>
+                    <h2 id="userName">Olà, Cliente!</h2>
                     <p>Bem-vindo de volta ??</p>
                 </div>
             </div>
@@ -440,7 +440,7 @@
     <div class="section">
         <h3 class="section-title">Seus Estabelecimentos</h3>
         <div class="estabelecimentos-grid" id="estabelecimentosGrid">
-            <!-- Ser� preenchido via JavaScript -->
+            <!-- Será preenchido via JavaScript -->
         </div>
     </div>
     
@@ -448,7 +448,7 @@
     <nav class="bottom-nav">
         <a href="app-inicio.html" class="nav-item active">
             <i class="fas fa-home"></i>
-            <span>In�cio</span>
+            <span>Inàcio</span>
         </a>
         <a href="app-buscar.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -456,7 +456,7 @@
         </a>
         <a href="app-promocoes.html" class="nav-item">
             <i class="fas fa-gift"></i>
-            <span>Promo��es</span>
+            <span>Promoções</span>
         </a>
         <a href="app-notificacoes.html" class="nav-item">
             <i class="fas fa-bell"></i>
@@ -469,7 +469,7 @@
     </nav>
     
     <script>
-        // Carregar dados do usu�rio
+        // Carregar dados do usuário
         async function loadUserData() {
             const token = localStorage.getItem('tem_de_tudo_token');
             const userStr = localStorage.getItem('tem_de_tudo_user');
@@ -489,15 +489,15 @@
                 return;
             }
             
-            // Atualizar nome do usu�rio
+            // Atualizar nome do usuário
             if (user.name) {
-                document.getElementById('userName').textContent = `Ol�, ${user.name.split(' ')[0]}!`;
+                document.getElementById('userName').textContent = `Olà, ${user.name.split(' ')[0]}!`;
             }
             
             try {
                 const baseURL = API_CONFIG.getBaseURL();
                 
-                // Buscar pontos do usu�rio
+                // Buscar pontos do usuário
                 const pointsResponse = await fetch(`${baseURL}/api/cliente/dashboard`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -528,7 +528,7 @@
                     renderEmptyState();
                 }
                 
-                // Buscar estat�sticas
+                // Buscar estatàsticas
                 const statsResponse = await fetch(`${baseURL}/api/cliente/historico-pontos`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -599,12 +599,12 @@
             grid.innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-store-slash"></i>
-                    <p>Voc� ainda n�o visitou nenhum estabelecimento</p>
+                    <p>Você ainda não visitou nenhum estabelecimento</p>
                 </div>
             `;
         }
         
-        // Inicializar ao carregar p�gina
+        // Inicializar ao carregar pàgina
         document.addEventListener('DOMContentLoaded', loadUserData);
         
         // Registrar Service Worker

@@ -45,16 +45,16 @@
                         <i class="fas fa-home icon-sm"></i> Dashboard
                     </a>
                     <a href="/admin/usuarios.html">
-                        <i class="fas fa-users icon-sm"></i> Usu·rios
+                        <i class="fas fa-users icon-sm"></i> Usu√°rios
                     </a>
                     <a href="/admin/empresas.html">
                         <i class="fas fa-building icon-sm"></i> Empresas
                     </a>
                     <a href="/admin/relatorios.html">
-                        <i class="fas fa-chart-bar icon-sm"></i> RelatÛrios
+                        <i class="fas fa-chart-bar icon-sm"></i> Relat√≥rios
                     </a>
                     <a href="/admin/configuracoes.html">
-                        <i class="fas fa-cog icon-sm"></i> ConfiguraÁıes
+                        <i class="fas fa-cog icon-sm"></i> Configura√ß√µes
                     </a>
                     <a href="#" onclick="logout()">
                         <i class="fas fa-sign-out-alt icon-sm"></i> Sair
@@ -76,16 +76,16 @@
                     <i class="fas fa-home icon-sm"></i> Dashboard
                 </a>
                 <a href="/admin/usuarios.html">
-                    <i class="fas fa-users icon-sm"></i> Usu·rios
+                    <i class="fas fa-users icon-sm"></i> Usu√°rios
                 </a>
                 <a href="/admin/empresas.html">
                     <i class="fas fa-building icon-sm"></i> Empresas
                 </a>
                 <a href="/admin/relatorios.html">
-                    <i class="fas fa-chart-bar icon-sm"></i> RelatÛrios
+                    <i class="fas fa-chart-bar icon-sm"></i> Relat√≥rios
                 </a>
                 <a href="/admin/configuracoes.html">
-                    <i class="fas fa-cog icon-sm"></i> ConfiguraÁıes
+                    <i class="fas fa-cog icon-sm"></i> Configura√ß√µes
                 </a>
                 <a href="#" onclick="logout()">
                     <i class="fas fa-sign-out-alt icon-sm"></i> Sair
@@ -118,7 +118,7 @@
                     <div class="stat-card">
                         <i class="fas fa-users" style="font-size: 2rem; color: var(--primary-purple); margin-bottom: var(--space-2);"></i>
                         <div class="stat-value" id="totalUsers">0</div>
-                        <div class="stat-label">Total de Usu·rios</div>
+                        <div class="stat-label">Total de Usu√°rios</div>
                     </div>
 
                     <div class="stat-card">
@@ -130,7 +130,7 @@
                     <div class="stat-card">
                         <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--accent-green); margin-bottom: var(--space-2);"></i>
                         <div class="stat-value" id="totalPontos">0</div>
-                        <div class="stat-label">Pontos DistribuÌdos</div>
+                        <div class="stat-label">Pontos Distribu√≠dos</div>
                     </div>
 
                     <div class="stat-card">
@@ -159,7 +159,7 @@
                         <div style="margin-top: var(--space-6); text-align: center;">
                             <a href="/admin/relatorios.html" class="btn btn-outline">
                                 <i class="fas fa-history"></i>
-                                Ver RelatÛrio Completo
+                                Ver Relat√≥rio Completo
                             </a>
                         </div>
                     </div>
@@ -170,9 +170,9 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <i class="fas fa-user-plus" style="font-size: 3rem; color: var(--primary-purple); margin-bottom: var(--space-4);"></i>
-                            <h3 style="margin: 0 0 var(--space-2); color: var(--gray-900);">Criar Usu·rio</h3>
+                            <h3 style="margin: 0 0 var(--space-2); color: var(--gray-900);">Criar Usu√°rio</h3>
                             <p style="margin: 0 0 var(--space-4); color: var(--gray-600); font-size: 0.875rem;">
-                                Adicionar novo usu·rio ao sistema
+                                Adicionar novo usu√°rio ao sistema
                             </p>
                             <a href="/admin/usuarios.html?action=create" class="btn btn-primary btn-sm">
                                 <i class="fas fa-plus"></i>
@@ -198,13 +198,13 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <i class="fas fa-chart-bar" style="font-size: 3rem; color: var(--accent-green); margin-bottom: var(--space-4);"></i>
-                            <h3 style="margin: 0 0 var(--space-2); color: var(--gray-900);">RelatÛrios</h3>
+                            <h3 style="margin: 0 0 var(--space-2); color: var(--gray-900);">Relat√≥rios</h3>
                             <p style="margin: 0 0 var(--space-4); color: var(--gray-600); font-size: 0.875rem;">
-                                An·lise de dados e estatÌsticas
+                                An√°lise de dados e estat√≠sticas
                             </p>
                             <a href="/admin/relatorios.html" class="btn btn-primary btn-sm">
                                 <i class="fas fa-chart-line"></i>
-                                Ver RelatÛrios
+                                Ver Relat√≥rios
                             </a>
                         </div>
                     </div>
@@ -218,9 +218,9 @@
     <script src="/js/auth-middleware.js"></script>
     <script src="/js/auth.js"></script>
     <script>
-        // Verificar autenticaÁ„o de admin
+        // Verificar autentica√ß√£o de admin
         document.addEventListener('DOMContentLoaded', async function() {
-            // Verificar se est· autenticado
+            // Verificar se est√° autenticado
             if (!authMiddleware.isAuthenticated()) {
                 window.location.href = '/admin-login.html';
                 return;
@@ -229,19 +229,19 @@
             // Validar token com o servidor
             const tokenValid = await authMiddleware.validateToken();
             if (!tokenValid) {
-                return; // J· foi redirecionado pelo validateToken
+                return; // J√° foi redirecionado pelo validateToken
             }
 
-            // Verificar se tem acesso ‡ rota
+            // Verificar se tem acesso √† rota
             if (!authMiddleware.hasAccessToCurrentRoute()) {
                 authMiddleware.redirectToCorrectRoute();
                 return;
             }
 
-            // Verificar se È admin
+            // Verificar se √© admin
             const user = authMiddleware.getCurrentUser();
             if (!user || user.perfil !== 'admin') {
-                alert('Acesso negado. VocÍ n„o tem permissıes administrativas.');
+                alert('Acesso negado. Voc√™ n√£o tem permiss√µes administrativas.');
                 authMiddleware.logout();
                 return;
             }
@@ -359,13 +359,13 @@
             const diffInMinutes = Math.floor((now - date) / (1000 * 60));
 
             if (diffInMinutes < 1) return 'Agora';
-            if (diffInMinutes < 60) return `${diffInMinutes}min atr·s`;
+            if (diffInMinutes < 60) return `${diffInMinutes}min atr√°s`;
 
             const diffInHours = Math.floor(diffInMinutes / 60);
-            if (diffInHours < 24) return `${diffInHours}h atr·s`;
+            if (diffInHours < 24) return `${diffInHours}h atr√°s`;
 
             const diffInDays = Math.floor(diffInHours / 24);
-            return `${diffInDays}d atr·s`;
+            return `${diffInDays}d atr√°s`;
         }
 
         function logout() {

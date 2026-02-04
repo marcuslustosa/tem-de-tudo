@@ -172,7 +172,7 @@
             <div class="hero-stats">
                 <div class="stat">
                     <div class="stat-value" id="empresaRating">-</div>
-                    <div class="stat-label">AvaliaÁ„o</div>
+                    <div class="stat-label">Avalia√ß√£o</div>
                 </div>
                 <div class="stat">
                     <div class="stat-value" id="meusPontos">0</div>
@@ -192,17 +192,17 @@
             </div>
             
             <div class="info-card" id="enderecoCard">
-                <div class="info-title"><i class="fas fa-map-marker-alt"></i> EndereÁo</div>
+                <div class="info-title"><i class="fas fa-map-marker-alt"></i> Endere√ßo</div>
                 <div class="info-text" id="empresaEndereco">-</div>
             </div>
             
             <div class="info-card" id="promocoesCard" style="display: none;">
-                <div class="info-title"><i class="fas fa-gift"></i> PromoÁıes Ativas</div>
+                <div class="info-title"><i class="fas fa-gift"></i> Promo√ß√µes Ativas</div>
                 <div class="promocoes-list" id="promocoesList"></div>
             </div>
             
             <div class="info-card" id="avaliacoesCard" style="display: none;">
-                <div class="info-title"><i class="fas fa-star"></i> AvaliaÁıes Recentes</div>
+                <div class="info-title"><i class="fas fa-star"></i> Avalia√ß√µes Recentes</div>
                 <div class="reviews-list" id="reviewsList"></div>
             </div>
             
@@ -216,7 +216,7 @@
         let empresaId = null;
         let empresaData = null;
         
-        // Õcones por ramo
+        // √çcones por ramo
         const ramoIcons = {
             'restaurante': '???',
             'lanchonete': '??',
@@ -242,7 +242,7 @@
             empresaId = getEmpresaId();
             
             if (!empresaId) {
-                alert('Empresa n„o especificada');
+                alert('Empresa n√£o especificada');
                 history.back();
                 return;
             }
@@ -269,7 +269,7 @@
                     console.log('Empresa carregada:', empresaData);
                     renderEmpresa();
                 } else if (response.status === 404) {
-                    alert('Empresa n„o encontrada');
+                    alert('Empresa n√£o encontrada');
                     history.back();
                 } else if (response.status === 401) {
                     window.location.href = '/entrar.html';
@@ -296,7 +296,7 @@
             document.getElementById('empresaNome').textContent = empresa.nome;
             document.getElementById('empresaCategoria').textContent = empresa.ramo || 'Estabelecimento';
             
-            // Õcone/Logo
+            // √çcone/Logo
             const iconEl = document.getElementById('heroIcon');
             if (empresa.logo) {
                 iconEl.innerHTML = `<img src="${empresa.logo}" alt="${empresa.nome}" onerror="this.parentElement.innerHTML='${ramoIcons[empresa.ramo] || ramoIcons.default}'">`;
@@ -310,28 +310,28 @@
             document.getElementById('totalClientes').textContent = empresa.total_clientes || '-';
             
             // Sobre
-            document.getElementById('empresaDescricao').textContent = empresa.descricao || 'Sem descriÁ„o disponÌvel.';
+            document.getElementById('empresaDescricao').textContent = empresa.descricao || 'Sem descri√ß√£o dispon√≠vel.';
             
-            // EndereÁo
+            // Endere√ßo
             document.getElementById('empresaEndereco').innerHTML = `
-                ${empresa.endereco || 'EndereÁo n„o informado'}<br>
+                ${empresa.endereco || 'Endere√ßo n√£o informado'}<br>
                 ${empresa.cidade ? `${empresa.cidade}, ${empresa.estado || ''}` : ''}
             `;
             
-            // PromoÁıes
+            // Promo√ß√µes
             if (promocoes && promocoes.length > 0) {
                 document.getElementById('promocoesCard').style.display = 'block';
                 renderPromocoes(promocoes);
             }
             
-            // AvaliaÁıes
+            // Avalia√ß√µes
             if (avaliacoes && avaliacoes.length > 0) {
                 document.getElementById('avaliacoesCard').style.display = 'block';
                 renderAvaliacoes(avaliacoes);
             }
         }
         
-        // Renderizar promoÁıes
+        // Renderizar promo√ß√µes
         function renderPromocoes(promocoes) {
             const list = document.getElementById('promocoesList');
             
@@ -344,14 +344,14 @@
                 return `
                     <div class="promo-item">
                         <h4>${promo.nome}</h4>
-                        <p>${promo.descricao || 'PromoÁ„o especial!'}</p>
+                        <p>${promo.descricao || 'Promo√ß√£o especial!'}</p>
                         ${badge}
                     </div>
                 `;
             }).join('');
         }
         
-        // Renderizar avaliaÁıes
+        // Renderizar avalia√ß√µes
         function renderAvaliacoes(avaliacoes) {
             const list = document.getElementById('reviewsList');
             
@@ -362,7 +362,7 @@
                 return `
                     <div class="review-item">
                         <div class="review-header">
-                            <span class="review-author">${review.cliente_nome || 'AnÙnimo'}</span>
+                            <span class="review-author">${review.cliente_nome || 'An√¥nimo'}</span>
                             <span class="review-rating">${stars}</span>
                         </div>
                         ${review.comentario ? `<p class="review-comment">${review.comentario}</p>` : ''}
