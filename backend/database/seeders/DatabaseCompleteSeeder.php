@@ -42,184 +42,91 @@ class DatabaseCompleteSeeder extends Seeder
         $this->command->info('🔄 Populando banco de dados...');
         
         // ============================================
-        // USUÁRIOS (6 usuários de teste)
+        // 3 ACESSOS PRINCIPAIS DO SISTEMA
         // ============================================
-        $senha = Hash::make('senha123');
         
-        $maria = User::create([
-            'nome' => 'Maria Silva',
-            'email' => 'maria@email.com',
-            'password' => $senha,
+        // 1. ADMIN REAL - Gerencia perfis das empresas, administrador do sistema
+        $adminReal = User::create([
+            'nome' => 'Administrador Sistema',
+            'email' => 'admin@temdetudo.com',
+            'password' => Hash::make('admin123'),
+            'tipo' => 'admin',
+            'telefone' => '(11) 99999-9999',
+            'pontos' => 0
+        ]);
+        
+        // 2. CLIENTE FICTÍCIO - Dados fictícios para simulação de transações
+        $clienteFicticio = User::create([
+            'nome' => 'Cliente Simulação',
+            'email' => 'cliente@teste.com',
+            'password' => Hash::make('123456'),
             'tipo' => 'cliente',
             'cpf' => '123.456.789-01',
             'telefone' => '(11) 98765-4321',
-            'pontos' => 195.00
+            'pontos' => 250.00 // Pontos fictícios para demonstração
         ]);
         
-        $joao = User::create([
-            'nome' => 'João Santos',
-            'email' => 'joao@email.com',
-            'password' => $senha,
-            'tipo' => 'cliente',
-            'cpf' => '987.654.321-09',
-            'telefone' => '(11) 91234-5678',
-            'pontos' => 120.00
-        ]);
-        
-        $saborArte = User::create([
-            'nome' => 'Restaurante Sabor & Arte',
-            'email' => 'saborearte@email.com',
-            'password' => $senha,
+        // 3. EMPRESA FICTÍCIA - Dados fictícios para simulação de transações  
+        $empresaFicticia = User::create([
+            'nome' => 'Empresa Simulação LTDA',
+            'email' => 'empresa@teste.com',
+            'password' => Hash::make('123456'),
             'tipo' => 'empresa',
             'cnpj' => '12.345.678/0001-90',
             'telefone' => '(11) 3456-7890',
             'pontos' => 0
         ]);
         
-        $bellaNapoli = User::create([
-            'nome' => 'Pizzaria Bella Napoli',
-            'email' => 'bellanapoli@email.com',
-            'password' => $senha,
-            'tipo' => 'empresa',
-            'cnpj' => '98.765.432/0001-10',
-            'telefone' => '(11) 3789-0123',
-            'pontos' => 0
-        ]);
-        
-        $admin = User::create([
-            'nome' => 'Admin Sistema',
-            'email' => 'admin@temdetudo.com',
-            'password' => $senha,
-            'tipo' => 'admin',
-            'telefone' => '(11) 99999-9999',
-            'pontos' => 0
-        ]);
-        
-        $gerente = User::create([
-            'nome' => 'Gerente Operacional',
-            'email' => 'gerente@temdetudo.com',
-            'password' => $senha,
-            'tipo' => 'admin',
-            'cpf' => '111.222.333-44',
-            'telefone' => '(11) 98888-8888',
-            'pontos' => 0
-        ]);
-        
-        $this->command->info('✅ 6 usuários criados');
+        $this->command->info('✅ 3 acessos criados: 1 admin real + 2 fictícios para simulação');
         
         // ============================================
-        // EMPRESAS (6 estabelecimentos)
+        // EMPRESA FICTÍCIA (dados para simulação)
         // ============================================
-        $empresa1 = Empresa::create([
-            'user_id' => $saborArte->id,
-            'nome' => 'Restaurante Sabor & Arte',
-            'descricao' => 'Culinária brasileira com toque contemporâneo. Ambiente aconchegante e pratos deliciosos.',
+        $empresaSimulacao = Empresa::create([
+            'user_id' => $empresaFicticia->id,
+            'nome' => 'Empresa Simulação LTDA',
+            'descricao' => 'Empresa fictícia para demonstração e testes das funcionalidades do sistema. Todos os dados são simulados.',
             'categoria' => 'alimentacao',
-            'endereco' => 'Rua das Flores, 123 - Centro, São Paulo - SP',
+            'endereco' => 'Rua das Simulações, 123 - Centro, São Paulo - SP',
             'latitude' => -23.550520,
             'longitude' => -46.633308,
             'telefone' => '(11) 3456-7890',
-            'horario_funcionamento' => 'Seg-Sex: 11h-23h | Sáb-Dom: 12h-00h',
+            'horario_funcionamento' => 'Seg-Sex: 9h-18h',
             'ativo' => true
         ]);
         
-        $empresa2 = Empresa::create([
-            'user_id' => $bellaNapoli->id,
-            'nome' => 'Pizzaria Bella Napoli',
-            'descricao' => 'As melhores pizzas artesanais da região. Massa fina e ingredientes selecionados.',
-            'categoria' => 'alimentacao',
-            'endereco' => 'Av. Paulista, 456 - Bela Vista, São Paulo - SP',
-            'latitude' => -23.561414,
-            'longitude' => -46.656178,
-            'telefone' => '(11) 3789-0123',
-            'horario_funcionamento' => 'Ter-Dom: 18h-23h',
-            'ativo' => true
-        ]);
-        
-        $empresa3 = Empresa::create([
-            'user_id' => $maria->id,
-            'nome' => 'Salão Beleza Pura',
-            'descricao' => 'Serviços de cabelo, maquiagem e estética com profissionais qualificados.',
-            'categoria' => 'beleza',
-            'endereco' => 'Rua Augusta, 789 - Consolação, São Paulo - SP',
-            'latitude' => -23.554820,
-            'longitude' => -46.662520,
-            'telefone' => '(11) 3333-4444',
-            'horario_funcionamento' => 'Seg-Sáb: 9h-19h',
-            'ativo' => true
-        ]);
-        
-        $empresa4 = Empresa::create([
-            'user_id' => $joao->id,
-            'nome' => 'Academia FitPower',
-            'descricao' => 'Academia completa com musculação, aeróbica e aulas coletivas.',
-            'categoria' => 'bemestar',
-            'endereco' => 'Rua dos Esportes, 321 - Mooca, São Paulo - SP',
-            'latitude' => -23.549300,
-            'longitude' => -46.599200,
-            'telefone' => '(11) 2222-3333',
-            'horario_funcionamento' => 'Seg-Sex: 6h-22h | Sáb: 8h-14h',
-            'ativo' => true
-        ]);
-        
-        $empresa5 = Empresa::create([
-            'user_id' => $saborArte->id,
-            'nome' => 'Auto Center Speed',
-            'descricao' => 'Manutenção automotiva, troca de óleo, alinhamento e balanceamento.',
-            'categoria' => 'automotivo',
-            'endereco' => 'Av. do Estado, 654 - Ipiranga, São Paulo - SP',
-            'latitude' => -23.587900,
-            'longitude' => -46.610100,
-            'telefone' => '(11) 4444-5555',
-            'horario_funcionamento' => 'Seg-Sex: 8h-18h | Sáb: 8h-12h',
-            'ativo' => true
-        ]);
-        
-        $empresa6 = Empresa::create([
-            'user_id' => $bellaNapoli->id,
-            'nome' => 'Farmácia Saúde Total',
-            'descricao' => 'Medicamentos, perfumaria e produtos de higiene com ótimos preços.',
-            'categoria' => 'saude',
-            'endereco' => 'Rua da Consolação, 987 - República, São Paulo - SP',
-            'latitude' => -23.543300,
-            'longitude' => -46.645400,
-            'telefone' => '(11) 5555-6666',
-            'horario_funcionamento' => '24 horas',
-            'ativo' => true
-        ]);
-        
-        $this->command->info('✅ 6 empresas criadas');
+        $this->command->info('✅ 1 empresa fictícia criada para simulação');
         
         // ============================================
-        // PROMOÇÕES (10 promoções)
+        // PROMOÇÕES FICTÍCIAS (para simulação)
         // ============================================
         DB::table('promocoes')->insert([
             [
-                'empresa_id' => $empresa1->id,
-                'titulo' => '20% OFF no rodízio',
-                'descricao' => 'Ganhe 20% de desconto no rodízio completo de carnes nobres.',
+                'empresa_id' => $empresaSimulacao->id,
+                'titulo' => '30% OFF Promoção Teste',
+                'descricao' => 'Promoção fictícia para demonstração do sistema de pontos e descontos.',
                 'pontos_necessarios' => 50,
-                'desconto_percentual' => 20.00,
+                'desconto_percentual' => 30.00,
                 'desconto_valor' => null,
                 'validade_inicio' => '2026-02-01',
-                'validade_fim' => '2026-08-31',
+                'validade_fim' => '2026-12-31',
                 'quantidade_disponivel' => 100,
-                'quantidade_resgatada' => 1,
+                'quantidade_resgatada' => 0,
                 'ativo' => true,
                 'imagem_url' => 'https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba',
                 'created_at' => now(),
                 'updated_at' => now()
             ],
             [
-                'empresa_id' => $empresa1->id,
-                'titulo' => 'Sobremesa Grátis',
-                'descricao' => 'Sobremesa grátis na compra de qualquer prato executivo.',
-                'pontos_necessarios' => 30,
+                'empresa_id' => $empresaSimulacao->id,
+                'titulo' => 'Produto Grátis (Simulação)',
+                'descricao' => 'Ganhe um produto grátis para testar as funcionalidades do sistema.',
+                'pontos_necessarios' => 25,
                 'desconto_percentual' => null,
-                'desconto_valor' => 15.00,
+                'desconto_valor' => 20.00,
                 'validade_inicio' => '2026-02-01',
-                'validade_fim' => '2026-06-30',
-                'quantidade_disponivel' => 200,
+                'validade_fim' => '2026-12-31',
+                'quantidade_disponivel' => 50,
                 'quantidade_resgatada' => 0,
                 'ativo' => true,
                 'imagem_url' => 'https://images.unsplash.com/photo-1551024506-0bccd828d307',
@@ -227,20 +134,22 @@ class DatabaseCompleteSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'empresa_id' => $empresa2->id,
-                'titulo' => 'Pizza Grande por R$ 39,90',
-                'descricao' => 'Qualquer pizza grande de até 3 sabores por apenas R$ 39,90.',
-                'pontos_necessarios' => 80,
-                'desconto_percentual' => null,
-                'desconto_valor' => 20.00,
+                'empresa_id' => $empresaSimulacao->id,
+                'titulo' => 'Desconto VIP (Demo)',
+                'descricao' => 'Desconto especial para demonstração das funcionalidades VIP.',
+                'pontos_necessarios' => 75,
+                'desconto_percentual' => 50.00,
+                'desconto_valor' => null,
                 'validade_inicio' => '2026-02-01',
                 'validade_fim' => '2026-12-31',
-                'quantidade_disponivel' => 150,
-                'quantidade_resgatada' => 1,
+                'quantidade_disponivel' => 25,
+                'quantidade_resgatada' => 0,
                 'ativo' => true,
-                'imagem_url' => 'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+                'imagem_url' => 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a',
                 'created_at' => now(),
                 'updated_at' => now()
+            ]
+        ]);
             ],
             [
                 'empresa_id' => $empresa2->id,
