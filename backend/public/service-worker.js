@@ -50,18 +50,36 @@ self.addEventListener('activate', (event) => {
 
 // Estratégia: Network First com fallback para Cache
 self.addEventListener('fetch', (event) => {
+  // Filtrar requisições não cacheáveis
+  const url = new URL(event.request.url);
+  const method = event.request.method;
+  
+  // NÃO cachear:
+  // - Extensões do Chrome
+  // - Métodos POST/PUT/DELETE/HEAD
+  // - URLs externas (não são do mesmo domínio)
+  const shouldCache = 
+    !url.protocol.includes('chrome-extension') &&
+    method === 'GET' &&
+    (url.origin === location.origin || url.hostname === 'localhost');
+  
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Se conseguiu da rede, cacheia e retorna
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
-        });
+        // Se conseguiu da rede E pode cachear, cacheia e retorna
+        if (shouldCache && response.ok) {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone).catch(() => {});
+          });
+        }
         return response;
       })
       .catch(() => {
-        // Se falhou, tenta do cache
+        // Se falhou, tenta do cache (somente para requisições cacheáveis)
+        if (!shouldCache) {
+          return new Response('Network error', { status: 503 });
+        }
         return caches.match(event.request).then((response) => {
           if (response) {
             return response;

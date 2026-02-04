@@ -529,7 +529,7 @@ class DatabaseCompleteSeeder extends Seeder
         $this->command->info('   - 4 cupons');
         $this->command->info('');
         $this->command->info('🔑 Logins de Teste (senha: senha123):');
-        $this->command->info('   - maria@email.com (Cliente - 195 pontos)');
+        $this->command->info('   - maria@email.com (Cliente - 0 pontos)');
         $this->command->info('   - joao@email.com (Cliente - 120 pontos)');
         $this->command->info('   - saborearte@email.com (Empresa)');
         $this->command->info('   - bellanapoli@email.com (Empresa)');

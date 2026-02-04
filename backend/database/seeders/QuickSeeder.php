@@ -142,7 +142,7 @@ class QuickSeeder extends Seeder
         $this->command->info('✅ BANCO POPULADO!');
         $this->command->info('==================================');
         $this->command->info('🔑 Logins (senha: senha123):');
-        $this->command->info('   - maria@email.com (Cliente - 195 pts)');
+        $this->command->info('   - maria@email.com (Cliente - 0 pts)');
         $this->command->info('   - joao@email.com (Cliente - 120 pts)');
         $this->command->info('   - saborearte@email.com (Empresa)');
         $this->command->info('   - bellanapoli@email.com (Empresa)');

@@ -11,8 +11,17 @@ class EmpresaController extends Controller
 {
     public function index()
     {
-        $empresas = Empresa::all(['id', 'nome', 'services']);
-        return response()->json($empresas);
+        try {
+            $empresas = Empresa::where('ativo', true)
+                ->select('id', 'nome', 'cnpj', 'telefone', 'endereco', 'logo', 'descricao', 'ativo', 'points_multiplier')
+                ->orderBy('nome')
+                ->get();
+
+            return response()->json($empresas, 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            Log::error('Erro ao listar empresas: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Erro ao carregar empresas'], 500);
+        }
     }
 
     /**

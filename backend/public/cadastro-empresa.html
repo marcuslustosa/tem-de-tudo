@@ -435,9 +435,11 @@
                 password: data.senha,
                 password_confirmation: data.senha_confirmation,
                 perfil: 'empresa',
-                cnpj: data.cnpj.replace(/\D/g, ''),
+                cnpj: data.cnpj, // Enviar formatado (com pontos)
                 endereco: data.endereco,
-                telefone: data.telefone.replace(/\D/g, '')
+                telefone: data.telefone.replace(/\D/g, ''),
+                terms: true // Aceita termos automaticamente
+
             };
             
             // Adiciona plano se houver
