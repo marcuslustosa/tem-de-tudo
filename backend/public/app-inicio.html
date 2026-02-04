@@ -146,7 +146,7 @@
     <script>
         // Função para verificar autenticação
         function checkAuth() {
-            const token = localStorage.getItem('auth_token');
+            const token = localStorage.getItem('token'); // CORRIGIDO: usar 'token' em vez de 'auth_token'
             if (!token) {
                 window.location.href = '/entrar.html';
                 return false;
@@ -156,7 +156,7 @@
 
         // Função para fazer requisições autenticadas
         async function apiRequest(url, options = {}) {
-            const token = localStorage.getItem('auth_token');
+            const token = localStorage.getItem('token'); // CORRIGIDO: usar 'token'
             
             const headers = {
                 'Content-Type': 'application/json',
@@ -173,7 +173,7 @@
             });
             
             if (response.status === 401) {
-                localStorage.removeItem('auth_token');
+                localStorage.removeItem('token'); // CORRIGIDO
                 localStorage.removeItem('user_data');
                 window.location.href = '/entrar.html';
                 return null;
