@@ -2,7 +2,7 @@
  * AUTH GUARD - TEM DE TUDO
  * Proteção automática de rotas
  * 
- * @version 2.0.0
+ * @version 3.0.0
  * @author Tem de Tudo Team
  * 
  * USO:
@@ -10,6 +10,25 @@
  * 
  * Tipos suportados: cliente, empresa, admin
  */
+
+// MIGRAÇÃO AUTOMÁTICA DE TOKENS
+(function migrarTokens() {
+    // Migrar token antigo para novo formato
+    const oldToken = localStorage.getItem('tem_de_tudo_token');
+    const oldUser = localStorage.getItem('tem_de_tudo_user');
+    const newToken = localStorage.getItem('token');
+    const newUser = localStorage.getItem('user');
+    
+    if (oldToken && !newToken) {
+        console.log('🔄 Migrando token antigo...');
+        localStorage.setItem('token', oldToken);
+    }
+    
+    if (oldUser && !newUser) {
+        console.log('🔄 Migrando dados de usuário antigos...');
+        localStorage.setItem('user', oldUser);
+    }
+})();
 
 (function() {
     'use strict';
@@ -22,24 +41,10 @@
     /**
      * Verificar autenticação
      */
-    function checkAuth() {
-        // Verificar autenticação admin
-        if (requireAdmin) {
-            const adminToken = localStorage.getItem('admin_token');
-            const adminUser = localStorage.getItem('admin_user');
-            
-            if (!adminToken || !adminUser) {
-                console.warn('🔒 Acesso negado: Admin não autenticado');
-                window.location.href = '/admin-login.html';
-                return false;
-            }
-            
-            return true;
-        }
-        
-        // Verificar autenticação regular
-        const token = localStorage.getItem('token');
-        const userData = localStorage.getItem('user');
+    function checkAuthInternal() {
+        // SISTEMA UNIFICADO - usar sempre 'token' e 'user'
+        const token = localStorage.getItem('token') || localStorage.getItem('tem_de_tudo_token');
+        const userData = localStorage.getItem('user') || localStorage.getItem('tem_de_tudo_user');
         
         if (!token || !userData) {
             console.warn('🔒 Acesso negado: Usuário não autenticado');
@@ -47,22 +52,41 @@
             return false;
         }
         
+        // Verificar autenticação admin
+        if (requireAdmin) {
+            try {
+                const user = JSON.parse(userData);
+                if (user.perfil !== 'admin' && user.role !== 'admin') {
+                    console.warn('🔒 Acesso negado: Admin requerido');
+                    window.location.href = '/entrar.html';
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Erro ao validar admin:', error);
+                localStorage.clear();
+                window.location.href = '/entrar.html';
+                return false;
+            }
+            return true;
+        }
+        
         // Se requer tipo específico de usuário
         if (requireAuth) {
             try {
                 const user = JSON.parse(userData);
+                const userType = user.user_type || user.perfil || 'cliente';
                 
-                if (user.user_type !== requireAuth) {
-                    console.warn(`🔒 Acesso negado: Requer perfil ${requireAuth}, mas usuário é ${user.user_type}`);
+                if (userType !== requireAuth) {
+                    console.warn(`🔒 Acesso negado: Requer perfil ${requireAuth}, mas usuário é ${userType}`);
                     
                     // Redirecionar para dashboard correto
                     const redirectMap = {
                         'cliente': '/app-inicio.html',
                         'empresa': '/dashboard-empresa.html',
-                        'admin': '/admin.html'
+                        'admin': '/admin-dashboard.html'
                     };
                     
-                    window.location.href = redirectMap[user.user_type] || '/entrar.html';
+                    window.location.href = redirectMap[userType] || '/entrar.html';
                     return false;
                 }
             } catch (error) {
@@ -76,87 +100,62 @@
         return true;
     }
     
-    /**
-     * Verificar token expirado periodicamente
-     */
-    function setupTokenCheck() {
-        // Verificar a cada 5 minutos
-        setInterval(async () => {
-            const token = localStorage.getItem('token');
-            
-            if (!token) {
-                console.warn('🔒 Token não encontrado');
-                window.location.href = '/entrar.html';
-                return;
-            }
-            
-            try {
-                // Fazer uma requisição leve para verificar se token é válido
-                const baseURL = API_CONFIG ? API_CONFIG.getBaseURL() : '';
-                const response = await fetch(`${baseURL}/api/user`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-                
-                if (response.status === 401) {
-                    console.warn('🔒 Token expirado');
-                    localStorage.clear();
-                    window.location.href = '/entrar.html';
-                }
-            } catch (error) {
-                // Ignorar erros de rede
-                console.debug('Erro ao verificar token:', error);
-            }
-        }, 5 * 60 * 1000); // 5 minutos
-    }
+    // DESATIVAR verificação periódica que pode causar loop
+    // function setupTokenCheck() {
+    //     // Verificação desativada temporariamente
+    // }
     
     // Executar verificação assim que possível
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            if (checkAuth()) {
-                setupTokenCheck();
-            }
+            checkAuthInternal();
         });
     } else {
-        if (checkAuth()) {
-            setupTokenCheck();
-        }
+        checkAuthInternal();
     }
     
     console.log('🛡️ Auth Guard ativo' + (requireAuth ? ` (requer: ${requireAuth})` : '') + (requireAdmin ? ' (admin)' : ''));
 })();
 
 /**
- * Verifica apenas se está autenticado (sem verificar perfil)
- * Use apenas em páginas públicas ou comuns a todos
+ * FUNÇÕES GLOBAIS PARA USO NAS PÁGINAS
+ */
+
+/**
+ * Verifica se está autenticado (UNIFICADO)
  * @returns {boolean}
  */
 function checkAuth() {
-    const token = localStorage.getItem('tem_de_tudo_token');
+    const token = localStorage.getItem('token') || localStorage.getItem('tem_de_tudo_token');
     if (!token) {
-        window.location.href = '/login.html';
+        window.location.href = '/entrar.html';
         return false;
     }
     return true;
 }
 
 /**
- * Logout universal
+ * Logout universal (LIMPA TUDO)
  */
 function logout() {
+    // Limpar todas as possíveis chaves de autenticação
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     localStorage.removeItem('tem_de_tudo_token');
     localStorage.removeItem('tem_de_tudo_user');
-    window.location.href = '/login.html';
+    localStorage.removeItem('admin_token');
+    localStorage.removeItem('admin_user');
+    
+    // Redirecionar
+    window.location.href = '/entrar.html';
 }
 
 /**
- * Obter dados do usuário atual
+ * Obter dados do usuário atual (UNIFICADO)
  * @returns {Object|null}
  */
 function getCurrentUser() {
-    const userStr = localStorage.getItem('tem_de_tudo_user');
+    const userStr = localStorage.getItem('user') || localStorage.getItem('tem_de_tudo_user');
     if (userStr) {
         try {
             return JSON.parse(userStr);
@@ -177,7 +176,7 @@ function hasProfile(profile) {
     const user = getCurrentUser();
     if (!user) return false;
     
-    const userProfile = user.perfil || user.role || 'cliente';
+    const userProfile = user.perfil || user.role || user.user_type || 'cliente';
     return userProfile === profile;
 }
 
@@ -206,11 +205,11 @@ function isCliente() {
 }
 
 /**
- * Obter token de autenticação
+ * Obter token de autenticação (UNIFICADO)
  * @returns {string|null}
  */
 function getAuthToken() {
-    return localStorage.getItem('tem_de_tudo_token');
+    return localStorage.getItem('token') || localStorage.getItem('tem_de_tudo_token');
 }
 
 /**
@@ -227,19 +226,4 @@ function getAuthHeaders() {
     };
 }
 
-// ================================================
-// EXEMPLO DE USO NAS PÁGINAS
-// ================================================
-//
-// PÁGINA DE CLIENTE:
-// if (!checkAuthAndProfile('cliente')) return;
-//
-// PÁGINA DE EMPRESA:
-// if (!checkAuthAndProfile('empresa')) return;
-//
-// PÁGINA DE ADMIN:
-// if (!checkAuthAndProfile('admin')) return;
-//
-// ================================================
-
-console.log('✅ Auth Guard carregado');
+console.log('✅ Auth Guard UNIFICADO carregado');
