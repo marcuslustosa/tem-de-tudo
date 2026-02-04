@@ -1,9 +1,9 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HistÃ³rico - Tem de Tudo</title>
+    <title>Histórico - Tem de Tudo</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1a1a2e">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -48,33 +48,33 @@
 <body>
     <div class="header">
         <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i></button>
-        <h1>HistÃ³rico de Pontos</h1>
+        <h1>Histórico de Pontos</h1>
     </div>
     <div class="stats-cards">
         <div class="stat-card"><div class="stat-value" id="totalGanho">0</div><div class="stat-label">Ganhos</div></div>
         <div class="stat-card"><div class="stat-value" id="totalResgate">0</div><div class="stat-label">Resgates</div></div>
-        <div class="stat-card"><div class="stat-value" id="totalTransacoes">0</div><div class="stat-label">TransaÃ§Ãµes</div></div>
+        <div class="stat-card"><div class="stat-value" id="totalTransacoes">0</div><div class="stat-label">Transações</div></div>
     </div>
     <div class="filter-tabs">
         <div class="filter-tab active" data-filter="todos" onclick="filtrar('todos')">Todos</div>
         <div class="filter-tab" data-filter="ganho" onclick="filtrar('ganho')">Ganhos</div>
         <div class="filter-tab" data-filter="resgate" onclick="filtrar('resgate')">Resgates</div>
-        <div class="filter-tab" data-filter="expiracao" onclick="filtrar('expiracao')">ExpiraÃ§Ãµes</div>
+        <div class="filter-tab" data-filter="expiracao" onclick="filtrar('expiracao')">Expirações</div>
     </div>
     <div class="timeline" id="timeline"></div>
     <div class="empty-state" id="emptyState" style="display: none;">
         <i class="fas fa-history"></i>
-        <p>Nenhuma transaÃ§Ã£o encontrada</p>
+        <p>Nenhuma transação encontrada</p>
     </div>
     <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>InÃ­cio</span></a>
+        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
         <a href="/app-buscar.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
         <a href="/app-meus-pontos.html" class="nav-item active"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>PromoÃ§Ãµes</span></a>
+        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
         <a href="/app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
     </nav>
     <script>
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://tem-de-tudo.onrender.com';
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         let historico = [];
         let filtroAtual = 'todos';
         const icones = { ganho: 'fa-plus-circle', checkin: 'fa-check-circle', resgate: 'fa-gift', expiracao: 'fa-clock' };
@@ -143,3 +143,4 @@
     </script>
 </body>
 </html>
+

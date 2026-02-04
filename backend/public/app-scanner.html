@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -54,18 +54,18 @@
                 <i class="fas fa-qrcode"></i>
             </div>
             <div class="scanner-title">Escaneie o QR Code</div>
-            <div class="scanner-subtitle">Aponte a c√¢mera para o QR Code da empresa para fazer check-in e ganhar pontos</div>
+            <div class="scanner-subtitle">Aponte a c‚mera para o QR Code da empresa para fazer check-in e ganhar pontos</div>
             <button class="btn-scan" onclick="iniciarScanner()">
                 <i class="fas fa-camera"></i>
-                Abrir C√¢mera
+                Abrir C‚mera
             </button>
             <video id="video" autoplay playsinline></video>
         </div>
         <div class="divider">OU</div>
         <div class="manual-input">
-            <h3>Digite o c√≥digo manualmente</h3>
+            <h3>Digite o cÛdigo manualmente</h3>
             <div class="input-group">
-                <label>C√≥digo da Empresa</label>
+                <label>CÛdigo da Empresa</label>
                 <input type="text" id="codigoManual" placeholder="Ex: EMP12345" maxlength="20">
             </div>
             <button class="btn-submit" onclick="fazerCheckinManual()">
@@ -79,7 +79,7 @@
                 </div>
                 <div class="info-content">
                     <h4>Ganhe pontos a cada visita</h4>
-                    <p>Acumule pontos e troque por pr√™mios</p>
+                    <p>Acumule pontos e troque por prÍmios</p>
                 </div>
             </div>
             <div class="info-card">
@@ -87,7 +87,7 @@
                     <i class="fas fa-star"></i>
                 </div>
                 <div class="info-content">
-                    <h4>B√¥nus especiais</h4>
+                    <h4>BÙnus especiais</h4>
                     <p>Receba pontos extras em datas comemorativas</p>
                 </div>
             </div>
@@ -96,21 +96,21 @@
                     <i class="fas fa-shield-alt"></i>
                 </div>
                 <div class="info-content">
-                    <h4>Seguro e confi√°vel</h4>
-                    <p>Seus dados est√£o protegidos</p>
+                    <h4>Seguro e confi·vel</h4>
+                    <p>Seus dados est„o protegidos</p>
                 </div>
             </div>
         </div>
     </div>
     <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>In√≠cio</span></a>
+        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>InÌcio</span></a>
         <a href="/app-buscar.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
         <a href="/app-meus-pontos.html" class="nav-item active"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promo√ß√µes</span></a>
+        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>PromoÁıes</span></a>
         <a href="/app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
     </nav>
     <script>
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://tem-de-tudo.onrender.com';
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         let stream = null;
         function iniciarScanner() {
             const video = document.getElementById('video');
@@ -120,20 +120,20 @@
                         stream = s;
                         video.srcObject = stream;
                         video.style.display = 'block';
-                        alert('Scanner ativado! (Em desenvolvimento - Use o c√≥digo manual por enquanto)');
+                        alert('Scanner ativado! (Em desenvolvimento - Use o cÛdigo manual por enquanto)');
                     })
                     .catch(err => {
-                        console.error('Erro ao acessar c√¢mera:', err);
-                        alert('N√£o foi poss√≠vel acessar a c√¢mera. Use o c√≥digo manual.');
+                        console.error('Erro ao acessar c‚mera:', err);
+                        alert('N„o foi possÌvel acessar a c‚mera. Use o cÛdigo manual.');
                     });
             } else {
-                alert('Seu navegador n√£o suporta acesso √† c√¢mera. Use o c√≥digo manual.');
+                alert('Seu navegador n„o suporta acesso ‡ c‚mera. Use o cÛdigo manual.');
             }
         }
         async function fazerCheckinManual() {
             const codigo = document.getElementById('codigoManual').value.trim();
             if (!codigo) {
-                alert('Digite o c√≥digo da empresa');
+                alert('Digite o cÛdigo da empresa');
                 return;
             }
             const token = localStorage.getItem('token');
@@ -152,10 +152,10 @@
                 });
                 const data = await response.json();
                 if (data.success) {
-                    alert(` Check-in realizado! Voc√™ ganhou ${data.pontos || 10} pontos!`);
+                    alert(` Check-in realizado! VocÍ ganhou ${data.pontos || 10} pontos!`);
                     window.location.href = '/app-meus-pontos.html';
                 } else {
-                    alert(' ' + (data.message || 'C√≥digo inv√°lido'));
+                    alert(' ' + (data.message || 'CÛdigo inv·lido'));
                 }
             } catch (error) {
                 console.error('Erro:', error);
@@ -168,3 +168,4 @@
     </script>
 </body>
 </html>
+

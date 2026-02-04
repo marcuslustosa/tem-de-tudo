@@ -1,9 +1,9 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PromoÃ§Ãµes - Tem de Tudo</title>
+    <title>Promoções - Tem de Tudo</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1a1a2e">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -43,8 +43,8 @@
 </head>
 <body>
     <div class="header">
-        <h1> PromoÃ§Ãµes</h1>
-        <p>Ofertas exclusivas para vocÃª</p>
+        <h1> Promoções</h1>
+        <p>Ofertas exclusivas para você</p>
     </div>
     <div class="tabs">
         <div class="tab active" data-tab="ativas" onclick="trocarTab('ativas')">Ativas</div>
@@ -52,22 +52,22 @@
         <div class="tab" data-tab="expiradas" onclick="trocarTab('expiradas')">Expiradas</div>
     </div>
     <div class="section">
-        <div class="section-title" id="sectionTitle">PromoÃ§Ãµes Ativas</div>
+        <div class="section-title" id="sectionTitle">Promoções Ativas</div>
         <div class="promocoes-grid" id="promocoesGrid"></div>
         <div class="empty-state" id="emptyState" style="display: none;">
             <i class="fas fa-gift"></i>
-            <p>Nenhuma promoÃ§Ã£o disponÃ­vel</p>
+            <p>Nenhuma promoção disponível</p>
         </div>
     </div>
     <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>InÃ­cio</span></a>
+        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
         <a href="/app-scanner.html" class="nav-item"><i class="fas fa-qrcode"></i><span>Scanner</span></a>
         <a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Meus pontos</span></a>
         <a href="/app-empresas.html" class="nav-item"><i class="fas fa-store"></i><span>Empresas</span></a>
         <a href="/app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
     </nav>
     <script>
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://tem-de-tudo.onrender.com';
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         let todasPromocoes = [];
         let tabAtual = 'ativas';
         document.addEventListener('DOMContentLoaded', async () => {
@@ -88,7 +88,7 @@
                 }
             }
             
-            // Emails de usuÃ¡rios de teste que podem ter dados fictÃ­cios
+            // Emails de usuários de teste que podem ter dados fictícios
             const usuariosTeste = ['maria@email.com', 'joao@email.com', 'saborearte@email.com', 'bellanapoli@email.com'];
             const ehUsuarioTeste = user && usuariosTeste.includes(user.email);
             
@@ -101,31 +101,31 @@
                     todasPromocoes = data.data;
                     filtrarPromocoes();
                 } else if (ehUsuarioTeste) {
-                    // Apenas usuÃ¡rios de teste recebem dados fictÃ­cios
-                    console.log('UsuÃ¡rio de teste: usando dados fictÃ­cios');
+                    // Apenas usuários de teste recebem dados fictícios
+                    console.log('Usuário de teste: usando dados fictícios');
                     todasPromocoes = [
-                        { id: 1, empresa: 'Sabor e Arte', titulo: 'R$50 por 50 Pontos', valor: 'Consulte regulamento', descricao: 'Troque seus pontos por crÃ©ditos em qualquer produto.', validade: '2026-03-31', tipo: 'desconto', status: 'ativa' },
-                        { id: 2, empresa: 'Bella Napoli', titulo: '2 por 1 em Pizzas', valor: 'TerÃ§as e Quintas', descricao: 'Compre uma pizza grande e leve outra do mesmo tamanho grÃ¡tis.', validade: '2026-02-28', tipo: 'brinde', status: 'ativa' },
-                        { id: 3, empresa: 'Academia FitLife', titulo: '20% OFF Mensalidade', valor: '3 primeiros meses', descricao: 'Desconto especial para novos alunos na matrÃ­cula.', validade: '2026-04-30', tipo: 'desconto', status: 'ativa' }
+                        { id: 1, empresa: 'Sabor e Arte', titulo: 'R$50 por 50 Pontos', valor: 'Consulte regulamento', descricao: 'Troque seus pontos por créditos em qualquer produto.', validade: '2026-03-31', tipo: 'desconto', status: 'ativa' },
+                        { id: 2, empresa: 'Bella Napoli', titulo: '2 por 1 em Pizzas', valor: 'Terças e Quintas', descricao: 'Compre uma pizza grande e leve outra do mesmo tamanho grátis.', validade: '2026-02-28', tipo: 'brinde', status: 'ativa' },
+                        { id: 3, empresa: 'Academia FitLife', titulo: '20% OFF Mensalidade', valor: '3 primeiros meses', descricao: 'Desconto especial para novos alunos na matrícula.', validade: '2026-04-30', tipo: 'desconto', status: 'ativa' }
                     ];
                     filtrarPromocoes();
                 } else {
-                    // Novos usuÃ¡rios: sem promoÃ§Ãµes (aguardam dados reais do banco)
-                    console.log('Novo usuÃ¡rio: aguardando promoÃ§Ãµes reais');
+                    // Novos usuários: sem promoções (aguardam dados reais do banco)
+                    console.log('Novo usuário: aguardando promoções reais');
                     todasPromocoes = [];
                     filtrarPromocoes();
                 }
             } catch (error) {
-                console.error('Erro ao carregar promoÃ§Ãµes:', error);
+                console.error('Erro ao carregar promoções:', error);
                 if (ehUsuarioTeste) {
-                    // Fallback para usuÃ¡rios de teste
+                    // Fallback para usuários de teste
                     todasPromocoes = [
-                        { id: 1, empresa: 'Sabor e Arte', titulo: 'R$50 por 50 Pontos', valor: 'Consulte regulamento', descricao: 'Troque seus pontos por crÃ©ditos em qualquer produto.', validade: '2026-03-31', tipo: 'desconto', status: 'ativa' },
-                        { id: 2, empresa: 'Bella Napoli', titulo: '2 por 1 em Pizzas', valor: 'TerÃ§as e Quintas', descricao: 'Compre uma pizza grande e leve outra do mesmo tamanho grÃ¡tis.', validade: '2026-02-28', tipo: 'brinde', status: 'ativa' }
+                        { id: 1, empresa: 'Sabor e Arte', titulo: 'R$50 por 50 Pontos', valor: 'Consulte regulamento', descricao: 'Troque seus pontos por créditos em qualquer produto.', validade: '2026-03-31', tipo: 'desconto', status: 'ativa' },
+                        { id: 2, empresa: 'Bella Napoli', titulo: '2 por 1 em Pizzas', valor: 'Terças e Quintas', descricao: 'Compre uma pizza grande e leve outra do mesmo tamanho grátis.', validade: '2026-02-28', tipo: 'brinde', status: 'ativa' }
                     ];
                     filtrarPromocoes();
                 } else {
-                    // Novos usuÃ¡rios veem empty state
+                    // Novos usuários veem empty state
                     todasPromocoes = [];
                     filtrarPromocoes();
                 }
@@ -135,7 +135,7 @@
             tabAtual = tab;
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-            const titulos = { ativas: 'PromoÃ§Ãµes Ativas', proximas: 'Em Breve', expiradas: 'PromoÃ§Ãµes Expiradas' };
+            const titulos = { ativas: 'Promoções Ativas', proximas: 'Em Breve', expiradas: 'Promoções Expiradas' };
             document.getElementById('sectionTitle').textContent = titulos[tab];
             filtrarPromocoes();
         }
@@ -171,7 +171,7 @@
                     <div class="promo-body">
                         <div class="promo-desc">${p.descricao}</div>
                         <div class="promo-footer">
-                            <div class="promo-validade"><i class="fas fa-calendar"></i>AtÃ© ${new Date(p.validade).toLocaleDateString('pt-BR')}</div>
+                            <div class="promo-validade"><i class="fas fa-calendar"></i>Até ${new Date(p.validade).toLocaleDateString('pt-BR')}</div>
                             <button class="promo-btn" onclick="usarPromocao(${p.id})">Usar</button>
                         </div>
                     </div>
@@ -179,8 +179,9 @@
             `).join('');
         }
         function usarPromocao(id) {
-            alert(`PromoÃ§Ã£o ${id} ativada! Mostre este cÃ³digo na empresa.`);
+            alert(`Promoção ${id} ativada! Mostre este código na empresa.`);
         }
     </script>
 </body>
 </html>
+

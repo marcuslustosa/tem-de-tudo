@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0a0a0f">
-    <title>Feliz Anivers√†rio! - Tem de Tudo</title>
+    <title>Feliz Anivers‡rio! - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -40,26 +40,26 @@
 <body>
     <div class="container">
         <div class="cake-icon"><i class="fas fa-birthday-cake"></i></div>
-        <h1>Parab√©ns!</h1>
-        <p class="subtitle">Hoje √© seu dia especial <i class="fas fa-gift"></i></p>
+        <h1>ParabÈns!</h1>
+        <p class="subtitle">Hoje È seu dia especial <i class="fas fa-gift"></i></p>
         <div class="bonus-card">
             <div class="points-value">500</div>
-            <div class="points-label">Pontos de Anivers√†rio</div>
+            <div class="points-label">Pontos de Anivers‡rio</div>
         </div>
         <div class="message">
-            <i class="fas fa-heart"></i> A equipe <strong>Tem de Tudo</strong> deseja um feliz anivers√°rio! Aproveite seus pontos extras para resgatar aquela recompensa que voc√™ tanto queria.
+            <i class="fas fa-heart"></i> A equipe <strong>Tem de Tudo</strong> deseja um feliz anivers·rio! Aproveite seus pontos extras para resgatar aquela recompensa que vocÍ tanto queria.
         </div>
         <button class="action-btn" onclick="resgatarBonus()">
             <i class="fas fa-gift"></i> RESGATAR MEU PRESENTE
         </button>
     </div>
     <script>
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://tem-de-tudo.onrender.com';
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         
         async function resgatarBonus() {
             const token = localStorage.getItem('token');
             if (!token) {
-                alert('Voc√™ precisa estar logado');
+                alert('VocÍ precisa estar logado');
                 window.location.href = '/entrar.html';
                 return;
             }
@@ -76,19 +76,20 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('‚úÖ Parab√©ns! 500 pontos creditados na sua conta!');
+                    alert('? ParabÈns! 500 pontos creditados na sua conta!');
                     window.location.href = '/app-inicio.html';
                 } else {
-                    alert('‚ùå ' + (data.message || 'Erro ao resgatar b√¥nus'));
+                    alert('? ' + (data.message || 'Erro ao resgatar bÙnus'));
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('‚úÖ B√¥nus de anivers√°rio simulado! 500 pontos creditados.');
+                alert('? BÙnus de anivers·rio simulado! 500 pontos creditados.');
                 setTimeout(() => window.location.href = '/app-inicio.html', 1500);
             }
         }
     </script>
 </body>
 </html>
+
 
 

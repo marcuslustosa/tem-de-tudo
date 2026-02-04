@@ -1,9 +1,9 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes da Promo√ß√£o - Tem de Tudo</title>
+    <title>Detalhes da PromoÁ„o - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/theme-escuro.css">
@@ -164,7 +164,7 @@
             <i class="fas fa-arrow-left"></i>
         </button>
         
-        <div class="promo-badge" id="promoBadge">PROMO√á√ÉO</div>
+        <div class="promo-badge" id="promoBadge">PROMO«√O</div>
         <h1 class="promo-title" id="promoTitle">Carregando...</h1>
         <div class="promo-empresa">
             <i class="fas fa-store"></i>
@@ -176,7 +176,7 @@
         <div class="info-card">
             <div class="info-row">
                 <span class="info-label">
-                    <i class="fas fa-coins"></i> Pontos Necess√°rios
+                    <i class="fas fa-coins"></i> Pontos Necess·rios
                 </span>
                 <span class="info-value" id="pontosNecessarios">0</span>
             </div>
@@ -188,32 +188,32 @@
             </div>
             <div class="info-row">
                 <span class="info-label">
-                    <i class="fas fa-calendar"></i> V√°lido at√©
+                    <i class="fas fa-calendar"></i> V·lido atÈ
                 </span>
                 <span class="info-value" id="validade">--/--/----</span>
             </div>
         </div>
         
         <div class="description" id="descricao">
-            Carregando descri√ß√£o...
+            Carregando descriÁ„o...
         </div>
         
         <div class="terms">
             <i class="fas fa-exclamation-triangle"></i> 
-            <strong>Importante:</strong> Ap√≥s resgatar, voc√™ ter√° um cupom dispon√≠vel para usar no estabelecimento. Apresente o cupom no caixa antes de realizar o pagamento.
+            <strong>Importante:</strong> ApÛs resgatar, vocÍ ter· um cupom disponÌvel para usar no estabelecimento. Apresente o cupom no caixa antes de realizar o pagamento.
         </div>
         
         <div class="countdown" id="countdown"></div>
         
         <button class="btn-resgatar" id="btnResgatar" onclick="resgatarPromocao()">
             <i class="fas fa-gift"></i>
-            Resgatar Promo√ß√£o
+            Resgatar PromoÁ„o
         </button>
     </div>
     
     <script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 
-            'http://localhost:8000' : 
+            'http://localhost:8001' : 
             'https://tem-de-tudo.onrender.com';
         
         const urlParams = new URLSearchParams(window.location.search);
@@ -224,7 +224,7 @@
         
         document.addEventListener('DOMContentLoaded', () => {
             if (!promocaoId) {
-                alert('Promo√ß√£o n√£o encontrada');
+                alert('PromoÁ„o n„o encontrada');
                 history.back();
                 return;
             }
@@ -243,12 +243,12 @@
                     renderizarPromocao();
                     iniciarCountdown();
                 } else {
-                    alert('Promo√ß√£o n√£o encontrada');
+                    alert('PromoÁ„o n„o encontrada');
                     history.back();
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao carregar promo√ß√£o');
+                alert('Erro ao carregar promoÁ„o');
                 history.back();
             }
         }
@@ -277,7 +277,7 @@
             document.getElementById('promoTitle').textContent = promocao.titulo;
             document.getElementById('promoEmpresa').textContent = promocao.empresa_nome || 'Estabelecimento';
             document.getElementById('pontosNecessarios').textContent = promocao.pontos_necessarios;
-            document.getElementById('descricao').textContent = promocao.descricao || 'Sem descri√ß√£o dispon√≠vel';
+            document.getElementById('descricao').textContent = promocao.descricao || 'Sem descriÁ„o disponÌvel';
             
             const validade = new Date(promocao.validade);
             document.getElementById('validade').textContent = validade.toLocaleDateString('pt-BR');
@@ -285,7 +285,7 @@
             // Badge baseado no tipo
             const badge = document.getElementById('promoBadge');
             if (promocao.pontos_necessarios < 50) {
-                badge.textContent = 'IMPERD√çVEL';
+                badge.textContent = 'IMPERDÕVEL';
                 badge.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a6f)';
                 badge.style.background = 'rgba(239, 68, 68, 0.3)';
             } else if (promocao.pontos_necessarios < 100) {
@@ -293,7 +293,7 @@
                 badge.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
                 badge.style.background = 'rgba(251, 191, 36, 0.3)';
             } else {
-                badge.textContent = 'üëë PREMIUM';
+                badge.textContent = '?? PREMIUM';
                 badge.style.background = 'rgba(168, 85, 247, 0.3)';
             }
         }
@@ -316,7 +316,7 @@
             const diff = validade - agora;
             
             if (diff <= 0) {
-                document.getElementById('countdown').innerHTML = '‚è∞ Promo√ß√£o expirada';
+                document.getElementById('countdown').innerHTML = '? PromoÁ„o expirada';
                 document.getElementById('btnResgatar').disabled = true;
                 return;
             }
@@ -324,7 +324,7 @@
             const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
             
             if (dias <= 7) {
-                document.getElementById('countdown').innerHTML = `‚è∞ Expira em ${dias} dia${dias !== 1 ? 's' : ''}!`;
+                document.getElementById('countdown').innerHTML = `? Expira em ${dias} dia${dias !== 1 ? 's' : ''}!`;
             }
         }
         
@@ -332,12 +332,12 @@
             const token = localStorage.getItem('token');
             
             if (!token) {
-                alert('‚ùå Voc√™ precisa estar logado para resgatar promo√ß√µes');
+                alert('? VocÍ precisa estar logado para resgatar promoÁıes');
                 window.location.href = '/entrar.html';
                 return;
             }
             
-            if (!confirm(`Confirma o resgate desta promo√ß√£o?\n\n${promocao.titulo}\nCusto: ${promocao.pontos_necessarios} pontos`)) {
+            if (!confirm(`Confirma o resgate desta promoÁ„o?\n\n${promocao.titulo}\nCusto: ${promocao.pontos_necessarios} pontos`)) {
                 return;
             }
             
@@ -358,18 +358,18 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert(`‚úÖ Promo√ß√£o resgatada com sucesso!\n\nCupom: ${data.data.codigo}\n\nVoc√™ pode encontr√°-lo na aba "Cupons" do seu perfil.`);
+                    alert(`? PromoÁ„o resgatada com sucesso!\n\nCupom: ${data.data.codigo}\n\nVocÍ pode encontr·-lo na aba "Cupons" do seu perfil.`);
                     window.location.href = '/app-perfil-cliente.html?tab=cupons';
                 } else {
-                    alert('‚ùå ' + (data.message || 'Erro ao resgatar promo√ß√£o'));
+                    alert('? ' + (data.message || 'Erro ao resgatar promoÁ„o'));
                     btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promo√ß√£o';
+                    btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar PromoÁ„o';
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('‚ùå Erro ao conectar com o servidor');
+                alert('? Erro ao conectar com o servidor');
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promo√ß√£o';
+                btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar PromoÁ„o';
             }
         }
     </script>
@@ -378,7 +378,7 @@
     <nav class="bottom-nav">
         <a href="/app-inicio.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>In√≠cio</span>
+            <span>InÌcio</span>
         </a>
         <a href="/app-buscar.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -390,7 +390,7 @@
         </a>
         <a href="/app-promocoes.html" class="nav-item active">
             <i class="fas fa-tags"></i>
-            <span>Promo√ß√µes</span>
+            <span>PromoÁıes</span>
         </a>
         <a href="/app-perfil.html" class="nav-item">
             <i class="fas fa-user"></i>
@@ -407,3 +407,4 @@
     </style>
 </body>
 </html>
+

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -52,14 +52,14 @@
                 </div>
                 
                 <button type="submit" class="btn-save">
-                    <i class="fas fa-save"></i> Salvar Alterações
+                    <i class="fas fa-save"></i> Salvar Altera��es
                 </button>
             </form>
         </div>
     </div>
     
     <script>
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://tem-de-tudo.onrender.com';
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         
         document.addEventListener('DOMContentLoaded', () => {
             const userStr = localStorage.getItem('user');
@@ -77,7 +77,7 @@
             
             const token = localStorage.getItem('token');
             if (!token) {
-                alert('Você precisa estar logado');
+                alert('Voc� precisa estar logado');
                 window.location.href = '/entrar.html';
                 return;
             }
@@ -107,16 +107,17 @@
                     Object.assign(user, dados);
                     localStorage.setItem('user', JSON.stringify(user));
                     
-                    alert('✅ Perfil atualizado com sucesso!');
+                    alert('? Perfil atualizado com sucesso!');
                     history.back();
                 } else {
-                    alert('❌ ' + (data.message || 'Erro ao atualizar perfil'));
+                    alert('? ' + (data.message || 'Erro ao atualizar perfil'));
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('❌ Erro ao conectar com o servidor');
+                alert('? Erro ao conectar com o servidor');
             }
         }
     </script>
 </body>
 </html>
+

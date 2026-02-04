@@ -85,7 +85,7 @@
         <a href="/app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
     </nav>
     <script>
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://tem-de-tudo.onrender.com';
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : (window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8001' : 'https://tem-de-tudo.onrender.com');
         let todasEmpresas = [];
         let categoriaAtual = 'todas';
         const categorias = { alimentacao: ' Alimentos', automotivo: ' Automotivo', beleza: ' Beleza', bemestar: ' Bem-estar', educacao: ' Educação', servicos: ' Serviços' };
@@ -116,29 +116,35 @@
         async function carregarEmpresas() {
             const token = localStorage.getItem('token');
             
-            // Dados fictícios como fallback
-            const empresasFicticias = [
-                { id: 1, nome: 'Sabor e Arte Restaurante', categoria: 'alimentacao', logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400', pontos_por_checkin: 15 },
-                { id: 2, nome: 'Bella Napoli Pizzaria', categoria: 'alimentacao', logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400', pontos_por_checkin: 12 },
-                { id: 3, nome: 'Academia FitLife', categoria: 'bemestar', logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', pontos_por_checkin: 20 },
-                { id: 4, nome: 'Salão Beleza Total', categoria: 'beleza', logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', pontos_por_checkin: 18 },
-                { id: 5, nome: 'Auto Center Premium', categoria: 'automotivo', logo: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400', pontos_por_checkin: 25 },
-                { id: 6, nome: 'Tech School', categoria: 'educacao', logo: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400', pontos_por_checkin: 30 },
-                { id: 7, nome: 'Café & Cia', categoria: 'alimentacao', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', pontos_por_checkin: 10 },
-                { id: 8, nome: 'Spa Relax', categoria: 'bemestar', logo: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400', pontos_por_checkin: 22 }
-            ];
-            
             try {
-                const response = await fetch(`${API_BASE_URL}/api/empresas`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const response = await fetch(`${API_BASE_URL}/api/cliente/empresas`, { 
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json' 
+                    } 
+                });
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
                 const data = await response.json();
+                
                 if (data.success && data.data && data.data.length > 0) {
-                    todasEmpresas = data.data;
+                    // Mapear os dados da API para o formato esperado pelo frontend
+                    todasEmpresas = data.data.map(emp => ({
+                        id: emp.id,
+                        nome: emp.nome,
+                        categoria: emp.ramo,
+                        logo: emp.logo,
+                        descricao: emp.descricao,
+                        pontos_por_checkin: Math.round(10 * (emp.pontos_cliente || 1))
+                    }));
                 } else {
-                    todasEmpresas = empresasFicticias;
+                    throw new Error('Nenhuma empresa disponível');
                 }
             } catch (error) {
-                console.error('Erro ao carregar empresas, usando dados fictícios:', error);
-                todasEmpresas = empresasFicticias;
+                console.error('Erro ao carregar empresas:', error);
+                alert('Erro ao carregar empresas. Verifique sua conexão.');
+                todasEmpresas = [];
             }
             
             renderizarEmpresas(todasEmpresas);
