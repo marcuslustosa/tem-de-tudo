@@ -60,17 +60,8 @@
     <script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         
-        // Dados fictícios para usuários de teste
-        const cuponsDisponiveis = [
-            { id: 1, empresa: 'Sabor e Arte', desconto: '20% OFF', descricao: 'Em qualquer prato', validade: '2026-03-31', codigo: 'SABOR20', usado: false },
-            { id: 2, empresa: 'Bella Napoli', desconto: 'R$ 15 OFF', descricao: 'Pizza grande', validade: '2026-02-28', codigo: 'PIZZA15', usado: false },
-            { id: 3, empresa: 'Academia FitLife', desconto: '1 mês grátis', descricao: 'Na matrícula anual', validade: '2026-04-30', codigo: 'FIT1MES', usado: false }
-        ];
-        
-        const cuponsUsados = [
-            { id: 4, empresa: 'Café & Cia', desconto: 'R$ 5 OFF', descricao: 'Em qualquer bebida', validade: '2026-01-31', codigo: 'CAFE5', usado: true, dataUso: '2026-01-15' }
-        ];
-        
+        let cuponsDisponiveis = [];
+        let cuponsUsados = [];
         let tabAtual = 'disponiveis';
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -80,14 +71,8 @@
                 return;
             }
             
-            // Verificar se é usuário de teste
-            const userStr = localStorage.getItem('user');
-            const isTestUser = userStr && (userStr.includes('maria@email.com') || userStr.includes('joao@email.com'));
-            
-            if (isTestUser) {
-                renderizarCupons();
-            } else {
-                carregarCuponsAPI();
+            // Sempre carregar dados reais da API
+            carregarCuponsAPI();
             }
             
             // Tabs
