@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #fff; padding-bottom: 80px; }
+        .header { background: #1a1a2e; padding: 20px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .back-btn { width: 36px; height: 36px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; text-decoration: none; }
+        .header h1 { font-size: 18px; font-weight: 700; flex: 1; }
+        .menu-section { padding: 20px; }
+        .section-title { font-size: 14px; font-weight: 700; color: #888; text-transform: uppercase; margin-bottom: 12px; padding-left: 4px; }
+        .menu-items { background: #1a1a2e; border-radius: 16px; overflow: hidden; border: 1px solid rgba(102, 126, 234, 0.1); }
+        .menu-item { padding: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item label { font-size: 15px; font-weight: 600; flex: 1; }
+        .toggle { position: relative; width: 50px; height: 28px; }
+        .toggle input { display: none; }
+        .toggle .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #2a2a3e; border-radius: 28px; transition: 0.3s; }
+        .toggle .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: 0.3s; }
+        .toggle input:checked + .slider { background: #f59e0b; }
+        .toggle input:checked + .slider:before { transform: translateX(22px); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-top: 1px solid rgba(102, 126, 234, 0.1); display: flex; justify-content: space-around; padding: 12px 0 8px; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #888; font-size: 11px; font-weight: 500; }
+        .nav-item.active { color: #f59e0b; }
+        .nav-item i { font-size: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="/app-perfil.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1>Configurações</h1>
+    </div>
+
+    <div class="menu-section">
+        <div class="section-title">Notificações</div>
+        <div class="menu-items">
+            <div class="menu-item">
+                <label>Notificações push</label>
+                <div class="toggle"><input type="checkbox" checked><div class="slider"></div></div>
+            </div>
+            <div class="menu-item">
+                <label>Alertas de promoções</label>
+                <div class="toggle"><input type="checkbox" checked><div class="slider"></div></div>
+            </div>
+            <div class="menu-item">
+                <label>Novos bônus</label>
+                <div class="toggle"><input type="checkbox" checked><div class="slider"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-section">
+        <div class="section-title">Privacidade</div>
+        <div class="menu-items">
+            <div class="menu-item">
+                <label>Usar localização</label>
+                <div class="toggle"><input type="checkbox" checked><div class="slider"></div></div>
+            </div>
+            <div class="menu-item">
+                <label>Perfil público</label>
+                <div class="toggle"><input type="checkbox"><div class="slider"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-section">
+        <div class="section-title">Aplicativo</div>
+        <div class="menu-items">
+            <div class="menu-item">
+                <label>Tema escuro</label>
+                <div class="toggle"><input type="checkbox" checked><div class="slider"></div></div>
+            </div>
+            <div class="menu-item">
+                <label>Som de notificação</label>
+                <div class="toggle"><input type="checkbox" checked><div class="slider"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
+        <a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
+        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
+        <a href="/app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
+    </nav>
+</body>
+</html>
