@@ -1,567 +1,168 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Empresas Parceiras - Tem de Tudo</title>
+    <title>Empresas - Tem de Tudo</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">
-    
     <style>
-        body {
-            padding-bottom: 80px;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
-            padding: var(--space-6) var(--space-4);
-            color: white;
-        }
-        
-        .header h1 {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: var(--space-2);
-        }
-        
-        .header p {
-            opacity: 0.9;
-            font-size: 14px;
-        }
-        
-        .search-section {
-            padding: var(--space-4);
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .search-box {
-            position: relative;
-        }
-        
-        .search-box input {
-            width: 100%;
-            padding: 14px 48px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-full);
-            color: var(--text-primary);
-            font-size: 15px;
-        }
-        
-        .search-box input:focus {
-            border-color: var(--purple-1);
-            outline: none;
-        }
-        
-        .search-box i {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-        
-        .categories {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: var(--space-4);
-            scrollbar-width: none;
-            background: var(--bg-primary);
-        }
-        
-        .categories::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .category-chip {
-            padding: 8px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-full);
-            white-space: nowrap;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .category-chip:hover,
-        .category-chip.active {
-            background: var(--purple-1);
-            color: white;
-            border-color: var(--purple-1);
-        }
-        
-        .empresas-list {
-            padding: var(--space-4);
-        }
-        
-        .empresa-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            margin-bottom: var(--space-4);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .empresa-card:hover {
-            border-color: var(--border-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-        }
-        
-        .empresa-image {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
-        }
-        
-        .empresa-content {
-            padding: var(--space-4);
-        }
-        
-        .empresa-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: var(--space-3);
-        }
-        
-        .empresa-name {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        
-        .empresa-category {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-        
-        .empresa-badge {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-            padding: 4px 12px;
-            border-radius: var(--radius-full);
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .empresa-stats {
-            display: flex;
-            gap: var(--space-4);
-            margin-bottom: var(--space-3);
-            padding-bottom: var(--space-3);
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-        
-        .stat-item i {
-            color: var(--purple-1);
-        }
-        
-        .empresa-promo {
-            background: rgba(102, 126, 234, 0.08);
-            padding: var(--space-3);
-            border-radius: var(--radius-md);
-            margin-bottom: var(--space-3);
-        }
-        
-        .promo-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--purple-1);
-            margin-bottom: 4px;
-        }
-        
-        .promo-desc {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        
-        .empresa-actions {
-            display: flex;
-            gap: var(--space-2);
-        }
-        
-        .btn-primary {
-            flex: 1;
-            padding: 12px;
-            background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .btn-outline {
-            flex: 1;
-            padding: 12px;
-            background: transparent;
-            color: var(--purple-1);
-            border: 1px solid var(--purple-1);
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: var(--space-8);
-            color: var(--text-muted);
-        }
-        
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: var(--space-4);
-            opacity: 0.3;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #1a1a2e; color: #fff; padding-bottom: 80px; }
+        .header { background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; }
+        .header h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+        .header p { font-size: 13px; opacity: 0.9; }
+        .search-section { padding: 16px 20px; background: #1a1a2e; }
+        .search-box { position: relative; }
+        .search-box input { width: 100%; padding: 14px 16px 14px 48px; background: #2a2a3e; border: 1px solid rgba(102, 126, 234, 0.1); border-radius: 16px; color: #fff; font-size: 15px; outline: none; }
+        .search-box input::placeholder { color: #888; }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #667eea; font-size: 18px; }
+        .filter-section { padding: 0 20px 16px; }
+        .filter-scroll { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+        .filter-scroll::-webkit-scrollbar { display: none; }
+        .filter-chip { background: #2a2a3e; border: 1px solid rgba(102, 126, 234, 0.2); padding: 10px 18px; border-radius: 24px; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: all 0.3s; }
+        .filter-chip.active { background: linear-gradient(135deg, #667eea, #764ba2); border-color: transparent; }
+        .filter-chip:active { transform: scale(0.95); }
+        .section { padding: 20px; }
+        .section-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
+        .empresas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .empresa-card { background: #2a2a3e; border-radius: 16px; overflow: hidden; text-decoration: none; color: #fff; border: 1px solid rgba(102, 126, 234, 0.1); transition: transform 0.3s; }
+        .empresa-card:active { transform: scale(0.97); }
+        .empresa-img { width: 100%; height: 120px; object-fit: cover; background: linear-gradient(135deg, #667eea20, #764ba220); }
+        .empresa-content { padding: 12px; }
+        .empresa-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .empresa-category { font-size: 11px; color: #888; margin-bottom: 8px; }
+        .empresa-footer { display: flex; justify-content: space-between; align-items: center; }
+        .empresa-distance { font-size: 11px; color: #667eea; display: flex; align-items: center; gap: 4px; }
+        .empresa-pontos { background: linear-gradient(135deg, #f39c12, #e67e22); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+        .empty-state { text-align: center; padding: 60px 20px; }
+        .empty-state i { font-size: 64px; opacity: 0.2; margin-bottom: 16px; }
+        .empty-state p { color: #888; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-top: 1px solid rgba(102, 126, 234, 0.1); display: flex; justify-content: space-around; padding: 12px 0 8px; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #888; font-size: 11px; font-weight: 500; }
+        .nav-item.active { color: #667eea; }
+        .nav-item i { font-size: 20px; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1><i class="fas fa-store"></i> Empresas Parceiras</h1>
-        <p>Descubra empresas e ganhe bônus!</p>
+        <h1>Empresas Parceiras</h1>
+        <p>Descubra onde acumular pontos</p>
     </div>
-    
     <div class="search-section">
         <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Buscar empresas..." oninput="filtrarEmpresas()">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Buscar empresas..." id="searchInput">
         </div>
     </div>
-    
-    <div class="categories">
-        <div class="category-chip active" onclick="filtrarCategoria('todas')">
-            <i class="fas fa-th"></i> Todas
-        </div>
-        <div class="category-chip" onclick="filtrarCategoria('alimentacao')">
-            <i class="fas fa-utensils"></i> Alimentação
-        </div>
-        <div class="category-chip" onclick="filtrarCategoria('moda')">
-            <i class="fas fa-tshirt"></i> Moda
-        </div>
-        <div class="category-chip" onclick="filtrarCategoria('saude')">
-            <i class="fas fa-heartbeat"></i> Saúde
-        </div>
-        <div class="category-chip" onclick="filtrarCategoria('beleza')">
-            <i class="fas fa-cut"></i> Beleza
-        </div>
-        <div class="category-chip" onclick="filtrarCategoria('servicos')">
-            <i class="fas fa-tools"></i> Serviços
+    <div class="filter-section">
+        <div class="filter-scroll" id="filterChips">
+            <div class="filter-chip active" data-cat="todas">Todas</div>
+            <div class="filter-chip" data-cat="alimentacao"> Alimentos</div>
+            <div class="filter-chip" data-cat="automotivo"> Automotivo</div>
+            <div class="filter-chip" data-cat="beleza"> Beleza</div>
+            <div class="filter-chip" data-cat="bemestar"> Bem-estar</div>
+            <div class="filter-chip" data-cat="educacao"> Educação</div>
+            <div class="filter-chip" data-cat="servicos"> Serviços</div>
         </div>
     </div>
-    
-    <div class="empresas-list" id="empresasList">
-        <!-- Empresas serão carregadas aqui via JavaScript -->
+    <div class="section">
+        <div class="section-title" id="sectionTitle">Todas as empresas</div>
+        <div class="empresas-grid" id="empresasGrid"></div>
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-store-slash"></i>
+            <p>Nenhuma empresa encontrada</p>
+        </div>
     </div>
-    
-    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <a href="/dashboard-cliente.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="/app-empresas.html" class="nav-item active">
-            <i class="fas fa-store"></i>
-            <span>Empresas</span>
-        </a>
-        <a href="/app-promocoes.html" class="nav-item">
-            <i class="fas fa-tags"></i>
-            <span>Promoções</span>
-        </a>
-        <a href="/app-qrcode.html" class="nav-item">
-            <i class="fas fa-qrcode"></i>
-            <span>Meu QR</span>
-        </a>
-        <a href="/app-perfil-cliente.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
+        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="/app-scanner.html" class="nav-item"><i class="fas fa-qrcode"></i><span>Scanner</span></a>
+        <a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Meus pontos</span></a>
+        <a href="/app-empresas.html" class="nav-item active"><i class="fas fa-store"></i><span>Empresas</span></a>
+        <a href="/app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
     </nav>
-    
     <script>
-        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 
-            'http://localhost:8000' : 
-            'https://tem-de-tudo.onrender.com';
-        
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://tem-de-tudo.onrender.com';
         let todasEmpresas = [];
         let categoriaAtual = 'todas';
-        let empresasFiltradas = [];
-        
-        // Carrega empresas da API ao iniciar
-        document.addEventListener('DOMContentLoaded', () => {
-            carregarEmpresasAPI();
-        });
-
-        async function carregarEmpresasAPI() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/empresas`);
-                const data = await response.json();
-                
-                if (data.success) {
-                    todasEmpresas = data.data.empresas.map(emp => ({
-                        id: emp.id,
-                        nome: emp.nome,
-                        categoria: emp.categoria || 'servicos',
-                        descricao: emp.descricao || '',
-                        imagem: emp.logo || 'https://via.placeholder.com/800x400/667eea/ffffff',
-                        pontos_checkin: emp.pontos_checkin || 10,
-                        total_clientes: Math.floor(Math.random() * 5000), // Temporário
-                        avaliacoes: (4.5 + Math.random() * 0.5).toFixed(1),
-                        aberto: true,
-                        promocao: null // Pode buscar promoções depois
-                    }));
-                    empresasFiltradas = todasEmpresas;
-                    renderizarEmpresas(empresasFiltradas);
-                } else {
-                    console.error('Erro ao carregar empresas:', data.message);
-                    mostrarErro('Não foi possível carregar as empresas');
-                }
-            } catch (error) {
-                console.error('Erro na requisição:', error);
-                // Fallback para dados fictícios em caso de erro
-                carregarDadosFicticios();
-            }
-        }
-
-        function carregarDadosFicticios() {
-            // Dados de fallback
-            todasEmpresas = [
-                {
-                    id: 1,
-                    nome: 'Restaurante Sabor & Arte',
-                    categoria: 'alimentacao',
-                    descricao: 'Culinária brasileira contemporânea',
-                    imagem: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
-                    pontos_checkin: 10,
-                    total_clientes: 1247,
-                    avaliacoes: 4.8,
-                    aberto: true,
-                    promocao: {
-                        titulo: '🎉 Desconto de 20% no almoço',
-                        descricao: 'Válido de segunda a sexta até 15h'
-                    }
-                },
-                {
-                    id: 2,
-                    nome: 'Pizzaria Bella Napoli',
-                    categoria: 'alimentacao',
-                    descricao: 'Pizzas artesanais no forno a lenha',
-                    imagem: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800',
-                    pontos_checkin: 15,
-                    total_clientes: 2893,
-                    avaliacoes: 4.9,
-                    aberto: true,
-                    promocao: {
-                        titulo: '🍕 Compre 1 leve 2 às terças',
-                        descricao: 'Pizza grande na compra de qualquer tamanho'
-                    }
-                }
-            ];
-            empresasFiltradas = todasEmpresas;
-            renderizarEmpresas(empresasFiltradas);
-        }
-
-        function mostrarErro(mensagem) {
-            const container = document.getElementById('empresasList');
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <p>${mensagem}</p>
-                    <button class="btn-primary" onclick="carregarEmpresasAPI()">
-                        <i class="fas fa-redo"></i> Tentar novamente
-                    </button>
-                </div>
-            `;
-        }
-        
-        function renderizarEmpresas(empresas) {
-            const container = document.getElementById('empresasList');
-            
-            if (empresas.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-search"></i>
-                        <p>Nenhuma empresa encontrada</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = empresas.map(empresa => `
-                <div class="empresa-card" onclick="abrirEmpresa(${empresa.id})">
-                    <img src="${empresa.imagem}" alt="${empresa.nome}" class="empresa-image" onerror="this.src='https://via.placeholder.com/800x400/667eea/ffffff?text=${encodeURIComponent(empresa.nome)}'">
-                    
-                    <div class="empresa-content">
-                        <div class="empresa-header">
-                            <div>
-                                <div class="empresa-name">${empresa.nome}</div>
-                                <div class="empresa-category">
-                                    <i class="fas ${getCategoriaIcon(empresa.categoria)}"></i>
-                                    ${getCategoriaLabel(empresa.categoria)}
-                                </div>
-                            </div>
-                            ${empresa.aberto ? '<span class="empresa-badge">Aberto</span>' : ''}
-                        </div>
-                        
-                        <div class="empresa-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-star"></i>
-                                ${empresa.avaliacoes}
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-users"></i>
-                                ${formatarNumero(empresa.total_clientes)} clientes
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-coins"></i>
-                                +${empresa.pontos_checkin} pontos
-                            </div>
-                        </div>
-                        
-                        ${empresa.promocao ? `
-                        <div class="empresa-promo">
-                            <div class="promo-title">${empresa.promocao.titulo}</div>
-                            <div class="promo-desc">${empresa.promocao.descricao}</div>
-                        </div>
-                        ` : ''}
-                        
-                        <div class="empresa-actions">
-                            <button class="btn-primary" onclick="event.stopPropagation(); fazerCheckin(${empresa.id})">
-                                <i class="fas fa-qrcode"></i> Check-in
-                            </button>
-                            <button class="btn-outline" onclick="event.stopPropagation(); verPromocoes(${empresa.id})">
-                                <i class="fas fa-tags"></i> Promoções
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function filtrarEmpresas() {
-            const termo = document.getElementById('searchInput').value.toLowerCase();
-            
-            empresasFiltradas = todasEmpresas.filter(empresa => {
-                const matchCategoria = categoriaAtual === 'todas' || empresa.categoria === categoriaAtual;
-                const matchBusca = termo === '' || 
-                    empresa.nome.toLowerCase().includes(termo) ||
-                    empresa.descricao.toLowerCase().includes(termo);
-                
-                return matchCategoria && matchBusca;
-            });
-            
-            renderizarEmpresas(empresasFiltradas);
-        }
-        
-        function filtrarCategoria(categoria) {
-            categoriaAtual = categoria;
-            
-            // Atualiza visual dos chips
-            document.querySelectorAll('.category-chip').forEach(chip => {
-                chip.classList.remove('active');
-            });
-            event.target.closest('.category-chip').classList.add('active');
-            
-            filtrarEmpresas();
-        }
-        
-        function getCategoriaIcon(categoria) {
-            const icons = {
-                'alimentacao': 'fa-utensils',
-                'moda': 'fa-tshirt',
-                'saude': 'fa-heartbeat',
-                'beleza': 'fa-cut',
-                'servicos': 'fa-tools'
-            };
-            return icons[categoria] || 'fa-store';
-        }
-        
-        function getCategoriaLabel(categoria) {
-            const labels = {
-                'alimentacao': 'Alimentação',
-                'moda': 'Moda',
-                'saude': 'Saúde',
-                'beleza': 'Beleza',
-                'servicos': 'Serviços'
-            };
-            return labels[categoria] || 'Outros';
-        }
-        
-        function formatarNumero(num) {
-            if (num >= 1000) {
-                return (num / 1000).toFixed(1) + 'k';
-            }
-            return num;
-        }
-        
-        function abrirEmpresa(id) {
-            window.location.href = `/app-empresa-detalhes.html?id=${id}`;
-        }
-        
-        async function fazerCheckin(id) {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    alert('❌ Você precisa estar logado para fazer check-in');
-                    window.location.href = '/entrar.html';
-                    return;
-                }
-
-                const response = await fetch(`${API_BASE_URL}/api/checkins`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ 
-                        empresa_id: id,
-                        latitude: -23.550520,
-                        longitude: -46.633308,
-                        metodo: 'manual'
-                    })
+        const categorias = { alimentacao: ' Alimentos', automotivo: ' Automotivo', beleza: ' Beleza', bemestar: ' Bem-estar', educacao: ' Educação', servicos: ' Serviços' };
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = '/entrar.html'; return; }
+            await carregarEmpresas();
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    categoriaAtual = chip.dataset.cat;
+                    filtrarEmpresas();
                 });
-
+            });
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                filtrarEmpresas(e.target.value.toLowerCase());
+            });
+            const urlParams = new URLSearchParams(window.location.search);
+            const cat = urlParams.get('cat');
+            const q = urlParams.get('q');
+            if (cat) {
+                const chip = document.querySelector(`[data-cat="${cat}"]`);
+                if (chip) chip.click();
+            }
+            if (q) document.getElementById('searchInput').value = q;
+        });
+        async function carregarEmpresas() {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/empresas`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const data = await response.json();
-
-                if (data.success) {
-                    alert(`✅ Check-in realizado!\n\nVocê ganhou +${data.data.pontos_ganhos} pontos! 🎉\nTotal: ${data.data.pontos_totais} pontos`);
-                    
-                    // Adiciona notificação
-                    if (window.NotificationSystem) {
-                        NotificationSystem.add({
-                            title: '✅ Check-in Realizado!',
-                            message: `Você ganhou ${data.data.pontos_ganhos} pontos`,
-                            icon: 'fa-check-circle',
-                            type: 'success'
-                        });
-                    }
-                } else {
-                    alert('❌ Erro ao fazer check-in: ' + data.message);
+                if (data.success && data.data) {
+                    todasEmpresas = data.data;
+                    renderizarEmpresas(todasEmpresas);
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('❌ Erro ao fazer check-in. Tente novamente.');
             }
         }
-        
-        function verPromocoes(id) {
-            window.location.href = `/app-promocoes.html?empresa=${id}`;
+        function filtrarEmpresas(termo = '') {
+            let filtradas = todasEmpresas;
+            if (categoriaAtual !== 'todas') {
+                filtradas = filtradas.filter(emp => emp.categoria === categoriaAtual);
+            }
+            if (termo) {
+                filtradas = filtradas.filter(emp => 
+                    emp.nome.toLowerCase().includes(termo) || 
+                    (emp.descricao && emp.descricao.toLowerCase().includes(termo))
+                );
+            }
+            document.getElementById('sectionTitle').textContent = 
+                categoriaAtual === 'todas' ? 'Todas as empresas' : categorias[categoriaAtual] || categoriaAtual;
+            renderizarEmpresas(filtradas);
+        }
+        function renderizarEmpresas(empresas) {
+            const grid = document.getElementById('empresasGrid');
+            const empty = document.getElementById('emptyState');
+            if (empresas.length === 0) {
+                grid.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+            grid.style.display = 'grid';
+            empty.style.display = 'none';
+            grid.innerHTML = empresas.map(emp => `
+                <a href="/app-empresa.html?id=${emp.id}" class="empresa-card">
+                    <img src="${emp.logo || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400'}" alt="${emp.nome}" class="empresa-img">
+                    <div class="empresa-content">
+                        <div class="empresa-name">${emp.nome}</div>
+                        <div class="empresa-category">${categorias[emp.categoria] || ' Outros'}</div>
+                        <div class="empresa-footer">
+                            <div class="empresa-distance"><i class="fas fa-map-marker-alt"></i>${Math.floor(Math.random() * 5) + 1} km</div>
+                            <div class="empresa-pontos">+${emp.pontos_por_checkin || 10} pts</div>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
         }
     </script>
 </body>

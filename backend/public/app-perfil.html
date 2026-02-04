@@ -1,485 +1,101 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0a0a0f">
-    <title>Meu Perfil - Tem de Tudo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Tem de Tudo</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1a1a2e">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a0f;
-            min-height: 100vh;
-            padding-bottom: 90px;
-            color: #fff;
-        }
-        
-        .header {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            padding: 20px;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 22px;
-            font-weight: 800;
-            color: #fff;
-        }
-        
-        .profile-header {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            padding: 32px 20px;
-            text-align: center;
-        }
-        
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            margin: 0 auto 20px;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-            position: relative;
-        }
-        
-        .edit-avatar-btn {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 36px;
-            height: 36px;
-            background: #667eea;
-            border: 3px solid #1a1a2e;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        
-        .profile-name {
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-        
-        .profile-email {
-            font-size: 14px;
-            color: #b0b0b0;
-            margin-bottom: 20px;
-        }
-        
-        .profile-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            padding: 0 20px;
-            margin-top: -20px;
-            margin-bottom: 24px;
-        }
-        
-        .stat-card {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-radius: 16px;
-            padding: 20px 16px;
-            text-align: center;
-            border: 1px solid rgba(102, 126, 234, 0.1);
-        }
-        
-        .stat-value {
-            font-size: 28px;
-            font-weight: 900;
-            color: #667eea;
-            margin-bottom: 6px;
-        }
-        
-        .stat-label {
-            font-size: 12px;
-            color: #b0b0b0;
-        }
-        
-        .section {
-            padding: 0 20px 24px;
-        }
-        
-        .section-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 16px;
-            padding: 0 4px;
-        }
-        
-        .menu-list {
-            display: grid;
-            gap: 12px;
-        }
-        
-        .menu-item {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-radius: 14px;
-            padding: 18px 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            text-decoration: none;
-            color: #fff;
-            transition: all 0.3s;
-            border: 1px solid rgba(102, 126, 234, 0.1);
-        }
-        
-        .menu-item:hover {
-            border-color: #667eea;
-            transform: translateX(4px);
-        }
-        
-        .menu-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: #667eea;
-            flex-shrink: 0;
-        }
-        
-        .menu-content {
-            flex: 1;
-        }
-        
-        .menu-title {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        
-        .menu-subtitle {
-            font-size: 12px;
-            color: #b0b0b0;
-        }
-        
-        .menu-arrow {
-            color: #666;
-            font-size: 16px;
-        }
-        
-        .logout-btn {
-            width: 100%;
-            padding: 18px;
-            background: rgba(231, 76, 60, 0.1);
-            color: #e74c3c;
-            border: 2px solid rgba(231, 76, 60, 0.2);
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .logout-btn:hover {
-            background: rgba(231, 76, 60, 0.2);
-            border-color: #e74c3c;
-        }
-        
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-top: 1px solid rgba(102, 126, 234, 0.2);
-            padding: 12px 8px 20px;
-            display: flex;
-            justify-content: space-around;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
-        }
-        
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            color: #b0b0b0;
-            font-size: 11px;
-            font-weight: 600;
-            transition: all 0.3s;
-            padding: 8px;
-            border-radius: 12px;
-        }
-        
-        .nav-item i {
-            font-size: 22px;
-        }
-        
-        .nav-item.active {
-            color: #667eea;
-        }
-        
-        .nav-item.active i {
-            transform: scale(1.15);
-        }
+        body { font-family: 'Inter', sans-serif; background: #1a1a2e; color: #fff; padding-bottom: 80px; }
+        .header { background: linear-gradient(135deg, #667eea, #764ba2); padding: 24px 20px 40px; text-align: center; }
+        .profile-avatar { width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); border: 3px solid rgba(255, 255, 255, 0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 36px; }
+        .profile-name { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+        .profile-email { font-size: 13px; opacity: 0.9; }
+        .profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px 20px; margin-top: -20px; }
+        .stat-card { background: #2a2a3e; border-radius: 12px; padding: 16px 12px; text-align: center; border: 1px solid rgba(102, 126, 234, 0.1); }
+        .stat-value { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 4px; }
+        .stat-label { font-size: 11px; color: #888; }
+        .menu-section { padding: 20px; }
+        .section-title { font-size: 14px; font-weight: 700; color: #888; text-transform: uppercase; margin-bottom: 12px; padding-left: 4px; }
+        .menu-items { background: #2a2a3e; border-radius: 16px; overflow: hidden; border: 1px solid rgba(102, 126, 234, 0.1); }
+        .menu-item { padding: 16px; display: flex; align-items: center; gap: 16px; text-decoration: none; color: #fff; border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.3s; }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item:active { background: rgba(102, 126, 234, 0.1); }
+        .menu-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .menu-content { flex: 1; }
+        .menu-title { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+        .menu-subtitle { font-size: 12px; color: #888; }
+        .menu-arrow { color: #667eea; font-size: 16px; }
+        .logout-btn { margin: 20px; background: #2a2a3e; border: 2px solid rgba(255, 59, 48, 0.3); color: #ff3b30; padding: 16px; border-radius: 16px; width: calc(100% - 40px); font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-top: 1px solid rgba(102, 126, 234, 0.1); display: flex; justify-content: space-around; padding: 12px 0 8px; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #888; font-size: 11px; font-weight: 500; }
+        .nav-item.active { color: #667eea; }
+        .nav-item i { font-size: 20px; }
     </style>
-    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+</head>
 <body>
     <div class="header">
-        <h1>Meu Perfil</h1>
+        <div class="profile-avatar"><i class="fas fa-user"></i></div>
+        <div class="profile-name" id="profileName">Carregando...</div>
+        <div class="profile-email" id="profileEmail">...</div>
     </div>
-    
-    <div class="profile-header">
-        <div class="profile-avatar">
-            <i class="fas fa-user"></i>
-            <button class="edit-avatar-btn">
-                <i class="fas fa-camera"></i>
-            </button>
-        </div>
-        <div class="profile-name" id="userName">Carregando...</div>
-        <div class="profile-email" id="userEmail">email@exemplo.com</div>
-    </div>
-    
     <div class="profile-stats">
-        <div class="stat-card">
-            <div class="stat-value" id="totalPoints">0</div>
-            <div class="stat-label">Pontos</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="totalVisits">0</div>
-            <div class="stat-label">Visitas</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="totalRewards">0</div>
-            <div class="stat-label">Resgates</div>
+        <div class="stat-card"><div class="stat-value" id="statPontos">0</div><div class="stat-label">Pontos</div></div>
+        <div class="stat-card"><div class="stat-value" id="statCheckins">0</div><div class="stat-label">Check-ins</div></div>
+        <div class="stat-card"><div class="stat-value" id="statCupons">0</div><div class="stat-label">Cupons</div></div>
+    </div>
+    <div class="menu-section">
+        <div class="section-title">Conta</div>
+        <div class="menu-items">
+            <a href="/app-editar-perfil.html" class="menu-item"><div class="menu-icon"><i class="fas fa-user-edit"></i></div><div class="menu-content"><div class="menu-title">Editar Perfil</div><div class="menu-subtitle">Nome, email, telefone</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
+            <a href="/app-meus-pontos.html" class="menu-item"><div class="menu-icon"><i class="fas fa-wallet"></i></div><div class="menu-content"><div class="menu-title">Meus Pontos</div><div class="menu-subtitle">Histórico e saldo</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
+            <a href="/app-meus-cupons.html" class="menu-item"><div class="menu-icon"><i class="fas fa-ticket-alt"></i></div><div class="menu-content"><div class="menu-title">Meus Cupons</div><div class="menu-subtitle">Cupons ativos e usados</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
         </div>
     </div>
-    
-    <div class="section">
-        <h3 class="section-title">Conta</h3>
-        <div class="menu-list">
-            <a href="#" class="menu-item" onclick="editProfile(event)">
-                <div class="menu-icon">
-                    <i class="fas fa-user-edit"></i>
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">Editar Perfil</div>
-                    <div class="menu-subtitle">Altere seus dados pessoais</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            
-            <a href="app-meu-qrcode.html" class="menu-item">
-                <div class="menu-icon">
-                    <i class="fas fa-qrcode"></i>
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">Meu QR Code</div>
-                    <div class="menu-subtitle">Apresente ao estabelecimento</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            
-            <a href="#" class="menu-item" onclick="changePassword(event)">
-                <div class="menu-icon">
-                    <i class="fas fa-lock"></i>
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">Alterar Senha</div>
-                    <div class="menu-subtitle">Atualize sua senha de acesso</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
+    <div class="menu-section">
+        <div class="section-title">Configurações</div>
+        <div class="menu-items">
+            <a href="/app-notificacoes.html" class="menu-item"><div class="menu-icon"><i class="fas fa-bell"></i></div><div class="menu-content"><div class="menu-title">Notificações</div><div class="menu-subtitle">Gerencie alertas</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
+            <a href="/app-ajuda.html" class="menu-item"><div class="menu-icon"><i class="fas fa-question-circle"></i></div><div class="menu-content"><div class="menu-title">Ajuda</div><div class="menu-subtitle">FAQ e suporte</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
+            <a href="/app-termos.html" class="menu-item"><div class="menu-icon"><i class="fas fa-file-alt"></i></div><div class="menu-content"><div class="menu-title">Termos de Uso</div><div class="menu-subtitle">Políticas e privacidade</div></div><i class="fas fa-chevron-right menu-arrow"></i></a>
         </div>
     </div>
-    
-    <div class="section">
-        <h3 class="section-title">Preferàncias</h3>
-        <div class="menu-list">
-            <a href="#" class="menu-item" onclick="notifications(event)">
-                <div class="menu-icon">
-                    <i class="fas fa-bell"></i>
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">Notificaààes</div>
-                    <div class="menu-subtitle">Gerencie suas notificaààes</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            
-            <a href="app-premium.html" class="menu-item">
-                <div class="menu-icon">
-                    <i class="fas fa-crown"></i>
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">Plano Premium</div>
-                    <div class="menu-subtitle">Benefàcios exclusivos</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-        </div>
-    </div>
-    
-    <div class="section">
-        <h3 class="section-title">Suporte</h3>
-        <div class="menu-list">
-            <a href="app-chat.html" class="menu-item">
-                <div class="menu-icon">
-                    <i class="fas fa-comments"></i>
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">Ajuda e Suporte</div>
-                    <div class="menu-subtitle">Fale conosco</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            
-            <a href="termos-de-uso.html" class="menu-item" target="_blank">
-                <div class="menu-icon">
-                    <i class="fas fa-file-contract"></i>
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">Termos de Uso</div>
-                    <div class="menu-subtitle">Leia nossos termos</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            
-            <a href="politica-de-privacidade.html" class="menu-item" target="_blank">
-                <div class="menu-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <div class="menu-content">
-                    <div class="menu-title">Privacidade</div>
-                    <div class="menu-subtitle">Polàtica de privacidade</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-        </div>
-    </div>
-    
-    <div class="section">
-        <button class="logout-btn" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i>
-            Sair da Conta
-        </button>
-    </div>
-    
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i>Sair da Conta</button>
     <nav class="bottom-nav">
-        <a href="/dashboard-cliente.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="/app-empresas.html" class="nav-item">
-            <i class="fas fa-store"></i>
-            <span>Empresas</span>
-        </a>
-        <a href="/app-promocoes.html" class="nav-item">
-            <i class="fas fa-tags"></i>
-            <span>Promoções</span>
-        </a>
-        <a href="/app-qrcode.html" class="nav-item">
-            <i class="fas fa-qrcode"></i>
-            <span>Meu QR</span>
-        </a>
-        <a href="/app-perfil-cliente.html" class="nav-item active">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
+        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="/app-scanner.html" class="nav-item"><i class="fas fa-qrcode"></i><span>Scanner</span></a>
+        <a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Meus pontos</span></a>
+        <a href="/app-empresas.html" class="nav-item"><i class="fas fa-store"></i><span>Empresas</span></a>
+        <a href="/app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
     </nav>
-    
     <script>
-        async function loadProfile() {
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://tem-de-tudo.onrender.com';
+        document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('token');
             const userStr = localStorage.getItem('user');
-            if (userStr && userStr !== 'undefined' && userStr !== 'null') {
-                try {
-                    const user = JSON.parse(userStr);
-                    if (user) {
-                        // Usar dados do user
-                    }
-                } catch (e) {
-                    console.error('Erro ao parsear user:', e);
-                }
-            }
-            
-            if (!token) {
-                window.location.href = '/entrar.html';
-                return;
-            }
-            
-            document.getElementById('userName').textContent = user.name || 'Usuário';
-            document.getElementById('userEmail').textContent = user.email || '';
-            
+            if (!token || !userStr) { window.location.href = '/entrar.html'; return; }
             try {
-                const response = await fetch('/api/cliente/dashboard', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-                
-                if (response.ok) {
-                    const stats = await response.json();
-                    document.getElementById('totalPoints').textContent = stats.total_points || '0';
-                    document.getElementById('totalVisits').textContent = stats.total_visits || '0';
-                    document.getElementById('totalRewards').textContent = stats.total_rewards || '0';
+                const user = JSON.parse(userStr);
+                document.getElementById('profileName').textContent = user.name || user.nome || 'Usuário';
+                document.getElementById('profileEmail').textContent = user.email || 'email@exemplo.com';
+                const response = await fetch(`${API_BASE_URL}/api/perfil`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await response.json();
+                if (data.success && data.data) {
+                    document.getElementById('statPontos').textContent = data.data.pontos || 0;
+                    const histResponse = await fetch(`${API_BASE_URL}/api/historico`, { headers: { 'Authorization': `Bearer ${token}` } });
+                    const histData = await histResponse.json();
+                    if (histData.success && histData.data) { document.getElementById('statCheckins').textContent = histData.data.filter(h => h.tipo === 'checkin').length; }
+                    const cuponsResponse = await fetch(`${API_BASE_URL}/api/cupons`, { headers: { 'Authorization': `Bearer ${token}` } });
+                    const cuponsData = await cuponsResponse.json();
+                    if (cuponsData.success && cuponsData.data) { document.getElementById('statCupons').textContent = cuponsData.data.length; }
                 }
-            } catch (error) {
-                console.error('Erro ao carregar perfil:', error);
-            }
-        }
-        
-        function editProfile(e) {
-            e.preventDefault();
-            alert('Funcionalidade de ediàào será implementada em breve!');
-        }
-        
-        function changePassword(e) {
-            e.preventDefault();
-            alert('Funcionalidade de alteraàào de senha será implementada em breve!');
-        }
-        
-        function notifications(e) {
-            e.preventDefault();
-            alert('Configurações de notificaààes seráo implementadas em breve!');
-        }
-        
-        function logout() {
-            authManager.logout();
-        }
-        
-        document.addEventListener('DOMContentLoaded', loadProfile);
+            } catch (error) { console.error('Erro:', error); }
+        });
+        function logout() { if (confirm('Tem certeza que deseja sair?')) { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.href = '/entrar.html'; } }
     </script>
 </body>
 </html>
-
-
