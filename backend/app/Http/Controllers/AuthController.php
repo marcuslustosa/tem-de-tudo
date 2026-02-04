@@ -161,16 +161,16 @@ class AuthController extends Controller
                     ]);
                 }
                 
-                // Bônus de adesão: 195 pontos
+                // Bônus de adesão: 10 pontos
                 try {
                     \App\Models\Ponto::create([
                         'user_id' => $user->id,
-                        'pontos' => 195,
+                        'pontos' => 10,
                         'tipo' => 'bonus_adesao',
                         'descricao' => 'Bônus de boas-vindas Tem de Tudo',
                         'data' => now()
                     ]);
-                    Log::info('Bônus de adesão de 195 pontos creditado', ['user_id' => $user->id]);
+                    Log::info('Bônus de adesão de 10 pontos creditado', ['user_id' => $user->id]);
                 } catch (\Exception $e) {
                     Log::warning('Erro ao creditar bônus de adesão', [
                         'user_id' => $user->id,

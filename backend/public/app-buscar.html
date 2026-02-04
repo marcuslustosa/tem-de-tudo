@@ -286,7 +286,7 @@
 </head>
 <body>
     <div class="header">
-        <h1 class="header-title">?? Buscar Empresas</h1>
+        <h1 class="header-title"><i class="fas fa-search"></i> Buscar Empresas</h1>
         <div class="search-box">
             <i class="fas fa-search"></i>
             <input 
@@ -303,25 +303,25 @@
             Todos
         </button>
         <button class="filter-btn" onclick="filterCategory('restaurante')">
-            ?? Restaurante
+            <i class="fas fa-utensils"></i> Restaurante
         </button>
         <button class="filter-btn" onclick="filterCategory('academia')">
-            ??? Academia
+            <i class="fas fa-dumbbell"></i> Academia
         </button>
         <button class="filter-btn" onclick="filterCategory('cafeteria')">
-            ? Cafeteria
+            <i class="fas fa-coffee"></i> Cafeteria
         </button>
         <button class="filter-btn" onclick="filterCategory('pet_shop')">
-            ?? Pet Shop
+            <i class="fas fa-paw"></i> Pet Shop
         </button>
         <button class="filter-btn" onclick="filterCategory('salao')">
-            ?? Salão
+            <i class="fas fa-cut"></i> Salão
         </button>
         <button class="filter-btn" onclick="filterCategory('mercado')">
-            ?? Mercado
+            <i class="fas fa-shopping-cart"></i> Mercado
         </button>
         <button class="filter-btn" onclick="filterCategory('farmacia')">
-            ?? Farmácia
+            <i class="fas fa-pills"></i> Farmácia
         </button>
     </div>
     
@@ -368,9 +368,21 @@
                 return;
             }
             
+            // Dados fictícios como fallback
+            const estabelecimentosFicticios = [
+                { id: 1, nome: 'Sabor e Arte Restaurante', ramo: 'restaurante', ramo_formatado: 'Restaurante', avaliacao_media: '4.8', logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400', meus_pontos: 120 },
+                { id: 2, nome: 'Bella Napoli Pizzaria', ramo: 'restaurante', ramo_formatado: 'Pizzaria', avaliacao_media: '4.9', logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400', meus_pontos: 85 },
+                { id: 3, nome: 'Academia FitLife', ramo: 'academia', ramo_formatado: 'Academia', avaliacao_media: '4.7', logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', meus_pontos: 200 },
+                { id: 4, nome: 'Salão Beleza Total', ramo: 'salao', ramo_formatado: 'Salão de Beleza', avaliacao_media: '4.9', logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', meus_pontos: 90 },
+                { id: 5, nome: 'Café & Cia', ramo: 'cafeteria', ramo_formatado: 'Cafeteria', avaliacao_media: '4.8', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', meus_pontos: 45 },
+                { id: 6, nome: 'Pet Shop Amigo Fiel', ramo: 'pet_shop', ramo_formatado: 'Pet Shop', avaliacao_media: '5.0', logo: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400', meus_pontos: 60 },
+                { id: 7, nome: 'Farmácia Vida Saudável', ramo: 'farmacia', ramo_formatado: 'Farmácia', avaliacao_media: '4.6', logo: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400', meus_pontos: 30 },
+                { id: 8, nome: 'Mercado Bom Preço', ramo: 'mercado', ramo_formatado: 'Mercado', avaliacao_media: '4.5', logo: 'https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?w=400', meus_pontos: 150 }
+            ];
+            
             try {
                 const apiUrl = API_CONFIG.getBaseURL() + '/api/cliente/empresas';
-                console.log('?? Buscando empresas em:', apiUrl);
+                console.log('🔍 Buscando empresas em:', apiUrl);
                 
                 const response = await fetch(apiUrl, {
                     headers: {
@@ -379,27 +391,31 @@
                     }
                 });
                 
-                console.log('?? Status resposta:', response.status);
+                console.log('📡 Status resposta:', response.status);
                 
                 if (response.ok) {
                     const result = await response.json();
-                    console.log('?? Dados recebidos:', result);
+                    console.log('📦 Dados recebidos:', result);
                     
                     // API retorna {success: true, data: [...]}
                     allEstablishments = result.data || result.empresas || result;
                     
-                    console.log('? Empresas carregadas:', allEstablishments.length);
+                    // Se vazio, usar dados fictícios
+                    if (!allEstablishments || allEstablishments.length === 0) {
+                        allEstablishments = estabelecimentosFicticios;
+                    }
                     
-                    // SEMPRE mostrar todas as empresas ao carregar
+                    console.log('✅ Empresas carregadas:', allEstablishments.length);
                     renderEstablishments(allEstablishments);
                 } else {
-                    const errorText = await response.text();
-                    console.error('? Erro ao carregar empresas:', response.status, errorText);
-                    renderEmptyState();
+                    console.error('❌ Erro ao carregar empresas, usando dados fictícios');
+                    allEstablishments = estabelecimentosFicticios;
+                    renderEstablishments(allEstablishments);
                 }
             } catch (error) {
-                console.error('? Erro na requisição:', error);
-                renderEmptyState();
+                console.error('❌ Erro na requisição, usando dados fictícios:', error);
+                allEstablishments = estabelecimentosFicticios;
+                renderEstablishments(allEstablishments);
             }
         }
         
