@@ -324,7 +324,9 @@
             });
 
             // Busca
-            document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchInput = document.getElementById('searchInput');
+            
+            searchInput.addEventListener('input', (e) => {
                 const searchTerm = e.target.value.toLowerCase();
                 filtrarEmpresas(searchTerm);
                 
@@ -337,6 +339,16 @@
                 }
                 const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
                 window.history.replaceState({}, '', newUrl);
+            });
+            
+            // Busca com Enter
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const searchTerm = e.target.value.toLowerCase().trim();
+                    if (searchTerm) {
+                        filtrarEmpresas(searchTerm);
+                    }
+                }
             });
         });
             });
@@ -384,8 +396,23 @@
             container.innerHTML = empresasFiltradas.map(e => `
                 <a href="/app-empresa-detalhes.html?id=${e.id}" class="empresa-card">
                     <img src="${e.logo || 'https://via.placeholder.com/400x300?text=Sem+Logo'}" 
-                         alt="${e.nome}" 
+                         alt="${e.nome || 'Empresa'}" 
                          class="empresa-img"
+                         onerror="this.src='https://via.placeholder.com/400x300?text=Sem+Logo'">
+                    <div class="empresa-content">
+                        <div class="empresa-name">${e.nome || 'Nome não informado'}</div>
+                        <div class="empresa-category">${e.descricao || e.categoria || 'Categoria'}</div>
+                        <div class="empresa-footer">
+                            <div class="empresa-distance">
+                                <i class="fas fa-map-marker-alt"></i> ${Math.floor(Math.random() * 5) + 1} km
+                            </div>
+                            <div class="empresa-pontos">
+                                ${e.points_multiplier || 1}x pontos
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
                          onerror="this.src='https://via.placeholder.com/400x300?text=Sem+Logo'">
                     <div class="empresa-content">
                         <div class="empresa-name">${e.nome}</div>
