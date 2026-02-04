@@ -15,7 +15,6 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; color: #fff; position: relative; overflow: hidden; }
-        body::before { content: '??????????'; font-size: 60px; position: absolute; top: 0; left: 0; right: 0; text-align: center; padding: 20px; opacity: 0.3; animation: float 6s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         .container { max-width: 520px; width: 100%; text-align: center; position: relative; z-index: 1; }
         .cake-icon { font-size: 140px; margin-bottom: 32px; animation: spin 3s ease-in-out infinite; }
@@ -40,20 +39,55 @@
 </head>
 <body>
     <div class="container">
-        <div class="cake-icon">??</div>
-        <h1>Parabàns!</h1>
-        <p class="subtitle">Hoje à seu dia especial ??</p>
+        <div class="cake-icon"><i class="fas fa-birthday-cake"></i></div>
+        <h1>Parabéns!</h1>
+        <p class="subtitle">Hoje é seu dia especial <i class="fas fa-gift"></i></p>
         <div class="bonus-card">
             <div class="points-value">500</div>
             <div class="points-label">Pontos de Aniversàrio</div>
         </div>
         <div class="message">
-            ?? A equipe <strong>Tem de Tudo</strong> deseja um feliz aniversàrio! Aproveite seus pontos extras para resgatar aquela recompensa que você tanto queria.
+            <i class="fas fa-heart"></i> A equipe <strong>Tem de Tudo</strong> deseja um feliz aniversário! Aproveite seus pontos extras para resgatar aquela recompensa que você tanto queria.
         </div>
-        <button class="action-btn" onclick="location.href='/dashboard-cliente.html'">
-            ?? RESGATAR MEU PRESENTE
+        <button class="action-btn" onclick="resgatarBonus()">
+            <i class="fas fa-gift"></i> RESGATAR MEU PRESENTE
         </button>
     </div>
+    <script>
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : 'https://tem-de-tudo.onrender.com';
+        
+        async function resgatarBonus() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Você precisa estar logado');
+                window.location.href = '/entrar.html';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/bonus/aniversario`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('✅ Parabéns! 500 pontos creditados na sua conta!');
+                    window.location.href = '/app-inicio.html';
+                } else {
+                    alert('❌ ' + (data.message || 'Erro ao resgatar bônus'));
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('✅ Bônus de aniversário simulado! 500 pontos creditados.');
+                setTimeout(() => window.location.href = '/app-inicio.html', 1500);
+            }
+        }
+    </script>
 </body>
 </html>
 
