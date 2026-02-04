@@ -482,12 +482,85 @@
                     'Accept': 'application/json'
                 };
                 
-                // Carregar usuários
-                const usersResponse = await fetch(`${API_URL}/admin/users`, { headers });
-                const usersData = await usersResponse.json();
+                // PRIMEIRO: Tenta carregar da API real
+                try {
+                    const usersResponse = await fetch(`${API_URL}/admin/users`, { headers });
+                    const usersData = await usersResponse.json();
+                    
+                    if (usersData.users) {
+                        const users = usersData.users;
+                        
+                        // Atualizar contadores
+                        document.getElementById('totalUsers').textContent = users.length;
+                        
+                        const empresas = users.filter(u => u.tipo === 'empresa');
+                        const clientes = users.filter(u => u.tipo === 'cliente');
+                        
+                        document.getElementById('totalEmpresas').textContent = empresas.length;
+                        document.getElementById('totalClientes').textContent = clientes.length;
+                        
+                        // Calcular total de pontos
+                        const pontosResponse = await fetch(`${API_URL}/admin/pontos/total`, { headers });
+                        const pontosData = await pontosResponse.json();
+                        document.getElementById('totalPontos').textContent = pontosData.total || 0;
+                        
+                        // Renderizar tabela de usuários
+                        renderUsersTable(users.slice(0, 10));
+                        renderEmpresasTable(empresas);
+                        return;
+                    }
+                } catch (apiError) {
+                    console.log('API indisponível, carregando dados fictícios...', apiError.message);
+                }
                 
-                if (usersData.users) {
-                    const users = usersData.users;
+                // FALLBACK: Dados fictícios completos para demonstração
+                console.log('🎭 MODO DEMONSTRAÇÃO ADMIN ATIVADO');
+                loadMockAdminData();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+                loadMockAdminData();
+            }
+        }
+        
+        // DADOS FICTÍCIOS COMPLETOS PARA ADMIN
+        function loadMockAdminData() {
+            // Dados fictícios de usuários
+            const mockUsers = [
+                { id: 1, name: 'João Silva', email: 'joao@gmail.com', tipo: 'cliente', pontos: 1250, status: 'ativo', created_at: '2024-01-15' },
+                { id: 2, name: 'Maria Santos', email: 'maria@hotmail.com', tipo: 'cliente', pontos: 890, status: 'ativo', created_at: '2024-01-20' },
+                { id: 3, name: 'TechCorp Solutions', email: 'contato@techcorp.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-10' },
+                { id: 4, name: 'Carlos Oliveira', email: 'carlos@yahoo.com', tipo: 'cliente', pontos: 650, status: 'ativo', created_at: '2024-01-25' },
+                { id: 5, name: 'Bella Vita Estética', email: 'contato@bellavita.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-12' },
+                { id: 6, name: 'Ana Costa', email: 'ana@gmail.com', tipo: 'cliente', pontos: 2100, status: 'ativo', created_at: '2024-01-18' },
+                { id: 7, name: 'Sabor & Arte Restaurante', email: 'contato@saborarte.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-14' },
+                { id: 8, name: 'Pedro Lima', email: 'pedro@outlook.com', tipo: 'cliente', pontos: 430, status: 'inativo', created_at: '2024-01-22' },
+                { id: 9, name: 'VidaFit Academia', email: 'contato@vidafit.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-16' },
+                { id: 10, name: 'Luciana Moreira', email: 'luciana@gmail.com', tipo: 'cliente', pontos: 780, status: 'ativo', created_at: '2024-01-28' },
+                { id: 11, name: 'FashionTrend Boutique', email: 'contato@fashiontrend.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-19' },
+                { id: 12, name: 'AutoCare Services', email: 'contato@autocare.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-21' }
+            ];
+
+            const empresas = mockUsers.filter(u => u.tipo === 'empresa');
+            const clientes = mockUsers.filter(u => u.tipo === 'cliente');
+            const totalPontos = clientes.reduce((sum, user) => sum + user.pontos, 0);
+
+            // Atualizar contadores
+            document.getElementById('totalUsers').textContent = mockUsers.length;
+            document.getElementById('totalEmpresas').textContent = empresas.length;
+            document.getElementById('totalClientes').textContent = clientes.length;
+            document.getElementById('totalPontos').textContent = totalPontos.toLocaleString('pt-BR');
+
+            // Renderizar tabelas
+            renderUsersTable(mockUsers.slice(0, 10));
+            renderEmpresasTable(empresas);
+            
+            // Adicionar indicador de modo demonstração
+            const header = document.querySelector('.header-left p');
+            if (header) {
+                header.innerHTML = 'Painel de Controle Administrativo <span style="color: #f1c40f;">• MODO DEMONSTRAÇÃO</span>';
+            }
+        }
                     
                     // Atualizar contadores
                     document.getElementById('totalUsers').textContent = users.length;

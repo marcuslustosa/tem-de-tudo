@@ -416,40 +416,104 @@
                     'Accept': 'application/json'
                 };
                 
-                // Carregar estatísticas
-                const statsResponse = await fetch(`${API_URL}/empresa/stats`, { headers });
-                const statsData = await statsResponse.json();
-                
-                if (statsData.total_clientes !== undefined) {
-                    document.getElementById('totalClientes').textContent = statsData.total_clientes;
-                    document.getElementById('pontosHoje').textContent = statsData.pontos_hoje || 0;
-                    document.getElementById('pontosMes').textContent = statsData.pontos_mes || 0;
+                // PRIMEIRO: Tenta carregar da API real
+                try {
+                    const statsResponse = await fetch(`${API_URL}/empresa/stats`, { headers });
+                    const statsData = await statsResponse.json();
+                    
+                    if (statsData.total_clientes !== undefined) {
+                        document.getElementById('totalClientes').textContent = statsData.total_clientes;
+                        document.getElementById('pontosHoje').textContent = statsData.pontos_hoje || 0;
+                        document.getElementById('pontosMes').textContent = statsData.pontos_mes || 0;
+                        
+                        // Carregar clientes recentes
+                        const clientesResponse = await fetch(`${API_URL}/empresa/clientes?limit=5`, { headers });
+                        const clientesData = await clientesResponse.json();
+                        
+                        if (clientesData.clientes) {
+                            renderClientes(clientesData.clientes);
+                        }
+                        
+                        // Carregar promoções
+                        const promocoesResponse = await fetch(`${API_URL}/empresa/promocoes`, { headers });
+                        const promocoesData = await promocoesResponse.json();
+                        
+                        if (promocoesData.promocoes) {
+                            renderPromocoes(promocoesData.promocoes);
+                        }
+                        return;
+                    }
+                } catch (apiError) {
+                    console.log('API indisponível, carregando dados fictícios para empresa...', apiError.message);
                 }
                 
-                // Carregar clientes recentes
-                const clientesResponse = await fetch(`${API_URL}/empresa/clientes?limit=5`, { headers });
-                const clientesData = await clientesResponse.json();
-                
-                if (clientesData.clientes) {
-                    renderClientes(clientesData.clientes);
-                }
-                
-                // Carregar promoções
-                const promocoesResponse = await fetch(`${API_URL}/empresa/promocoes`, { headers });
-                const promocoesData = await promocoesResponse.json();
-                
-                if (promocoesData.promocoes) {
-                    renderPromocoes(promocoesData.promocoes);
-                }
+                // FALLBACK: Dados fictícios completos para empresa
+                console.log('🏢 MODO DEMONSTRAÇÃO EMPRESA ATIVADO');
+                loadMockEmpresaData();
                 
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
-                // Em caso de erro, mostrar dados mockados
-                document.getElementById('totalClientes').textContent = '0';
-                document.getElementById('pontosHoje').textContent = '0';
-                document.getElementById('pontosMes').textContent = '0';
-                document.getElementById('clientesList').innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: var(--space-6);">Nenhum cliente cadastrado</p>';
-                document.getElementById('promocoesList').innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: var(--space-6);">Nenhuma promoção ativa</p>';
+                loadMockEmpresaData();
+            }
+        }
+        
+        // DADOS FICTÍCIOS COMPLETOS PARA EMPRESA
+        function loadMockEmpresaData() {
+            // Estatísticas ficticias
+            document.getElementById('totalClientes').textContent = '847';
+            document.getElementById('pontosHoje').textContent = '1,250';
+            document.getElementById('pontosMes').textContent = '28,450';
+            
+            // Clientes fictícios recentes
+            const mockClientes = [
+                { id: 1, name: 'João Silva', email: 'joao@gmail.com', pontos: 1250, ultimo_checkin: '2024-02-04 14:30' },
+                { id: 2, name: 'Maria Santos', email: 'maria@hotmail.com', pontos: 890, ultimo_checkin: '2024-02-04 13:45' },
+                { id: 3, name: 'Carlos Oliveira', email: 'carlos@yahoo.com', pontos: 650, ultimo_checkin: '2024-02-04 12:20' },
+                { id: 4, name: 'Ana Costa', email: 'ana@gmail.com', pontos: 2100, ultimo_checkin: '2024-02-04 11:15' },
+                { id: 5, name: 'Pedro Lima', email: 'pedro@outlook.com', pontos: 430, ultimo_checkin: '2024-02-03 16:40' }
+            ];
+            
+            // Promoções fictícias ativas
+            const mockPromocoes = [
+                { 
+                    id: 1, 
+                    titulo: 'Desconto de 20% em Serviços', 
+                    descricao: 'Válido para todos os serviços até o final do mês',
+                    pontos_necessarios: 500,
+                    usos: 45,
+                    limite: 100,
+                    validade: '2024-02-29',
+                    status: 'ativa'
+                },
+                { 
+                    id: 2, 
+                    titulo: 'Brinde Especial', 
+                    descricao: 'Ganhe um brinde exclusivo na compra acima de R$ 100',
+                    pontos_necessarios: 300,
+                    usos: 23,
+                    limite: 50,
+                    validade: '2024-02-15',
+                    status: 'ativa'
+                },
+                { 
+                    id: 3, 
+                    titulo: 'Combo Promocional', 
+                    descricao: 'Compre 2 e leve 3 em produtos selecionados',
+                    pontos_necessarios: 800,
+                    usos: 12,
+                    limite: 30,
+                    validade: '2024-03-05',
+                    status: 'ativa'
+                }
+            ];
+            
+            renderClientes(mockClientes);
+            renderPromocoes(mockPromocoes);
+            
+            // Adicionar indicador de modo demonstração
+            const userInfo = document.querySelector('.user-info h3');
+            if (userInfo) {
+                userInfo.innerHTML += ' <span style="color: #f1c40f; font-size: 12px;">• DEMO</span>';
             }
         }
         

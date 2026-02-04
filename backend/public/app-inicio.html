@@ -20,44 +20,44 @@
         .saldo-value { font-size: 18px; font-weight: 800; }
         
         .search-container { padding: 0 20px 16px; }
-        .search-box { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(102, 126, 234, 0.2); }
-        .search-box i { color: #667eea; font-size: 18px; }
+        .search-box { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(241, 196, 15, 0.2); }
+        .search-box i { color: #f1c40f; font-size: 18px; }
         .search-box input { flex: 1; background: none; border: none; color: #fff; font-size: 15px; outline: none; }
         .search-box input::placeholder { color: #888; }
         
         .location { padding: 0 20px 16px; display: flex; align-items: center; gap: 8px; color: #888; font-size: 13px; }
-        .location i { color: #667eea; }
+        .location i { color: #f1c40f; }
         .location span { flex: 1; }
         
         .section { padding: 0 20px 24px; }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .section-title { font-size: 18px; font-weight: 800; }
-        .ver-mais { font-size: 13px; color: #667eea; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+        .ver-mais { font-size: 13px; color: #f1c40f; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 4px; }
         
         .categories-scroll { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
         .categories-scroll::-webkit-scrollbar { display: none; }
         .category-card { min-width: 100px; text-align: center; text-decoration: none; color: #fff; }
-        .category-icon { width: 80px; height: 80px; background: rgba(255,255,255,0.05); border: 1px solid rgba(102, 126, 234, 0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 8px; transition: all 0.3s; }
-        .category-card:active .category-icon { transform: scale(0.95); background: linear-gradient(135deg, #667eea20, #764ba220); }
+        .category-icon { width: 80px; height: 80px; background: rgba(255,255,255,0.05); border: 1px solid rgba(241, 196, 15, 0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 8px; transition: all 0.3s; }
+        .category-card:active .category-icon { transform: scale(0.95); background: linear-gradient(135deg, #f1c40f20, #f39c1220); }
         .category-name { font-size: 12px; font-weight: 600; }
         
         .banner-carousel { margin: 0 20px 24px; overflow: hidden; border-radius: 16px; }
         .banner-img { width: 100%; height: 160px; object-fit: cover; border-radius: 16px; }
         
         .empresas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .empresa-card { background: rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; text-decoration: none; color: #fff; border: 1px solid rgba(102, 126, 234, 0.1); transition: transform 0.3s; }
+        .empresa-card { background: rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; text-decoration: none; color: #fff; border: 1px solid rgba(241, 196, 15, 0.1); transition: transform 0.3s; }
         .empresa-card:active { transform: scale(0.97); }
         .empresa-img { width: 100%; height: 120px; object-fit: cover; }
         .empresa-content { padding: 12px; }
         .empresa-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .empresa-category { font-size: 11px; color: #888; margin-bottom: 8px; }
         .empresa-footer { display: flex; justify-content: space-between; align-items: center; }
-        .empresa-distance { font-size: 11px; color: #667eea; display: flex; align-items: center; gap: 4px; }
+        .empresa-distance { font-size: 11px; color: #f1c40f; display: flex; align-items: center; gap: 4px; }
         .empresa-pontos { background: linear-gradient(135deg, #f39c12, #e67e22); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
         
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0a0a0f; border-top: 1px solid rgba(102, 126, 234, 0.1); display: flex; justify-content: space-around; padding: 12px 0 8px; z-index: 1000; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0a0a0f; border-top: 1px solid rgba(241, 196, 15, 0.1); display: flex; justify-content: space-around; padding: 12px 0 8px; z-index: 1000; }
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #888; font-size: 11px; font-weight: 500; }
-        .nav-item.active { color: #667eea; }
+        .nav-item.active { color: #f1c40f; }
         .nav-item i { font-size: 20px; }
     </style>
 </head>
@@ -188,46 +188,72 @@
                 const token = checkAuth();
                 if (!token) return;
 
-                // Primeiro tenta buscar dados da API
-                const response = await apiRequest('/api/auth/me');
-                
-                if (response && response.ok) {
-                    const data = await response.json();
+                // PRIMEIRO: Tenta API real
+                try {
+                    const response = await apiRequest('/api/auth/me');
                     
-                    if (data.success && data.user) {
-                        // Atualizar UI com dados reais
-                        document.getElementById('userName').textContent = data.user.name || data.user.nome || 'Usuário';
-                        document.getElementById('saldoValue').textContent = (data.user.pontos || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                    if (response && response.ok) {
+                        const data = await response.json();
                         
-                        // Atualizar perfil dinâmico
-                        updateProfileType(data.user);
-                        
-                        // Salvar no localStorage para cache
-                        localStorage.setItem('user_data', JSON.stringify(data.user));
-                    } else {
-                        throw new Error('Dados do usuário inválidos');
+                        if (data.success && data.user) {
+                            // Atualizar UI com dados reais
+                            document.getElementById('userName').textContent = data.user.name || data.user.nome || 'Usuário';
+                            document.getElementById('saldoValue').textContent = (data.user.pontos || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                            
+                            // Atualizar perfil dinâmico
+                            updateProfileType(data.user);
+                            
+                            // Salvar no localStorage para cache
+                            localStorage.setItem('user_data', JSON.stringify(data.user));
+                            return;
+                        }
                     }
-                } else {
-                    throw new Error('Erro na API');
+                } catch (apiError) {
+                    console.log('API indisponível, carregando dados fictícios do cliente...', apiError.message);
                 }
+                
+                // FALLBACK: Dados fictícios do cliente
+                console.log('👤 MODO DEMONSTRAÇÃO CLIENTE ATIVADO');
+                loadMockClienteData();
+                
             } catch (error) {
                 console.error('Erro ao carregar dados do usuário:', error);
-                
-                // Fallback: usar dados do cache se existir
-                const cachedUser = localStorage.getItem('user');
-                if (cachedUser) {
-                    try {
-                        const user = JSON.parse(cachedUser);
-                        document.getElementById('userName').textContent = user.name || user.nome || 'Usuário';
-                        document.getElementById('saldoValue').textContent = (user.pontos || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-                        updateProfileType(user);
-                    } catch {
-                        // Se cache inválido, usar dados padrão
-                        setDefaultUserData();
-                    }
-                } else {
-                    setDefaultUserData();
+                loadMockClienteData();
+            }
+        }
+        
+        // DADOS FICTÍCIOS COMPLETOS PARA CLIENTE
+        function loadMockClienteData() {
+            // Usar dados do usuário logado ou padrão
+            const cachedUser = localStorage.getItem('user');
+            let mockUser = {
+                name: 'Cliente Simulação',
+                pontos: 1450,
+                perfil: 'usuario_comum'
+            };
+            
+            if (cachedUser) {
+                try {
+                    const user = JSON.parse(cachedUser);
+                    mockUser = {
+                        name: user.name || 'Cliente Simulação',
+                        pontos: user.pontos || 1450,
+                        perfil: user.perfil || 'usuario_comum'
+                    };
+                } catch (e) {
+                    console.log('Cache inválido, usando dados padrão');
                 }
+            }
+            
+            // Atualizar interface
+            document.getElementById('userName').textContent = mockUser.name;
+            document.getElementById('saldoValue').textContent = mockUser.pontos.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            updateProfileType(mockUser);
+            
+            // Adicionar indicador de modo demonstração
+            const greeting = document.querySelector('.greeting');
+            if (greeting) {
+                greeting.innerHTML += ' <span style="color: #f1c40f; font-size: 11px;">• DEMO</span>';
             }
         }
 
