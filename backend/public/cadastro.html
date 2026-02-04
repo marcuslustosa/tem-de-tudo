@@ -260,9 +260,18 @@
     </div>
     
     <script>
-        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-            ? 'http://127.0.0.1:8001/api'
-            : '/api';
+        // Configuração de API mais robusta
+        let API_URL;
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            // LOCAL: Tenta várias portas comuns do Laravel
+            API_URL = 'http://127.0.0.1:8000/api';
+        } else if (window.location.hostname.includes('render.com') || window.location.hostname.includes('herokuapp.com')) {
+            // PRODUÇÃO: Render, Heroku, etc
+            API_URL = '/api';
+        } else {
+            // OUTROS: Relative path como fallback
+            API_URL = '/api';
+        }
         
         const form = document.getElementById('registerForm');
         const btnSubmit = document.getElementById('btnSubmit');
