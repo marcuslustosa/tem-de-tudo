@@ -967,4 +967,73 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Atualizar perfil do usuário autenticado
+     */
+    public function updateProfile(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuário não autenticado'
+                ], 401);
+            }
+
+            // Validação dos dados
+            $validatedData = $request->validate([
+                'name' => 'sometimes|string|max:255',
+                'nome' => 'sometimes|string|max:255',
+                'email' => 'sometimes|email|unique:users,email,' . $user->id,
+                'telefone' => 'sometimes|string|max:20',
+                'cpf' => 'sometimes|string|max:14',
+                'data_nascimento' => 'sometimes|date'
+            ]);
+
+            // Atualizar apenas os campos enviados
+            $user->update(array_filter($validatedData));
+
+            Log::info('Perfil atualizado com sucesso', [
+                'user_id' => $user->id,
+                'fields' => array_keys($validatedData)
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Perfil atualizado com sucesso!',
+                'data' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'nome' => $user->nome ?? $user->name,
+                    'email' => $user->email,
+                    'telefone' => $user->telefone,
+                    'cpf' => $user->cpf,
+                    'data_nascimento' => $user->data_nascimento,
+                    'perfil' => $user->perfil
+                ]
+            ]);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dados inválidos',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao atualizar perfil', [
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno do servidor'
+            ], 500);
+        }
+    }
+
 }

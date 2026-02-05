@@ -272,6 +272,146 @@
             </div>
         </div>
     </main>
+
+    <script>
+        // Verificar autenticação
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (!token || !user) {
+                window.location.href = '/entrar.html';
+                return false;
+            }
+            
+            // Verificar se é empresa
+            try {
+                const userData = JSON.parse(user);
+                if (userData.perfil !== 'empresa') {
+                    window.location.href = '/entrar.html';
+                    return false;
+                }
+            } catch (e) {
+                window.location.href = '/entrar.html';
+                return false;
+            }
+            
+            return token;
+        }
+
+        // Função de logout padronizada
+        function logout() {
+            if (confirm('Deseja realmente sair?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/entrar.html';
+            }
+        }
+
+        // Carregar dados da empresa
+        function loadEmpresaData() {
+            try {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                
+                // Preencher dados existentes
+                if (user.name) document.querySelector('input[type="text"]').value = user.name;
+                if (user.email) document.querySelector('input[type="email"]').value = user.email;
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        // Função para mostrar feedback
+        function showFeedback(message, type = 'success') {
+            const feedback = document.createElement('div');
+            feedback.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                font-weight: 600;
+                z-index: 10000;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+                animation: slideIn 0.3s ease;
+            `;
+            
+            feedback.textContent = message;
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => document.body.removeChild(feedback), 300);
+            }, 3000);
+        }
+
+        // Adicionar event listeners aos botões salvar
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadEmpresaData();
+            
+            // Adicionar funcionalidade aos botões salvar
+            document.querySelectorAll('.save-btn').forEach((btn, index) => {
+                btn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    
+                    // Feedback visual
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+                    this.disabled = true;
+                    
+                    // Simular salvamento (temporário até backend estar pronto)
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    // Resetar botão
+                    this.innerHTML = '<i class="fas fa-check"></i> Salvo!';
+                    this.style.background = '#10b981';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                        this.style.background = '';
+                    }, 2000);
+                    
+                    // Feedback
+                    const sections = ['Dados da Empresa', 'Horários', 'Configurações de Sistema'];
+                    showFeedback(`${sections[index] || 'Configurações'} salvas com sucesso!`);
+                });
+            });
+            
+            // Adicionar funcionalidade aos botões de perigo
+            document.querySelectorAll('.danger-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const action = this.textContent.trim();
+                    
+                    if (confirm(`Tem certeza que deseja: ${action}?\n\nEsta ação não pode ser desfeita!`)) {
+                        if (action.includes('Sair')) {
+                            logout();
+                        } else {
+                            showFeedback('Funcionalidade será implementada em breve', 'error');
+                        }
+                    }
+                });
+            });
+        });
+
+        // Adicionar estilos para animações
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
 

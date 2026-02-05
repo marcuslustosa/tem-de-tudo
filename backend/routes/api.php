@@ -110,6 +110,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'user']);
     Route::get('/auth/me', [AuthController::class, 'user']);
+    Route::put('/perfil', [AuthController::class, 'updateProfile']);
+    Route::put('/usuario/atualizar', [AuthController::class, 'updateProfile']);
     
     // ========== SISTEMA VIP E BADGES ==========
     Route::get('/badges/meus', [BadgeController::class, 'meusBadges']);
