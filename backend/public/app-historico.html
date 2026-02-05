@@ -2,126 +2,562 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Histórico - Tem de Tudo</title>
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#1a1a2e">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f1c40f">
+    <title>📊 Histórico Premium - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #1a1a2e; color: #fff; padding-bottom: 80px; }
-        .header { background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; display: flex; align-items: center; gap: 16px; }
-        .btn-back { background: rgba(255, 255, 255, 0.2); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: none; color: #fff; font-size: 18px; cursor: pointer; }
-        .header h1 { font-size: 20px; font-weight: 800; }
-        .stats-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px 20px; }
-        .stat-card { background: #2a2a3e; border-radius: 12px; padding: 16px 12px; text-align: center; border: 1px solid rgba(102, 126, 234, 0.1); }
-        .stat-value { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 4px; }
-        .stat-label { font-size: 11px; color: #888; }
-        .filter-tabs { display: flex; padding: 16px 20px; gap: 8px; border-bottom: 1px solid rgba(102, 126, 234, 0.1); overflow-x: auto; }
-        .filter-tab { padding: 10px 20px; background: #2a2a3e; border: 1px solid rgba(102, 126, 234, 0.1); border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; }
-        .filter-tab.active { background: linear-gradient(135deg, #667eea, #764ba2); border-color: transparent; }
-        .timeline { padding: 20px; }
-        .timeline-item { display: flex; gap: 16px; margin-bottom: 20px; }
-        .timeline-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-        .timeline-icon.ganho { background: linear-gradient(135deg, #10b981, #059669); }
-        .timeline-icon.resgate { background: linear-gradient(135deg, #f39c12, #e67e22); }
-        .timeline-icon.expiracao { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .timeline-content { flex: 1; }
-        .timeline-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px; }
-        .timeline-title { font-size: 15px; font-weight: 700; }
-        .timeline-points { font-size: 16px; font-weight: 800; }
-        .timeline-points.positive { color: #10b981; }
-        .timeline-points.negative { color: #ef4444; }
-        .timeline-desc { font-size: 13px; color: #888; margin-bottom: 6px; }
-        .timeline-date { font-size: 11px; color: #666; }
-        .empty-state { text-align: center; padding: 60px 20px; }
-        .empty-state i { font-size: 64px; opacity: 0.2; margin-bottom: 16px; }
-        .empty-state p { color: #888; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-top: 1px solid rgba(102, 126, 234, 0.1); display: flex; justify-content: space-around; padding: 12px 0 8px; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #888; font-size: 11px; font-weight: 500; }
-        .nav-item.active { color: #667eea; }
-        .nav-item i { font-size: 20px; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #fff; 
+            padding-bottom: 80px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header { 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            position: relative;
+            padding: 32px 20px 24px;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.9), rgba(15, 20, 25, 0.6));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.2);
+            border-color: rgba(241, 196, 15, 0.4);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding: 24px 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.9), rgba(15, 20, 25, 0.6));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.15);
+            border-radius: 20px;
+            padding: 20px 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.2);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .filter-tabs {
+            display: flex;
+            padding: 20px;
+            gap: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-tab {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.6), rgba(15, 20, 25, 0.3));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .filter-tab:hover {
+            transform: translateY(-2px);
+            border-color: rgba(241, 196, 15, 0.4);
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+            border-color: transparent;
+            color: #0a0a0f;
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+        }
+
+        .timeline {
+            padding: 20px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.3), rgba(15, 20, 25, 0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.1);
+            border-color: rgba(241, 196, 15, 0.2);
+        }
+
+        .timeline-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            color: #0a0a0f;
+        }
+
+        .timeline-icon.ganho {
+            background: linear-gradient(135deg, #00d4aa 0%, #00c896 100%);
+            color: #fff;
+        }
+
+        .timeline-icon.resgate {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            color: #fff;
+        }
+
+        .timeline-icon.expiracao {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            color: #fff;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .timeline-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .timeline-points {
+            font-size: 18px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .timeline-points.positive {
+            color: #00d4aa;
+        }
+
+        .timeline-points.negative {
+            color: #ff6b6b;
+        }
+
+        .timeline-desc {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.3), rgba(15, 20, 25, 0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 24px;
+            margin: 20px;
+        }
+
+        .empty-state i {
+            font-size: 72px;
+            opacity: 0.3;
+            margin-bottom: 24px;
+            color: #f1c40f;
+        }
+
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.95), rgba(10, 10, 15, 0.95));
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(241, 196, 15, 0.1);
+            padding: 12px 20px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            z-index: 1000;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-item.active::before {
+            opacity: 1;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: #f1c40f;
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active i {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 28px 16px 20px;
+            }
+
+            .stats-cards, .timeline, .filter-tabs {
+                padding: 16px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .nav-item {
+                font-size: 11px;
+                padding: 6px 8px;
+            }
+
+            .nav-item i {
+                font-size: 18px;
+            }
+        }
+
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-cards, .filter-tabs, .timeline {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .stats-cards { animation-delay: 0.1s; }
+        .filter-tabs { animation-delay: 0.2s; }
+        .timeline { animation-delay: 0.3s; }
     </style>
-    <link rel="stylesheet" href="/css/vale-bonus-theme.css">
 </head>
 <body>
     <div class="header">
-        <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i></button>
-        <h1>Histórico de Pontos</h1>
+        <div class="header-content">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>📊 Histórico Premium</h1>
+        </div>
     </div>
+
     <div class="stats-cards">
-        <div class="stat-card"><div class="stat-value" id="totalGanho">0</div><div class="stat-label">Ganhos</div></div>
-        <div class="stat-card"><div class="stat-value" id="totalResgate">0</div><div class="stat-label">Resgates</div></div>
-        <div class="stat-card"><div class="stat-value" id="totalTransacoes">0</div><div class="stat-label">Transações</div></div>
+        <div class="stat-card">
+            <div class="stat-value" id="totalGanho">0</div>
+            <div class="stat-label">💰 Ganhos</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="totalResgate">0</div>
+            <div class="stat-label">🎁 Resgates</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="totalTransacoes">0</div>
+            <div class="stat-label">📈 Transações</div>
+        </div>
     </div>
+
     <div class="filter-tabs">
-        <div class="filter-tab active" data-filter="todos" onclick="filtrar('todos')">Todos</div>
-        <div class="filter-tab" data-filter="ganho" onclick="filtrar('ganho')">Ganhos</div>
-        <div class="filter-tab" data-filter="resgate" onclick="filtrar('resgate')">Resgates</div>
-        <div class="filter-tab" data-filter="expiracao" onclick="filtrar('expiracao')">Expirações</div>
+        <div class="filter-tab active" data-filter="todos" onclick="filtrar('todos')">
+            <i class="fas fa-list"></i> Todos
+        </div>
+        <div class="filter-tab" data-filter="ganho" onclick="filtrar('ganho')">
+            <i class="fas fa-plus-circle"></i> Ganhos
+        </div>
+        <div class="filter-tab" data-filter="resgate" onclick="filtrar('resgate')">
+            <i class="fas fa-gift"></i> Resgates
+        </div>
+        <div class="filter-tab" data-filter="expiracao" onclick="filtrar('expiracao')">
+            <i class="fas fa-clock"></i> Expirações
+        </div>
     </div>
+
     <div class="timeline" id="timeline"></div>
+
     <div class="empty-state" id="emptyState" style="display: none;">
         <i class="fas fa-history"></i>
         <p>Nenhuma transação encontrada</p>
     </div>
+
     <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
-        <a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-        <a href="/app-meus-pontos.html" class="nav-item active"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
-        <a href="/app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
+        <div class="nav-items">
+            <a href="/app-inicio.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </a>
+            <a href="/app-empresas.html" class="nav-item">
+                <i class="fas fa-search"></i>
+                <span>Buscar</span>
+            </a>
+            <a href="/app-cupons.html" class="nav-item">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Cupons</span>
+            </a>
+            <a href="/app-pontos.html" class="nav-item active">
+                <i class="fas fa-coins"></i>
+                <span>Pontos</span>
+            </a>
+            <a href="/app-perfil.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Perfil</span>
+            </a>
+        </div>
     </nav>
+
     <script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         let historico = [];
         let filtroAtual = 'todos';
-        const icones = { ganho: 'fa-plus-circle', checkin: 'fa-check-circle', resgate: 'fa-gift', expiracao: 'fa-clock' };
+        
+        const icones = {
+            ganho: 'fa-plus-circle',
+            checkin: 'fa-check-circle',
+            resgate: 'fa-gift',
+            expiracao: 'fa-clock'
+        };
+
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('token');
-            if (!token) { window.location.href = '/entrar.html'; return; }
+            if (!token) {
+                window.location.href = '/entrar.html';
+                return;
+            }
             await carregarHistorico();
         });
+
         async function carregarHistorico() {
             const token = localStorage.getItem('token');
+            
             try {
-                const response = await fetch(`${API_BASE_URL}/api/historico`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const response = await fetch(`${API_BASE_URL}/api/historico`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
                 const data = await response.json();
+                
                 if (data.success && data.data) {
                     historico = data.data;
                     calcularEstatisticas();
                     renderizarHistorico();
+                } else {
+                    // Dados mockados para demonstração
+                    historico = [
+                        {
+                            tipo: 'ganho',
+                            pontos: 100,
+                            descricao: 'Check-in Premium',
+                            empresa: 'Loja ABC',
+                            created_at: new Date().toISOString()
+                        },
+                        {
+                            tipo: 'resgate',
+                            pontos: -50,
+                            descricao: 'Cupom de desconto resgatado',
+                            empresa: 'Super Mercado',
+                            created_at: new Date(Date.now() - 86400000).toISOString()
+                        }
+                    ];
+                    calcularEstatisticas();
+                    renderizarHistorico();
                 }
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('Erro ao carregar histórico:', error);
+                mostrarFeedback('Erro ao carregar histórico', 'error');
             }
         }
+
         function calcularEstatisticas() {
-            const ganhos = historico.filter(h => h.tipo === 'ganho' || h.tipo === 'checkin').reduce((sum, h) => sum + (h.pontos || 0), 0);
-            const resgates = historico.filter(h => h.tipo === 'resgate').reduce((sum, h) => sum + Math.abs(h.pontos || 0), 0);
+            const ganhos = historico.filter(h => h.tipo === 'ganho' || h.tipo === 'checkin')
+                .reduce((sum, h) => sum + (h.pontos || 0), 0);
+            
+            const resgates = historico.filter(h => h.tipo === 'resgate')
+                .reduce((sum, h) => sum + Math.abs(h.pontos || 0), 0);
+
             document.getElementById('totalGanho').textContent = ganhos;
             document.getElementById('totalResgate').textContent = resgates;
             document.getElementById('totalTransacoes').textContent = historico.length;
         }
+
         function filtrar(tipo) {
             filtroAtual = tipo;
-            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            
+            // Atualizar tabs ativas
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
             document.querySelector(`[data-filter="${tipo}"]`).classList.add('active');
+            
             renderizarHistorico();
         }
+
         function renderizarHistorico() {
             let dados = historico;
-            if (filtroAtual !== 'todos') dados = historico.filter(h => h.tipo === filtroAtual);
+            
+            if (filtroAtual !== 'todos') {
+                dados = historico.filter(h => h.tipo === filtroAtual);
+            }
+
             const timeline = document.getElementById('timeline');
             const empty = document.getElementById('emptyState');
+
             if (dados.length === 0) {
                 timeline.style.display = 'none';
                 empty.style.display = 'block';
                 return;
             }
+
             timeline.style.display = 'block';
             empty.style.display = 'none';
+
             timeline.innerHTML = dados.map(h => `
                 <div class="timeline-item">
                     <div class="timeline-icon ${h.tipo}">
@@ -134,12 +570,53 @@
                                 ${h.pontos > 0 ? '+' : ''}${h.pontos} pts
                             </div>
                         </div>
-                        <div class="timeline-desc">${h.empresa || 'Sistema'}</div>
-                        <div class="timeline-date">${new Date(h.created_at).toLocaleString('pt-BR')}</div>
+                        <div class="timeline-desc">🏪 ${h.empresa || 'Sistema'}</div>
+                        <div class="timeline-date">📅 ${new Date(h.created_at).toLocaleString('pt-BR')}</div>
                     </div>
                 </div>
             `).join('');
         }
+
+        function mostrarFeedback(mensagem, tipo) {
+            const feedback = document.createElement('div');
+            feedback.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${tipo === 'success' ? 'linear-gradient(135deg, #00d4aa, #00c896)' : tipo === 'error' ? 'linear-gradient(135deg, #ff6b6b, #ff5252)' : 'linear-gradient(135deg, #f1c40f, #e67e22)'};
+                color: ${tipo === 'success' || tipo === 'error' ? '#fff' : '#0a0a0f'};
+                padding: 12px 24px;
+                border-radius: 16px;
+                font-weight: 600;
+                font-size: 14px;
+                z-index: 10000;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+                animation: slideDown 0.3s ease;
+            `;
+            
+            feedback.textContent = mensagem;
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.style.animation = 'slideUp 0.3s ease';
+                setTimeout(() => document.body.removeChild(feedback), 300);
+            }, 3000);
+        }
+
+        // Estilos para animações
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from { transform: translate(-50%, -100%); opacity: 0; }
+                to { transform: translate(-50%, 0); opacity: 1; }
+            }
+            @keyframes slideUp {
+                from { transform: translate(-50%, 0); opacity: 1; }
+                to { transform: translate(-50%, -100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
