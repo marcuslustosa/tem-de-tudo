@@ -52,6 +52,26 @@ Route::get('/debug', function () {
     }
 });
 
+// Debug - teste de empresas (TEMPORÁRIO)
+Route::get('/debug/empresas', function () {
+    try {
+        $count = \App\Models\Empresa::count();
+        $empresas = \App\Models\Empresa::where('ativo', true)->take(3)->get(['id', 'nome', 'categoria']);
+        
+        return response()->json([
+            'status' => 'OK',
+            'total_empresas' => $count,
+            'empresas_sample' => $empresas,
+            'message' => 'Empresas carregadas com sucesso'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'ERROR',
+            'message' => 'Erro ao carregar empresas: ' . $e->getMessage()
+        ], 500);
+    }
+});
+
 // Setup database manual (APENAS PRODUÇÃO - RENDER)
 Route::get('/setup-database', [SetupController::class, 'setupDatabase']);
 
@@ -185,8 +205,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/add-pontos', [AuthController::class, 'addPontos']);
 
-    Route::get('/empresas', [EmpresaController::class, 'index']);
-    Route::post('/empresas', [EmpresaController::class, 'store']);
+    //Route::get('/empresas', [EmpresaController::class, 'index']);
+    //Route::post('/empresas', [EmpresaController::class, 'store']);
 
     // Notificações de usuários
     Route::get('/notifications', [NotificationController::class, 'getUserNotifications']);

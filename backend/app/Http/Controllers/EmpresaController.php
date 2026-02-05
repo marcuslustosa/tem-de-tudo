@@ -25,19 +25,46 @@ class EmpresaController extends Controller
     }
 
     /**
-     * Listar empresas para cadastro de funcionários (público)
+     * Listar empresas para cadastro de funcionários (público) + busca
      */
-    public function listEmpresas()
+    public function listEmpresas(Request $request)
     {
         try {
-            $empresas = Empresa::where('ativo', true)
-                ->select('id', 'nome', 'endereco', 'telefone')
+            $query = Empresa::where('ativo', true);
+            
+            // Filtro por categoria
+            if ($request->has('categoria') && $request->categoria !== 'todos') {
+                $query->where('categoria', $request->categoria);
+            }
+
+            // Busca por nome ou descrição
+            if ($request->has('busca')) {
+                $busca = $request->busca;
+                $query->where(function($q) use ($busca) {
+                    $q->where('nome', 'LIKE', "%{$busca}%")
+                      ->orWhere('descricao', 'LIKE', "%{$busca}%");
+                });
+            }
+            
+            $empresas = $query
+                ->select('id', 'nome', 'endereco', 'telefone', 'categoria', 'descricao', 'logo', 'points_multiplier')
                 ->orderBy('nome')
                 ->get();
 
             return response()->json([
                 'success' => true,
-                'data' => $empresas
+                'data' => $empresas->map(function($empresa) {
+                    return [
+                        'id' => $empresa->id,
+                        'nome' => $empresa->nome,
+                        'descricao' => $empresa->descricao,
+                        'categoria' => $empresa->categoria,
+                        'endereco' => $empresa->endereco,
+                        'telefone' => $empresa->telefone,
+                        'logo' => $empresa->logo,
+                        'points_multiplier' => $empresa->points_multiplier ?? 1,
+                    ];
+                })
             ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             Log::error('Erro ao listar empresas: ' . $e->getMessage());

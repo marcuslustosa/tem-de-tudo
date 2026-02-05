@@ -2,354 +2,760 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrar - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Entrar - Tem de Tudo Premium</title>
+    <meta name="theme-color" content="#f1c40f">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">
+    
     <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
         body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
         }
-        
-        .container {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-xl);
+
+        /* Animação de fundo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 440px;
-            padding: 40px;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(241, 196, 15, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(241, 196, 15, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(241, 196, 15, 0.06) 0%, transparent 50%);
+            animation: backgroundFloat 12s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
         }
-        
+
+        @keyframes backgroundFloat {
+            0%, 100% { 
+                background: 
+                    radial-gradient(circle at 30% 40%, rgba(241, 196, 15, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(241, 196, 15, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 80%, rgba(241, 196, 15, 0.06) 0%, transparent 50%);
+            }
+            50% { 
+                background: 
+                    radial-gradient(circle at 70% 60%, rgba(241, 196, 15, 0.12) 0%, transparent 50%),
+                    radial-gradient(circle at 20% 80%, rgba(241, 196, 15, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 60% 20%, rgba(241, 196, 15, 0.08) 0%, transparent 50%);
+            }
+        }
+
+        .container {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(26, 26, 46, 0.7));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            border-radius: 32px;
+            width: 100%;
+            max-width: 480px;
+            padding: 48px 40px;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(241, 196, 15, 0.1));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f1c40f;
+            text-decoration: none;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            z-index: 3;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.3);
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
         .logo {
-            text-align: center;
-            margin-bottom: 30px;
+            font-size: 80px;
+            margin-bottom: 16px;
+            animation: logoFloat 3s ease-in-out infinite;
+            display: block;
+            filter: drop-shadow(0 10px 20px rgba(241, 196, 15, 0.3));
         }
-        
-        .logo img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+
+        @keyframes logoFloat {
+            0%, 100% { 
+                transform: translateY(0px);
+                filter: drop-shadow(0 10px 20px rgba(241, 196, 15, 0.3));
+            }
+            50% { 
+                transform: translateY(-8px);
+                filter: drop-shadow(0 15px 30px rgba(241, 196, 15, 0.4));
+            }
         }
-        
+
         .welcome h1 {
-            font-size: 28px;
-            font-weight: 800;
+            font-size: 32px;
+            font-weight: 900;
             text-align: center;
-            margin-bottom: 8px;
-            background: var(--gradient-purple);
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff, #f1c40f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
+
         .welcome p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .forgot {
-            text-align: right;
-            margin-bottom: 24px;
-        }
-        
-        .forgot a {
-            color: var(--purple-1);
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-        }
-        
-        .forgot a:hover {
-            text-decoration: underline;
-        }
-        
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: var(--gradient-purple);
-            color: white;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 16px;
-            font-weight: 700;
-            border: none;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
-        }
-        
-        .divider {
             text-align: center;
-            margin: 24px 0;
+            margin-bottom: 40px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-container {
             position: relative;
         }
-        
-        .divider::before,
-        .divider::after {
+
+        .input-container i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #f1c40f;
+            font-size: 18px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 18px 20px 18px 60px;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(241, 196, 15, 0.2);
+            border-radius: 20px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 400;
+        }
+
+        .form-control:focus {
+            border-color: rgba(241, 196, 15, 0.5);
+            box-shadow: 0 0 0 4px rgba(241, 196, 15, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: #f1c40f;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #f1c40f;
+        }
+
+        .forgot-link {
+            color: #f1c40f;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+            color: #e67e22;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            color: #1a1a2e;
+            font-size: 16px;
+            font-weight: 800;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+            z-index: 2;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #e67e22, #f1c40f);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-submit:hover::before {
+            opacity: 1;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(241, 196, 15, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-submit span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 32px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .divider::before {
             content: '';
             position: absolute;
             top: 50%;
-            width: 40%;
+            left: 0;
+            right: 0;
             height: 1px;
-            background: var(--border-color);
+            background: linear-gradient(90deg, transparent, rgba(241, 196, 15, 0.3), transparent);
         }
-        
-        .divider::before { left: 0; }
-        .divider::after { right: 0; }
-        
+
         .divider span {
-            background: var(--bg-card);
-            padding: 0 10px;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        
-        .register {
-            text-align: center;
-            margin-top: 24px;
-            color: var(--text-secondary);
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(26, 26, 46, 0.7));
+            padding: 0 20px;
+            color: rgba(255, 255, 255, 0.6);
             font-size: 14px;
-        }
-        
-        .register a {
-            color: var(--purple-1);
             font-weight: 600;
+        }
+
+        .quick-login {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .quick-login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            border-radius: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .quick-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.15);
+            border-color: rgba(241, 196, 15, 0.4);
+        }
+
+        .quick-login-btn i {
+            font-size: 18px;
+        }
+
+        .admin-btn { color: #f39c12; }
+        .cliente-btn { color: #3498db; }
+        .empresa-btn { color: #e74c3c; }
+
+        .register-link {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .register-link a {
+            color: #f1c40f;
+            font-weight: 700;
             text-decoration: none;
         }
-        
-        .register a:hover {
+
+        .register-link a:hover {
             text-decoration: underline;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border-radius: 32px;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(241, 196, 15, 0.2);
+            border-left: 3px solid #f1c40f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.1));
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.2), rgba(39, 174, 96, 0.1));
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            color: #27ae60;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                padding: 32px 24px;
+                margin: 10px;
+                border-radius: 24px;
+            }
+
+            .logo {
+                font-size: 60px;
+            }
+
+            .welcome h1 {
+                font-size: 28px;
+            }
+
+            .form-control {
+                padding: 16px 20px 16px 55px;
+                font-size: 15px;
+            }
+
+            .btn-submit {
+                padding: 18px;
+                font-size: 15px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">
-            <img src="/img/logo.png" alt="Tem de Tudo">
+        <a href="/index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner"></div>
         </div>
-        
-        <div class="welcome">
-            <h1>Bem-vindo de volta!</h1>
-            <p>Entre para acessar sua conta</p>
+
+        <div class="logo-section">
+            <div class="logo">🛍️</div>
+            <div class="welcome">
+                <h1>Bem-vindo de volta!</h1>
+                <p>Entre na sua conta premium e continue aproveitando as melhores ofertas ✨</p>
+            </div>
         </div>
-        
-        <div id="alertBox" class="alert"></div>
-        
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
         <form id="loginForm">
             <div class="form-group">
-                <label class="form-label" for="email">E-mail</label>
-                <div class="input-wrapper">
+                <label for="email">Email</label>
+                <div class="input-container">
                     <i class="fas fa-envelope"></i>
-                    <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        class="form-control" 
+                        placeholder="seu@email.com"
+                        required
+                        autocomplete="email"
+                    >
                 </div>
             </div>
-            
+
             <div class="form-group">
-                <label class="form-label" for="password">Senha</label>
-                <div class="input-wrapper">
+                <label for="password">Senha</label>
+                <div class="input-container">
                     <i class="fas fa-lock"></i>
-                    <input type="password" id="password" class="form-control" placeholder="Digite sua senha" required>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="form-control" 
+                        placeholder="Sua senha premium"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="passwordIcon"></i>
+                    </button>
                 </div>
             </div>
-            
-            <div class="forgot">
-                <a href="/recuperar-senha.html">Esqueceu sua senha?</a>
+
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember" name="remember">
+                    <span>Lembrar de mim</span>
+                </label>
+                <a href="/recuperar-senha.html" class="forgot-link">Esqueceu a senha?</a>
             </div>
-            
-            <button type="submit" class="btn-submit" id="btnSubmit">
-                ENTRAR
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span>Entrar na conta premium</span>
             </button>
         </form>
-        
+
         <div class="divider">
-            <span>ou</span>
+            <span>ou acesso rápido para teste</span>
         </div>
-        
-        <div class="register">
-            Não tem uma conta? <a href="/cadastro.html">Cadastre-se grátis</a>
+
+        <div class="quick-login">
+            <button type="button" class="quick-login-btn admin-btn" onclick="quickLogin('admin')">
+                <i class="fas fa-crown"></i>
+                <span>Teste como Administrador</span>
+            </button>
+            <button type="button" class="quick-login-btn cliente-btn" onclick="quickLogin('cliente')">
+                <i class="fas fa-user"></i>
+                <span>Teste como Cliente Premium</span>
+            </button>
+            <button type="button" class="quick-login-btn empresa-btn" onclick="quickLogin('empresa')">
+                <i class="fas fa-building"></i>
+                <span>Teste como Empresa Parceira</span>
+            </button>
+        </div>
+
+        <div class="register-link">
+            Ainda não tem uma conta? <a href="/registro.html">Crie sua conta premium</a>
         </div>
     </div>
-    
+
     <script>
-        // Configuração de API mais robusta
-        let API_URL;
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // LOCAL: Tenta várias portas comuns do Laravel
-            API_URL = 'http://127.0.0.1:8000/api';
-        } else if (window.location.hostname.includes('render.com') || window.location.hostname.includes('herokuapp.com')) {
-            // PRODUÇÃO: Render, Heroku, etc
-            API_URL = '/api';
-        } else {
-            // OUTROS: Relative path como fallback
-            API_URL = '/api';
-        }
-        
-        const form = document.getElementById('loginForm');
-        const btnSubmit = document.getElementById('btnSubmit');
-        const alertBox = document.getElementById('alertBox');
-        
-        function showAlert(message, type = 'error') {
-            alertBox.textContent = message;
-            alertBox.className = `alert alert-${type}`;
-            alertBox.style.display = 'block';
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const passwordIcon = document.getElementById('passwordIcon');
             
-            if (type === 'success') {
-                setTimeout(() => {
-                    alertBox.style.display = 'none';
-                }, 3000);
-            }
-        }
-        
-        function setLoading(loading) {
-            if (loading) {
-                btnSubmit.disabled = true;
-                btnSubmit.innerHTML = '<span class="loading"></span>ENTRANDO...';
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.className = 'fas fa-eye-slash';
             } else {
-                btnSubmit.disabled = false;
-                btnSubmit.textContent = 'ENTRAR';
+                passwordInput.type = 'password';
+                passwordIcon.className = 'fas fa-eye';
             }
         }
-        
-        form.addEventListener('submit', async (e) => {
+
+        // Quick login for testing
+        function quickLogin(type) {
+            const credentials = {
+                admin: { email: 'admin@temdetudo.com', password: 'admin123' },
+                cliente: { email: 'cliente@teste.com', password: '123456' },
+                empresa: { email: 'empresa@teste.com', password: '123456' }
+            };
+
+            if (credentials[type]) {
+                document.getElementById('email').value = credentials[type].email;
+                document.getElementById('password').value = credentials[type].password;
+                
+                // Auto submit after a brief delay
+                setTimeout(() => {
+                    document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+                }, 500);
+            }
+        }
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            alertBox.style.display = 'none';
             
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
             
-            setLoading(true);
-            
-            // MOCK DATA - Funciona sem backend para testes
-            const mockUsers = {
-                'admin@temdetudo.com': { 
-                    password: 'admin123', 
-                    user: { id: 1, name: 'Administrador Sistema', email: 'admin@temdetudo.com', perfil: 'administrador', pontos: 0 },
-                    token: 'mock_admin_token_123'
-                },
-                'cliente@teste.com': { 
-                    password: '123456', 
-                    user: { id: 2, name: 'Cliente Simulação', email: 'cliente@teste.com', perfil: 'usuario_comum', pontos: 250 },
-                    token: 'mock_cliente_token_456'
-                },
-                'empresa@teste.com': { 
-                    password: '123456', 
-                    user: { id: 3, name: 'Empresa Simulação LTDA', email: 'empresa@teste.com', perfil: 'gestor', pontos: 0 },
-                    token: 'mock_empresa_token_789'
-                }
-            };
-            
+            if (!email || !password) {
+                showError('Por favor, preencha todos os campos');
+                return;
+            }
+
+            showLoading(true);
+            hideMessages();
+
             try {
-                // Primeiro: Tenta API real
-                const response = await fetch(`${API_URL}/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
+                // Simular login API call
+                await simulateLogin(email, password, remember);
+            } catch (error) {
+                console.error('Erro no login:', error);
+                showError('Erro ao fazer login. Tente novamente.');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        // Simulate login process
+        async function simulateLogin(email, password, remember) {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Mock credentials
+            const validCredentials = [
+                { email: 'admin@temdetudo.com', password: 'admin123', type: 'admin', name: 'Admin Sistema' },
+                { email: 'cliente@teste.com', password: '123456', type: 'cliente', name: 'Marcus Silva' },
+                { email: 'empresa@teste.com', password: '123456', type: 'empresa', name: 'Empresa Teste' }
+            ];
+
+            const user = validCredentials.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                showSuccess(`Bem-vindo, ${user.name}! Redirecionando...`);
                 
-                const result = await response.json();
-                
-                console.log('Resposta completa:', result);
-                
-                // VERIFICAR SUCESSO PRIMEIRO
-                if (!response.ok || result.success === false) {
-                    throw new Error(result.message || 'Erro ao fazer login');
+                // Store user data
+                localStorage.setItem('token', 'mock-jwt-token-' + Date.now());
+                localStorage.setItem('userType', user.type);
+                localStorage.setItem('user', JSON.stringify({
+                    name: user.name,
+                    email: user.email,
+                    type: user.type,
+                    pontos: user.type === 'cliente' ? 2847.50 : 0,
+                    perfil: user.type === 'cliente' ? 'premium' : user.type
+                }));
+
+                if (remember) {
+                    localStorage.setItem('rememberLogin', 'true');
                 }
-                
-                // AGORA SIM extrair data (só se success === true)
-                let data = result.data || result;
-                
-                // Se success === true e tem data, usar data
-                if (result.success && result.data) {
-                    data = result.data;
-                } else if (result.token && result.user) {
-                    // API retornou token/user diretamente
-                    data = result;
-                }
-                
-                console.log('Data extraída:', data);
-                console.log('Token:', data?.token);
-                console.log('User:', data?.user);
-                
-                if (!data || !data.token || !data.user) {
-                    console.error('Estrutura inválida:', result);
-                    throw new Error('Resposta inválida do servidor');
-                }
-                
-                // Salvar token e dados do usuário
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('user', JSON.stringify(data.user));
-                
-                showAlert('Login realizado com sucesso!', 'success');
-                
-                // Redirecionar baseado no perfil do usuário
+
+                // Redirect based on user type
                 setTimeout(() => {
-                    if (data.user.perfil === 'administrador') {
-                        window.location.href = '/admin-dashboard.html';
-                    } else if (data.user.perfil === 'gestor') {
-                        window.location.href = '/dashboard-empresa.html';
-                    } else {
-                        window.location.href = '/app-inicio.html';
+                    switch(user.type) {
+                        case 'admin':
+                            window.location.href = '/admin-dashboard.html';
+                            break;
+                        case 'empresa':
+                            window.location.href = '/empresa-dashboard.html';
+                            break;
+                        default:
+                            window.location.href = '/app-inicio.html';
                     }
                 }, 1000);
+
+            } else {
+                throw new Error('Credenciais inválidas');
+            }
+        }
+
+        // Utility functions
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('show', show);
+            document.getElementById('submitBtn').disabled = show;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.add('show');
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').classList.remove('show');
+            document.getElementById('successMessage').classList.remove('show');
+        }
+
+        // Auto-fill remembered credentials
+        window.addEventListener('load', () => {
+            if (localStorage.getItem('rememberLogin') === 'true') {
+                const userData = localStorage.getItem('user');
+                if (userData) {
+                    try {
+                        const user = JSON.parse(userData);
+                        document.getElementById('email').value = user.email || '';
+                        document.getElementById('remember').checked = true;
+                    } catch (e) {
+                        console.warn('Erro ao carregar dados salvos');
+                    }
+                }
+            }
+
+            // Check if already logged in
+            if (localStorage.getItem('token')) {
+                const userType = localStorage.getItem('userType') || 'cliente';
                 
-            } catch (error) {
-                console.log('API falhou, tentando MOCK DATA...', error.message);
-                
-                // FALLBACK: Usar dados mock
-                const mockUser = mockUsers[email];
-                if (mockUser && mockUser.password === password) {
-                    console.log('✅ MOCK LOGIN SUCESSO!');
-                    
-                    // Salvar dados mockados
-                    localStorage.setItem('token', mockUser.token);
-                    localStorage.setItem('user', JSON.stringify(mockUser.user));
-                    
-                    showAlert('Login realizado com sucesso! (Modo Demonstração)', 'success');
-                    
-                    // Redirecionar baseado no perfil
-                    setTimeout(() => {
-                        if (mockUser.user.perfil === 'administrador') {
-                            window.location.href = '/admin-dashboard.html';
-                        } else if (mockUser.user.perfil === 'gestor') {
-                            window.location.href = '/dashboard-empresa.html';
-                        } else {
-                            window.location.href = '/app-inicio.html';
-                        }
-                    }, 1000);
-                } else {
-                    setLoading(false);
-                    showAlert('Email ou senha incorretos. Use: cliente@teste.com/123456, admin@temdetudo.com/admin123, empresa@teste.com/123456');
+                switch(userType) {
+                    case 'admin':
+                        window.location.href = '/admin-dashboard.html';
+                        break;
+                    case 'empresa':
+                        window.location.href = '/empresa-dashboard.html';
+                        break;
+                    default:
+                        window.location.href = '/app-inicio.html';
                 }
             }
         });
-        
-        // Verificar se já está logado
-        const existingToken = localStorage.getItem('token');
-        const existingUser = localStorage.getItem('user');
-        
-        if (existingToken && existingUser) {
-            // Já está logado, redirecionar
-            const user = JSON.parse(existingUser);
-            if (user.perfil === 'admin') {
-                window.location.href = '/admin-dashboard.html';
-            } else if (user.perfil === 'empresa') {
-                window.location.href = '/dashboard-empresa.html';
-            } else {
-                window.location.href = '/app-inicio.html';
+
+        // Enter key on password field
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
             }
-        }
+        });
+
+        // Clear error messages when user starts typing
+        document.getElementById('email').addEventListener('input', hideMessages);
+        document.getElementById('password').addEventListener('input', hideMessages);
     </script>
 </body>
 </html>

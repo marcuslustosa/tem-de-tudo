@@ -6,98 +6,670 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Relatórios - Tem de Tudo</title>
+    <meta name="theme-color" content="#f1c40f">
+    <title>📊 Relatórios Premium - Tem de Tudo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <link rel="manifest" href="/manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0a0a0f; color: #ffffff; display: flex; min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding-bottom: 80px;
+            overflow-x: hidden;
         }
-        .sidebar {
-            width: 260px; background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-right: 1px solid rgba(102, 126, 234, 0.1);
-            padding: 24px 0; position: fixed; height: 100vh; overflow-y: auto;
+
+        .header { 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            position: relative;
+            padding: 24px; 
+            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(102, 126, 234, 0.1); margin-bottom: 24px; }
-        .logo h1 { font-size: 24px; font-weight: 900; color: #667eea; }
-        .logo p { font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-top: 4px; }
-        .nav-menu { list-style: none; }
-        .nav-item { padding: 0 16px; margin-bottom: 4px; }
-        .nav-link {
-            display: flex; align-items: center; padding: 12px 16px;
-            color: rgba(255, 255, 255, 0.7); text-decoration: none;
-            border-radius: 12px; transition: all 0.3s; font-size: 14px; font-weight: 500;
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            pointer-events: none;
         }
-        .nav-link i { margin-right: 12px; font-size: 18px; width: 24px; }
-        .nav-link:hover { background: rgba(102, 126, 234, 0.1); color: #667eea; }
-        .nav-link.active { background: rgba(102, 126, 234, 0.15); color: #667eea; box-shadow: 0 0 20px rgba(102, 126, 234, 0.2); }
-        .main-content { margin-left: 260px; flex: 1; padding: 32px; }
-        .header { margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
-        .header-left h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
-        .header-left p { color: rgba(255, 255, 255, 0.6); font-size: 14px; }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .back-btn {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(241, 196, 15, 0.1));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-radius: 16px;
+            color: #f1c40f;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.3);
+        }
+
+        .header h1 { 
+            font-size: 24px; 
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff, #f1c40f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p { 
+            font-size: 14px; 
+            color: rgba(255, 255, 255, 0.7); 
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .content { padding: 24px; }
+
         .filters {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(102, 126, 234, 0.1);
-            border-radius: 16px; padding: 24px; margin-bottom: 24px;
-            display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 32px;
+            display: flex;
+            gap: 16px;
+            align-items: end;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
         }
-        .filter-group { flex: 1; min-width: 200px; }
-        .filter-label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; color: #667eea; }
+
+        .filters::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .filters:hover::before {
+            opacity: 1;
+        }
+
+        .filter-group { 
+            flex: 1; 
+            min-width: 180px; 
+            position: relative;
+            z-index: 2;
+        }
+
+        .filter-label { 
+            display: block; 
+            font-size: 12px; 
+            font-weight: 700; 
+            margin-bottom: 8px; 
+            text-transform: uppercase; 
+            color: #f1c40f;
+            letter-spacing: 0.5px; 
+        }
+
         .filter-select {
-            width: 100%; padding: 12px 16px;
-            background: rgba(102, 126, 234, 0.05);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 12px; color: white; font-size: 14px; font-family: inherit;
+            width: 100%; 
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.8), rgba(15, 20, 25, 0.4));
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            border-radius: 12px; 
+            color: white; 
+            font-size: 14px; 
+            font-family: inherit;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #f1c40f;
+            box-shadow: 0 0 0 3px rgba(241, 196, 15, 0.1);
+        }
+
         .export-btn {
-            padding: 12px 24px; background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none; border-radius: 12px; color: white; font-size: 13px; font-weight: 700;
-            cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+            padding: 16px 24px; 
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            border: none; 
+            border-radius: 16px; 
+            color: #0a0a0f; 
+            font-size: 14px; 
+            font-weight: 700;
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+            min-width: 140px;
+            justify-content: center;
         }
-        .export-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
-        .reports-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; }
+
+        .export-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.4); 
+        }
+
+        .reports-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+            gap: 24px; 
+        }
+
         .report-card {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(102, 126, 234, 0.1);
-            border-radius: 16px; padding: 24px; transition: all 0.3s;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .report-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3); border-color: rgba(102, 126, 234, 0.3); }
+
+        .report-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .report-card:hover::before {
+            opacity: 1;
+        }
+
+        .report-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.2); 
+            border-color: rgba(241, 196, 15, 0.3); 
+        }
+
         .report-header {
-            display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
         }
+
         .report-icon {
-            width: 56px; height: 56px; background: rgba(102, 126, 234, 0.1);
-            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            width: 56px; 
+            height: 56px; 
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(241, 196, 15, 0.1));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-radius: 16px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
             font-size: 28px;
+            color: #f1c40f;
         }
-        .report-title { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
-        .report-desc { font-size: 13px; color: rgba(255, 255, 255, 0.6); }
-        .report-metrics { margin-bottom: 20px; }
+
+        .report-title { 
+            font-size: 18px; 
+            font-weight: 800; 
+            margin-bottom: 4px;
+            color: #fff;
+        }
+
+        .report-desc { 
+            font-size: 13px; 
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500; 
+        }
+
+        .report-metrics { 
+            margin-bottom: 20px; 
+            position: relative;
+            z-index: 2;
+        }
+
         .metric-row {
-            display: flex; justify-content: space-between; padding: 12px 0;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.1); font-size: 14px;
+            display: flex; 
+            justify-content: space-between; 
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.1); 
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
+
         .metric-row:last-child { border-bottom: none; }
-        .metric-label { color: rgba(255, 255, 255, 0.6); }
-        .metric-value { font-weight: 700; color: #667eea; }
-        .report-btn {
-            width: 100%; padding: 12px; background: rgba(102, 126, 234, 0.1);
-            border: 1px solid rgba(102, 126, 234, 0.2); border-radius: 10px;
-            color: #667eea; font-size: 13px; font-weight: 600;
-            cursor: pointer; transition: all 0.3s;
+
+        .metric-row:hover {
+            background: rgba(241, 196, 15, 0.05);
+            border-radius: 8px;
+            padding-left: 8px;
+            padding-right: 8px;
         }
-        .report-btn:hover { background: #667eea; color: white; }
+
+        .metric-label { 
+            color: rgba(255, 255, 255, 0.7); 
+            font-weight: 500;
+        }
+
+        .metric-value { 
+            font-weight: 800; 
+            color: #f1c40f; 
+        }
+
+        .report-btn {
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.1), rgba(241, 196, 15, 0.05));
+            border: 1px solid rgba(241, 196, 15, 0.2); 
+            border-radius: 12px;
+            color: #f1c40f; 
+            font-size: 14px; 
+            font-weight: 700;
+            cursor: pointer; 
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .report-btn:hover { 
+            background: linear-gradient(135deg, #f1c40f, #e67e22); 
+            color: #0a0a0f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(26, 26, 46, 0.8));
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(241, 196, 15, 0.1);
+            padding: 12px 0 8px 0;
+            z-index: 300;
+        }
+        
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            min-width: 60px;
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(241, 196, 15, 0.1));
+            color: #f1c40f;
+            transform: translateY(-2px);
+        }
+        
+        .nav-item:hover {
+            color: #f1c40f;
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item span {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
         @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 16px; }
-            .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .content { padding: 16px; }
+            .filters { 
+                flex-direction: column; 
+                align-items: stretch; 
+                gap: 16px; 
+            }
+            .filter-group { min-width: 100%; }
+            .export-btn { width: 100%; }
+            .reports-grid { 
+                grid-template-columns: 1fr; 
+                gap: 16px; 
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-top">
+                <button class="back-btn" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div>
+                    <h1>📊 Relatórios Premium</h1>
+                    <p>Análise completa do seu negócio</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="filters">
+            <div class="filter-group">
+                <label class="filter-label" for="periodo">Período</label>
+                <select class="filter-select" id="periodo">
+                    <option value="hoje">Hoje</option>
+                    <option value="7dias">Últimos 7 dias</option>
+                    <option value="30dias" selected>Últimos 30 dias</option>
+                    <option value="3meses">Últimos 3 meses</option>
+                    <option value="6meses">Últimos 6 meses</option>
+                    <option value="ano">Este ano</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label" for="categoria">Categoria</label>
+                <select class="filter-select" id="categoria">
+                    <option value="todas">Todas as categorias</option>
+                    <option value="vendas">Vendas</option>
+                    <option value="clientes">Clientes</option>
+                    <option value="produtos">Produtos</option>
+                    <option value="financeiro">Financeiro</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label" for="formato">Formato</label>
+                <select class="filter-select" id="formato">
+                    <option value="pdf">PDF</option>
+                    <option value="excel">Excel</option>
+                    <option value="csv">CSV</option>
+                </select>
+            </div>
+            <button class="export-btn" onclick="exportarTodos()">
+                <i class="fas fa-download"></i>
+                Exportar Todos
+            </button>
+        </div>
+
+        <div class="reports-grid">
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <div class="report-title">Vendas Mensais</div>
+                        <div class="report-desc">Análise completa das vendas</div>
+                    </div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Total Vendas</span>
+                        <span class="metric-value">R$ 45.230,00</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Crescimento</span>
+                        <span class="metric-value">+12,5%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Meta Alcançada</span>
+                        <span class="metric-value">85%</span>
+                    </div>
+                </div>
+                <button class="report-btn" onclick="gerarRelatorio('vendas')">
+                    Gerar Relatório
+                </button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <div class="report-title">Clientes Ativos</div>
+                        <div class="report-desc">Base de clientes e engajamento</div>
+                    </div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Total Clientes</span>
+                        <span class="metric-value">1.247</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Novos este mês</span>
+                        <span class="metric-value">89</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Taxa Retenção</span>
+                        <span class="metric-value">92%</span>
+                    </div>
+                </div>
+                <button class="report-btn" onclick="gerarRelatorio('clientes')">
+                    Gerar Relatório
+                </button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div>
+                        <div class="report-title">Estoque</div>
+                        <div class="report-desc">Controle de inventário</div>
+                    </div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Produtos</span>
+                        <span class="metric-value">356</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Baixo Estoque</span>
+                        <span class="metric-value">23</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Valor Total</span>
+                        <span class="metric-value">R$ 89.340</span>
+                    </div>
+                </div>
+                <button class="report-btn" onclick="gerarRelatorio('estoque')">
+                    Gerar Relatório
+                </button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div>
+                        <div class="report-title">Financeiro</div>
+                        <div class="report-desc">Fluxo de caixa e lucros</div>
+                    </div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Receita</span>
+                        <span class="metric-value">R$ 67.890</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Despesas</span>
+                        <span class="metric-value">R$ 23.450</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Lucro Líquido</span>
+                        <span class="metric-value">R$ 44.440</span>
+                    </div>
+                </div>
+                <button class="report-btn" onclick="gerarRelatorio('financeiro')">
+                    Gerar Relatório
+                </button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div>
+                        <div class="report-title">Promoções</div>
+                        <div class="report-desc">Performance das campanhas</div>
+                    </div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Campanhas Ativas</span>
+                        <span class="metric-value">12</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Conversão</span>
+                        <span class="metric-value">8.7%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">ROI Médio</span>
+                        <span class="metric-value">245%</span>
+                    </div>
+                </div>
+                <button class="report-btn" onclick="gerarRelatorio('promocoes')">
+                    Gerar Relatório
+                </button>
+            </div>
+
+            <div class="report-card">
+                <div class="report-header">
+                    <div class="report-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div>
+                        <div class="report-title">App Usage</div>
+                        <div class="report-desc">Uso do aplicativo mobile</div>
+                    </div>
+                </div>
+                <div class="report-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">Downloads</span>
+                        <span class="metric-value">2.847</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Usuários Ativos</span>
+                        <span class="metric-value">1.923</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Avaliação</span>
+                        <span class="metric-value">4.8⭐</span>
+                    </div>
+                </div>
+                <button class="report-btn" onclick="gerarRelatorio('app')">
+                    Gerar Relatório
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-items">
+            <a href="empresa-dashboard.html" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="empresa-clientes.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="empresa-relatorios.html" class="nav-item active">
+                <i class="fas fa-chart-bar"></i>
+                <span>Relatórios</span>
+            </a>
+            <a href="empresa-configuracoes.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Config</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        function gerarRelatorio(tipo) {
+            const periodo = document.getElementById('periodo').value;
+            const formato = document.getElementById('formato').value;
+            
+            // Simular geração do relatório
+            alert(`Gerando relatório de ${tipo} para o período: ${periodo} no formato ${formato.toUpperCase()}`);
+            
+            // Aqui seria implementada a lógica real de geração
+            console.log(`Generating report: ${tipo}, period: ${periodo}, format: ${formato}`);
+        }
+
+        function exportarTodos() {
+            const periodo = document.getElementById('periodo').value;
+            const categoria = document.getElementById('categoria').value;
+            const formato = document.getElementById('formato').value;
+            
+            alert(`Exportando todos os relatórios\nCategoria: ${categoria}\nPeríodo: ${periodo}\nFormato: ${formato.toUpperCase()}`);
+            
+            // Implementar lógica de exportação em lote
+            console.log(`Exporting all reports: ${categoria}, ${periodo}, ${formato}`);
+        }
+
+        // Atualizar dados quando os filtros mudarem
+        document.getElementById('periodo').addEventListener('change', atualizarDados);
+        document.getElementById('categoria').addEventListener('change', atualizarDados);
+
+        function atualizarDados() {
+            console.log('Atualizando dados dos relatórios...');
+            // Implementar atualização dos dados baseada nos filtros
+        }
+
+        // Carregar dados iniciais
+        document.addEventListener('DOMContentLoaded', function() {
+            atualizarDados();
+        });
+    </script>
+</body>
+</html>
             .filters { flex-direction: column; }
             .reports-grid { grid-template-columns: 1fr; }
         }

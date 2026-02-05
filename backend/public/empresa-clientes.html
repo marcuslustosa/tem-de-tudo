@@ -6,52 +6,104 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0a0a0f">
-    <title>Meus Clientes - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#f1c40f">
+    <title>👥 Clientes Premium - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <link rel="manifest" href="/manifest.json">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #0a0a0f; min-height: 100vh; color: #fff; padding-bottom: 40px; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            min-height: 100vh; 
+            color: #fff; 
+            padding-bottom: 80px;
+            overflow-x: hidden;
+        }
         
         .header { 
-            background: linear-gradient(145deg, #1a1a2e, #16213e); 
-            padding: 20px; 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            position: relative;
+            padding: 24px; 
             border-bottom: 1px solid rgba(241, 196, 15, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
         }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
         .header-top {
             display: flex;
             align-items: center;
             gap: 16px;
             margin-bottom: 16px;
         }
+
         .back-btn {
             width: 44px;
             height: 44px;
-            background: rgba(241, 196, 15, 0.1);
-            border: 1px solid rgba(241, 196, 15, 0.2);
-            border-radius: 12px;
-            color: #fff;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(241, 196, 15, 0.1));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-radius: 16px;
+            color: #f1c40f;
             font-size: 18px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .header h1 { font-size: 24px; font-weight: 900; }
-        .header p { font-size: 13px; color: #b0b0b0; margin-top: 4px; }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.3);
+        }
+
+        .header h1 { 
+            font-size: 24px; 
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff, #f1c40f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p { 
+            font-size: 14px; 
+            color: rgba(255, 255, 255, 0.7); 
+            margin-top: 4px;
+            font-weight: 500;
+        }
         
         .search-bar {
-            background: rgba(241, 196, 15, 0.05);
-            border: 1px solid rgba(241, 196, 15, 0.1);
-            border-radius: 12px;
-            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(26, 26, 46, 0.3));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            border-radius: 16px;
+            padding: 16px;
             display: flex;
             align-items: center;
             gap: 12px;
+            position: relative;
+            z-index: 2;
         }
         .search-bar i { color: #f1c40f; }
         .search-bar input {
@@ -60,44 +112,668 @@
             border: none;
             color: #fff;
             font-size: 14px;
+            font-weight: 500;
             outline: none;
         }
-        .search-bar input::placeholder { color: #666; }
+        .search-bar input::placeholder { color: rgba(255, 255, 255, 0.5); }
         
-        .content { padding: 20px; }
+        .content { padding: 24px; }
         
         .stats-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 16px;
+            margin-bottom: 32px;
         }
+
         .stat-mini {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(241, 196, 15, 0.1);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-        }
-        .stat-mini-value { font-size: 24px; font-weight: 900; color: #f1c40f; }
-        .stat-mini-label { font-size: 11px; color: #b0b0b0; text-transform: uppercase; margin-top: 4px; }
-        
-        .clientes-grid { display: grid; gap: 12px; }
-        
-        .cliente-card {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(241, 196, 15, 0.1);
             border-radius: 16px;
             padding: 20px;
-            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-        .cliente-card:hover {
-            border-color: #f1c40f;
+
+        .stat-mini::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-mini:hover::before {
+            opacity: 1;
+        }
+
+        .stat-mini:hover {
             transform: translateY(-2px);
+            border-color: rgba(241, 196, 15, 0.3);
+        }
+
+        .stat-mini-value { 
+            font-size: 24px; 
+            font-weight: 900; 
+            color: #f1c40f;
+            position: relative;
+            z-index: 2;
+        }
+        .stat-mini-label { 
+            font-size: 11px; 
+            color: rgba(255, 255, 255, 0.6); 
+            text-transform: uppercase; 
+            margin-top: 4px;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .clientes-grid { display: grid; gap: 16px; }
+        
+        .cliente-card {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cliente-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cliente-card:hover::before {
+            opacity: 1;
+        }
+
+        .cliente-card:hover {
+            border-color: rgba(241, 196, 15, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.2);
         }
         
         .cliente-header {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .cliente-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #0a0a0f;
+            margin-right: 16px;
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.2);
+        }
+        
+        .cliente-info {
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .cliente-nome { 
+            font-size: 18px; 
+            font-weight: 700; 
+            color: #fff; 
+            margin-bottom: 4px; 
+        }
+        
+        .cliente-status { 
+            font-size: 12px; 
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-ativo { 
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.2), rgba(46, 204, 113, 0.1));
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #2ecc71; 
+        }
+        
+        .status-inativo { 
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.1));
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c; 
+        }
+        
+        .cliente-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .cliente-stat-item {
+            text-align: center;
+            padding: 12px;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.6), rgba(15, 20, 25, 0.2));
+            border-radius: 12px;
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .cliente-stat-item:hover {
+            border-color: rgba(241, 196, 15, 0.3);
+            transform: scale(1.02);
+        }
+        
+        .stat-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: #f1c40f;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+        
+        .cliente-actions {
+            display: flex;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .action-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            color: #0a0a0f;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.8), rgba(52, 152, 219, 0.6));
+            color: #fff;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.8), rgba(231, 76, 60, 0.6));
+            color: #fff;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.3);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            color: #f1c40f;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        
+        .empty-state h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        
+        .empty-state p {
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .fab {
+            position: fixed;
+            bottom: 96px;
+            right: 20px;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #0a0a0f;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.4);
+            transition: all 0.3s ease;
+            z-index: 200;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 12px 35px rgba(241, 196, 15, 0.6);
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(26, 26, 46, 0.8));
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(241, 196, 15, 0.1);
+            padding: 12px 0 8px 0;
+            z-index: 300;
+        }
+        
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            min-width: 60px;
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(241, 196, 15, 0.1));
+            color: #f1c40f;
+            transform: translateY(-2px);
+        }
+        
+        .nav-item:hover {
+            color: #f1c40f;
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .nav-item span {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .loading-spinner {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(241, 196, 15, 0.1);
+            border-top: 3px solid #f1c40f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .cliente-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .cliente-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+            
+            .header {
+                padding: 16px;
+            }
+            
+            .content {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-top">
+                <button class="back-btn" onclick="window.history.back()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div>
+                    <h1>👥 Clientes Premium</h1>
+                    <p>Gerencie seus clientes com excelência</p>
+                </div>
+            </div>
+            
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar cliente..." id="searchInput" onkeyup="filtrarClientes()">
+            </div>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="stats-row">
+            <div class="stat-mini">
+                <div class="stat-mini-value" id="totalClientes">156</div>
+                <div class="stat-mini-label">Total Clientes</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-value" id="clientesAtivos">134</div>
+                <div class="stat-mini-label">Ativos</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-value" id="novosMes">23</div>
+                <div class="stat-mini-label">Novos/Mês</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-mini-value" id="ticketMedio">R$ 387</div>
+                <div class="stat-mini-label">Ticket Médio</div>
+            </div>
+        </div>
+        
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner"></div>
+        </div>
+        
+        <div class="clientes-grid" id="clientesGrid">
+            <!-- Clientes serão carregados aqui dinamicamente -->
+        </div>
+        
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-users"></i>
+            <h3>Nenhum cliente encontrado</h3>
+            <p>Comece a cadastrar seus primeiros clientes para acompanhar seu crescimento!</p>
+        </div>
+    </div>
+    
+    <button class="fab" onclick="adicionarCliente()">
+        <i class="fas fa-plus"></i>
+    </button>
+    
+    <nav class="bottom-nav">
+        <div class="nav-items">
+            <a href="empresa-dashboard.html" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="empresa-clientes.html" class="nav-item active">
+                <i class="fas fa-users"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="empresa-promocoes.html" class="nav-item">
+                <i class="fas fa-tags"></i>
+                <span>Promoções</span>
+            </a>
+            <a href="empresa-configuracoes.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Config</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // Dados de exemplo dos clientes
+        const clientesExemplo = [
+            {
+                id: 1,
+                nome: "Maria Silva",
+                email: "maria@email.com",
+                telefone: "(11) 99999-9999",
+                status: "ativo",
+                totalPedidos: 23,
+                totalGasto: 1450.60,
+                ultimoPedido: "2024-01-15",
+                avatar: "MS"
+            },
+            {
+                id: 2,
+                nome: "João Santos",
+                email: "joao@email.com", 
+                telefone: "(11) 88888-8888",
+                status: "ativo",
+                totalPedidos: 31,
+                totalGasto: 2340.80,
+                ultimoPedido: "2024-01-14",
+                avatar: "JS"
+            },
+            {
+                id: 3,
+                nome: "Ana Costa",
+                email: "ana@email.com",
+                telefone: "(11) 77777-7777", 
+                status: "inativo",
+                totalPedidos: 5,
+                totalGasto: 234.50,
+                ultimoPedido: "2023-12-20",
+                avatar: "AC"
+            },
+            {
+                id: 4,
+                nome: "Pedro Lima",
+                email: "pedro@email.com",
+                telefone: "(11) 66666-6666",
+                status: "ativo", 
+                totalPedidos: 18,
+                totalGasto: 987.30,
+                ultimoPedido: "2024-01-13",
+                avatar: "PL"
+            },
+            {
+                id: 5,
+                nome: "Carla Oliveira",
+                email: "carla@email.com",
+                telefone: "(11) 55555-5555",
+                status: "ativo",
+                totalPedidos: 42,
+                totalGasto: 3256.90,
+                ultimoPedido: "2024-01-16",
+                avatar: "CO"
+            }
+        ];
+
+        let clientesFiltrados = [...clientesExemplo];
+
+        function formatarMoeda(valor) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(valor);
+        }
+
+        function formatarData(data) {
+            return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR');
+        }
+
+        function gerarCardCliente(cliente) {
+            const statusClass = cliente.status === 'ativo' ? 'status-ativo' : 'status-inativo';
+            const statusText = cliente.status === 'ativo' ? 'Ativo' : 'Inativo';
+            const statusIcon = cliente.status === 'ativo' ? 'check-circle' : 'times-circle';
+
+            return `
+                <div class="cliente-card" data-cliente-id="${cliente.id}">
+                    <div class="cliente-header">
+                        <div style="display: flex; align-items: center;">
+                            <div class="cliente-avatar">${cliente.avatar}</div>
+                            <div class="cliente-info">
+                                <div class="cliente-nome">${cliente.nome}</div>
+                                <div class="cliente-status">
+                                    <span class="status-badge ${statusClass}">
+                                        <i class="fas fa-${statusIcon}"></i>
+                                        ${statusText}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cliente-actions">
+                            <button class="action-btn btn-primary" onclick="editarCliente(${cliente.id})" title="Editar Cliente">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn btn-secondary" onclick="verDetalhes(${cliente.id})" title="Ver Detalhes">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn btn-danger" onclick="removerCliente(${cliente.id})" title="Remover Cliente">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="cliente-stats">
+                        <div class="cliente-stat-item">
+                            <span class="stat-value">${cliente.totalPedidos}</span>
+                            <span class="stat-label">Pedidos</span>
+                        </div>
+                        <div class="cliente-stat-item">
+                            <span class="stat-value">${formatarMoeda(cliente.totalGasto)}</span>
+                            <span class="stat-label">Total Gasto</span>
+                        </div>
+                        <div class="cliente-stat-item">
+                            <span class="stat-value">${formatarData(cliente.ultimoPedido)}</span>
+                            <span class="stat-label">Último Pedido</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function carregarClientes() {
+            const grid = document.getElementById('clientesGrid');
+            const emptyState = document.getElementById('emptyState');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            loadingSpinner.style.display = 'flex';
+            
+            setTimeout(() => {
+                if (clientesFiltrados.length === 0) {
+                    grid.innerHTML = '';
+                    emptyState.style.display = 'block';
+                } else {
+                    emptyState.style.display = 'none';
+                    grid.innerHTML = clientesFiltrados.map(cliente => gerarCardCliente(cliente)).join('');
+                }
+                loadingSpinner.style.display = 'none';
+            }, 1000);
+        }
+
+        function filtrarClientes() {
+            const termo = document.getElementById('searchInput').value.toLowerCase();
+            
+            clientesFiltrados = clientesExemplo.filter(cliente => 
+                cliente.nome.toLowerCase().includes(termo) ||
+                cliente.email.toLowerCase().includes(termo) ||
+                cliente.telefone.includes(termo)
+            );
+            
+            carregarClientes();
+        }
+
+        function editarCliente(id) {
+            // Implementar edição do cliente
+            console.log('Editando cliente:', id);
+            alert(`Editando cliente ${id}`);
+        }
+
+        function verDetalhes(id) {
+            // Implementar visualização de detalhes
+            console.log('Ver detalhes:', id);
+            alert(`Ver detalhes do cliente ${id}`);
+        }
+
+        function removerCliente(id) {
+            if (confirm('Tem certeza que deseja remover este cliente?')) {
+                // Implementar remoção do cliente
+                console.log('Removendo cliente:', id);
+                alert(`Cliente ${id} removido com sucesso!`);
+                // Recarregar lista
+                carregarClientes();
+            }
+        }
+
+        function adicionarCliente() {
+            // Implementar adição de novo cliente
+            console.log('Adicionar novo cliente');
+            alert('Funcionalidade de adicionar cliente será implementada');
+        }
+
+        // Carregar clientes ao iniciar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarClientes();
+        });
+    </script>
+</body>
+</html>
+            position: relative;
+            z-index: 2;
             align-items: flex-start;
             gap: 16px;
             margin-bottom: 16px;

@@ -6,19 +6,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Criar Novo Administrador - Tem de Ponto</title>
-    <meta name="description" content="àrea restrita para criação de novos administradores">
+    <meta name="theme-color" content="#f1c40f">
+    <title>👤 Criar Admin Premium - Tem de Tudo</title>
+    <meta name="description" content="Área restrita para criação de novos administradores">
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="manifest" href="/manifest.json">
-    
-    <!-- Modern Theme CSS -->
     
     <script src="/js/config.js"></script>
     <script src="/js/auth-manager.js" defer></script>
@@ -26,8 +20,86 @@
     <script src="/js/validators.js" defer></script>
     <script src="/js/ui-helpers.js" defer></script>
     <script src="/js/auth-guard.js" data-require-admin></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        /* Liquid Glass Sidebar */
+        .sidebar {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(241, 196, 15, 0.2);
+            padding: 24px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            z-index: 1000;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 32px;
+        }
+
+        .form-container {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 32px;
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 20px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(26, 26, 46, 0.3));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 16px;
+            font-size: 14px;
+        }
+    </style>
+</head>
 <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">

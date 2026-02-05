@@ -2,48 +2,55 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0a0a0f">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categorias - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
         body { 
             font-family: 'Inter', sans-serif; 
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); 
-            min-height: 100vh; 
-            padding-bottom: 90px; 
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
             color: #fff; 
+            padding-bottom: 80px;
+            min-height: 100vh;
         }
         
         .header { 
-            background: linear-gradient(145deg, #1a1a2e, #16213e); 
-            padding: 20px; 
-            border-bottom: 1px solid rgba(241, 196, 15, 0.2); 
-            text-align: center; 
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
             position: relative;
             overflow: hidden;
         }
+        
         .header::before {
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
             right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(241, 196, 15, 0.1), rgba(102, 126, 234, 0.05));
-            z-index: 1;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(241, 196, 15, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
         }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        
         .header h1 { 
-            font-size: 24px; 
-            font-weight: 900; 
-            background: linear-gradient(135deg, #f1c40f, #f39c12, #e67e22);
+            font-size: 28px; 
+            font-weight: 900;
+            background: linear-gradient(135deg, #f1c40f, #f39c12);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -52,55 +59,66 @@
             text-shadow: 0 2px 10px rgba(241, 196, 15, 0.3);
         }
         
-        .search-container { 
-            padding: 20px; 
+        .header p {
+            font-size: 14px;
+            color: #b0b0b0;
+            margin-top: 8px;
+        }
+        
+        .search-container {
+            padding: 20px;
             background: linear-gradient(145deg, #1a1a2e, #16213e);
         }
-        .search-box { 
-            position: relative; 
-            background: rgba(241, 196, 15, 0.1); 
-            border: 2px solid rgba(241, 196, 15, 0.3); 
-            border-radius: 25px; 
-            padding: 15px 50px 15px 20px; 
-            display: flex; 
-            align-items: center; 
+        
+        .search-box {
+            position: relative;
+            background: rgba(241, 196, 15, 0.1);
+            border: 2px solid rgba(241, 196, 15, 0.3);
+            border-radius: 25px;
+            padding: 15px 50px 15px 20px;
+            display: flex;
+            align-items: center;
             transition: all 0.3s;
         }
+        
         .search-box:focus-within {
             border-color: #f1c40f;
             box-shadow: 0 0 20px rgba(241, 196, 15, 0.4);
         }
-        .search-box i { 
-            color: #f1c40f; 
-            margin-right: 12px; 
+        
+        .search-box i {
+            color: #f1c40f;
+            margin-right: 12px;
             font-size: 16px;
         }
-        .search-box input { 
-            flex: 1; 
-            border: none; 
-            background: transparent; 
-            color: #fff; 
-            font-size: 16px; 
+        
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: #fff;
+            font-size: 16px;
             outline: none;
         }
-        .search-box input::placeholder { 
-            color: rgba(255,255,255,0.6); 
+        
+        .search-box input::placeholder {
+            color: rgba(255,255,255,0.6);
         }
         
-        .categories-grid { 
-            padding: 20px; 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 16px; 
+        .categories-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
         }
         
-        .category-card { 
-            background: linear-gradient(145deg, #1a1a2e, #16213e); 
-            border-radius: 20px; 
-            padding: 20px 16px; 
-            text-align: center; 
-            border: 2px solid rgba(241, 196, 15, 0.2); 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        .category-card {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border-radius: 20px;
+            padding: 20px 16px;
+            text-align: center;
+            border: 2px solid rgba(241, 196, 15, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             position: relative;
             overflow: hidden;
@@ -109,6 +127,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-decoration: none;
+            color: inherit;
         }
         
         .category-card::before {
@@ -133,220 +153,150 @@
             background: linear-gradient(135deg, rgba(241, 196, 15, 0.1), rgba(241, 196, 15, 0.05));
         }
         
-        .category-card i { 
-            font-size: 32px; 
-            margin-bottom: 12px; 
+        .category-card i {
+            font-size: 48px;
+            margin-bottom: 12px;
             color: #f1c40f;
             position: relative;
             z-index: 2;
             text-shadow: 0 2px 10px rgba(241, 196, 15, 0.5);
+            transition: transform 0.3s ease;
         }
         
-        .category-card span { 
-            font-size: 14px; 
-            font-weight: 600; 
+        .category-card:hover i {
+            transform: scale(1.2) rotate(10deg);
+        }
+        
+        .category-card span {
+            font-size: 16px;
+            font-weight: 700;
             color: #fff;
             position: relative;
             z-index: 2;
         }
         
         /* Cores específicas por categoria */
-        .category-card[data-categoria="alimentacao"] { border-color: rgba(231, 76, 60, 0.3); }
-        .category-card[data-categoria="alimentacao"]:hover { border-color: #e74c3c; box-shadow: 0 15px 35px rgba(231, 76, 60, 0.3); }
-        .category-card[data-categoria="alimentacao"] i { color: #e74c3c; }
-        
-        .category-card[data-categoria="beleza"] { border-color: rgba(142, 68, 173, 0.3); }
-        .category-card[data-categoria="beleza"]:hover { border-color: #8e44ad; box-shadow: 0 15px 35px rgba(142, 68, 173, 0.3); }
-        .category-card[data-categoria="beleza"] i { color: #8e44ad; }
-        
-        .category-card[data-categoria="esportes"] { border-color: rgba(39, 174, 96, 0.3); }
-        .category-card[data-categoria="esportes"]:hover { border-color: #27ae60; box-shadow: 0 15px 35px rgba(39, 174, 96, 0.3); }
-        .category-card[data-categoria="esportes"] i { color: #27ae60; }
-        
-        .category-card[data-categoria="moda"] { border-color: rgba(155, 89, 182, 0.3); }
-        .category-card[data-categoria="moda"]:hover { border-color: #9b59b6; box-shadow: 0 15px 35px rgba(155, 89, 182, 0.3); }
-        .category-card[data-categoria="moda"] i { color: #9b59b6; }
-        
-        .category-card[data-categoria="tecnologia"] { border-color: rgba(52, 152, 219, 0.3); }
-        .category-card[data-categoria="tecnologia"]:hover { border-color: #3498db; box-shadow: 0 15px 35px rgba(52, 152, 219, 0.3); }
-        .category-card[data-categoria="tecnologia"] i { color: #3498db; }
-        
-        .category-card[data-categoria="automotivo"] { border-color: rgba(230, 126, 34, 0.3); }
-        .category-card[data-categoria="automotivo"]:hover { border-color: #e67e22; box-shadow: 0 15px 35px rgba(230, 126, 34, 0.3); }
-        .category-card[data-categoria="automotivo"] i { color: #e67e22; }
-        
-        .bottom-nav { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            background: linear-gradient(145deg, #0a0a0f, #1a1a2e); 
-            border-top: 1px solid rgba(241, 196, 15, 0.2); 
-            display: flex; 
-            justify-content: space-around; 
-            padding: 12px 0 8px; 
-            z-index: 1000; 
+        .category-card[data-categoria="alimentacao"] {
+            border-color: rgba(231, 76, 60, 0.3);
         }
-        .nav-item { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 4px; 
-            text-decoration: none; 
-            color: rgba(255,255,255,0.6); 
-            font-size: 11px; 
-            font-weight: 500; 
-            transition: all 0.3s;
+        .category-card[data-categoria="alimentacao"]:hover {
+            border-color: #e74c3c;
+            box-shadow: 0 15px 35px rgba(231, 76, 60, 0.3);
         }
-        .nav-item.active { 
-            color: #f1c40f; 
-            text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
-        }
-        .nav-item i { 
-            font-size: 20px; 
-            transition: all 0.3s;
-        }
-        .nav-item:hover i {
-            transform: scale(1.1);
+        .category-card[data-categoria="alimentacao"] i {
+            color: #e74c3c;
         }
         
-        /* Sugestões de pesquisa */
-        .search-suggestions {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 2px solid rgba(241, 196, 15, 0.3);
-            border-top: none;
-            border-radius: 0 0 15px 15px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
+        .category-card[data-categoria="beleza"] {
+            border-color: rgba(142, 68, 173, 0.3);
+        }
+        .category-card[data-categoria="beleza"]:hover {
+            border-color: #8e44ad;
+            box-shadow: 0 15px 35px rgba(142, 68, 173, 0.3);
+        }
+        .category-card[data-categoria="beleza"] i {
+            color: #8e44ad;
         }
         
-        .suggestion-item {
-            padding: 12px 20px;
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+        .category-card[data-categoria="esportes"] {
+            border-color: rgba(39, 174, 96, 0.3);
+        }
+        .category-card[data-categoria="esportes"]:hover {
+            border-color: #27ae60;
+            box-shadow: 0 15px 35px rgba(39, 174, 96, 0.3);
+        }
+        .category-card[data-categoria="esportes"] i {
+            color: #27ae60;
         }
         
-        .suggestion-item:hover {
-            background: rgba(241, 196, 15, 0.1);
-            color: #f1c40f;
+        .category-card[data-categoria="moda"] {
+            border-color: rgba(155, 89, 182, 0.3);
+        }
+        .category-card[data-categoria="moda"]:hover {
+            border-color: #9b59b6;
+            box-shadow: 0 15px 35px rgba(155, 89, 182, 0.3);
+        }
+        .category-card[data-categoria="moda"] i {
+            color: #9b59b6;
         }
         
-        .suggestion-item:last-child {
-            border-bottom: none;
+        .category-card[data-categoria="tecnologia"] {
+            border-color: rgba(52, 152, 219, 0.3);
         }
-    </style>
+        .category-card[data-categoria="tecnologia"]:hover {
+            border-color: #3498db;
+            box-shadow: 0 15px 35px rgba(52, 152, 219, 0.3);
+        }
+        .category-card[data-categoria="tecnologia"] i {
+            color: #3498db;
         }
         
-        .category-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+        .category-card[data-categoria="automotivo"] {
+            border-color: rgba(230, 126, 34, 0.3);
+        }
+        .category-card[data-categoria="automotivo"]:hover {
+            border-color: #e67e22;
+            box-shadow: 0 15px 35px rgba(230, 126, 34, 0.3);
+        }
+        .category-card[data-categoria="automotivo"] i {
+            color: #e67e22;
+        }
+        
+        .category-card[data-categoria="saude"] {
+            border-color: rgba(255, 140, 200, 0.3);
+        }
+        .category-card[data-categoria="saude"]:hover {
+            border-color: #ff8cc8;
+            box-shadow: 0 15px 35px rgba(255, 140, 200, 0.3);
+        }
+        .category-card[data-categoria="saude"] i {
+            color: #ff8cc8;
+        }
+        
+        .category-card[data-categoria="servicos"] {
+            border-color: rgba(255, 212, 59, 0.3);
+        }
+        .category-card[data-categoria="servicos"]:hover {
+            border-color: #ffd43b;
+            box-shadow: 0 15px 35px rgba(255, 212, 59, 0.3);
+        }
+        .category-card[data-categoria="servicos"] i {
+            color: #ffd43b;
+        }
+        
+        .bottom-nav {
+            position: fixed;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(241, 196, 15, 0.1), rgba(243, 156, 18, 0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            left: 0;
+            right: 0;
+            background: linear-gradient(145deg, #0a0a0f, #1a1a2e);
+            border-top: 1px solid rgba(241, 196, 15, 0.2);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 8px;
+            z-index: 1000;
         }
         
-        .category-card:hover {
-            border-color: #f1c40f;
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 60px rgba(241, 196, 15, 0.3);
-        }
-        
-        .category-card:hover::before {
-            opacity: 1;
-        }
-        
-        .category-card:active {
-            transform: translateY(-4px) scale(1.01);
-        }
-        
-        .category-icon { 
-            font-size: 48px; 
-            margin-bottom: 16px; 
-            position: relative;
-            z-index: 1;
-            transition: transform 0.3s ease;
-        }
-        
-        .category-card:hover .category-icon {
-            transform: scale(1.2) rotate(10deg);
-        }
-        
-        .category-name { 
-            font-size: 16px; 
-            font-weight: 700; 
-            margin-bottom: 6px; 
-            position: relative;
-            z-index: 1;
-        }
-        
-        .category-count { 
-            font-size: 13px; 
-            color: #b0b0b0; 
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Cores específicas para cada categoria */
-        .category-card[data-category="restaurantes"] .category-icon { color: #ff6b6b; }
-        .category-card[data-category="beleza"] .category-icon { color: #ff9ff3; }
-        .category-card[data-category="fitness"] .category-icon { color: #51cf66; }
-        .category-card[data-category="servicos"] .category-icon { color: #ffd43b; }
-        .category-card[data-category="lazer"] .category-icon { color: #74c0fc; }
-        .category-card[data-category="saude"] .category-icon { color: #ff8cc8; }
-        
-        .bottom-nav { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            background: linear-gradient(145deg, #1a1a2e, #16213e); 
-            border-top: 1px solid rgba(102, 126, 234, 0.2); 
-            padding: 12px 8px 20px; 
-            display: flex; 
-            justify-content: space-around; 
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.3); 
-        }
-        
-        .nav-item { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 6px; 
-            text-decoration: none; 
-            color: #b0b0b0; 
-            font-size: 11px; 
-            font-weight: 600; 
-            padding: 8px;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-item:hover {
-            background: rgba(241, 196, 15, 0.1);
-            color: #f1c40f;
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: rgba(255,255,255,0.6);
+            font-size: 11px;
+            font-weight: 500;
+            transition: all 0.3s;
         }
         
         .nav-item.active {
-            background: rgba(241, 196, 15, 0.2);
             color: #f1c40f;
+            text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
         }
         
-        .nav-item i { 
-            font-size: 22px; 
-            transition: transform 0.3s ease;
+        .nav-item i {
+            font-size: 20px;
+            transition: all 0.3s;
         }
         
         .nav-item:hover i {
@@ -364,263 +314,117 @@
                 padding: 20px 16px;
             }
             
-            .category-icon {
+            .category-card i {
                 font-size: 40px;
             }
         }
     </style>
-    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n    <link rel="stylesheet" href="/css/vale-bonus-theme.css">
 </head>
 <body>
     <div class="header">
-        <h1>Categorias</h1>
+        <div class="header-content">
+            <h1>Categorias</h1>
+            <p>Explore todas as categorias disponíveis</p>
+        </div>
     </div>
-    
+
     <div class="search-container">
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" placeholder="Buscar categoria ou empresa..." id="searchInput">
-            <div class="search-suggestions" id="searchSuggestions"></div>
+            <input type="text" id="searchInput" placeholder="Buscar categorias ou empresas...">
         </div>
     </div>
 
     <div class="categories-grid">
-        <div class="category-card" data-categoria="alimentacao" onclick="goToCategory('alimentacao')">
-            <i class="fas fa-utensils"></i>
-            <span>Restaurantes</span>
-        </div>
+        <a href="/app-empresas.html?category=alimentacao" class="category-card" data-categoria="alimentacao">
+            <i class="fas fa-hamburger"></i>
+            <span>Alimentação</span>
+        </a>
         
-        <div class="category-card" data-categoria="beleza" onclick="goToCategory('beleza')">
+        <a href="/app-empresas.html?category=beleza" class="category-card" data-categoria="beleza">
             <i class="fas fa-spa"></i>
             <span>Beleza & Estética</span>
-        </div>
+        </a>
         
-        <div class="category-card" data-categoria="esportes" onclick="goToCategory('esportes')">
+        <a href="/app-empresas.html?category=esportes" class="category-card" data-categoria="esportes">
             <i class="fas fa-dumbbell"></i>
             <span>Esportes & Fitness</span>
-        </div>
+        </a>
         
-        <div class="category-card" data-categoria="moda" onclick="goToCategory('moda')">
+        <a href="/app-empresas.html?category=moda" class="category-card" data-categoria="moda">
             <i class="fas fa-tshirt"></i>
             <span>Moda</span>
-        </div>
+        </a>
         
-        <div class="category-card" data-categoria="tecnologia" onclick="goToCategory('tecnologia')">
+        <a href="/app-empresas.html?category=tecnologia" class="category-card" data-categoria="tecnologia">
             <i class="fas fa-laptop"></i>
             <span>Tecnologia</span>
-        </div>
+        </a>
         
-        <div class="category-card" data-categoria="automotivo" onclick="goToCategory('automotivo')">
+        <a href="/app-empresas.html?category=automotivo" class="category-card" data-categoria="automotivo">
             <i class="fas fa-car"></i>
             <span>Automotivo</span>
-        </div>
+        </a>
         
-        <div class="category-card" data-categoria="saude" onclick="goToCategory('saude')">
+        <a href="/app-empresas.html?category=saude" class="category-card" data-categoria="saude">
             <i class="fas fa-heartbeat"></i>
             <span>Saúde</span>
-        </div>
+        </a>
         
-        <div class="category-card" data-categoria="servicos" onclick="goToCategory('servicos')">
-            <i class="fas fa-tools"></i>
+        <a href="/app-empresas.html?category=servicos" class="category-card" data-categoria="servicos">
+            <i class="fas fa-wrench"></i>
             <span>Serviços</span>
-        </div>
+        </a>
     </div>
 
     <nav class="bottom-nav">
-        <a href="app-inicio.html" class="nav-item">
+        <a href="/app-inicio.html" class="nav-item">
             <i class="fas fa-home"></i>
             <span>Início</span>
         </a>
-        <a href="app-empresas.html" class="nav-item">
+        <a href="/app-empresas.html" class="nav-item">
             <i class="fas fa-search"></i>
             <span>Buscar</span>
         </a>
-        <a href="app-promocoes.html" class="nav-item">
-            <i class="fas fa-gift"></i>
+        <a href="/app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
             <span>Promoções</span>
         </a>
-        <a href="app-notificacoes.html" class="nav-item">
+        <a href="/app-avisos.html" class="nav-item">
             <i class="fas fa-bell"></i>
             <span>Avisos</span>
         </a>
-        <a href="app-perfil.html" class="nav-item active">
+        <a href="/app-perfil.html" class="nav-item">
             <i class="fas fa-user"></i>
             <span>Perfil</span>
         </a>
     </nav>
 
     <script>
-        // Dados fictícios das empresas por categoria
-        const empresasPorCategoria = {
-            'alimentacao': [
-                'TechCorp Solutions - Restaurante Corporativo',
-                'Sabor & Arte Restaurante',
-                'Pizzaria Bella Vista',
-                'Hamburgueria Premium',
-                'Sushi House Oriental',
-                'Padaria Pão Dourado'
-            ],
-            'beleza': [
-                'Bella Vita Estética',
-                'Salon Premium Hair',
-                'Spa Relaxamento Total',
-                'Barbearia Moderna',
-                'Nail Studio Fashion'
-            ],
-            'esportes': [
-                'VidaFit Academia',
-                'CrossFit Power',
-                'Pilates Studio',
-                'Personal Trainer Pro',
-                'Yoga Center'
-            ],
-            'moda': [
-                'FashionTrend Boutique',
-                'Outlet Style',
-                'Jeans & Co',
-                'Acessórios Fashion',
-                'Calçados Premium'
-            ],
-            'tecnologia': [
-                'TechCorp Solutions',
-                'Assistência SmartPhone',
-                'Loja de Games',
-                'Informática Total',
-                'Eletrônicos & Cia'
-            ],
-            'automotivo': [
-                'AutoCare Services',
-                'Oficina Mecânica Pro',
-                'Lava Car Express',
-                'Auto Peças Premium',
-                'Pneus & Rodas'
-            ],
-            'saude': [
-                'Clínica Médica Central',
-                'Farmácia Popular',
-                'Laboratório Exames',
-                'Fisioterapia Saúde+',
-                'Dentista Sorriso'
-            ],
-            'servicos': [
-                'Lavanderia Express',
-                'Chaveiro 24h',
-                'Encanador Pro',
-                'Eletricista Expert',
-                'Pintor Profissional'
-            ]
-        };
-
-        const searchInput = document.getElementById('searchInput');
-        const searchSuggestions = document.getElementById('searchSuggestions');
-
-        // Função de busca
-        searchInput.addEventListener('input', function() {
-            const query = this.value.toLowerCase();
+        // Busca funcional
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.category-card');
             
-            if (query.length === 0) {
-                searchSuggestions.style.display = 'none';
-                return;
-            }
-
-            const suggestions = [];
-            
-            // Buscar em categorias
-            const categorias = ['alimentacao', 'beleza', 'esportes', 'moda', 'tecnologia', 'automotivo', 'saude', 'servicos'];
-            categorias.forEach(cat => {
-                if (cat.includes(query)) {
-                    suggestions.push(`📂 Categoria: ${getCategoryName(cat)}`);
+            cards.forEach(card => {
+                const categoryName = card.querySelector('span').textContent.toLowerCase();
+                if (categoryName.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
                 }
             });
-
-            // Buscar em empresas
-            Object.keys(empresasPorCategoria).forEach(categoria => {
-                empresasPorCategoria[categoria].forEach(empresa => {
-                    if (empresa.toLowerCase().includes(query)) {
-                        suggestions.push(`🏢 ${empresa}`);
-                    }
-                });
-            });
-
-            if (suggestions.length > 0) {
-                searchSuggestions.innerHTML = suggestions.slice(0, 5).map(suggestion => 
-                    `<div class="suggestion-item" onclick="selectSuggestion('${suggestion}')">${suggestion}</div>`
-                ).join('');
-                searchSuggestions.style.display = 'block';
-            } else {
-                searchSuggestions.style.display = 'none';
-            }
         });
-
-        // Função para busca com Enter
-        searchInput.addEventListener('keypress', function(e) {
+        
+        // Enter para buscar
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                const query = this.value;
-                if (query.trim()) {
-                    window.location.href = `app-empresas.html?search=${encodeURIComponent(query)}`;
+                const query = e.target.value.trim();
+                if (query) {
+                    window.location.href = `/app-empresas.html?q=${encodeURIComponent(query)}`;
                 }
             }
         });
-
-        // Fechar sugestões ao clicar fora
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.search-box')) {
-                searchSuggestions.style.display = 'none';
-            }
-        });
-
-        function selectSuggestion(suggestion) {
-            if (suggestion.includes('Categoria:')) {
-                const categoria = suggestion.split('Categoria: ')[1];
-                goToCategoryByName(categoria);
-            } else {
-                const empresa = suggestion.replace('🏢 ', '');
-                window.location.href = `app-empresas.html?search=${encodeURIComponent(empresa)}`;
-            }
-            searchSuggestions.style.display = 'none';
-        }
-
-        function getCategoryName(categoria) {
-            const names = {
-                'alimentacao': 'Restaurantes',
-                'beleza': 'Beleza & Estética',
-                'esportes': 'Esportes & Fitness',
-                'moda': 'Moda',
-                'tecnologia': 'Tecnologia',
-                'automotivo': 'Automotivo',
-                'saude': 'Saúde',
-                'servicos': 'Serviços'
-            };
-            return names[categoria] || categoria;
-        }
-
-        function goToCategory(categoria) {
-            window.location.href = `app-empresas.html?categoria=${categoria}`;
-        }
-
-        function goToCategoryByName(name) {
-            const categoryMap = {
-                'Restaurantes': 'alimentacao',
-                'Beleza & Estética': 'beleza',
-                'Esportes & Fitness': 'esportes',
-                'Moda': 'moda',
-                'Tecnologia': 'tecnologia',
-                'Automotivo': 'automotivo',
-                'Saúde': 'saude',
-                'Serviços': 'servicos'
-            };
-            const categoria = categoryMap[name];
-            if (categoria) {
-                goToCategory(categoria);
-            }
-        }
     </script>
 </body>
 </html>

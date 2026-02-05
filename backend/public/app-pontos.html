@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f1c40f">
+    <title>💰 Meus Pontos Premium - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #fff; 
+            padding-bottom: 80px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header { 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            position: relative;
+            padding: 32px 20px 24px;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .back-btn {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(241, 196, 15, 0.1));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-radius: 16px;
+            color: #f1c40f;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.3);
+        }
+
+        .header h1 { 
+            font-size: 28px; 
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff, #f1c40f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .header p { 
+            font-size: 14px; 
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 24px 20px;
+        }
+
+        .pontos-card {
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            padding: 32px 24px;
+            border-radius: 24px;
+            margin-bottom: 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 35px rgba(241, 196, 15, 0.3);
+        }
+
+        .pontos-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .pontos-card .saldo {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            color: #0a0a0f;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pontos-card .label {
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(10, 10, 15, 0.8);
+            position: relative;
+            z-index: 2;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.9), rgba(15, 20, 25, 0.6));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.15);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(241, 196, 15, 0.2);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card .icon {
+            font-size: 32px;
+            color: #f1c40f;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-card .label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: #f1c40f;
+        }
+
+        .extrato {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.9), rgba(15, 20, 25, 0.6));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.15);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .transacao {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+        }
+
+        .transacao:last-child {
+            border-bottom: none;
+        }
+
+        .transacao-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .transacao-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(241, 196, 15, 0.1));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f1c40f;
+            font-size: 18px;
+        }
+
+        .transacao-detalhes {
+            flex: 1;
+        }
+
+        .transacao-titulo {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .transacao-data {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        .transacao-pontos {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .transacao-pontos.ganhou {
+            color: #00d4aa;
+        }
+
+        .transacao-pontos.gastou {
+            color: #ff6b6b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: rgba(241, 196, 15, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.95), rgba(10, 10, 15, 0.95));
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(241, 196, 15, 0.1);
+            padding: 12px 20px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            z-index: 1000;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-item.active::before {
+            opacity: 1;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: #f1c40f;
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active i {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 28px 16px 20px;
+            }
+
+            .content {
+                padding: 20px 16px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .pontos-card .saldo {
+                font-size: 40px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .nav-item {
+                font-size: 11px;
+                padding: 6px 8px;
+            }
+
+            .nav-item i {
+                font-size: 18px;
+            }
+        }
+
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pontos-card, .stat-card, .extrato {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .stat-card:nth-child(2) { animation-delay: 0.1s; }
+        .stat-card:nth-child(3) { animation-delay: 0.2s; }
+        .extrato { animation-delay: 0.3s; }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="header-content">
+            <button class="back-btn" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>💰 Meus Pontos Premium</h1>
+            <p>Acompanhe seus ganhos e recompensas</p>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- Saldo de Pontos -->
+        <div class="pontos-card">
+            <div class="saldo" id="saldoPontos">1,247</div>
+            <div class="label">Pontos Disponíveis</div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">📈</div>
+                <div class="value" id="totalGanhos">2,856</div>
+                <div class="label">Total Ganhos</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🛍️</div>
+                <div class="value" id="totalGastos">1,609</div>
+                <div class="label">Total Gastos</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🏆</div>
+                <div class="value" id="checkins">47</div>
+                <div class="label">Check-ins</div>
+            </div>
+        </div>
+
+        <!-- Extrato de Transações -->
+        <div class="extrato">
+            <div class="section-title">
+                <i class="fas fa-history"></i>
+                Extrato de Pontos
+            </div>
+            
+            <div id="extratoTransacoes">
+                <!-- Será preenchido via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-items">
+            <a href="app-inicio.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </a>
+            <a href="app-empresas.html" class="nav-item">
+                <i class="fas fa-search"></i>
+                <span>Buscar</span>
+            </a>
+            <a href="app-cupons.html" class="nav-item">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Cupons</span>
+            </a>
+            <a href="app-pontos.html" class="nav-item active">
+                <i class="fas fa-coins"></i>
+                <span>Pontos</span>
+            </a>
+            <a href="app-perfil.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
+        
+        // Dados fictícios para demonstração
+        const transacoesFicticias = [
+            {
+                id: 1,
+                tipo: 'checkin',
+                empresa: 'Sabor e Arte',
+                pontos: 50,
+                data: '2024-01-15T10:30:00Z',
+                icon: 'fa-map-marker-alt'
+            },
+            {
+                id: 2,
+                tipo: 'compra_cupom',
+                empresa: 'Bella Napoli',
+                pontos: -80,
+                data: '2024-01-14T18:45:00Z',
+                icon: 'fa-ticket-alt'
+            },
+            {
+                id: 3,
+                tipo: 'checkin',
+                empresa: 'Academia FitLife',
+                pontos: 75,
+                data: '2024-01-13T07:15:00Z',
+                icon: 'fa-map-marker-alt'
+            },
+            {
+                id: 4,
+                tipo: 'bonus',
+                empresa: 'Programa Fidelidade',
+                pontos: 100,
+                data: '2024-01-12T12:00:00Z',
+                icon: 'fa-gift'
+            },
+            {
+                id: 5,
+                tipo: 'checkin',
+                empresa: 'Café & Cia',
+                pontos: 25,
+                data: '2024-01-11T09:20:00Z',
+                icon: 'fa-map-marker-alt'
+            }
+        ];
+        
+        let saldoAtual = 1247;
+        let totalGanhos = 2856;
+        let totalGastos = 1609;
+        let totalCheckins = 47;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/entrar.html';
+                return;
+            }
+            
+            // Verificar se é usuário FICTÍCIO (demonstração) ou REAL (uso)
+            const userStr = localStorage.getItem('user');
+            const usuariosFicticios = ['maria@email.com', 'joao@email.com', 'saborearte@email.com', 'bellanapoli@email.com'];
+            let ehUsuarioFicticio = false;
+            
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    ehUsuarioFicticio = usuariosFicticios.includes(user.email);
+                } catch (e) {
+                    console.error('Erro ao parsear user:', e);
+                }
+            }
+            
+            if (ehUsuarioFicticio) {
+                console.log('👤 Usuário fictício: usando dados de demonstração');
+                renderizarDadosFicticios();
+            } else {
+                console.log('🔥 Usuário real: carregando dados reais da API');
+                carregarDadosAPI();
+            }
+        });
+        
+        function renderizarDadosFicticios() {
+            // Atualizar estatísticas
+            document.getElementById('saldoPontos').textContent = formatarNumero(saldoAtual);
+            document.getElementById('totalGanhos').textContent = formatarNumero(totalGanhos);
+            document.getElementById('totalGastos').textContent = formatarNumero(totalGastos);
+            document.getElementById('checkins').textContent = totalCheckins;
+            
+            // Renderizar extrato
+            renderizarExtrato(transacoesFicticias);
+        }
+        
+        async function carregarDadosAPI() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE_URL}/api/pontos`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Atualizar com dados reais
+                    saldoAtual = data.saldo || 0;
+                    totalGanhos = data.total_ganhos || 0;
+                    totalGastos = data.total_gastos || 0;
+                    totalCheckins = data.total_checkins || 0;
+                    
+                    document.getElementById('saldoPontos').textContent = formatarNumero(saldoAtual);
+                    document.getElementById('totalGanhos').textContent = formatarNumero(totalGanhos);
+                    document.getElementById('totalGastos').textContent = formatarNumero(totalGastos);
+                    document.getElementById('checkins').textContent = totalCheckins;
+                    
+                    renderizarExtrato(data.transacoes || []);
+                } else {
+                    console.log('Erro ao carregar dados, usando dados fictícios');
+                    renderizarDadosFicticios();
+                }
+            } catch (error) {
+                console.error('Erro na API:', error);
+                renderizarDadosFicticios();
+            }
+        }
+        
+        function renderizarExtrato(transacoes) {
+            const container = document.getElementById('extratoTransacoes');
+            
+            if (transacoes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-coins"></i>
+                        <h3>Nenhuma transação ainda</h3>
+                        <p>Comece fazendo check-ins em empresas parceiras para ganhar pontos!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = transacoes.map(transacao => {
+                const data = new Date(transacao.data || transacao.created_at);
+                const isPositivo = transacao.pontos > 0;
+                const iconClass = getIconeTransacao(transacao.tipo);
+                
+                return `
+                    <div class="transacao">
+                        <div class="transacao-info">
+                            <div class="transacao-icon">
+                                <i class="fas ${iconClass}"></i>
+                            </div>
+                            <div class="transacao-detalhes">
+                                <div class="transacao-titulo">${getTituloTransacao(transacao)}</div>
+                                <div class="transacao-data">${formatarData(data)}</div>
+                            </div>
+                        </div>
+                        <div class="transacao-pontos ${isPositivo ? 'ganhou' : 'gastou'}">
+                            ${isPositivo ? '+' : ''}${transacao.pontos}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function getIconeTransacao(tipo) {
+            const icones = {
+                'checkin': 'fa-map-marker-alt',
+                'compra_cupom': 'fa-ticket-alt',
+                'uso_cupom': 'fa-gift',
+                'bonus': 'fa-star',
+                'cashback': 'fa-coins',
+                'referencia': 'fa-user-plus'
+            };
+            return icones[tipo] || 'fa-coins';
+        }
+        
+        function getTituloTransacao(transacao) {
+            const titulos = {
+                'checkin': `Check-in em ${transacao.empresa || transacao.empresa_nome}`,
+                'compra_cupom': `Compra de cupom - ${transacao.empresa || transacao.empresa_nome}`,
+                'uso_cupom': `Uso de cupom - ${transacao.empresa || transacao.empresa_nome}`,
+                'bonus': `Bônus - ${transacao.empresa || 'Sistema'}`,
+                'cashback': `Cashback - ${transacao.empresa || transacao.empresa_nome}`,
+                'referencia': `Indicação de amigo - ${transacao.empresa || 'Sistema'}`
+            };
+            return titulos[transacao.tipo] || `Transação - ${transacao.empresa || 'Sistema'}`;
+        }
+        
+        function formatarData(data) {
+            const agora = new Date();
+            const diff = agora - data;
+            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+            
+            if (dias === 0) {
+                return 'Hoje';
+            } else if (dias === 1) {
+                return 'Ontem';
+            } else if (dias < 7) {
+                return `${dias} dias atrás`;
+            } else {
+                return data.toLocaleDateString('pt-BR');
+            }
+        }
+        
+        function formatarNumero(numero) {
+            if (numero >= 1000) {
+                return (numero / 1000).toFixed(1).replace('.', ',') + 'k';
+            }
+            return numero.toString();
+        }
+    </script>
+</body>
+</html>

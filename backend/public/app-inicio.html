@@ -4,77 +4,580 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Início - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #0a0a0f; color: #fff; padding-bottom: 80px; overflow-x: hidden; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
         
-        .header { padding: 20px 20px 16px; background: #0a0a0f; }
-        .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-        .greeting { font-size: 20px; font-weight: 400; margin-bottom: 4px; color: #aaa; }
-        .user-name { font-size: 26px; font-weight: 900; color: #fff; }
-        .profile-type { font-size: 13px; color: #f39c12; margin-top: 4px; display: flex; align-items: center; gap: 6px; }
-        .saldo-badge { background: #f59e0b; padding: 12px 18px; border-radius: 24px; border: 2px solid rgba(255, 215, 0, 0.4); cursor: pointer; }
-        .saldo-label { font-size: 11px; opacity: 0.9; }
-        .saldo-value { font-size: 18px; font-weight: 800; }
-        
-        .search-container { padding: 0 20px 16px; }
-        .search-box { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(241, 196, 15, 0.2); }
-        .search-box i { color: #f1c40f; font-size: 18px; }
-        .search-box input { flex: 1; background: none; border: none; color: #fff; font-size: 15px; outline: none; }
-        .search-box input::placeholder { color: #888; }
-        
-        .location { padding: 0 20px 16px; display: flex; align-items: center; gap: 8px; color: #888; font-size: 13px; }
-        .location i { color: #f1c40f; }
-        .location span { flex: 1; }
-        
-        .section { padding: 0 20px 24px; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .section-title { font-size: 18px; font-weight: 800; }
-        .ver-mais { font-size: 13px; color: #f1c40f; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 4px; }
-        
-        .categories-scroll { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
-        .categories-scroll::-webkit-scrollbar { display: none; }
-        .category-card { min-width: 100px; text-align: center; text-decoration: none; color: #fff; }
-        .category-icon { width: 80px; height: 80px; background: rgba(255,255,255,0.05); border: 1px solid rgba(241, 196, 15, 0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 8px; transition: all 0.3s; }
-        .category-card:active .category-icon { transform: scale(0.95); background: linear-gradient(135deg, #f1c40f20, #f39c1220); }
-        .category-name { font-size: 12px; font-weight: 600; }
-        
-        .banner-carousel { margin: 0 20px 24px; overflow: hidden; border-radius: 16px; }
-        .banner-img { width: 100%; height: 160px; object-fit: cover; border-radius: 16px; }
-        
-        .empresas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .empresa-card { background: rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; text-decoration: none; color: #fff; border: 1px solid rgba(241, 196, 15, 0.1); transition: transform 0.3s; }
-        .empresa-card:active { transform: scale(0.97); }
-        .empresa-img { width: 100%; height: 120px; object-fit: cover; }
-        .empresa-content { padding: 12px; }
-        .empresa-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .empresa-category { font-size: 11px; color: #888; margin-bottom: 8px; }
-        .empresa-footer { display: flex; justify-content: space-between; align-items: center; }
-        .empresa-distance { font-size: 11px; color: #f1c40f; display: flex; align-items: center; gap: 4px; }
-        .empresa-pontos { background: linear-gradient(135deg, #f39c12, #e67e22); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
-        
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0a0a0f; border-top: 1px solid rgba(241, 196, 15, 0.1); display: flex; justify-content: space-around; padding: 12px 0 8px; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #888; font-size: 11px; font-weight: 500; }
-        .nav-item.active { color: #f1c40f; }
-        .nav-item i { font-size: 20px; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%); 
+            color: #fff; 
+            min-height: 100vh;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+        }
+
+        .header { 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            position: relative;
+            padding: 32px 20px 24px;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-top { 
+            position: relative;
+            z-index: 2;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+            margin-bottom: 20px; 
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .greeting { 
+            font-size: 16px; 
+            font-weight: 400; 
+            margin-bottom: 4px; 
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .user-name { 
+            font-size: 28px; 
+            font-weight: 900; 
+            background: linear-gradient(135deg, #ffffff, #f1c40f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .profile-type { 
+            font-size: 13px; 
+            color: #f1c40f; 
+            font-weight: 600;
+            display: flex; 
+            align-items: center; 
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(241, 196, 15, 0.15);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            width: fit-content;
+        }
+
+        .saldo-badge { 
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(241, 196, 15, 0.1));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            padding: 16px 20px; 
+            border-radius: 20px; 
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .saldo-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(241, 196, 15, 0.1) 0%, transparent 70%);
+            animation: float 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+            33% { transform: translate(20px, -20px) rotate(120deg); }
+            66% { transform: translate(-15px, 15px) rotate(240deg); }
+        }
+
+        .saldo-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.3);
+        }
+
+        .saldo-label { 
+            font-size: 11px; 
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 4px;
+        }
+
+        .saldo-value { 
+            font-size: 20px; 
+            font-weight: 900; 
+            color: #f1c40f;
+            position: relative;
+            z-index: 2;
+        }
+
+        .search-container { 
+            padding: 0 20px 20px; 
+        }
+
+        .search-box { 
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            border-radius: 20px; 
+            padding: 16px 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .search-box:focus-within {
+            border-color: rgba(241, 196, 15, 0.5);
+            box-shadow: 0 4px 20px rgba(241, 196, 15, 0.2);
+        }
+
+        .search-box i { 
+            color: #f1c40f; 
+            font-size: 18px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .search-box input { 
+            flex: 1; 
+            background: none; 
+            border: none; 
+            color: #fff; 
+            font-size: 16px; 
+            outline: none;
+            position: relative;
+            z-index: 2;
+        }
+
+        .search-box input::placeholder { 
+            color: rgba(255, 255, 255, 0.5); 
+        }
+
+        .location { 
+            padding: 0 20px 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            color: rgba(255, 255, 255, 0.6); 
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .location i { 
+            color: #f1c40f;
+            font-size: 16px;
+        }
+
+        .location span { 
+            flex: 1; 
+        }
+
+        .section { 
+            padding: 0 20px 32px; 
+        }
+
+        .section-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+        }
+
+        .section-title { 
+            font-size: 20px; 
+            font-weight: 800;
+            position: relative;
+            padding-left: 16px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            border-radius: 2px;
+        }
+
+        .ver-mais { 
+            font-size: 14px; 
+            color: #f1c40f; 
+            font-weight: 700; 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .ver-mais:hover {
+            background: rgba(241, 196, 15, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .categories-scroll { 
+            display: flex; 
+            gap: 16px; 
+            overflow-x: auto; 
+            scrollbar-width: none; 
+            padding: 4px 0 8px;
+        }
+
+        .categories-scroll::-webkit-scrollbar { 
+            display: none; 
+        }
+
+        .category-card { 
+            min-width: 100px; 
+            text-align: center; 
+            text-decoration: none; 
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .category-icon { 
+            width: 88px; 
+            height: 88px; 
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 36px; 
+            margin: 0 auto 12px; 
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .category-card:hover .category-icon::before {
+            opacity: 1;
+        }
+
+        .category-card:hover .category-icon {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.2);
+            border-color: rgba(241, 196, 15, 0.4);
+        }
+
+        .category-name { 
+            font-size: 13px; 
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .banner-carousel { 
+            margin: 0 20px 32px; 
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner-img { 
+            width: 100%; 
+            height: 180px; 
+            object-fit: cover; 
+            border-radius: 20px;
+            filter: brightness(0.8);
+            transition: all 0.3s ease;
+        }
+
+        .banner-carousel:hover .banner-img {
+            filter: brightness(1);
+            transform: scale(1.05);
+        }
+
+        .banner-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 20px;
+            color: white;
+        }
+
+        .banner-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .banner-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .empresas-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 16px; 
+        }
+
+        .empresa-card { 
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 20px; 
+            overflow: hidden; 
+            text-decoration: none; 
+            color: #fff;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .empresa-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .empresa-card:hover::before {
+            opacity: 1;
+        }
+
+        .empresa-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.2);
+        }
+
+        .empresa-img { 
+            width: 100%; 
+            height: 130px; 
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .empresa-card:hover .empresa-img {
+            transform: scale(1.1);
+        }
+
+        .empresa-content { 
+            padding: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .empresa-name { 
+            font-size: 15px; 
+            font-weight: 800; 
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .empresa-category { 
+            font-size: 12px; 
+            color: rgba(255, 255, 255, 0.7); 
+            margin-bottom: 12px;
+        }
+
+        .empresa-footer { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            font-size: 11px;
+        }
+
+        .empresa-distance { 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .empresa-distance i { 
+            color: #f1c40f; 
+        }
+
+        .empresa-pontos { 
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            color: #1a1a2e;
+            padding: 4px 8px; 
+            border-radius: 12px; 
+            font-weight: 800;
+            font-size: 10px;
+        }
+
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(26, 26, 46, 0.8));
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(241, 196, 15, 0.2);
+            display: flex; 
+            justify-content: space-around; 
+            padding: 16px 0 12px; 
+            z-index: 1000; 
+        }
+
+        .nav-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 6px; 
+            text-decoration: none; 
+            color: rgba(255, 255, 255, 0.6); 
+            font-size: 11px; 
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.1), transparent);
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-item.active::before {
+            opacity: 1;
+        }
+
+        .nav-item.active { 
+            color: #f1c40f; 
+            transform: translateY(-2px);
+        }
+
+        .nav-item i { 
+            font-size: 20px;
+            transition: all 0.3s ease; 
+        }
+
+        .nav-item.active i {
+            transform: scale(1.1);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .quick-action {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 16px;
+            padding: 16px 12px;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-action::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .quick-action:hover::before {
+            opacity: 1;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(241, 196, 15, 0.2);
+        }
+
+        .quick-action i {
+            font-size: 24px;
+            color: #f1c40f;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .quick-action span {
+            font-size: 11px;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="header-top">
-            <div>
-                <div class="greeting">Olá, <span id="userName">...</span></div>
+            <div class="user-info">
+                <div class="greeting">Olá, bem-vindo de volta! ✨</div>
+                <div class="user-name" id="userName">Marcus Silva</div>
                 <div class="profile-type" id="profileType">
-                    <i class="fas fa-spinner fa-spin"></i> Carregando...
+                    <i class="fas fa-crown"></i> Premium Active
                 </div>
             </div>
-            <div class="saldo-badge" onclick="location.href='/app-meus-pontos.html'">
-                <div>
-                    <div class="saldo-label">Saldo:</div>
-                    <div class="saldo-value">$ <span id="saldoValue">0,00</span></div>
-                </div>
+            <div class="saldo-badge" onclick="window.location.href='/app-meus-pontos.html'">
+                <div class="saldo-label">💰 Saldo Atual</div>
+                <div class="saldo-value">R$ <span id="saldoValue">2.847,50</span></div>
             </div>
         </div>
     </div>
@@ -82,170 +585,286 @@
     <div class="search-container">
         <div class="search-box">
             <i class="fas fa-search"></i>
-            <input type="text" placeholder="O que está procurando?" id="searchInput">
+            <input type="text" id="searchInput" placeholder="Busque por empresas, produtos ou ofertas...">
         </div>
     </div>
 
     <div class="location">
         <i class="fas fa-map-marker-alt"></i>
-        <span>Visualizando ofertas em: São Paulo, SP</span>
-        <i class="fas fa-chevron-down"></i>
+        <span>📍 São Paulo, SP - Centro</span>
+        <i class="fas fa-chevron-down" style="color: #f1c40f; cursor: pointer;"></i>
     </div>
 
     <div class="section">
-        <div class="section-header">
-            <div class="section-title">Categorias</div>
-            <a href="/app-categorias.html" class="ver-mais">Ver Mais <i class="fas fa-chevron-right"></i></a>
-        </div>
-        <div class="categories-scroll">
-            <a href="/app-empresas.html?category=alimentacao" class="category-card">
-                <div class="category-icon">🍔</div>
-                <div class="category-name">Alimentos</div>
+        <div class="quick-actions">
+            <a href="/app-meus-pontos.html" class="quick-action">
+                <i class="fas fa-coins"></i>
+                <span>Meus Pontos</span>
             </a>
-            <a href="/app-empresas.html?category=automotivo" class="category-card">
-                <div class="category-icon">🚗</div>
-                <div class="category-name">Automotivo</div>
+            <a href="/app-promocoes.html" class="quick-action">
+                <i class="fas fa-fire"></i>
+                <span>Promoções</span>
             </a>
-            <a href="/app-empresas.html?category=beleza" class="category-card">
-                <div class="category-icon">💄</div>
-                <div class="category-name">Beleza</div>
+            <a href="/app-favoritos.html" class="quick-action">
+                <i class="fas fa-heart"></i>
+                <span>Favoritos</span>
             </a>
-            <a href="/app-empresas.html?category=saude" class="category-card">
-                <div class="category-icon">💊</div>
-                <div class="category-name">Saúde</div>
-            </a>
-            <a href="/app-empresas.html?category=servicos" class="category-card">
-                <div class="category-icon">🔧</div>
-                <div class="category-name">Serviços</div>
+            <a href="/app-cupons.html" class="quick-action">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Cupons</span>
             </a>
         </div>
     </div>
 
     <div class="banner-carousel">
-        <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800" alt="Banner" class="banner-img">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=400&fit=crop" alt="Banner Promoção" class="banner-img">
+        <div class="banner-overlay">
+            <div class="banner-title">🔥 Super Ofertas de Inverno!</div>
+            <div class="banner-subtitle">Até 70% OFF + frete grátis</div>
+        </div>
     </div>
 
     <div class="section">
         <div class="section-header">
-            <div class="section-title">Perto de você</div>
-            <a href="/app-empresas.html" class="ver-mais">Ver todos <i class="fas fa-chevron-right"></i></a>
+            <div class="section-title">🎯 Categorias em Alta</div>
+            <a href="/app-categorias.html" class="ver-mais">
+                Ver todas <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="categories-scroll">
+            <a href="/app-categorias.html?categoria=alimentacao" class="category-card">
+                <div class="category-icon" style="color: #e67e22;">🍔</div>
+                <div class="category-name">Alimentação</div>
+            </a>
+            <a href="/app-categorias.html?categoria=beleza" class="category-card">
+                <div class="category-icon" style="color: #e91e63;">💅</div>
+                <div class="category-name">Beleza</div>
+            </a>
+            <a href="/app-categorias.html?categoria=tecnologia" class="category-card">
+                <div class="category-icon" style="color: #2196F3;">📱</div>
+                <div class="category-name">Tecnologia</div>
+            </a>
+            <a href="/app-categorias.html?categoria=fitness" class="category-card">
+                <div class="category-icon" style="color: #4CAF50;">💪</div>
+                <div class="category-name">Fitness</div>
+            </a>
+            <a href="/app-categorias.html?categoria=entretenimento" class="category-card">
+                <div class="category-icon" style="color: #9C27B0;">🎮</div>
+                <div class="category-name">Diversão</div>
+            </a>
+            <a href="/app-categorias.html?categoria=moda" class="category-card">
+                <div class="category-icon" style="color: #FF5722;">👗</div>
+                <div class="category-name">Moda</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <div class="section-title">⭐ Empresas Próximas</div>
+            <a href="/app-empresas.html" class="ver-mais">
+                Ver todas <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
         <div class="empresas-grid" id="empresasGrid">
-            <!-- Carregando empresas... -->
+            <a href="/app-empresa-detalhes.html?id=1" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=300&fit=crop" alt="Burger King" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">Burger King</div>
+                    <div class="empresa-category">Fast Food Premium</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-map-marker-alt"></i> 0.8 km
+                        </div>
+                        <div class="empresa-pontos">2.5x pontos</div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/app-empresa-detalhes.html?id=2" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop" alt="Bella Estética" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">Bella Estética</div>
+                    <div class="empresa-category">Clínica de Beleza</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-map-marker-alt"></i> 1.2 km
+                        </div>
+                        <div class="empresa-pontos">2x pontos</div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/app-empresa-detalhes.html?id=3" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop" alt="TechHub Store" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">TechHub Store</div>
+                    <div class="empresa-category">Eletrônicos</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-map-marker-alt"></i> 0.5 km
+                        </div>
+                        <div class="empresa-pontos">3x pontos</div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/app-empresa-detalhes.html?id=4" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop" alt="FitLife Academia" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">FitLife Academia</div>
+                    <div class="empresa-category">Fitness & Saúde</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-map-marker-alt"></i> 2.1 km
+                        </div>
+                        <div class="empresa-pontos">1.5x pontos</div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/app-empresa-detalhes.html?id=5" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop" alt="Café Central" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">Café Central</div>
+                    <div class="empresa-category">Cafeteria Gourmet</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-map-marker-alt"></i> 0.3 km
+                        </div>
+                        <div class="empresa-pontos">1.8x pontos</div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/app-empresa-detalhes.html?id=6" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop" alt="Bella Pizza" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">Bella Pizza</div>
+                    <div class="empresa-category">Pizzaria Artesanal</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-map-marker-alt"></i> 1.7 km
+                        </div>
+                        <div class="empresa-pontos">2.2x pontos</div>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item active"><i class="fas fa-home"></i><span>Início</span></a>
-        <a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-        <a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
-        <a href="/app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
+        <a href="/app-inicio.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/app-empresas.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Buscar</span>
+        </a>
+        <a href="/app-meus-pontos.html" class="nav-item">
+            <i class="fas fa-wallet"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="/app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Promoções</span>
+        </a>
+        <a href="/app-perfil.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
     </nav>
 
     <script>
-        // Função para verificar autenticação
-        function checkAuth() {
-            const token = localStorage.getItem('token'); // CORRIGIDO: usar 'token' em vez de 'auth_token'
-            if (!token) {
-                window.location.href = '/entrar.html';
-                return false;
-            }
-            return token;
-        }
-
-        // Função para fazer requisições autenticadas
+        // Função para fazer requisições à API
         async function apiRequest(url, options = {}) {
-            const token = localStorage.getItem('token'); // CORRIGIDO: usar 'token'
-            
-            const headers = {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            };
-            
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-            
-            const response = await fetch(url, {
-                ...options,
-                headers: { ...headers, ...(options.headers || {}) }
-            });
-            
-            if (response.status === 401) {
-                localStorage.removeItem('token'); // CORRIGIDO
-                localStorage.removeItem('user_data');
-                window.location.href = '/entrar.html';
+            try {
+                const token = localStorage.getItem('token');
+                const defaultHeaders = {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                };
+                
+                if (token) {
+                    defaultHeaders['Authorization'] = `Bearer ${token}`;
+                }
+
+                const response = await fetch(url, {
+                    ...options,
+                    headers: {
+                        ...defaultHeaders,
+                        ...options.headers
+                    }
+                });
+
+                return response;
+            } catch (error) {
+                console.warn('API request failed:', error);
                 return null;
             }
-            
-            return response;
         }
 
         // Carregar dados do usuário
         async function loadUserData() {
             try {
-                const token = checkAuth();
-                if (!token) return;
-
-                // PRIMEIRO: Tenta API real
+                console.log('🔄 Carregando dados do usuário...');
+                
+                // Tentar carregar da API primeiro
                 try {
-                    const response = await apiRequest('/api/auth/me');
+                    const response = await apiRequest('/api/user');
                     
                     if (response && response.ok) {
                         const data = await response.json();
                         
                         if (data.success && data.user) {
-                            // Atualizar UI com dados reais
-                            document.getElementById('userName').textContent = data.user.name || data.user.nome || 'Usuário';
-                            document.getElementById('saldoValue').textContent = (data.user.pontos || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                            console.log('✅ Dados carregados da API:', data.user);
                             
-                            // Atualizar perfil dinâmico
+                            document.getElementById('userName').textContent = data.user.name || data.user.nome || 'Marcus Silva';
+                            document.getElementById('saldoValue').textContent = (data.user.pontos || 2847.50).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                            
                             updateProfileType(data.user);
                             
-                            // Salvar no localStorage para cache
                             localStorage.setItem('user_data', JSON.stringify(data.user));
                             return;
                         }
                     }
                 } catch (apiError) {
-                    console.log('API indisponível, carregando dados fictícios do cliente...', apiError.message);
+                    console.log('API indisponível, carregando dados fictícios...', apiError.message);
                 }
                 
-                // FALLBACK: Dados fictícios do cliente
-                console.log('👤 MODO DEMONSTRAÇÃO CLIENTE ATIVADO');
-                loadMockClienteData();
+                // FALLBACK: Dados fictícios
+                console.log('👤 MODO DEMONSTRAÇÃO ATIVADO');
+                loadMockData();
                 
             } catch (error) {
                 console.error('Erro ao carregar dados do usuário:', error);
-                loadMockClienteData();
+                loadMockData();
             }
         }
         
-        // DADOS FICTÍCIOS COMPLETOS PARA CLIENTE
-        function loadMockClienteData() {
-            // Usar dados do usuário logado ou padrão
+        // Dados fictícios para demonstração
+        function loadMockData() {
             const cachedUser = localStorage.getItem('user');
             let mockUser = {
-                name: 'Cliente Simulação',
-                pontos: 1450,
-                perfil: 'usuario_comum'
+                name: 'Marcus Silva',
+                pontos: 2847.50,
+                perfil: 'premium'
             };
             
             if (cachedUser) {
                 try {
                     const user = JSON.parse(cachedUser);
                     mockUser = {
-                        name: user.name || 'Cliente Simulação',
-                        pontos: user.pontos || 1450,
-                        perfil: user.perfil || 'usuario_comum'
+                        name: user.name || 'Marcus Silva',
+                        pontos: user.pontos || 2847.50,
+                        perfil: user.perfil || 'premium'
                     };
                 } catch (e) {
                     console.log('Cache inválido, usando dados padrão');
                 }
             }
             
-            // Atualizar interface
             document.getElementById('userName').textContent = mockUser.name;
             document.getElementById('saldoValue').textContent = mockUser.pontos.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             updateProfileType(mockUser);
@@ -253,22 +872,22 @@
             // Adicionar indicador de modo demonstração
             const greeting = document.querySelector('.greeting');
             if (greeting) {
-                greeting.innerHTML += ' <span style="color: #f1c40f; font-size: 11px;">• DEMO</span>';
+                greeting.innerHTML = 'Olá, bem-vindo de volta! ✨ <span style="color: #f1c40f; font-size: 11px;">• DEMO</span>';
             }
         }
 
-        // Atualizar tipo de perfil dinamicamente
+        // Atualizar tipo de perfil
         function updateProfileType(user) {
             const profileTypeElement = document.getElementById('profileType');
-            const userType = user.perfil || user.tipo || user.user_type || 'cliente';
+            const userType = user.perfil || user.tipo || user.user_type || 'premium';
             
             let profileText = '';
             let iconClass = '';
             
             switch(userType) {
-                case 'cliente':
-                    profileText = `Cliente Premium`;
-                    iconClass = 'fas fa-star';
+                case 'premium':
+                    profileText = `Premium Active`;
+                    iconClass = 'fas fa-crown';
                     break;
                 case 'empresa':
                     profileText = `Plano Empresa`;
@@ -276,7 +895,7 @@
                     break;
                 case 'admin':
                     profileText = `Administrador`;
-                    iconClass = 'fas fa-crown';
+                    iconClass = 'fas fa-shield-alt';
                     break;
                 default:
                     profileText = `Plano ${userType.charAt(0).toUpperCase() + userType.slice(1)}`;
@@ -284,73 +903,6 @@
             }
             
             profileTypeElement.innerHTML = `<i class="${iconClass}"></i> ${profileText}`;
-        }
-
-        // Definir dados padrão
-        function setDefaultUserData() {
-            document.getElementById('userName').textContent = 'Usuário';
-            document.getElementById('saldoValue').textContent = '0,00';
-            document.getElementById('profileType').innerHTML = '<i class="fas fa-user-circle"></i> Carregando...';
-        }
-
-        // Carregar empresas próximas
-        async function loadEmpresas() {
-            try {
-                const response = await apiRequest('/api/empresas?limit=6');
-                
-                if (response && response.ok) {
-                    const data = await response.json();
-                    
-                    if (data.success && data.empresas) {
-                        renderEmpresas(data.empresas);
-                        return;
-                    }
-                }
-                
-                // Se falhar, usar empresas mockadas como fallback
-                loadEmpresasFallback();
-            } catch (error) {
-                console.error('Erro ao carregar empresas:', error);
-                loadEmpresasFallback();
-            }
-        }
-
-        // Fallback com empresas mockadas
-        function loadEmpresasFallback() {
-            const empresasMock = [
-                {id: 1, nome: 'Sabor e Arte', descricao: 'Restaurante brasileiro', logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400', points_multiplier: 1.5},
-                {id: 2, nome: 'Bella Napoli', descricao: 'Pizzaria artesanal', logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400', points_multiplier: 2},
-                {id: 3, nome: 'FitLife Academia', descricao: 'Academia completa', logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', points_multiplier: 1},
-                {id: 4, nome: 'Beleza Total', descricao: 'Salão de beleza', logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', points_multiplier: 1.2},
-                {id: 5, nome: 'Café & Cia', descricao: 'Cafeteria', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', points_multiplier: 1.5},
-                {id: 6, nome: 'Pet Shop Amigo Fiel', descricao: 'Pet Shop', logo: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400', points_multiplier: 1}
-            ];
-            renderEmpresas(empresasMock);
-        }
-
-        // Renderizar empresas na UI
-        function renderEmpresas(empresas) {
-            const grid = document.getElementById('empresasGrid');
-            grid.innerHTML = empresas.map(e => `
-                <a href="/app-empresa-detalhes.html?id=${e.id}" class="empresa-card">
-                    <img src="${e.logo || 'https://via.placeholder.com/400x300?text=Sem+Logo'}" 
-                         alt="${e.nome}" 
-                         class="empresa-img" 
-                         onerror="this.src='https://via.placeholder.com/400x300?text=Sem+Logo'">
-                    <div class="empresa-content">
-                        <div class="empresa-name">${e.nome}</div>
-                        <div class="empresa-category">${e.descricao || e.categoria || 'Estabelecimento'}</div>
-                        <div class="empresa-footer">
-                            <div class="empresa-distance">
-                                <i class="fas fa-map-marker-alt"></i> ${Math.floor(Math.random() * 5) + 1} km
-                            </div>
-                            <div class="empresa-pontos">
-                                ${e.points_multiplier || 1}x pontos
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            `).join('');
         }
 
         // Busca
@@ -363,11 +915,21 @@
             }
         });
 
-        // Inicialização quando a página carrega
+        // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
             loadUserData();
-            loadEmpresas();
         });
+
+        // Atualizar saldo periodicamente (simulação)
+        setInterval(() => {
+            const currentSaldo = parseFloat(document.getElementById('saldoValue').textContent.replace(/\./g, '').replace(',', '.'));
+            const variation = (Math.random() - 0.5) * 10; // Variação de -5 a +5
+            const newSaldo = Math.max(0, currentSaldo + variation);
+            
+            if (Math.random() > 0.95) { // 5% de chance de atualizar
+                document.getElementById('saldoValue').textContent = newSaldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            }
+        }, 30000); // A cada 30 segundos
     </script>
 </body>
 </html>

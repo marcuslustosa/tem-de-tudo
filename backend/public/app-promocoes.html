@@ -2,185 +2,605 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promoções - Tem de Tudo</title>
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#1a1a2e">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f1c40f">
+    <title>🎯 Promoções Premium - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #1a1a2e; color: #fff; padding-bottom: 80px; }
-        .header { background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; text-align: center; }
-        .header h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
-        .header p { font-size: 13px; opacity: 0.9; }
-        .tabs { display: flex; padding: 16px 20px; gap: 12px; border-bottom: 1px solid rgba(102, 126, 234, 0.1); }
-        .tab { flex: 1; padding: 12px; background: #2a2a3e; border: 1px solid rgba(102, 126, 234, 0.1); border-radius: 12px; text-align: center; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .tab.active { background: linear-gradient(135deg, #667eea, #764ba2); border-color: transparent; }
-        .section { padding: 20px; }
-        .section-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
-        .promocoes-grid { display: grid; gap: 16px; }
-        .promo-card { background: #2a2a3e; border-radius: 16px; overflow: hidden; border: 1px solid rgba(102, 126, 234, 0.1); }
-        .promo-header { background: linear-gradient(135deg, #667eea, #764ba2); padding: 16px; position: relative; }
-        .promo-badge { position: absolute; top: 12px; right: 12px; background: rgba(255, 255, 255, 0.3); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-        .promo-empresa { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-        .promo-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
-        .promo-valor { font-size: 16px; opacity: 0.9; }
-        .promo-body { padding: 16px; }
-        .promo-desc { font-size: 13px; color: #b0b0b0; margin-bottom: 16px; line-height: 1.5; }
-        .promo-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
-        .promo-validade { font-size: 12px; color: #888; display: flex; align-items: center; gap: 6px; }
-        .promo-btn { background: linear-gradient(135deg, #f39c12, #e67e22); padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; }
-        .empty-state { text-align: center; padding: 60px 20px; }
-        .empty-state i { font-size: 64px; opacity: 0.2; margin-bottom: 16px; }
-        .empty-state p { color: #888; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-top: 1px solid rgba(102, 126, 234, 0.1); display: flex; justify-content: space-around; padding: 12px 0 8px; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #888; font-size: 11px; font-weight: 500; }
-        .nav-item.active { color: #667eea; }
-        .nav-item i { font-size: 20px; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #fff; 
+            padding-bottom: 80px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .header { 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            position: relative;
+            padding: 32px 20px 24px;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        
+        .header h1 { 
+            font-size: 28px; 
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff, #f1c40f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+        
+        .tabs-container {
+            padding: 24px 20px;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(26, 26, 46, 0.3));
+            backdrop-filter: blur(10px);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 12px;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.8), rgba(15, 20, 25, 0.4));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 16px;
+            padding: 8px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgba(255,255,255,0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tab:hover::before {
+            opacity: 1;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            color: #0a0a0f;
+            font-weight: 800;
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+        }
+
+        .tab.active::before {
+            opacity: 0;
+        }
+        
+        .section {
+            padding: 24px 20px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 28px;
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+        }
+        
+        .promocoes-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .promo-card {
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .promo-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .promo-card:hover::before {
+            opacity: 1;
+        }
+        
+        .promo-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(241, 196, 15, 0.3);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.2);
+        }
+        
+        .promo-header {
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            padding: 24px;
+            position: relative;
+            color: #0a0a0f;
+            z-index: 2;
+        }
+        
+        .promo-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+            backdrop-filter: blur(10px);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .promo-empresa {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            opacity: 0.8;
+        }
+        
+        .promo-title {
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        
+        .promo-valor {
+            font-size: 18px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .promo-desconto {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 2px 10px rgba(46, 204, 113, 0.3);
+        }
+        
+        .promo-body {
+            padding: 24px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .promo-desc {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 16px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+        
+        .promo-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .promo-tag {
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(241, 196, 15, 0.1));
+            color: #f1c40f;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            backdrop-filter: blur(5px);
+            text-transform: uppercase;
+        }
+        
+        .promo-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid rgba(241, 196, 15, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .promo-validade {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+        
+        .promo-validade i {
+            color: #f1c40f;
+        }
+        
+        .promo-btn {
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            color: #0a0a0f;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .promo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.4);
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(26, 26, 46, 0.8));
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(241, 196, 15, 0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 8px;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 4px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            min-width: 60px;
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(241, 196, 15, 0.1));
+            color: #f1c40f;
+            transform: translateY(-2px);
+        }
+        
+        .nav-item:hover {
+            color: #f1c40f;
+        }
+        
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+            transition: all 0.3s;
+        }
+        
+        .nav-item span {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #f1c40f;
+            opacity: 0.7;
+        }
+        
+        .empty-state h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            line-height: 1.6;
+        }
     </style>
-    <link rel="stylesheet" href="/css/vale-bonus-theme.css">
 </head>
 <body>
     <div class="header">
-        <h1> Promoções</h1>
-        <p>Ofertas exclusivas para você</p>
-    </div>
-    <div class="tabs">
-        <div class="tab active" data-tab="ativas" onclick="trocarTab('ativas')">Ativas</div>
-        <div class="tab" data-tab="proximas" onclick="trocarTab('proximas')">Em Breve</div>
-        <div class="tab" data-tab="expiradas" onclick="trocarTab('expiradas')">Expiradas</div>
-    </div>
-    <div class="section">
-        <div class="section-title" id="sectionTitle">Promoções Ativas</div>
-        <div class="promocoes-grid" id="promocoesGrid"></div>
-        <div class="empty-state" id="emptyState" style="display: none;">
-            <i class="fas fa-gift"></i>
-            <p>Nenhuma promoção disponível</p>
+        <div class="header-content">
+            <h1>🎁 Promoções</h1>
+            <p>Ofertas exclusivas e descontos incríveis para você</p>
         </div>
     </div>
+    
+    <div class="tabs-container">
+        <div class="tabs">
+            <div class="tab active" data-tab="ativas" onclick="trocarTab('ativas')">Ativas</div>
+            <div class="tab" data-tab="proximas" onclick="trocarTab('proximas')">Em Breve</div>
+            <div class="tab" data-tab="expiradas" onclick="trocarTab('expiradas')">Expiradas</div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title" id="sectionTitle">Promoções Ativas</div>
+        <div class="promocoes-grid" id="promocoesGrid">
+            <!-- Promoções fictícias serão inseridas aqui -->
+        </div>
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <i class="fas fa-gift"></i>
+            <p>Nenhuma promoção disponível no momento</p>
+        </div>
+    </div>
+
     <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
-        <a href="/app-scanner.html" class="nav-item"><i class="fas fa-qrcode"></i><span>Scanner</span></a>
-        <a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Meus pontos</span></a>
-        <a href="/app-empresas.html" class="nav-item"><i class="fas fa-store"></i><span>Empresas</span></a>
-        <a href="/app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
+        <a href="/app-inicio.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="/app-empresas.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Buscar</span>
+        </a>
+        <a href="/app-promocoes.html" class="nav-item active">
+            <i class="fas fa-tags"></i>
+            <span>Promoções</span>
+        </a>
+        <a href="/app-avisos.html" class="nav-item">
+            <i class="fas fa-bell"></i>
+            <span>Avisos</span>
+        </a>
+        <a href="/app-perfil.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
     </nav>
+
     <script>
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
-        let todasPromocoes = [];
+        // Dados fictícios de promoções
+        const promocoesFicticias = {
+            ativas: [
+                {
+                    id: 1,
+                    empresa: "Burger King Premium",
+                    titulo: "50% OFF em Combos",
+                    descricao: "Desconto de 50% em todos os combos premium. Válido para pedidos acima de R$ 25,00. Não é cumulativo com outras promoções.",
+                    valor: "R$ 15,00",
+                    valorOriginal: "R$ 30,00",
+                    desconto: "-50%",
+                    validade: "15/02/2026",
+                    tags: ["Alimentação", "Combo", "Popular"],
+                    badge: "HOT"
+                },
+                {
+                    id: 2,
+                    empresa: "Bella Estética & Spa",
+                    titulo: "Massagem Relaxante",
+                    descricao: "Sessão completa de massagem relaxante com óleos aromáticos. Inclui esfoliação corporal e hidratação. Duração: 60 minutos.",
+                    valor: "R$ 80,00",
+                    valorOriginal: "R$ 120,00",
+                    desconto: "-33%",
+                    validade: "20/02/2026",
+                    tags: ["Beleza", "Relaxamento", "Spa"],
+                    badge: "NOVO"
+                },
+                {
+                    id: 3,
+                    empresa: "TechHub Store",
+                    titulo: "iPhone 15 Pro Max",
+                    descricao: "Último lançamento da Apple com 256GB de armazenamento. Parcelamento em até 12x sem juros. Garantia estendida inclusa.",
+                    valor: "R$ 6.500,00",
+                    valorOriginal: "R$ 7.200,00",
+                    desconto: "-10%",
+                    validade: "28/02/2026",
+                    tags: ["Tecnologia", "Smartphone", "Apple"],
+                    badge: "LIMITADO"
+                },
+                {
+                    id: 4,
+                    empresa: "FitLife Academia",
+                    titulo: "Plano Anual Premium",
+                    descricao: "Acesso ilimitado a todas as modalidades, personal trainer incluso, avaliação física completa e plano nutricional personalizado.",
+                    valor: "R$ 89,00/mês",
+                    valorOriginal: "R$ 149,00/mês",
+                    desconto: "-40%",
+                    validade: "10/03/2026",
+                    tags: ["Fitness", "Premium", "Anual"],
+                    badge: "OFERTA"
+                }
+            ],
+            proximas: [
+                {
+                    id: 5,
+                    empresa: "Shopping Center Plaza",
+                    titulo: "Black Friday Antecipada",
+                    descricao: "Descontos de até 70% em mais de 200 lojas. Promoção especial para clientes cadastrados no app. Sorteio de vale-compras.",
+                    valor: "Até 70% OFF",
+                    valorOriginal: "",
+                    desconto: "-70%",
+                    validade: "24/11/2026",
+                    tags: ["Shopping", "Black Friday", "Geral"],
+                    badge: "EM BREVE"
+                }
+            ],
+            expiradas: [
+                {
+                    id: 6,
+                    empresa: "Pizzaria Napoli",
+                    titulo: "Pizza Família Grátis",
+                    descricao: "Na compra de 2 pizzas grandes, ganhe 1 pizza família de calabresa. Oferta válida apenas aos domingos.",
+                    valor: "GRÁTIS",
+                    valorOriginal: "R$ 45,00",
+                    desconto: "100%",
+                    validade: "01/02/2026",
+                    tags: ["Alimentação", "Pizza", "Família"],
+                    badge: "EXPIRADA"
+                }
+            ]
+        };
+
         let tabAtual = 'ativas';
-        document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('token');
-            if (!token) { window.location.href = '/entrar.html'; return; }
-            await carregarPromocoes();
-        });
-        async function carregarPromocoes() {
-            const token = localStorage.getItem('token');
-            const userStr = localStorage.getItem('user');
-            let user = null;
-            
-            if (userStr) {
-                try {
-                    user = JSON.parse(userStr);
-                } catch (e) {
-                    console.error('Erro ao parsear user:', e);
-                }
-            }
-            
-            // Usuários FICTÍCIOS (para demonstração) vs REAIS (para uso)
-            const usuariosFicticios = ['maria@email.com', 'joao@email.com', 'saborearte@email.com', 'bellanapoli@email.com'];
-            const ehUsuarioFicticio = user && usuariosFicticios.includes(user.email);
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/promocoes`, { headers: { 'Authorization': `Bearer ${token}` } });
-                const data = await response.json();
-                
-                if (data.success && data.data && data.data.length > 0) {
-                    // Se a API retornou dados reais, usar eles
-                    todasPromocoes = data.data;
-                    filtrarPromocoes();
-                } else if (ehUsuarioFicticio) {
-                    // Usuários FICTÍCIOS: dados fictícios para demonstração
-                    console.log('👤 Usuário fictício: usando dados de demonstração');
-                    todasPromocoes = [
-                        { id: 1, empresa: 'Sabor e Arte', titulo: 'R$50 por 50 Pontos', valor: 'Consulte regulamento', descricao: 'Troque seus pontos por créditos em qualquer produto.', validade: '2026-03-31', tipo: 'desconto', status: 'ativa' },
-                        { id: 2, empresa: 'Bella Napoli', titulo: '2 por 1 em Pizzas', valor: 'Terças e Quintas', descricao: 'Compre uma pizza grande e leve outra do mesmo tamanho grátis.', validade: '2026-02-28', tipo: 'brinde', status: 'ativa' },
-                        { id: 3, empresa: 'Academia FitLife', titulo: '20% OFF Mensalidade', valor: '3 primeiros meses', descricao: 'Desconto especial para novos alunos na matrícula.', validade: '2026-04-30', tipo: 'desconto', status: 'ativa' }
-                    ];
-                    filtrarPromocoes();
-                } else {
-                    // Usuários REAIS: começam limpos, dados crescem conforme o uso
-                    console.log('🔥 Usuário real: aguardando promoções reais do uso');
-                    todasPromocoes = [];
-                    filtrarPromocoes();
-                }
-            } catch (error) {
-                console.error('Erro ao carregar promoções:', error);
-                if (ehUsuarioFicticio) {
-                    // Fallback para usuários de teste
-                    todasPromocoes = [
-                        { id: 1, empresa: 'Sabor e Arte', titulo: 'R$50 por 50 Pontos', valor: 'Consulte regulamento', descricao: 'Troque seus pontos por créditos em qualquer produto.', validade: '2026-03-31', tipo: 'desconto', status: 'ativa' },
-                        { id: 2, empresa: 'Bella Napoli', titulo: '2 por 1 em Pizzas', valor: 'Terças e Quintas', descricao: 'Compre uma pizza grande e leve outra do mesmo tamanho grátis.', validade: '2026-02-28', tipo: 'brinde', status: 'ativa' }
-                    ];
-                    filtrarPromocoes();
-                } else {
-                    // Novos usuários veem empty state
-                    todasPromocoes = [];
-                    filtrarPromocoes();
-                }
-            }
-        }
-        function trocarTab(tab) {
-            tabAtual = tab;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-            const titulos = { ativas: 'Promoções Ativas', proximas: 'Em Breve', expiradas: 'Promoções Expiradas' };
-            document.getElementById('sectionTitle').textContent = titulos[tab];
-            filtrarPromocoes();
-        }
-        function filtrarPromocoes() {
-            const hoje = new Date();
-            let filtradas = todasPromocoes.filter(p => {
-                const validade = new Date(p.validade);
-                if (tabAtual === 'ativas') return validade >= hoje && p.status === 'ativa';
-                if (tabAtual === 'proximas') return p.status === 'proxima';
-                if (tabAtual === 'expiradas') return validade < hoje || p.status === 'expirada';
-                return true;
-            });
-            renderizarPromocoes(filtradas);
-        }
+
         function renderizarPromocoes(promocoes) {
             const grid = document.getElementById('promocoesGrid');
-            const empty = document.getElementById('emptyState');
-            if (promocoes.length === 0) {
+            const emptyState = document.getElementById('emptyState');
+
+            if (!promocoes || promocoes.length === 0) {
                 grid.style.display = 'none';
-                empty.style.display = 'block';
+                emptyState.style.display = 'block';
                 return;
             }
+
             grid.style.display = 'grid';
-            empty.style.display = 'none';
-            grid.innerHTML = promocoes.map(p => `
-                <div class="promo-card">
+            emptyState.style.display = 'none';
+
+            grid.innerHTML = promocoes.map(promo => `
+                <div class="promo-card" onclick="abrirPromocao(${promo.id})">
                     <div class="promo-header">
-                        <div class="promo-badge">${p.tipo === 'desconto' ? ' Desconto' : ' Brinde'}</div>
-                        <div class="promo-empresa">${p.empresa}</div>
-                        <div class="promo-title">${p.titulo}</div>
-                        <div class="promo-valor">${p.valor}</div>
+                        <div class="promo-badge">${promo.badge}</div>
+                        <div class="promo-empresa">${promo.empresa}</div>
+                        <div class="promo-title">${promo.titulo}</div>
+                        <div class="promo-valor">
+                            ${promo.valor}
+                            ${promo.valorOriginal ? `<span class="promo-desconto">${promo.desconto}</span>` : ''}
+                        </div>
                     </div>
                     <div class="promo-body">
-                        <div class="promo-desc">${p.descricao}</div>
+                        <div class="promo-desc">${promo.descricao}</div>
+                        <div class="promo-tags">
+                            ${promo.tags.map(tag => `<span class="promo-tag">${tag}</span>`).join('')}
+                        </div>
                         <div class="promo-footer">
-                            <div class="promo-validade"><i class="fas fa-calendar"></i>Até ${new Date(p.validade).toLocaleDateString('pt-BR')}</div>
-                            <button class="promo-btn" onclick="usarPromocao(${p.id})">Usar</button>
+                            <div class="promo-validade">
+                                <i class="fas fa-clock"></i>
+                                Válido até ${promo.validade}
+                            </div>
+                            <button class="promo-btn" onclick="event.stopPropagation(); usarPromocao(${promo.id})">
+                                ${tabAtual === 'expiradas' ? 'Expirada' : 'Usar Agora'}
+                            </button>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
-        function usarPromocao(id) {
-            alert(`Promoção ${id} ativada! Mostre este código na empresa.`);
+
+        function trocarTab(novaTab) {
+            // Remove ativo de todas as tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Ativa a nova tab
+            document.querySelector(`[data-tab="${novaTab}"]`).classList.add('active');
+            
+            tabAtual = novaTab;
+            
+            // Atualiza título da seção
+            const titulos = {
+                'ativas': 'Promoções Ativas',
+                'proximas': 'Promoções Em Breve',
+                'expiradas': 'Promoções Expiradas'
+            };
+            
+            document.getElementById('sectionTitle').textContent = titulos[novaTab];
+            
+            // Renderiza as promoções da tab selecionada
+            renderizarPromocoes(promocoesFicticias[novaTab]);
         }
+
+        function abrirPromocao(id) {
+            // Simula abertura de detalhes da promoção
+            alert(`Abrindo detalhes da promoção ID: ${id}`);
+        }
+
+        function usarPromocao(id) {
+            if (tabAtual === 'expiradas') return;
+            
+            // Simula uso da promoção
+            alert(`Promoção ID: ${id} ativada com sucesso! 🎉`);
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            renderizarPromocoes(promocoesFicticias.ativas);
+        });
     </script>
 </body>
 </html>
