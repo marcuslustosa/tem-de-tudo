@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f1c40f">
+    <title>🔔 Central de Avisos Premium - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #fff; 
+            padding-bottom: 80px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header { 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            position: relative;
+            padding: 32px 20px 24px;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.9), rgba(15, 20, 25, 0.6));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.2);
+            border-color: rgba(241, 196, 15, 0.4);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .filter-tabs {
+            display: flex;
+            padding: 20px;
+            gap: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-tab {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.6), rgba(15, 20, 25, 0.3));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .filter-tab:hover {
+            transform: translateY(-2px);
+            border-color: rgba(241, 196, 15, 0.4);
+        }
+
+        .filter-tab.active {
+            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+            border-color: transparent;
+            color: #0a0a0f;
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+        }
+
+        .avisos-container {
+            padding: 20px;
+        }
+
+        .aviso-item {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.3), rgba(15, 20, 25, 0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .aviso-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.1);
+            border-color: rgba(241, 196, 15, 0.2);
+        }
+
+        .aviso-item.nao-lido {
+            border-color: rgba(241, 196, 15, 0.4);
+        }
+
+        .aviso-item.nao-lido::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+        }
+
+        .aviso-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .aviso-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .aviso-icon.promocao {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            color: #fff;
+        }
+
+        .aviso-icon.sistema {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: #fff;
+        }
+
+        .aviso-icon.pontos {
+            background: linear-gradient(135deg, #00d4aa 0%, #00c896 100%);
+            color: #fff;
+        }
+
+        .aviso-icon.importante {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            color: #fff;
+        }
+
+        .aviso-content {
+            flex: 1;
+        }
+
+        .aviso-titulo {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #fff;
+        }
+
+        .aviso-subtitulo {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+
+        .aviso-descricao {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .aviso-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .aviso-data {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        .btn-marcar-lido {
+            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0a0a0f;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-marcar-lido:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
+        }
+
+        .aviso-lido .btn-marcar-lido {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            cursor: default;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.3), rgba(15, 20, 25, 0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 24px;
+            margin: 20px;
+        }
+
+        .empty-state i {
+            font-size: 72px;
+            opacity: 0.3;
+            margin-bottom: 24px;
+            color: #f1c40f;
+        }
+
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .stats-bar {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.6), rgba(15, 20, 25, 0.3));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #f1c40f;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 4px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.95), rgba(10, 10, 15, 0.95));
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(241, 196, 15, 0.1);
+            padding: 12px 20px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            z-index: 1000;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-item.active::before {
+            opacity: 1;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            color: #f1c40f;
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active i {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 28px 16px 20px;
+            }
+
+            .avisos-container, .filter-tabs, .stats-bar {
+                padding: 16px;
+                margin: 16px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .nav-item {
+                font-size: 11px;
+                padding: 6px 8px;
+            }
+
+            .nav-item i {
+                font-size: 18px;
+            }
+        }
+
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-bar, .filter-tabs, .aviso-item {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .stats-bar { animation-delay: 0.1s; }
+        .filter-tabs { animation-delay: 0.2s; }
+        .aviso-item:nth-child(1) { animation-delay: 0.3s; }
+        .aviso-item:nth-child(2) { animation-delay: 0.4s; }
+        .aviso-item:nth-child(3) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>🔔 Central de Avisos Premium</h1>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value" id="totalAvisos">8</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="naoLidos">3</div>
+            <div class="stat-label">Não Lidos</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="importantes">1</div>
+            <div class="stat-label">Importantes</div>
+        </div>
+    </div>
+
+    <div class="filter-tabs">
+        <div class="filter-tab active" data-filter="todos" onclick="filtrar('todos')">
+            🔔 Todos
+        </div>
+        <div class="filter-tab" data-filter="promocao" onclick="filtrar('promocao')">
+            🎁 Promoções
+        </div>
+        <div class="filter-tab" data-filter="pontos" onclick="filtrar('pontos')">
+            💰 Pontos
+        </div>
+        <div class="filter-tab" data-filter="sistema" onclick="filtrar('sistema')">
+            ⚙️ Sistema
+        </div>
+        <div class="filter-tab" data-filter="importante" onclick="filtrar('importante')">
+            ⚠️ Importantes
+        </div>
+    </div>
+
+    <div class="avisos-container" id="avisosContainer">
+        <!-- Avisos serão carregados dinamicamente -->
+    </div>
+
+    <div class="empty-state" id="emptyState" style="display: none;">
+        <i class="fas fa-bell-slash"></i>
+        <p>Nenhum aviso encontrado</p>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-items">
+            <a href="/app-inicio.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </a>
+            <a href="/app-empresas.html" class="nav-item">
+                <i class="fas fa-search"></i>
+                <span>Buscar</span>
+            </a>
+            <a href="/app-cupons.html" class="nav-item">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Cupons</span>
+            </a>
+            <a href="/app-pontos.html" class="nav-item">
+                <i class="fas fa-coins"></i>
+                <span>Pontos</span>
+            </a>
+            <a href="/app-avisos.html" class="nav-item active">
+                <i class="fas fa-bell"></i>
+                <span>Avisos</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        let avisos = [
+            {
+                id: 1,
+                tipo: 'promocao',
+                titulo: '🎉 Super Promoção Burger King!',
+                subtitulo: 'Burger King Premium',
+                descricao: 'Combo Whopper com 50% de desconto! Válido até 15/02. Resgate já seu cupom e aproveite esta oferta especial.',
+                data: '2026-02-05',
+                lido: false,
+                importante: false
+            },
+            {
+                id: 2,
+                tipo: 'pontos',
+                titulo: '💰 +150 Pontos Creditados!',
+                subtitulo: 'Check-in SmartFit Academia',
+                descricao: 'Parabéns! Você ganhou 150 pontos pelo seu check-in na SmartFit. Continue frequentando para ganhar ainda mais!',
+                data: '2026-02-04',
+                lido: false,
+                importante: false
+            },
+            {
+                id: 3,
+                tipo: 'sistema',
+                titulo: '🔄 Atualização do Sistema',
+                subtitulo: 'Tem de Tudo v2.1',
+                descricao: 'Nova versão disponível com melhorias na interface, correções de bugs e novas funcionalidades premium.',
+                data: '2026-02-03',
+                lido: true,
+                importante: false
+            },
+            {
+                id: 4,
+                tipo: 'importante',
+                titulo: '⚠️ Pontos Expirando em Breve',
+                subtitulo: 'Ação Necessária',
+                descricao: 'Você tem 300 pontos que expiram em 7 dias! Use-os para resgatar cupons incríveis antes que seja tarde.',
+                data: '2026-02-02',
+                lido: false,
+                importante: true
+            },
+            {
+                id: 5,
+                tipo: 'promocao',
+                titulo: '🍕 Pizza Bella Napoli - 30% OFF',
+                subtitulo: 'Pizzaria Bella Napoli',
+                descricao: 'Pizzas artesanais com 30% de desconto! Massa fina, ingredientes frescos. Válido para delivery e retirada.',
+                data: '2026-02-01',
+                lido: true,
+                importante: false
+            },
+            {
+                id: 6,
+                tipo: 'pontos',
+                titulo: '🎯 Meta de Pontos Atingida!',
+                subtitulo: 'Conquista Desbloqueada',
+                descricao: 'Você alcançou 1000 pontos este mês! Como recompensa, ganhou 100 pontos bônus e acesso a promoções exclusivas.',
+                data: '2026-01-31',
+                lido: true,
+                importante: false
+            },
+            {
+                id: 7,
+                tipo: 'sistema',
+                titulo: '📱 Novo Recurso: PWA',
+                subtitulo: 'App Instalável',
+                descricao: 'Agora você pode instalar o Tem de Tudo no seu celular! Acesse mais rápido e receba notificações push.',
+                data: '2026-01-30',
+                lido: true,
+                importante: false
+            },
+            {
+                id: 8,
+                tipo: 'promocao',
+                titulo: '☕ Café Central - Fidelidade',
+                subtitulo: 'Café Central',
+                descricao: 'A cada 5 check-ins, ganhe 1 café grátis! Seu programa de fidelidade exclusivo com o melhor café da região.',
+                data: '2026-01-29',
+                lido: false,
+                importante: false
+            }
+        ];
+
+        let filtroAtual = 'todos';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarAvisos();
+            atualizarEstatisticas();
+        });
+
+        function filtrar(tipo) {
+            filtroAtual = tipo;
+            
+            // Atualizar tabs ativas
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`[data-filter="${tipo}"]`).classList.add('active');
+            
+            renderizarAvisos();
+        }
+
+        function renderizarAvisos() {
+            let avisosFiltrados = avisos;
+            
+            if (filtroAtual !== 'todos') {
+                avisosFiltrados = avisos.filter(aviso => aviso.tipo === filtroAtual);
+            }
+
+            const container = document.getElementById('avisosContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (avisosFiltrados.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'block';
+            emptyState.style.display = 'none';
+
+            container.innerHTML = avisosFiltrados.map(aviso => `
+                <div class="aviso-item ${aviso.lido ? 'aviso-lido' : 'nao-lido'}" data-id="${aviso.id}">
+                    <div class="aviso-header">
+                        <div class="aviso-icon ${aviso.tipo}">
+                            <i class="fas ${getIconePorTipo(aviso.tipo)}"></i>
+                        </div>
+                        <div class="aviso-content">
+                            <div class="aviso-titulo">${aviso.titulo}</div>
+                            <div class="aviso-subtitulo">${aviso.subtitulo}</div>
+                        </div>
+                    </div>
+                    <div class="aviso-descricao">${aviso.descricao}</div>
+                    <div class="aviso-footer">
+                        <div class="aviso-data">📅 ${formatarData(aviso.data)}</div>
+                        ${!aviso.lido ? `<button class="btn-marcar-lido" onclick="marcarComoLido(${aviso.id})">Marcar como Lido</button>` : '<button class="btn-marcar-lido">✅ Lido</button>'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getIconePorTipo(tipo) {
+            const icones = {
+                promocao: 'fa-tags',
+                pontos: 'fa-coins',
+                sistema: 'fa-cog',
+                importante: 'fa-exclamation-triangle'
+            };
+            return icones[tipo] || 'fa-bell';
+        }
+
+        function formatarData(data) {
+            return new Date(data).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function marcarComoLido(id) {
+            const aviso = avisos.find(a => a.id === id);
+            if (aviso) {
+                aviso.lido = true;
+                renderizarAvisos();
+                atualizarEstatisticas();
+                mostrarFeedback('Aviso marcado como lido!', 'success');
+            }
+        }
+
+        function atualizarEstatisticas() {
+            const total = avisos.length;
+            const naoLidos = avisos.filter(a => !a.lido).length;
+            const importantes = avisos.filter(a => a.importante).length;
+
+            document.getElementById('totalAvisos').textContent = total;
+            document.getElementById('naoLidos').textContent = naoLidos;
+            document.getElementById('importantes').textContent = importantes;
+        }
+
+        function mostrarFeedback(mensagem, tipo) {
+            const feedback = document.createElement('div');
+            feedback.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${tipo === 'success' ? 'linear-gradient(135deg, #00d4aa, #00c896)' : 'linear-gradient(135deg, #f1c40f, #e67e22)'};
+                color: ${tipo === 'success' ? '#fff' : '#0a0a0f'};
+                padding: 12px 24px;
+                border-radius: 16px;
+                font-weight: 600;
+                font-size: 14px;
+                z-index: 10000;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+                animation: slideDown 0.3s ease;
+            `;
+            
+            feedback.textContent = mensagem;
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.style.animation = 'slideUp 0.3s ease';
+                setTimeout(() => document.body.removeChild(feedback), 300);
+            }, 3000);
+        }
+
+        // Estilos para animações
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from { transform: translate(-50%, -100%); opacity: 0; }
+                to { transform: translate(-50%, 0); opacity: 1; }
+            }
+            @keyframes slideUp {
+                from { transform: translate(-50%, 0); opacity: 1; }
+                to { transform: translate(-50%, -100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

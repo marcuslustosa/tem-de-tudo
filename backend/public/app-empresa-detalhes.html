@@ -497,7 +497,11 @@
                     document.getElementById('companyPhone').textContent = empresaData.telefone;
                     document.getElementById('companyDescription').textContent = empresaData.descricao || 'Empresa parceira do programa de fidelidade Tem de Tudo.';
                     
-                    // Atualizar banner se tiver logo
+                    // Atualizar banner se tiver logo/foto
+                    if (empresaData.logo || empresaData.foto) {
+                        document.getElementById('companyBanner').src = empresaData.logo || empresaData.foto;
+                        document.getElementById('companyBanner').alt = `Banner ${empresaData.nome}`;
+                    }
                     if (empresaData.logo) {
                         const headerImage = document.querySelector('.header-image img');
                         if (headerImage) {

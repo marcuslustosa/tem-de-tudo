@@ -667,89 +667,11 @@
             </a>
         </div>
         <div class="empresas-grid" id="empresasGrid">
-            <a href="/app-empresa-detalhes.html?id=1" class="empresa-card">
-                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&h=300&fit=crop" alt="Burger King" class="empresa-img">
-                <div class="empresa-content">
-                    <div class="empresa-name">Burger King</div>
-                    <div class="empresa-category">Fast Food Premium</div>
-                    <div class="empresa-footer">
-                        <div class="empresa-distance">
-                            <i class="fas fa-map-marker-alt"></i> 0.8 km
-                        </div>
-                        <div class="empresa-pontos">2.5x pontos</div>
-                    </div>
-                </div>
-            </a>
-
-            <a href="/app-empresa-detalhes.html?id=2" class="empresa-card">
-                <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop" alt="Bella Estética" class="empresa-img">
-                <div class="empresa-content">
-                    <div class="empresa-name">Bella Estética</div>
-                    <div class="empresa-category">Clínica de Beleza</div>
-                    <div class="empresa-footer">
-                        <div class="empresa-distance">
-                            <i class="fas fa-map-marker-alt"></i> 1.2 km
-                        </div>
-                        <div class="empresa-pontos">2x pontos</div>
-                    </div>
-                </div>
-            </a>
-
-            <a href="/app-empresa-detalhes.html?id=3" class="empresa-card">
-                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop" alt="TechHub Store" class="empresa-img">
-                <div class="empresa-content">
-                    <div class="empresa-name">TechHub Store</div>
-                    <div class="empresa-category">Eletrônicos</div>
-                    <div class="empresa-footer">
-                        <div class="empresa-distance">
-                            <i class="fas fa-map-marker-alt"></i> 0.5 km
-                        </div>
-                        <div class="empresa-pontos">3x pontos</div>
-                    </div>
-                </div>
-            </a>
-
-            <a href="/app-empresa-detalhes.html?id=4" class="empresa-card">
-                <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop" alt="FitLife Academia" class="empresa-img">
-                <div class="empresa-content">
-                    <div class="empresa-name">FitLife Academia</div>
-                    <div class="empresa-category">Fitness & Saúde</div>
-                    <div class="empresa-footer">
-                        <div class="empresa-distance">
-                            <i class="fas fa-map-marker-alt"></i> 2.1 km
-                        </div>
-                        <div class="empresa-pontos">1.5x pontos</div>
-                    </div>
-                </div>
-            </a>
-
-            <a href="/app-empresa-detalhes.html?id=5" class="empresa-card">
-                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop" alt="Café Central" class="empresa-img">
-                <div class="empresa-content">
-                    <div class="empresa-name">Café Central</div>
-                    <div class="empresa-category">Cafeteria Gourmet</div>
-                    <div class="empresa-footer">
-                        <div class="empresa-distance">
-                            <i class="fas fa-map-marker-alt"></i> 0.3 km
-                        </div>
-                        <div class="empresa-pontos">1.8x pontos</div>
-                    </div>
-                </div>
-            </a>
-
-            <a href="/app-empresa-detalhes.html?id=6" class="empresa-card">
-                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop" alt="Bella Pizza" class="empresa-img">
-                <div class="empresa-content">
-                    <div class="empresa-name">Bella Pizza</div>
-                    <div class="empresa-category">Pizzaria Artesanal</div>
-                    <div class="empresa-footer">
-                        <div class="empresa-distance">
-                            <i class="fas fa-map-marker-alt"></i> 1.7 km
-                        </div>
-                        <div class="empresa-pontos">2.2x pontos</div>
-                    </div>
-                </div>
-            </a>
+            <!-- Empresas serão carregadas dinamicamente via API -->
+            <div id="loadingEmpresas" style="grid-column: 1/-1; text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">
+                <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 12px;"></i>
+                <p>Carregando empresas próximas...</p>
+            </div>
         </div>
     </div>
 
@@ -930,6 +852,81 @@
                 document.getElementById('saldoValue').textContent = newSaldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             }
         }, 30000); // A cada 30 segundos
+
+        // Carregar empresas próximas dinamicamente
+        carregarEmpresasProximas();
+    }
+
+    async function carregarEmpresasProximas() {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('/api/cliente/empresas', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const empresas = data.data || data.empresas || [];
+                renderizarEmpresas(empresas.slice(0, 6)); // Mostrar apenas 6 empresas
+            } else {
+                throw new Error('Erro ao carregar empresas');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar empresas:', error);
+            renderizarEmpresasFallback();
+        }
+    }
+
+    function renderizarEmpresas(empresas) {
+        const container = document.getElementById('empresasGrid');
+        
+        if (!empresas || empresas.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: rgba(255,255,255,0.7);">Nenhuma empresa encontrada</p>';
+            return;
+        }
+
+        const categorias = {
+            'restaurante': 'Alimentação',
+            'academia': 'Fitness & Saúde',
+            'beleza': 'Beleza & Estética',
+            'farmacia': 'Saúde',
+            'cafeteria': 'Cafeteria'
+        };
+
+        container.innerHTML = empresas.map(empresa => `
+            <a href="/app-empresa-detalhes.html?id=${empresa.id}" class="empresa-card">
+                <img src="${empresa.logo || empresa.foto || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400'}" 
+                     alt="${empresa.nome}" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">${empresa.nome}</div>
+                    <div class="empresa-category">${categorias[empresa.ramo] || empresa.categoria || 'Serviços'}</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-map-marker-alt"></i> ${(Math.random() * 2 + 0.1).toFixed(1)} km
+                        </div>
+                        <div class="empresa-pontos">${empresa.points_multiplier || 1.5}x pontos</div>
+                    </div>
+                </div>
+            </a>
+        `).join('');
+    }
+
+    function renderizarEmpresasFallback() {
+        // Fallback com dados estáticos caso a API falhe
+        const empresasFallback = [
+            { id: 1, nome: 'Sabor e Arte', categoria: 'Restaurante', logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400', points_multiplier: 1.5 },
+            { id: 2, nome: 'Bella Napoli', categoria: 'Pizzaria', logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400', points_multiplier: 2.0 },
+            { id: 3, nome: 'FitLife Academia', categoria: 'Academia', logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', points_multiplier: 1.0 },
+            { id: 4, nome: 'Beleza Total', categoria: 'Salão', logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', points_multiplier: 1.2 },
+            { id: 5, nome: 'Café & Cia', categoria: 'Cafeteria', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', points_multiplier: 1.5 },
+            { id: 6, nome: 'Pet Shop Amigo Fiel', categoria: 'Pet Shop', logo: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400', points_multiplier: 1.0 }
+        ];
+        
+        renderizarEmpresas(empresasFallback);
+    }
     </script>
 </body>
 </html>

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f1c40f">
+    <title>🔧 Admin Premium - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            position: relative;
+            padding: 24px;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-admin {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            font-size: 1.5rem;
+            color: #f1c40f;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .badge-admin {
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(230, 126, 34, 0.2));
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            border-radius: 12px;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #f1c40f;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        
+        .header-left p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .user-info {
+            text-align: right;
+            margin-right: 12px;
+        }
+        
+        .user-info .name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .user-info .role {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .btn-logout {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-logout:hover {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.2);
+        }
+        
+        /* Main content */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.6), rgba(15, 20, 25, 0.3));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(241, 196, 15, 0.1);
+            border-color: rgba(241, 196, 15, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(241, 196, 15, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .stat-icon.users { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .stat-icon.companies { background: linear-gradient(135deg, #10b981, #047857); }
+        .stat-icon.transactions { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .stat-icon.points { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .stat-icon.active { background: linear-gradient(135deg, #06d6a0, #118d57); }
+        .stat-icon.revenue { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 900;
+            color: #f1c40f;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .stat-change.positive { color: #10b981; }
+        .stat-change.negative { color: #ef4444; }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.6), rgba(15, 20, 25, 0.3));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.15);
+            border-color: rgba(241, 196, 15, 0.4);
+            color: #fff;
+        }
+
+        .action-btn i {
+            font-size: 18px;
+            color: #f1c40f;
+        }
+        
+        /* Recent Activity */
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: #f1c40f;
+        }
+        
+        .activity-list {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.6), rgba(15, 20, 25, 0.3));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.user-action { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .activity-icon.company-action { background: linear-gradient(135deg, #10b981, #047857); }
+        .activity-icon.system-action { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        
+        .activity-desc {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .activity-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main { padding: 20px 16px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .header-content { flex-direction: column; gap: 16px; }
+            .header { padding: 20px 16px; }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(241, 196, 15, 0.3);
+            border-top: 2px solid #f1c40f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-admin">
+                    <i class="fas fa-gem logo-icon"></i>
+                    <span class="logo-text">Tem de Tudo</span>
+                    <div class="badge-admin">
+                        <i class="fas fa-shield-alt"></i> Admin
+                    </div>
+                </div>
+                <h1>Painel Administrativo</h1>
+                <p>Gerencie usuários, empresas e monitore o sistema</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="name" id="adminName">Administrator</div>
+                    <div class="role">Super Admin</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Sair
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main">
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="totalUsers">847</div>
+                        <div class="stat-label">Usuários Ativos</div>
+                        <div class="stat-change positive">+12% este mês</div>
+                    </div>
+                    <div class="stat-icon users">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="totalCompanies">156</div>
+                        <div class="stat-label">Empresas Parceiras</div>
+                        <div class="stat-change positive">+8% este mês</div>
+                    </div>
+                    <div class="stat-icon companies">
+                        <i class="fas fa-building"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="totalTransactions">2.4k</div>
+                        <div class="stat-label">Transações Hoje</div>
+                        <div class="stat-change positive">+15% ontem</div>
+                    </div>
+                    <div class="stat-icon transactions">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="totalPoints">89.2k</div>
+                        <div class="stat-label">Pontos em Circulação</div>
+                        <div class="stat-change positive">+5% esta semana</div>
+                    </div>
+                    <div class="stat-icon points">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="activeToday">142</div>
+                        <div class="stat-label">Check-ins Hoje</div>
+                        <div class="stat-change positive">+18% ontem</div>
+                    </div>
+                    <div class="stat-icon active">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="monthlyRevenue">R$ 45.8k</div>
+                        <div class="stat-label">Receita Mensal</div>
+                        <div class="stat-change positive">+22% mês passado</div>
+                    </div>
+                    <div class="stat-icon revenue">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="/admin/usuarios.html" class="action-btn">
+                <i class="fas fa-users"></i>
+                Gerenciar Usuários
+            </a>
+            <a href="/admin/empresas.html" class="action-btn">
+                <i class="fas fa-building"></i>
+                Gerenciar Empresas
+            </a>
+            <a href="/admin/relatorios.html" class="action-btn">
+                <i class="fas fa-chart-bar"></i>
+                Relatórios
+            </a>
+            <a href="/admin-configuracoes.html" class="action-btn">
+                <i class="fas fa-cogs"></i>
+                Configurações
+            </a>
+            <a href="/admin-create-user.html" class="action-btn">
+                <i class="fas fa-user-plus"></i>
+                Criar Usuário
+            </a>
+            <a href="/admin/promocoes.html" class="action-btn">
+                <i class="fas fa-tags"></i>
+                Promoções
+            </a>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="section-title">
+            <i class="fas fa-clock"></i>
+            Atividade Recente
+        </div>
+        
+        <div class="activity-list" id="activityList">
+            <div class="activity-item">
+                <div class="activity-icon user-action">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Novo usuário cadastrado</div>
+                    <div class="activity-desc">Marcus Silva se cadastrou como cliente premium</div>
+                </div>
+                <div class="activity-time">há 5 min</div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon company-action">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Nova empresa aprovada</div>
+                    <div class="activity-desc">Pizzaria Bella Napoli foi aprovada e está ativa</div>
+                </div>
+                <div class="activity-time">há 12 min</div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon system-action">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Pontos distribuídos</div>
+                    <div class="activity-desc">1.245 pontos foram distribuídos hoje</div>
+                </div>
+                <div class="activity-time">há 1h</div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon user-action">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Check-in realizado</div>
+                    <div class="activity-desc">Ana Costa fez check-in no Café Central</div>
+                </div>
+                <div class="activity-time">há 2h</div>
+            </div>
+            
+            <div class="activity-item">
+                <div class="activity-icon company-action">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Nova promoção criada</div>
+                    <div class="activity-desc">SmartFit Academia criou promoção "1 mês grátis"</div>
+                </div>
+                <div class="activity-time">há 3h</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação admin
+            verificarAuth();
+            
+            // Carregar dados do dashboard
+            carregarDashboard();
+            
+            // Atualizar dados a cada 30 segundos
+            setInterval(carregarDashboard, 30000);
+        });
+
+        function verificarAuth() {
+            const user = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            
+            if (!user || !token) {
+                window.location.href = '/admin-login.html';
+                return;
+            }
+            
+            try {
+                const userData = JSON.parse(user);
+                if (userData.perfil !== 'admin') {
+                    alert('Acesso negado. Apenas administradores podem acessar esta área.');
+                    localStorage.clear();
+                    window.location.href = '/admin-login.html';
+                    return;
+                }
+                
+                // Atualizar nome do admin
+                document.getElementById('adminName').textContent = userData.name || 'Administrator';
+            } catch (error) {
+                console.error('Erro ao verificar autenticação:', error);
+                localStorage.clear();
+                window.location.href = '/admin-login.html';
+            }
+        }
+
+        async function carregarDashboard() {
+            try {
+                // Simular dados reais do dashboard
+                const dashboardData = {
+                    totalUsers: Math.floor(Math.random() * 100) + 800,
+                    totalCompanies: Math.floor(Math.random() * 20) + 140,
+                    totalTransactions: (Math.random() * 1.5 + 2).toFixed(1) + 'k',
+                    totalPoints: (Math.random() * 10 + 85).toFixed(1) + 'k',
+                    activeToday: Math.floor(Math.random() * 50) + 120,
+                    monthlyRevenue: 'R$ ' + (Math.random() * 10 + 40).toFixed(1) + 'k'
+                };
+
+                // Atualizar estatísticas
+                document.getElementById('totalUsers').textContent = dashboardData.totalUsers;
+                document.getElementById('totalCompanies').textContent = dashboardData.totalCompanies;
+                document.getElementById('totalTransactions').textContent = dashboardData.totalTransactions;
+                document.getElementById('totalPoints').textContent = dashboardData.totalPoints;
+                document.getElementById('activeToday').textContent = dashboardData.activeToday;
+                document.getElementById('monthlyRevenue').textContent = dashboardData.monthlyRevenue;
+                
+                // Adicionar efeito de atualização
+                const statValues = document.querySelectorAll('.stat-value');
+                statValues.forEach(stat => {
+                    stat.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        stat.style.transform = 'scale(1)';
+                    }, 200);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+            }
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair do painel administrativo?')) {
+                localStorage.clear();
+                window.location.href = '/admin-login.html';
+            }
+        }
+
+        // Adicionar interatividade aos cards
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'translateY(-6px)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-4px)';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
