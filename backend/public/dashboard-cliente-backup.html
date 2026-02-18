@@ -98,7 +98,7 @@
         async function carregarEmpresas() {
             const token = localStorage.getItem('token');
             if (!token) {
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
                 return;
             }
 
@@ -113,7 +113,7 @@
                 if (!response.ok) {
                     if (response.status === 401) {
                         localStorage.removeItem('token');
-                        window.location.href = '/entrar.html';
+                        window.location.href = 'entrar.html';
                         return;
                     }
                     throw new Error('Erro ao carregar empresas');
@@ -272,7 +272,7 @@
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = '/entrar.html';
+            window.location.href = 'entrar.html';
         }
     </script>
 </body>

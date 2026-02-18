@@ -418,7 +418,13 @@
             to { transform: rotate(360deg); }
         }
     </style>
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+    <link rel="stylesheet" href="/css/theme-escuro.css">`n    <script>
+        const token = localStorage.getItem('tem_de_tudo_token');
+        if (!token) {
+            window.location.href = 'admin-login.html';
+        }
+    </script>
+</head>
 <body>
     <div class="header">
         <div class="header-content">
@@ -551,7 +557,7 @@
         
         if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
             localStorage.clear();
-            window.location.href = '/admin-login.html';
+            window.location.href = 'admin-login.html';
             return;
         }
         
@@ -560,12 +566,12 @@
             user = JSON.parse(userStr);
             if (!user || !user.perfil || user.perfil !== 'admin') {
                 localStorage.clear();
-                window.location.href = '/admin-login.html';
+                window.location.href = 'admin-login.html';
                 return;
             }
         } catch (e) {
             localStorage.clear();
-            window.location.href = '/admin-login.html';
+            window.location.href = 'admin-login.html';
             return;
         }
         
@@ -576,7 +582,7 @@
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = '/admin-login.html';
+            window.location.href = 'admin-login.html';
         }
         
         // Carregar dados

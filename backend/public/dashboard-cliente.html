@@ -53,7 +53,7 @@
         .btn-logout {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            color: #1D1D1F;
+            color: white;
             padding: 8px 16px;
             border-radius: 8px;
             font-size: 14px;
@@ -528,7 +528,7 @@
         
         if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
             localStorage.clear();
-            window.location.href = '/entrar.html';
+            window.location.href = 'entrar.html';
         }
         
         let user;
@@ -536,11 +536,11 @@
             user = JSON.parse(userStr);
             if (!user || !user.perfil || user.perfil !== 'cliente') {
                 localStorage.clear();
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
             }
         } catch (e) {
             localStorage.clear();
-            window.location.href = '/entrar.html';
+            window.location.href = 'entrar.html';
         }
         
         // Exibir nome do usuário
@@ -549,7 +549,7 @@
         function logout() {
             if (confirm('Deseja realmente sair?')) {
                 localStorage.clear();
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
             }
         }
         

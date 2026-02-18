@@ -214,7 +214,7 @@
         
         .btn-logout:hover {
             background: var(--error);
-            color: #1D1D1F;
+            color: white;
         }
         
         .bottom-nav {
@@ -461,7 +461,7 @@
         
         if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
             localStorage.clear();
-            window.location.href = '/entrar.html';
+            window.location.href = 'entrar.html';
         }
         
         let user;
@@ -469,11 +469,11 @@
             user = JSON.parse(userStr);
             if (!user || !user.perfil || user.perfil !== 'cliente') {
                 localStorage.clear();
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
             }
         } catch (e) {
             localStorage.clear();
-            window.location.href = '/entrar.html';
+            window.location.href = 'entrar.html';
         }
         
         // Exibir dados do usuário
@@ -541,7 +541,7 @@
             if (confirm('Deseja realmente sair?')) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
             }
         }
         

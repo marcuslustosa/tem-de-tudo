@@ -591,7 +591,7 @@
             const token = localStorage.getItem('token');
             
             if (!user || !token) {
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
                 return;
             }
             
@@ -600,7 +600,7 @@
                 if (userData.perfil !== 'empresa') {
                     alert('Acesso negado. Apenas empresas podem acessar esta área.');
                     localStorage.clear();
-                    window.location.href = '/entrar.html';
+                    window.location.href = 'entrar.html';
                     return;
                 }
                 
@@ -610,7 +610,7 @@
             } catch (error) {
                 console.error('Erro ao verificar autenticação:', error);
                 localStorage.clear();
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
             }
         }
 
@@ -651,7 +651,7 @@
         function logout() {
             if (confirm('Tem certeza que deseja sair do painel da empresa?')) {
                 localStorage.clear();
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
             }
         }
 

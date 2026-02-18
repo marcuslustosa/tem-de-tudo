@@ -316,17 +316,17 @@
         
         if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
             localStorage.clear();
-            window.location.href = '/entrar.html';
+            window.location.href = 'entrar.html';
         } else {
             try {
                 const user = JSON.parse(userStr);
                 if (!user || !user.perfil || user.perfil !== 'cliente') {
                     localStorage.clear();
-                    window.location.href = '/entrar.html';
+                    window.location.href = 'entrar.html';
                 }
             } catch (e) {
                 localStorage.clear();
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
             }
         }
         
@@ -336,7 +336,7 @@
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = '/entrar.html';
+            window.location.href = 'entrar.html';
         }
         
         // Gerar QR Code

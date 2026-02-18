@@ -15,12 +15,12 @@
     <link rel="manifest" href="/manifest.json">
     
     <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-admin></script>
-    
+    <script>
+        const token = localStorage.getItem('tem_de_tudo_token');
+        if (!token) {
+            window.location.href = 'admin-login.html';
+        }
+    </script>
     <style>
         * {
             margin: 0;
@@ -287,7 +287,7 @@
             
             if (!userStr || userStr === 'undefined' || userStr === 'null') {
                 alert('Acesso negado. Apenas administradores podem acessar esta área.');
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
                 return;
             }
             
@@ -297,13 +297,13 @@
             } catch (e) {
                 alert('Erro ao carregar dados do usuário.');
                 localStorage.clear();
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
                 return;
             }
             
             if (!user.perfil || user.perfil !== 'admin') {
                 alert('Acesso negado. Apenas administradores podem acessar esta área.');
-                window.location.href = '/entrar.html';
+                window.location.href = 'entrar.html';
                 return;
             }
 

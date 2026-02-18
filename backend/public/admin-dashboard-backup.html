@@ -174,12 +174,13 @@
         }
     </style>
     <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-admin></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
+    <script>
+        const token = localStorage.getItem('tem_de_tudo_token');
+        if (!token) {
+            window.location.href = 'admin-login.html';
+        }
+    </script>
+    <link rel="stylesheet" href="/css/global-unified.css">
     <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
 <body>
     <div class="header">
@@ -284,7 +285,7 @@
         function checkAuth() {
             const token = localStorage.getItem('token');
             if (!token) {
-                window.location.href = '/admin-login.html';
+                window.location.href = 'admin-login.html';
                 return false;
             }
             return token;
@@ -311,7 +312,7 @@
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('mainContent').style.display = 'block';
                 } else if (response.status === 401) {
-                    window.location.href = '/admin-login.html';
+                    window.location.href = 'admin-login.html';
                 } else {
                     console.error('Erro na resposta:', response.status);
                     document.getElementById('loading').innerHTML = 
