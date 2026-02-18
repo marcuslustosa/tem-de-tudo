@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +14,7 @@
     <link rel="manifest" href="/manifest.json">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #0a0a0f; min-height: 100vh; color: #fff; }
+        body { font-family: 'Inter', sans-serif; background: #FFFFFF; min-height: 100vh; color: #1D1D1F; }
         
         .hero { 
             background: linear-gradient(145deg, #1a1a2e, #16213e); 
@@ -29,7 +29,7 @@
             backdrop-filter: blur(10px); 
             border: 1px solid rgba(102, 126, 234, 0.2); 
             border-radius: 12px; 
-            color: #fff; 
+            color: #1D1D1F; 
             font-size: 18px; 
             cursor: pointer; 
             margin-bottom: 20px; 
@@ -118,7 +118,7 @@
             width: 100%; 
             padding: 18px; 
             background: linear-gradient(135deg, #667eea, #764ba2); 
-            color: white; 
+            color: #1D1D1F; 
             border: none; 
             border-radius: 14px; 
             font-size: 16px; 
@@ -173,7 +173,7 @@
             <div class="hero-stats">
                 <div class="stat">
                     <div class="stat-value" id="empresaRating">-</div>
-                    <div class="stat-label">Avaliação</div>
+                    <div class="stat-label">Avaliaï¿½ï¿½o</div>
                 </div>
                 <div class="stat">
                     <div class="stat-value" id="meusPontos">0</div>
@@ -193,17 +193,17 @@
             </div>
             
             <div class="info-card" id="enderecoCard">
-                <div class="info-title"><i class="fas fa-map-marker-alt"></i> Endereço</div>
+                <div class="info-title"><i class="fas fa-map-marker-alt"></i> Endereï¿½o</div>
                 <div class="info-text" id="empresaEndereco">-</div>
             </div>
             
             <div class="info-card" id="promocoesCard" style="display: none;">
-                <div class="info-title"><i class="fas fa-gift"></i> Promoções Ativas</div>
+                <div class="info-title"><i class="fas fa-gift"></i> Promoï¿½ï¿½es Ativas</div>
                 <div class="promocoes-list" id="promocoesList"></div>
             </div>
             
             <div class="info-card" id="avaliacoesCard" style="display: none;">
-                <div class="info-title"><i class="fas fa-star"></i> Avaliações Recentes</div>
+                <div class="info-title"><i class="fas fa-star"></i> Avaliaï¿½ï¿½es Recentes</div>
                 <div class="reviews-list" id="reviewsList"></div>
             </div>
             
@@ -217,7 +217,7 @@
         let empresaId = null;
         let empresaData = null;
         
-        // Ícones por ramo
+        // ï¿½cones por ramo
         const ramoIcons = {
             'restaurante': '???',
             'lanchonete': '??',
@@ -243,7 +243,7 @@
             empresaId = getEmpresaId();
             
             if (!empresaId) {
-                alert('Empresa não especificada');
+                alert('Empresa nï¿½o especificada');
                 history.back();
                 return;
             }
@@ -270,7 +270,7 @@
                     console.log('Empresa carregada:', empresaData);
                     renderEmpresa();
                 } else if (response.status === 404) {
-                    alert('Empresa não encontrada');
+                    alert('Empresa nï¿½o encontrada');
                     history.back();
                 } else if (response.status === 401) {
                     window.location.href = '/entrar.html';
@@ -297,7 +297,7 @@
             document.getElementById('empresaNome').textContent = empresa.nome;
             document.getElementById('empresaCategoria').textContent = empresa.ramo || 'Estabelecimento';
             
-            // Ícone/Logo
+            // ï¿½cone/Logo
             const iconEl = document.getElementById('heroIcon');
             if (empresa.logo) {
                 iconEl.innerHTML = `<img src="${empresa.logo}" alt="${empresa.nome}" onerror="this.parentElement.innerHTML='${ramoIcons[empresa.ramo] || ramoIcons.default}'">`;
@@ -311,28 +311,28 @@
             document.getElementById('totalClientes').textContent = empresa.total_clientes || '-';
             
             // Sobre
-            document.getElementById('empresaDescricao').textContent = empresa.descricao || 'Sem descrição disponível.';
+            document.getElementById('empresaDescricao').textContent = empresa.descricao || 'Sem descriï¿½ï¿½o disponï¿½vel.';
             
-            // Endereço
+            // Endereï¿½o
             document.getElementById('empresaEndereco').innerHTML = `
-                ${empresa.endereco || 'Endereço não informado'}<br>
+                ${empresa.endereco || 'Endereï¿½o nï¿½o informado'}<br>
                 ${empresa.cidade ? `${empresa.cidade}, ${empresa.estado || ''}` : ''}
             `;
             
-            // Promoções
+            // Promoï¿½ï¿½es
             if (promocoes && promocoes.length > 0) {
                 document.getElementById('promocoesCard').style.display = 'block';
                 renderPromocoes(promocoes);
             }
             
-            // Avaliações
+            // Avaliaï¿½ï¿½es
             if (avaliacoes && avaliacoes.length > 0) {
                 document.getElementById('avaliacoesCard').style.display = 'block';
                 renderAvaliacoes(avaliacoes);
             }
         }
         
-        // Renderizar promoções
+        // Renderizar promoï¿½ï¿½es
         function renderPromocoes(promocoes) {
             const list = document.getElementById('promocoesList');
             
@@ -345,14 +345,14 @@
                 return `
                     <div class="promo-item">
                         <h4>${promo.nome}</h4>
-                        <p>${promo.descricao || 'Promoção especial!'}</p>
+                        <p>${promo.descricao || 'Promoï¿½ï¿½o especial!'}</p>
                         ${badge}
                     </div>
                 `;
             }).join('');
         }
         
-        // Renderizar avaliações
+        // Renderizar avaliaï¿½ï¿½es
         function renderAvaliacoes(avaliacoes) {
             const list = document.getElementById('reviewsList');
             
@@ -363,7 +363,7 @@
                 return `
                     <div class="review-item">
                         <div class="review-header">
-                            <span class="review-author">${review.cliente_nome || 'Anônimo'}</span>
+                            <span class="review-author">${review.cliente_nome || 'Anï¿½nimo'}</span>
                             <span class="review-rating">${stars}</span>
                         </div>
                         ${review.comentario ? `<p class="review-comment">${review.comentario}</p>` : ''}
@@ -381,7 +381,7 @@
     <nav class="bottom-nav">
         <a href="/app-inicio.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>Início</span>
+            <span>Inï¿½cio</span>
         </a>
         <a href="/app-empresas.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -393,7 +393,7 @@
         </a>
         <a href="/app-promocoes.html" class="nav-item">
             <i class="fas fa-tags"></i>
-            <span>Promoções</span>
+            <span>Promoï¿½ï¿½es</span>
         </a>
         <a href="/app-perfil.html" class="nav-item">
             <i class="fas fa-user"></i>

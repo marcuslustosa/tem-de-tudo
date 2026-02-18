@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -14,11 +14,12 @@
     <link rel="manifest" href="/manifest.json">
     
     <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-admin></script>
+    <script>
+        const token = localStorage.getItem('tem_de_tudo_token');
+        if (!token) {
+            window.location.href = 'admin-login.html';
+        }
+    </script>
     
     <style>
         * {
@@ -29,8 +30,8 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
-            color: #fff;
+            background: #FFFFFF;
+            color: #1D1D1F;
             min-height: 100vh;
             overflow-x: hidden;
             padding-bottom: 80px;
@@ -129,8 +130,8 @@
                 <!-- Page Header -->
                 <div class="card mb-4">
                     <div class="card-header text-center">
-                        <i class="fas fa-chart-line icon-lg" style="color: white; font-size: 3rem; margin-bottom: 1rem;"></i>
-                        <h1 style="color: white; margin-bottom: 0.5rem;">Estatísticas e Relatórios</h1>
+                        <i class="fas fa-chart-line icon-lg" style="color: #1D1D1F; font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h1 style="color: #1D1D1F; margin-bottom: 0.5rem;">Estatísticas e Relatórios</h1>
                         <p style="color: rgba(255,255,255,0.9);">Análise completa de dados e desempenho do sistema</p>
                     </div>
                 </div>
@@ -197,7 +198,7 @@
                                         <span style="color: var(--gray-600); font-size: 0.75rem;">vs. mís anterior</span>
                                     </div>
                                 </div>
-                                <div style="background: var(--primary-blue); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <div style="background: var(--primary-blue); color: #1D1D1F; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-users" style="font-size: 1.5rem;"></i>
                                 </div>
                             </div>
@@ -217,7 +218,7 @@
                                         <span style="color: var(--gray-600); font-size: 0.75rem;">vs. mís anterior</span>
                                     </div>
                                 </div>
-                                <div style="background: var(--accent-orange); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <div style="background: var(--accent-orange); color: #1D1D1F; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-coins" style="font-size: 1.5rem;"></i>
                                 </div>
                             </div>
@@ -237,7 +238,7 @@
                                         <span style="color: var(--gray-600); font-size: 0.75rem;">vs. mís anterior</span>
                                     </div>
                                 </div>
-                                <div style="background: var(--success-green); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <div style="background: var(--success-green); color: #1D1D1F; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-store" style="font-size: 1.5rem;"></i>
                                 </div>
                             </div>
@@ -257,7 +258,7 @@
                                         <span style="color: var(--gray-600); font-size: 0.75rem;">vs. mís anterior</span>
                                     </div>
                                 </div>
-                                <div style="background: var(--warning-yellow); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <div style="background: var(--warning-yellow); color: #1D1D1F; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-exchange-alt" style="font-size: 1.5rem;"></i>
                                 </div>
                             </div>
@@ -271,7 +272,7 @@
                     <!-- Growth Trend Chart -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 style="color: white; margin: 0;">
+                            <h3 style="color: #1D1D1F; margin: 0;">
                                 <i class="fas fa-chart-line icon-sm"></i> Crescimento de Usuórios
                             </h3>
                         </div>
@@ -283,7 +284,7 @@
                     <!-- Category Distribution -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 style="color: white; margin: 0;">
+                            <h3 style="color: #1D1D1F; margin: 0;">
                                 <i class="fas fa-chart-pie icon-sm"></i> Distribuiçõo por Categoria
                             </h3>
                         </div>
@@ -299,7 +300,7 @@
                     <!-- Points Activity -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 style="color: white; margin: 0;">
+                            <h3 style="color: #1D1D1F; margin: 0;">
                                 <i class="fas fa-coins icon-sm"></i> Atividade de Pontos
                             </h3>
                         </div>
@@ -311,7 +312,7 @@
                     <!-- Regional Performance -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 style="color: white; margin: 0;">
+                            <h3 style="color: #1D1D1F; margin: 0;">
                                 <i class="fas fa-map-marker-alt icon-sm"></i> Performance por Regi?o
                             </h3>
                         </div>
@@ -324,7 +325,7 @@
                 <!-- Detailed Reports Table -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 style="color: white; margin: 0;">
+                        <h3 style="color: #1D1D1F; margin: 0;">
                             <i class="fas fa-table icon-sm"></i> Relatório Detalhado de Estabelecimentos
                         </h3>
                     </div>
@@ -346,7 +347,7 @@
                                     <tr style="border-bottom: 1px solid var(--gray-200);">
                                         <td style="padding: var(--space-3);">
                                             <div style="display: flex; align-items: center; gap: var(--space-2);">
-                                                <div style="width: 40px; height: 40px; background: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.875rem;">MC</div>
+                                                <div style="width: 40px; height: 40px; background: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1D1D1F; font-weight: bold; font-size: 0.875rem;">MC</div>
                                                 <div>
                                                     <div style="font-weight: 600; color: var(--gray-900);">McDonald's Centro</div>
                                                     <div style="font-size: 0.875rem; color: var(--gray-600);">Rua das Flores, 123</div>
@@ -358,7 +359,7 @@
                                         <td style="padding: var(--space-3); text-align: center; font-weight: 600; color: var(--accent-orange);">147,329</td>
                                         <td style="padding: var(--space-3); text-align: center; font-weight: 600; color: var(--gray-900);">8,642</td>
                                         <td style="padding: var(--space-3); text-align: center;">
-                                            <span style="background: var(--success-green); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500;">Ativo</span>
+                                            <span style="background: var(--success-green); color: #1D1D1F; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500;">Ativo</span>
                                         </td>
                                         <td style="padding: var(--space-3); text-align: center;">
                                             <button class="btn btn-sm btn-outline" onclick="viewStoreDetails('mc-centro')" style="margin-right: 0.5rem;">
@@ -373,7 +374,7 @@
                                     <tr style="border-bottom: 1px solid var(--gray-200);">
                                         <td style="padding: var(--space-3);">
                                             <div style="display: flex; align-items: center; gap: var(--space-2);">
-                                                <div style="width: 40px; height: 40px; background: var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.875rem;">SB</div>
+                                                <div style="width: 40px; height: 40px; background: var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1D1D1F; font-weight: bold; font-size: 0.875rem;">SB</div>
                                                 <div>
                                                     <div style="font-weight: 600; color: var(--gray-900);">Starbucks Shopping</div>
                                                     <div style="font-size: 0.875rem; color: var(--gray-600);">Shopping Center Norte</div>
@@ -385,7 +386,7 @@
                                         <td style="padding: var(--space-3); text-align: center; font-weight: 600; color: var(--accent-orange);">98,247</td>
                                         <td style="padding: var(--space-3); text-align: center; font-weight: 600; color: var(--gray-900);">5,431</td>
                                         <td style="padding: var(--space-3); text-align: center;">
-                                            <span style="background: var(--success-green); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500;">Ativo</span>
+                                            <span style="background: var(--success-green); color: #1D1D1F; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500;">Ativo</span>
                                         </td>
                                         <td style="padding: var(--space-3); text-align: center;">
                                             <button class="btn btn-sm btn-outline" onclick="viewStoreDetails('sb-shopping')" style="margin-right: 0.5rem;">
@@ -400,7 +401,7 @@
                                     <tr style="border-bottom: 1px solid var(--gray-200);">
                                         <td style="padding: var(--space-3);">
                                             <div style="display: flex; align-items: center; gap: var(--space-2);">
-                                                <div style="width: 40px; height: 40px; background: var(--accent-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.875rem;">FM</div>
+                                                <div style="width: 40px; height: 40px; background: var(--accent-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1D1D1F; font-weight: bold; font-size: 0.875rem;">FM</div>
                                                 <div>
                                                     <div style="font-weight: 600; color: var(--gray-900);">Farm?cia S?o Paulo</div>
                                                     <div style="font-size: 0.875rem; color: var(--gray-600);">Av. Paulista, 1000</div>
@@ -412,7 +413,7 @@
                                         <td style="padding: var(--space-3); text-align: center; font-weight: 600; color: var(--accent-orange);">203,847</td>
                                         <td style="padding: var(--space-3); text-align: center; font-weight: 600; color: var(--gray-900);">12,398</td>
                                         <td style="padding: var(--space-3); text-align: center;">
-                                            <span style="background: var(--success-green); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500;">Ativo</span>
+                                            <span style="background: var(--success-green); color: #1D1D1F; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500;">Ativo</span>
                                         </td>
                                         <td style="padding: var(--space-3); text-align: center;">
                                             <button class="btn btn-sm btn-outline" onclick="viewStoreDetails('farmacia-sp')" style="margin-right: 0.5rem;">
@@ -427,7 +428,7 @@
                                     <tr style="border-bottom: 1px solid var(--gray-200);">
                                         <td style="padding: var(--space-3);">
                                             <div style="display: flex; align-items: center; gap: var(--space-2);">
-                                                <div style="width: 40px; height: 40px; background: var(--warning-yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.875rem;">CV</div>
+                                                <div style="width: 40px; height: 40px; background: var(--warning-yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1D1D1F; font-weight: bold; font-size: 0.875rem;">CV</div>
                                                 <div>
                                                     <div style="font-weight: 600; color: var(--gray-900);">Cinema Village</div>
                                                     <div style="font-size: 0.875rem; color: var(--gray-600);">Shopping Villa Lobos</div>
@@ -439,7 +440,7 @@
                                         <td style="padding: var(--space-3); text-align: center; font-weight: 600; color: var(--accent-orange);">45,892</td>
                                         <td style="padding: var(--space-3); text-align: center; font-weight: 600; color: var(--gray-900);">2,847</td>
                                         <td style="padding: var(--space-3); text-align: center;">
-                                            <span style="background: var(--warning-yellow); color: white; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500;">Inativo</span>
+                                            <span style="background: var(--warning-yellow); color: #1D1D1F; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 500;">Inativo</span>
                                         </td>
                                         <td style="padding: var(--space-3); text-align: center;">
                                             <button class="btn btn-sm btn-outline" onclick="viewStoreDetails('cinema-village')" style="margin-right: 0.5rem;">

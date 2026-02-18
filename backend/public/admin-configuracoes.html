@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -13,11 +13,12 @@
     <link rel="manifest" href="/manifest.json">
     
     <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-admin></script>
+    <script>
+        const token = localStorage.getItem('tem_de_tudo_token');
+        if (!token) {
+            window.location.href = 'admin-login.html';
+        }
+    </script>
     
     <style>
         * {
@@ -28,8 +29,8 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
-            color: #fff;
+            background: #FFFFFF;
+            color: #1D1D1F;
             min-height: 100vh;
             overflow-x: hidden;
             padding-bottom: 80px;
@@ -95,13 +96,13 @@
 
         .btn-primary {
             background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            color: #fff;
+            color: #1D1D1F;
         }
 
         .btn-outline {
             background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(26, 26, 46, 0.3));
             border: 1px solid rgba(111, 26, 182, 0.2);
-            color: #fff;
+            color: #1D1D1F;
         }
 
         .setting-tab {
@@ -113,7 +114,7 @@
             border: 1px solid rgba(111, 26, 182, 0.2);
             border-radius: 12px;
             padding: 12px 16px;
-            color: #fff;
+            color: #1D1D1F;
             font-family: 'Inter', sans-serif;
         }
 
@@ -169,8 +170,8 @@
                 <!-- Page Header -->
                 <div class="card mb-4">
                     <div class="card-header text-center">
-                        <i class="fas fa-cogs icon-lg" style="color: white; font-size: 3rem; margin-bottom: 1rem;"></i>
-                        <h1 style="color: white; margin-bottom: 0.5rem;">Configurações do Sistema</h1>
+                        <i class="fas fa-cogs icon-lg" style="color: #1D1D1F; font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h1 style="color: #1D1D1F; margin-bottom: 0.5rem;">Configurações do Sistema</h1>
                         <p style="color: rgba(255,255,255,0.9);">Gerenciar configurações globais e parâmetros do sistema</p>
                     </div>
                 </div>
@@ -202,7 +203,7 @@
                 <div id="pontos-section" class="setting-section">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h3 style="color: white; margin: 0;">
+                            <h3 style="color: #1D1D1F; margin: 0;">
                                 <i class="fas fa-coins icon-sm"></i> Configurações do Sistema de Pontos
                             </h3>
                         </div>
@@ -296,7 +297,7 @@
                 <div id="usuarios-section" class="setting-section" style="display: none;">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h3 style="color: white; margin: 0;">
+                            <h3 style="color: #1D1D1F; margin: 0;">
                                 <i class="fas fa-users icon-sm"></i> Configurações de Usuários
                             </h3>
                         </div>
@@ -371,7 +372,7 @@
                 <div id="estabelecimentos-section" class="setting-section" style="display: none;">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h3 style="color: white; margin: 0;">
+                            <h3 style="color: #1D1D1F; margin: 0;">
                                 <i class="fas fa-store icon-sm"></i> Configurações de Estabelecimentos
                             </h3>
                         </div>
@@ -440,7 +441,7 @@
                 <div id="notificacoes-section" class="setting-section" style="display: none;">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h3 style="color: white; margin: 0;">
+                            <h3 style="color: #1D1D1F; margin: 0;">
                                 <i class="fas fa-bell icon-sm"></i> Configurações de Notificações
                             </h3>
                         </div>
@@ -506,7 +507,7 @@
                 <div id="seguranca-section" class="setting-section" style="display: none;">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h3 style="color: white; margin: 0;">
+                            <h3 style="color: #1D1D1F; margin: 0;">
                                 <i class="fas fa-shield-alt icon-sm"></i> Configurações de Segurança
                             </h3>
                         </div>
