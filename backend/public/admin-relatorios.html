@@ -89,18 +89,18 @@
         <!-- Admin Header -->
         <header class="app-header">
             <div class="header-container">
-                <a href="/admin.html" class="logo">
-                    <i class="fas fa-gem" style="color: #f1c40f; margin-right: 8px; font-size: 1.2rem;"></i>
-                    <span style="font-weight: 800; background: linear-gradient(135deg, #f1c40f, #e67e22); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tem de Tudo</span>
-                    <span style="color: var(--accent-orange); margin-left: 8px; font-weight: 600;">ADMIN</span>
+                <a href="admin-painel.html" class="logo">
+                    <i class="fas fa-shield-alt" style="color: #6F1AB6; margin-right: 8px; font-size: 1.2rem;"></i>
+                    <span style="font-weight: 800; background: linear-gradient(135deg, #6F1AB6, #9333EA); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tem de Tudo</span>
+                    <span style="color: #9333EA; margin-left: 8px; font-weight: 600;">ADMIN</span>
                 </a>
                 
                 <nav class="nav-menu">
-                    <a href="/admin.html"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
-                    <a href="/profile-company.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
+                    <a href="admin-painel.html"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
+                    <a href="admin-empresas.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
                     <a href="#" class="active"><i class="fas fa-chart-line icon-sm"></i> Relatórios</a>
-                    <a href="/profile-client.html"><i class="fas fa-users icon-sm"></i> Usuórios</a>
-                    <a href="/entrar.html"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+                    <a href="admin-usuarios.html"><i class="fas fa-users icon-sm"></i> Usuários</a>
+                    <button onclick="handleLogout()" style="background: none; border: none; color: inherit; cursor: pointer; font: inherit;"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</button>
                 </nav>
                 
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
@@ -114,11 +114,11 @@
         <!-- Mobile Navigation -->
         <div class="mobile-nav" id="mobileNav">
             <div class="mobile-nav-menu">
-                <a href="/admin.html"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
-                <a href="/profile-company.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
+                <a href="admin-painel.html"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
+                <a href="admin-empresas.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
                 <a href="#" class="active"><i class="fas fa-chart-line icon-sm"></i> Relatórios</a>
-                <a href="/profile-client.html"><i class="fas fa-users icon-sm"></i> Usuórios</a>
-                <a href="/entrar.html"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+                <a href="admin-usuarios.html"><i class="fas fa-users icon-sm"></i> Usuários</a>
+                <button onclick="handleLogout()" style="background: none; border: none; color: inherit; cursor: pointer; font: inherit;"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</button>
             </div>
         </div>
 
@@ -493,14 +493,14 @@
                 data: {
                     labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
                     datasets: [{
-                        label: 'Novos Usuórios',
+                        label: 'Novos Usuários',
                         data: [845, 1203, 1456, 1678, 1892, 2134, 2387, 2645, 2834, 3012, 3247, 3456],
-                        borderColor: '#764ba2',
-                        backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                        borderColor: '#6F1AB6',
+                        backgroundColor: 'rgba(111, 26, 182, 0.1)',
                         tension: 0.4,
                         fill: true
                     }, {
-                        label: 'Usuórios Ativos',
+                        label: 'Usuários Ativos',
                         data: [7234, 8456, 9123, 9876, 10234, 10987, 11456, 11789, 12034, 12287, 12456, 12547],
                         borderColor: '#059669',
                         backgroundColor: 'rgba(5, 150, 105, 0.1)',
@@ -529,14 +529,14 @@
             charts.category = new Chart(categoryCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Alimentaçõo', 'Varejo', 'Sa?de', 'Serviços', 'Entretenimento'],
+                    labels: ['Alimentação', 'Varejo', 'Saúde', 'Serviços', 'Entretenimento'],
                     datasets: [{
                         data: [35, 25, 20, 12, 8],
                         backgroundColor: [
-                            '#764ba2',
+                            '#6F1AB6',
                             '#059669',
                             '#ea580c',
-                            '#7c3aed',
+                            '#9333EA',
                             '#dc2626'
                         ]
                     }]
@@ -588,11 +588,11 @@
                 data: {
                     labels: ['Centro', 'Zona Norte', 'Zona Sul', 'Zona Leste', 'Zona Oeste'],
                     datasets: [{
-                        label: 'Usuórios Ativos',
+                        label: 'Usuários Ativos',
                         data: [85, 78, 92, 67, 73],
-                        borderColor: '#764ba2',
-                        backgroundColor: 'rgba(30, 64, 175, 0.2)',
-                        pointBackgroundColor: '#764ba2'
+                        borderColor: '#6F1AB6',
+                        backgroundColor: 'rgba(111, 26, 182, 0.2)',
+                        pointBackgroundColor: '#6F1AB6'
                     }, {
                         label: 'Estabelecimentos',
                         data: [78, 65, 88, 59, 71],
@@ -662,6 +662,14 @@
 
         // Update metrics every 30 seconds
         setInterval(updateMetrics, 30000);
+
+        // Logout function
+        function handleLogout() {
+            localStorage.removeItem('tem_de_tudo_token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('userRole');
+            window.location.href = 'admin-login.html';
+        }
     </script><script src="/js/global.js"></script>
 </body>
 </html>

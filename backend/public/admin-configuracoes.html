@@ -40,7 +40,7 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+            border-bottom: 1px solid rgba(111, 26, 182, 0.1);
         }
 
         .header-container {
@@ -55,7 +55,7 @@
         .card {
             background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(241, 196, 15, 0.1);
+            border: 1px solid rgba(111, 26, 182, 0.1);
             border-radius: 20px;
             margin-bottom: 24px;
             position: relative;
@@ -66,7 +66,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            background: linear-gradient(135deg, rgba(111, 26, 182, 0.05) 0%, transparent 50%);
             pointer-events: none;
         }
 
@@ -94,13 +94,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #f1c40f, #e67e22);
-            color: #1a1a2e;
+            background: linear-gradient(135deg, #6F1AB6, #9333EA);
+            color: #fff;
         }
 
         .btn-outline {
             background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(26, 26, 46, 0.3));
-            border: 1px solid rgba(241, 196, 15, 0.2);
+            border: 1px solid rgba(111, 26, 182, 0.2);
             color: #fff;
         }
 
@@ -110,7 +110,7 @@
 
         .form-control {
             background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(26, 26, 46, 0.3));
-            border: 1px solid rgba(241, 196, 15, 0.2);
+            border: 1px solid rgba(111, 26, 182, 0.2);
             border-radius: 12px;
             padding: 12px 16px;
             color: #fff;
@@ -119,8 +119,8 @@
 
         .form-control:focus {
             outline: none;
-            border-color: rgba(241, 196, 15, 0.5);
-            box-shadow: 0 0 20px rgba(241, 196, 15, 0.2);
+            border-color: rgba(111, 26, 182, 0.5);
+            box-shadow: 0 0 20px rgba(111, 26, 182, 0.2);
         }
     </style>
 </head>
@@ -129,18 +129,18 @@
         <!-- Admin Header -->
         <header class="app-header">
             <div class="header-container">
-                <a href="/admin.html" class="logo">
-                    <i class="fas fa-gem" style="color: #f1c40f; margin-right: 8px; font-size: 1.2rem;"></i>
-                    <span style="font-weight: 800; background: linear-gradient(135deg, #f1c40f, #e67e22); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tem de Tudo</span>
-                    <span style="color: var(--accent-orange); margin-left: 8px; font-weight: 600;">ADMIN</span>
+                <a href="admin-painel.html" class="logo">
+                    <i class="fas fa-shield-alt" style="color: #6F1AB6; margin-right: 8px; font-size: 1.2rem;"></i>
+                    <span style="font-weight: 800; background: linear-gradient(135deg, #6F1AB6, #9333EA); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tem de Tudo</span>
+                    <span style="color: #9333EA; margin-left: 8px; font-weight: 600;">ADMIN</span>
                 </a>
                 
                 <nav class="nav-menu">
-                    <a href="/admin.html"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
-                    <a href="/profile-company.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
-                    <a href="/admin-relatorios.html"><i class="fas fa-chart-line icon-sm"></i> Relatórios</a>
+                    <a href="admin-painel.html"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
+                    <a href="admin-empresas.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
+                    <a href="admin-relatorios.html"><i class="fas fa-chart-line icon-sm"></i> Relatórios</a>
                     <a href="#" class="active"><i class="fas fa-cogs icon-sm"></i> Configurações</a>
-                    <a href="/entrar.html"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+                    <button onclick="handleLogout()" style="background: none; border: none; color: inherit; cursor: pointer; font: inherit;"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</button>
                 </nav>
                 
                 <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
@@ -154,11 +154,11 @@
         <!-- Mobile Navigation -->
         <div class="mobile-nav" id="mobileNav">
             <div class="mobile-nav-menu">
-                <a href="/admin.html"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
-                <a href="/profile-company.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
-                <a href="/admin-relatorios.html"><i class="fas fa-chart-line icon-sm"></i> Relatórios</a>
+                <a href="admin-painel.html"><i class="fas fa-tachometer-alt icon-sm"></i> Dashboard</a>
+                <a href="admin-empresas.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
+                <a href="admin-relatorios.html"><i class="fas fa-chart-line icon-sm"></i> Relatórios</a>
                 <a href="#" class="active"><i class="fas fa-cogs icon-sm"></i> Configurações</a>
-                <a href="/entrar.html"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
+                <button onclick="handleLogout()" style="background: none; border: none; color: inherit; cursor: pointer; font: inherit;"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</button>
             </div>
         </div>
 
@@ -680,6 +680,14 @@
                 }
             }
         });
+
+        // Logout function
+        function handleLogout() {
+            localStorage.removeItem('tem_de_tudo_token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('userRole');
+            window.location.href = 'admin-login.html';
+        }
     </script><script src="/js/global.js"></script>
     
     <!-- Bottom Navigation -->
@@ -709,8 +717,8 @@
             transition: all 0.3s;
         }
         .bottom-nav .nav-item.active {
-            color: #667eea;
-            background: rgba(102,126,234,0.15);
+            color: #6F1AB6;
+            background: rgba(111,26,182,0.15);
         }
         .bottom-nav .nav-item i {
             font-size: 20px;
