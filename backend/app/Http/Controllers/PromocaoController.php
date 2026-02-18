@@ -69,6 +69,10 @@ class PromocaoController extends Controller
         $validator = Validator::make($request->all(), [
             'titulo' => 'required|string|max:100',
             'descricao' => 'required|string|max:500',
+            'desconto' => 'required|numeric|min:0|max:100', // % de desconto
+            'pontos_necessarios' => 'required|integer|min:10', // Mínimo 10 pontos
+            'data_inicio' => 'nullable|date|after_or_equal:today',
+            'validade' => 'nullable|date|after_or_equal:data_inicio',
             'imagem' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'ativo' => 'boolean'
         ]);
@@ -83,6 +87,14 @@ class PromocaoController extends Controller
 
         $data = $validator->validated();
         $data['empresa_id'] = $empresa->id;
+        
+        // Status baseado na validade
+        if (isset($data['validade']) && $data['validade'] < now()->toDateString()) {
+            $data['status'] = 'expirada';
+            $data['ativo'] = false;
+        } else {
+            $data['status'] = 'ativa';
+        }
 
         // Upload obrigatório da imagem
         if ($request->hasFile('imagem')) {
@@ -333,9 +345,17 @@ class PromocaoController extends Controller
             ], 404);
         }
 
-        // Buscar promoções ativas
+        // Buscar promoções ativas e válidas
         $promocoes = Promocao::where('empresa_id', $empresa_id)
             ->where('ativo', true)
+            ->where(function($query) {
+                $query->whereNull('validade')
+                      ->orWhere('validade', '>=', now()->toDateString());
+            })
+            ->where(function($query) {
+                $query->whereNull('data_inicio')
+                      ->orWhere('data_inicio', '<=', now()->toDateString());
+            })
             ->orderBy('created_at', 'desc')
             ->get();
 

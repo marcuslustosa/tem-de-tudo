@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Adicionar latitude e longitude em empresas (users com perfil empresa)
+        Schema::table('users', function (Blueprint $table) {
+            if (!Schema::hasColumn('users', 'latitude')) {
+                $table->decimal('latitude', 10, 8)->nullable()->after('cep');
+            }
+            if (!Schema::hasColumn('users', 'longitude')) {
+                $table->decimal('longitude', 11, 8)->nullable()->after('latitude');
+            }
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['latitude', 'longitude']);
+        });
+    }
+};

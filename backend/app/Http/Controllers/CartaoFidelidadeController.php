@@ -81,6 +81,19 @@ class CartaoFidelidadeController extends Controller
             ], 422);
         }
 
+        // ✅ REGRA: Apenas 1 cartão ativo por empresa
+        $cartaoAtivoExistente = CartaoFidelidade::where('empresa_id', $empresa->id)
+            ->where('ativo', true)
+            ->first();
+        
+        if ($cartaoAtivoExistente && ($request->input('ativo', true) === true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Você já possui um cartão de fidelidade ativo. Desative o cartão atual antes de criar um novo.',
+                'cartao_ativo' => $cartaoAtivoExistente
+            ], 422);
+        }
+
         $data = $validator->validated();
         $data['empresa_id'] = $empresa->id;
 
@@ -158,6 +171,22 @@ class CartaoFidelidadeController extends Controller
                 'message' => 'Dados inválidos',
                 'errors' => $validator->errors()
             ], 422);
+        }
+
+        // ✅ REGRA: Apenas 1 cartão ativo por empresa
+        if ($request->has('ativo') && $request->input('ativo') === true) {
+            $cartaoAtivoExistente = CartaoFidelidade::where('empresa_id', $empresa->id)
+                ->where('ativo', true)
+                ->where('id', '!=', $id)
+                ->first();
+            
+            if ($cartaoAtivoExistente) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Você já possui outro cartão de fidelidade ativo. Desative o cartão atual antes de ativar este.',
+                    'cartao_ativo' => $cartaoAtivoExistente
+                ], 422);
+            }
         }
 
         $cartao->update($validator->validated());

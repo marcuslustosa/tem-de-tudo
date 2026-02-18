@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#6F1AB6">
+    <title>Início - Tem de Tudo</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="/js/config.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #F5F5F7;
+            color: #1D1D1F;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+        }
+        
+        /* Header Estilo Vivo */
+       .header {
+            background: linear-gradient(135deg, #6F1AB6 0%, #9333EA 100%);
+            color: white;
+            padding: 20px 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(111, 26, 182, 0.15);
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .user-greeting {
+            flex: 1;
+        }
+        
+        .user-greeting h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        
+        .user-greeting p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .icon-btn:active {
+            transform: scale(0.95);
+            background: rgba(255,255,255,0.25);
+        }
+        
+        /* Barra de Pesquisa */
+        .search-bar {
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .search-bar i {
+            color: white;
+            opacity: 0.8;
+            font-size: 18px;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            outline: none;
+        }
+        
+        .search-bar input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Categorias Horizontais */
+        .categories-section {
+            padding: 20px 0;
+            background: white;
+        }
+        
+        .categories-scroll {
+            display: flex;
+            gap: 12px;
+            padding: 0 16px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        
+        .categories-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category-item {
+            flex-shrink: 0;
+            text-align: center;
+            text-decoration: none;
+            color: #1D1D1F;
+        }
+        
+        .category-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #F5F5F7, #E5E5E7);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+        
+        .category-item.active .category-icon,
+        .category-item:active .category-icon {
+            background: linear-gradient(135deg, #6F1AB6, #9333EA);
+            transform: scale(0.95);
+        }
+        
+        .category-item.active .category-icon {
+            color: white;
+        }
+        
+        .category-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1D1D1F;
+        }
+        
+        /* QR Code Card */
+        .qr-card {
+            background: white;
+            margin: 16px;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+        
+        .qr-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1D1D1F;
+        }
+        
+        .qr-preview {
+            background: #F5F5F7;
+            padding: 16px;
+            border-radius: 16px;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+        
+        #qrcodeDisplay {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .qr-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .btn-qr {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #6F1AB6, #9333EA);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .btn-qr:active {
+            transform: scale(0.98);
+        }
+        
+        /* Seção de Conteúdo */
+        .content-section {
+            padding: 0 16px 20px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 24px 0 16px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1D1D1F;
+        }
+        
+        .section-link {
+            font-size: 14px;
+            color: #6F1AB6;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        /* Cards de Empresas */
+        .empresa-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+        
+        .empresa-card:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .empresa-logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #6F1AB6, #9333EA);
+            border-radius: 16px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        
+        .empresa-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .empresa-name {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #1D1D1F;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .empresa-category {
+            font-size: 14px;
+            color: #86868B;
+            margin-bottom: 8px;
+        }
+        
+        .empresa-tag {
+            display: inline-block;
+            background: #F5F5F7;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6F1AB6;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #E5E5E7;
+            padding: 8px 8px 20px;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: #86868B;
+            padding: 8px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        
+        .nav-item i {
+            font-size: 24px;
+        }
+        
+        .nav-item span {
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .nav-item.active {
+            color: #6F1AB6;
+        }
+        
+        .nav-item:active {
+            transform: scale(0.95);
+        }
+        
+        /* Loading States */
+        .skeleton {
+            background: linear-gradient(90deg, #F5F5F7 25%, #E5E5E7 50%, #F5F5F7 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #86868B;
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .empty-state p {
+            font-size: 16px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-top">
+            <div class="user-greeting">
+                <h1 id="userName">Olá!</h1>
+                <p id="userSubtitle">Bem-vindo de volta</p>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="location.href='app-notificacoes.html'">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <button class="icon-btn" onclick="location.href='app-perfil.html'">
+                    <i class="fas fa-user"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="search-bar" onclick="location.href='app-buscar.html'">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Buscar estabelecimentos..." readonly>
+        </div>
+    </div>
+    
+    <!-- Categorias Horizontais -->
+    <div class="categories-section">
+        <div class="categories-scroll" id="categoriesScroll">
+            <a href="#" class="category-item active" data-category="todos">
+                <div class="category-icon">🏪</div>
+                <div class="category-name">Todos</div>
+            </a>
+            <a href="#" class="category-item" data-category="alimentacao">
+                <div class="category-icon">🍔</div>
+                <div class="category-name">Alimentação</div>
+            </a>
+            <a href="#" class="category-item" data-category="beleza">
+                <div class="category-icon">💇</div>
+                <div class="category-name">Beleza</div>
+            </a>
+            <a href="#" class="category-item" data-category="saude">
+                <div class="category-icon">💊</div>
+                <div class="category-name">Saúde</div>
+            </a>
+            <a href="#" class="category-item" data-category="varejo">
+                <div class="category-icon">👕</div>
+                <div class="category-name">Varejo</div>
+            </a>
+            <a href="#" class="category-item" data-category="servicos">
+                <div class="category-icon">🔧</div>
+                <div class="category-name">Serviços</div>
+            </a>
+            <a href="#" class="category-item" data-category="pet">
+                <div class="category-icon">🐾</div>
+                <div class="category-name">Pet Shop</div>
+            </a>
+        </div>
+    </div>
+    
+    <!-- QR Code Card -->
+    <div class="qr-card" id="qrCard">
+        <h3><i class="fas fa-qrcode"></i> Meu QR Code</h3>
+        <div class="qr-preview">
+            <div id="qrcodeDisplay"></div>
+        </div>
+        <div class="qr-actions">
+            <button class="btn-qr" onclick="abrirScanner()">
+                <i class="fas fa-camera"></i> Escanear
+            </button>
+            <button class="btn-qr" onclick="compartilharQR()">
+                <i class="fas fa-share-alt"></i> Compartilhar
+            </button>
+        </div>
+    </div>
+    
+    <!-- Empresas Próximas -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2 class="section-title">Próximos a você</h2>
+            <a href="app-empresas.html" class="section-link">Ver todos</a>
+        </div>
+        <div id="empresasContainer">
+            <!-- Skeleton Loading -->
+            <div class="empresa-card skeleton" style="height: 96px;"></div>
+            <div class="empresa-card skeleton" style="height: 96px;"></div>
+        </div>
+    </div>
+    
+    <!-- Promoções em Destaque -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2 class="section-title">Promoções em Destaque</h2>
+            <a href="app-promocoes-todas.html" class="section-link">Ver todas</a>
+        </div>
+        <div id="promocoesContainer">
+            <div class="empty-state">
+                <i class="fas fa-gift"></i>
+                <p>Nenhuma promoção disponível</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="app-inicio.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="app-buscar.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Buscar</span>
+        </a>
+        <a href="app-scanner.html" class="nav-item">
+            <i class="fas fa-qrcode"></i>
+            <span>QR Code</span>
+        </a>
+    </nav>
+    
+    <script>
+        let currentUser = null;
+        let currentToken = null;
+        let userLocation = null;
+        
+        // Calcular distância entre dois pontos (Haversine formula)
+        function calcularDistancia(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Raio da Terra em km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                     Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c;
+            
+            if (distance < 1) {
+                return `${Math.round(distance * 1000)}m`;
+            }
+            return `${distance.toFixed(1)} km`;
+        }
+        
+        // Obter localização do usuário
+        function obterLocalizacao() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        };
+                        console.log('Localização obtida:', userLocation);
+                        // Recarregar empresas com distâncias calculadas
+                        loadEmpresas();
+                    },
+                    (error) => {
+                        console.warn('Geolocalização não disponível:', error);
+                        loadEmpresas();
+                    }
+                );
+            } else {
+                console.warn('Geolocalização não suportada');
+                loadEmpresas();
+            }
+        }
+        
+        // Carregar dados do usuário
+        async function loadUserData() {
+            currentToken = localStorage.getItem('tem_de_tudo_token');
+            currentUser = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
+            
+            if (!currentToken) {
+                window.location.href = 'entrar.html';
+                return;
+            }
+            
+            // Atualizar saudação
+            if (currentUser.name) {
+                const firstName = currentUser.name.split(' ')[0];
+                document.getElementById('userName').textContent = `Olá, ${firstName}!`;
+            }
+            
+            // Gerar QR Code
+            generateQRCode();
+            
+            // Obter localização e carregar empresas
+            obterLocalizacao();
+        }
+        
+        // Gerar QR Code
+        function generateQRCode() {
+            if (currentUser.id) {
+                const qrData = JSON.stringify({
+                    user_id: currentUser.id,
+                    type: 'cliente',
+                    timestamp: Date.now()
+                });
+                
+                QRCode.toCanvas(document.createElement('canvas'), qrData, {
+                    width: 200,
+                    margin: 1,
+                    color: { dark: '#1D1D1F', light: '#FFFFFF' }
+                }, function (error, canvas) {
+                    if (!error) {
+                        const display = document.getElementById('qrcodeDisplay');
+                        display.innerHTML = '';
+                        display.appendChild(canvas);
+                    }
+                });
+            }
+        }
+        
+        // Carregar empresas
+        async function loadEmpresas() {
+            try {
+                const baseURL = API_CONFIG.getBaseURL();
+                let url = `${baseURL}/api/cliente/empresas`;
+                
+                // Se temos localização, usar endpoint com geolocalização
+                if (userLocation) {
+                    url = `${baseURL}/api/cliente/empresas-proximas?latitude=${userLocation.latitude}&longitude=${userLocation.longitude}&raio=10`;
+                }
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    const empresas = result.data || result.empresas || result;
+                    renderEmpresas(empresas.slice(0, 5)); // Mostrar só 5 próximas
+                } else {
+                    renderEmptyEmpresas();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar empresas:', error);
+                renderEmptyEmpresas();
+            }
+        }
+        
+        // Renderizar empresas
+        function renderEmpresas(empresas) {
+            const container = document.getElementById('empresasContainer');
+            
+            if (!empresas || empresas.length === 0) {
+                renderEmptyEmpresas();
+                return;
+            }
+            
+            // Calcular distâncias se temos localização E a empresa não retornou
+            let empresasComDistancia = empresas.map(emp => {
+                let distancia = emp.distancia;
+                
+                // Se backend não retornou distância, calcula no frontend
+                if (!distancia && userLocation && emp.latitude && emp.longitude) {
+                    const dist = calcularDistancia(
+                        userLocation.latitude,
+                        userLocation.longitude,
+                        parseFloat(emp.latitude),
+                        parseFloat(emp.longitude)
+                    );
+                    distancia = dist;
+                } else if (typeof distancia === 'number') {
+                    // Backend retornou número, formatar
+                    distancia = distancia < 1 ? `${Math.round(distancia * 1000)}m` : `${distancia.toFixed(1)} km`;
+                }
+                
+                return { ...emp, distanciaCalculada: distancia || '-- km' };
+            });
+            
+            const icons = {
+                'alimentacao': '🍔', 'beleza': '💇', 'saude': '💊',
+                'varejo': '👕', 'servicos': '🔧', 'pet': '🐾', 'default': '🏪'
+            };
+            
+            container.innerHTML = empresasComDistancia.map(emp => `
+                <a href="app-estabelecimento.html?id=${emp.id}" class="empresa-card">
+                    <div class="empresa-logo">${icons[emp.categoria] || icons.default}</div>
+                    <div class="empresa-info">
+                        <div class="empresa-name">${emp.nome || emp.razao_social}</div>
+                        <div class="empresa-category">${emp.categoria || 'Estabelecimento'}</div>
+                        <span class="empresa-tag">📍 ${emp.distanciaCalculada}</span>
+                    </div>
+                </a>
+            `).join('');
+        }
+        
+        // Empresas vazio
+        function renderEmptyEmpresas() {
+            document.getElementById('empresasContainer').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-store-slash"></i>
+                    <p>Nenhuma empresa próxima encontrada</p>
+                </div>
+            `;
+        }
+        
+        // Abrir scanner
+        function abrirScanner() {
+            location.href = 'app-scanner.html';
+        }
+        
+        // Compartilhar QR
+        function compartilharQR() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Meu QR Code - Tem de Tudo',
+                    text: 'Escaneie meu código para me adicionar!'
+                }).catch(() => {});
+            } else {
+                alert('Compartilhamento não suportado');
+            }
+        }
+        
+        // Filtrar por categoria
+        document.querySelectorAll('.category-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.category-item').forEach(cat => cat.classList.remove('active'));
+                item.classList.add('active');
+                const category = item.dataset.category;
+                // Filtrar empresas por categoria
+                console.log('Filtrar por:', category);
+            });
+        });
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', loadUserData);
+    </script>
+</body>
+</html>

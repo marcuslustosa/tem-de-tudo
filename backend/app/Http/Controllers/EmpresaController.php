@@ -244,6 +244,113 @@ class EmpresaController extends Controller
     }
 
     /**
+     * Listar empresas próximas ao cliente (com geolocalização)
+     */
+    public function empresasProximas(Request $request)
+    {
+        try {
+            $latitude = $request->input('latitude');
+            $longitude = $request->input('longitude');
+            $raio = $request->input('raio', 10); // Raio em km, padrão 10km
+
+            // Buscar todas empresas ativas
+            $query = DB::table('users')
+                ->where('perfil', 'empresa')
+                ->where('ativo', true)
+                ->select('id', 'name as nome', 'razao_social', 'categoria', 'endereco', 'telefone', 'latitude', 'longitude');
+
+            // Se temos lat/lon, calcular distância
+            if ($latitude && $longitude) {
+                $empresas = $query->get()->map(function ($empresa) use ($latitude, $longitude) {
+                    if ($empresa->latitude && $empresa->longitude) {
+                        $empresa->distancia = $this->calcularDistancia(
+                            $latitude,
+                            $longitude,
+                            $empresa->latitude,
+                            $empresa->longitude
+                        );
+                    } else {
+                        $empresa->distancia = null;
+                    }
+                    return $empresa;
+                })->filter(function ($empresa) use ($raio) {
+                    return $empresa->distancia === null || $empresa->distancia <= $raio;
+                })->sortBy('distancia')->values();
+            } else {
+                $empresas = $query->get();
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $empresas
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar empresas próximas', [
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao buscar empresas'
+            ], 500);
+        }
+    }
+
+    /**
+     * Atualizar localização da empresa
+     */
+    public function atualizarLocalizacao(Request $request)
+    {
+        try {
+            $user = $request->user();
+
+            $validated = $request->validate([
+                'latitude' => 'required|numeric|between:-90,90',
+                'longitude' => 'required|numeric|between:-180,180'
+            ]);
+
+            $user->update([
+                'latitude' => $validated['latitude'],
+                'longitude' => $validated['longitude']
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Localização atualizada com sucesso!'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erro ao atualizar localização', [
+                'error' => $e->getMessage(),
+                'user_id' => $request->user()->id ?? null
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao atualizar localização'
+            ], 500);
+        }
+    }
+
+    /**
+     * Calcular distância entre dois pontos (fórmula de Haversine)
+     */
+    private function calcularDistancia($lat1, $lon1, $lat2, $lon2)
+    {
+        $R = 6371; // Raio da Terra em km
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        
+        $a = sin($dLat/2) * sin($dLat/2) +
+             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+             sin($dLon/2) * sin($dLon/2);
+        
+        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        $distance = $R * $c;
+        
+        return round($distance, 2);
+    }
+
+    /**
      * Calcular nível baseado nos pontos
      */
     private function calcularNivel($pontos)
