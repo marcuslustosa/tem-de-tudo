@@ -28,13 +28,21 @@ class SetupController extends Controller
         $output[] = "";
 
         try {
-            // 1. Verificar conexão
+            // 1. Limpar caches (importante para Render)
+            $output[] = "🧹 Limpando caches...";
+            Artisan::call('cache:clear');
+            Artisan::call('config:clear');
+            Artisan::call('view:clear');
+            $output[] = "✅ Caches limpos";
+            $output[] = "";
+            
+            // 2. Verificar conexão
             $output[] = "📡 Testando conexão com banco...";
             DB::connection()->getPdo();
             $output[] = "✅ Conexão OK: " . config('database.default');
             $output[] = "";
 
-            // 2. Rodar migrations
+            // 3. Rodar migrations
             $output[] = "📦 Executando migrations...";
             Artisan::call('migrate', ['--force' => true]);
             $output[] = Artisan::output();
