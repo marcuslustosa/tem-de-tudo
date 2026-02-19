@@ -1,571 +1,379 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6F1AB6">
-    <title>✨ Cadastro Premium - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Cadastro - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="manifest" href="/manifest.json">
+    <script src="/js/config.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Inter', sans-serif;
-            background: #FFFFFF;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            color: #1D1D1F;
-            overflow: hidden;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Animação de fundo */
         body::before {
             content: '';
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(111, 26, 182, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(111, 26, 182, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(111, 26, 182, 0.06) 0%, transparent 50%);
-            animation: backgroundFloat 15s ease-in-out infinite;
+                radial-gradient(circle at 20% 50%, rgba(111, 26, 182, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
             pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .cadastro-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            padding: 48px 40px;
+            border-radius: 24px;
+            max-width: 550px;
+            width: 100%;
+            position: relative;
             z-index: 1;
         }
 
-        @keyframes backgroundFloat {
-            0%, 100% { 
-                background: 
-                    radial-gradient(circle at 20% 50%, rgba(111, 26, 182, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 80% 20%, rgba(111, 26, 182, 0.08) 0%, transparent 50%),
-                    radial-gradient(circle at 40% 80%, rgba(111, 26, 182, 0.06) 0%, transparent 50%);
-            }
-            50% { 
-                background: 
-                    radial-gradient(circle at 80% 60%, rgba(111, 26, 182, 0.12) 0%, transparent 50%),
-                    radial-gradient(circle at 20% 80%, rgba(111, 26, 182, 0.1) 0%, transparent 50%),
-                    radial-gradient(circle at 60% 20%, rgba(111, 26, 182, 0.08) 0%, transparent 50%);
-            }
-        }
-        
-        .container {
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(111, 26, 182, 0.2);
-            border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(111, 26, 182, 0.1);
-            width: 100%;
-            max-width: 500px;
-            padding: 40px;
-            position: relative;
-            z-index: 2;
-            overflow: hidden;
+        .logo-section {
+            text-align: center;
+            margin-bottom: 32px;
         }
 
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.05) 0%, transparent 50%);
-            pointer-events: none;
-        }
-        
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .logo img {
+        .logo-section .icon {
             width: 80px;
             height: 80px;
-            border-radius: 50%;
-            filter: drop-shadow(0 8px 16px rgba(111, 26, 182, 0.3));
-        }
-        
-        .welcome {
-            position: relative;
-            z-index: 2;
+            background: linear-gradient(135deg, #6F1AB6, #9333EA);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(111, 26, 182, 0.3);
         }
 
-        .welcome h1 {
+        .logo-section .icon i {
+            font-size: 40px;
+            color: white;
+        }
+
+        .logo-section h1 {
             font-size: 28px;
             font-weight: 900;
-            text-align: center;
+            color: #1D1D1F;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #ffffff, #6F1AB6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
-        
-        .welcome p {
-            color: rgba(255, 255, 255, 0.7);
+
+        .logo-section p {
             font-size: 14px;
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: 500;
+            color: #86868B;
         }
-        
+
         .profile-selector {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 30px;
-            position: relative;
-            z-index: 2;
+            margin-bottom: 24px;
         }
-        
+
         .profile-option {
             padding: 20px;
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(26, 26, 46, 0.3));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(111, 26, 182, 0.2);
+            background: white;
+            border: 2px solid #E5E5E7;
             border-radius: 16px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-option::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .profile-option:hover::before {
-            opacity: 1;
+            transition: all 0.3s;
         }
 
         .profile-option:hover {
-            border-color: rgba(111, 26, 182, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(111, 26, 182, 0.2);
-        }
-        
-        .profile-option.selected {
             border-color: #6F1AB6;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.2), rgba(111, 26, 182, 0.1));
+            transform: translateY(-2px);
         }
 
-        .profile-option.selected::before {
-            opacity: 1;
+        .profile-option.active {
+            background: linear-gradient(135deg, #6F1AB6, #9333EA);
+            border-color: #6F1AB6;
+            color: white;
         }
-        
+
         .profile-option i {
             font-size: 32px;
-            margin-bottom: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
+            margin-bottom: 8px;
+            display: block;
         }
-        
-        .profile-option.selected i {
-            color: #6F1AB6;
-            transform: scale(1.1);
+
+        .profile-option.active i {
+            color: white;
         }
-        
-        .profile-option .title {
-            font-size: 16px;
-            font-weight: 800;
-            color: #1D1D1F;
-            margin-bottom: 4px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .profile-option .desc {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            position: relative;
-            z-index: 2;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: var(--gradient-purple);
-            color: #1D1D1F;
-            font-size: 16px;
+
+        .profile-option span {
             font-weight: 700;
-            border: none;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn-submit:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .login-link {
-            text-align: center;
-            margin-top: 24px;
-            color: var(--text-secondary);
             font-size: 14px;
         }
-        
-        .login-link a {
-            color: var(--purple-1);
-            font-weight: 600;
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 13px;
+            color: #1D1D1F;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #E5E5E7;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6F1AB6;
+            box-shadow: 0 4px 12px rgba(111, 26, 182, 0.2);
+        }
+
+        .btn-cadastro {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #6F1AB6, #9333EA);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+
+        .btn-cadastro:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(111, 26, 182, 0.4);
+        }
+
+        .btn-cadastro:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: #FEE;
+            color: #C00;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: #DFF0D8;
+            color: #3C763D;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .links {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .links a {
+            color: #6F1AB6;
             text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
         }
-        
-        .login-link a:hover {
-            text-decoration: underline;
-        }
-        
-        .cpf-cnpj-label {
-            display: inline-block;
-            margin-left: 4px;
-            font-size: 11px;
-            color: var(--text-muted);
+
+        .links a:hover {
+            color: #9333EA;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <img src="/img/logo.png" alt="Tem de Tudo">
+    <div class="cadastro-container">
+        <div class="logo-section">
+            <div class="icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h1>Criar Conta</h1>
+            <p>Junte-se ao Tem de Tudo</p>
         </div>
-        
-        <div class="welcome">
-            <h1>Crie sua conta</h1>
-            <p>Comece a acumular pontos agora mesmo</p>
+
+        <div class="profile-selector">
+            <div class="profile-option active" onclick="selectProfile('cliente')">
+                <i class="fas fa-user"></i>
+                <span>Cliente</span>
+            </div>
+            <div class="profile-option" onclick="selectProfile('empresa')">
+                <i class="fas fa-building"></i>
+                <span>Empresa</span>
+            </div>
         </div>
-        
-        <div id="alertBox" class="alert"></div>
-        
-        <form id="registerForm">
-            <!-- Seletor de Perfil -->
-            <div class="profile-selector">
-                <div class="profile-option" data-perfil="cliente">
-                    <i class="fas fa-user"></i>
-                    <div class="title">Cliente</div>
-                    <div class="desc">Acumule pontos</div>
-                </div>
-                <div class="profile-option" data-perfil="empresa">
-                    <i class="fas fa-store"></i>
-                    <div class="title">Empresa</div>
-                    <div class="desc">Ofereça benefícios</div>
-                </div>
-            </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <form id="cadastroForm" onsubmit="handleCadastro(event)">
+            <input type="hidden" id="perfil" name="perfil" value="cliente">
             
-            <input type="hidden" id="perfil" name="perfil" value="">
-            
-            <!-- Nome -->
             <div class="form-group">
-                <label class="form-label" for="name">
-                    <span id="nameLabel">Nome Completo</span> <span style="color: #ff4757;">*</span>
-                </label>
-                <div class="input-wrapper">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="name" class="form-control" placeholder="Seu nome" required>
-                </div>
+                <label for="name">Nome Completo</label>
+                <input type="text" id="name" name="name" required placeholder="Seu nome">
             </div>
-            
-            <!-- CPF/CNPJ -->
+
             <div class="form-group">
-                <label class="form-label" for="cpf_cnpj">
-                    <span id="cpfCnpjLabel">CPF</span> <span style="color: #ff4757;">*</span>
-                </label>
-                <div class="input-wrapper">
-                    <i class="fas fa-id-card"></i>
-                    <input type="text" id="cpf_cnpj" class="form-control" placeholder="000.000.000-00" required>
-                </div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="seu@email.com" autocomplete="username">
             </div>
-            
-            <!-- E-mail -->
+
             <div class="form-group">
-                <label class="form-label" for="email">E-mail <span style="color: #ff4757;">*</span></label>
-                <div class="input-wrapper">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" id="email" class="form-control" placeholder="seu@email.com" required>
-                </div>
+                <label for="telefone">Telefone</label>
+                <input type="tel" id="telefone" name="telefone" required placeholder="(11) 99999-9999">
             </div>
-            
-            <!-- Telefone -->
+
             <div class="form-group">
-                <label class="form-label" for="telefone">Telefone <span style="color: #ff4757;">*</span></label>
-                <div class="input-wrapper">
-                    <i class="fas fa-phone"></i>
-                    <input type="tel" id="telefone" class="form-control" placeholder="(00) 00000-0000" required>
-                </div>
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required placeholder="••••••••" minlength="6" autocomplete="new-password">
             </div>
-            
-            <!-- Senha -->
+
             <div class="form-group">
-                <label class="form-label" for="password">Senha <span style="color: #ff4757;">*</span></label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password" class="form-control" placeholder="Mínimo 8 caracteres" required>
-                </div>
+                <label for="password_confirmation">Confirmar Senha</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" required placeholder="••••••••" minlength="6" autocomplete="new-password">
             </div>
-            
-            <!-- Confirmar Senha -->
-            <div class="form-group">
-                <label class="form-label" for="password_confirmation">Confirmar Senha <span style="color: #ff4757;">*</span></label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="password_confirmation" class="form-control" placeholder="Digite a senha novamente" required>
-                </div>
-            </div>
-            
-            <!-- Aceitar Termos -->
-            <div class="form-group" style="margin-top: 20px;">
-                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                    <input type="checkbox" id="terms" required style="width: 18px; height: 18px; cursor: pointer;">
-                    <span style="font-size: 14px; color: #e0e0e0;">
-                        Li e aceito os <a href="/app-termos.html" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 600;">termos de uso</a> e a <a href="/politica-privacidade.html" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 600;">política de privacidade</a> <span style="color: #ff4757;">*</span>
-                    </span>
-                </label>
-            </div>
-            
-            <button type="submit" class="btn-submit" id="btnSubmit">
-                CRIAR CONTA
+
+            <button type="submit" class="btn-cadastro" id="btnCadastro">
+                <i class="fas fa-check"></i> Criar Conta
             </button>
         </form>
-        
-        <div class="login-link">
-            Já tem uma conta? <a href="/entrar.html">Faça login</a>
+
+        <div class="links">
+            <span style="color: #86868B;">Já tem uma conta?</span>
+            <a href="/entrar.html">Entrar agora</a>
         </div>
     </div>
-    
+
     <script>
-        // Configuração de API mais robusta
-        let API_URL;
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // LOCAL: Tenta várias portas comuns do Laravel
-            API_URL = 'http://127.0.0.1:8000/api';
-        } else if (window.location.hostname.includes('render.com') || window.location.hostname.includes('herokuapp.com')) {
-            // PRODUÇÃO: Render, Heroku, etc
-            API_URL = '/api';
-        } else {
-            // OUTROS: Relative path como fallback
-            API_URL = '/api';
-        }
-        
-        const form = document.getElementById('registerForm');
-        const btnSubmit = document.getElementById('btnSubmit');
-        const alertBox = document.getElementById('alertBox');
-        const perfilInput = document.getElementById('perfil');
-        const cpfCnpjInput = document.getElementById('cpf_cnpj');
-        const cpfCnpjLabel = document.getElementById('cpfCnpjLabel');
-        const nameLabel = document.getElementById('nameLabel');
-        
-        // Seleção de perfil
-        document.querySelectorAll('.profile-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.profile-option').forEach(opt => opt.classList.remove('selected'));
-                this.classList.add('selected');
-                perfilInput.value = this.dataset.perfil;
-                
-                // LIMPAR campos ao trocar de perfil
-                cpfCnpjInput.value = '';
-                
-                // Atualizar labels e placeholders
-                if (this.dataset.perfil === 'empresa') {
-                    cpfCnpjLabel.textContent = 'CNPJ';
-                    cpfCnpjInput.placeholder = '00.000.000/0000-00';
-                    nameLabel.textContent = 'Nome da Empresa';
-                } else {
-                    cpfCnpjLabel.textContent = 'CPF';
-                    cpfCnpjInput.placeholder = '000.000.000-00';
-                    nameLabel.textContent = 'Nome Completo';
-                }
+        function selectProfile(tipo) {
+            document.getElementById('perfil').value = tipo;
+            document.querySelectorAll('.profile-option').forEach(opt => {
+                opt.classList.remove('active');
             });
-        });
-        
-        function showAlert(message, type = 'error') {
-            alertBox.textContent = message;
-            alertBox.className = `alert alert-${type}`;
-            alertBox.style.display = 'block';
-            
-            if (type === 'success') {
-                setTimeout(() => {
-                    alertBox.style.display = 'none';
-                }, 3000);
-            }
+            event.target.closest('.profile-option').classList.add('active');
         }
-        
-        function setLoading(loading) {
-            if (loading) {
-                btnSubmit.disabled = true;
-                btnSubmit.innerHTML = '<span class="loading-spinner"></span> CRIANDO...';
-            } else {
-                btnSubmit.disabled = false;
-                btnSubmit.textContent = 'CRIAR CONTA';
-            }
-        }
-        
-        // Máscaras
-        cpfCnpjInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            const perfil = perfilInput.value;
+
+        async function handleCadastro(event) {
+            event.preventDefault();
             
-            if (perfil === 'empresa') {
-                // CNPJ: 00.000.000/0000-00
-                if (value.length <= 14) {
-                    value = value.replace(/^(\d{2})(\d)/, '$1.$2');
-                    value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
-                    value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
-                    value = value.replace(/(\d{4})(\d)/, '$1-$2');
-                }
-            } else {
-                // CPF: 000.000.000-00
-                if (value.length <= 11) {
-                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-                    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-                    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-                }
-            }
+            const btnCadastro = document.getElementById('btnCadastro');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
             
-            e.target.value = value;
-        });
-        
-        document.getElementById('telefone').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length <= 11) {
-                value = value.replace(/^(\d{2})(\d)/, '($1) $2');
-                value = value.replace(/(\d{5})(\d)/, '$1-$2');
-            }
-            e.target.value = value;
-        });
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            alertBox.style.display = 'none';
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const telefone = document.getElementById('telefone').value;
+            const password = document.getElementById('password').value;
+            const password_confirmation = document.getElementById('password_confirmation').value;
+            const perfil = document.getElementById('perfil').value;
             
-            // Validar perfil selecionado
-            if (!perfilInput.value) {
-                showAlert('Selecione se você é Cliente ou Empresa');
-                return;
-            }
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
             
             // Validar senhas
-            const password = document.getElementById('password').value;
-            const passwordConfirmation = document.getElementById('password_confirmation').value;
-            
-            if (password !== passwordConfirmation) {
-                showAlert('As senhas não coincidem');
+            if (password !== password_confirmation) {
+                errorMessage.textContent = 'As senhas não coincidem!';
+                errorMessage.style.display = 'block';
                 return;
             }
             
-            if (password.length < 8) {
-                showAlert('A senha deve ter no mínimo 8 caracteres');
-                return;
-            }
-            
-            // Validar termos
-            const termsCheckbox = document.getElementById('terms');
-            if (!termsCheckbox.checked) {
-                showAlert('Você precisa aceitar os termos de uso');
-                return;
-            }
-            
-            const formData = {
-                perfil: perfilInput.value,
-                name: document.getElementById('name').value,
-                cpf_cnpj: cpfCnpjInput.value.replace(/\D/g, ''),
-                email: document.getElementById('email').value,
-                telefone: document.getElementById('telefone').value.replace(/\D/g, ''),
-                password: password,
-                password_confirmation: passwordConfirmation,
-                terms: termsCheckbox.checked ? 1 : 0
-            };
-            
-            console.log('Enviando dados:', formData);
-            
-            setLoading(true);
+            btnCadastro.disabled = true;
+            btnCadastro.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Criando conta...';
             
             try {
-                const response = await fetch(`${API_URL}/auth/register`, {
+                const response = await fetch(`${API_CONFIG.getBaseURL()}/api/auth/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        telefone,
+                        password,
+                        password_confirmation,
+                        perfil
+                    })
                 });
                 
                 const result = await response.json();
-                console.log('Resposta do servidor:', result);
                 
-                // VERIFICAR SUCESSO
-                if (!response.ok || result.success === false) {
-                    // Mostrar erros de validação se existirem
-                    if (result.errors) {
-                        const errorMessages = Object.values(result.errors).flat().join('\n');
-                        throw new Error(errorMessages);
-                    }
-                    throw new Error(result.message || 'Erro ao criar conta');
-                }
-                
-                // Cadastro retorna token, fazer login automático
-                const data = result.data;
-                
-                if (data && data.token && data.user) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                if (response.ok && result.success) {
+                    successMessage.textContent = 'Conta criada com sucesso! Redirecionando...';
+                    successMessage.style.display = 'block';
                     
-                    showAlert('Conta criada com sucesso! Redirecionando...', 'success');
+                    // Salvar dados e redirecionar
+                    localStorage.setItem('token', result.data.token);
+                    localStorage.setItem('user', JSON.stringify(result.data.user));
+                    localStorage.setItem('userType', result.data.user.perfil);
                     
-                    // Redirecionar baseado no perfil
                     setTimeout(() => {
-                        if (data.user.perfil === 'admin') {
-                            window.location.href = '/admin-dashboard.html';
-                        } else if (data.user.perfil === 'empresa') {
-                            window.location.href = '/dashboard-empresa.html';
-                        } else {
-                            window.location.href = '/dashboard-cliente.html';
-                        }
+                        const redirectUrl = perfil === 'cliente' ? '/dashboard-cliente.html' : '/dashboard-empresa.html';
+                        window.location.href = redirectUrl;
                     }, 1500);
                 } else {
-                    showAlert('Conta criada! Redirecionando para login...', 'success');
-                    setTimeout(() => {
-                        window.location.href = 'entrar.html';
-                    }, 2000);
+                    throw new Error(result.message || 'Erro ao criar conta');
                 }
-                
             } catch (error) {
-                setLoading(false);
                 console.error('Erro no cadastro:', error);
-                showAlert(error.message || 'Erro ao criar conta. Tente novamente.');
+                errorMessage.textContent = error.message || 'Erro ao criar conta. Tente novamente.';
+                errorMessage.style.display = 'block';
+            } finally {
+                btnCadastro.disabled = false;
+                btnCadastro.innerHTML = '<i class="fas fa-check"></i> Criar Conta';
             }
-        });
+        }
     </script>
 </body>
 </html>
-
