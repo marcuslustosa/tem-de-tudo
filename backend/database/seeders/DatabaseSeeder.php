@@ -85,6 +85,12 @@ class DatabaseSeeder extends Seeder
         }
         echo "✅ 50 clientes criados (cliente1@email.com até cliente50@email.com / senha123)\n";
 
+        // DESABILITAR temporariamente criação de empresas e dados adicionais
+        // para garantir que pelo menos os usuários são criados
+        echo "\n⚠️ Empresas e dados adicionais desabilitados temporariamente\n";
+        echo "✅ SETUP BÁSICO CONCLUÍDO - Apenas usuários criados\n";
+        
+        /*
         // Criar empresas fictícias na tabela empresas
         echo "\n🏪 Criando empresas parceiras...\n";
         
@@ -180,6 +186,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             DataSeeder::class,
         ]);
+        */
 
         echo "\n========================================\n";
         echo "✅ SEEDER CONCLUÍDO COM SUCESSO!\n";
@@ -194,9 +201,7 @@ class DatabaseSeeder extends Seeder
         echo "\n";
         
         $totalUsers = User::count();
-        $totalEmpresas = \App\Models\Empresa::count();
         echo "📊 Total de usuários: {$totalUsers}\n";
-        echo "📊 Total de empresas: {$totalEmpresas}\n";
         echo "========================================\n\n";
     }
 }
