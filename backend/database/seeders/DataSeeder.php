@@ -91,35 +91,46 @@ class DataSeeder extends Seeder
             for ($i = 1; $i <= rand(3, 8); $i++) {
                 $valorCompra = rand(50, 500);
                 $pontosCalculados = (int)($valorCompra * 0.1);
+                $status = ['pending', 'approved', 'approved', 'approved'][rand(0, 3)];
+                $bonusApplied = rand(0, 1) === 1 ? 'TRUE' : 'FALSE';
+                $aprovadoEm = now()->subDays(rand(0, 30))->format('Y-m-d H:i:s');
+                $createdAt = now()->subDays(rand(0, 60))->format('Y-m-d H:i:s');
+                $latitude = -23.5505199 + (rand(-1000, 1000) / 100000);
+                $longitude = -46.6333094 + (rand(-1000, 1000) / 100000);
+                $codigoValidacao = strtoupper(substr(md5(uniqid()), 0, 8));
 
-                $checkIn = CheckIn::create([
-                    'user_id' => $cliente->id,
-                    'empresa_id' => $empresaId,
-                    'qr_code_id' => $qrCode?->id,
-                    'valor_compra' => $valorCompra,
-                    'pontos_calculados' => $pontosCalculados,
-                    'foto_cupom' => null,
-                    'latitude' => -23.5505199 + (rand(-1000, 1000) / 100000),
-                    'longitude' => -46.6333094 + (rand(-1000, 1000) / 100000),
-                    'observacoes' => 'Check-in automático #' . $i,
-                    'status' => ['pending', 'approved', 'approved', 'approved'][rand(0, 3)],
-                    'codigo_validacao' => strtoupper(substr(md5(uniqid()), 0, 8)),
-                    'aprovado_em' => now()->subDays(rand(0, 30)),
-                    'aprovado_por' => null,
-                    'bonus_applied' => (bool)rand(0, 1),
-                    'created_at' => now()->subDays(rand(0, 60)),
-                ]);
+                // Usar SQL RAW para garantir TRUE/FALSE ao invés de 1/0
+                DB::statement("INSERT INTO check_ins 
+                    (user_id, empresa_id, qr_code_id, valor_compra, pontos_calculados, foto_cupom, latitude, longitude, observacoes, status, codigo_validacao, aprovado_em, aprovado_por, bonus_applied, created_at, updated_at) 
+                    VALUES (?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, NULL, $bonusApplied, ?, NOW())",
+                    [
+                        $cliente->id,
+                        $empresaId,
+                        $qrCode?->id,
+                        $valorCompra,
+                        $pontosCalculados,
+                        $latitude,
+                        $longitude,
+                        'Check-in automático #' . $i,
+                        $status,
+                        $codigoValidacao,
+                        $aprovadoEm,
+                        $createdAt
+                    ]
+                );
+                
+                $checkInId = DB::getPdo()->lastInsertId();
 
                 // Criar pontos para check-in aprovado
-                if ($checkIn->status === 'approved') {
+                if ($status === 'approved') {
                     Ponto::create([
                         'user_id' => $cliente->id,
                         'empresa_id' => $empresaId,
-                        'checkin_id' => $checkIn->id,
+                        'checkin_id' => $checkInId,
                         'pontos' => $pontosCalculados,
                         'descricao' => 'Pontos por check-in',
                         'tipo' => 'earn',
-                        'created_at' => $checkIn->aprovado_em,
+                        'created_at' => $aprovadoEm,
                     ]);
                 }
             }
