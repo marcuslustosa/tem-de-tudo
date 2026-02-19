@@ -685,8 +685,10 @@ class AuthController extends Controller
         }
 
         try {
-            // Buscar usuário admin
-            $user = User::where('email', $request->email)->where('perfil', 'admin')->first();
+            // Buscar usuário admin (aceita 'admin' ou 'administrador' por compatibilidade)
+            $user = User::where('email', $request->email)
+                ->whereIn('perfil', ['admin', 'administrador'])
+                ->first();
 
             if (!$user || !Hash::check($request->password, $user->password)) {
                 RateLimiter::hit($key, 300); // 5 minutos

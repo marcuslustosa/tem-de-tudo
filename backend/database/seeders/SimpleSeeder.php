@@ -50,7 +50,7 @@ class SimpleSeeder extends Seeder
             [
                 'name' => 'Administrador Sistema',
                 'password' => Hash::make('admin123'),
-                'perfil' => 'administrador',
+                'perfil' => 'admin',
                 'telefone' => '(11) 99999-9999',
                 'pontos' => 0,
                 'status' => 'ativo'
