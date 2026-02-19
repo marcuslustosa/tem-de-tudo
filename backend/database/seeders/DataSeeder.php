@@ -35,21 +35,23 @@ class DataSeeder extends Seeder
                 $cnpj = sprintf('%02d.%03d.%03d/%04d-%02d', 
                     rand(10, 99), rand(100, 999), rand(100, 999), 
                     rand(1000, 9999), rand(10, 99));
+                
+                $endereco = 'Rua Exemplo, ' . rand(1, 1000) . ' - São Paulo, SP';
+                $telefone = '(11) 9' . rand(1000, 9999) . '-' . rand(1000, 9999);
 
-                // Usar DB::table() para bypass do Eloquent
-                DB::table('empresas')->insert([
-                    'nome' => $empresaUser->name,
-                    'endereco' => 'Rua Exemplo, ' . rand(1, 1000) . ' - São Paulo, SP',
-                    'telefone' => '(11) 9' . rand(1000, 9999) . '-' . rand(1000, 9999),
-                    'cnpj' => $cnpj,
-                    'logo' => null,
-                    'descricao' => 'Empresa parceira do programa de fidelidade',
-                    'points_multiplier' => 1.0,
-                    'ativo' => true,
-                    'owner_id' => $empresaUser->id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+                // Usar SQL RAW para garantir tipos corretos
+                DB::statement("INSERT INTO empresas 
+                    (nome, endereco, telefone, cnpj, logo, descricao, points_multiplier, ativo, owner_id, created_at, updated_at) 
+                    VALUES (?, ?, ?, ?, NULL, ?, 1.0, TRUE, ?, NOW(), NOW())",
+                    [
+                        $empresaUser->name,
+                        $endereco,
+                        $telefone,
+                        $cnpj,
+                        'Empresa parceira do programa de fidelidade',
+                        $empresaUser->id
+                    ]
+                );
             }
             $empresas = Empresa::all();
         }
