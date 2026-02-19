@@ -6,6 +6,7 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -147,9 +148,13 @@ class DatabaseSeeder extends Seeder
         ];
         
         foreach ($empresasData as $empData) {
-            \App\Models\Empresa::updateOrCreate(
-                ['nome' => $empData['nome']],
-                [
+            // Verificar se empresa já existe
+            $exists = DB::table('empresas')->where('nome', $empData['nome'])->exists();
+            
+            if (!$exists) {
+                // Usar DB::table() para bypass do Eloquent e seus casts problemáticos
+                DB::table('empresas')->insert([
+                    'nome' => $empData['nome'],
                     'owner_id' => $empData['owner_id'],
                     'ramo' => $empData['ramo'],
                     'logo' => $empData['logo'],
@@ -157,10 +162,12 @@ class DatabaseSeeder extends Seeder
                     'endereco' => 'Rua Exemplo, ' . rand(100, 9999) . ' - São Paulo, SP',
                     'telefone' => sprintf('(11) 9%04d-%04d', rand(1000, 9999), rand(1000, 9999)),
                     'cnpj' => sprintf('%02d.%03d.%03d/%04d-%02d', rand(10, 99), rand(100, 999), rand(100, 999), rand(1000, 9999), rand(10, 99)),
-                    'ativo' => true,
+                    'ativo' => true,  // PostgreSQL aceita true diretamente via DB::table()
                     'points_multiplier' => 1.0,
-                ]
-            );
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
         echo "✅ 8 empresas parceiras criadas\n";
 

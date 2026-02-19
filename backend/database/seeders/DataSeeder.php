@@ -36,7 +36,8 @@ class DataSeeder extends Seeder
                     rand(10, 99), rand(100, 999), rand(100, 999), 
                     rand(1000, 9999), rand(10, 99));
 
-                Empresa::create([
+                // Usar DB::table() para bypass do Eloquent
+                DB::table('empresas')->insert([
                     'nome' => $empresaUser->name,
                     'endereco' => 'Rua Exemplo, ' . rand(1, 1000) . ' - São Paulo, SP',
                     'telefone' => '(11) 9' . rand(1000, 9999) . '-' . rand(1000, 9999),
@@ -46,6 +47,8 @@ class DataSeeder extends Seeder
                     'points_multiplier' => 1.0,
                     'ativo' => true,
                     'owner_id' => $empresaUser->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             }
             $empresas = Empresa::all();
