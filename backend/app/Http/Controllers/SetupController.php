@@ -51,16 +51,41 @@ class SetupController extends Controller
             $output[] = "";
 
             // 3.1 FIX CRÍTICO: Garantir tipos corretos no PostgreSQL
-            if (DB::getDriverName() === 'pgsql' && Schema::hasTable('empresas')) {
-                $output[] = "🔧 Corrigindo tipos de dados PostgreSQL...";
+            if (DB::getDriverName() === 'pgsql') {
+                $output[] = "🔧 Corrigindo TODOS os tipos boolean PostgreSQL...";
                 try {
-                    // Forçar conversão de ativo para boolean
-                    DB::statement('ALTER TABLE empresas ALTER COLUMN ativo TYPE BOOLEAN USING CASE WHEN ativo::text IN (\'1\', \'t\', \'true\', \'y\', \'yes\') THEN TRUE ELSE FALSE END');
-                    // Forçar conversão de points_multiplier para float
-                    DB::statement('ALTER TABLE empresas ALTER COLUMN points_multiplier TYPE DOUBLE PRECISION USING points_multiplier::double precision');
-                    $output[] = "✅ Tipos de dados corrigidos";
+                    // Empresas
+                    if (Schema::hasTable('empresas')) {
+                        DB::statement('ALTER TABLE empresas ALTER COLUMN ativo TYPE BOOLEAN USING CASE WHEN ativo::text IN (\'1\', \'t\', \'true\', \'y\', \'yes\') THEN TRUE ELSE FALSE END');
+                        DB::statement('ALTER TABLE empresas ALTER COLUMN points_multiplier TYPE DOUBLE PRECISION USING points_multiplier::double precision');
+                    }
+                    
+                    // QR Codes
+                    if (Schema::hasTable('qr_codes')) {
+                        DB::statement('ALTER TABLE qr_codes ALTER COLUMN active TYPE BOOLEAN USING CASE WHEN active::text IN (\'1\', \'t\', \'true\', \'y\', \'yes\') THEN TRUE ELSE FALSE END');
+                    }
+                    
+                    // Check-ins
+                    if (Schema::hasTable('check_ins')) {
+                        DB::statement('ALTER TABLE check_ins ALTER COLUMN bonus_applied TYPE BOOLEAN USING CASE WHEN bonus_applied::text IN (\'1\', \'t\', \'true\', \'y\', \'yes\') THEN TRUE ELSE FALSE END');
+                    }
+                    
+                    // Users
+                    if (Schema::hasTable('users')) {
+                        if (Schema::hasColumn('users', 'is_active')) {
+                            DB::statement('ALTER TABLE users ALTER COLUMN is_active TYPE BOOLEAN USING CASE WHEN is_active::text IN (\'1\', \'t\', \'true\', \'y\', \'yes\') THEN TRUE ELSE FALSE END');
+                        }
+                        if (Schema::hasColumn('users', 'email_notifications')) {
+                            DB::statement('ALTER TABLE users ALTER COLUMN email_notifications TYPE BOOLEAN USING CASE WHEN email_notifications::text IN (\'1\', \'t\', \'true\', \'y\', \'yes\') THEN TRUE ELSE FALSE END');
+                            DB::statement('ALTER TABLE users ALTER COLUMN points_notifications TYPE BOOLEAN USING CASE WHEN points_notifications::text IN (\'1\', \'t\', \'true\', \'y\', \'yes\') THEN TRUE ELSE FALSE END');
+                            DB::statement('ALTER TABLE users ALTER COLUMN security_notifications TYPE BOOLEAN USING CASE WHEN security_notifications::text IN (\'1\', \'t\', \'true\', \'y\', \'yes\') THEN TRUE ELSE FALSE END');
+                            DB::statement('ALTER TABLE users ALTER COLUMN promotional_notifications TYPE BOOLEAN USING CASE WHEN promotional_notifications::text IN (\'1\', \'t\', \'true\', \'y\', \'yes\') THEN TRUE ELSE FALSE END');
+                        }
+                    }
+                    
+                    $output[] = "✅ Todos os tipos boolean corrigidos";
                 } catch (\Exception $e) {
-                    $output[] = "⚠️ Tipos já estavam corretos ou erro: " . $e->getMessage();
+                    $output[] = "⚠️ Alguns tipos já estavam corretos ou erro: " . $e->getMessage();
                 }
                 $output[] = "";
             }
