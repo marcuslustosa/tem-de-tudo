@@ -7,30 +7,41 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#6F1AB6">
-    <title>🎁 Promoções Premium - Tem de Tudo</title>
+    <title>🎁 Promoções - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+    <link rel="stylesheet" href="/css/style-unificado.css">
     <link rel="manifest" href="/manifest.json">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: 'Inter', sans-serif; 
-            background: #FFFFFF;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             min-height: 100vh; 
             color: #1D1D1F; 
             padding-bottom: 80px;
             overflow-x: hidden;
         }
         
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
         .header { 
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             position: relative;
             padding: 24px; 
-            border-bottom: 1px solid rgba(111, 26, 182, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .header::before {
@@ -784,7 +795,38 @@
             <i class="fas fa-chart-line"></i>
             <span>Relatórios</span>
         </a>
-    </nav></body>
+    </nav>
+
+    <script>
+        // Verificação de autenticação
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const userStr = localStorage.getItem('user');
+            
+            if (!token || !userStr) {
+                window.location.href = '/entrar.html';
+                return;
+            }
+
+            try {
+                const user = JSON.parse(userStr);
+                
+                // Verifica se é empresa
+                if (user.perfil !== 'empresa' && user.perfil !== 'admin') {
+                    alert('❌ Acesso negado! Esta área é exclusiva para empresas.');
+                    window.location.href = '/entrar.html';
+                    return;
+                }
+
+                console.log('✅ Autenticação verificada:', user.email);
+            } catch (error) {
+                console.error('Erro ao verificar autenticação:', error);
+                localStorage.clear();
+                window.location.href = '/entrar.html';
+            }
+        });
+    </script>
+</body>
 </html>
 
 

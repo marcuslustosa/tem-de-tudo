@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Início - Tem de Tudo</title>
+    <title>📱 Dashboard Cliente - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/style-unificado.css">
     <style>
         * {
             margin: 0;
@@ -15,20 +16,31 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: #F5F5F7;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             color: #1D1D1F;
             min-height: 100vh;
             padding-bottom: 80px;
         }
         
-        /* Header com Gradiente */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Header Glassmorphism */
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 24px 20px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
         
         .header-content {
@@ -43,16 +55,18 @@
             font-size: 24px;
             font-weight: 800;
             margin-bottom: 4px;
+            color: #667eea;
         }
         
         .header-left p {
             font-size: 14px;
-            opacity: 0.9;
+            opacity: 0.8;
+            color: #1D1D1F;
         }
         
         .btn-logout {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
             color: white;
             padding: 8px 16px;
             border-radius: 8px;
@@ -66,8 +80,8 @@
         }
         
         .btn-logout:hover {
-            background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
         
         /* Main Container */
@@ -86,16 +100,20 @@
         }
         
         .stat-card {
-            background: #2a2a3e;
-            border: 1px solid rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 16px;
             padding: 20px;
             transition: all 0.3s;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
         
         .stat-card:hover {
-            border-color: rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.4);
             transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
         }
         
         .stat-header {
@@ -108,7 +126,7 @@
         .stat-label {
             font-size: 12px;
             text-transform: uppercase;
-            color: #999;
+            color: #86868b;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
@@ -136,16 +154,19 @@
         
         .stat-subtitle {
             font-size: 13px;
-            color: #999;
+            color: #86868b;
         }
         
-        /* Section */
+        /* Section Glassmorphism */
         .section {
-            background: #2a2a3e;
-            border: 1px solid rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
         
         .section-title {
@@ -201,13 +222,23 @@
             box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
         }
         
-        /* Promoções */
+        /* Promoções Glassmorphism */
         .promo-card {
-            background: #F5F5F7;
-            border: 1px solid rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+        
+        .promo-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(102, 126, 234, 0.15);
+        }
             transition: all 0.3s;
         }
         
@@ -327,18 +358,21 @@
             margin-bottom: 16px;
         }
         
-        /* Bottom Navigation */
+        /* Bottom Navigation Glassmorphism */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: #2a2a3e;
-            border-top: 1px solid rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
             display: flex;
             justify-content: space-around;
             padding: 12px 0;
             z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
         }
         
         .nav-item {
@@ -348,7 +382,7 @@
             gap: 4px;
             padding: 8px 16px;
             text-decoration: none;
-            color: #999;
+            color: #86868b;
             transition: all 0.3s;
             border-radius: 8px;
         }

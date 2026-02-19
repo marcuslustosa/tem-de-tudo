@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Início - Tem de Tudo</title>
+    <title>🏠 Início - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/style-unificado.css">
     <style>
         * { 
             margin: 0; 
@@ -15,18 +16,29 @@
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background: #FFFFFF; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             color: #1D1D1F; 
             min-height: 100vh;
             padding-bottom: 80px;
             overflow-x: hidden;
         }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         .header { 
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             position: relative;
             padding: 32px 20px 24px;
-            border-bottom: 1px solid rgba(111, 26, 182, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .header::before {
@@ -36,7 +48,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(111, 26, 182, 0.1) 0%, transparent 50%);
+            background: radial-gradient(circle at 50% 0%, rgba(102, 126, 234, 0.05) 0%, transparent 50%);
             pointer-events: none;
         }
 
@@ -57,13 +69,13 @@
             font-size: 16px; 
             font-weight: 400; 
             margin-bottom: 4px; 
-            color: rgba(255, 255, 255, 0.7);
+            color: #86868b;
         }
 
         .user-name { 
             font-size: 28px; 
             font-weight: 900; 
-            background: linear-gradient(135deg, #ffffff, #6F1AB6);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -368,15 +380,17 @@
         }
 
         .empresa-card { 
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(111, 26, 182, 0.1);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 20px; 
             overflow: hidden; 
             text-decoration: none; 
             color: #1D1D1F;
             transition: all 0.3s ease;
             position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         .empresa-card::before {
@@ -423,7 +437,7 @@
 
         .empresa-category { 
             font-size: 12px; 
-            color: rgba(255, 255, 255, 0.7); 
+            color: #86868b; 
             margin-bottom: 12px;
         }
 
@@ -438,7 +452,7 @@
             display: flex; 
             align-items: center; 
             gap: 4px; 
-            color: rgba(255, 255, 255, 0.6);
+            color: #86868b;
         }
 
         .empresa-distance i { 
@@ -667,11 +681,108 @@
             </a>
         </div>
         <div class="empresas-grid" id="empresasGrid">
-            <!-- Empresas serão carregadas dinamicamente via API -->
-            <div id="loadingEmpresas" style="grid-column: 1/-1; text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">
-                <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 12px;"></i>
-                <p>Carregando empresas próximas...</p>
-            </div>
+            <!-- Empresas fictícias hardcoded -->
+            <a href="/app-empresa-detalhes.html?id=1" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Burger Prime" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">🍔 Burger Prime</div>
+                    <div class="empresa-category">Hamburgueria Gourmet</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-location-dot"></i>
+                            <span>250m</span>
+                        </div>
+                        <div class="empresa-pontos">
+                            <i class="fas fa-coins"></i> 10 pts
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="/app-empresa-detalhes.html?id=2" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?w=400" alt="Pizza Mania" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">🍕 Pizza Mania</div>
+                    <div class="empresa-category">Pizzaria Artesanal</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-location-dot"></i>
+                            <span>380m</span>
+                        </div>
+                        <div class="empresa-pontos">
+                            <i class="fas fa-coins"></i> 15 pts
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="/app-empresa-detalhes.html?id=3" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1572448862527-d3c904757de6?w=400" alt="Gym Fitness" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">💪 Gym Fitness</div>
+                    <div class="empresa-category">Academia de Elite</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-location-dot"></i>
+                            <span>520m</span>
+                        </div>
+                        <div class="empresa-pontos">
+                            <i class="fas fa-coins"></i> 20 pts
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="/app-empresa-detalhes.html?id=4" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400" alt="Café Supremo" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">☕ Café Supremo</div>
+                    <div class="empresa-category">Cafeteria Artesanal</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-location-dot"></i>
+                            <span>180m</span>
+                        </div>
+                        <div class="empresa-pontos">
+                            <i class="fas fa-coins"></i> 8 pts
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="/app-empresa-detalhes.html?id=5" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400" alt="Farmácia Saúde+" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">💊 Farmácia Saúde+</div>
+                    <div class="empresa-category">Farmácia e Perfumaria</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-location-dot"></i>
+                            <span>650m</span>
+                        </div>
+                        <div class="empresa-pontos">
+                            <i class="fas fa-coins"></i> 12 pts
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <a href="/app-empresa-detalhes.html?id=6" class="empresa-card">
+                <img src="https://images.unsplash.com/photo-1485962398705-ef6a13c41e8f?w=400" alt="Beleza Max" class="empresa-img">
+                <div class="empresa-content">
+                    <div class="empresa-name">💇 Beleza Max</div>
+                    <div class="empresa-category">Salão de Beleza</div>
+                    <div class="empresa-footer">
+                        <div class="empresa-distance">
+                            <i class="fas fa-location-dot"></i>
+                            <span>420m</span>
+                        </div>
+                        <div class="empresa-pontos">
+                            <i class="fas fa-coins"></i> 25 pts
+                        </div>
+                    </div>
+                </div>
+            </a>
         </div>
     </div>
 
