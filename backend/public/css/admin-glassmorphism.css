@@ -701,3 +701,101 @@ tr:hover td {
     color: var(--text-gray);
     font-size: 14px;
 }
+
+/* ========== BOTTOM NAVIGATION (PWA) ========== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--glass-white-strong);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--glass-border);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 0;
+    z-index: 999;
+    height: 70px;
+}
+
+.bottom-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--text-gray);
+    flex: 1;
+    padding: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+    gap: 4px;
+}
+
+.bottom-nav .nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-light) 100%);
+    border-radius: 0 0 3px 3px;
+    transition: width 0.3s ease;
+}
+
+.bottom-nav .nav-item:hover::before,
+.bottom-nav .nav-item.active::before {
+    width: 60%;
+}
+
+.bottom-nav .nav-item:hover {
+    color: var(--vivo-purple);
+    transform: translateY(-2px);
+}
+
+.bottom-nav .nav-item.active {
+    color: var(--vivo-purple);
+    font-weight: 700;
+}
+
+.bottom-nav .nav-item i {
+    font-size: 22px;
+    margin-bottom: 2px;
+    transition: all 0.3s ease;
+}
+
+.bottom-nav .nav-item.active i {
+    transform: scale(1.1);
+}
+
+.bottom-nav .nav-item span {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Padding no body para a bottom nav */
+body {
+    padding-bottom: 90px;
+}
+
+@media (max-width: 768px) {
+    .bottom-nav {
+        height: 65px;
+        padding: 8px 0;
+    }
+    
+    .bottom-nav .nav-item i {
+        font-size: 20px;
+    }
+    
+    .bottom-nav .nav-item span {
+        font-size: 10px;
+    }
+}
