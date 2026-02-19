@@ -43,8 +43,8 @@ class DataSeeder extends Seeder
                     'cnpj' => $cnpj,
                     'logo' => null,
                     'descricao' => 'Empresa parceira do programa de fidelidade',
-                    'points_multiplier' => (float) 1.00,
-                    'ativo' => (bool) true,
+                    'points_multiplier' => 1.0,
+                    'ativo' => true,
                     'owner_id' => $empresaUser->id,
                 ]);
             }
