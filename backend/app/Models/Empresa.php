@@ -30,8 +30,8 @@ class Empresa extends Model
 
     protected $casts = [
         'ativo' => 'boolean',
-        'points_multiplier' => 'decimal:2',
-        'avaliacao_media' => 'decimal:2',
+        'points_multiplier' => 'float',
+        'avaliacao_media' => 'float',
         'total_avaliacoes' => 'integer'
     ];
 
