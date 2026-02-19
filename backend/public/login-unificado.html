@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6F1AB6">
+    <title>Login - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="manifest" href="/manifest.json">
+    <script src="/js/config.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(111, 26, 182, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            padding: 48px 40px;
+            border-radius: 24px;
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-section .icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #6F1AB6, #9333EA);
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(111, 26, 182, 0.3);
+        }
+
+        .logo-section .icon i {
+            font-size: 40px;
+            color: white;
+        }
+
+        .logo-section h1 {
+            font-size: 28px;
+            font-weight: 900;
+            color: #1D1D1F;
+            margin-bottom: 8px;
+        }
+
+        .logo-section p {
+            font-size: 14px;
+            color: #86868B;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 13px;
+            color: #1D1D1F;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #E5E5E7;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6F1AB6;
+            box-shadow: 0 4px 12px rgba(111, 26, 182, 0.2);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #6F1AB6, #9333EA);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+
+        .btn-login:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(111, 26, 182, 0.4);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: #FEE;
+            color: #C00;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .links {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .links a {
+            color: #6F1AB6;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: block;
+            margin: 8px 0;
+            transition: all 0.3s;
+        }
+
+        .links a:hover {
+            color: #9333EA;
+        }
+
+        .divider {
+            margin: 24px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #E5E5E7;
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0 16px;
+            position: relative;
+            color: #86868B;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .admin-link {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .admin-link a {
+            color: #86868B;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+
+        .admin-link a:hover {
+            color: #6F1AB6;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="icon">
+                <i class="fas fa-gem"></i>
+            </div>
+            <h1>Bem-vindo!</h1>
+            <p>Entre para acessar sua conta</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="seu@email.com" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required placeholder="••••••••" autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn-login" id="btnLogin">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
+        </form>
+
+        <div class="links">
+            <a href="/cadastro.html">
+                <i class="fas fa-user-plus"></i> Criar nova conta
+            </a>
+        </div>
+
+        <div class="divider">
+            <span>OU</span>
+        </div>
+
+        <div class="admin-link">
+            <a href="/admin-login.html">
+                <i class="fas fa-shield-halved"></i> Acesso Administrativo
+            </a>
+        </div>
+    </div>
+
+    <script>
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const btnLogin = document.getElementById('btnLogin');
+            const errorMessage = document.getElementById('errorMessage');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            btnLogin.disabled = true;
+            btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+            errorMessage.style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_CONFIG.getBaseURL()}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Salvar dados no localStorage
+                    localStorage.setItem('token', result.data.token);
+                    localStorage.setItem('user', JSON.stringify(result.data.user));
+                    localStorage.setItem('userType', result.data.user.perfil);
+                    
+                    // Redirecionar baseado no perfil
+                    const perfil = result.data.user.perfil;
+                    let redirectUrl = '/';
+                    
+                    switch(perfil) {
+                        case 'cliente':
+                            redirectUrl = '/dashboard-cliente.html';
+                            break;
+                        case 'empresa':
+                            redirectUrl = '/dashboard-empresa.html';
+                            break;
+                        case 'admin':
+                            redirectUrl = '/admin-painel.html';
+                            break;
+                        default:
+                            redirectUrl = '/';
+                    }
+                    
+                    window.location.href = redirectUrl;
+                } else {
+                    throw new Error(result.message || 'Credenciais inválidas');
+                }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                errorMessage.textContent = error.message || 'Erro ao fazer login. Tente novamente.';
+                errorMessage.style.display = 'block';
+            } finally {
+                btnLogin.disabled = false;
+                btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+            }
+        }
+    </script>
+</body>
+</html>
