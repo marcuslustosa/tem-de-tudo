@@ -1106,32 +1106,17 @@
     </nav>
 
     <script>
-        // Verificação de autenticação
+        // Verificação de autenticação SIMPLIFICADA
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
-            const userStr = localStorage.getItem('user');
             
-            if (!token || !userStr) {
+            if (!token) {
+                console.warn('⚠️ Sem token - redirecionando...');
                 window.location.href = '/entrar.html';
                 return;
             }
 
-            try {
-                const user = JSON.parse(userStr);
-                
-                // Verifica se é empresa
-                if (user.perfil !== 'empresa' && user.perfil !== 'admin') {
-                    alert('❌ Acesso negado! Esta área é exclusiva para empresas.');
-                    window.location.href = '/entrar.html';
-                    return;
-                }
-
-                console.log('✅ Autenticação verificada:', user.email);
-            } catch (error) {
-                console.error('Erro ao verificar autenticação:', error);
-                localStorage.clear();
-                window.location.href = '/entrar.html';
-            }
+            console.log('✅ Usuário autenticado - acesso permitido');
         });
     </script>
 </body>
