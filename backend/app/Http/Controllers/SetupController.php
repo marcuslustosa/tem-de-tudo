@@ -49,14 +49,29 @@ class SetupController extends Controller
             $output[] = "✅ Migrations concluídas";
             $output[] = "";
 
-            // 3. Rodar seeders
+            // 3.1 FIX CRÍTICO: Garantir tipos corretos no PostgreSQL
+            if (DB::getDriverName() === 'pgsql' && Schema::hasTable('empresas')) {
+                $output[] = "🔧 Corrigindo tipos de dados PostgreSQL...";
+                try {
+                    // Forçar conversão de ativo para boolean
+                    DB::statement('ALTER TABLE empresas ALTER COLUMN ativo TYPE BOOLEAN USING CASE WHEN ativo::text IN (\'1\', \'t\', \'true\', \'y\', \'yes\') THEN TRUE ELSE FALSE END');
+                    // Forçar conversão de points_multiplier para float
+                    DB::statement('ALTER TABLE empresas ALTER COLUMN points_multiplier TYPE DOUBLE PRECISION USING points_multiplier::double precision');
+                    $output[] = "✅ Tipos de dados corrigidos";
+                } catch (\Exception $e) {
+                    $output[] = "⚠️ Tipos já estavam corretos ou erro: " . $e->getMessage();
+                }
+                $output[] = "";
+            }
+
+            // 4. Rodar seeders
             $output[] = "🌱 Executando seeders...";
             Artisan::call('db:seed', ['--force' => true, '--class' => 'Database\\Seeders\\DatabaseSeeder']);
             $output[] = Artisan::output();
             $output[] = "✅ Seeders concluídos";
             $output[] = "";
 
-            // 4. Verificar usuários criados
+            // 5. Verificar usuários criados
             $output[] = "📊 Verificando usuários criados...";
             $totalUsers = DB::table('users')->count();
             $admin = DB::table('users')->where('email', 'admin@temdetudo.com')->first();
