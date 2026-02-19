@@ -59,16 +59,26 @@ class DataSeeder extends Seeder
         // Criar QR Codes para empresas
         foreach ($empresas as $empresa) {
             for ($i = 1; $i <= 3; $i++) {
-                QRCode::create([
-                    'empresa_id' => $empresa->id,
-                    'name' => 'QR Code ' . $i . ' - ' . $empresa->nome,
-                    'code' => QRCode::gerarCodigoUnico($empresa->id),
-                    'location' => ['Caixa ' . $i, 'Mesa ' . $i][rand(0, 1)],
-                    'active' => true,
-                    'active_offers' => json_encode(['bonus_checkin' => 10]),
-                    'usage_count' => rand(0, 50),
-                    'last_used_at' => now()->subDays(rand(0, 7)),
-                ]);
+                $name = 'QR Code ' . $i . ' - ' . $empresa->nome;
+                $code = QRCode::gerarCodigoUnico($empresa->id);
+                $location = ['Caixa ' . $i, 'Mesa ' . $i][rand(0, 1)];
+                $usageCount = rand(0, 50);
+                $lastUsedAt = now()->subDays(rand(0, 7))->format('Y-m-d H:i:s');
+                
+                // Usar SQL RAW para garantir TRUE ao invés de 1
+                DB::statement("INSERT INTO qr_codes 
+                    (empresa_id, name, code, location, active, active_offers, usage_count, last_used_at, created_at, updated_at) 
+                    VALUES (?, ?, ?, ?, TRUE, ?, ?, ?, NOW(), NOW())",
+                    [
+                        $empresa->id,
+                        $name,
+                        $code,
+                        $location,
+                        json_encode(['bonus_checkin' => 10]),
+                        $usageCount,
+                        $lastUsedAt
+                    ]
+                );
             }
         }
 
