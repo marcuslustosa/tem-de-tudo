@@ -122,12 +122,14 @@ class AuthManager {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                localStorage.setItem(AUTH_CONFIG.STORAGE_KEYS.ADMIN_TOKEN, data.data.token);
-                localStorage.setItem(AUTH_CONFIG.STORAGE_KEYS.ADMIN_USER, JSON.stringify(data.data.admin));
+                const adminUser = data.data.admin || data.data.user;
+                adminUser.perfil = 'admin';
+                
+                this.saveAuth(data.data.token, adminUser);
                 
                 return {
                     success: true,
-                    admin: data.data.admin,
+                    admin: adminUser,
                     redirect: data.data.redirect_to || AUTH_CONFIG.PAGES.ADMIN_DASHBOARD
                 };
             } else {
@@ -197,8 +199,12 @@ class AuthManager {
     saveAuth(token, user) {
         this.token = token;
         this.user = user;
-        localStorage.setItem(AUTH_CONFIG.STORAGE_KEYS.TOKEN, token);
-        localStorage.setItem(AUTH_CONFIG.STORAGE_KEYS.USER, JSON.stringify(user));
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        // Definir userType baseado no perfil
+        const userType = user.perfil || user.role || user.user_type || 'cliente';
+        localStorage.setItem('userType', userType);
     }
 
     /**
@@ -207,8 +213,9 @@ class AuthManager {
     clearAuth() {
         this.token = null;
         this.user = null;
-        localStorage.removeItem(AUTH_CONFIG.STORAGE_KEYS.TOKEN);
-        localStorage.removeItem(AUTH_CONFIG.STORAGE_KEYS.USER);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('userType');
     }
 
     /**
@@ -223,8 +230,9 @@ class AuthManager {
      * Logout do admin
      */
     adminLogout() {
-        localStorage.removeItem(AUTH_CONFIG.STORAGE_KEYS.ADMIN_TOKEN);
-        localStorage.removeItem(AUTH_CONFIG.STORAGE_KEYS.ADMIN_USER);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('userType');
         window.location.href = AUTH_CONFIG.PAGES.ADMIN_LOGIN;
     }
 
@@ -239,9 +247,10 @@ class AuthManager {
      * Verificar se é admin autenticado
      */
     isAdminAuthenticated() {
-        const adminToken = localStorage.getItem(AUTH_CONFIG.STORAGE_KEYS.ADMIN_TOKEN);
-        const adminUser = localStorage.getItem(AUTH_CONFIG.STORAGE_KEYS.ADMIN_USER);
-        return !!(adminToken && adminUser);
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        const userType = localStorage.getItem('userType');
+        return !!(token && user && userType === 'admin');
     }
 
     /**

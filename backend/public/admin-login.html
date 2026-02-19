@@ -10,8 +10,9 @@
     <script src="/js/config.js"></script>
     <script>
         // Se já está logado, redirecionar para o painel
-        const token = localStorage.getItem('tem_de_tudo_token');
-        if (token) {
+        const token = localStorage.getItem('token');
+        const userType = localStorage.getItem('userType');
+        if (token && userType === 'admin') {
             window.location.href = 'admin-painel.html';
         }
     </script>
@@ -133,8 +134,9 @@
                 const result = await response.json();
                 
                 if (response.ok && result.success) {
-                    localStorage.setItem('tem_de_tudo_token', result.data.token);
-                    localStorage.setItem('tem_de_tudo_user', JSON.stringify(result.data.user));
+                    localStorage.setItem('token', result.data.token);
+                    localStorage.setItem('user', JSON.stringify(result.data.user));
+                    localStorage.setItem('userType', 'admin');
                     window.location.href = 'admin-painel.html';
                 } else {
                     throw new Error(result.message || 'Credenciais inválidas');

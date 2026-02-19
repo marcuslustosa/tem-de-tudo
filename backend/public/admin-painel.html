@@ -100,7 +100,7 @@
     <script>
         async function loadDashboard() {
             try {
-                const token = localStorage.getItem('tem_de_tudo_token');
+                const token = localStorage.getItem('token');
                 if (!token) {
                     window.location.href = 'admin-login.html';
                     return;
@@ -126,8 +126,8 @@
         }
         function logout() {
             if (confirm('Deseja realmente sair?')) {
-                localStorage.removeItem('tem_de_tudo_token');
-                localStorage.removeItem('tem_de_tudo_user');
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
                 window.location.href = 'admin-login.html';
             }
         }

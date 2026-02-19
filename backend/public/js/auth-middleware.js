@@ -1,4 +1,4 @@
-// Middleware JavaScript para proteção de rotas por perfil
+﻿// Middleware JavaScript para proteção de rotas por perfil
 class AuthMiddleware {
     constructor() {
         this.perfilRoutes = {
@@ -10,8 +10,8 @@ class AuthMiddleware {
 
     // Verificar se usuário está logado e tem token válido
     isAuthenticated() {
-        const token = localStorage.getItem('tem_de_tudo_token') || sessionStorage.getItem('tem_de_tudo_token');
-        const user = localStorage.getItem('tem_de_tudo_user') || sessionStorage.getItem('tem_de_tudo_user');
+        const token = localStorage.getItem('token') || localStorage.getItem('token');
+        const user = localStorage.getItem('user') || sessionStorage.getItem('tem_de_tudo_user');
 
         if (!token || !user) {
             return false;
@@ -28,7 +28,7 @@ class AuthMiddleware {
     // Obter dados do usuário logado
     getCurrentUser() {
         try {
-            const user = localStorage.getItem('tem_de_tudo_user') || sessionStorage.getItem('tem_de_tudo_user');
+            const user = localStorage.getItem('user') || sessionStorage.getItem('tem_de_tudo_user');
             return user ? JSON.parse(user) : null;
         } catch (e) {
             return null;
@@ -72,8 +72,8 @@ class AuthMiddleware {
 
     // Logout do usuário
     logout() {
-        localStorage.removeItem('tem_de_tudo_token');
-        localStorage.removeItem('tem_de_tudo_user');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
         sessionStorage.removeItem('tem_de_tudo_token');
         sessionStorage.removeItem('tem_de_tudo_user');
         window.location.href = '/admin-login.html';
@@ -97,12 +97,12 @@ class AuthMiddleware {
 
     // Atualizar dados do usuário (após refresh do token, etc.)
     updateUserData(userData) {
-        localStorage.setItem('tem_de_tudo_user', JSON.stringify(userData));
+        localStorage.setItem('user', JSON.stringify(userData));
     }
 
     // Verificar se token ainda é válido (chamada para API)
     async validateToken() {
-        const token = localStorage.getItem('tem_de_tudo_token') || sessionStorage.getItem('tem_de_tudo_token');
+        const token = localStorage.getItem('token') || localStorage.getItem('token');
         if (!token) {
             return false;
         }

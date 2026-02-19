@@ -16,7 +16,7 @@
     
     <script src="/js/config.js"></script>
     <script>
-        const token = localStorage.getItem('tem_de_tudo_token');
+        const token = localStorage.getItem('token');
         if (!token) {
             window.location.href = 'admin-login.html';
         }
@@ -283,7 +283,7 @@
     <script>
         // Check if user is logged in and has admin permissions
         document.addEventListener('DOMContentLoaded', function() {
-            const userStr = localStorage.getItem('tem_de_tudo_user');
+            const userStr = localStorage.getItem('user');
             
             if (!userStr || userStr === 'undefined' || userStr === 'null') {
                 alert('Acesso negado. Apenas administradores podem acessar esta área.');
@@ -367,7 +367,7 @@
         document.getElementById('createAdminForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const userStr = localStorage.getItem('tem_de_tudo_user');
+            const userStr = localStorage.getItem('user');
             let currentUser = null;
             if (userStr && userStr !== 'undefined' && userStr !== 'null') {
                 try {

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Sistema de QR Code Scanner
  * Substitui o sistema de foto por escaneamento de QR Codes
  */
@@ -183,7 +183,7 @@ class QRCodeScanner {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('tem_de_tudo_token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
                 },
                 body: JSON.stringify({
@@ -295,7 +295,7 @@ class QRCodeScanner {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('tem_de_tudo_token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
                 },
                 body: JSON.stringify({

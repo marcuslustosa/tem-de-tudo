@@ -1,4 +1,4 @@
-/**
+﻿/**
  * API para sistema de pontos e check-ins
  * Tem de Tudo - Sistema de Fidelidade
  */
@@ -7,14 +7,14 @@ class PontosAPI {
     constructor() {
         // Detectar automaticamente a URL base
         this.baseURL = window.location.origin + '/api';
-        this.token = localStorage.getItem('auth_token') || sessionStorage.getItem('tem_de_tudo_token');
+        this.token = localStorage.getItem('token');
         console.log('🔗 PontosAPI inicializada com base URL:', this.baseURL);
     }
 
     // Configurar token de autorização
     setToken(token) {
         this.token = token;
-        localStorage.setItem('auth_token', token);
+        localStorage.setItem('token', token);
     }
 
     // Headers padrão para requisições
@@ -91,7 +91,8 @@ class PontosAPI {
             await this.request('/logout', { method: 'POST' });
         } finally {
             this.token = null;
-            localStorage.removeItem('auth_token');
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
         }
     }
 
@@ -424,7 +425,7 @@ function maskCurrency(input) {
 
 // Verificar autenticação ao carregar
 document.addEventListener('DOMContentLoaded', function() {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('token');
     
     // Se estiver em página que requer login e não tiver token
     const requiresAuth = ['/checkin.html', '/pontos.html', '/profile-client.html'];

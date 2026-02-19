@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Firebase Push Notifications - TemDeTudo
  * Sistema completo de notificações para clientes, empresas e admins
  */
@@ -299,7 +299,7 @@ function handleNotificationClick(data) {
 // Atualizar token FCM no servidor
 async function updateFCMTokenOnServer(token) {
     try {
-        const authToken = localStorage.getItem('auth_token') || localStorage.getItem('admin_token');
+        const authToken = localStorage.getItem('token') || localStorage.getItem('admin_token');
         
         if (!authToken) {
             console.log('ℹ️ Usuário não logado, token será enviado no próximo login');
@@ -329,7 +329,7 @@ async function updateFCMTokenOnServer(token) {
 // Marcar notificação como recebida
 async function markNotificationAsReceived(notificationId) {
     try {
-        const authToken = localStorage.getItem('auth_token') || localStorage.getItem('admin_token');
+        const authToken = localStorage.getItem('token') || localStorage.getItem('admin_token');
         if (!authToken) return;
 
         await fetch(`${API_BASE}/notifications/${notificationId}/received`, {
@@ -347,7 +347,7 @@ async function markNotificationAsReceived(notificationId) {
 // Marcar notificação como lida
 async function markNotificationAsRead(notificationId) {
     try {
-        const authToken = localStorage.getItem('auth_token') || localStorage.getItem('admin_token');
+        const authToken = localStorage.getItem('token') || localStorage.getItem('admin_token');
         if (!authToken) return;
 
         const response = await fetch(`${API_BASE}/notifications/${notificationId}/read`, {
@@ -370,7 +370,7 @@ async function markNotificationAsRead(notificationId) {
 // Obter notificações do usuário
 async function getUserNotifications(page = 1) {
     try {
-        const authToken = localStorage.getItem('auth_token') || localStorage.getItem('admin_token');
+        const authToken = localStorage.getItem('token') || localStorage.getItem('admin_token');
         if (!authToken) return [];
 
         const response = await fetch(`${API_BASE}/notifications?page=${page}`, {
@@ -395,7 +395,7 @@ async function getUserNotifications(page = 1) {
 // Atualizar contador de notificações
 async function updateNotificationCount() {
     try {
-        const authToken = localStorage.getItem('auth_token') || localStorage.getItem('admin_token');
+        const authToken = localStorage.getItem('token') || localStorage.getItem('admin_token');
         if (!authToken) return;
 
         const response = await fetch(`${API_BASE}/notifications`, {
@@ -428,7 +428,7 @@ async function updateNotificationCount() {
 // Configurações de notificação
 async function updateNotificationSettings(settings) {
     try {
-        const authToken = localStorage.getItem('auth_token') || localStorage.getItem('admin_token');
+        const authToken = localStorage.getItem('token') || localStorage.getItem('admin_token');
         if (!authToken) return false;
 
         const response = await fetch(`${API_BASE}/notifications/settings`, {

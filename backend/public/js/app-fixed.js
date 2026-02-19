@@ -1,4 +1,4 @@
-// =====================================================
+﻿// =====================================================
 // APLICATIVO MOBILE TEM DE TUDO - SISTEMA DE FIDELIDADE
 // =====================================================
 
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // =====================================================
 
 function checkAuthStatus() {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('token');
     
     if (token) {
         // Verificar se token é válido
@@ -134,7 +134,7 @@ async function handleLogin(event) {
         
         if (response.ok) {
             // Login bem-sucedido
-            localStorage.setItem('auth_token', data.data.token);
+            localStorage.setItem('token', data.data.token);
             currentUser = data.data.user;
             userPoints = data.data.user.pontos || 0;
             userLevel = calculateUserLevel(userPoints);
@@ -195,7 +195,7 @@ async function handleRegister(event) {
         
         if (response.ok) {
             // Salvar token e usuário retornados
-            localStorage.setItem('auth_token', data.data.token);
+            localStorage.setItem('token', data.data.token);
             currentUser = data.data.user;
             userPoints = data.data.user.pontos || 0;
             userLevel = calculateUserLevel(userPoints);

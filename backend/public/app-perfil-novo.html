@@ -272,7 +272,7 @@
         
         async function loadUserData() {
             try {
-                const token = localStorage.getItem('tem_de_tudo_token');
+                const token = localStorage.getItem('token');
                 const baseURL = API_CONFIG.getBaseURL();
                 
                 const response = await fetch(`${baseURL}/api/auth/user`, {
@@ -312,7 +312,7 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
             
             try {
-                const token = localStorage.getItem('tem_de_tudo_token');
+                const token = localStorage.getItem('token');
                 const baseURL = API_CONFIG.getBaseURL();
                 
                 const response = await fetch(`${baseURL}/api/auth/profile`, {
@@ -351,8 +351,8 @@
         
         function logout() {
             if (confirm('Deseja realmente sair?')) {
-                localStorage.removeItem('tem_de_tudo_token');
-                localStorage.removeItem('tem_de_tudo_user');
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
                 window.location.href = '/login.html';
             }
         }

@@ -573,20 +573,38 @@
             installButton.style.display = 'none';
         });
 
-        // Redirect if already logged in
-        if (localStorage.getItem('token')) {
-            const userType = localStorage.getItem('userType') || 'cliente';
+        // Check if already logged in and show logout button
+        const token = localStorage.getItem('token');
+        const userType = localStorage.getItem('userType');
+        
+        if (token && userType) {
+            // Show logout button in header
+            const container = document.querySelector('.container');
+            const logoutBtn = document.createElement('div');
+            logoutBtn.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 1000;';
+            logoutBtn.innerHTML = `
+                <button onclick="logout()" style="
+                    background: linear-gradient(135deg, #6F1AB6, #9333EA);
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 12px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    box-shadow: 0 4px 12px rgba(111, 26, 182, 0.3);
+                ">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            `;
+            document.body.appendChild(logoutBtn);
             
-            switch(userType) {
-                case 'admin':
-                    window.location.href = '/admin-dashboard.html';
-                    break;
-                case 'empresa':
-                    window.location.href = '/empresa-dashboard.html';
-                    break;
-                default:
-                    window.location.href = '/app-inicio.html';
-            }
+            // Add logout function
+            window.logout = function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('userType');
+                window.location.reload();
+            };
         }
 
         // Analytics simulation

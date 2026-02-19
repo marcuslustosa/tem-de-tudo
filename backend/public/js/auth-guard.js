@@ -1,42 +1,83 @@
-/**
+﻿/**
  * AUTH GUARD - TEM DE TUDO
- * Proteção automática de rotas - VERSÃO SIMPLIFICADA
+ * Proteção automática de rotas - ATIVADO
  * 
- * @version 4.0.0 - SEM REDIRECTS AUTOMÁTICOS
+ * @version 5.0.0 - TOKENS PADRONIZADOS: 'token' e 'user'
  * 
  * USO:
  * <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
  */
 
-// MIGRAÇÃO AUTOMÁTICA DE TOKENS (SEM REDIRECT)
+// MIGRAÇÃO AUTOMÁTICA DE TOKENS ANTIGOS
 (function migrarTokens() {
-    const oldToken = localStorage.getItem('tem_de_tudo_token');
-    const oldUser = localStorage.getItem('tem_de_tudo_user');
-    const newToken = localStorage.getItem('token');
-    const newUser = localStorage.getItem('user');
+    const oldToken = localStorage.getItem('token');
+    const oldUser = localStorage.getItem('user');
+    const adminToken = localStorage.getItem('admin_token');
+    const adminUser = localStorage.getItem('admin_user');
     
-    if (oldToken && !newToken) {
+    // Migrar tokens antigos para novos
+    if (oldToken) {
         console.log('🔄 Migrando token antigo...');
         localStorage.setItem('token', oldToken);
+        localStorage.removeItem('token');
     }
     
-    if (oldUser && !newUser) {
+    if (oldUser) {
         console.log('🔄 Migrando dados de usuário antigos...');
         localStorage.setItem('user', oldUser);
+        localStorage.removeItem('user');
+    }
+    
+    // Admin mantém separado
+    if (adminToken && !localStorage.getItem('token')) {
+        localStorage.setItem('token', adminToken);
+    }
+    
+    if (adminUser && !localStorage.getItem('user')) {
+        localStorage.setItem('user', adminUser);
     }
 })();
 
-// DESATIVAR VERIFICAÇÕES AUTOMÁTICAS POR ENQUANTO
-// (function() {
-//     'use strict';
-//     
-//     const currentScript = document.currentScript;
-//     const requireAuth = currentScript ? currentScript.getAttribute('data-require-auth') : null;
-//     const requireAdmin = currentScript ? currentScript.hasAttribute('data-require-admin') : false;
-//     
-//     // VERIFICAÇÕES AUTOMÁTICAS DESATIVADAS PARA EVITAR LOOP
-//     console.log('🛡️ Auth Guard DESATIVADO temporariamente (versão 4.0.0)');
-// })();
+// ATIVAR VERIFICAÇÕES AUTOMÁTICAS
+(function() {
+    'use strict';
+    
+    const currentScript = document.currentScript;
+    const requireAuth = currentScript ? currentScript.getAttribute('data-require-auth') : null;
+    const requireAdmin = currentScript ? currentScript.hasAttribute('data-require-admin') : false;
+    
+    // Verificar autenticação se necessário
+    if (requireAuth || requireAdmin) {
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        
+        if (!token || !user) {
+            console.log('🚫 Não autenticado - redirecionando...');
+            window.location.href = requireAdmin ? '/admin-login.html' : '/entrar.html';
+            return;
+        }
+        
+        // Verificar perfil se especificado
+        if (requireAuth && requireAuth !== 'any') {
+            try {
+                const userData = JSON.parse(user);
+                const userProfile = userData.perfil || userData.role || userData.user_type || 'cliente';
+                
+                if (userProfile !== requireAuth) {
+                    console.log(`🚫 Acesso negado - perfil requerido: ${requireAuth}, atual: ${userProfile}`);
+                    window.location.href = '/entrar.html';
+                    return;
+                }
+            } catch (error) {
+                console.error('Erro ao verificar perfil:', error);
+                window.location.href = '/entrar.html';
+                return;
+            }
+        }
+        
+        console.log('✅ Auth Guard: Acesso autorizado');
+    }
+})();
 
 /**
  * FUNÇÕES GLOBAIS PARA USO NAS PÁGINAS
@@ -47,7 +88,7 @@
  * @returns {boolean}
  */
 function checkAuth() {
-    const token = localStorage.getItem('token') || localStorage.getItem('tem_de_tudo_token');
+    const token = localStorage.getItem('token');
     if (!token) {
         window.location.href = '/entrar.html';
         return false;
@@ -59,16 +100,19 @@ function checkAuth() {
  * Logout universal (LIMPA TUDO)
  */
 function logout() {
-    // Limpar todas as possíveis chaves de autenticação
+    // Limpar tokens e dados
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.removeItem('tem_de_tudo_token');
-    localStorage.removeItem('tem_de_tudo_user');
+    localStorage.removeItem('userType');
+    
+    // Limpar possíveis tokens antigos
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     localStorage.removeItem('admin_token');
     localStorage.removeItem('admin_user');
     
     // Redirecionar
-    window.location.href = '/entrar.html';
+    window.location.href = '/index.html';
 }
 
 /**
@@ -76,7 +120,7 @@ function logout() {
  * @returns {Object|null}
  */
 function getCurrentUser() {
-    const userStr = localStorage.getItem('user') || localStorage.getItem('tem_de_tudo_user');
+    const userStr = localStorage.getItem('user');
     if (userStr) {
         try {
             return JSON.parse(userStr);
@@ -130,7 +174,7 @@ function isCliente() {
  * @returns {string|null}
  */
 function getAuthToken() {
-    return localStorage.getItem('token') || localStorage.getItem('tem_de_tudo_token');
+    return localStorage.getItem('token');
 }
 
 /**

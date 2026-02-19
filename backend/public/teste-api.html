@@ -75,7 +75,7 @@
                 
                 if (response.ok && data.token) {
                     token = data.token;
-                    localStorage.setItem('tem_de_tudo_token', token);
+                    localStorage.setItem('token', token);
                     div.innerHTML = `
                         <p class="success">? Login OK!</p>
                         <p>Token: ${token.substring(0, 20)}...</p>
@@ -93,7 +93,7 @@
             const div = document.getElementById('empresas');
             
             if (!token) {
-                token = localStorage.getItem('tem_de_tudo_token');
+                token = localStorage.getItem('token');
             }
             
             if (!token) {
