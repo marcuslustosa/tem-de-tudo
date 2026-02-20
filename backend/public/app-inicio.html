@@ -15,8 +15,7 @@
 <div class="greeting">Olá, bem-vindo de volta! ✨</div>
 <div class="user-name" id="userName">Marcus Silva</div>
 <div class="profile-type" id="profileType">
-<i class="fas fa-crown"></i> Premium Active
-                </div>
+<i class="fas fa-crown"></i> Premium Active  </div>
 </div>
 <div class="saldo-badge" onclick="window.location.href='/app-meus-pontos.html'">
 <div class="saldo-label">💰 Saldo Atual</div>
@@ -65,8 +64,7 @@
 <div class="section">
 <div class="section-header">
 <div class="section-title">🎯 Categorias em Alta</div>
-<a href="/app-categorias.html" class="ver-mais">
-                Ver todas <i class="fas fa-arrow-right"></i>
+<a href="/app-categorias.html" class="ver-mais">  Ver todas <i class="fas fa-arrow-right"></i>
 </a>
 </div>
 <div class="categories-scroll">
@@ -99,8 +97,7 @@
 <div class="section">
 <div class="section-header">
 <div class="section-title">⭐ Empresas Próximas</div>
-<a href="/app-empresas.html" class="ver-mais">
-                Ver todas <i class="fas fa-arrow-right"></i>
+<a href="/app-empresas.html" class="ver-mais">  Ver todas <i class="fas fa-arrow-right"></i>
 </a>
 </div>
 <div class="empresas-grid" id="empresasGrid">
@@ -116,8 +113,7 @@
 <span>250m</span>
 </div>
 <div class="empresa-pontos">
-<i class="fas fa-coins"></i> 10 pts
-                        </div>
+<i class="fas fa-coins"></i> 10 pts  </div>
 </div>
 </div>
 </a>
@@ -132,8 +128,7 @@
 <span>380m</span>
 </div>
 <div class="empresa-pontos">
-<i class="fas fa-coins"></i> 15 pts
-                        </div>
+<i class="fas fa-coins"></i> 15 pts  </div>
 </div>
 </div>
 </a>
@@ -148,8 +143,7 @@
 <span>520m</span>
 </div>
 <div class="empresa-pontos">
-<i class="fas fa-coins"></i> 20 pts
-                        </div>
+<i class="fas fa-coins"></i> 20 pts  </div>
 </div>
 </div>
 </a>
@@ -164,8 +158,7 @@
 <span>180m</span>
 </div>
 <div class="empresa-pontos">
-<i class="fas fa-coins"></i> 8 pts
-                        </div>
+<i class="fas fa-coins"></i> 8 pts  </div>
 </div>
 </div>
 </a>
@@ -180,8 +173,7 @@
 <span>650m</span>
 </div>
 <div class="empresa-pontos">
-<i class="fas fa-coins"></i> 12 pts
-                        </div>
+<i class="fas fa-coins"></i> 12 pts  </div>
 </div>
 </div>
 </a>
@@ -196,8 +188,7 @@
 <span>420m</span>
 </div>
 <div class="empresa-pontos">
-<i class="fas fa-coins"></i> 25 pts
-                        </div>
+<i class="fas fa-coins"></i> 25 pts  </div>
 </div>
 </div>
 </a>
@@ -225,237 +216,17 @@
 <span>Perfil</span>
 </a>
 </nav>
-<script>
-        // Função para fazer requisições à API
-        async function apiRequest(url, options = {}) {
-            try {
-                const token = localStorage.getItem('token');
-                const defaultHeaders = {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                };
-                
-                if (token) {
-                    defaultHeaders['Authorization'] = `Bearer ${token}`;
-                }
-
-                const response = await fetch(url, {
-                    ...options,
-                    headers: {
-                        ...defaultHeaders,
-                        ...options.headers
-                    }
-                });
-
-                return response;
-            } catch (error) {
-                console.warn('API request failed:', error);
-                return null;
-            }
-        }
-
-        // Carregar dados do usuário
-        async function loadUserData() {
-            try {
-                console.log('🔄 Carregando dados do usuário...');
-                
-                // Tentar carregar da API primeiro
-                try {
-                    const response = await apiRequest('/api/user');
-                    
-                    if (response && response.ok) {
-                        const data = await response.json();
-                        
-                        if (data.success && data.user) {
-                            console.log('✅ Dados carregados da API:', data.user);
-                            
-                            document.getElementById('userName').textContent = data.user.name || data.user.nome || 'Marcus Silva';
-                            document.getElementById('saldoValue').textContent = (data.user.pontos || 2847.50).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-                            
-                            updateProfileType(data.user);
-                            
-                            localStorage.setItem('user_data', JSON.stringify(data.user));
-                            return;
-                        }
-                    }
-                } catch (apiError) {
-                    console.log('API indisponível, carregando dados fictícios...', apiError.message);
-                }
-                
-                // FALLBACK: Dados fictícios
-                console.log('👤 MODO DEMONSTRAÇÃO ATIVADO');
-                loadMockData();
-                
-            } catch (error) {
-                console.error('Erro ao carregar dados do usuário:', error);
-                loadMockData();
-            }
-        }
-        
-        // Dados fictícios para demonstração
-        function loadMockData() {
-            const cachedUser = localStorage.getItem('user');
-            let mockUser = {
-                name: 'Marcus Silva',
-                pontos: 2847.50,
-                perfil: 'premium'
-            };
-            
-            if (cachedUser) {
-                try {
-                    const user = JSON.parse(cachedUser);
-                    mockUser = {
-                        name: user.name || 'Marcus Silva',
-                        pontos: user.pontos || 2847.50,
-                        perfil: user.perfil || 'premium'
-                    };
-                } catch (e) {
-                    console.log('Cache inválido, usando dados padrão');
-                }
-            }
-            
-            document.getElementById('userName').textContent = mockUser.name;
-            document.getElementById('saldoValue').textContent = mockUser.pontos.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-            updateProfileType(mockUser);
-            
-            // Adicionar indicador de modo demonstração
-            const greeting = document.querySelector('.greeting');
-            if (greeting) {
-                greeting.innerHTML = 'Olá, bem-vindo de volta! ✨ <span style="color: #6F1AB6; font-size: 11px;">• DEMO</span>';
-            }
-        }
-
-        // Atualizar tipo de perfil
-        function updateProfileType(user) {
-            const profileTypeElement = document.getElementById('profileType');
-            const userType = user.perfil || user.tipo || user.user_type || 'premium';
-            
-            let profileText = '';
-            let iconClass = '';
-            
-            switch(userType) {
-                case 'premium':
-                    profileText = `Premium Active`;
-                    iconClass = 'fas fa-crown';
-                    break;
-                case 'empresa':
-                    profileText = `Plano Empresa`;
-                    iconClass = 'fas fa-building';
-                    break;
-                case 'admin':
-                    profileText = `Administrador`;
-                    iconClass = 'fas fa-shield-alt';
-                    break;
-                default:
-                    profileText = `Plano ${userType.charAt(0).toUpperCase() + userType.slice(1)}`;
-                    iconClass = 'fas fa-user-circle';
-            }
-            
-            profileTypeElement.innerHTML = `<i class="${iconClass}"></i> ${profileText}`;
-        }
-
-        // Busca
-        document.getElementById('searchInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const query = e.target.value.trim();
-                if (query) {
-                    window.location.href = `/app-empresas.html?q=${encodeURIComponent(query)}`;
-                }
-            }
-        });
-
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', () => {
-            loadUserData();
-        });
-
-        // Atualizar saldo periodicamente (simulação)
-        setInterval(() => {
-            const currentSaldo = parseFloat(document.getElementById('saldoValue').textContent.replace(/\./g, '').replace(',', '.'));
-            const variation = (Math.random() - 0.5) * 10; // Variação de -5 a +5
-            const newSaldo = Math.max(0, currentSaldo + variation);
-            
-            if (Math.random() > 0.95) { // 5% de chance de atualizar
-                document.getElementById('saldoValue').textContent = newSaldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-            }
-        }, 30000); // A cada 30 segundos
-
-        // Carregar empresas próximas dinamicamente
-        carregarEmpresasProximas();
-    }
-
-    async function carregarEmpresasProximas() {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('/api/cliente/empresas', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                const empresas = data.data || data.empresas || [];
-                renderizarEmpresas(empresas.slice(0, 6)); // Mostrar apenas 6 empresas
-            } else {
-                throw new Error('Erro ao carregar empresas');
-            }
-        } catch (error) {
-            console.error('Erro ao carregar empresas:', error);
-            renderizarEmpresasFallback();
-        }
-    }
-
-    function renderizarEmpresas(empresas) {
-        const container = document.getElementById('empresasGrid');
-        
-        if (!empresas || empresas.length === 0) {
-            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: rgba(255,255,255,0.7);">Nenhuma empresa encontrada</p>';
-            return;
-        }
-
-        const categorias = {
-            'restaurante': 'Alimentação',
-            'academia': 'Fitness & Saúde',
-            'beleza': 'Beleza & Estética',
-            'farmacia': 'Saúde',
-            'cafeteria': 'Cafeteria'
-        };
-
-        container.innerHTML = empresas.map(empresa => `
-            <a href="/app-empresa-detalhes.html?id=${empresa.id}" class="empresa-card">
-<img src="${empresa.logo || empresa.foto || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400'}" 
-                     alt="${empresa.nome}" class="empresa-img">
+<script>  // Função para fazer requisições à API  async function apiRequest(url, options = {}) {  try {  const token = localStorage.getItem('token');  const defaultHeaders = {  'Content-Type': 'application/json',  'Accept': 'application/json'  };  if (token) {  defaultHeaders['Authorization'] = `Bearer ${token}`;  }  const response = await fetch(url, {  ...options,  headers: {  ...defaultHeaders,  ...options.headers  }  });  return response;  } catch (error) {  console.warn('API request failed:', error);  return null;  }  }  // Carregar dados do usuário  async function loadUserData() {  try {  console.log('🔄 Carregando dados do usuário...');  // Tentar carregar da API primeiro  try {  const response = await apiRequest('/api/user');  if (response && response.ok) {  const data = await response.json();  if (data.success && data.user) {  console.log('✅ Dados carregados da API:', data.user);  document.getElementById('userName').textContent = data.user.name || data.user.nome || 'Marcus Silva';  document.getElementById('saldoValue').textContent = (data.user.pontos || 2847.50).toLocaleString('pt-BR', { minimumFractionDigits: 2 });  updateProfileType(data.user);  localStorage.setItem('user_data', JSON.stringify(data.user));  return;  }  }  } catch (apiError) {  console.log('API indisponível, carregando dados fictícios...', apiError.message);  }  // FALLBACK: Dados fictícios  console.log('👤 MODO DEMONSTRAÇÃO ATIVADO');  loadMockData();  } catch (error) {  console.error('Erro ao carregar dados do usuário:', error);  loadMockData();  }  }  // Dados fictícios para demonstração  function loadMockData() {  const cachedUser = localStorage.getItem('user');  let mockUser = {  name: 'Marcus Silva',  pontos: 2847.50,  perfil: 'premium'  };  if (cachedUser) {  try {  const user = JSON.parse(cachedUser);  mockUser = {  name: user.name || 'Marcus Silva',  pontos: user.pontos || 2847.50,  perfil: user.perfil || 'premium'  };  } catch (e) {  console.log('Cache inválido, usando dados padrão');  }  }  document.getElementById('userName').textContent = mockUser.name;  document.getElementById('saldoValue').textContent = mockUser.pontos.toLocaleString('pt-BR', { minimumFractionDigits: 2 });  updateProfileType(mockUser);  // Adicionar indicador de modo demonstração  const greeting = document.querySelector('.greeting');  if (greeting) {  greeting.innerHTML = 'Olá, bem-vindo de volta! ✨ <span style="color: #6F1AB6; font-size: 11px;">• DEMO</span>';  }  }  // Atualizar tipo de perfil  function updateProfileType(user) {  const profileTypeElement = document.getElementById('profileType');  const userType = user.perfil || user.tipo || user.user_type || 'premium';  let profileText = '';  let iconClass = '';  switch(userType) {  case 'premium':  profileText = `Premium Active`;  iconClass = 'fas fa-crown';  break;  case 'empresa':  profileText = `Plano Empresa`;  iconClass = 'fas fa-building';  break;  case 'admin':  profileText = `Administrador`;  iconClass = 'fas fa-shield-alt';  break;  default:  profileText = `Plano ${userType.charAt(0).toUpperCase() + userType.slice(1)}`;  iconClass = 'fas fa-user-circle';  }  profileTypeElement.innerHTML = `<i class="${iconClass}"></i> ${profileText}`;  }  // Busca  document.getElementById('searchInput').addEventListener('keypress', (e) => {  if (e.key === 'Enter') {  const query = e.target.value.trim();  if (query) {  window.location.href = `/app-empresas.html?q=${encodeURIComponent(query)}`;  }  }  });  // Inicialização  document.addEventListener('DOMContentLoaded', () => {  loadUserData();  });  // Atualizar saldo periodicamente (simulação)  setInterval(() => {  const currentSaldo = parseFloat(document.getElementById('saldoValue').textContent.replace(/\./g, '').replace(',', '.'));  const variation = (Math.random() - 0.5) * 10; // Variação de -5 a +5  const newSaldo = Math.max(0, currentSaldo + variation);  if (Math.random() > 0.95) { // 5% de chance de atualizar  document.getElementById('saldoValue').textContent = newSaldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 });  }  }, 30000); // A cada 30 segundos  // Carregar empresas próximas dinamicamente  carregarEmpresasProximas();  }  async function carregarEmpresasProximas() {  try {  const token = localStorage.getItem('token');  const response = await fetch('/api/cliente/empresas', {  headers: {  'Authorization': `Bearer ${token}`,  'Accept': 'application/json'  }  });  if (response.ok) {  const data = await response.json();  const empresas = data.data || data.empresas || [];  renderizarEmpresas(empresas.slice(0, 6)); // Mostrar apenas 6 empresas  } else {  throw new Error('Erro ao carregar empresas');  }  } catch (error) {  console.error('Erro ao carregar empresas:', error);  renderizarEmpresasFallback();  }  }  function renderizarEmpresas(empresas) {  const container = document.getElementById('empresasGrid');  if (!empresas || empresas.length === 0) {  container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: rgba(255,255,255,0.7);">Nenhuma empresa encontrada</p>';  return;  }  const categorias = {  'restaurante': 'Alimentação',  'academia': 'Fitness & Saúde',  'beleza': 'Beleza & Estética',  'farmacia': 'Saúde',  'cafeteria': 'Cafeteria'  };  container.innerHTML = empresas.map(empresa => `  <a href="/app-empresa-detalhes.html?id=${empresa.id}" class="empresa-card">
+<img src="${empresa.logo || empresa.foto || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400'}"  alt="${empresa.nome}" class="empresa-img">
 <div class="empresa-content">
 <div class="empresa-name">${empresa.nome}</div>
 <div class="empresa-category">${categorias[empresa.ramo] || empresa.categoria || 'Serviços'}</div>
 <div class="empresa-footer">
 <div class="empresa-distance">
-<i class="fas fa-map-marker-alt"></i> ${(Math.random() * 2 + 0.1).toFixed(1)} km
-                        </div>
+<i class="fas fa-map-marker-alt"></i> ${(Math.random() * 2 + 0.1).toFixed(1)} km  </div>
 <div class="empresa-pontos">${empresa.points_multiplier || 1.5}x pontos</div>
 </div>
 </div>
-</a>
-        `).join('');
-    }
-
-    function renderizarEmpresasFallback() {
-        // Fallback com dados estáticos caso a API falhe
-        const empresasFallback = [
-            { id: 1, nome: 'Sabor e Arte', categoria: 'Restaurante', logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400', points_multiplier: 1.5 },
-            { id: 2, nome: 'Bella Napoli', categoria: 'Pizzaria', logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400', points_multiplier: 2.0 },
-            { id: 3, nome: 'FitLife Academia', categoria: 'Academia', logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', points_multiplier: 1.0 },
-            { id: 4, nome: 'Beleza Total', categoria: 'Salão', logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', points_multiplier: 1.2 },
-            { id: 5, nome: 'Café & Cia', categoria: 'Cafeteria', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', points_multiplier: 1.5 },
-            { id: 6, nome: 'Pet Shop Amigo Fiel', categoria: 'Pet Shop', logo: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400', points_multiplier: 1.0 }
-        ];
-        
-        renderizarEmpresas(empresasFallback);
-    }
-    </script>
+</a>  `).join('');  }  function renderizarEmpresasFallback() {  // Fallback com dados estáticos caso a API falhe  const empresasFallback = [  { id: 1, nome: 'Sabor e Arte', categoria: 'Restaurante', logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400', points_multiplier: 1.5 },  { id: 2, nome: 'Bella Napoli', categoria: 'Pizzaria', logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400', points_multiplier: 2.0 },  { id: 3, nome: 'FitLife Academia', categoria: 'Academia', logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', points_multiplier: 1.0 },  { id: 4, nome: 'Beleza Total', categoria: 'Salão', logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', points_multiplier: 1.2 },  { id: 5, nome: 'Café & Cia', categoria: 'Cafeteria', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', points_multiplier: 1.5 },  { id: 6, nome: 'Pet Shop Amigo Fiel', categoria: 'Pet Shop', logo: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400', points_multiplier: 1.0 }  ];  renderizarEmpresas(empresasFallback);  }  </script>
 </body>
-</html>
-
-
+</html>  

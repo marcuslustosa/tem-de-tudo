@@ -49,9 +49,7 @@
 <!-- Extrato de Transações -->
 <div class="extrato">
 <div class="section-title">
-<i class="fas fa-history"></i>
-                Extrato de Pontos
-            </div>
+<i class="fas fa-history"></i>  Extrato de Pontos  </div>
 <div id="extratoTransacoes">
 <!-- Será preenchido via JavaScript -->
 </div>
@@ -81,152 +79,11 @@
 </a>
 </div>
 </nav>
-<script>
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
-        
-        // Dados fictícios para demonstração
-        const transacoesFicticias = [
-            {
-                id: 1,
-                tipo: 'checkin',
-                empresa: 'Sabor e Arte',
-                pontos: 50,
-                data: '2024-01-15T10:30:00Z',
-                icon: 'fa-map-marker-alt'
-            },
-            {
-                id: 2,
-                tipo: 'compra_cupom',
-                empresa: 'Bella Napoli',
-                pontos: -80,
-                data: '2024-01-14T18:45:00Z',
-                icon: 'fa-ticket-alt'
-            },
-            {
-                id: 3,
-                tipo: 'checkin',
-                empresa: 'Academia FitLife',
-                pontos: 75,
-                data: '2024-01-13T07:15:00Z',
-                icon: 'fa-map-marker-alt'
-            },
-            {
-                id: 4,
-                tipo: 'bonus',
-                empresa: 'Programa Fidelidade',
-                pontos: 100,
-                data: '2024-01-12T12:00:00Z',
-                icon: 'fa-gift'
-            },
-            {
-                id: 5,
-                tipo: 'checkin',
-                empresa: 'Café & Cia',
-                pontos: 25,
-                data: '2024-01-11T09:20:00Z',
-                icon: 'fa-map-marker-alt'
-            }
-        ];
-        
-        let saldoAtual = 1247;
-        let totalGanhos = 2856;
-        let totalGastos = 1609;
-        let totalCheckins = 47;
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'entrar.html';
-                return;
-            }
-            
-            // Verificar se é usuário FICTÍCIO (demonstração) ou REAL (uso)
-            const userStr = localStorage.getItem('user');
-            const usuariosFicticios = ['maria@email.com', 'joao@email.com', 'saborearte@email.com', 'bellanapoli@email.com'];
-            let ehUsuarioFicticio = false;
-            
-            if (userStr) {
-                try {
-                    const user = JSON.parse(userStr);
-                    ehUsuarioFicticio = usuariosFicticios.includes(user.email);
-                } catch (e) {
-                    console.error('Erro ao parsear user:', e);
-                }
-            }
-            
-            if (ehUsuarioFicticio) {
-                console.log('👤 Usuário fictício: usando dados de demonstração');
-                renderizarDadosFicticios();
-            } else {
-                console.log('🔥 Usuário real: carregando dados reais da API');
-                carregarDadosAPI();
-            }
-        });
-        
-        function renderizarDadosFicticios() {
-            // Atualizar estatísticas
-            document.getElementById('saldoPontos').textContent = formatarNumero(saldoAtual);
-            document.getElementById('totalGanhos').textContent = formatarNumero(totalGanhos);
-            document.getElementById('totalGastos').textContent = formatarNumero(totalGastos);
-            document.getElementById('checkins').textContent = totalCheckins;
-            
-            // Renderizar extrato
-            renderizarExtrato(transacoesFicticias);
-        }
-        
-        async function carregarDadosAPI() {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch(`${API_BASE_URL}/api/pontos`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    // Atualizar com dados reais
-                    saldoAtual = data.saldo || 0;
-                    totalGanhos = data.total_ganhos || 0;
-                    totalGastos = data.total_gastos || 0;
-                    totalCheckins = data.total_checkins || 0;
-                    
-                    document.getElementById('saldoPontos').textContent = formatarNumero(saldoAtual);
-                    document.getElementById('totalGanhos').textContent = formatarNumero(totalGanhos);
-                    document.getElementById('totalGastos').textContent = formatarNumero(totalGastos);
-                    document.getElementById('checkins').textContent = totalCheckins;
-                    
-                    renderizarExtrato(data.transacoes || []);
-                } else {
-                    console.log('Erro ao carregar dados, usando dados fictícios');
-                    renderizarDadosFicticios();
-                }
-            } catch (error) {
-                console.error('Erro na API:', error);
-                renderizarDadosFicticios();
-            }
-        }
-        
-        function renderizarExtrato(transacoes) {
-            const container = document.getElementById('extratoTransacoes');
-            
-            if (transacoes.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
+<script>  const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';  // Dados fictícios para demonstração  const transacoesFicticias = [  {  id: 1,  tipo: 'checkin',  empresa: 'Sabor e Arte',  pontos: 50,  data: '2024-01-15T10:30:00Z',  icon: 'fa-map-marker-alt'  },  {  id: 2,  tipo: 'compra_cupom',  empresa: 'Bella Napoli',  pontos: -80,  data: '2024-01-14T18:45:00Z',  icon: 'fa-ticket-alt'  },  {  id: 3,  tipo: 'checkin',  empresa: 'Academia FitLife',  pontos: 75,  data: '2024-01-13T07:15:00Z',  icon: 'fa-map-marker-alt'  },  {  id: 4,  tipo: 'bonus',  empresa: 'Programa Fidelidade',  pontos: 100,  data: '2024-01-12T12:00:00Z',  icon: 'fa-gift'  },  {  id: 5,  tipo: 'checkin',  empresa: 'Café & Cia',  pontos: 25,  data: '2024-01-11T09:20:00Z',  icon: 'fa-map-marker-alt'  }  ];  let saldoAtual = 1247;  let totalGanhos = 2856;  let totalGastos = 1609;  let totalCheckins = 47;  document.addEventListener('DOMContentLoaded', () => {  const token = localStorage.getItem('token');  if (!token) {  window.location.href = 'entrar.html';  return;  }  // Verificar se é usuário FICTÍCIO (demonstração) ou REAL (uso)  const userStr = localStorage.getItem('user');  const usuariosFicticios = ['maria@email.com', 'joao@email.com', 'saborearte@email.com', 'bellanapoli@email.com'];  let ehUsuarioFicticio = false;  if (userStr) {  try {  const user = JSON.parse(userStr);  ehUsuarioFicticio = usuariosFicticios.includes(user.email);  } catch (e) {  console.error('Erro ao parsear user:', e);  }  }  if (ehUsuarioFicticio) {  console.log('👤 Usuário fictício: usando dados de demonstração');  renderizarDadosFicticios();  } else {  console.log('🔥 Usuário real: carregando dados reais da API');  carregarDadosAPI();  }  });  function renderizarDadosFicticios() {  // Atualizar estatísticas  document.getElementById('saldoPontos').textContent = formatarNumero(saldoAtual);  document.getElementById('totalGanhos').textContent = formatarNumero(totalGanhos);  document.getElementById('totalGastos').textContent = formatarNumero(totalGastos);  document.getElementById('checkins').textContent = totalCheckins;  // Renderizar extrato  renderizarExtrato(transacoesFicticias);  }  async function carregarDadosAPI() {  try {  const token = localStorage.getItem('token');  const response = await fetch(`${API_BASE_URL}/api/pontos`, {  headers: { 'Authorization': `Bearer ${token}` }  });  if (response.ok) {  const data = await response.json();  // Atualizar com dados reais  saldoAtual = data.saldo || 0;  totalGanhos = data.total_ganhos || 0;  totalGastos = data.total_gastos || 0;  totalCheckins = data.total_checkins || 0;  document.getElementById('saldoPontos').textContent = formatarNumero(saldoAtual);  document.getElementById('totalGanhos').textContent = formatarNumero(totalGanhos);  document.getElementById('totalGastos').textContent = formatarNumero(totalGastos);  document.getElementById('checkins').textContent = totalCheckins;  renderizarExtrato(data.transacoes || []);  } else {  console.log('Erro ao carregar dados, usando dados fictícios');  renderizarDadosFicticios();  }  } catch (error) {  console.error('Erro na API:', error);  renderizarDadosFicticios();  }  }  function renderizarExtrato(transacoes) {  const container = document.getElementById('extratoTransacoes');  if (transacoes.length === 0) {  container.innerHTML = `  <div class="empty-state">
 <i class="fas fa-coins"></i>
 <h3>Nenhuma transação ainda</h3>
 <p>Comece fazendo check-ins em empresas parceiras para ganhar pontos!</p>
-</div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = transacoes.map(transacao => {
-                const data = new Date(transacao.data || transacao.created_at);
-                const isPositivo = transacao.pontos > 0;
-                const iconClass = getIconeTransacao(transacao.tipo);
-                
-                return `
-                    <div class="transacao">
+</div>  `;  return;  }  container.innerHTML = transacoes.map(transacao => {  const data = new Date(transacao.data || transacao.created_at);  const isPositivo = transacao.pontos > 0;  const iconClass = getIconeTransacao(transacao.tipo);  return `  <div class="transacao">
 <div class="transacao-info">
 <div class="transacao-icon">
 <i class="fas ${iconClass}"></i>
@@ -236,60 +93,7 @@
 <div class="transacao-data">${formatarData(data)}</div>
 </div>
 </div>
-<div class="transacao-pontos ${isPositivo ? 'ganhou' : 'gastou'}">
-                            ${isPositivo ? '+' : ''}${transacao.pontos}
-                        </div>
-</div>
-                `;
-            }).join('');
-        }
-        
-        function getIconeTransacao(tipo) {
-            const icones = {
-                'checkin': 'fa-map-marker-alt',
-                'compra_cupom': 'fa-ticket-alt',
-                'uso_cupom': 'fa-gift',
-                'bonus': 'fa-star',
-                'cashback': 'fa-coins',
-                'referencia': 'fa-user-plus'
-            };
-            return icones[tipo] || 'fa-coins';
-        }
-        
-        function getTituloTransacao(transacao) {
-            const titulos = {
-                'checkin': `Check-in em ${transacao.empresa || transacao.empresa_nome}`,
-                'compra_cupom': `Compra de cupom - ${transacao.empresa || transacao.empresa_nome}`,
-                'uso_cupom': `Uso de cupom - ${transacao.empresa || transacao.empresa_nome}`,
-                'bonus': `Bônus - ${transacao.empresa || 'Sistema'}`,
-                'cashback': `Cashback - ${transacao.empresa || transacao.empresa_nome}`,
-                'referencia': `Indicação de amigo - ${transacao.empresa || 'Sistema'}`
-            };
-            return titulos[transacao.tipo] || `Transação - ${transacao.empresa || 'Sistema'}`;
-        }
-        
-        function formatarData(data) {
-            const agora = new Date();
-            const diff = agora - data;
-            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-            
-            if (dias === 0) {
-                return 'Hoje';
-            } else if (dias === 1) {
-                return 'Ontem';
-            } else if (dias < 7) {
-                return `${dias} dias atrás`;
-            } else {
-                return data.toLocaleDateString('pt-BR');
-            }
-        }
-        
-        function formatarNumero(numero) {
-            if (numero >= 1000) {
-                return (numero / 1000).toFixed(1).replace('.', ',') + 'k';
-            }
-            return numero.toString();
-        }
-    </script>
+<div class="transacao-pontos ${isPositivo ? 'ganhou' : 'gastou'}">  ${isPositivo ? '+' : ''}${transacao.pontos}  </div>
+</div>  `;  }).join('');  }  function getIconeTransacao(tipo) {  const icones = {  'checkin': 'fa-map-marker-alt',  'compra_cupom': 'fa-ticket-alt',  'uso_cupom': 'fa-gift',  'bonus': 'fa-star',  'cashback': 'fa-coins',  'referencia': 'fa-user-plus'  };  return icones[tipo] || 'fa-coins';  }  function getTituloTransacao(transacao) {  const titulos = {  'checkin': `Check-in em ${transacao.empresa || transacao.empresa_nome}`,  'compra_cupom': `Compra de cupom - ${transacao.empresa || transacao.empresa_nome}`,  'uso_cupom': `Uso de cupom - ${transacao.empresa || transacao.empresa_nome}`,  'bonus': `Bônus - ${transacao.empresa || 'Sistema'}`,  'cashback': `Cashback - ${transacao.empresa || transacao.empresa_nome}`,  'referencia': `Indicação de amigo - ${transacao.empresa || 'Sistema'}`  };  return titulos[transacao.tipo] || `Transação - ${transacao.empresa || 'Sistema'}`;  }  function formatarData(data) {  const agora = new Date();  const diff = agora - data;  const dias = Math.floor(diff / (1000 * 60 * 60 * 24));  if (dias === 0) {  return 'Hoje';  } else if (dias === 1) {  return 'Ontem';  } else if (dias < 7) {  return `${dias} dias atrás`;  } else {  return data.toLocaleDateString('pt-BR');  }  }  function formatarNumero(numero) {  if (numero >= 1000) {  return (numero / 1000).toFixed(1).replace('.', ',') + 'k';  }  return numero.toString();  }  </script>
 </body>
 </html>

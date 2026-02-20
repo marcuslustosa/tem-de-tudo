@@ -26,13 +26,9 @@
 <!-- Tabs -->
 <div class="tabs">
 <button class="tab active" data-tab="shop">
-<i class="fas fa-shopping-bag" style="margin-right: 8px;"></i>
-                Shop
-            </button>
+<i class="fas fa-shopping-bag" style="margin-right: 8px;"></i>  Shop  </button>
 <button class="tab" data-tab="meus">
-<i class="fas fa-ticket-alt" style="margin-right: 8px;"></i>
-                Meus Cupons
-            </button>
+<i class="fas fa-ticket-alt" style="margin-right: 8px;"></i>  Meus Cupons  </button>
 </div>
 <!-- Shop de Cupons (comprar com pontos) -->
 <div id="tab-shop" class="tab-content active">
@@ -80,104 +76,7 @@
 </a>
 </div>
 </nav>
-<script>
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
-        
-        // Dados de exemplo para shop de cupons
-        const cuponsShop = [
-            { 
-                id: 1, 
-                empresa: 'Sabor e Arte', 
-                desconto: '20% OFF', 
-                descricao: 'Em qualquer prato do cardápio', 
-                pontos: 100, 
-                economia: 'Economize até R$ 25',
-                categoria: 'restaurante'
-            },
-            { 
-                id: 2, 
-                empresa: 'Bella Napoli', 
-                desconto: 'R$ 15 OFF', 
-                descricao: 'Pizza grande tradicional', 
-                pontos: 80, 
-                economia: 'Economize R$ 15',
-                categoria: 'restaurante'
-            },
-            { 
-                id: 3, 
-                empresa: 'Academia FitLife', 
-                desconto: '1 mês grátis', 
-                descricao: 'Na matrícula anual premium', 
-                pontos: 200, 
-                economia: 'Economize R$ 89',
-                categoria: 'servicos'
-            },
-            { 
-                id: 4, 
-                empresa: 'Café & Cia', 
-                desconto: 'R$ 10 OFF', 
-                descricao: 'Em bebidas especiais', 
-                pontos: 60, 
-                economia: 'Economize R$ 10',
-                categoria: 'cafe'
-            }
-        ];
-        
-        // Dados fictícios para usuários de DEMONSTRAÇÃO
-        const cuponsDisponivelsFicticios = [
-            { id: 1, empresa: 'Sabor e Arte', desconto: '20% OFF', descricao: 'Em qualquer prato', validade: '2026-03-31', codigo: 'SABOR20', usado: false },
-            { id: 2, empresa: 'Bella Napoli', desconto: 'R$ 15 OFF', descricao: 'Pizza grande', validade: '2026-02-28', codigo: 'PIZZA15', usado: false },
-            { id: 3, empresa: 'Academia FitLife', desconto: '1 mês grátis', descricao: 'Na matrícula anual', validade: '2026-04-30', codigo: 'FIT1MES', usado: false }
-        ];
-        
-        const cuponsUsadosFicticios = [
-            { id: 4, empresa: 'Café & Cia', desconto: 'R$ 5 OFF', descricao: 'Em qualquer bebida', validade: '2026-01-31', codigo: 'CAFE5', usado: true, dataUso: '2026-01-15' }
-        ];
-        
-        let cuponsDisponiveis = [];
-        let cuponsUsados = [];
-        let pontosUsuario = 250;
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'entrar.html';
-                return;
-            }
-            
-            // Verificar se é usuário FICTÍCIO (demonstração) ou REAL (uso)
-            const userStr = localStorage.getItem('user');
-            const usuariosFicticios = ['maria@email.com', 'joao@email.com', 'saborearte@email.com', 'bellanapoli@email.com'];
-            let ehUsuarioFicticio = false;
-            
-            if (userStr) {
-                try {
-                    const user = JSON.parse(userStr);
-                    ehUsuarioFicticio = usuariosFicticios.includes(user.email);
-                } catch (e) {
-                    console.error('Erro ao parsear user:', e);
-                }
-            }
-            
-            if (ehUsuarioFicticio) {
-                console.log('👤 Usuário fictício: usando dados de demonstração');
-                cuponsDisponiveis = cuponsDisponivelsFicticios;
-                cuponsUsados = cuponsUsadosFicticios;
-            } else {
-                console.log('🔥 Usuário real: carregando cupons reais da API');
-                carregarCuponsAPI();
-            }
-            
-            renderizarShopCupons();
-            renderizarCupons();
-            configurarTabs();
-        });
-        
-        function renderizarShopCupons() {
-            const grid = document.getElementById('cuponsShop');
-            
-            grid.innerHTML = cuponsShop.map(cupom => `
-                <div class="cupom-card">
+<script>  const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';  // Dados de exemplo para shop de cupons  const cuponsShop = [  {  id: 1,  empresa: 'Sabor e Arte',  desconto: '20% OFF',  descricao: 'Em qualquer prato do cardápio',  pontos: 100,  economia: 'Economize até R$ 25',  categoria: 'restaurante'  },  {  id: 2,  empresa: 'Bella Napoli',  desconto: 'R$ 15 OFF',  descricao: 'Pizza grande tradicional',  pontos: 80,  economia: 'Economize R$ 15',  categoria: 'restaurante'  },  {  id: 3,  empresa: 'Academia FitLife',  desconto: '1 mês grátis',  descricao: 'Na matrícula anual premium',  pontos: 200,  economia: 'Economize R$ 89',  categoria: 'servicos'  },  {  id: 4,  empresa: 'Café & Cia',  desconto: 'R$ 10 OFF',  descricao: 'Em bebidas especiais',  pontos: 60,  economia: 'Economize R$ 10',  categoria: 'cafe'  }  ];  // Dados fictícios para usuários de DEMONSTRAÇÃO  const cuponsDisponivelsFicticios = [  { id: 1, empresa: 'Sabor e Arte', desconto: '20% OFF', descricao: 'Em qualquer prato', validade: '2026-03-31', codigo: 'SABOR20', usado: false },  { id: 2, empresa: 'Bella Napoli', desconto: 'R$ 15 OFF', descricao: 'Pizza grande', validade: '2026-02-28', codigo: 'PIZZA15', usado: false },  { id: 3, empresa: 'Academia FitLife', desconto: '1 mês grátis', descricao: 'Na matrícula anual', validade: '2026-04-30', codigo: 'FIT1MES', usado: false }  ];  const cuponsUsadosFicticios = [  { id: 4, empresa: 'Café & Cia', desconto: 'R$ 5 OFF', descricao: 'Em qualquer bebida', validade: '2026-01-31', codigo: 'CAFE5', usado: true, dataUso: '2026-01-15' }  ];  let cuponsDisponiveis = [];  let cuponsUsados = [];  let pontosUsuario = 250;  document.addEventListener('DOMContentLoaded', () => {  const token = localStorage.getItem('token');  if (!token) {  window.location.href = 'entrar.html';  return;  }  // Verificar se é usuário FICTÍCIO (demonstração) ou REAL (uso)  const userStr = localStorage.getItem('user');  const usuariosFicticios = ['maria@email.com', 'joao@email.com', 'saborearte@email.com', 'bellanapoli@email.com'];  let ehUsuarioFicticio = false;  if (userStr) {  try {  const user = JSON.parse(userStr);  ehUsuarioFicticio = usuariosFicticios.includes(user.email);  } catch (e) {  console.error('Erro ao parsear user:', e);  }  }  if (ehUsuarioFicticio) {  console.log('👤 Usuário fictício: usando dados de demonstração');  cuponsDisponiveis = cuponsDisponivelsFicticios;  cuponsUsados = cuponsUsadosFicticios;  } else {  console.log('🔥 Usuário real: carregando cupons reais da API');  carregarCuponsAPI();  }  renderizarShopCupons();  renderizarCupons();  configurarTabs();  });  function renderizarShopCupons() {  const grid = document.getElementById('cuponsShop');  grid.innerHTML = cuponsShop.map(cupom => `  <div class="cupom-card">
 <div class="cupom-empresa">${cupom.empresa}</div>
 <div class="cupom-desconto">${cupom.desconto}</div>
 <div class="cupom-detalhes">${cupom.descricao}</div>
@@ -186,195 +85,33 @@
 <div class="economia">${cupom.economia}</div>
 </div>
 <button class="btn-comprar" onclick="comprarCupom(${cupom.id})" ${pontosUsuario < cupom.pontos ? 'disabled' : ''}>
-<i class="fas fa-shopping-cart" style="margin-right: 8px;"></i>
-                        ${pontosUsuario < cupom.pontos ? 'Pontos insuficientes' : 'Comprar'}
-                    </button>
-</div>
-            `).join('');
-        }
-        
-        function renderizarCupons() {
-            const grid = document.getElementById('cuponsDisponiveis');
-            const empty = document.getElementById('emptyState');
-            
-            if (cuponsDisponiveis.length === 0) {
-                empty.style.display = 'block';
-                grid.style.display = 'none';
-                return;
-            }
-            
-            empty.style.display = 'none';
-            grid.style.display = 'grid';
-            
-            grid.innerHTML = cuponsDisponiveis.map(cupom => `
-                <div class="cupom-card ${cupom.usado ? 'cupom-usado' : ''}">
+<i class="fas fa-shopping-cart" style="margin-right: 8px;"></i>  ${pontosUsuario < cupom.pontos ? 'Pontos insuficientes' : 'Comprar'}  </button>
+</div>  `).join('');  }  function renderizarCupons() {  const grid = document.getElementById('cuponsDisponiveis');  const empty = document.getElementById('emptyState');  if (cuponsDisponiveis.length === 0) {  empty.style.display = 'block';  grid.style.display = 'none';  return;  }  empty.style.display = 'none';  grid.style.display = 'grid';  grid.innerHTML = cuponsDisponiveis.map(cupom => `  <div class="cupom-card ${cupom.usado ? 'cupom-usado' : ''}">
 <div class="cupom-empresa">${cupom.empresa}</div>
 <div class="cupom-desconto">${cupom.desconto}</div>
 <div class="cupom-detalhes">${cupom.descricao}</div>
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
 <div style="font-size: 12px; color: rgba(255,255,255,0.6);">
-<i class="fas fa-calendar"></i> Até ${new Date(cupom.validade).toLocaleDateString('pt-BR')}
-                        </div>
-                        ${cupom.usado ? `<div style="color: #00d4aa; font-size: 12px; font-weight: 600;"><i class="fas fa-check"></i> Usado</div>` : ''}
-                    </div>
+<i class="fas fa-calendar"></i> Até ${new Date(cupom.validade).toLocaleDateString('pt-BR')}  </div>  ${cupom.usado ? `<div style="color: #00d4aa; font-size: 12px; font-weight: 600;"><i class="fas fa-check"></i> Usado</div>` : ''}  </div>
 <button class="btn-usar" onclick="${cupom.usado ? '' : `usarCupom(${cupom.id})`}" ${cupom.usado ? 'disabled' : ''}>
-<i class="fas fa-${cupom.usado ? 'check' : 'ticket-alt'}" style="margin-right: 8px;"></i>
-                        ${cupom.usado ? 'Cupom Utilizado' : 'Usar Cupom'}
-                    </button>
-</div>
-            `).join('');
-        }
-        
-        function configurarTabs() {
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    // Remove active de todos os tabs
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                    
-                    // Ativa o tab clicado
-                    tab.classList.add('active');
-                    const targetTab = tab.dataset.tab;
-                    document.getElementById(`tab-${targetTab}`).classList.add('active');
-                });
-            });
-        }
-        
-        function comprarCupom(id) {
-            const cupom = cuponsShop.find(c => c.id === id);
-            if (!cupom) return;
-            
-            if (pontosUsuario < cupom.pontos) {
-                alert('Pontos insuficientes! Você precisa de mais ' + (cupom.pontos - pontosUsuario) + ' pontos.');
-                return;
-            }
-            
-            if (confirm(`Comprar cupom "${cupom.desconto}" por ${cupom.pontos} pontos?`)) {
-                // Deduzir pontos
-                pontosUsuario -= cupom.pontos;
-                document.getElementById('pontosUser').textContent = pontosUsuario + ' pontos';
-                
-                // Adicionar aos cupons disponíveis
-                const novoCupom = {
-                    id: Date.now(),
-                    empresa: cupom.empresa,
-                    desconto: cupom.desconto,
-                    descricao: cupom.descricao,
-                    validade: '2026-12-31',
-                    codigo: 'CUPOM' + Math.random().toString(36).substr(2, 5).toUpperCase(),
-                    usado: false
-                };
-                
-                cuponsDisponiveis.push(novoCupom);
-                renderizarShopCupons();
-                renderizarCupons();
-                
-                alert('🎉 Cupom adquirido com sucesso!');
-            }
-        }
-        
-        function usarCupom(id) {
-            if (confirm('Confirmar uso do cupom? Esta ação não pode ser desfeita.')) {
-                const cupomIndex = cuponsDisponiveis.findIndex(c => c.id === id);
-                if (cupomIndex !== -1) {
-                    cuponsDisponiveis[cupomIndex].usado = true;
-                    cuponsDisponiveis[cupomIndex].dataUso = new Date().toISOString().split('T')[0];
-                    renderizarCupons();
-                    alert('✅ Cupom utilizado com sucesso!');
-                }
-            }
-        }
-        
-        async function carregarCuponsAPI() {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch(`${API_BASE_URL}/api/cupons`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    cuponsDisponiveis = data.disponiveis || [];
-                    cuponsUsados = data.usados || [];
-                    pontosUsuario = data.pontos || 0;
-                    document.getElementById('pontosUser').textContent = pontosUsuario + ' pontos';
-                } else {
-                    console.log('Erro ao carregar cupons, usando dados fictícios');
-                    cuponsDisponiveis = cuponsDisponivelsFicticios;
-                    cuponsUsados = cuponsUsadosFicticios;
-                }
-                
-                renderizarShopCupons();
-                renderizarCupons();
-            } catch (error) {
-                console.error('Erro na API:', error);
-                cuponsDisponiveis = cuponsDisponivelsFicticios;
-                cuponsUsados = cuponsUsadosFicticios;
-                renderizarShopCupons();
-                renderizarCupons();
-            }
-        }
-    </script>
+<i class="fas fa-${cupom.usado ? 'check' : 'ticket-alt'}" style="margin-right: 8px;"></i>  ${cupom.usado ? 'Cupom Utilizado' : 'Usar Cupom'}  </button>
+</div>  `).join('');  }  function configurarTabs() {  document.querySelectorAll('.tab').forEach(tab => {  tab.addEventListener('click', () => {  // Remove active de todos os tabs  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));  // Ativa o tab clicado  tab.classList.add('active');  const targetTab = tab.dataset.tab;  document.getElementById(`tab-${targetTab}`).classList.add('active');  });  });  }  function comprarCupom(id) {  const cupom = cuponsShop.find(c => c.id === id);  if (!cupom) return;  if (pontosUsuario < cupom.pontos) {  alert('Pontos insuficientes! Você precisa de mais ' + (cupom.pontos - pontosUsuario) + ' pontos.');  return;  }  if (confirm(`Comprar cupom "${cupom.desconto}" por ${cupom.pontos} pontos?`)) {  // Deduzir pontos  pontosUsuario -= cupom.pontos;  document.getElementById('pontosUser').textContent = pontosUsuario + ' pontos';  // Adicionar aos cupons disponíveis  const novoCupom = {  id: Date.now(),  empresa: cupom.empresa,  desconto: cupom.desconto,  descricao: cupom.descricao,  validade: '2026-12-31',  codigo: 'CUPOM' + Math.random().toString(36).substr(2, 5).toUpperCase(),  usado: false  };  cuponsDisponiveis.push(novoCupom);  renderizarShopCupons();  renderizarCupons();  alert('🎉 Cupom adquirido com sucesso!');  }  }  function usarCupom(id) {  if (confirm('Confirmar uso do cupom? Esta ação não pode ser desfeita.')) {  const cupomIndex = cuponsDisponiveis.findIndex(c => c.id === id);  if (cupomIndex !== -1) {  cuponsDisponiveis[cupomIndex].usado = true;  cuponsDisponiveis[cupomIndex].dataUso = new Date().toISOString().split('T')[0];  renderizarCupons();  alert('✅ Cupom utilizado com sucesso!');  }  }  }  async function carregarCuponsAPI() {  try {  const token = localStorage.getItem('token');  const response = await fetch(`${API_BASE_URL}/api/cupons`, {  headers: { 'Authorization': `Bearer ${token}` }  });  if (response.ok) {  const data = await response.json();  cuponsDisponiveis = data.disponiveis || [];  cuponsUsados = data.usados || [];  pontosUsuario = data.pontos || 0;  document.getElementById('pontosUser').textContent = pontosUsuario + ' pontos';  } else {  console.log('Erro ao carregar cupons, usando dados fictícios');  cuponsDisponiveis = cuponsDisponivelsFicticios;  cuponsUsados = cuponsUsadosFicticios;  }  renderizarShopCupons();  renderizarCupons();  } catch (error) {  console.error('Erro na API:', error);  cuponsDisponiveis = cuponsDisponivelsFicticios;  cuponsUsados = cuponsUsadosFicticios;  renderizarShopCupons();  renderizarCupons();  }  }  </script>
 </body>
 </html>
 </div>
-<div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(102, 126, 234, 0.2); font-size: 12px; color: #667eea; font-weight: 700; letter-spacing: 2px;">
-                        ${cupom.codigo}
-                    </div>
-</div>
-            `).join('');
-            
-            gridUsados.innerHTML = cuponsUsados.map(cupom => `
-                <div class="card" style="padding: 20px; margin-bottom: 16px; opacity: 0.5;">
+<div class="card">  ${cupom.codigo}  </div>
+</div>  `).join('');  gridUsados.innerHTML = cuponsUsados.map(cupom => `  <div class="card" style="padding: 20px; margin-bottom: 16px; opacity: 0.5;">
 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
 <div>
 <div style="font-size: 18px; font-weight: 700; color: #888; margin-bottom: 4px;">${cupom.desconto}</div>
 <div style="font-size: 14px; color: #666;">${cupom.empresa}</div>
 </div>
-<div class="badge" style="background: #2a2a3e; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #666;">
-                            Usado
-                        </div>
+<div class="badge" style="background: #2a2a3e; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #666;">  Usado  </div>
 </div>
 <p style="font-size: 14px; color: #666; margin-bottom: 12px;">${cupom.descricao}</p>
 <div style="font-size: 12px; color: #555;">
-<i class="fas fa-check-circle"></i> Usado em ${new Date(cupom.dataUso).toLocaleDateString('pt-BR')}
-                    </div>
-</div>
-            `).join('');
-        }
-        
-        async function carregarCuponsAPI() {
-            const token = localStorage.getItem('token');
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/cupons`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                if (data.success && data.data) {
-                    // Processar cupons da API
-                    console.log('Cupons da API:', data.data);
-                }
-            } catch (error) {
-                console.error('Erro ao carregar cupons:', error);
-                document.getElementById('emptyState').style.display = 'block';
-            }
-        }
-        
-        function usarCupom(id) {
-            if (confirm('Tem certeza que deseja usar este cupom?')) {
-                alert('Cupom usado com sucesso! Apresente o código no estabelecimento.');
-                // Mover para usados
-                const cupom = cuponsDisponiveis.find(c => c.id === id);
-                if (cupom) {
-                    cupom.usado = true;
-                    cupom.dataUso = new Date().toISOString().split('T')[0];
-                    cuponsUsados.push(cupom);
-                    cuponsDisponiveis.splice(cuponsDisponiveis.findIndex(c => c.id === id), 1);
-                    renderizarCupons();
-                }
-            }
-        }
-    </script>
+<i class="fas fa-check-circle"></i> Usado em ${new Date(cupom.dataUso).toLocaleDateString('pt-BR')}  </div>
+</div>  `).join('');  }  async function carregarCuponsAPI() {  const token = localStorage.getItem('token');  try {  const response = await fetch(`${API_BASE_URL}/api/cupons`, {  headers: { 'Authorization': `Bearer ${token}` }  });  const data = await response.json();  if (data.success && data.data) {  // Processar cupons da API  console.log('Cupons da API:', data.data);  }  } catch (error) {  console.error('Erro ao carregar cupons:', error);  document.getElementById('emptyState').style.display = 'block';  }  }  function usarCupom(id) {  if (confirm('Tem certeza que deseja usar este cupom?')) {  alert('Cupom usado com sucesso! Apresente o código no estabelecimento.');  // Mover para usados  const cupom = cuponsDisponiveis.find(c => c.id === id);  if (cupom) {  cupom.usado = true;  cupom.dataUso = new Date().toISOString().split('T')[0];  cuponsUsados.push(cupom);  cuponsDisponiveis.splice(cuponsDisponiveis.findIndex(c => c.id === id), 1);  renderizarCupons();  }  }  }  </script>
 </body>
 </html>
 
