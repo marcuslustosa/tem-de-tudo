@@ -1,454 +1,108 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes da Empresa - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: #FFFFFF;
-            color: #1D1D1F; 
-            padding-bottom: 80px;
-            min-height: 100vh;
-        }
-        
-        .header-image { 
-            position: relative; 
-            height: 250px; 
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            overflow: hidden;
-        }
-        
-        .header-image img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-        }
-        
-        .header-overlay { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            padding: 20px; 
-            display: flex; 
-            justify-content: space-between;
-            align-items: flex-start;
-            background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 80%);
-        }
-        
-        .back-btn, .fav-btn { 
-            width: 44px; 
-            height: 44px; 
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            text-decoration: none; 
-            color: #1D1D1F; 
-            border: 1px solid rgba(111, 26, 182, 0.3);
-            transition: all 0.3s ease;
-            font-size: 18px;
-        }
-        
-        .back-btn:hover, .fav-btn:hover {
-            background: rgba(111, 26, 182, 0.2);
-            border-color: #6F1AB6;
-            transform: scale(1.05);
-        }
-        
-        .fav-btn.active { 
-            color: #ff3b30; 
-            background: rgba(255, 59, 48, 0.2);
-        }
-        
-        .company-info { 
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            padding: 32px 20px; 
-            border-bottom: 1px solid rgba(111, 26, 182, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .company-info::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(111, 26, 182, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-        
-        .company-header { 
-            display: flex; 
-            align-items: flex-start; 
-            gap: 20px; 
-            margin-bottom: 24px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .company-logo { 
-            width: 80px; 
-            height: 80px; 
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border-radius: 20px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 36px; 
-            border: 2px solid rgba(111, 26, 182, 0.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        }
-        
-        .company-main { 
-            flex: 1; 
-        }
-        
-        .company-name { 
-            font-size: 24px; 
-            font-weight: 900; 
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #6F1AB6, #f39c12);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .company-category { 
-            font-size: 14px; 
-            color: #b0b0b0; 
-            font-weight: 600; 
-            margin-bottom: 12px;
-            opacity: 0.9;
-        }
-        
-        .rating { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-        }
-        
-        .stars { 
-            color: #fbbf24; 
-            font-size: 16px; 
-        }
-        
-        .rating-text { 
-            font-size: 14px; 
-            color: #b0b0b0; 
-        }
-        
-        .company-stats { 
-            display: flex; 
-            gap: 12px; 
-            margin-top: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .stat-item { 
-            flex: 1; 
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 16px; 
-            padding: 16px 12px; 
-            text-align: center; 
-            border: 1px solid rgba(111, 26, 182, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .stat-item:hover {
-            transform: translateY(-4px);
-            border-color: #6F1AB6;
-            box-shadow: 0 8px 25px rgba(111, 26, 182, 0.2);
-        }
-        
-        .stat-value { 
-            font-size: 20px; 
-            font-weight: 800; 
-            color: #6F1AB6; 
-            margin-bottom: 4px; 
-        }
-        
-        .stat-label { 
-            font-size: 11px; 
-            color: #b0b0b0; 
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-        
-        .info-section { 
-            padding: 24px 20px; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .section-title { 
-            font-size: 18px; 
-            font-weight: 800; 
-            margin-bottom: 16px; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px;
-            color: #1D1D1F;
-        }
-        
-        .section-title::before {
-            content: '';
-            width: 4px;
-            height: 20px;
-            background: linear-gradient(135deg, #6F1AB6, #f39c12);
-            border-radius: 2px;
-        }
-        
-        .section-title i { 
-            color: #6F1AB6;
-            font-size: 20px;
-        }
-        
-        .info-item { 
-            display: flex; 
-            align-items: flex-start; 
-            gap: 16px; 
-            margin-bottom: 16px; 
-            padding: 16px; 
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 16px;
-            border: 1px solid rgba(111, 26, 182, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .info-item:hover {
-            border-color: rgba(111, 26, 182, 0.3);
-            transform: translateX(4px);
-        }
-        
-        .info-icon { 
-            width: 44px; 
-            height: 44px; 
-            background: rgba(111, 26, 182, 0.1);
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: #6F1AB6; 
-            font-size: 18px; 
-            flex-shrink: 0;
-            border: 1px solid rgba(111, 26, 182, 0.2);
-        }
-        
-        .info-content { 
-            flex: 1; 
-        }
-        
-        .info-label { 
-            font-size: 12px; 
-            color: #b0b0b0; 
-            margin-bottom: 4px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        
-        .info-value { 
-            font-size: 15px; 
-            font-weight: 600;
-            color: #1D1D1F;
-        }
-        
-        .description { 
-            font-size: 15px; 
-            color: #b0b0b0; 
-            line-height: 1.7;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(111, 26, 182, 0.1);
-        }
-        
-        .services-section { 
-            padding: 24px 20px; 
-        }
-        
-        .service-item { 
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 20px; 
-            padding: 20px; 
-            margin-bottom: 16px; 
-            border: 1px solid rgba(111, 26, 182, 0.1); 
-            cursor: pointer; 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
-        .service-item:hover { 
-            border-color: #6F1AB6;
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(111, 26, 182, 0.2);
-        }
-        
-        .service-item.selected { 
-            border-color: #6F1AB6; 
-            background: rgba(111, 26, 182, 0.1);
-        }
-        
-        .service-header { 
-            display: flex; 
-            align-items: flex-start; 
-            gap: 16px; 
-            margin-bottom: 12px; 
-        }
-        
-        .service-icon { 
-            width: 52px; 
-            height: 52px; 
-            background: rgba(111, 26, 182, 0.15);
-            border-radius: 16px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 24px;
-            color: #6F1AB6;
-            border: 1px solid rgba(111, 26, 182, 0.3);
-        }
-        .service-main { flex: 1; }
-        .service-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-        .service-desc { font-size: 12px; color: #888; line-height: 1.4; }
-        .service-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .service-price { font-size: 18px; font-weight: 800; color: #f59e0b; }
-        .service-points { font-size: 11px; color: #888; }
-        .add-btn { background: #f59e0b; color: #1D1D1F; border: none; padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; }
-        .service-item.selected .add-btn { background: #10b981; }
-        .service-item.selected .add-btn i { display: inline; }
-        
-        .cart-footer { position: fixed; bottom: 0; left: 0; right: 0; background: #F5F5F7; border-top: 2px solid #f59e0b; padding: 16px 20px; display: none; z-index: 1000; }
-        .cart-footer.active { display: block; }
-        .cart-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .cart-items { font-size: 13px; color: #888; }
-        .cart-total { font-size: 20px; font-weight: 800; color: #f59e0b; }
-        .confirm-btn { width: 100%; background: #f59e0b; color: #1D1D1F; border: none; padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .confirm-btn:hover { background: #d97706; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detalhes da Empresa - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header-image">
-        <img id="companyBanner" src="" alt="Banner">
-        <div class="header-overlay">
-            <a href="/app-empresas.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <button class="fav-btn" onclick="toggleFavorite()">
-                <i class="fas fa-heart"></i>
-            </button>
+<div class="header-image">
+<img id="companyBanner" src="" alt="Banner">
+<div class="header-overlay">
+<a href="/app-empresas.html" class="back-btn">
+<i class="fas fa-arrow-left"></i>
+</a>
+<button class="fav-btn" onclick="toggleFavorite()">
+<i class="fas fa-heart"></i>
+</button>
+</div>
+</div>
+<div class="company-info">
+<div class="company-header">
+<div id="companyLogo" class="company-logo">🍕</div>
+<div class="company-main">
+<div id="companyName" class="company-name">Carregando...</div>
+<div id="companyCategory" class="company-category">•••</div>
+<div class="rating">
+<div class="stars">
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star"></i>
+<i class="fas fa-star-half-alt"></i>
+</div>
+<span id="companyRating" class="rating-text">4.5 (234 avaliações)</span>
+</div>
+</div>
+</div>
+<div class="company-stats">
+<div class="stat-item">
+<div class="stat-value">+100</div>
+<div class="stat-label">Pontos VB</div>
+</div>
+<div class="stat-item">
+<div class="stat-value">15%</div>
+<div class="stat-label">Cashback</div>
+</div>
+<div class="stat-item">
+<div class="stat-value">30min</div>
+<div class="stat-label">Entrega</div>
+</div>
+</div>
+</div>
+<div class="info-section">
+<div class="section-title">
+<i class="fas fa-info-circle"></i> Informações
         </div>
-    </div>
-
-    <div class="company-info">
-        <div class="company-header">
-            <div id="companyLogo" class="company-logo">🍕</div>
-            <div class="company-main">
-                <div id="companyName" class="company-name">Carregando...</div>
-                <div id="companyCategory" class="company-category">•••</div>
-                <div class="rating">
-                    <div class="stars">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <span id="companyRating" class="rating-text">4.5 (234 avaliações)</span>
-                </div>
-            </div>
+<div class="info-item">
+<div class="info-icon"><i class="fas fa-clock"></i></div>
+<div class="info-content">
+<div class="info-label">Horário de funcionamento</div>
+<div id="companyHours" class="info-value">Seg-Dom: 11h - 23h</div>
+</div>
+</div>
+<div class="info-item">
+<div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+<div class="info-content">
+<div class="info-label">Endereço</div>
+<div id="companyAddress" class="info-value">Carregando...</div>
+</div>
+</div>
+<div class="info-item">
+<div class="info-icon"><i class="fas fa-phone"></i></div>
+<div class="info-content">
+<div class="info-label">Telefone</div>
+<div id="companyPhone" class="info-value">(11) 99999-9999</div>
+</div>
+</div>
+</div>
+<div class="info-section">
+<div class="section-title">
+<i class="fas fa-align-left"></i> Sobre
         </div>
-        
-        <div class="company-stats">
-            <div class="stat-item">
-                <div class="stat-value">+100</div>
-                <div class="stat-label">Pontos VB</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value">15%</div>
-                <div class="stat-label">Cashback</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value">30min</div>
-                <div class="stat-label">Entrega</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="info-section">
-        <div class="section-title">
-            <i class="fas fa-info-circle"></i> Informações
-        </div>
-        
-        <div class="info-item">
-            <div class="info-icon"><i class="fas fa-clock"></i></div>
-            <div class="info-content">
-                <div class="info-label">Horário de funcionamento</div>
-                <div id="companyHours" class="info-value">Seg-Dom: 11h - 23h</div>
-            </div>
-        </div>
-        
-        <div class="info-item">
-            <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
-            <div class="info-content">
-                <div class="info-label">Endereço</div>
-                <div id="companyAddress" class="info-value">Carregando...</div>
-            </div>
-        </div>
-        
-        <div class="info-item">
-            <div class="info-icon"><i class="fas fa-phone"></i></div>
-            <div class="info-content">
-                <div class="info-label">Telefone</div>
-                <div id="companyPhone" class="info-value">(11) 99999-9999</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="info-section">
-        <div class="section-title">
-            <i class="fas fa-align-left"></i> Sobre
-        </div>
-        <div id="companyDescription" class="description">
+<div id="companyDescription" class="description">
             Carregando descrição...
         </div>
-    </div>
-
-    <div class="services-section">
-        <div class="section-title">
-            <i class="fas fa-th-large"></i> Produtos e Serviços
+</div>
+<div class="services-section">
+<div class="section-title">
+<i class="fas fa-th-large"></i> Produtos e Serviços
         </div>
-        <div id="servicesList"></div>
-    </div>
-
-    <div id="cartFooter" class="cart-footer">
-        <div class="cart-summary">
-            <div class="cart-items"><span id="cartCount">0</span> itens selecionados</div>
-            <div class="cart-total">💰 <span id="cartTotal">0</span> pts</div>
-        </div>
-        <button class="confirm-btn" onclick="confirmOrder()">
-            <i class="fas fa-check-circle"></i> Confirmar Pedido
+<div id="servicesList"></div>
+</div>
+<div id="cartFooter" class="cart-footer">
+<div class="cart-summary">
+<div class="cart-items"><span id="cartCount">0</span> itens selecionados</div>
+<div class="cart-total">💰 <span id="cartTotal">0</span> pts</div>
+</div>
+<button class="confirm-btn" onclick="confirmOrder()">
+<i class="fas fa-check-circle"></i> Confirmar Pedido
         </button>
-    </div>
-
-    <script>
+</div>
+<script>
         // Variáveis globais
         let selectedServices = [];
         let empresaData = null;
@@ -594,23 +248,23 @@
                 const icon = getIconForCategory(produto.categoria);
                 return `
                     <div class="service-item" data-id="${produto.id}" onclick="toggleService(${produto.id})">
-                        <div class="service-header">
-                            <div class="service-icon">${icon}</div>
-                            <div class="service-main">
-                                <div class="service-name">${produto.nome}</div>
-                                <div class="service-desc">${produto.descricao || 'Produto disponível'}</div>
-                            </div>
-                        </div>
-                        <div class="service-footer">
-                            <div>
-                                <div class="service-price">R$ ${produto.preco.toFixed(2)}</div>
-                                <div class="service-points">+${produto.pontos_calculados || Math.floor(produto.preco / 10)} pts</div>
-                            </div>
-                            <button class="add-btn">
-                                <i class="fas fa-check" style="display:none;"></i> Adicionar
+<div class="service-header">
+<div class="service-icon">${icon}</div>
+<div class="service-main">
+<div class="service-name">${produto.nome}</div>
+<div class="service-desc">${produto.descricao || 'Produto disponível'}</div>
+</div>
+</div>
+<div class="service-footer">
+<div>
+<div class="service-price">R$ ${produto.preco.toFixed(2)}</div>
+<div class="service-points">+${produto.pontos_calculados || Math.floor(produto.preco / 10)} pts</div>
+</div>
+<button class="add-btn">
+<i class="fas fa-check" style="display:none;"></i> Adicionar
                             </button>
-                        </div>
-                    </div>
+</div>
+</div>
                 `;
             }).join('');
         }

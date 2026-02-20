@@ -1,215 +1,124 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nova Promoção - Tem de Tudo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            color: #1D1D1F; 
-            display: flex; 
-            min-height: 100vh;
-        }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .sidebar {
-            width: 260px; 
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 24px 0; 
-            position: fixed; 
-            height: 100vh; 
-            overflow-y: auto;
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
-        }
-        .logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(102, 126, 234, 0.1); margin-bottom: 24px; }
-        .logo h1 { font-size: 24px; font-weight: 900; color: #667eea; }
-        .logo p { font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-top: 4px; }
-        .nav-menu { list-style: none; }
-        .nav-item { padding: 0 16px; margin-bottom: 4px; }
-        .nav-link {
-            display: flex; align-items: center; padding: 12px 16px;
-            color: rgba(255, 255, 255, 0.7); text-decoration: none;
-            border-radius: 12px; transition: all 0.3s; font-size: 14px; font-weight: 500;
-        }
-        .nav-link i { margin-right: 12px; font-size: 18px; width: 24px; }
-        .nav-link:hover { background: rgba(102, 126, 234, 0.1); color: #667eea; }
-        .nav-link.active { background: rgba(102, 126, 234, 0.15); color: #667eea; box-shadow: 0 0 20px rgba(102, 126, 234, 0.2); }
-        .main-content { margin-left: 260px; flex: 1; padding: 32px; max-width: 800px; }
-        .header { margin-bottom: 32px; }
-        .header h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
-        .header p { color: rgba(255, 255, 255, 0.6); font-size: 14px; }
-        .form-section {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(102, 126, 234, 0.1);
-            border-radius: 16px; padding: 32px; margin-bottom: 24px;
-        }
-        .section-title { font-size: 18px; font-weight: 800; margin-bottom: 24px; color: #667eea; }
-        .form-row { margin-bottom: 20px; }
-        .form-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-        .form-input, .form-textarea, .form-select {
-            width: 100%; padding: 12px 16px;
-            background: rgba(102, 126, 234, 0.05);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 12px; color: #1D1D1F; font-size: 14px; font-family: inherit;
-        }
-        .form-textarea { min-height: 100px; resize: vertical; }
-        .form-input::placeholder, .form-textarea::placeholder { color: rgba(255, 255, 255, 0.4); }
-        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-        .form-actions {
-            display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;
-        }
-        .btn {
-            padding: 14px 32px; border: none; border-radius: 12px;
-            font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2); color: #1D1D1F;
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.7);
-        }
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 16px; }
-            .form-grid { grid-template-columns: 1fr; }
-        }
-    </style>
-    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="empresa"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nova Promoção - Tem de Tudo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="/js/config.js"></script>
+<script src="/js/auth-manager.js" defer></script>
+<script src="/js/api-client.js" defer></script>
+<script src="/js/validators.js" defer></script>
+<script src="/js/ui-helpers.js" defer></script>
+<script src="/js/auth-guard.js" data-require-auth="empresa"></script>
+<link rel="stylesheet" href="/css/global-unified.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/style-unificado.css">
+</head>
 <body>
-    <aside class="sidebar">
-        <div class="logo">
-            <i class="fas fa-gem" style="color: #6F1AB6; margin-right: 8px; font-size: 1.5rem;"></i>
-            <h1 style="display: inline; background: linear-gradient(135deg, #6F1AB6, #9333EA); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tem de Tudo</h1>
-            <p>Painel Empresa</p>
-        </div>
-        <ul class="nav-menu">
-            <li class="nav-item"><a href="empresa-dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i>Dashboard</a></li>
-            <li class="nav-item"><a href="empresa-qrcode.html" class="nav-link"><i class="fas fa-qrcode"></i>QR Code</a></li>
-            <li class="nav-item"><a href="empresa-scanner.html" class="nav-link"><i class="fas fa-camera"></i>Scanner</a></li>
-            <li class="nav-item"><a href="empresa-clientes.html" class="nav-link"><i class="fas fa-users"></i>Clientes</a></li>
-            <li class="nav-item"><a href="empresa-promocoes.html" class="nav-link active"><i class="fas fa-gift"></i>Promoções</a></li>
-            <li class="nav-item"><a href="empresa-bonus.html" class="nav-link"><i class="fas fa-star"></i>Bônus</a></li>
-            <li class="nav-item"><a href="empresa-notificacoes.html" class="nav-link"><i class="fas fa-bell"></i>Notificações</a></li>
-            <li class="nav-item"><a href="empresa-relatorios.html" class="nav-link"><i class="fas fa-file-alt"></i>Relatórios</a></li>
-            <li class="nav-item"><a href="empresa-configuracoes.html" class="nav-link"><i class="fas fa-cog"></i>Configurações</a></li>
-        </ul>
-    </aside>
-
-    <main class="main-content">
-        <div class="header">
-            <h2>Nova Promoção</h2>
-            <p>Crie uma nova promoção para seus clientes</p>
-        </div>
-
-        <div class="form-section">
-            <h3 class="section-title">Informações Básicas</h3>
-            <div class="form-row">
-                <label class="form-label">Título da Promoção</label>
-                <input type="text" class="form-input" placeholder="Ex: Dobro de Pontos no Final de Semana">
-            </div>
-            <div class="form-row">
-                <label class="form-label">Descrição</label>
-                <textarea class="form-textarea" placeholder="Descreva os detalhes da promoção para que os clientes entendam como funciona..."></textarea>
-            </div>
-            <div class="form-grid">
-                <div class="form-row">
-                    <label class="form-label">Tipo de Promoção</label>
-                    <select class="form-select">
-                        <option>Dobro de Pontos</option>
-                        <option>Desconto Percentual</option>
-                        <option>Brinde Grátis</option>
-                        <option>Pontos Extras Fixos</option>
-                        <option>Combo Especial</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <label class="form-label">Valor da Promoção</label>
-                    <input type="text" class="form-input" placeholder="Ex: 2x, 30%, R$ 50">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-section">
-            <h3 class="section-title">Período e Condições</h3>
-            <div class="form-grid">
-                <div class="form-row">
-                    <label class="form-label">Data de Início</label>
-                    <input type="date" class="form-input">
-                </div>
-                <div class="form-row">
-                    <label class="form-label">Data de Término</label>
-                    <input type="date" class="form-input">
-                </div>
-            </div>
-            <div class="form-row">
-                <label class="form-label">Valor Mínimo de Compra (opcional)</label>
-                <input type="number" class="form-input" placeholder="R$ 0,00">
-            </div>
-            <div class="form-row">
-                <label class="form-label">Limite de Uso por Cliente (opcional)</label>
-                <input type="number" class="form-input" placeholder="Ex: 1, 5, ilimitado">
-            </div>
-        </div>
-
-        <div class="form-section">
-            <h3 class="section-title">Público-Alvo</h3>
-            <div class="form-row">
-                <label class="form-label">Quem pode usar esta promoção?</label>
-                <select class="form-select">
-                    <option>Todos os clientes</option>
-                    <option>Apenas clientes Premium</option>
-                    <option>Novos clientes</option>
-                    <option>Clientes inativos</option>
-                    <option>Clientes frequentes</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <button class="btn btn-secondary" onclick="location.href='empresa-promocoes.html'">
-                <i class="fas fa-times"></i>
+<aside class="sidebar">
+<div class="logo">
+<i class="fas fa-gem" style="color: #6F1AB6; margin-right: 8px; font-size: 1.5rem;"></i>
+<h1 >Tem de Tudo</h1>
+<p>Painel Empresa</p>
+</div>
+<ul class="nav-menu">
+<li class="nav-item"><a href="empresa-dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i>Dashboard</a></li>
+<li class="nav-item"><a href="empresa-qrcode.html" class="nav-link"><i class="fas fa-qrcode"></i>QR Code</a></li>
+<li class="nav-item"><a href="empresa-scanner.html" class="nav-link"><i class="fas fa-camera"></i>Scanner</a></li>
+<li class="nav-item"><a href="empresa-clientes.html" class="nav-link"><i class="fas fa-users"></i>Clientes</a></li>
+<li class="nav-item"><a href="empresa-promocoes.html" class="nav-link active"><i class="fas fa-gift"></i>Promoções</a></li>
+<li class="nav-item"><a href="empresa-bonus.html" class="nav-link"><i class="fas fa-star"></i>Bônus</a></li>
+<li class="nav-item"><a href="empresa-notificacoes.html" class="nav-link"><i class="fas fa-bell"></i>Notificações</a></li>
+<li class="nav-item"><a href="empresa-relatorios.html" class="nav-link"><i class="fas fa-file-alt"></i>Relatórios</a></li>
+<li class="nav-item"><a href="empresa-configuracoes.html" class="nav-link"><i class="fas fa-cog"></i>Configurações</a></li>
+</ul>
+</aside>
+<main class="main-content">
+<div class="header">
+<h2>Nova Promoção</h2>
+<p>Crie uma nova promoção para seus clientes</p>
+</div>
+<div class="form-section">
+<h3 class="section-title">Informações Básicas</h3>
+<div class="form-row">
+<label class="form-label">Título da Promoção</label>
+<input type="text" class="form-input" placeholder="Ex: Dobro de Pontos no Final de Semana">
+</div>
+<div class="form-row">
+<label class="form-label">Descrição</label>
+<textarea class="form-textarea" placeholder="Descreva os detalhes da promoção para que os clientes entendam como funciona..."></textarea>
+</div>
+<div class="form-grid">
+<div class="form-row">
+<label class="form-label">Tipo de Promoção</label>
+<select class="form-select">
+<option>Dobro de Pontos</option>
+<option>Desconto Percentual</option>
+<option>Brinde Grátis</option>
+<option>Pontos Extras Fixos</option>
+<option>Combo Especial</option>
+</select>
+</div>
+<div class="form-row">
+<label class="form-label">Valor da Promoção</label>
+<input type="text" class="form-input" placeholder="Ex: 2x, 30%, R$ 50">
+</div>
+</div>
+</div>
+<div class="form-section">
+<h3 class="section-title">Período e Condições</h3>
+<div class="form-grid">
+<div class="form-row">
+<label class="form-label">Data de Início</label>
+<input type="date" class="form-input">
+</div>
+<div class="form-row">
+<label class="form-label">Data de Término</label>
+<input type="date" class="form-input">
+</div>
+</div>
+<div class="form-row">
+<label class="form-label">Valor Mínimo de Compra (opcional)</label>
+<input type="number" class="form-input" placeholder="R$ 0,00">
+</div>
+<div class="form-row">
+<label class="form-label">Limite de Uso por Cliente (opcional)</label>
+<input type="number" class="form-input" placeholder="Ex: 1, 5, ilimitado">
+</div>
+</div>
+<div class="form-section">
+<h3 class="section-title">Público-Alvo</h3>
+<div class="form-row">
+<label class="form-label">Quem pode usar esta promoção?</label>
+<select class="form-select">
+<option>Todos os clientes</option>
+<option>Apenas clientes Premium</option>
+<option>Novos clientes</option>
+<option>Clientes inativos</option>
+<option>Clientes frequentes</option>
+</select>
+</div>
+</div>
+<div class="form-actions">
+<button class="btn btn-secondary" onclick="location.href='empresa-promocoes.html'">
+<i class="fas fa-times"></i>
                 Cancelar
             </button>
-            <button class="btn btn-primary" onclick="createPromo()">
-                <i class="fas fa-check"></i>
+<button class="btn btn-primary" onclick="createPromo()">
+<i class="fas fa-check"></i>
                 Criar Promoção
             </button>
-        </div>
-    </main>
-
-    <script>
+</div>
+</main>
+<script>
         // Verificação de autenticação SIMPLIFICADA
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');

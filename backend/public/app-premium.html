@@ -1,101 +1,83 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0a0a0f">
-    <title>Premium - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #FFFFFF; min-height: 100vh; color: #1D1D1F; }
-        .header { background: linear-gradient(135deg, #f39c12, #9333EA); padding: 60px 20px 40px; text-align: center; }
-        .crown-icon { font-size: 80px; margin-bottom: 20px; }
-        .header h1 { font-size: 36px; font-weight: 900; margin-bottom: 12px; }
-        .header p { font-size: 16px; opacity: 0.95; }
-        .content { padding: 32px 20px; }
-        .benefits-grid { display: grid; gap: 16px; margin-bottom: 32px; }
-        .benefit-card { background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 16px; padding: 24px; border: 1px solid rgba(102, 126, 234, 0.1); display: flex; gap: 16px; }
-        .benefit-icon { width: 56px; height: 56px; background: rgba(243, 156, 18, 0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
-        .benefit-info h3 { font-size: 17px; font-weight: 800; margin-bottom: 6px; }
-        .benefit-info p { font-size: 14px; color: #b0b0b0; line-height: 1.6; }
-        .price-card { background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 24px; padding: 32px; text-align: center; border: 2px solid #f39c12; margin-bottom: 24px; }
-        .price { font-size: 56px; font-weight: 900; color: #f39c12; margin: 20px 0; }
-        .price span { font-size: 24px; }
-        .upgrade-btn { width: 100%; padding: 20px; background: linear-gradient(135deg, #f39c12, #9333EA); color: #1D1D1F; border: none; border-radius: 16px; font-size: 18px; font-weight: 900; cursor: pointer; box-shadow: 0 12px 40px rgba(243, 156, 18, 0.4); }
-    </style>
-    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n    <link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0f">
+<title>Premium - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<script src="/js/config.js"></script>
+<script src="/js/auth-manager.js" defer></script>
+<script src="/js/api-client.js" defer></script>
+<script src="/js/validators.js" defer></script>
+<script src="/js/ui-helpers.js" defer></script>
+<script src="/js/auth-guard.js" data-require-auth="cliente"></script>
+<link rel="stylesheet" href="/css/global-unified.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">`n    <link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header">
-        <div class="crown-icon"><i class="fas fa-crown"></i></div>
-        <h1>Seja Premium</h1>
-        <p>Benefícios exclusivos para você</p>
-    </div>
-    <div class="content">
-        <div class="benefits-grid">
-            <div class="benefit-card">
-                <div class="benefit-icon"><i class="fas fa-gem"></i></div>
-                <div class="benefit-info">
-                    <h3>Pontos em Dobro</h3>
-                    <p>Acumule 2x mais pontos em todas as suas compras</p>
-                </div>
-            </div>
-            <div class="benefit-card">
-                <div class="benefit-icon"><i class="fas fa-gift"></i></div>
-                <div class="benefit-info">
-                    <h3>Recompensas Exclusivas</h3>
-                    <p>Acesso a prêmios que apenas membros Premium podem resgatar</p>
-                </div>
-            </div>
-            <div class="benefit-card">
-                <div class="benefit-icon"><i class="fas fa-bell"></i></div>
-                <div class="benefit-info">
-                    <h3>Promoções Antecipadas</h3>
-                    <p>Seja o primeiro a saber das promoções dos estabelecimentos</p>
-                </div>
-            </div>
-            <div class="benefit-card">
-                <div class="benefit-icon"><i class="fas fa-headset"></i></div>
-                <div class="benefit-info">
-                    <h3>Atendimento Prioritário</h3>
-                    <p>Suporte VIP e atendimento diferenciado nos estabelecimentos</p>
-                </div>
-            </div>
-            <div class="benefit-card">
-                <div class="benefit-icon"><i class="fas fa-birthday-cake"></i></div>
-                <div class="benefit-info">
-                    <h3>Presente de Aniversário</h3>
-                    <p>Bônus especial de 500 pontos no seu aniversário</p>
-                </div>
-            </div>
-        </div>
-        <div class="price-card">
-            <h2>Plano Mensal</h2>
-            <div class="price">R$ 19<span>,90</span></div>
-            <p style="color: #b0b0b0; margin-bottom: 24px;">Cancele quando quiser</p>
-            <button class="upgrade-btn" onclick="assinarPlano()">
-                <i class="fas fa-crown"></i> ASSINAR AGORA
+<div class="header">
+<div class="crown-icon"><i class="fas fa-crown"></i></div>
+<h1>Seja Premium</h1>
+<p>Benefícios exclusivos para você</p>
+</div>
+<div class="content">
+<div class="benefits-grid">
+<div class="benefit-card">
+<div class="benefit-icon"><i class="fas fa-gem"></i></div>
+<div class="benefit-info">
+<h3>Pontos em Dobro</h3>
+<p>Acumule 2x mais pontos em todas as suas compras</p>
+</div>
+</div>
+<div class="benefit-card">
+<div class="benefit-icon"><i class="fas fa-gift"></i></div>
+<div class="benefit-info">
+<h3>Recompensas Exclusivas</h3>
+<p>Acesso a prêmios que apenas membros Premium podem resgatar</p>
+</div>
+</div>
+<div class="benefit-card">
+<div class="benefit-icon"><i class="fas fa-bell"></i></div>
+<div class="benefit-info">
+<h3>Promoções Antecipadas</h3>
+<p>Seja o primeiro a saber das promoções dos estabelecimentos</p>
+</div>
+</div>
+<div class="benefit-card">
+<div class="benefit-icon"><i class="fas fa-headset"></i></div>
+<div class="benefit-info">
+<h3>Atendimento Prioritário</h3>
+<p>Suporte VIP e atendimento diferenciado nos estabelecimentos</p>
+</div>
+</div>
+<div class="benefit-card">
+<div class="benefit-icon"><i class="fas fa-birthday-cake"></i></div>
+<div class="benefit-info">
+<h3>Presente de Aniversário</h3>
+<p>Bônus especial de 500 pontos no seu aniversário</p>
+</div>
+</div>
+</div>
+<div class="price-card">
+<h2>Plano Mensal</h2>
+<div class="price">R$ 19<span>,90</span></div>
+<p style="color: #b0b0b0; margin-bottom: 24px;">Cancele quando quiser</p>
+<button class="upgrade-btn" onclick="assinarPlano()">
+<i class="fas fa-crown"></i> ASSINAR AGORA
             </button>
-        </div>
-        <button onclick="history.back()" style="width: 100%; padding: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #1D1D1F; font-size: 16px; cursor: pointer; margin-top: 16px;">
-            <i class="fas fa-arrow-left"></i> Voltar
+</div>
+<button onclick="history.back()" style="width: 100%; padding: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #1D1D1F; font-size: 16px; cursor: pointer; margin-top: 16px;">
+<i class="fas fa-arrow-left"></i> Voltar
         </button>
-    </div>
-    <script>
+</div>
+<script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         
         async function assinarPlano() {

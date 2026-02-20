@@ -1,20 +1,20 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6F1AB6">
-    <title>Gerenciar PromoÃ§Ãµes - Admin</title>
+    <title>Gerenciar Promoções - Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/admin-glassmorphism.css">
     <link rel="manifest" href="/manifest.json">
     <script src="/js/config.js"></script>
-</head>
+<link rel="stylesheet" href="/css/style-unificado.css">`n</head>
 <body>
     <div class="admin-header">
         <div class="header-content">
-            <h1><i class="fas fa-tags"></i> Gerenciar PromoÃ§Ãµes</h1>
+            <h1><i class="fas fa-tags"></i> Gerenciar Promoções</h1>
             <button class="btn-back" onclick="location.href='admin-painel.html'">
                 <i class="fas fa-arrow-left"></i> Voltar
             </button>
@@ -22,9 +22,9 @@
     </div>
     <div class="container">
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Buscar promoÃ§Ãµes por tÃ­tulo, empresa ou categoria...">
+            <input type="text" id="searchInput" placeholder="Buscar promoções por título, empresa ou categoria...">
             <button class="btn-add" onclick="createPromocao()">
-                <i class="fas fa-plus"></i> Nova PromoÃ§Ã£o
+                <i class="fas fa-plus"></i> Nova Promoção
             </button>
         </div>
         <div class="table-container">
@@ -32,17 +32,17 @@
                 <thead>
                     <tr>
                         <th>Imagem</th>
-                        <th>TÃ­tulo</th>
+                        <th>Título</th>
                         <th>Empresa</th>
                         <th>Desconto</th>
-                        <th>InÃ­cio</th>
+                        <th>Início</th>
                         <th>Validade</th>
                         <th>Status</th>
-                        <th>AÃ§Ãµes</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody id="promocoesTable">
-                    <tr><td colspan="8" style="text-align:center;padding:40px;color:#86868B;">Carregando promoÃ§Ãµes...</td></tr>
+                    <tr><td colspan="8" style="text-align:center;padding:40px;color:#86868B;">Carregando promoções...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -66,7 +66,7 @@
         function renderPromocoes(promocoes) {
             const tbody = document.getElementById('promocoesTable');
             if (promocoes.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#86868B;">Nenhuma promoÃ§Ã£o cadastrada</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#86868B;">Nenhuma promoção cadastrada</td></tr>';
                 return;
             }
             tbody.innerHTML = promocoes.map(p => {
@@ -90,10 +90,10 @@
                 `;
             }).join('');
         }
-        function createPromocao() { alert('Criar nova promoÃ§Ã£o'); }
-        function toggleStatus(id) { alert(`Alternar status da promoÃ§Ã£o ${id}`); }
-        function editPromocao(id) { alert(`Editar promoÃ§Ã£o ${id}`); }
-        function deletePromocao(id) { if(confirm('Excluir promoÃ§Ã£o?')) alert(`ExcluÃ­do ${id}`); }
+        function createPromocao() { alert('Criar nova promoção'); }
+        function toggleStatus(id) { alert(`Alternar status da promoção ${id}`); }
+        function editPromocao(id) { alert(`Editar promoção ${id}`); }
+        function deletePromocao(id) { if(confirm('Excluir promoção?')) alert(`Excluído ${id}`); }
         document.addEventListener('DOMContentLoaded', loadPromocoes);
     </script>
 
@@ -105,7 +105,7 @@
         </a>
         <a href="admin-usuarios.html" class="nav-item">
             <i class="fas fa-users"></i>
-            <span>UsuÃ¡rios</span>
+            <span>Usuários</span>
         </a>
         <a href="admin-empresas.html" class="nav-item">
             <i class="fas fa-building"></i>
@@ -113,7 +113,7 @@
         </a>
         <a href="admin-relatorios.html" class="nav-item">
             <i class="fas fa-chart-line"></i>
-            <span>RelatÃ³rios</span>
+            <span>Relatórios</span>
         </a>
         <a href="admin-configuracoes.html" class="nav-item">
             <i class="fas fa-cog"></i>

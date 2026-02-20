@@ -1,328 +1,85 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#6F1AB6">
-    <title>Bônus de Adesão - Empresa</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="/js/config.js"></script>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #F5F5F7;
-            color: #1D1D1F;
-            padding-bottom: 20px;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #6F1AB6 0%, #9333EA 100%);
-            color: white;
-            padding: 20px 16px;
-            box-shadow: 0 4px 12px rgba(111, 26, 182, 0.15);
-        }
-        
-        .header-content {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .back-btn {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.15);
-            border: none;
-            border-radius: 50%;
-            color: #1D1D1F;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        
-        .header-title h1 {
-            font-size: 22px;
-            font-weight: 800;
-        }
-        
-        .header-title p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        
-        .container {
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .info-box {
-            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
-            border-left: 4px solid #4CAF50;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-        }
-        
-        .info-box h3 {
-            font-size: 16px;
-            font-weight: 700;
-            color: #2E7D32;
-            margin-bottom: 8px;
-        }
-        
-        .info-box p {
-            font-size: 14px;
-            color: #1B5E20;
-            line-height: 1.5;
-        }
-        
-        .form-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            margin-bottom: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1D1D1F;
-            margin-bottom: 8px;
-        }
-        
-        .radio-group {
-            display: grid;
-            gap: 12px;
-        }
-        
-        .radio-option {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            border: 2px solid #E5E5E7;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .radio-option:hover {
-            border-color: #6F1AB6;
-            background: #F9F5FF;
-        }
-        
-        .radio-option input[type="radio"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
-            accent-color: #6F1AB6;
-        }
-        
-        .radio-option.selected {
-            border-color: #6F1AB6;
-            background: #F9F5FF;
-        }
-        
-        .radio-label {
-            flex: 1;
-        }
-        
-        .radio-label strong {
-            display: block;
-            font-size: 15px;
-            margin-bottom: 4px;
-        }
-        
-        .radio-label span {
-            font-size: 13px;
-            color: #86868B;
-        }
-        
-        .input-wrapper {
-            position: relative;
-        }
-        
-        .input-with-icon {
-            width: 100%;
-            padding: 14px 16px 14px 50px;
-            border: 2px solid #E5E5E7;
-            border-radius: 12px;
-            font-size: 16px;
-            font-family: 'Inter', sans-serif;
-            transition: border 0.2s;
-        }
-        
-        .input-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #86868B;
-            font-size: 18px;
-        }
-        
-        .input-with-icon:focus {
-            outline: none;
-            border-color: #6F1AB6;
-        }
-        
-        .preview-card {
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            color: white;
-            padding: 24px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-        }
-        
-        .preview-card h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            opacity: 0.9;
-        }
-        
-        .preview-value {
-            font-size: 36px;
-            font-weight: 900;
-            margin-bottom: 8px;
-        }
-        
-        .preview-desc {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        
-        .btn-primary {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .btn-primary:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            background: #4CAF50;
-            color: #1D1D1F;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-        
-        .status-badge.inactive {
-            background: #86868B;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#6F1AB6">
+<title>Bônus de Adesão - Empresa</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="/js/config.js"></script>
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <button class="back-btn" onclick="history.back()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <div class="header-title">
-                <h1>Bônus de Adesão</h1>
-                <p>Configure o bônus para novos clientes</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="container">
-        <div class="info-box">
-            <h3>💡 Como funciona?</h3>
-            <p>O bônus de adesão é concedido automaticamente quando um cliente escaneia o QR Code da sua empresa pela primeira vez. Configure o tipo e valor do bônus que deseja oferecer.</p>
-        </div>
-        
-        <div class="form-card">
-            <div id="statusBadge"></div>
-            
-            <div class="form-group">
-                <label>Tipo de Bônus</label>
-                <div class="radio-group">
-                    <label class="radio-option">
-                        <input type="radio" name="tipo_desconto" value="percentual">
-                        <div class="radio-label">
-                            <strong>Desconto Percentual</strong>
-                            <span>Cliente ganha X% de desconto na primeira compra</span>
-                        </div>
-                    </label>
-                    
-                    <label class="radio-option">
-                        <input type="radio" name="tipo_desconto" value="fixo">
-                        <div class="radio-label">
-                            <strong>Desconto Fixo</strong>
-                            <span>Cliente ganha R$ X de desconto na primeira compra</span>
-                        </div>
-                    </label>
-                    
-                    <label class="radio-option">
-                        <input type="radio" name="tipo_desconto" value="gratis">
-                        <div class="radio-label">
-                            <strong>Serviço/Produto Grátis</strong>
-                            <span>Cliente ganha um brinde ou serviço gratuito</span>
-                        </div>
-                    </label>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label id="valorLabel">Valor do Bônus</label>
-                <div class="input-wrapper">
-                    <i class="input-icon fas fa-gift"></i>
-                    <input type="number" id="valorDesconto" class="input-with-icon" placeholder="0" min="0" step="0.01">
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Descrição do Bônus</label>
-                <div class="input-wrapper">
-                    <i class="input-icon fas fa-comment-alt"></i>
-                    <input type="text" id="descricao" class="input-with-icon" placeholder="Ex: Ganhe 10% OFF na primeira compra!">
-                </div>
-            </div>
-        </div>
-        
-        <div class="preview-card" id="preview">
-            <h3>Preview do Cupom</h3>
-            <div class="preview-value" id="previewValue">--</div>
-            <div class="preview-desc" id="previewDesc">Configure o bônus acima</div>
-        </div>
-        
-        <button class="btn-primary" id="btnSalvar">
-            <i class="fas fa-check"></i> Salvar Configurações
+<div class="header">
+<div class="header-content">
+<button class="back-btn" onclick="history.back()">
+<i class="fas fa-arrow-left"></i>
+</button>
+<div class="header-title">
+<h1>Bônus de Adesão</h1>
+<p>Configure o bônus para novos clientes</p>
+</div>
+</div>
+</div>
+<div class="container">
+<div class="info-box">
+<h3>💡 Como funciona?</h3>
+<p>O bônus de adesão é concedido automaticamente quando um cliente escaneia o QR Code da sua empresa pela primeira vez. Configure o tipo e valor do bônus que deseja oferecer.</p>
+</div>
+<div class="form-card">
+<div id="statusBadge"></div>
+<div class="form-group">
+<label>Tipo de Bônus</label>
+<div class="radio-group">
+<label class="radio-option">
+<input type="radio" name="tipo_desconto" value="percentual">
+<div class="radio-label">
+<strong>Desconto Percentual</strong>
+<span>Cliente ganha X% de desconto na primeira compra</span>
+</div>
+</label>
+<label class="radio-option">
+<input type="radio" name="tipo_desconto" value="fixo">
+<div class="radio-label">
+<strong>Desconto Fixo</strong>
+<span>Cliente ganha R$ X de desconto na primeira compra</span>
+</div>
+</label>
+<label class="radio-option">
+<input type="radio" name="tipo_desconto" value="gratis">
+<div class="radio-label">
+<strong>Serviço/Produto Grátis</strong>
+<span>Cliente ganha um brinde ou serviço gratuito</span>
+</div>
+</label>
+</div>
+</div>
+<div class="form-group">
+<label id="valorLabel">Valor do Bônus</label>
+<div class="input-wrapper">
+<i class="input-icon fas fa-gift"></i>
+<input type="number" id="valorDesconto" class="input-with-icon" placeholder="0" min="0" step="0.01">
+</div>
+</div>
+<div class="form-group">
+<label>Descrição do Bônus</label>
+<div class="input-wrapper">
+<i class="input-icon fas fa-comment-alt"></i>
+<input type="text" id="descricao" class="input-with-icon" placeholder="Ex: Ganhe 10% OFF na primeira compra!">
+</div>
+</div>
+</div>
+<div class="preview-card" id="preview">
+<h3>Preview do Cupom</h3>
+<div class="preview-value" id="previewValue">--</div>
+<div class="preview-desc" id="previewDesc">Configure o bônus acima</div>
+</div>
+<button class="btn-primary" id="btnSalvar">
+<i class="fas fa-check"></i> Salvar Configurações
         </button>
-    </div>
-    
-    <script>
+</div>
+<script>
         let bonusAtual = null;
         
         async function loadBonus() {

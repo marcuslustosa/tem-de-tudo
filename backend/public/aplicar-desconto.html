@@ -1,79 +1,72 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aplicar Desconto - Tem de Tudo</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
-    
-    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Aplicar Desconto - Tem de Tudo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<script src="/js/config.js"></script>
+<script src="/js/auth-manager.js" defer></script>
+<script src="/js/api-client.js" defer></script>
+<script src="/js/validators.js" defer></script>
+<script src="/js/ui-helpers.js" defer></script>
+<script src="/js/auth-guard.js" data-require-auth="cliente"></script>
+<link rel="stylesheet" href="/css/global-unified.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/style-unificado.css">
+</head>
 <body>
-    <nav class="nav-bar">
-        <ul>
-            <li><a href="/dashboard-estabelecimento.html"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="/profile-company.html"><i class="fas fa-building"></i> Painel Empresa</a></li>
-            <li><a href="/configurar-descontos.html"><i class="fas fa-percent"></i> Configurar Descontos</a></li>
-            <li><a href="/aplicar-desconto.html"><i class="fas fa-tag"></i> Aplicar Desconto</a></li>
-            <li><a href="/meus-descontos.html"><i class="fas fa-list"></i> Meus Descontos</a></li>
-            <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
-        </ul>
-    </nav>
-
-    <div class="page-header">
-        <h1 class="page-title"><i class="fas fa-calculator"></i> Aplicar Desconto em Venda</h1>
-        <p class="page-subtitle">Busque o cliente, informe o valor da compra e aplique o desconto</p>
-    </div>
-
-    <div class="container">
-        <div class="search-section">
-            <h2 class="search-title"><i class="fas fa-search"></i> Buscar Cliente</h2>
-            <input 
+<nav class="nav-bar">
+<ul>
+<li><a href="/dashboard-estabelecimento.html"><i class="fas fa-home"></i> Dashboard</a></li>
+<li><a href="/profile-company.html"><i class="fas fa-building"></i> Painel Empresa</a></li>
+<li><a href="/configurar-descontos.html"><i class="fas fa-percent"></i> Configurar Descontos</a></li>
+<li><a href="/aplicar-desconto.html"><i class="fas fa-tag"></i> Aplicar Desconto</a></li>
+<li><a href="/meus-descontos.html"><i class="fas fa-list"></i> Meus Descontos</a></li>
+<li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+</ul>
+</nav>
+<div class="page-header">
+<h1 class="page-title"><i class="fas fa-calculator"></i> Aplicar Desconto em Venda</h1>
+<p class="page-subtitle">Busque o cliente, informe o valor da compra e aplique o desconto</p>
+</div>
+<div class="container">
+<div class="search-section">
+<h2 class="search-title"><i class="fas fa-search"></i> Buscar Cliente</h2>
+<input 
                 type="text" 
                 class="search-input" 
                 id="searchInput" 
                 placeholder="Digite o CPF, email ou nome do cliente..."
             >
-            <button class="search-button" onclick="searchCustomer()">
-                <i class="fas fa-search"></i> Buscar Cliente
+<button class="search-button" onclick="searchCustomer()">
+<i class="fas fa-search"></i> Buscar Cliente
             </button>
-        </div>
-
-        <div class="customer-info" id="customerInfo">
-            <div class="customer-header">
-                <div class="customer-avatar" id="customerAvatar">?</div>
-                <div class="customer-details">
-                    <h3 id="customerName">Nome do Cliente</h3>
-                    <p id="customerEmail">email@exemplo.com</p>
-                </div>
-            </div>
-            <div class="points-display">
-                <div class="points-value" id="customerPoints">0</div>
-                <div class="points-label">Pontos Acumulados</div>
-                <span class="level-badge" id="customerLevel" style="background: #CD7F32; color: #1D1D1F;">Bronze</span>
-            </div>
-        </div>
-
-        <div class="calculator-section" id="calculatorSection">
-            <h2 class="calc-title"><i class="fas fa-cash-register"></i> Calcular Desconto</h2>
-            
-            <label style="color: var(--gray-700); font-weight: 600; margin-bottom: 0.5rem; display: block;">
+</div>
+<div class="customer-info" id="customerInfo">
+<div class="customer-header">
+<div class="customer-avatar" id="customerAvatar">?</div>
+<div class="customer-details">
+<h3 id="customerName">Nome do Cliente</h3>
+<p id="customerEmail">email@exemplo.com</p>
+</div>
+</div>
+<div class="points-display">
+<div class="points-value" id="customerPoints">0</div>
+<div class="points-label">Pontos Acumulados</div>
+<span class="level-badge" id="customerLevel" class="card">Bronze</span>
+</div>
+</div>
+<div class="calculator-section" id="calculatorSection">
+<h2 class="calc-title"><i class="fas fa-cash-register"></i> Calcular Desconto</h2>
+<label style="color: var(--gray-700); font-weight: 600; margin-bottom: 0.5rem; display: block;">
                 Valor da Compra (R$)
             </label>
-            <input 
+<input 
                 type="number" 
                 class="purchase-input" 
                 id="purchaseValue" 
@@ -82,31 +75,28 @@
                 step="0.01"
                 oninput="calculateDiscount()"
             >
-
-            <div class="calc-row">
-                <span class="calc-label">N?vel do Cliente:</span>
-                <span class="calc-value" id="calcLevel">Bronze</span>
-            </div>
-            <div class="calc-row">
-                <span class="calc-label">Desconto Aplic?vel:</span>
-                <span class="calc-value" id="calcDiscount">5%</span>
-            </div>
-            <div class="calc-row">
-                <span class="calc-label">Valor do Desconto:</span>
-                <span class="calc-value" id="calcDiscountValue">R$ 0,00</span>
-            </div>
-
-            <div class="final-amount">
-                <p class="final-label">Valor Final a Pagar</p>
-                <div class="final-value" id="finalValue">R$ 0,00</div>
-                <button class="apply-button" onclick="applyDiscount()">
-                    <i class="fas fa-check-circle"></i> Confirmar e Aplicar Desconto
+<div class="calc-row">
+<span class="calc-label">N?vel do Cliente:</span>
+<span class="calc-value" id="calcLevel">Bronze</span>
+</div>
+<div class="calc-row">
+<span class="calc-label">Desconto Aplic?vel:</span>
+<span class="calc-value" id="calcDiscount">5%</span>
+</div>
+<div class="calc-row">
+<span class="calc-label">Valor do Desconto:</span>
+<span class="calc-value" id="calcDiscountValue">R$ 0,00</span>
+</div>
+<div class="final-amount">
+<p class="final-label">Valor Final a Pagar</p>
+<div class="final-value" id="finalValue">R$ 0,00</div>
+<button class="apply-button" onclick="applyDiscount()">
+<i class="fas fa-check-circle"></i> Confirmar e Aplicar Desconto
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <script>
+</div>
+</div>
+</div>
+<script>
         let currentCustomer = null;
 
         function logout() {

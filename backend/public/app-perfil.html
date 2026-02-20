@@ -1,635 +1,192 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: #FFFFFF; 
-            color: #1D1D1F; 
-            min-height: 100vh; 
-            padding-bottom: 80px;
-            overflow-x: hidden;
-        }
-
-        .header { 
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
-            position: relative;
-            padding: 32px 20px 24px;
-            border-bottom: 1px solid rgba(111, 26, 182, 0.1);
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(111, 26, 182, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .profile-info {
-            position: relative;
-            z-index: 2;
-        }
-
-        .avatar-container {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.2), rgba(255, 255, 255, 0.1));
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(111, 26, 182, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            margin-bottom: 2px;
-        }
-
-        .avatar-container::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, #6F1AB6, rgba(111, 26, 182, 0.3));
-            z-index: -1;
-            filter: blur(8px);
-        }
-
-        .camera-button {
-            position: absolute;
-            bottom: -4px;
-            right: -4px;
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            border: 3px solid rgba(26, 26, 46, 0.9);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .camera-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 20px rgba(111, 26, 182, 0.4);
-        }
-
-        .camera-button i {
-            font-size: 14px;
-            color: #1a1a2e;
-        }
-
-        .user-name {
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 6px;
-            background: linear-gradient(135deg, #ffffff, #6F1AB6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .user-plan {
-            font-size: 14px;
-            color: #6F1AB6;
-            font-weight: 600;
-            padding: 6px 12px;
-            background: rgba(111, 26, 182, 0.15);
-            border: 1px solid rgba(111, 26, 182, 0.3);
-            border-radius: 20px;
-            display: inline-block;
-            backdrop-filter: blur(10px);
-        }
-
-        .balance-card {
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.15), rgba(111, 26, 182, 0.05));
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(111, 26, 182, 0.2);
-            border-radius: 20px;
-            padding: 16px 20px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .balance-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(111, 26, 182, 0.1) 0%, transparent 70%);
-            animation: float 6s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
-            33% { transform: translate(30px, -30px) rotate(120deg); }
-            66% { transform: translate(-20px, 20px) rotate(240deg); }
-        }
-
-        .balance-label {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 4px;
-        }
-
-        .balance-amount {
-            font-size: 24px;
-            font-weight: 900;
-            color: #6F1AB6;
-            position: relative;
-            z-index: 2;
-        }
-
-        .edit-profile-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            border-radius: 20px;
-            padding: 16px 24px;
-            text-decoration: none;
-            color: #1a1a2e;
-            font-weight: 800;
-            font-size: 16px;
-            margin: 24px 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .edit-profile-btn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, #9333EA, #6F1AB6);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .edit-profile-btn:hover::before {
-            opacity: 1;
-        }
-
-        .edit-profile-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(111, 26, 182, 0.4);
-        }
-
-        .edit-profile-btn i,
-        .edit-profile-btn span {
-            position: relative;
-            z-index: 2;
-        }
-
-        .menu-section { 
-            padding: 16px 20px; 
-        }
-
-        .section-title { 
-            font-size: 13px; 
-            font-weight: 800; 
-            color: rgba(255, 255, 255, 0.6); 
-            text-transform: uppercase; 
-            margin-bottom: 16px;
-            position: relative;
-            padding-left: 16px;
-        }
-
-        .section-title::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 16px;
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            border-radius: 2px;
-        }
-
-        .menu-items { 
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(111, 26, 182, 0.1);
-            border-radius: 20px; 
-            overflow: hidden;
-            position: relative;
-        }
-
-        .menu-items::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.05) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .menu-item { 
-            padding: 18px 20px; 
-            display: flex; 
-            align-items: center; 
-            gap: 16px; 
-            text-decoration: none; 
-            color: #1D1D1F; 
-            border-bottom: 1px solid rgba(111, 26, 182, 0.08);
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .menu-item:last-child { 
-            border-bottom: none; 
-        }
-
-        .menu-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 0;
-            background: linear-gradient(90deg, rgba(111, 26, 182, 0.1), transparent);
-            transition: width 0.3s ease;
-        }
-
-        .menu-item:hover::before {
-            width: 100%;
-        }
-
-        .menu-item:hover {
-            transform: translateX(4px);
-        }
-
-        .menu-icon { 
-            width: 48px; 
-            height: 48px; 
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            border-radius: 16px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 20px;
-            color: #1a1a2e;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .menu-item:hover .menu-icon {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 4px 20px rgba(111, 26, 182, 0.3);
-        }
-
-        .menu-content { 
-            flex: 1; 
-        }
-
-        .menu-title { 
-            font-size: 16px; 
-            font-weight: 700; 
-            margin-bottom: 4px; 
-        }
-
-        .menu-subtitle { 
-            font-size: 13px; 
-            color: rgba(255, 255, 255, 0.6);
-            line-height: 1.4; 
-        }
-
-        .menu-arrow { 
-            color: #6F1AB6; 
-            font-size: 16px;
-            transition: all 0.3s ease; 
-        }
-
-        .menu-item:hover .menu-arrow {
-            transform: translateX(4px);
-        }
-
-        .alert-badge {
-            width: 24px;
-            height: 24px;
-            background: linear-gradient(135deg, #ff3b30, #ff6b6b);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 800;
-            margin-right: 8px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
-        }
-
-        .logout-btn { 
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
-            backdrop-filter: blur(20px);
-            border: 2px solid rgba(255, 59, 48, 0.3); 
-            color: #ff3b30; 
-            padding: 18px 24px; 
-            border-radius: 20px; 
-            width: 100%; 
-            font-size: 16px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 12px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .logout-btn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255, 59, 48, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .logout-btn:hover::before {
-            opacity: 1;
-        }
-
-        .logout-btn:hover {
-            transform: translateY(-2px);
-            border-color: rgba(255, 59, 48, 0.6);
-            box-shadow: 0 8px 25px rgba(255, 59, 48, 0.2);
-        }
-
-        .bottom-nav { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(26, 26, 46, 0.8));
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(111, 26, 182, 0.2);
-            display: flex; 
-            justify-content: space-around; 
-            padding: 16px 0 12px; 
-            z-index: 1000; 
-        }
-
-        .nav-item { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 6px; 
-            text-decoration: none; 
-            color: rgba(255, 255, 255, 0.6); 
-            font-size: 11px; 
-            font-weight: 600;
-            padding: 8px 12px;
-            border-radius: 16px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-item::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.1), transparent);
-            border-radius: 16px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .nav-item.active::before {
-            opacity: 1;
-        }
-
-        .nav-item.active { 
-            color: #6F1AB6; 
-            transform: translateY(-2px);
-        }
-
-        .nav-item i { 
-            font-size: 20px;
-            transition: all 0.3s ease; 
-        }
-
-        .nav-item.active i {
-            transform: scale(1.1);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header">
-        <div class="profile-info">
-            <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 24px;">
-                <div class="avatar-container">
-                    <i class="fas fa-user"></i>
-                    <div class="camera-button">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                </div>
-                <div style="flex: 1;">
-                    <div id="profileName" class="user-name">Olá, Marcus Silva</div>
-                    <div class="user-plan">✨ Premium Active</div>
-                </div>
-                <div class="balance-card">
-                    <div class="balance-label">💰 Saldo Atual</div>
-                    <div id="headerSaldo" class="balance-amount">R$ 2.847,50</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <a href="/app-editar-perfil.html" class="edit-profile-btn">
-        <i class="fas fa-user-edit"></i>
-        <span>Alterar meu perfil</span>
-    </a>
-
-    <div class="menu-section">
-        <div class="section-title">👤 Minha Conta</div>
-        <div class="menu-items">
-            <a href="/app-editar-perfil.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-user-edit"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Editar Dados</div>
-                    <div class="menu-subtitle">Altere informações pessoais e preferências</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            <a href="/app-favoritos.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-heart"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Lista de Favoritos</div>
-                    <div class="menu-subtitle">Produtos e ofertas que você salvou para depois</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            <a href="/app-meus-pontos.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-coins"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Meus Pontos Premium</div>
-                    <div class="menu-subtitle">Confira seu saldo e histórico de pontos</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            <a href="/app-cupons.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-store"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Loja Premium</div>
-                    <div class="menu-subtitle">Troque seus pontos por produtos exclusivos</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            <a href="/app-promocoes.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-gift"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Promoções Ativas</div>
-                    <div class="menu-subtitle">Ofertas especiais e descontos exclusivos</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            <a href="/app-historico.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-receipt"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Histórico de Pedidos</div>
-                    <div class="menu-subtitle">Acompanhe todos os seus pedidos realizados</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-        </div>
-    </div>
-
-    <div class="menu-section">
-        <div class="section-title">🔍 Navegação</div>
-        <div class="menu-items">
-            <a href="/app-categorias.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-th-large"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Explorar Categorias</div>
-                    <div class="menu-subtitle">Encontre produtos por categoria de forma rápida</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            <a href="/app-notificacoes.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-bell"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Central de Avisos</div>
-                    <div class="menu-subtitle">Suas notificações e alertas importantes</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            <a href="/app-enderecos.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-map-marker-alt"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Meus Endereços</div>
-                    <div class="menu-subtitle">Gerencie locais de entrega cadastrados</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            <a href="/app-cartoes.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-credit-card"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Formas de Pagamento</div>
-                    <div class="menu-subtitle">Cartões e métodos de pagamento salvos</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-        </div>
-    </div>
-
-    <div class="menu-section">
-        <div class="section-title">⚙️ Configurações</div>
-        <div class="menu-items">
-            <a href="/app-configuracoes.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-cog"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Preferências do App</div>
-                    <div class="menu-subtitle">Personalize sua experiência no aplicativo</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            <a href="/app-seguranca.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-shield-alt"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Segurança Premium</div>
-                    <div class="menu-subtitle">Proteja sua conta com verificação em duas etapas</div>
-                </div>
-                <div class="alert-badge">!</div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-        </div>
-    </div>
-
-    <div class="menu-section">
-        <div class="section-title">📋 Central de Ajuda</div>
-        <div class="menu-items">
-            <a href="/app-como-ganhar.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-lightbulb"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Como Ganhar Mais Pontos</div>
-                    <div class="menu-subtitle">Dicas e estratégias para maximizar seus ganhos</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            <a href="/app-ajuda.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-question-circle"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">FAQ & Tutoriais</div>
-                    <div class="menu-subtitle">Encontre respostas para suas dúvidas</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-            <a href="/app-suporte.html" class="menu-item">
-                <div class="menu-icon"><i class="fas fa-headset"></i></div>
-                <div class="menu-content">
-                    <div class="menu-title">Suporte Premium 24/7</div>
-                    <div class="menu-subtitle">Atendimento especializado sempre disponível</div>
-                </div>
-                <i class="fas fa-chevron-right menu-arrow"></i>
-            </a>
-        </div>
-    </div>
-
-    <div style="padding: 20px;">
-        <button class="logout-btn" onclick="logout()" style="margin: 0; width: 100%; border: none;">
-            <i class="fas fa-sign-out-alt"></i> Sair do app
+<div class="header">
+<div class="profile-info">
+<div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 24px;">
+<div class="avatar-container">
+<i class="fas fa-user"></i>
+<div class="camera-button">
+<i class="fas fa-camera"></i>
+</div>
+</div>
+<div style="flex: 1;">
+<div id="profileName" class="user-name">Olá, Marcus Silva</div>
+<div class="user-plan">✨ Premium Active</div>
+</div>
+<div class="balance-card">
+<div class="balance-label">💰 Saldo Atual</div>
+<div id="headerSaldo" class="balance-amount">R$ 2.847,50</div>
+</div>
+</div>
+</div>
+</div>
+<a href="/app-editar-perfil.html" class="edit-profile-btn">
+<i class="fas fa-user-edit"></i>
+<span>Alterar meu perfil</span>
+</a>
+<div class="menu-section">
+<div class="section-title">👤 Minha Conta</div>
+<div class="menu-items">
+<a href="/app-editar-perfil.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-user-edit"></i></div>
+<div class="menu-content">
+<div class="menu-title">Editar Dados</div>
+<div class="menu-subtitle">Altere informações pessoais e preferências</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="/app-favoritos.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-heart"></i></div>
+<div class="menu-content">
+<div class="menu-title">Lista de Favoritos</div>
+<div class="menu-subtitle">Produtos e ofertas que você salvou para depois</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="/app-meus-pontos.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-coins"></i></div>
+<div class="menu-content">
+<div class="menu-title">Meus Pontos Premium</div>
+<div class="menu-subtitle">Confira seu saldo e histórico de pontos</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="/app-cupons.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-store"></i></div>
+<div class="menu-content">
+<div class="menu-title">Loja Premium</div>
+<div class="menu-subtitle">Troque seus pontos por produtos exclusivos</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="/app-promocoes.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-gift"></i></div>
+<div class="menu-content">
+<div class="menu-title">Promoções Ativas</div>
+<div class="menu-subtitle">Ofertas especiais e descontos exclusivos</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="/app-historico.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-receipt"></i></div>
+<div class="menu-content">
+<div class="menu-title">Histórico de Pedidos</div>
+<div class="menu-subtitle">Acompanhe todos os seus pedidos realizados</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+</div>
+</div>
+<div class="menu-section">
+<div class="section-title">🔍 Navegação</div>
+<div class="menu-items">
+<a href="/app-categorias.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-th-large"></i></div>
+<div class="menu-content">
+<div class="menu-title">Explorar Categorias</div>
+<div class="menu-subtitle">Encontre produtos por categoria de forma rápida</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="/app-notificacoes.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-bell"></i></div>
+<div class="menu-content">
+<div class="menu-title">Central de Avisos</div>
+<div class="menu-subtitle">Suas notificações e alertas importantes</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="/app-enderecos.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-map-marker-alt"></i></div>
+<div class="menu-content">
+<div class="menu-title">Meus Endereços</div>
+<div class="menu-subtitle">Gerencie locais de entrega cadastrados</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="/app-cartoes.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-credit-card"></i></div>
+<div class="menu-content">
+<div class="menu-title">Formas de Pagamento</div>
+<div class="menu-subtitle">Cartões e métodos de pagamento salvos</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+</div>
+</div>
+<div class="menu-section">
+<div class="section-title">⚙️ Configurações</div>
+<div class="menu-items">
+<a href="/app-configuracoes.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-cog"></i></div>
+<div class="menu-content">
+<div class="menu-title">Preferências do App</div>
+<div class="menu-subtitle">Personalize sua experiência no aplicativo</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="/app-seguranca.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-shield-alt"></i></div>
+<div class="menu-content">
+<div class="menu-title">Segurança Premium</div>
+<div class="menu-subtitle">Proteja sua conta com verificação em duas etapas</div>
+</div>
+<div class="alert-badge">!</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+</div>
+</div>
+<div class="menu-section">
+<div class="section-title">📋 Central de Ajuda</div>
+<div class="menu-items">
+<a href="/app-como-ganhar.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-lightbulb"></i></div>
+<div class="menu-content">
+<div class="menu-title">Como Ganhar Mais Pontos</div>
+<div class="menu-subtitle">Dicas e estratégias para maximizar seus ganhos</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="/app-ajuda.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-question-circle"></i></div>
+<div class="menu-content">
+<div class="menu-title">FAQ & Tutoriais</div>
+<div class="menu-subtitle">Encontre respostas para suas dúvidas</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+<a href="/app-suporte.html" class="menu-item">
+<div class="menu-icon"><i class="fas fa-headset"></i></div>
+<div class="menu-content">
+<div class="menu-title">Suporte Premium 24/7</div>
+<div class="menu-subtitle">Atendimento especializado sempre disponível</div>
+</div>
+<i class="fas fa-chevron-right menu-arrow"></i>
+</a>
+</div>
+</div>
+<div style="padding: 20px;">
+<button class="logout-btn" onclick="logout()" style="margin: 0; width: 100%; border: none;">
+<i class="fas fa-sign-out-alt"></i> Sair do app
         </button>
-    </div>
-
-    <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
-        <a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-        <a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
-        <a href="/app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
-    </nav>
-
-    <script>
+</div>
+<nav class="bottom-nav">
+<a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
+<a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
+<a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
+<a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
+<a href="/app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
+</nav>
+<script>
         function logout() { 
             if (confirm('Tem certeza que deseja sair?')) { 
                 localStorage.clear(); 

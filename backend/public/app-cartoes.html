@@ -1,79 +1,55 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cartões - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #FFFFFF; color: #1D1D1F; padding-bottom: 80px; }
-        .header { background: #F5F5F7; padding: 20px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        .back-btn { width: 36px; height: 36px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; color: #1D1D1F; cursor: pointer; text-decoration: none; }
-        .header h1 { font-size: 18px; font-weight: 700; flex: 1; }
-        .add-btn { background: #f59e0b; padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; border: none; color: #1D1D1F; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-        .cards-list { padding: 20px; }
-        .card-item { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 20px; padding: 24px; margin-bottom: 16px; position: relative; overflow: hidden; }
-        .card-item::before { content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); }
-        .card-type { font-size: 12px; font-weight: 600; opacity: 0.9; margin-bottom: 24px; }
-        .card-number { font-size: 18px; font-weight: 700; letter-spacing: 2px; margin-bottom: 20px; font-family: 'Courier New', monospace; }
-        .card-footer { display: flex; justify-content: space-between; align-items: center; }
-        .card-holder { font-size: 13px; font-weight: 600; }
-        .card-expiry { font-size: 12px; opacity: 0.9; }
-        .card-actions { display: flex; gap: 8px; margin-top: 16px; }
-        .btn-card { background: rgba(255, 255, 255, 0.2); padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; border: none; color: #1D1D1F; cursor: pointer; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #F5F5F7; border-top: 1px solid rgba(102, 126, 234, 0.1); display: flex; justify-content: space-around; padding: 12px 0 8px; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #888; font-size: 11px; font-weight: 500; }
-        .nav-item.active { color: #f59e0b; }
-        .nav-item i { font-size: 20px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartões - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header">
-        <a href="/app-perfil.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i>
-        </a>
-        <h1>Cartões</h1>
-        <button class="add-btn" onclick="alert('Funcionalidade em desenvolvimento')">
-            <i class="fas fa-plus"></i> Adicionar
+<div class="header">
+<a href="/app-perfil.html" class="back-btn">
+<i class="fas fa-arrow-left"></i>
+</a>
+<h1>Cartões</h1>
+<button class="add-btn" onclick="alert('Funcionalidade em desenvolvimento')">
+<i class="fas fa-plus"></i> Adicionar
         </button>
-    </div>
-
-    <div class="cards-list">
-        <div class="card-item">
-            <div class="card-type">VISA ****</div>
-            <div class="card-number">•••• •••• •••• 1234</div>
-            <div class="card-footer">
-                <div class="card-holder">MARCUS VINI</div>
-                <div class="card-expiry">12/26</div>
-            </div>
-            <div class="card-actions">
-                <button class="btn-card"><i class="fas fa-edit"></i> Editar</button>
-                <button class="btn-card"><i class="fas fa-trash"></i> Remover</button>
-            </div>
-        </div>
-
-        <div class="card-item" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-            <div class="card-type">MASTERCARD ****</div>
-            <div class="card-number">•••• •••• •••• 5678</div>
-            <div class="card-footer">
-                <div class="card-holder">MARCUS VINI</div>
-                <div class="card-expiry">08/27</div>
-            </div>
-            <div class="card-actions">
-                <button class="btn-card"><i class="fas fa-edit"></i> Editar</button>
-                <button class="btn-card"><i class="fas fa-trash"></i> Remover</button>
-            </div>
-        </div>
-    </div>
-
-    <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
-        <a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-        <a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
-        <a href="/app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
-    </nav>
+</div>
+<div class="cards-list">
+<div class="card-item">
+<div class="card-type">VISA ****</div>
+<div class="card-number">•••• •••• •••• 1234</div>
+<div class="card-footer">
+<div class="card-holder">MARCUS VINI</div>
+<div class="card-expiry">12/26</div>
+</div>
+<div class="card-actions">
+<button class="btn-card"><i class="fas fa-edit"></i> Editar</button>
+<button class="btn-card"><i class="fas fa-trash"></i> Remover</button>
+</div>
+</div>
+<div class="card-item" >
+<div class="card-type">MASTERCARD ****</div>
+<div class="card-number">•••• •••• •••• 5678</div>
+<div class="card-footer">
+<div class="card-holder">MARCUS VINI</div>
+<div class="card-expiry">08/27</div>
+</div>
+<div class="card-actions">
+<button class="btn-card"><i class="fas fa-edit"></i> Editar</button>
+<button class="btn-card"><i class="fas fa-trash"></i> Remover</button>
+</div>
+</div>
+</div>
+<nav class="bottom-nav">
+<a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
+<a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
+<a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
+<a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
+<a href="/app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
+</nav>
 </body>
 </html>

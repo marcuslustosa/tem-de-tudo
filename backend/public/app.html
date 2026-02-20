@@ -1,214 +1,201 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#6F1AB6">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Tem de Tudo - Home</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#6F1AB6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Tem de Tudo - Home</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="/js/config.js"></script>
+<script src="/js/auth-manager.js" defer></script>
+<script src="/js/api-client.js" defer></script>
+<script src="/js/validators.js" defer></script>
+<script src="/js/ui-helpers.js" defer></script>
+<script src="/js/auth-guard.js" data-require-auth="cliente"></script>
+<link rel="stylesheet" href="/css/global-unified.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/style-unificado.css">
+</head>
 <body>
-    <!-- Header Premium -->
-    <header class="app-header">
-        <div class="header-content">
-            <div class="header-top">
-                <div class="app-logo">
-                    <i class="fas fa-sparkles"></i>
-                    <span>Tem de Tudo</span>
-                </div>
-                <div class="header-actions">
-                    <button class="icon-btn" onclick="window.location.href='notificacoes.html'">
-                        <i class="fas fa-bell"></i>
-                    </button>
-                    <button class="icon-btn" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Card de Pontos -->
-            <div class="points-card">
-                <div class="points-header">
-                    <div class="points-info">
-                        <h2>Seus Pontos</h2>
-                        <div class="points-value">
-                            <span id="userPoints">0</span>
-                            <span>pts</span>
-                        </div>
-                    </div>
-                    <div class="points-badge">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>+125 hoje</span>
-                    </div>
-                </div>
-                
-                <div class="qr-buttons">
-                    <button class="qr-btn" onclick="window.location.href='scanner.html'">
-                        <i class="fas fa-qrcode"></i>
-                        <span>Escanear QR</span>
-                    </button>
-                    <button class="qr-btn" onclick="showMyQR()">
-                        <i class="fas fa-id-card"></i>
-                        <span>Meu QR</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- A??es R?pidas -->
-    <section class="section">
-        <div class="section-header">
-            <h2 class="section-title">
-                <i class="fas fa-bolt"></i>
+<!-- Header Premium -->
+<header class="app-header">
+<div class="header-content">
+<div class="header-top">
+<div class="app-logo">
+<i class="fas fa-sparkles"></i>
+<span>Tem de Tudo</span>
+</div>
+<div class="header-actions">
+<button class="icon-btn" onclick="window.location.href='notificacoes.html'">
+<i class="fas fa-bell"></i>
+</button>
+<button class="icon-btn" onclick="logout()">
+<i class="fas fa-sign-out-alt"></i>
+</button>
+</div>
+</div>
+<!-- Card de Pontos -->
+<div class="points-card">
+<div class="points-header">
+<div class="points-info">
+<h2>Seus Pontos</h2>
+<div class="points-value">
+<span id="userPoints">0</span>
+<span>pts</span>
+</div>
+</div>
+<div class="points-badge">
+<i class="fas fa-arrow-up"></i>
+<span>+125 hoje</span>
+</div>
+</div>
+<div class="qr-buttons">
+<button class="qr-btn" onclick="window.location.href='scanner.html'">
+<i class="fas fa-qrcode"></i>
+<span>Escanear QR</span>
+</button>
+<button class="qr-btn" onclick="showMyQR()">
+<i class="fas fa-id-card"></i>
+<span>Meu QR</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- A??es R?pidas -->
+<section class="section">
+<div class="section-header">
+<h2 class="section-title">
+<i class="fas fa-bolt"></i>
                 A??es R?pidas
             </h2>
-        </div>
-        
-        <div class="quick-actions">
-            <a href="estabelecimentos.html" class="action-btn">
-                <div class="action-icon">
-                    <i class="fas fa-store"></i>
-                </div>
-                <div class="action-label">Estabelecimentos</div>
-            </a>
-            
-            <a href="pontos.html" class="action-btn">
-                <div class="action-icon">
-                    <i class="fas fa-history"></i>
-                </div>
-                <div class="action-label">Hist?rico</div>
-            </a>
-            
-            <a href="bonus-aniversario.html" class="action-btn">
-                <div class="action-icon">
-                    <i class="fas fa-gift"></i>
-                </div>
-                <div class="action-label">B?nus</div>
-            </a>
-            
-            <a href="ajuda.html" class="action-btn">
-                <div class="action-icon">
-                    <i class="fas fa-headset"></i>
-                </div>
-                <div class="action-label">Ajuda</div>
-            </a>
-        </div>
-    </section>
-
-    <!-- Estabelecimentos em Destaque -->
-    <section class="section">
-        <div class="section-header">
-            <h2 class="section-title">
-                <i class="fas fa-fire"></i>
+</div>
+<div class="quick-actions">
+<a href="estabelecimentos.html" class="action-btn">
+<div class="action-icon">
+<i class="fas fa-store"></i>
+</div>
+<div class="action-label">Estabelecimentos</div>
+</a>
+<a href="pontos.html" class="action-btn">
+<div class="action-icon">
+<i class="fas fa-history"></i>
+</div>
+<div class="action-label">Hist?rico</div>
+</a>
+<a href="bonus-aniversario.html" class="action-btn">
+<div class="action-icon">
+<i class="fas fa-gift"></i>
+</div>
+<div class="action-label">B?nus</div>
+</a>
+<a href="ajuda.html" class="action-btn">
+<div class="action-icon">
+<i class="fas fa-headset"></i>
+</div>
+<div class="action-label">Ajuda</div>
+</a>
+</div>
+</section>
+<!-- Estabelecimentos em Destaque -->
+<section class="section">
+<div class="section-header">
+<h2 class="section-title">
+<i class="fas fa-fire"></i>
                 Em Destaque
             </h2>
-            <a href="estabelecimentos.html" class="view-all">
+<a href="estabelecimentos.html" class="view-all">
                 Ver todos
                 <i class="fas fa-chevron-right"></i>
-            </a>
-        </div>
-
-        <div class="companies-grid" id="companiesGrid">
-            <!-- Cards ser?o carregados via JavaScript -->
-            <div class="company-card">
-                <div class="company-logo">
-                    <i class="fas fa-pizza-slice"></i>
-                </div>
-                <div class="company-info">
-                    <div class="company-name">Pizzaria Bella Napoli</div>
-                    <div class="company-category">Restaurante ? Pizzaria</div>
-                    <div class="company-stats">
-                        <div class="stat-item">
-                            <i class="fas fa-star"></i>
-                            <span class="stat-value">4.9</span>
+</a>
+</div>
+<div class="companies-grid" id="companiesGrid">
+<!-- Cards ser?o carregados via JavaScript -->
+<div class="company-card">
+<div class="company-logo">
+<i class="fas fa-pizza-slice"></i>
+</div>
+<div class="company-info">
+<div class="company-name">Pizzaria Bella Napoli</div>
+<div class="company-category">Restaurante ? Pizzaria</div>
+<div class="company-stats">
+<div class="stat-item">
+<i class="fas fa-star"></i>
+<span class="stat-value">4.9</span>
+</div>
+<div class="stat-item">
+<i class="fas fa-coins"></i>
+<span class="stat-value">2.5x</span> pontos
                         </div>
-                        <div class="stat-item">
-                            <i class="fas fa-coins"></i>
-                            <span class="stat-value">2.5x</span> pontos
+</div>
+</div>
+</div>
+<div class="company-card">
+<div class="company-logo">
+<i class="fas fa-cut"></i>
+</div>
+<div class="company-info">
+<div class="company-name">Sal?o Premium</div>
+<div class="company-category">Beleza ? Est?tica</div>
+<div class="company-stats">
+<div class="stat-item">
+<i class="fas fa-star"></i>
+<span class="stat-value">4.8</span>
+</div>
+<div class="stat-item">
+<i class="fas fa-coins"></i>
+<span class="stat-value">3.0x</span> pontos
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="company-card">
-                <div class="company-logo">
-                    <i class="fas fa-cut"></i>
-                </div>
-                <div class="company-info">
-                    <div class="company-name">Sal?o Premium</div>
-                    <div class="company-category">Beleza ? Est?tica</div>
-                    <div class="company-stats">
-                        <div class="stat-item">
-                            <i class="fas fa-star"></i>
-                            <span class="stat-value">4.8</span>
+</div>
+</div>
+</div>
+<div class="company-card">
+<div class="company-logo">
+<i class="fas fa-dumbbell"></i>
+</div>
+<div class="company-info">
+<div class="company-name">Academia FitLife</div>
+<div class="company-category">Sa?de ? Fitness</div>
+<div class="company-stats">
+<div class="stat-item">
+<i class="fas fa-star"></i>
+<span class="stat-value">4.9</span>
+</div>
+<div class="stat-item">
+<i class="fas fa-coins"></i>
+<span class="stat-value">2.0x</span> pontos
                         </div>
-                        <div class="stat-item">
-                            <i class="fas fa-coins"></i>
-                            <span class="stat-value">3.0x</span> pontos
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="company-card">
-                <div class="company-logo">
-                    <i class="fas fa-dumbbell"></i>
-                </div>
-                <div class="company-info">
-                    <div class="company-name">Academia FitLife</div>
-                    <div class="company-category">Sa?de ? Fitness</div>
-                    <div class="company-stats">
-                        <div class="stat-item">
-                            <i class="fas fa-star"></i>
-                            <span class="stat-value">4.9</span>
-                        </div>
-                        <div class="stat-item">
-                            <i class="fas fa-coins"></i>
-                            <span class="stat-value">2.0x</span> pontos
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <a href="app.html" class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>In?cio</span>
-        </a>
-        <a href="estabelecimentos.html" class="nav-item">
-            <i class="fas fa-store"></i>
-            <span>Lojas</span>
-        </a>
-        <a href="scanner.html" class="nav-item">
-            <i class="fas fa-qrcode"></i>
-            <span>Scanner</span>
-        </a>
-        <a href="pontos.html" class="nav-item">
-            <i class="fas fa-wallet"></i>
-            <span>Pontos</span>
-        </a>
-        <a href="perfil.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
-    </nav>
-
-    <script>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+<a href="app.html" class="nav-item active">
+<i class="fas fa-home"></i>
+<span>In?cio</span>
+</a>
+<a href="estabelecimentos.html" class="nav-item">
+<i class="fas fa-store"></i>
+<span>Lojas</span>
+</a>
+<a href="scanner.html" class="nav-item">
+<i class="fas fa-qrcode"></i>
+<span>Scanner</span>
+</a>
+<a href="pontos.html" class="nav-item">
+<i class="fas fa-wallet"></i>
+<span>Pontos</span>
+</a>
+<a href="perfil.html" class="nav-item">
+<i class="fas fa-user"></i>
+<span>Perfil</span>
+</a>
+</nav>
+<script>
         // Carregar dados do usu?rio
         async function loadUserData() {
             const token = localStorage.getItem('token');

@@ -1,89 +1,82 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Meus Descontos - Tem de Tudo</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
-    
-    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Meus Descontos - Tem de Tudo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<script src="/js/config.js"></script>
+<script src="/js/auth-manager.js" defer></script>
+<script src="/js/api-client.js" defer></script>
+<script src="/js/validators.js" defer></script>
+<script src="/js/ui-helpers.js" defer></script>
+<script src="/js/auth-guard.js" data-require-auth="cliente"></script>
+<link rel="stylesheet" href="/css/global-unified.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/style-unificado.css">
+</head>
 <body>
-    <nav class="nav-bar">
-        <ul>
-            <li><a href="/dashboard-estabelecimento.html"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="/profile-company.html"><i class="fas fa-building"></i> Painel Empresa</a></li>
-            <li><a href="/configurar-descontos.html"><i class="fas fa-percent"></i> Configurar Descontos</a></li>
-            <li><a href="/aplicar-desconto.html"><i class="fas fa-tag"></i> Aplicar Desconto</a></li>
-            <li><a href="/meus-descontos.html"><i class="fas fa-list"></i> Meus Descontos</a></li>
-            <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
-        </ul>
-    </nav>
-
-    <div class="page-header">
-        <h1 class="page-title"><i class="fas fa-history"></i> Hist?rico de Descontos</h1>
-        <p class="page-subtitle">Acompanhe todos os descontos aplicados em sua empresa</p>
-    </div>
-
-    <div class="container">
-        <div class="stats-bar">
-            <div class="stat-box blue">
-                <div class="stat-icon"><i class="fas fa-receipt"></i></div>
-                <div class="stat-value" id="totalDiscounts">0</div>
-                <div class="stat-label">Total de Descontos</div>
-            </div>
-            <div class="stat-box green">
-                <div class="stat-icon"><i class="fas fa-coins"></i></div>
-                <div class="stat-value" id="totalSavings">R$ 0</div>
-                <div class="stat-label">Economia dos Clientes</div>
-            </div>
-            <div class="stat-box orange">
-                <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
-                <div class="stat-value" id="avgDiscount">0%</div>
-                <div class="stat-label">Desconto M?dio</div>
-            </div>
-        </div>
-
-        <div class="filters-section">
-            <span class="filter-label"><i class="fas fa-filter"></i> Filtrar por:</span>
-            <select class="filter-select" id="periodFilter" onchange="filterDiscounts()">
-                <option value="all">Todos os per?odos</option>
-                <option value="today">Hoje</option>
-                <option value="week">Esta semana</option>
-                <option value="month">Este m?s</option>
-            </select>
-            <select class="filter-select" id="levelFilter" onchange="filterDiscounts()">
-                <option value="all">Todos os n?veis</option>
-                <option value="bronze">Bronze</option>
-                <option value="silver">Prata</option>
-                <option value="gold">Ouro</option>
-                <option value="platinum">Platina</option>
-                <option value="diamond">Diamante</option>
-            </select>
-        </div>
-
-        <div id="discountsList" class="timeline">
-            <div class="empty-state">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Carregando hist?rico de descontos...</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
+<nav class="nav-bar">
+<ul>
+<li><a href="/dashboard-estabelecimento.html"><i class="fas fa-home"></i> Dashboard</a></li>
+<li><a href="/profile-company.html"><i class="fas fa-building"></i> Painel Empresa</a></li>
+<li><a href="/configurar-descontos.html"><i class="fas fa-percent"></i> Configurar Descontos</a></li>
+<li><a href="/aplicar-desconto.html"><i class="fas fa-tag"></i> Aplicar Desconto</a></li>
+<li><a href="/meus-descontos.html"><i class="fas fa-list"></i> Meus Descontos</a></li>
+<li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+</ul>
+</nav>
+<div class="page-header">
+<h1 class="page-title"><i class="fas fa-history"></i> Hist?rico de Descontos</h1>
+<p class="page-subtitle">Acompanhe todos os descontos aplicados em sua empresa</p>
+</div>
+<div class="container">
+<div class="stats-bar">
+<div class="stat-box blue">
+<div class="stat-icon"><i class="fas fa-receipt"></i></div>
+<div class="stat-value" id="totalDiscounts">0</div>
+<div class="stat-label">Total de Descontos</div>
+</div>
+<div class="stat-box green">
+<div class="stat-icon"><i class="fas fa-coins"></i></div>
+<div class="stat-value" id="totalSavings">R$ 0</div>
+<div class="stat-label">Economia dos Clientes</div>
+</div>
+<div class="stat-box orange">
+<div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+<div class="stat-value" id="avgDiscount">0%</div>
+<div class="stat-label">Desconto M?dio</div>
+</div>
+</div>
+<div class="filters-section">
+<span class="filter-label"><i class="fas fa-filter"></i> Filtrar por:</span>
+<select class="filter-select" id="periodFilter" onchange="filterDiscounts()">
+<option value="all">Todos os per?odos</option>
+<option value="today">Hoje</option>
+<option value="week">Esta semana</option>
+<option value="month">Este m?s</option>
+</select>
+<select class="filter-select" id="levelFilter" onchange="filterDiscounts()">
+<option value="all">Todos os n?veis</option>
+<option value="bronze">Bronze</option>
+<option value="silver">Prata</option>
+<option value="gold">Ouro</option>
+<option value="platinum">Platina</option>
+<option value="diamond">Diamante</option>
+</select>
+</div>
+<div id="discountsList" class="timeline">
+<div class="empty-state">
+<i class="fas fa-spinner fa-spin"></i>
+<p>Carregando hist?rico de descontos...</p>
+</div>
+</div>
+</div>
+<script>
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
@@ -194,43 +187,43 @@
             if (discounts.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <i class="fas fa-receipt"></i>
-                        <p>Nenhum desconto aplicado ainda.</p>
-                    </div>
+<i class="fas fa-receipt"></i>
+<p>Nenhum desconto aplicado ainda.</p>
+</div>
                 `;
                 return;
             }
 
             container.innerHTML = discounts.map(discount => `
                 <div class="discount-item">
-                    <div class="discount-header">
-                        <div>
-                            <h3 class="customer-name">${discount.customerName}</h3>
-                            <span class="discount-date">
-                                <i class="fas fa-calendar-alt"></i> ${discount.date}
+<div class="discount-header">
+<div>
+<h3 class="customer-name">${discount.customerName}</h3>
+<span class="discount-date">
+<i class="fas fa-calendar-alt"></i> ${discount.date}
                             </span>
-                        </div>
-                        <span class="discount-badge">${discount.discount}% OFF</span>
-                    </div>
-                    <div class="discount-details">
-                        <div class="detail-item">
-                            <span class="detail-label">N?vel</span>
-                            <span class="detail-value">${discount.level}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Valor Original</span>
-                            <span class="detail-value">R$ ${discount.originalValue.toFixed(2)}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Valor Final</span>
-                            <span class="detail-value">R$ ${discount.finalValue.toFixed(2)}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Economia</span>
-                            <span class="detail-value" style="color: #0ba360;">R$ ${discount.savings.toFixed(2)}</span>
-                        </div>
-                    </div>
-                </div>
+</div>
+<span class="discount-badge">${discount.discount}% OFF</span>
+</div>
+<div class="discount-details">
+<div class="detail-item">
+<span class="detail-label">N?vel</span>
+<span class="detail-value">${discount.level}</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Valor Original</span>
+<span class="detail-value">R$ ${discount.originalValue.toFixed(2)}</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Valor Final</span>
+<span class="detail-value">R$ ${discount.finalValue.toFixed(2)}</span>
+</div>
+<div class="detail-item">
+<span class="detail-label">Economia</span>
+<span class="detail-value" style="color: #0ba360;">R$ ${discount.savings.toFixed(2)}</span>
+</div>
+</div>
+</div>
             `).join('');
         }
 

@@ -1,378 +1,98 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0a0a0f">
-    <title>Meu QR Code - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #FFFFFF;
-            min-height: 100vh;
-            padding-bottom: 90px;
-            color: #1D1D1F;
-        }
-        
-        .header {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
-        }
-        
-        .back-btn {
-            width: 44px;
-            height: 44px;
-            background: rgba(102, 126, 234, 0.1);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 12px;
-            color: #667eea;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .back-btn:hover {
-            background: rgba(102, 126, 234, 0.2);
-            transform: translateX(-2px);
-        }
-        
-        .header-title {
-            flex: 1;
-        }
-        
-        .header-title h1 {
-            font-size: 22px;
-            font-weight: 800;
-            color: #1D1D1F;
-            margin-bottom: 4px;
-        }
-        
-        .header-title p {
-            font-size: 13px;
-            color: #b0b0b0;
-        }
-        
-        .qr-container {
-            padding: 32px 20px;
-            text-align: center;
-        }
-        
-        .qr-card {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-radius: 24px;
-            padding: 40px 32px;
-            max-width: 440px;
-            margin: 0 auto 24px;
-            border: 2px solid rgba(102, 126, 234, 0.2);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-        }
-        
-        .user-info {
-            margin-bottom: 32px;
-        }
-        
-        .user-avatar {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            margin: 0 auto 16px;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-        }
-        
-        .user-name {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 6px;
-            color: #1D1D1F;
-        }
-        
-        .user-id {
-            font-size: 14px;
-            color: #667eea;
-            font-weight: 600;
-        }
-        
-        .qr-wrapper {
-            background: white;
-            padding: 24px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 24px;
-            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.2);
-        }
-        
-        #qrcode {
-            display: flex;
-            justify-content: center;
-        }
-        
-        .qr-instructions {
-            background: rgba(102, 126, 234, 0.1);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-        
-        .qr-instructions h3 {
-            font-size: 16px;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .qr-instructions ul {
-            list-style: none;
-            text-align: left;
-        }
-        
-        .qr-instructions li {
-            color: #b0b0b0;
-            margin-bottom: 8px;
-            padding-left: 28px;
-            position: relative;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        
-        .qr-instructions li::before {
-            content: '?';
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: 700;
-            font-size: 16px;
-        }
-        
-        .brightness-control {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-        
-        .brightness-label {
-            font-size: 14px;
-            color: #b0b0b0;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .brightness-slider {
-            width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: rgba(102, 126, 234, 0.2);
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-        
-        .brightness-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
-        }
-        
-        .action-buttons {
-            display: grid;
-            gap: 12px;
-        }
-        
-        .btn {
-            padding: 16px;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #1D1D1F;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-secondary {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            border: 2px solid rgba(102, 126, 234, 0.2);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(102, 126, 234, 0.2);
-            border-color: #667eea;
-        }
-        
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-top: 1px solid rgba(102, 126, 234, 0.2);
-            padding: 12px 8px 20px;
-            display: flex;
-            justify-content: space-around;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
-        }
-        
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            color: #b0b0b0;
-            font-size: 11px;
-            font-weight: 600;
-            transition: all 0.3s;
-            padding: 8px;
-            border-radius: 12px;
-        }
-        
-        .nav-item i {
-            font-size: 22px;
-            transition: all 0.3s;
-        }
-        
-        .nav-item.active {
-            color: #667eea;
-        }
-        
-        .nav-item.active i {
-            transform: scale(1.15);
-        }
-    </style>
-    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n    <link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0f">
+<title>Meu QR Code - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/auth-manager.js" defer></script>
+<script src="/js/api-client.js" defer></script>
+<script src="/js/validators.js" defer></script>
+<script src="/js/ui-helpers.js" defer></script>
+<script src="/js/auth-guard.js" data-require-auth="cliente"></script>
+<link rel="stylesheet" href="/css/global-unified.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">`n    <link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header">
-        <button class="back-btn" onclick="location.href='/dashboard-cliente.html'">
-            <i class="fas fa-arrow-left"></i>
-        </button>
-        <div class="header-title">
-            <h1>Meu QR Code</h1>
-            <p>Apresente ao estabelecimento</p>
-        </div>
-    </div>
-    
-    <div class="qr-container">
-        <div class="qr-card">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="user-name" id="userName">Carregando...</div>
-                <div class="user-id" id="userId">ID: #0000</div>
-            </div>
-            
-            <div class="qr-wrapper">
-                <div id="qrcode"></div>
-            </div>
-            
-            <div class="brightness-control">
-                <div class="brightness-label">
-                    <span><i class="fas fa-sun"></i> Brilho da Tela</span>
-                    <span id="brightnessValue">100%</span>
-                </div>
-                <input type="range" min="30" max="100" value="100" class="brightness-slider" id="brightnessSlider">
-            </div>
-        </div>
-        
-        <div class="qr-instructions">
-            <h3><i class="fas fa-info-circle"></i> Como usar</h3>
-            <ul>
-                <li>Apresente este QR Code ao caixa do estabelecimento</li>
-                <li>Aguarde a validaàào pelo scanner</li>
-                <li>Seus pontos seráo creditados automaticamente</li>
-                <li>Mantenha o brilho da tela no màximo para melhor leitura</li>
-            </ul>
-        </div>
-        
-        <div class="action-buttons">
-            <button class="btn btn-primary" onclick="shareQRCode()">
-                <i class="fas fa-share-alt"></i> Compartilhar QR Code
+<div class="header">
+<button class="back-btn" onclick="location.href='/dashboard-cliente.html'">
+<i class="fas fa-arrow-left"></i>
+</button>
+<div class="header-title">
+<h1>Meu QR Code</h1>
+<p>Apresente ao estabelecimento</p>
+</div>
+</div>
+<div class="qr-container">
+<div class="qr-card">
+<div class="user-info">
+<div class="user-avatar">
+<i class="fas fa-user"></i>
+</div>
+<div class="user-name" id="userName">Carregando...</div>
+<div class="user-id" id="userId">ID: #0000</div>
+</div>
+<div class="qr-wrapper">
+<div id="qrcode"></div>
+</div>
+<div class="brightness-control">
+<div class="brightness-label">
+<span><i class="fas fa-sun"></i> Brilho da Tela</span>
+<span id="brightnessValue">100%</span>
+</div>
+<input type="range" min="30" max="100" value="100" class="brightness-slider" id="brightnessSlider">
+</div>
+</div>
+<div class="qr-instructions">
+<h3><i class="fas fa-info-circle"></i> Como usar</h3>
+<ul>
+<li>Apresente este QR Code ao caixa do estabelecimento</li>
+<li>Aguarde a validaàào pelo scanner</li>
+<li>Seus pontos seráo creditados automaticamente</li>
+<li>Mantenha o brilho da tela no màximo para melhor leitura</li>
+</ul>
+</div>
+<div class="action-buttons">
+<button class="btn btn-primary" onclick="shareQRCode()">
+<i class="fas fa-share-alt"></i> Compartilhar QR Code
             </button>
-            <button class="btn btn-secondary" onclick="downloadQRCode()">
-                <i class="fas fa-download"></i> Baixar Imagem
+<button class="btn btn-secondary" onclick="downloadQRCode()">
+<i class="fas fa-download"></i> Baixar Imagem
             </button>
-        </div>
-    </div>
-    
-    <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="/app-empresas.html" class="nav-item">
-            <i class="fas fa-store"></i>
-            <span>Empresas</span>
-        </a>
-        <a href="/app-promocoes.html" class="nav-item">
-            <i class="fas fa-tags"></i>
-            <span>Promoções</span>
-        </a>
-        <a href="/app-qrcode.html" class="nav-item active">
-            <i class="fas fa-qrcode"></i>
-            <span>Meu QR</span>
-        </a>
-        <a href="/app-perfil-cliente.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
-    </nav>
-    
-    <script>
+</div>
+</div>
+<nav class="bottom-nav">
+<a href="/app-inicio.html" class="nav-item active">
+<i class="fas fa-home"></i>
+<span>Início</span>
+</a>
+<a href="/app-empresas.html" class="nav-item">
+<i class="fas fa-store"></i>
+<span>Empresas</span>
+</a>
+<a href="/app-promocoes.html" class="nav-item">
+<i class="fas fa-tags"></i>
+<span>Promoções</span>
+</a>
+<a href="/app-qrcode.html" class="nav-item active">
+<i class="fas fa-qrcode"></i>
+<span>Meu QR</span>
+</a>
+<a href="/app-perfil-cliente.html" class="nav-item">
+<i class="fas fa-user"></i>
+<span>Perfil</span>
+</a>
+</nav>
+<script>
         const userStr = localStorage.getItem('user');
         let user = null;
         if (userStr && userStr !== 'undefined' && userStr !== 'null') {

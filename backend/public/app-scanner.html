@@ -1,115 +1,83 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner QR Code - Tem de Tudo</title>
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#1a1a2e">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #F5F5F7; color: #1D1D1F; padding-bottom: 80px; }
-        .header { background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; text-align: center; }
-        .header h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
-        .header p { font-size: 13px; opacity: 0.9; }
-        .scanner-container { padding: 20px; text-align: center; }
-        .scanner-box { background: #2a2a3e; border: 3px dashed rgba(102, 126, 234, 0.4); border-radius: 24px; padding: 40px 20px; margin: 20px 0; position: relative; overflow: hidden; }
-        .scanner-icon { width: 120px; height: 120px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 24px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 64px; }
-        .scanner-title { font-size: 20px; font-weight: 800; margin-bottom: 12px; }
-        .scanner-subtitle { font-size: 14px; color: #888; margin-bottom: 24px; line-height: 1.6; }
-        .btn-scan { background: linear-gradient(135deg, #667eea, #764ba2); padding: 16px 40px; border-radius: 16px; font-size: 16px; font-weight: 700; border: none; color: #1D1D1F; cursor: pointer; display: inline-flex; align-items: center; gap: 12px; }
-        .btn-scan:active { transform: scale(0.97); }
-        .divider { display: flex; align-items: center; gap: 16px; margin: 32px 0; color: #888; font-size: 13px; }
-        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(102, 126, 234, 0.1); }
-        .manual-input { background: #2a2a3e; border-radius: 16px; padding: 20px; border: 1px solid rgba(102, 126, 234, 0.1); }
-        .manual-input h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
-        .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; font-size: 13px; color: #888; margin-bottom: 8px; }
-        .input-group input { width: 100%; padding: 14px 16px; background: #F5F5F7; border: 1px solid rgba(102, 126, 234, 0.2); border-radius: 12px; color: #1D1D1F; font-size: 15px; outline: none; }
-        .input-group input:focus { border-color: #667eea; }
-        .btn-submit { width: 100%; background: linear-gradient(135deg, #f39c12, #9333EA); padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 700; border: none; color: #1D1D1F; cursor: pointer; }
-        .info-cards { display: grid; gap: 12px; margin-top: 32px; }
-        .info-card { background: #2a2a3e; border-radius: 16px; padding: 16px; border: 1px solid rgba(102, 126, 234, 0.1); display: flex; align-items: center; gap: 16px; }
-        .info-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #667eea20, #764ba220); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #667eea; }
-        .info-content h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-        .info-content p { font-size: 12px; color: #888; line-height: 1.5; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #F5F5F7; border-top: 1px solid rgba(102, 126, 234, 0.1); display: flex; justify-content: space-around; padding: 12px 0 8px; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #888; font-size: 11px; font-weight: 500; }
-        .nav-item.active { color: #667eea; }
-        .nav-item i { font-size: 20px; }
-        #video { width: 100%; max-width: 400px; border-radius: 16px; margin: 20px auto; display: none; }
-    </style>
-    <link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scanner QR Code - Tem de Tudo</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1a1a2e">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header">
-        <h1> Scanner QR Code</h1>
-        <p>Escaneie para ganhar pontos</p>
-    </div>
-    <div class="scanner-container">
-        <div class="scanner-box">
-            <div class="scanner-icon">
-                <i class="fas fa-qrcode"></i>
-            </div>
-            <div class="scanner-title">Escaneie o QR Code</div>
-            <div class="scanner-subtitle">Aponte a câmera para o QR Code da empresa para fazer check-in e ganhar pontos</div>
-            <button class="btn-scan" onclick="iniciarScanner()">
-                <i class="fas fa-camera"></i>
+<div class="header">
+<h1> Scanner QR Code</h1>
+<p>Escaneie para ganhar pontos</p>
+</div>
+<div class="scanner-container">
+<div class="scanner-box">
+<div class="scanner-icon">
+<i class="fas fa-qrcode"></i>
+</div>
+<div class="scanner-title">Escaneie o QR Code</div>
+<div class="scanner-subtitle">Aponte a câmera para o QR Code da empresa para fazer check-in e ganhar pontos</div>
+<button class="btn-scan" onclick="iniciarScanner()">
+<i class="fas fa-camera"></i>
                 Abrir Câmera
             </button>
-            <video id="video" autoplay playsinline></video>
-        </div>
-        <div class="divider">OU</div>
-        <div class="manual-input">
-            <h3>Digite o código manualmente</h3>
-            <div class="input-group">
-                <label>Código da Empresa</label>
-                <input type="text" id="codigoManual" placeholder="Ex: EMP12345" maxlength="20">
-            </div>
-            <button class="btn-submit" onclick="fazerCheckinManual()">
-                <i class="fas fa-check-circle"></i> Fazer Check-in
+<video id="video" autoplay playsinline></video>
+</div>
+<div class="divider">OU</div>
+<div class="manual-input">
+<h3>Digite o código manualmente</h3>
+<div class="input-group">
+<label>Código da Empresa</label>
+<input type="text" id="codigoManual" placeholder="Ex: EMP12345" maxlength="20">
+</div>
+<button class="btn-submit" onclick="fazerCheckinManual()">
+<i class="fas fa-check-circle"></i> Fazer Check-in
             </button>
-        </div>
-        <div class="info-cards">
-            <div class="info-card">
-                <div class="info-icon">
-                    <i class="fas fa-coins"></i>
-                </div>
-                <div class="info-content">
-                    <h4>Ganhe pontos a cada visita</h4>
-                    <p>Acumule pontos e troque por prêmios</p>
-                </div>
-            </div>
-            <div class="info-card">
-                <div class="info-icon">
-                    <i class="fas fa-star"></i>
-                </div>
-                <div class="info-content">
-                    <h4>Bônus especiais</h4>
-                    <p>Receba pontos extras em datas comemorativas</p>
-                </div>
-            </div>
-            <div class="info-card">
-                <div class="info-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <div class="info-content">
-                    <h4>Seguro e confiável</h4>
-                    <p>Seus dados estão protegidos</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
-        <a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-        <a href="/app-meus-pontos.html" class="nav-item active"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
-        <a href="/app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
-    </nav>
-    <script>
+</div>
+<div class="info-cards">
+<div class="info-card">
+<div class="info-icon">
+<i class="fas fa-coins"></i>
+</div>
+<div class="info-content">
+<h4>Ganhe pontos a cada visita</h4>
+<p>Acumule pontos e troque por prêmios</p>
+</div>
+</div>
+<div class="info-card">
+<div class="info-icon">
+<i class="fas fa-star"></i>
+</div>
+<div class="info-content">
+<h4>Bônus especiais</h4>
+<p>Receba pontos extras em datas comemorativas</p>
+</div>
+</div>
+<div class="info-card">
+<div class="info-icon">
+<i class="fas fa-shield-alt"></i>
+</div>
+<div class="info-content">
+<h4>Seguro e confiável</h4>
+<p>Seus dados estão protegidos</p>
+</div>
+</div>
+</div>
+</div>
+<nav class="bottom-nav">
+<a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
+<a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
+<a href="/app-meus-pontos.html" class="nav-item active"><i class="fas fa-wallet"></i><span>Pontos</span></a>
+<a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
+<a href="/app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
+</nav>
+<script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         let stream = null;
         function iniciarScanner() {

@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -9,90 +9,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="/js/config.js"></script>
     <script>
-        // Se j√° est√° logado, redirecionar para o painel
+        // Se j· est· logado, redirecionar para o painel
         const token = localStorage.getItem('token');
         const userType = localStorage.getItem('userType');
         if (token && userType === 'admin') {
             window.location.href = 'admin-painel.html';
         }
     </script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: linear-gradient(135deg, #6F1AB6 0%, #9333EA 100%); 
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px; 
-        }
-        .login-container { 
-            background: white; 
-            padding: 48px 40px; 
-            border-radius: 24px; 
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3); 
-            max-width: 450px; 
-            width: 100%; 
-        }
-        .logo-section { text-align: center; margin-bottom: 32px; }
-        .logo-section .icon { 
-            width: 80px; 
-            height: 80px; 
-            background: linear-gradient(135deg, #6F1AB6, #9333EA); 
-            border-radius: 20px; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin-bottom: 16px; 
-        }
-        .logo-section .icon i { font-size: 40px; color: white; }
-        .logo-section h1 { font-size: 28px; font-weight: 900; color: #1D1D1F; margin-bottom: 8px; }
-        .logo-section p { font-size: 14px; color: #86868B; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 700; font-size: 13px; color: #1D1D1F; margin-bottom: 8px; text-transform: uppercase; }
-        .form-group input { 
-            width: 100%; 
-            padding: 16px; 
-            border: 2px solid #E5E5E7; 
-            border-radius: 12px; 
-            font-size: 16px; 
-            font-family: 'Inter', sans-serif; 
-            transition: all 0.3s; 
-        }
-        .form-group input:focus { outline: none; border-color: #6F1AB6; }
-        .btn-login { 
-            width: 100%; 
-            padding: 18px; 
-            background: linear-gradient(135deg, #6F1AB6, #9333EA); 
-            color: white; 
-            border: none; 
-            border-radius: 12px; 
-            font-size: 18px; 
-            font-weight: 900; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-            margin-top: 8px; 
-        }
-        .btn-login:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(111, 26, 182, 0.4); }
-        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
-        .error-message { 
-            background: #FEE; 
-            color: #C00; 
-            padding: 12px; 
-            border-radius: 8px; 
-            margin-bottom: 16px; 
-            display: none; 
-            font-size: 14px; 
-        }
-    </style>
-</head>
+    
+<link rel="stylesheet" href="/css/style-unificado.css">`n</head>
 <body>
     <div class="login-container">
         <div class="logo-section">
             <div class="icon"><i class="fas fa-shield-halved"></i></div>
-            <h1>Administra√ß√£o</h1>
-            <p>Sistema de Gest√£o Tem de Tudo</p>
+            <h1>AdministraÁ„o</h1>
+            <p>Sistema de Gest„o Tem de Tudo</p>
         </div>
         <div class="error-message" id="errorMessage"></div>
         <form id="loginForm" onsubmit="handleLogin(event)">
@@ -102,7 +33,7 @@
             </div>
             <div class="form-group">
                 <label for="password">Senha</label>
-                <input type="password" id="password" name="password" required placeholder="‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢" autocomplete="current-password">
+                <input type="password" id="password" name="password" required placeholder="ïïïïïïïï" autocomplete="current-password">
             </div>
             <button type="submit" class="btn-login" id="btnLogin">
                 <i class="fas fa-sign-in-alt"></i> Entrar no Painel
@@ -139,7 +70,7 @@
                     localStorage.setItem('userType', 'admin');
                     window.location.href = 'admin-painel.html';
                 } else {
-                    throw new Error(result.message || 'Credenciais inv√°lidas');
+                    throw new Error(result.message || 'Credenciais inv·lidas');
                 }
             } catch (error) {
                 console.error('Erro no login:', error);

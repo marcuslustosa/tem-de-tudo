@@ -1,344 +1,122 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Central de Notificações - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">
-    
-    <!-- EmailJS SDK (GRÁTIS - 300 emails/mês) -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    
-    <style>
-        body {
-            padding-bottom: 80px;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
-            padding: var(--space-6) var(--space-4);
-            color: #1D1D1F;
-        }
-        
-        .header h1 {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: var(--space-2);
-        }
-        
-        .header p {
-            opacity: 0.9;
-            font-size: 14px;
-        }
-        
-        .notification-types {
-            padding: var(--space-4);
-            display: grid;
-            gap: var(--space-4);
-        }
-        
-        .notification-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-5);
-        }
-        
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
-            margin-bottom: var(--space-4);
-        }
-        
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #1D1D1F;
-        }
-        
-        .card-title {
-            flex: 1;
-        }
-        
-        .card-title h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-        
-        .card-title p {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-        
-        .toggle-switch {
-            position: relative;
-            width: 50px;
-            height: 28px;
-        }
-        
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .3s;
-            border-radius: 28px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 4px;
-            bottom: 4px;
-            background-color: #1D1D1F;
-            transition: .3s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: var(--purple-1);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(22px);
-        }
-        
-        .btn-test {
-            width: 100%;
-            padding: var(--space-3);
-            background: rgba(102, 126, 234, 0.1);
-            border: 1px solid var(--purple-1);
-            border-radius: var(--radius-md);
-            color: var(--purple-1);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-test:hover {
-            background: rgba(102, 126, 234, 0.2);
-        }
-        
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .status-badge.active {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-        }
-        
-        .status-badge.inactive {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-        }
-        
-        .notification-list {
-            padding: var(--space-4);
-        }
-        
-        .notification-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-4);
-            margin-bottom: var(--space-3);
-            display: flex;
-            gap: var(--space-3);
-        }
-        
-        .notification-item.unread {
-            border-left: 3px solid var(--purple-1);
-            background: rgba(102, 126, 234, 0.05);
-        }
-        
-        .notification-icon-small {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--purple-1), var(--purple-2));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #1D1D1F;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-        
-        .notification-content {
-            flex: 1;
-        }
-        
-        .notification-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        
-        .notification-message {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-        
-        .notification-time {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: var(--space-8);
-            color: var(--text-muted);
-        }
-        
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: var(--space-4);
-            opacity: 0.3;
-        }
-    </style>
-    <link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central de Notificações - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">
+<!-- EmailJS SDK (GRÁTIS - 300 emails/mês) -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header">
-        <h1><i class="fas fa-bell"></i> Central de Notificações</h1>
-        <p>Gerencie como você recebe notificações</p>
-    </div>
-    
-    <div class="notification-types">
-        <!-- Push Notifications -->
-        <div class="notification-card">
-            <div class="card-header">
-                <div class="card-icon">
-                    <i class="fas fa-mobile-alt"></i>
-                </div>
-                <div class="card-title">
-                    <h3>Push Notifications</h3>
-                    <p>Notificações no navegador</p>
-                </div>
-                <span class="status-badge inactive" id="pushStatus">
-                    <i class="fas fa-circle"></i> Inativo
+<div class="header">
+<h1><i class="fas fa-bell"></i> Central de Notificações</h1>
+<p>Gerencie como você recebe notificações</p>
+</div>
+<div class="notification-types">
+<!-- Push Notifications -->
+<div class="notification-card">
+<div class="card-header">
+<div class="card-icon">
+<i class="fas fa-mobile-alt"></i>
+</div>
+<div class="card-title">
+<h3>Push Notifications</h3>
+<p>Notificações no navegador</p>
+</div>
+<span class="status-badge inactive" id="pushStatus">
+<i class="fas fa-circle"></i> Inativo
                 </span>
-            </div>
-            <button class="btn-test" onclick="enablePushNotifications()">
-                <i class="fas fa-bell"></i> Ativar Push Notifications
+</div>
+<button class="btn-test" onclick="enablePushNotifications()">
+<i class="fas fa-bell"></i> Ativar Push Notifications
             </button>
-            <button class="btn-test" onclick="testPushNotification()" style="margin-top: 8px;">
-                <i class="fas fa-rocket"></i> Testar Notificação
+<button class="btn-test" onclick="testPushNotification()" style="margin-top: 8px;">
+<i class="fas fa-rocket"></i> Testar Notificação
             </button>
-        </div>
-        
-        <!-- Email Notifications -->
-        <div class="notification-card">
-            <div class="card-header">
-                <div class="card-icon">
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <div class="card-title">
-                    <h3>Email Notifications</h3>
-                    <p>Receba por e-mail (EmailJS)</p>
-                </div>
-                <span class="status-badge active" id="emailStatus">
-                    <i class="fas fa-circle"></i> Ativo
+</div>
+<!-- Email Notifications -->
+<div class="notification-card">
+<div class="card-header">
+<div class="card-icon">
+<i class="fas fa-envelope"></i>
+</div>
+<div class="card-title">
+<h3>Email Notifications</h3>
+<p>Receba por e-mail (EmailJS)</p>
+</div>
+<span class="status-badge active" id="emailStatus">
+<i class="fas fa-circle"></i> Ativo
                 </span>
-            </div>
-            <div style="margin-bottom: var(--space-3);">
-                <label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600;">Seu Email:</label>
-                <input type="email" id="userEmail" class="input-field" placeholder="seu@email.com" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-primary);">
-            </div>
-            <button class="btn-test" onclick="testEmailNotification()">
-                <i class="fas fa-paper-plane"></i> Enviar Email de Teste
+</div>
+<div style="margin-bottom: var(--space-3);">
+<label style="display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600;">Seu Email:</label>
+<input type="email" id="userEmail" class="input-field" placeholder="seu@email.com" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-primary);">
+</div>
+<button class="btn-test" onclick="testEmailNotification()">
+<i class="fas fa-paper-plane"></i> Enviar Email de Teste
             </button>
-        </div>
-        
-        <!-- In-App Notifications -->
-        <div class="notification-card">
-            <div class="card-header">
-                <div class="card-icon">
-                    <i class="fas fa-inbox"></i>
-                </div>
-                <div class="card-title">
-                    <h3>Notificações In-App</h3>
-                    <p>Dentro do aplicativo</p>
-                </div>
-                <span class="status-badge active">
-                    <i class="fas fa-circle"></i> Ativo
+</div>
+<!-- In-App Notifications -->
+<div class="notification-card">
+<div class="card-header">
+<div class="card-icon">
+<i class="fas fa-inbox"></i>
+</div>
+<div class="card-title">
+<h3>Notificações In-App</h3>
+<p>Dentro do aplicativo</p>
+</div>
+<span class="status-badge active">
+<i class="fas fa-circle"></i> Ativo
                 </span>
-            </div>
-            <button class="btn-test" onclick="testInAppNotification()">
-                <i class="fas fa-plus"></i> Criar Notificação Teste
+</div>
+<button class="btn-test" onclick="testInAppNotification()">
+<i class="fas fa-plus"></i> Criar Notificação Teste
             </button>
-        </div>
-    </div>
-    
-    <div style="padding: var(--space-4);">
-        <h3 style="font-size: 18px; font-weight: 700; margin-bottom: var(--space-4);">
-            <i class="fas fa-history"></i> Histórico de Notificações
+</div>
+</div>
+<div style="padding: var(--space-4);">
+<h3 style="font-size: 18px; font-weight: 700; margin-bottom: var(--space-4);">
+<i class="fas fa-history"></i> Histórico de Notificações
         </h3>
-        
-        <div id="notificationList">
-            <div class="empty-state">
-                <i class="fas fa-bell-slash"></i>
-                <p>Nenhuma notificação ainda</p>
-            </div>
-        </div>
-        
-        <button class="btn-test" onclick="clearAllNotifications()" style="margin-top: var(--space-3);">
-            <i class="fas fa-trash"></i> Limpar Todas Notificações
+<div id="notificationList">
+<div class="empty-state">
+<i class="fas fa-bell-slash"></i>
+<p>Nenhuma notificação ainda</p>
+</div>
+</div>
+<button class="btn-test" onclick="clearAllNotifications()" style="margin-top: var(--space-3);">
+<i class="fas fa-trash"></i> Limpar Todas Notificações
         </button>
-    </div>
-    
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="/app-empresas.html" class="nav-item">
-            <i class="fas fa-store"></i>
-            <span>Empresas</span>
-        </a>
-        <a href="/app-promocoes.html" class="nav-item">
-            <i class="fas fa-tags"></i>
-            <span>Promoções</span>
-        </a>
-        <a href="/app-qrcode.html" class="nav-item">
-            <i class="fas fa-qrcode"></i>
-            <span>Meu QR</span>
-        </a>
-        <a href="/app-perfil-cliente.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
-    </nav>
-    
-    <script src="/js/notification-system-simple.js"></script>
+</div>
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+<a href="/app-inicio.html" class="nav-item">
+<i class="fas fa-home"></i>
+<span>Início</span>
+</a>
+<a href="/app-empresas.html" class="nav-item">
+<i class="fas fa-store"></i>
+<span>Empresas</span>
+</a>
+<a href="/app-promocoes.html" class="nav-item">
+<i class="fas fa-tags"></i>
+<span>Promoções</span>
+</a>
+<a href="/app-qrcode.html" class="nav-item">
+<i class="fas fa-qrcode"></i>
+<span>Meu QR</span>
+</a>
+<a href="/app-perfil-cliente.html" class="nav-item">
+<i class="fas fa-user"></i>
+<span>Perfil</span>
+</a>
+</nav>
+<script src="/js/notification-system-simple.js"></script>
 </body>
 </html>

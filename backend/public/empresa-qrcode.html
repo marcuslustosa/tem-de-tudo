@@ -1,404 +1,136 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>QR Code Empresa - Tem de Tudo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #FFFFFF;
-            color: #ffffff;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-right: 1px solid rgba(102, 126, 234, 0.1);
-            padding: 24px 0;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .logo {
-            padding: 0 24px 24px;
-            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
-            margin-bottom: 24px;
-        }
-
-        .logo h1 {
-            font-size: 24px;
-            font-weight: 900;
-            color: #667eea;
-        }
-
-        .logo p {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 4px;
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            padding: 0 16px;
-            margin-bottom: 4px;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            border-radius: 12px;
-            transition: all 0.3s;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .nav-link i {
-            margin-right: 12px;
-            font-size: 18px;
-            width: 24px;
-        }
-
-        .nav-link:hover {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-        }
-
-        .nav-link.active {
-            background: rgba(102, 126, 234, 0.15);
-            color: #667eea;
-            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
-        }
-
-        .main-content {
-            margin-left: 260px;
-            flex: 1;
-            padding: 32px;
-        }
-
-        .header {
-            margin-bottom: 32px;
-        }
-
-        .header h2 {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .header p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-        }
-
-        .qr-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .qr-card {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 24px;
-            padding: 48px;
-            text-align: center;
-        }
-
-        .qr-wrapper {
-            background: white;
-            padding: 32px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 32px;
-            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-        }
-
-        #qrcode {
-            display: inline-block;
-        }
-
-        .qr-info {
-            margin-bottom: 32px;
-        }
-
-        .qr-id {
-            font-size: 18px;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 8px;
-        }
-
-        .qr-name {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 16px;
-        }
-
-        .qr-instructions {
-            background: rgba(102, 126, 234, 0.1);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 32px;
-        }
-
-        .qr-instructions h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: #667eea;
-        }
-
-        .qr-instructions ul {
-            text-align: left;
-            list-style: none;
-            font-size: 14px;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .qr-instructions li {
-            margin-bottom: 8px;
-            padding-left: 24px;
-            position: relative;
-        }
-
-        .qr-instructions li::before {
-            content: '?';
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: 700;
-        }
-
-        .qr-actions {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-        }
-
-        .qr-btn {
-            padding: 14px 32px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 12px;
-            color: #1D1D1F;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .qr-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
-        }
-
-        .qr-btn i {
-            font-size: 16px;
-        }
-
-        .brightness-control {
-            margin-top: 24px;
-        }
-
-        .brightness-label {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 12px;
-        }
-
-        .brightness-slider {
-            width: 100%;
-            max-width: 300px;
-            height: 6px;
-            background: rgba(102, 126, 234, 0.2);
-            border-radius: 3px;
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-
-        .brightness-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #667eea;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 16px;
-            }
-
-            .qr-card {
-                padding: 24px;
-            }
-
-            .qr-actions {
-                flex-direction: column;
-            }
-        }
-    </style>
-    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="empresa"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>QR Code Empresa - Tem de Tudo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/auth-manager.js" defer></script>
+<script src="/js/api-client.js" defer></script>
+<script src="/js/validators.js" defer></script>
+<script src="/js/ui-helpers.js" defer></script>
+<script src="/js/auth-guard.js" data-require-auth="empresa"></script>
+<link rel="stylesheet" href="/css/global-unified.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/style-unificado.css">
+</head>
 <body>
-    <aside class="sidebar">
-        <div class="logo">
-            <i class="fas fa-gem" style="color: #6F1AB6; margin-right: 8px; font-size: 1.5rem;"></i>
-            <h1 style="display: inline; background: linear-gradient(135deg, #6F1AB6, #9333EA); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tem de Tudo</h1>
-            <p>Painel Empresa</p>
-        </div>
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="empresa-dashboard.html" class="nav-link">
-                    <i class="fas fa-chart-line"></i>
+<aside class="sidebar">
+<div class="logo">
+<i class="fas fa-gem" style="color: #6F1AB6; margin-right: 8px; font-size: 1.5rem;"></i>
+<h1 >Tem de Tudo</h1>
+<p>Painel Empresa</p>
+</div>
+<ul class="nav-menu">
+<li class="nav-item">
+<a href="empresa-dashboard.html" class="nav-link">
+<i class="fas fa-chart-line"></i>
                     Dashboard
                 </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-qrcode.html" class="nav-link active">
-                    <i class="fas fa-qrcode"></i>
+</li>
+<li class="nav-item">
+<a href="empresa-qrcode.html" class="nav-link active">
+<i class="fas fa-qrcode"></i>
                     QR Code
                 </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-scanner.html" class="nav-link">
-                    <i class="fas fa-camera"></i>
+</li>
+<li class="nav-item">
+<a href="empresa-scanner.html" class="nav-link">
+<i class="fas fa-camera"></i>
                     Scanner
                 </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-clientes.html" class="nav-link">
-                    <i class="fas fa-users"></i>
+</li>
+<li class="nav-item">
+<a href="empresa-clientes.html" class="nav-link">
+<i class="fas fa-users"></i>
                     Clientes
                 </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-promocoes.html" class="nav-link">
-                    <i class="fas fa-gift"></i>
+</li>
+<li class="nav-item">
+<a href="empresa-promocoes.html" class="nav-link">
+<i class="fas fa-gift"></i>
                     Promoções
                 </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-bonus.html" class="nav-link">
-                    <i class="fas fa-star"></i>
+</li>
+<li class="nav-item">
+<a href="empresa-bonus.html" class="nav-link">
+<i class="fas fa-star"></i>
                     Bônus
                 </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-notificacoes.html" class="nav-link">
-                    <i class="fas fa-bell"></i>
+</li>
+<li class="nav-item">
+<a href="empresa-notificacoes.html" class="nav-link">
+<i class="fas fa-bell"></i>
                     Notificações
                 </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-relatorios.html" class="nav-link">
-                    <i class="fas fa-file-alt"></i>
+</li>
+<li class="nav-item">
+<a href="empresa-relatorios.html" class="nav-link">
+<i class="fas fa-file-alt"></i>
                     Relatórios
                 </a>
-            </li>
-            <li class="nav-item">
-                <a href="empresa-configuracoes.html" class="nav-link">
-                    <i class="fas fa-cog"></i>
+</li>
+<li class="nav-item">
+<a href="empresa-configuracoes.html" class="nav-link">
+<i class="fas fa-cog"></i>
                     Configurações
                 </a>
-            </li>
-        </ul>
-    </aside>
-
-    <main class="main-content">
-        <div class="header">
-            <h2>QR Code da Empresa</h2>
-            <p>Mostre este QR Code aos clientes para acumularem pontos</p>
-        </div>
-
-        <div class="qr-container">
-            <div class="qr-card">
-                <div class="qr-info">
-                    <div class="qr-id">ID: EMP-12345</div>
-                    <div class="qr-name">Popeye Hamburguer</div>
-                </div>
-
-                <div class="qr-wrapper">
-                    <div id="qrcode"></div>
-                </div>
-
-                <div class="qr-instructions">
-                    <h3><i class="fas fa-info-circle"></i> Como Funciona</h3>
-                    <ul>
-                        <li>Cliente abre o app Tem de Tudo</li>
-                        <li>Toca em "Scanner" no menu inferior</li>
-                        <li>Aponta a câmera para este QR Code</li>
-                        <li>Pontos são creditados automaticamente</li>
-                    </ul>
-                </div>
-
-                <div class="qr-actions">
-                    <button class="qr-btn" onclick="downloadQR()">
-                        <i class="fas fa-download"></i>
+</li>
+</ul>
+</aside>
+<main class="main-content">
+<div class="header">
+<h2>QR Code da Empresa</h2>
+<p>Mostre este QR Code aos clientes para acumularem pontos</p>
+</div>
+<div class="qr-container">
+<div class="qr-card">
+<div class="qr-info">
+<div class="qr-id">ID: EMP-12345</div>
+<div class="qr-name">Popeye Hamburguer</div>
+</div>
+<div class="qr-wrapper">
+<div id="qrcode"></div>
+</div>
+<div class="qr-instructions">
+<h3><i class="fas fa-info-circle"></i> Como Funciona</h3>
+<ul>
+<li>Cliente abre o app Tem de Tudo</li>
+<li>Toca em "Scanner" no menu inferior</li>
+<li>Aponta a câmera para este QR Code</li>
+<li>Pontos são creditados automaticamente</li>
+</ul>
+</div>
+<div class="qr-actions">
+<button class="qr-btn" onclick="downloadQR()">
+<i class="fas fa-download"></i>
                         Baixar QR Code
                     </button>
-                    <button class="qr-btn" onclick="printQR()">
-                        <i class="fas fa-print"></i>
+<button class="qr-btn" onclick="printQR()">
+<i class="fas fa-print"></i>
                         Imprimir
                     </button>
-                </div>
-
-                <div class="brightness-control">
-                    <div class="brightness-label">
-                        <i class="fas fa-sun"></i> Brilho do QR Code
+</div>
+<div class="brightness-control">
+<div class="brightness-label">
+<i class="fas fa-sun"></i> Brilho do QR Code
                     </div>
-                    <input type="range" class="brightness-slider" min="30" max="100" value="100" 
+<input type="range" class="brightness-slider" min="30" max="100" value="100" 
                            oninput="adjustBrightness(this.value)">
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script>
+</div>
+</div>
+</div>
+</main>
+<script>
         // Gerar QR Code
         const empresaId = 'EMP-12345';
         const qrData = JSON.stringify({

@@ -1,78 +1,49 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recuperar Senha - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #F5F5F7; color: #1D1D1F; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-        .container { background: #2a2a3e; border: 1px solid rgba(102, 126, 234, 0.1); border-radius: 24px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); width: 100%; max-width: 440px; padding: 40px; }
-        .header { text-align: center; margin-bottom: 32px; }
-        .header i { font-size: 64px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 16px; }
-        h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .subtitle { color: #999; font-size: 14px; line-height: 1.6; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 13px; font-weight: 600; color: #aaa; margin-bottom: 8px; }
-        input { width: 100%; padding: 14px 16px; background: #F5F5F7; border: 1px solid rgba(102, 126, 234, 0.2); border-radius: 12px; color: #1D1D1F; font-size: 15px; outline: none; transition: all 0.3s; }
-        input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
-        input::placeholder { color: #666; }
-        .btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #667eea, #764ba2); color: #1D1D1F; font-size: 16px; font-weight: 700; border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .back-link { text-align: center; margin-top: 24px; }
-        .back-link a { color: #667eea; font-size: 14px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
-        .back-link a:hover { text-decoration: underline; }
-        .alert { padding: 14px 16px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; display: none; }
-        .alert-success { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #22c55e; }
-        .alert-error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; }
-        .info-box { background: rgba(102, 126, 234, 0.1); border: 1px solid rgba(102, 126, 234, 0.2); border-radius: 12px; padding: 16px; margin-bottom: 24px; }
-        .info-box i { color: #667eea; margin-right: 8px; }
-        .info-box p { font-size: 13px; color: #aaa; line-height: 1.6; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recuperar Senha - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <i class="fas fa-key"></i>
-            <h1>Recuperar Senha</h1>
-            <p class="subtitle">Enviaremos um link de recuperação para seu e-mail</p>
-        </div>
-
-        <div class="info-box" id="infoBox">
-            <p><i class="fas fa-info-circle"></i> Digite o e-mail cadastrado na sua conta. Você receberá instruções para criar uma nova senha.</p>
-        </div>
-
-        <div class="alert alert-success" id="alertSuccess">
-            <i class="fas fa-check-circle"></i> <span id="successMessage"></span>
-        </div>
-        <div class="alert alert-error" id="alertError">
-            <i class="fas fa-exclamation-circle"></i> <span id="errorMessage"></span>
-        </div>
-
-        <form id="recoveryForm">
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" placeholder="seu@email.com" required autocomplete="email">
-            </div>
-
-            <button type="submit" class="btn" id="submitBtn">
-                <i class="fas fa-paper-plane"></i>
+<div class="container">
+<div class="header">
+<i class="fas fa-key"></i>
+<h1>Recuperar Senha</h1>
+<p class="subtitle">Enviaremos um link de recuperação para seu e-mail</p>
+</div>
+<div class="info-box" id="infoBox">
+<p><i class="fas fa-info-circle"></i> Digite o e-mail cadastrado na sua conta. Você receberá instruções para criar uma nova senha.</p>
+</div>
+<div class="alert alert-success" id="alertSuccess">
+<i class="fas fa-check-circle"></i>
+<span id="successMessage"></span>
+</div>
+<div class="alert alert-error" id="alertError">
+<i class="fas fa-exclamation-circle"></i>
+<span id="errorMessage"></span>
+</div>
+<form id="recoveryForm">
+<div class="form-group">
+<label for="email">E-mail</label>
+<input type="email" id="email" placeholder="seu@email.com" required autocomplete="email">
+</div>
+<button type="submit" class="btn" id="submitBtn">
+<i class="fas fa-paper-plane"></i>
                 Enviar Link de Recuperação
             </button>
-        </form>
-
-        <div class="back-link">
-            <a href="/entrar.html">
-                <i class="fas fa-arrow-left"></i>
+</form>
+<div class="back-link">
+<a href="/entrar.html">
+<i class="fas fa-arrow-left"></i>
                 Voltar para Login
             </a>
-        </div>
-    </div>
-
-    <script>
+</div>
+</div>
+<script>
         const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? 'http://127.0.0.1:8001/api' 
             : '/api';

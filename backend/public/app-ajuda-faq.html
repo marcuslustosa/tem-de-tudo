@@ -1,101 +1,75 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajuda - Tem de Tudo</title>
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#1a1a2e">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #F5F5F7; color: #1D1D1F; padding-bottom: 80px; }
-        .header { background: linear-gradient(135deg, #667eea, #764ba2); padding: 20px; display: flex; align-items: center; gap: 16px; }
-        .btn-back { background: rgba(255, 255, 255, 0.2); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: none; color: white; font-size: 18px; cursor: pointer; }
-        .header h1 { font-size: 20px; font-weight: 800; }
-        .search-section { padding: 16px 20px; }
-        .search-box { position: relative; }
-        .search-box input { width: 100%; padding: 14px 16px 14px 48px; background: #2a2a3e; border: 1px solid rgba(102, 126, 234, 0.1); border-radius: 12px; color: #1D1D1F; font-size: 15px; outline: none; }
-        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #667eea; font-size: 18px; }
-        .faq-section { padding: 20px; }
-        .faq-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; }
-        .faq-item { background: #2a2a3e; border-radius: 16px; margin-bottom: 12px; border: 1px solid rgba(102, 126, 234, 0.1); overflow: hidden; }
-        .faq-question { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; }
-        .faq-answer { padding: 0 16px 16px; color: #888; line-height: 1.6; font-size: 14px; display: none; }
-        .faq-answer.show { display: block; }
-        .contact-cards { display: grid; gap: 12px; margin-top: 24px; }
-        .contact-card { background: #2a2a3e; border-radius: 16px; padding: 20px; border: 1px solid rgba(102, 126, 234, 0.1); text-align: center; }
-        .contact-icon { width: 60px; height: 60px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 16px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
-        .contact-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-        .contact-desc { font-size: 13px; color: #888; margin-bottom: 16px; }
-        .contact-btn { background: linear-gradient(135deg, #667eea, #764ba2); padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 700; border: none; color: #1D1D1F; cursor: pointer; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #F5F5F7; border-top: 1px solid rgba(102, 126, 234, 0.1); display: flex; justify-content: space-around; padding: 12px 0 8px; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: #888; font-size: 11px; font-weight: 500; }
-        .nav-item.active { color: #667eea; }
-        .nav-item i { font-size: 20px; }
-    </style>
-    <link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ajuda - Tem de Tudo</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1a1a2e">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header">
-        <button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i></button>
-        <h1>Ajuda e FAQ</h1>
-    </div>
-    <div class="search-section">
-        <div class="search-box">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" placeholder="Buscar d�vidas..." id="searchFaq">
-        </div>
-    </div>
-    <div class="faq-section">
-        <div class="faq-title">Perguntas Frequentes</div>
-        <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-question">Como ganhar pontos? <i class="fas fa-chevron-down"></i></div>
-            <div class="faq-answer">Voc� ganha pontos fazendo check-in nas empresas parceiras usando o scanner QR Code ou o c�digo manual.</div>
-        </div>
-        <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-question">Como resgatar cupons? <i class="fas fa-chevron-down"></i></div>
-            <div class="faq-answer">Acesse a se��o de Promo��es, escolha uma oferta e clique em "Usar". Mostre o c�digo gerado na empresa.</div>
-        </div>
-        <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-question">Os pontos expiram? <i class="fas fa-chevron-down"></i></div>
-            <div class="faq-answer">Sim, os pontos t�m validade de 12 meses a partir da data de ganho. Verifique seu hist�rico para detalhes.</div>
-        </div>
-        <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-question">Posso transferir pontos? <i class="fas fa-chevron-down"></i></div>
-            <div class="faq-answer">N�o, os pontos s�o pessoais e intransfer�veis.</div>
-        </div>
-        <div class="faq-item" onclick="toggleFaq(this)">
-            <div class="faq-question">Como alterar meus dados? <i class="fas fa-chevron-down"></i></div>
-            <div class="faq-answer">V� em Perfil > Editar Perfil e atualize suas informa��es.</div>
-        </div>
-    </div>
-    <div class="faq-section">
-        <div class="faq-title">Entre em Contato</div>
-        <div class="contact-cards">
-            <div class="contact-card">
-                <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                <div class="contact-title">Email</div>
-                <div class="contact-desc">contato@temdetudo.com</div>
-                <button class="contact-btn" onclick="window.location.href='mailto:contato@temdetudo.com'">Enviar Email</button>
-            </div>
-            <div class="contact-card">
-                <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
-                <div class="contact-title">WhatsApp</div>
-                <div class="contact-desc">(11) 99999-9999</div>
-                <button class="contact-btn" onclick="window.open('https://wa.me/5511999999999', '_blank')">Abrir WhatsApp</button>
-            </div>
-        </div>
-    </div>
-    <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>In�cio</span></a>
-        <a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-        <a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-        <a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promo��es</span></a>
-        <a href="/app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
-    </nav>
-    <script>
+<div class="header">
+<button class="btn-back" onclick="window.history.back()"><i class="fas fa-arrow-left"></i></button>
+<h1>Ajuda e FAQ</h1>
+</div>
+<div class="search-section">
+<div class="search-box">
+<i class="fas fa-search search-icon"></i>
+<input type="text" placeholder="Buscar d�vidas..." id="searchFaq">
+</div>
+</div>
+<div class="faq-section">
+<div class="faq-title">Perguntas Frequentes</div>
+<div class="faq-item" onclick="toggleFaq(this)">
+<div class="faq-question">Como ganhar pontos? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer">Voc� ganha pontos fazendo check-in nas empresas parceiras usando o scanner QR Code ou o c�digo manual.</div>
+</div>
+<div class="faq-item" onclick="toggleFaq(this)">
+<div class="faq-question">Como resgatar cupons? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer">Acesse a se��o de Promo��es, escolha uma oferta e clique em "Usar". Mostre o c�digo gerado na empresa.</div>
+</div>
+<div class="faq-item" onclick="toggleFaq(this)">
+<div class="faq-question">Os pontos expiram? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer">Sim, os pontos t�m validade de 12 meses a partir da data de ganho. Verifique seu hist�rico para detalhes.</div>
+</div>
+<div class="faq-item" onclick="toggleFaq(this)">
+<div class="faq-question">Posso transferir pontos? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer">N�o, os pontos s�o pessoais e intransfer�veis.</div>
+</div>
+<div class="faq-item" onclick="toggleFaq(this)">
+<div class="faq-question">Como alterar meus dados? <i class="fas fa-chevron-down"></i></div>
+<div class="faq-answer">V� em Perfil > Editar Perfil e atualize suas informa��es.</div>
+</div>
+</div>
+<div class="faq-section">
+<div class="faq-title">Entre em Contato</div>
+<div class="contact-cards">
+<div class="contact-card">
+<div class="contact-icon"><i class="fas fa-envelope"></i></div>
+<div class="contact-title">Email</div>
+<div class="contact-desc">contato@temdetudo.com</div>
+<button class="contact-btn" onclick="window.location.href='mailto:contato@temdetudo.com'">Enviar Email</button>
+</div>
+<div class="contact-card">
+<div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+<div class="contact-title">WhatsApp</div>
+<div class="contact-desc">(11) 99999-9999</div>
+<button class="contact-btn" onclick="window.open('https://wa.me/5511999999999', '_blank')">Abrir WhatsApp</button>
+</div>
+</div>
+</div>
+<nav class="bottom-nav">
+<a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>In�cio</span></a>
+<a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
+<a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
+<a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promo��es</span></a>
+<a href="/app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
+</nav>
+<script>
         function toggleFaq(element) {
             const answer = element.querySelector('.faq-answer');
             answer.classList.toggle('show');

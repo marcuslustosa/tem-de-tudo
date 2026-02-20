@@ -1,74 +1,55 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alterar Senha - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">
-    <style>
-        body { background: #FFFFFF; color: #1D1D1F; padding-bottom: 100px; }
-        .header { background: linear-gradient(145deg, #667eea, #764ba2); padding: 60px 20px 30px; text-align: center; position: relative; }
-        .btn-back { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border: none; width: 40px; height: 40px; border-radius: 12px; color: white; font-size: 18px; cursor: pointer; }
-        .container { max-width: 600px; margin: -20px auto 0; padding: 0 20px; }
-        .form-card { background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 24px; padding: 24px; margin-bottom: 20px; border: 1px solid rgba(102, 126, 234, 0.1); }
-        .form-group { margin-bottom: 20px; position: relative; }
-        .form-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #b0b0b0; }
-        .form-input { width: 100%; padding: 14px 46px 14px 16px; background: rgba(0,0,0,0.3); border: 1px solid rgba(102, 126, 234, 0.2); border-radius: 12px; color: #1D1D1F; font-size: 15px; }
-        .form-input:focus { outline: none; border-color: #667eea; }
-        .toggle-password { position: absolute; right: 16px; top: 44px; background: none; border: none; color: #667eea; cursor: pointer; }
-        .btn-save { width: 100%; padding: 18px; background: linear-gradient(135deg, #667eea, #764ba2); color: #1D1D1F; border: none; border-radius: 16px; font-size: 18px; font-weight: 700; cursor: pointer; }
-        .alert { background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107; padding: 16px; border-radius: 12px; margin-bottom: 20px; font-size: 13px; color: #ffc107; }
-    </style>
-    <link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alterar Senha - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">
+<link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header">
-        <button class="btn-back" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
-        <h1><i class="fas fa-key"></i> Alterar Senha</h1>
-    </div>
-    
-    <div class="container">
-        <div class="alert">
-            <i class="fas fa-info-circle"></i> 
-            <strong>Dica de segurança:</strong> Use uma senha forte com pelo menos 6 caracteres, incluindo letras e números.
+<div class="header">
+<button class="btn-back" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+<h1><i class="fas fa-key"></i> Alterar Senha</h1>
+</div>
+<div class="container">
+<div class="alert">
+<i class="fas fa-info-circle"></i>
+<strong>Dica de segurança:</strong> Use uma senha forte com pelo menos 6 caracteres, incluindo letras e números.
         </div>
-        
-        <div class="form-card">
-            <form id="formSenha" onsubmit="alterarSenha(event)">
-                <div class="form-group">
-                    <label class="form-label">Senha Atual</label>
-                    <input type="password" class="form-input" id="senhaAtual" required>
-                    <button type="button" class="toggle-password" onclick="togglePassword('senhaAtual')">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Nova Senha</label>
-                    <input type="password" class="form-input" id="novaSenha" required minlength="6">
-                    <button type="button" class="toggle-password" onclick="togglePassword('novaSenha')">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Confirmar Nova Senha</label>
-                    <input type="password" class="form-input" id="confirmarSenha" required minlength="6">
-                    <button type="button" class="toggle-password" onclick="togglePassword('confirmarSenha')">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-                
-                <button type="submit" class="btn-save">
-                    <i class="fas fa-save"></i> Alterar Senha
+<div class="form-card">
+<form id="formSenha" onsubmit="alterarSenha(event)">
+<div class="form-group">
+<label class="form-label">Senha Atual</label>
+<input type="password" class="form-input" id="senhaAtual" required>
+<button type="button" class="toggle-password" onclick="togglePassword('senhaAtual')">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+<div class="form-group">
+<label class="form-label">Nova Senha</label>
+<input type="password" class="form-input" id="novaSenha" required minlength="6">
+<button type="button" class="toggle-password" onclick="togglePassword('novaSenha')">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+<div class="form-group">
+<label class="form-label">Confirmar Nova Senha</label>
+<input type="password" class="form-input" id="confirmarSenha" required minlength="6">
+<button type="button" class="toggle-password" onclick="togglePassword('confirmarSenha')">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+<button type="submit" class="btn-save">
+<i class="fas fa-save"></i> Alterar Senha
                 </button>
-            </form>
-        </div>
-    </div>
-    
-    <script>
+</form>
+</div>
+</div>
+<script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         
         function togglePassword(inputId) {
@@ -138,38 +119,29 @@
             }
         }
     </script>
-    
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="/app-empresas.html" class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>Buscar</span>
-        </a>
-        <a href="/app-meus-pontos.html" class="nav-item">
-            <i class="fas fa-wallet"></i>
-            <span>Pontos</span>
-        </a>
-        <a href="/app-promocoes.html" class="nav-item">
-            <i class="fas fa-tags"></i>
-            <span>Promoções</span>
-        </a>
-        <a href="/app-perfil.html" class="nav-item active">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
-    </nav>
-    
-    <style>
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #2a2a3e; border-top: 1px solid rgba(102, 126, 234, 0.1); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: #999; transition: all 0.3s; border-radius: 8px; }
-        .nav-item:hover, .nav-item.active { color: #667eea; background: rgba(102, 126, 234, 0.1); }
-        .nav-item i { font-size: 20px; }
-        .nav-item span { font-size: 11px; font-weight: 600; text-transform: uppercase; }
-    </style>
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+<a href="/app-inicio.html" class="nav-item">
+<i class="fas fa-home"></i>
+<span>Início</span>
+</a>
+<a href="/app-empresas.html" class="nav-item">
+<i class="fas fa-search"></i>
+<span>Buscar</span>
+</a>
+<a href="/app-meus-pontos.html" class="nav-item">
+<i class="fas fa-wallet"></i>
+<span>Pontos</span>
+</a>
+<a href="/app-promocoes.html" class="nav-item">
+<i class="fas fa-tags"></i>
+<span>Promoções</span>
+</a>
+<a href="/app-perfil.html" class="nav-item active">
+<i class="fas fa-user"></i>
+<span>Perfil</span>
+</a>
+</nav>
 </body>
 </html>
 

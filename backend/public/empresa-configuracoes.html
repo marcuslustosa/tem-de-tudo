@@ -1,297 +1,183 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Configurações - Tem de Tudo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            color: #1D1D1F; 
-            display: flex; 
-            min-height: 100vh;
-        }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .sidebar {
-            width: 260px; 
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 24px 0; 
-            position: fixed; 
-            height: 100vh; 
-            overflow-y: auto;
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
-        }
-        .logo { padding: 0 24px 24px; border-bottom: 1px solid rgba(102, 126, 234, 0.1); margin-bottom: 24px; }
-        .logo h1 { font-size: 24px; font-weight: 900; color: #667eea; }
-        .logo p { font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-top: 4px; }
-        .nav-menu { list-style: none; }
-        .nav-item { padding: 0 16px; margin-bottom: 4px; }
-        .nav-link {
-            display: flex; align-items: center; padding: 12px 16px;
-            color: rgba(255, 255, 255, 0.7); text-decoration: none;
-            border-radius: 12px; transition: all 0.3s; font-size: 14px; font-weight: 500;
-        }
-        .nav-link i { margin-right: 12px; font-size: 18px; width: 24px; }
-        .nav-link:hover { background: rgba(102, 126, 234, 0.1); color: #667eea; }
-        .nav-link.active { background: rgba(102, 126, 234, 0.15); color: #667eea; box-shadow: 0 0 20px rgba(102, 126, 234, 0.2); }
-        .main-content { margin-left: 260px; flex: 1; padding: 32px; max-width: 1000px; }
-        .header { margin-bottom: 32px; }
-        .header h2 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
-        .header p { color: rgba(255, 255, 255, 0.6); font-size: 14px; }
-        .settings-section {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border: 1px solid rgba(102, 126, 234, 0.1);
-            border-radius: 16px; padding: 32px; margin-bottom: 24px;
-        }
-        .section-title { font-size: 20px; font-weight: 800; margin-bottom: 24px; color: #667eea; }
-        .form-row { margin-bottom: 24px; }
-        .form-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-        .form-input, .form-textarea {
-            width: 100%; padding: 12px 16px;
-            background: rgba(102, 126, 234, 0.05);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 12px; color: #1D1D1F; font-size: 14px; font-family: inherit;
-        }
-        .form-textarea { min-height: 100px; resize: vertical; }
-        .form-input::placeholder, .form-textarea::placeholder { color: rgba(255, 255, 255, 0.4); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
-        .toggle-setting {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 16px; background: rgba(102, 126, 234, 0.05);
-            border: 1px solid rgba(102, 126, 234, 0.1);
-            border-radius: 12px; margin-bottom: 12px;
-        }
-        .toggle-setting-info { flex: 1; }
-        .toggle-setting-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-        .toggle-setting-desc { font-size: 12px; color: rgba(255, 255, 255, 0.6); }
-        .toggle-switch { position: relative; width: 56px; height: 28px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .toggle-slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(255, 255, 255, 0.1); transition: 0.4s; border-radius: 28px;
-        }
-        .toggle-slider:before {
-            position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px;
-            background-color: #1D1D1F; transition: 0.4s; border-radius: 50%;
-        }
-        input:checked + .toggle-slider { background-color: #667eea; }
-        input:checked + .toggle-slider:before { transform: translateX(28px); }
-        .save-btn {
-            padding: 14px 32px; background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none; border-radius: 12px; color: #1D1D1F; font-size: 14px; font-weight: 700;
-            cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px;
-        }
-        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4); }
-        .danger-zone {
-            background: linear-gradient(145deg, rgba(231, 76, 60, 0.1), rgba(192, 57, 43, 0.1));
-            border: 1px solid rgba(231, 76, 60, 0.3);
-        }
-        .danger-btn {
-            padding: 12px 24px; background: rgba(231, 76, 60, 0.2);
-            border: 1px solid rgba(231, 76, 60, 0.4); border-radius: 12px;
-            color: #e74c3c; font-size: 13px; font-weight: 600;
-            cursor: pointer; transition: all 0.3s;
-        }
-        .danger-btn:hover { background: #e74c3c; color: #1D1D1F; }
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .main-content { margin-left: 0; padding: 16px; }
-            .form-grid { grid-template-columns: 1fr; }
-        }
-    </style>
-    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="empresa"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Configurações - Tem de Tudo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="/js/config.js"></script>
+<script src="/js/auth-manager.js" defer></script>
+<script src="/js/api-client.js" defer></script>
+<script src="/js/validators.js" defer></script>
+<script src="/js/ui-helpers.js" defer></script>
+<script src="/js/auth-guard.js" data-require-auth="empresa"></script>
+<link rel="stylesheet" href="/css/global-unified.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/style-unificado.css">
+</head>
 <body>
-    <aside class="sidebar">
-        <div class="logo">
-            <i class="fas fa-gem" style="color: #6F1AB6; margin-right: 8px; font-size: 1.5rem;"></i>
-            <h1 style="display: inline; background: linear-gradient(135deg, #6F1AB6, #9333EA); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tem de Tudo</h1>
-            <p>Painel Empresa</p>
-        </div>
-        <ul class="nav-menu">
-            <li class="nav-item"><a href="empresa-dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i>Dashboard</a></li>
-            <li class="nav-item"><a href="empresa-qrcode.html" class="nav-link"><i class="fas fa-qrcode"></i>QR Code</a></li>
-            <li class="nav-item"><a href="empresa-scanner.html" class="nav-link"><i class="fas fa-camera"></i>Scanner</a></li>
-            <li class="nav-item"><a href="empresa-clientes.html" class="nav-link"><i class="fas fa-users"></i>Clientes</a></li>
-            <li class="nav-item"><a href="empresa-promocoes.html" class="nav-link"><i class="fas fa-gift"></i>Promoções</a></li>
-            <li class="nav-item"><a href="empresa-bonus.html" class="nav-link"><i class="fas fa-star"></i>Bônus</a></li>
-            <li class="nav-item"><a href="empresa-notificacoes.html" class="nav-link"><i class="fas fa-bell"></i>Notificações</a></li>
-            <li class="nav-item"><a href="empresa-relatorios.html" class="nav-link"><i class="fas fa-file-alt"></i>Relatórios</a></li>
-            <li class="nav-item"><a href="empresa-configuracoes.html" class="nav-link active"><i class="fas fa-cog"></i>Configurações</a></li>
-        </ul>
-    </aside>
-
-    <main class="main-content">
-        <div class="header">
-            <h2>Configurações</h2>
-            <p>Gerencie as configurações do seu estabelecimento</p>
-        </div>
-
-        <div class="settings-section">
-            <h3 class="section-title"><i class="fas fa-store"></i> Informações do Estabelecimento</h3>
-            <div class="form-grid">
-                <div class="form-row">
-                    <label class="form-label">Nome do Estabelecimento</label>
-                    <input type="text" class="form-input" value="Popeye Hamburguer" placeholder="Nome comercial">
-                </div>
-                <div class="form-row">
-                    <label class="form-label">Categoria</label>
-                    <select class="form-input">
-                        <option selected>Restaurante</option>
-                        <option>Beleza & Estética</option>
-                        <option>Fitness</option>
-                        <option>Serviços</option>
-                        <option>Lazer</option>
-                        <option>Saúde</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row">
-                <label class="form-label">Descrição</label>
-                <textarea class="form-textarea" placeholder="Conte aos clientes sobre seu negócio...">A melhor hamburgueria da região! Hambúrgueres artesanais preparados com ingredientes frescos e de qualidade.</textarea>
-            </div>
-            <div class="form-grid">
-                <div class="form-row">
-                    <label class="form-label">Telefone</label>
-                    <input type="tel" class="form-input" value="(11) 98765-4321" placeholder="(00) 00000-0000">
-                </div>
-                <div class="form-row">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" value="contato@popeye.com" placeholder="contato@empresa.com">
-                </div>
-            </div>
-            <div class="form-row">
-                <label class="form-label">Endereço Completo</label>
-                <input type="text" class="form-input" value="Av. Paulista, 1000 - Bela Vista, São Paulo - SP" placeholder="Rua, número, bairro, cidade">
-            </div>
-            <button class="save-btn"><i class="fas fa-save"></i> Salvar Alterações</button>
-        </div>
-
-        <div class="settings-section">
-            <h3 class="section-title"><i class="fas fa-clock"></i> Horário de Funcionamento</h3>
-            <div class="form-grid">
-                <div class="form-row">
-                    <label class="form-label">Segunda a Sexta</label>
-                    <input type="text" class="form-input" value="11:00 - 23:00" placeholder="00:00 - 00:00">
-                </div>
-                <div class="form-row">
-                    <label class="form-label">Sábado</label>
-                    <input type="text" class="form-input" value="11:00 - 00:00" placeholder="00:00 - 00:00">
-                </div>
-                <div class="form-row">
-                    <label class="form-label">Domingo</label>
-                    <input type="text" class="form-input" value="11:00 - 22:00" placeholder="00:00 - 00:00">
-                </div>
-                <div class="form-row">
-                    <label class="form-label">Feriados</label>
-                    <input type="text" class="form-input" value="12:00 - 20:00" placeholder="00:00 - 00:00">
-                </div>
-            </div>
-            <button class="save-btn"><i class="fas fa-save"></i> Salvar Horários</button>
-        </div>
-
-        <div class="settings-section">
-            <h3 class="section-title"><i class="fas fa-coins"></i> Pontuação e Recompensas</h3>
-            <div class="form-grid">
-                <div class="form-row">
-                    <label class="form-label">Pontos por Real Gasto</label>
-                    <input type="number" class="form-input" value="10" placeholder="Ex: 10 pontos">
-                </div>
-                <div class="form-row">
-                    <label class="form-label">Valor Mínimo para Pontos</label>
-                    <input type="number" class="form-input" value="10" placeholder="R$ 0,00">
-                </div>
-                <div class="form-row">
-                    <label class="form-label">Validade dos Pontos (dias)</label>
-                    <input type="number" class="form-input" value="90" placeholder="Ex: 90 dias">
-                </div>
-                <div class="form-row">
-                    <label class="form-label">Multiplicador Premium</label>
-                    <input type="number" class="form-input" value="2" placeholder="Ex: 2x">
-                </div>
-            </div>
-            <button class="save-btn"><i class="fas fa-save"></i> Salvar Configurações</button>
-        </div>
-
-        <div class="settings-section">
-            <h3 class="section-title"><i class="fas fa-bell"></i> Notificações</h3>
-            <div class="toggle-setting">
-                <div class="toggle-setting-info">
-                    <div class="toggle-setting-title">Notificações Push</div>
-                    <div class="toggle-setting-desc">Enviar notificações para clientes sobre promoções</div>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="toggle-setting">
-                <div class="toggle-setting-info">
-                    <div class="toggle-setting-title">Email Marketing</div>
-                    <div class="toggle-setting-desc">Enviar emails promocionais semanais</div>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="toggle-setting">
-                <div class="toggle-setting-info">
-                    <div class="toggle-setting-title">SMS</div>
-                    <div class="toggle-setting-desc">Enviar SMS em datas especiais (aniversários, etc)</div>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <div class="settings-section danger-zone">
-            <h3 class="section-title"><i class="fas fa-exclamation-triangle"></i> Zona de Perigo</h3>
-            <div class="form-row">
-                <label class="form-label">Ações Irreversíveis</label>
-                <p style="font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 16px;">
+<aside class="sidebar">
+<div class="logo">
+<i class="fas fa-gem" style="color: #6F1AB6; margin-right: 8px; font-size: 1.5rem;"></i>
+<h1 >Tem de Tudo</h1>
+<p>Painel Empresa</p>
+</div>
+<ul class="nav-menu">
+<li class="nav-item"><a href="empresa-dashboard.html" class="nav-link"><i class="fas fa-chart-line"></i>Dashboard</a></li>
+<li class="nav-item"><a href="empresa-qrcode.html" class="nav-link"><i class="fas fa-qrcode"></i>QR Code</a></li>
+<li class="nav-item"><a href="empresa-scanner.html" class="nav-link"><i class="fas fa-camera"></i>Scanner</a></li>
+<li class="nav-item"><a href="empresa-clientes.html" class="nav-link"><i class="fas fa-users"></i>Clientes</a></li>
+<li class="nav-item"><a href="empresa-promocoes.html" class="nav-link"><i class="fas fa-gift"></i>Promoções</a></li>
+<li class="nav-item"><a href="empresa-bonus.html" class="nav-link"><i class="fas fa-star"></i>Bônus</a></li>
+<li class="nav-item"><a href="empresa-notificacoes.html" class="nav-link"><i class="fas fa-bell"></i>Notificações</a></li>
+<li class="nav-item"><a href="empresa-relatorios.html" class="nav-link"><i class="fas fa-file-alt"></i>Relatórios</a></li>
+<li class="nav-item"><a href="empresa-configuracoes.html" class="nav-link active"><i class="fas fa-cog"></i>Configurações</a></li>
+</ul>
+</aside>
+<main class="main-content">
+<div class="header">
+<h2>Configurações</h2>
+<p>Gerencie as configurações do seu estabelecimento</p>
+</div>
+<div class="settings-section">
+<h3 class="section-title"><i class="fas fa-store"></i> Informações do Estabelecimento</h3>
+<div class="form-grid">
+<div class="form-row">
+<label class="form-label">Nome do Estabelecimento</label>
+<input type="text" class="form-input" value="Popeye Hamburguer" placeholder="Nome comercial">
+</div>
+<div class="form-row">
+<label class="form-label">Categoria</label>
+<select class="form-input">
+<option selected>Restaurante</option>
+<option>Beleza & Estética</option>
+<option>Fitness</option>
+<option>Serviços</option>
+<option>Lazer</option>
+<option>Saúde</option>
+</select>
+</div>
+</div>
+<div class="form-row">
+<label class="form-label">Descrição</label>
+<textarea class="form-textarea" placeholder="Conte aos clientes sobre seu negócio...">A melhor hamburgueria da região! Hambúrgueres artesanais preparados com ingredientes frescos e de qualidade.</textarea>
+</div>
+<div class="form-grid">
+<div class="form-row">
+<label class="form-label">Telefone</label>
+<input type="tel" class="form-input" value="(11) 98765-4321" placeholder="(00) 00000-0000">
+</div>
+<div class="form-row">
+<label class="form-label">Email</label>
+<input type="email" class="form-input" value="contato@popeye.com" placeholder="contato@empresa.com">
+</div>
+</div>
+<div class="form-row">
+<label class="form-label">Endereço Completo</label>
+<input type="text" class="form-input" value="Av. Paulista, 1000 - Bela Vista, São Paulo - SP" placeholder="Rua, número, bairro, cidade">
+</div>
+<button class="save-btn"><i class="fas fa-save"></i> Salvar Alterações</button>
+</div>
+<div class="settings-section">
+<h3 class="section-title"><i class="fas fa-clock"></i> Horário de Funcionamento</h3>
+<div class="form-grid">
+<div class="form-row">
+<label class="form-label">Segunda a Sexta</label>
+<input type="text" class="form-input" value="11:00 - 23:00" placeholder="00:00 - 00:00">
+</div>
+<div class="form-row">
+<label class="form-label">Sábado</label>
+<input type="text" class="form-input" value="11:00 - 00:00" placeholder="00:00 - 00:00">
+</div>
+<div class="form-row">
+<label class="form-label">Domingo</label>
+<input type="text" class="form-input" value="11:00 - 22:00" placeholder="00:00 - 00:00">
+</div>
+<div class="form-row">
+<label class="form-label">Feriados</label>
+<input type="text" class="form-input" value="12:00 - 20:00" placeholder="00:00 - 00:00">
+</div>
+</div>
+<button class="save-btn"><i class="fas fa-save"></i> Salvar Horários</button>
+</div>
+<div class="settings-section">
+<h3 class="section-title"><i class="fas fa-coins"></i> Pontuação e Recompensas</h3>
+<div class="form-grid">
+<div class="form-row">
+<label class="form-label">Pontos por Real Gasto</label>
+<input type="number" class="form-input" value="10" placeholder="Ex: 10 pontos">
+</div>
+<div class="form-row">
+<label class="form-label">Valor Mínimo para Pontos</label>
+<input type="number" class="form-input" value="10" placeholder="R$ 0,00">
+</div>
+<div class="form-row">
+<label class="form-label">Validade dos Pontos (dias)</label>
+<input type="number" class="form-input" value="90" placeholder="Ex: 90 dias">
+</div>
+<div class="form-row">
+<label class="form-label">Multiplicador Premium</label>
+<input type="number" class="form-input" value="2" placeholder="Ex: 2x">
+</div>
+</div>
+<button class="save-btn"><i class="fas fa-save"></i> Salvar Configurações</button>
+</div>
+<div class="settings-section">
+<h3 class="section-title"><i class="fas fa-bell"></i> Notificações</h3>
+<div class="toggle-setting">
+<div class="toggle-setting-info">
+<div class="toggle-setting-title">Notificações Push</div>
+<div class="toggle-setting-desc">Enviar notificações para clientes sobre promoções</div>
+</div>
+<label class="toggle-switch">
+<input type="checkbox" checked>
+<span class="toggle-slider"></span>
+</label>
+</div>
+<div class="toggle-setting">
+<div class="toggle-setting-info">
+<div class="toggle-setting-title">Email Marketing</div>
+<div class="toggle-setting-desc">Enviar emails promocionais semanais</div>
+</div>
+<label class="toggle-switch">
+<input type="checkbox" checked>
+<span class="toggle-slider"></span>
+</label>
+</div>
+<div class="toggle-setting">
+<div class="toggle-setting-info">
+<div class="toggle-setting-title">SMS</div>
+<div class="toggle-setting-desc">Enviar SMS em datas especiais (aniversários, etc)</div>
+</div>
+<label class="toggle-switch">
+<input type="checkbox">
+<span class="toggle-slider"></span>
+</label>
+</div>
+</div>
+<div class="settings-section danger-zone">
+<h3 class="section-title"><i class="fas fa-exclamation-triangle"></i> Zona de Perigo</h3>
+<div class="form-row">
+<label class="form-label">Ações Irreversíveis</label>
+<p style="font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 16px;">
                     Essas ações não podem ser desfeitas. Tenha certeza antes de prosseguir.
                 </p>
-                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    <button class="danger-btn"><i class="fas fa-trash"></i> Excluir Todos os Dados</button>
-                    <button class="danger-btn"><i class="fas fa-ban"></i> Desativar Conta</button>
-                    <button class="danger-btn"><i class="fas fa-sign-out-alt"></i> Sair da Plataforma</button>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script>
+<div style="display: flex; gap: 12px; flex-wrap: wrap;">
+<button class="danger-btn"><i class="fas fa-trash"></i> Excluir Todos os Dados</button>
+<button class="danger-btn"><i class="fas fa-ban"></i> Desativar Conta</button>
+<button class="danger-btn"><i class="fas fa-sign-out-alt"></i> Sair da Plataforma</button>
+</div>
+</div>
+</div>
+</main>
+<script>
         // Verificar autenticação
         function checkAuth() {
             const token = localStorage.getItem('token');

@@ -1,439 +1,64 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#6F1AB6">
-    <title>🎯 Promoções Premium - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: #FFFFFF;
-            color: #1D1D1F; 
-            padding-bottom: 80px;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        .header { 
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
-            position: relative;
-            padding: 32px 20px 24px;
-            border-bottom: 1px solid rgba(111, 26, 182, 0.1);
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(111, 26, 182, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-        
-        .header-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-        }
-        
-        .header h1 { 
-            font-size: 28px; 
-            font-weight: 900;
-            background: linear-gradient(135deg, #ffffff, #6F1AB6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-        }
-        
-        .header p {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 500;
-        }
-        
-        .tabs-container {
-            padding: 24px 20px;
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(26, 26, 46, 0.3));
-            backdrop-filter: blur(10px);
-        }
-        
-        .tabs {
-            display: flex;
-            gap: 12px;
-            background: linear-gradient(135deg, rgba(15, 20, 25, 0.8), rgba(15, 20, 25, 0.4));
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(111, 26, 182, 0.1);
-            border-radius: 16px;
-            padding: 8px;
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 16px;
-            border-radius: 12px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: rgba(255,255,255,0.6);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tab::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.1) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .tab:hover::before {
-            opacity: 1;
-        }
-        
-        .tab.active {
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            color: #0a0a0f;
-            font-weight: 800;
-            transform: scale(1.02);
-            box-shadow: 0 4px 15px rgba(111, 26, 182, 0.3);
-        }
-
-        .tab.active::before {
-            opacity: 0;
-        }
-        
-        .section {
-            padding: 24px 20px;
-        }
-        
-        .section-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: #1D1D1F;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        
-        .section-title::before {
-            content: '';
-            width: 4px;
-            height: 28px;
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            border-radius: 2px;
-            box-shadow: 0 0 10px rgba(111, 26, 182, 0.5);
-        }
-        
-        .promocoes-grid {
-            display: grid;
-            gap: 20px;
-        }
-        
-        .promo-card {
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(111, 26, 182, 0.1);
-            border-radius: 20px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .promo-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.05) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .promo-card:hover::before {
-            opacity: 1;
-        }
-        
-        .promo-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(111, 26, 182, 0.3);
-            box-shadow: 0 8px 25px rgba(111, 26, 182, 0.2);
-        }
-        
-        .promo-header {
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            padding: 24px;
-            position: relative;
-            color: #0a0a0f;
-            z-index: 2;
-        }
-        
-        .promo-badge {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
-            backdrop-filter: blur(10px);
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #1D1D1F;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .promo-empresa {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            opacity: 0.8;
-        }
-        
-        .promo-title {
-            font-size: 22px;
-            font-weight: 900;
-            margin-bottom: 8px;
-            line-height: 1.2;
-        }
-        
-        .promo-valor {
-            font-size: 18px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .promo-desconto {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: #1D1D1F;
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 700;
-            box-shadow: 0 2px 10px rgba(46, 204, 113, 0.3);
-        }
-        
-        .promo-body {
-            padding: 24px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .promo-desc {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 16px;
-            line-height: 1.6;
-            font-weight: 500;
-        }
-        
-        .promo-tags {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .promo-tag {
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.2), rgba(111, 26, 182, 0.1));
-            color: #6F1AB6;
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
-            border: 1px solid rgba(111, 26, 182, 0.2);
-            backdrop-filter: blur(5px);
-            text-transform: uppercase;
-        }
-        
-        .promo-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 16px;
-            border-top: 1px solid rgba(111, 26, 182, 0.1);
-            position: relative;
-            z-index: 2;
-        }
-        
-        .promo-validade {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 500;
-        }
-        
-        .promo-validade i {
-            color: #6F1AB6;
-        }
-        
-        .promo-btn {
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            color: #0a0a0f;
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 13px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .promo-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(111, 26, 182, 0.4);
-        }
-        
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(26, 26, 46, 0.8));
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(111, 26, 182, 0.1);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0 8px;
-            z-index: 1000;
-        }
-        
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 8px 4px;
-            color: rgba(255, 255, 255, 0.6);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-radius: 12px;
-            min-width: 60px;
-        }
-        
-        .nav-item.active {
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.2), rgba(111, 26, 182, 0.1));
-            color: #6F1AB6;
-            transform: translateY(-2px);
-        }
-        
-        .nav-item:hover {
-            color: #6F1AB6;
-        }
-        
-        .nav-item i {
-            font-size: 20px;
-            margin-bottom: 4px;
-            transition: all 0.3s;
-        }
-        
-        .nav-item span {
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .empty-state i {
-            font-size: 64px;
-            margin-bottom: 20px;
-            color: #6F1AB6;
-            opacity: 0.7;
-        }
-        
-        .empty-state h3 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #1D1D1F;
-        }
-        
-        .empty-state p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#6F1AB6">
+<title>🎯 Promoções Premium - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <h1>🎁 Promoções</h1>
-            <p>Ofertas exclusivas e descontos incríveis para você</p>
-        </div>
-    </div>
-    
-    <div class="tabs-container">
-        <div class="tabs">
-            <div class="tab active" data-tab="ativas" onclick="trocarTab('ativas')">Ativas</div>
-            <div class="tab" data-tab="proximas" onclick="trocarTab('proximas')">Em Breve</div>
-            <div class="tab" data-tab="expiradas" onclick="trocarTab('expiradas')">Expiradas</div>
-        </div>
-    </div>
-    
-    <div class="section">
-        <div class="section-title" id="sectionTitle">Promoções Ativas</div>
-        <div class="promocoes-grid" id="promocoesGrid">
-            <!-- Promoções fictícias serão inseridas aqui -->
-        </div>
-        <div class="empty-state" id="emptyState" style="display: none;">
-            <i class="fas fa-gift"></i>
-            <p>Nenhuma promoção disponível no momento</p>
-        </div>
-    </div>
-
-    <nav class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="/app-empresas.html" class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>Buscar</span>
-        </a>
-        <a href="/app-promocoes.html" class="nav-item active">
-            <i class="fas fa-tags"></i>
-            <span>Promoções</span>
-        </a>
-        <a href="/app-avisos.html" class="nav-item">
-            <i class="fas fa-bell"></i>
-            <span>Avisos</span>
-        </a>
-        <a href="/app-perfil.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
-    </nav>
-
-    <script>
+<div class="header">
+<div class="header-content">
+<h1>🎁 Promoções</h1>
+<p>Ofertas exclusivas e descontos incríveis para você</p>
+</div>
+</div>
+<div class="tabs-container">
+<div class="tabs">
+<div class="tab active" data-tab="ativas" onclick="trocarTab('ativas')">Ativas</div>
+<div class="tab" data-tab="proximas" onclick="trocarTab('proximas')">Em Breve</div>
+<div class="tab" data-tab="expiradas" onclick="trocarTab('expiradas')">Expiradas</div>
+</div>
+</div>
+<div class="section">
+<div class="section-title" id="sectionTitle">Promoções Ativas</div>
+<div class="promocoes-grid" id="promocoesGrid">
+<!-- Promoções fictícias serão inseridas aqui -->
+</div>
+<div class="empty-state" id="emptyState" style="display: none;">
+<i class="fas fa-gift"></i>
+<p>Nenhuma promoção disponível no momento</p>
+</div>
+</div>
+<nav class="bottom-nav">
+<a href="/app-inicio.html" class="nav-item">
+<i class="fas fa-home"></i>
+<span>Início</span>
+</a>
+<a href="/app-empresas.html" class="nav-item">
+<i class="fas fa-search"></i>
+<span>Buscar</span>
+</a>
+<a href="/app-promocoes.html" class="nav-item active">
+<i class="fas fa-tags"></i>
+<span>Promoções</span>
+</a>
+<a href="/app-avisos.html" class="nav-item">
+<i class="fas fa-bell"></i>
+<span>Avisos</span>
+</a>
+<a href="/app-perfil.html" class="nav-item">
+<i class="fas fa-user"></i>
+<span>Perfil</span>
+</a>
+</nav>
+<script>
         // Dados fictícios de promoções
         const promocoesFicticias = {
             ativas: [
@@ -533,31 +158,31 @@
 
             grid.innerHTML = promocoes.map(promo => `
                 <div class="promo-card" onclick="abrirPromocao(${promo.id})">
-                    <div class="promo-header">
-                        <div class="promo-badge">${promo.badge}</div>
-                        <div class="promo-empresa">${promo.empresa}</div>
-                        <div class="promo-title">${promo.titulo}</div>
-                        <div class="promo-valor">
+<div class="promo-header">
+<div class="promo-badge">${promo.badge}</div>
+<div class="promo-empresa">${promo.empresa}</div>
+<div class="promo-title">${promo.titulo}</div>
+<div class="promo-valor">
                             ${promo.valor}
                             ${promo.valorOriginal ? `<span class="promo-desconto">${promo.desconto}</span>` : ''}
                         </div>
-                    </div>
-                    <div class="promo-body">
-                        <div class="promo-desc">${promo.descricao}</div>
-                        <div class="promo-tags">
+</div>
+<div class="promo-body">
+<div class="promo-desc">${promo.descricao}</div>
+<div class="promo-tags">
                             ${promo.tags.map(tag => `<span class="promo-tag">${tag}</span>`).join('')}
                         </div>
-                        <div class="promo-footer">
-                            <div class="promo-validade">
-                                <i class="fas fa-clock"></i>
+<div class="promo-footer">
+<div class="promo-validade">
+<i class="fas fa-clock"></i>
                                 Válido até ${promo.validade}
                             </div>
-                            <button class="promo-btn" onclick="event.stopPropagation(); usarPromocao(${promo.id})">
+<button class="promo-btn" onclick="event.stopPropagation(); usarPromocao(${promo.id})">
                                 ${tabAtual === 'expiradas' ? 'Expirada' : 'Usar Agora'}
                             </button>
-                        </div>
-                    </div>
-                </div>
+</div>
+</div>
+</div>
             `).join('');
         }
 

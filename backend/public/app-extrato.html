@@ -1,210 +1,53 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extrato de Pontos - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">
-    <style>
-        body { padding-bottom: 80px; }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            padding: 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        .header-content {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .btn-back {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        
-        .header h1 {
-            font-size: 22px;
-            font-weight: 800;
-        }
-        
-        .saldo-resumo {
-            background: linear-gradient(135deg, #2a2a3e, #252538);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-radius: 16px;
-            padding: 24px;
-            margin: 20px;
-            text-align: center;
-        }
-        
-        .saldo-label {
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 8px;
-        }
-        
-        .saldo-valor {
-            font-size: 48px;
-            font-weight: 900;
-            color: #f39c12;
-        }
-        
-        .filtros {
-            padding: 20px;
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-        }
-        
-        .filtro-btn {
-            padding: 10px 20px;
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            background: rgba(102, 126, 234, 0.1);
-            color: #1D1D1F;
-            border-radius: 20px;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .filtro-btn.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-color: #667eea;
-        }
-        
-        .timeline {
-            padding: 0 20px 20px;
-        }
-        
-        .timeline-item {
-            background: #2a2a3e;
-            border: 1px solid rgba(102, 126, 234, 0.1);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            position: relative;
-        }
-        
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -10px;
-            top: 24px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #667eea;
-        }
-        
-        .item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-        
-        .item-empresa {
-            font-weight: 600;
-            font-size: 16px;
-        }
-        
-        .item-pontos {
-            font-size: 20px;
-            font-weight: 800;
-        }
-        
-        .item-pontos.positivo {
-            color: #2ecc71;
-        }
-        
-        .item-pontos.negativo {
-            color: #e74c3c;
-        }
-        
-        .item-tipo {
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 4px;
-        }
-        
-        .item-data {
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-        
-        .empty-state i {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extrato de Pontos - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <button class="btn-back" onclick="window.history.back()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <h1>📊 Extrato de Pontos</h1>
-        </div>
-    </div>
-    
-    <div class="saldo-resumo">
-        <div class="saldo-label">Saldo Total</div>
-        <div class="saldo-valor" id="saldoTotal">0</div>
-    </div>
-    
-    <div class="filtros">
-        <button class="filtro-btn active" data-tipo="todos">Todos</button>
-        <button class="filtro-btn" data-tipo="ganhos">✅ Ganhos</button>
-        <button class="filtro-btn" data-tipo="gastos">💸 Gastos</button>
-        <button class="filtro-btn" data-tipo="check-in">📍 Check-ins</button>
-    </div>
-    
-    <div class="timeline" id="timeline"></div>
-    
-    <div class="bottom-nav">
-        <a href="/app-inicio.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="/app-empresas.html" class="nav-item">
-            <i class="fas fa-store"></i>
-            <span>Empresas</span>
-        </a>
-        <a href="/app-promocoes.html" class="nav-item">
-            <i class="fas fa-gift"></i>
-            <span>Promoções</span>
-        </a>
-        <a href="/app-perfil.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
-    </div>
-    
-    <script>
+<div class="header">
+<div class="header-content">
+<button class="btn-back" onclick="window.history.back()">
+<i class="fas fa-arrow-left"></i>
+</button>
+<h1>📊 Extrato de Pontos</h1>
+</div>
+</div>
+<div class="saldo-resumo">
+<div class="saldo-label">Saldo Total</div>
+<div class="saldo-valor" id="saldoTotal">0</div>
+</div>
+<div class="filtros">
+<button class="filtro-btn active" data-tipo="todos">Todos</button>
+<button class="filtro-btn" data-tipo="ganhos">✅ Ganhos</button>
+<button class="filtro-btn" data-tipo="gastos">💸 Gastos</button>
+<button class="filtro-btn" data-tipo="check-in">📍 Check-ins</button>
+</div>
+<div class="timeline" id="timeline"></div>
+<div class="bottom-nav">
+<a href="/app-inicio.html" class="nav-item">
+<i class="fas fa-home"></i>
+<span>Início</span>
+</a>
+<a href="/app-empresas.html" class="nav-item">
+<i class="fas fa-store"></i>
+<span>Empresas</span>
+</a>
+<a href="/app-promocoes.html" class="nav-item">
+<i class="fas fa-gift"></i>
+<span>Promoções</span>
+</a>
+<a href="/app-perfil.html" class="nav-item">
+<i class="fas fa-user"></i>
+<span>Perfil</span>
+</a>
+</div>
+<script>
         const API_BASE_URL = 'http://localhost:8000';
         let todosTransacoes = [];
         let filtroAtual = 'todos';
@@ -250,9 +93,9 @@
                 console.error('Erro:', error);
                 document.getElementById('timeline').innerHTML = `
                     <div class="empty-state">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <p>Erro ao carregar extrato</p>
-                    </div>
+<i class="fas fa-exclamation-circle"></i>
+<p>Erro ao carregar extrato</p>
+</div>
                 `;
             }
         }
@@ -275,26 +118,26 @@
             if (transacoesFiltradas.length === 0) {
                 timeline.innerHTML = `
                     <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <p>Nenhuma transação encontrada</p>
-                    </div>
+<i class="fas fa-inbox"></i>
+<p>Nenhuma transação encontrada</p>
+</div>
                 `;
                 return;
             }
             
             timeline.innerHTML = transacoesFiltradas.map(t => `
                 <div class="timeline-item">
-                    <div class="item-header">
-                        <div>
-                            <div class="item-empresa">${t.empresa_nome || t.descricao || 'Transação'}</div>
-                            <div class="item-tipo">${t.tipo || 'Pontos'}</div>
-                            <div class="item-data">${formatarData(t.created_at || t.data)}</div>
-                        </div>
-                        <div class="item-pontos ${t.pontos > 0 ? 'positivo' : 'negativo'}">
+<div class="item-header">
+<div>
+<div class="item-empresa">${t.empresa_nome || t.descricao || 'Transação'}</div>
+<div class="item-tipo">${t.tipo || 'Pontos'}</div>
+<div class="item-data">${formatarData(t.created_at || t.data)}</div>
+</div>
+<div class="item-pontos ${t.pontos > 0 ? 'positivo' : 'negativo'}">
                             ${t.pontos > 0 ? '+' : ''}${t.pontos}
                         </div>
-                    </div>
-                </div>
+</div>
+</div>
             `).join('');
         }
         

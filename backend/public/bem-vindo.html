@@ -1,183 +1,63 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tem de Tudo - Sistema de Fidelidade</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: #FFFFFF;
-            color: #1D1D1F;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
-        }
-        h1 {
-            font-size: 48px;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .subtitle {
-            font-size: 18px;
-            color: #b0b0b0;
-            margin-bottom: 50px;
-        }
-        .status {
-            background: rgba(26, 26, 46, 0.8);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-        }
-        .status-indicator {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-        .status-text {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        .status-detail {
-            color: #b0b0b0;
-            font-size: 14px;
-        }
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        .btn {
-            padding: 18px 24px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 12px;
-            color: #1D1D1F;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-        .btn-secondary {
-            background: rgba(255,255,255,0.1);
-        }
-        .btn-secondary:hover {
-            background: rgba(255,255,255,0.15);
-        }
-        .credentials {
-            background: rgba(26, 26, 46, 0.6);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: left;
-        }
-        .credential-item {
-            padding: 12px;
-            margin: 8px 0;
-            background: rgba(0,0,0,0.3);
-            border-radius: 8px;
-            border-left: 3px solid #667eea;
-        }
-        .credential-item strong {
-            color: #667eea;
-        }
-        .loading {
-            display: none;
-            margin: 20px 0;
-        }
-        .spinner {
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
-    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tem de Tudo - Sistema de Fidelidade</title>
+<script src="/js/config.js"></script>
+<script src="/js/auth-manager.js" defer></script>
+<script src="/js/api-client.js" defer></script>
+<script src="/js/validators.js" defer></script>
+<script src="/js/ui-helpers.js" defer></script>
+<script src="/js/auth-guard.js" data-require-auth="cliente"></script>
+<link rel="stylesheet" href="/css/global-unified.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/style-unificado.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
 <body>
-    <div class="container">
-        <h1>?? Tem de Tudo</h1>
-        <p class="subtitle">Sistema de Fidelidade Digital</p>
-
-        <div class="status" id="statusBox">
-            <div class="status-indicator" id="statusIcon">?</div>
-            <div class="status-text" id="statusText">Verificando sistema...</div>
-            <div class="status-detail" id="statusDetail">Aguarde um momento</div>
-        </div>
-
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p style="margin-top: 10px; color: #b0b0b0;">Inicializando banco de dados...</p>
-        </div>
-
-        <div class="buttons">
-            <a href="/entrar.html" class="btn">
+<div class="container">
+<h1>?? Tem de Tudo</h1>
+<p class="subtitle">Sistema de Fidelidade Digital</p>
+<div class="status" id="statusBox">
+<div class="status-indicator" id="statusIcon">?</div>
+<div class="status-text" id="statusText">Verificando sistema...</div>
+<div class="status-detail" id="statusDetail">Aguarde um momento</div>
+</div>
+<div class="loading" id="loading">
+<div class="spinner"></div>
+<p style="margin-top: 10px; color: #b0b0b0;">Inicializando banco de dados...</p>
+</div>
+<div class="buttons">
+<a href="/entrar.html" class="btn">
                 ?? Fazer Login
             </a>
-            <a href="/cadastro.html" class="btn">
+<a href="/cadastro.html" class="btn">
                 ?? Cadastrar-se
             </a>
-            <a href="/teste-login.html" class="btn btn-secondary">
+<a href="/teste-login.html" class="btn btn-secondary">
                 ?? Testar Sistema
             </a>
-            <button onclick="inicializarSistema()" class="btn btn-secondary">
+<button onclick="inicializarSistema()" class="btn btn-secondary">
                 ?? Inicializar Dados
             </button>
-        </div>
-
-        <div class="credentials">
-            <h3 style="margin-bottom: 15px; color: #667eea;">?? Credenciais de Teste</h3>
-            <div class="credential-item">
-                <strong>Admin:</strong> admin@temdetudo.com / admin123
+</div>
+<div class="credentials">
+<h3 style="margin-bottom: 15px; color: #667eea;">?? Credenciais de Teste</h3>
+<div class="credential-item">
+<strong>Admin:</strong> admin@temdetudo.com / admin123
             </div>
-            <div class="credential-item">
-                <strong>Cliente:</strong> cliente@teste.com / 123456
+<div class="credential-item">
+<strong>Cliente:</strong> cliente@teste.com / 123456
             </div>
-            <div class="credential-item">
-                <strong>Empresa:</strong> empresa@teste.com / 123456
+<div class="credential-item">
+<strong>Empresa:</strong> empresa@teste.com / 123456
             </div>
-            <div class="credential-item">
-                <strong>Clientes 1-5:</strong> cliente1@email.com / senha123
+<div class="credential-item">
+<strong>Clientes 1-5:</strong> cliente1@email.com / senha123
             </div>
-        </div>
-    </div>
-
-    <script>
+</div>
+</div>
+<script>
         const API_BASE = window.location.hostname.includes('onrender.com') 
             ? window.location.origin 
             : 'http://127.0.0.1:8000';

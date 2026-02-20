@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -7,427 +7,20 @@
     <title>Redirecionando...</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #FFFFFF;
-            color: #1D1D1F;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
-            position: relative;
-            padding: 24px;
-            border-bottom: 1px solid rgba(111, 26, 182, 0.1);
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(111, 26, 182, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-        
-        .header-content {
-            position: relative;
-            z-index: 2;
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header-left h1 {
-            font-size: 28px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #ffffff, #6F1AB6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 4px;
-        }
-        
-        .header-left p {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 500;
-        }
-        
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .user-info {
-            text-align: right;
-            margin-right: 12px;
-        }
-        
-        .user-info .name {
-            font-size: 14px;
-            font-weight: 700;
-            color: #1D1D1F;
-        }
-        
-        .user-info .role {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        .btn-logout {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #ef4444;
-            padding: 12px 20px;
-            border-radius: 16px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-logout::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .btn-logout:hover::before {
-            opacity: 1;
-        }
-
-        .btn-logout:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
-        }
-        
-        /* Main Content */
-        .main {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 32px 24px;
-        }
-        
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .stat-card {
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(111, 26, 182, 0.1);
-            border-radius: 20px;
-            padding: 24px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.05) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .stat-card:hover::before {
-            opacity: 1;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(111, 26, 182, 0.3);
-            box-shadow: 0 12px 30px rgba(111, 26, 182, 0.2);
-        }
-        
-        .stat-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .stat-label {
-            font-size: 13px;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.6);
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-        
-        .stat-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            transition: all 0.3s ease;
-        }
-        
-        .stat-icon.purple {
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.2), rgba(111, 26, 182, 0.1));
-            color: #6F1AB6;
-        }
-        
-        .stat-icon.green {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
-            color: #22c55e;
-        }
-        
-        .stat-icon.orange {
-            background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(249, 115, 22, 0.1));
-            color: #f97316;
-        }
-        
-        .stat-icon.blue {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
-            color: #3b82f6;
-        }
-
-        .stat-card:hover .stat-icon {
-            transform: scale(1.1);
-        }
-        
-        .stat-value {
-            font-size: 36px;
-            font-weight: 900;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .stat-change {
-            font-size: 12px;
-            color: #22c55e;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-weight: 600;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .stat-change.negative {
-            color: #ef4444;
-        }
-        
-        /* Section */
-        .section {
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(111, 26, 182, 0.1);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.05) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .section:hover::before {
-            opacity: 1;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .section-title {
-            font-size: 20px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff, #6F1AB6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            color: #1a1a2e;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 16px;
-            font-size: 14px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .btn-primary:hover::before {
-            opacity: 1;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(111, 26, 182, 0.3);
-        }
-        
-        /* Table */
-        .table-wrapper {
-            overflow-x: auto;
-            position: relative;
-            z-index: 2;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        thead {
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.1), rgba(111, 26, 182, 0.05));
-        }
-        
-        th {
-            padding: 16px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.7);
-            letter-spacing: 0.5px;
-        }
-        
-        td {
-            padding: 16px;
-            border-top: 1px solid rgba(111, 26, 182, 0.1);
-            font-size: 14px;
-            color: #1D1D1F;
-        }
-        
-        tbody tr:hover {
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.05), transparent);
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-        
-        .badge.active {
-            background: rgba(34, 197, 94, 0.15);
-            color: #22c55e;
-        }
-        
-        .badge.inactive {
-            background: rgba(100, 116, 139, 0.15);
-            color: #64748b;
-        }
-        
-        .badge.admin {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-        }
-        
-        .badge.empresa {
-            background: rgba(59, 130, 246, 0.15);
-            color: #3b82f6;
-        }
-        
-        .badge.cliente {
-            background: rgba(111, 26, 182, 0.15);
-            color: #6F1AB6;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #64748b;
-        }
-        
-        .spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(111, 26, 182, 0.2);
-            border-top-color: #6F1AB6;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+    
     <link rel="stylesheet" href="/css/theme-escuro.css">`n    <script>
         const token = localStorage.getItem('token');
         if (!token) {
             window.location.href = 'admin-login.html';
         }
     </script>
-</head>
+<link rel="stylesheet" href="/css/style-unificado.css">`n</head>
 <body>
     <div class="header">
         <div class="header-content">
             <div class="header-left">
-                <h1>Painel de Administra√ß√£o</h1>
-                <p>Bem-vindo ao sistema de gest√£o</p>
+                <h1>Painel de AdministraÁ„o</h1>
+                <p>Bem-vindo ao sistema de gest„o</p>
             </div>
             <div class="header-right">
                 <div class="user-info">
@@ -447,7 +40,7 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-header">
-                    <span class="stat-label">Total de Usu√°rios</span>
+                    <span class="stat-label">Total de Usu·rios</span>
                     <div class="stat-icon purple">
                         <i class="fas fa-users"></i>
                     </div>
@@ -455,7 +48,7 @@
                 <div class="stat-value" id="totalUsers">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>12% este m√™s</span>
+                    <span>12% este mÍs</span>
                 </div>
             </div>
             
@@ -469,7 +62,7 @@
                 <div class="stat-value" id="totalEmpresas">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>8% este m√™s</span>
+                    <span>8% este mÍs</span>
                 </div>
             </div>
             
@@ -483,7 +76,7 @@
                 <div class="stat-value" id="totalClientes">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>15% este m√™s</span>
+                    <span>15% este mÍs</span>
                 </div>
             </div>
             
@@ -497,24 +90,24 @@
                 <div class="stat-value" id="totalPontos">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>22% este m√™s</span>
+                    <span>22% este mÍs</span>
                 </div>
             </div>
         </div>
         
-        <!-- Usu√°rios Recentes -->
+        <!-- Usu·rios Recentes -->
         <div class="section">
             <div class="section-header">
-                <h2 class="section-title">Usu√°rios Recentes</h2>
+                <h2 class="section-title">Usu·rios Recentes</h2>
                 <button class="btn-primary" onclick="window.location.href='/admin-create-user.html'">
-                    <i class="fas fa-plus"></i> Novo Usu√°rio
+                    <i class="fas fa-plus"></i> Novo Usu·rio
                 </button>
             </div>
             
             <div id="usersTable">
                 <div class="loading">
                     <div class="spinner"></div>
-                    <p style="margin-top: 16px;">Carregando usu√°rios...</p>
+                    <p style="margin-top: 16px;">Carregando usu·rios...</p>
                 </div>
             </div>
         </div>
@@ -535,20 +128,20 @@
     </div>
     
     <script>
-        // Configura√ß√£o de API mais robusta
+        // ConfiguraÁ„o de API mais robusta
         let API_URL;
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // LOCAL: Tenta v√°rias portas comuns do Laravel
+            // LOCAL: Tenta v·rias portas comuns do Laravel
             API_URL = 'http://127.0.0.1:8000/api';
         } else if (window.location.hostname.includes('render.com') || window.location.hostname.includes('herokuapp.com')) {
-            // PRODU√á√ÉO: Render, Heroku, etc
+            // PRODU«√O: Render, Heroku, etc
             API_URL = '/api';
         } else {
             // OUTROS: Relative path como fallback
             API_URL = '/api';
         }
         
-        // Verificar autentica√ß√£o
+        // Verificar autenticaÁ„o
         const token = localStorage.getItem('token');
         const userStr = localStorage.getItem('user');
         
@@ -572,10 +165,10 @@
             return;
         }
         
-        // Exibir nome do usu√°rio
+        // Exibir nome do usu·rio
         document.getElementById('userName').textContent = user.name || user.email;
         
-        // Fun√ß√£o de logout
+        // FunÁ„o de logout
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
@@ -612,17 +205,17 @@
                         const pontosData = await pontosResponse.json();
                         document.getElementById('totalPontos').textContent = pontosData.total || 0;
                         
-                        // Renderizar tabela de usu√°rios
+                        // Renderizar tabela de usu·rios
                         renderUsersTable(users.slice(0, 10));
                         renderEmpresasTable(empresas);
                         return;
                     }
                 } catch (apiError) {
-                    console.log('API indispon√≠vel, carregando dados fict√≠cios...', apiError.message);
+                    console.log('API indisponÌvel, carregando dados fictÌcios...', apiError.message);
                 }
                 
-                // FALLBACK: Dados fict√≠cios completos para demonstra√ß√£o
-                console.log('üé≠ MODO DEMONSTRA√á√ÉO ADMIN ATIVADO');
+                // FALLBACK: Dados fictÌcios completos para demonstraÁ„o
+                console.log('?? MODO DEMONSTRA«√O ADMIN ATIVADO');
                 loadMockAdminData();
                 
             } catch (error) {
@@ -631,15 +224,15 @@
             }
         }
         
-        // DADOS FICT√çCIOS COMPLETOS PARA ADMIN
+        // DADOS FICTÕCIOS COMPLETOS PARA ADMIN
         function loadMockAdminData() {
-            // Dados fict√≠cios de usu√°rios
+            // Dados fictÌcios de usu·rios
             const mockUsers = [
-                { id: 1, name: 'Jo√£o Silva', email: 'joao@gmail.com', tipo: 'cliente', pontos: 1250, status: 'ativo', created_at: '2024-01-15' },
+                { id: 1, name: 'Jo„o Silva', email: 'joao@gmail.com', tipo: 'cliente', pontos: 1250, status: 'ativo', created_at: '2024-01-15' },
                 { id: 2, name: 'Maria Santos', email: 'maria@hotmail.com', tipo: 'cliente', pontos: 890, status: 'ativo', created_at: '2024-01-20' },
                 { id: 3, name: 'TechCorp Solutions', email: 'contato@techcorp.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-10' },
                 { id: 4, name: 'Carlos Oliveira', email: 'carlos@yahoo.com', tipo: 'cliente', pontos: 650, status: 'ativo', created_at: '2024-01-25' },
-                { id: 5, name: 'Bella Vita Est√©tica', email: 'contato@bellavita.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-12' },
+                { id: 5, name: 'Bella Vita EstÈtica', email: 'contato@bellavita.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-12' },
                 { id: 6, name: 'Ana Costa', email: 'ana@gmail.com', tipo: 'cliente', pontos: 2100, status: 'ativo', created_at: '2024-01-18' },
                 { id: 7, name: 'Sabor & Arte Restaurante', email: 'contato@saborarte.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-14' },
                 { id: 8, name: 'Pedro Lima', email: 'pedro@outlook.com', tipo: 'cliente', pontos: 430, status: 'inativo', created_at: '2024-01-22' },
@@ -663,10 +256,10 @@
             renderUsersTable(mockUsers.slice(0, 10));
             renderEmpresasTable(empresas);
             
-            // Adicionar indicador de modo demonstra√ß√£o
+            // Adicionar indicador de modo demonstraÁ„o
             const header = document.querySelector('.header-left p');
             if (header) {
-                header.innerHTML = 'Painel de Controle Administrativo <span style="color: #6F1AB6;">‚Ä¢ MODO DEMONSTRA√á√ÉO</span>';
+                header.innerHTML = 'Painel de Controle Administrativo <span style="color: #6F1AB6;">ï MODO DEMONSTRA«√O</span>';
             }
         }
                     
@@ -684,7 +277,7 @@
                     const pontosData = await pontosResponse.json();
                     document.getElementById('totalPontos').textContent = pontosData.total || 0;
                     
-                    // Renderizar tabela de usu√°rios
+                    // Renderizar tabela de usu·rios
                     renderUsersTable(users.slice(0, 10));
                     renderEmpresasTable(empresas);
                 }
@@ -756,69 +349,7 @@
     </script>
     
     <!-- Bottom Navigation -->
-    <style>
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(26, 26, 46, 0.8));
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(111, 26, 182, 0.2);
-            display: flex;
-            justify-content: space-around;
-            padding: 16px 0 12px;
-            z-index: 1000;
-            box-shadow: 0 -10px 40px rgba(111, 26, 182, 0.1);
-        }
-        .bottom-nav .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.6);
-            border-radius: 16px;
-            transition: all 0.3s ease;
-            position: relative;
-            font-weight: 600;
-        }
-
-        .bottom-nav .nav-item::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.1), transparent);
-            border-radius: 16px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .bottom-nav .nav-item.active::before {
-            opacity: 1;
-        }
-
-        .bottom-nav .nav-item.active {
-            color: #6F1AB6;
-            transform: translateY(-2px);
-        }
-        .bottom-nav .nav-item i {
-            font-size: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .bottom-nav .nav-item.active i {
-            transform: scale(1.1);
-        }
-
-        .bottom-nav .nav-item span {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        body { padding-bottom: 80px; }
-    </style>
+    
     <nav class="bottom-nav">
         <a href="/admin-dashboard.html" class="nav-item active">
             <i class="fas fa-tachometer-alt"></i>
@@ -830,11 +361,11 @@
         </a>
         <a href="/admin-create-user.html" class="nav-item">
             <i class="fas fa-users"></i>
-            <span>Usu√°rios</span>
+            <span>Usu·rios</span>
         </a>
         <a href="/admin-relatorios.html" class="nav-item">
             <i class="fas fa-chart-line"></i>
-            <span>Relat√≥rios</span>
+            <span>RelatÛrios</span>
         </a>
         <a href="/admin-configuracoes.html" class="nav-item">
             <i class="fas fa-cog"></i>

@@ -1,542 +1,116 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tem de Tudo - Sistema Premium de Fidelidade</title>
-    
-    <!-- PWA Meta Tags -->
-    <meta name="description" content="Acumule pontos, ganhe recompensas e descontos exclusivos nos seus estabelecimentos favoritos com nossa plataforma premium">
-    <meta name="theme-color" content="#6F1AB6">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Tem de Tudo Premium">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json">
-    
-    <!-- Icons -->
-    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #FFFFFF;
-            min-height: 100vh;
-            color: #1D1D1F;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        .container {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 60px 24px 40px;
-            text-align: center;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .logo-container {
-            position: relative;
-            margin-bottom: 32px;
-        }
-
-
-
-        .brand-name {
-            font-size: 48px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-        }
-
-        .brand-tagline {
-            font-size: 14px;
-            color: #6F1AB6;
-            font-weight: 600;
-            margin-bottom: 24px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .subtitle {
-            font-size: 20px;
-            color: #1D1D1F;
-            margin-bottom: 48px;
-            line-height: 1.6;
-            font-weight: 500;
-        }
-
-        .features {
-            display: grid;
-            gap: 20px;
-            margin-bottom: 48px;
-        }
-
-        .feature {
-            background: #FFFFFF;
-            border: 1px solid #E5E5E7;
-            border-radius: 20px;
-            padding: 24px 20px;
-            text-align: left;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        .feature::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(111, 26, 182, 0.03) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .feature:hover::before {
-            opacity: 1;
-        }
-
-        .feature:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(111, 26, 182, 0.15);
-            border-color: #6F1AB6;
-        }
-
-        .feature-icon {
-            font-size: 32px;
-            color: #6F1AB6;
-            margin-bottom: 16px;
-            display: block;
-            position: relative;
-            z-index: 2;
-        }
-
-        .feature-title {
-            font-size: 18px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            color: #1D1D1F;
-            position: relative;
-            z-index: 2;
-        }
-
-        .feature-desc {
-            font-size: 14px;
-            color: #86868B;
-            line-height: 1.5;
-            position: relative;
-            z-index: 2;
-        }
-
-        .cta-section {
-            margin-bottom: 48px;
-        }
-
-        .cta-text {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1D1D1F;
-            margin-bottom: 32px;
-        }
-
-        .buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            padding: 18px 32px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: 800;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .btn:hover::before {
-            opacity: 1;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #6F1AB6, #9333EA);
-            color: white;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(111, 26, 182, 0.4);
-        }
-
-        .btn-secondary {
-            background: #FFFFFF;
-            border: 2px solid #6F1AB6;
-            color: #6F1AB6;
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(111, 26, 182, 0.2);
-            background: #F5F5F7;
-        }
-
-        .btn i {
-            font-size: 18px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .btn span {
-            position: relative;
-            z-index: 2;
-        }
-
-        .install-section {
-            background: #FFFFFF;
-            border: 2px solid #6F1AB6;
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 32px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 16px rgba(111, 26, 182, 0.1);
-        }
-
-        .install-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, rgba(111, 26, 182, 0.03), transparent);
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0%, 100% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-        }
-
-        .install-icon {
-            font-size: 48px;
-            color: #6F1AB6;
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .install-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: #1D1D1F;
-            margin-bottom: 8px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .install-desc {
-            font-size: 14px;
-            color: #86868B;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .platform-icons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 16px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .platform-icon {
-            font-size: 24px;
-            color: rgba(111, 26, 182, 0.7);
-            transition: all 0.3s ease;
-        }
-
-        .platform-icon:hover {
-            color: #6F1AB6;
-            transform: scale(1.2);
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .stat {
-            text-align: center;
-            background: #FFFFFF;
-            border: 1px solid #E5E5E7;
-            border-radius: 16px;
-            padding: 20px 12px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        .stat:hover {
-            transform: translateY(-2px);
-            border-color: #6F1AB6;
-            box-shadow: 0 4px 12px rgba(111, 26, 182, 0.15);
-        }
-
-        .stat-number {
-            font-size: 24px;
-            font-weight: 900;
-            color: #6F1AB6;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: #86868B;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            color: #86868B;
-            line-height: 1.5;
-        }
-
-        .footer a {
-            color: #6F1AB6;
-            text-decoration: none;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* PWA Install Button */
-        .pwa-install-button {
-            display: none;
-            margin-top: 16px;
-        }
-
-        .pwa-install-button.show {
-            display: block;
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .container {
-                padding: 40px 20px;
-            }
-
-            .logo {
-                font-size: 80px;
-            }
-
-            .brand-name {
-                font-size: 36px;
-            }
-
-            .subtitle {
-                font-size: 18px;
-            }
-
-            .buttons {
-                gap: 12px;
-            }
-
-            .btn {
-                padding: 16px 24px;
-                font-size: 15px;
-            }
-        }
-
-        /* Loading Animation */
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #FFFFFF;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
-
-        .loading.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(111, 26, 182, 0.2);
-            border-left: 4px solid #6F1AB6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Tem de Tudo - Sistema Premium de Fidelidade</title>
+<!-- PWA Meta Tags -->
+<meta name="description" content="Acumule pontos, ganhe recompensas e descontos exclusivos nos seus estabelecimentos favoritos com nossa plataforma premium">
+<meta name="theme-color" content="#6F1AB6">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tem de Tudo Premium">
+<!-- PWA Manifest -->
+<link rel="manifest" href="/manifest.json">
+<!-- Icons -->
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style-unificado.css">
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-    </div>
-
-    <div class="container">
-        <div class="logo-container">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px;">
-                <i class="fas fa-gem" style="font-size: 48px; color: #6F1AB6;"></i>
-            </div>
-            <div class="brand-name">Tem de Tudo</div>
-            <div class="brand-tagline">Sistema de Fidelidade Premium</div>
-        </div>
-
-        <div class="subtitle">
+<!-- Loading Screen -->
+<div class="loading" id="loading">
+<div class="spinner"></div>
+</div>
+<div class="container">
+<div class="logo-container">
+<div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px;">
+<i class="fas fa-gem" style="font-size: 48px; color: #6F1AB6;"></i>
+</div>
+<div class="brand-name">Tem de Tudo</div>
+<div class="brand-tagline">Sistema de Fidelidade Premium</div>
+</div>
+<div class="subtitle">
             A plataforma que <strong>recompensa sua fidelidade</strong> com pontos, descontos exclusivos e experiências únicas ✨
         </div>
-
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-number">50+</div>
-                <div class="stat-label">Empresas</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">2.5k</div>
-                <div class="stat-label">Usuários</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">95%</div>
-                <div class="stat-label">Satisfação</div>
-            </div>
-        </div>
-
-        <div class="features">
-            <div class="feature">
-                <i class="fas fa-coins feature-icon"></i>
-                <div class="feature-title">🎯 Pontos Inteligentes</div>
-                <div class="feature-desc">Acumule pontos a cada compra e troque por recompensas exclusivas com sistema de multiplicadores premium</div>
-            </div>
-
-            <div class="feature">
-                <i class="fas fa-percentage feature-icon"></i>
-                <div class="feature-title">🔥 Descontos Exclusivos</div>
-                <div class="feature-desc">Aproveite ofertas especiais, cupons personalizados e promoções disponíveis apenas para membros</div>
-            </div>
-
-            <div class="feature">
-                <i class="fas fa-mobile-alt feature-icon"></i>
-                <div class="feature-title">📱 App Nativo Premium</div>
-                <div class="feature-desc">Interface moderna, notificações inteligentes e experiência offline completa em qualquer dispositivo</div>
-            </div>
-        </div>
-
-        <div class="install-section">
-            <div class="install-icon">📲</div>
-            <div class="install-title">Instale como App</div>
-            <div class="install-desc">Transforme em aplicativo nativo para melhor experiência</div>
-            <div class="platform-icons">
-                <i class="fab fa-android platform-icon" title="Android"></i>
-                <i class="fab fa-apple platform-icon" title="iOS"></i>
-                <i class="fab fa-windows platform-icon" title="Windows"></i>
-                <i class="fab fa-chrome platform-icon" title="Desktop"></i>
-            </div>
-        </div>
-
-        <div class="cta-section">
-            <div class="cta-text">✨ Comece sua jornada premium agora!</div>
-            
-            <div class="buttons">
-                <a href="/entrar.html" class="btn btn-primary">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span>Entrar na Conta</span>
-                </a>
-                
-                <a href="/cadastro.html" class="btn btn-secondary">
-                    <i class="fas fa-user-plus"></i>
-                    <span>Criar Conta Premium</span>
-                </a>
-
-                <!-- PWA Install Button (hidden by default) -->
-                <button id="pwa-install-btn" class="btn btn-secondary pwa-install-button">
-                    <i class="fas fa-download"></i>
-                    <span>Instalar App</span>
-                </button>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>🏆 <strong>Tem de Tudo Premium</strong> - Sua fidelidade vale ouro</p>
-            <p>
-                <a href="/termos.html">Termos de Uso</a> • 
+<div class="stats">
+<div class="stat">
+<div class="stat-number">50+</div>
+<div class="stat-label">Empresas</div>
+</div>
+<div class="stat">
+<div class="stat-number">2.5k</div>
+<div class="stat-label">Usuários</div>
+</div>
+<div class="stat">
+<div class="stat-number">95%</div>
+<div class="stat-label">Satisfação</div>
+</div>
+</div>
+<div class="features">
+<div class="feature">
+<i class="fas fa-coins feature-icon"></i>
+<div class="feature-title">🎯 Pontos Inteligentes</div>
+<div class="feature-desc">Acumule pontos a cada compra e troque por recompensas exclusivas com sistema de multiplicadores premium</div>
+</div>
+<div class="feature">
+<i class="fas fa-percentage feature-icon"></i>
+<div class="feature-title">🔥 Descontos Exclusivos</div>
+<div class="feature-desc">Aproveite ofertas especiais, cupons personalizados e promoções disponíveis apenas para membros</div>
+</div>
+<div class="feature">
+<i class="fas fa-mobile-alt feature-icon"></i>
+<div class="feature-title">📱 App Nativo Premium</div>
+<div class="feature-desc">Interface moderna, notificações inteligentes e experiência offline completa em qualquer dispositivo</div>
+</div>
+</div>
+<div class="install-section">
+<div class="install-icon">📲</div>
+<div class="install-title">Instale como App</div>
+<div class="install-desc">Transforme em aplicativo nativo para melhor experiência</div>
+<div class="platform-icons">
+<i class="fab fa-android platform-icon" title="Android"></i>
+<i class="fab fa-apple platform-icon" title="iOS"></i>
+<i class="fab fa-windows platform-icon" title="Windows"></i>
+<i class="fab fa-chrome platform-icon" title="Desktop"></i>
+</div>
+</div>
+<div class="cta-section">
+<div class="cta-text">✨ Comece sua jornada premium agora!</div>
+<div class="buttons">
+<a href="/entrar.html" class="btn btn-primary">
+<i class="fas fa-sign-in-alt"></i>
+<span>Entrar na Conta</span>
+</a>
+<a href="/cadastro.html" class="btn btn-secondary">
+<i class="fas fa-user-plus"></i>
+<span>Criar Conta Premium</span>
+</a>
+<!-- PWA Install Button (hidden by default) -->
+<button id="pwa-install-btn" class="btn btn-secondary pwa-install-button">
+<i class="fas fa-download"></i>
+<span>Instalar App</span>
+</button>
+</div>
+</div>
+<div class="footer">
+<p>🏆 <strong>Tem de Tudo Premium</strong> - Sua fidelidade vale ouro</p>
+<p>
+<a href="/termos.html">Termos de Uso</a> • 
                 <a href="/privacidade.html">Privacidade</a> • 
                 <a href="/app-ajuda.html">Ajuda</a>
-            </p>
-            <p style="margin-top: 16px; font-size: 11px;">
+</p>
+<p style="margin-top: 16px; font-size: 11px;">
                 © 2026 Tem de Tudo. Todos os direitos reservados.<br>
-                <span style="color: #6F1AB6;">v2.0 • Premium Edition</span>
-            </p>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script>
+<span style="color: #6F1AB6;">v2.0 • Premium Edition</span>
+</p>
+</div>
+</div>
+<!-- Scripts -->
+<script>
         // Loading screen
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -578,32 +152,29 @@
         const userType = localStorage.getItem('userType');
         
         if (token && userType) {
-            // Show logout button in header
-            const container = document.querySelector('.container');
-            const logoutBtn = document.createElement('div');
-            logoutBtn.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 1000;';
-            logoutBtn.innerHTML = `
-                <button onclick="logout()" style="
-                    background: linear-gradient(135deg, #6F1AB6, #9333EA);
-                    color: white;
-                    border: none;
-                    padding: 12px 24px;
-                    border-radius: 12px;
-                    font-weight: 700;
-                    cursor: pointer;
-                    box-shadow: 0 4px 12px rgba(111, 26, 182, 0.3);
-                ">
-                    <i class="fas fa-sign-out-alt"></i> Sair
-                </button>
-            `;
-            document.body.appendChild(logoutBtn);
+            // Verify token is valid by checking user data
+            try {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (user && user.id) {
+                    // Show logout button in header
+                    const logoutBtn = document.createElement('div');
+                    logoutBtn.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 1000;';
+                    logoutBtn.innerHTML = `
+                        <button class="btn-logout" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Sair
+                        </button>
+                    `;
+                    document.body.appendChild(logoutBtn);
+                }
+            } catch (e) {
+                // Invalid user data, clear storage
+                localStorage.clear();
+            }
             
             // Add logout function
             window.logout = function() {
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                localStorage.removeItem('userType');
-                window.location.reload();
+                localStorage.clear();
+                window.location.href = '/entrar.html';
             };
         }
 
@@ -672,9 +243,8 @@
             });
         }
     </script>
-
-    <!-- PWA Installer Script -->
-    <script src="/js/pwa-installer.js" defer></script>
+<!-- PWA Installer Script -->
+<script src="/js/pwa-installer.js" defer></script>
 </body>
 </html>
 

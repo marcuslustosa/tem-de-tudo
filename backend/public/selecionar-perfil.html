@@ -1,354 +1,102 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0a0a0f">
-    <title>Selecione seu perfil - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
-    
-    <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #FFFFFF;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                linear-gradient(rgba(102, 126, 234, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(102, 126, 234, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-        }
-        
-        .container {
-            max-width: 1100px;
-            width: 100%;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 56px;
-        }
-        
-        .logo {
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 28px;
-        }
-        
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        
-        .header h1 {
-            font-size: 42px;
-            font-weight: 900;
-            color: #1D1D1F;
-            margin-bottom: 16px;
-            letter-spacing: -1px;
-        }
-        
-        .header p {
-            font-size: 19px;
-            color: #b0b0b0;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-            margin-bottom: 40px;
-        }
-        
-        .profile-card {
-            background: linear-gradient(145deg, #1a1a2e, #16213e);
-            border-radius: 24px;
-            padding: 48px 36px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-            border: 2px solid rgba(102, 126, 234, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .profile-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transform: scaleX(0);
-            transition: transform 0.4s;
-        }
-        
-        .profile-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
-            border-color: #667eea;
-        }
-        
-        .profile-card:hover::before {
-            transform: scaleX(1);
-        }
-        
-        .profile-icon {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 24px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            color: #1D1D1F;
-            transition: all 0.4s;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
-        }
-        
-        .profile-card:hover .profile-icon {
-            transform: scale(1.1) rotate(5deg);
-            box-shadow: 0 12px 36px rgba(102, 126, 234, 0.5);
-        }
-        
-        .profile-card h2 {
-            font-size: 28px;
-            margin-bottom: 14px;
-            color: #1D1D1F;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-        
-        .profile-card p {
-            color: #b0b0b0;
-            line-height: 1.7;
-            margin-bottom: 28px;
-            font-size: 15px;
-        }
-        
-        .profile-features {
-            list-style: none;
-            text-align: left;
-            margin-bottom: 32px;
-        }
-        
-        .profile-features li {
-            color: #b0b0b0;
-            margin-bottom: 12px;
-            padding-left: 32px;
-            position: relative;
-            font-size: 14px;
-        }
-        
-        .profile-features li::before {
-            content: '?';
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: 700;
-            font-size: 18px;
-        }
-        
-        .btn-select {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #1D1D1F;
-            border: none;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
-            letter-spacing: 0.5px;
-        }
-        
-        .btn-select:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(102, 126, 234, 0.5);
-        }
-        
-        .badge {
-            display: inline-block;
-            background: rgba(102, 126, 234, 0.2);
-            color: #667eea;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .back-link {
-            text-align: center;
-            margin-top: 32px;
-        }
-        
-        .back-link a {
-            color: #b0b0b0;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: color 0.3s;
-            padding: 12px 24px;
-            border-radius: 12px;
-            background: rgba(26, 26, 46, 0.5);
-        }
-        
-        .back-link a:hover {
-            color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-        }
-        
-        @media (max-width: 968px) {
-            .cards-grid {
-                grid-template-columns: 1fr;
-                max-width: 480px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-            
-            .header h1 {
-                font-size: 32px;
-            }
-            
-            .header p {
-                font-size: 16px;
-            }
-        }
-    </style>
-    <script src="/js/config.js"></script>
-    <script src="/js/auth-manager.js" defer></script>
-    <script src="/js/api-client.js" defer></script>
-    <script src="/js/validators.js" defer></script>
-    <script src="/js/ui-helpers.js" defer></script>
-    <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-        <link rel="stylesheet" href="/css/global-unified.css">
-    <link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0f">
+<title>Selecione seu perfil - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<script src="/js/config.js"></script>
+<script src="/js/auth-manager.js" defer></script>
+<script src="/js/api-client.js" defer></script>
+<script src="/js/validators.js" defer></script>
+<script src="/js/ui-helpers.js" defer></script>
+<script src="/js/auth-guard.js" data-require-auth="cliente"></script>
+<link rel="stylesheet" href="/css/global-unified.css">
+<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/style-unificado.css">
+</head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <img src="img/logo.png" alt="Tem de Tudo">
-            </div>
-            <h1>Como você quer usar o sistema?</h1>
-            <p>Escolha o perfil que melhor se encaixa com suas necessidades</p>
-        </div>
-        
-        <div class="cards-grid">
-            <!-- CLIENTE -->
-            <div class="profile-card" onclick="selectProfile('cliente')">
-                <span class="badge">Mais Popular</span>
-                <div class="profile-icon">
-                    <i class="fas fa-user"></i>
-                </div>
-                <h2>Sou Cliente</h2>
-                <p>Acumule pontos e ganhe recompensas em estabelecimentos parceiros</p>
-                <ul class="profile-features">
-                    <li>Acumule pontos a cada compra</li>
-                    <li>Resgate recompensas exclusivas</li>
-                    <li>QR Code pessoal para validaàào</li>
-                    <li>Acompanhe seu histórico</li>
-                    <li>Receba promoções personalizadas</li>
-                </ul>
-                <button class="btn-select">
+<div class="container">
+<div class="header">
+<div class="logo">
+<img src="img/logo.png" alt="Tem de Tudo">
+</div>
+<h1>Como você quer usar o sistema?</h1>
+<p>Escolha o perfil que melhor se encaixa com suas necessidades</p>
+</div>
+<div class="cards-grid">
+<!-- CLIENTE -->
+<div class="profile-card" onclick="selectProfile('cliente')">
+<span class="badge">Mais Popular</span>
+<div class="profile-icon">
+<i class="fas fa-user"></i>
+</div>
+<h2>Sou Cliente</h2>
+<p>Acumule pontos e ganhe recompensas em estabelecimentos parceiros</p>
+<ul class="profile-features">
+<li>Acumule pontos a cada compra</li>
+<li>Resgate recompensas exclusivas</li>
+<li>QR Code pessoal para validaàào</li>
+<li>Acompanhe seu histórico</li>
+<li>Receba promoções personalizadas</li>
+</ul>
+<button class="btn-select">
                     CONTINUAR COMO CLIENTE
                 </button>
-            </div>
-            
-            <!-- EMPRESA -->
-            <div class="profile-card" onclick="selectProfile('empresa')">
-                <span class="badge">Para Negàcios</span>
-                <div class="profile-icon">
-                    <i class="fas fa-store"></i>
-                </div>
-                <h2>Tenho Empresa</h2>
-                <p>Fidelize seus clientes e aumente suas vendas com nosso sistema</p>
-                <ul class="profile-features">
-                    <li>Dashboard completo de màtricas</li>
-                    <li>Gerencie clientes e pontos</li>
-                    <li>Crie promoções personalizadas</li>
-                    <li>Scanner QR Code integrado</li>
-                    <li>Relatórios detalhados de vendas</li>
-                </ul>
-                <button class="btn-select">
+</div>
+<!-- EMPRESA -->
+<div class="profile-card" onclick="selectProfile('empresa')">
+<span class="badge">Para Negàcios</span>
+<div class="profile-icon">
+<i class="fas fa-store"></i>
+</div>
+<h2>Tenho Empresa</h2>
+<p>Fidelize seus clientes e aumente suas vendas com nosso sistema</p>
+<ul class="profile-features">
+<li>Dashboard completo de màtricas</li>
+<li>Gerencie clientes e pontos</li>
+<li>Crie promoções personalizadas</li>
+<li>Scanner QR Code integrado</li>
+<li>Relatórios detalhados de vendas</li>
+</ul>
+<button class="btn-select">
                     CONTINUAR COMO EMPRESA
                 </button>
-            </div>
-            
-            <!-- ADMIN -->
-            <div class="profile-card" onclick="selectProfile('admin')">
-                <span class="badge">Administraàào</span>
-                <div class="profile-icon">
-                    <i class="fas fa-shield-halved"></i>
-                </div>
-                <h2>Sou Administrador</h2>
-                <p>Gerencie toda a plataforma e aprove novos estabelecimentos</p>
-                <ul class="profile-features">
-                    <li>Painel master de controle</li>
-                    <li>Aprovar/reprovar estabelecimentos</li>
-                    <li>Gerenciar todos os usuários</li>
-                    <li>Relatórios globais da plataforma</li>
-                    <li>Configurações avançadas do sistema</li>
-                </ul>
-                <button class="btn-select">
+</div>
+<!-- ADMIN -->
+<div class="profile-card" onclick="selectProfile('admin')">
+<span class="badge">Administraàào</span>
+<div class="profile-icon">
+<i class="fas fa-shield-halved"></i>
+</div>
+<h2>Sou Administrador</h2>
+<p>Gerencie toda a plataforma e aprove novos estabelecimentos</p>
+<ul class="profile-features">
+<li>Painel master de controle</li>
+<li>Aprovar/reprovar estabelecimentos</li>
+<li>Gerenciar todos os usuários</li>
+<li>Relatórios globais da plataforma</li>
+<li>Configurações avançadas do sistema</li>
+</ul>
+<button class="btn-select">
                     ACESSAR PAINEL ADMIN
                 </button>
-            </div>
-        </div>
-        
-        <div class="back-link">
-            <a href="index.html">
-                <i class="fas fa-arrow-left"></i>
+</div>
+</div>
+<div class="back-link">
+<a href="index.html">
+<i class="fas fa-arrow-left"></i>
                 Voltar para a pàgina inicial
             </a>
-        </div>
-    </div>
-    
-    <script>
+</div>
+</div>
+<script>
         function selectProfile(tipo) {
             // Verificar se usuário está autenticado
             const token = localStorage.getItem('token');
