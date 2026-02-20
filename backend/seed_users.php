@@ -52,7 +52,14 @@ $users = [
 ];
 
 foreach ($users as $userData) {
-    DB::table('users')->insert($userData);
+    // Verificar se o usuário já existe
+    $existing = DB::table('users')->where('email', $userData['email'])->first();
+    if (!$existing) {
+        DB::table('users')->insert($userData);
+        echo "✅ Usuário {$userData['name']} criado!\n";
+    } else {
+        echo "⚠️  Usuário {$userData['email']} já existe, ignorando.\n";
+    }
 }
 
 echo "Usuários de teste criados com sucesso!\n";
