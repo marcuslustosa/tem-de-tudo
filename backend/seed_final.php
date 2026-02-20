@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-echo "🌱 POPULANDO BANCO COM DADOS FICTÍCIOS\n";
-echo "=====================================\n\n";
+echo "🌱 POPULANDO BANCO VIVO COM DADOS FICTÍCIOS\n";
+echo "==========================================\n\n";
 
 // Limpar dados existentes
 echo "🗑️  Limpando dados antigos...\n";
@@ -20,18 +20,18 @@ DB::table('check_ins')->delete();
 DB::table('qr_codes')->delete();
 DB::table('promocoes')->delete();
 DB::table('empresas')->delete();
-DB::table('users')->where('email', '!=', 'admin@temdetudo.com')->delete();
+DB::table('users')->where('email', '!=', 'admin@vivo.com.br')->delete();
 echo "✅ Dados limpos!\n\n";
 
 // 1. CRIAR USUÁRIOS CLIENTES
 echo "👥 Criando clientes...\n";
 
 $clientes = [
-    ['name' => 'Maria Silva', 'email' => 'maria.silva@email.com', 'telefone' => '11987654321'],
-    ['name' => 'João Santos', 'email' => 'joao.santos@email.com', 'telefone' => '11987654322'],
-    ['name' => 'Ana Costa', 'email' => 'ana.costa@email.com', 'telefone' => '11987654323'],
-    ['name' => 'Pedro Oliveira', 'email' => 'pedro.oliveira@email.com', 'telefone' => '11987654324'],
-    ['name' => 'Julia Ferreira', 'email' => 'julia.ferreira@email.com', 'telefone' => '11987654325'],
+    ['name' => 'Maria Silva Vivo', 'email' => 'maria.silva@vivo.com.br', 'telefone' => '11987654321'],
+    ['name' => 'João Santos Vivo', 'email' => 'joao.santos@vivo.com.br', 'telefone' => '11987654322'],
+    ['name' => 'Ana Costa Premium', 'email' => 'ana.costa@vivo.com.br', 'telefone' => '11987654323'],
+    ['name' => 'Pedro Oliveira Gold', 'email' => 'pedro.oliveira@vivo.com.br', 'telefone' => '11987654324'],
+    ['name' => 'Julia Ferreira VIP', 'email' => 'julia.ferreira@vivo.com.br', 'telefone' => '11987654325'],
 ];
 
 $clientesIds = [];
