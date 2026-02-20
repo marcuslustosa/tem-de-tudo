@@ -14,27 +14,27 @@ use Illuminate\Support\Facades\Hash;
 // Criar usuários de teste diretamente
 $users = [
     [
-        'name' => 'Admin Vivo',
-        'email' => 'admin@vivo.com.br',
-        'password' => Hash::make('Admin123!'),
+        'name' => 'Admin Sistema',
+        'email' => 'admin@temdetudo.com.br',
+        'password' => Hash::make('Temdetudo123!'),
         'role' => 'admin',
         'email_verified_at' => now(),
         'created_at' => now(),
         'updated_at' => now(),
     ],
     [
-        'name' => 'Cliente Vivo',
-        'email' => 'cliente@vivo.com.br',
-        'password' => Hash::make('Cliente123!'),
+        'name' => 'Cliente Principal',
+        'email' => 'cliente1@temdetudo.com.br',
+        'password' => Hash::make('Temdetudo123!'),
         'role' => 'cliente',
         'email_verified_at' => now(),
         'created_at' => now(),
         'updated_at' => now(),
     ],
     [
-        'name' => 'Empresa Vivo',
-        'email' => 'empresa@vivo.com.br',
-        'password' => Hash::make('Empresa123!'),
+        'name' => 'Empresa Principal',
+        'email' => 'empresa1@temdetudo.com.br',
+        'password' => Hash::make('Temdetudo123!'),
         'role' => 'empresa',
         'email_verified_at' => now(),
         'created_at' => now(),
@@ -56,8 +56,8 @@ foreach ($users as $userData) {
 }
 
 echo "Usuários de teste criados com sucesso!\n";
-echo "\nCredenciais VIVO:\n";
-echo "Admin: admin@vivo.com.br / Admin123!\n";
-echo "Cliente: cliente@vivo.com.br / Cliente123!\n";
-echo "Empresa: empresa@vivo.com.br / Empresa123!\n";
+echo "\nCredenciais TEM DE TUDO:\n";
+echo "Admin: admin@temdetudo.com.br / Temdetudo123!\n";
+echo "Cliente: cliente1@temdetudo.com.br / Temdetudo123!\n";
+echo "Empresa: empresa1@temdetudo.com.br / Temdetudo123!\n";
 echo "Test: test@example.com / password\n";

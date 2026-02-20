@@ -6,13 +6,13 @@ $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
 use Illuminate\Support\Facades\DB;
 
-echo "🔍 USUÁRIOS DE TESTE VIVO CADASTRADOS:\n";
-echo "=====================================\n\n";
+echo "🔍 USUÁRIOS DE TESTE TEM DE TUDO:\n";
+echo "==================================\n\n";
 
 $emails = [
-    'admin@vivo.com.br',
-    'cliente@vivo.com.br', 
-    'empresa@vivo.com.br',
+    'admin@temdetudo.com.br',
+    'cliente1@temdetudo.com.br', 
+    'empresa1@temdetudo.com.br',
     'admin@temdetudo.com',
     'cliente@temdetudo.com',
     'empresa@temdetudo.com'
@@ -33,9 +33,9 @@ if($users->count() > 0) {
     
     echo "\n🎯 CREDENCIAIS PARA TESTE:\n";
     echo "=========================\n";
-    echo "🔴 ADMIN: admin@vivo.com.br / Admin123!\n";
-    echo "🔵 CLIENTE: cliente@vivo.com.br / Cliente123!\n";
-    echo "🟢 EMPRESA: empresa@vivo.com.br / Empresa123!\n\n";
+    echo "🔴 ADMIN: admin@temdetudo.com.br / Temdetudo123!\n";
+    echo "🔵 CLIENTE: cliente1@temdetudo.com.br / Temdetudo123!\n";
+    echo "🟢 EMPRESA: empresa1@temdetudo.com.br / Temdetudo123!\n\n";
 } else {
     echo "❌ Nenhum usuário de teste encontrado!\n";
     echo "📋 Execute: php seed_users.php para criar os usuários\n";
