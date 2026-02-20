@@ -10,28 +10,6 @@ Route::get('/', function () {
     return response()->json(['error' => 'Index page not found'], 404);
 });
 
-// Rotas para todas as páginas HTML
-$htmlPages = [
-    'admin-configuracoes', 'admin-create-user', 'admin-login', 'admin-relatorios', 'admin',
-    'ajuda', 'aplicar-desconto', 'app', 'checkin', 'checkout-pontos',
-    'configurar-descontos', 'contato', 'empresa-qrcode', 'estabelecimentos-fixed',
-    'estabelecimentos', 'faq', 'login', 'meus-descontos', 'planos', 'pontos',
-    'preview-glass', 'privacidade', 'profile-client', 'profile-company',
-    'register-admin', 'register-company-success', 'register-company', 'register',
-    'relatorios-descontos', 'relatorios-financeiros', 'teste',
-    'dashboard-cliente', 'dashboard-estabelecimento'
-];
-
-foreach ($htmlPages as $page) {
-    Route::get("/{$page}", function () use ($page) {
-        $filePath = public_path("{$page}.html");
-        if (file_exists($filePath)) {
-            return response()->file($filePath);
-        }
-        return abort(404);
-    });
-}
-
 Route::get('/health', function () {
     return response()->json(['status' => 'OK']);
 });
@@ -39,6 +17,22 @@ Route::get('/health', function () {
 Route::get('/api/health', function () {
     return response()->json(['status' => 'healthy']);
 });
+
+// Rota dinâmica para TODAS as páginas HTML
+// Deve vir DEPOIS das rotas específicas para não conflitar
+Route::get('/{page}', function ($page) {
+    // Remove extensão .html se vier na URL
+    $page = str_replace('.html', '', $page);
+    
+    $filePath = public_path("{$page}.html");
+    
+    if (file_exists($filePath)) {
+        return response()->file($filePath);
+    }
+    
+    // Se não encontrar, retorna 404
+    return abort(404, "Página {$page}.html não encontrada");
+})->where('page', '[a-zA-Z0-9_][a-zA-Z0-9_-]*');
 
 Route::get('/debug', function () {
     return response()->json([
