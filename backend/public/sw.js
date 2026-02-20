@@ -83,10 +83,17 @@ self.addEventListener('fetch', (event) => {
         return;
     }
     
-    // Assets: Cache First
+    // CSS/JS: Network First (garante sempre a versao mais recente)
     if (
         request.destination === 'style' ||
-        request.destination === 'script' ||
+        request.destination === 'script'
+    ) {
+        event.respondWith(networkFirst(request));
+        return;
+    }
+
+    // Fontes e imagens: Cache First (nao mudam)
+    if (
         request.destination === 'font' ||
         request.destination === 'image'
     ) {

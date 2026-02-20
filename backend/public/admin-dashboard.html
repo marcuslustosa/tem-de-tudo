@@ -14,13 +14,13 @@
             window.location.href = 'admin-login.html';
         }
     </script>
-<link rel="stylesheet" href="/css/style-unificado.css">`n</head>
+<link rel="stylesheet" href="/css/style-unificado.css?v=3">`n</head>
 <body>
     <div class="header">
         <div class="header-content">
             <div class="header-left">
-                <h1>Painel de Administração</h1>
-                <p>Bem-vindo ao sistema de gestão</p>
+                <h1>Painel de Administraï¿½ï¿½o</h1>
+                <p>Bem-vindo ao sistema de gestï¿½o</p>
             </div>
             <div class="header-right">
                 <div class="user-info">
@@ -40,7 +40,7 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-header">
-                    <span class="stat-label">Total de Usuários</span>
+                    <span class="stat-label">Total de Usuï¿½rios</span>
                     <div class="stat-icon purple">
                         <i class="fas fa-users"></i>
                     </div>
@@ -48,7 +48,7 @@
                 <div class="stat-value" id="totalUsers">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>12% este mês</span>
+                    <span>12% este mï¿½s</span>
                 </div>
             </div>
             
@@ -62,7 +62,7 @@
                 <div class="stat-value" id="totalEmpresas">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>8% este mês</span>
+                    <span>8% este mï¿½s</span>
                 </div>
             </div>
             
@@ -76,7 +76,7 @@
                 <div class="stat-value" id="totalClientes">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>15% este mês</span>
+                    <span>15% este mï¿½s</span>
                 </div>
             </div>
             
@@ -90,24 +90,24 @@
                 <div class="stat-value" id="totalPontos">0</div>
                 <div class="stat-change">
                     <i class="fas fa-arrow-up"></i>
-                    <span>22% este mês</span>
+                    <span>22% este mï¿½s</span>
                 </div>
             </div>
         </div>
         
-        <!-- Usuários Recentes -->
+        <!-- Usuï¿½rios Recentes -->
         <div class="section">
             <div class="section-header">
-                <h2 class="section-title">Usuários Recentes</h2>
+                <h2 class="section-title">Usuï¿½rios Recentes</h2>
                 <button class="btn-primary" onclick="window.location.href='/admin-create-user.html'">
-                    <i class="fas fa-plus"></i> Novo Usuário
+                    <i class="fas fa-plus"></i> Novo Usuï¿½rio
                 </button>
             </div>
             
             <div id="usersTable">
                 <div class="loading">
                     <div class="spinner"></div>
-                    <p style="margin-top: 16px;">Carregando usuários...</p>
+                    <p style="margin-top: 16px;">Carregando usuï¿½rios...</p>
                 </div>
             </div>
         </div>
@@ -128,20 +128,20 @@
     </div>
     
     <script>
-        // Configuração de API mais robusta
+        // Configuraï¿½ï¿½o de API mais robusta
         let API_URL;
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // LOCAL: Tenta várias portas comuns do Laravel
+            // LOCAL: Tenta vï¿½rias portas comuns do Laravel
             API_URL = 'http://127.0.0.1:8000/api';
         } else if (window.location.hostname.includes('render.com') || window.location.hostname.includes('herokuapp.com')) {
-            // PRODUÇÃO: Render, Heroku, etc
+            // PRODUï¿½ï¿½O: Render, Heroku, etc
             API_URL = '/api';
         } else {
             // OUTROS: Relative path como fallback
             API_URL = '/api';
         }
         
-        // Verificar autenticação
+        // Verificar autenticaï¿½ï¿½o
         const token = localStorage.getItem('token');
         const userStr = localStorage.getItem('user');
         
@@ -165,10 +165,10 @@
             return;
         }
         
-        // Exibir nome do usuário
+        // Exibir nome do usuï¿½rio
         document.getElementById('userName').textContent = user.name || user.email;
         
-        // Função de logout
+        // Funï¿½ï¿½o de logout
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
@@ -205,17 +205,17 @@
                         const pontosData = await pontosResponse.json();
                         document.getElementById('totalPontos').textContent = pontosData.total || 0;
                         
-                        // Renderizar tabela de usuários
+                        // Renderizar tabela de usuï¿½rios
                         renderUsersTable(users.slice(0, 10));
                         renderEmpresasTable(empresas);
                         return;
                     }
                 } catch (apiError) {
-                    console.log('API indisponível, carregando dados fictícios...', apiError.message);
+                    console.log('API indisponï¿½vel, carregando dados fictï¿½cios...', apiError.message);
                 }
                 
-                // FALLBACK: Dados fictícios completos para demonstração
-                console.log('?? MODO DEMONSTRAÇÃO ADMIN ATIVADO');
+                // FALLBACK: Dados fictï¿½cios completos para demonstraï¿½ï¿½o
+                console.log('?? MODO DEMONSTRAï¿½ï¿½O ADMIN ATIVADO');
                 loadMockAdminData();
                 
             } catch (error) {
@@ -224,15 +224,15 @@
             }
         }
         
-        // DADOS FICTÍCIOS COMPLETOS PARA ADMIN
+        // DADOS FICTï¿½CIOS COMPLETOS PARA ADMIN
         function loadMockAdminData() {
-            // Dados fictícios de usuários
+            // Dados fictï¿½cios de usuï¿½rios
             const mockUsers = [
-                { id: 1, name: 'João Silva', email: 'joao@gmail.com', tipo: 'cliente', pontos: 1250, status: 'ativo', created_at: '2024-01-15' },
+                { id: 1, name: 'Joï¿½o Silva', email: 'joao@gmail.com', tipo: 'cliente', pontos: 1250, status: 'ativo', created_at: '2024-01-15' },
                 { id: 2, name: 'Maria Santos', email: 'maria@hotmail.com', tipo: 'cliente', pontos: 890, status: 'ativo', created_at: '2024-01-20' },
                 { id: 3, name: 'TechCorp Solutions', email: 'contato@techcorp.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-10' },
                 { id: 4, name: 'Carlos Oliveira', email: 'carlos@yahoo.com', tipo: 'cliente', pontos: 650, status: 'ativo', created_at: '2024-01-25' },
-                { id: 5, name: 'Bella Vita Estética', email: 'contato@bellavita.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-12' },
+                { id: 5, name: 'Bella Vita Estï¿½tica', email: 'contato@bellavita.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-12' },
                 { id: 6, name: 'Ana Costa', email: 'ana@gmail.com', tipo: 'cliente', pontos: 2100, status: 'ativo', created_at: '2024-01-18' },
                 { id: 7, name: 'Sabor & Arte Restaurante', email: 'contato@saborarte.com', tipo: 'empresa', pontos: 0, status: 'ativo', created_at: '2024-01-14' },
                 { id: 8, name: 'Pedro Lima', email: 'pedro@outlook.com', tipo: 'cliente', pontos: 430, status: 'inativo', created_at: '2024-01-22' },
@@ -256,10 +256,10 @@
             renderUsersTable(mockUsers.slice(0, 10));
             renderEmpresasTable(empresas);
             
-            // Adicionar indicador de modo demonstração
+            // Adicionar indicador de modo demonstraï¿½ï¿½o
             const header = document.querySelector('.header-left p');
             if (header) {
-                header.innerHTML = 'Painel de Controle Administrativo <span style="color: #6F1AB6;">• MODO DEMONSTRAÇÃO</span>';
+                header.innerHTML = 'Painel de Controle Administrativo <span style="color: #6F1AB6;">ï¿½ MODO DEMONSTRAï¿½ï¿½O</span>';
             }
         }
                     
@@ -277,7 +277,7 @@
                     const pontosData = await pontosResponse.json();
                     document.getElementById('totalPontos').textContent = pontosData.total || 0;
                     
-                    // Renderizar tabela de usuários
+                    // Renderizar tabela de usuï¿½rios
                     renderUsersTable(users.slice(0, 10));
                     renderEmpresasTable(empresas);
                 }
@@ -361,11 +361,11 @@
         </a>
         <a href="/admin-create-user.html" class="nav-item">
             <i class="fas fa-users"></i>
-            <span>Usuários</span>
+            <span>Usuï¿½rios</span>
         </a>
         <a href="/admin-relatorios.html" class="nav-item">
             <i class="fas fa-chart-line"></i>
-            <span>Relatórios</span>
+            <span>Relatï¿½rios</span>
         </a>
         <a href="/admin-configuracoes.html" class="nav-item">
             <i class="fas fa-cog"></i>
