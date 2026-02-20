@@ -1,312 +1,437 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📱 Dashboard Cliente - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/style-unificado.css?v=3">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6F1AB6">
+    <title>📱 Dashboard Cliente - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: #6F1AB6;
+            padding: 20px 16px;
+            color: white;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .main {
+            padding: 20px 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #6F1AB6;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: #6F1AB6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #6F1AB6;
+            margin-bottom: 4px;
+        }
+
+        .stat-subtitle {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: #6F1AB6;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            border: 1px solid #eee;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(111,26,182,0.2);
+            border-color: #6F1AB6;
+        }
+
+        .action-card-icon {
+            width: 48px;
+            height: 48px;
+            background: #6F1AB6;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .action-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .action-card p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #eee;
+            padding: 12px 0;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #666;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active {
+            color: #6F1AB6;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-<!-- Header -->
-<div class="header">
-<div class="header-content">
-<div class="header-left">
-<h1>Olá, <span id="userName">Cliente</span>!</h1>
-<p>Bem-vindo ao Tem de Tudo</p>
-</div>
-<button class="btn-logout" onclick="logout()">
-<i class="fas fa-sign-out-alt"></i>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1>📱 Olá, Client Ivo!</h1>
+                <p>Bem-vindo ao seu painel cliente</p>
+            </div>
+            <button class="btn-logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
                 Sair
             </button>
-</div>
-</div>
-<div class="main">
-<!-- Stats -->
-<div class="stats-grid">
-<div class="stat-card">
-<div class="stat-header">
-<span class="stat-label">Meus Pontos</span>
-<div class="stat-icon">
-<i class="fas fa-coins"></i>
-</div>
-</div>
-<div class="stat-value" id="totalPontos">0</div>
-<div class="stat-subtitle">Disponíveis para resgatar</div>
-</div>
-<div class="stat-card">
-<div class="stat-header">
-<span class="stat-label">Promoções</span>
-<div class="stat-icon">
-<i class="fas fa-tags"></i>
-</div>
-</div>
-<div class="stat-value" id="totalPromocoes">0</div>
-<div class="stat-subtitle">Disponíveis agora</div>
-</div>
-<div class="stat-card">
-<div class="stat-header">
-<span class="stat-label">Este Mês</span>
-<div class="stat-icon">
-<i class="fas fa-chart-line"></i>
-</div>
-</div>
-<div class="stat-value" id="pontosMes">0</div>
-<div class="stat-subtitle">Pontos ganhos</div>
-</div>
-</div>
-<!-- QR Code -->
-<div class="section">
-<div class="qrcode-container">
-<h3 class="section-title">Meu QR Code</h3>
-<p style="color: #999; font-size: 14px; margin-bottom: 12px;">
-                    Apresente este código para ganhar pontos
-                </p>
-<div class="qrcode-box" id="qrcodeBox">
-<div class="loading-spinner"></div>
-</div>
-<button class="btn-qr" onclick="showFullQR()">
-<i class="fas fa-expand"></i>
-                    Ver em Tela Cheia
-                </button>
-</div>
-</div>
-<!-- Promoções Disponíveis -->
-<div class="section">
-<h3 class="section-title">Promoções Disponíveis</h3>
-<div id="promocoesList">
-<div class="loading">
-<div class="loading-spinner"></div>
-<p>Carregando promoções...</p>
-</div>
-</div>
-</div>
-<!-- Histórico de Pontos -->
-<div class="section">
-<h3 class="section-title">Histórico Recente</h3>
-<div id="historicoList">
-<div class="loading">
-<div class="loading-spinner"></div>
-<p>Carregando histórico...</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Bottom Navigation -->
-<nav class="bottom-nav">
-<a href="/app-inicio.html" class="nav-item active">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="/app-empresas.html" class="nav-item">
-<i class="fas fa-search"></i>
-<span>Buscar</span>
-</a>
-<a href="/app-meus-pontos.html" class="nav-item">
-<i class="fas fa-wallet"></i>
-<span>Pontos</span>
-</a>
-<a href="/app-promocoes.html" class="nav-item">
-<i class="fas fa-tags"></i>
-<span>Promoções</span>
-</a>
-<a href="/app-perfil.html" class="nav-item">
-<i class="fas fa-user"></i>
-<span>Perfil</span>
-</a>
-</nav>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script>
-        // Configuração de API mais robusta
-        let API_URL;
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // LOCAL: Tenta várias portas comuns do Laravel
-            API_URL = 'http://127.0.0.1:8000/api';
-        } else if (window.location.hostname.includes('render.com') || window.location.hostname.includes('herokuapp.com')) {
-            // PRODUÇÃO: Render, Heroku, etc
-            API_URL = '/api';
-        } else {
-            // OUTROS: Relative path como fallback
-            API_URL = '/api';
-        }
-        
-        // Verificar autenticação
-        const token = localStorage.getItem('token');
-        const userStr = localStorage.getItem('user');
-        
-        if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
-            localStorage.clear();
-            window.location.href = 'entrar.html';
-        }
-        
-        let user;
-        try {
-            user = JSON.parse(userStr);
-            if (!user || !user.perfil || user.perfil !== 'cliente') {
-                localStorage.clear();
-                window.location.href = 'entrar.html';
-            }
-        } catch (e) {
-            localStorage.clear();
-            window.location.href = 'entrar.html';
-        }
-        
-        // Exibir nome do usuário
-        document.getElementById('userName').textContent = user.name || user.email.split('@')[0];
-        
-        function logout() {
-            if (confirm('Deseja realmente sair?')) {
-                localStorage.clear();
-                window.location.href = 'entrar.html';
-            }
-        }
-        
-        // Gerar QR Code
-        function generateQRCode() {
-            const qrcodeBox = document.getElementById('qrcodeBox');
-            qrcodeBox.innerHTML = '';
-            
-            new QRCode(qrcodeBox, {
-                text: `TDT-USER-${user.id}`,
-                width: 180,
-                height: 180,
-                colorDark: '#1e293b',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
-        
-        function showFullQR() {
-            window.location.href = '/app-qrcode.html';
-        }
-        
-        // Carregar dados
-        async function loadData() {
-            try {
-                const headers = {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json'
-                };
-                
-                // Carregar pontos
-                const pontosResponse = await fetch(`${API_URL}/cliente/pontos`, { headers });
-                const pontosData = await pontosResponse.json();
-                
-                if (pontosData.total !== undefined) {
-                    document.getElementById('totalPontos').textContent = pontosData.total;
-                    document.getElementById('pontosMes').textContent = pontosData.mes || 0;
-                }
-                
-                // Carregar promoções
-                const promocoesResponse = await fetch(`${API_URL}/promocoes`, { headers });
-                const promocoesData = await promocoesResponse.json();
-                
-                if (promocoesData.promocoes) {
-                    renderPromocoes(promocoesData.promocoes);
-                    document.getElementById('totalPromocoes').textContent = promocoesData.promocoes.length;
-                }
-                
-                // Carregar histórico
-                const historicoResponse = await fetch(`${API_URL}/cliente/historico`, { headers });
-                const historicoData = await historicoResponse.json();
-                
-                if (historicoData.transacoes) {
-                    renderHistorico(historicoData.transacoes);
-                }
-                
-                // Gerar QR Code
-                generateQRCode();
-                
-            } catch (error) {
-                console.error('Erro ao carregar dados:', error);
-                // Dados de fallback para desenvolvimento
-                document.getElementById('totalPontos').textContent = '0';
-                document.getElementById('totalPromocoes').textContent = '0';
-                document.getElementById('pontosMes').textContent = '0';
-                renderPromocoes([]);
-                renderHistorico([]);
-                generateQRCode();
-            }
-        }
-        
-        function renderPromocoes(promocoes) {
-            const html = promocoes.length > 0 ? promocoes.map(promo => `
-                <div class="promo-card">
-<div class="promo-header">
-<div>
-<div class="promo-title">${promo.titulo}</div>
-<div class="promo-empresa">${promo.empresa_nome || 'Estabelecimento Parceiro'}</div>
-</div>
-<div class="promo-badge">
-                            ${promo.pontos_necessarios} pts
-                        </div>
-</div>
-<p class="promo-desc">
-                        ${promo.descricao || 'Promoção exclusiva'}
-                    </p>
-<button class="btn-resgatar" onclick="resgatarPromocao(${promo.id})">
-<i class="fas fa-gift"></i> Resgatar
-                    </button>
-</div>
-            `).join('') : `
-                <div class="empty-state">
-<i class="fas fa-tags"></i>
-<p>Nenhuma promoção disponível no momento</p>
-</div>
-            `;
-            
-            document.getElementById('promocoesList').innerHTML = html;
-        }
-        
-        function renderHistorico(transacoes) {
-            const html = transacoes.length > 0 ? transacoes.slice(0, 5).map(t => `
-                <div class="historico-item">
-<div class="historico-info">
-<div class="historico-title">${t.descricao || 'Transação'}</div>
-<div class="historico-date">${new Date(t.created_at).toLocaleDateString('pt-BR')}</div>
-</div>
-<div class="historico-pontos ${t.tipo === 'ganho' ? 'gain' : 'loss'}">
-                        ${t.tipo === 'ganho' ? '+' : '-'}${t.pontos}
+        </div>
+    </div>
+
+    <div class="main">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">🛍️ PEDIDOS TOTAL</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-shopping-bag"></i>
                     </div>
-</div>
-            `).join('') : `
-                <div class="empty-state">
-<i class="fas fa-history"></i>
-<p>Nenhuma transação ainda</p>
-</div>
-            `;
-            
-            document.getElementById('historicoList').innerHTML = html;
-        }
-        
-        async function resgatarPromocao(id) {
-            try {
-                const response = await fetch(`${API_URL}/cliente/resgatar-promocao/${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok && result.success) {
-                    alert('✅ Promoção resgatada com sucesso!\n\nConfira em "Cupons".');
-                    loadData();
-                } else {
-                    alert('❌ ' + (result.message || 'Erro ao resgatar promoção'));
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('❌ Erro ao conectar com o servidor');
+                </div>
+                <div class="stat-value">47</div>
+                <div class="stat-subtitle">Realizados este mês</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">💰 VALOR GASTO</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                </div>
+                <div class="stat-value">R$ 2,357</div>
+                <div class="stat-subtitle">Nos últimos 30 dias</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">⭐ PONTOS FIDELIDADE</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <div class="stat-value">1,250</div>
+                <div class="stat-subtitle">Disponíveis para uso</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">📦 PEDIDOS PENDENTES</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <div class="stat-value">3</div>
+                <div class="stat-subtitle">Em andamento</div>
+            </div>
+        </div>
+
+        <!-- Main Actions -->
+        <h2 class="section-title">
+            <i class="fas fa-rocket"></i>
+            Ações Rápidas
+        </h2>
+
+        <div class="actions-grid">
+            <a href="catalogo-produtos.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <h3>Explorar Catálogo</h3>
+                <p>Navegue por nossos produtos e ofertas</p>
+            </a>
+
+            <a href="meus-pedidos.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h3>Meus Pedidos</h3>
+                <p>Acompanhe o status dos seus pedidos</p>
+            </a>
+
+            <a href="perfil-cliente.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3>Meu Perfil</h3>
+                <p>Edite suas informações pessoais</p>
+            </a>
+
+            <a href="avaliacoes-cliente.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>Minhas Avaliações</h3>
+                <p>Avalie produtos e experiências</p>
+            </a>
+
+            <a href="ofertas-promocoes.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <h3>Ofertas Especiais</h3>
+                <p>Promoções exclusivas para você</p>
+            </a>
+
+            <a href="suporte-cliente.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3>Central de Ajuda</h3>
+                <p>Tire suas dúvidas e contate o suporte</p>
+            </a>
+        </div>
+
+        <!-- More Options -->
+        <h2 class="section-title">
+            <i class="fas fa-th-large"></i>
+            Mais Opções
+        </h2>
+
+        <div class="actions-grid">
+            <a href="programa-fidelidade.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3>Programa Fidelidade</h3>
+                <p>Acumule pontos e troque por prêmios</p>
+            </a>
+
+            <a href="enderecos-cliente.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>Meus Endereços</h3>
+                <p>Gerencie seus endereços de entrega</p>
+            </a>
+
+            <a href="favoritos-cliente.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3>Lista de Desejos</h3>
+                <p>Produtos salvos para comprar depois</p>
+            </a>
+
+            <a href="notificacoes-cliente.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3>Notificações</h3>
+                <p>Configure alertas e preferências</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard-cliente.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="catalogo-produtos.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Explorar</span>
+        </a>
+        <a href="meus-pedidos.html" class="nav-item">
+            <i class="fas fa-shopping-bag"></i>
+            <span>Pedidos</span>
+        </a>
+        <a href="perfil-cliente.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+    <script>
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                alert('🔓 Logout realizado com sucesso!');
+                window.location.href = 'login-cliente.html';
             }
         }
-        
-        // Carregar dados ao iniciar
-        loadData();
+
+        // Simular carregamento de dados
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard cliente carregado com sucesso');
+            
+            // Animation simples para os cards
+            const cards = document.querySelectorAll('.stat-card, .action-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.3s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                }, index * 50);
+            });
+        });
     </script>
 </body>
 </html>
