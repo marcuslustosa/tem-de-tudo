@@ -1,103 +1,653 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#6F1AB6">
-<title>🏢 Dashboard Empresa - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/style-unificado.css?v=3">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#f1c40f">
+    <title>🏢 Dashboard Empresa - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
+            position: relative;
+            padding: 32px 24px;
+            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 70% 20%, rgba(241, 196, 15, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .logo-empresa {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            color: #f1c40f;
+            font-size: 1.5rem;
+            text-shadow: 0 2px 8px rgba(241, 196, 15, 0.3);
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+        }
+
+        .badge-empresa {
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(230, 126, 34, 0.2));
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #f1c40f;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .header-left h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, rgba(255,255,255,0.8));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .header-left p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .empresa-info {
+            text-align: right;
+        }
+
+        .empresa-info .name {
+            font-weight: 700;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .empresa-info .category {
+            font-size: 13px;
+            color: rgba(241, 196, 15, 0.8);
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.1), rgba(230, 126, 34, 0.1));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+            padding: 12px 20px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-logout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.2);
+            border-color: rgba(241, 196, 15, 0.4);
+        }
+
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.9), rgba(15, 20, 25, 0.6));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 24px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(241, 196, 15, 0.1);
+            border-color: rgba(241, 196, 15, 0.2);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .stat-change.positive {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(230, 126, 34, 0.2));
+            color: #f1c40f;
+            border: 1px solid rgba(241, 196, 15, 0.3);
+        }
+
+        .quick-actions {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: #f1c40f;
+            font-size: 1.2rem;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.9), rgba(15, 20, 25, 0.6));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 20px;
+            padding: 20px 24px;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.15);
+            border-color: rgba(241, 196, 15, 0.2);
+        }
+
+        .action-btn i {
+            color: #f1c40f;
+            font-size: 18px;
+        }
+
+        .recent-activity {
+            background: linear-gradient(135deg, rgba(15, 20, 25, 0.9), rgba(15, 20, 25, 0.6));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 196, 15, 0.1);
+            border-radius: 24px;
+            padding: 32px;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: rgba(241, 196, 15, 0.05);
+            border-color: rgba(241, 196, 15, 0.1);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .activity-icon.checkin {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+            color: #3b82f6;
+        }
+
+        .activity-icon.promocao {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1));
+            color: #a855f7;
+        }
+
+        .activity-icon.cliente {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            color: #10b981;
+        }
+
+        .activity-icon.avaliacao {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1));
+            color: #f59e0b;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .activity-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: rgba(241, 196, 15, 0.8);
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 24px 16px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .header-right {
+                align-self: flex-end;
+            }
+
+            .main {
+                padding: 24px 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-left h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card, .action-btn, .recent-activity {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        .stat-card:nth-child(5) { animation-delay: 0.5s; }
+    </style>
 </head>
-<body>
-<div class="header">
-<div class="header-content">
-<div class="header-left">
-<div class="logo-empresa">
-<i class="fas fa-gem logo-icon"></i>
-<span class="logo-text">Tem de Tudo</span>
-<div class="badge-empresa">
-<i class="fas fa-store"></i> Empresa
+<<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-empresa">
+                    <i class="fas fa-gem logo-icon"></i>
+                    <span class="logo-text">Tem de Tudo</span>
+                    <div class="badge-empresa">
+                        <i class="fas fa-store"></i> EMPRESA
                     </div>
-</div>
-<h1>Dashboard Empresa</h1>
-<p>Gerencie clientes, promoções e monitore performance</p>
-</div>
-<div class="header-right">
-<div class="empresa-info">
-<div class="name" id="empresaNome">Minha Empresa</div>
-<div class="category" id="empresaCategoria">Estabelecimento</div>
-</div>
-<button class="btn-logout" onclick="logout()">
-<i class="fas fa-sign-out-alt"></i>
+                </div>
+                <h1>Dashboard Empresa</h1>
+                <p>Gerencie clientes, promoções e monitore performance em tempo real</p>
+            </div>
+            <div class="header-right">
+                <div class="empresa-info">
+                    <div class="name" id="empresaNome">Minha Empresa</div>
+                    <div class="category" id="empresaCategoria">Estabelecimento</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
                     Sair
                 </button>
-</div>
-</div>
-</div>
-<div class="main">
-<!-- Stats Grid -->
-<div class="stats-grid" id="statsGrid">
-<div class="stat-card">
-<div class="stat-header">
-<div>
-<div class="stat-value" id="totalClientes">284</div>
-<div class="stat-label">Clientes Cadastrados</div>
-<div class="stat-change positive">+18 esta semana</div>
-</div>
-<div class="stat-icon clientes">
-<i class="fas fa-users"></i>
-</div>
-</div>
-</div>
-<div class="stat-card">
-<div class="stat-header">
-<div>
-<div class="stat-value" id="checkinsHoje">47</div>
-<div class="stat-label">Check-ins Hoje</div>
-<div class="stat-change positive">+12% ontem</div>
-</div>
-<div class="stat-icon checkins">
-<i class="fas fa-qrcode"></i>
-</div>
-</div>
-</div>
-<div class="stat-card">
-<div class="stat-header">
-<div>
-<div class="stat-value" id="pontosDistribuidos">3.2k</div>
-<div class="stat-label">Pontos Distribuídos</div>
-<div class="stat-change positive">+8% esta semana</div>
-</div>
-<div class="stat-icon pontos">
-<i class="fas fa-coins"></i>
-</div>
-</div>
-</div>
-<div class="stat-card">
-<div class="stat-header">
-<div>
-<div class="stat-value" id="promocoesAtivas">5</div>
-<div class="stat-label">Promoções Ativas</div>
-<div class="stat-change positive">2 novas</div>
-</div>
-<div class="stat-icon promocoes">
-<i class="fas fa-tags"></i>
-</div>
-</div>
-</div>
-<div class="stat-card">
-<div class="stat-header">
-<div>
-<div class="stat-value" id="receitaMensal">R$ 12.8k</div>
-<div class="stat-label">Receita Mensal</div>
-<div class="stat-change positive">+25% mês passado</div>
-</div>
-<div class="stat-icon receita">
-<i class="fas fa-chart-line"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+        <!-- Stats Grid -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="totalClientes">156</div>
+                        <div class="stat-label">Clientes Cadastrados</div>
+                        <div class="stat-change positive">+18 esta semana</div>
+                    </div>
+                    <div class="stat-icon clientes">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="checkinsHoje">47</div>
+                        <div class="stat-label">Check-ins Hoje</div>
+                        <div class="stat-change positive">+12% ontem</div>
+                    </div>
+                    <div class="stat-icon checkins">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="pontosDistribuidos">3.2k</div>
+                        <div class="stat-label">Pontos Distribuídos</div>
+                        <div class="stat-change positive">+8% esta semana</div>
+                    </div>
+                    <div class="stat-icon pontos">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="promocoesAtivas">5</div>
+                        <div class="stat-label">Promoções Ativas</div>
+                        <div class="stat-change positive">2 novas</div>
+                    </div>
+                    <div class="stat-icon promocoes">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="receitaMensal">R$ 12.4k</div>
+                        <div class="stat-label">Receita Mensal</div>
+                        <div class="stat-change positive">+25% mês passado</div>
+                    </div>
+                    <div class="stat-icon receita">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <div class="stat-value" id="avaliacaoMedia">4.8</div>
+                        <div class="stat-label">Avaliação Média</div>
+                        <div class="stat-change positive">⭐ Excelente</div>
+                    </div>
+                    <div class="stat-icon avaliacao">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h2 class="section-title">
+                <i class="fas fa-rocket"></i>
+                Ações Rápidas
+            </h2>
+            <div class="actions-grid">
+                <a href="/empresa-scanner.html" class="action-btn">
+                    <i class="fas fa-qrcode"></i>
+                    Scanner QR Code
+                </a>
+                <a href="/empresa-nova-promocao.html" class="action-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    Nova Promoção
+                </a>
+                <a href="/empresa-clientes.html" class="action-btn">
+                    <i class="fas fa-users"></i>
+                    Gerenciar Clientes
+                </a>
+                <a href="/empresa-relatorios.html" class="action-btn">
+                    <i class="fas fa-chart-bar"></i>
+                    Relatórios
+                </a>
+                <a href="/empresa-notificacoes.html" class="action-btn">
+                    <i class="fas fa-bell"></i>
+                    Notificações
+                </a>
+                <a href="/empresa-configuracoes.html" class="action-btn">
+                    <i class="fas fa-cog"></i>
+                    Configurações
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                Atividade Recente
+            </h2>
+            <div class="activity-list" id="activityList">
+                <div class="activity-item">
+                    <div class="activity-icon checkin">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Check-in realizado</div>
+                        <div class="activity-desc">Maria Silva fez check-in e ganhou 15 pontos</div>
+                    </div>
+                    <div class="activity-time">há 3 min</div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon promocao">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Promoção resgatada</div>
+                        <div class="activity-desc">João Costa resgatou "10% de desconto"</div>
+                    </div>
+                    <div class="activity-time">há 15 min</div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon cliente">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Novo cliente</div>
+                        <div class="activity-desc">Ana Oliveira se cadastrou como cliente</div>
+                    </div>
+                    <div class="activity-time">há 1h</div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon avaliacao">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Nova avaliação</div>
+                        <div class="activity-desc">Carlos Santos avaliou com 5 estrelas</div>
+                    </div>
+                    <div class="activity-time">há 2h</div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon promocao">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Promoção criada</div>
+                        <div class="activity-desc">Nova promoção "Happy Hour" foi ativada</div>
+                    </div>
+                    <div class="activity-time">há 4h</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </div>
 </div>
@@ -290,18 +840,132 @@
             });
         });
 
+    <script>
+        // Configuração da API
+        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
+        
+        // Verificar autenticação
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (!token || !user) {
+                window.location.href = '/entrar.html';
+                return false;
+            }
+            
+            try {
+                const userData = JSON.parse(user);
+                if (userData.perfil !== 'empresa') {
+                    window.location.href = '/entrar.html';
+                    return false;
+                }
+                
+                // Atualizar informações da empresa no header
+                document.getElementById('empresaNome').textContent = userData.name || userData.nome || 'Minha Empresa';
+                document.getElementById('empresaCategoria').textContent = userData.categoria || 'Estabelecimento';
+                
+            } catch (e) {
+                console.error('Erro ao parsear dados do usuário:', e);
+                window.location.href = '/entrar.html';
+                return false;
+            }
+            
+            return token;
+        }
+        
+        // Carregar dados do dashboard
+        async function loadDashboard() {
+            const token = checkAuth();
+            if (!token) return;
+            
+            try {
+                // Dados realistas para demonstração
+                const dashboardData = {
+                    totalClientes: 156,
+                    checkinsHoje: Math.floor(Math.random() * 30 + 20),
+                    pontosDistribuidos: (Math.random() * 2 + 2).toFixed(1) + 'k',
+                    promocoesAtivas: Math.floor(Math.random() * 3 + 3),
+                    receitaMensal: 'R$ 12.4k',
+                    avaliacaoMedia: 4.8
+                };
+
+                // Atualizar com animação
+                setTimeout(() => {
+                    document.getElementById('totalClientes').textContent = dashboardData.totalClientes;
+                    document.getElementById('checkinsHoje').textContent = dashboardData.checkinsHoje;
+                    document.getElementById('pontosDistribuidos').textContent = dashboardData.pontosDistribuidos;
+                    document.getElementById('promocoesAtivas').textContent = dashboardData.promocoesAtivas;
+                    document.getElementById('receitaMensal').textContent = dashboardData.receitaMensal;
+                    document.getElementById('avaliacaoMedia').textContent = dashboardData.avaliacaoMedia;
+                    
+                    // Efeito de atualização nos valores
+                    document.querySelectorAll('.stat-value').forEach(stat => {
+                        stat.style.transform = 'scale(1.05)';
+                        setTimeout(() => {
+                            stat.style.transform = 'scale(1)';
+                        }, 200);
+                    });
+                }, 500);
+                
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+            }
+        }
+
+        // Função de logout padronizada
+        function logout() {
+            if (confirm('Tem certeza que deseja sair do painel da empresa?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('admin_token');
+                localStorage.removeItem('admin_user');
+                window.location.href = '/entrar.html';
+            }
+        }
+
+        // Inicializar quando página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+            
+            // Interatividade nos cards
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'translateY(-6px)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(0px)';
+                    }, 150);
+                });
+            });
+
         // Adicionar interatividade aos botões de ação
         document.querySelectorAll('.action-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 // Adicionar feedback visual
                 this.style.transform = 'translateY(-4px)';
-                this.style.boxShadow = '0 12px 35px rgba(111, 26, 182, 0.2)';
+                this.style.boxShadow = '0 12px 35px rgba(241, 196, 15, 0.2)';
                 
                 setTimeout(() => {
                     this.style.transform = 'translateY(-2px)';
-                    this.style.boxShadow = '0 8px 25px rgba(111, 26, 182, 0.15)';
+                    this.style.boxShadow = '0 8px 25px rgba(241, 196, 15, 0.15)';
                 }, 150);
             });
+        });
+            
+        // Atualização em tempo real (simulação)
+        setInterval(() => {
+            const activities = document.querySelectorAll('.activity-time');
+            activities.forEach(activity => {
+                let text = activity.textContent;
+                if (text.includes('min')) {
+                    let minutes = parseInt(text.match(/\d+/)[0]);
+                    if (Math.random() > 0.95) { // 5% chance de update
+                        activity.textContent = `há ${minutes + 1} min`;
+                    }
+                }
+            });
+        }, 30000);
+        
         });
     </script>
 </body>
