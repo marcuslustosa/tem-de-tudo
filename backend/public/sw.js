@@ -1,7 +1,7 @@
 // Service Worker - Tem de Tudo App
 // Versão otimizada para PWA com cache estratégico
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v3.0.0';
 const CACHE_NAME = `tem-de-tudo-${CACHE_VERSION}`;
 
 // Assets essenciais para cache (offline first)
@@ -11,7 +11,7 @@ const CORE_ASSETS = [
     '/app-perfil.html',
     '/app-meu-qrcode.html',
     '/app-scanner.html',
-    '/css/mobile-native.css',
+    '/css/style-unificado.css',
     '/manifest.json'
 ];
 
