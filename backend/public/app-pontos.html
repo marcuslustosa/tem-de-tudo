@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -6,11 +6,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#6F1AB6">
-<title>💰 Meus Pontos Premium - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#6A0DAD">
+<title>Meus Pontos - Vivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/style-unificado.css?v=3">
+<link rel="stylesheet" href="/css/vivo-global.css">
 </head>
 <body>
 <div class="header">
@@ -97,3 +97,8 @@
 </div>  `;  }).join('');  }  function getIconeTransacao(tipo) {  const icones = {  'checkin': 'fa-map-marker-alt',  'compra_cupom': 'fa-ticket-alt',  'uso_cupom': 'fa-gift',  'bonus': 'fa-star',  'cashback': 'fa-coins',  'referencia': 'fa-user-plus'  };  return icones[tipo] || 'fa-coins';  }  function getTituloTransacao(transacao) {  const titulos = {  'checkin': `Check-in em ${transacao.empresa || transacao.empresa_nome}`,  'compra_cupom': `Compra de cupom - ${transacao.empresa || transacao.empresa_nome}`,  'uso_cupom': `Uso de cupom - ${transacao.empresa || transacao.empresa_nome}`,  'bonus': `Bônus - ${transacao.empresa || 'Sistema'}`,  'cashback': `Cashback - ${transacao.empresa || transacao.empresa_nome}`,  'referencia': `Indicação de amigo - ${transacao.empresa || 'Sistema'}`  };  return titulos[transacao.tipo] || `Transação - ${transacao.empresa || 'Sistema'}`;  }  function formatarData(data) {  const agora = new Date();  const diff = agora - data;  const dias = Math.floor(diff / (1000 * 60 * 60 * 24));  if (dias === 0) {  return 'Hoje';  } else if (dias === 1) {  return 'Ontem';  } else if (dias < 7) {  return `${dias} dias atrás`;  } else {  return data.toLocaleDateString('pt-BR');  }  }  function formatarNumero(numero) {  if (numero >= 1000) {  return (numero / 1000).toFixed(1).replace('.', ',') + 'k';  }  return numero.toString();  }  </script>
 </body>
 </html>
+
+
+
+
+

@@ -1,237 +1,20 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#6F1AB6">
-    <title>📱 Dashboard Cliente - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#6A0DAD">
+    <title>📱 Dashboard Cliente - Vivo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f8f9fa;
-            color: #333;
-            min-height: 100vh;
-            padding-bottom: 80px;
-        }
-
-        .header {
-            background: #6F1AB6;
-            padding: 20px 16px;
-            color: white;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-left h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .header-left p {
-            opacity: 0.9;
-            font-size: 14px;
-        }
-
-        .btn-logout {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-
-        .btn-logout:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .main {
-            padding: 20px 16px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-left: 4px solid #6F1AB6;
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #666;
-            font-weight: 600;
-        }
-
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            background: #6F1AB6;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #6F1AB6;
-            margin-bottom: 4px;
-        }
-
-        .stat-subtitle {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-title i {
-            color: #6F1AB6;
-        }
-
-        .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .action-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            text-decoration: none;
-            color: #333;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: all 0.2s;
-            border: 1px solid #eee;
-        }
-
-        .action-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(111,26,182,0.2);
-            border-color: #6F1AB6;
-        }
-
-        .action-card-icon {
-            width: 48px;
-            height: 48px;
-            background: #6F1AB6;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-
-        .action-card h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .action-card p {
-            font-size: 13px;
-            color: #666;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid #eee;
-            padding: 12px 0;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: #666;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: 500;
-            padding: 8px;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .nav-item.active {
-            color: #6F1AB6;
-        }
-
-        .nav-item i {
-            font-size: 18px;
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            .actions-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/css/vivo-global.css">
 </head>
 <body>
     <div class="header">
         <div class="header-content">
             <div class="header-left">
-                <h1>📱 Olá, Client Ivo!</h1>
-                <p>Bem-vindo ao seu painel cliente</p>
+                <h1>📱 Olá, Cliente Vivo!</h1>
+                <p>Bem-vindo ao seu painel</p>
             </div>
             <button class="btn-logout" onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i>
@@ -240,7 +23,7 @@
         </div>
     </div>
 
-    <div class="main">
+    <div class="container">
         <!-- Stats Cards -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -251,7 +34,10 @@
                     </div>
                 </div>
                 <div class="stat-value">47</div>
-                <div class="stat-subtitle">Realizados este mês</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Realizados este mês</span>
+                </div>
             </div>
 
             <div class="stat-card">
@@ -261,19 +47,25 @@
                         <i class="fas fa-credit-card"></i>
                     </div>
                 </div>
-                <div class="stat-value">R$ 2,357</div>
-                <div class="stat-subtitle">Nos últimos 30 dias</div>
+                <div class="stat-value">R$ 2.357</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Nos últimos 30 dias</span>
+                </div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <span class="stat-label">⭐ PONTOS FIDELIDADE</span>
+                    <span class="stat-label">⭐ PONTOS VIVO</span>
                     <div class="stat-icon">
                         <i class="fas fa-star"></i>
                     </div>
                 </div>
-                <div class="stat-value">1,250</div>
-                <div class="stat-subtitle">Disponíveis para uso</div>
+                <div class="stat-value">1.250</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Disponíveis para uso</span>
+                </div>
             </div>
 
             <div class="stat-card">
@@ -284,7 +76,10 @@
                     </div>
                 </div>
                 <div class="stat-value">3</div>
-                <div class="stat-subtitle">Em andamento</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Em andamento</span>
+                </div>
             </div>
         </div>
 
@@ -295,52 +90,64 @@
         </h2>
 
         <div class="actions-grid">
-            <a href="catalogo-produtos.html" class="action-card">
+            <a href="/app-empresas.html" class="action-card">
                 <div class="action-card-icon">
                     <i class="fas fa-store"></i>
                 </div>
-                <h3>Explorar Catálogo</h3>
-                <p>Navegue por nossos produtos e ofertas</p>
-            </a>
-
-            <a href="meus-pedidos.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-shopping-cart"></i>
+                <div class="action-card-content">
+                    <h3>Explorar Empresas</h3>
+                    <p>Navegue por empresas parceiras</p>
                 </div>
-                <h3>Meus Pedidos</h3>
-                <p>Acompanhe o status dos seus pedidos</p>
             </a>
 
-            <a href="perfil-cliente.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-user"></i>
-                </div>
-                <h3>Meu Perfil</h3>
-                <p>Edite suas informações pessoais</p>
-            </a>
-
-            <a href="avaliacoes-cliente.html" class="action-card">
+            <a href="/app-pontos.html" class="action-card">
                 <div class="action-card-icon">
                     <i class="fas fa-star"></i>
                 </div>
-                <h3>Minhas Avaliações</h3>
-                <p>Avalie produtos e experiências</p>
+                <div class="action-card-content">
+                    <h3>Meus Pontos</h3>
+                    <p>Acompanhe seus pontos Vivo</p>
+                </div>
             </a>
 
-            <a href="ofertas-promocoes.html" class="action-card">
+            <a href="/app-perfil.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="action-card-content">
+                    <h3>Meu Perfil</h3>
+                    <p>Edite suas informações</p>
+                </div>
+            </a>
+
+            <a href="/app-promocoes.html" class="action-card">
                 <div class="action-card-icon">
                     <i class="fas fa-tags"></i>
                 </div>
-                <h3>Ofertas Especiais</h3>
-                <p>Promoções exclusivas para você</p>
+                <div class="action-card-content">
+                    <h3>Promoções</h3>
+                    <p>Ofertas exclusivas Vivo</p>
+                </div>
             </a>
 
-            <a href="suporte-cliente.html" class="action-card">
+            <a href="/app-cupons.html" class="action-card">
+                <div class="action-card-icon">
+                    <i class="fas fa-ticket-alt"></i>
+                </div>
+                <div class="action-card-content">
+                    <h3>Meus Cupons</h3>
+                    <p>Cupons disponíveis para uso</p>
+                </div>
+            </a>
+
+            <a href="/app-ajuda.html" class="action-card">
                 <div class="action-card-icon">
                     <i class="fas fa-headset"></i>
                 </div>
-                <h3>Central de Ajuda</h3>
-                <p>Tire suas dúvidas e contate o suporte</p>
+                <div class="action-card-content">
+                    <h3>Central de Ajuda</h3>
+                    <p>Suporte e atendimento</p>
+                </div>
             </a>
         </div>
 
@@ -351,55 +158,63 @@
         </h2>
 
         <div class="actions-grid">
-            <a href="programa-fidelidade.html" class="action-card">
+            <a href="/app-qrcode.html" class="action-card">
                 <div class="action-card-icon">
-                    <i class="fas fa-gift"></i>
+                    <i class="fas fa-qrcode"></i>
                 </div>
-                <h3>Programa Fidelidade</h3>
-                <p>Acumule pontos e troque por prêmios</p>
+                <div class="action-card-content">
+                    <h3>Meu QR Code</h3>
+                    <p>Código para ganhar pontos</p>
+                </div>
             </a>
 
-            <a href="enderecos-cliente.html" class="action-card">
+            <a href="/app-historico.html" class="action-card">
                 <div class="action-card-icon">
-                    <i class="fas fa-map-marker-alt"></i>
+                    <i class="fas fa-history"></i>
                 </div>
-                <h3>Meus Endereços</h3>
-                <p>Gerencie seus endereços de entrega</p>
+                <div class="action-card-content">
+                    <h3>Histórico</h3>
+                    <p>Suas transações e atividades</p>
+                </div>
             </a>
 
-            <a href="favoritos-cliente.html" class="action-card">
+            <a href="/app-favoritos.html" class="action-card">
                 <div class="action-card-icon">
                     <i class="fas fa-heart"></i>
                 </div>
-                <h3>Lista de Desejos</h3>
-                <p>Produtos salvos para comprar depois</p>
+                <div class="action-card-content">
+                    <h3>Favoritos</h3>
+                    <p>Empresas e produtos favoritos</p>
+                </div>
             </a>
 
-            <a href="notificacoes-cliente.html" class="action-card">
+            <a href="/app-configuracoes.html" class="action-card">
                 <div class="action-card-icon">
-                    <i class="fas fa-bell"></i>
+                    <i class="fas fa-cogs"></i>
                 </div>
-                <h3>Notificações</h3>
-                <p>Configure alertas e preferências</p>
+                <div class="action-card-content">
+                    <h3>Configurações</h3>
+                    <p>Ajustes e preferências</p>
+                </div>
             </a>
         </div>
     </div>
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <a href="dashboard-cliente.html" class="nav-item active">
+        <a href="/dashboard-cliente.html" class="nav-item active">
             <i class="fas fa-home"></i>
             <span>Início</span>
         </a>
-        <a href="catalogo-produtos.html" class="nav-item">
+        <a href="/app-empresas.html" class="nav-item">
             <i class="fas fa-search"></i>
             <span>Explorar</span>
         </a>
-        <a href="meus-pedidos.html" class="nav-item">
-            <i class="fas fa-shopping-bag"></i>
-            <span>Pedidos</span>
+        <a href="/app-pontos.html" class="nav-item">
+            <i class="fas fa-star"></i>
+            <span>Pontos</span>
         </a>
-        <a href="perfil-cliente.html" class="nav-item">
+        <a href="/app-perfil.html" class="nav-item">
             <i class="fas fa-user"></i>
             <span>Perfil</span>
         </a>
@@ -408,31 +223,37 @@
     <script>
         function logout() {
             if (confirm('Tem certeza que deseja sair?')) {
-                alert('🔓 Logout realizado com sucesso!');
-                window.location.href = 'login-cliente.html';
+                localStorage.clear();
+                window.location.href = '/entrar.html';
             }
         }
 
-        // Simular carregamento de dados
+        // Carregar dados do usuário
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Dashboard cliente carregado com sucesso');
+            console.log('Dashboard cliente carregado');
             
-            // Animation simples para os cards
+            // Verificar autenticação
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/entrar.html';
+                return;
+            }
+            
+            // Animação dos cards
             const cards = document.querySelectorAll('.stat-card, .action-card');
             cards.forEach((card, index) => {
                 setTimeout(() => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    card.style.transition = 'all 0.3s ease';
-                    
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, 50);
-                }, index * 50);
+                    card.classList.add('fade-in');
+                }, index * 100);
             });
         });
     </script>
 </body>
 </html>
+
+
+
+
+
+
 

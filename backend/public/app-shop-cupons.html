@@ -1,19 +1,19 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shop de Cupons - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Shop de Cupons - Vivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vale-bonus-theme.css">
+<link rel="stylesheet" href="/css/vivo-global.css">
 <script src="/js/config.js"></script>
 <script src="/js/auth-manager.js" defer></script>
 <script src="/js/api-client.js" defer></script>
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/style-unificado.css?v=3">
+<link rel="stylesheet" href="/css/vivo-global.css">
 </head>
 <body>
 <div class="header">
@@ -89,3 +89,8 @@
 </div>  `).join('');  }  function comprarCupom(cupomId) {  const cupom = cuponsShop.find(c => c.id === cupomId);  if (pontosUsuario < cupom.pontos) {  alert('Pontos insuficientes!');  return;  }  // Confirmar compra  if (confirm(`Deseja resgatar "${cupom.titulo}" por ${cupom.pontos} pontos?`)) {  pontosUsuario -= cupom.pontos;  // Adicionar aos meus cupons  const novoCupom = {  id: Date.now(),  titulo: cupom.titulo,  descricao: cupom.descricao,  codigo: gerarCodigo(),  validade: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR'),  usado: false  };  meusCupons.push(novoCupom);  // Atualizar interface  renderizarShop();  renderizarMeusCupons();  alert(`Cupom "${cupom.titulo}" resgatado com sucesso!\\nCódigo: ${novoCupom.codigo}`);  }  }  function usarCupom(codigo) {  if (confirm('Tem certeza que deseja usar este cupom?\\n\\nEsta ação não pode ser desfeita.')) {  const cupom = meusCupons.find(c => c.codigo === codigo);  cupom.usado = true;  renderizarMeusCupons();  alert('Cupom usado com sucesso!');  }  }  function gerarCodigo() {  return Math.random().toString(36).substring(2, 8).toUpperCase();  }  </script>
 </body>
 </html>
+
+
+
+
+
