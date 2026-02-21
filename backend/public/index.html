@@ -1,257 +1,167 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Vivo - Sistema Premium de Fidelidade</title>
-<!-- PWA Meta Tags -->
-<meta name="description" content="Acumule pontos, ganhe recompensas e descontos exclusivos nos seus estabelecimentos favoritos com nossa plataforma premium">
-<meta name="theme-color" content="#6A0DAD">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tem de Tudo - Sistema de Fidelidade</title>
+<meta name="description" content="Acumule pontos, ganhe recompensas e descontos exclusivos nos seus estabelecimentos favoritos">
+<meta name="theme-color" content="#6F1AB6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Vivo Premium">
-<!-- PWA Manifest -->
+<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
 <link rel="manifest" href="/manifest.json">
-<!-- Icons -->
 <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
 <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <!-- Loading Screen -->
-<div class="loading" id="loading">
-<div class="spinner"></div>
+<div class="loading-screen" id="loadingScreen">
+    <div class="loading-spinner"></div>
 </div>
-<div class="container">
-<div class="logo-container">
-<div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px;">
-<i class="fas fa-gem" style="font-size: 48px; color: #6F1AB6;"></i>
-</div>
-<div class="brand-name">Vivo</div>
-<div class="brand-tagline">Sistema de Fidelidade Premium</div>
-</div>
-<div class="subtitle">
-            A plataforma que <strong>recompensa sua fidelidade</strong> com pontos, descontos exclusivos e experiências únicas ✨
-        </div>
-<div class="stats">
-<div class="stat">
-<div class="stat-number">50+</div>
-<div class="stat-label">Empresas</div>
-</div>
-<div class="stat">
-<div class="stat-number">2.5k</div>
-<div class="stat-label">Usuários</div>
-</div>
-<div class="stat">
-<div class="stat-number">95%</div>
-<div class="stat-label">Satisfação</div>
-</div>
-</div>
-<div class="features">
-<div class="feature">
-<i class="fas fa-coins feature-icon"></i>
-<div class="feature-title">🎯 Pontos Inteligentes</div>
-<div class="feature-desc">Acumule pontos a cada compra e troque por recompensas exclusivas com sistema de multiplicadores premium</div>
-</div>
-<div class="feature">
-<i class="fas fa-percentage feature-icon"></i>
-<div class="feature-title">🔥 Descontos Exclusivos</div>
-<div class="feature-desc">Aproveite ofertas especiais, cupons personalizados e promoções disponíveis apenas para membros</div>
-</div>
-<div class="feature">
-<i class="fas fa-mobile-alt feature-icon"></i>
-<div class="feature-title">📱 App Nativo Premium</div>
-<div class="feature-desc">Interface moderna, notificações inteligentes e experiência offline completa em qualquer dispositivo</div>
-</div>
-</div>
-<div class="install-section">
-<div class="install-icon">📲</div>
-<div class="install-title">Instale como App</div>
-<div class="install-desc">Transforme em aplicativo nativo para melhor experiência</div>
-<div class="platform-icons">
-<i class="fab fa-android platform-icon" title="Android"></i>
-<i class="fab fa-apple platform-icon" title="iOS"></i>
-<i class="fab fa-windows platform-icon" title="Windows"></i>
-<i class="fab fa-chrome platform-icon" title="Desktop"></i>
-</div>
-</div>
-<div class="cta-section">
-<div class="cta-text">✨ Comece sua jornada premium agora!</div>
-<div class="buttons">
-<a href="/entrar.html" class="btn btn-primary">
-<i class="fas fa-sign-in-alt"></i>
-<span>Entrar na Conta</span>
-</a>
-<a href="/cadastro.html" class="btn btn-secondary">
-<i class="fas fa-user-plus"></i>
-<span>Criar Conta Premium</span>
-</a>
-<!-- PWA Install Button (hidden by default) -->
-<button id="pwa-install-btn" class="btn btn-secondary pwa-install-button">
-<i class="fas fa-download"></i>
-<span>Instalar App</span>
-</button>
-</div>
-</div>
-<div class="footer">
-<p>🏆 <strong>Vivo Premium</strong> - Sua fidelidade vale ouro</p>
-<p>
-<a href="/termos.html">Termos de Uso</a> • 
-                <a href="/privacidade.html">Privacidade</a> • 
-                <a href="/app-ajuda.html">Ajuda</a>
-</p>
-<p style="margin-top: 16px; font-size: 11px;">
-                © 2026 Tem de Tudo. Todos os direitos reservados.<br>
-<span style="color: #6F1AB6;">v2.0 • Premium Edition</span>
-</p>
-</div>
-</div>
-<!-- Scripts -->
-<script>
-        // Loading screen
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loading').classList.add('hidden');
-            }, 1000);
-        });
 
-        // PWA Install
-        let deferredPrompt;
-        const installButton = document.getElementById('pwa-install-btn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installButton.classList.add('show');
-        });
-
-        installButton.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                
-                if (outcome === 'accepted') {
-                    console.log('PWA instalado com sucesso');
-                    installButton.style.display = 'none';
-                }
-                
-                deferredPrompt = null;
-            }
-        });
-
-        // Check if already installed
-        window.addEventListener('appinstalled', () => {
-            installButton.style.display = 'none';
-        });
-
-        // Check if already logged in and show logout button
-        const token = localStorage.getItem('token');
-        const userType = localStorage.getItem('userType');
-        
-        if (token && userType) {
-            // Verify token is valid by checking user data
-            try {
-                const user = JSON.parse(localStorage.getItem('user') || '{}');
-                if (user && user.id) {
-                    // Show logout button in header
-                    const logoutBtn = document.createElement('div');
-                    logoutBtn.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 1000;';
-                    logoutBtn.innerHTML = `
-                        <button class="btn-logout" onclick="logout()">
-                            <i class="fas fa-sign-out-alt"></i> Sair
-                        </button>
-                    `;
-                    document.body.appendChild(logoutBtn);
-                }
-            } catch (e) {
-                // Invalid user data, clear storage
-                localStorage.clear();
-            }
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-bg">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+    </div>
+    
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title fade-up">Recompense sua fidelidade</h1>
+            <p class="hero-subtitle fade-up">Acumule pontos, ganhe recompensas e descontos exclusivos nos seus estabelecimentos favoritos</p>
             
-            // Add logout function
-            window.logout = function() {
-                localStorage.clear();
-                window.location.href = '/entrar.html';
-            };
-        }
+            <div class="hero-buttons fade-up">
+                <a href="entrar.html" class="hero-btn hero-btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Entrar agora
+                </a>
+                <a href="cadastro.html" class="hero-btn hero-btn-secondary">
+                    <i class="fas fa-user-plus"></i>
+                    Criar conta
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
-        // Analytics simulation
-        setTimeout(() => {
-            console.log('📊 Analytics: Landing page viewed');
-        }, 2000);
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title fade-up">Como funciona</h2>
+        
+        <div class="features-grid">
+            <div class="feature-card fade-up">
+                <div class="feature-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h3 class="feature-title">Acumule Pontos</h3>
+                <p class="feature-description">Ganhe pontos a cada compra nos estabelecimentos parceiros e acompanhe seu saldo em tempo real</p>
+            </div>
+            
+            <div class="feature-card fade-up">
+                <div class="feature-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3 class="feature-title">Resgate Prêmios</h3>
+                <p class="feature-description">Troque seus pontos por produtos, descontos e ofertas exclusivas nos nossos parceiros</p>
+            </div>
+            
+            <div class="feature-card fade-up">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title">App Intuitivo</h3>
+                <p class="feature-description">Interface moderna e fácil de usar para acompanhar pontos, ofertas e histórico de compras</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-        // Dynamic stats update (simulation)
-        const updateStats = () => {
-            const statNumbers = document.querySelectorAll('.stat-number');
-            statNumbers.forEach((stat, index) => {
-                if (Math.random() > 0.98) { // 2% chance
-                    const current = parseInt(stat.textContent.replace(/\D/g, ''));
-                    const increment = Math.floor(Math.random() * 3) + 1;
-                    
-                    switch(index) {
-                        case 0: // Empresas
-                            if (current < 100) stat.textContent = (current + increment) + '+';
-                            break;
-                        case 1: // Usuários
-                            const newValue = current + increment;
-                            stat.textContent = newValue >= 1000 ? 
-                                (Math.floor(newValue / 100) / 10) + 'k' : 
-                                newValue + '';
-                            break;
-                        case 2: // Satisfação
-                            if (current < 99) stat.textContent = Math.min(99, current + 1) + '%';
-                            break;
-                    }
-                }
-            });
-        };
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="stats-bg"></div>
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item fade-up">
+                <span class="stat-number">10,000+</span>
+                <span class="stat-label">Usuários Ativos</span>
+            </div>
+            <div class="stat-item fade-up">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Estabelecimentos</span>
+            </div>
+            <div class="stat-item fade-up">
+                <span class="stat-number">1M+</span>
+                <span class="stat-label">Pontos Distribuídos</span>
+            </div>
+            <div class="stat-item fade-up">
+                <span class="stat-number">98%</span>
+                <span class="stat-label">Satisfação</span>
+            </div>
+        </div>
+    </div>
+</section>
 
-        // Update stats every 30 seconds
-        setInterval(updateStats, 30000);
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-container fade-up">
+            <h2 class="cta-title">Comece a acumular pontos hoje!</h2>
+            <p class="cta-subtitle">
+                Entre na nossa comunidade de fidelidade e aproveite vantagens exclusivas em centenas de estabelecimentos parceiros
+            </p>
+            
+            <div class="cta-buttons">
+                <a href="cadastro.html" class="cta-btn cta-primary">
+                    <i class="fas fa-rocket"></i>
+                    Criar Conta Gratuita
+                </a>
+                <a href="entrar.html" class="cta-btn cta-secondary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Já tenho conta
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
 
-        // Smooth scroll for internal links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+<script>
+// Loading screen
+document.addEventListener('DOMContentLoaded', function() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    
+    setTimeout(() => {
+        loadingScreen.classList.add('hidden');
+    }, 1000);
+    
+    // Fade up animation on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationDelay = '0.2s';
+                entry.target.classList.add('fade-up');
+            }
         });
+    }, observerOptions);
+    
+    // Observe all fade-up elements
+    document.querySelectorAll('.fade-up').forEach(el => {
+        observer.observe(el);
+    });
+});
+</script>
 
-        // Add hover sound effect (optional)
-        document.querySelectorAll('.btn, .feature').forEach(element => {
-            element.addEventListener('mouseenter', () => {
-                // Audio feedback could be added here
-                console.log('🎵 Hover effect:', element.className);
-            });
-        });
-
-        // Service Worker registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => console.log('✅ SW registered'))
-                    .catch(error => console.log('❌ SW registration failed'));
-            });
-        }
-    </script>
-<!-- PWA Installer Script -->
-<script src="/js/pwa-installer.js" defer></script>
 </body>
 </html>
-
-
-
-
-
-
-
-

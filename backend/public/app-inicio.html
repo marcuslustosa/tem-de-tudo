@@ -3,234 +3,457 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#6A0DAD">
-<title>Início - Vivo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#6F1AB6">
+<title>Início - Tem de Tudo</title>
+<meta name="description" content="Descubra ofertas incríveis e ganhe pontos em suas compras">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<div class="header">
-<div class="header-top">
-<div class="user-info">
-<div class="greeting">Olá, bem-vindo de volta! ✨</div>
-<div class="user-name" id="userName">Marcus Silva</div>
-<div class="profile-type" id="profileType">
-<i class="fas fa-crown"></i> Premium Active  </div>
+<div class="app-inicio">
+    <!-- Enhanced Header -->
+    <header class="header-premium fade-in">
+        <div class="header-top">
+            <div class="user-section">
+                <div class="greeting">Olá, bem-vindo de volta! ✨</div>
+                <div class="user-name" id="userName">Marcus Silva</div>
+                <div class="profile-type" id="profileType">
+                    <i class="fas fa-crown"></i> Premium Active
+                </div>
+            </div>
+            <div class="saldo-card" onclick="window.location.href='app-meus-pontos.html'">
+                <div class="saldo-label">💰 Saldo Atual</div>
+                <div class="saldo-value">R$ <span id="saldoValue">2.847,50</span></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Enhanced Search -->
+    <section class="search-section slide-in-left">
+        <form class="search-container" onsubmit="handleSearch(event)">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" 
+                   class="search-input" 
+                   id="searchInput" 
+                   placeholder="Busque por empresas, produtos ou ofertas...">
+            <button type="submit" class="search-btn">
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </form>
+    </section>
+
+    <!-- Location Bar -->
+    <div class="location-bar" onclick="showLocationSelector()">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>📍 São Paulo, SP - Centro</span>
+        <i class="fas fa-chevron-down" style="margin-left: auto;"></i>
+    </div>
+
+    <!-- Quick Actions -->
+    <section class="quick-actions-section">
+        <h2 class="section-title">
+            <i class="fas fa-bolt" style="color: var(--vivo-purple);"></i>
+            Acesso Rápido
+        </h2>
+        <div class="quick-actions">
+            <a href="app-meus-pontos.html" class="quick-action">
+                <i class="fas fa-coins"></i>
+                <span>Meus Pontos</span>
+            </a>
+            <a href="app-promocoes.html" class="quick-action">
+                <i class="fas fa-fire"></i>
+                <span>Promoções</span>
+            </a>
+            <a href="app-favoritos.html" class="quick-action">
+                <i class="fas fa-heart"></i>
+                <span>Favoritos</span>
+            </a>
+            <a href="app-scanner.html" class="quick-action">
+                <i class="fas fa-qrcode"></i>
+                <span>Scanner</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Banner Carousel -->
+    <section class="banner-section">
+        <div class="banner-carousel">
+            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=400&fit=crop" 
+                 alt="Banner Promoção" 
+                 class="banner-img">
+            <div class="banner-overlay">
+                <div class="banner-title">🔥 Super Ofertas de Inverno!</div>
+                <div class="banner-subtitle">Até 70% OFF + frete grátis</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-th-large" style="color: var(--vivo-purple);"></i>
+                Categorias em Alta
+            </h2>
+            <a href="app-categorias.html" class="ver-mais">
+                Ver todas <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="categories-scroll">
+            <a href="app-categorias.html?categoria=alimentacao" class="category-card">
+                <div class="category-icon">🍔</div>
+                <div class="category-name">Alimentação</div>
+            </a>
+            <a href="app-categorias.html?categoria=beleza" class="category-card">
+                <div class="category-icon">💅</div>
+                <div class="category-name">Beleza</div>
+            </a>
+            <a href="app-categorias.html?categoria=tecnologia" class="category-card">
+                <div class="category-icon">📱</div>
+                <div class="category-name">Tecnologia</div>
+            </a>
+            <a href="app-categorias.html?categoria=fitness" class="category-card">
+                <div class="category-icon">💪</div>
+                <div class="category-name">Fitness</div>
+            </a>
+            <a href="app-categorias.html?categoria=entretenimento" class="category-card">
+                <div class="category-icon">🎮</div>
+                <div class="category-name">Diversão</div>
+            </a>
+            <a href="app-categorias.html?categoria=moda" class="category-card">
+                <div class="category-icon">👗</div>
+                <div class="category-name">Moda</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Empresas Próximas -->
+    <section class="empresas-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-map-marker-alt" style="color: var(--vivo-purple);"></i>
+                Empresas Próximas
+            </h2>
+            <a href="app-empresas.html" class="ver-mais">
+                Ver todas <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="empresas-grid" id="empresasGrid">
+            <!-- Empresas carregadas via JavaScript -->
+        </div>
+    </section>
 </div>
-<div class="saldo-badge" onclick="window.location.href='/app-meus-pontos.html'">
-<div class="saldo-label">💰 Saldo Atual</div>
-<div class="saldo-value">R$ <span id="saldoValue">2.847,50</span></div>
-</div>
-</div>
-</div>
-<div class="search-container">
-<div class="search-box">
-<i class="fas fa-search"></i>
-<input type="text" id="searchInput" placeholder="Busque por empresas, produtos ou ofertas...">
-</div>
-</div>
-<div class="location">
-<i class="fas fa-map-marker-alt"></i>
-<span>📍 São Paulo, SP - Centro</span>
-<i class="fas fa-chevron-down" style="color: #6F1AB6; cursor: pointer;"></i>
-</div>
-<div class="section">
-<div class="quick-actions">
-<a href="/app-meus-pontos.html" class="quick-action">
-<i class="fas fa-coins"></i>
-<span>Meus Pontos</span>
-</a>
-<a href="/app-promocoes.html" class="quick-action">
-<i class="fas fa-fire"></i>
-<span>Promoções</span>
-</a>
-<a href="/app-favoritos.html" class="quick-action">
-<i class="fas fa-heart"></i>
-<span>Favoritos</span>
-</a>
-<a href="/app-cupons.html" class="quick-action">
-<i class="fas fa-ticket-alt"></i>
-<span>Cupons</span>
-</a>
-</div>
-</div>
-<div class="banner-carousel">
-<img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=400&fit=crop" alt="Banner Promoção" class="banner-img">
-<div class="banner-overlay">
-<div class="banner-title">🔥 Super Ofertas de Inverno!</div>
-<div class="banner-subtitle">Até 70% OFF + frete grátis</div>
-</div>
-</div>
-<div class="section">
-<div class="section-header">
-<div class="section-title">🎯 Categorias em Alta</div>
-<a href="/app-categorias.html" class="ver-mais">  Ver todas <i class="fas fa-arrow-right"></i>
-</a>
-</div>
-<div class="categories-scroll">
-<a href="/app-categorias.html?categoria=alimentacao" class="category-card">
-<div class="category-icon" style="color: #9333EA;">🍔</div>
-<div class="category-name">Alimentação</div>
-</a>
-<a href="/app-categorias.html?categoria=beleza" class="category-card">
-<div class="category-icon" style="color: #e91e63;">💅</div>
-<div class="category-name">Beleza</div>
-</a>
-<a href="/app-categorias.html?categoria=tecnologia" class="category-card">
-<div class="category-icon" style="color: #2196F3;">📱</div>
-<div class="category-name">Tecnologia</div>
-</a>
-<a href="/app-categorias.html?categoria=fitness" class="category-card">
-<div class="category-icon" style="color: #4CAF50;">💪</div>
-<div class="category-name">Fitness</div>
-</a>
-<a href="/app-categorias.html?categoria=entretenimento" class="category-card">
-<div class="category-icon" style="color: #9C27B0;">🎮</div>
-<div class="category-name">Diversão</div>
-</a>
-<a href="/app-categorias.html?categoria=moda" class="category-card">
-<div class="category-icon" style="color: #FF5722;">👗</div>
-<div class="category-name">Moda</div>
-</a>
-</div>
-</div>
-<div class="section">
-<div class="section-header">
-<div class="section-title">⭐ Empresas Próximas</div>
-<a href="/app-empresas.html" class="ver-mais">  Ver todas <i class="fas fa-arrow-right"></i>
-</a>
-</div>
-<div class="empresas-grid" id="empresasGrid">
-<!-- Empresas fictícias hardcoded -->
-<a href="/app-empresa-detalhes.html?id=1" class="empresa-card">
-<img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Burger Prime" class="empresa-img">
-<div class="empresa-content">
-<div class="empresa-name">🍔 Burger Prime</div>
-<div class="empresa-category">Hamburgueria Gourmet</div>
-<div class="empresa-footer">
-<div class="empresa-distance">
-<i class="fas fa-location-dot"></i>
-<span>250m</span>
-</div>
-<div class="empresa-pontos">
-<i class="fas fa-coins"></i> 10 pts  </div>
-</div>
-</div>
-</a>
-<a href="/app-empresa-detalhes.html?id=2" class="empresa-card">
-<img src="https://images.unsplash.com/photo-1553621042-f6e147245754?w=400" alt="Pizza Mania" class="empresa-img">
-<div class="empresa-content">
-<div class="empresa-name">🍕 Pizza Mania</div>
-<div class="empresa-category">Pizzaria Artesanal</div>
-<div class="empresa-footer">
-<div class="empresa-distance">
-<i class="fas fa-location-dot"></i>
-<span>380m</span>
-</div>
-<div class="empresa-pontos">
-<i class="fas fa-coins"></i> 15 pts  </div>
-</div>
-</div>
-</a>
-<a href="/app-empresa-detalhes.html?id=3" class="empresa-card">
-<img src="https://images.unsplash.com/photo-1572448862527-d3c904757de6?w=400" alt="Gym Fitness" class="empresa-img">
-<div class="empresa-content">
-<div class="empresa-name">💪 Gym Fitness</div>
-<div class="empresa-category">Academia de Elite</div>
-<div class="empresa-footer">
-<div class="empresa-distance">
-<i class="fas fa-location-dot"></i>
-<span>520m</span>
-</div>
-<div class="empresa-pontos">
-<i class="fas fa-coins"></i> 20 pts  </div>
-</div>
-</div>
-</a>
-<a href="/app-empresa-detalhes.html?id=4" class="empresa-card">
-<img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400" alt="Café Supremo" class="empresa-img">
-<div class="empresa-content">
-<div class="empresa-name">☕ Café Supremo</div>
-<div class="empresa-category">Cafeteria Artesanal</div>
-<div class="empresa-footer">
-<div class="empresa-distance">
-<i class="fas fa-location-dot"></i>
-<span>180m</span>
-</div>
-<div class="empresa-pontos">
-<i class="fas fa-coins"></i> 8 pts  </div>
-</div>
-</div>
-</a>
-<a href="/app-empresa-detalhes.html?id=5" class="empresa-card">
-<img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400" alt="Farmácia Saúde+" class="empresa-img">
-<div class="empresa-content">
-<div class="empresa-name">💊 Farmácia Saúde+</div>
-<div class="empresa-category">Farmácia e Perfumaria</div>
-<div class="empresa-footer">
-<div class="empresa-distance">
-<i class="fas fa-location-dot"></i>
-<span>650m</span>
-</div>
-<div class="empresa-pontos">
-<i class="fas fa-coins"></i> 12 pts  </div>
-</div>
-</div>
-</a>
-<a href="/app-empresa-detalhes.html?id=6" class="empresa-card">
-<img src="https://images.unsplash.com/photo-1485962398705-ef6a13c41e8f?w=400" alt="Beleza Max" class="empresa-img">
-<div class="empresa-content">
-<div class="empresa-name">💇 Beleza Max</div>
-<div class="empresa-category">Salão de Beleza</div>
-<div class="empresa-footer">
-<div class="empresa-distance">
-<i class="fas fa-location-dot"></i>
-<span>420m</span>
-</div>
-<div class="empresa-pontos">
-<i class="fas fa-coins"></i> 25 pts  </div>
-</div>
-</div>
-</a>
-</div>
-</div>
+
+<!-- Bottom Navigation -->
 <nav class="bottom-nav">
-<a href="/app-inicio.html" class="nav-item active">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="/app-empresas.html" class="nav-item">
-<i class="fas fa-search"></i>
-<span>Buscar</span>
-</a>
-<a href="/app-meus-pontos.html" class="nav-item">
-<i class="fas fa-wallet"></i>
-<span>Pontos</span>
-</a>
-<a href="/app-promocoes.html" class="nav-item">
-<i class="fas fa-tags"></i>
-<span>Promoções</span>
-</a>
-<a href="/app-perfil.html" class="nav-item">
-<i class="fas fa-user"></i>
-<span>Perfil</span>
-</a>
+    <div class="nav-container">
+        <a href="app-inicio.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="app-empresas.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Buscar</span>
+        </a>
+        <a href="app-meus-pontos.html" class="nav-item">
+            <i class="fas fa-wallet"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Ofertas</span>
+        </a>
+        <a href="app-perfil.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
 </nav>
-<script>  // Função para fazer requisições à API  async function apiRequest(url, options = {}) {  try {  const token = localStorage.getItem('token');  const defaultHeaders = {  'Content-Type': 'application/json',  'Accept': 'application/json'  };  if (token) {  defaultHeaders['Authorization'] = `Bearer ${token}`;  }  const response = await fetch(url, {  ...options,  headers: {  ...defaultHeaders,  ...options.headers  }  });  return response;  } catch (error) {  console.warn('API request failed:', error);  return null;  }  }  // Carregar dados do usuário  async function loadUserData() {  try {  console.log('🔄 Carregando dados do usuário...');  // Tentar carregar da API primeiro  try {  const response = await apiRequest('/api/user');  if (response && response.ok) {  const data = await response.json();  if (data.success && data.user) {  console.log('✅ Dados carregados da API:', data.user);  document.getElementById('userName').textContent = data.user.name || data.user.nome || 'Marcus Silva';  document.getElementById('saldoValue').textContent = (data.user.pontos || 2847.50).toLocaleString('pt-BR', { minimumFractionDigits: 2 });  updateProfileType(data.user);  localStorage.setItem('user_data', JSON.stringify(data.user));  return;  }  }  } catch (apiError) {  console.log('API indisponível, carregando dados fictícios...', apiError.message);  }  // FALLBACK: Dados fictícios  console.log('👤 MODO DEMONSTRAÇÃO ATIVADO');  loadMockData();  } catch (error) {  console.error('Erro ao carregar dados do usuário:', error);  loadMockData();  }  }  // Dados fictícios para demonstração  function loadMockData() {  const cachedUser = localStorage.getItem('user');  let mockUser = {  name: 'Marcus Silva',  pontos: 2847.50,  perfil: 'premium'  };  if (cachedUser) {  try {  const user = JSON.parse(cachedUser);  mockUser = {  name: user.name || 'Marcus Silva',  pontos: user.pontos || 2847.50,  perfil: user.perfil || 'premium'  };  } catch (e) {  console.log('Cache inválido, usando dados padrão');  }  }  document.getElementById('userName').textContent = mockUser.name;  document.getElementById('saldoValue').textContent = mockUser.pontos.toLocaleString('pt-BR', { minimumFractionDigits: 2 });  updateProfileType(mockUser);  // Adicionar indicador de modo demonstração  const greeting = document.querySelector('.greeting');  if (greeting) {  greeting.innerHTML = 'Olá, bem-vindo de volta! ✨ <span style="color: #6F1AB6; font-size: 11px;">• DEMO</span>';  }  }  // Atualizar tipo de perfil  function updateProfileType(user) {  const profileTypeElement = document.getElementById('profileType');  const userType = user.perfil || user.tipo || user.user_type || 'premium';  let profileText = '';  let iconClass = '';  switch(userType) {  case 'premium':  profileText = `Premium Active`;  iconClass = 'fas fa-crown';  break;  case 'empresa':  profileText = `Plano Empresa`;  iconClass = 'fas fa-building';  break;  case 'admin':  profileText = `Administrador`;  iconClass = 'fas fa-shield-alt';  break;  default:  profileText = `Plano ${userType.charAt(0).toUpperCase() + userType.slice(1)}`;  iconClass = 'fas fa-user-circle';  }  profileTypeElement.innerHTML = `<i class="${iconClass}"></i> ${profileText}`;  }  // Busca  document.getElementById('searchInput').addEventListener('keypress', (e) => {  if (e.key === 'Enter') {  const query = e.target.value.trim();  if (query) {  window.location.href = `/app-empresas.html?q=${encodeURIComponent(query)}`;  }  }  });  // Inicialização  document.addEventListener('DOMContentLoaded', () => {  loadUserData();  });  // Atualizar saldo periodicamente (simulação)  setInterval(() => {  const currentSaldo = parseFloat(document.getElementById('saldoValue').textContent.replace(/\./g, '').replace(',', '.'));  const variation = (Math.random() - 0.5) * 10; // Variação de -5 a +5  const newSaldo = Math.max(0, currentSaldo + variation);  if (Math.random() > 0.95) { // 5% de chance de atualizar  document.getElementById('saldoValue').textContent = newSaldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 });  }  }, 30000); // A cada 30 segundos  // Carregar empresas próximas dinamicamente  carregarEmpresasProximas();  }  async function carregarEmpresasProximas() {  try {  const token = localStorage.getItem('token');  const response = await fetch('/api/cliente/empresas', {  headers: {  'Authorization': `Bearer ${token}`,  'Accept': 'application/json'  }  });  if (response.ok) {  const data = await response.json();  const empresas = data.data || data.empresas || [];  renderizarEmpresas(empresas.slice(0, 6)); // Mostrar apenas 6 empresas  } else {  throw new Error('Erro ao carregar empresas');  }  } catch (error) {  console.error('Erro ao carregar empresas:', error);  renderizarEmpresasFallback();  }  }  function renderizarEmpresas(empresas) {  const container = document.getElementById('empresasGrid');  if (!empresas || empresas.length === 0) {  container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: rgba(255,255,255,0.7);">Nenhuma empresa encontrada</p>';  return;  }  const categorias = {  'restaurante': 'Alimentação',  'academia': 'Fitness & Saúde',  'beleza': 'Beleza & Estética',  'farmacia': 'Saúde',  'cafeteria': 'Cafeteria'  };  container.innerHTML = empresas.map(empresa => `  <a href="/app-empresa-detalhes.html?id=${empresa.id}" class="empresa-card">
-<img src="${empresa.logo || empresa.foto || 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400'}"  alt="${empresa.nome}" class="empresa-img">
-<div class="empresa-content">
-<div class="empresa-name">${empresa.nome}</div>
-<div class="empresa-category">${categorias[empresa.ramo] || empresa.categoria || 'Serviços'}</div>
-<div class="empresa-footer">
-<div class="empresa-distance">
-<i class="fas fa-map-marker-alt"></i> ${(Math.random() * 2 + 0.1).toFixed(1)} km  </div>
-<div class="empresa-pontos">${empresa.points_multiplier || 1.5}x pontos</div>
-</div>
-</div>
-</a>  `).join('');  }  function renderizarEmpresasFallback() {  // Fallback com dados estáticos caso a API falhe  const empresasFallback = [  { id: 1, nome: 'Sabor e Arte', categoria: 'Restaurante', logo: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400', points_multiplier: 1.5 },  { id: 2, nome: 'Bella Napoli', categoria: 'Pizzaria', logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400', points_multiplier: 2.0 },  { id: 3, nome: 'FitLife Academia', categoria: 'Academia', logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400', points_multiplier: 1.0 },  { id: 4, nome: 'Beleza Total', categoria: 'Salão', logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400', points_multiplier: 1.2 },  { id: 5, nome: 'Café & Cia', categoria: 'Cafeteria', logo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400', points_multiplier: 1.5 },  { id: 6, nome: 'Pet Shop Amigo Fiel', categoria: 'Pet Shop', logo: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400', points_multiplier: 1.0 }  ];  renderizarEmpresas(empresasFallback);  }  </script>
+
+<script src="/js/config.js"></script>
+<script>
+// API Helper Function
+async function apiRequest(url, options = {}) {
+    try {
+        const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+        const defaultHeaders = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        };
+        
+        if (token) {
+            defaultHeaders['Authorization'] = `Bearer ${token}`;
+        }
+        
+        const response = await fetch(`${API_CONFIG.getBaseURL()}${url}`, {
+            ...options,
+            headers: {
+                ...defaultHeaders,
+                ...options.headers
+            }
+        });
+        
+        return response;
+    } catch (error) {
+        console.warn('API request failed:', error);
+        return null;
+    }
+}
+
+// Load User Data
+async function loadUserData() {
+    try {
+        console.log('🔄 Carregando dados do usuário...');
+        
+        // Try to load from API
+        const response = await apiRequest('/api/user');
+        if (response && response.ok) {
+            const data = await response.json();
+            if (data.success && data.user) {
+                console.log('✅ Dados carregados da API:', data.user);
+                updateUserInterface(data.user);
+                localStorage.setItem('user_data', JSON.stringify(data.user));
+                return;
+            }
+        }
+        
+        // Fallback to demo data
+        console.log('👤 MODO DEMONSTRAÇÃO ATIVADO');
+        loadMockData();
+        
+    } catch (error) {
+        console.error('Erro ao carregar dados do usuário:', error);
+        loadMockData();
+    }
+}
+
+// Update User Interface
+function updateUserInterface(user) {
+    document.getElementById('userName').textContent = user.name || user.nome || 'Marcus Silva';
+    document.getElementById('saldoValue').textContent = (user.pontos || 2847.50).toLocaleString('pt-BR', { 
+        minimumFractionDigits: 2 
+    });
+    updateProfileType(user);
+}
+
+// Mock Data for Demo
+function loadMockData() {
+    const cachedUser = localStorage.getItem('user');
+    let mockUser = {
+        name: 'Marcus Silva',
+        pontos: 2847.50,
+        perfil: 'premium'
+    };
+    
+    if (cachedUser) {
+        try {
+            const user = JSON.parse(cachedUser);
+            mockUser = {
+                name: user.name || user.nome || 'Marcus Silva',
+                pontos: user.pontos || 2847.50,
+                perfil: user.perfil || user.tipo || 'premium'
+            };
+        } catch (e) {
+            console.log('Cache inválido, usando dados padrão');
+        }
+    }
+    
+    updateUserInterface(mockUser);
+    
+    // Add demo indicator
+    const greeting = document.querySelector('.greeting');
+    if (greeting) {
+        greeting.innerHTML = 'Olá, bem-vindo de volta! ✨ <span style="color: #FEF08A; font-size: 10px; font-weight: 700;">• DEMO</span>';
+    }
+}
+
+// Update Profile Type Display
+function updateProfileType(user) {
+    const profileTypeElement = document.getElementById('profileType');
+    const userType = user.perfil || user.tipo || user.user_type || 'premium';
+    
+    let profileText = '';
+    let iconClass = '';
+    
+    switch(userType) {
+        case 'premium':
+            profileText = 'Premium Active';
+            iconClass = 'fas fa-crown';
+            break;
+        case 'empresa':
+            profileText = 'Plano Empresa';
+            iconClass = 'fas fa-building';
+            break;
+        case 'admin':
+            profileText = 'Administrador';
+            iconClass = 'fas fa-shield-alt';
+            break;
+        default:
+            profileText = `Plano ${userType.charAt(0).toUpperCase() + userType.slice(1)}`;
+            iconClass = 'fas fa-user-circle';
+    }
+    
+    profileTypeElement.innerHTML = `<i class="${iconClass}"></i> ${profileText}`;
+}
+
+// Handle Search
+function handleSearch(event) {
+    event.preventDefault();
+    const query = document.getElementById('searchInput').value.trim();
+    if (query) {
+        window.location.href = `app-empresas.html?q=${encodeURIComponent(query)}`;
+    }
+}
+
+// Show Location Selector
+function showLocationSelector() {
+    alert('🌍 Seletor de localização em desenvolvimento.\n\nLocalização atual: São Paulo, SP - Centro');
+}
+
+// Load Nearby Companies
+async function carregarEmpresasProximas() {
+    const container = document.getElementById('empresasGrid');
+    
+    // Show loading skeleton
+    container.innerHTML = Array(6).fill(0).map(() => `
+        <div class="empresa-card loading-skeleton" style="height: 200px;"></div>
+    `).join('');
+    
+    try {
+        const response = await apiRequest('/api/cliente/empresas');
+        if (response && response.ok) {
+            const data = await response.json();
+            const empresas = data.data || data.empresas || [];
+            renderizarEmpresas(empresas.slice(0, 6));
+        } else {
+            throw new Error('Erro ao carregar empresas');
+        }
+    } catch (error) {
+        console.error('Erro ao carregar empresas:', error);
+        renderizarEmpresasFallback();
+    }
+}
+
+// Render Companies
+function renderizarEmpresas(empresas) {
+    const container = document.getElementById('empresasGrid');
+    
+    if (!empresas || empresas.length === 0) {
+        container.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; padding: var(--space-2xl); color: var(--text-secondary);">
+                <i class="fas fa-store" style="font-size: 2rem; margin-bottom: var(--space-md); opacity: 0.5;"></i>
+                <p>Nenhuma empresa encontrada</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const categorias = {
+        'restaurante': 'Alimentação',
+        'academia': 'Fitness & Saúde',
+        'beleza': 'Beleza & Estética',
+        'farmacia': 'Saúde',
+        'cafeteria': 'Cafeteria'
+    };
+    
+    container.innerHTML = empresas.map((empresa, index) => `
+        <a href="app-empresa-detalhes.html?id=${empresa.id}" class="empresa-card fade-in" style="animation-delay: ${index * 0.1}s">
+            <img src="${empresa.logo || empresa.foto || `https://images.unsplash.com/photo-155${Math.floor(Math.random() * 9)}742049-0cfed4f6a45d?w=400`}"
+                 alt="${empresa.nome}" 
+                 class="empresa-img"
+                 onerror="this.src='https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400'">
+            <div class="empresa-content">
+                <div class="empresa-name">${empresa.nome}</div>
+                <div class="empresa-category">${categorias[empresa.ramo] || empresa.categoria || 'Serviços'}</div>
+                <div class="empresa-footer">
+                    <div class="empresa-distance">
+                        <i class="fas fa-location-dot"></i>
+                        ${(Math.random() * 2 + 0.1).toFixed(1)}km
+                    </div>
+                    <div class="empresa-pontos">
+                        <i class="fas fa-coins"></i>
+                        ${empresa.points_multiplier || Math.floor(Math.random() * 20) + 5} pts
+                    </div>
+                </div>
+            </div>
+        </a>
+    `).join('');
+}
+
+// Fallback Companies Data
+function renderizarEmpresasFallback() {
+    const empresasFallback = [
+        { id: 1, nome: '🍔 Burger Prime', categoria: 'Hamburgueria Gourmet', logo: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400', points_multiplier: 10 },
+        { id: 2, nome: '🍕 Pizza Mania', categoria: 'Pizzaria Artesanal', logo: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=400', points_multiplier: 15 },
+        { id: 3, nome: '💪 Gym Fitness', categoria: 'Academia de Elite', logo: 'https://images.unsplash.com/photo-1572448862527-d3c904757de6?w=400', points_multiplier: 20 },
+        { id: 4, nome: '☕ Café Supremo', categoria: 'Cafeteria Artesanal', logo: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400', points_multiplier: 8 },
+        { id: 5, nome: '💊 Farmácia Saúde+', categoria: 'Farmácia e Perfumaria', logo: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400', points_multiplier: 12 },
+        { id: 6, nome: '💇 Beleza Max', categoria: 'Salão de Beleza', logo: 'https://images.unsplash.com/photo-1485962398705-ef6a13c41e8f?w=400', points_multiplier: 25 }
+    ];
+    
+    renderizarEmpresas(empresasFallback);
+}
+
+// Simulate Balance Updates
+function simulateBalanceUpdates() {
+    setInterval(() => {
+        const currentSaldo = parseFloat(document.getElementById('saldoValue').textContent.replace(/\./g, '').replace(',', '.'));
+        const variation = (Math.random() - 0.5) * 10; // -5 to +5 variation
+        const newSaldo = Math.max(0, currentSaldo + variation);
+        
+        if (Math.random() > 0.95) { // 5% chance to update
+            document.getElementById('saldoValue').textContent = newSaldo.toLocaleString('pt-BR', { 
+                minimumFractionDigits: 2 
+            });
+        }
+    }, 30000); // Every 30 seconds
+}
+
+// Initialize App
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 App Tem de Tudo iniciado');
+    
+    // Load user data and companies
+    loadUserData();
+    carregarEmpresasProximas();
+    
+    // Start balance simulation
+    simulateBalanceUpdates();
+    
+    // Add stagger animation to elements
+    setTimeout(() => {
+        document.querySelectorAll('.fade-in, .slide-in-left').forEach((el, index) => {
+            el.style.animationDelay = `${index * 0.1}s`;
+        });
+    }, 100);
+});
+
+// Search input enhancements
+document.getElementById('searchInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        handleSearch(e);
+    }
+});
+
+// Add search suggestions (future enhancement)
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const query = e.target.value.trim();
+    // TODO: Implement search suggestions
+    console.log('Search query:', query);
+});
+</script>
 </body>
 </html>  
+
+
+
+
+
+
+
+
+
 
 
 

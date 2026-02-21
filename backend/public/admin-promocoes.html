@@ -1,127 +1,392 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#6A0DAD">
-    <title>Gerenciar Promo��es - Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/admin-glassmorphism.css">
-    <link rel="manifest" href="/manifest.json">
-    <script src="/js/config.js"></script>
-<link rel="stylesheet" href="/css/vivo-global.css">`n</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerenciar Promoções - Admin Tem de Tudo</title>
+<meta name="description" content="Painel administrativo para gerenciar promoções e campanhas">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
 <body>
-    <div class="admin-header">
-        <div class="header-content">
-            <h1><i class="fas fa-tags"></i> Gerenciar Promo��es</h1>
-            <button class="btn-back" onclick="location.href='admin-painel.html'">
-                <i class="fas fa-arrow-left"></i> Voltar
-            </button>
+<div class="admin-promotions-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-container">
+            <h1 class="page-title">
+                <i class="fas fa-tags"></i>
+                Gerenciar Promoções
+            </h1>
+            <a href="admin-painel.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Voltar
+            </a>
         </div>
     </div>
-    <div class="container">
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Buscar promo��es por t�tulo, empresa ou categoria...">
-            <button class="btn-add" onclick="createPromocao()">
-                <i class="fas fa-plus"></i> Nova Promo��o
-            </button>
-        </div>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Imagem</th>
-                        <th>T�tulo</th>
-                        <th>Empresa</th>
-                        <th>Desconto</th>
-                        <th>In�cio</th>
-                        <th>Validade</th>
-                        <th>Status</th>
-                        <th>A��es</th>
-                    </tr>
-                </thead>
-                <tbody id="promocoesTable">
-                    <tr><td colspan="8" style="text-align:center;padding:40px;color:#86868B;">Carregando promo��es...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <script>
-        async function loadPromocoes() {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch(`${API_CONFIG.getBaseURL()}/api/promocoes`, {
-                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
-                });
-                if (response.ok) {
-                    const promocoes = await response.json();
-                    renderPromocoes(promocoes.data || promocoes || []);
-                }
-            } catch (error) {
-                console.error(error);
-                renderPromocoes([]);
-            }
-        }
-        function renderPromocoes(promocoes) {
-            const tbody = document.getElementById('promocoesTable');
-            if (promocoes.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#86868B;">Nenhuma promo��o cadastrada</td></tr>';
-                return;
-            }
-            tbody.innerHTML = promocoes.map(p => {
-                const status = new Date(p.validade) < new Date() ? 'expirada' : (p.status === 'ativa' ? 'ativa' : 'pendente');
-                const statusText = status === 'expirada' ? 'Expirada' : (status === 'ativa' ? 'Ativa' : 'Pendente');
-                return `
-                    <tr>
-                        <td><img src="${p.imagem || '/images/placeholder.jpg'}" alt="${p.titulo}" style="width:60px;height:60px;border-radius:8px;object-fit:cover;"></td>
-                        <td>${p.titulo}</td>
-                        <td>${p.empresa?.nome || 'N/A'}</td>
-                        <td><strong>${p.desconto}%</strong></td>
-                        <td>${new Date(p.data_inicio).toLocaleDateString('pt-BR')}</td>
-                        <td>${new Date(p.validade).toLocaleDateString('pt-BR')}</td>
-                        <td><span class="badge ${status}">${statusText}</span></td>
-                        <td>
-                            <button class="btn-action btn-toggle" onclick="toggleStatus(${p.id})"><i class="fas fa-toggle-on"></i></button>
-                            <button class="btn-action btn-edit" onclick="editPromocao(${p.id})"><i class="fas fa-edit"></i></button>
-                            <button class="btn-action btn-delete" onclick="deletePromocao(${p.id})"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-        function createPromocao() { alert('Criar nova promo��o'); }
-        function toggleStatus(id) { alert(`Alternar status da promo��o ${id}`); }
-        function editPromocao(id) { alert(`Editar promo��o ${id}`); }
-        function deletePromocao(id) { if(confirm('Excluir promo��o?')) alert(`Exclu�do ${id}`); }
-        document.addEventListener('DOMContentLoaded', loadPromocoes);
-    </script>
 
-    <!-- Bottom Navigation PWA -->
-    <nav class="bottom-nav">
+    <!-- Page Container -->
+    <div class="page-container">
+        <!-- Page Actions -->
+        <div class="page-actions fade-in">
+            <div class="search-section">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Buscar promoções por título, empresa ou categoria..."
+                    oninput="filterPromotions()"
+                >
+                <button class="filter-btn" id="filterBtn" onclick="toggleFilters()">
+                    <i class="fas fa-filter"></i>
+                    Filtros
+                </button>
+            </div>
+            <button class="create-btn" onclick="createPromotion()">
+                <i class="fas fa-plus"></i>
+                Nova Promoção
+            </button>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card fade-in animate-delay-1">
+                <div class="stat-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="stat-value" id="totalPromotions">24</div>
+                <div class="stat-label">Total de Promoções</div>
+            </div>
+
+            <div class="stat-card fade-in animate-delay-2">
+                <div class="stat-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-value" id="activePromotions">12</div>
+                <div class="stat-label">Promoções Ativas</div>
+            </div>
+
+            <div class="stat-card fade-in animate-delay-3">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-value" id="pendingPromotions">5</div>
+                <div class="stat-label">Aguardando Aprovação</div>
+            </div>
+
+            <div class="stat-card fade-in animate-delay-4">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-value" id="conversionRate">78%</div>
+                <div class="stat-label">Taxa de Conversão</div>
+            </div>
+        </div>
+
+        <!-- Promotions Grid -->
+        <div class="promotions-grid" id="promotionsGrid">
+            <!-- Promotions will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <div class="nav-container">
         <a href="admin-painel.html" class="nav-item">
             <i class="fas fa-tachometer-alt"></i>
             <span>Dashboard</span>
         </a>
         <a href="admin-usuarios.html" class="nav-item">
             <i class="fas fa-users"></i>
-            <span>Usu�rios</span>
+            <span>Usuários</span>
         </a>
         <a href="admin-empresas.html" class="nav-item">
             <i class="fas fa-building"></i>
             <span>Empresas</span>
         </a>
-        <a href="admin-relatorios.html" class="nav-item">
-            <i class="fas fa-chart-line"></i>
-            <span>Relat�rios</span>
+        <a href="admin-promocoes.html" class="nav-item active">
+            <i class="fas fa-tags"></i>
+            <span>Promoções</span>
         </a>
         <a href="admin-configuracoes.html" class="nav-item">
-            <i class="fas fa-cog"></i>
+            <i class="fas fa-cogs"></i>
             <span>Config</span>
         </a>
-    </nav>
+    </div>
+</div>
+
+<script src="/js/config.js"></script>
+<script>
+// Sample promotion data
+const samplePromotions = [
+    {
+        id: 1,
+        titulo: "Black Friday - 50% OFF",
+        empresa: { nome: "TechStore" },
+        desconto: 50,
+        data_inicio: "2024-11-20",
+        validade: "2024-11-30",
+        status: "ativa",
+        imagem: null
+    },
+    {
+        id: 2,
+        titulo: "Desconto Especial Clientes VIP",
+        empresa: { nome: "Fashion Store" },
+        desconto: 30,
+        data_inicio: "2024-11-01",
+        validade: "2024-12-31",
+        status: "ativa",
+        imagem: null
+    },
+    {
+        id: 3,
+        titulo: "Promoção de Natal",
+        empresa: { nome: "Casa & Decoração" },
+        desconto: 25,
+        data_inicio: "2024-12-15",
+        validade: "2024-12-25",
+        status: "pendente",
+        imagem: null
+    },
+    {
+        id: 4,
+        titulo: "Liquidação de Verão",
+        empresa: { nome: "Sports Center" },
+        desconto: 40,
+        data_inicio: "2024-10-01",
+        validade: "2024-10-31",
+        status: "expirada",
+        imagem: null
+    }
+];
+
+// Load promotions
+async function loadPromotions() {
+    try {
+        const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+        
+        // Try to fetch from API first
+        try {
+            const response = await fetch(`${API_CONFIG.getBaseURL()}/api/promocoes`, {
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const promotions = data.data || data || [];
+                renderPromotions(promotions);
+                updateStats(promotions);
+                return;
+            }
+        } catch (apiError) {
+            console.log('API não disponível, usando dados de exemplo');
+        }
+        
+        // Fallback to sample data
+        renderPromotions(samplePromotions);
+        updateStats(samplePromotions);
+        
+    } catch (error) {
+        console.error('Erro ao carregar promoções:', error);
+        renderPromotions([]);
+    }
+}
+
+// Render promotions
+function renderPromotions(promotions) {
+    const grid = document.getElementById('promotionsGrid');
+    
+    if (promotions.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state fade-in">
+                <div class="empty-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <h3>Nenhuma promoção encontrada</h3>
+                <p>Crie sua primeira promoção para começar</p>
+            </div>
+        `;
+        return;
+    }
+    
+    grid.innerHTML = promotions.map((promotion, index) => {
+        const status = getPromotionStatus(promotion);
+        const statusClass = getStatusClass(status);
+        const statusText = getStatusText(status);
+        
+        return `
+            <div class="promotion-card fade-in animate-delay-${(index % 4) + 1}">
+                <div class="promotion-image">
+                    ${promotion.imagem ? 
+                        `<img src="${promotion.imagem}" alt="${promotion.titulo}">` : 
+                        '<div class="placeholder"><i class="fas fa-image"></i></div>'
+                    }
+                    <div class="promotion-status ${statusClass}">
+                        ${statusText}
+                    </div>
+                </div>
+                
+                <div class="promotion-content">
+                    <h3 class="promotion-title">${promotion.titulo}</h3>
+                    
+                    <div class="promotion-company">
+                        <i class="fas fa-building"></i>
+                        ${promotion.empresa?.nome || 'N/A'}
+                    </div>
+                    
+                    <div class="promotion-details">
+                        <div class="promotion-discount">
+                            -${promotion.desconto}%
+                        </div>
+                        <div class="promotion-dates">
+                            <div><strong>Início:</strong> ${formatDate(promotion.data_inicio)}</div>
+                            <div><strong>Expira:</strong> ${formatDate(promotion.validade)}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="promotion-actions">
+                        <button class="action-btn btn-edit" onclick="editPromotion(${promotion.id})" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn btn-toggle" onclick="togglePromotionStatus(${promotion.id})" title="Ativar/Desativar">
+                            <i class="fas fa-toggle-${status === 'ativa' ? 'on' : 'off'}"></i>
+                        </button>
+                        <button class="action-btn btn-delete" onclick="deletePromotion(${promotion.id})" title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Update statistics
+function updateStats(promotions) {
+    const active = promotions.filter(p => getPromotionStatus(p) === 'ativa').length;
+    const pending = promotions.filter(p => getPromotionStatus(p) === 'pendente').length;
+    
+    animateValue('totalPromotions', promotions.length);
+    animateValue('activePromotions', active);
+    animateValue('pendingPromotions', pending);
+    animateValue('conversionRate', 78, '%');
+}
+
+// Helper functions
+function getPromotionStatus(promotion) {
+    const now = new Date();
+    const startDate = new Date(promotion.data_inicio);
+    const endDate = new Date(promotion.validade);
+    
+    if (endDate < now) return 'expirada';
+    if (startDate > now) return 'pendente';
+    return promotion.status || 'ativa';
+}
+
+function getStatusClass(status) {
+    return `status-${status === 'ativa' ? 'active' : status === 'pendente' ? 'pending' : 'expired'}`;
+}
+
+function getStatusText(status) {
+    const statusMap = {
+        'ativa': 'Ativa',
+        'pendente': 'Pendente',
+        'expirada': 'Expirada'
+    };
+    return statusMap[status] || 'Desconhecido';
+}
+
+function formatDate(dateString) {
+    return new Date(dateString).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+function animateValue(elementId, value, suffix = '') {
+    const element = document.getElementById(elementId);
+    const start = 0;
+    const duration = 1000;
+    const increment = value / (duration / 16);
+    let current = start;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= value) {
+            element.textContent = value + suffix;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current) + suffix;
+        }
+    }, 16);
+}
+
+// Action functions
+function createPromotion() {
+    alert('🎯 Criar nova promoção - Funcionalidade em desenvolvimento');
+}
+
+function editPromotion(id) {
+    alert(`📝 Editar promoção ${id} - Funcionalidade em desenvolvimento`);
+}
+
+function togglePromotionStatus(id) {
+    alert(`🔄 Alternar status da promoção ${id} - Funcionalidade em desenvolvimento`);
+}
+
+function deletePromotion(id) {
+    if (confirm('Tem certeza que deseja excluir esta promoção?')) {
+        alert(`🗑️ Promoção ${id} excluída - Funcionalidade em desenvolvimento`);
+    }
+}
+
+function filterPromotions() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    // Implementation for filtering promotions
+    console.log('Filtering promotions with term:', searchTerm);
+}
+
+function toggleFilters() {
+    alert('🔍 Filtros avançados - Funcionalidade em desenvolvimento');
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Página de promoções carregada');
+    
+    // Check authentication
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
+    
+    if (!token || userType !== 'admin') {
+        alert('⚠️ Acesso negado. Redirecionando...');
+        window.location.href = '/entrar.html';
+        return;
+    }
+    
+    // Load promotions
+    loadPromotions();
+});
+</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -3,7 +3,224 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Central de Avisos - Vivo</title>
+<title>Notificações - Tem de Tudo</title>
+<meta name="description" content="Acompanhe suas notificações no Tem de Tudo">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="app-page">
+<!-- App Header -->
+<div class="app-header">
+    <button class="app-back-btn" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+    <h1 class="app-title">Notificações</h1>
+    <div class="app-actions">
+        <button class="app-action-btn" onclick="markAllAsRead()">
+            <i class="fas fa-check-double"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Notification Groups -->
+<div class="app-section">
+    <div class="notification-group">
+        <h3 class="notification-group-title">Hoje</h3>
+        
+        <div class="notification-item unread" onclick="markAsRead(this)">
+            <div class="notification-icon notification-success">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Pontos creditados!</h4>
+                <p>Você ganhou 50 pontos na compra da Padaria do João</p>
+                <span class="notification-time">Há 2 horas</span>
+            </div>
+            <div class="notification-badge"></div>
+        </div>
+        
+        <div class="notification-item unread" onclick="markAsRead(this)">
+            <div class="notification-icon notification-info">
+                <i class="fas fa-gift"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Nova recompensa disponível</h4>
+                <p>Desconto de 20% no Restaurante Sabor & Arte</p>
+                <span class="notification-time">Há 3 horas</span>
+            </div>
+            <div class="notification-badge"></div>
+        </div>
+        
+        <div class="notification-item" onclick="markAsRead(this)">
+            <div class="notification-icon notification-warning">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Pontos próximos do vencimento</h4>
+                <p>100 pontos vencem em 7 dias. Use antes de perder!</p>
+                <span class="notification-time">Há 5 horas</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification-group">
+        <h3 class="notification-group-title">Ontem</h3>
+        
+        <div class="notification-item" onclick="markAsRead(this)">
+            <div class="notification-icon notification-success">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Resgate realizado com sucesso</h4>
+                <p>Desconto de R$ 10,00 usado na Farmácia Vida Saudável</p>
+                <span class="notification-time">Ontem às 14:30</span>
+            </div>
+        </div>
+        
+        <div class="notification-item" onclick="markAsRead(this)">
+            <div class="notification-icon notification-info">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Novo nível conquistado!</h4>
+                <p>Parabéns! Você alcançou o nível Bronze</p>
+                <span class="notification-time">Ontem às 10:15</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification-group">
+        <h3 class="notification-group-title">Esta semana</h3>
+        
+        <div class="notification-item" onclick="markAsRead(this)">
+            <div class="notification-icon notification-info">
+                <i class="fas fa-store"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Novo estabelecimento parceiro</h4>
+                <p>Agora você pode ganhar pontos na Livraria Conhecimento</p>
+                <span class="notification-time">Segunda-feira</span>
+            </div>
+        </div>
+        
+        <div class="notification-item" onclick="markAsRead(this)">
+            <div class="notification-icon notification-success">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Pontos em dobro</h4>
+                <p>Você ganhou 100 pontos na promoção especial</p>
+                <span class="notification-time">Domingo</span>
+            </div>
+        </div>
+        
+        <div class="notification-item" onclick="markAsRead(this)">
+            <div class="notification-icon notification-warning">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="notification-content">
+                <h4>Lembrete importante</h4>
+                <p>Não esqueça de usar seus pontos! 50 pontos vencem em breve</p>
+                <span class="notification-time">Sábado</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Empty State (hidden by default) -->
+<div class="app-section empty-notifications" style="display: none;">
+    <div class="empty-state">
+        <div class="empty-icon">
+            <i class="fas fa-bell-slash"></i>
+        </div>
+        <h3>Nenhuma notificação</h3>
+        <p>Quando você tiver notificações, elas aparecerão aqui</p>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+    <a href="app-inicio.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Início</span>
+    </a>
+    <a href="app-meus-pontos.html" class="nav-item">
+        <i class="fas fa-coins"></i>
+        <span>Pontos</span>
+    </a>
+    <a href="app-meu-qrcode.html" class="nav-item">
+        <i class="fas fa-qrcode"></i>
+        <span>QR Code</span>
+    </a>
+    <a href="app-perfil.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>Perfil</span>
+    </a>
+</nav>
+
+<script>
+function markAsRead(notification) {
+    notification.classList.remove('unread');
+    const badge = notification.querySelector('.notification-badge');
+    if (badge) {
+        badge.remove();
+    }
+}
+
+function markAllAsRead() {
+    const unreadNotifications = document.querySelectorAll('.notification-item.unread');
+    unreadNotifications.forEach(notification => {
+        notification.classList.remove('unread');
+        const badge = notification.querySelector('.notification-badge');
+        if (badge) {
+            badge.remove();
+        }
+    });
+    
+    // Show success message
+    showToast('Todas as notificações foram marcadas como lidas');
+}
+
+function showToast(message) {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    
+    // Add to body
+    document.body.appendChild(toast);
+    
+    // Show with animation
+    setTimeout(() => toast.classList.add('show'), 100);
+    
+    // Remove after delay
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => document.body.removeChild(toast), 300);
+    }, 3000);
+}
+
+// Check if there are notifications
+document.addEventListener('DOMContentLoaded', function() {
+    const notifications = document.querySelectorAll('.notification-item');
+    const emptyState = document.querySelector('.empty-notifications');
+    
+    if (notifications.length === 0) {
+        emptyState.style.display = 'block';
+    }
+});
+</script>
+
+</body>
+</html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central de Avisos - Tem de Tudo</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#6A0DAD">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -185,23 +402,23 @@
 <p>Quando houver novidades, elas aparecerão aqui.<br>Mantenha as notificações ativadas para não perder nada!</p>
 </div>
 <nav class="bottom-nav">
-<a href="/app-inicio.html" class="nav-item">
+<a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
 <span>Início</span>
 </a>
-<a href="/app-empresas.html" class="nav-item">
+<a href="app-empresas.html" class="nav-item">
 <i class="fas fa-search"></i>
 <span>Buscar</span>
 </a>
-<a href="/app-meus-pontos.html" class="nav-item">
+<a href="app-meus-pontos.html" class="nav-item">
 <i class="fas fa-wallet"></i>
 <span>Pontos</span>
 </a>
-<a href="/app-promocoes.html" class="nav-item">
+<a href="app-promocoes.html" class="nav-item">
 <i class="fas fa-tags"></i>
 <span>Promoções</span>
 </a>
-<a href="/app-perfil.html" class="nav-item">
+<a href="app-perfil.html" class="nav-item">
 <i class="fas fa-user"></i>
 <span>Perfil</span>
 </a>
@@ -307,6 +524,15 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 

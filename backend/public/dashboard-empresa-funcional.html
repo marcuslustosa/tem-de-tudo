@@ -1,103 +1,404 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#6A0DAD">
-    <title>🏢 Dashboard Empresa - Vivo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Empresa - Tem de Tudo</title>
+<meta name="description" content="Painel de gestão empresarial do Tem de Tudo">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="business-dashboard">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="header-container">
+            <div class="company-info">
+                <h1>
+                    <i class="fas fa-building"></i>
+                    <span id="companyName">Bella Vista Restaurante</span>
+                </h1>
+                <p>Painel de gestão empresarial</p>
+                <div class="company-badge">
+                    <i class="fas fa-crown"></i>
+                    Empresa Premium
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                Sair
+            </button>
+        </div>
+    </div>
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f8f9fa;
-            color: #333;
-            min-height: 100vh;
-            padding-bottom: 80px;
-        }
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Quick Stats -->
+        <div class="quick-stats">
+            <div class="stat-card fade-in animate-delay-1">
+                <div class="stat-header">
+                    <span class="stat-label">👥 Clientes Este Mês</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-value">1,347</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+18% vs mês anterior</span>
+                </div>
+            </div>
 
-        .header {
-            background: #6F1AB6;
-            padding: 24px 16px;
+            <div class="stat-card fade-in animate-delay-2">
+                <div class="stat-header">
+                    <span class="stat-label">💰 Faturamento</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                </div>
+                <div class="stat-value">R$ 47,892</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+12% este mês</span>
+                </div>
+            </div>
+
+            <div class="stat-card fade-in animate-delay-3">
+                <div class="stat-header">
+                    <span class="stat-label">⭐ Pontos Distribuídos</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <div class="stat-value">28,450</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+25% este mês</span>
+                </div>
+            </div>
+
+            <div class="stat-card fade-in animate-delay-4">
+                <div class="stat-header">
+                    <span class="stat-label">📊 Taxa de Conversão</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="stat-value">78.3%</div>
+                <div class="stat-change">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+5.2% este mês</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Section -->
+        <div class="section-header fade-in">
+            <h2 class="section-title">
+                <i class="fas fa-tools"></i>
+                Gestão Empresarial
+            </h2>
+            <a href="empresa-relatorios.html" class="view-all-btn">Ver Relatórios</a>
+        </div>
+
+        <div class="management-grid">
+            <a href="empresa-pontos.html" class="management-card fade-in animate-delay-1">
+                <div class="card-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Sistema de Pontos</h3>
+                    <p>Configure pontos por compra e gerencie recompensas para clientes</p>
+                </div>
+            </a>
+
+            <a href="empresa-clientes.html" class="management-card fade-in animate-delay-2">
+                <div class="card-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Gestão de Clientes</h3>
+                    <p>Visualize e gerencie informações dos seus clientes</p>
+                </div>
+            </a>
+
+            <a href="empresa-promocoes.html" class="management-card fade-in animate-delay-3">
+                <div class="card-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Promoções & Ofertas</h3>
+                    <p>Crie e gerencie campanhas promocionais para aumentar vendas</p>
+                </div>
+            </a>
+
+            <a href="empresa-relatorios.html" class="management-card fade-in animate-delay-4">
+                <div class="card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Relatórios & Analytics</h3>
+                    <p>Análises detalhadas de performance e métricas de negócio</p>
+                </div>
+            </a>
+
+            <a href="empresa-perfil.html" class="management-card fade-in animate-delay-1">
+                <div class="card-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Perfil da Empresa</h3>
+                    <p>Edite informações da empresa e configurações gerais</p>
+                </div>
+            </a>
+
+            <a href="empresa-configuracoes.html" class="management-card fade-in animate-delay-2">
+                <div class="card-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Configurações</h3>
+                    <p>Ajustes do sistema e preferências da empresa</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity fade-in">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-clock"></i>
+                    Atividade Recente
+                </h2>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Novo cliente cadastrado</div>
+                    <div class="activity-time">Maria Silva - há 15 minutos</div>
+                </div>
+                <div class="activity-value">+150 pts</div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Compra realizada</div>
+                    <div class="activity-time">João Santos - há 32 minutos</div>
+                </div>
+                <div class="activity-value">R$ 85,50</div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Pontos resgatados</div>
+                    <div class="activity-time">Ana Costa - há 1 hora</div>
+                </div>
+                <div class="activity-value">-500 pts</div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Avaliação 5 estrelas</div>
+                    <div class="activity-time">Carlos Lima - há 2 horas</div>
+                </div>
+                <div class="activity-value">⭐⭐⭐⭐⭐</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <div class="nav-container">
+        <a href="dashboard-empresa-funcional.html" class="nav-item active">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="empresa-clientes.html" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="empresa-pontos.html" class="nav-item">
+            <i class="fas fa-star"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="empresa-relatorios.html" class="nav-item">
+            <i class="fas fa-chart-bar"></i>
+            <span>Relatórios</span>
+        </a>
+        <a href="empresa-configuracoes.html" class="nav-item">
+            <i class="fas fa-cogs"></i>
+            <span>Config</span>
+        </a>
+    </div>
+</div>
+
+<script>
+// Logout Function
+function logout() {
+    if (confirm('Tem certeza que deseja sair do painel empresarial?')) {
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Show confirmation
+        const notification = document.createElement('div');
+        notification.innerHTML = '<i class="fas fa-check-circle"></i> Logout realizado com sucesso!';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10B981, #059669);
             color: white;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header-left h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .header-left p {
-            opacity: 0.9;
-            font-size: 14px;
-        }
-
-        .empresa-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 4px 12px;
-            border-radius: 16px;
-            font-size: 12px;
+            padding: 16px 24px;
+            border-radius: 12px;
             font-weight: 600;
-            margin-top: 8px;
-            display: inline-block;
-        }
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            animation: slideIn 0.3s ease;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            window.location.href = '/entrar.html';
+        }, 1000);
+    }
+}
 
-        .btn-logout {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-        }
+// Initialize Dashboard
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Dashboard empresarial carregado com sucesso');
+    
+    // Check authentication
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
+    const companyName = localStorage.getItem('companyName') || 'Minha Empresa';
+    
+    if (!token) {
+        alert('⚠️ Sessão expirada. Redirecionando para login...');
+        window.location.href = '/entrar.html';
+        return;
+    }
+    
+    if (userType && userType !== 'empresa') {
+        alert('⚠️ Área restrita para empresas. Redirecionando...');
+        window.location.href = '/entrar.html';
+        return;
+    }
+    
+    // Update company name
+    const companyNameEl = document.getElementById('companyName');
+    if (companyNameEl && companyName !== 'Minha Empresa') {
+        companyNameEl.textContent = companyName;
+    }
+    
+    // Animate counters
+    setTimeout(() => {
+        animateCounters();
+    }, 500);
+    
+    // Load dashboard data
+    loadDashboardData();
+    
+    // Set up refresh interval
+    setInterval(refreshDashboardData, 300000); // Refresh every 5 minutes
+});
 
-        .btn-logout:hover {
-            background: rgba(255,255,255,0.3);
+// Animate number counters
+function animateCounters() {
+    const statValues = document.querySelectorAll('.stat-value');
+    
+    statValues.forEach((element, index) => {
+        const text = element.textContent;
+        let targetValue;
+        let prefix = '';
+        let suffix = '';
+        
+        if (text.includes('R$')) {
+            targetValue = parseInt(text.replace(/[^\d]/g, ''));
+            prefix = 'R$ ';
+        } else if (text.includes('%')) {
+            targetValue = parseFloat(text.replace('%', ''));
+            suffix = '%';
+        } else {
+            targetValue = parseInt(text.replace(/[^\d]/g, ''));
         }
-
-        .main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px 16px;
+        
+        if (!isNaN(targetValue)) {
+            let current = 0;
+            const increment = targetValue / 50;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                
+                if (current >= targetValue) {
+                    element.textContent = prefix + targetValue.toLocaleString() + suffix;
+                    clearInterval(timer);
+                } else {
+                    if (suffix === '%') {
+                        element.textContent = prefix + current.toFixed(1) + suffix;
+                    } else {
+                        element.textContent = prefix + Math.floor(current).toLocaleString() + suffix;
+                    }
+                }
+            }, 30);
         }
+    });
+}
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 32px;
+// Load dashboard data
+async function loadDashboardData() {
+    try {
+        console.log('Carregando dados do dashboard empresarial...');
+        
+        // This would typically fetch from API
+        // const response = await fetch('/api/empresa/dashboard');
+        // const data = await response.json();
+        // updateDashboardData(data);
+        
+    } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+    }
+}
+
+// Refresh dashboard data
+function refreshDashboardData() {
+    console.log('Atualizando dados do dashboard...');
+    loadDashboardData();
+}
+
+// Add CSS for slide animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
         }
-
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            border-left: 5px solid #6F1AB6;
+        to {
+            transform: translateX(0);
+            opacity: 1;
         }
-
-        .stat-header {
+    }
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
 <body>
     <div class="header">
         <div class="header-content">
@@ -710,7 +1011,7 @@
             <div class="header-left">
                 <div class="logo-empresa">
                     <i class="fas fa-gem logo-icon"></i>
-                    <span class="logo-text">Vivo</span>
+                    <span class="logo-text">Tem de Tudo</span>
                     <div class="badge-empresa">
                         <i class="fas fa-store"></i> EMPRESA
                     </div>
@@ -820,27 +1121,27 @@
                 Ações Rápidas
             </h2>
             <div class="actions-grid">
-                <a href="/empresa-scanner.html" class="action-btn">
+                <a href="empresa-scanner.html" class="action-btn">
                     <i class="fas fa-qrcode"></i>
                     Scanner QR Code
                 </a>
-                <a href="/empresa-nova-promocao.html" class="action-btn">
+                <a href="empresa-nova-promocao.html" class="action-btn">
                     <i class="fas fa-plus-circle"></i>
                     Nova Promoção
                 </a>
-                <a href="/empresa-clientes.html" class="action-btn">
+                <a href="empresa-clientes.html" class="action-btn">
                     <i class="fas fa-users"></i>
                     Gerenciar Clientes
                 </a>
-                <a href="/empresa-relatorios.html" class="action-btn">
+                <a href="empresa-relatorios.html" class="action-btn">
                     <i class="fas fa-chart-bar"></i>
                     Relatórios
                 </a>
-                <a href="/empresa-notificacoes.html" class="action-btn">
+                <a href="empresa-notificacoes.html" class="action-btn">
                     <i class="fas fa-bell"></i>
                     Notificações
                 </a>
-                <a href="/empresa-configuracoes.html" class="action-btn">
+                <a href="empresa-configuracoes.html" class="action-btn">
                     <i class="fas fa-cog"></i>
                     Configurações
                 </a>
@@ -929,27 +1230,27 @@
 </div>
 <!-- Quick Actions -->
 <div class="quick-actions">
-<a href="/empresa-scanner.html" class="action-btn">
+<a href="empresa-scanner.html" class="action-btn">
 <i class="fas fa-camera"></i>
                 Scanner QR Code
             </a>
-<a href="/empresa-clientes.html" class="action-btn">
+<a href="empresa-clientes.html" class="action-btn">
 <i class="fas fa-users"></i>
                 Meus Clientes
             </a>
-<a href="/empresa-promocoes.html" class="action-btn">
+<a href="empresa-promocoes.html" class="action-btn">
 <i class="fas fa-tags"></i>
                 Minhas Promoções
             </a>
-<a href="/empresa-nova-promocao.html" class="action-btn">
+<a href="empresa-nova-promocao.html" class="action-btn">
 <i class="fas fa-plus"></i>
                 Nova Promoção
             </a>
-<a href="/empresa-relatorios.html" class="action-btn">
+<a href="empresa-relatorios.html" class="action-btn">
 <i class="fas fa-chart-bar"></i>
                 Relatórios
             </a>
-<a href="/empresa-configuracoes.html" class="action-btn">
+<a href="empresa-configuracoes.html" class="action-btn">
 <i class="fas fa-cogs"></i>
                 Configurações
             </a>
@@ -1233,6 +1534,15 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 

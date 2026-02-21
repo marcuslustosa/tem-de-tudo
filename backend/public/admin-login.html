@@ -1,89 +1,251 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#6A0DAD">
-    <title>Login Administrativo - Vivo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="/js/config.js"></script>
-    <script>
-        // Se j� est� logado, redirecionar para o painel
-        const token = localStorage.getItem('token');
-        const userType = localStorage.getItem('userType');
-        if (token && userType === 'admin') {
-            window.location.href = 'admin-painel.html';
-        }
-    </script>
-    
-<link rel="stylesheet" href="/css/vivo-global.css">`n</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Administrativo - Tem de Tudo</title>
+<meta name="description" content="Acesso administrativo seguro ao sistema Tem de Tudo">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
 <body>
-    <div class="login-container">
+<div class="admin-login-page">
+</head>
+<body>
+<div class="admin-login-page">
+    <!-- Background Decorations -->
+    <div class="bg-decoration">
+        <div class="decoration-circle decoration-1"></div>
+        <div class="decoration-circle decoration-2"></div>
+        <div class="decoration-circle decoration-3"></div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container fade-in">
+        <!-- Logo Section -->
         <div class="logo-section">
-            <div class="icon"><i class="fas fa-shield-halved"></i></div>
-            <h1>Administra��o</h1>
-            <p>Sistema de Gest�o Tem de Tudo</p>
+            <div class="icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+            <h1>Administração</h1>
+            <p>Sistema de Gestão Tem de Tudo</p>
         </div>
+
+        <!-- Error Message -->
         <div class="error-message" id="errorMessage"></div>
-        <form id="loginForm" onsubmit="handleLogin(event)">
+
+        <!-- Login Form -->
+        <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required placeholder="admin@temdetudo.com" autocomplete="username">
+                <label class="form-label" for="email">Email</label>
+                <div style="position: relative;">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           class="form-input with-icon" 
+                           required 
+                           placeholder="admin@temdetudo.com" 
+                           autocomplete="username">
+                </div>
             </div>
+
             <div class="form-group">
-                <label for="password">Senha</label>
-                <input type="password" id="password" name="password" required placeholder="��������" autocomplete="current-password">
+                <label class="form-label" for="password">Senha</label>
+                <div class="password-group">
+                    <div style="position: relative;">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" 
+                               id="password" 
+                               name="password" 
+                               class="form-input with-icon" 
+                               required 
+                               placeholder="Digite sua senha" 
+                               autocomplete="current-password">
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
+
+            <div class="remember-group">
+                <input type="checkbox" id="rememberMe" class="remember-checkbox">
+                <label for="rememberMe" class="remember-label">Lembrar de mim</label>
+            </div>
+
             <button type="submit" class="btn-login" id="btnLogin">
-                <i class="fas fa-sign-in-alt"></i> Entrar no Painel
+                <span id="loginText">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Entrar no Painel
+                </span>
+                <div class="loading" id="loginLoading" style="display: none;"></div>
             </button>
         </form>
+
+        <!-- Login Footer -->
+        <div class="login-footer">
+            <div class="footer-links">
+                <a href="/index.html" class="footer-link">
+                    <i class="fas fa-home"></i> Voltar ao Site
+                </a>
+                <a href="#" class="footer-link" onclick="showForgotPassword()">
+                    <i class="fas fa-key"></i> Esqueci a Senha
+                </a>
+            </div>
+            
+            <div class="security-notice">
+                <i class="fas fa-shield-alt"></i>
+                Acesso restrito - Área administrativa protegida
+            </div>
+        </div>
     </div>
-    <script>
-        async function handleLogin(event) {
-            event.preventDefault();
-            const btnLogin = document.getElementById('btnLogin');
-            const errorMessage = document.getElementById('errorMessage');
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+</div>
+
+<script src="/js/config.js"></script>
+<script>
+// Check if already logged in
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
+    
+    if (token && userType === 'admin') {
+        window.location.href = 'admin-painel.html';
+    }
+    
+    // Focus first input
+    document.getElementById('email').focus();
+});
+
+// Toggle password visibility
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.className = 'fas fa-eye';
+    }
+}
+
+// Show error message
+function showError(message) {
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.textContent = message;
+    errorDiv.classList.add('show');
+    
+    setTimeout(() => {
+        errorDiv.classList.remove('show');
+    }, 5000);
+}
+
+// Handle forgot password
+function showForgotPassword() {
+    alert('🔄 Funcionalidade em desenvolvimento.\n\nPara recuperar sua senha, entre em contato com o suporte técnico.');
+}
+
+// Handle login form submission
+async function handleLogin(event) {
+    event.preventDefault();
+    
+    const btnLogin = document.getElementById('btnLogin');
+    const loginText = document.getElementById('loginText');
+    const loginLoading = document.getElementById('loginLoading');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
+    
+    // Validation
+    if (!email || !password) {
+        showError('Por favor, preencha todos os campos');
+        return;
+    }
+    
+    // Show loading state
+    btnLogin.disabled = true;
+    loginText.style.display = 'none';
+    loginLoading.style.display = 'block';
+    errorMessage.classList.remove('show');
+    
+    try {
+        const response = await fetch(`${API_CONFIG.getBaseURL()}/api/admin/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ 
+                email, 
+                password,
+                remember_me: rememberMe 
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+            // Store authentication data
+            const tokenKey = rememberMe ? 'authToken' : 'sessionToken';
+            localStorage.setItem(tokenKey, result.data.token);
+            localStorage.setItem('authToken', result.data.token); // Fallback
+            localStorage.setItem('token', result.data.token); // Legacy support
+            localStorage.setItem('user', JSON.stringify(result.data.user));
+            localStorage.setItem('userType', 'admin');
             
-            btnLogin.disabled = true;
-            btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
-            errorMessage.style.display = 'none';
+            // Success feedback
+            loginText.innerHTML = '<i class="fas fa-check"></i> Login realizado!';
+            loginText.style.display = 'flex';
+            loginLoading.style.display = 'none';
             
-            try {
-                const response = await fetch(`${API_CONFIG.getBaseURL()}/api/admin/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok && result.success) {
-                    localStorage.setItem('token', result.data.token);
-                    localStorage.setItem('user', JSON.stringify(result.data.user));
-                    localStorage.setItem('userType', 'admin');
-                    window.location.href = 'admin-painel.html';
-                } else {
-                    throw new Error(result.message || 'Credenciais inv�lidas');
-                }
-            } catch (error) {
-                console.error('Erro no login:', error);
-                errorMessage.textContent = error.message || 'Erro ao fazer login. Tente novamente.';
-                errorMessage.style.display = 'block';
-            } finally {
-                btnLogin.disabled = false;
-                btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar no Painel';
-            }
+            // Redirect after brief delay
+            setTimeout(() => {
+                window.location.href = 'admin-painel.html';
+            }, 1000);
+            
+        } else {
+            throw new Error(result.message || 'Credenciais inválidas');
         }
-    </script>
+        
+    } catch (error) {
+        console.error('Erro no login:', error);
+        showError(error.message || 'Erro ao fazer login. Verifique suas credenciais.');
+        
+        // Reset button state
+        btnLogin.disabled = false;
+        loginText.style.display = 'flex';
+        loginLoading.style.display = 'none';
+        
+        // Focus on email field for retry
+        document.getElementById('email').focus();
+    }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.key === 'Enter') {
+        document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+    }
+});
+</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
 
 
 

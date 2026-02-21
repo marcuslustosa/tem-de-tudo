@@ -3,99 +3,406 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meus Pontos - Vivo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Meus Pontos - Tem de Tudo</title>
+<meta name="description" content="Gerencie seus pontos e troque por benefícios exclusivos">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<div class="header">
-<div class="header-content">
-<h1>💰 Meus Pontos</h1>
-<p>Acumule pontos e troque por benefícios exclusivos</p>
+<div class="app-pontos">
+    <!-- Header -->
+    <header class="header-pontos fade-in">
+        <div class="header-content">
+            <h1><i class="fas fa-coins"></i> Meus Pontos</h1>
+            <p>Acumule pontos e troque por benefícios exclusivos</p>
+        </div>
+    </header>
+
+    <!-- Main Points Card -->
+    <div class="pontos-main-card bounce-in">
+        <div class="saldo-principal">
+            <div class="saldo-icon-container">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="saldo-valor-display" id="pontosTotal">2.847</div>
+            <div class="saldo-label-texto">Pontos Disponíveis</div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-valor" id="pontosEsteMes">1.250</div>
+                <div class="stat-label">Este Mês</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-valor" id="valorReais">R$ 284,70</div>
+                <div class="stat-label">Valor em Reais</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-valor" id="nivelUsuario">12</div>
+                <div class="stat-label">Nível</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Level Progress -->
+    <div class="level-progress fade-in">
+        <div class="level-header">
+            <span class="level-current">Nível 12 - Premium</span>
+            <span class="level-next">Próximo: 13</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="levelProgress"></div>
+        </div>
+        <div class="progress-text">2.847 / 3.500 pontos para o próximo nível</div>
+    </div>
+
+    <!-- Actions Grid -->
+    <section class="actions-section">
+        <h2 class="section-title">
+            <i class="fas fa-star" style="color: var(--vivo-purple);"></i>
+            Ações Rápidas
+        </h2>
+        <div class="actions-grid">
+            <a href="#" class="action-card" onclick="resgatar()">
+                <div class="action-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <div class="action-text">Resgatar Pontos</div>
+            </a>
+            
+            <a href="#" class="action-card" onclick="transferir()">
+                <div class="action-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="action-text">Transferir</div>
+            </a>
+            
+            <a href="#" class="action-card" onclick="convidar()">
+                <div class="action-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="action-text">Convidar Amigos</div>
+            </a>
+            
+            <a href="#" class="action-card" onclick="regras()">
+                <div class="action-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="action-text">Como Funciona</div>
+            </a>
+        </div>
+    </section>
+
+    <!-- History Section -->
+    <section class="historia-section">
+        <h2 class="section-title">
+            <i class="fas fa-history" style="color: var(--vivo-purple);"></i>
+            Histórico de Pontos
+        </h2>
+        
+        <div class="historia-filters">
+            <button class="filter-btn active" onclick="filtrarHistorico('todos')">Todos</button>
+            <button class="filter-btn" onclick="filtrarHistorico('ganhou')">Ganhos</button>
+            <button class="filter-btn" onclick="filtrarHistorico('gastou')">Gastos</button>
+            <button class="filter-btn" onclick="filtrarHistorico('mes')">Este Mês</button>
+        </div>
+        
+        <div class="historico-lista" id="historicoLista">
+            <!-- Histórico será inserido aqui -->
+        </div>
+    </section>
 </div>
-</div>
-<div class="saldo-card">
-<div class="saldo-content">
-<div class="saldo-icon">
-<i class="fas fa-coins"></i>
-</div>
-<div class="saldo-valor">2.847</div>
-<div class="saldo-label">Pontos Disponíveis</div>
-<div class="saldo-extra">
-<div class="saldo-item">
-<div class="saldo-item-valor">1.250</div>
-<div class="saldo-item-label">Este Mês</div>
-</div>
-<div class="saldo-item">
-<div class="saldo-item-valor">R$ 284,70</div>
-<div class="saldo-item-label">Valor em Reais</div>
-</div>
-<div class="saldo-item">
-<div class="saldo-item-valor">12</div>
-<div class="saldo-item-label">Nível</div>
-</div>
-</div>
-</div>
-</div>
-<div class="actions-grid">
-<a href="#" class="action-btn" onclick="resgatar()">
-<i class="fas fa-gift"></i>
-<span>Resgatar Pontos</span>
-</a>
-<a href="#" class="action-btn" onclick="transferir()">
-<i class="fas fa-exchange-alt"></i>
-<span>Transferir</span>
-</a>
-<a href="#" class="action-btn" onclick="regras()">
-<i class="fas fa-info-circle"></i>
-<span>Como Funciona</span>
-</a>
-<a href="#" class="action-btn" onclick="convidar()">
-<i class="fas fa-user-plus"></i>
-<span>Convidar Amigos</span>
-</a>
-</div>
-<div class="section">
-<div class="section-title">Histórico de Pontos</div>
-<div class="historico-list" id="historicoList">
-<!-- Histórico será inserido aqui -->
-</div>
-</div>
+
+<!-- Bottom Navigation -->
 <nav class="bottom-nav">
-<a href="/app-inicio.html" class="nav-item">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="/app-empresas.html" class="nav-item">
-<i class="fas fa-search"></i>
-<span>Buscar</span>
-</a>
-<a href="/app-promocoes.html" class="nav-item">
-<i class="fas fa-tags"></i>
-<span>Promoções</span>
-</a>
-<a href="/app-avisos.html" class="nav-item">
-<i class="fas fa-bell"></i>
-<span>Avisos</span>
-</a>
-<a href="/app-perfil.html" class="nav-item">
-<i class="fas fa-user"></i>
-<span>Perfil</span>
-</a>
+    <div class="nav-container">
+        <a href="app-inicio.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="app-empresas.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Buscar</span>
+        </a>
+        <a href="app-meus-pontos.html" class="nav-item active">
+            <i class="fas fa-wallet"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Ofertas</span>
+        </a>
+        <a href="app-perfil.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
+    </div>
 </nav>
-<script>  // Dados fictícios de histórico de pontos  const historicoPontos = [  {  id: 1,  tipo: 'ganhou',  descricao: 'Compra no Burger King Premium',  data: '04/02/2026',  valor: '+150',  detalhes: 'Ganhou 150 pontos na compra de R$ 45,00'  },  {  id: 2,  tipo: 'gastou',  descricao: 'Resgate de desconto',  data: '03/02/2026',  valor: '-300',  detalhes: 'Trocou 300 pontos por desconto de R$ 30,00'  },  {  id: 3,  tipo: 'ganhou',  descricao: 'Check-in na TechHub Store',  data: '02/02/2026',  valor: '+50',  detalhes: 'Bonus por visita ao estabelecimento'  },  {  id: 4,  tipo: 'ganhou',  descricao: 'Indicação de amigo',  data: '01/02/2026',  valor: '+500',  detalhes: 'Seu amigo João fez o primeiro check-in'  },  {  id: 5,  tipo: 'ganhou',  descricao: 'Compra na Bella Estética',  data: '31/01/2026',  valor: '+200',  detalhes: 'Ganhou 200 pontos na compra de R$ 120,00'  },  {  id: 6,  tipo: 'gastou',  descricao: 'Resgate de produto',  data: '30/01/2026',  valor: '-800',  detalhes: 'Trocou 800 pontos por fone Bluetooth'  },  {  id: 7,  tipo: 'ganhou',  descricao: 'Bonus de aniversário',  data: '25/01/2026',  valor: '+1000',  detalhes: 'Parabéns! Bonus especial de aniversário'  },  {  id: 8,  tipo: 'ganhou',  descricao: 'Avaliação 5 estrelas',  data: '23/01/2026',  valor: '+100',  detalhes: 'Bonus por avaliar a FitLife Academia'  }  ];  function renderizarHistorico() {  const lista = document.getElementById('historicoList');  lista.innerHTML = historicoPontos.map(item => `  <div class="historico-item" onclick="verDetalhes(${item.id})">
-<div class="historico-icon ${item.tipo}">
-<i class="fas fa-${item.tipo === 'ganhou' ? 'plus' : 'minus'}"></i>
-</div>
-<div class="historico-info">
-<div class="historico-desc">${item.descricao}</div>
-<div class="historico-data">${item.data}</div>
-</div>
-<div class="historico-valor ${item.tipo}">  ${item.valor}  </div>
-</div>  `).join('');  }  function verDetalhes(id) {  const item = historicoPontos.find(h => h.id === id);  if (item) {  alert(`${item.descricao}\n\n${item.detalhes}\n\nData: ${item.data}`);  }  }  function resgatar() {  alert('🎁 Abrir loja de resgates\n\nVocê tem 2.847 pontos disponíveis!\nValor equivalente: R$ 284,70');  }  function transferir() {  alert('💸 Transferir pontos\n\nTransfira seus pontos para amigos e família.\nMínimo: 100 pontos');  }  function regras() {  alert(`ℹ️ Como Funciona\n\n• Ganhe 1 ponto a cada R$ 1,00 gasto\n• Check-in = 50 pontos bonus\n• Convide amigos = 500 pontos\n• 1 ponto = R$ 0,10\n• Resgate mínimo: 100 pontos`);  }  function convidar() {  alert('👥 Convidar Amigos\n\nGanhe 500 pontos para cada amigo que fizer o primeiro check-in!\n\nSeu código: TEMP2847');  }  // Inicialização  document.addEventListener('DOMContentLoaded', function() {  renderizarHistorico();  });  </script>
+
+<script src="/js/config.js"></script>
+<script>
+// Mock data for points history
+const historicoPontos = [
+    {
+        id: 1,
+        tipo: 'ganhou',
+        descricao: 'Compra no Burger King Premium',
+        data: '04/02/2024',
+        valor: '+150',
+        detalhes: 'Ganhou 150 pontos na compra de R$ 45,00',
+        categoria: 'compra'
+    },
+    {
+        id: 2,
+        tipo: 'gastou',
+        descricao: 'Resgate de desconto',
+        data: '03/02/2024',
+        valor: '-300',
+        detalhes: 'Trocou 300 pontos por desconto de R$ 30,00',
+        categoria: 'resgate'
+    },
+    {
+        id: 3,
+        tipo: 'ganhou',
+        descricao: 'Check-in na TechHub Store',
+        data: '02/02/2024',
+        valor: '+50',
+        detalhes: 'Bonus por visita ao estabelecimento',
+        categoria: 'checkin'
+    },
+    {
+        id: 4,
+        tipo: 'ganhou',
+        descricao: 'Indicação de amigo',
+        data: '01/02/2024',
+        valor: '+500',
+        detalhes: 'Seu amigo João fez o primeiro check-in',
+        categoria: 'indicacao'
+    },
+    {
+        id: 5,
+        tipo: 'ganhou',
+        descricao: 'Compra na Bella Estética',
+        data: '31/01/2024',
+        valor: '+200',
+        detalhes: 'Ganhou 200 pontos na compra de R$ 120,00',
+        categoria: 'compra'
+    },
+    {
+        id: 6,
+        tipo: 'gastou',
+        descricao: 'Resgate de produto',
+        data: '30/01/2024',
+        valor: '-800',
+        detalhes: 'Trocou 800 pontos por fone Bluetooth',
+        categoria: 'resgate'
+    },
+    {
+        id: 7,
+        tipo: 'ganhou',
+        descricao: 'Bonus de aniversário',
+        data: '25/01/2024',
+        valor: '+1000',
+        detalhes: 'Parabéns! Bonus especial de aniversário',
+        categoria: 'bonus'
+    },
+    {
+        id: 8,
+        tipo: 'ganhou',
+        descricao: 'Avaliação 5 estrelas',
+        data: '23/01/2024',
+        valor: '+100',
+        detalhes: 'Bonus por avaliar a FitLife Academia',
+        categoria: 'avaliacao'
+    }
+];
+
+let filtroAtivo = 'todos';
+
+// Render history list
+function renderizarHistorico(itens = historicoPontos) {
+    const lista = document.getElementById('historicoLista');
+    
+    if (itens.length === 0) {
+        lista.innerHTML = `
+            <div style="text-align: center; padding: var(--space-2xl); color: var(--text-secondary);">
+                <i class="fas fa-history" style="font-size: 2rem; margin-bottom: var(--space-md); opacity: 0.5;"></i>
+                <p>Nenhum histórico encontrado</p>
+            </div>
+        `;
+        return;
+    }
+    
+    lista.innerHTML = itens.map((item, index) => `
+        <div class="historico-item fade-in" style="animation-delay: ${index * 0.1}s" onclick="verDetalhes(${item.id})">
+            <div class="historico-icon ${item.tipo}">
+                <i class="fas fa-${item.tipo === 'ganhou' ? 'plus' : 'minus'}"></i>
+            </div>
+            <div class="historico-info">
+                <div class="historico-desc">${item.descricao}</div>
+                <div class="historico-data">${item.data}</div>
+            </div>
+            <div class="historico-valor ${item.tipo}">
+                ${item.valor}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Filter history
+function filtrarHistorico(tipo) {
+    // Update active filter button
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    filtroAtivo = tipo;
+    let itensFiltrados = historicoPontos;
+    
+    switch(tipo) {
+        case 'ganhou':
+            itensFiltrados = historicoPontos.filter(item => item.tipo === 'ganhou');
+            break;
+        case 'gastou':
+            itensFiltrados = historicoPontos.filter(item => item.tipo === 'gastou');
+            break;
+        case 'mes':
+            // Filter current month (February 2024 in this example)
+            itensFiltrados = historicoPontos.filter(item => item.data.includes('02/2024'));
+            break;
+    }
+    
+    renderizarHistorico(itensFiltrados);
+}
+
+// Show item details
+function verDetalhes(id) {
+    const item = historicoPontos.find(h => h.id === id);
+    if (item) {
+        alert(`${item.descricao}\n\n${item.detalhes}\n\nData: ${item.data}`);
+    }
+}
+
+// Action functions
+function resgatar() {
+    alert('🎁 Loja de Resgates\n\nVocê tem 2.847 pontos disponíveis!\nValor equivalente: R$ 284,70\n\n✨ Novos produtos adicionados!');
+}
+
+function transferir() {
+    alert('💸 Transferir Pontos\n\nTransfira seus pontos para amigos e família.\n\n• Mínimo: 100 pontos\n• Taxa: 0 pontos\n• Instantâneo');
+}
+
+function convidar() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Tem de Tudo - Convite',
+            text: 'Ganhe pontos no melhor app de cashback! Use meu código: TEMP2847',
+            url: 'https://temdetudo.app/convite/TEMP2847'
+        });
+    } else {
+        alert('👥 Convidar Amigos\n\nGanhe 500 pontos para cada amigo que fizer o primeiro check-in!\n\nSeu código: TEMP2847\n\nCompartilhe: https://temdetudo.app/convite/TEMP2847');
+    }
+}
+
+function regras() {
+    alert(`ℹ️ Como Funciona\n\n🎯 Como Ganhar Pontos:\n• 1 ponto a cada R$ 1,00 gasto\n• Check-in = 50 pontos bonus\n• Convide amigos = 500 pontos\n• Avaliações = 100 pontos\n• Bonus especiais por nível\n\n💰 Como Usar:\n• 1 ponto = R$ 0,10\n• Resgate mínimo: 100 pontos\n• Sem taxa de transferência\n• Validade: 12 meses`);
+}
+
+// Load user data
+async function carregarDadosUsuario() {
+    try {
+        // Simulate API call
+        const pontos = 2847;
+        const pontosEsteMes = 1250;
+        const nivel = 12;
+        
+        document.getElementById('pontosTotal').textContent = pontos.toLocaleString();
+        document.getElementById('pontosEsteMes').textContent = pontosEsteMes.toLocaleString();
+        document.getElementById('valorReais').textContent = `R$ ${(pontos * 0.1).toFixed(2)}`;
+        document.getElementById('nivelUsuario').textContent = nivel;
+        
+        // Update progress bar
+        const progressPercent = (pontos / 3500) * 100;
+        document.getElementById('levelProgress').style.width = `${progressPercent}%`;
+        
+        console.log('✅ Dados do usuário carregados');
+    } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+    }
+}
+
+// Simulate points animation
+function animarPontos() {
+    const elemento = document.getElementById('pontosTotal');
+    const valorFinal = 2847;
+    let valorAtual = 0;
+    const incremento = valorFinal / 50;
+    
+    const intervalo = setInterval(() => {
+        valorAtual += incremento;
+        if (valorAtual >= valorFinal) {
+            valorAtual = valorFinal;
+            clearInterval(intervalo);
+        }
+        elemento.textContent = Math.floor(valorAtual).toLocaleString();
+    }, 30);
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Página Meus Pontos carregada');
+    
+    // Load user data and history
+    carregarDadosUsuario();
+    renderizarHistorico();
+    
+    // Start points animation after a delay
+    setTimeout(() => {
+        animarPontos();
+    }, 500);
+    
+    // Add stagger animation to elements
+    setTimeout(() => {
+        document.querySelectorAll('.fade-in').forEach((el, index) => {
+            el.style.animationDelay = `${index * 0.1}s`;
+        });
+    }, 100);
+});
+
+// Pull to refresh simulation
+let startY = 0;
+let isRefreshing = false;
+
+document.addEventListener('touchstart', function(e) {
+    startY = e.touches[0].pageY;
+});
+
+document.addEventListener('touchmove', function(e) {
+    const currentY = e.touches[0].pageY;
+    const diff = currentY - startY;
+    
+    if (diff > 100 && window.scrollY === 0 && !isRefreshing) {
+        // Trigger refresh
+        isRefreshing = true;
+        carregarDadosUsuario();
+        setTimeout(() => {
+            isRefreshing = false;
+        }, 1000);
+    }
+});
+</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 

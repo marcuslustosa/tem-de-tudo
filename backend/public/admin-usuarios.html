@@ -1,80 +1,237 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#6A0DAD">
-    <title>Gerenciar UsuÃ¡rios - Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/vivo-global.css">
-    <link rel="manifest" href="/manifest.json">
-    <script src="/js/config.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerenciar Usuários - Admin Tem de Tudo</title>
+<meta name="description" content="Painel administrativo para gerenciar usuários do sistema">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="admin-header">
-        <div class="header-content">
-            <h1><i class="fas fa-users-cog"></i> Gerenciar UsuÃ¡rios</h1>
-            <button class="btn-secondary" onclick="history.back()" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);"><i class="fas fa-arrow-left"></i> Voltar</button>
+<div class="admin-users-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-container">
+            <h1 class="page-title">
+                <i class="fas fa-users-cog"></i>
+                Gerenciar Usuários
+            </h1>
+            <a href="admin-painel.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Voltar
+            </a>
         </div>
     </div>
-    <div class="main">
-        <div class="section">
+
+    <!-- Content Container -->
+    <div class="content-container">
+        <!-- Users Section -->
+        <div class="users-section">
+            <!-- Section Header -->
             <div class="section-header">
-                <div class="section-title">Todos os UsuÃ¡rios</div>
-                <a href="/admin-criar-usuario.html" class="btn-primary" style="font-size:13px;padding:8px 14px;"><i class="fas fa-plus"></i> Novo</a>
+                <h2 class="section-title">
+                    <i class="fas fa-users"></i>
+                    Lista de Usuários
+                </h2>
+                <a href="admin-criar-usuario.html" class="add-user-btn">
+                    <i class="fas fa-plus"></i>
+                    Adicionar Usuário
+                </a>
             </div>
-            <div class="search-box" style="margin-bottom:16px;">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Buscar por nome, email ou CPF..." oninput="filterUsers(this.value)">
+
+            <!-- Search Container -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Buscar usuário..." id="searchInput">
+                </div>
             </div>
+
+            <!-- Table Container -->
             <div class="table-container">
-                <table>
-                    <thead><tr><th>Nome</th><th>Email</th><th>CPF</th><th>Perfil</th><th>Status</th><th>AÃ§Ãµes</th></tr></thead>
-                    <tbody id="usersTable"><tr><td colspan="6" style="text-align:center;padding:40px;color:#86868b;">Carregando...</td></tr></tbody>
+                <table class="users-table" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Status</th>
+                            <th>Cadastro</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <div class="empty-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <p>Carregando usuários...</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
-    <nav class="bottom-nav">
-        <a href="/admin-painel.html" class="nav-item "><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
-        <a href="/admin-usuarios.html" class="nav-item active"><i class="fas fa-users"></i><span>UsuÃ¡rios</span></a>
-        <a href="/admin-empresas.html" class="nav-item "><i class="fas fa-building"></i><span>Empresas</span></a>
-        <a href="/admin-relatorios.html" class="nav-item "><i class="fas fa-chart-line"></i><span>RelatÃ³rios</span></a>
-        <a href="/admin-configuracoes.html" class="nav-item "><i class="fas fa-cog"></i><span>Config</span></a>
-    </nav>
-    <script>
-        let allUsers = [];
-        async function loadUsers() {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) { window.location.href = '/admin-login.html'; return; }
-                const r = await fetch(API_CONFIG.getBaseURL() + '/api/admin/users', { headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' }});
-                if (r.ok) { const j = await r.json(); allUsers = j.data || j || []; renderUsers(allUsers); }
-                else if (r.status === 401) { window.location.href = '/admin-login.html'; }
-            } catch(e) { console.error(e); renderUsers([]); }
+</div>
+
+<script>
+// Função para buscar e exibir usuários
+async function loadUsers() {
+    try {
+        const response = await fetch('/api/admin/users');
+        const users = await response.json();
+        
+        const tbody = document.getElementById('usersTableBody');
+        
+        if (users.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <p>Nenhum usuário encontrado.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
         }
-        function filterUsers(q) { renderUsers(allUsers.filter(u => (u.nome||u.name||'').toLowerCase().includes(q.toLowerCase()) || (u.email||'').toLowerCase().includes(q.toLowerCase()))); }
-        function renderUsers(users) {
-            const tbody = document.getElementById('usersTable');
-            if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#86868b;">Nenhum usuÃ¡rio encontrado</td></tr>'; return; }
-            tbody.innerHTML = users.map(u => <tr>
-                <td></td><td></td><td></td>
-                <td><span class="badge badge-info"></span></td>
-                <td><span class="badge badge-"></span></td>
-                <td style="display:flex;gap:6px;">
-                    <button class="btn-secondary" style="font-size:12px;padding:6px 10px;" onclick="editUser()"><i class="fas fa-edit"></i></button>
-                    <button class="btn-secondary" style="font-size:12px;padding:6px 10px;color:#ef4444;border-color:#fca5a5;" onclick="deleteUser()"><i class="fas fa-trash"></i></button>
-                </td></tr>).join('');
+        
+        tbody.innerHTML = users.map(user => `
+            <tr>
+                <td>
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            ${user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <div class="user-name">${user.name}</div>
+                            <div class="user-email">${user.email}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>${user.email}</td>
+                <td>
+                    <span class="user-role">${user.tipo || 'Cliente'}</span>
+                </td>
+                <td>
+                    <span class="status-badge status-${user.status === 'ativo' ? 'active' : user.status === 'inativo' ? 'inactive' : 'pending'}">
+                        <i class="fas fa-circle"></i>
+                        ${user.status || 'Ativo'}
+                    </span>
+                </td>
+                <td>${formatDate(user.created_at)}</td>
+                <td>
+                    <div class="user-actions">
+                        <button class="action-btn edit" onclick="editUser(${user.id})" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete" onclick="deleteUser(${user.id})" title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Erro ao carregar usuários:', error);
+        document.getElementById('usersTableBody').innerHTML = `
+            <tr>
+                <td colspan="6">
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <p>Erro ao carregar usuários. Tente novamente.</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+}
+
+// Função para formatar data
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
+}
+
+// Função para editar usuário
+function editUser(userId) {
+    window.location.href = `admin-editar-usuario.html?id=${userId}`;
+}
+
+// Função para excluir usuário
+async function deleteUser(userId) {
+    if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
+    
+    try {
+        const response = await fetch(`/api/admin/users/${userId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            showNotification('Usuário excluído com sucesso!', 'success');
+            loadUsers(); // Recarrega a lista
+        } else {
+            throw new Error('Erro ao excluir usuário');
         }
-        function editUser(id) { alert('Editar usuÃ¡rio ' + id); }
-        function deleteUser(id) { if(confirm('Excluir usuÃ¡rio?')) alert('ExcluÃ­do ' + id); }
-        document.addEventListener('DOMContentLoaded', loadUsers);
-    </script>
+    } catch (error) {
+        console.error('Erro ao excluir usuário:', error);
+        showNotification('Erro ao excluir usuário.', 'error');
+    }
+}
+
+// Função de busca
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('#usersTableBody tr');
+    
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchTerm) ? '' : 'none';
+    });
+});
+
+// Função para mostrar notificações
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6'};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        z-index: 9999;
+        font-weight: 600;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Carregar usuários ao carregar a página
+document.addEventListener('DOMContentLoaded', loadUsers);
+</script>
 </body>
 </html>
-
-
-
-
-

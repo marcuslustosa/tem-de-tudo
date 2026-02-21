@@ -1,333 +1,233 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#6A0DAD">
-    <title>Configurações Admin - Vivo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="manifest" href="/manifest.json">
-    <script src="/js/config.js"></script>
-<link rel="stylesheet" href="/css/vivo-global.css">`n</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configurações Admin - Tem de Tudo</title>
+<meta name="description" content="Painel de configurações administrativas do sistema">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
 <body>
-    <div class="admin-header">
-        <div class="header-content">
-            <h1><i class="fas fa-cog"></i> Configurações</h1>
-            <button class="btn-back" onclick="location.href='admin-painel.html'">
-                <i class="fas fa-arrow-left"></i> Voltar
-            </button>
-        </div>
-    </div>
-
-    <div class="container">
-        <!-- Configurações do Sistema -->
-        <div class="glass-card" style="margin-bottom: 20px;">
-            <h2 style="margin-bottom: 24px; font-size: 20px; font-weight: 900; color: #1D1D1F; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-sliders-h" style="color: #6F1AB6;"></i>
+<div class="admin-settings-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-container">
+            <h1 class="page-title">
+                <i class="fas fa-cogs"></i>
                 Configurações do Sistema
-            </h2>
-            
-            <form id="systemSettingsForm" onsubmit="saveSettings(event)">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Nome do Sistema</label>
-                        <input type="text" id="systemName" value="Vivo" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email de Contato</label>
-                        <input type="email" id="systemEmail" value="contato@temdetudo.com" required>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Telefone de Suporte</label>
-                        <input type="tel" id="systemPhone" value="(11) 9999-9999">
-                    </div>
-                    <div class="form-group">
-                        <label>Fuso Horário</label>
-                        <select id="timezone">
-                            <option value="America/Sao_Paulo" selected>São Paulo (GMT-3)</option>
-                            <option value="America/Manaus">Manaus (GMT-4)</option>
-                            <option value="America/Noronha">Fernando de Noronha (GMT-2)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Descrição do Sistema</label>
-                    <textarea id="systemDescription" rows="4" style="resize: vertical;">Programa de fidelidade e benefícios para clientes e empresas parceiras</textarea>
-                </div>
-            </form>
-        </div>
-
-        <!-- Configurações de Pontos -->
-        <div class="glass-card" style="margin-bottom: 20px;">
-            <h2 style="margin-bottom: 24px; font-size: 20px; font-weight: 900; color: #1D1D1F; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-coins" style="color: #6F1AB6;"></i>
-                Regras de Pontuação
-            </h2>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Pontos por Real Gasto (R$)</label>
-                    <input type="number" id="pointsPerReal" value="10" min="1" step="1">
-                    <small style="color: #86868B; font-size: 12px; margin-top: 4px; display: block;">A cada R$ 1,00 gasto, quantos pontos o cliente ganha</small>
-                </div>
-                <div class="form-group">
-                    <label>Pontos Bônus Primeiro Cadastro</label>
-                    <input type="number" id="welcomeBonus" value="100" min="0" step="10">
-                    <small style="color: #86868B; font-size: 12px; margin-top: 4px; display: block;">Pontos dados ao novo usuário no primeiro login</small>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Pontos Diários Check-in</label>
-                    <input type="number" id="dailyCheckIn" value="5" min="0" step="1">
-                    <small style="color: #86868B; font-size: 12px; margin-top: 4px; display: block;">Pontos ganhos por login diário consecutivo</small>
-                </div>
-                <div class="form-group">
-                    <label>Validade dos Pontos (dias)</label>
-                    <input type="number" id="pointsExpiry" value="365" min="30" step="30">
-                    <small style="color: #86868B; font-size: 12px; margin-top: 4px; display: block;">Pontos expiram após quantos dias sem uso</small>
-                </div>
-            </div>
-        </div>
-
-        <!-- Configurações de Email -->
-        <div class="glass-card" style="margin-bottom: 20px;">
-            <h2 style="margin-bottom: 24px; font-size: 20px; font-weight: 900; color: #1D1D1F; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-envelope" style="color: #6F1AB6;"></i>
-                Configurações de Email (EmailJS)
-            </h2>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Service ID</label>
-                    <input type="text" id="emailServiceId" value="service_tem_de_tudo" placeholder="service_xxxxxxx">
-                </div>
-                <div class="form-group">
-                    <label>Template ID</label>
-                    <input type="text" id="emailTemplateId" value="template_notificacao" placeholder="template_xxxxxxx">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Public Key</label>
-                <input type="text" id="emailPublicKey" value="YOUR_PUBLIC_KEY_HERE" placeholder="YOUR_PUBLIC_KEY">
-                <small style="color: #86868B; font-size: 12px; margin-top: 4px; display: block;">
-                    Obtenha gratuitamente em <a href="https://emailjs.com" target="_blank" style="color: #6F1AB6; font-weight: 600;">EmailJS.com</a>
-                </small>
-            </div>
-
-            <div style="background: rgba(111, 26, 182, 0.05); padding: 16px; border-radius: 12px; border: 1px solid rgba(111, 26, 182, 0.1);">
-                <p style="color: #6F1AB6; font-weight: 600; margin-bottom: 8px;">
-                    <i class="fas fa-info-circle"></i> Como configurar EmailJS
-                </p>
-                <ol style="color: #1D1D1F; font-size: 14px; margin-left: 20px; line-height: 1.8;">
-                    <li>Crie conta gratuita em <strong>emailjs.com</strong></li>
-                    <li>Adicione serviço de email (Gmail, Outlook, etc)</li>
-                    <li>Crie template de notificação</li>
-                    <li>Cole as credenciais acima</li>
-                    <li>Plano gratuito: 200 emails/mês</li>
-                </ol>
-            </div>
-        </div>
-
-        <!-- Configurações de Segurança -->
-        <div class="glass-card" style="margin-bottom: 20px;">
-            <h2 style="margin-bottom: 24px; font-size: 20px; font-weight: 900; color: #1D1D1F; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-shield-alt" style="color: #6F1AB6;"></i>
-                Segurança
-            </h2>
-            
-            <div class="form-group">
-                <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                    <span>Autenticação de Dois Fatores (2FA)</span>
-                    <div style="position: relative; width: 60px; height: 32px;  border-radius: 16px; transition: all 0.3s;">
-                        <input type="checkbox" id="enable2FA" style="display: none;">
-                        <div style="position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; background: white; border-radius: 50%; transition: all 0.3s;"></div>
-                    </div>
-                </label>
-            </div>
-
-            <div class="form-group">
-                <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                    <span>Notificações de Login Suspeito</span>
-                    <div style="position: relative; width: 60px; height: 32px; background: #6F1AB6; border-radius: 16px; transition: all 0.3s;">
-                        <input type="checkbox" id="loginNotifications" checked style="display: none;">
-                        <div style="position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; background: white; border-radius: 50%; transition: all 0.3s;"></div>
-                    </div>
-                </label>
-            </div>
-
-            <div class="form-group">
-                <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                    <span>Exigir Senha Forte</span>
-                    <div style="position: relative; width: 60px; height: 32px; background: #6F1AB6; border-radius: 16px; transition: all 0.3s;">
-                        <input type="checkbox" id="strongPassword" checked style="display: none;">
-                        <div style="position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; background: white; border-radius: 50%; transition: all 0.3s;"></div>
-                    </div>
-                </label>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Tamanho Mínimo de Senha</label>
-                    <input type="number" id="minPasswordLength" value="8" min="6" max="20">
-                </div>
-                <div class="form-group">
-                    <label>Tentativas de Login (antes de bloquear)</label>
-                    <input type="number" id="maxLoginAttempts" value="5" min="3" max="10">
-                </div>
-            </div>
-        </div>
-
-        <!-- Configurações de Manutenção -->
-        <div class="glass-card" style="margin-bottom: 20px;">
-            <h2 style="margin-bottom: 24px; font-size: 20px; font-weight: 900; color: #1D1D1F; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-tools" style="color: #6F1AB6;"></i>
-                Manutenção
-            </h2>
-            
-            <div class="form-group">
-                <label style="display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-                    <span>Modo Manutenção (bloqueia acesso de clientes)</span>
-                    <div style="position: relative; width: 60px; height: 32px;  border-radius: 16px; transition: all 0.3s;">
-                        <input type="checkbox" id="maintenanceMode" style="display: none;">
-                        <div style="position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; background: white; border-radius: 50%; transition: all 0.3s;"></div>
-                    </div>
-                </label>
-            </div>
-
-            <div class="form-group">
-                <label>Mensagem de Manutenção</label>
-                <textarea id="maintenanceMessage" rows="3" style="resize: vertical;">Sistema em manutenção. Voltamos em breve!</textarea>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 20px;">
-                <button type="button" class="btn-action btn-view" onclick="clearCache()">
-                    <i class="fas fa-broom"></i> Limpar Cache
-                </button>
-                <button type="button" class="btn-action btn-toggle" onclick="backupData()">
-                    <i class="fas fa-database"></i> Backup Dados
-                </button>
-                <button type="button" class="btn-action btn-delete" onclick="resetSystem()">
-                    <i class="fas fa-exclamation-triangle"></i> Reset Sistema
-                </button>
-            </div>
-        </div>
-
-        <!-- Botão Salvar Global -->
-        <div style="display: flex; gap: 12px; justify-content: flex-end;">
-            <button type="button" class="btn-back" onclick="location.href='admin-painel.html'" style="border-color: #E5E5E7;">
-                <i class="fas fa-times"></i> Cancelar
-            </button>
-            <button type="button" class="btn-submit" onclick="saveAllSettings()">
-                <i class="fas fa-save"></i> Salvar Todas Configurações
-            </button>
+            </h1>
+            <a href="admin-painel.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Voltar
+            </a>
         </div>
     </div>
 
-    <script>
-        function saveAllSettings() {
-            const settings = {
-                system: {
-                    name: document.getElementById('systemName').value,
-                    email: document.getElementById('systemEmail').value,
-                    phone: document.getElementById('systemPhone').value,
-                    timezone: document.getElementById('timezone').value,
-                    description: document.getElementById('systemDescription').value
-                },
-                points: {
-                    perReal: parseInt(document.getElementById('pointsPerReal').value),
-                    welcomeBonus: parseInt(document.getElementById('welcomeBonus').value),
-                    dailyCheckIn: parseInt(document.getElementById('dailyCheckIn').value),
-                    expiry: parseInt(document.getElementById('pointsExpiry').value)
-                },
-                email: {
-                    serviceId: document.getElementById('emailServiceId').value,
-                    templateId: document.getElementById('emailTemplateId').value,
-                    publicKey: document.getElementById('emailPublicKey').value
-                },
-                security: {
-                    enable2FA: document.getElementById('enable2FA').checked,
-                    loginNotifications: document.getElementById('loginNotifications').checked,
-                    strongPassword: document.getElementById('strongPassword').checked,
-                    minPasswordLength: parseInt(document.getElementById('minPasswordLength').value),
-                    maxLoginAttempts: parseInt(document.getElementById('maxLoginAttempts').value)
-                },
-                maintenance: {
-                    enabled: document.getElementById('maintenanceMode').checked,
-                    message: document.getElementById('maintenanceMessage').value
-                }
-            };
+    <!-- Content Container -->
+    <div class="content-container">
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i>
+            Configurações salvas com sucesso!
+        </div>
 
-            console.log('Configurações salvas:', settings);
-            localStorage.setItem('adminSettings', JSON.stringify(settings));
-            
-            alert('✅ Configurações salvas com sucesso!');
-        }
+        <!-- Settings Grid -->
+        <div class="settings-grid">
+            <!-- System Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-sliders-h"></i>
+                        Configurações Gerais
+                    </h2>
+                    <p class="section-description">Informações básicas do sistema</p>
+                </div>
+                <div class="section-content">
+                    <form class="settings-form" id="systemSettingsForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="systemName">Nome do Sistema</label>
+                                <input type="text" id="systemName" class="form-input" value="Tem de Tudo" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="systemEmail">Email de Contato</label>
+                                <input type="email" id="systemEmail" class="form-input" value="contato@temdetudo.com" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="systemPhone">Telefone de Suporte</label>
+                                <input type="tel" id="systemPhone" class="form-input" value="(11) 9999-9999">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="timezone">Fuso Horário</label>
+                                <select id="timezone" class="form-select">
+                                    <option value="America/Sao_Paulo" selected>América/São Paulo (GMT-3)</option>
+                                    <option value="America/New_York">América/Nova York (GMT-5)</option>
+                                    <option value="Europe/London">Europa/Londres (GMT+0)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="save-btn">
+                            <i class="fas fa-save"></i>
+                            Salvar Configurações
+                        </button>
+                    </form>
+                </div>
+            </div>
 
-        function clearCache() {
-            if (confirm('Deseja limpar todo o cache do sistema?')) {
-                alert('Cache limpo com sucesso!');
-            }
-        }
+            <!-- Notification Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-bell"></i>
+                        Notificações
+                    </h2>
+                    <p class="section-description">Configurar alertas e notificações do sistema</p>
+                </div>
+                <div class="section-content">
+                    <div class="notification-settings">
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <div class="notification-title">Novos Usuários</div>
+                                <div class="notification-description">Receber notificação quando novos usuários se cadastrarem</div>
+                            </div>
+                            <div class="toggle-switch active" data-setting="new-users">
+                            </div>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <div class="notification-title">Novos Pedidos</div>
+                                <div class="notification-description">Receber notificação sobre novos pedidos</div>
+                            </div>
+                            <div class="toggle-switch active" data-setting="new-orders">
+                            </div>
+                        </div>
+                        
+                        <div class="notification-item">
+                            <div class="notification-info">
+                                <div class="notification-title">Relatórios Semanais</div>
+                                <div class="notification-description">Receber relatórios automáticos por email</div>
+                            </div>
+                            <div class="toggle-switch" data-setting="weekly-reports">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        function backupData() {
-            alert('Backup iniciado! Os dados serão salvos em formato JSON.');
-        }
+            <!-- Security Section -->
+            <div class="settings-section security-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Segurança
+                    </h2>
+                    <p class="section-description">Configurações de segurança e acesso</p>
+                </div>
+                <div class="section-content">
+                    <div class="security-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Alterações de segurança requerem confirmação por email
+                    </div>
+                    
+                    <form class="settings-form">
+                        <div class="form-group">
+                            <label class="form-label" for="sessionTimeout">Timeout de Sessão (minutos)</label>
+                            <select id="sessionTimeout" class="form-select">
+                                <option value="15">15 minutos</option>
+                                <option value="30" selected>30 minutos</option>
+                                <option value="60">1 hora</option>
+                                <option value="120">2 horas</option>
+                            </select>
+                        </div>
+                        
+                        <div class="toggle-group">
+                            <div class="toggle-switch active" data-setting="two-factor">
+                            </div>
+                            <span class="toggle-label">Autenticação de dois fatores</span>
+                        </div>
+                        
+                        <button type="submit" class="save-btn">
+                            <i class="fas fa-lock"></i>
+                            Salvar Configurações de Segurança
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        function resetSystem() {
-            if (confirm('⚠️ ATENÇÃO: Isso irá resetar TODAS as configurações para o padrão. Deseja continuar?')) {
-                if (confirm('Tem certeza? Esta ação não pode ser desfeita!')) {
-                    alert('Sistema resetado para configurações padrão.');
-                    location.reload();
-                }
-            }
-        }
+<script>
+// Toggle switches functionality
+document.querySelectorAll('.toggle-switch').forEach(toggle => {
+    toggle.addEventListener('click', function() {
+        this.classList.toggle('active');
+        const setting = this.getAttribute('data-setting');
+        const isActive = this.classList.contains('active');
+        
+        // Aqui você pode salvar a configuração via API
+        console.log(`Setting ${setting}: ${isActive}`);
+    });
+});
 
-        // Carregar configurações salvas
-        document.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('adminSettings');
-            if (saved) {
-                const settings = JSON.parse(saved);
-                console.log('Configurações carregadas:', settings);
-            }
-        });
-    </script>
+// Form submissions
+document.getElementById('systemSettingsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const settings = {};
+    
+    for (let [key, value] of formData.entries()) {
+        settings[key] = value;
+    }
+    
+    // Simulate API call
+    console.log('Saving system settings:', settings);
+    showSuccessMessage();
+});
 
-    <!-- Bottom Navigation PWA -->
-    <nav class="bottom-nav">
-        <a href="admin-painel.html" class="nav-item">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="admin-usuarios.html" class="nav-item">
-            <i class="fas fa-users"></i>
-            <span>Usuários</span>
-        </a>
-        <a href="admin-empresas.html" class="nav-item">
-            <i class="fas fa-building"></i>
-            <span>Empresas</span>
-        </a>
-        <a href="admin-relatorios.html" class="nav-item">
-            <i class="fas fa-chart-line"></i>
-            <span>Relatórios</span>
-        </a>
-        <a href="admin-configuracoes.html" class="nav-item active">
-            <i class="fas fa-cog"></i>
-            <span>Config</span>
-        </a>
-    </nav>
+// Success message
+function showSuccessMessage() {
+    const message = document.getElementById('successMessage');
+    message.style.display = 'flex';
+    
+    setTimeout(() => {
+        message.style.display = 'none';
+    }, 3000);
+}
+
+// Notification function
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6'};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        z-index: 9999;
+        font-weight: 600;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+</script>
 </body>
 </html>
-
-
-
-
-
-

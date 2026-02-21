@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#6A0DAD">
-<title>🔔 Central de Avisos Premium - Vivo</title>
+<title>🔔 Central de Avisos Premium - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/css/vivo-global.css">
@@ -51,23 +51,23 @@
 </div>
 <nav class="bottom-nav">
 <div class="nav-items">
-<a href="/app-inicio.html" class="nav-item">
+<a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
 <span>Início</span>
 </a>
-<a href="/app-empresas.html" class="nav-item">
+<a href="app-empresas.html" class="nav-item">
 <i class="fas fa-search"></i>
 <span>Buscar</span>
 </a>
-<a href="/app-cupons.html" class="nav-item">
+<a href="app-cupons.html" class="nav-item">
 <i class="fas fa-ticket-alt"></i>
 <span>Cupons</span>
 </a>
-<a href="/app-pontos.html" class="nav-item">
+<a href="app-pontos.html" class="nav-item">
 <i class="fas fa-coins"></i>
 <span>Pontos</span>
 </a>
-<a href="/app-avisos.html" class="nav-item active">
+<a href="app-avisos.html" class="nav-item active">
 <i class="fas fa-bell"></i>
 <span>Avisos</span>
 </a>
@@ -89,6 +89,15 @@
 </div>  `).join('');  }  function getIconePorTipo(tipo) {  const icones = {  promocao: 'fa-tags',  pontos: 'fa-coins',  sistema: 'fa-cog',  importante: 'fa-exclamation-triangle'  };  return icones[tipo] || 'fa-bell';  }  function formatarData(data) {  return new Date(data).toLocaleDateString('pt-BR', {  day: '2-digit',  month: '2-digit',  year: 'numeric'  });  }  function marcarComoLido(id) {  const aviso = avisos.find(a => a.id === id);  if (aviso) {  aviso.lido = true;  renderizarAvisos();  atualizarEstatisticas();  mostrarFeedback('Aviso marcado como lido!', 'success');  }  }  function atualizarEstatisticas() {  const total = avisos.length;  const naoLidos = avisos.filter(a => !a.lido).length;  const importantes = avisos.filter(a => a.importante).length;  document.getElementById('totalAvisos').textContent = total;  document.getElementById('naoLidos').textContent = naoLidos;  document.getElementById('importantes').textContent = importantes;  }  function mostrarFeedback(mensagem, tipo) {  const feedback = document.createElement('div');  feedback.style.cssText = `  position: fixed;  top: 20px;  left: 50%;  transform: translateX(-50%);  background: ${tipo === 'success' ? 'linear-gradient(135deg, #00d4aa, #00c896)' : 'linear-gradient(135deg, #6F1AB6, #9333EA)'};  color: ${tipo === 'success' ? '#fff' : '#0a0a0f'};  padding: 12px 24px;  border-radius: 16px;  font-weight: 600;  font-size: 14px;  z-index: 10000;  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);  animation: slideDown 0.3s ease;  `;  feedback.textContent = mensagem;  document.body.appendChild(feedback);  setTimeout(() => {  feedback.style.animation = 'slideUp 0.3s ease';  setTimeout(() => document.body.removeChild(feedback), 300);  }, 3000);  }  // Estilos para animações  const style = document.createElement('style');  style.textContent = `  @keyframes slideDown {  from { transform: translate(-50%, -100%); opacity: 0; }  to { transform: translate(-50%, 0); opacity: 1; }  }  @keyframes slideUp {  from { transform: translate(-50%, 0); opacity: 1; }  to { transform: translate(-50%, -100%); opacity: 0; }  }  `;  document.head.appendChild(style);  </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 

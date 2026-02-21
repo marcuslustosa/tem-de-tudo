@@ -1,83 +1,325 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#6A0DAD">
-    <title>Gerenciar Empresas - Admin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/vivo-global.css">
-    <link rel="manifest" href="/manifest.json">
-    <script src="/js/config.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerenciar Empresas - Admin Tem de Tudo</title>
+<meta name="description" content="Painel administrativo para gerenciar empresas parceiras">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="admin-header">
-        <div class="header-content">
-            <h1><i class="fas fa-building"></i> Gerenciar Empresas</h1>
-            <button class="btn-secondary" onclick="history.back()" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);"><i class="fas fa-arrow-left"></i> Voltar</button>
+<div class="admin-companies-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-container">
+            <h1 class="page-title">
+                <i class="fas fa-building"></i>
+                Gerenciar Empresas
+            </h1>
+            <a href="admin-painel.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Voltar
+            </a>
         </div>
     </div>
-    <div class="main">
-        <div class="section">
+
+    <!-- Content Container -->
+    <div class="content-container">
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-value" id="totalCompanies">0</div>
+                <div class="stat-label">Total de Empresas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="activeCompanies">0</div>
+                <div class="stat-label">Empresas Ativas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pendingCompanies">0</div>
+                <div class="stat-label">Pendentes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="newCompanies">0</div>
+                <div class="stat-label">Novas Este Mês</div>
+            </div>
+        </div>
+
+        <!-- Companies Section -->
+        <div class="companies-section">
+            <!-- Section Header -->
             <div class="section-header">
-                <div class="section-title">Todas as Empresas</div>
-                <button class="btn-primary" style="font-size:13px;padding:8px 14px;" onclick="createEmpresa()"><i class="fas fa-plus"></i> Nova</button>
+                <h2 class="section-title">
+                    <i class="fas fa-list"></i>
+                    Lista de Empresas
+                </h2>
+                <button class="add-company-btn" onclick="addCompany()">
+                    <i class="fas fa-plus"></i>
+                    Nova Empresa
+                </button>
             </div>
-            <div class="search-box" style="margin-bottom:16px;">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Buscar por nome, CNPJ ou categoria..." oninput="filterEmpresas(this.value)">
+
+            <!-- Search and Filters -->
+            <div class="search-filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" class="search-input" placeholder="Buscar empresa..." id="searchInput">
+                </div>
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">Todas as Categorias</option>
+                    <option value="restaurante">Restaurantes</option>
+                    <option value="farmacia">Farmácias</option>
+                    <option value="supermercado">Supermercados</option>
+                    <option value="loja">Lojas</option>
+                    <option value="servico">Serviços</option>
+                </select>
+                <select class="filter-select" id="statusFilter">
+                    <option value="">Todos os Status</option>
+                    <option value="ativo">Ativo</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="inativo">Inativo</option>
+                </select>
             </div>
-            <div class="table-container">
-                <table>
-                    <thead><tr><th>Logo</th><th>Nome</th><th>CNPJ</th><th>Categoria</th><th>Status</th><th>AÃ§Ãµes</th></tr></thead>
-                    <tbody id="empresasTable"><tr><td colspan="6" style="text-align:center;padding:40px;color:#86868b;">Carregando...</td></tr></tbody>
-                </table>
+
+            <!-- Companies Grid -->
+            <div class="company-grid" id="companiesGrid">
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <p>Carregando empresas...</p>
+                </div>
             </div>
         </div>
     </div>
-    <nav class="bottom-nav">
-        <a href="/admin-painel.html" class="nav-item "><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
-        <a href="/admin-usuarios.html" class="nav-item "><i class="fas fa-users"></i><span>UsuÃ¡rios</span></a>
-        <a href="/admin-empresas.html" class="nav-item active"><i class="fas fa-building"></i><span>Empresas</span></a>
-        <a href="/admin-relatorios.html" class="nav-item "><i class="fas fa-chart-line"></i><span>RelatÃ³rios</span></a>
-        <a href="/admin-configuracoes.html" class="nav-item "><i class="fas fa-cog"></i><span>Config</span></a>
-    </nav>
-    <script>
-        let allEmpresas = [];
-        async function loadEmpresas() {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) { window.location.href = '/admin-login.html'; return; }
-                const r = await fetch(API_CONFIG.getBaseURL() + '/api/empresas', { headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' }});
-                if (r.ok) { const j = await r.json(); allEmpresas = j.data || j || []; renderEmpresas(allEmpresas); }
-                else if (r.status === 401) { window.location.href = '/admin-login.html'; }
-            } catch(e) { console.error(e); renderEmpresas([]); }
+</div>
+
+<script>
+// Dados de exemplo das empresas
+const companiesData = [
+    {
+        id: 1,
+        name: "Restaurante Sabor Mineiro",
+        category: "restaurante",
+        phone: "(11) 99999-9999",
+        email: "contato@sabormineiro.com",
+        status: "ativo",
+        address: "Rua das Flores, 123",
+        created_at: "2024-01-15"
+    },
+    {
+        id: 2,
+        name: "Farmácia São José",
+        category: "farmacia",
+        phone: "(11) 88888-8888",
+        email: "saojose@farmacia.com",
+        status: "ativo",
+        address: "Av. Principal, 456",
+        created_at: "2024-01-20"
+    },
+    {
+        id: 3,
+        name: "Supermercado Central",
+        category: "supermercado",
+        phone: "(11) 77777-7777",
+        email: "central@super.com",
+        status: "pendente",
+        address: "Rua Central, 789",
+        created_at: "2024-02-01"
+    }
+];
+
+// Função para carregar empresas
+function loadCompanies() {
+    const grid = document.getElementById('companiesGrid');
+    
+    if (companiesData.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <p>Nenhuma empresa encontrada.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    grid.innerHTML = companiesData.map(company => `
+        <div class="company-card" data-category="${company.category}" data-status="${company.status}">
+            <div class="company-header">
+                <div class="company-logo">
+                    ${company.name.charAt(0).toUpperCase()}
+                </div>
+                <div class="company-info">
+                    <h3>${company.name}</h3>
+                    <span class="company-category">${getCategoryLabel(company.category)}</span>
+                </div>
+            </div>
+            
+            <div class="company-details">
+                <div class="detail-row">
+                    <span class="detail-label">Telefone:</span>
+                    <span class="detail-value">${company.phone}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">${company.email}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Endereço:</span>
+                    <span class="detail-value">${company.address}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="company-status status-${company.status}">
+                        <i class="fas fa-circle"></i>
+                        ${getStatusLabel(company.status)}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="company-actions">
+                <button class="action-btn edit" onclick="editCompany(${company.id})" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete" onclick="deleteCompany(${company.id})" title="Excluir">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+    
+    updateStats();
+}
+
+// Função para obter label da categoria
+function getCategoryLabel(category) {
+    const labels = {
+        restaurante: 'Restaurante',
+        farmacia: 'Farmácia',
+        supermercado: 'Supermercado',
+        loja: 'Loja',
+        servico: 'Serviço'
+    };
+    return labels[category] || category;
+}
+
+// Função para obter label do status
+function getStatusLabel(status) {
+    const labels = {
+        ativo: 'Ativo',
+        pendente: 'Pendente',
+        inativo: 'Inativo'
+    };
+    return labels[status] || status;
+}
+
+// Função para atualizar estatísticas
+function updateStats() {
+    const total = companiesData.length;
+    const active = companiesData.filter(c => c.status === 'ativo').length;
+    const pending = companiesData.filter(c => c.status === 'pendente').length;
+    const thisMonth = companiesData.filter(c => {
+        const created = new Date(c.created_at);
+        const now = new Date();
+        return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
+    }).length;
+    
+    document.getElementById('totalCompanies').textContent = total;
+    document.getElementById('activeCompanies').textContent = active;
+    document.getElementById('pendingCompanies').textContent = pending;
+    document.getElementById('newCompanies').textContent = thisMonth;
+}
+
+// Função para adicionar empresa
+function addCompany() {
+    window.location.href = 'admin-criar-empresa.html';
+}
+
+// Função para editar empresa
+function editCompany(companyId) {
+    window.location.href = `admin-editar-empresa.html?id=${companyId}`;
+}
+
+// Função para excluir empresa
+function deleteCompany(companyId) {
+    if (confirm('Tem certeza que deseja excluir esta empresa?')) {
+        const index = companiesData.findIndex(c => c.id === companyId);
+        if (index > -1) {
+            companiesData.splice(index, 1);
+            loadCompanies();
+            showNotification('Empresa excluída com sucesso!', 'success');
         }
-        function filterEmpresas(q) { renderEmpresas(allEmpresas.filter(e => (e.nome||e.nome_fantasia||'').toLowerCase().includes(q.toLowerCase()))); }
-        function renderEmpresas(list) {
-            const tbody = document.getElementById('empresasTable');
-            if (!list.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#86868b;">Nenhuma empresa encontrada</td></tr>'; return; }
-            tbody.innerHTML = list.map(e => <tr>
-                <td><img src="" alt="" style="width:38px;height:38px;border-radius:8px;object-fit:cover;"></td>
-                <td></td><td></td><td></td>
-                <td><span class="badge badge-"></span></td>
-                <td style="display:flex;gap:6px;">
-                    <button class="btn-secondary" style="font-size:12px;padding:6px 10px;" onclick="viewEmpresa()"><i class="fas fa-eye"></i></button>
-                    <button class="btn-secondary" style="font-size:12px;padding:6px 10px;" onclick="editEmpresa()"><i class="fas fa-edit"></i></button>
-                    <button class="btn-secondary" style="font-size:12px;padding:6px 10px;color:#ef4444;border-color:#fca5a5;" onclick="deleteEmpresa()"><i class="fas fa-trash"></i></button>
-                </td></tr>).join('');
-        }
-        function createEmpresa() { alert('Criar nova empresa'); }
-        function viewEmpresa(id) { window.location.href = '/profile-company.html?id=' + id; }
-        function editEmpresa(id) { alert('Editar empresa ' + id); }
-        function deleteEmpresa(id) { if(confirm('Excluir empresa?')) alert('ExcluÃ­da ' + id); }
-        document.addEventListener('DOMContentLoaded', loadEmpresas);
-    </script>
+    }
+}
+
+// Função de busca
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    filterCompanies();
+});
+
+// Função de filtro por categoria
+document.getElementById('categoryFilter').addEventListener('change', function(e) {
+    filterCompanies();
+});
+
+// Função de filtro por status
+document.getElementById('statusFilter').addEventListener('change', function(e) {
+    filterCompanies();
+});
+
+// Função para filtrar empresas
+function filterCompanies() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    const cards = document.querySelectorAll('.company-card');
+    
+    cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        const category = card.getAttribute('data-category');
+        const status = card.getAttribute('data-status');
+        
+        const matchesSearch = text.includes(searchTerm);
+        const matchesCategory = !categoryFilter || category === categoryFilter;
+        const matchesStatus = !statusFilter || status === statusFilter;
+        
+        card.style.display = matchesSearch && matchesCategory && matchesStatus ? '' : 'none';
+    });
+}
+
+// Função para mostrar notificações
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6'};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        z-index: 9999;
+        font-weight: 600;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Carregar empresas ao carregar a página
+document.addEventListener('DOMContentLoaded', loadCompanies);
+</script>
 </body>
 </html>
-
-
-
-
-

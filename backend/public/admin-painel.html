@@ -1,269 +1,238 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#6A0DAD">
-    <title>Painel Admin - Vivo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/vivo-global.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Administrativo - Tem de Tudo</title>
+<meta name="description" content="Painel de controle administrativo do Tem de Tudo">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="header">
+<div class="admin-page">
+    <!-- Header -->
+    <div class="admin-header">
         <div class="header-content">
             <div class="header-left">
-                <h1>Painel Vivo</h1>
+                <h1>Painel Tem de Tudo</h1>
                 <p>Gestão completa do sistema <span class="admin-badge">Admin</span></p>
             </div>
-            <button class="btn-logout" onclick="logout()">
+            <button class="logout-btn" onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i>
-                Sair
+                <span>Sair</span>
             </button>
         </div>
     </div>
 
-    <div class="main">
-        <!-- Stats Dashboard -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">👥 Total Usuários</span>
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
+    <!-- Main Content -->
+    <div class="admin-main">
+        <!-- Welcome Section -->
+        <div class="welcome-section fade-in">
+            <h2 class="welcome-title">Bem-vindo ao Dashboard</h2>
+            <p class="welcome-subtitle">Gerencie todos os aspectos do sistema Tem de Tudo</p>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-section">
+            <h2 class="section-title fade-in animate-delay-1">
+                <i class="fas fa-chart-bar"></i>
+                Visão Geral do Sistema
+            </h2>
+
+            <div class="stats-grid">
+                <div class="stat-card fade-in animate-delay-2">
+                    <div class="stat-header">
+                        <div class="stat-label">Usuários Ativos</div>
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="activeUsers">1,234</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +12% este mês
                     </div>
                 </div>
-                <div class="stat-value">2,847</div>
-                <div class="stat-change">
-                    <i class="fas fa-arrow-up"></i>
-                    <span>+12% este mês</span>
+
+                <div class="stat-card fade-in animate-delay-3">
+                    <div class="stat-header">
+                        <div class="stat-label">Pedidos Hoje</div>
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="todayOrders">47</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +8% hoje
+                    </div>
+                </div>
+
+                <div class="stat-card fade-in animate-delay-4">
+                    <div class="stat-header">
+                        <div class="stat-label">Empresas Parceiras</div>
+                        <div class="stat-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value" id="partnerCompanies">89</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +3 novas
+                    </div>
+                </div>
+
+                <div class="stat-card fade-in animate-delay-4">
+                    <div class="stat-header">
+                        <div class="stat-label">Status do Sistema</div>
+                        <div class="stat-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value">99.8%</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-check-circle"></i>
+                        Online
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">🏢 Empresas Ativas</span>
-                    <div class="stat-icon">
+        <!-- Quick Actions Section -->
+        <div class="actions-section">
+            <h2 class="section-title">
+                <i class="fas fa-bolt"></i>
+                Ações Rápidas
+            </h2>
+
+            <div class="actions-grid">
+                <a href="admin-usuarios.html" class="action-card">
+                    <div class="action-card-icon">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                    <div class="action-card-content">
+                        <h3>Gerenciar Usuários</h3>
+                        <p>Visualizar, editar e gerenciar todos os usuários do sistema</p>
+                    </div>
+                </a>
+
+                <a href="admin-empresas.html" class="action-card">
+                    <div class="action-card-icon">
                         <i class="fas fa-building"></i>
                     </div>
-                </div>
-                <div class="stat-value">156</div>
-                <div class="stat-change">
-                    <i class="fas fa-arrow-up"></i>
-                    <span>+8% este mês</span>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">💰 Transações Hoje</span>
-                    <div class="stat-icon">
-                        <i class="fas fa-credit-card"></i>
+                    <div class="action-card-content">
+                        <h3>Empresas Parceiras</h3>
+                        <p>Gerenciar empresas cadastradas e suas informações</p>
                     </div>
-                </div>
-                <div class="stat-value">R$ 89,250</div>
-                <div class="stat-change">
-                    <i class="fas fa-arrow-up"></i>
-                    <span>+15% hoje</span>
-                </div>
-            </div>
+                </a>
 
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">🎯 Pontos Ativos</span>
-                    <div class="stat-icon">
-                        <i class="fas fa-star"></i>
+                <a href="admin-relatorios.html" class="action-card">
+                    <div class="action-card-icon">
+                        <i class="fas fa-chart-line"></i>
                     </div>
-                </div>
-                <div class="stat-value">1,234,567</div>
-                <div class="stat-change">
-                    <i class="fas fa-arrow-up"></i>
-                    <span>+22% este mês</span>
-                </div>
+                    <div class="action-card-content">
+                        <h3>Relatórios</h3>
+                        <p>Visualizar relatórios detalhados e analytics</p>
+                    </div>
+                </a>
+
+                <a href="admin-configuracoes.html" class="action-card">
+                    <div class="action-card-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="action-card-content">
+                        <h3>Configurações</h3>
+                        <p>Ajustar configurações do sistema e preferências</p>
+                    </div>
+                </a>
             </div>
-        </div>
-
-        <!-- Management Actions -->
-        <h2 class="section-title">
-            <i class="fas fa-tools"></i>
-            Gestão do Sistema
-        </h2>
-
-        <div class="actions-grid">
-            <a href="/app-admin-usuarios.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-users-cog"></i>
-                </div>
-                <div class="action-card-content">
-                    <h3>Gerenciar Usuários</h3>
-                    <p>Administrar contas de usuário e permissões</p>
-                </div>
-            </a>
-
-            <a href="/app-admin-empresas.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-building"></i>
-                </div>
-                <div class="action-card-content">
-                    <h3>Empresas Parceiras</h3>
-                    <p>Gerenciar empresas cadastradas no sistema</p>
-                </div>
-            </a>
-
-            <a href="/app-admin-relatorios.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="action-card-content">
-                    <h3>Relatórios e Analytics</h3>
-                    <p>Visualizar dados e métricas do sistema</p>
-                </div>
-            </a>
-
-            <a href="/app-admin-promocoes.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-tags"></i>
-                </div>
-                <div class="action-card-content">
-                    <h3>Promoções Globais</h3>
-                    <p>Gerenciar campanhas e ofertas especiais</p>
-                </div>
-            </a>
-
-            <a href="/app-admin-configuracoes.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-cogs"></i>
-                </div>
-                <div class="action-card-content">
-                    <h3>Configurações</h3>
-                    <p>Ajustes gerais e parâmetros do sistema</p>
-                </div>
-            </a>
-
-            <a href="/app-admin-create-user.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-user-plus"></i>
-                </div>
-                <div class="action-card-content">
-                    <h3>Criar Usuário</h3>
-                    <p>Adicionar novos usuários ao sistema</p>
-                </div>
-            </a>
-        </div>
-
-        <!-- Quick Tools -->
-        <h2 class="section-title">
-            <i class="fas fa-bolt"></i>
-            Ferramentas Rápidas
-        </h2>
-
-        <div class="actions-grid">
-            <a href="/app-admin-logs.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-file-alt"></i>
-                </div>
-                <div class="action-card-content">
-                    <h3>Logs do Sistema</h3>
-                    <p>Monitorar atividades e erros</p>
-                </div>
-            </a>
-
-            <a href="/app-admin-backup.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-database"></i>
-                </div>
-                <div class="action-card-content">
-                    <h3>Backup e Restore</h3>
-                    <p>Gerenciar backups do banco de dados</p>
-                </div>
-            </a>
-
-            <a href="/app-admin-notificacoes.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-bell"></i>
-                </div>
-                <div class="action-card-content">
-                    <h3>Notificações</h3>
-                    <p>Enviar avisos para usuários</p>
-                </div>
-            </a>
-
-            <a href="/app-admin-suporte.html" class="action-card">
-                <div class="action-card-icon">
-                    <i class="fas fa-headset"></i>
-                </div>
-                <div class="action-card-content">
-                    <h3>Central de Suporte</h3>
-                    <p>Gerenciar tickets e solicitações</p>
-                </div>
-            </a>
         </div>
     </div>
 
     <!-- Bottom Navigation -->
     <div class="bottom-nav">
-        <a href="/app-admin-dashboard.html" class="nav-item active">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="/app-admin-usuarios.html" class="nav-item">
-            <i class="fas fa-users"></i>
-            <span>Usuários</span>
-        </a>
-        <a href="/app-admin-empresas.html" class="nav-item">
-            <i class="fas fa-building"></i>
-            <span>Empresas</span>
-        </a>
-        <a href="/app-admin-relatorios.html" class="nav-item">
-            <i class="fas fa-chart-line"></i>
-            <span>Relatórios</span>
-        </a>
-        <a href="/app-admin-configuracoes.html" class="nav-item">
-            <i class="fas fa-cogs"></i>
-            <span>Config</span>
-        </a>
+        <div class="nav-container">
+            <a href="admin-painel.html" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-usuarios.html" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span>Usuários</span>
+            </a>
+            <a href="admin-empresas.html" class="nav-item">
+                <i class="fas fa-building"></i>
+                <span>Empresas</span>
+            </a>
+            <a href="admin-configuracoes.html" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span>Config</span>
+            </a>
+        </div>
     </div>
+</div>
 
-    <script>
-        function logout() {
-            if (confirm('Tem certeza que deseja sair do painel administrativo?')) {
-                alert('🔓 Logout administrativo realizado com sucesso!');
-                localStorage.clear();
-                window.location.href = '/app-admin-entrar.html';
-            }
-        }
+<script>
+// Função de logout
+function logout() {
+    if (confirm('Tem certeza que deseja sair?')) {
+        localStorage.removeItem('adminToken');
+        window.location.href = 'admin-login.html';
+    }
+}
 
-        // Simular carregamento de dados dinâmicos
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Painel administrativo carregado com sucesso');
-            
-            // Animation para os cards
-            const cards = document.querySelectorAll('.stat-card, .action-card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    card.style.transition = 'all 0.3s ease';
-                    
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, 50);
-                }, index * 30);
-            });
-            
-            // Verificar autenticação mockada
-            const token = localStorage.getItem('token');
-            if (!token) {
-                alert('⚠️ Sessão expirada. Redirecionando para login...');
-                window.location.href = '/app-admin-entrar.html';
-            }
-        });
-    </script>
+// Carregar dados do dashboard
+async function loadDashboardData() {
+    try {
+        // Simular chamadas da API
+        const stats = {
+            activeUsers: 1234,
+            todayOrders: 47,
+            partnerCompanies: 89,
+            systemUptime: 99.8
+        };
+        
+        // Atualizar os valores na tela
+        document.getElementById('activeUsers').textContent = stats.activeUsers.toLocaleString();
+        document.getElementById('todayOrders').textContent = stats.todayOrders;
+        document.getElementById('partnerCompanies').textContent = stats.partnerCompanies;
+        
+    } catch (error) {
+        console.error('Erro ao carregar dados do dashboard:', error);
+    }
+}
+
+// Verificar autenticação
+function checkAuth() {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+        window.location.href = 'admin-login.html';
+        return false;
+    }
+    return true;
+}
+
+// Adicionar animações aos cards
+function addAnimations() {
+    const cards = document.querySelectorAll('.fade-in');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+    });
+}
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', function() {
+    if (checkAuth()) {
+        loadDashboardData();
+        addAnimations();
+    }
+});
+
+// Atualizar dados a cada 30 segundos
+setInterval(loadDashboardData, 30000);
+</script>
 </body>
 </html>
-
-
-
-
-

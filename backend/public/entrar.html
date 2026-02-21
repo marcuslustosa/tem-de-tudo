@@ -3,31 +3,245 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#6A0DAD">
-<title>Login - Vivo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Entrar - Tem de Tudo</title>
+<meta name="description" content="Faça login na sua conta Tem de Tudo e acesse seus pontos e recompensas">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="manifest" href="/manifest.json">
-<script src="/js/config.js"></script>
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<div class="login-container">
-<div class="logo-section">
-<div class="icon">
-<i class="fas fa-gem"></i>
+<div class="login-page">
+    <!-- Background Elements -->
+    <div class="login-bg">
+        <div class="floating-element element-1"></div>
+        <div class="floating-element element-2"></div>
+        <div class="floating-element element-3"></div>
+    </div>
+
+    <!-- Back Link -->
+    <div class="back-link">
+        <a href="index.html">
+            <i class="fas fa-arrow-left"></i>
+            Voltar
+        </a>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i class="fas fa-gem"></i>
+            </div>
+            <h1 class="welcome-title">Bem-vindo!</h1>
+            <p class="welcome-subtitle">Entre para acessar sua conta</p>
+        </div>
+
+        <!-- Error/Success Messages -->
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <!-- Login Form -->
+        <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="form-input"
+                    required 
+                    placeholder="seu@email.com" 
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Senha</label>
+                <div class="password-input-group">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input"
+                        required 
+                        placeholder="Sua senha" 
+                        autocomplete="current-password"
+                    >
+                    <button type="button" class="password-toggle" onclick="togglePassword()">
+                        <i class="fas fa-eye" id="passwordToggleIcon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="forgot-password">
+                <a href="recuperar-senha.html">Esqueceu sua senha?</a>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                <span id="loginBtnText">Entrar</span>
+                <div class="loading" id="loginLoading" style="display: none;"></div>
+            </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="divider">
+            <span>ou</span>
+        </div>
+
+        <!-- Register Link -->
+        <div class="register-link">
+            <p>Ainda não tem uma conta?</p>
+            <a href="cadastro.html">Criar conta gratuita</a>
+        </div>
+    </div>
 </div>
-<h1>Bem-vindo!</h1>
-<p>Entre para acessar sua conta</p>
-</div>
-<div class="error-message" id="errorMessage"></div>
-<form id="loginForm" onsubmit="handleLogin(event)">
-<div class="form-group">
-<label for="email">Email</label>
-<input type="email" id="email" name="email" required placeholder="seu@email.com" autocomplete="username">
-</div>
-<div class="form-group">
-<label for="password">Senha</label>
+
+<script src="/js/config.js"></script>
+<script>
+// Toggle password visibility
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.getElementById('passwordToggleIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.className = 'fas fa-eye';
+    }
+}
+
+// Show error message
+function showError(message) {
+    const errorDiv = document.getElementById('errorMessage');
+    errorDiv.textContent = message;
+    errorDiv.classList.add('show');
+    
+    setTimeout(() => {
+        errorDiv.classList.remove('show');
+    }, 5000);
+}
+
+// Show success message
+function showSuccess(message) {
+    const successDiv = document.getElementById('successMessage');
+    successDiv.textContent = message;
+    successDiv.classList.add('show');
+    
+    setTimeout(() => {
+        successDiv.classList.remove('show');
+    }, 3000);
+}
+
+// Handle login form submission
+async function handleLogin(event) {
+    event.preventDefault();
+    
+    const loginBtn = document.getElementById('loginBtn');
+    const loginBtnText = document.getElementById('loginBtnText');
+    const loginLoading = document.getElementById('loginLoading');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    // Show loading state
+    loginBtn.disabled = true;
+    loginBtnText.style.display = 'none';
+    loginLoading.style.display = 'block';
+    errorMessage.classList.remove('show');
+    
+    const formData = new FormData(event.target);
+    const email = formData.get('email');
+    const password = formData.get('password');
+    
+    try {
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Success - store token and redirect
+            localStorage.setItem('authToken', data.token);
+            localStorage.setItem('userType', data.user.type);
+            localStorage.setItem('userName', data.user.name);
+            
+            showSuccess('Login realizado com sucesso!');
+            
+            // Redirect based on user type
+            setTimeout(() => {
+                let redirectUrl = '/';
+                
+                switch(data.user.type) {
+                    case 'cliente':
+                        redirectUrl = 'dashboard-cliente.html';
+                        break;
+                    case 'empresa':
+                        redirectUrl = 'dashboard-empresa-funcional.html';
+                        break;
+                    case 'admin':
+                        redirectUrl = 'admin-painel.html';
+                        break;
+                    default:
+                        redirectUrl = 'index.html';
+                }
+                
+                window.location.href = redirectUrl;
+            }, 1000);
+            
+        } else {
+            // Error from server
+            throw new Error(data.message || 'Erro no login');
+        }
+        
+    } catch (error) {
+        console.error('Login error:', error);
+        showError(error.message || 'Erro ao fazer login. Tente novamente.');
+    } finally {
+        // Hide loading state
+        loginBtn.disabled = false;
+        loginBtnText.style.display = 'block';
+        loginLoading.style.display = 'none';
+    }
+}
+
+// Check if user is already logged in
+window.addEventListener('load', function() {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        const userType = localStorage.getItem('userType');
+        let redirectUrl = 'index.html';
+        
+        switch(userType) {
+            case 'cliente':
+                redirectUrl = 'dashboard-cliente.html';
+                break;
+            case 'empresa':
+                redirectUrl = 'dashboard-empresa-funcional.html';
+                break;
+            case 'admin':
+                redirectUrl = 'admin-painel.html';
+                break;
+        }
+        
+        window.location.href = redirectUrl;
+    }
+});
+
+// Auto-focus email field
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('email').focus();
+});
+</script>
+</body>
+</html>
 <input type="password" id="password" name="password" required placeholder="••••••••" autocomplete="current-password">
 </div>
 <button type="submit" class="btn-login" id="btnLogin">
@@ -35,7 +249,7 @@
             </button>
 </form>
 <div class="links">
-<a href="/cadastro.html">
+<a href="cadastro.html">
 <i class="fas fa-user-plus"></i> Criar nova conta
             </a>
 </div>
@@ -113,6 +327,15 @@
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 

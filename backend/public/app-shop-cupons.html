@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shop de Cupons - Vivo</title>
+<title>Shop de Cupons - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/css/vivo-global.css">
@@ -52,11 +52,11 @@
 </div>
 </div>
 <nav class="bottom-nav">
-<a href="/app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
-<a href="/app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-<a href="/app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-<a href="/app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
-<a href="/app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
+<a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
+<a href="app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
+<a href="app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
+<a href="app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
+<a href="app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
 </nav>
 <script>  // Dados fictícios do shop de cupons  const cuponsShop = [  {  id: 1,  titulo: 'R$ 10 OFF',  descricao: 'Desconto de R$ 10 em compras acima de R$ 50',  pontos: 100,  valorReal: 10.00,  categoria: 'desconto',  icone: 'fas fa-percentage',  cor: '#10b981'  },  {  id: 2,  titulo: 'Frete Grátis',  descricao: 'Delivery gratuito em qualquer pedido',  pontos: 50,  valorReal: 8.00,  categoria: 'delivery',  icone: 'fas fa-shipping-fast',  cor: '#3b82f6'  },  {  id: 3,  titulo: 'R$ 25 OFF',  descricao: 'Desconto de R$ 25 em compras acima de R$ 100',  pontos: 250,  valorReal: 25.00,  categoria: 'desconto',  icone: 'fas fa-tags',  cor: '#f59e0b'  },  {  id: 4,  titulo: '2 por 1 Pizza',  descricao: 'Compre 1 pizza grande e ganhe outra igual',  pontos: 300,  valorReal: 35.00,  categoria: 'promocao',  icone: 'fas fa-pizza-slice',  cor: '#ef4444'  },  {  id: 5,  titulo: '20% OFF Beleza',  descricao: '20% de desconto em todos os serviços de beleza',  pontos: 150,  valorReal: 20.00,  categoria: 'beleza',  icone: 'fas fa-spa',  cor: '#8b5cf6'  },  {  id: 6,  titulo: 'Academia Grátis',  descricao: '1 semana grátis na academia',  pontos: 400,  valorReal: 80.00,  categoria: 'fitness',  icone: 'fas fa-dumbbell',  cor: '#06b6d4'  }  ];  // Meus cupons (comprados)  let meusCupons = [  {  id: 1,  titulo: 'R$ 10 OFF',  descricao: 'Desconto de R$ 10 em compras acima de R$ 50',  codigo: 'DESC10XYZ',  validade: '2026-03-15',  usado: false  }  ];  let pontosUsuario = 250; // Pontos fictícios do usuário  document.addEventListener('DOMContentLoaded', () => {  renderizarShop();  renderizarMeusCupons();  // Tabs  document.querySelectorAll('.tab').forEach(tab => {  tab.addEventListener('click', () => {  document.querySelectorAll('.tab').forEach(t => {  t.classList.remove('active');  t.style.background = 'transparent';  t.style.color = '#888';  });  tab.classList.add('active');  tab.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';  tab.style.color = 'white';  const targetTab = tab.dataset.tab;  document.querySelectorAll('.tab-content').forEach(content => {  content.style.display = 'none';  });  document.getElementById(`tab-${targetTab}`).style.display = 'block';  });  });  });  function renderizarShop() {  const grid = document.getElementById('cuponsShop');  document.getElementById('pontosUser').textContent = `${pontosUsuario} pontos`;  grid.innerHTML = cuponsShop.map(cupom => `  <div class="cupom-card" style="background: #2a2a3e; border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid rgba(102, 126, 234, 0.1);">
 <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
@@ -89,6 +89,15 @@
 </div>  `).join('');  }  function comprarCupom(cupomId) {  const cupom = cuponsShop.find(c => c.id === cupomId);  if (pontosUsuario < cupom.pontos) {  alert('Pontos insuficientes!');  return;  }  // Confirmar compra  if (confirm(`Deseja resgatar "${cupom.titulo}" por ${cupom.pontos} pontos?`)) {  pontosUsuario -= cupom.pontos;  // Adicionar aos meus cupons  const novoCupom = {  id: Date.now(),  titulo: cupom.titulo,  descricao: cupom.descricao,  codigo: gerarCodigo(),  validade: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR'),  usado: false  };  meusCupons.push(novoCupom);  // Atualizar interface  renderizarShop();  renderizarMeusCupons();  alert(`Cupom "${cupom.titulo}" resgatado com sucesso!\\nCódigo: ${novoCupom.codigo}`);  }  }  function usarCupom(codigo) {  if (confirm('Tem certeza que deseja usar este cupom?\\n\\nEsta ação não pode ser desfeita.')) {  const cupom = meusCupons.find(c => c.codigo === codigo);  cupom.usado = true;  renderizarMeusCupons();  alert('Cupom usado com sucesso!');  }  }  function gerarCodigo() {  return Math.random().toString(36).substring(2, 8).toUpperCase();  }  </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 

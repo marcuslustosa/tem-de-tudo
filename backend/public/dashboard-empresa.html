@@ -1,745 +1,337 @@
-﻿<script>
-    // Redirecionar para versão funcional
-    window.location.href = '/dashboard-empresa-funcional.html';
-</script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#6A0DAD">
-    <title>🏪 Empresa Premium - Vivo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 80px;
-        }
-    <style>
-        .header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
-            position: relative;
-            padding: 24px;
-            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .main {
-            padding: 32px 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .action-btn {
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(241, 196, 15, 0.1);
-            border-radius: 20px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: block;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .action-btn:hover::before {
-            opacity: 1;
-        }
-        
-        .action-btn:hover {
-            border-color: rgba(241, 196, 15, 0.3);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(241, 196, 15, 0.2);
-        }
-        
-        .action-btn i {
-            font-size: 32px;
-            margin-bottom: 16px;
-            color: #f1c40f;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
-        }
-
-        .action-btn:hover i {
-            transform: scale(1.1);
-        }
-        
-        .action-btn .label {
-            font-size: 14px;
-            font-weight: 700;
-            color: #fff;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .scanner-section {
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(241, 196, 15, 0.1);
-            border-radius: 20px;
-            padding: 32px;
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .scanner-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
-            pointer-events: none;
-        }
-        
-        .scanner-box {
-            width: 100%;
-            max-width: 400px;
-            height: 300px;
-            margin: 24px auto;
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.6), rgba(26, 26, 46, 0.3));
-            border: 2px dashed rgba(241, 196, 15, 0.3);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 16px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .scanner-box i {
-            font-size: 64px;
-            color: #f1c40f;
-        }
-        
-        .cliente-card {
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(241, 196, 15, 0.1);
-            border-radius: 16px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cliente-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(241, 196, 15, 0.05) 0%, transparent 50%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .cliente-card:hover::before {
-            opacity: 1;
-        }
-        
-        .cliente-card:hover {
-            border-color: rgba(241, 196, 15, 0.3);
-            transform: translateX(4px);
-            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.2);
-        }
-        
-        .cliente-info {
-            flex: 1;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .cliente-name {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: var(--space-1);
-        }
-        
-        .cliente-email {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        
-        .cliente-pontos {
-            background: rgba(102, 126, 234, 0.15);
-            color: var(--purple-1);
-            padding: 8px 16px;
-            border-radius: var(--radius-full);
-            font-size: 14px;
-            font-weight: 700;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--space-5);
-            margin-bottom: var(--space-8);
-        }
-        
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
-            transition: all 0.3s;
-        }
-        
-        .stat-card:hover {
-            border-color: var(--border-hover);
-            transform: translateY(-2px);
-        }
-        
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-4);
-        }
-        
-        .stat-label {
-            font-size: 13px;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-        
-        .stat-icon.purple {
-            background: rgba(241, 196, 15, 0.15);
-            color: #f1c40f;
-        }
-        
-        .stat-icon.green {
-            background: rgba(34, 197, 94, 0.15);
-            color: var(--success);
-        }
-        
-        .stat-icon.orange {
-            background: rgba(249, 115, 22, 0.15);
-            color: var(--warning);
-        }
-        
-        .stat-value {
-            font-size: 48px;
-            font-weight: 900;
-            color: #f1c40f;
-            margin-bottom: var(--space-2);
-        }
-        
-        .stat-subtitle {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-        
-        .section {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: var(--space-6);
-            margin-bottom: var(--space-6);
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-5);
-        }
-        
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-    </style>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Empresa Dashboard - Tem de Tudo</title>
+<meta name="description" content="Painel de controle da empresa no Tem de Tudo">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-    <div class="header">
-        <div class="header-content">
-            <div class="header-left">
-                <div class="logo-mini">
-                    <i class="fas fa-gem" style="color: #f1c40f; margin-right: 8px;"></i>
-                    <span style="font-weight: 800; background: linear-gradient(135deg, #f1c40f, #e67e22); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Vivo</span>
-                </div>
-                <h1>Painel da Empresa</h1>
-                <p>Gerencie seus clientes e promoções</p>
-            </div>
-            <div class="header-right">
-                <div class="user-info" style="text-align: right; margin-right: var(--space-4);">
-                    <div style="font-size: 14px; font-weight: 600; color: var(--text-primary);" id="empresaNome">Empresa</div>
-                    <div style="font-size: 12px; color: var(--text-muted);">Estabelecimento</div>
-                </div>
-                <button class="btn-danger" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Sair
-                </button>
-            </div>
+<body class="admin-page">
+<!-- Admin Header -->
+<div class="admin-header">
+    <div class="admin-brand">
+        <div class="admin-logo">
+            <i class="fas fa-gem"></i>
+        </div>
+        <div class="admin-brand-info">
+            <h1>Empresa Dashboard</h1>
+            <span>Painel de Controle</span>
         </div>
     </div>
     
-    <div class="main">
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <a href="#scanner" class="action-btn" onclick="showScanner(); return false;">
-                <i class="fas fa-qrcode"></i>
-                <div class="label">Scanner QR</div>
-            </a>
-            <a href="/empresa-nova-promocao.html" class="action-btn">
-                <i class="fas fa-plus-circle"></i>
-                <div class="label">Nova Promoção</div>
-            </a>
-            <a href="/empresa-clientes.html" class="action-btn">
-                <i class="fas fa-users"></i>
-                <div class="label">Clientes</div>
-            </a>
-            <a href="/empresa-relatorios.html" class="action-btn">
-                <i class="fas fa-chart-bar"></i>
-                <div class="label">Relatórios</div>
-            </a>
-        </div>
-        
-        <!-- Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Total de Clientes</span>
-                    <div class="stat-icon purple">
-                        <i class="fas fa-users"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="totalClientes">0</div>
-                <div class="stat-subtitle">Cadastrados na plataforma</div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Pontos Hoje</span>
-                    <div class="stat-icon green">
-                        <i class="fas fa-coins"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="pontosHoje">0</div>
-                <div class="stat-subtitle">Distribuídos hoje</div>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Pontos Mês</span>
-                    <div class="stat-icon orange">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                </div>
-                <div class="stat-value" id="pontosMes">0</div>
-                <div class="stat-subtitle">Distribuídos este mês</div>
-            </div>
-        </div>
-        
-        <!-- Scanner Section -->
-        <div class="scanner-section" id="scannerSection" style="display: none;">
-            <h3 class="section-title">Scanner de QR Code</h3>
-            <p style="color: var(--text-secondary); margin-bottom: var(--space-4);">
-                Escaneie o QR Code do cliente para dar pontos
-            </p>
-            <div class="scanner-box">
-                <i class="fas fa-camera"></i>
-                <p style="color: var(--text-muted);">Clique para ativar a câmera</p>
-                <button class="btn-primary" onclick="activateCamera()">
-                    <i class="fas fa-camera"></i>
-                    Ativar Câmera
-                </button>
-            </div>
-            <button class="btn-secondary" onclick="hideScanner()">
-                Fechar Scanner
+    <div class="admin-user">
+        <div class="admin-notifications">
+            <button class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
             </button>
         </div>
         
-        <!-- Clientes Recentes -->
-        <div class="section">
-            <div class="section-header">
-                <h3 class="section-title">Clientes Recentes</h3>
-                <a href="/empresa-clientes.html" class="btn-secondary">
-                    Ver Todos
-                </a>
+        <div class="admin-user-info">
+            <div class="admin-avatar">
+                <i class="fas fa-building"></i>
             </div>
-            <div id="clientesList">
-                <div class="loading" style="text-align: center; padding: var(--space-8);">
-                    <div class="loading-spinner"></div>
-                    <p style="margin-top: var(--space-4); color: var(--text-muted);">Carregando clientes...</p>
-                </div>
+            <div class="admin-user-details">
+                <span class="admin-user-name">Padaria do João</span>
+                <span class="admin-user-role">Estabelecimento</span>
             </div>
         </div>
         
-        <!-- Promoções Ativas -->
-        <div class="section">
-            <div class="section-header">
-                <h3 class="section-title">Promoções Ativas</h3>
-                <a href="/empresa-promocoes.html" class="btn-secondary">
-                    Gerenciar
-                </a>
+        <button class="admin-menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Admin Navigation -->
+<div class="admin-nav">
+    <nav class="admin-nav-list">
+        <a href="dashboard-empresa-funcional.html" class="admin-nav-item active">
+            <i class="fas fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="empresa-clientes.html" class="admin-nav-item">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span>
+        </a>
+        <a href="empresa-scanner.html" class="admin-nav-item">
+            <i class="fas fa-qrcode"></i>
+            <span>Scanner QR</span>
+        </a>
+        <a href="empresa-relatorios.html" class="admin-nav-item">
+            <i class="fas fa-chart-bar"></i>
+            <span>Relatórios</span>
+        </a>
+        <a href="empresa-configuracoes.html" class="admin-nav-item">
+            <i class="fas fa-cog"></i>
+            <span>Configurações</span>
+        </a>
+    </nav>
+</div>
+
+<!-- Main Content -->
+<div class="admin-main">
+    <!-- Stats Cards -->
+    <div class="admin-section">
+        <div class="stats-grid">
+            <div class="stat-card stat-primary">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Clientes Ativos</h3>
+                    <div class="stat-number">1,234</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +12% este mês
+                    </div>
+                </div>
             </div>
-            <div id="promocoesList">
-                <div class="loading" style="text-align: center; padding: var(--space-8);">
-                    <div class="loading-spinner"></div>
-                    <p style="margin-top: var(--space-4); color: var(--text-muted);">Carregando promoções...</p>
+            
+            <div class="stat-card stat-success">
+                <div class="stat-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Pontos Emitidos</h3>
+                    <div class="stat-number">15,678</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +8% esta semana
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-warning">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Vendas Hoje</h3>
+                    <div class="stat-number">R$ 2,456</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +15% ontem
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stat-card stat-info">
+                <div class="stat-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>Resgates</h3>
+                    <div class="stat-number">89</div>
+                    <div class="stat-change negative">
+                        <i class="fas fa-arrow-down"></i>
+                        -3% este mês
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Quick Actions -->
+    <div class="admin-section">
+        <h2 class="section-title">Ações Rápidas</h2>
+        
+        <div class="quick-actions-grid">
+            <a href="empresa-scanner.html" class="quick-action-card primary">
+                <div class="quick-action-icon">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <div class="quick-action-content">
+                    <h3>Escanear QR Code</h3>
+                    <p>Leia o código do cliente</p>
+                </div>
+            </a>
+            
+            <a href="empresa-clientes.html" class="quick-action-card success">
+                <div class="quick-action-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="quick-action-content">
+                    <h3>Cadastrar Cliente</h3>
+                    <p>Adicionar novo cliente</p>
+                </div>
+            </a>
+            
+            <a href="empresa-relatorios.html" class="quick-action-card warning">
+                <div class="quick-action-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="quick-action-content">
+                    <h3>Ver Relatórios</h3>
+                    <p>Acompanhar performance</p>
+                </div>
+            </a>
+            
+            <button class="quick-action-card info" onclick="showEmergencyContact()">
+                <div class="quick-action-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div class="quick-action-content">
+                    <h3>Suporte</h3>
+                    <p>Ajuda e contato</p>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="admin-section">
+        <div class="section-header">
+            <h2 class="section-title">Transações Recentes</h2>
+            <a href="empresa-relatorios.html" class="section-link">
+                Ver todas <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="data-table">
+            <div class="table-header">
+                <div class="table-col">Cliente</div>
+                <div class="table-col">Tipo</div>
+                <div class="table-col">Pontos</div>
+                <div class="table-col">Valor</div>
+                <div class="table-col">Horário</div>
+            </div>
+            
+            <div class="table-row">
+                <div class="table-col">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name">Maria Silva</span>
+                            <span class="user-id">#12345</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-col">
+                    <span class="badge badge-success">Compra</span>
+                </div>
+                <div class="table-col">
+                    <span class="points-value">+50 pts</span>
+                </div>
+                <div class="table-col">
+                    <span class="money-value">R$ 125,00</span>
+                </div>
+                <div class="table-col">
+                    <span class="time-value">14:30</span>
+                </div>
+            </div>
+            
+            <div class="table-row">
+                <div class="table-col">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name">João Santos</span>
+                            <span class="user-id">#67890</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-col">
+                    <span class="badge badge-warning">Resgate</span>
+                </div>
+                <div class="table-col">
+                    <span class="points-value">-100 pts</span>
+                </div>
+                <div class="table-col">
+                    <span class="money-value">R$ 20,00</span>
+                </div>
+                <div class="table-col">
+                    <span class="time-value">13:15</span>
+                </div>
+            </div>
+            
+            <div class="table-row">
+                <div class="table-col">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name">Ana Costa</span>
+                            <span class="user-id">#11223</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-col">
+                    <span class="badge badge-success">Compra</span>
+                </div>
+                <div class="table-col">
+                    <span class="points-value">+30 pts</span>
+                </div>
+                <div class="table-col">
+                    <span class="money-value">R$ 75,50</span>
+                </div>
+                <div class="table-col">
+                    <span class="time-value">12:45</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Show support modal
+function showEmergencyContact() {
+    alert('Em breve: Modal de suporte será implementado');
+}
+
+// Simulate real-time updates
+function updateStats() {
+    const statNumbers = document.querySelectorAll('.stat-number');
     
-    <script>
-        // Configuração de API mais robusta
-        let API_URL;
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // LOCAL: Tenta várias portas comuns do Laravel
-            API_URL = 'http://127.0.0.1:8000/api';
-        } else if (window.location.hostname.includes('render.com') || window.location.hostname.includes('herokuapp.com')) {
-            // PRODUÇÃO: Render, Heroku, etc
-            API_URL = '/api';
+    statNumbers.forEach((stat, index) => {
+        const currentValue = parseInt(stat.textContent.replace(/\D/g, ''));
+        // Simulate small random changes
+        const change = Math.floor(Math.random() * 10) - 5;
+        const newValue = Math.max(0, currentValue + change);
+        
+        if (index === 2) { // Money value
+            stat.textContent = `R$ ${newValue.toLocaleString('pt-BR')}`;
         } else {
-            // OUTROS: Relative path como fallback
-            API_URL = '/api';
+            stat.textContent = newValue.toLocaleString('pt-BR');
         }
-        
-        // Verificar autenticação
-        const token = localStorage.getItem('token');
-        const userStr = localStorage.getItem('user');
-        
-        if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
-            localStorage.clear();
-            window.location.href = '/entrar.html';
-            return;
-        }
-        
-        let user;
-        try {
-            user = JSON.parse(userStr);
-            if (!user || !user.perfil || user.perfil !== 'empresa') {
-                localStorage.clear();
-                window.location.href = '/entrar.html';
-                return;
-            }
-        } catch (e) {
-            localStorage.clear();
-            window.location.href = '/entrar.html';
-            return;
-        }
-        
-        // Exibir nome da empresa
-        document.getElementById('empresaNome').textContent = user.name || user.email;
-        
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/entrar.html';
-        }
-        
-        function showScanner() {
-            document.getElementById('scannerSection').style.display = 'block';
-            window.scrollTo({ top: document.getElementById('scannerSection').offsetTop - 100, behavior: 'smooth' });
-        }
-        
-        function hideScanner() {
-            document.getElementById('scannerSection').style.display = 'none';
-        }
-        
-        function activateCamera() {
-            alert('Ativar câmera para scanner - implementar com biblioteca de QR Code');
-        }
-        
-        // Carregar dados
-        async function loadData() {
-            try {
-                const headers = {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json'
-                };
-                
-                // PRIMEIRO: Tenta carregar da API real
-                try {
-                    const statsResponse = await fetch(`${API_URL}/empresa/stats`, { headers });
-                    const statsData = await statsResponse.json();
-                    
-                    if (statsData.total_clientes !== undefined) {
-                        document.getElementById('totalClientes').textContent = statsData.total_clientes;
-                        document.getElementById('pontosHoje').textContent = statsData.pontos_hoje || 0;
-                        document.getElementById('pontosMes').textContent = statsData.pontos_mes || 0;
-                        
-                        // Carregar clientes recentes
-                        const clientesResponse = await fetch(`${API_URL}/empresa/clientes?limit=5`, { headers });
-                        const clientesData = await clientesResponse.json();
-                        
-                        if (clientesData.clientes) {
-                            renderClientes(clientesData.clientes);
-                        }
-                        
-                        // Carregar promoções
-                        const promocoesResponse = await fetch(`${API_URL}/empresa/promocoes`, { headers });
-                        const promocoesData = await promocoesResponse.json();
-                        
-                        if (promocoesData.promocoes) {
-                            renderPromocoes(promocoesData.promocoes);
-                        }
-                        return;
-                    }
-                } catch (apiError) {
-                    console.log('API indisponível, carregando dados fictícios para empresa...', apiError.message);
-                }
-                
-                // FALLBACK: Dados fictícios completos para empresa
-                console.log('🏢 MODO DEMONSTRAÇÃO EMPRESA ATIVADO');
-                loadMockEmpresaData();
-                
-            } catch (error) {
-                console.error('Erro ao carregar dados:', error);
-                loadMockEmpresaData();
-            }
-        }
-        
-        // DADOS FICTÍCIOS COMPLETOS PARA EMPRESA
-        function loadMockEmpresaData() {
-            // Estatísticas ficticias
-            document.getElementById('totalClientes').textContent = '847';
-            document.getElementById('pontosHoje').textContent = '1,250';
-            document.getElementById('pontosMes').textContent = '28,450';
+    });
+}
+
+// Update stats every 30 seconds
+setInterval(updateStats, 30000);
+
+// Mobile menu toggle
+document.querySelector('.admin-menu-toggle').addEventListener('click', function() {
+    document.querySelector('.admin-nav').classList.toggle('mobile-open');
+});
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loading animation to stats
+    document.querySelectorAll('.stat-card').forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.5s ease';
             
-            // Clientes fictícios recentes
-            const mockClientes = [
-                { id: 1, name: 'João Silva', email: 'joao@gmail.com', pontos: 1250, ultimo_checkin: '2024-02-04 14:30' },
-                { id: 2, name: 'Maria Santos', email: 'maria@hotmail.com', pontos: 890, ultimo_checkin: '2024-02-04 13:45' },
-                { id: 3, name: 'Carlos Oliveira', email: 'carlos@yahoo.com', pontos: 650, ultimo_checkin: '2024-02-04 12:20' },
-                { id: 4, name: 'Ana Costa', email: 'ana@gmail.com', pontos: 2100, ultimo_checkin: '2024-02-04 11:15' },
-                { id: 5, name: 'Pedro Lima', email: 'pedro@outlook.com', pontos: 430, ultimo_checkin: '2024-02-03 16:40' }
-            ];
-            
-            // Promoções fictícias ativas
-            const mockPromocoes = [
-                { 
-                    id: 1, 
-                    titulo: 'Desconto de 20% em Serviços', 
-                    descricao: 'Válido para todos os serviços até o final do mês',
-                    pontos_necessarios: 500,
-                    usos: 45,
-                    limite: 100,
-                    validade: '2024-02-29',
-                    status: 'ativa'
-                },
-                { 
-                    id: 2, 
-                    titulo: 'Brinde Especial', 
-                    descricao: 'Ganhe um brinde exclusivo na compra acima de R$ 100',
-                    pontos_necessarios: 300,
-                    usos: 23,
-                    limite: 50,
-                    validade: '2024-02-15',
-                    status: 'ativa'
-                },
-                { 
-                    id: 3, 
-                    titulo: 'Combo Promocional', 
-                    descricao: 'Compre 2 e leve 3 em produtos selecionados',
-                    pontos_necessarios: 800,
-                    usos: 12,
-                    limite: 30,
-                    validade: '2024-03-05',
-                    status: 'ativa'
-                }
-            ];
-            
-            renderClientes(mockClientes);
-            renderPromocoes(mockPromocoes);
-            
-            // Adicionar indicador de modo demonstração
-            const userInfo = document.querySelector('.user-info h3');
-            if (userInfo) {
-                userInfo.innerHTML += ' <span style="color: #f1c40f; font-size: 12px;">• DEMO</span>';
-            }
-        }
-        
-        function renderClientes(clientes) {
-            const html = clientes.length > 0 ? clientes.map(cliente => `
-                <div class="cliente-card">
-                    <div class="cliente-info">
-                        <div class="cliente-name">${cliente.name}</div>
-                        <div class="cliente-email">${cliente.email}</div>
-                    </div>
-                    <div class="cliente-pontos">
-                        ${cliente.pontos || 0} pts
-                    </div>
-                </div>
-            `).join('') : '<p style="color: var(--text-muted); text-align: center; padding: var(--space-6);">Nenhum cliente cadastrado</p>';
-            
-            document.getElementById('clientesList').innerHTML = html;
-        }
-        
-        function renderPromocoes(promocoes) {
-            const html = promocoes.length > 0 ? `
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Promoção</th>
-                                <th>Pontos</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${promocoes.map(promo => `
-                                <tr>
-                                    <td style="font-weight: 600;">${promo.titulo}</td>
-                                    <td>${promo.pontos_necessarios} pts</td>
-                                    <td><span class="badge badge-success">Ativa</span></td>
-                                    <td>
-                                        <button class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="editarPromocao(${promo.id})">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            ` : '<p style="color: var(--text-muted); text-align: center; padding: var(--space-6);">Nenhuma promoção ativa</p>';
-            
-            document.getElementById('promocoesList').innerHTML = html;
-        }
-        
-        function editarPromocao(id) {
-            window.location.href = `/empresa-nova-promocao.html?id=${id}`;
-        }
-        
-        // Carregar dados ao iniciar
-        loadData();
-    </script>
-    
-    <!-- Bottom Navigation -->
-    <style>
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid rgba(102,126,234,0.1);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            z-index: 1000;
-            box-shadow: 0 -10px 40px rgba(102,126,234,0.08);
-        }
-        .bottom-nav .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            padding: 8px 16px;
-            text-decoration: none;
-            color: #7c8db0;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-        .bottom-nav .nav-item.active {
-            color: #f1c40f;
-            background: rgba(241,196,15,0.08);
-        }
-        .bottom-nav .nav-item i {
-            font-size: 20px;
-        }
-        .bottom-nav .nav-item span {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        body {
-            padding-bottom: 80px;
-        }
-    </style>
-    <nav class="bottom-nav">
-        <a href="/dashboard-empresa.html" class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="/empresa-scanner.html" class="nav-item">
-            <i class="fas fa-qrcode"></i>
-            <span>Scanner</span>
-        </a>
-        <a href="/empresa-promocoes.html" class="nav-item">
-            <i class="fas fa-gift"></i>
-            <span>Promoções</span>
-        </a>
-        <a href="/empresa-clientes.html" class="nav-item">
-            <i class="fas fa-users"></i>
-            <span>Clientes</span>
-        </a>
-        <a href="/empresa-relatorios.html" class="nav-item">
-            <i class="fas fa-chart-line"></i>
-            <span>Relatórios</span>
-        </a>
-    </nav>
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        }, index * 150);
+    });
+});
+</script>
+
 </body>
 </html>
-
-
-
-
-
-
-
