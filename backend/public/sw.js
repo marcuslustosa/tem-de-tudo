@@ -11,7 +11,9 @@ const CORE_ASSETS = [
     '/app-perfil.html',
     '/app-meu-qrcode.html',
     '/app-scanner.html',
-    '/css/style-unificado.css',
+    '/global-styles.css',
+    '/global-auth.js',
+    '/global-navbar.js',
     '/manifest.json'
 ];
 
@@ -63,6 +65,11 @@ self.addEventListener('fetch', (event) => {
     const { request } = event;
     const url = new URL(request.url);
     
+    // Apenas lidar com requisições GET para cache
+    if (request.method !== 'GET') {
+        return;
+    }
+    
     // Ignora outros domínios (exceto CDNs)
     if (url.origin !== location.origin && 
         !url.origin.includes('cdnjs.cloudflare.com') &&
@@ -71,9 +78,8 @@ self.addEventListener('fetch', (event) => {
         return;
     }
     
-    // API: Network First
+    // API: Network Only (não cachear APIs por segurança)
     if (url.pathname.startsWith('/api/')) {
-        event.respondWith(networkFirst(request));
         return;
     }
     
@@ -130,7 +136,7 @@ async function networkFirst(request) {
     
     try {
         const response = await fetch(request);
-        if (response.ok) {
+        if (response.ok && request.method === 'GET') {
             cache.put(request, response.clone());
         }
         return response;
@@ -153,7 +159,7 @@ async function staleWhileRevalidate(request) {
     
     const fetchPromise = fetch(request)
         .then((response) => {
-            if (response.ok) {
+            if (response.ok && request.method === 'GET') {
                 cache.put(request, response.clone());
             }
             return response;

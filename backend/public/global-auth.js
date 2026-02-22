@@ -77,13 +77,18 @@ function checkAuthentication() {
     const userStr = localStorage.getItem('user');
     
     if (!token || !userStr) {
-        console.log('❌ Token ou usuário não encontrado');
+        console.log('ℹ️ Usuário não autenticado - redirecionando para login se necessário');
         return false;
     }
     
     try {
         const user = JSON.parse(userStr);
-        console.log('✅ Usuário autenticado:', user.name, '(' + user.perfil + ')');
+        
+        // Garantir que o usuário tem propriedades básicas
+        if (!user.name) user.name = user.email || 'Usuário';
+        if (!user.perfil && !user.type) user.perfil = 'cliente';
+        
+        console.log('✅ Usuário autenticado:', user.name, '(' + (user.perfil || user.type) + ')');
         
         // Atualizar informações da navbar se existir
         updateNavbarUserInfo(user);
@@ -95,6 +100,8 @@ function checkAuthentication() {
         };
     } catch (error) {
         console.error('❌ Erro ao parsear dados do usuário:', error);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
         return false;
     }
 }
