@@ -8,7 +8,7 @@
 
 ### 🔑 **Credenciais:**
 - **Email:** `admin@temdetudo.com`
-- **Senha:** `123456`
+- **Senha:** `admin123`
 
 ### 🎯 **O que demonstrar:**
 
@@ -50,6 +50,10 @@
 ## 👥 **2. PERFIL CLIENTE**
 
 ### 🔑 **Credenciais Principais:**
+- **Email:** `cliente@teste.com` (Cliente oficial de teste - 150 pontos)
+- **Senha:** `123456`
+
+### 🔑 **Credenciais Extras:**
 - **Email:** `maria@email.com` (180 pontos acumulados)
 - **Senha:** `123456`
 
@@ -104,6 +108,10 @@
 ## 🏢 **3. PERFIL EMPRESA**
 
 ### 🔑 **Credenciais Principais:**
+- **Email:** `empresa@teste.com` (Empresa oficial de teste)
+- **Senha:** `123456`
+
+### 🔑 **Credenciais Extras:**
 - **Email:** `contato@sabordacasa.com` (Restaurante)
 - **Senha:** `123456`
 

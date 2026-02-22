@@ -8,7 +8,7 @@
 
 const API_URL = window.location.hostname === 'localhost' ? 
     'http://localhost:8000/api' : 
-    'https://tem-de-tudo.onrender.com/api';
+    'https://tem-de-tudo-9g7r.onrender.com/api';
 
 // ============================================
 // 1. PUSH NOTIFICATIONS (Web API)

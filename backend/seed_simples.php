@@ -1,34 +1,23 @@
 <?php
 /**
- * Script para Popular Banco com Dados de Demonstração
- * Tema de Tudo - Sistema de Fidelidade
+ * Script Simplificado para Popular Banco com Dados de Demonstração
+ * Tem de Tudo - Sistema de Fidelidade
  * 
  * Execute este arquivo para popular o banco com dados fictícios
  * para demonstração dos 3 perfis: Admin, Cliente, Empresa
  */
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
-// Carregar variáveis de ambiente
-if (file_exists(__DIR__ . '/../.env')) {
-    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-    $dotenv->load();
-}
-
 try {
-    // Conexão com banco de dados
-    $host = $_ENV['DB_HOST'] ?? 'localhost';
-    $dbname = $_ENV['DB_DATABASE'] ?? 'tem_de_tudo';
-    $username = $_ENV['DB_USERNAME'] ?? 'root';
-    $password = $_ENV['DB_PASSWORD'] ?? '';
+    // Configurações do banco - ajuste conforme necessário
+    $host = 'localhost';
+    $dbname = 'tem_de_tudo';
+    $username = 'root';
+    $password = '';
     
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     echo "🔗 Conectado ao banco de dados: $dbname\n";
-    
-    // Hash da senha padrão: 123456
-    $senhaHash = password_hash('123456', PASSWORD_DEFAULT);
     
     echo "🧹 Limpando dados existentes (se houver)...\n";
     
@@ -41,7 +30,7 @@ try {
     $pdo->exec("DELETE FROM users WHERE id > 0");
     $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
     
-    echo "� Inserindo ADMINISTRADOR (PERFIL OFICIAL DE TESTE)...\n";
+    echo "👑 Inserindo ADMINISTRADOR (PERFIL OFICIAL DE TESTE)...\n";
     
     // 1. ADMINISTRADOR OFICIAL DE TESTE
     $adminSenha = password_hash('admin123', PASSWORD_DEFAULT);
@@ -74,9 +63,7 @@ try {
     $clientes = [
         ['Maria Silva Santos', 'maria@email.com', '(11) 99999-0001'],
         ['João Pedro Oliveira', 'joao@email.com', '(11) 99999-0002'],
-        ['Ana Carolina Lima', 'ana@email.com', '(11) 99999-0003'],
-        ['Roberto Costa Silva', 'roberto@email.com', '(11) 99999-0004'],
-        ['Patricia Fernandes', 'patricia@email.com', '(11) 99999-0005']
+        ['Ana Carolina Lima', 'ana@email.com', '(11) 99999-0003']
     ];
     
     $clienteIds = [$clienteTesteId]; // Incluir o cliente de teste
@@ -91,10 +78,7 @@ try {
     // 5. EMPRESAS EXTRAS DE EXEMPLO
     $empresas = [
         ['Restaurante Sabor da Casa', 'contato@sabordacasa.com', '(11) 3333-0001'],
-        ['Farmácia São João', 'contato@farmaciajoao.com', '(11) 3333-0002'],
-        ['Posto Shell Centro', 'contato@shellcentro.com', '(11) 3333-0003'],
-        ['Supermercado Família', 'contato@superfamilia.com', '(11) 3333-0004'],
-        ['Loja de Roupas Fashion', 'contato@fashionloja.com', '(11) 3333-0005']
+        ['Farmácia São João', 'contato@farmaciajoao.com', '(11) 3333-0002']
     ];
     
     $empresaUserIds = [$empresaTesteUserId]; // Incluir a empresa de teste
@@ -108,10 +92,7 @@ try {
     $empresasDetalhes = [
         [$empresaTesteUserId, 'Empresa de Teste Demonstração', '11.111.111/0001-11', 'Teste', 'Rua de Teste, 123', 'São Paulo', 'SP', '00000-000', 'Empresa oficial para testes do sistema'],
         [$empresaUserIds[1], 'Restaurante Sabor da Casa', '12.345.678/0001-01', 'Restaurantes', 'Rua das Flores, 123', 'São Paulo', 'SP', '01234-567', 'Restaurante familiar com pratos caseiros desde 1985'],
-        [$empresaUserIds[2], 'Farmácia São João', '23.456.789/0001-02', 'Farmácias', 'Av. Paulista, 456', 'São Paulo', 'SP', '01310-100', 'Farmácia completa com atendimento 24h'],
-        [$empresaUserIds[3], 'Posto Shell Centro', '34.567.890/0001-03', 'Postos de Combustível', 'Rua do Comércio, 789', 'São Paulo', 'SP', '01020-000', 'Posto de combustível com conveniência completa'],
-        [$empresaUserIds[4], 'Supermercado Família', '45.678.901/0001-04', 'Supermercados', 'Rua do Mercado, 321', 'São Paulo', 'SP', '05432-019', 'Supermercado com produtos frescos e ofertas diárias'],
-        [$empresaUserIds[5], 'Loja de Roupas Fashion', '56.789.012/0001-05', 'Moda e Vestuário', 'Shopping Center, Loja 205', 'São Paulo', 'SP', '04567-890', 'Moda jovem e tendências atuais']
+        [$empresaUserIds[2], 'Farmácia São João', '23.456.789/0001-02', 'Farmácias', 'Av. Paulista, 456', 'São Paulo', 'SP', '01310-100', 'Farmácia completa com atendimento 24h']
     ];
     
     $empresaIds = [];
@@ -123,25 +104,17 @@ try {
     
     echo "⭐ Inserindo PONTOS DOS CLIENTES...\n";
     
-    // 5. PONTOS DOS CLIENTES (EXEMPLO)
+    // 7. PONTOS DOS CLIENTES
     $pontos = [
         // Cliente de Teste Oficial (150 pontos iniciais)
         [$clienteTesteId, $empresaIds[1], 50, 0, 50, 'Compra inicial no restaurante - R$ 25,00', 'ganho', '-5 day'],
         [$clienteTesteId, $empresaIds[2], 40, 0, 40, 'Compra na farmácia - R$ 20,00', 'ganho', '-3 day'],
-        [$clienteTesteId, $empresaIds[4], 60, 0, 60, 'Compra no supermercado - R$ 30,00', 'ganho', '-1 day'],
+        [$clienteTesteId, $empresaIds[1], 60, 0, 60, 'Compra no restaurante - R$ 30,00', 'ganho', '-1 day'],
         
-        // Maria Silva Santos (clienteIds[1] - já que o [0] é o cliente de teste)
+        // Maria Silva Santos (clienteIds[1])
         [$clienteIds[1], $empresaIds[1], 50, 0, 50, 'Compra no restaurante - R$ 25,00', 'ganho', '-2 day'],
         [$clienteIds[1], $empresaIds[2], 30, 0, 30, 'Compra na farmácia - R$ 15,00', 'ganho', '-1 day'],
-        [$clienteIds[1], $empresaIds[4], 100, 0, 100, 'Compra no supermercado - R$ 50,00', 'ganho', '0 day'],
-        
-        // João Pedro Oliveira (clienteIds[2])
-        [$clienteIds[2], $empresaIds[3], 80, 0, 80, 'Abastecimento no posto - R$ 40,00', 'ganho', '-3 day'],
-        [$clienteIds[2], $empresaIds[5], 60, 30, 30, 'Compra de roupas - R$ 30,00', 'ganho', '-2 day'],
-        
-        // Ana Carolina Lima (clienteIds[3])
-        [$clienteIds[3], $empresaIds[1], 40, 0, 40, 'Almoço no restaurante - R$ 20,00', 'ganho', '-1 day'],
-        [$clienteIds[3], $empresaIds[2], 25, 0, 25, 'Medicamentos - R$ 12,50', 'ganho', '0 day']
+        [$clienteIds[1], $empresaIds[1], 100, 0, 100, 'Compra no restaurante - R$ 50,00', 'ganho', '0 day']
     ];
     
     foreach ($pontos as $ponto) {
@@ -152,56 +125,17 @@ try {
     
     echo "🎁 Inserindo PROMOÇÕES ATIVAS...\n";
     
-    // 6. PROMOÇÕES ATIVAS
+    // 8. PROMOÇÕES ATIVAS
     $promocoes = [
         [$empresaIds[0], 'Oferta de Teste', 'Promoção especial da empresa de teste', 30, 15, 0, '+30 day'],
         [$empresaIds[1], '10% OFF Almoço Executivo', 'Desconto de 10% no almoço executivo de segunda a sexta', 50, 10, 0, '+30 day'],
-        [$empresaIds[2], 'R$ 5 OFF Medicamentos', 'R$ 5,00 de desconto em medicamentos acima de R$ 20,00', 25, 0, 5.00, '+15 day'],
-        [$empresaIds[3], 'Combustível com Desconto', '5% de desconto no combustível', 100, 5, 0, '+7 day'],
-        [$empresaIds[4], '15% OFF Compras acima de R$ 50', 'Desconto de 15% em compras acima de R$ 50,00', 75, 15, 0, '+20 day'],
-        [$empresaIds[5], 'R$ 10 OFF Roupas', 'R$ 10,00 de desconto em roupas acima de R$ 80,00', 60, 0, 10.00, '+25 day']
+        [$empresaIds[2], 'R$ 5 OFF Medicamentos', 'R$ 5,00 de desconto em medicamentos acima de R$ 20,00', 25, 0, 5.00, '+15 day']
     ];
     
     foreach ($promocoes as $promocao) {
         $validoAte = date('Y-m-d H:i:s', strtotime($promocao[6]));
         $stmt = $pdo->prepare("INSERT INTO promocoes (empresa_id, titulo, descricao, pontos_necessarios, desconto_porcentagem, desconto_valor, valido_ate, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, 'ativo', NOW(), NOW())");
         $stmt->execute([$promocao[0], $promocao[1], $promocao[2], $promocao[3], $promocao[4], $promocao[5], $validoAte]);
-    }
-    
-    echo "🔔 Inserindo NOTIFICAÇÕES...\n";
-    
-    // 7. NOTIFICAÇÕES PARA DEMONSTRAÇÃO
-    $notificacoes = [
-        // Para o cliente de teste
-        [$clienteTesteId, 'Bem-vindo ao Tem de Tudo!', 'Sua conta de teste foi criada com sucesso! Use para testar o sistema.', 'boas-vindas', 0, '0 day'],
-        [$clienteTesteId, 'Pontos de Teste Ganhos!', 'Você ganhou 150 pontos para demonstração do sistema', 'pontos', 0, '-1 day'],
-        
-        // Para outros clientes
-        [$clienteIds[1], 'Bem-vindo ao Tem de Tudo!', 'Sua conta foi criada com sucesso! Comece a acumular pontos agora.', 'boas-vindas', 0, '0 day'],
-        [$clienteIds[1], 'Pontos Ganhos!', 'Você ganhou 50 pontos no Restaurante Sabor da Casa', 'pontos', 0, '-2 day'],
-        [$clienteIds[2], 'Promoção Especial!', 'Nova promoção no Posto Shell Centro: 5% de desconto!', 'promocao', 1, '-1 day'],
-        [$clienteIds[3], 'Lembrete', 'Você tem pontos acumulados! Que tal usar em alguma promoção?', 'lembrete', 0, '0 day']
-    ];
-    
-    foreach ($notificacoes as $notif) {
-        $data = date('Y-m-d H:i:s', strtotime($notif[5]));
-        $stmt = $pdo->prepare("INSERT INTO notificacoes (user_id, titulo, mensagem, tipo, lida, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$notif[0], $notif[1], $notif[2], $notif[3], $notif[4], $data, $data]);
-    }
-    
-    echo "⚙️ Inserindo CONFIGURAÇÕES...\n";
-    
-    // 8. CONFIGURAÇÕES DE PONTUAÇÃO
-    $configuracoes = [
-        ['pontos_por_real', '2', 'Quantos pontos são ganhos por real gasto'],
-        ['pontos_minimos_uso', '25', 'Quantidade mínima de pontos para usar'],
-        ['valor_ponto', '0.50', 'Valor em reais de cada ponto'],
-        ['bonus_cadastro', '100', 'Pontos de bônus ao se cadastrar']
-    ];
-    
-    foreach ($configuracoes as $config) {
-        $stmt = $pdo->prepare("INSERT INTO configuracoes (chave, valor, descricao, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW()) ON DUPLICATE KEY UPDATE valor = VALUES(valor), updated_at = NOW()");
-        $stmt->execute($config);
     }
     
     echo "\n✅ DADOS DE DEMONSTRAÇÃO INSERIDOS COM SUCESSO!\n\n";
@@ -217,7 +151,7 @@ try {
     
     echo "👤 CLIENTE:\n";
     echo "   Email: cliente@teste.com\n";
-    echo "   Senha: 123456\n\n";
+    echo "   Senha: 123456 (150 pontos)\n\n";
     
     echo "📋 USUÁRIOS EXTRAS PARA DEMONSTRAÇÃO:\n";
     echo "=======================================\n";
@@ -234,29 +168,33 @@ try {
     echo "\n";
     
     // Verificar dados inseridos
-    $queries = [
-        'USUÁRIOS' => "SELECT COUNT(*) as total FROM users",
-        'EMPRESAS' => "SELECT COUNT(*) as total FROM empresas",
-        'PONTOS' => "SELECT COUNT(*) as total FROM pontos", 
-        'PROMOÇÕES' => "SELECT COUNT(*) as total FROM promocoes WHERE status = 'ativo'",
-        'NOTIFICAÇÕES' => "SELECT COUNT(*) as total FROM notificacoes"
-    ];
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM users");
+    $users = $stmt->fetch()['total'];
     
-    echo "📊 RESUMO DOS DADOS:\n";
-    echo "========================================\n";
-    foreach ($queries as $nome => $query) {
-        $result = $pdo->query($query)->fetch();
-        echo "$nome: {$result['total']}\n";
-    }
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM empresas");
+    $empresas_count = $stmt->fetch()['total'];
     
-    echo "\n🚀 SISTEMA PRONTO PARA DEMONSTRAÇÃO!\n";
-    echo "Acesse: http://seu-dominio.com/entrar.html\n";
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM pontos");
+    $pontos_count = $stmt->fetch()['total'];
     
-} catch (PDOException $e) {
-    echo "❌ Erro de conexão com banco: " . $e->getMessage() . "\n";
-    exit(1);
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM promocoes WHERE status = 'ativo'");
+    $promocoes_count = $stmt->fetch()['total'];
+    
+    echo "📊 RESUMO DOS DADOS INSERIDOS:\n";
+    echo "===============================\n";
+    echo "👥 Usuários: $users\n";
+    echo "🏢 Empresas: $empresas_count\n";
+    echo "⭐ Transações de Pontos: $pontos_count\n";
+    echo "🎁 Promoções Ativas: $promocoes_count\n\n";
+    
+    echo "🚀 SISTEMA PRONTO PARA TESTE!\n";
+    echo "Acesse: https://tem-de-tudo-9g7r.onrender.com/\n";
+
 } catch (Exception $e) {
-    echo "❌ Erro geral: " . $e->getMessage() . "\n";
-    exit(1);
+    echo "❌ ERRO: " . $e->getMessage() . "\n";
+    echo "Verifique:\n";
+    echo "1. Se o banco 'tem_de_tudo' existe\n";
+    echo "2. Se as credenciais estão corretas\n";
+    echo "3. Se as tabelas foram criadas\n";
 }
 ?>

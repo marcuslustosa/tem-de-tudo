@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Cliente - Tem de Tudo</title>
+<meta name="description" content="Painel do cliente Tem de Tudo - Gerencie pontos, pedidos e explore ofertas">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="js/config.js"></script>
+<script src="js/auth-guard.js"></script>
+<style>
+/* RESET E VARIÁVEIS */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --vivo-blue: #3B82F6; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; 
+    --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; 
+    --gray-800: #1F2937; --gray-900: #111827; --white: #FFFFFF; --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    min-height: 100vh;
+    color: var(--gray-800);
+}
+
+/* HEADER */
+.header {
+    background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%);
+    color: var(--white);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.logout-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.welcome {
+    text-align: center;
+    max-width: 1200px;
+    margin: 2rem auto 0;
+}
+
+.welcome h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* CONTAINER PRINCIPAL */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* CARD DE PONTOS */
+.points-card {
+    background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%);
+    color: var(--white);
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.points-value {
+    font-size: 4rem;
+    font-weight: 800;
+    margin: 1rem 0;
+}
+
+.points-label {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.points-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-white {
+    background: var(--white);
+    color: var(--vivo-purple);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--white);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+/* ESTATÍSTICAS */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    border: 1px solid var(--gray-200);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--vivo-purple);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.25rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+/* AÇÕES RÁPIDAS */
+.section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.action-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    border: 1px solid var(--gray-200);
+}
+
+.action-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.action-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--vivo-purple);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.action-content h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 0.25rem;
+}
+
+.action-content p {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+/* OFERTAS */
+.offers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.offer-card {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    border: 1px solid var(--gray-200);
+}
+
+.offer-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.offer-image {
+    height: 120px;
+    background: linear-gradient(135deg, var(--vivo-orange) 0%, #ff6b35 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 2rem;
+}
+
+.offer-content {
+    padding: 1.5rem;
+}
+
+.offer-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 0.5rem;
+}
+
+.offer-description {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.offer-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--vivo-purple);
+    margin-bottom: 1rem;
+}
+
+.btn-offer {
+    background: var(--vivo-purple);
+    color: var(--white);
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-offer:hover {
+    background: var(--vivo-purple-dark);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .container { padding: 1rem; }
+    .header { padding: 1.5rem 1rem; }
+    .points-value { font-size: 3rem; }
+    .points-actions { flex-direction: column; }
+    .stats { grid-template-columns: 1fr; }
+    .actions-grid { grid-template-columns: 1fr; }
+    .offers-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<!-- HEADER -->
+<div class="header">
+    <div class="header-top">
+        <div class="logo">
+            <i class="fas fa-shopping-bag"></i> Tem de Tudo
+        </div>
+        <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            Sair
+        </button>
+    </div>
+    <div class="welcome">
+        <h1 id="welcomeText">Olá, Cliente!</h1>
+        <p>Bem-vindo ao seu painel pessoal</p>
+    </div>
+</div>
+
+<!-- CONTAINER PRINCIPAL -->
+<div class="container">
+    <!-- CARD DE PONTOS -->
+    <div class="points-card">
+        <div class="points-title">
+            <i class="fas fa-star"></i>
+            Seus Pontos Tem de Tudo
+        </div>
+        <div class="points-value" id="pointsValue">180</div>
+        <div class="points-label">pontos disponíveis</div>
+        <div class="points-actions">
+            <a href="app-meu-qrcode.html" class="btn btn-white">
+                <i class="fas fa-qrcode"></i>
+                Meu QR Code
+            </a>
+            <a href="app-promocoes.html" class="btn btn-outline">
+                <i class="fas fa-gift"></i>
+                Ver Promoções
+            </a>
+        </div>
+    </div>
+
+    <!-- ESTATÍSTICAS -->
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+            <div class="stat-value">15</div>
+            <div class="stat-label">Compras Realizadas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--vivo-green);">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-value">R$ 890</div>
+            <div class="stat-label">Total Economizado</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--vivo-orange);">
+                <i class="fas fa-store"></i>
+            </div>
+            <div class="stat-value">5</div>
+            <div class="stat-label">Empresas Diferentes</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--vivo-blue);">
+                <i class="fas fa-crown"></i>
+            </div>
+            <div class="stat-value">Gold</div>
+            <div class="stat-label">Seu Nível</div>
+        </div>
+    </div>
+
+    <!-- AÇÕES RÁPIDAS -->
+    <div class="section">
+        <h2 class="section-title">
+            <i class="fas fa-rocket"></i>
+            Ações Rápidas
+        </h2>
+        <div class="actions-grid">
+            <a href="app-empresas.html" class="action-card">
+                <div class="action-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Explorar Empresas</h3>
+                    <p>Descubra empresas parceiras próximas a você</p>
+                </div>
+            </a>
+
+            <a href="app-promocoes.html" class="action-card">
+                <div class="action-icon" style="background: var(--vivo-green);">
+                    <i class="fas fa-percent"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Ver Promoções</h3>
+                    <p>Ofertas exclusivas disponíveis agora</p>
+                </div>
+            </a>
+
+            <a href="app-meu-qrcode.html" class="action-card">
+                <div class="action-icon" style="background: var(--vivo-orange);">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Meu QR Code</h3>
+                    <p>Mostre na loja para acumular pontos</p>
+                </div>
+            </a>
+
+            <a href="app-extrato.html" class="action-card">
+                <div class="action-icon" style="background: var(--vivo-blue);">
+                    <i class="fas fa-history"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Histórico</h3>
+                    <p>Veja suas compras e pontos acumulados</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- OFERTAS EM DESTAQUE -->
+    <div class="section">
+        <h2 class="section-title">
+            <i class="fas fa-fire"></i>
+            Ofertas Imperdíveis
+        </h2>
+        <div class="offers-grid">
+            <div class="offer-card">
+                <div class="offer-image">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="offer-content">
+                    <h3 class="offer-title">10% OFF Almoço</h3>
+                    <p class="offer-description">Desconto especial no Restaurante Sabor da Casa</p>
+                    <div class="offer-price">Precisa: 50 pontos</div>
+                    <button class="btn-offer" onclick="usePromotion('rest1')">Usar Promoção</button>
+                </div>
+            </div>
+
+            <div class="offer-card">
+                <div class="offer-image" style="background: linear-gradient(135deg, var(--vivo-green) 0%, #059669 100%);">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <div class="offer-content">
+                    <h3 class="offer-title">R$ 5 OFF Medicamentos</h3>
+                    <p class="offer-description">Desconto na Farmácia São João</p>
+                    <div class="offer-price">Precisa: 25 pontos</div>
+                    <button class="btn-offer" onclick="usePromotion('farm1')">Usar Promoção</button>
+                </div>
+            </div>
+
+            <div class="offer-card">
+                <div class="offer-image" style="background: linear-gradient(135deg, var(--vivo-blue) 0%, #1d4ed8 100%);">
+                    <i class="fas fa-gas-pump"></i>
+                </div>
+                <div class="offer-content">
+                    <h3 class="offer-title">5% OFF Combustível</h3>
+                    <p class="offer-description">Desconto no Posto Energia</p>
+                    <div class="offer-price">Precisa: 100 pontos</div>
+                    <button class="btn-offer" onclick="usePromotion('gas1')">Usar Promoção</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Carregamento inicial
+window.addEventListener('DOMContentLoaded', function() {
+    initializeDashboard();
+});
+
+function initializeDashboard() {
+    loadUserData();
+    loadUserPoints();
+}
+
+function loadUserData() {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    if (userData.name) {
+        document.getElementById('welcomeText').textContent = `Olá, ${userData.name}!`;
+    }
+}
+
+function loadUserPoints() {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    const points = userData.pontos || 180; // Fallback para Maria com 180 pontos
+    document.getElementById('pointsValue').textContent = points;
+}
+
+function logout() {
+    if (confirm('Tem certeza que deseja sair?')) {
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = 'entrar.html';
+    }
+}
+
+function usePromotion(promoId) {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    const currentPoints = userData.pontos || 180;
+    
+    // Definir pontos necessários para cada promoção
+    const promotions = {
+        'rest1': { name: '10% OFF Almoço', points: 50 },
+        'farm1': { name: 'R$ 5 OFF Medicamentos', points: 25 },
+        'gas1': { name: '5% OFF Combustível', points: 100 }
+    };
+    
+    const promo = promotions[promoId];
+    if (!promo) return;
+    
+    if (currentPoints >= promo.points) {
+        if (confirm(`Usar ${promo.points} pontos para "${promo.name}"?`)) {
+            // Atualizar pontos
+            userData.pontos = currentPoints - promo.points;
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            // Atualizar display
+            document.getElementById('pointsValue').textContent = userData.pontos;
+            
+            alert(`🎉 Promoção "${promo.name}" ativada com sucesso! Você agora tem ${userData.pontos} pontos.`);
+        }
+    } else {
+        alert(`❌ Você precisa de ${promo.points} pontos para usar esta promoção. Você tem apenas ${currentPoints} pontos.`);
+    }
+}
+</script>
+</body>
+</html>
