@@ -1,70 +1,229 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cartões - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>💳 Meus Cartões - Tem de Tudo</title>
+<meta name="description" content="Gerencie seus cartões de pagamento">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - CARTÕES */
+body { font-family: 'Inter', sans-serif; background: var(--gray-50); min-height: 100vh; color: var(--gray-900); }
+.app-page { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+.header-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; }
+.header-nav h1 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); flex: 1; text-align: center; margin: 0 1rem; }
+.back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gray-100); color: var(--gray-700); text-decoration: none; transition: var(--transition); }
+.back-btn:hover { background: var(--gray-200); }
+.add-btn { background: var(--vivo-purple); color: var(--white); border: none; padding: 0.5rem 1rem; 
+    border-radius: var(--border-radius); font-weight: 600; cursor: pointer; transition: var(--transition); }
+.add-btn:hover { background: var(--vivo-purple-dark); }
+
+.app-content { flex: 1; padding: 1rem 1.5rem 6rem; }
+
+.cards-grid { display: grid; gap: 1.5rem; margin-bottom: 2rem; }
+.card-item { background: linear-gradient(135deg, var(--vivo-purple), var(--vivo-purple-dark)); 
+    color: var(--white); border-radius: var(--border-radius); padding: 1.5rem; position: relative; 
+    box-shadow: var(--shadow-lg); min-height: 200px; overflow: hidden; }
+.card-item::before { content: ''; position: absolute; top: -50px; right: -50px; width: 100px; height: 100px;
+    background: rgba(255, 255, 255, 0.1); border-radius: 50%; }
+.card-network { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.card-type { font-size: 0.875rem; font-weight: 600; opacity: 0.9; }
+.card-logo { width: 40px; height: 25px; background: rgba(255, 255, 255, 0.2); border-radius: 4px;
+    display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+.card-number { font-size: 1.125rem; font-weight: 600; letter-spacing: 2px; margin-bottom: 1.5rem; font-family: 'Courier New', monospace; }
+.card-footer { display: flex; justify-content: space-between; align-items: end; }
+.card-holder { font-size: 0.75rem; opacity: 0.8; }
+.card-holder-name { font-size: 0.875rem; font-weight: 600; margin-top: 0.25rem; }
+.card-expiry { text-align: right; }
+.card-exp-label { font-size: 0.75rem; opacity: 0.8; }
+.card-exp-date { font-size: 0.875rem; font-weight: 600; margin-top: 0.25rem; }
+
+.card-actions { background: var(--white); border-radius: var(--border-radius); padding: 1rem; 
+    box-shadow: var(--shadow-sm); display: flex; gap: 0.75rem; margin-top: 1rem; }
+.card-btn { flex: 1; background: var(--gray-100); color: var(--gray-700); border: none; 
+    padding: 0.75rem 1rem; border-radius: var(--border-radius-sm); font-weight: 600; 
+    cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.card-btn:hover { background: var(--gray-200); }
+.card-btn.primary { background: var(--vivo-purple); color: var(--white); }
+.card-btn.primary:hover { background: var(--vivo-purple-dark); }
+.card-btn.danger { background: var(--vivo-red); color: var(--white); }
+.card-btn.danger:hover { background: #DC2626; }
+
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--gray-500); }
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; color: var(--gray-300); }
+
+.security-info { background: var(--white); border-radius: var(--border-radius); padding: 1.5rem; 
+    box-shadow: var(--shadow-sm); margin-bottom: 2rem; border-left: 4px solid var(--vivo-green); }
+.security-title { font-weight: 700; color: var(--gray-900); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+.security-text { color: var(--gray-600); font-size: 0.875rem; }
+
+.toast { position: fixed; top: 2rem; left: 50%; transform: translateX(-50%); background: var(--vivo-green);
+    color: var(--white); padding: 1rem 2rem; border-radius: var(--border-radius); font-weight: 600;
+    z-index: 1000; box-shadow: var(--shadow-lg); animation: slideDown 0.3s ease; }
+
+@keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+@keyframes slideUp { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -100%); opacity: 0; } }
+</style>
 </head>
 <body>
-<div class="header">
-<a href="app-perfil.html" class="back-btn">
-<i class="fas fa-arrow-left"></i>
-</a>
-<h1>Cartões</h1>
-<button class="add-btn" onclick="alert('Funcionalidade em desenvolvimento')">
-<i class="fas fa-plus"></i> Adicionar
-        </button>
+<div class="app-page">
+    <div class="app-header">
+        <div class="header-nav">
+            <a href="app-perfil.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1>💳 Meus Cartões</h1>
+            <button class="add-btn" onclick="adicionarCartao()">
+                <i class="fas fa-plus"></i> Adicionar
+            </button>
+        </div>
+    </div>
+    
+    <div class="app-content">
+        <!-- Informações de Segurança -->
+        <div class="security-info fade-in">
+            <div class="security-title">
+                <i class="fas fa-shield-alt" style="color: var(--vivo-green);"></i>
+                Seus dados estão seguros
+            </div>
+            <div class="security-text">
+                Todas as informações dos cartões são criptografadas e armazenadas com segurança.
+            </div>
+        </div>
+        
+        <!-- Lista de Cartões -->
+        <div class="cards-grid" id="cardsGrid">
+            <!-- Cartão Visa -->
+            <div class="card-item fade-in">
+                <div class="card-network">
+                    <div class="card-type">VISA</div>
+                    <div class="card-logo">VISA</div>
+                </div>
+                <div class="card-number">•••• •••• •••• 1234</div>
+                <div class="card-footer">
+                    <div class="card-holder">
+                        <div class="card-holder-name">MARCUS SILVA</div>
+                        <div class="card-holder">Titular</div>
+                    </div>
+                    <div class="card-expiry">
+                        <div class="card-exp-date">12/26</div>
+                        <div class="card-exp-label">Válido até</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-actions fade-in">
+                <button class="card-btn primary" onclick="editarCartao('visa1234')">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="card-btn" onclick="verDetalhes('visa1234')">
+                    <i class="fas fa-eye"></i> Detalhes
+                </button>
+                <button class="card-btn danger" onclick="removerCartao('visa1234')">
+                    <i class="fas fa-trash"></i> Remover
+                </button>
+            </div>
+            
+            <!-- Cartão MasterCard -->
+            <div class="card-item fade-in" style="background: linear-gradient(135deg, #FF5F00, #EB001B);">
+                <div class="card-network">
+                    <div class="card-type">MASTERCARD</div>
+                    <div class="card-logo">MC</div>
+                </div>
+                <div class="card-number">•••• •••• •••• 5678</div>
+                <div class="card-footer">
+                    <div class="card-holder">
+                        <div class="card-holder-name">MARCUS SILVA</div>
+                        <div class="card-holder">Titular</div>
+                    </div>
+                    <div class="card-expiry">
+                        <div class="card-exp-date">08/27</div>
+                        <div class="card-exp-label">Válido até</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-actions fade-in">
+                <button class="card-btn primary" onclick="editarCartao('master5678')">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="card-btn" onclick="verDetalhes('master5678')">
+                    <i class="fas fa-eye"></i> Detalhes
+                </button>
+                <button class="card-btn danger" onclick="removerCartao('master5678')">
+                    <i class="fas fa-trash"></i> Remover
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="cards-list">
-<div class="card-item">
-<div class="card-type">VISA ****</div>
-<div class="card-number">•••• •••• •••• 1234</div>
-<div class="card-footer">
-<div class="card-holder">MARCUS VINI</div>
-<div class="card-expiry">12/26</div>
-</div>
-<div class="card-actions">
-<button class="btn-card"><i class="fas fa-edit"></i> Editar</button>
-<button class="btn-card"><i class="fas fa-trash"></i> Remover</button>
-</div>
-</div>
-<div class="card-item" >
-<div class="card-type">MASTERCARD ****</div>
-<div class="card-number">•••• •••• •••• 5678</div>
-<div class="card-footer">
-<div class="card-holder">MARCUS VINI</div>
-<div class="card-expiry">08/27</div>
-</div>
-<div class="card-actions">
-<button class="btn-card"><i class="fas fa-edit"></i> Editar</button>
-<button class="btn-card"><i class="fas fa-trash"></i> Remover</button>
-</div>
-</div>
-</div>
-<nav class="bottom-nav">
-<a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
-<a href="app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-<a href="app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-<a href="app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
-<a href="app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
-</nav>
+
+<script>
+function adicionarCartao() {
+    alert('💳 Adicionar novo cartão\n\nFuncionalidade em desenvolvimento!\n\nEm breve você poderá:\n• Adicionar cartões de crédito e débito\n• Validação automática de dados\n• Segurança bancária certificada');
+}
+
+function editarCartao(id) {
+    showToast('✏️ Abrir editor de cartão #' + id);
+}
+
+function verDetalhes(id) {
+    const cartoes = {
+        'visa1234': {
+            nome: 'VISA **** 1234',
+            banco: 'Banco do Brasil',
+            tipo: 'Crédito',
+            limite: 'R$ 5.000,00',
+            fatura: 'R$ 1.247,50'
+        },
+        'master5678': {
+            nome: 'MASTERCARD **** 5678',
+            banco: 'Itaú',
+            tipo: 'Débito',
+            limite: 'Sem limite',
+            fatura: 'N/A'
+        }
+    };
+    
+    const cartao = cartoes[id];
+    if (cartao) {
+        alert(`💳 ${cartao.nome}\n\n🏦 Banco: ${cartao.banco}\n📄 Tipo: ${cartao.tipo}\n💰 Limite: ${cartao.limite}\n📊 Fatura atual: ${cartao.fatura}`);
+    }
+}
+
+function removerCartao(id) {
+    if (confirm('⚠️ Tem certeza que deseja remover este cartão?\n\nEsta ação não pode ser desfeita.')) {
+        showToast('🗑️ Cartão removido com sucesso!');
+        // Simular remoção visual
+        setTimeout(() => {
+            showToast('💾 Dados atualizados!');
+        }, 1500);
+    }
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideUp 0.3s ease';
+        setTimeout(() => document.body.removeChild(toast), 300);
+    }, 2500);
+}
+
+// Simulação de carregamento
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('💳 Sistema de cartões carregado!');
+});
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

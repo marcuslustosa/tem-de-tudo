@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -10,10 +10,9 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/vivo-global.css">
+`n
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <div class="container">
 <h1>?? Tem de Tudo</h1>
@@ -61,12 +60,10 @@
         const API_BASE = window.location.hostname.includes('onrender.com') 
             ? window.location.origin 
             : 'http://127.0.0.1:8000';
-
         async function verificarSistema() {
             try {
                 const response = await fetch(API_BASE + '/api/debug');
                 const data = await response.json();
-                
                 if (data.status === 'OK') {
                     document.getElementById('statusIcon').textContent = '?';
                     document.getElementById('statusText').textContent = 'Sistema Online';
@@ -79,67 +76,43 @@
                 mostrarErro();
             }
         }
-
         function mostrarErro() {
             document.getElementById('statusIcon').textContent = '??';
             document.getElementById('statusText').textContent = 'Sistema Iniciando';
-            document.getElementById('statusDetail').textContent = 'Clique em "Inicializar Dados" para come√ßar';
+            document.getElementById('statusDetail').textContent = 'Clique em "Inicializar Dados" para comeÁar';
             document.getElementById('statusBox').style.borderColor = 'rgba(255, 152, 0, 0.5)';
         }
-
         async function inicializarSistema() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('statusIcon').textContent = '?';
             document.getElementById('statusText').textContent = 'Inicializando...';
-            document.getElementById('statusDetail').textContent = 'Criando usu√°rios e dados de teste';
-
+            document.getElementById('statusDetail').textContent = 'Criando usu·rios e dados de teste';
             try {
                 const response = await fetch(API_BASE + '/api/setup-database?secret=temdetudo2024');
                 const data = await response.json();
-                
                 document.getElementById('loading').style.display = 'none';
-                
                 if (data.success) {
                     document.getElementById('statusIcon').textContent = '?';
                     document.getElementById('statusText').textContent = 'Sistema Pronto!';
-                    document.getElementById('statusDetail').textContent = `${data.total_users} usu√°rios criados. Fa√ßa login agora!`;
+                    document.getElementById('statusDetail').textContent = `${data.total_users} usu·rios criados. FaÁa login agora!`;
                     document.getElementById('statusBox').style.borderColor = 'rgba(76, 175, 80, 0.5)';
-                    
-                    alert('? Sistema inicializado com sucesso!\n\nVoc√™ j√° pode fazer login com:\n- admin@temdetudo.com / admin123\n- cliente@teste.com / 123456');
+                    alert('? Sistema inicializado com sucesso!\n\nVocÍ j· pode fazer login com:\n- admin@temdetudo.com / admin123\n- cliente@teste.com / 123456');
                 } else {
                     document.getElementById('statusIcon').textContent = '?';
-                    document.getElementById('statusText').textContent = 'Erro na Inicializa√ß√£o';
+                    document.getElementById('statusText').textContent = 'Erro na InicializaÁ„o';
                     document.getElementById('statusDetail').textContent = data.error || 'Tente novamente em alguns segundos';
-                    alert('Erro: ' + (data.error || 'Falha na inicializa√ß√£o'));
+                    alert('Erro: ' + (data.error || 'Falha na inicializaÁ„o'));
                 }
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('statusIcon').textContent = '?';
-                document.getElementById('statusText').textContent = 'Erro de Conex√£o';
+                document.getElementById('statusText').textContent = 'Erro de Conex„o';
                 document.getElementById('statusDetail').textContent = 'Servidor pode estar reiniciando. Aguarde 2 minutos.';
-                alert('Erro de conex√£o. O servidor pode estar reiniciando. Aguarde 2-3 minutos e tente novamente.');
+                alert('Erro de conex„o. O servidor pode estar reiniciando. Aguarde 2-3 minutos e tente novamente.');
             }
         }
-
         // Verificar sistema ao carregar
         window.addEventListener('load', verificarSistema);
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

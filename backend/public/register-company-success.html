@@ -1,231 +1,729 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cadastro Recebido - TemDeTudo Empresarial</title>
-<!-- Meta Tags -->
-<meta name="description" content="Cadastro empresarial recebido - Pr?ximos passos para parceria">
-<meta name="theme-color" content="#4c1d95">
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-<!-- Font Awesome Icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="manifest" href="/manifest.json">
-<!-- Icons -->
-<link rel="icon" type="image/png" href="/frontend/img/logo.png">
-<!-- Stylesheets -->
-<script src="/js/config.js"></script>
-<script src="/js/auth-manager.js" defer></script>
-<script src="/js/api-client.js" defer></script>
-<script src="/js/validators.js" defer></script>
-<script src="/js/ui-helpers.js" defer></script>
-<script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
-<body style="background: var(--gradient-primary); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
-<div class="success-container" style="width: 100%; max-width: 600px; margin: 2rem; text-align: center;">
-<!-- Success Card -->
-<div class="card" style="background: white; border-radius: var(--radius-2xl); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
-<!-- Header -->
-<div style="background: var(--gradient-success); color: #1D1D1F; padding: var(--space-8);">
-<div style="background: white; width: 80px; height: 80px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-<i class="fas fa-check" style="font-size: 2rem; color: var(--success-green);"></i>
-</div>
-<h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Cadastro Recebido!</h1>
-<p style="opacity: 0.9; font-size: 1.125rem;">Sua empresa est? sendo analisada</p>
-</div>
-<!-- Content -->
-<div style="padding: var(--space-8);">
-<!-- Timeline -->
-<div style="margin-bottom: 2rem;">
-<h2 style="color: var(--gray-900); font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; text-align: left;">
-<i class="fas fa-clock" style="color: var(--primary-purple);"></i>
-                        Pr?ximos Passos
-                    </h2>
-<div style="position: relative; padding-left: 2rem;">
-<!-- Timeline line -->
-<div style="position: absolute; left: 0.75rem; top: 0; bottom: 0; width: 2px; background: var(--gray-200);"></div>
-<!-- Step 1 -->
-<div style="position: relative; margin-bottom: 1.5rem;">
-<div style="position: absolute; left: -1.75rem; top: 0.25rem; width: 1.5rem; height: 1.5rem; background: var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-<i class="fas fa-check" style="color: #1D1D1F; font-size: 0.75rem;"></i>
-</div>
-<div>
-<h3 style="font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem;">Cadastro Enviado</h3>
-<p style="color: var(--gray-600); font-size: 0.875rem;">Dados recebidos e sendo processados</p>
-</div>
-</div>
-<!-- Step 2 -->
-<div style="position: relative; margin-bottom: 1.5rem;">
-<div style="position: absolute; left: -1.75rem; top: 0.25rem; width: 1.5rem; height: 1.5rem; background: var(--warning-yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-<i class="fas fa-search" style="color: #1D1D1F; font-size: 0.75rem;"></i>
-</div>
-<div>
-<h3 style="font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem;">An?lise Comercial</h3>
-<p style="color: var(--gray-600); font-size: 0.875rem;">1-2 dias ?teis para an?lise</p>
-</div>
-</div>
-<!-- Step 3 -->
-<div style="position: relative; margin-bottom: 1.5rem;">
-<div style="position: absolute; left: -1.75rem; top: 0.25rem; width: 1.5rem; height: 1.5rem; background: var(--gray-300); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-<i class="fas fa-envelope" style="color: #1D1D1F; font-size: 0.75rem;"></i>
-</div>
-<div>
-<h3 style="font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem;">Proposta Comercial</h3>
-<p style="color: var(--gray-600); font-size: 0.875rem;">Envio por email com valores e condi??es</p>
-</div>
-</div>
-<!-- Step 4 -->
-<div style="position: relative;">
-<div style="position: absolute; left: -1.75rem; top: 0.25rem; width: 1.5rem; height: 1.5rem; background: var(--gray-300); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-<i class="fas fa-rocket" style="color: #1D1D1F; font-size: 0.75rem;"></i>
-</div>
-<div>
-<h3 style="font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem;">Ativa??o</h3>
-<p style="color: var(--gray-600); font-size: 0.875rem;">24-48h ap?s aprova??o</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Pricing Info -->
-<div style="background: var(--gray-50); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 2rem; border: 2px solid var(--primary-purple); position: relative; overflow: hidden;">
-<!-- Decorative element -->
-<div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: var(--gradient-primary); border-radius: 50%; opacity: 0.1;"></div>
-<h3 style="color: var(--primary-purple); font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-<i class="fas fa-tag"></i>
-                        Informa??es de Cobran?a
-                    </h3>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-<div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--gray-200);">
-<div style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 0.25rem;">Taxa de Ades?o</div>
-<div style="font-size: 1.25rem; font-weight: 700; color: var(--primary-purple);">R$ 149,90</div>
-<div style="font-size: 0.75rem; color: var(--gray-500);">Pagamento ?nico</div>
-</div>
-<div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--gray-200);">
-<div style="font-size: 0.875rem; color: var(--gray-600); margin-bottom: 0.25rem;">Mensalidade</div>
-<div style="font-size: 1.25rem; font-weight: 700; color: var(--primary-purple);">R$ 79,90</div>
-<div style="font-size: 0.75rem; color: var(--gray-500);">A partir do 2? m?s</div>
-</div>
-</div>
-<div style="background: var(--gradient-success); color: #1D1D1F; padding: 0.75rem; border-radius: var(--radius-md); text-align: center; font-weight: 600;">
-                        ?? PRIMEIRO M?S GR?TIS!
-                    </div>
-</div>
-<!-- Contact Info -->
-<div >
-<h3 style="font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-<i class="fas fa-headset"></i>
-                        Precisa de Ajuda?
-                    </h3>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-<a href="tel:1140001234" style="display: flex; align-items: center; gap: 0.75rem; color: #1D1D1F; text-decoration: none; padding: 0.75rem; background: rgba(255,255,255,0.1); border-radius: var(--radius-md); transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-<i class="fas fa-phone" style="color: var(--accent-orange);"></i>
-<div>
-<div style="font-weight: 600; font-size: 0.875rem;">(11) 4000-1234</div>
-<div style="font-size: 0.75rem; opacity: 0.8;">Seg-Sex 8h-18h</div>
-</div>
-</a>
-<a href="mailto:parcerias@temdetudo.com" style="display: flex; align-items: center; gap: 0.75rem; color: #1D1D1F; text-decoration: none; padding: 0.75rem; background: rgba(255,255,255,0.1); border-radius: var(--radius-md); transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-<i class="fas fa-envelope" style="color: var(--accent-orange);"></i>
-<div>
-<div style="font-weight: 600; font-size: 0.875rem;">Email Direto</div>
-<div style="font-size: 0.75rem; opacity: 0.8;">parcerias@temdetudo.com</div>
-</div>
-</a>
-</div>
-</div>
-<!-- Actions -->
-<div style="display: flex; gap: 1rem; justify-content: center;">
-<a href="/" class="btn btn-outline btn-lg" style="text-decoration: none; display: inline-block;">
-<i class="fas fa-home icon-sm"></i>
-                        Voltar ao In?cio
-                    </a>
-<a href="/contato.html" class="btn btn-primary btn-lg" style="text-decoration: none; display: inline-block;">
-<i class="fas fa-comments icon-sm"></i>
-                        Falar Conosco
-                    </a>
-</div>
-</div>
-</div>
-<!-- Footer Note -->
-<div style="margin-top: 2rem; color: rgba(255,255,255,0.8); font-size: 0.875rem;">
-<p>
-<i class="fas fa-shield-alt" style="margin-right: 0.5rem;"></i>
-                Seus dados est?o seguros e protegidos conforme a LGPD
-            </p>
-</div>
-</div>
-<!-- Auto redirect script -->
-<script>
-        // Show countdown for redirect (optional)
-        let countdown = 30;
-        const redirectTimer = document.createElement('div');
-        redirectTimer.id = 'redirect-timer';
-        redirectTimer.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); color: #1D1D1F; padding: 1rem; border-radius: 8px; font-size: 0.875rem; z-index: 1000;';
-        redirectTimer.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-<i class="fas fa-info-circle" style="color: #8b9cf5;"></i>
-<span>Redirecionamento autom?tico em <strong id="countdown">${countdown}</strong>s</span>
-<button onclick="this.parentElement.parentElement.style.display='none'" style="background: none; border: none; color: #1D1D1F; cursor: pointer; margin-left: 0.5rem;">?</button>
-</div>
-        `;
-        
-        // Only show timer if not manually closed before
-        if (!localStorage.getItem('hide_redirect_timer')) {
-            document.body.appendChild(redirectTimer);
-            
-            const countdownEl = document.getElementById('countdown');
-            const interval = setInterval(() => {
-                countdown--;
-                if (countdownEl) countdownEl.textContent = countdown;
-                
-                if (countdown <= 0) {
-                    clearInterval(interval);
-                    window.location.href = '/';
-                }
-            }, 1000);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Realizado com Sucesso - Tem de Tudo</title>
+    <meta name="description" content="Cadastro empresarial recebido - Próximos passos para parceria">
+    <meta name="theme-color" content="#6F1AB6">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="global-styles.css">
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--vivo-purple), #8B4CD6);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
         }
+
+        .success-container {
+            width: 100%;
+            max-width: 700px;
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        .success-header {
+            background: linear-gradient(135deg, #00d4aa, #00c4a7);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="success" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23success)"/></svg>');
+            pointer-events: none;
+        }
+
+        .success-header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .success-icon {
+            background: white;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .success-icon i {
+            font-size: 3rem;
+            color: #00d4aa;
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .success-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .success-content {
+            padding: 2.5rem;
+        }
+
+        .timeline-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .timeline-title {
+            color: var(--vivo-purple);
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--vivo-purple), #8B4CD6);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--vivo-purple);
+            border: 4px solid white;
+            box-shadow: 0 2px 10px rgba(111, 26, 182, 0.3);
+        }
+
+        .timeline-item.completed::before {
+            background: #00d4aa;
+            box-shadow: 0 2px 10px rgba(0, 212, 170, 0.3);
+        }
+
+        .timeline-item.current::before {
+            background: #ffa500;
+            box-shadow: 0 2px 10px rgba(255, 165, 0, 0.3);
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 2px 10px rgba(255, 165, 0, 0.3);
+            }
+            to {
+                box-shadow: 0 2px 20px rgba(255, 165, 0, 0.6);
+            }
+        }
+
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--vivo-purple);
+        }
+
+        .timeline-item.completed .timeline-content {
+            border-left-color: #00d4aa;
+        }
+
+        .timeline-item.current .timeline-content {
+            border-left-color: #ffa500;
+            background: linear-gradient(135deg, #fff9e6, #fef5e7);
+        }
+
+        .timeline-step {
+            color: var(--vivo-purple);
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title-item {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f8f9ff, #e8f2ff);
+            padding: 1.5rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 2px solid rgba(111, 26, 182, 0.1);
+        }
+
+        .info-card i {
+            font-size: 2rem;
+            color: var(--vivo-purple);
+            margin-bottom: 1rem;
+        }
+
+        .info-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .action-section {
+            background: linear-gradient(135deg, var(--vivo-purple), #8B4CD6);
+            margin: -1.5rem -2.5rem;
+            padding: 2rem 2.5rem;
+            color: white;
+            text-align: center;
+        }
+
+        .action-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .action-subtitle {
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--vivo-purple);
+        }
+
+        .btn-primary:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+            color: var(--vivo-purple);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .contact-info {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-info h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .contact-methods {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            font-size: 2rem;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 20%;
+            right: 15%;
+            font-size: 1.5rem;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            font-size: 2.5rem;
+            animation-delay: 4s;
+        }
+
+        .floating-element:nth-child(4) {
+            bottom: 10%;
+            right: 10%;
+            font-size: 1.8rem;
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-20px) rotate(120deg);
+            }
+            66% {
+                transform: translateY(-10px) rotate(240deg);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .success-header {
+                padding: 2rem 1.5rem;
+            }
+
+            .success-title {
+                font-size: 2rem;
+            }
+
+            .success-content {
+                padding: 1.5rem;
+            }
+
+            .timeline {
+                padding-left: 1.5rem;
+            }
+
+            .timeline-item::before {
+                left: -1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+
+            .info-cards {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .contact-methods {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .success-title {
+                font-size: 1.7rem;
+            }
+
+            .success-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            .success-icon i {
+                font-size: 2.5rem;
+            }
+
+            .timeline-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <i class="fas fa-star floating-element"></i>
+        <i class="fas fa-heart floating-element"></i>
+        <i class="fas fa-gem floating-element"></i>
+        <i class="fas fa-check-circle floating-element"></i>
+    </div>
+
+    <div class="success-container">
+        <div class="success-card">
+            <!-- Success Header -->
+            <div class="success-header">
+                <div class="success-header-content">
+                    <div class="success-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h1 class="success-title">Cadastro Realizado!</h1>
+                    <p class="success-subtitle">Sua empresa está sendo analisada pela nossa equipe</p>
+                </div>
+            </div>
+
+            <!-- Success Content -->
+            <div class="success-content">
+                <!-- Timeline Section -->
+                <div class="timeline-section">
+                    <h2 class="timeline-title">
+                        <i class="fas fa-clock"></i>
+                        Próximos Passos
+                    </h2>
+
+                    <div class="timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-content">
+                                <div class="timeline-step">CONCLUÍDO</div>
+                                <h3 class="timeline-title-item">Cadastro Recebido</h3>
+                                <p class="timeline-description">
+                                    Seus dados foram enviados com sucesso e já estão em nosso sistema.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item current">
+                            <div class="timeline-content">
+                                <div class="timeline-step">EM ANDAMENTO</div>
+                                <h3 class="timeline-title-item">Análise Documental</h3>
+                                <p class="timeline-description">
+                                    Nossa equipe está verificando as informações e documentos fornecidos. 
+                                    Este processo leva de 24 a 48 horas úteis.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-step">AGUARDANDO</div>
+                                <h3 class="timeline-title-item">Confirmação por Email</h3>
+                                <p class="timeline-description">
+                                    Você receberá um email com o resultado da análise e as credenciais 
+                                    de acesso ao painel administrativo.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <div class="timeline-step">FINAL</div>
+                                <h3 class="timeline-title-item">Configuração e Ativação</h3>
+                                <p class="timeline-description">
+                                    Após aprovação, você poderá acessar o painel e configurar ofertas, 
+                                    visualizar relatórios e começar a receber clientes.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Cards -->
+                <div class="info-cards">
+                    <div class="info-card">
+                        <i class="fas fa-envelope"></i>
+                        <h4>Fique Atento ao Email</h4>
+                        <p>Verifique sua caixa de entrada e spam regularmente</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-phone"></i>
+                        <h4>Suporte Disponível</h4>
+                        <p>Nossa equipe está pronta para esclarecer dúvidas</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Dashboard Completo</h4>
+                        <p>Acompanhe clientes, vendas e relatórios em tempo real</p>
+                    </div>
+                </div>
+
+                <!-- Action Section -->
+                <div class="action-section">
+                    <h3 class="action-title">Enquanto aguarda, que tal explorar?</h3>
+                    <p class="action-subtitle">
+                        Conheça melhor nossos serviços e prepare-se para aproveitar ao máximo a parceria
+                    </p>
+
+                    <div class="action-buttons">
+                        <a href="app-inicio.html" class="btn btn-primary">
+                            <i class="fas fa-home"></i>
+                            Explorar o App
+                        </a>
+                        <a href="faq.html" class="btn btn-secondary">
+                            <i class="fas fa-question-circle"></i>
+                            Central de Ajuda
+                        </a>
+                    </div>
+
+                    <div class="contact-info">
+                        <h4>Precisa de Ajuda?</h4>
+                        <div class="contact-methods">
+                            <div class="contact-method">
+                                <i class="fas fa-envelope"></i>
+                                <span>empresas@temdetudo.com.br</span>
+                            </div>
+                            <div class="contact-method">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>(11) 99999-9999</span>
+                            </div>
+                            <div class="contact-method">
+                                <i class="fas fa-clock"></i>
+                                <span>Seg - Sex: 9h às 18h</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="global-auth.js"></script>
+    <script src="global-navbar.js"></script>
+    
+    <script>
+        // Check for URL parameters to display custom messages
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const companyName = urlParams.get('company') || 'Sua empresa';
+            
+            // Update page content with company name if provided
+            if (urlParams.get('company')) {
+                const subtitle = document.querySelector('.success-subtitle');
+                subtitle.textContent = `${companyName} está sendo analisada pela nossa equipe`;
+            }
+
+            // Show welcome toast
+            setTimeout(() => {
+                showToast(`Bem-vindo ao Tem de Tudo! 🎉`, 'success');
+            }, 1000);
+
+            // Add click tracking for buttons
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.innerText.trim();
+                    console.log(`Button clicked: ${action}`);
+                    
+                    // Show loading feedback
+                    showToast(`Carregando ${action.toLowerCase()}...`, 'info');
+                });
+            });
+
+            // Add email copy functionality
+            const emailElement = document.querySelector('.contact-method span');
+            if (emailElement && emailElement.textContent.includes('@')) {
+                emailElement.style.cursor = 'pointer';
+                emailElement.title = 'Clique para copiar';
+                emailElement.addEventListener('click', function() {
+                    navigator.clipboard.writeText(this.textContent).then(() => {
+                        showToast('Email copiado para a área de transferência!', 'success');
+                    });
+                });
+            }
+
+            // Simulate progress update (demo)
+            setTimeout(() => {
+                updateProgress();
+            }, 5000);
+        });
+
+        // Simulate progress update
+        function updateProgress() {
+            // This would normally come from an API call
+            const currentItem = document.querySelector('.timeline-item.current');
+            if (currentItem) {
+                // Simulate moving to next step (for demo purposes)
+                setTimeout(() => {
+                    showToast('Análise documental em andamento...', 'info');
+                }, 2000);
+            }
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const now = new Date().toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type} show`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                  type === 'error' ? 'fa-exclamation-circle' : 
+                                  'fa-info-circle'}"></i>
+                    <div class="toast-message">
+                        <strong>${message}</strong>
+                        <small>${now}</small>
+                    </div>
+                </div>
+            `;
+
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+
+            // Auto remove after 4 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 4000);
+        }
+
+        // Add smooth scroll behavior for any internal links
+        document.addEventListener('click', function(e) {
+            if (e.target.getAttribute('href') && e.target.getAttribute('href').startsWith('#')) {
+                e.preventDefault();
+                const target = document.querySelector(e.target.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+
+        // Initialize page
+        console.log('Company registration success page loaded');
         
-        // Log successful company registration
-        console.log('?? Cadastro empresarial conclu?do:', {
-            timestamp: new Date().toISOString(),
-            page: 'register-company-success',
-            next_steps: [
-                'An?lise comercial (1-2 dias)',
-                'Envio de proposta por email',
-                'Ativa??o ap?s aprova??o (24-48h)'
-            ],
-            pricing: {
-                taxa_adesao: 149.90,
-                mensalidade: 79.90,
-                primeiro_mes_gratis: true
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const focusedElement = document.activeElement;
+                if (focusedElement.classList.contains('btn') || focusedElement.classList.contains('contact-method')) {
+                    focusedElement.click();
+                }
             }
         });
     </script>
-<script src="/js/global.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

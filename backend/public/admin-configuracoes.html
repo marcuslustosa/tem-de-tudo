@@ -8,9 +8,47 @@
 <meta name="theme-color" content="#6F1AB6">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
-<link rel="stylesheet" href="/css/style.css">
-</head>
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - ADMIN CONFIG */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; --gray-800: #1F2937;
+    --gray-900: #111827; --white: #FFFFFF; --border-radius: 12px; --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1); --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15); --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+body { font-family: 'Inter', sans-serif; background: var(--gray-50); min-height: 100vh; color: var(--gray-900); }
+.admin-settings-page { min-height: 100vh; }
+.page-header { background: var(--white); border-bottom: 1px solid var(--gray-200); padding: 1.5rem 0; margin-bottom: 2rem; }
+.header-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: between; }
+.page-title { font-size: 1.75rem; font-weight: 700; color: var(--gray-900); display: flex; align-items: center; gap: 0.75rem; }
+.page-title i { color: var(--vivo-purple); }
+.back-btn { background: var(--gray-100); color: var(--gray-700); padding: 0.5rem 1rem; border-radius: var(--border-radius);
+    text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: var(--transition); margin-left: auto; }
+.back-btn:hover { background: var(--gray-200); }
+.content-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem 3rem; }
+.success-message { background: var(--vivo-green); color: var(--white); padding: 1rem; border-radius: var(--border-radius);
+    margin-bottom: 2rem; display: none; animation: slideIn 0.3s ease-out; }
+.settings-grid { display: grid; gap: 2rem; }
+.settings-section { background: var(--white); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); }
+.section-header { padding: 2rem 2rem 1rem; border-bottom: 1px solid var(--gray-200); }
+.section-title { font-size: 1.25rem; font-weight: 600; color: var(--gray-900); display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+.section-title i { color: var(--vivo-purple); }
+.section-description { color: var(--gray-600); }
+.section-content { padding: 2rem; }
+.settings-form { display: grid; gap: 1.5rem; }
+.form-row { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+.form-group { }
+.form-label { font-weight: 600; color: var(--gray-700); margin-bottom: 0.5rem; display: block; }
+.form-input { width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--gray-200); border-radius: var(--border-radius);
+    font-size: 1rem; transition: var(--transition); }
+.form-input:focus { outline: none; border-color: var(--vivo-purple); box-shadow: 0 0 0 3px rgba(111, 26, 182, 0.1); }
+@media (min-width: 768px) { .form-row { grid-template-columns: repeat(2, 1fr); } }
+</style>
 <body>
 <div class="admin-settings-page">
     <!-- Page Header -->
@@ -26,14 +64,12 @@
             </a>
         </div>
     </div>
-
     <!-- Content Container -->
     <div class="content-container">
         <div class="success-message" id="successMessage">
             <i class="fas fa-check-circle"></i>
             Configurações salvas com sucesso!
         </div>
-
         <!-- Settings Grid -->
         <div class="settings-grid">
             <!-- System Settings -->
@@ -57,7 +93,6 @@
                                 <input type="email" id="systemEmail" class="form-input" value="contato@temdetudo.com" required>
                             </div>
                         </div>
-                        
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="systemPhone">Telefone de Suporte</label>
@@ -72,7 +107,6 @@
                                 </select>
                             </div>
                         </div>
-                        
                         <button type="submit" class="save-btn">
                             <i class="fas fa-save"></i>
                             Salvar Configurações
@@ -80,7 +114,6 @@
                     </form>
                 </div>
             </div>
-
             <!-- Notification Settings -->
             <div class="settings-section">
                 <div class="section-header">
@@ -100,7 +133,6 @@
                             <div class="toggle-switch active" data-setting="new-users">
                             </div>
                         </div>
-                        
                         <div class="notification-item">
                             <div class="notification-info">
                                 <div class="notification-title">Novos Pedidos</div>
@@ -109,7 +141,6 @@
                             <div class="toggle-switch active" data-setting="new-orders">
                             </div>
                         </div>
-                        
                         <div class="notification-item">
                             <div class="notification-info">
                                 <div class="notification-title">Relatórios Semanais</div>
@@ -121,7 +152,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Security Section -->
             <div class="settings-section security-section">
                 <div class="section-header">
@@ -136,7 +166,6 @@
                         <i class="fas fa-exclamation-triangle"></i>
                         Alterações de segurança requerem confirmação por email
                     </div>
-                    
                     <form class="settings-form">
                         <div class="form-group">
                             <label class="form-label" for="sessionTimeout">Timeout de Sessão (minutos)</label>
@@ -147,13 +176,11 @@
                                 <option value="120">2 horas</option>
                             </select>
                         </div>
-                        
                         <div class="toggle-group">
                             <div class="toggle-switch active" data-setting="two-factor">
                             </div>
                             <span class="toggle-label">Autenticação de dois fatores</span>
                         </div>
-                        
                         <button type="submit" class="save-btn">
                             <i class="fas fa-lock"></i>
                             Salvar Configurações de Segurança
@@ -164,7 +191,6 @@
         </div>
     </div>
 </div>
-
 <script>
 // Toggle switches functionality
 document.querySelectorAll('.toggle-switch').forEach(toggle => {
@@ -172,38 +198,30 @@ document.querySelectorAll('.toggle-switch').forEach(toggle => {
         this.classList.toggle('active');
         const setting = this.getAttribute('data-setting');
         const isActive = this.classList.contains('active');
-        
         // Aqui você pode salvar a configuração via API
         console.log(`Setting ${setting}: ${isActive}`);
     });
 });
-
 // Form submissions
 document.getElementById('systemSettingsForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
     const formData = new FormData(this);
     const settings = {};
-    
     for (let [key, value] of formData.entries()) {
         settings[key] = value;
     }
-    
     // Simulate API call
     console.log('Saving system settings:', settings);
     showSuccessMessage();
 });
-
 // Success message
 function showSuccessMessage() {
     const message = document.getElementById('successMessage');
     message.style.display = 'flex';
-    
     setTimeout(() => {
         message.style.display = 'none';
     }, 3000);
 }
-
 // Notification function
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
@@ -220,10 +238,8 @@ function showNotification(message, type = 'info') {
         font-weight: 600;
         animation: slideIn 0.3s ease;
     `;
-    
     notification.textContent = message;
     document.body.appendChild(notification);
-    
     setTimeout(() => {
         notification.remove();
     }, 3000);

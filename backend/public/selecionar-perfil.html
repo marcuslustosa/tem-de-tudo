@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -18,16 +18,15 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
+`n
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <div class="container">
 <div class="header">
 <div class="logo">
-<img src="img/logo.png" alt="Tem de Tudo">
+<img src="logo.svg" alt="Tem de Tudo">
 </div>
-<h1>Como você quer usar o sistema?</h1>
+<h1>Como voc� quer usar o sistema?</h1>
 <p>Escolha o perfil que melhor se encaixa com suas necessidades</p>
 </div>
 <div class="cards-grid">
@@ -42,9 +41,9 @@
 <ul class="profile-features">
 <li>Acumule pontos a cada compra</li>
 <li>Resgate recompensas exclusivas</li>
-<li>QR Code pessoal para validaàào</li>
-<li>Acompanhe seu histórico</li>
-<li>Receba promoções personalizadas</li>
+<li>QR Code pessoal para valida��o</li>
+<li>Acompanhe seu hist�rico</li>
+<li>Receba promo��es personalizadas</li>
 </ul>
 <button class="btn-select">
                     CONTINUAR COMO CLIENTE
@@ -52,18 +51,18 @@
 </div>
 <!-- EMPRESA -->
 <div class="profile-card" onclick="selectProfile('empresa')">
-<span class="badge">Para Negàcios</span>
+<span class="badge">Para Neg�cios</span>
 <div class="profile-icon">
 <i class="fas fa-store"></i>
 </div>
 <h2>Tenho Empresa</h2>
 <p>Fidelize seus clientes e aumente suas vendas com nosso sistema</p>
 <ul class="profile-features">
-<li>Dashboard completo de màtricas</li>
+<li>Dashboard completo de m�tricas</li>
 <li>Gerencie clientes e pontos</li>
-<li>Crie promoções personalizadas</li>
+<li>Crie promo��es personalizadas</li>
 <li>Scanner QR Code integrado</li>
-<li>Relatórios detalhados de vendas</li>
+<li>Relat�rios detalhados de vendas</li>
 </ul>
 <button class="btn-select">
                     CONTINUAR COMO EMPRESA
@@ -71,7 +70,7 @@
 </div>
 <!-- ADMIN -->
 <div class="profile-card" onclick="selectProfile('admin')">
-<span class="badge">Administraàào</span>
+<span class="badge">Administra��o</span>
 <div class="profile-icon">
 <i class="fas fa-shield-halved"></i>
 </div>
@@ -80,9 +79,9 @@
 <ul class="profile-features">
 <li>Painel master de controle</li>
 <li>Aprovar/reprovar estabelecimentos</li>
-<li>Gerenciar todos os usuários</li>
-<li>Relatórios globais da plataforma</li>
-<li>Configurações avançadas do sistema</li>
+<li>Gerenciar todos os usu�rios</li>
+<li>Relat�rios globais da plataforma</li>
+<li>Configura��es avan�adas do sistema</li>
 </ul>
 <button class="btn-select">
                     ACESSAR PAINEL ADMIN
@@ -92,16 +91,15 @@
 <div class="back-link">
 <a href="index.html">
 <i class="fas fa-arrow-left"></i>
-                Voltar para a pàgina inicial
+                Voltar para a p�gina inicial
             </a>
 </div>
 </div>
 <script>
         function selectProfile(tipo) {
-            // Verificar se usuário está autenticado
+            // Verificar se usu�rio est� autenticado
             const token = localStorage.getItem('token');
             const userStr = localStorage.getItem('user');
-            
             let user = null;
             if (userStr && userStr !== 'undefined' && userStr !== 'null') {
                 try {
@@ -110,14 +108,12 @@
                     console.error('Erro ao parsear user:', e);
                 }
             }
-            
             if (token && user && user.user_type) {
-                // Usuário já logado, redirecionar direto
+                // Usu�rio j� logado, redirecionar direto
                 redirectByType(user.user_type);
             } else {
-                // Usuário não logado, salvar escolha e ir para cadastro
+                // Usu�rio n�o logado, salvar escolha e ir para cadastro
                 localStorage.setItem('selectedProfile', tipo);
-                
                 if (tipo === 'admin') {
                     // Admin precisa de credenciais especiais
                     window.location.href = 'entrar.html';
@@ -128,7 +124,6 @@
                 }
             }
         }
-        
         function redirectByType(type) {
             switch(type) {
                 case 'admin':
@@ -143,19 +138,17 @@
                     break;
             }
         }
-        
-        // Se usuário já está logado, pode mostrar apenas o card dele
+        // Se usu�rio j� est� logado, pode mostrar apenas o card dele
         window.addEventListener('DOMContentLoaded', function() {
             const token = localStorage.getItem('token');
             const userStr = localStorage.getItem('user');
-            
             if (token && userStr && userStr !== 'undefined' && userStr !== 'null') {
                 try {
                     const user = JSON.parse(userStr);
                     if (user && user.user_type) {
-                        // Opcional: mostrar apenas o perfil do usuário logado
-                        // ou adicionar um botão "Continuar" em destaque
-                        console.log('Usuário já logado como:', user.user_type);
+                        // Opcional: mostrar apenas o perfil do usu�rio logado
+                        // ou adicionar um bot�o "Continuar" em destaque
+                        console.log('Usu�rio j� logado como:', user.user_type);
                     }
                 } catch (e) {
                     console.error('Erro ao parsear user:', e);
@@ -165,20 +158,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

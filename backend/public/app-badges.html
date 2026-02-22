@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
@@ -6,7 +6,6 @@
 <title>Meus Badges | Tem de Tudo</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/css/vivo-global.css">
-</head>
 <body>
 <header class="header">
 <div class="header-content">
@@ -14,12 +13,12 @@
 <button class="back-btn" onclick="history.back()">
 <i class="fas fa-arrow-left"></i>
 </button>
-<h1><span class="badge-emoji">üèÜ</span> Meus Badges</h1>
+<h1><span class="badge-emoji">??</span> Meus Badges</h1>
 </div>
 </div>
 </header>
 <div class="container">
-<!-- Estat√≠sticas -->
+<!-- EstatÌsticas -->
 <div class="stats-grid" id="statsGrid">
 <div class="stat-card">
 <div class="stat-number" id="totalBadges">-</div>
@@ -31,7 +30,7 @@
 </div>
 <div class="stat-card">
 <div class="stat-number" id="nivelAtual">-</div>
-<div class="stat-label">N√≠vel Atual</div>
+<div class="stat-label">NÌvel Atual</div>
 </div>
 <div class="stat-card">
 <div class="stat-number" id="diasConsecutivos">-</div>
@@ -39,14 +38,14 @@
 </div>
 </div>
 <!-- Badges Conquistados -->
-<h2 class="section-title">üèÜ Badges Conquistados</h2>
+<h2 class="section-title">?? Badges Conquistados</h2>
 <div class="badges-grid" id="badgesConquistados">
 <div class="loading">
 <i class="fas fa-spinner"></i>
 </div>
 </div>
 <!-- Progresso Badges -->
-<h2 class="section-title">üéØ Progresso dos Badges</h2>
+<h2 class="section-title">?? Progresso dos Badges</h2>
 <div class="badges-grid" id="progressoBadges">
 <div class="loading">
 <i class="fas fa-spinner"></i>
@@ -54,12 +53,11 @@
 </div>
 </div>
 <script>
-        // Verificar autentica√ß√£o
+        // Verificar autenticaÁ„o
         const token = localStorage.getItem('token'); // CORRIGIDO
         if (!token) {
             window.location.href = 'index.html';
         }
-
         // API Request helper
         async function apiRequest(endpoint, options = {}) {
             const defaultOptions = {
@@ -68,54 +66,42 @@
                     'Authorization': `Bearer ${token}`
                 }
             };
-
             const response = await fetch(`http://127.0.0.1:8000/api${endpoint}`, {
                 ...defaultOptions,
                 ...options,
                 headers: { ...defaultOptions.headers, ...options.headers }
             });
-
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-
             return await response.json();
         }
-
-        // Carregar dados do usu√°rio
+        // Carregar dados do usu·rio
         async function carregarDadosUsuario() {
             try {
                 const response = await apiRequest('/me');
                 const user = response;
-
-                // Atualizar estat√≠sticas
+                // Atualizar estatÌsticas
                 document.getElementById('totalPontos').textContent = user.pontos_lifetime || user.pontos || 0;
-                
                 const nivel = calcularNivel(user.pontos_lifetime || user.pontos || 0);
                 document.getElementById('nivelAtual').textContent = nivel.nome;
                 document.getElementById('diasConsecutivos').textContent = user.dias_consecutivos || 0;
-
             } catch (error) {
-                console.error('Erro ao carregar dados do usu√°rio:', error);
-                showError('Erro ao carregar dados do usu√°rio');
+                console.error('Erro ao carregar dados do usu·rio:', error);
+                showError('Erro ao carregar dados do usu·rio');
             }
         }
-
         // Carregar badges conquistados
         async function carregarBadgesConquistados() {
             try {
                 const response = await apiRequest('/badges/meus');
                 const badges = response.badges || [];
-
                 document.getElementById('totalBadges').textContent = badges.length;
-
                 const container = document.getElementById('badgesConquistados');
-                
                 if (badges.length === 0) {
-                    container.innerHTML = '<div class="no-badges">Voc√™ ainda n√£o conquistou nenhum badge. Continue usando o app!</div>';
+                    container.innerHTML = '<div class="no-badges">VocÍ ainda n„o conquistou nenhum badge. Continue usando o app!</div>';
                     return;
                 }
-
                 container.innerHTML = badges.map(badge => `
                     <div class="badge-card conquistado">
 <div class="conquered-badge">
@@ -133,31 +119,25 @@
 <p class="badge-description">${badge.descricao}</p>
 </div>
                 `).join('');
-
             } catch (error) {
                 console.error('Erro ao carregar badges conquistados:', error);
                 document.getElementById('badgesConquistados').innerHTML = 
                     '<div class="error">Erro ao carregar badges conquistados</div>';
             }
         }
-
         // Carregar progresso dos badges
         async function carregarProgressoBadges() {
             try {
                 const response = await apiRequest('/badges/progresso');
                 const progresso = response.progresso || [];
-
                 const container = document.getElementById('progressoBadges');
-                
                 if (progresso.length === 0) {
-                    container.innerHTML = '<div class="no-badges">Parab√©ns! Voc√™ conquistou todos os badges dispon√≠veis! üéâ</div>';
+                    container.innerHTML = '<div class="no-badges">ParabÈns! VocÍ conquistou todos os badges disponÌveis! ??</div>';
                     return;
                 }
-
                 container.innerHTML = progresso.map(item => {
                     const badge = item.badge;
                     const percentual = Math.min(100, item.progresso_percentual);
-                    
                     return `
                         <div class="badge-card">
 <div class="badge-header">
@@ -184,27 +164,24 @@
 </div>
                     `;
                 }).join('');
-
             } catch (error) {
                 console.error('Erro ao carregar progresso dos badges:', error);
                 document.getElementById('progressoBadges').innerHTML = 
                     '<div class="error">Erro ao carregar progresso dos badges</div>';
             }
         }
-
-        // Calcular n√≠vel baseado em pontos
+        // Calcular nÌvel baseado em pontos
         function calcularNivel(pontos) {
             if (pontos >= 15000) {
-                return { nome: 'Diamante üíé', cor: '#b9f2ff' };
+                return { nome: 'Diamante ??', cor: '#b9f2ff' };
             } else if (pontos >= 5000) {
-                return { nome: 'Ouro ü•á', cor: '#ffd700' };
+                return { nome: 'Ouro ??', cor: '#ffd700' };
             } else if (pontos >= 1500) {
-                return { nome: 'Prata ü•à', cor: '#c0c0c0' };
+                return { nome: 'Prata ??', cor: '#c0c0c0' };
             }
-            return { nome: 'Bronze ü•â', cor: '#cd7f32' };
+            return { nome: 'Bronze ??', cor: '#cd7f32' };
         }
-
-        // Obter texto da condi√ß√£o do badge
+        // Obter texto da condiÁ„o do badge
         function getCondicaoTexto(badge) {
             const tipos = {
                 'pontos': `Acumular ${badge.condicao_valor} pontos`,
@@ -212,13 +189,11 @@
                 'empresas_visitadas': `Visitar ${badge.condicao_valor} empresas diferentes`,
                 'dias_consecutivos': `${badge.condicao_valor} dias consecutivos de check-in`,
                 'valor_gasto': `Gastar R$ ${(badge.condicao_valor / 100).toFixed(2)}`,
-                'nivel': `Alcan√ßar n√≠vel ${badge.condicao_valor}`
+                'nivel': `AlcanÁar nÌvel ${badge.condicao_valor}`
             };
-            
-            return tipos[badge.condicao_tipo] || 'Condi√ß√£o especial';
+            return tipos[badge.condicao_tipo] || 'CondiÁ„o especial';
         }
-
-        // Obter unidade da condi√ß√£o
+        // Obter unidade da condiÁ„o
         function getUnidadeCondicao(tipo) {
             const unidades = {
                 'pontos': 'pontos',
@@ -226,23 +201,19 @@
                 'empresas_visitadas': 'empresas',
                 'dias_consecutivos': 'dias',
                 'valor_gasto': 'centavos',
-                'nivel': 'n√≠vel'
+                'nivel': 'nÌvel'
             };
-            
             return unidades[tipo] || '';
         }
-
         // Formatar data
         function formatDate(dateString) {
             return new Date(dateString).toLocaleDateString('pt-BR');
         }
-
         // Mostrar erro
         function showError(message) {
             console.error(message);
         }
-
-        // Inicializar p√°gina
+        // Inicializar p·gina
         async function inicializarPagina() {
             await Promise.all([
                 carregarDadosUsuario(),
@@ -250,23 +221,8 @@
                 carregarProgressoBadges()
             ]);
         }
-
-        // Iniciar quando a p√°gina carregar
+        // Iniciar quando a p·gina carregar
         document.addEventListener('DOMContentLoaded', inicializarPagina);
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

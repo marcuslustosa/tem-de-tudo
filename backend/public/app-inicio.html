@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -8,15 +8,106 @@
 <meta name="description" content="Descubra ofertas incríveis e ganhe pontos em suas compras">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/style.css">
-</head>
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - PÁGINA INÍCIO */
+body { font-family: 'Inter', sans-serif; background: var(--gray-50); margin: 0; padding: 0; color: var(--gray-900); }
+.app-inicio { min-height: 100vh; padding-bottom: 80px; }
+
+.header-premium { background: linear-gradient(135deg, var(--vivo-purple), var(--vivo-purple-dark)); 
+    color: var(--white); padding: 2rem 1.5rem 1.5rem; border-radius: 0 0 20px 20px; margin-bottom: 1rem; }
+.header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.user-section { flex: 1; }
+.greeting { font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.25rem; }
+.user-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+.profile-type { font-size: 0.75rem; background: rgba(255, 255, 255, 0.2); padding: 0.25rem 0.75rem;
+    border-radius: 12px; display: inline-flex; align-items: center; gap: 0.25rem; }
+.saldo-card { background: rgba(255, 255, 255, 0.15); border-radius: var(--border-radius); padding: 1rem;
+    min-width: 120px; text-align: center; cursor: pointer; transition: var(--transition); }
+.saldo-card:hover { background: rgba(255, 255, 255, 0.25); }
+.saldo-label { font-size: 0.75rem; opacity: 0.9; margin-bottom: 0.25rem; }
+.saldo-value { font-size: 1.25rem; font-weight: 700; }
+
+.search-section { padding: 0 1.5rem; margin-bottom: 1rem; }
+.search-container { position: relative; display: flex; align-items: center; background: var(--white);
+    border-radius: var(--border-radius); box-shadow: var(--shadow-sm); overflow: hidden; border: 2px solid var(--gray-200); }
+.search-container:focus-within { border-color: var(--vivo-purple); }
+.search-icon { position: absolute; left: 1rem; color: var(--gray-400); z-index: 1; }
+.search-input { flex: 1; padding: 1rem 1rem 1rem 2.75rem; border: none; outline: none; font-size: 1rem; }
+.search-input::placeholder { color: var(--gray-400); }
+.search-btn { background: var(--vivo-purple); color: var(--white); border: none; padding: 1rem 1.25rem;
+    cursor: pointer; transition: var(--transition); }
+.search-btn:hover { background: var(--vivo-purple-dark); }
+
+.location-bar { background: var(--white); margin: 0 1.5rem 1rem; padding: 0.75rem 1rem; border-radius: var(--border-radius);
+    display: flex; align-items: center; gap: 0.5rem; color: var(--gray-700); font-size: 0.875rem; cursor: pointer;
+    transition: var(--transition); box-shadow: var(--shadow-sm); }
+.location-bar:hover { background: var(--gray-50); }
+
+.quick-actions-section { padding: 0 1.5rem; margin-bottom: 2rem; }
+.section-title { font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem; }
+.quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.quick-action { background: var(--white); border-radius: var(--border-radius); padding: 1rem 0.75rem;
+    text-align: center; text-decoration: none; color: var(--gray-700); transition: var(--transition);
+    box-shadow: var(--shadow-sm); }
+.quick-action:hover { background: var(--gray-50); color: var(--vivo-purple); transform: translateY(-2px); }
+.quick-action i { font-size: 1.5rem; color: var(--vivo-purple); margin-bottom: 0.5rem; display: block; }
+.quick-action span { font-size: 0.875rem; font-weight: 600; }
+
+.banner-section { margin: 0 1.5rem 2rem; }
+.banner-carousel { position: relative; border-radius: var(--border-radius); overflow: hidden; }
+.banner-img { width: 100%; height: 150px; object-fit: cover; }
+.banner-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: var(--white); padding: 1.5rem 1rem 1rem; }
+.banner-title { font-size: 1.125rem; font-weight: 700; margin-bottom: 0.25rem; }
+.banner-subtitle { font-size: 0.875rem; opacity: 0.9; }
+
+.categories-section, .empresas-section { padding: 0 1.5rem; margin-bottom: 2rem; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.ver-mais { color: var(--vivo-purple); text-decoration: none; font-size: 0.875rem; font-weight: 600;
+    display: flex; align-items: center; gap: 0.25rem; }
+.ver-mais:hover { text-decoration: underline; }
+
+.categories-scroll { display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 0.5rem; }
+.categories-scroll::-webkit-scrollbar { height: 4px; }
+.categories-scroll::-webkit-scrollbar-track { background: var(--gray-200); border-radius: 2px; }
+.categories-scroll::-webkit-scrollbar-thumb { background: var(--vivo-purple); border-radius: 2px; }
+.category-card { background: var(--white); border-radius: var(--border-radius); padding: 1rem; min-width: 80px;
+    text-align: center; text-decoration: none; color: var(--gray-700); transition: var(--transition);
+    box-shadow: var(--shadow-sm); }
+.category-card:hover { background: var(--gray-50); transform: translateY(-2px); }
+.category-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.category-name { font-size: 0.75rem; font-weight: 600; }
+
+.empresas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+.empresa-card { background: var(--white); border-radius: var(--border-radius); padding: 1rem; text-decoration: none;
+    color: var(--gray-700); transition: var(--transition); box-shadow: var(--shadow-sm); }
+.empresa-card:hover { background: var(--gray-50); transform: translateY(-2px); }
+
+.fade-in { animation: fadeIn 0.6s ease-out; }
+.slide-in-left { animation: slideInLeft 0.6s ease-out; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+
+@media (max-width: 768px) {
+    .header-top { flex-direction: column; gap: 1rem; }
+    .saldo-card { min-width: auto; width: 100%; }
+    .quick-actions { grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+    .quick-action { padding: 0.75rem 0.5rem; }
+    .quick-action span { font-size: 0.75rem; }
+}
+</style>
 <body>
 <div class="app-inicio">
     <!-- Enhanced Header -->
     <header class="header-premium fade-in">
         <div class="header-top">
             <div class="user-section">
-                <div class="greeting">Olá, bem-vindo de volta! ✨</div>
+                <div class="greeting">Olá, bem-vindo de volta! 👋</div>
                 <div class="user-name" id="userName">Marcus Silva</div>
                 <div class="profile-type" id="profileType">
                     <i class="fas fa-crown"></i> Premium Active
@@ -28,7 +119,6 @@
             </div>
         </div>
     </header>
-
     <!-- Enhanced Search -->
     <section class="search-section slide-in-left">
         <form class="search-container" onsubmit="handleSearch(event)">
@@ -42,14 +132,12 @@
             </button>
         </form>
     </section>
-
     <!-- Location Bar -->
     <div class="location-bar" onclick="showLocationSelector()">
         <i class="fas fa-map-marker-alt"></i>
         <span>📍 São Paulo, SP - Centro</span>
         <i class="fas fa-chevron-down" style="margin-left: auto;"></i>
     </div>
-
     <!-- Quick Actions -->
     <section class="quick-actions-section">
         <h2 class="section-title">
@@ -75,7 +163,6 @@
             </a>
         </div>
     </section>
-
     <!-- Banner Carousel -->
     <section class="banner-section">
         <div class="banner-carousel">
@@ -88,7 +175,6 @@
             </div>
         </div>
     </section>
-
     <!-- Categories -->
     <section class="categories-section">
         <div class="section-header">
@@ -102,11 +188,11 @@
         </div>
         <div class="categories-scroll">
             <a href="app-categorias.html?categoria=alimentacao" class="category-card">
-                <div class="category-icon">🍔</div>
+                <div class="category-icon">🍕</div>
                 <div class="category-name">Alimentação</div>
             </a>
             <a href="app-categorias.html?categoria=beleza" class="category-card">
-                <div class="category-icon">💅</div>
+                <div class="category-icon">💄</div>
                 <div class="category-name">Beleza</div>
             </a>
             <a href="app-categorias.html?categoria=tecnologia" class="category-card">
@@ -118,16 +204,15 @@
                 <div class="category-name">Fitness</div>
             </a>
             <a href="app-categorias.html?categoria=entretenimento" class="category-card">
-                <div class="category-icon">🎮</div>
+                <div class="category-icon">🎭</div>
                 <div class="category-name">Diversão</div>
             </a>
             <a href="app-categorias.html?categoria=moda" class="category-card">
-                <div class="category-icon">👗</div>
+                <div class="category-icon">👔</div>
                 <div class="category-name">Moda</div>
             </a>
         </div>
     </section>
-
     <!-- Empresas Próximas -->
     <section class="empresas-section">
         <div class="section-header">
@@ -144,7 +229,6 @@
         </div>
     </section>
 </div>
-
 <!-- Bottom Navigation -->
 <nav class="bottom-nav">
     <div class="nav-container">
@@ -170,7 +254,6 @@
         </a>
     </div>
 </nav>
-
 <script src="/js/config.js"></script>
 <script>
 // API Helper Function
@@ -181,11 +264,9 @@ async function apiRequest(url, options = {}) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         };
-        
         if (token) {
             defaultHeaders['Authorization'] = `Bearer ${token}`;
         }
-        
         const response = await fetch(`${API_CONFIG.getBaseURL()}${url}`, {
             ...options,
             headers: {
@@ -193,19 +274,16 @@ async function apiRequest(url, options = {}) {
                 ...options.headers
             }
         });
-        
         return response;
     } catch (error) {
         console.warn('API request failed:', error);
         return null;
     }
 }
-
 // Load User Data
 async function loadUserData() {
     try {
         console.log('🔄 Carregando dados do usuário...');
-        
         // Try to load from API
         const response = await apiRequest('/api/user');
         if (response && response.ok) {
@@ -217,17 +295,14 @@ async function loadUserData() {
                 return;
             }
         }
-        
         // Fallback to demo data
-        console.log('👤 MODO DEMONSTRAÇÃO ATIVADO');
+        console.log('🗳️ MODO DEMONSTRAÇÃO ATIVADO');
         loadMockData();
-        
     } catch (error) {
         console.error('Erro ao carregar dados do usuário:', error);
         loadMockData();
     }
 }
-
 // Update User Interface
 function updateUserInterface(user) {
     document.getElementById('userName').textContent = user.name || user.nome || 'Marcus Silva';
@@ -236,7 +311,6 @@ function updateUserInterface(user) {
     });
     updateProfileType(user);
 }
-
 // Mock Data for Demo
 function loadMockData() {
     const cachedUser = localStorage.getItem('user');
@@ -245,7 +319,6 @@ function loadMockData() {
         pontos: 2847.50,
         perfil: 'premium'
     };
-    
     if (cachedUser) {
         try {
             const user = JSON.parse(cachedUser);
@@ -258,24 +331,19 @@ function loadMockData() {
             console.log('Cache inválido, usando dados padrão');
         }
     }
-    
     updateUserInterface(mockUser);
-    
     // Add demo indicator
     const greeting = document.querySelector('.greeting');
     if (greeting) {
-        greeting.innerHTML = 'Olá, bem-vindo de volta! ✨ <span style="color: #FEF08A; font-size: 10px; font-weight: 700;">• DEMO</span>';
+        greeting.innerHTML = 'Olá, bem-vindo de volta! 👋 <span style="color: #FEF08A; font-size: 10px; font-weight: 700;">🗳️ DEMO</span>';
     }
 }
-
 // Update Profile Type Display
 function updateProfileType(user) {
     const profileTypeElement = document.getElementById('profileType');
     const userType = user.perfil || user.tipo || user.user_type || 'premium';
-    
     let profileText = '';
     let iconClass = '';
-    
     switch(userType) {
         case 'premium':
             profileText = 'Premium Active';
@@ -293,10 +361,8 @@ function updateProfileType(user) {
             profileText = `Plano ${userType.charAt(0).toUpperCase() + userType.slice(1)}`;
             iconClass = 'fas fa-user-circle';
     }
-    
     profileTypeElement.innerHTML = `<i class="${iconClass}"></i> ${profileText}`;
 }
-
 // Handle Search
 function handleSearch(event) {
     event.preventDefault();
@@ -305,21 +371,17 @@ function handleSearch(event) {
         window.location.href = `app-empresas.html?q=${encodeURIComponent(query)}`;
     }
 }
-
 // Show Location Selector
 function showLocationSelector() {
-    alert('🌍 Seletor de localização em desenvolvimento.\n\nLocalização atual: São Paulo, SP - Centro');
+    alert('🗺️ Seletor de localização em desenvolvimento.\n\nLocalização atual: São Paulo, SP - Centro');
 }
-
 // Load Nearby Companies
 async function carregarEmpresasProximas() {
     const container = document.getElementById('empresasGrid');
-    
     // Show loading skeleton
     container.innerHTML = Array(6).fill(0).map(() => `
         <div class="empresa-card loading-skeleton" style="height: 200px;"></div>
     `).join('');
-    
     try {
         const response = await apiRequest('/api/cliente/empresas');
         if (response && response.ok) {
@@ -334,11 +396,9 @@ async function carregarEmpresasProximas() {
         renderizarEmpresasFallback();
     }
 }
-
 // Render Companies
 function renderizarEmpresas(empresas) {
     const container = document.getElementById('empresasGrid');
-    
     if (!empresas || empresas.length === 0) {
         container.innerHTML = `
             <div style="grid-column: 1/-1; text-align: center; padding: var(--space-2xl); color: var(--text-secondary);">
@@ -348,7 +408,6 @@ function renderizarEmpresas(empresas) {
         `;
         return;
     }
-    
     const categorias = {
         'restaurante': 'Alimentação',
         'academia': 'Fitness & Saúde',
@@ -356,7 +415,6 @@ function renderizarEmpresas(empresas) {
         'farmacia': 'Saúde',
         'cafeteria': 'Cafeteria'
     };
-    
     container.innerHTML = empresas.map((empresa, index) => `
         <a href="app-empresa-detalhes.html?id=${empresa.id}" class="empresa-card fade-in" style="animation-delay: ${index * 0.1}s">
             <img src="${empresa.logo || empresa.foto || `https://images.unsplash.com/photo-155${Math.floor(Math.random() * 9)}742049-0cfed4f6a45d?w=400`}"
@@ -380,28 +438,27 @@ function renderizarEmpresas(empresas) {
         </a>
     `).join('');
 }
-
 // Fallback Companies Data
 function renderizarEmpresasFallback() {
     const empresasFallback = [
-        { id: 1, nome: '🍔 Burger Prime', categoria: 'Hamburgueria Gourmet', logo: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400', points_multiplier: 10 },
-        { id: 2, nome: '🍕 Pizza Mania', categoria: 'Pizzaria Artesanal', logo: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=400', points_multiplier: 15 },
-        { id: 3, nome: '💪 Gym Fitness', categoria: 'Academia de Elite', logo: 'https://images.unsplash.com/photo-1572448862527-d3c904757de6?w=400', points_multiplier: 20 },
-        { id: 4, nome: '☕ Café Supremo', categoria: 'Cafeteria Artesanal', logo: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400', points_multiplier: 8 },
-        { id: 5, nome: '💊 Farmácia Saúde+', categoria: 'Farmácia e Perfumaria', logo: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400', points_multiplier: 12 },
-        { id: 6, nome: '💇 Beleza Max', categoria: 'Salão de Beleza', logo: 'https://images.unsplash.com/photo-1485962398705-ef6a13c41e8f?w=400', points_multiplier: 25 }
+        { id: 1, nome: '?? Burger Prime', categoria: 'Hamburgueria Gourmet', logo: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400', points_multiplier: 10 },
+        { id: 2, nome: '?? Pizza Mania', categoria: 'Pizzaria Artesanal', logo: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=400', points_multiplier: 15 },
+        { id: 3, nome: '?? Gym Fitness', categoria: 'Academia de Elite', logo: 'https://images.unsplash.com/photo-1572448862527-d3c904757de6?w=400', points_multiplier: 20 },
+        { id: 4, nome: '? Caf� Supremo', categoria: 'Cafeteria Artesanal', logo: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400', points_multiplier: 8 },
+        { id: 5, nome: '?? Farm�cia Sa�de+', categoria: 'Farm�cia e Perfumaria', logo: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400', points_multiplier: 12 },
+        { id: 6, nome: '?? Beleza Max', categoria: 'Sal�o de Beleza', logo: 'https://images.unsplash.com/photo-1485962398705-ef6a13c41e8f?w=400', points_multiplier: 25 }
     ];
-    
     renderizarEmpresas(empresasFallback);
 }
+// Global timer reference
+let balanceTimer;
 
 // Simulate Balance Updates
 function simulateBalanceUpdates() {
-    setInterval(() => {
+    balanceTimer = setInterval(() => {
         const currentSaldo = parseFloat(document.getElementById('saldoValue').textContent.replace(/\./g, '').replace(',', '.'));
         const variation = (Math.random() - 0.5) * 10; // -5 to +5 variation
         const newSaldo = Math.max(0, currentSaldo + variation);
-        
         if (Math.random() > 0.95) { // 5% chance to update
             document.getElementById('saldoValue').textContent = newSaldo.toLocaleString('pt-BR', { 
                 minimumFractionDigits: 2 
@@ -410,17 +467,20 @@ function simulateBalanceUpdates() {
     }, 30000); // Every 30 seconds
 }
 
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    if (balanceTimer) {
+        clearInterval(balanceTimer);
+    }
+});
 // Initialize App
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 App Tem de Tudo iniciado');
-    
     // Load user data and companies
     loadUserData();
     carregarEmpresasProximas();
-    
     // Start balance simulation
     simulateBalanceUpdates();
-    
     // Add stagger animation to elements
     setTimeout(() => {
         document.querySelectorAll('.fade-in, .slide-in-left').forEach((el, index) => {
@@ -428,14 +488,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, 100);
 });
-
 // Search input enhancements
 document.getElementById('searchInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         handleSearch(e);
     }
 });
-
 // Add search suggestions (future enhancement)
 document.getElementById('searchInput').addEventListener('input', function(e) {
     const query = e.target.value.trim();
@@ -445,17 +503,3 @@ document.getElementById('searchInput').addEventListener('input', function(e) {
 </script>
 </body>
 </html>  
-
-
-
-
-
-
-
-
-
-
-
-
-
-

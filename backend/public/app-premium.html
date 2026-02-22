@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -17,15 +17,13 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n    <link rel="stylesheet" href="/css/vivo-global.css">
+`n    
 <link rel="stylesheet" href="/css/vivo-global.css">
-</head>
 <body>
 <div class="header">
 <div class="crown-icon"><i class="fas fa-crown"></i></div>
 <h1>Seja Premium</h1>
-<p>BenefÃ­cios exclusivos para vocÃª</p>
+<p>Benefícios exclusivos para você</p>
 </div>
 <div class="content">
 <div class="benefits-grid">
@@ -40,28 +38,28 @@
 <div class="benefit-icon"><i class="fas fa-gift"></i></div>
 <div class="benefit-info">
 <h3>Recompensas Exclusivas</h3>
-<p>Acesso a prÃªmios que apenas membros Premium podem resgatar</p>
+<p>Acesso a prêmios que apenas membros Premium podem resgatar</p>
 </div>
 </div>
 <div class="benefit-card">
 <div class="benefit-icon"><i class="fas fa-bell"></i></div>
 <div class="benefit-info">
-<h3>PromoÃ§Ãµes Antecipadas</h3>
-<p>Seja o primeiro a saber das promoÃ§Ãµes dos estabelecimentos</p>
+<h3>Promoções Antecipadas</h3>
+<p>Seja o primeiro a saber das promoções dos estabelecimentos</p>
 </div>
 </div>
 <div class="benefit-card">
 <div class="benefit-icon"><i class="fas fa-headset"></i></div>
 <div class="benefit-info">
-<h3>Atendimento PrioritÃ¡rio</h3>
+<h3>Atendimento Prioritário</h3>
 <p>Suporte VIP e atendimento diferenciado nos estabelecimentos</p>
 </div>
 </div>
 <div class="benefit-card">
 <div class="benefit-icon"><i class="fas fa-birthday-cake"></i></div>
 <div class="benefit-info">
-<h3>Presente de AniversÃ¡rio</h3>
-<p>BÃ´nus especial de 500 pontos no seu aniversÃ¡rio</p>
+<h3>Presente de Aniversário</h3>
+<p>Bônus especial de 500 pontos no seu aniversário</p>
 </div>
 </div>
 </div>
@@ -79,20 +77,17 @@
 </div>
 <script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
-        
         async function assinarPlano() {
             const token = localStorage.getItem('token');
             if (!token) {
-                alert('VocÃª precisa estar logado');
+                alert('Você precisa estar logado');
                 window.location.href = 'entrar.html';
                 return;
             }
-            
-            // ConfirmaÃ§Ã£o
-            if (!confirm('Deseja assinar o Plano Premium por R$ 19,90/mÃªs?')) {
+            // Confirmação
+            if (!confirm('Deseja assinar o Plano Premium por R$ 19,90/mês?')) {
                 return;
             }
-            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/assinar-premium`, {
                     method: 'POST',
@@ -102,39 +97,19 @@
                     },
                     body: JSON.stringify({ plano: 'mensal' })
                 });
-                
                 const data = await response.json();
-                
                 if (data.success) {
-                    alert('? ParabÃ©ns! VocÃª agora Ã© Premium!\n\nBenefÃ­cios ativados:\n- Pontos em dobro\n- Recompensas exclusivas\n- PromoÃ§Ãµes antecipadas');
+                    alert('? Parabéns! Você agora é Premium!\n\nBenefícios ativados:\n- Pontos em dobro\n- Recompensas exclusivas\n- Promoções antecipadas');
                     window.location.href = '/app-inicio.html';
                 } else {
                     alert('? Erro ao assinar: ' + (data.message || 'Tente novamente mais tarde'));
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('? Assinatura simulada com sucesso!\n\n(Em produÃ§Ã£o, integraria com gateway de pagamento)');
+                alert('? Assinatura simulada com sucesso!\n\n(Em produção, integraria com gateway de pagamento)');
                 setTimeout(() => window.location.href = '/app-inicio.html', 1500);
             }
         }
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

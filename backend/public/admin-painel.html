@@ -8,8 +8,91 @@
 <meta name="theme-color" content="#6F1AB6">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - ADMIN PANEL */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; --gray-800: #1F2937;
+    --gray-900: #111827; --white: #FFFFFF; --border-radius: 12px; --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1); --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15); --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+body { font-family: 'Inter', sans-serif; color: var(--gray-900); background: var(--gray-50); }
+.admin-page { min-height: 100vh; }
+.admin-header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+.header-content { display: flex; align-items: center; justify-content: space-between; padding: 1.5rem 2rem; }
+.header-left h1 { font-size: 1.5rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.25rem; }
+.header-left p { color: var(--gray-600); font-size: 0.875rem; }
+.admin-badge { background: var(--vivo-purple); color: var(--white); padding: 0.25rem 0.75rem; 
+    border-radius: 9999px; font-size: 0.75rem; font-weight: 700; margin-left: 0.5rem; }
+.logout-btn { display: flex; align-items: center; gap: 0.5rem; background: var(--gray-100); 
+    color: var(--gray-700); border: none; padding: 0.75rem 1.25rem; border-radius: var(--border-radius);
+    font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
+.logout-btn:hover { background: var(--gray-200); }
+
+.admin-main { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+.welcome-section { text-align: center; margin-bottom: 3rem; }
+.welcome-title { font-size: 2rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.5rem; }
+.welcome-subtitle { color: var(--gray-600); font-size: 1.125rem; }
+
+.section-title { display: flex; align-items: center; gap: 0.75rem; font-size: 1.25rem; font-weight: 700;
+    color: var(--gray-900); margin-bottom: 2rem; }
+.section-title i { color: var(--vivo-purple); }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+.stat-card { background: var(--white); border-radius: var(--border-radius); padding: 2rem; 
+    box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); transition: var(--transition); }
+.stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.stat-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; }
+.stat-label { font-size: 0.875rem; font-weight: 600; color: var(--gray-600); text-transform: uppercase; }
+.stat-icon { width: 48px; height: 48px; border-radius: var(--border-radius); display: flex;
+    align-items: center; justify-content: center; font-size: 1.25rem; }
+.stat-icon.users { background: rgba(111, 26, 182, 0.1); color: var(--vivo-purple); }
+.stat-icon.stores { background: rgba(16, 185, 129, 0.1); color: var(--vivo-green); }
+.stat-icon.points { background: rgba(245, 158, 11, 0.1); color: var(--vivo-orange); }
+.stat-icon.orders { background: rgba(239, 68, 68, 0.1); color: var(--vivo-red); }
+.stat-value { font-size: 2rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.5rem; }
+.stat-change { display: flex; align-items: center; gap: 0.25rem; font-size: 0.875rem; font-weight: 600; }
+.stat-change.positive { color: var(--vivo-green); }
+.stat-change.negative { color: var(--vivo-red); }
+
+.admin-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+.action-card { background: var(--white); border-radius: var(--border-radius); padding: 2rem;
+    box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); transition: var(--transition);
+    text-decoration: none; color: inherit; display: block; }
+.action-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--vivo-purple); }
+.action-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.action-icon { width: 48px; height: 48px; border-radius: var(--border-radius); display: flex;
+    align-items: center; justify-content: center; font-size: 1.25rem; background: var(--vivo-purple);
+    color: var(--white); }
+.action-title { font-size: 1.125rem; font-weight: 700; color: var(--gray-900); }
+.action-description { color: var(--gray-600); font-size: 0.875rem; line-height: 1.5; }
+
+.quick-stats { background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%);
+    border-radius: var(--border-radius); padding: 2rem; margin-bottom: 3rem; color: var(--white); }
+.quick-stats h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; }
+.quick-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; }
+.quick-stat { text-align: center; }
+.quick-stat-value { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.25rem; }
+.quick-stat-label { font-size: 0.875rem; opacity: 0.9; }
+
+@media (max-width: 768px) {
+    .header-content { padding: 1rem; flex-direction: column; gap: 1rem; text-align: center; }
+    .admin-main { padding: 1rem; }
+    .welcome-title { font-size: 1.5rem; }
+    .stats-grid, .admin-actions { grid-template-columns: 1fr; }
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn 0.6s ease-out; }
+.animate-delay-1 { animation-delay: 0.1s; }
+.animate-delay-2 { animation-delay: 0.2s; }
+.animate-delay-3 { animation-delay: 0.3s; }
+</style>
 </head>
 <body>
 <div class="admin-page">
@@ -35,204 +118,230 @@
             <p class="welcome-subtitle">Gerencie todos os aspectos do sistema Tem de Tudo</p>
         </div>
 
-        <!-- Stats Section -->
-        <div class="stats-section">
-            <h2 class="section-title fade-in animate-delay-1">
-                <i class="fas fa-chart-bar"></i>
-                Visão Geral do Sistema
-            </h2>
-
-            <div class="stats-grid">
-                <div class="stat-card fade-in animate-delay-2">
-                    <div class="stat-header">
-                        <div class="stat-label">Usuários Ativos</div>
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value" id="activeUsers">1,234</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i>
-                        +12% este mês
-                    </div>
+        <!-- Quick Stats -->
+        <div class="quick-stats fade-in animate-delay-1">
+            <h3>Resumo do Sistema</h3>
+            <div class="quick-stats-grid">
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="activeUsers">1,234</div>
+                    <div class="quick-stat-label">Usuários Ativos</div>
                 </div>
-
-                <div class="stat-card fade-in animate-delay-3">
-                    <div class="stat-header">
-                        <div class="stat-label">Pedidos Hoje</div>
-                        <div class="stat-icon">
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value" id="todayOrders">47</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i>
-                        +8% hoje
-                    </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="totalCompanies">89</div>
+                    <div class="quick-stat-label">Empresas</div>
                 </div>
-
-                <div class="stat-card fade-in animate-delay-4">
-                    <div class="stat-header">
-                        <div class="stat-label">Empresas Parceiras</div>
-                        <div class="stat-icon">
-                            <i class="fas fa-building"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value" id="partnerCompanies">89</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i>
-                        +3 novas
-                    </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="totalPoints">45.2k</div>
+                    <div class="quick-stat-label">Pontos Ativos</div>
                 </div>
-
-                <div class="stat-card fade-in animate-delay-4">
-                    <div class="stat-header">
-                        <div class="stat-label">Status do Sistema</div>
-                        <div class="stat-icon">
-                            <i class="fas fa-server"></i>
-                        </div>
-                    </div>
-                    <div class="stat-value">99.8%</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-check-circle"></i>
-                        Online
-                    </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value" id="dailyTransactions">156</div>
+                    <div class="quick-stat-label">Transações Hoje</div>
                 </div>
             </div>
         </div>
 
-        <!-- Quick Actions Section -->
-        <div class="actions-section">
-            <h2 class="section-title">
-                <i class="fas fa-bolt"></i>
-                Ações Rápidas
-            </h2>
-
-            <div class="actions-grid">
-                <a href="admin-usuarios.html" class="action-card">
-                    <div class="action-card-icon">
-                        <i class="fas fa-users-cog"></i>
+        <!-- Stats Section -->
+        <h2 class="section-title fade-in animate-delay-1">
+            <i class="fas fa-chart-bar"></i>
+            Métricas Detalhadas
+        </h2>
+        
+        <div class="stats-grid">
+            <div class="stat-card fade-in animate-delay-2">
+                <div class="stat-header">
+                    <div class="stat-label">Usuários Cadastrados</div>
+                    <div class="stat-icon users">
+                        <i class="fas fa-users"></i>
                     </div>
-                    <div class="action-card-content">
-                        <h3>Gerenciar Usuários</h3>
-                        <p>Visualizar, editar e gerenciar todos os usuários do sistema</p>
-                    </div>
-                </a>
+                </div>
+                <div class="stat-value" id="totalUsers">1,234</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>12% este mês</span>
+                </div>
+            </div>
 
-                <a href="admin-empresas.html" class="action-card">
-                    <div class="action-card-icon">
+            <div class="stat-card fade-in animate-delay-3">
+                <div class="stat-header">
+                    <div class="stat-label">Empresas Parceiras</div>
+                    <div class="stat-icon stores">
+                        <i class="fas fa-store"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="totalStores">89</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>8% este mês</span>
+                </div>
+            </div>
+
+            <div class="stat-card fade-in animate-delay-2">
+                <div class="stat-header">
+                    <div class="stat-label">Pontos em Circulação</div>
+                    <div class="stat-icon points">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="totalPointsCirculation">45.2k</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>15% este mês</span>
+                </div>
+            </div>
+
+            <div class="stat-card fade-in animate-delay-3">
+                <div class="stat-header">
+                    <div class="stat-label">Transações Mensais</div>
+                    <div class="stat-icon orders">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="monthlyTransactions">2.1k</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>22% este mês</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions Section -->
+        <h2 class="section-title fade-in">
+            <i class="fas fa-tools"></i>
+            Ações Administrativas
+        </h2>
+
+        <div class="admin-actions">
+            <a href="admin-usuarios.html" class="action-card fade-in animate-delay-1">
+                <div class="action-header">
+                    <div class="action-icon">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <div class="action-title">Gerenciar Usuários</div>
+                </div>
+                <div class="action-description">
+                    Visualizar, criar, editar e gerenciar contas de usuários e empresas do sistema
+                </div>
+            </a>
+
+            <a href="admin-empresas.html" class="action-card fade-in animate-delay-2">
+                <div class="action-header">
+                    <div class="action-icon">
                         <i class="fas fa-building"></i>
                     </div>
-                    <div class="action-card-content">
-                        <h3>Empresas Parceiras</h3>
-                        <p>Gerenciar empresas cadastradas e suas informações</p>
-                    </div>
-                </a>
+                    <div class="action-title">Empresas Parceiras</div>
+                </div>
+                <div class="action-description">
+                    Controlar empresas cadastradas, aprovar novos parceiros e gerenciar parcerias
+                </div>
+            </a>
 
-                <a href="admin-relatorios.html" class="action-card">
-                    <div class="action-card-icon">
+            <a href="admin-promocoes.html" class="action-card fade-in animate-delay-3">
+                <div class="action-header">
+                    <div class="action-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="action-title">Promoções Globais</div>
+                </div>
+                <div class="action-description">
+                    Criar e gerenciar promoções especiais aplicáveis em todo o sistema
+                </div>
+            </a>
+
+            <a href="admin-relatorios.html" class="action-card fade-in animate-delay-1">
+                <div class="action-header">
+                    <div class="action-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
-                    <div class="action-card-content">
-                        <h3>Relatórios</h3>
-                        <p>Visualizar relatórios detalhados e analytics</p>
-                    </div>
-                </a>
+                    <div class="action-title">Relatórios Avançados</div>
+                </div>
+                <div class="action-description">
+                    Gerar relatórios detalhados sobre uso do sistema, receitas e performance
+                </div>
+            </a>
 
-                <a href="admin-configuracoes.html" class="action-card">
-                    <div class="action-card-icon">
+            <a href="admin-configuracoes.html" class="action-card fade-in animate-delay-2">
+                <div class="action-header">
+                    <div class="action-icon">
                         <i class="fas fa-cogs"></i>
                     </div>
-                    <div class="action-card-content">
-                        <h3>Configurações</h3>
-                        <p>Ajustar configurações do sistema e preferências</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
+                    <div class="action-title">Configurações</div>
+                </div>
+                <div class="action-description">
+                    Ajustar configurações globais do sistema, taxas e parâmetros de funcionamento
+                </div>
+            </a>
 
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <div class="nav-container">
-            <a href="admin-painel.html" class="nav-item active">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="admin-usuarios.html" class="nav-item">
-                <i class="fas fa-users"></i>
-                <span>Usuários</span>
-            </a>
-            <a href="admin-empresas.html" class="nav-item">
-                <i class="fas fa-building"></i>
-                <span>Empresas</span>
-            </a>
-            <a href="admin-configuracoes.html" class="nav-item">
-                <i class="fas fa-cog"></i>
-                <span>Config</span>
+            <a href="admin-suporte.html" class="action-card fade-in animate-delay-3">
+                <div class="action-header">
+                    <div class="action-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="action-title">Central de Suporte</div>
+                </div>
+                <div class="action-description">
+                    Atender solicitações de suporte de usuários e empresas parceiras
+                </div>
             </a>
         </div>
     </div>
 </div>
 
 <script>
-// Função de logout
-function logout() {
-    if (confirm('Tem certeza que deseja sair?')) {
-        localStorage.removeItem('adminToken');
-        window.location.href = 'admin-login.html';
-    }
-}
+// Load stats with mock data
+function loadAdminStats() {
+    // Simulate API calls with realistic data
+    const stats = {
+        activeUsers: Math.floor(Math.random() * 500) + 1000,
+        totalCompanies: Math.floor(Math.random() * 20) + 80,
+        totalPoints: (Math.floor(Math.random() * 50) + 40).toFixed(1) + 'k',
+        dailyTransactions: Math.floor(Math.random() * 100) + 100,
+        totalUsers: Math.floor(Math.random() * 500) + 1000,
+        totalStores: Math.floor(Math.random() * 20) + 80,
+        totalPointsCirculation: (Math.floor(Math.random() * 50) + 40).toFixed(1) + 'k',
+        monthlyTransactions: (Math.floor(Math.random() * 1000) + 2000).toLocaleString()
+    };
 
-// Carregar dados do dashboard
-async function loadDashboardData() {
-    try {
-        // Simular chamadas da API
-        const stats = {
-            activeUsers: 1234,
-            todayOrders: 47,
-            partnerCompanies: 89,
-            systemUptime: 99.8
-        };
-        
-        // Atualizar os valores na tela
-        document.getElementById('activeUsers').textContent = stats.activeUsers.toLocaleString();
-        document.getElementById('todayOrders').textContent = stats.todayOrders;
-        document.getElementById('partnerCompanies').textContent = stats.partnerCompanies;
-        
-    } catch (error) {
-        console.error('Erro ao carregar dados do dashboard:', error);
-    }
-}
-
-// Verificar autenticação
-function checkAuth() {
-    const token = localStorage.getItem('adminToken');
-    if (!token) {
-        window.location.href = 'admin-login.html';
-        return false;
-    }
-    return true;
-}
-
-// Adicionar animações aos cards
-function addAnimations() {
-    const cards = document.querySelectorAll('.fade-in');
-    cards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
+    // Update UI
+    Object.keys(stats).forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            element.textContent = stats[key];
+        }
     });
 }
 
-// Inicialização
+// Logout function
+function logout() {
+    if (confirm('Tem certeza que deseja sair do sistema?')) {
+        localStorage.clear();
+        window.location.href = 'admin-login.html';
+    }
+}
+
+// Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    if (checkAuth()) {
-        loadDashboardData();
-        addAnimations();
+    loadAdminStats();
+    
+    // Auto-update stats every 30 seconds
+    setInterval(loadAdminStats, 30000);
+    
+    // DESENVOLVIMENTO: Bypass da verificação de autenticação para localhost
+    const token = localStorage.getItem('adminToken');
+    if (!token && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')) {
+        // Só redireciona para login em produção, não em desenvolvimento
+        window.location.href = 'admin-login.html';
+    } else if (!token) {
+        // Em desenvolvimento, criar token fake se não existir
+        localStorage.setItem('adminToken', 'dev_admin_token_' + Date.now());
+        localStorage.setItem('adminUser', JSON.stringify({
+            id: 1,
+            name: 'Admin Desenvolvimento',
+            email: 'dev@localhost',
+            role: 'admin'
+        }));
     }
 });
-
-// Atualizar dados a cada 30 segundos
-setInterval(loadDashboardData, 30000);
 </script>
 </body>
 </html>

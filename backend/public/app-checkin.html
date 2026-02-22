@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,19 +7,18 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#6A0DAD">
-<title>üìç Check-in Premium - Tem de Tudo</title>
+<title>?? Check-in Premium - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
 <link rel="stylesheet" href="/css/vivo-global.css">
-</head>
 <body>
 <div class="header">
 <div class="header-content">
 <button class="back-btn" onclick="history.back()">
 <i class="fas fa-arrow-left"></i>
 </button>
-<h1>üìç Check-in Premium</h1>
+<h1>?? Check-in Premium</h1>
 <p>Escaneie QR Code ou use GPS</p>
 </div>
 </div>
@@ -38,17 +37,17 @@
 <!-- QR Scanner -->
 <div id="qr-method" class="method-content">
 <div class="scanner-container">
-<div class="scanner-title">üì± Scanner QR Code</div>
-<div class="scanner-subtitle">Aponte a c√¢mera para o QR Code da empresa</div>
+<div class="scanner-title">?? Scanner QR Code</div>
+<div class="scanner-subtitle">Aponte a c‚mera para o QR Code da empresa</div>
 <div id="qr-reader" class="qr-reader"></div>
 <div id="scanner-status" class="scanner-status"></div>
 <button id="start-camera" class="btn" onclick="startScanner()">
 <i class="fas fa-camera"></i>
-                    Iniciar C√¢mera
+                    Iniciar C‚mera
                 </button>
 <button id="stop-camera" class="btn" onclick="stopScanner()" style="display: none;">
 <i class="fas fa-stop"></i>
-                    Parar C√¢mera
+                    Parar C‚mera
                 </button>
 </div>
 </div>
@@ -57,15 +56,15 @@
 <div class="location-info">
 <div class="location-item">
 <i class="fas fa-map-marker-alt"></i>
-<span>Sua localiza√ß√£o ser√° usada para detectar empresas pr√≥ximas</span>
+<span>Sua localizaÁ„o ser· usada para detectar empresas prÛximas</span>
 </div>
 <div class="location-item">
 <i class="fas fa-shield-alt"></i>
-<span>Seus dados de localiza√ß√£o s√£o seguros e criptografados</span>
+<span>Seus dados de localizaÁ„o s„o seguros e criptografados</span>
 </div>
 <div class="location-item">
 <i class="fas fa-clock"></i>
-<span>Check-in autom√°tico em empresas dentro de 50 metros</span>
+<span>Check-in autom·tico em empresas dentro de 50 metros</span>
 </div>
 </div>
 <button id="gps-checkin" class="btn" onclick="gpsCheckin()">
@@ -81,8 +80,8 @@
                 Check-in Manual
             </h3>
 <div class="input-group">
-<label for="empresa-codigo">C√≥digo da Empresa</label>
-<input type="text" id="empresa-codigo" placeholder="Digite o c√≥digo da empresa" maxlength="10">
+<label for="empresa-codigo">CÛdigo da Empresa</label>
+<input type="text" id="empresa-codigo" placeholder="Digite o cÛdigo da empresa" maxlength="10">
 </div>
 <button class="btn" onclick="manualCheckin()">
 <i class="fas fa-check"></i>
@@ -94,7 +93,7 @@
 <div class="nav-items">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>In√≠cio</span>
+<span>InÌcio</span>
 </a>
 <a href="app-empresas.html" class="nav-item">
 <i class="fas fa-search"></i>
@@ -116,14 +115,11 @@
 </nav>
 <script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
-        
         let html5QrCode = null;
         let currentPosition = null;
-        
         document.addEventListener('DOMContentLoaded', () => {
             checkAuth();
         });
-        
         function checkAuth() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -131,38 +127,31 @@
                 return;
             }
         }
-        
         function switchMethod(method) {
             // Update tabs
             document.querySelectorAll('.method-tab').forEach(tab => tab.classList.remove('active'));
             event.target.closest('.method-tab').classList.add('active');
-            
             // Show/hide content
             document.querySelectorAll('.method-content').forEach(content => content.style.display = 'none');
             document.getElementById(method + '-method').style.display = 'block';
-            
             // Stop scanner if switching away from QR
             if (method !== 'qr' && html5QrCode) {
                 stopScanner();
             }
         }
-        
         function startScanner() {
             const qrCodeReader = document.getElementById('qr-reader');
             const status = document.getElementById('scanner-status');
             const startBtn = document.getElementById('start-camera');
             const stopBtn = document.getElementById('stop-camera');
-            
             if (!html5QrCode) {
                 html5QrCode = new Html5Qrcode("qr-reader");
             }
-            
             const config = {
                 fps: 10,
                 qrbox: { width: 250, height: 250 },
                 aspectRatio: 1.0
             };
-            
             html5QrCode.start(
                 { facingMode: "environment" },
                 config,
@@ -175,22 +164,20 @@
                     // Erro silencioso - normal durante scan
                 }
             ).then(() => {
-                showStatus('C√¢mera iniciada! Aponte para o QR Code.', 'info');
+                showStatus('C‚mera iniciada! Aponte para o QR Code.', 'info');
                 startBtn.style.display = 'none';
                 stopBtn.style.display = 'block';
             }).catch((err) => {
-                showStatus('Erro ao acessar c√¢mera: ' + err, 'error');
+                showStatus('Erro ao acessar c‚mera: ' + err, 'error');
                 console.error(err);
             });
         }
-        
         function stopScanner() {
             const startBtn = document.getElementById('start-camera');
             const stopBtn = document.getElementById('stop-camera');
-            
             if (html5QrCode) {
                 html5QrCode.stop().then(() => {
-                    showStatus('C√¢mera desligada', 'info');
+                    showStatus('C‚mera desligada', 'info');
                     startBtn.style.display = 'block';
                     stopBtn.style.display = 'none';
                 }).catch((err) => {
@@ -198,7 +185,6 @@
                 });
             }
         }
-        
         function processQRCode(qrData) {
             try {
                 // Tentar parsear como JSON
@@ -207,54 +193,48 @@
                     const empresaId = data.empresaId || data.empresa_id;
                     realizarCheckin(empresaId, 'qr');
                 } else {
-                    showStatus('QR Code inv√°lido: falta ID da empresa', 'error');
+                    showStatus('QR Code inv·lido: falta ID da empresa', 'error');
                 }
             } catch (e) {
-                // Se n√£o for JSON, tratar como c√≥digo simples
+                // Se n„o for JSON, tratar como cÛdigo simples
                 if (qrData.length > 3) {
                     realizarCheckin(qrData, 'qr');
                 } else {
-                    showStatus('QR Code inv√°lido: formato n√£o reconhecido', 'error');
+                    showStatus('QR Code inv·lido: formato n„o reconhecido', 'error');
                 }
             }
         }
-        
         function gpsCheckin() {
             const status = document.getElementById('gps-status');
             const button = document.getElementById('gps-checkin');
-            
             button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obtendo localiza√ß√£o...';
-            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obtendo localizaÁ„o...';
             if (!navigator.geolocation) {
-                showGpsStatus('GPS n√£o suportado neste dispositivo', 'error');
+                showGpsStatus('GPS n„o suportado neste dispositivo', 'error');
                 button.disabled = false;
                 button.innerHTML = '<i class="fas fa-location-arrow"></i> Fazer Check-in GPS';
                 return;
             }
-            
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     currentPosition = position;
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     const accuracy = position.coords.accuracy;
-                    
-                    showGpsStatus(`Localiza√ß√£o obtida (precis√£o: ${Math.round(accuracy)}m)`, 'success');
-                    
-                    // Simular check-in baseado em localiza√ß√£o
+                    showGpsStatus(`LocalizaÁ„o obtida (precis„o: ${Math.round(accuracy)}m)`, 'success');
+                    // Simular check-in baseado em localizaÁ„o
                     setTimeout(() => {
                         realizarCheckin('GPS_LOCATION', 'gps', { lat, lng, accuracy });
                     }, 1000);
                 },
                 (error) => {
-                    let errorMsg = 'Erro ao obter localiza√ß√£o: ';
+                    let errorMsg = 'Erro ao obter localizaÁ„o: ';
                     switch(error.code) {
                         case error.PERMISSION_DENIED:
-                            errorMsg += 'Permiss√£o negada';
+                            errorMsg += 'Permiss„o negada';
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            errorMsg += 'Localiza√ß√£o indispon√≠vel';
+                            errorMsg += 'LocalizaÁ„o indisponÌvel';
                             break;
                         case error.TIMEOUT:
                             errorMsg += 'Tempo esgotado';
@@ -273,30 +253,23 @@
                 }
             );
         }
-        
         function manualCheckin() {
             const codigo = document.getElementById('empresa-codigo').value.trim();
-            
             if (!codigo) {
-                showStatus('Digite o c√≥digo da empresa', 'error');
+                showStatus('Digite o cÛdigo da empresa', 'error');
                 return;
             }
-            
             if (codigo.length < 3) {
-                showStatus('C√≥digo deve ter pelo menos 3 caracteres', 'error');
+                showStatus('CÛdigo deve ter pelo menos 3 caracteres', 'error');
                 return;
             }
-            
             realizarCheckin(codigo, 'manual');
         }
-        
         async function realizarCheckin(empresaId, metodo, extra = {}) {
             try {
                 const token = localStorage.getItem('token');
                 const userData = JSON.parse(localStorage.getItem('user') || '{}');
-                
                 showStatus('Processando check-in...', 'info');
-                
                 const payload = {
                     empresa_id: empresaId,
                     metodo: metodo,
@@ -304,7 +277,6 @@
                     user_id: userData.id,
                     ...extra
                 };
-                
                 const response = await fetch(`${API_BASE_URL}/api/checkin`, {
                     method: 'POST',
                     headers: {
@@ -313,30 +285,23 @@
                     },
                     body: JSON.stringify(payload)
                 });
-                
                 const data = await response.json();
-                
                 if (response.ok) {
-                    showStatus(`‚úÖ Check-in realizado com sucesso! ${data.pontos ? `+${data.pontos} pontos` : ''}`, 'success');
-                    
+                    showStatus(`? Check-in realizado com sucesso! ${data.pontos ? `+${data.pontos} pontos` : ''}`, 'success');
                     // Limpar campo manual
                     document.getElementById('empresa-codigo').value = '';
-                    
                     // Reset GPS button
                     const gpsBtn = document.getElementById('gps-checkin');
                     if (gpsBtn) {
                         gpsBtn.disabled = false;
                         gpsBtn.innerHTML = '<i class="fas fa-location-arrow"></i> Fazer Check-in GPS';
                     }
-                    
                 } else {
-                    showStatus(`‚ùå ${data.message || 'Erro no check-in'}`, 'error');
+                    showStatus(`? ${data.message || 'Erro no check-in'}`, 'error');
                 }
-                
             } catch (error) {
                 console.error('Erro no check-in:', error);
-                showStatus('‚ùå Erro de conex√£o. Tente novamente.', 'error');
-                
+                showStatus('? Erro de conex„o. Tente novamente.', 'error');
                 // Reset GPS button on error
                 const gpsBtn = document.getElementById('gps-checkin');
                 if (gpsBtn) {
@@ -345,13 +310,11 @@
                 }
             }
         }
-        
         function showStatus(message, type) {
             const status = document.getElementById('scanner-status');
             status.className = `scanner-status ${type}`;
             status.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
             status.style.display = 'block';
-            
             // Auto hide after 5 seconds for non-error messages
             if (type !== 'error') {
                 setTimeout(() => {
@@ -359,13 +322,11 @@
                 }, 5000);
             }
         }
-        
         function showGpsStatus(message, type) {
             const status = document.getElementById('gps-status');
             status.className = `scanner-status ${type}`;
             status.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
             status.style.display = 'block';
-            
             // Auto hide after 5 seconds for non-error messages
             if (type !== 'error') {
                 setTimeout(() => {
@@ -376,17 +337,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

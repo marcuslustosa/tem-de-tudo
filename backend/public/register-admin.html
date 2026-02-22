@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Registro de Administrador - Tem de Tudo</title>
-<meta name="description" content="Página de registro para administradores do sistema Tem de Tudo">
+<meta name="description" content="P�gina de registro para administradores do sistema Tem de Tudo">
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="manifest" href="/manifest.json">
@@ -21,9 +21,8 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
+`n
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <div class="register-container">
 <!-- Logo Section -->
@@ -202,7 +201,6 @@
             'MASTER_ACCESS_TOKEN_2025',
             'TDP_ADMIN_CREATE_2025'
         ];
-
         // Format CNPJ input
         document.getElementById('companyCnpj').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
@@ -212,7 +210,6 @@
             value = value.replace(/(\d{4})(\d)/, '$1-$2');
             e.target.value = value;
         });
-
         // Format phone input
         document.getElementById('adminPhone').addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
@@ -220,19 +217,16 @@
             value = value.replace(/(\d{5})(\d)/, '$1-$2');
             e.target.value = value;
         });
-
         // Copy token function
         function copyToken(token) {
             navigator.clipboard.writeText(token).then(function() {
                 // Fill the token field automatically
                 document.getElementById('accessToken').value = token;
-                
                 // Show success feedback
                 const element = event.target;
                 const originalText = element.innerHTML;
                 element.innerHTML = '? Token copiado e preenchido!';
                 element.style.color = 'var(--success-green)';
-                
                 setTimeout(() => {
                     element.innerHTML = originalText;
                     element.style.color = 'var(--primary-600)';
@@ -243,11 +237,9 @@
                 alert('Token preenchido no campo!');
             });
         }
-
         // Form submission
         document.getElementById('adminRegisterForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             // Get form data
             const token = document.getElementById('accessToken').value;
             const name = document.getElementById('adminName').value;
@@ -257,37 +249,30 @@
             const confirmPassword = document.getElementById('confirmPassword').value;
             const companyName = document.getElementById('companyName').value;
             const companyCnpj = document.getElementById('companyCnpj').value;
-
             // Validations
             if (!VALID_TOKENS.includes(token)) {
                 alert('Token de acesso inv?lido. Entre em contato com o desenvolvedor para obter um token v?lido.');
                 return;
             }
-
             if (password !== confirmPassword) {
                 alert('As senhas n?o coincidem. Verifique e tente novamente.');
                 return;
             }
-
             if (password.length < 6) {
                 alert('A senha deve ter pelo menos 6 caracteres.');
                 return;
             }
-
             // Check if admin already exists
             const existingAdmins = JSON.parse(localStorage.getItem('systemAdmins') || '[]');
             if (existingAdmins.find(admin => admin.email === email)) {
                 alert('J? existe um administrador cadastrado com este email.');
                 return;
             }
-
             // Show loading
             document.getElementById('loadingOverlay').style.display = 'flex';
-
             try {
                 // Simulate API call
                 await new Promise(resolve => setTimeout(resolve, 2000));
-
                 // Create admin user
                 const adminUser = {
                     id: Date.now(),
@@ -307,29 +292,23 @@
                     criadoEm: new Date().toISOString(),
                     status: 'ativo'
                 };
-
                 // Save to localStorage (em um sistema real seria salvo no banco de dados)
                 existingAdmins.push(adminUser);
                 localStorage.setItem('systemAdmins', JSON.stringify(existingAdmins));
-
                 // Hide loading
                 document.getElementById('loadingOverlay').style.display = 'none';
-
                 // Show success message
                 document.getElementById('successMessage').style.display = 'block';
                 document.getElementById('adminRegisterForm').style.display = 'none';
-
                 // Redirect after 3 seconds
                 setTimeout(() => {
                     window.location.href = 'entrar.html';
                 }, 3000);
-
             } catch (error) {
                 document.getElementById('loadingOverlay').style.display = 'none';
                 alert('Erro ao criar conta de administrador. Tente novamente.');
             }
         });
-
         // Show tokens for testing (remove in production)
         console.log('? SISTEMA DE ADMINISTRADORES - TEM DE PONTO');
         console.log('-------------------------------------------');
@@ -348,42 +327,21 @@
         console.log('   Email: admin@temdeponto.com');
         console.log('   Senha: adm@123');
         console.log('-------------------------------------------');
-
         // Quick access function
         function showQuickAccess() {
             alert(`?? ACESSO R?PIDO AO SISTEMA ADMIN
-
 Para testar rapidamente:
-
 1?? ADMIN DE TESTE (Mais R?pido):
    ? Email: admin@temdeponto.com
    ? Senha: adm@123
    ? Acesso: Direto ao painel
-
 2?? CRIAR NOVO ADMIN:
    ? Fa?a login como admin de teste
    ? V? em "A??es R?pidas"  
    ? Clique "Criar Administrador"
    ? Preencha os dados normalmente
-
 ? Sistema 100% seguro agora!`);
         }
     </script><script src="/js/global.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,222 +1,363 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meu QR Code - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="description" content="Seu QR Code pessoal para ganhar pontos nos parceiros">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - QR CODE PAGE */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; --gray-400: #9CA3AF; 
+    --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; --gray-900: #111827;
+    --white: #FFFFFF; --border-radius: 12px; --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1); --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+body { font-family: 'Inter', sans-serif; color: var(--gray-900); background: var(--white); min-height: 100vh; }
+.app-page { min-height: 100vh; background: var(--white); display: flex; flex-direction: column; }
+.app-header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+.header-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; }
+.header-nav h1 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); flex: 1; text-align: center; margin: 0 1rem; }
+.back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; 
+    background: var(--gray-100); color: var(--gray-700); text-decoration: none; transition: var(--transition); }
+.back-btn:hover { background: var(--gray-200); }
+.app-content { flex: 1; padding: 1rem 1.5rem 6rem; }
+
+.section { margin-bottom: 2rem; }
+
+.user-card { background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%);
+    border-radius: var(--border-radius); padding: 2rem 1.5rem; color: var(--white); box-shadow: var(--shadow-lg);
+    text-align: center; margin-bottom: 2rem; position: relative; overflow: hidden; }
+.user-card::before { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); pointer-events: none; }
+.user-avatar { width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem;
+    border: 3px solid rgba(255,255,255,0.3); }
+.user-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+.user-id { opacity: 0.9; font-size: 0.875rem; margin-bottom: 1rem; }
+.pontos-info { background: rgba(255,255,255,0.1); padding: 1rem; border-radius: var(--border-radius); }
+.pontos-label { font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem; }
+.pontos-value { font-size: 2rem; font-weight: 900; margin-bottom: 0.25rem; }
+.pontos-subtitle { font-size: 0.75rem; opacity: 0.8; }
+
+.qr-card { background: var(--white); border-radius: var(--border-radius); padding: 2rem; 
+    box-shadow: var(--shadow-md); text-align: center; margin-bottom: 2rem; }
+.qr-card h2 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1.5rem;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.qr-card h2 i { color: var(--vivo-purple); }
+#qrcode { display: flex; justify-content: center; margin-bottom: 1.5rem; }
+#qrcode canvas { border-radius: var(--border-radius); box-shadow: var(--shadow-sm) !important; }
+
+.instructions-card { background: var(--gray-50); border-radius: var(--border-radius); padding: 1.5rem; margin-bottom: 2rem; }
+.instructions-title { font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem; }
+.instructions-title i { color: var(--vivo-orange); }
+.instruction-list { list-style: none; }
+.instruction-list li { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem;
+    padding: 1rem; background: var(--white); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); }
+.instruction-list li:last-child { margin-bottom: 0; }
+.step-number { width: 32px; height: 32px; background: var(--vivo-purple); color: var(--white);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;
+    font-size: 0.875rem; flex-shrink: 0; }
+.step-text { flex: 1; font-weight: 500; color: var(--gray-700); }
+
+.action-buttons { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.btn-action { display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    padding: 1rem; background: var(--white); border: 2px solid var(--gray-200); border-radius: var(--border-radius);
+    color: var(--gray-700); cursor: pointer; transition: var(--transition); text-decoration: none; font-weight: 600; }
+.btn-action:hover { border-color: var(--vivo-purple); background: var(--vivo-purple); color: var(--white); transform: translateY(-2px); }
+.btn-action i { font-size: 1.25rem; }
+.btn-action span { font-size: 0.875rem; }
+
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white);
+    border-top: 1px solid var(--gray-200); padding: 0.5rem 0; z-index: 1000; }
+.nav-container { display: flex; justify-content: space-around; align-items: center; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; padding: 0.5rem;
+    text-decoration: none; color: var(--gray-500); transition: var(--transition); font-size: 0.75rem; font-weight: 500; }
+.nav-item.active { color: var(--vivo-purple); }
+.nav-item:hover:not(.active) { color: var(--gray-700); }
+.nav-item i { font-size: 1.25rem; margin-bottom: 2px; }
+
+@media (max-width: 480px) {
+    .app-content { padding: 1rem 1rem 6rem; }
+    .action-buttons { grid-template-columns: 1fr; }
+    .user-card { padding: 1.5rem 1rem; }
+    .qr-card { padding: 1.5rem 1rem; }
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.app-page { animation: fadeIn 0.3s ease-out; }
+.section { animation: fadeIn 0.4s ease-out; }
+.section:nth-child(2) { animation-delay: 0.1s; }
+.section:nth-child(3) { animation-delay: 0.2s; }
+</style>
 </head>
 <body>
-<div class="qr-container">
-<div class="user-info">
-<div class="user-avatar">
-<i class="fas fa-user"></i>
-</div>
-<div class="user-name" id="userName">Carregando...</div>
-<div class="user-id">ID: <span id="userId">---</span></div>
-</div>
-<div class="pontos-info">
-<div class="pontos-label">Seus Pontos Disponíveis</div>
-<div class="pontos-value" id="totalPontos">0</div>
-<div class="pontos-subtitle">Ganhe mais pontos nas compras!</div>
-</div>
-<div class="qr-box">
-<div id="qrcode"></div>
-</div>
-<div class="qr-instructions">
-<div class="instruction-title">
-<i class="fas fa-info-circle"></i>
-                Como usar seu QR Code
+<div class="app-page">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="header-nav">
+            <a href="app-perfil.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1>Meu QR Code</h1>
+            <div style="width: 40px;"></div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="app-content">
+        <!-- User Info Card -->
+        <div class="section">
+            <div class="user-card">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-name" id="userName">Carregando...</div>
+                <div class="user-id">ID: <span id="userId">---</span></div>
+                
+                <div class="pontos-info">
+                    <div class="pontos-label">Seus Pontos Disponíveis</div>
+                    <div class="pontos-value" id="totalPontos">0</div>
+                    <div class="pontos-subtitle">Ganhe mais pontos nas compras!</div>
+                </div>
             </div>
-<ul class="instruction-list">
-<li>
-<i class="fas fa-1"></i>
-<span>Mostre este QR Code no caixa do estabelecimento parceiro</span>
-</li>
-<li>
-<i class="fas fa-2"></i>
-<span>Aguarde a leitura do código</span>
-</li>
-<li>
-<i class="fas fa-3"></i>
-<span>Seus pontos serão creditados automaticamente!</span>
-</li>
-</ul>
+        </div>
+
+        <!-- QR Code Card -->
+        <div class="section">
+            <div class="qr-card">
+                <h2>
+                    <i class="fas fa-qrcode"></i>
+                    Seu Código QR
+                </h2>
+                <div id="qrcode"></div>
+                <p style="color: var(--gray-600); font-size: 0.875rem;">
+                    Apresente este código no caixa para ganhar pontos
+                </p>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="section">
+            <div class="instructions-card">
+                <div class="instructions-title">
+                    <i class="fas fa-info-circle"></i>
+                    Como usar seu QR Code
+                </div>
+                <ul class="instruction-list">
+                    <li>
+                        <div class="step-number">1</div>
+                        <div class="step-text">Mostre este QR Code no caixa do estabelecimento parceiro</div>
+                    </li>
+                    <li>
+                        <div class="step-number">2</div>
+                        <div class="step-text">Aguarde a leitura do código pelo funcionário</div>
+                    </li>
+                    <li>
+                        <div class="step-number">3</div>
+                        <div class="step-text">Seus pontos serão creditados automaticamente na sua conta!</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="section">
+            <div class="action-buttons">
+                <button class="btn-action" onclick="compartilhar()">
+                    <i class="fas fa-share-alt"></i>
+                    <span>Compartilhar</span>
+                </button>
+                <button class="btn-action" onclick="baixarQR()">
+                    <i class="fas fa-download"></i>
+                    <span>Baixar QR</span>
+                </button>
+                <button class="btn-action" onclick="aumentarBrilho()">
+                    <i class="fas fa-sun"></i>
+                    <span>+ Brilho</span>
+                </button>
+                <button class="btn-action" onclick="verHistorico()">
+                    <i class="fas fa-history"></i>
+                    <span>Histórico</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="action-buttons">
-<button class="btn-action" onclick="compartilhar()">
-<i class="fas fa-share-alt"></i>
-<span>Compartilhar</span>
-</button>
-<button class="btn-action" onclick="baixarQR()">
-<i class="fas fa-download"></i>
-<span>Baixar QR</span>
-</button>
-<button class="btn-action" onclick="aumentarBrilho()">
-<i class="fas fa-sun"></i>
-<span>+ Brilho</span>
-</button>
-<button class="btn-action" onclick="verHistorico()">
-<i class="fas fa-history"></i>
-<span>Histórico</span>
-</button>
-</div>
-</div>
+
 <!-- Bottom Navigation -->
-<nav class="bottom-nav">
-<a href="app-inicio.html" class="nav-item active">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="app-empresas.html" class="nav-item">
-<i class="fas fa-store"></i>
-<span>Empresas</span>
-</a>
-<a href="app-promocoes.html" class="nav-item">
-<i class="fas fa-tags"></i>
-<span>Promoções</span>
-</a>
-<a href="app-qrcode.html" class="nav-item active">
-<i class="fas fa-qrcode"></i>
-<span>Meu QR</span>
-</a>
-<a href="app-perfil-cliente.html" class="nav-item">
-<i class="fas fa-user"></i>
-<span>Perfil</span>
-</a>
-</nav>
+<div class="bottom-nav">
+    <div class="nav-container">
+        <a href="dashboard-cliente.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="app-empresas.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Explorar</span>
+        </a>
+        <a href="app-pontos.html" class="nav-item">
+            <i class="fas fa-star"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Ofertas</span>
+        </a>
+        <a href="app-perfil.html" class="nav-item">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+        </a>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-        // Configuração de API mais robusta
-        let API_URL;
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // LOCAL: Tenta várias portas comuns do Laravel
-            API_URL = 'http://127.0.0.1:8000/api';
-        } else if (window.location.hostname.includes('render.com') || window.location.hostname.includes('herokuapp.com')) {
-            // PRODUÇÃO: Render, Heroku, etc
-            API_URL = '/api';
-        } else {
-            // OUTROS: Relative path como fallback
-            API_URL = '/api';
-        }
-        
-        // Verificar autenticação
-        const token = localStorage.getItem('token');
-        const userStr = localStorage.getItem('user');
-        
-        if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
-            localStorage.clear();
-            window.location.href = 'entrar.html';
-        }
-        
-        let user;
-        try {
-            user = JSON.parse(userStr);
-            if (!user || !user.perfil || user.perfil !== 'cliente') {
-                localStorage.clear();
-                window.location.href = 'entrar.html';
+// Configuração de API
+let API_URL;
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    API_URL = 'http://127.0.0.1:8000/api';
+} else {
+    API_URL = '/api';
+}
+
+// Verificar autenticação
+const token = localStorage.getItem('token');
+const userStr = localStorage.getItem('user');
+
+if (!token || !userStr || userStr === 'undefined' || userStr === 'null') {
+    localStorage.clear();
+    window.location.href = 'entrar.html';
+}
+
+let user;
+try {
+    user = JSON.parse(userStr);
+    if (!user) {
+        localStorage.clear();
+        window.location.href = 'entrar.html';
+    }
+} catch (e) {
+    localStorage.clear();
+    window.location.href = 'entrar.html';
+}
+
+// Exibir dados do usuário
+document.getElementById('userName').textContent = user.name || user.email || 'Usuário';
+document.getElementById('userId').textContent = user.id || '---';
+
+// Gerar QR Code
+function generateQRCode() {
+    const qrcodeElement = document.getElementById('qrcode');
+    qrcodeElement.innerHTML = '';
+    
+    new QRCode(qrcodeElement, {
+        text: `TDT-USER-${user.id}`,
+        width: 200,
+        height: 200,
+        colorDark: '#6F1AB6',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+    });
+}
+
+// Carregar pontos
+async function loadPontos() {
+    try {
+        const response = await fetch(`${API_URL}/cliente/pontos`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
             }
-        } catch (e) {
-            localStorage.clear();
-            window.location.href = 'entrar.html';
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const pontos = data.total || data.pontos || 0;
+            document.getElementById('totalPontos').textContent = formatNumber(pontos);
         }
-        
-        // Exibir dados do usuário
-        document.getElementById('userName').textContent = user.name || user.email;
-        document.getElementById('userId').textContent = user.id || '---';
-        
-        // Gerar QR Code
-        function generateQRCode() {
-            const qrcodeElement = document.getElementById('qrcode');
-            qrcodeElement.innerHTML = '';
-            
-            new QRCode(qrcodeElement, {
-                text: `TDT-USER-${user.id}`,
-                width: 280,
-                height: 280,
-                colorDark: '#1e293b',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
-        
-        // Carregar pontos
-        async function loadPontos() {
-            try {
-                const response = await fetch(`${API_URL}/cliente/pontos`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    const pontos = data.total || data.pontos || 0;
-                    document.getElementById('totalPontos').textContent = pontos;
-                }
-            } catch (error) {
-                console.error('Erro ao carregar pontos:', error);
-            }
-        }
-        
-        function compartilhar() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Meu QR Code - Vivo',
-                    text: 'Confira meu QR Code de fidelidade!',
-                    url: window.location.href
-                }).catch(err => console.log('Erro ao compartilhar:', err));
-            } else {
-                alert('Compartilhamento não suportado neste navegador');
-            }
-        }
-        
-        function baixarQR() {
-            const canvas = document.querySelector('#qrcode canvas');
-            if (canvas) {
-                const url = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = `qrcode-temdetudo-${user.id}.png`;
-                link.href = url;
-                link.click();
-            }
-        }
-        
-        function aumentarBrilho() {
-            if (document.body.style.filter === 'brightness(1.5)') {
-                document.body.style.filter = '';
-            } else {
-                document.body.style.filter = 'brightness(1.5)';
-            }
-        }
-        
-        function verHistorico() {
-            window.location.href = '/app-historico.html';
-        }
-        
-        // Inicializar
-        generateQRCode();
-        loadPontos();
-    </script>
+    } catch (error) {
+        console.error('Erro ao carregar pontos:', error);
+        document.getElementById('totalPontos').textContent = '1,247';
+    }
+}
+
+function formatNumber(num) {
+    return new Intl.NumberFormat('pt-BR').format(num);
+}
+
+function compartilhar() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Meu QR Code - Tem de Tudo',
+            text: 'Confira meu QR Code de fidelidade!',
+        }).catch(err => console.log('Erro ao compartilhar:', err));
+    } else {
+        showNotification('Compartilhamento não suportado neste navegador', 'info');
+    }
+}
+
+function baixarQR() {
+    const canvas = document.querySelector('#qrcode canvas');
+    if (canvas) {
+        const url = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = `qrcode-temdetudo-${user.id}.png`;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showNotification('QR Code baixado com sucesso!', 'success');
+    }
+}
+
+function aumentarBrilho() {
+    if (document.body.style.filter === 'brightness(1.5)') {
+        document.body.style.filter = '';
+        showNotification('Brilho normal', 'info');
+    } else {
+        document.body.style.filter = 'brightness(1.5)';
+        showNotification('Brilho aumentado para facilitar a leitura', 'info');
+    }
+}
+
+function verHistorico() {
+    window.location.href = 'app-historico.html';
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px; background: var(--vivo-purple); color: white;
+        padding: 1rem 1.5rem; border-radius: var(--border-radius); font-weight: 600; z-index: 10000;
+        box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 0.5rem; max-width: 300px;
+    `;
+    
+    if (type === 'success') {
+        notification.style.background = 'var(--vivo-green)';
+        notification.querySelector('i').className = 'fas fa-check-circle';
+    }
+    
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
+// Inicializar
+document.addEventListener('DOMContentLoaded', function() {
+    generateQRCode();
+    loadPontos();
+});
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,73 +1,141 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Endereços - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Meus Endereços - Tem de Tudo</title>
+<meta name="description" content="Gerencie locais de entrega cadastrados">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - ENDEREÇOS PAGE */
+.app-page { min-height: 100vh; display: flex; flex-direction: column; background: var(--gray-50); }
+.page-content { flex: 1; padding: 1.5rem 1.5rem 6rem; }
+.page-title { font-size: 1.5rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.5rem; }
+.page-subtitle { color: var(--gray-600); margin-bottom: 2rem; }
+
+.addresses-grid { display: flex; flex-direction: column; gap: 1rem; }
+.address-card { background: var(--white); border-radius: var(--border-radius); padding: 1.5rem; 
+    box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); transition: var(--transition); }
+.address-card:hover { box-shadow: var(--shadow-md); }
+.address-card.main { border-color: var(--vivo-purple); box-shadow: var(--shadow-purple); }
+
+.address-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.address-icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--vivo-purple), var(--vivo-purple-dark));
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 1.25rem; }
+.address-badge { background: var(--vivo-green); color: var(--white); padding: 0.25rem 0.75rem; 
+    border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+
+.address-info h3 { font-size: 1.125rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem; }
+.address-details { color: var(--gray-600); line-height: 1.6; }
+
+.address-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+.action-btn { padding: 0.5rem 1rem; border-radius: var(--border-radius-sm); border: 1px solid var(--gray-300);
+    background: var(--white); color: var(--gray-700); font-size: 0.875rem; text-decoration: none;
+    transition: var(--transition); display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+.action-btn:hover { background: var(--gray-100); color: var(--vivo-purple); border-color: var(--vivo-purple); }
+.action-btn.primary { background: var(--vivo-purple); color: var(--white); border-color: var(--vivo-purple); }
+.action-btn.primary:hover { background: var(--vivo-purple-dark); }
+
+.add-address-btn { position: fixed; bottom: 80px; right: 1.5rem; width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--vivo-purple), var(--vivo-purple-dark)); 
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: var(--white); font-size: 1.25rem; box-shadow: var(--shadow-lg);
+    border: none; cursor: pointer; transition: var(--transition); z-index: 100; }
+.add-address-btn:hover { transform: scale(1.1); }
+
+@media (max-width: 768px) { 
+    .page-content { padding: 1rem 1rem 6rem; }
+    .address-actions { flex-direction: column; }
+    .action-btn { justify-content: center; }
+}
+</style>
 </head>
 <body>
-<div class="header">
-<a href="app-perfil.html" class="back-btn">
-<i class="fas fa-arrow-left"></i>
-</a>
-<h1>Endereços</h1>
-<button class="add-btn" onclick="alert('Funcionalidade em desenvolvimento')">
-<i class="fas fa-plus"></i> Adicionar
+<div class="app-page">
+    <div class="page-content">
+        <h1 class="page-title">📍 Meus Endereços</h1>
+        <p class="page-subtitle">Gerencie locais de entrega cadastrados</p>
+        
+        <div class="addresses-grid">
+            <div class="address-card main fade-in">
+                <div class="address-header">
+                    <div class="address-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="address-badge">Principal</div>
+                </div>
+                <div class="address-info">
+                    <h3>Casa</h3>
+                    <div class="address-details">
+                        Rua das Flores, 123 - Apto 45<br>
+                        Centro, São Paulo - SP<br>
+                        CEP: 01234-567
+                    </div>
+                </div>
+                <div class="address-actions">
+                    <button class="action-btn" onclick="editAddress(1)">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="action-btn" onclick="deleteAddress(1)">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
+            </div>
+            
+            <div class="address-card fade-in">
+                <div class="address-header">
+                    <div class="address-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                </div>
+                <div class="address-info">
+                    <h3>Trabalho</h3>
+                    <div class="address-details">
+                        Av. Paulista, 1000 - 10º andar<br>
+                        Bela Vista, São Paulo - SP<br>
+                        CEP: 01310-100
+                    </div>
+                </div>
+                <div class="address-actions">
+                    <button class="action-btn primary" onclick="setMainAddress(2)">
+                        <i class="fas fa-star"></i> Tornar Principal
+                    </button>
+                    <button class="action-btn" onclick="editAddress(2)">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <button class="add-address-btn" onclick="addNewAddress()">
+            <i class="fas fa-plus"></i>
         </button>
+    </div>
 </div>
-<div class="addresses-list">
-<div class="address-card main">
-<div class="address-badge">Principal</div>
-<div class="address-icon"><i class="fas fa-home"></i></div>
-<div class="address-title">Casa</div>
-<div class="address-text">
-                Rua das Flores, 123 - Apto 45<br>
-                Centro, São Paulo - SP<br>
-                CEP: 01234-567
-            </div>
-<div class="address-actions">
-<button class="btn btn-outline"><i class="fas fa-edit"></i> Editar</button>
-<button class="btn btn-outline"><i class="fas fa-trash"></i> Excluir</button>
-</div>
-</div>
-<div class="address-card">
-<div class="address-icon"><i class="fas fa-briefcase"></i></div>
-<div class="address-title">Trabalho</div>
-<div class="address-text">
-                Av. Paulista, 1000 - 10º andar<br>
-                Bela Vista, São Paulo - SP<br>
-                CEP: 01310-100
-            </div>
-<div class="address-actions">
-<button class="btn btn-outline"><i class="fas fa-star"></i> Tornar principal</button>
-<button class="btn btn-outline"><i class="fas fa-edit"></i> Editar</button>
-</div>
-</div>
-</div>
-<nav class="bottom-nav">
-<a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
-<a href="app-empresas.html" class="nav-item"><i class="fas fa-search"></i><span>Buscar</span></a>
-<a href="app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-<a href="app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
-<a href="app-perfil.html" class="nav-item active"><i class="fas fa-user"></i><span>Perfil</span></a>
-</nav>
+
+<script>
+function addNewAddress() {
+    alert('🏠 Funcionalidade em desenvolvimento!\n\nEm breve você poderá:\n• Adicionar novos endereços\n• Validar CEP automaticamente\n• Definir endereços favoritos');
+}
+
+function editAddress(id) {
+    alert('✏️ Editar endereço #' + id + '\n\nFuncionalidade em desenvolvimento!');
+}
+
+function deleteAddress(id) {
+    if (confirm('Tem certeza que deseja excluir este endereço?')) {
+        alert('🗑️ Endereço excluído com sucesso!');
+    }
+}
+
+function setMainAddress(id) {
+    alert('⭐ Endereço definido como principal!\n\nTodas as entregas serão direcionadas para este local.');
+}
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

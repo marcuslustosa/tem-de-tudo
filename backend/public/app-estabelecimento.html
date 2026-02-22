@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -17,10 +17,8 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n    <link rel="stylesheet" href="/css/vivo-global.css">
+`n    
 <link rel="stylesheet" href="/css/vivo-global.css">
-</head>
 <body>
 <div id="loading" class="loading">
 <i class="fas fa-spinner fa-spin" style="font-size: 48px;"></i>
@@ -37,7 +35,7 @@
 <div class="hero-stats">
 <div class="stat">
 <div class="stat-value" id="empresaRating">-</div>
-<div class="stat-label">Avalia��o</div>
+<div class="stat-label">Avalia??o</div>
 </div>
 <div class="stat">
 <div class="stat-value" id="meusPontos">0</div>
@@ -55,15 +53,15 @@
 <div class="info-text" id="empresaDescricao">-</div>
 </div>
 <div class="info-card" id="enderecoCard">
-<div class="info-title"><i class="fas fa-map-marker-alt"></i> Endere�o</div>
+<div class="info-title"><i class="fas fa-map-marker-alt"></i> Endere?o</div>
 <div class="info-text" id="empresaEndereco">-</div>
 </div>
 <div class="info-card" id="promocoesCard" style="display: none;">
-<div class="info-title"><i class="fas fa-gift"></i> Promo��es Ativas</div>
+<div class="info-title"><i class="fas fa-gift"></i> Promo??es Ativas</div>
 <div class="promocoes-list" id="promocoesList"></div>
 </div>
 <div class="info-card" id="avaliacoesCard" style="display: none;">
-<div class="info-title"><i class="fas fa-star"></i> Avalia��es Recentes</div>
+<div class="info-title"><i class="fas fa-star"></i> Avalia??es Recentes</div>
 <div class="reviews-list" id="reviewsList"></div>
 </div>
 <button class="action-btn" onclick="location.href='app-scanner.html'">
@@ -74,8 +72,7 @@
 <script>
         let empresaId = null;
         let empresaData = null;
-        
-        // �cones por ramo
+        // ?cones por ramo
         const ramoIcons = {
             'restaurante': '???',
             'lanchonete': '??',
@@ -89,30 +86,24 @@
             'mercado': '??',
             'default': '??'
         };
-        
         // Pegar ID da URL
         function getEmpresaId() {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
         }
-        
         // Carregar detalhes da empresa
         async function loadEmpresa() {
             empresaId = getEmpresaId();
-            
             if (!empresaId) {
-                alert('Empresa n�o especificada');
+                alert('Empresa n?o especificada');
                 history.back();
                 return;
             }
-            
             const token = localStorage.getItem('token');
-            
             if (!token) {
                 window.location.href = 'entrar.html';
                 return;
             }
-
             try {
                 const response = await fetch(`/api/cliente/empresas/${empresaId}`, {
                     headers: {
@@ -120,15 +111,13 @@
                         'Accept': 'application/json'
                     }
                 });
-                
                 if (response.ok) {
                     const result = await response.json();
                     empresaData = result.data;
-                    
                     console.log('Empresa carregada:', empresaData);
                     renderEmpresa();
                 } else if (response.status === 404) {
-                    alert('Empresa n�o encontrada');
+                    alert('Empresa n?o encontrada');
                     history.back();
                 } else if (response.status === 401) {
                     window.location.href = 'entrar.html';
@@ -146,82 +135,68 @@
                 document.getElementById('content').style.display = 'block';
             }
         }
-        
         // Renderizar empresa
         function renderEmpresa() {
             const { empresa, meus_pontos, promocoes, avaliacoes } = empresaData;
-            
             // Header
             document.getElementById('empresaNome').textContent = empresa.nome;
             document.getElementById('empresaCategoria').textContent = empresa.ramo || 'Estabelecimento';
-            
-            // �cone/Logo
+            // ?cone/Logo
             const iconEl = document.getElementById('heroIcon');
             if (empresa.logo) {
                 iconEl.innerHTML = `<img src="${empresa.logo}" alt="${empresa.nome}" onerror="this.parentElement.innerHTML='${ramoIcons[empresa.ramo] || ramoIcons.default}'">`;
             } else {
                 iconEl.textContent = ramoIcons[empresa.ramo] || ramoIcons.default;
             }
-            
             // Stats
             document.getElementById('empresaRating').textContent = empresa.avaliacao_media || '5.0';
             document.getElementById('meusPontos').textContent = meus_pontos || 0;
             document.getElementById('totalClientes').textContent = empresa.total_clientes || '-';
-            
             // Sobre
-            document.getElementById('empresaDescricao').textContent = empresa.descricao || 'Sem descri��o dispon�vel.';
-            
-            // Endere�o
+            document.getElementById('empresaDescricao').textContent = empresa.descricao || 'Sem descri??o dispon?vel.';
+            // Endere?o
             document.getElementById('empresaEndereco').innerHTML = `
-                ${empresa.endereco || 'Endere�o n�o informado'}<br>
+                ${empresa.endereco || 'Endere?o n?o informado'}<br>
                 ${empresa.cidade ? `${empresa.cidade}, ${empresa.estado || ''}` : ''}
             `;
-            
-            // Promo��es
+            // Promo??es
             if (promocoes && promocoes.length > 0) {
                 document.getElementById('promocoesCard').style.display = 'block';
                 renderPromocoes(promocoes);
             }
-            
-            // Avalia��es
+            // Avalia??es
             if (avaliacoes && avaliacoes.length > 0) {
                 document.getElementById('avaliacoesCard').style.display = 'block';
                 renderAvaliacoes(avaliacoes);
             }
         }
-        
-        // Renderizar promo��es
+        // Renderizar promo??es
         function renderPromocoes(promocoes) {
             const list = document.getElementById('promocoesList');
-            
             list.innerHTML = promocoes.map(promo => {
                 let badge = '';
                 if (promo.pontos_necessarios) {
                     badge = `<span class="promo-badge">?? ${promo.pontos_necessarios} pts</span>`;
                 }
-                
                 return `
                     <div class="promo-item">
 <h4>${promo.nome}</h4>
-<p>${promo.descricao || 'Promo��o especial!'}</p>
+<p>${promo.descricao || 'Promo??o especial!'}</p>
                         ${badge}
                     </div>
                 `;
             }).join('');
         }
-        
-        // Renderizar avalia��es
+        // Renderizar avalia??es
         function renderAvaliacoes(avaliacoes) {
             const list = document.getElementById('reviewsList');
-            
             list.innerHTML = avaliacoes.slice(0, 5).map(review => {
                 const stars = '?'.repeat(review.nota);
                 const date = new Date(review.created_at).toLocaleDateString('pt-BR');
-                
                 return `
                     <div class="review-item">
 <div class="review-header">
-<span class="review-author">${review.cliente_nome || 'An�nimo'}</span>
+<span class="review-author">${review.cliente_nome || 'An?nimo'}</span>
 <span class="review-rating">${stars}</span>
 </div>
                         ${review.comentario ? `<p class="review-comment">${review.comentario}</p>` : ''}
@@ -230,7 +205,6 @@
                 `;
             }).join('');
         }
-        
         // Carregar ao iniciar
         document.addEventListener('DOMContentLoaded', loadEmpresa);
     </script>
@@ -238,7 +212,7 @@
 <nav class="bottom-nav">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>In�cio</span>
+<span>In?cio</span>
 </a>
 <a href="app-empresas.html" class="nav-item">
 <i class="fas fa-search"></i>
@@ -250,7 +224,7 @@
 </a>
 <a href="app-promocoes.html" class="nav-item">
 <i class="fas fa-tags"></i>
-<span>Promo��es</span>
+<span>Promo??es</span>
 </a>
 <a href="app-perfil.html" class="nav-item">
 <i class="fas fa-user"></i>
@@ -259,20 +233,3 @@
 </nav>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

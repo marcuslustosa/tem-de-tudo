@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -16,9 +16,8 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
+`n
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <nav class="nav-bar">
 <ul>
@@ -98,13 +97,11 @@
 </div>
 <script>
         let currentCustomer = null;
-
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             window.location.href = 'entrar.html';
         }
-
         function checkAuth() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -113,15 +110,12 @@
             }
             return true;
         }
-
         function searchCustomer() {
             const searchValue = document.getElementById('searchInput').value.trim();
-            
             if (!searchValue) {
                 alert('Por favor, digite um CPF, email ou nome para buscar.');
                 return;
             }
-
             // Simula??o de busca (integre com sua API)
             currentCustomer = {
                 name: 'Jo?o da Silva',
@@ -130,23 +124,18 @@
                 level: 'Ouro',
                 discount: 15
             };
-
             displayCustomer(currentCustomer);
         }
-
         function displayCustomer(customer) {
             document.getElementById('customerInfo').style.display = 'block';
             document.getElementById('calculatorSection').style.display = 'block';
-
             const initial = customer.name.charAt(0).toUpperCase();
             document.getElementById('customerAvatar').textContent = initial;
             document.getElementById('customerName').textContent = customer.name;
             document.getElementById('customerEmail').textContent = customer.email;
             document.getElementById('customerPoints').textContent = customer.points.toLocaleString('pt-BR');
-            
             const levelBadge = document.getElementById('customerLevel');
             levelBadge.textContent = customer.level;
-            
             // Cores dos n?veis
             const levelColors = {
                 'Bronze': '#CD7F32',
@@ -155,39 +144,29 @@
                 'Platina': '#E5E4E2',
                 'Diamante': '#B9F2FF'
             };
-            
             levelBadge.style.background = levelColors[customer.level] || '#CD7F32';
             levelBadge.style.color = (customer.level === 'Ouro' || customer.level === 'Platina' || customer.level === 'Diamante') ? '#333' : 'white';
-
             document.getElementById('calcLevel').textContent = customer.level;
             document.getElementById('calcDiscount').textContent = customer.discount + '%';
-
             calculateDiscount();
         }
-
         function calculateDiscount() {
             if (!currentCustomer) return;
-
             const purchaseValue = parseFloat(document.getElementById('purchaseValue').value) || 0;
             const discountPercent = currentCustomer.discount;
             const discountValue = purchaseValue * (discountPercent / 100);
             const finalValue = purchaseValue - discountValue;
-
             document.getElementById('calcDiscountValue').textContent = 'R$ ' + discountValue.toFixed(2).replace('.', ',');
             document.getElementById('finalValue').textContent = 'R$ ' + finalValue.toFixed(2).replace('.', ',');
         }
-
         function applyDiscount() {
             const purchaseValue = parseFloat(document.getElementById('purchaseValue').value) || 0;
-            
             if (purchaseValue <= 0) {
                 alert('Por favor, informe um valor de compra v?lido.');
                 return;
             }
-
             if (confirm(`Confirmar aplica??o do desconto de ${currentCustomer.discount}% para ${currentCustomer.name}?`)) {
                 alert('Desconto aplicado com sucesso! ?');
-                
                 // Limpar formul?rio
                 document.getElementById('searchInput').value = '';
                 document.getElementById('purchaseValue').value = '';
@@ -196,25 +175,7 @@
                 currentCustomer = null;
             }
         }
-
         checkAuth();
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

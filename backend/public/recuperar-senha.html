@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,16 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/css/vivo-global.css">
-</head>
 <body>
 <div class="container">
 <div class="header">
 <i class="fas fa-key"></i>
 <h1>Recuperar Senha</h1>
-<p class="subtitle">Enviaremos um link de recuperaÃ§Ã£o para seu e-mail</p>
+<p class="subtitle">Enviaremos um link de recuperação para seu e-mail</p>
 </div>
 <div class="info-box" id="infoBox">
-<p><i class="fas fa-info-circle"></i> Digite o e-mail cadastrado na sua conta. VocÃª receberÃ¡ instruÃ§Ãµes para criar uma nova senha.</p>
+<p><i class="fas fa-info-circle"></i> Digite o e-mail cadastrado na sua conta. Você receberá instruções para criar uma nova senha.</p>
 </div>
 <div class="alert alert-success" id="alertSuccess">
 <i class="fas fa-check-circle"></i>
@@ -33,7 +32,7 @@
 </div>
 <button type="submit" class="btn" id="submitBtn">
 <i class="fas fa-paper-plane"></i>
-                Enviar Link de RecuperaÃ§Ã£o
+                Enviar Link de Recuperação
             </button>
 </form>
 <div class="back-link">
@@ -47,7 +46,6 @@
         const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? 'http://127.0.0.1:8001/api' 
             : '/api';
-
         const form = document.getElementById('recoveryForm');
         const emailInput = document.getElementById('email');
         const submitBtn = document.getElementById('submitBtn');
@@ -56,33 +54,26 @@
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
         const infoBox = document.getElementById('infoBox');
-
         function showSuccess(message) {
             alertSuccess.style.display = 'block';
             alertError.style.display = 'none';
             infoBox.style.display = 'none';
             successMessage.textContent = message;
         }
-
         function showError(message) {
             alertSuccess.style.display = 'none';
             alertError.style.display = 'block';
             errorMessage.textContent = message;
         }
-
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const email = emailInput.value.trim();
-
             if (!email) {
                 showError('Por favor, digite seu e-mail');
                 return;
             }
-
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-
             try {
                 const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
                     method: 'POST',
@@ -92,30 +83,26 @@
                     },
                     body: JSON.stringify({ email })
                 });
-
                 const data = await response.json();
-
                 if (response.ok && data.success) {
-                    showSuccess('âœ… E-mail enviado com sucesso! Verifique sua caixa de entrada (e spam).');
+                    showSuccess('? E-mail enviado com sucesso! Verifique sua caixa de entrada (e spam).');
                     emailInput.value = '';
-                    
-                    // Redirecionar apÃ³s 3 segundos
+                    // Redirecionar após 3 segundos
                     setTimeout(() => {
                         window.location.href = 'entrar.html';
                     }, 3000);
                 } else {
-                    showError(data.message || 'E-mail nÃ£o encontrado. Verifique e tente novamente.');
+                    showError(data.message || 'E-mail não encontrado. Verifique e tente novamente.');
                 }
             } catch (error) {
                 console.error('Erro:', error);
                 showError('Erro ao conectar com o servidor. Tente novamente.');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Link de RecuperaÃ§Ã£o';
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Link de Recuperação';
             }
         });
-
-        // ValidaÃ§Ã£o de email em tempo real
+        // Validação de email em tempo real
         emailInput.addEventListener('input', () => {
             alertSuccess.style.display = 'none';
             alertError.style.display = 'none';
@@ -126,18 +113,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

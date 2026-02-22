@@ -1,17 +1,15 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buscar Estabelecimentos - Tem de Tudo</title>
-<link rel="stylesheet" href="/css/theme-escuro.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/css/vivo-global.css">
-</head>
 <body>
 <div class="search-header">
 <div class="search-box">
-<input type="text" class="search-input" id="searchInput" placeholder="Buscar restaurantes, lojas, serviÃ§os...">
+<input type="text" class="search-input" id="searchInput" placeholder="Buscar restaurantes, lojas, serviços...">
 <button class="search-btn" onclick="buscarEmpresas()">
 <i class="fas fa-search"></i>
 </button>
@@ -27,10 +25,10 @@
 <i class="fas fa-shopping-bag"></i> Lojas
             </button>
 <button class="filter-btn" data-categoria="servico" onclick="filtrarCategoria('servico')">
-<i class="fas fa-wrench"></i> ServiÃ§os
+<i class="fas fa-wrench"></i> Serviços
             </button>
 <button class="filter-btn" data-categoria="saude" onclick="filtrarCategoria('saude')">
-<i class="fas fa-heartbeat"></i> SaÃºde
+<i class="fas fa-heartbeat"></i> Saúde
             </button>
 </div>
 </div>
@@ -47,26 +45,23 @@
 <p>Tente ajustar os filtros ou buscar por outro termo</p>
 </div>
 <script>
-        // ConfiguraÃ§Ã£o de API mais robusta
+        // Configuração de API mais robusta
         let API_URL;
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            // LOCAL: Tenta vÃ¡rias portas comuns do Laravel
+            // LOCAL: Tenta várias portas comuns do Laravel
             API_URL = 'http://127.0.0.1:8000/api';
         } else if (window.location.hostname.includes('render.com') || window.location.hostname.includes('herokuapp.com')) {
-            // PRODUÃ‡ÃƒO: Render, Heroku, etc
+            // PRODUÇÃO: Render, Heroku, etc
             API_URL = '/api';
         } else {
             // OUTROS: Relative path como fallback
             API_URL = '/api';
         }
-        
         let todasEmpresas = [];
         let categoriaAtual = 'todos';
-        
         // Carregar empresas ao iniciar
         window.addEventListener('DOMContentLoaded', () => {
             carregarEmpresas();
-            
             // Buscar ao digitar (debounce)
             let timeout;
             document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -74,20 +69,16 @@
                 timeout = setTimeout(() => buscarEmpresas(), 500);
             });
         });
-        
         async function carregarEmpresas() {
             const loadingState = document.getElementById('loadingState');
             const empresasGrid = document.getElementById('empresasGrid');
             const emptyState = document.getElementById('emptyState');
-            
             loadingState.style.display = 'block';
             empresasGrid.style.display = 'none';
             emptyState.style.display = 'none';
-            
             try {
                 const response = await fetch(`${API_URL}/empresas`);
                 const data = await response.json();
-                
                 if (data.success) {
                     todasEmpresas = data.data || [];
                     renderizarEmpresas(todasEmpresas);
@@ -106,20 +97,16 @@
                 loadingState.style.display = 'none';
             }
         }
-        
         function renderizarEmpresas(empresas) {
             const empresasGrid = document.getElementById('empresasGrid');
             const emptyState = document.getElementById('emptyState');
-            
             if (!empresas || empresas.length === 0) {
                 empresasGrid.style.display = 'none';
                 emptyState.style.display = 'block';
                 return;
             }
-            
             empresasGrid.style.display = 'grid';
             emptyState.style.display = 'none';
-            
             empresasGrid.innerHTML = empresas.map(empresa => `
                 <div class="empresa-card" onclick="verEmpresa(${empresa.id})">
 <img class="empresa-img" 
@@ -150,7 +137,6 @@
 </div>
             `).join('');
         }
-        
         function getCategoriaIcon(categoria) {
             const icons = {
                 'restaurante': 'fa-utensils',
@@ -166,32 +152,25 @@
             };
             return icons[categoria.toLowerCase()] || 'fa-store';
         }
-        
         function filtrarCategoria(categoria) {
             categoriaAtual = categoria;
-            
-            // Atualizar botÃµes ativos
+            // Atualizar botões ativos
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.closest('.filter-btn').classList.add('active');
-            
             // Filtrar e renderizar
             buscarEmpresas();
         }
-        
         function buscarEmpresas() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
             let empresasFiltradas = todasEmpresas;
-            
             // Filtrar por categoria
             if (categoriaAtual !== 'todos') {
                 empresasFiltradas = empresasFiltradas.filter(e => 
                     (e.categoria || '').toLowerCase() === categoriaAtual
                 );
             }
-            
             // Filtrar por termo de busca
             if (searchTerm) {
                 empresasFiltradas = empresasFiltradas.filter(e => 
@@ -200,31 +179,11 @@
                     (e.categoria || '').toLowerCase().includes(searchTerm)
                 );
             }
-            
             renderizarEmpresas(empresasFiltradas);
         }
-        
         function verEmpresa(id) {
             window.location.href = `/estabelecimento.html?id=${id}`;
         }
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

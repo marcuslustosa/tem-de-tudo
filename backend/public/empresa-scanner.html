@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,15 +7,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#6A0DAD">
-<title>üì± Scanner QR - Tem de Tudo</title>
+<title>?? Scanner QR - Tem de Tudo</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <div class="header">
 <div class="header-content">
@@ -24,8 +23,8 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div>
-<h1>üì± Scanner QR Premium</h1>
-<p>Escaneie QR Codes com tecnologia avan√ßada</p>
+<h1>?? Scanner QR Premium</h1>
+<p>Escaneie QR Codes com tecnologia avanÁada</p>
 </div>
 </div>
 </div>
@@ -65,10 +64,10 @@
                 Como usar o Scanner
             </div>
 <ul class="instructions-list">
-<li>Permita o acesso √† c√¢mera quando solicitado</li>
+<li>Permita o acesso ‡ c‚mera quando solicitado</li>
 <li>Posicione o QR Code dentro do quadro dourado</li>
-<li>Mantenha o dispositivo est√°vel at√© o reconhecimento</li>
-<li>O resultado ser√° exibido automaticamente</li>
+<li>Mantenha o dispositivo est·vel atÈ o reconhecimento</li>
+<li>O resultado ser· exibido automaticamente</li>
 </ul>
 </div>
 </div>
@@ -84,7 +83,7 @@
 </a>
 <a href="empresa-promocoes.html" class="nav-item">
 <i class="fas fa-tags"></i>
-<span>Promo√ß√µes</span>
+<span>PromoÁıes</span>
 </a>
 <a href="empresa-configuracoes.html" class="nav-item">
 <i class="fas fa-cog"></i>
@@ -95,44 +94,35 @@
 <script>
         let html5QrCode;
         let lastResult = '';
-        
         function onScanSuccess(decodedText, decodedResult) {
             // Evita processar o mesmo resultado repetidas vezes
             if (lastResult === decodedText) {
                 return;
             }
-            
             lastResult = decodedText;
-            
             // Para o scanner
             html5QrCode.stop().then((ignore) => {
                 console.log("QR Code scanner stopped.");
             }).catch((err) => {
                 console.log("Unable to stop scanning.", err);
             });
-            
             // Atualiza o status
             document.getElementById('scanner-status').textContent = 'QR Code detectado!';
             document.getElementById('scanner-status').className = 'scanner-status';
-            
             // Mostra o resultado
             showResult(decodedText);
-            
-            // Vibra√ß√£o no celular (se suportado)
+            // VibraÁ„o no celular (se suportado)
             if (navigator.vibrate) {
                 navigator.vibrate(200);
             }
         }
-        
         function onScanFailure(error) {
             // Erro silencioso - normal durante o scanning
         }
-        
         function showResult(result) {
             document.getElementById('result-content').textContent = result;
             document.getElementById('scan-result').style.display = 'block';
         }
-        
         function startScanner() {
             const config = {
                 fps: 10,
@@ -140,16 +130,13 @@
                 aspectRatio: 1.0,
                 disableFlip: false,
                 videoConstraints: {
-                    facingMode: "environment" // C√¢mera traseira
+                    facingMode: "environment" // C‚mera traseira
                 }
             };
-            
             html5QrCode = new Html5Qrcode("qr-reader");
-            
             // Atualiza status
-            document.getElementById('scanner-status').textContent = 'Iniciando c√¢mera...';
+            document.getElementById('scanner-status').textContent = 'Iniciando c‚mera...';
             document.getElementById('scanner-status').className = 'scanner-status scanning';
-            
             html5QrCode.start(
                 { facingMode: "environment" },
                 config,
@@ -157,19 +144,17 @@
                 onScanFailure
             ).catch(err => {
                 console.log("Unable to start scanning", err);
-                
-                // Tenta c√¢mera frontal se a traseira falhar
+                // Tenta c‚mera frontal se a traseira falhar
                 html5QrCode.start(
                     { facingMode: "user" },
                     config,
                     onScanSuccess,
                     onScanFailure
                 ).catch(err => {
-                    document.getElementById('scanner-status').textContent = 'Erro: N√£o foi poss√≠vel acessar a c√¢mera';
+                    document.getElementById('scanner-status').textContent = 'Erro: N„o foi possÌvel acessar a c‚mera';
                     document.getElementById('scanner-status').className = 'scanner-status';
                 });
             });
-            
             // Depois de iniciar, atualiza status
             setTimeout(() => {
                 if (document.getElementById('scanner-status').className.includes('scanning')) {
@@ -177,19 +162,16 @@
                 }
             }, 2000);
         }
-        
         function startNewScan() {
             document.getElementById('scan-result').style.display = 'none';
             lastResult = '';
             startScanner();
         }
-        
         function copyToClipboard() {
             const resultContent = document.getElementById('result-content').textContent;
-            
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(resultContent).then(() => {
-                    alert('Conte√∫do copiado para a √°rea de transfer√™ncia!');
+                    alert('Conte˙do copiado para a ·rea de transferÍncia!');
                 }).catch(() => {
                     fallbackCopyTextToClipboard(resultContent);
                 });
@@ -197,7 +179,6 @@
                 fallbackCopyTextToClipboard(resultContent);
             }
         }
-        
         function fallbackCopyTextToClipboard(text) {
             const textArea = document.createElement("textarea");
             textArea.value = text;
@@ -207,44 +188,38 @@
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
-            
             try {
                 document.execCommand('copy');
-                alert('Conte√∫do copiado para a √°rea de transfer√™ncia!');
+                alert('Conte˙do copiado para a ·rea de transferÍncia!');
             } catch (err) {
-                alert('Erro ao copiar conte√∫do');
+                alert('Erro ao copiar conte˙do');
             }
-            
             document.body.removeChild(textArea);
         }
-        
         function processQRContent() {
             const content = document.getElementById('result-content').textContent;
-            
-            // Verifica se √© uma URL
+            // Verifica se È uma URL
             try {
                 const url = new URL(content);
                 if (confirm('Deseja abrir esta URL?\n\n' + content)) {
                     window.open(content, '_blank');
                 }
             } catch (e) {
-                // N√£o √© uma URL, mostra op√ß√µes
-                alert('Conte√∫do do QR Code:\n\n' + content);
+                // N„o È uma URL, mostra opÁıes
+                alert('Conte˙do do QR Code:\n\n' + content);
             }
         }
-        
-        // Inicia o scanner quando a p√°gina carrega
+        // Inicia o scanner quando a p·gina carrega
         document.addEventListener('DOMContentLoaded', function() {
-            // Verifica se a c√¢mera est√° dispon√≠vel
+            // Verifica se a c‚mera est· disponÌvel
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 startScanner();
             } else {
-                document.getElementById('scanner-status').textContent = 'C√¢mera n√£o dispon√≠vel neste dispositivo';
+                document.getElementById('scanner-status').textContent = 'C‚mera n„o disponÌvel neste dispositivo';
                 document.getElementById('scanner-status').className = 'scanner-status';
             }
         });
-        
-        // Cleanup quando sair da p√°gina
+        // Cleanup quando sair da p·gina
         window.addEventListener('beforeunload', function() {
             if (html5QrCode) {
                 html5QrCode.stop().catch(err => {
@@ -258,27 +233,22 @@
             flex: 1;
             padding: 32px;
         }
-
         .header {
             margin-bottom: 32px;
         }
-
         .header h2 {
             font-size: 32px;
             font-weight: 800;
             margin-bottom: 8px;
         }
-
         .header p {
             color: rgba(255, 255, 255, 0.6);
             font-size: 14px;
         }
-
         .scanner-container {
             max-width: 600px;
             margin: 0 auto;
         }
-
         .scanner-card {
             background: linear-gradient(145deg, #1a1a2e, #16213e);
             border: 1px solid rgba(102, 126, 234, 0.2);
@@ -286,20 +256,17 @@
             padding: 32px;
             text-align: center;
         }
-
         #reader {
             border-radius: 16px;
             overflow: hidden;
             margin-bottom: 24px;
         }
-
         .scanner-controls {
             display: flex;
             gap: 16px;
             justify-content: center;
             margin-bottom: 24px;
         }
-
         .scanner-btn {
             padding: 14px 32px;
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -314,21 +281,16 @@
             align-items: center;
             gap: 8px;
         }
-
         .scanner-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
         }
-
         .scanner-btn.stop {
-            
         }
-
         .scanner-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-
         .scanner-instructions {
             background: rgba(102, 126, 234, 0.1);
             border: 1px solid rgba(102, 126, 234, 0.2);
@@ -336,27 +298,23 @@
             padding: 24px;
             text-align: left;
         }
-
         .scanner-instructions h3 {
             font-size: 16px;
             font-weight: 700;
             margin-bottom: 16px;
             color: #667eea;
         }
-
         .scanner-instructions ul {
             list-style: none;
             font-size: 14px;
             line-height: 1.8;
             color: rgba(255, 255, 255, 0.8);
         }
-
         .scanner-instructions li {
             margin-bottom: 8px;
             padding-left: 24px;
             position: relative;
         }
-
         .scanner-instructions li::before {
             content: '?';
             position: absolute;
@@ -364,7 +322,6 @@
             color: #667eea;
             font-weight: 700;
         }
-
         .success-modal {
             display: none;
             position: fixed;
@@ -377,7 +334,6 @@
             align-items: center;
             justify-content: center;
         }
-
         .success-content {
             background: linear-gradient(145deg, #1a1a2e, #16213e);
             border: 1px solid rgba(102, 126, 234, 0.3);
@@ -387,7 +343,6 @@
             max-width: 400px;
             animation: slideUp 0.3s;
         }
-
         @keyframes slideUp {
             from {
                 transform: translateY(100px);
@@ -398,56 +353,46 @@
                 opacity: 1;
             }
         }
-
         .success-icon {
             font-size: 72px;
             margin-bottom: 24px;
         }
-
         .success-title {
             font-size: 24px;
             font-weight: 800;
             margin-bottom: 16px;
             color: #667eea;
         }
-
         .success-details {
             margin: 24px 0;
             padding: 24px;
             background: rgba(102, 126, 234, 0.1);
             border-radius: 12px;
         }
-
         .success-detail-row {
             display: flex;
             justify-content: space-between;
             margin-bottom: 12px;
             font-size: 14px;
         }
-
         .success-detail-label {
             color: rgba(255, 255, 255, 0.6);
         }
-
         .success-detail-value {
             font-weight: 700;
             color: #667eea;
         }
-
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
             }
-
             .main-content {
                 margin-left: 0;
                 padding: 16px;
             }
-
             .scanner-card {
                 padding: 24px;
             }
-
             .scanner-controls {
                 flex-direction: column;
             }
@@ -459,8 +404,6 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="empresa"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
 <body>
 <aside class="sidebar">
 <div class="logo">
@@ -496,31 +439,31 @@
 <li class="nav-item">
 <a href="empresa-promocoes.html" class="nav-link">
 <i class="fas fa-gift"></i>
-                    Promo√ß√µes
+                    PromoÁıes
                 </a>
 </li>
 <li class="nav-item">
 <a href="empresa-bonus.html" class="nav-link">
 <i class="fas fa-star"></i>
-                    B√†nus
+                    B‡nus
                 </a>
 </li>
 <li class="nav-item">
 <a href="empresa-notificacoes.html" class="nav-link">
 <i class="fas fa-bell"></i>
-                    Notifica√†√†es
+                    Notifica‡‡es
                 </a>
 </li>
 <li class="nav-item">
 <a href="empresa-relatorios.html" class="nav-link">
 <i class="fas fa-file-alt"></i>
-                    Relat√≥rios
+                    RelatÛrios
                 </a>
 </li>
 <li class="nav-item">
 <a href="empresa-configuracoes.html" class="nav-link">
 <i class="fas fa-cog"></i>
-                    Configura√ß√µes
+                    ConfiguraÁıes
                 </a>
 </li>
 </ul>
@@ -544,12 +487,12 @@
                     </button>
 </div>
 <div class="scanner-instructions">
-<h3><i class="fas fa-info-circle"></i> Instru√†√†es</h3>
+<h3><i class="fas fa-info-circle"></i> Instru‡‡es</h3>
 <ul>
 <li>Clique em "Iniciar Scanner"</li>
-<li>Permita o acesso √† c√†mera</li>
+<li>Permita o acesso ‡ c‡mera</li>
 <li>Aponte para o QR Code do cliente</li>
-<li>Aguarde a confirma√†√†o autom√†tica</li>
+<li>Aguarde a confirma‡‡o autom‡tica</li>
 </ul>
 </div>
 </div>
@@ -581,13 +524,10 @@
 </div>
 <script>
         let html5QrcodeScanner;
-
         function startScanner() {
             document.getElementById('startBtn').style.display = 'none';
             document.getElementById('stopBtn').style.display = 'flex';
-
             html5QrcodeScanner = new Html5Qrcode("reader");
-
             html5QrcodeScanner.start(
                 { facingMode: "environment" },
                 { fps: 10, qrbox: 250 },
@@ -595,40 +535,32 @@
                 onScanFailure
             );
         }
-
         function stopScanner() {
             html5QrcodeScanner.stop().then(() => {
                 document.getElementById('startBtn').style.display = 'flex';
                 document.getElementById('stopBtn').style.display = 'none';
             });
         }
-
         function onScanSuccess(decodedText) {
             try {
                 const data = JSON.parse(decodedText);
-                
                 // Simular chamada API
                 creditPoints(data);
-                
                 // Parar scanner
                 stopScanner();
             } catch (e) {
-                alert('QR Code inv√°lido');
+                alert('QR Code inv·lido');
             }
         }
-
         function onScanFailure(error) {
-            // Ignorar erros de scan cont√†nuo
+            // Ignorar erros de scan cont‡nuo
         }
-
         function creditPoints(clientData) {
             // Mock data - integrar com API real
-            document.getElementById('clientName').textContent = clientData.name || 'Jo√†o Silva';
+            document.getElementById('clientName').textContent = clientData.name || 'Jo‡o Silva';
             document.getElementById('points').textContent = '+50 pontos';
             document.getElementById('totalPoints').textContent = '1.297 pontos';
-            
             document.getElementById('successModal').style.display = 'flex';
-
             // API call exemplo:
             // fetch('/api/empresa/credit-points', {
             //     method: 'POST',
@@ -636,7 +568,6 @@
             //     body: JSON.stringify({ clientId: clientData.id })
             // });
         }
-
         function closeModal() {
             document.getElementById('successModal').style.display = 'none';
             startScanner();
@@ -654,7 +585,7 @@
 </a>
 <a href="empresa-promocoes.html" class="nav-item">
 <i class="fas fa-gift"></i>
-<span>Promo√ß√µes</span>
+<span>PromoÁıes</span>
 </a>
 <a href="empresa-clientes.html" class="nav-item">
 <i class="fas fa-users"></i>
@@ -662,40 +593,20 @@
 </a>
 <a href="empresa-relatorios.html" class="nav-item">
 <i class="fas fa-chart-line"></i>
-<span>Relat√≥rios</span>
+<span>RelatÛrios</span>
 </a>
 </nav>
 <script>
-        // Verifica√ß√£o de autentica√ß√£o SIMPLIFICADA
+        // VerificaÁ„o de autenticaÁ„o SIMPLIFICADA
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
-            
             if (!token) {
-                console.warn('‚ö†Ô∏è Sem token - redirecionando...');
+                console.warn('?? Sem token - redirecionando...');
                 window.location.href = '/entrar.html';
                 return;
             }
-
-            console.log('‚úÖ Usu√°rio autenticado - acesso permitido');
+            console.log('? Usu·rio autenticado - acesso permitido');
         });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

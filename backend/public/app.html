@@ -9,18 +9,14 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
     <!-- Progressive Web App -->
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
     <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png">
-    
     <!-- CSS Centralizado -->
     <link rel="stylesheet" href="/style.css">
-    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         /* SPA Specific Styles */
         .app-container {
@@ -28,7 +24,6 @@
             background: var(--gradient-primary);
             position: relative;
         }
-        
         .loading-screen {
             position: fixed;
             top: 0;
@@ -43,12 +38,10 @@
             z-index: 9999;
             transition: opacity 0.5s ease;
         }
-        
         .loading-screen.hidden {
             opacity: 0;
             pointer-events: none;
         }
-        
         .loader {
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
@@ -58,21 +51,17 @@
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
         }
-        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
         .content-area {
             opacity: 0;
             transition: opacity 0.5s ease;
         }
-        
         .content-area.visible {
             opacity: 1;
         }
-        
         /* Navigation Styles */
         .top-nav {
             background: rgba(255, 255, 255, 0.1);
@@ -83,7 +72,6 @@
             top: 0;
             z-index: 100;
         }
-        
         .nav-header {
             display: flex;
             justify-content: space-between;
@@ -91,7 +79,6 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-        
         .nav-brand {
             display: flex;
             align-items: center;
@@ -100,13 +87,11 @@
             font-weight: 600;
             font-size: 1.2rem;
         }
-        
         .nav-actions {
             display: flex;
             gap: 1rem;
             align-items: center;
         }
-        
         .user-info {
             display: flex;
             align-items: center;
@@ -114,7 +99,6 @@
             color: white;
             font-size: 0.9rem;
         }
-        
         .user-avatar {
             width: 32px;
             height: 32px;
@@ -126,7 +110,6 @@
             font-weight: bold;
             color: white;
         }
-        
         .logout-btn {
             background: rgba(255, 255, 255, 0.2);
             border: none;
@@ -137,12 +120,10 @@
             transition: all 0.3s ease;
             font-size: 0.9rem;
         }
-        
         .logout-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
         }
-        
         /* Side Navigation */
         .side-nav {
             position: fixed;
@@ -158,21 +139,17 @@
             transition: transform 0.3s ease;
             z-index: 90;
         }
-        
         .side-nav.open {
             transform: translateX(0);
         }
-        
         .nav-menu {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        
         .nav-item {
             margin-bottom: 4px;
         }
-        
         .nav-link {
             display: flex;
             align-items: center;
@@ -184,19 +161,16 @@
             border-left: 3px solid transparent;
             cursor: pointer;
         }
-        
         .nav-link:hover,
         .nav-link.active {
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border-left-color: var(--accent-orange);
         }
-        
         .nav-link i {
             width: 20px;
             text-align: center;
         }
-        
         /* Main Content */
         .main-content {
             padding: 2rem;
@@ -204,11 +178,9 @@
             transition: margin-left 0.3s ease;
             min-height: calc(100vh - 140px);
         }
-        
         .main-content.nav-open {
             margin-left: 260px;
         }
-        
         /* Bottom Navigation for Mobile */
         .bottom-nav {
             display: none;
@@ -221,7 +193,6 @@
             padding: 8px 0;
             z-index: 100;
         }
-        
         .bottom-nav-menu {
             display: flex;
             justify-content: space-around;
@@ -229,7 +200,6 @@
             max-width: 500px;
             margin: 0 auto;
         }
-        
         .bottom-nav-item {
             display: flex;
             flex-direction: column;
@@ -243,47 +213,38 @@
             border-radius: 8px;
             cursor: pointer;
         }
-        
         .bottom-nav-item.active,
         .bottom-nav-item:hover {
             color: var(--accent-orange);
             background: rgba(255, 255, 255, 0.1);
         }
-        
         .bottom-nav-item i {
             font-size: 1.2rem;
         }
-        
         /* Responsive */
         @media (max-width: 768px) {
             .side-nav {
                 display: none;
             }
-            
             .main-content {
                 margin-left: 0;
                 padding: 1rem;
                 padding-bottom: 80px;
             }
-            
             .bottom-nav {
                 display: block;
             }
-            
             .nav-actions {
                 gap: 0.5rem;
             }
-            
             .user-info span {
                 display: none;
             }
         }
-        
         /* Menu Toggle */
         .menu-toggle {
             display: none;
         }
-        
         @media (min-width: 769px) {
             .menu-toggle {
                 display: block;
@@ -296,13 +257,12 @@
                 border-radius: 4px;
                 transition: all 0.3s ease;
             }
-            
             .menu-toggle:hover {
                 background: rgba(255, 255, 255, 0.1);
             }
         }
     </style>
-</head>
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
@@ -310,7 +270,6 @@
         <h3 style="color: white; margin: 0;">Carregando sistema...</h3>
         <p style="color: rgba(255,255,255,0.8); margin-top: 8px;">Verificando autenticação</p>
     </div>
-
     <!-- App Container -->
     <div class="app-container">
         <!-- Top Navigation -->
@@ -323,7 +282,6 @@
                     <i class="fas fa-gem"></i>
                     <span>Tem de Tudo</span>
                 </div>
-                
                 <div class="nav-actions">
                     <div class="user-info" id="userInfo">
                         <div class="user-avatar" id="userAvatar">?</div>
@@ -336,21 +294,18 @@
                 </div>
             </div>
         </nav>
-
         <!-- Side Navigation -->
         <aside class="side-nav" id="sideNav">
             <ul class="nav-menu" id="navMenu">
                 <!-- Menu items will be dynamically loaded based on user role -->
             </ul>
         </aside>
-
         <!-- Main Content Area -->
         <main class="main-content" id="mainContent">
             <div class="content-area" id="contentArea">
                 <!-- Content will be dynamically loaded here -->
             </div>
         </main>
-
         <!-- Bottom Navigation (Mobile) -->
         <nav class="bottom-nav" id="bottomNav">
             <div class="bottom-nav-menu" id="bottomNavMenu">
@@ -358,7 +313,6 @@
             </div>
         </nav>
     </div>
-
     <!-- SPA Router and Components -->
     <script src="/js/spa-router.js"></script>
     <script src="/js/spa-auth.js"></script>

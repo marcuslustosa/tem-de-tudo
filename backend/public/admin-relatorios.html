@@ -1,19 +1,19 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#6F1AB6">
-    <title>Relatórios Admin - Tem de Tudo</title>
+    <title>Relat�rios Admin - Tem de Tudo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>    <link rel="manifest" href="/manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/js/config.js"></script>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body class="modern-interface">
 <!-- Background Elements -->
 <div class="bg-elements">
@@ -21,7 +21,6 @@
     <div class="floating-square" style="top: 60%; right: 10%;"></div>
     <div class="gradient-blob" style="top: 40%; left: 5%;"></div>
 </div>
-
 <!-- Header -->
 <div class="modern-header">
     <div class="header-content">
@@ -34,8 +33,8 @@
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <div>
-                    <h1>Relatórios</h1>
-                    <span class="subtitle">Análises e estatísticas do sistema</span>
+                    <h1>Relat�rios</h1>
+                    <span class="subtitle">An�lises e estat�sticas do sistema</span>
                 </div>
             </div>
         </div>
@@ -47,7 +46,6 @@
         </div>
     </div>
 </div>
-
 <!-- Main Content -->
 <div class="main-container">
     <div class="page-content">
@@ -56,7 +54,7 @@
             <div class="selector-content">
                 <h3>
                     <i class="fas fa-calendar-alt"></i>
-                    Período de Análise
+                    Per�odo de An�lise
                 </h3>
                 <div class="period-buttons">
                     <button class="period-btn active" data-period="7">7 dias</button>
@@ -65,7 +63,7 @@
                 </div>
                 <div class="date-range">
                     <input type="date" id="startDate" class="date-input">
-                    <span>até</span>
+                    <span>at�</span>
                     <input type="date" id="endDate" class="date-input">
                     <button class="apply-btn" onclick="applyDateRange()">
                         <i class="fas fa-check"></i>
@@ -73,7 +71,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Stats Overview -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -87,10 +84,9 @@
                     </div>
                 </div>
                 <div class="stat-value" data-counter="1347">0</div>
-                <div class="stat-label">Total de Usuários</div>
-                <div class="stat-description">+156 novos usuários este mês</div>
+                <div class="stat-label">Total de Usu�rios</div>
+                <div class="stat-description">+156 novos usu�rios este m�s</div>
             </div>
-            
             <div class="stat-card">
                 <div class="stat-header">
                     <div class="stat-icon coins">
@@ -102,10 +98,9 @@
                     </div>
                 </div>
                 <div class="stat-value" data-counter="89456">0</div>
-                <div class="stat-label">Pontos Distribuídos</div>
+                <div class="stat-label">Pontos Distribu�dos</div>
                 <div class="stat-description">7.234 pontos hoje</div>
             </div>
-            
             <div class="stat-card">
                 <div class="stat-header">
                     <div class="stat-icon companies">
@@ -118,9 +113,8 @@
                 </div>
                 <div class="stat-value" data-counter="23">0</div>
                 <div class="stat-label">Empresas Ativas</div>
-                <div class="stat-description">2 pendentes de aprovação</div>
+                <div class="stat-description">2 pendentes de aprova��o</div>
             </div>
-            
             <div class="stat-card">
                 <div class="stat-header">
                     <div class="stat-icon coupons">
@@ -136,14 +130,13 @@
                 <div class="stat-description">67 resgates hoje</div>
             </div>
         </div>
-
         <!-- Charts Section -->
         <div class="charts-grid">
             <div class="chart-card">
                 <div class="chart-header">
                     <h3>
                         <i class="fas fa-chart-line"></i>
-                        Crescimento de Usuários
+                        Crescimento de Usu�rios
                     </h3>
                     <div class="chart-actions">
                         <button class="chart-action" title="Atualizar">
@@ -155,12 +148,11 @@
                     <canvas id="usersChart"></canvas>
                 </div>
             </div>
-            
             <div class="chart-card">
                 <div class="chart-header">
                     <h3>
                         <i class="fas fa-chart-pie"></i>
-                        Distribuição por Perfil
+                        Distribui��o por Perfil
                     </h3>
                 </div>
                 <div class="chart-container">
@@ -168,7 +160,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Activity Feed -->
         <div class="glass-card activity-section">
             <div class="section-header">
@@ -188,26 +179,26 @@
             </h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
                 <div class="form-group">
-                    <label>Período</label>
+                    <label>Per�odo</label>
                     <select id="periodFilter" onchange="updateStats()">
-                        <option value="7">Últimos 7 dias</option>
-                        <option value="30" selected>Últimos 30 dias</option>
-                        <option value="90">Últimos 90 dias</option>
-                        <option value="365">Últimos 12 meses</option>
+                        <option value="7">�ltimos 7 dias</option>
+                        <option value="30" selected>�ltimos 30 dias</option>
+                        <option value="90">�ltimos 90 dias</option>
+                        <option value="365">�ltimos 12 meses</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Categoria</label>
                     <select id="categoryFilter" onchange="updateStats()">
                         <option value="all">Todas</option>
-                        <option value="alimentacao">Alimentação</option>
+                        <option value="alimentacao">Alimenta��o</option>
                         <option value="varejo">Varejo</option>
-                        <option value="servicos">Serviços</option>
-                        <option value="saude">Saúde</option>
+                        <option value="servicos">Servi�os</option>
+                        <option value="saude">Sa�de</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Região</label>
+                    <label>Regi�o</label>
                     <select id="regionFilter" onchange="updateStats()">
                         <option value="all">Todas</option>
                         <option value="centro">Centro</option>
@@ -222,13 +213,12 @@
                 </div>
             </div>
         </div>
-
         <!-- Charts Section -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
             <div class="glass-card">
                 <h3 style="margin-bottom: 20px; font-size: 18px; font-weight: 800; color: #1D1D1F;">
                     <i class="fas fa-chart-bar" style="color: #6F1AB6; margin-right: 8px;"></i>
-                    Usuários por Mês
+                    Usu�rios por M�s
                 </h3>
                 <canvas id="usersChart" height="200"></canvas>
             </div>
@@ -240,7 +230,6 @@
                 <canvas id="pointsChart" height="200"></canvas>
             </div>
         </div>
-
         <!-- Top Empresas -->
         <div class="glass-card">
             <h3 style="margin-bottom: 20px; font-size: 18px; font-weight: 800; color: #1D1D1F;">
@@ -249,7 +238,6 @@
             </h3>
     </div>
 </div>
-
 <!-- Bottom Navigation -->
 <div class="bottom-nav">
     <div class="nav-container">
@@ -259,7 +247,7 @@
         </a>
         <a href="admin-usuarios.html" class="nav-item">
             <i class="fas fa-users"></i>
-            <span>Usuários</span>
+            <span>Usu�rios</span>
         </a>
         <a href="admin-empresas.html" class="nav-item">
             <i class="fas fa-building"></i>
@@ -267,7 +255,7 @@
         </a>
         <a href="admin-relatorios.html" class="nav-item active">
             <i class="fas fa-chart-line"></i>
-            <span>Relatórios</span>
+            <span>Relat�rios</span>
         </a>
         <a href="admin-configuracoes.html" class="nav-item">
             <i class="fas fa-cogs"></i>
@@ -275,10 +263,8 @@
         </a>
     </div>
 </div>
-
 <script>
 let usersChart, profileChart;
-
 // Initialize Charts
 function initializeCharts() {
     // Users Growth Chart
@@ -288,7 +274,7 @@ function initializeCharts() {
         data: {
             labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
             datasets: [{
-                label: 'Novos Usuários',
+                label: 'Novos Usu�rios',
                 data: [120, 190, 300, 500, 200, 300],
                 borderColor: '#6F1AB6',
                 backgroundColor: 'rgba(111, 26, 182, 0.1)',
@@ -320,7 +306,6 @@ function initializeCharts() {
             }
         }
     });
-
     // Profile Distribution Chart
     const profileCtx = document.getElementById('profileChart').getContext('2d');
     profileChart = new Chart(profileCtx, {
@@ -348,14 +333,12 @@ function initializeCharts() {
         }
     });
 }
-
 // Counter Animation
 function animateCounters() {
     document.querySelectorAll('[data-counter]').forEach(counter => {
         const target = parseInt(counter.dataset.counter);
         const increment = target / 100;
         let current = 0;
-        
         const timer = setInterval(() => {
             current += increment;
             if (current >= target) {
@@ -366,36 +349,34 @@ function animateCounters() {
         }, 20);
     });
 }
-
 // Load Activity Feed
 function loadActivity() {
     const activities = [
         {
             icon: 'fas fa-user-plus',
-            text: 'Novo usuário registrado: João Silva',
-            time: '2 min atrás',
+            text: 'Novo usu�rio registrado: Jo�o Silva',
+            time: '2 min atr�s',
             type: 'user'
         },
         {
             icon: 'fas fa-coins',
-            text: '1.500 pontos distribuídos na Farmácia Central',
-            time: '5 min atrás',
+            text: '1.500 pontos distribu�dos na Farm�cia Central',
+            time: '5 min atr�s',
             type: 'points'
         },
         {
             icon: 'fas fa-ticket',
-            text: '12 cupons resgatados no último hora',
-            time: '15 min atrás',
+            text: '12 cupons resgatados no �ltimo hora',
+            time: '15 min atr�s',
             type: 'coupon'
         },
         {
             icon: 'fas fa-building',
             text: 'Nova empresa cadastrada: Tech Store',
-            time: '1h atrás',
+            time: '1h atr�s',
             type: 'company'
         }
     ];
-    
     const activityFeed = document.getElementById('activityFeed');
     activityFeed.innerHTML = activities.map(activity => `
         <div class="activity-item">
@@ -409,45 +390,37 @@ function loadActivity() {
         </div>
     `).join('');
 }
-
 // Period Selection
 function selectPeriod(period) {
     document.querySelectorAll('.period-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     event.target.classList.add('active');
-    
     // Update charts and stats based on selected period
-    console.log(`Período selecionado: ${period} dias`);
+    console.log(`Per�odo selecionado: ${period} dias`);
 }
-
 // Export Report
 function exportReport() {
     const btn = event.target.closest('button');
     const originalText = btn.innerHTML;
-    
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exportando...';
-    
     // Simulate export
     setTimeout(() => {
         btn.disabled = false;
         btn.innerHTML = originalText;
-        showMessage('Relatório exportado com sucesso!', 'success');
+        showMessage('Relat�rio exportado com sucesso!', 'success');
     }, 2000);
 }
-
 // Apply Date Range
 function applyDateRange() {
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
-    
     if (startDate && endDate) {
-        console.log(`Período personalizado: ${startDate} até ${endDate}`);
-        showMessage('Período aplicado com sucesso!', 'success');
+        console.log(`Per�odo personalizado: ${startDate} at� ${endDate}`);
+        showMessage('Per�odo aplicado com sucesso!', 'success');
     }
 }
-
 // Show Message
 function showMessage(message, type = 'success') {
     const notification = document.createElement('div');
@@ -468,49 +441,39 @@ function showMessage(message, type = 'success') {
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         animation: slideIn 0.3s ease;
     `;
-    
     document.body.appendChild(notification);
-    
     setTimeout(() => {
         notification.remove();
     }, 3000);
 }
-
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     // Check authentication
     const token = localStorage.getItem('authToken') || localStorage.getItem('token');
     const userType = localStorage.getItem('userType');
-    
     if (!token || userType !== 'admin') {
-        alert('⚠️ Acesso negado. Área restrita para administradores.');
+        alert('?? Acesso negado. �rea restrita para administradores.');
         window.location.href = '/entrar.html';
         return;
     }
-    
     // Initialize everything
     animateCounters();
     loadActivity();
-    
     // Initialize charts after a brief delay
     setTimeout(() => {
         initializeCharts();
     }, 500);
-    
     // Set today's date as default
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('endDate').value = today;
-    
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     document.getElementById('startDate').value = sevenDaysAgo.toISOString().split('T')[0];
-    
     // Add event listeners for period buttons
     document.querySelectorAll('.period-btn').forEach(btn => {
         btn.addEventListener('click', () => selectPeriod(btn.dataset.period));
     });
 });
-
 // CSS for animations
 const style = document.createElement('style');
 style.textContent = `
@@ -523,14 +486,13 @@ document.head.appendChild(style);
 </script>
 </body>
 </html>
-                { rank: 4, nome: 'Academia Fitness Pro', categoria: 'Serviços', pontos: 76000, cupons: 290, taxa: '82.1%' },
-                { rank: 5, nome: 'Pizzaria Don Giovanni', categoria: 'Alimentação', pontos: 65000, cupons: 250, taxa: '78.9%' }
+                { rank: 4, nome: 'Academia Fitness Pro', categoria: 'Servi�os', pontos: 76000, cupons: 290, taxa: '82.1%' },
+                { rank: 5, nome: 'Pizzaria Don Giovanni', categoria: 'Alimenta��o', pontos: 65000, cupons: 250, taxa: '78.9%' }
             ];
-            
             const tbody = document.getElementById('topEmpresasTable');
             tbody.innerHTML = topEmpresas.map(e => `
                 <tr>
-                    <td style="font-weight: 700; color: #6F1AB6;">${e.rank}º</td>
+                    <td style="font-weight: 700; color: #6F1AB6;">${e.rank}�</td>
                     <td style="font-weight: 600;">${e.nome}</td>
                     <td><span class="badge empresa">${e.categoria}</span></td>
                     <td>${e.pontos.toLocaleString('pt-BR')}</td>
@@ -539,11 +501,9 @@ document.head.appendChild(style);
                 </tr>
             `).join('');
         }
-
         function exportReport() {
-            alert('Relatório exportado com sucesso! (Funcionalidade será implementada)');
+            alert('Relat�rio exportado com sucesso! (Funcionalidade ser� implementada)');
         }
-
         // Inicializar charts
         function initCharts() {
             // Users Chart
@@ -553,7 +513,7 @@ document.head.appendChild(style);
                 data: {
                     labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
                     datasets: [{
-                        label: 'Novos Usuários',
+                        label: 'Novos Usu�rios',
                         data: [650, 590, 800, 810, 560, 550, 400, 700, 820, 950, 1100, 1250],
                         borderColor: '#6F1AB6',
                         backgroundColor: 'rgba(111, 26, 182, 0.1)',
@@ -573,13 +533,12 @@ document.head.appendChild(style);
                     }
                 }
             });
-
             // Points Chart
             const pointsCtx = document.getElementById('pointsChart').getContext('2d');
             new Chart(pointsCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Alimentação', 'Varejo', 'Serviços', 'Saúde', 'Entretenimento'],
+                    labels: ['Alimenta��o', 'Varejo', 'Servi�os', 'Sa�de', 'Entretenimento'],
                     datasets: [{
                         data: [35, 25, 20, 12, 8],
                         backgroundColor: [
@@ -607,14 +566,12 @@ document.head.appendChild(style);
                 }
             });
         }
-
         // Carregar ao iniciar
         document.addEventListener('DOMContentLoaded', () => {
             updateStats();
             initCharts();
         });
     </script>
-
     <!-- Bottom Navigation PWA -->
     <nav class="bottom-nav">
         <a href="admin-painel.html" class="nav-item">
@@ -623,7 +580,7 @@ document.head.appendChild(style);
         </a>
         <a href="admin-usuarios.html" class="nav-item">
             <i class="fas fa-users"></i>
-            <span>Usuários</span>
+            <span>Usu�rios</span>
         </a>
         <a href="admin-empresas.html" class="nav-item">
             <i class="fas fa-building"></i>
@@ -631,7 +588,7 @@ document.head.appendChild(style);
         </a>
         <a href="admin-relatorios.html" class="nav-item active">
             <i class="fas fa-chart-line"></i>
-            <span>Relatórios</span>
+            <span>Relat�rios</span>
         </a>
         <a href="admin-configuracoes.html" class="nav-item">
             <i class="fas fa-cog"></i>
@@ -640,19 +597,3 @@ document.head.appendChild(style);
     </nav>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code - Tem de Tudo</title>
+<meta name="description" content="Seu QR Code pessoal para ganhar pontos">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - QR CODE PAGE */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; --gray-800: #1F2937;
+    --gray-900: #111827; --white: #FFFFFF; --border-radius: 12px; --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1); --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15); --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+body { font-family: 'Inter', sans-serif; color: var(--gray-900); background: var(--gray-50); min-height: 100vh; margin: 0; padding: 0; }
+.app-page { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+.header-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; }
+.header-nav h1 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); flex: 1; text-align: center; margin: 0 1rem; }
+.back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gray-100); color: var(--gray-700); text-decoration: none; transition: var(--transition); border: none; cursor: pointer; }
+.back-btn:hover { background: var(--gray-200); }
+.app-content { flex: 1; padding: 1rem 1.5rem 6rem; text-align: center; }
+
+.qr-section { background: var(--white); border-radius: var(--border-radius); padding: 2rem 1.5rem; 
+    margin-bottom: 2rem; box-shadow: var(--shadow-sm); }
+.qr-container { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+.qr-code-display { width: 250px; height: 250px; margin: 0 auto; padding: 1rem; background: var(--white);
+    border: 2px solid var(--gray-200); border-radius: var(--border-radius); display: flex;
+    align-items: center; justify-content: center; }
+.qr-code-display canvas { max-width: 100%; max-height: 100%; }
+.qr-info { text-align: center; }
+.qr-info h2 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.5rem; }
+.qr-info p { color: var(--gray-600); font-size: 0.875rem; line-height: 1.5; }
+
+.user-card { background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%);
+    border-radius: var(--border-radius); padding: 2rem 1.5rem; margin-bottom: 2rem; color: var(--white);
+    box-shadow: var(--shadow-lg); }
+.user-info { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+.user-avatar { width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+.user-details h3 { font-size: 1.125rem; font-weight: 700; margin-bottom: 0.25rem; }
+.user-details p { opacity: 0.9; font-size: 0.875rem; }
+.user-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.stat-item { text-align: center; }
+.stat-value { font-size: 1.5rem; font-weight: 800; display: block; }
+.stat-label { font-size: 0.75rem; opacity: 0.9; font-weight: 600; text-transform: uppercase; }
+
+.instructions { background: var(--white); border-radius: var(--border-radius); padding: 2rem 1.5rem;
+    margin-bottom: 2rem; box-shadow: var(--shadow-sm); }
+.instructions h3 { font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem; text-align: center; }
+.steps-list { text-align: left; max-width: 400px; margin: 0 auto; }
+.step-item { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-100); }
+.step-item:last-child { border-bottom: none; margin-bottom: 0; }
+.step-number { width: 32px; height: 32px; background: var(--vivo-purple); color: var(--white);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 0.875rem; font-weight: 700; flex-shrink: 0; }
+.step-text { flex: 1; }
+.step-title { font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem; }
+.step-desc { color: var(--gray-600); font-size: 0.875rem; }
+
+.actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.action-btn { background: var(--white); border: 2px solid var(--gray-200); border-radius: var(--border-radius);
+    padding: 1rem; color: var(--gray-700); text-decoration: none; display: flex; flex-direction: column;
+    align-items: center; gap: 0.75rem; transition: var(--transition); }
+.action-btn:hover { border-color: var(--vivo-purple); color: var(--vivo-purple); transform: translateY(-2px); }
+.action-btn i { font-size: 1.5rem; }
+.action-btn span { font-size: 0.875rem; font-weight: 600; }
+.action-btn.primary { background: var(--vivo-purple); color: var(--white); border-color: var(--vivo-purple); }
+.action-btn.primary:hover { background: var(--vivo-purple-dark); border-color: var(--vivo-purple-dark); color: var(--white); }
+
+.refresh-info { background: var(--gray-100); border-radius: var(--border-radius); padding: 1rem; 
+    margin-bottom: 2rem; text-align: center; }
+.refresh-info p { color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.5rem; }
+.refresh-time { font-weight: 600; color: var(--vivo-purple); }
+
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white);
+    border-top: 1px solid var(--gray-200); padding: 0.5rem 0; z-index: 1000; }
+.nav-container { display: flex; justify-content: space-around; align-items: center; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; padding: 0.5rem;
+    text-decoration: none; color: var(--gray-500); transition: var(--transition); font-size: 0.75rem; font-weight: 500; }
+.nav-item.active { color: var(--vivo-purple); }
+.nav-item:hover:not(.active) { color: var(--gray-700); }
+.nav-item i { font-size: 1.25rem; margin-bottom: 2px; }
+
+@media (max-width: 480px) {
+    .app-content { padding: 1rem 1rem 6rem; }
+    .qr-code-display { width: 200px; height: 200px; }
+    .user-stats { grid-template-columns: 1fr; }
+    .actions { grid-template-columns: 1fr; }
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+.app-page { animation: fadeIn 0.3s ease-out; }
+.qr-code-display { animation: pulse 2s ease-in-out infinite; }
+</style>
+</head>
+<body>
+<div class="app-page">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="header-nav">
+            <button class="back-btn" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>Meu QR Code</h1>
+            <div style="width: 40px;"></div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="app-content">
+        <!-- User Card -->
+        <div class="user-card">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <h3 id="userName">Usuário Teste</h3>
+                    <p id="userEmail">teste@teste.com</p>
+                </div>
+            </div>
+            <div class="user-stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="userPoints">2.847</span>
+                    <span class="stat-label">Pontos</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="userLevel">Gold</span>
+                    <span class="stat-label">Nível</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Code Section -->
+        <div class="qr-section">
+            <div class="qr-container">
+                <div class="qr-code-display" id="qrCodeDisplay">
+                    <!-- QR Code will be generated here -->
+                </div>
+                <div class="qr-info">
+                    <h2>Seu QR Code Pessoal</h2>
+                    <p>Apresente este código nos estabelecimentos parceiros para ganhar pontos automaticamente.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <h3>Como usar seu QR Code</h3>
+            <div class="steps-list">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-text">
+                        <div class="step-title">Vá ao estabelecimento</div>
+                        <div class="step-desc">Visite qualquer loja parceira do programa</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-text">
+                        <div class="step-title">Mostre seu QR Code</div>
+                        <div class="step-desc">Apresente esta tela para o atendente</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-text">
+                        <div class="step-title">Ganhe pontos</div>
+                        <div class="step-desc">Pontos são creditados automaticamente</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <a href="#" class="action-btn primary" onclick="refreshQRCode()">
+                <i class="fas fa-sync-alt"></i>
+                <span>Atualizar</span>
+            </a>
+            <a href="#" class="action-btn" onclick="shareQRCode()">
+                <i class="fas fa-share-alt"></i>
+                <span>Compartilhar</span>
+            </a>
+        </div>
+
+        <!-- Refresh Info -->
+        <div class="refresh-info">
+            <p>QR Code atualizado automaticamente a cada 5 minutos</p>
+            <p class="refresh-time" id="refreshTime">Próxima atualização em 4:32</p>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <div class="nav-container">
+        <a href="dashboard-cliente.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="app-empresas.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Explorar</span>
+        </a>
+        <a href="app-pontos.html" class="nav-item">
+            <i class="fas fa-star"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Ofertas</span>
+        </a>
+        <a href="app-perfil.html" class="nav-item">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+        </a>
+    </div>
+</div>
+
+<script>
+let qrRefreshTimer;
+let countdownTimer;
+
+// Generate QR Code
+function generateQRCode() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const qrData = {
+        userId: user.id || 1,
+        timestamp: Date.now(),
+        hash: Math.random().toString(36).substring(7)
+    };
+    
+    const qrString = JSON.stringify(qrData);
+    const qrDisplay = document.getElementById('qrCodeDisplay');
+    
+    QRCode.toCanvas(qrString, {
+        width: 200,
+        height: 200,
+        margin: 1,
+        color: {
+            dark: '#6F1AB6',
+            light: '#FFFFFF'
+        }
+    }, function (error, canvas) {
+        if (error) {
+            console.error('Erro ao gerar QR Code:', error);
+            qrDisplay.innerHTML = '<p style="color: #EF4444;">Erro ao gerar QR Code</p>';
+        } else {
+            qrDisplay.innerHTML = '';
+            qrDisplay.appendChild(canvas);
+        }
+    });
+}
+
+// Refresh QR Code
+function refreshQRCode() {
+    generateQRCode();
+    showNotification('QR Code atualizado!');
+    resetCountdown();
+}
+
+// Share QR Code
+function shareQRCode() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Meu QR Code - Tem de Tudo',
+            text: 'Escaneie meu QR Code para me encontrar no app!'
+        });
+    } else {
+        showNotification('Compartilhamento não suportado neste dispositivo');
+    }
+}
+
+// Show notification
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px; background: var(--vivo-green); color: white;
+        padding: 1rem 1.5rem; border-radius: var(--border-radius); font-weight: 600; z-index: 10000;
+        box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 0.5rem; max-width: 300px;
+        animation: fadeIn 0.3s ease;
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
+// Countdown timer
+function startCountdown() {
+    let seconds = 300; // 5 minutes
+    
+    function updateCountdown() {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        document.getElementById('refreshTime').textContent = 
+            `Próxima atualização em ${minutes}:${secs.toString().padStart(2, '0')}`;
+        
+        if (seconds <= 0) {
+            generateQRCode();
+            seconds = 300;
+        } else {
+            seconds--;
+        }
+    }
+    
+    updateCountdown();
+    countdownTimer = setInterval(updateCountdown, 1000);
+}
+
+function resetCountdown() {
+    if (countdownTimer) clearInterval(countdownTimer);
+    startCountdown();
+}
+
+// Load user data
+function loadUserData() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    if (user.name) document.getElementById('userName').textContent = user.name;
+    if (user.email) document.getElementById('userEmail').textContent = user.email;
+    if (user.pontos) document.getElementById('userPoints').textContent = user.pontos.toLocaleString();
+}
+
+// Auto-refresh setup with cleanup
+function setupAutoRefresh() {
+    qrRefreshTimer = setInterval(() => {
+        generateQRCode();
+    }, 5 * 60 * 1000); // 5 minutes
+}
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    if (qrRefreshTimer) clearInterval(qrRefreshTimer);
+    if (countdownTimer) clearInterval(countdownTimer);
+});
+
+// Keep screen awake (if supported)
+function keepScreenAwake() {
+    if ('wakeLock' in navigator) {
+        navigator.wakeLock.request('screen').catch(err => {
+            console.log('Wake lock failed:', err);
+        });
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    loadUserData();
+    generateQRCode();
+    setupAutoRefresh();
+    startCountdown();
+    keepScreenAwake();
+});
+</script>
+</body>
+</html>

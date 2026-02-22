@@ -1,15 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerenciar Promoções - Admin Tem de Tudo</title>
-<meta name="description" content="Painel administrativo para gerenciar promoções e campanhas">
+<title>Gerenciar Promo��es - Admin Tem de Tudo</title>
+<meta name="description" content="Painel administrativo para gerenciar promo��es e campanhas">
 <meta name="theme-color" content="#6F1AB6">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/style.css">
-</head>
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <div class="admin-promotions-page">
     <!-- Page Header -->
@@ -17,7 +19,7 @@
         <div class="header-container">
             <h1 class="page-title">
                 <i class="fas fa-tags"></i>
-                Gerenciar Promoções
+                Gerenciar Promo��es
             </h1>
             <a href="admin-painel.html" class="back-btn">
                 <i class="fas fa-arrow-left"></i>
@@ -25,7 +27,6 @@
             </a>
         </div>
     </div>
-
     <!-- Page Container -->
     <div class="page-container">
         <!-- Page Actions -->
@@ -35,7 +36,7 @@
                     type="text" 
                     class="search-input" 
                     id="searchInput" 
-                    placeholder="Buscar promoções por título, empresa ou categoria..."
+                    placeholder="Buscar promo��es por t�tulo, empresa ou categoria..."
                     oninput="filterPromotions()"
                 >
                 <button class="filter-btn" id="filterBtn" onclick="toggleFilters()">
@@ -45,10 +46,9 @@
             </div>
             <button class="create-btn" onclick="createPromotion()">
                 <i class="fas fa-plus"></i>
-                Nova Promoção
+                Nova Promo��o
             </button>
         </div>
-
         <!-- Stats Overview -->
         <div class="stats-overview">
             <div class="stat-card fade-in animate-delay-1">
@@ -56,41 +56,36 @@
                     <i class="fas fa-tags"></i>
                 </div>
                 <div class="stat-value" id="totalPromotions">24</div>
-                <div class="stat-label">Total de Promoções</div>
+                <div class="stat-label">Total de Promo��es</div>
             </div>
-
             <div class="stat-card fade-in animate-delay-2">
                 <div class="stat-icon">
                     <i class="fas fa-fire"></i>
                 </div>
                 <div class="stat-value" id="activePromotions">12</div>
-                <div class="stat-label">Promoções Ativas</div>
+                <div class="stat-label">Promo��es Ativas</div>
             </div>
-
             <div class="stat-card fade-in animate-delay-3">
                 <div class="stat-icon">
                     <i class="fas fa-clock"></i>
                 </div>
                 <div class="stat-value" id="pendingPromotions">5</div>
-                <div class="stat-label">Aguardando Aprovação</div>
+                <div class="stat-label">Aguardando Aprova��o</div>
             </div>
-
             <div class="stat-card fade-in animate-delay-4">
                 <div class="stat-icon">
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <div class="stat-value" id="conversionRate">78%</div>
-                <div class="stat-label">Taxa de Conversão</div>
+                <div class="stat-label">Taxa de Convers�o</div>
             </div>
         </div>
-
         <!-- Promotions Grid -->
         <div class="promotions-grid" id="promotionsGrid">
             <!-- Promotions will be loaded here -->
         </div>
     </div>
 </div>
-
 <!-- Bottom Navigation -->
 <div class="bottom-nav">
     <div class="nav-container">
@@ -100,7 +95,7 @@
         </a>
         <a href="admin-usuarios.html" class="nav-item">
             <i class="fas fa-users"></i>
-            <span>Usuários</span>
+            <span>Usu�rios</span>
         </a>
         <a href="admin-empresas.html" class="nav-item">
             <i class="fas fa-building"></i>
@@ -108,7 +103,7 @@
         </a>
         <a href="admin-promocoes.html" class="nav-item active">
             <i class="fas fa-tags"></i>
-            <span>Promoções</span>
+            <span>Promo��es</span>
         </a>
         <a href="admin-configuracoes.html" class="nav-item">
             <i class="fas fa-cogs"></i>
@@ -116,7 +111,6 @@
         </a>
     </div>
 </div>
-
 <script src="/js/config.js"></script>
 <script>
 // Sample promotion data
@@ -143,8 +137,8 @@ const samplePromotions = [
     },
     {
         id: 3,
-        titulo: "Promoção de Natal",
-        empresa: { nome: "Casa & Decoração" },
+        titulo: "Promo��o de Natal",
+        empresa: { nome: "Casa & Decora��o" },
         desconto: 25,
         data_inicio: "2024-12-15",
         validade: "2024-12-25",
@@ -153,7 +147,7 @@ const samplePromotions = [
     },
     {
         id: 4,
-        titulo: "Liquidação de Verão",
+        titulo: "Liquida��o de Ver�o",
         empresa: { nome: "Sports Center" },
         desconto: 40,
         data_inicio: "2024-10-01",
@@ -162,12 +156,10 @@ const samplePromotions = [
         imagem: null
     }
 ];
-
 // Load promotions
 async function loadPromotions() {
     try {
         const token = localStorage.getItem('authToken') || localStorage.getItem('token');
-        
         // Try to fetch from API first
         try {
             const response = await fetch(`${API_CONFIG.getBaseURL()}/api/promocoes`, {
@@ -176,7 +168,6 @@ async function loadPromotions() {
                     'Accept': 'application/json'
                 }
             });
-            
             if (response.ok) {
                 const data = await response.json();
                 const promotions = data.data || data || [];
@@ -185,41 +176,35 @@ async function loadPromotions() {
                 return;
             }
         } catch (apiError) {
-            console.log('API não disponível, usando dados de exemplo');
+            console.log('API n�o dispon�vel, usando dados de exemplo');
         }
-        
         // Fallback to sample data
         renderPromotions(samplePromotions);
         updateStats(samplePromotions);
-        
     } catch (error) {
-        console.error('Erro ao carregar promoções:', error);
+        console.error('Erro ao carregar promo��es:', error);
         renderPromotions([]);
     }
 }
-
 // Render promotions
 function renderPromotions(promotions) {
     const grid = document.getElementById('promotionsGrid');
-    
     if (promotions.length === 0) {
         grid.innerHTML = `
             <div class="empty-state fade-in">
                 <div class="empty-icon">
                     <i class="fas fa-tags"></i>
                 </div>
-                <h3>Nenhuma promoção encontrada</h3>
-                <p>Crie sua primeira promoção para começar</p>
+                <h3>Nenhuma promo��o encontrada</h3>
+                <p>Crie sua primeira promo��o para come�ar</p>
             </div>
         `;
         return;
     }
-    
     grid.innerHTML = promotions.map((promotion, index) => {
         const status = getPromotionStatus(promotion);
         const statusClass = getStatusClass(status);
         const statusText = getStatusText(status);
-        
         return `
             <div class="promotion-card fade-in animate-delay-${(index % 4) + 1}">
                 <div class="promotion-image">
@@ -231,25 +216,21 @@ function renderPromotions(promotions) {
                         ${statusText}
                     </div>
                 </div>
-                
                 <div class="promotion-content">
                     <h3 class="promotion-title">${promotion.titulo}</h3>
-                    
                     <div class="promotion-company">
                         <i class="fas fa-building"></i>
                         ${promotion.empresa?.nome || 'N/A'}
                     </div>
-                    
                     <div class="promotion-details">
                         <div class="promotion-discount">
                             -${promotion.desconto}%
                         </div>
                         <div class="promotion-dates">
-                            <div><strong>Início:</strong> ${formatDate(promotion.data_inicio)}</div>
+                            <div><strong>In�cio:</strong> ${formatDate(promotion.data_inicio)}</div>
                             <div><strong>Expira:</strong> ${formatDate(promotion.validade)}</div>
                         </div>
                     </div>
-                    
                     <div class="promotion-actions">
                         <button class="action-btn btn-edit" onclick="editPromotion(${promotion.id})" title="Editar">
                             <i class="fas fa-edit"></i>
@@ -266,33 +247,27 @@ function renderPromotions(promotions) {
         `;
     }).join('');
 }
-
 // Update statistics
 function updateStats(promotions) {
     const active = promotions.filter(p => getPromotionStatus(p) === 'ativa').length;
     const pending = promotions.filter(p => getPromotionStatus(p) === 'pendente').length;
-    
     animateValue('totalPromotions', promotions.length);
     animateValue('activePromotions', active);
     animateValue('pendingPromotions', pending);
     animateValue('conversionRate', 78, '%');
 }
-
 // Helper functions
 function getPromotionStatus(promotion) {
     const now = new Date();
     const startDate = new Date(promotion.data_inicio);
     const endDate = new Date(promotion.validade);
-    
     if (endDate < now) return 'expirada';
     if (startDate > now) return 'pendente';
     return promotion.status || 'ativa';
 }
-
 function getStatusClass(status) {
     return `status-${status === 'ativa' ? 'active' : status === 'pendente' ? 'pending' : 'expired'}`;
 }
-
 function getStatusText(status) {
     const statusMap = {
         'ativa': 'Ativa',
@@ -301,7 +276,6 @@ function getStatusText(status) {
     };
     return statusMap[status] || 'Desconhecido';
 }
-
 function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('pt-BR', {
         day: '2-digit',
@@ -309,14 +283,12 @@ function formatDate(dateString) {
         year: 'numeric'
     });
 }
-
 function animateValue(elementId, value, suffix = '') {
     const element = document.getElementById(elementId);
     const start = 0;
     const duration = 1000;
     const increment = value / (duration / 16);
     let current = start;
-    
     const timer = setInterval(() => {
         current += increment;
         if (current >= value) {
@@ -327,69 +299,43 @@ function animateValue(elementId, value, suffix = '') {
         }
     }, 16);
 }
-
 // Action functions
 function createPromotion() {
-    alert('🎯 Criar nova promoção - Funcionalidade em desenvolvimento');
+    alert('?? Criar nova promo��o - Funcionalidade em desenvolvimento');
 }
-
 function editPromotion(id) {
-    alert(`📝 Editar promoção ${id} - Funcionalidade em desenvolvimento`);
+    alert(`?? Editar promo��o ${id} - Funcionalidade em desenvolvimento`);
 }
-
 function togglePromotionStatus(id) {
-    alert(`🔄 Alternar status da promoção ${id} - Funcionalidade em desenvolvimento`);
+    alert(`?? Alternar status da promo��o ${id} - Funcionalidade em desenvolvimento`);
 }
-
 function deletePromotion(id) {
-    if (confirm('Tem certeza que deseja excluir esta promoção?')) {
-        alert(`🗑️ Promoção ${id} excluída - Funcionalidade em desenvolvimento`);
+    if (confirm('Tem certeza que deseja excluir esta promo��o?')) {
+        alert(`??? Promo��o ${id} exclu�da - Funcionalidade em desenvolvimento`);
     }
 }
-
 function filterPromotions() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     // Implementation for filtering promotions
     console.log('Filtering promotions with term:', searchTerm);
 }
-
 function toggleFilters() {
-    alert('🔍 Filtros avançados - Funcionalidade em desenvolvimento');
+    alert('?? Filtros avan�ados - Funcionalidade em desenvolvimento');
 }
-
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Página de promoções carregada');
-    
+    console.log('P�gina de promo��es carregada');
     // Check authentication
     const token = localStorage.getItem('authToken') || localStorage.getItem('token');
     const userType = localStorage.getItem('userType');
-    
     if (!token || userType !== 'admin') {
-        alert('⚠️ Acesso negado. Redirecionando...');
+        alert('?? Acesso negado. Redirecionando...');
         window.location.href = '/entrar.html';
         return;
     }
-    
     // Load promotions
     loadPromotions();
 });
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

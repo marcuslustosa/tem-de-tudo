@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -8,17 +8,23 @@
 <meta name="theme-color" content="#6F1AB6">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
 </head>
 <body>
 <div class="client-dashboard">
     <!-- Dashboard Header -->
     <div class="dashboard-header">
-        <button class="logout-btn" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i>
-            Sair
-        </button>
-        
+        <div class="header-top">
+            <div class="logo-section">
+                <img src="logo.svg" alt="Tem de Tudo" class="header-logo">
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sair</span>
+            </button>
+        </div>
         <div class="header-content">
             <div class="welcome-section">
                 <h1 id="welcomeText">Olá, Cliente!</h1>
@@ -35,7 +41,7 @@
         <!-- Points Card -->
         <div class="points-card fade-in">
             <div class="points-header">
-                <div>
+                <div class="points-info">
                     <div class="points-title">
                         <i class="fas fa-star"></i>
                         Seus Pontos Tem de Tudo
@@ -45,7 +51,17 @@
                 </div>
                 <a href="app-pontos.html" class="use-points-btn">
                     <i class="fas fa-gift"></i>
-                    Usar Pontos
+                    <span>Usar Pontos</span>
+                </a>
+            </div>
+            <div class="points-actions">
+                <a href="app-qrcode.html" class="points-action">
+                    <i class="fas fa-qrcode"></i>
+                    <span>Mostrar QR Code</span>
+                </a>
+                <a href="app-extrato.html" class="points-action">
+                    <i class="fas fa-history"></i>
+                    <span>Ver Extrato</span>
                 </a>
             </div>
         </div>
@@ -56,149 +72,345 @@
                 <div class="mini-stat-icon">
                     <i class="fas fa-shopping-bag"></i>
                 </div>
-                <div class="mini-stat-value">47</div>
-                <div class="mini-stat-label">Pedidos Total</div>
+                <div class="mini-stat-content">
+                    <div class="mini-stat-value">47</div>
+                    <div class="mini-stat-label">Compras</div>
+                </div>
             </div>
-
             <div class="mini-stat fade-in animate-delay-2">
                 <div class="mini-stat-icon">
                     <i class="fas fa-credit-card"></i>
                 </div>
-                <div class="mini-stat-value">R$ 2.357</div>
-                <div class="mini-stat-label">Valor Gasto</div>
+                <div class="mini-stat-content">
+                    <div class="mini-stat-value">R$ 2.357</div>
+                    <div class="mini-stat-label">Valor Gasto</div>
+                </div>
             </div>
-
             <div class="mini-stat fade-in animate-delay-3">
-                <div class="mini-stat-icon">
-                    <i class="fas fa-clock"></i>
+                <div class="mini-stat-icon empresa">
+                    <i class="fas fa-store"></i>
                 </div>
-                <div class="mini-stat-value">3</div>
-                <div class="mini-stat-label">Pedidos Pendentes</div>
+                <div class="mini-stat-content">
+                    <div class="mini-stat-value">12</div>
+                    <div class="mini-stat-label">Empresas</div>
+                </div>
             </div>
-
             <div class="mini-stat fade-in animate-delay-4">
-                <div class="mini-stat-icon">
-                    <i class="fas fa-trophy"></i>
+                <div class="mini-stat-icon vip">
+                    <i class="fas fa-crown"></i>
                 </div>
-                <div class="mini-stat-value">Gold</div>
-                <div class="mini-stat-label">Status VIP</div>
+                <div class="mini-stat-content">
+                    <div class="mini-stat-value">Gold</div>
+                    <div class="mini-stat-label">Status</div>
+                </div>
             </div>
         </div>
 
         <!-- Quick Actions -->
-        <h2 class="section-title fade-in">
-            <i class="fas fa-rocket"></i>
-            Ações Rápidas
-        </h2>
+        <div class="dashboard-section">
+            <h2 class="section-title fade-in">
+                <i class="fas fa-rocket"></i>
+                Ações Rápidas
+            </h2>
+            <div class="actions-grid">
+                <a href="app-empresas.html" class="action-card fade-in animate-delay-1">
+                    <div class="action-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Explorar</h3>
+                        <p>Descubra empresas parceiras e ofertas exclusivas</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
 
-        <div class="actions-grid">
-            <a href="app-empresas.html" class="action-card fade-in animate-delay-1">
-                <div class="action-icon">
-                    <i class="fas fa-store"></i>
-                </div>
-                <div class="action-content">
-                    <h3>Explorar Empresas</h3>
-                    <p>Navegue por empresas parceiras e descubra ofertas exclusivas</p>
-                </div>
-            </a>
+                <a href="app-pontos.html" class="action-card fade-in animate-delay-2">
+                    <div class="action-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Meus Pontos</h3>
+                        <p>Gerencie e use seus pontos acumulados</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
 
-            <a href="app-pontos.html" class="action-card fade-in animate-delay-2">
-                <div class="action-icon">
-                    <i class="fas fa-star"></i>
-                </div>
-                <div class="action-content">
-                    <h3>Meus Pontos</h3>
-                    <p>Acompanhe e gerencie seus pontos Tem de Tudo</p>
-                </div>
-            </a>
+                <a href="app-qrcode.html" class="action-card fade-in animate-delay-3">
+                    <div class="action-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Meu QR Code</h3>
+                        <p>Mostre na loja para acumular pontos</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
 
-            <a href="app-promocoes.html" class="action-card fade-in animate-delay-3">
-                <div class="action-icon">
-                    <i class="fas fa-tags"></i>
-                </div>
-                <div class="action-content">
-                    <h3>Promoções</h3>
-                    <p>Ofertas exclusivas e promoções especiais para você</p>
-                </div>
-            </a>
+                <a href="app-cupons.html" class="action-card fade-in animate-delay-4">
+                    <div class="action-icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Meus Cupons</h3>
+                        <p>Seus cupons de desconto disponíveis</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
 
-            <a href="app-qrcode.html" class="action-card fade-in animate-delay-4">
-                <div class="action-icon">
-                    <i class="fas fa-qrcode"></i>
-                </div>
-                <div class="action-content">
-                    <h3>Meu QR Code</h3>
-                    <p>Código pessoal para ganhar pontos em compras</p>
-                </div>
-            </a>
+                <a href="app-cashback.html" class="action-card fade-in animate-delay-1">
+                    <div class="action-icon" style="background: var(--vivo-green);">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Cashback</h3>
+                        <p>Resgate dinheiro de volta nas compras</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
+
+                <a href="app-indicar.html" class="action-card fade-in animate-delay-2">
+                    <div class="action-icon" style="background: var(--vivo-blue);">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Indicar Amigos</h3>
+                        <p>Ganhe pontos indicando amigos</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
+            </div>
         </div>
 
-        <!-- More Options -->
-        <h2 class="section-title fade-in">
-            <i class="fas fa-th-large"></i>
-            Mais Opções
-        </h2>
+        <!-- Ofertas Especiais -->
+        <div class="dashboard-section">
+            <h2 class="section-title fade-in">
+                <i class="fas fa-fire"></i>
+                Ofertas Imperdíveis
+            </h2>
+            <div class="offers-carousel">
+                <div class="offer-card fade-in animate-delay-1">
+                    <div class="offer-badge">-50%</div>
+                    <div class="offer-content">
+                        <h3>Pizza Hut</h3>
+                        <p>50% OFF em pizzas grandes</p>
+                        <div class="offer-validity">Válido até 28/02</div>
+                    </div>
+                    <a href="app-oferta-detalhe.html?id=1" class="offer-btn">
+                        <span>Resgatar</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="offer-card fade-in animate-delay-2">
+                    <div class="offer-badge">2x</div>
+                    <div class="offer-content">
+                        <h3>Farmácia Popular</h3>
+                        <p>Pontos em dobro em medicamentos</p>
+                        <div class="offer-validity">Válido até 05/03</div>
+                    </div>
+                    <a href="app-oferta-detalhe.html?id=2" class="offer-btn">
+                        <span>Ativar</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
 
-        <div class="actions-grid">
-            <a href="app-perfil.html" class="action-card fade-in animate-delay-1">
-                <div class="action-icon">
-                    <i class="fas fa-user"></i>
+                <div class="offer-card fade-in animate-delay-3">
+                    <div class="offer-badge">R$20</div>
+                    <div class="offer-content">
+                        <h3>Uber</h3>
+                        <p>R$ 20 OFF na primeira corrida</p>
+                        <div class="offer-validity">Novo usuário</div>
+                    </div>
+                    <a href="app-oferta-detalhe.html?id=3" class="offer-btn">
+                        <span>Usar</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
-                <div class="action-content">
-                    <h3>Meu Perfil</h3>
-                    <p>Edite suas informações pessoais e preferências</p>
-                </div>
-            </a>
+            </div>
+        </div>
 
-            <a href="app-cupons.html" class="action-card fade-in animate-delay-2">
-                <div class="action-icon">
-                    <i class="fas fa-ticket-alt"></i>
+        <!-- Histórico Recente -->
+        <div class="dashboard-section">
+            <h2 class="section-title fade-in">
+                <i class="fas fa-history"></i>
+                Atividades Recentes
+                <a href="app-historico-completo.html" class="section-link">Ver todos</a>
+            </h2>
+            <div class="activity-list">
+                <div class="activity-item fade-in animate-delay-1">
+                    <div class="activity-icon gained">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Pontos ganhos - McDonald's</div>
+                        <div class="activity-subtitle">Hoje, 14:32</div>
+                    </div>
+                    <div class="activity-value positive">+120 pts</div>
                 </div>
-                <div class="action-content">
-                    <h3>Meus Cupons</h3>
-                    <p>Cupons de desconto disponíveis para usar</p>
-                </div>
-            </a>
 
-            <a href="app-historico.html" class="action-card fade-in animate-delay-3">
-                <div class="action-icon">
-                    <i class="fas fa-history"></i>
+                <div class="activity-item fade-in animate-delay-2">
+                    <div class="activity-icon used">
+                        <i class="fas fa-minus"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Cupom resgatado - Subway</div>
+                        <div class="activity-subtitle">Ontem, 19:15</div>
+                    </div>
+                    <div class="activity-value negative">-500 pts</div>
                 </div>
-                <div class="action-content">
-                    <h3>Histórico</h3>
-                    <p>Suas transações e atividades recentes</p>
-                </div>
-            </a>
 
-            <a href="app-favoritos.html" class="action-card fade-in animate-delay-4">
-                <div class="action-icon">
-                    <i class="fas fa-heart"></i>
+                <div class="activity-item fade-in animate-delay-3">
+                    <div class="activity-icon cashback">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">Cashback recebido - iFood</div>
+                        <div class="activity-subtitle">19/02, 20:45</div>
+                    </div>
+                    <div class="activity-value positive">R$ 5,00</div>
                 </div>
-                <div class="action-content">
-                    <h3>Favoritos</h3>
-                    <p>Empresas e produtos que você mais gosta</p>
-                </div>
-            </a>
+            </div>
+        </div>
 
-            <a href="app-ajuda.html" class="action-card fade-in animate-delay-1">
-                <div class="action-icon">
-                    <i class="fas fa-headset"></i>
+        <!-- Status VIP -->
+        <div class="dashboard-section">
+            <h2 class="section-title fade-in">
+                <i class="fas fa-crown"></i>
+                Status VIP Gold
+            </h2>
+            <div class="vip-status-card fade-in">
+                <div class="vip-header">
+                    <div class="vip-info">
+                        <div class="vip-level">GOLD</div>
+                        <div class="vip-description">Próximo nível: Platinum (em R$ 1.143)</div>
+                    </div>
+                    <div class="vip-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 67%;"></div>
+                        </div>
+                        <div class="progress-text">R$ 2.357 / R$ 3.500</div>
+                    </div>
                 </div>
-                <div class="action-content">
-                    <h3>Central de Ajuda</h3>
-                    <p>Suporte ao cliente e atendimento especializado</p>
+                <div class="vip-benefits">
+                    <div class="benefit-item">
+                        <i class="fas fa-percentage"></i>
+                        <span>5% cashback extra</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-shipping-fast"></i>
+                        <span>Frete grátis</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-birthday-cake"></i>
+                        <span>Oferta de aniversário</span>
+                    </div>
                 </div>
-            </a>
+            </div>
+        </div>
 
-            <a href="app-configuracoes.html" class="action-card fade-in animate-delay-2">
-                <div class="action-icon">
-                    <i class="fas fa-cogs"></i>
+        <!-- Notificações -->
+        <div class="dashboard-section">
+            <h2 class="section-title fade-in">
+                <i class="fas fa-bell"></i>
+                Avisos e Notificações
+                <a href="app-notificacoes.html" class="section-link">Ver todas</a>
+            </h2>
+            <div class="notifications-list">
+                <div class="notification-item fade-in animate-delay-1 unread">
+                    <div class="notification-icon new-offer">
+                        <i class="fas fa-tag"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">Nova oferta disponível! 🔥</div>
+                        <div class="notification-subtitle">Burger King: 30% OFF no combo Whopper</div>
+                        <div class="notification-time">há 2 horas</div>
+                    </div>
                 </div>
-                <div class="action-content">
-                    <h3>Configurações</h3>
-                    <p>Ajustes do aplicativo e preferências</p>
+
+                <div class="notification-item fade-in animate-delay-2">
+                    <div class="notification-icon points">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">Pontos prestes a vencer</div>
+                        <div class="notification-subtitle">350 pontos vencem em 5 dias</div>
+                        <div class="notification-time">ontem</div>
+                    </div>
                 </div>
-            </a>
+            </div>
+        </div>
+
+        <!-- Acesso Rápido - Conta -->
+        <div class="dashboard-section">
+            <h2 class="section-title fade-in">
+                <i class="fas fa-user-cog"></i>
+                Minha Conta
+            </h2>
+            <div class="actions-grid">
+                <a href="app-perfil.html" class="action-card fade-in animate-delay-1">
+                    <div class="action-icon">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Meu Perfil</h3>
+                        <p>Dados pessoais e preferências</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
+
+                <a href="app-cartao-fidelidade.html" class="action-card fade-in animate-delay-2">
+                    <div class="action-icon" style="background: var(--vivo-orange);">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Cartão Fidelidade</h3>
+                        <p>Seu cartão digital Tem de Tudo</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
+
+                <a href="app-configuracoes.html" class="action-card fade-in animate-delay-3">
+                    <div class="action-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Configurações</h3>
+                        <p>Notificações, privacidade e mais</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
+
+                <a href="app-ajuda.html" class="action-card fade-in animate-delay-4">
+                    <div class="action-icon" style="background: var(--vivo-green);">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Ajuda & Suporte</h3>
+                        <p>FAQ, chat e contato direto</p>
+                    </div>
+                    <div class="action-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -217,13 +429,20 @@
         <a href="app-pontos.html" class="nav-item">
             <div style="position: relative;">
                 <i class="fas fa-star"></i>
-                <div class="notification-badge">1.2K</div>
+                <div class="notification-badge" id="pointsBadge">1.2K</div>
             </div>
             <span>Pontos</span>
         </a>
+        <a href="app-promocoes.html" class="nav-item">
+            <div style="position: relative;">
+                <i class="fas fa-tags"></i>
+                <div class="notification-badge" style="background: #F59E0B;">3</div>
+            </div>
+            <span>Ofertas</span>
+        </a>
         <a href="app-perfil.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
         </a>
     </div>
 </div>
@@ -235,24 +454,8 @@ function logout() {
         localStorage.clear();
         sessionStorage.clear();
         
-        // Show confirmation
-        const notification = document.createElement('div');
-        notification.innerHTML = '<i class="fas fa-check-circle"></i> Logout realizado com sucesso!';
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #10B981, #059669);
-            color: white;
-            padding: 16px 24px;
-            border-radius: 12px;
-            font-weight: 600;
-            z-index: 10000;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
-            animation: slideIn 0.3s ease;
-        `;
-        
-        document.body.appendChild(notification);
+        // Show success notification
+        showNotification('Logout realizado com sucesso!', 'success');
         
         setTimeout(() => {
             window.location.href = '/entrar.html';
@@ -260,26 +463,63 @@ function logout() {
     }
 }
 
+// Show notification
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+    notification.className = `notification ${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--vivo-purple);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        z-index: 10000;
+        box-shadow: 0 10px 30px rgba(111, 26, 182, 0.3);
+        animation: slideIn 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
 // Initialize Dashboard
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Dashboard cliente carregado com sucesso');
     
-    // Check authentication
+    // Check authentication - TEMPORARIAMENTE DESABILITADO PARA VISUALIZAÇÃO
+    /*
     const token = localStorage.getItem('authToken') || localStorage.getItem('token');
     const userType = localStorage.getItem('userType');
     const userName = localStorage.getItem('userName') || localStorage.getItem('user');
     
     if (!token) {
-        alert('⚠️ Sessão expirada. Redirecionando para login...');
-        window.location.href = '/entrar.html';
+        showNotification('Sessão expirada. Redirecionando para login...', 'error');
+        setTimeout(() => {
+            window.location.href = '/entrar.html';
+        }, 2000);
         return;
     }
     
     if (userType && userType !== 'cliente') {
-        alert('⚠️ Área restrita para clientes. Redirecionando...');
-        window.location.href = '/entrar.html';
+        showNotification('Área restrita para clientes. Redirecionando...', 'error');
+        setTimeout(() => {
+            window.location.href = '/entrar.html';
+        }, 2000);
         return;
     }
+    */
+    
+    // Para visualização do design, simular usuário logado
+    const userName = 'João Silva';
     
     // Update welcome text with user name
     if (userName) {
@@ -295,12 +535,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        welcomeText.textContent = `Olá, ${name.split(' ')[0]}!`;
+        const firstName = name.split(' ')[0];
+        welcomeText.textContent = `Olá, ${firstName}!`;
     }
     
     // Animate counter for points
     setTimeout(() => {
-        animateCounter('pointsValue', 1250, 'pontos');
+        animateCounter('pointsValue', 1250);
     }, 500);
     
     // Load dashboard data
@@ -311,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Animate number counter
-function animateCounter(elementId, targetValue, suffix = '') {
+function animateCounter(elementId, targetValue) {
     const element = document.getElementById(elementId);
     const startValue = 0;
     const duration = 1500;
@@ -320,12 +561,11 @@ function animateCounter(elementId, targetValue, suffix = '') {
     
     const timer = setInterval(() => {
         currentValue += increment;
-        
         if (currentValue >= targetValue) {
-            element.textContent = targetValue.toLocaleString() + (suffix ? ` ${suffix}` : '');
+            element.textContent = targetValue.toLocaleString();
             clearInterval(timer);
         } else {
-            element.textContent = Math.floor(currentValue).toLocaleString() + (suffix ? ` ${suffix}` : '');
+            element.textContent = Math.floor(currentValue).toLocaleString();
         }
     }, 16);
 }
@@ -333,14 +573,11 @@ function animateCounter(elementId, targetValue, suffix = '') {
 // Load dashboard data
 async function loadDashboardData() {
     try {
-        // This would typically fetch from API
         console.log('Carregando dados do dashboard...');
-        
-        // Update stats with real data when API is available
+        // This would typically fetch from API
         // const response = await fetch('/api/client/dashboard');
         // const data = await response.json();
         // updateDashboardStats(data);
-        
     } catch (error) {
         console.error('Erro ao carregar dados:', error);
     }
@@ -352,7 +589,7 @@ function refreshData() {
     // loadDashboardData();
 }
 
-// Add CSS for slide animation
+// Add CSS animations
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideIn {
@@ -370,19 +607,3 @@ document.head.appendChild(style);
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

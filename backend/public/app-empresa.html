@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/css/vivo-global.css">
-</head>
 <body>
 <div id="loadingState" class="loading">
 <i class="fas fa-circle-notch"></i>
@@ -43,21 +42,21 @@
 </div>
 </div>
 <div class="empresa-description" id="empresaDescricao">
-            Carregando descriÃ§Ã£o...
+            Carregando descrição...
         </div>
 <div class="info-section">
-<div class="info-title">InformaÃ§Ãµes</div>
+<div class="info-title">Informações</div>
 <div class="info-item">
 <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
 <div class="info-content">
-<div class="info-label">EndereÃ§o</div>
+<div class="info-label">Endereço</div>
 <div class="info-value" id="empresaEndereco">-</div>
 </div>
 </div>
 <div class="info-item">
 <div class="info-icon"><i class="fas fa-clock"></i></div>
 <div class="info-content">
-<div class="info-label">HorÃ¡rio</div>
+<div class="info-label">Horário</div>
 <div class="info-value" id="empresaHorario">-</div>
 </div>
 </div>
@@ -70,7 +69,7 @@
 </div>
 </div>
 <div class="promocoes-section">
-<div class="info-title">PromoÃ§Ãµes DisponÃ­veis</div>
+<div class="info-title">Promoções Disponíveis</div>
 <div id="promocoesContainer"></div>
 </div>
 <button class="checkin-button" id="checkinBtn">
@@ -80,42 +79,33 @@
 </div>
 <script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : (window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8001' : 'https://tem-de-tudo.onrender.com');
-        
         const categorias = {
-            alimentacao: 'ðŸ” Alimentos',
-            automotivo: 'ðŸš— Automotivo',
-            beleza: 'ðŸ’„ Beleza',
-            bemestar: 'ðŸ§˜ Bem-estar',
-            educacao: 'ðŸ“š EducaÃ§Ã£o',
-            servicos: 'ðŸ› ï¸ ServiÃ§os'
+            alimentacao: '?? Alimentos',
+            automotivo: '?? Automotivo',
+            beleza: '?? Beleza',
+            bemestar: '?? Bem-estar',
+            educacao: '?? Educação',
+            servicos: '??? Serviços'
         };
-        
         let empresaAtual = null;
-        
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = 'entrar.html';
                 return;
             }
-            
             const urlParams = new URLSearchParams(window.location.search);
             const empresaId = urlParams.get('id');
-            
             if (!empresaId) {
-                alert('Empresa nÃ£o encontrada');
+                alert('Empresa não encontrada');
                 window.location.href = '/app-empresas.html';
                 return;
             }
-            
             await carregarEmpresa(empresaId);
-            
             document.getElementById('checkinBtn').addEventListener('click', fazerCheckin);
         });
-        
         async function carregarEmpresa(id) {
             const token = localStorage.getItem('token');
-            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/empresas/${id}`, {
                     headers: {
@@ -123,70 +113,55 @@
                         'Accept': 'application/json'
                     }
                 });
-                
                 if (!response.ok) throw new Error('Erro ao carregar empresa');
-                
                 const data = await response.json();
                 empresaAtual = data.data || data;
-                
                 renderizarEmpresa(empresaAtual);
-                
             } catch (error) {
                 console.error('Erro:', error);
                 alert('Erro ao carregar dados da empresa');
                 window.location.href = '/app-empresas.html';
             }
         }
-        
         function renderizarEmpresa(empresa) {
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('empresaContent').style.display = 'block';
-            
             document.getElementById('coverPhoto').style.backgroundImage = 
                 `url(${empresa.logo || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800'})`;
-            
             document.getElementById('empresaLogo').src = 
                 empresa.logo || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200';
-            
             document.getElementById('empresaNome').textContent = empresa.nome;
             document.getElementById('empresaCategoria').textContent = 
-                categorias[empresa.ramo] || 'ðŸª Outros';
-            
+                categorias[empresa.ramo] || '?? Outros';
             document.getElementById('empresaRating').textContent = '4.8';
             document.getElementById('empresaDistancia').textContent = 
                 `${Math.floor(Math.random() * 5) + 1} km`;
             document.getElementById('empresaPontos').textContent = 
                 `+${Math.round(10 * (empresa.pontos_cliente || 1))} pts`;
-            
             document.getElementById('empresaDescricao').textContent = 
-                empresa.descricao || 'Empresa parceira do programa Tem de Tudo. FaÃ§a check-in e acumule pontos!';
-            
+                empresa.descricao || 'Empresa parceira do programa Tem de Tudo. Faça check-in e acumule pontos!';
             document.getElementById('empresaEndereco').textContent = 
-                empresa.endereco || 'NÃ£o informado';
+                empresa.endereco || 'Não informado';
             document.getElementById('empresaHorario').textContent = 
                 empresa.horario_funcionamento || 'Seg-Sex: 08:00-18:00';
             document.getElementById('empresaTelefone').textContent = 
-                empresa.telefone || 'NÃ£o informado';
-            
+                empresa.telefone || 'Não informado';
             renderizarPromocoes(empresa);
         }
-        
         function renderizarPromocoes(empresa) {
             const container = document.getElementById('promocoesContainer');
-            
             const promocoes = [
                 {
-                    titulo: 'Check-in DiÃ¡rio',
+                    titulo: 'Check-in Diário',
                     descricao: `Ganhe ${Math.round(10 * (empresa.pontos_cliente || 1))} pontos a cada visita`,
                     pontos: Math.round(10 * (empresa.pontos_cliente || 1))
                 },
                 {
                     titulo: 'Primeira Visita',
-                    descricao: 'BÃ´nus especial na primeira visita',
+                    descricao: 'Bônus especial na primeira visita',
                     pontos: Math.round(20 * (empresa.pontos_cliente || 1))
                 }
             ];
-            
             container.innerHTML = promocoes.map(promo => `
                 <div class="promo-card">
 <div class="promo-title">${promo.titulo}</div>
@@ -195,16 +170,12 @@
 </div>
             `).join('');
         }
-        
         async function fazerCheckin() {
             if (!empresaAtual) return;
-            
             const token = localStorage.getItem('token');
             const btn = document.getElementById('checkinBtn');
-            
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processando...';
-            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/check-ins`, {
                     method: 'POST',
@@ -217,16 +188,13 @@
                         empresa_id: empresaAtual.id
                     })
                 });
-                
                 const data = await response.json();
-                
                 if (data.success) {
-                    alert(`âœ… Check-in realizado!\n+${data.data.pontos_ganhos || 10} pontos`);
+                    alert(`? Check-in realizado!\n+${data.data.pontos_ganhos || 10} pontos`);
                     window.location.href = '/app-meus-pontos.html';
                 } else {
                     throw new Error(data.message || 'Erro ao fazer check-in');
                 }
-                
             } catch (error) {
                 console.error('Erro:', error);
                 alert('Erro ao fazer check-in: ' + error.message);
@@ -237,18 +205,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

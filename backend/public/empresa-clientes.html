@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,12 +7,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#6A0DAD">
-<title>👥 Clientes - Tem de Tudo</title>
+<title>?? Clientes - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script><link rel="manifest" href="/manifest.json">
 <link rel="stylesheet" href="/css/vivo-global.css">
-<link rel="manifest" href="/manifest.json">
-</head>
 <body>
 <div class="header">
 <div class="header-content">
@@ -27,8 +27,8 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div>
-<h1>👥 Clientes Premium</h1>
-<p>Gerencie seus clientes com excelência</p>
+<h1>?? Clientes Premium</h1>
+<p>Gerencie seus clientes com excel�ncia</p>
 </div>
 </div>
 <div class="search-bar">
@@ -49,18 +49,18 @@
 </div>
 <div class="stat-mini">
 <div class="stat-mini-value" id="novosMes">23</div>
-<div class="stat-mini-label">Novos/Mês</div>
+<div class="stat-mini-label">Novos/M�s</div>
 </div>
 <div class="stat-mini">
 <div class="stat-mini-value" id="ticketMedio">R$ 387</div>
-<div class="stat-mini-label">Ticket Médio</div>
+<div class="stat-mini-label">Ticket M�dio</div>
 </div>
 </div>
 <div class="loading-spinner" id="loadingSpinner">
 <div class="spinner"></div>
 </div>
 <div class="clientes-grid" id="clientesGrid">
-<!-- Clientes serão carregados aqui dinamicamente -->
+<!-- Clientes ser�o carregados aqui dinamicamente -->
 </div>
 <div class="empty-state" id="emptyState" style="display: none;">
 <i class="fas fa-users"></i>
@@ -83,7 +83,7 @@
 </a>
 <a href="empresa-promocoes.html" class="nav-item">
 <i class="fas fa-tags"></i>
-<span>Promoções</span>
+<span>Promo��es</span>
 </a>
 <a href="empresa-configuracoes.html" class="nav-item">
 <i class="fas fa-cog"></i>
@@ -107,7 +107,7 @@
             },
             {
                 id: 2,
-                nome: "João Santos",
+                nome: "Jo�o Santos",
                 email: "joao@email.com", 
                 telefone: "(11) 88888-8888",
                 status: "ativo",
@@ -150,25 +150,20 @@
                 avatar: "CO"
             }
         ];
-
         let clientesFiltrados = [...clientesExemplo];
-
         function formatarMoeda(valor) {
             return new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
             }).format(valor);
         }
-
         function formatarData(data) {
             return new Date(data + 'T00:00:00').toLocaleDateString('pt-BR');
         }
-
         function gerarCardCliente(cliente) {
             const statusClass = cliente.status === 'ativo' ? 'status-ativo' : 'status-inativo';
             const statusText = cliente.status === 'ativo' ? 'Ativo' : 'Inativo';
             const statusIcon = cliente.status === 'ativo' ? 'check-circle' : 'times-circle';
-
             return `
                 <div class="cliente-card" data-cliente-id="${cliente.id}">
 <div class="cliente-header">
@@ -207,20 +202,17 @@
 </div>
 <div class="cliente-stat-item">
 <span class="stat-value">${formatarData(cliente.ultimoPedido)}</span>
-<span class="stat-label">Último Pedido</span>
+<span class="stat-label">�ltimo Pedido</span>
 </div>
 </div>
 </div>
             `;
         }
-
         function carregarClientes() {
             const grid = document.getElementById('clientesGrid');
             const emptyState = document.getElementById('emptyState');
             const loadingSpinner = document.getElementById('loadingSpinner');
-            
             loadingSpinner.style.display = 'flex';
-            
             setTimeout(() => {
                 if (clientesFiltrados.length === 0) {
                     grid.innerHTML = '';
@@ -232,48 +224,40 @@
                 loadingSpinner.style.display = 'none';
             }, 1000);
         }
-
         function filtrarClientes() {
             const termo = document.getElementById('searchInput').value.toLowerCase();
-            
             clientesFiltrados = clientesExemplo.filter(cliente => 
                 cliente.nome.toLowerCase().includes(termo) ||
                 cliente.email.toLowerCase().includes(termo) ||
                 cliente.telefone.includes(termo)
             );
-            
             carregarClientes();
         }
-
         function editarCliente(id) {
-            // Implementar edição do cliente
+            // Implementar edi��o do cliente
             console.log('Editando cliente:', id);
             alert(`Editando cliente ${id}`);
         }
-
         function verDetalhes(id) {
-            // Implementar visualização de detalhes
+            // Implementar visualiza��o de detalhes
             console.log('Ver detalhes:', id);
             alert(`Ver detalhes do cliente ${id}`);
         }
-
         function removerCliente(id) {
             if (confirm('Tem certeza que deseja remover este cliente?')) {
-                // Implementar remoção do cliente
+                // Implementar remo��o do cliente
                 console.log('Removendo cliente:', id);
                 alert(`Cliente ${id} removido com sucesso!`);
                 // Recarregar lista
                 carregarClientes();
             }
         }
-
         function adicionarCliente() {
-            // Implementar adição de novo cliente
+            // Implementar adi��o de novo cliente
             console.log('Adicionar novo cliente');
-            alert('Funcionalidade de adicionar cliente será implementada');
+            alert('Funcionalidade de adicionar cliente ser� implementada');
         }
-
-        // Carregar clientes ao iniciar a página
+        // Carregar clientes ao iniciar a p�gina
         document.addEventListener('DOMContentLoaded', function() {
             carregarClientes();
         });
@@ -289,7 +273,6 @@
         .cliente-avatar {
             width: 56px;
             height: 56px;
-            
             border-radius: 14px;
             display: flex;
             align-items: center;
@@ -310,7 +293,6 @@
             font-size: 13px;
             color: #b0b0b0;
         }
-        
         .cliente-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -331,7 +313,6 @@
             color: #666;
             margin-top: 4px;
         }
-        
         .loading, .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -342,7 +323,6 @@
             margin-bottom: 20px;
             opacity: 0.5;
         }
-        
         @media (max-width: 480px) {
             .header h1 { font-size: 20px; }
             .cliente-stats { grid-template-columns: 1fr; }
@@ -354,8 +334,6 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="empresa"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
 <body>
 <div class="header">
 <div class="header-top">
@@ -399,7 +377,6 @@
 </div>
 <script>
         let allClientes = [];
-        
         function checkAuth() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -408,11 +385,9 @@
             }
             return token;
         }
-        
         async function loadClientes() {
             const token = checkAuth();
             if (!token) return;
-
             try {
                 const response = await fetch('/api/empresa/clientes', {
                     headers: {
@@ -420,13 +395,10 @@
                         'Accept': 'application/json'
                     }
                 });
-                
                 if (response.ok) {
                     const result = await response.json();
                     allClientes = result.data || [];
-                    
                     console.log('Clientes carregados:', allClientes.length);
-                    
                     if (allClientes.length > 0) {
                         renderClientes(allClientes);
                         updateStats();
@@ -446,33 +418,28 @@
                 document.getElementById('loading').style.display = 'none';
             }
         }
-        
         function updateStats() {
             const totalPontos = allClientes.reduce((sum, c) => sum + (c.total_pontos || 0), 0);
             const clientesAtivos = allClientes.filter(c => (c.total_transacoes || 0) > 0).length;
-            
             document.getElementById('totalClientes').textContent = allClientes.length;
             document.getElementById('clientesAtivos').textContent = clientesAtivos;
             document.getElementById('pontosTotal').textContent = totalPontos.toLocaleString('pt-BR');
             document.getElementById('totalInfo').textContent = `${allClientes.length} ${allClientes.length === 1 ? 'cliente' : 'clientes'}`;
         }
-        
         function renderClientes(clientes) {
             const grid = document.getElementById('clientes-grid');
-            
             grid.innerHTML = clientes.map(cliente => {
                 const inicial = (cliente.cliente_nome || 'C')[0].toUpperCase();
                 const ultimaVisita = cliente.ultima_visita ? 
                     new Date(cliente.ultima_visita).toLocaleDateString('pt-BR') : 
                     'Nunca';
-                
                 return `
                     <div class="cliente-card">
 <div class="cliente-header">
 <div class="cliente-avatar">${inicial}</div>
 <div class="cliente-info">
 <div class="cliente-nome">${cliente.cliente_nome}</div>
-<div class="cliente-email">${cliente.cliente_email || 'Email não informado'}</div>
+<div class="cliente-email">${cliente.cliente_email || 'Email n�o informado'}</div>
 </div>
 </div>
 <div class="cliente-stats">
@@ -486,28 +453,23 @@
 </div>
 <div class="cliente-stat">
 <div class="cliente-stat-value" style="font-size: 12px;">${ultimaVisita}</div>
-<div class="cliente-stat-label">àltima</div>
+<div class="cliente-stat-label">�ltima</div>
 </div>
 </div>
 </div>
                 `;
             }).join('');
-            
             grid.style.display = 'grid';
         }
-        
         function filterClientes() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            
             let filtered = allClientes;
-            
             if (searchTerm) {
                 filtered = allClientes.filter(c => {
                     return (c.cliente_nome && c.cliente_nome.toLowerCase().includes(searchTerm)) ||
                            (c.cliente_email && c.cliente_email.toLowerCase().includes(searchTerm));
                 });
             }
-            
             if (filtered.length > 0) {
                 renderClientes(filtered);
                 document.getElementById('empty-state').style.display = 'none';
@@ -516,12 +478,10 @@
                 document.getElementById('empty-state').style.display = 'block';
             }
         }
-        
         function showEmptyState() {
             document.getElementById('empty-state').style.display = 'block';
             document.getElementById('totalInfo').textContent = '0 clientes';
         }
-        
         document.addEventListener('DOMContentLoaded', loadClientes);
     </script>
 <!-- Bottom Navigation -->
@@ -536,7 +496,7 @@
 </a>
 <a href="empresa-promocoes.html" class="nav-item">
 <i class="fas fa-gift"></i>
-<span>Promoções</span>
+<span>Promo��es</span>
 </a>
 <a href="empresa-clientes.html" class="nav-item active">
 <i class="fas fa-users"></i>
@@ -544,27 +504,9 @@
 </a>
 <a href="empresa-relatorios.html" class="nav-item">
 <i class="fas fa-chart-line"></i>
-<span>Relatórios</span>
+<span>Relat�rios</span>
 </a>
 </nav>
 </body>
 </html>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

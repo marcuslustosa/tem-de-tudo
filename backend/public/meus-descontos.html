@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -16,9 +16,8 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
+`n
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <nav class="nav-bar">
 <ul>
@@ -82,7 +81,6 @@
             localStorage.removeItem('user');
             window.location.href = 'entrar.html';
         }
-
         function checkAuth() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -91,7 +89,6 @@
             }
             return true;
         }
-
         function loadDiscounts() {
             // Simula??o de dados (integre com sua API)
             const mockDiscounts = [
@@ -176,14 +173,11 @@
                     savings: 12.55
                 }
             ];
-
             displayDiscounts(mockDiscounts);
             updateStats(mockDiscounts);
         }
-
         function displayDiscounts(discounts) {
             const container = document.getElementById('discountsList');
-
             if (discounts.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
@@ -193,7 +187,6 @@
                 `;
                 return;
             }
-
             container.innerHTML = discounts.map(discount => `
                 <div class="discount-item">
 <div class="discount-header">
@@ -226,42 +219,21 @@
 </div>
             `).join('');
         }
-
         function updateStats(discounts) {
             const totalDiscounts = discounts.length;
             const totalSavings = discounts.reduce((sum, d) => sum + d.savings, 0);
             const avgDiscount = discounts.reduce((sum, d) => sum + d.discount, 0) / discounts.length;
-
             document.getElementById('totalDiscounts').textContent = totalDiscounts;
             document.getElementById('totalSavings').textContent = 'R$ ' + totalSavings.toFixed(2);
             document.getElementById('avgDiscount').textContent = avgDiscount.toFixed(1) + '%';
         }
-
         function filterDiscounts() {
             // Implementar filtros (integre com sua API)
             console.log('Filtros aplicados');
             loadDiscounts();
         }
-
         checkAuth();
         loadDiscounts();
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,54 +1,474 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#6A0DAD">
-<title>Favoritos Premium - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meus Favoritos - Tem de Tudo</title>
+<meta name="description" content="Suas empresas e ofertas favoritas em um só lugar">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="manifest" href="/manifest.json">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - FAVORITOS PAGE */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --vivo-pink: #EC4899; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151;
+    --gray-800: #1F2937; --gray-900: #111827; --white: #FFFFFF; --border-radius: 12px; --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1); --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15); --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+body { font-family: 'Inter', sans-serif; color: var(--gray-900); background: var(--gray-50); min-height: 100vh; }
+.app-page { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+.header-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; }
+.header-nav h1 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); flex: 1; text-align: center; margin: 0 1rem; }
+.back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gray-100); color: var(--gray-700); border: none; cursor: pointer; transition: var(--transition); }
+.back-btn:hover { background: var(--gray-200); }
+.header-subtitle { padding: 0 1.5rem 1rem; color: var(--gray-600); font-size: 0.875rem; text-align: center; }
+.app-content { flex: 1; padding: 1rem 1.5rem 6rem; }
+
+.section { margin-bottom: 2rem; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.stat-card { background: var(--white); border-radius: var(--border-radius); padding: 1.5rem 1rem; text-align: center;
+    box-shadow: var(--shadow-sm); border: 2px solid var(--gray-100); transition: var(--transition); }
+.stat-card:hover { border-color: var(--vivo-purple); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.stat-value { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+.stat-card:nth-child(1) .stat-value { color: var(--vivo-pink); }
+.stat-card:nth-child(2) .stat-value { color: var(--vivo-green); }  
+.stat-card:nth-child(3) .stat-value { color: var(--vivo-orange); }
+.stat-label { font-size: 0.75rem; color: var(--gray-600); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.filter-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
+.filter-tab { padding: 0.75rem 1rem; background: var(--white); border: 2px solid var(--gray-200); 
+    border-radius: 25px; cursor: pointer; transition: var(--transition); white-space: nowrap;
+    font-size: 0.875rem; font-weight: 600; color: var(--gray-600); }
+.filter-tab.active { background: var(--vivo-purple); color: var(--white); border-color: var(--vivo-purple); }
+.filter-tab:hover:not(.active) { border-color: var(--gray-300); }
+
+.favorites-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.favorite-card { background: var(--white); border-radius: var(--border-radius); overflow: hidden;
+    box-shadow: var(--shadow-sm); border: 2px solid var(--gray-100); transition: var(--transition); position: relative; }
+.favorite-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--gray-200); }
+
+.card-image { height: 120px; background: linear-gradient(135deg, var(--gray-200) 0%, var(--gray-300) 100%);
+    display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--gray-500); position: relative; }
+.promo-badge { position: absolute; top: 0.75rem; left: 0.75rem; background: var(--vivo-red); color: var(--white);
+    padding: 0.25rem 0.5rem; border-radius: 15px; font-size: 0.75rem; font-weight: 700; }
+.favorite-btn { position: absolute; top: 0.75rem; right: 0.75rem; width: 36px; height: 36px;
+    background: rgba(255,255,255,0.9); border: none; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; color: var(--vivo-pink); cursor: pointer; transition: var(--transition); }
+.favorite-btn:hover { background: var(--white); transform: scale(1.1); }
+
+.card-content { padding: 1rem; }
+.card-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--gray-900); }
+.card-category { color: var(--gray-600); font-size: 0.75rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.card-description { color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.4; }
+
+.card-footer { display: flex; justify-content: between; align-items: center; }
+.card-rating { display: flex; align-items: center; gap: 0.25rem; }
+.stars { color: var(--vivo-orange); }
+.rating-text { color: var(--gray-600); font-size: 0.75rem; margin-left: 0.25rem; }
+.card-distance { color: var(--gray-500); font-size: 0.75rem; }
+
+.action-buttons { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.btn-action { flex: 1; padding: 0.625rem; border: 1px solid var(--gray-300); background: var(--white);
+    color: var(--gray-700); border-radius: var(--border-radius); font-size: 0.75rem; font-weight: 600;
+    cursor: pointer; transition: var(--transition); }
+.btn-action:hover { border-color: var(--vivo-purple); color: var(--vivo-purple); }
+.btn-action.primary { background: var(--vivo-purple); color: var(--white); border-color: var(--vivo-purple); }
+.btn-action.primary:hover { background: var(--vivo-purple-dark); }
+
+.empty-state { text-align: center; padding: 4rem 2rem; color: var(--gray-500); }
+.empty-state i { font-size: 4rem; margin-bottom: 1rem; color: var(--gray-400); }
+.empty-state h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--gray-700); }
+.empty-state p { margin-bottom: 2rem; }
+.empty-state .btn { background: var(--vivo-purple); color: var(--white); padding: 0.75rem 2rem;
+    border-radius: 25px; text-decoration: none; font-weight: 600; transition: var(--transition); }
+.empty-state .btn:hover { background: var(--vivo-purple-dark); }
+
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white);
+    border-top: 1px solid var(--gray-200); padding: 0.5rem 0; z-index: 1000; }
+.nav-container { display: flex; justify-content: space-around; align-items: center; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; padding: 0.5rem;
+    text-decoration: none; color: var(--gray-500); transition: var(--transition); font-size: 0.75rem; font-weight: 500; }
+.nav-item.active { color: var(--vivo-purple); }
+.nav-item:hover:not(.active) { color: var(--gray-700); }
+.nav-item i { font-size: 1.25rem; margin-bottom: 2px; }
+
+@media (max-width: 768px) {
+    .app-content { padding: 1rem 1rem 6rem; }
+    .stats-grid { gap: 0.75rem; }
+    .stat-card { padding: 1rem 0.75rem; }
+    .favorites-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+    .filter-tabs { gap: 0.25rem; }
+    .filter-tab { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+.app-page { animation: fadeIn 0.3s ease-out; }
+.section { animation: fadeIn 0.4s ease-out; }
+.section:nth-child(2) { animation-delay: 0.1s; }
+.section:nth-child(3) { animation-delay: 0.2s; }
+.favorite-card { animation: fadeIn 0.5s ease-out; }
+.favorite-btn:hover { animation: pulse 0.3s ease-out; }
+</style>
 </head>
 <body>
-<div class="header">
-<div class="header-content">
-<div class="header-top">
-<button class="btn-back" onclick="window.history.back()">
-<i class="fas fa-arrow-left"></i>
-</button>
-<h1>❤️ Meus Favoritos</h1>
+<div class="app-page">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="header-nav">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>Meus Favoritos</h1>
+            <div style="width: 40px;"></div>
+        </div>
+        <div class="header-subtitle">
+            Suas empresas e ofertas preferidas em um só lugar
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="app-content">
+        <!-- Statistics Cards -->
+        <div class="section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalFavoritos">8</div>
+                    <div class="stat-label">Favoritos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="ofertas">5</div>
+                    <div class="stat-label">Com Ofertas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="economia">R$ 247</div>
+                    <div class="stat-label">Economia</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="section">
+            <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterFavorites('todos')">Todos</button>
+                <button class="filter-tab" onclick="filterFavorites('ofertas')">Com Ofertas</button>
+                <button class="filter-tab" onclick="filterFavorites('proximos')">Próximos</button>
+                <button class="filter-tab" onclick="filterFavorites('categoria')">Por Categoria</button>
+            </div>
+        </div>
+
+        <!-- Favorites Grid -->
+        <div class="section">
+            <div class="favorites-grid" id="favoritesGrid">
+                <!-- Favorite items will be generated here -->
+            </div>
+            
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <i class="fas fa-heart"></i>
+                <h3>Nenhum favorito encontrado</h3>
+                <p>Que tal explorar nossas ofertas e começar a marcar seus favoritos?</p>
+                <a href="app-promocoes.html" class="btn">Explorar Ofertas</a>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="header-subtitle">Suas empresas e ofertas preferidas em um só lugar</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <div class="nav-container">
+        <a href="dashboard-cliente.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="app-empresas.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Explorar</span>
+        </a>
+        <a href="app-pontos.html" class="nav-item">
+            <i class="fas fa-star"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="app-promocoes.html" class="nav-item active">
+            <i class="fas fa-tags"></i>
+            <span>Ofertas</span>
+        </a>
+        <a href="app-perfil.html" class="nav-item">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+        </a>
+    </div>
 </div>
-</div>
-<div class="stats-row">
-<div class="stat-card">
-<div class="stat-number" id="totalFavoritos">8</div>
-<div class="stat-label">Favoritos</div>
-</div>
-<div class="stat-card">
-<div class="stat-number" id="ofertas">5</div>
-<div class="stat-label">Com Ofertas</div>
-</div>
-<div class="stat-card">
-<div class="stat-number" id="economia">R$ 247</div>
-<div class="stat-label">Economia</div>
-</div>
-</div>
-<div class="filter-tabs">
-<button class="filter-tab active" onclick="filterFavorites('todos')">Todos</button>
-<button class="filter-tab" onclick="filterFavorites('ofertas')">Com Ofertas</button>
-<button class="filter-tab" onclick="filterFavorites('proximos')">Próximos</button>
-<button class="filter-tab" onclick="filterFavorites('categoria')">Por Tipo</button>
-</div>
-<div class="content">
-<div id="favoritesContent">
-<div class="section-title">⭐ Seus Favoritos Premium</div>
-<div class="empresas-grid" id="favoritesGrid">
+
+<script>
+let favoritos = [];
+let filtroAtual = 'todos';
+
+// Dados de exemplo dos favoritos
+const favoritosExemplo = [
+    {
+        id: 1,
+        nome: 'Padaria do João',
+        categoria: 'Alimentação',
+        descricao: 'Pães frescos, doces e salgados artesanais',
+        desconto: 15,
+        rating: 4.8,
+        reviews: 124,
+        distancia: 0.3,
+        hasOffer: true,
+        image: 'fa-bread-slice'
+    },
+    {
+        id: 2,
+        nome: 'Super Mercado Prime',
+        categoria: 'Supermercado',
+        descricao: 'Tudo para sua casa com os melhores preços',
+        desconto: 20,
+        rating: 4.6,
+        reviews: 289,
+        distancia: 0.8,
+        hasOffer: true,
+        image: 'fa-shopping-cart'
+    },
+    {
+        id: 3,
+        nome: 'Loja de Roupas Fashion',
+        categoria: 'Moda',
+        descricao: 'As últimas tendências da moda masculina e feminina',
+        desconto: 0,
+        rating: 4.9,
+        reviews: 67,
+        distancia: 1.2,
+        hasOffer: false,
+        image: 'fa-tshirt'
+    },
+    {
+        id: 4,
+        nome: 'Farmácia Saúde+',
+        categoria: 'Saúde',
+        descricao: 'Medicamentos, cosméticos e produtos de higiene',
+        desconto: 10,
+        rating: 4.7,
+        reviews: 156,
+        distancia: 0.5,
+        hasOffer: true,
+        image: 'fa-pills'
+    },
+    {
+        id: 5,
+        nome: 'Auto Center Premium',
+        categoria: 'Automotivo',
+        descricao: 'Serviços automotivos e peças originais',
+        desconto: 25,
+        rating: 4.5,
+        reviews: 89,
+        distancia: 2.1,
+        hasOffer: true,
+        image: 'fa-car'
+    },
+    {
+        id: 6,
+        nome: 'Pet Shop Amigo',
+        categoria: 'Pet Shop',
+        descricao: 'Tudo para seu pet com muito carinho',
+        desconto: 0,
+        rating: 4.9,
+        reviews: 203,
+        distancia: 0.9,
+        hasOffer: false,
+        image: 'fa-paw'
+    },
+    {
+        id: 7,
+        nome: 'Restaurante Delícia',
+        categoria: 'Restaurante',
+        descricao: 'Pratos deliciosos da culinária brasileira',
+        desconto: 30,
+        rating: 4.8,
+        reviews: 178,
+        distancia: 0.4,
+        hasOffer: true,
+        image: 'fa-utensils'
+    },
+    {
+        id: 8,
+        nome: 'Academia Fitness Pro',
+        categoria: 'Academia',
+        descricao: 'Equipamentos modernos e personal trainers',
+        desconto: 0,
+        rating: 4.6,
+        reviews: 134,
+        distancia: 1.5,
+        hasOffer: false,
+        image: 'fa-dumbbell'
+    }
+];
+
+document.addEventListener('DOMContentLoaded', function() {
+    favoritos = [...favoritosExemplo];
+    renderFavorites();
+    updateStats();
+});
+
+function renderFavorites() {
+    let dadosFiltrados = [...favoritos];
+    
+    switch(filtroAtual) {
+        case 'ofertas':
+            dadosFiltrados = favoritos.filter(f => f.hasOffer);
+            break;
+        case 'proximos':
+            dadosFiltrados = favoritos.filter(f => f.distancia <= 1.0);
+            break;
+        case 'categoria':
+            dadosFiltrados = favoritos.filter(f => f.categoria === 'Alimentação');
+            break;
+    }
+    
+    const grid = document.getElementById('favoritesGrid');
+    const emptyState = document.getElementById('emptyState');
+    
+    if (dadosFiltrados.length === 0) {
+        grid.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
+    
+    grid.style.display = 'grid';
+    emptyState.style.display = 'none';
+    
+    grid.innerHTML = dadosFiltrados.map(favorito => `
+        <div class="favorite-card" data-id="${favorito.id}" data-categoria="${favorito.categoria.toLowerCase()}">
+            <div class="card-image">
+                <i class="fas ${favorito.image}"></i>
+                ${favorito.hasOffer ? `<div class="promo-badge">${favorito.desconto}% OFF</div>` : ''}
+                <button class="favorite-btn favorited" onclick="toggleFavorite(event, ${favorito.id})">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
+            
+            <div class="card-content">
+                <div class="card-title">${favorito.nome}</div>
+                <div class="card-category">${favorito.categoria}</div>
+                <div class="card-description">${favorito.descricao}</div>
+                
+                <div class="card-footer">
+                    <div class="card-rating">
+                        <div class="stars">
+                            ${'<i class="fas fa-star"></i>'.repeat(Math.floor(favorito.rating))}
+                            ${favorito.rating % 1 ? '<i class="fas fa-star-half-alt"></i>' : ''}
+                        </div>
+                        <span class="rating-text">${favorito.rating} (${favorito.reviews})</span>
+                    </div>
+                    <div class="card-distance">${favorito.distancia} km</div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-action" onclick="viewDetails(${favorito.id})">
+                        <i class="fas fa-info-circle"></i> Detalhes
+                    </button>
+                    <button class="btn-action primary" onclick="visitStore(${favorito.id})">
+                        <i class="fas fa-store"></i> Visitar
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterFavorites(tipo) {
+    filtroAtual = tipo;
+    
+    // Atualizar tabs ativas
+    document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    renderFavorites();
+    updateStats();
+}
+
+function toggleFavorite(event, favoriteId) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const btn = event.currentTarget;
+    const card = btn.closest('.favorite-card');
+    
+    // Simular remoção dos favoritos
+    card.style.animation = 'fadeOut 0.3s ease-out';
+    setTimeout(() => {
+        favoritos = favoritos.filter(f => f.id !== favoriteId);
+        renderFavorites();
+        updateStats();
+        showNotification('Removido dos favoritos', 'info');
+    }, 300);
+}
+
+function updateStats() {
+    const dadosFiltrados = filtroAtual === 'todos' ? favoritos : 
+        filtroAtual === 'ofertas' ? favoritos.filter(f => f.hasOffer) :
+        filtroAtual === 'proximos' ? favoritos.filter(f => f.distancia <= 1.0) :
+        favoritos.filter(f => f.categoria === 'Alimentação');
+    
+    const totalFavoritos = dadosFiltrados.length;
+    const ofertas = dadosFiltrados.filter(f => f.hasOffer).length;
+    const economia = dadosFiltrados.reduce((sum, f) => sum + (f.hasOffer ? f.desconto * 10 : 0), 0);
+    
+    document.getElementById('totalFavoritos').textContent = totalFavoritos;
+    document.getElementById('ofertas').textContent = ofertas;
+    document.getElementById('economia').textContent = `R$ ${economia}`;
+}
+
+function viewDetails(favoriteId) {
+    const favorito = favoritos.find(f => f.id === favoriteId);
+    showNotification(`Abrindo detalhes de ${favorito.nome}`, 'info');
+    // Aqui seria o redirecionamento para página de detalhes
+}
+
+function visitStore(favoriteId) {
+    const favorito = favoritos.find(f => f.id === favoriteId);
+    showNotification(`Redirecionando para ${favorito.nome}`, 'success');
+    // Aqui seria o redirecionamento para a loja/empresa
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px; background: var(--vivo-purple); color: white;
+        padding: 1rem 1.5rem; border-radius: var(--border-radius); font-weight: 600; z-index: 10000;
+        box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 0.5rem; max-width: 300px;
+    `;
+    
+    if (type === 'success') {
+        notification.style.background = 'var(--vivo-green)';
+        notification.querySelector('i').className = 'fas fa-check-circle';
+    }
+    
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
+// CSS para animação de fadeOut
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-20px); }
+    }
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
 <a href="app-empresa-detalhes.html?id=1" class="empresa-card" data-categoria="alimentacao">
 <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=200&h=200&fit=crop" alt="Burger King" class="empresa-img">
 <div class="empresa-content">
@@ -67,10 +487,10 @@
 </button>
 </a>
 <a href="app-empresa-detalhes.html?id=2" class="empresa-card" data-categoria="beleza">
-<img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&h=200&fit=crop" alt="Bella Estética" class="empresa-img">
+<img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&h=200&fit=crop" alt="Bella Est�tica" class="empresa-img">
 <div class="empresa-content">
-<div class="empresa-name">Bella Estética Spa</div>
-<div class="empresa-category">Clínica de Beleza</div>
+<div class="empresa-name">Bella Est�tica Spa</div>
+<div class="empresa-category">Cl�nica de Beleza</div>
 <div class="empresa-footer">
 <div class="empresa-distance">
 <i class="fas fa-map-marker-alt"></i> 1.2 km
@@ -87,7 +507,7 @@
 <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=200&h=200&fit=crop" alt="TechHub Store" class="empresa-img">
 <div class="empresa-content">
 <div class="empresa-name">TechHub Electronics</div>
-<div class="empresa-category">Eletrônicos & Gadgets</div>
+<div class="empresa-category">Eletr�nicos & Gadgets</div>
 <div class="empresa-footer">
 <div class="empresa-distance">
 <i class="fas fa-map-marker-alt"></i> 0.5 km
@@ -117,9 +537,9 @@
 </button>
 </a>
 <a href="app-empresa-detalhes.html?id=5" class="empresa-card" data-categoria="alimentacao">
-<img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=200&h=200&fit=crop" alt="Café Central" class="empresa-img">
+<img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=200&h=200&fit=crop" alt="Caf� Central" class="empresa-img">
 <div class="empresa-content">
-<div class="empresa-name">Café Central Premium</div>
+<div class="empresa-name">Caf� Central Premium</div>
 <div class="empresa-category">Cafeteria Gourmet</div>
 <div class="empresa-footer">
 <div class="empresa-distance">
@@ -154,7 +574,7 @@
 <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=200&h=200&fit=crop" alt="Style Shop" class="empresa-img">
 <div class="empresa-content">
 <div class="empresa-name">Style & Fashion Co.</div>
-<div class="empresa-category">Moda & Acessórios</div>
+<div class="empresa-category">Moda & Acess�rios</div>
 <div class="empresa-footer">
 <div class="empresa-distance">
 <i class="fas fa-map-marker-alt"></i> 1.4 km
@@ -170,7 +590,7 @@
 <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=200&h=200&fit=crop" alt="HealthCare Plus" class="empresa-img">
 <div class="empresa-content">
 <div class="empresa-name">HealthCare Plus</div>
-<div class="empresa-category">Clínica Médica</div>
+<div class="empresa-category">Cl�nica M�dica</div>
 <div class="empresa-footer">
 <div class="empresa-distance">
 <i class="fas fa-map-marker-alt"></i> 0.9 km
@@ -194,7 +614,7 @@
 <nav class="bottom-nav">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>Início</span>
+<span>In�cio</span>
 </a>
 <a href="app-empresas.html" class="nav-item">
 <i class="fas fa-search"></i>
@@ -206,7 +626,7 @@
 </a>
 <a href="app-promocoes.html" class="nav-item">
 <i class="fas fa-tags"></i>
-<span>Promoções</span>
+<span>Promo��es</span>
 </a>
 <a href="app-perfil.html" class="nav-item">
 <i class="fas fa-user"></i>
@@ -221,19 +641,15 @@
                 tab.classList.remove('active');
             });
             event.target.classList.add('active');
-
             const empresas = document.querySelectorAll('.empresa-card');
             const emptyState = document.getElementById('emptyState');
             const favoritesContent = document.getElementById('favoritesContent');
-            
             let visibleCount = 0;
-
             empresas.forEach(empresa => {
                 let shouldShow = false;
                 const categoria = empresa.getAttribute('data-categoria');
                 const hasPromo = empresa.querySelector('.promo-badge');
                 const distance = parseFloat(empresa.querySelector('.empresa-distance').textContent);
-
                 switch(tipo) {
                     case 'todos':
                         shouldShow = true;
@@ -245,15 +661,13 @@
                         shouldShow = distance <= 1.0;
                         break;
                     case 'categoria':
-                        // Para demonstração, mostrar apenas alimentação
+                        // Para demonstra��o, mostrar apenas alimenta��o
                         shouldShow = categoria === 'alimentacao';
                         break;
                 }
-
                 empresa.style.display = shouldShow ? 'flex' : 'none';
                 if (shouldShow) visibleCount++;
             });
-
             // Mostrar/esconder estado vazio
             if (visibleCount === 0) {
                 favoritesContent.style.display = 'none';
@@ -262,56 +676,45 @@
                 favoritesContent.style.display = 'block';
                 emptyState.style.display = 'none';
             }
-
-            // Atualizar estatísticas
+            // Atualizar estat�sticas
             updateStats();
         }
-
         // Toggle favorito
         function toggleFavorite(event, empresaId) {
             event.preventDefault();
             event.stopPropagation();
-
             const btn = event.currentTarget;
             const isCurrentlyFavorited = btn.classList.contains('favorited');
-
             if (isCurrentlyFavorited) {
                 btn.classList.remove('favorited');
                 btn.innerHTML = '<i class="fas fa-heart"></i>';
-                
-                // Simular remoção com animação
+                // Simular remo��o com anima��o
                 setTimeout(() => {
                     btn.closest('.empresa-card').style.display = 'none';
                     updateStats();
                 }, 300);
-                
                 console.log(`Empresa ${empresaId} removida dos favoritos`);
             } else {
                 btn.classList.add('favorited');
                 btn.innerHTML = '<i class="fas fa-heart"></i>';
                 console.log(`Empresa ${empresaId} adicionada aos favoritos`);
             }
-
             // Feedback visual
             btn.style.transform = 'scale(1.3)';
             setTimeout(() => {
                 btn.style.transform = 'scale(1)';
             }, 200);
         }
-
-        // Atualizar estatísticas
+        // Atualizar estat�sticas
         function updateStats() {
             const empresasVisiveis = document.querySelectorAll('.empresa-card[style*="flex"], .empresa-card:not([style])');
             const empresasComOfertas = document.querySelectorAll('.empresa-card .promo-badge');
-            
             let totalFavoritos = 0;
             let ofertas = 0;
             let economia = 0;
-
             empresasVisiveis.forEach(empresa => {
                 if (empresa.style.display !== 'none') {
                     totalFavoritos++;
-                    
                     const promoBadge = empresa.querySelector('.promo-badge');
                     if (promoBadge) {
                         ofertas++;
@@ -320,12 +723,10 @@
                     }
                 }
             });
-
             document.getElementById('totalFavoritos').textContent = totalFavoritos;
             document.getElementById('ofertas').textContent = ofertas;
             document.getElementById('economia').textContent = 'R$ ' + economia;
         }
-
         // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
             updateStats();
@@ -333,17 +734,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

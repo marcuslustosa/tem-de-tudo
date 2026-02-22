@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -18,9 +18,8 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
+`n
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body class="card">
 <!-- Header Premium -->
 <header >
@@ -55,8 +54,7 @@
                 console.error('Erro ao carregar nome:', e);
             }
         }
-        
-        // FunÃ§Ã£o logout
+        // Função logout
         window.logout = function() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
@@ -187,7 +185,6 @@
                 window.location.href = '/entrar';
                 return;
             }
-
             try {
                 const response = await fetch('/api/empresa/dashboard', {
                     headers: {
@@ -195,7 +192,6 @@
                         'Accept': 'application/json'
                     }
                 });
-
                 if (response.ok) {
                     const data = await response.json();
                     document.getElementById('companyName').textContent = data.empresa?.nome_fantasia || 'Minha Empresa';
@@ -208,32 +204,13 @@
                 console.error('Erro:', error);
             }
         }
-
         function logout() {
             if (confirm('Deseja sair?')) {
                 localStorage.removeItem('token');
                 window.location.href = '/entrar';
             }
         }
-
         loadDashboard();
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

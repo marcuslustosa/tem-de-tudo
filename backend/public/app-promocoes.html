@@ -1,247 +1,868 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#6A0DAD">
-<title>🎯 Promoções Premium - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
-<body>
-<div class="header">
-<div class="header-content">
-<h1>🎁 Promoções</h1>
-<p>Ofertas exclusivas e descontos incríveis para você</p>
-</div>
-</div>
-<div class="tabs-container">
-<div class="tabs">
-<div class="tab active" data-tab="ativas" onclick="trocarTab('ativas')">Ativas</div>
-<div class="tab" data-tab="proximas" onclick="trocarTab('proximas')">Em Breve</div>
-<div class="tab" data-tab="expiradas" onclick="trocarTab('expiradas')">Expiradas</div>
-</div>
-</div>
-<div class="section">
-<div class="section-title" id="sectionTitle">Promoções Ativas</div>
-<div class="promocoes-grid" id="promocoesGrid">
-<!-- Promoções fictícias serão inseridas aqui -->
-</div>
-<div class="empty-state" id="emptyState" style="display: none;">
-<i class="fas fa-gift"></i>
-<p>Nenhuma promoção disponível no momento</p>
-</div>
-</div>
-<nav class="bottom-nav">
-<a href="app-inicio.html" class="nav-item">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="app-empresas.html" class="nav-item">
-<i class="fas fa-search"></i>
-<span>Buscar</span>
-</a>
-<a href="app-promocoes.html" class="nav-item active">
-<i class="fas fa-tags"></i>
-<span>Promoções</span>
-</a>
-<a href="app-avisos.html" class="nav-item">
-<i class="fas fa-bell"></i>
-<span>Avisos</span>
-</a>
-<a href="app-perfil.html" class="nav-item">
-<i class="fas fa-user"></i>
-<span>Perfil</span>
-</a>
-</nav>
-<script>
-        // Dados fictícios de promoções
-        const promocoesFicticias = {
-            ativas: [
-                {
-                    id: 1,
-                    empresa: "Burger King Premium",
-                    titulo: "50% OFF em Combos",
-                    descricao: "Desconto de 50% em todos os combos premium. Válido para pedidos acima de R$ 25,00. Não é cumulativo com outras promoções.",
-                    valor: "R$ 15,00",
-                    valorOriginal: "R$ 30,00",
-                    desconto: "-50%",
-                    validade: "15/02/2026",
-                    tags: ["Alimentação", "Combo", "Popular"],
-                    badge: "HOT"
-                },
-                {
-                    id: 2,
-                    empresa: "Bella Estética & Spa",
-                    titulo: "Massagem Relaxante",
-                    descricao: "Sessão completa de massagem relaxante com óleos aromáticos. Inclui esfoliação corporal e hidratação. Duração: 60 minutos.",
-                    valor: "R$ 80,00",
-                    valorOriginal: "R$ 120,00",
-                    desconto: "-33%",
-                    validade: "20/02/2026",
-                    tags: ["Beleza", "Relaxamento", "Spa"],
-                    badge: "NOVO"
-                },
-                {
-                    id: 3,
-                    empresa: "TechHub Store",
-                    titulo: "iPhone 15 Pro Max",
-                    descricao: "Último lançamento da Apple com 256GB de armazenamento. Parcelamento em até 12x sem juros. Garantia estendida inclusa.",
-                    valor: "R$ 6.500,00",
-                    valorOriginal: "R$ 7.200,00",
-                    desconto: "-10%",
-                    validade: "28/02/2026",
-                    tags: ["Tecnologia", "Smartphone", "Apple"],
-                    badge: "LIMITADO"
-                },
-                {
-                    id: 4,
-                    empresa: "FitLife Academia",
-                    titulo: "Plano Anual Premium",
-                    descricao: "Acesso ilimitado a todas as modalidades, personal trainer incluso, avaliação física completa e plano nutricional personalizado.",
-                    valor: "R$ 89,00/mês",
-                    valorOriginal: "R$ 149,00/mês",
-                    desconto: "-40%",
-                    validade: "10/03/2026",
-                    tags: ["Fitness", "Premium", "Anual"],
-                    badge: "OFERTA"
-                }
-            ],
-            proximas: [
-                {
-                    id: 5,
-                    empresa: "Shopping Center Plaza",
-                    titulo: "Black Friday Antecipada",
-                    descricao: "Descontos de até 70% em mais de 200 lojas. Promoção especial para clientes cadastrados no app. Sorteio de vale-compras.",
-                    valor: "Até 70% OFF",
-                    valorOriginal: "",
-                    desconto: "-70%",
-                    validade: "24/11/2026",
-                    tags: ["Shopping", "Black Friday", "Geral"],
-                    badge: "EM BREVE"
-                }
-            ],
-            expiradas: [
-                {
-                    id: 6,
-                    empresa: "Pizzaria Napoli",
-                    titulo: "Pizza Família Grátis",
-                    descricao: "Na compra de 2 pizzas grandes, ganhe 1 pizza família de calabresa. Oferta válida apenas aos domingos.",
-                    valor: "GRÁTIS",
-                    valorOriginal: "R$ 45,00",
-                    desconto: "100%",
-                    validade: "01/02/2026",
-                    tags: ["Alimentação", "Pizza", "Família"],
-                    badge: "EXPIRADA"
-                }
-            ]
-        };
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promoções - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="global-styles.css">
+    
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-        let tabAtual = 'ativas';
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
-        function renderizarPromocoes(promocoes) {
-            const grid = document.getElementById('promocoesGrid');
-            const emptyState = document.getElementById('emptyState');
+        .header-section h1 {
+            color: var(--vivo-purple);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
 
-            if (!promocoes || promocoes.length === 0) {
-                grid.style.display = 'none';
-                emptyState.style.display = 'block';
-                return;
+        .header-section p {
+            color: #666;
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, var(--vivo-purple), #8B4CD6);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="white" opacity="0.1"/><circle cx="80" cy="40" r="0.5" fill="white" opacity="0.1"/><circle cx="40" cy="80" r="1.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .hero-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .filter-tab {
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 25px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--vivo-purple);
+            transform: translateY(-2px);
+        }
+
+        .filter-tab.active {
+            background: var(--vivo-purple);
+            color: white;
+            border-color: var(--vivo-purple);
+        }
+
+        .filter-tab i {
+            font-size: 14px;
+        }
+
+        .tab-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .filter-tab:not(.active) .tab-count {
+            background: var(--vivo-purple);
+            color: white;
+        }
+
+        .promocoes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .promocao-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .promocao-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(111, 26, 182, 0.15);
+        }
+
+        .promocao-header {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .promocao-header.alimentacao {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+        }
+
+        .promocao-header.beleza {
+            background: linear-gradient(45deg, #C471ED, #F64F59);
+        }
+
+        .promocao-header.tecnologia {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .promocao-header.moda {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .promocao-header.casa {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+        }
+
+        .promocao-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--vivo-purple);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .promocao-icon {
+            font-size: 4rem;
+            opacity: 0.9;
+        }
+
+        .promocao-content {
+            padding: 1.5rem;
+        }
+
+        .promocao-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .promocao-empresa {
+            color: var(--vivo-purple);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .promocao-descricao {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .promocao-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .promocao-preco {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preco-original {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 0.9rem;
+        }
+
+        .preco-promocional {
+            color: var(--vivo-purple);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .promocao-cta {
+            background: var(--vivo-purple);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .promocao-cta:hover {
+            background: #5d1694;
+            transform: scale(1.05);
+        }
+
+        .promocao-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .cashback-badge {
+            background: linear-gradient(45deg, #00d4aa, #00c4a7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            display: none;
+        }
+
+        .no-results i {
+            font-size: 4rem;
+            color: var(--vivo-purple);
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        .search-container {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-box input:focus {
+            border-color: var(--vivo-purple);
+            box-shadow: 0 0 0 3px rgba(111, 26, 182, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--vivo-purple);
+            font-size: 18px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
             }
 
-            grid.style.display = 'grid';
-            emptyState.style.display = 'none';
+            .hero-banner {
+                padding: 2rem 1.5rem;
+            }
 
-            grid.innerHTML = promocoes.map(promo => `
-                <div class="promo-card" onclick="abrirPromocao(${promo.id})">
-<div class="promo-header">
-<div class="promo-badge">${promo.badge}</div>
-<div class="promo-empresa">${promo.empresa}</div>
-<div class="promo-title">${promo.titulo}</div>
-<div class="promo-valor">
-                            ${promo.valor}
-                            ${promo.valorOriginal ? `<span class="promo-desconto">${promo.desconto}</span>` : ''}
-                        </div>
-</div>
-<div class="promo-body">
-<div class="promo-desc">${promo.descricao}</div>
-<div class="promo-tags">
-                            ${promo.tags.map(tag => `<span class="promo-tag">${tag}</span>`).join('')}
-                        </div>
-<div class="promo-footer">
-<div class="promo-validade">
-<i class="fas fa-clock"></i>
-                                Válido até ${promo.validade}
-                            </div>
-<button class="promo-btn" onclick="event.stopPropagation(); usarPromocao(${promo.id})">
-                                ${tabAtual === 'expiradas' ? 'Expirada' : 'Usar Agora'}
-                            </button>
-</div>
-</div>
-</div>
-            `).join('');
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .filter-tabs {
+                gap: 0.5rem;
+            }
+
+            .filter-tab {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .promocoes-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .promocao-content {
+                padding: 1rem;
+            }
+
+            .promocao-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .promocao-cta {
+                width: 100%;
+                padding: 15px;
+            }
         }
 
-        function trocarTab(novaTab) {
-            // Remove ativo de todas as tabs
-            document.querySelectorAll('.tab').forEach(tab => {
+        @media (max-width: 480px) {
+            .header-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(111, 26, 182, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--vivo-purple);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Offer pulse animation */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .promocao-card.destaque {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation será inserida aqui pelo global-navbar.js -->
+    <nav id="navbar-container"></nav>
+    
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1>Promoções Exclusivas</h1>
+            <p>Ofertas imperdíveis selecionadas especialmente para você</p>
+        </div>
+
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+            <div class="hero-content">
+                <h2 class="hero-title">🔥 Super Ofertas da Semana!</h2>
+                <p class="hero-subtitle">
+                    Descontos de até 70% + cashback em pontos para suas próximas compras. 
+                    Não perca essas oportunidades únicas!
+                </p>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="hero-stat-number">15</span>
+                        <span class="hero-stat-label">Ofertas Ativas</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-number">70%</span>
+                        <span class="hero-stat-label">Desconto Máximo</span>
+                    </div>
+                    <div class="hero-stat">
+                        <span class="hero-stat-number">2x</span>
+                        <span class="hero-stat-label">Pontos Duplos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Container -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar promoções...">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-category="todas" onclick="filterPromocoes('todas')">
+                <i class="fas fa-star"></i>
+                <span>Todas</span>
+                <span class="tab-count">15</span>
+            </button>
+            <button class="filter-tab" data-category="alimentacao" onclick="filterPromocoes('alimentacao')">
+                <i class="fas fa-utensils"></i>
+                <span>Alimentação</span>
+                <span class="tab-count">5</span>
+            </button>
+            <button class="filter-tab" data-category="beleza" onclick="filterPromocoes('beleza')">
+                <i class="fas fa-spa"></i>
+                <span>Beleza</span>
+                <span class="tab-count">3</span>
+            </button>
+            <button class="filter-tab" data-category="tecnologia" onclick="filterPromocoes('tecnologia')">
+                <i class="fas fa-laptop"></i>
+                <span>Tecnologia</span>
+                <span class="tab-count">4</span>
+            </button>
+            <button class="filter-tab" data-category="moda" onclick="filterPromocoes('moda')">
+                <i class="fas fa-tshirt"></i>
+                <span>Moda</span>
+                <span class="tab-count">2</span>
+            </button>
+            <button class="filter-tab" data-category="casa" onclick="filterPromocoes('casa')">
+                <i class="fas fa-home"></i>
+                <span>Casa</span>
+                <span class="tab-count">1</span>
+            </button>
+        </div>
+
+        <!-- Promoções Grid -->
+        <div class="promocoes-grid" id="promocoesGrid">
+            <!-- Promoção 1 - Alimentação -->
+            <div class="promocao-card destaque" data-categoria="alimentacao">
+                <div class="promocao-header alimentacao">
+                    <i class="fas fa-hamburger promocao-icon"></i>
+                    <div class="promocao-badge">50% OFF</div>
+                </div>
+                <div class="promocao-content">
+                    <h3 class="promocao-title">Combo Burger Gourmet</h3>
+                    <p class="promocao-empresa">🍔 Burger Palace</p>
+                    <p class="promocao-descricao">
+                        Sanduíche artesanal + batata rústica + refrigerante. 
+                        Válido para delivery e retirada no local.
+                    </p>
+                    <div class="promocao-details">
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Até 23:59h</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>2.1km</span>
+                        </div>
+                        <div class="cashback-badge">+50 pontos</div>
+                    </div>
+                    <div class="promocao-footer">
+                        <div class="promocao-preco">
+                            <span class="preco-original">R$ 49,90</span>
+                            <span class="preco-promocional">R$ 24,90</span>
+                        </div>
+                        <button class="promocao-cta" onclick="abrirPromocao('burger-combo')">Ver Oferta</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Promoção 2 - Beleza -->
+            <div class="promocao-card" data-categoria="beleza">
+                <div class="promocao-header beleza">
+                    <i class="fas fa-spa promocao-icon"></i>
+                    <div class="promocao-badge">30% OFF</div>
+                </div>
+                <div class="promocao-content">
+                    <h3 class="promocao-title">Tratamento Facial Completo</h3>
+                    <p class="promocao-empresa">✨ Estética Viva</p>
+                    <p class="promocao-descricao">
+                        Limpeza de pele + hidratação + máscara revitalizante. 
+                        Agende seu horário online.
+                    </p>
+                    <div class="promocao-details">
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>Agendamento</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-star"></i>
+                            <span>4.8 ★</span>
+                        </div>
+                        <div class="cashback-badge">+100 pontos</div>
+                    </div>
+                    <div class="promocao-footer">
+                        <div class="promocao-preco">
+                            <span class="preco-original">R$ 120,00</span>
+                            <span class="preco-promocional">R$ 84,00</span>
+                        </div>
+                        <button class="promocao-cta" onclick="abrirPromocao('facial-tratamento')">Ver Oferta</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Promoção 3 - Tecnologia -->
+            <div class="promocao-card" data-categoria="tecnologia">
+                <div class="promocao-header tecnologia">
+                    <i class="fas fa-headphones promocao-icon"></i>
+                    <div class="promocao-badge">40% OFF</div>
+                </div>
+                <div class="promocao-content">
+                    <h3 class="promocao-title">Fone Bluetooth Premium</h3>
+                    <p class="promocao-empresa">🎧 Tech Store</p>
+                    <p class="promocao-descricao">
+                        Fone sem fio com cancelamento de ruído, bateria 30h. 
+                        Garantia de 2 anos + frete grátis.
+                    </p>
+                    <div class="promocao-details">
+                        <div class="detail-item">
+                            <i class="fas fa-truck"></i>
+                            <span>Frete Grátis</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>2 anos</span>
+                        </div>
+                        <div class="cashback-badge">+200 pontos</div>
+                    </div>
+                    <div class="promocao-footer">
+                        <div class="promocao-preco">
+                            <span class="preco-original">R$ 299,90</span>
+                            <span class="preco-promocional">R$ 179,90</span>
+                        </div>
+                        <button class="promocao-cta" onclick="abrirPromocao('fone-bluetooth')">Ver Oferta</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Promoção 4 - Moda -->
+            <div class="promocao-card" data-categoria="moda">
+                <div class="promocao-header moda">
+                    <i class="fas fa-tshirt promocao-icon"></i>
+                    <div class="promocao-badge">60% OFF</div>
+                </div>
+                <div class="promocao-content">
+                    <h3 class="promocao-title">Coleção Verão 2024</h3>
+                    <p class="promocao-empresa">👗 Moda Bella</p>
+                    <p class="promocao-descricao">
+                        Peças selecionadas da nova coleção. Vestidos, blusas e 
+                        acessórios com estilo único.
+                    </p>
+                    <div class="promocao-details">
+                        <div class="detail-item">
+                            <i class="fas fa-tags"></i>
+                            <span>Múltiplas peças</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span>Troca fácil</span>
+                        </div>
+                        <div class="cashback-badge">+75 pontos</div>
+                    </div>
+                    <div class="promocao-footer">
+                        <div class="promocao-preco">
+                            <span class="preco-original">R$ 159,90</span>
+                            <span class="preco-promocional">R$ 63,90</span>
+                        </div>
+                        <button class="promocao-cta" onclick="abrirPromocao('colecao-verao')">Ver Oferta</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Promoção 5 - Casa -->
+            <div class="promocao-card" data-categoria="casa">
+                <div class="promocao-header casa">
+                    <i class="fas fa-couch promocao-icon"></i>
+                    <div class="promocao-badge">45% OFF</div>
+                </div>
+                <div class="promocao-content">
+                    <h3 class="promocao-title">Kit Decoração Moderna</h3>
+                    <p class="promocao-empresa">🏠 Casa & Estilo</p>
+                    <p class="promocao-descricao">
+                        Conjunto de almofadas, vaso decorativo e quadro moderno. 
+                        Transforme seu ambiente com estilo.
+                    </p>
+                    <div class="promocao-details">
+                        <div class="detail-item">
+                            <i class="fas fa-box"></i>
+                            <span>Kit completo</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-home"></i>
+                            <span>Entrega grátis</span>
+                        </div>
+                        <div class="cashback-badge">+150 pontos</div>
+                    </div>
+                    <div class="promocao-footer">
+                        <div class="promocao-preco">
+                            <span class="preco-original">R$ 199,90</span>
+                            <span class="preco-promocional">R$ 109,90</span>
+                        </div>
+                        <button class="promocao-cta" onclick="abrirPromocao('kit-decoracao')">Ver Oferta</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results -->
+        <div class="no-results" id="noResults">
+            <i class="fas fa-search"></i>
+            <h3>Nenhuma promoção encontrada</h3>
+            <p>Tente buscar por outros termos ou navegue por todas as categorias</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="global-auth.js"></script>
+    <script src="global-navbar.js"></script>
+    
+    <script>
+        // Filter functionality
+        function filterPromocoes(categoria) {
+            const cards = document.querySelectorAll('.promocao-card');
+            const tabs = document.querySelectorAll('.filter-tab');
+            const noResults = document.getElementById('noResults');
+            const promocoesGrid = document.getElementById('promocoesGrid');
+            let hasResults = false;
+
+            // Update active tab
+            tabs.forEach(tab => {
                 tab.classList.remove('active');
+                if (tab.getAttribute('data-category') === categoria) {
+                    tab.classList.add('active');
+                }
             });
-            
-            // Ativa a nova tab
-            document.querySelector(`[data-tab="${novaTab}"]`).classList.add('active');
-            
-            tabAtual = novaTab;
-            
-            // Atualiza título da seção
-            const titulos = {
-                'ativas': 'Promoções Ativas',
-                'proximas': 'Promoções Em Breve',
-                'expiradas': 'Promoções Expiradas'
-            };
-            
-            document.getElementById('sectionTitle').textContent = titulos[novaTab];
-            
-            // Renderiza as promoções da tab selecionada
-            renderizarPromocoes(promocoesFicticias[novaTab]);
+
+            // Show/hide cards based on category
+            cards.forEach(card => {
+                const cardCategoria = card.getAttribute('data-categoria');
+                if (categoria === 'todas' || cardCategoria === categoria) {
+                    card.style.display = 'block';
+                    hasResults = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            if (hasResults) {
+                noResults.style.display = 'none';
+                promocoesGrid.style.display = 'grid';
+            } else {
+                noResults.style.display = 'block';
+                promocoesGrid.style.display = 'none';
+            }
+
+            // Show toast with category info
+            showToast(`Exibindo promoções: ${categoria === 'todas' ? 'Todas as categorias' : categoria}`, 'info');
         }
 
-        function abrirPromocao(id) {
-            // Simula abertura de detalhes da promoção
-            alert(`Abrindo detalhes da promoção ID: ${id}`);
-        }
-
-        function usarPromocao(id) {
-            if (tabAtual === 'expiradas') return;
-            
-            // Simula uso da promoção
-            alert(`Promoção ID: ${id} ativada com sucesso! 🎉`);
-        }
-
-        // Inicialização
+        // Search functionality
         document.addEventListener('DOMContentLoaded', function() {
-            renderizarPromocoes(promocoesFicticias.ativas);
+            const searchInput = document.getElementById('searchInput');
+            const cards = document.querySelectorAll('.promocao-card');
+            const noResults = document.getElementById('noResults');
+            const promocoesGrid = document.getElementById('promocoesGrid');
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                let hasResults = false;
+
+                cards.forEach(card => {
+                    const title = card.querySelector('.promocao-title').textContent.toLowerCase();
+                    const empresa = card.querySelector('.promocao-empresa').textContent.toLowerCase();
+                    const descricao = card.querySelector('.promocao-descricao').textContent.toLowerCase();
+
+                    if (title.includes(searchTerm) || 
+                        empresa.includes(searchTerm) || 
+                        descricao.includes(searchTerm)) {
+                        card.style.display = 'block';
+                        hasResults = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Show/hide no results message
+                if (hasResults || searchTerm === '') {
+                    noResults.style.display = 'none';
+                    promocoesGrid.style.display = 'grid';
+                } else {
+                    noResults.style.display = 'block';
+                    promocoesGrid.style.display = 'none';
+                }
+            });
+        });
+
+        // Open promotion details
+        function abrirPromocao(promocaoId) {
+            showToast('Carregando detalhes da promoção...', 'info');
+            
+            // Simulate loading and redirect
+            setTimeout(() => {
+                // Here you would typically redirect to a detailed promotion page
+                // For now, we'll just show a success message
+                showToast('Promoção adicionada aos favoritos! 🎉', 'success');
+                
+                // Add to favorites simulation
+                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (!user.favoritePromotions) {
+                    user.favoritePromotions = [];
+                }
+                
+                if (!user.favoritePromotions.includes(promocaoId)) {
+                    user.favoritePromotions.push(promocaoId);
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                }
+            }, 1000);
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const now = new Date().toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type} show`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                  type === 'error' ? 'fa-exclamation-circle' : 
+                                  'fa-info-circle'}"></i>
+                    <div class="toast-message">
+                        <strong>${message}</strong>
+                        <small>${now}</small>
+                    </div>
+                </div>
+            `;
+
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 3000);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Promotions page loaded');
+            
+            // Add hover effects to promotion cards
+            const cards = document.querySelectorAll('.promocao-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(-4px)';
+                });
+            });
+
+            // Initialize tooltips
+            const detailItems = document.querySelectorAll('.detail-item');
+            detailItems.forEach(item => {
+                const text = item.querySelector('span').textContent;
+                item.setAttribute('title', text);
+            });
         });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

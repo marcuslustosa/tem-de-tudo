@@ -1,893 +1,1080 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cadastro Empresarial - Tem de Tudo</title>
-<!-- Meta Tags -->
-<meta name="description" content="Cadastre sua empresa no programa de fidelidade Tem de Tudo">
-<meta name="theme-color" content="#6A0DAD">
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-<!-- Font Awesome Icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="manifest" href="/manifest.json">
-<!-- Icons -->
-<link rel="icon" type="image/png" href="/frontend/img/logo.png">
-<!-- Stylesheets -->
-<script src="/js/config.js"></script>
-<script src="/js/auth-manager.js" defer></script>
-<script src="/js/api-client.js" defer></script>
-<script src="/js/validators.js" defer></script>
-<script src="/js/ui-helpers.js" defer></script>
-<script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/vivo-global.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastre sua Empresa - Tem de Tudo</title>
+    <meta name="description" content="Cadastre sua empresa no programa de fidelidade Tem de Tudo e atraia mais clientes">
+    <meta name="theme-color" content="#6F1AB6">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="global-styles.css">
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    
+    <style>
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header-section h1 {
+            color: var(--vivo-purple);
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .header-section p {
+            color: #666;
+            font-size: 1.3rem;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .benefits-section {
+            background: linear-gradient(135deg, var(--vivo-purple), #8B4CD6);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .benefits-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="benefits" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23benefits)"/></svg>');
+            pointer-events: none;
+        }
+
+        .benefits-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .benefits-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .benefit-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .benefit-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .benefit-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .benefit-desc {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .form-wizard {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .wizard-header {
+            background: linear-gradient(90deg, var(--vivo-purple), #8B4CD6);
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .wizard-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .wizard-subtitle {
+            opacity: 0.9;
+        }
+
+        .wizard-progress {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .progress-step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .progress-step.active {
+            background: white;
+            color: var(--vivo-purple);
+        }
+
+        .progress-step.completed {
+            background: #00d4aa;
+            color: white;
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 40px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%);
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .progress-step.completed::after {
+            background: #00d4aa;
+        }
+
+        .wizard-content {
+            padding: 2.5rem;
+        }
+
+        .wizard-step {
+            display: none;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: var(--vivo-purple);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group .required {
+            color: #e74c3c;
+            margin-left: 4px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--vivo-purple);
+            box-shadow: 0 0 0 3px rgba(111, 26, 182, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-row.three-cols {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            border-color: var(--vivo-purple);
+            background: rgba(111, 26, 182, 0.05);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked + label {
+            color: var(--vivo-purple);
+            font-weight: 600;
+        }
+
+        .wizard-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--vivo-purple);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5d1694;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            border-color: #d0d7de;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        .success-section {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: #00d4aa;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--vivo-purple);
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd, #f1f8ff);
+            border-left: 4px solid var(--vivo-purple);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .info-box i {
+            color: var(--vivo-purple);
+            margin-right: 10px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header-section h1 {
+                font-size: 2.2rem;
+            }
+
+            .benefits-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .benefits-title {
+                font-size: 1.8rem;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .wizard-content {
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row.three-cols {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .wizard-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .wizard-progress {
+                gap: 0.5rem;
+            }
+
+            .progress-step {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+
+            .progress-step::after {
+                width: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-section h1 {
+                font-size: 1.9rem;
+            }
+
+            .benefits-title {
+                font-size: 1.5rem;
+            }
+
+            .wizard-header {
+                padding: 1.5rem;
+            }
+
+            .wizard-title {
+                font-size: 1.4rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-<div class="app-container">
-<!-- Header -->
-<header class="app-header">
-<div class="header-container">
-<a href="/" class="logo">
-<i class="fas fa-gem" style="color: #6F1AB6; margin-right: 8px; font-size: 1.2rem;"></i>
-<span>Tem de Tudo</span>
-</a>
-<nav class="nav-menu">
-<a href="/"><i class="fas fa-home icon-sm"></i> In?cio</a>
-<a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
-<a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
-<a href="/entrar.html"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
-</nav>
-<button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-<span></span>
-<span></span>
-<span></span>
-</button>
-</div>
-</header>
-<!-- Mobile Navigation -->
-<div class="mobile-nav" id="mobileNav">
-<div class="mobile-nav-menu">
-<a href="/"><i class="fas fa-home icon-sm"></i> In?cio</a>
-<a href="/estabelecimentos.html"><i class="fas fa-store icon-sm"></i> Estabelecimentos</a>
-<a href="/contato.html"><i class="fas fa-envelope icon-sm"></i> Contato</a>
-<a href="/entrar.html"><i class="fas fa-sign-in-alt icon-sm"></i> Login</a>
-</div>
-</div>
-<!-- Main Content -->
-<main class="app-main">
-<!-- Hero Section -->
-<section >
-<div style="max-width: 800px; margin: 0 auto;">
-<i class="fas fa-store" style="font-size: 3rem; color: var(--accent-orange); margin-bottom: 1rem; display: block;"></i>
-<h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">Cadastre sua Empresa</h1>
-<p style="font-size: 1.125rem; opacity: 0.9;">Junte-se ao programa de fidelidade e aumente suas vendas!</p>
-</div>
-</section>
-<!-- Step Indicator -->
-<div style="background: white; padding: var(--space-6) var(--space-6); border-bottom: 1px solid var(--gray-200);">
-<div style="max-width: 1000px; margin: 0 auto;">
-<div class="step-indicator" id="stepIndicator">
-<div class="step active">
-<div class="step-number">1</div>
-<div class="step-label">Planos</div>
-</div>
-<div class="step-line"></div>
-<div class="step">
-<div class="step-number">2</div>
-<div class="step-label">Dados</div>
-</div>
-<div class="step-line"></div>
-<div class="step">
-<div class="step-number">3</div>
-<div class="step-label">Pagamento</div>
-</div>
-<div class="step-line"></div>
-<div class="step">
-<div class="step-number">4</div>
-<div class="step-label">Confirma??o</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Content Area -->
-<section style="padding: var(--space-12) var(--space-6); background: var(--gray-50); min-height: 70vh;">
-<div style="max-width: 1000px; margin: 0 auto;">
-<!-- Step 1: Plans -->
-<div id="step1" class="step-content active">
-<div style="text-align: center; margin-bottom: 3rem;">
-<h2 style="font-size: 2rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem;">Escolha seu Plano</h2>
-<p style="color: var(--gray-600); font-size: 1.125rem;">Selecione o plano que melhor atende s necessidades da sua empresa</p>
-</div>
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
-<!-- Plano Bsico -->
-<div class="plan-card" onclick="selectPlan('basico')">
-<div class="plan-header">
-<h3>Plano Bsico</h3>
-<div class="plan-price">
-<span class="price">R$ 89</span>
-<span class="period">/ms</span>
-</div>
-</div>
-<div class="plan-body">
-<ul class="plan-features">
-<li><i class="fas fa-check"></i> At 500 clientes cadastrados</li>
-<li><i class="fas fa-check"></i> QR Code personalizado</li>
-<li><i class="fas fa-check"></i> Relatrios bsicos</li>
-<li><i class="fas fa-check"></i> Suporte por email</li>
-<li><i class="fas fa-check"></i> 3 campanhas por m?s</li>
-</ul>
-</div>
-<div class="plan-footer">
-<div class="plan-tag">Ideal para pequenos neg?cios</div>
-</div>
-</div>
-<!-- Plano Profissional -->
-<div class="plan-card popular" onclick="selectPlan('profissional')">
-<div class="popular-badge">Mais Popular</div>
-<div class="plan-header">
-<h3>Plano Profissional</h3>
-<div class="plan-price">
-<span class="price">R$ 189</span>
-<span class="period">/ms</span>
-</div>
-</div>
-<div class="plan-body">
-<ul class="plan-features">
-<li><i class="fas fa-check"></i> At 2.000 clientes</li>
-<li><i class="fas fa-check"></i> QR Code + App personalizado</li>
-<li><i class="fas fa-check"></i> Relatrios avanados</li>
-<li><i class="fas fa-check"></i> Suporte prioritrio</li>
-<li><i class="fas fa-check"></i> Campanhas ilimitadas</li>
-<li><i class="fas fa-check"></i> Integrao com redes sociais</li>
-<li><i class="fas fa-check"></i> Dashboard analytics</li>
-</ul>
-</div>
-<div class="plan-footer">
-<div class="plan-tag">Perfeito para empresas em crescimento</div>
-</div>
-</div>
-<!-- Plano Empresarial -->
-<div class="plan-card" onclick="selectPlan('empresarial')">
-<div class="plan-header">
-<h3>Plano Empresarial</h3>
-<div class="plan-price">
-<span class="price">R$ 389</span>
-<span class="period">/ms</span>
-</div>
-</div>
-<div class="plan-body">
-<ul class="plan-features">
-<li><i class="fas fa-check"></i> Clientes ilimitados</li>
-<li><i class="fas fa-check"></i> Mltiplas filiais</li>
-<li><i class="fas fa-check"></i> API personalizada</li>
-<li><i class="fas fa-check"></i> Gerente de conta dedicado</li>
-<li><i class="fas fa-check"></i> White label disponvel</li>
-<li><i class="fas fa-check"></i> Integraes avanadas</li>
-<li><i class="fas fa-check"></i> Suporte 24/7</li>
-<li><i class="fas fa-check"></i> Treinamento da equipe</li>
-</ul>
-</div>
-<div class="plan-footer">
-<div class="plan-tag">Para grandes empresas</div>
-</div>
-</div>
-</div>
-<div style="text-align: center; margin-top: 2rem;">
-<button class="btn btn-lg"  onclick="nextStep()" id="continueBtn" disabled>
-<i class="fas fa-arrow-right icon-sm"></i> Continuar com Plano Selecionado
-                            </button>
-</div>
-</div>
-<!-- Step 2: Company Data -->
-<div id="step2" class="step-content">
-<div style="text-align: center; margin-bottom: 3rem;">
-<h2 style="font-size: 2rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem;">Dados da Empresa</h2>
-<p style="color: var(--gray-600); font-size: 1.125rem;">Preencha as informaes da sua empresa</p>
-</div>
-<div class="card" style="max-width: 700px; margin: 0 auto;">
-<form id="companyForm" class="card-body" style="padding: 10px;">
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-<div class="form-group">
-<label for="razaoSocial" class="form-label">
-<i class="fas fa-building icon-sm"></i> Razo Social *
-                                        </label>
-<input type="text" id="razaoSocial" name="razaoSocial" class="form-control" required>
-</div>
-<div class="form-group">
-<label for="nomeFantasia" class="form-label">
-<i class="fas fa-store icon-sm"></i> Nome Fantasia *
-                                        </label>
-<input type="text" id="nomeFantasia" name="nomeFantasia" class="form-control" required>
-</div>
-</div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-<div class="form-group">
-<label for="cnpj" class="form-label">
-<i class="fas fa-id-card icon-sm"></i> CNPJ *
-                                        </label>
-<input type="text" id="cnpj" name="cnpj" class="form-control" placeholder="00.000.000/0000-00" required>
-</div>
-<div class="form-group">
-<label for="inscricaoEstadual" class="form-label">
-<i class="fas fa-certificate icon-sm"></i> Inscri??o Estadual
-                                        </label>
-<input type="text" id="inscricaoEstadual" name="inscricaoEstadual" class="form-control">
-</div>
-</div>
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-<div class="form-group">
-<label for="email" class="form-label">
-<i class="fas fa-envelope icon-sm"></i> Email Empresarial *
-                                        </label>
-<input type="email" id="email" name="email" class="form-control" required>
-</div>
-<div class="form-group">
-<label for="telefone" class="form-label">
-<i class="fas fa-phone icon-sm"></i> Telefone *
-                                        </label>
-<input type="tel" id="telefone" name="telefone" class="form-control" placeholder="(11) 99999-9999" required>
-</div>
-</div>
-<div class="form-group" style="margin-bottom: 1.5rem;">
-<label for="website" class="form-label">
-<i class="fas fa-globe icon-sm"></i> Website (opcional)
-                                    </label>
-<input type="url" id="website" name="website" class="form-control" placeholder="https://www.exemplo.com">
-</div>
-<div class="form-group" style="margin-bottom: 1.5rem;">
-<label for="descricao" class="form-label">
-<i class="fas fa-align-left icon-sm"></i> Descri??o do Neg?cio *
-                                    </label>
-<textarea id="descricao" name="descricao" class="form-control" rows="4" placeholder="Descreva brevemente sua empresa e os produtos/servios oferecidos..." required></textarea>
-</div>
-<h4 style="color: var(--gray-900); margin-bottom: 1rem; border-bottom: 1px solid var(--gray-200); padding-bottom: 0.5rem;">
-<i class="fas fa-map-marker-alt icon-sm"></i> Endere?o
-                                </h4>
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-<div class="form-group">
-<label for="cep" class="form-label">CEP *</label>
-<input type="text" id="cep" name="cep" class="form-control" placeholder="00000-000" required>
-</div>
-<div class="form-group">
-<label for="numero" class="form-label">N?mero *</label>
-<input type="text" id="numero" name="numero" class="form-control" required>
-</div>
-</div>
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-<div class="form-group">
-<label for="endereco" class="form-label">Endere?o *</label>
-<input type="text" id="endereco" name="endereco" class="form-control" readonly>
-</div>
-<div class="form-group">
-<label for="complemento" class="form-label">Complemento</label>
-<input type="text" id="complemento" name="complemento" class="form-control">
-</div>
-</div>
-<div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
-<div class="form-group">
-<label for="bairro" class="form-label">Bairro *</label>
-<input type="text" id="bairro" name="bairro" class="form-control" readonly>
-</div>
-<div class="form-group">
-<label for="cidade" class="form-label">Cidade *</label>
-<input type="text" id="cidade" name="cidade" class="form-control" readonly>
-</div>
-<div class="form-group">
-<label for="uf" class="form-label">UF *</label>
-<input type="text" id="uf" name="uf" class="form-control" readonly>
-</div>
-</div>
-</form>
-</div>
-<div style="text-align: center; margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
-<button class="btn btn-ghost" onclick="prevStep()">
-<i class="fas fa-arrow-left icon-sm"></i> Voltar
-                            </button>
-<button class="btn btn-lg"  onclick="validateFormAndNext()">
-<i class="fas fa-arrow-right icon-sm"></i> Continuar
-                            </button>
-</div>
-</div>
-<!-- Step 3: Payment -->
-<div id="step3" class="step-content">
-<div style="text-align: center; margin-bottom: 3rem;">
-<h2 style="font-size: 2rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem;">Pagamento</h2>
-<p style="color: var(--gray-600); font-size: 1.125rem;">Confirme seu plano e m?todo de pagamento</p>
-</div>
-<div style="display: grid; grid-template-columns: 1fr 400px; gap: 3rem; align-items: start;" class="payment-grid">
-<!-- Payment Methods -->
-<div>
-<div class="card" style="margin-bottom: 2rem;">
-<div class="card-header">
-<h3 style="color: #1D1D1F; margin: 0;"><i class="fas fa-credit-card icon-sm"></i> M?todo de Pagamento</h3>
-</div>
-<div class="card-body">
-<div class="payment-methods">
-<div class="payment-method" onclick="selectPaymentMethod('credit')">
-<div class="method-icon">
-<i class="fas fa-credit-card"></i>
-</div>
-<div class="method-info">
-<h4>Cart?o de Cr?dito</h4>
-<p>Pagamento mensal autom?tico</p>
-</div>
-<div class="method-check">
-<i class="fas fa-check"></i>
-</div>
-</div>
-<div class="payment-method" onclick="selectPaymentMethod('pix')">
-<div class="method-icon">
-<i class="fab fa-pix"></i>
-</div>
-<div class="method-info">
-<h4>PIX</h4>
-<p>Pagamento  vista com 10% desconto</p>
-</div>
-<div class="method-check">
-<i class="fas fa-check"></i>
-</div>
-</div>
-<div class="payment-method" onclick="selectPaymentMethod('boleto')">
-<div class="method-icon">
-<i class="fas fa-barcode"></i>
-</div>
-<div class="method-info">
-<h4>Boleto Banc?rio</h4>
-<p>Vencimento em 5 dias teis</p>
-</div>
-<div class="method-check">
-<i class="fas fa-check"></i>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Payment Form -->
-<div id="paymentForm" class="card" style="display: none;">
-<div class="card-body">
-<!-- Credit Card Form -->
-<div id="creditForm" style="display: none;">
-<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-<div class="form-group">
-<label class="form-label">N?mero do Cart?o</label>
-<input type="text" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19">
-</div>
-<div class="form-group">
-<label class="form-label">CVV</label>
-<input type="text" class="form-control" placeholder="000" maxlength="3">
-</div>
-</div>
-<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; margin-bottom: 1rem;">
-<div class="form-group">
-<label class="form-label">Validade</label>
-<input type="text" class="form-control" placeholder="MM/AA" maxlength="5">
-</div>
-<div class="form-group">
-<label class="form-label">Nome no Carto</label>
-<input type="text" class="form-control" placeholder="Nome como impresso no carto">
-</div>
-</div>
-</div>
-<!-- PIX Form -->
-<div id="pixForm" style="display: none; text-align: center;">
-<div class="card">
-<i class="fab fa-pix" style="font-size: 3rem; color: #0369a1; margin-bottom: 1rem;"></i>
-<h4>Pagamento via PIX</h4>
-<p>Aps confirmar, voc receber o QR Code para pagamento</p>
-</div>
-</div>
-<!-- Boleto Form -->
-<div id="boletoForm" style="display: none; text-align: center;">
-<div class="card">
-<i class="fas fa-barcode" style="font-size: 3rem; color: #764ba2; margin-bottom: 1rem;"></i>
-<h4>Boleto Bancrio</h4>
-<p>O boleto ser enviado por email e ter vencimento em 5 dias teis</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Order Summary -->
-<div class="card">
-<div class="card-header">
-<h3 style="color: #1D1D1F; margin: 0;"><i class="fas fa-file-invoice icon-sm"></i> Resumo do Pedido</h3>
-</div>
-<div class="card-body">
-<div id="orderSummary">
-<!-- Will be populated by JavaScript -->
-</div>
-</div>
-</div>
-</div>
-<div style="text-align: center; margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
-<button class="btn btn-ghost" onclick="prevStep()">
-<i class="fas fa-arrow-left icon-sm"></i> Voltar
-                            </button>
-<button class="btn btn-lg btn-success" onclick="processPayment()" id="payBtn" disabled style="padding: 1rem 3rem;">
-<i class="fas fa-credit-card icon-sm"></i> Finalizar Pagamento
-                            </button>
-</div>
-</div>
-<!-- Step 4: Confirmation -->
-<div id="step4" class="step-content">
-<div style="text-align: center;">
-<div style="background: white; padding: 3rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: 2rem auto; max-width: 600px;">
-<div >
-<i class="fas fa-check" style="font-size: 2rem; color: #1D1D1F;"></i>
-</div>
-<h2 style="font-size: 2rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem;">Cadastro Realizado!</h2>
-<p style="color: var(--gray-600); font-size: 1.125rem; margin-bottom: 2rem;">Sua empresa foi cadastrada com sucesso no programa de fidelidade Tem de Tudo.</p>
-<div id="confirmationDetails" style="text-align: left; background: var(--gray-50); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
-<!-- Will be populated by JavaScript -->
-</div>
-<div class="card">
-<h4 style="color: #92400e; margin-bottom: 0.5rem;"><i class="fas fa-clock icon-sm"></i> Prximos Passos</h4>
-<p style="color: #92400e; margin-bottom: 0; font-size: 0.875rem;">
-                                        Nossa equipe entrar em contato em at 24 horas para ativao da conta e treinamento inicial.
-                                        Voc receber um email com as credenciais de acesso ao painel administrativo.
-                                    </p>
-</div>
-<div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-<a href="/" class="btn btn-ghost">
-<i class="fas fa-home icon-sm"></i> Voltar ao Incio
-                                    </a>
-<a href="/contato.html" class="btn" >
-<i class="fas fa-headset icon-sm"></i> Falar com Suporte
-                                    </a>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-</main>
-</div>
-<!-- Loading Overlay -->
-<div id="loadingOverlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: none; z-index: 9999; align-items: center; justify-content: center;">
-<div style="text-align: center; color: white;">
-<div style="border: 3px solid #667eea; border-top: 3px solid transparent; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
-<div id="loadingText">Processando...</div>
-</div>
-</div>
-<!-- Scripts -->
-<script src="/js/app-mobile.js"></script>
-<script>
+    <!-- Navigation será inserida aqui pelo global-navbar.js -->
+    <nav id="navbar-container"></nav>
+    
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1>Cadastre sua Empresa</h1>
+            <p>Junte-se ao maior programa de fidelidade da região e transforme visitantes ocasionais em clientes fiéis</p>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="benefits-section">
+            <div class="benefits-content">
+                <h2 class="benefits-title">🚀 Por que se tornar um parceiro?</h2>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <i class="fas fa-users benefit-icon"></i>
+                        <h3 class="benefit-title">Mais Clientes</h3>
+                        <p class="benefit-desc">Atraia novos clientes através da nossa rede de usuários ativos</p>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-heart benefit-icon"></i>
+                        <h3 class="benefit-title">Fidelização</h3>
+                        <p class="benefit-desc">Transforme clientes em fãs com nosso sistema de pontos e recompensas</p>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-chart-line benefit-icon"></i>
+                        <h3 class="benefit-title">Analytics</h3>
+                        <p class="benefit-desc">Dashboard completo com insights sobre seus clientes e vendas</p>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-gift benefit-icon"></i>
+                        <h3 class="benefit-title">100% Gratuito</h3>
+                        <p class="benefit-desc">Sem taxas de adesão, mensalidades ou comissões. Totalmente gratuito!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="form-wizard" id="registrationWizard">
+            <div class="wizard-header">
+                <h2 class="wizard-title">Cadastro Empresarial</h2>
+                <p class="wizard-subtitle">Preencha os dados da sua empresa em 3 passos simples</p>
+                <div class="wizard-progress">
+                    <div class="progress-step active" data-step="1">1</div>
+                    <div class="progress-step" data-step="2">2</div>
+                    <div class="progress-step" data-step="3">3</div>
+                </div>
+            </div>
+
+            <div class="wizard-content">
+                <form id="companyRegistrationForm" novalidate>
+                    <!-- Step 1: Dados da Empresa -->
+                    <div class="wizard-step active" data-step="1">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-building"></i>
+                                Dados da Empresa
+                            </h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="razaoSocial">Razão Social <span class="required">*</span></label>
+                                    <input type="text" id="razaoSocial" name="razaoSocial" required>
+                                    <div class="error-message">Razão social é obrigatória</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="nomeFantasia">Nome Fantasia <span class="required">*</span></label>
+                                    <input type="text" id="nomeFantasia" name="nomeFantasia" required>
+                                    <div class="error-message">Nome fantasia é obrigatório</div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cnpj">CNPJ <span class="required">*</span></label>
+                                    <input type="text" id="cnpj" name="cnpj" placeholder="00.000.000/0001-00" required>
+                                    <div class="error-message">CNPJ inválido</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inscricaoEstadual">Inscrição Estadual</label>
+                                    <input type="text" id="inscricaoEstadual" name="inscricaoEstadual">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="descricao">Descrição da Empresa <span class="required">*</span></label>
+                                <textarea id="descricao" name="descricao" placeholder="Conte um pouco sobre sua empresa, produtos e serviços..." required></textarea>
+                                <div class="error-message">Descrição é obrigatória</div>
+                            </div>
+
+                            <div class="info-box">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Importante:</strong> Todos os dados serão verificados pela nossa equipe antes da aprovação do cadastro.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Endereço e Contato -->
+                    <div class="wizard-step" data-step="2">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-map-marker-alt"></i>
+                                Endereço e Contato
+                            </h3>
+
+                            <div class="form-row three-cols">
+                                <div class="form-group">
+                                    <label for="cep">CEP <span class="required">*</span></label>
+                                    <input type="text" id="cep" name="cep" placeholder="00000-000" required>
+                                    <div class="error-message">CEP é obrigatório</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cidade">Cidade <span class="required">*</span></label>
+                                    <input type="text" id="cidade" name="cidade" required>
+                                    <div class="error-message">Cidade é obrigatória</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="estado">Estado <span class="required">*</span></label>
+                                    <select id="estado" name="estado" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="SP">São Paulo</option>
+                                        <option value="RJ">Rio de Janeiro</option>
+                                        <option value="MG">Minas Gerais</option>
+                                        <option value="ES">Espírito Santo</option>
+                                        <option value="PR">Paraná</option>
+                                        <option value="SC">Santa Catarina</option>
+                                        <option value="RS">Rio Grande do Sul</option>
+                                    </select>
+                                    <div class="error-message">Estado é obrigatório</div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="endereco">Endereço <span class="required">*</span></label>
+                                    <input type="text" id="endereco" name="endereco" placeholder="Rua, Avenida..." required>
+                                    <div class="error-message">Endereço é obrigatório</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="numero">Número <span class="required">*</span></label>
+                                    <input type="text" id="numero" name="numero" required>
+                                    <div class="error-message">Número é obrigatório</div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="complemento">Complemento</label>
+                                    <input type="text" id="complemento" name="complemento" placeholder="Sala, Andar, etc.">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bairro">Bairro <span class="required">*</span></label>
+                                    <input type="text" id="bairro" name="bairro" required>
+                                    <div class="error-message">Bairro é obrigatório</div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="telefone">Telefone <span class="required">*</span></label>
+                                    <input type="tel" id="telefone" name="telefone" placeholder="(11) 99999-9999" required>
+                                    <div class="error-message">Telefone é obrigatório</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email <span class="required">*</span></label>
+                                    <input type="email" id="email" name="email" placeholder="empresa@exemplo.com" required>
+                                    <div class="error-message">Email é obrigatório e deve ser válido</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Categorias e Finalização -->
+                    <div class="wizard-step" data-step="3">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-tags"></i>
+                                Categorias de Atuação
+                            </h3>
+                            
+                            <p style="color: #666; margin-bottom: 1.5rem;">
+                                Selecione as categorias que melhor descrevem os produtos/serviços da sua empresa:
+                            </p>
+
+                            <div class="checkbox-group">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="categorias[]" value="alimentacao">
+                                    <span>🍔 Alimentação</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="categorias[]" value="beleza">
+                                    <span>✨ Beleza & Estética</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="categorias[]" value="esportes">
+                                    <span>🏋️ Esportes & Fitness</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="categorias[]" value="moda">
+                                    <span>👗 Moda & Vestuário</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="categorias[]" value="tecnologia">
+                                    <span>💻 Tecnologia</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="categorias[]" value="automotivo">
+                                    <span>🚗 Automotivo</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="categorias[]" value="saude">
+                                    <span>🏥 Saúde & Bem-estar</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="categorias[]" value="educacao">
+                                    <span>📚 Educação</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="categorias[]" value="casa">
+                                    <span>🏠 Casa & Construção</span>
+                                </label>
+                                <label class="checkbox-item">
+                                    <input type="checkbox" name="categorias[]" value="servicos">
+                                    <span>🛠️ Serviços Gerais</span>
+                                </label>
+                            </div>
+
+                            <div class="info-box">
+                                <i class="fas fa-lightbulb"></i>
+                                <strong>Dica:</strong> Selecionar categorias adequadas ajuda os clientes a encontrarem sua empresa mais facilmente.
+                            </div>
+
+                            <div class="form-section" style="margin-top: 2rem;">
+                                <h3 class="section-title">
+                                    <i class="fas fa-user-tie"></i>
+                                    Dados do Responsável
+                                </h3>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="responsavelNome">Nome Completo <span class="required">*</span></label>
+                                        <input type="text" id="responsavelNome" name="responsavelNome" required>
+                                        <div class="error-message">Nome do responsável é obrigatório</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="responsavelCargo">Cargo/Função <span class="required">*</span></label>
+                                        <input type="text" id="responsavelCargo" name="responsavelCargo" placeholder="Proprietário, Gerente, etc." required>
+                                        <div class="error-message">Cargo é obrigatório</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Success Section -->
+                <div class="success-section" id="successSection">
+                    <i class="fas fa-check-circle success-icon"></i>
+                    <h2 class="success-title">Cadastro Realizado com Sucesso!</h2>
+                    <p class="success-message">
+                        Parabéns! Sua empresa foi cadastrada em nosso sistema. Nossa equipe irá analisar os dados fornecidos
+                        e você receberá uma confirmação por email em até 48 horas úteis.
+                    </p>
+                    <div class="wizard-actions">
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='app-inicio.html'">
+                            <i class="fas fa-home"></i>
+                            Ir para o App
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                            <i class="fas fa-plus"></i>
+                            Cadastrar Outra Empresa
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Navigation Actions -->
+                <div class="wizard-actions" id="wizardActions">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" onclick="previousStep()" style="display: none;">
+                        <i class="fas fa-arrow-left"></i>
+                        Anterior
+                    </button>
+                    <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                        Próximo
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="global-auth.js"></script>
+    <script src="global-navbar.js"></script>
+    
+    <script>
         let currentStep = 1;
-        let selectedPlan = null;
-        let selectedPaymentMethod = null;
-        let formData = {};
+        const totalSteps = 3;
 
-        const plans = {
-            basico: {
-                name: 'Plano B?sico',
-                price: 89,
-                features: ['At? 500 clientes', 'QR Code personalizado', 'Relat?rios b?sicos', 'Suporte por email', '3 campanhas/m?s']
-            },
-            profissional: {
-                name: 'Plano Profissional', 
-                price: 189,
-                features: ['At? 2.000 clientes', 'App personalizado', 'Relat?rios avan?ados', 'Suporte priorit?rio', 'Campanhas ilimitadas', 'Redes sociais', 'Analytics']
-            },
-            empresarial: {
-                name: 'Plano Empresarial',
-                price: 389, 
-                features: ['Clientes ilimitados', 'M?ltiplas filiais', 'API personalizada', 'Gerente dedicado', 'White label', 'Integra??es avan?adas', 'Suporte 24/7']
-            }
-        };
-
-        function toggleMobileMenu() {
-            const mobileNav = document.getElementById('mobileNav');
-            const btn = document.querySelector('.mobile-menu-btn');
-            mobileNav.classList.toggle('active');
-            btn.classList.toggle('active');
-        }
-
-        function selectPlan(planId) {
-            // Remove previous selection
-            document.querySelectorAll('.plan-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-
-            // Add selection to clicked plan
-            event.currentTarget.classList.add('selected');
-            selectedPlan = planId;
-            
-            // Enable continue button
-            document.getElementById('continueBtn').disabled = false;
-            document.getElementById('continueBtn').style.opacity = '1';
-        }
-
+        // Navigation functions
         function nextStep() {
-            if (currentStep < 4) {
-                // Hide current step
-                document.getElementById(`step${currentStep}`).classList.remove('active');
-                
-                // Update step indicator
-                document.querySelectorAll('.step')[currentStep - 1].classList.remove('active');
-                document.querySelectorAll('.step')[currentStep - 1].classList.add('completed');
-                
-                currentStep++;
-                
-                // Show next step
-                document.getElementById(`step${currentStep}`).classList.add('active');
-                document.querySelectorAll('.step')[currentStep - 1].classList.add('active');
-                
-                // Special handling for step 3 (payment)
-                if (currentStep === 3) {
-                    updateOrderSummary();
+            if (validateCurrentStep()) {
+                if (currentStep === totalSteps) {
+                    submitForm();
+                } else {
+                    currentStep++;
+                    updateWizard();
                 }
             }
         }
 
-        function prevStep() {
+        function previousStep() {
             if (currentStep > 1) {
-                // Hide current step
-                document.getElementById(`step${currentStep}`).classList.remove('active');
-                
-                // Update step indicator
-                document.querySelectorAll('.step')[currentStep - 1].classList.remove('active');
-                document.querySelectorAll('.step')[currentStep - 1].classList.remove('completed');
-                
                 currentStep--;
-                
-                // Show previous step
-                document.getElementById(`step${currentStep}`).classList.add('active');
-                document.querySelectorAll('.step')[currentStep - 1].classList.add('active');
-                document.querySelectorAll('.step')[currentStep - 1].classList.remove('completed');
+                updateWizard();
             }
         }
 
-        function validateFormAndNext() {
-            const form = document.getElementById('companyForm');
-            const formDataObj = new FormData(form);
-            const data = Object.fromEntries(formDataObj);
-            
-            // Basic validation
-            const requiredFields = ['razaoSocial', 'nomeFantasia', 'cnpj', 'email', 'telefone', 'descricao', 'cep', 'numero'];
-            const missingFields = requiredFields.filter(field => !data[field] || data[field].trim() === '');
-            
-            if (missingFields.length > 0) {
-                alert('Por favor, preencha todos os campos obrigat?rios marcados com *');
-                return;
-            }
-            
-            // CNPJ validation (basic)
-            if (!isValidCNPJ(data.cnpj)) {
-                alert('Por favor, insira um CNPJ v?lido');
-                return;
-            }
-            
-            // Email validation
-            if (!isValidEmail(data.email)) {
-                alert('Por favor, insira um email v?lido');
-                return;
-            }
-            
-            // Store form data
-            formData = data;
-            nextStep();
-        }
-
-        function selectPaymentMethod(method) {
-            // Remove previous selection
-            document.querySelectorAll('.payment-method').forEach(elem => {
-                elem.classList.remove('selected');
+        function updateWizard() {
+            // Update progress indicators
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < currentStep) {
+                    step.classList.add('completed');
+                } else if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                }
             });
-            
-            // Add selection
-            event.currentTarget.classList.add('selected');
-            selectedPaymentMethod = method;
-            
-            // Show payment form
-            document.getElementById('paymentForm').style.display = 'block';
-            
-            // Hide all forms first
-            document.getElementById('creditForm').style.display = 'none';
-            document.getElementById('pixForm').style.display = 'none'; 
-            document.getElementById('boletoForm').style.display = 'none';
-            
-            // Show selected form
-            document.getElementById(`${method}Form`).style.display = 'block';
-            
-            // Enable pay button
-            document.getElementById('payBtn').disabled = false;
-            
-            // Update order summary
-            updateOrderSummary();
-        }
 
-        function updateOrderSummary() {
-            if (!selectedPlan) return;
+            // Update wizard steps
+            document.querySelectorAll('.wizard-step').forEach((step, index) => {
+                step.classList.remove('active');
+                if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            prevBtn.style.display = currentStep === 1 ? 'none' : 'flex';
             
-            const plan = plans[selectedPlan];
-            let discount = 0;
-            let discountText = '';
-            
-            if (selectedPaymentMethod === 'pix') {
-                discount = plan.price * 0.1;
-                discountText = '<div style="color: #764ba2; font-weight: 600;"><i class="fas fa-tag icon-sm"></i> Desconto PIX (10%): -R$ ' + discount.toFixed(2) + '</div>';
+            if (currentStep === totalSteps) {
+                nextBtn.innerHTML = '<span class="loading" style="display:none;"></span> Finalizar Cadastro <i class="fas fa-check"></i>';
+            } else {
+                nextBtn.innerHTML = 'Próximo <i class="fas fa-arrow-right"></i>';
             }
-            
-            const finalPrice = plan.price - discount;
-            
-            document.getElementById('orderSummary').innerHTML = `
-                <div style="margin-bottom: 1.5rem;">
-<h4 style="color: #667eea; margin-bottom: 1rem;">${plan.name}</h4>
-<ul style="list-style: none; padding: 0; margin: 0;">
-                        ${plan.features.map(feature => `<li style="padding: 0.25rem 0; color: var(--gray-600); font-size: 0.875rem;"><i class="fas fa-check" style="color: #667eea; margin-right: 0.5rem;"></i>${feature}</li>`).join('')}
-                    </ul>
-</div>
-<div style="border-top: 1px solid var(--gray-200); padding-top: 1rem;">
-<div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-<span>Mensalidade:</span>
-<span>R$ ${plan.price.toFixed(2)}</span>
-</div>
-                    ${discountText}
-                    <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.125rem; color: #667eea; border-top: 1px solid var(--gray-200); padding-top: 1rem; margin-top: 1rem;">
-<span>Total:</span>
-<span>R$ ${finalPrice.toFixed(2)}</span>
-</div>
-</div>
-            `;
         }
 
-        function processPayment() {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            const loadingText = document.getElementById('loadingText');
-            
-            loadingOverlay.style.display = 'flex';
-            loadingText.textContent = 'Processando pagamento...';
-            
-            // Simulate payment processing
-            setTimeout(() => {
-                loadingText.textContent = 'Criando conta empresarial...';
+        // Form validation
+        function validateCurrentStep() {
+            const currentStepElement = document.querySelector(`.wizard-step[data-step="${currentStep}"]`);
+            const requiredFields = currentStepElement.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                const formGroup = field.closest('.form-group');
                 
-                setTimeout(() => {
-                    loadingText.textContent = 'Enviando confirmaes...';
-                    
-                    setTimeout(() => {
-                        loadingOverlay.style.display = 'none';
-                        
-                        // Show confirmation details
-                        showConfirmation();
-                        nextStep();
-                        
-                    }, 1500);
-                }, 1500);
+                if (!validateField(field)) {
+                    formGroup.classList.add('error');
+                    isValid = false;
+                } else {
+                    formGroup.classList.remove('error');
+                }
+            });
+
+            // Special validation for step 3 (categories)
+            if (currentStep === 3) {
+                const categorias = document.querySelectorAll('input[name="categorias[]"]:checked');
+                if (categorias.length === 0) {
+                    showToast('Por favor, selecione pelo menos uma categoria', 'error');
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+
+        function validateField(field) {
+            const value = field.value.trim();
+            
+            if (field.hasAttribute('required') && !value) {
+                return false;
+            }
+
+            // CNPJ validation
+            if (field.name === 'cnpj') {
+                return validateCNPJ(value);
+            }
+
+            // Email validation
+            if (field.type === 'email') {
+                return validateEmail(value);
+            }
+
+            // CEP validation
+            if (field.name === 'cep') {
+                return validateCEP(value);
+            }
+
+            return true;
+        }
+
+        function validateCNPJ(cnpj) {
+            cnpj = cnpj.replace(/[^\d]+/g, '');
+            
+            if (cnpj.length !== 14) {
+                return false;
+            }
+
+            // Basic CNPJ validation algorithm
+            if (/^(\d)\1+$/.test(cnpj)) {
+                return false;
+            }
+
+            return true; // Simplified validation for demo
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function validateCEP(cep) {
+            const cepRegex = /^[0-9]{5}-?[0-9]{3}$/;
+            return cepRegex.test(cep);
+        }
+
+        // Form submission
+        function submitForm() {
+            const nextBtn = document.getElementById('nextBtn');
+            const loading = nextBtn.querySelector('.loading');
+            
+            nextBtn.disabled = true;
+            loading.style.display = 'inline-block';
+            
+            // Simulate API call
+            setTimeout(() => {
+                const formData = new FormData(document.getElementById('companyRegistrationForm'));
+                
+                // Log form data (in production, send to server)
+                console.log('Form Data:', Object.fromEntries(formData));
+                
+                // Show success section
+                document.getElementById('wizardActions').style.display = 'none';
+                document.querySelector('.wizard-step.active').style.display = 'none';
+                document.getElementById('successSection').style.display = 'block';
+                
+                // Update progress to show completion
+                document.querySelectorAll('.progress-step').forEach(step => {
+                    step.classList.remove('active');
+                    step.classList.add('completed');
+                });
+                
+                showToast('Cadastro realizado com sucesso! 🎉', 'success');
             }, 2000);
         }
 
-        function showConfirmation() {
-            const plan = plans[selectedPlan];
-            const paymentMethodNames = {
-                'credit': 'Carto de Crdito',
-                'pix': 'PIX',
-                'boleto': 'Boleto Banc?rio'
-            };
+        // Reset form
+        function resetForm() {
+            document.getElementById('companyRegistrationForm').reset();
+            currentStep = 1;
+            updateWizard();
+            document.getElementById('successSection').style.display = 'none';
+            document.getElementById('wizardActions').style.display = 'flex';
+            document.querySelector('.wizard-step[data-step="1"]').style.display = 'block';
             
-            document.getElementById('confirmationDetails').innerHTML = `
-                <div style="display: grid; gap: 0.75rem;">
-<div style="display: flex; justify-content: space-between;">
-<strong>Empresa:</strong>
-<span>${formData.nomeFantasia}</span>
-</div>
-<div style="display: flex; justify-content: space-between;">
-<strong>CNPJ:</strong>
-<span>${formData.cnpj}</span>
-</div>
-<div style="display: flex; justify-content: space-between;">
-<strong>Plano:</strong>
-<span>${plan.name}</span>
-</div>
-<div style="display: flex; justify-content: space-between;">
-<strong>Pagamento:</strong>
-<span>${paymentMethodNames[selectedPaymentMethod]}</span>
-</div>
-<div style="display: flex; justify-content: space-between;">
-<strong>Protocolo:</strong>
-<span>#TDT${Date.now().toString().slice(-6)}</span>
-</div>
-</div>
-            `;
+            // Clear all error states
+            document.querySelectorAll('.form-group.error').forEach(group => {
+                group.classList.remove('error');
+            });
+            
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.disabled = false;
+            nextBtn.querySelector('.loading').style.display = 'none';
         }
 
-        // Utility functions
-        function isValidCNPJ(cnpj) {
-            // Basic CNPJ validation
-            cnpj = cnpj.replace(/[^\d]+/g, '');
-            return cnpj.length === 14;
-        }
-
-        function isValidEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-
-        // CEP lookup
-        document.getElementById('cep').addEventListener('blur', function() {
-            const cep = this.value.replace(/\D/g, '');
-            if (cep.length === 8) {
-                fetch(`https://viacep.com.br/ws/${cep}/json/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.erro) {
-                            document.getElementById('endereco').value = data.logradouro;
-                            document.getElementById('bairro').value = data.bairro;
-                            document.getElementById('cidade').value = data.localidade;
-                            document.getElementById('uf').value = data.uf;
-                        }
-                    })
-                    .catch(error => console.log('Erro ao buscar CEP:', error));
-            }
-        });
-
-        // Input masks
+        // Input masks and auto-formatters
         document.addEventListener('DOMContentLoaded', function() {
             // CNPJ mask
-            document.getElementById('cnpj').addEventListener('input', function() {
-                let value = this.value.replace(/\D/g, '');
+            const cnpjInput = document.getElementById('cnpj');
+            cnpjInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
                 value = value.replace(/^(\d{2})(\d)/, '$1.$2');
                 value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
                 value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
                 value = value.replace(/(\d{4})(\d)/, '$1-$2');
-                this.value = value;
+                e.target.value = value;
+            });
+
+            // CEP mask and auto-fetch
+            const cepInput = document.getElementById('cep');
+            cepInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+                e.target.value = value;
+                
+                if (value.length === 9) {
+                    fetchAddressByCEP(value.replace('-', ''));
+                }
             });
 
             // Phone mask
-            document.getElementById('telefone').addEventListener('input', function() {
-                let value = this.value.replace(/\D/g, '');
-                value = value.replace(/(\d{2})(\d)/, '($1) $2');
-                value = value.replace(/(\d{5})(\d)/, '$1-$2');
-                this.value = value;
-            });
-
-            // CEP mask
-            document.getElementById('cep').addEventListener('input', function() {
-                let value = this.value.replace(/\D/g, '');
-                value = value.replace(/^(\d{5})(\d)/, '$1-$2');
-                this.value = value;
+            const telefoneInput = document.getElementById('telefone');
+            telefoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                value = value.replace(/^(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+                e.target.value = value;
             });
         });
-    </script><script src="/js/global.js"></script>
-</body>
-</html>
-<script>
-    // Menu toggle
-    document.addEventListener('DOMContentLoaded', function() {
-      const menuToggle = document.getElementById('menu-toggle');
-      const navLinks = document.getElementById('nav-links');
 
-      if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', function() {
-          navLinks.classList.toggle('active');
-        });
-      }
+        // Fetch address by CEP
+        function fetchAddressByCEP(cep) {
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.erro) {
+                        document.getElementById('endereco').value = data.logradouro || '';
+                        document.getElementById('bairro').value = data.bairro || '';
+                        document.getElementById('cidade').value = data.localidade || '';
+                        document.getElementById('estado').value = data.uf || '';
+                        
+                        // Focus on number field
+                        document.getElementById('numero').focus();
+                        
+                        showToast('Endereço preenchido automaticamente', 'success');
+                    }
+                })
+                .catch(error => {
+                    console.error('CEP lookup error:', error);
+                });
+        }
 
-      // Form submission
-      const form = document.getElementById('register-company-form');
-      if (form) {
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-          
-          const formData = new FormData(form);
-          const data = Object.fromEntries(formData.entries());
-          
-          // Simple validation
-          if (!data.companyName || !data.email || !data.phone || !data.address || !data.description) {
-            alert('Por favor, preencha todos os campos obrigatrios.');
-            return;
-          }
-
-          // Email validation
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(data.email)) {
-            alert('Por favor, insira um email vlido.');
-            return;
-          }
-
-          // Phone validation (basic)
-          const phoneRegex = /^[\d\s\(\)\-\+]+$/;
-          if (!phoneRegex.test(data.phone)) {
-            alert('Por favor, insira um telefone vlido.');
-            return;
-          }
-
-          // Simulate form submission
-          const submitBtn = form.querySelector('button[type="submit"]');
-          const originalText = submitBtn.textContent;
-          submitBtn.textContent = 'Enviando...';
-          submitBtn.disabled = true;
-
-          // Simulate API call with billing notification
-          setTimeout(() => {
-            const billingMessage = `
-? CADASTRO EMPRESARIAL RECEBIDO!
-
-Ol, ${data.companyName}!
-
-Sua solicitao de cadastro foi recebida com sucesso! 
-
-?? PRXIMOS PASSOS:
-1. Anlise dos dados (1-2 dias teis)
-2. Envio da proposta comercial por email
-3. Aprovao e ativao do perfil
-
-?? INFORMAES DE COBRANA:
- Taxa de adeso: R$ 149,90 (pagamento nico)
- Mensalidade: R$ 79,90/ms
- Sem taxa por transao
- Primeiro ms GRTIS para teste!
-
-?? DOCUMENTOS NECESSRIOS:
-Voc receber um email em ${data.email} com:
- Contrato de parceria
- Informaes bancrias para pagamento
- Manual de integrao
- Cronograma de ativao
-
-? PRAZO DE ATIVAO:
- Aps aprovao: 24-48h
- Treinamento da equipe incluso
- Suporte tcnico completo
-
-Dvidas? Entre em contato:
-?? (11) 4000-1234
-?? parcerias@temdetudo.com
-?? WhatsApp: (11) 94000-1234
-
-Obrigado por escolher a TemDeTudo! ??
-            `.trim();
-            
-            alert(billingMessage);
-            
-            // Simulate sending billing email
-            console.log('?? Email de cobrana enviado para:', data.email);
-            console.log('?? Dados para cobrana:', {
-              empresa: data.companyName,
-              email: data.email,
-              telefone: data.phone,
-              endereco: data.address,
-              taxa_adesao: 149.90,
-              mensalidade: 79.90,
-              primeiro_mes_gratis: true
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const now = new Date().toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
             });
-            
-            form.reset();
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-            
-            // Redirect to confirmation page after 3 seconds
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type} show`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                  type === 'error' ? 'fa-exclamation-circle' : 
+                                  'fa-info-circle'}"></i>
+                    <div class="toast-message">
+                        <strong>${message}</strong>
+                        <small>${now}</small>
+                    </div>
+                </div>
+            `;
+
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+
+            // Auto remove after 4 seconds
             setTimeout(() => {
-              window.location.href = '/register-company-success.html';
-            }, 3000);
-          }, 2000);
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 4000);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Company registration page loaded');
+            updateWizard();
+            
+            // Focus first input
+            setTimeout(() => {
+                document.getElementById('razaoSocial').focus();
+            }, 500);
         });
-      }
-    });
-  </script>
-<script src="/js/global.js"></script>
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

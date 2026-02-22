@@ -1,21 +1,22 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Extrato de Pontos - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
 <link rel="stylesheet" href="/css/vivo-global.css">
-</head>
 <body>
 <div class="header">
 <div class="header-content">
 <button class="btn-back" onclick="window.history.back()">
 <i class="fas fa-arrow-left"></i>
 </button>
-<h1>📊 Extrato de Pontos</h1>
+<h1>?? Extrato de Pontos</h1>
 </div>
 </div>
 <div class="saldo-resumo">
@@ -24,15 +25,15 @@
 </div>
 <div class="filtros">
 <button class="filtro-btn active" data-tipo="todos">Todos</button>
-<button class="filtro-btn" data-tipo="ganhos">✅ Ganhos</button>
-<button class="filtro-btn" data-tipo="gastos">💸 Gastos</button>
-<button class="filtro-btn" data-tipo="check-in">📍 Check-ins</button>
+<button class="filtro-btn" data-tipo="ganhos">? Ganhos</button>
+<button class="filtro-btn" data-tipo="gastos">?? Gastos</button>
+<button class="filtro-btn" data-tipo="check-in">?? Check-ins</button>
 </div>
 <div class="timeline" id="timeline"></div>
 <div class="bottom-nav">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>Início</span>
+<span>In�cio</span>
 </a>
 <a href="app-empresas.html" class="nav-item">
 <i class="fas fa-store"></i>
@@ -40,7 +41,7 @@
 </a>
 <a href="app-promocoes.html" class="nav-item">
 <i class="fas fa-gift"></i>
-<span>Promoções</span>
+<span>Promo��es</span>
 </a>
 <a href="app-perfil.html" class="nav-item">
 <i class="fas fa-user"></i>
@@ -51,10 +52,8 @@
         const API_BASE_URL = 'http://localhost:8000';
         let todosTransacoes = [];
         let filtroAtual = 'todos';
-        
         document.addEventListener('DOMContentLoaded', () => {
             carregarExtrato();
-            
             // Filtros
             document.querySelectorAll('.filtro-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -65,10 +64,8 @@
                 });
             });
         });
-        
         async function carregarExtrato() {
             const token = localStorage.getItem('token');
-            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/pontos/historico`, {
                     headers: { 
@@ -76,18 +73,14 @@
                         'Accept': 'application/json'
                     }
                 });
-                
                 if (!response.ok) throw new Error('Erro ao carregar extrato');
-                
                 const result = await response.json();
-                
                 if (result.success && result.data) {
                     todosTransacoes = result.data.historico || result.data || [];
                     document.getElementById('saldoTotal').textContent = result.data.saldo || 0;
                 } else {
                     todosTransacoes = [];
                 }
-                
                 renderizarExtrato();
             } catch (error) {
                 console.error('Erro:', error);
@@ -99,12 +92,9 @@
                 `;
             }
         }
-        
         function renderizarExtrato() {
             const timeline = document.getElementById('timeline');
-            
             let transacoesFiltradas = todosTransacoes;
-            
             if (filtroAtual === 'ganhos') {
                 transacoesFiltradas = todosTransacoes.filter(t => t.pontos > 0);
             } else if (filtroAtual === 'gastos') {
@@ -114,22 +104,20 @@
                     t.tipo && t.tipo.toLowerCase().includes('check')
                 );
             }
-            
             if (transacoesFiltradas.length === 0) {
                 timeline.innerHTML = `
                     <div class="empty-state">
 <i class="fas fa-inbox"></i>
-<p>Nenhuma transação encontrada</p>
+<p>Nenhuma transa��o encontrada</p>
 </div>
                 `;
                 return;
             }
-            
             timeline.innerHTML = transacoesFiltradas.map(t => `
                 <div class="timeline-item">
 <div class="item-header">
 <div>
-<div class="item-empresa">${t.empresa_nome || t.descricao || 'Transação'}</div>
+<div class="item-empresa">${t.empresa_nome || t.descricao || 'Transa��o'}</div>
 <div class="item-tipo">${t.tipo || 'Pontos'}</div>
 <div class="item-data">${formatarData(t.created_at || t.data)}</div>
 </div>
@@ -140,19 +128,16 @@
 </div>
             `).join('');
         }
-        
         function formatarData(dataString) {
-            if (!dataString) return 'Data não disponível';
-            
+            if (!dataString) return 'Data n�o dispon�vel';
             const data = new Date(dataString);
             const hoje = new Date();
             const ontem = new Date(hoje);
             ontem.setDate(hoje.getDate() - 1);
-            
             if (data.toDateString() === hoje.toDateString()) {
-                return `Hoje às ${data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+                return `Hoje �s ${data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
             } else if (data.toDateString() === ontem.toDateString()) {
-                return `Ontem às ${data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+                return `Ontem �s ${data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
             } else {
                 return data.toLocaleDateString('pt-BR', { 
                     day: '2-digit', 
@@ -166,18 +151,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

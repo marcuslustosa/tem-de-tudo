@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,19 +7,18 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#6A0DAD">
-<title>🎁 Promoções - Tem de Tudo</title>
+<title>?? Promo��es - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
-<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script><link rel="manifest" href="/manifest.json">
 <script src="/js/config.js"></script>
 <script src="/js/auth-manager.js" defer></script>
 <script src="/js/api-client.js" defer></script>
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="empresa"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n</head>
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <div class="header">
 <div class="header-content">
@@ -35,31 +34,31 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div>
-<h1>Promoções</h1>
+<h1>Promo��es</h1>
 <p id="totalInfo">Carregando...</p>
 </div>
 </div>
 <button class="add-btn" onclick="openModal()">
-<i class="fas fa-plus"></i> Nova Promoàào
+<i class="fas fa-plus"></i> Nova Promo��o
         </button>
 </div>
 <div class="content">
 <div id="loading" class="loading">
 <i class="fas fa-spinner fa-spin"></i>
-<p>Carregando promoções...</p>
+<p>Carregando promo��es...</p>
 </div>
 <div id="promo-list" class="promo-list" style="display: none;"></div>
 <div id="empty-state" class="empty-state" style="display: none;">
 <i class="fas fa-gift"></i>
-<p>Nenhuma promoàào cadastrada</p>
-<small style="display: block; margin-top: 8px; color: #666;">Clique em "Nova Promoàào" para criar</small>
+<p>Nenhuma promo��o cadastrada</p>
+<small style="display: block; margin-top: 8px; color: #666;">Clique em "Nova Promo��o" para criar</small>
 </div>
 </div>
 <!-- Modal de Criar/Editar -->
 <div id="promoModal" class="modal">
 <div class="modal-content">
 <div class="modal-header">
-<h2 id="modalTitle">Nova Promoàào</h2>
+<h2 id="modalTitle">Nova Promo��o</h2>
 <button class="close-btn" onclick="closeModal()">
 <i class="fas fa-times"></i>
 </button>
@@ -67,15 +66,15 @@
 <form id="promoForm" onsubmit="handleSubmit(event)">
 <input type="hidden" id="promoId">
 <div class="form-group">
-<label class="form-label">Nome da Promoàào *</label>
+<label class="form-label">Nome da Promo��o *</label>
 <input type="text" id="nome" class="form-input" placeholder="Ex: Desconto de 15%" required>
 </div>
 <div class="form-group">
-<label class="form-label">Descriàào</label>
-<textarea id="descricao" class="form-textarea" placeholder="Descreva os detalhes da promoàào..."></textarea>
+<label class="form-label">Descri��o</label>
+<textarea id="descricao" class="form-textarea" placeholder="Descreva os detalhes da promo��o..."></textarea>
 </div>
 <div class="form-group">
-<label class="form-label">Tipo de Promoàào *</label>
+<label class="form-label">Tipo de Promo��o *</label>
 <select id="tipo" class="form-select" required>
 <option value="">Selecione...</option>
 <option value="desconto">Desconto</option>
@@ -85,39 +84,39 @@
 </select>
 </div>
 <div class="form-group">
-<label class="form-label">Pontos Necessàrios</label>
+<label class="form-label">Pontos Necess�rios</label>
 <input type="number" id="pontos_necessarios" class="form-input" placeholder="0" min="0">
 </div>
 <div class="form-group">
-<label class="form-label">Data de Inàcio</label>
+<label class="form-label">Data de In�cio</label>
 <input type="date" id="data_inicio" class="form-input">
 </div>
 <div class="form-group">
-<label class="form-label">Data de Tàrmino</label>
+<label class="form-label">Data de T�rmino</label>
 <input type="date" id="data_fim" class="form-input">
 </div>
 <div class="form-group">
 <label class="form-checkbox">
 <input type="checkbox" id="ativo" checked>
-<span>Promoàào ativa</span>
+<span>Promo��o ativa</span>
 </label>
 </div>
 <button type="submit" class="btn-submit" id="submitBtn">
-<i class="fas fa-save"></i> Salvar Promoàào
+<i class="fas fa-save"></i> Salvar Promo��o
                 </button>
 </form>
 </div>
 </div>
-<!-- Modal de Confirmaàào -->
+<!-- Modal de Confirma��o -->
 <div id="confirmModal" class="modal">
 <div class="modal-content" style="max-width: 400px;">
 <div class="modal-header">
-<h2>Confirmar Exclusào</h2>
+<h2>Confirmar Exclus�o</h2>
 <button class="close-btn" onclick="closeConfirmModal()">
 <i class="fas fa-times"></i>
 </button>
 </div>
-<p style="margin-bottom: 24px; color: #b0b0b0;">Tem certeza que deseja excluir esta promoàào?</p>
+<p style="margin-bottom: 24px; color: #b0b0b0;">Tem certeza que deseja excluir esta promo��o?</p>
 <div style="display: flex; gap: 8px;">
 <button onclick="closeConfirmModal()" class="btn-action btn-edit" style="flex: 1;">
                     Cancelar
@@ -131,7 +130,6 @@
 <script>
         let promocoes = [];
         let deleteId = null;
-        
         function checkAuth() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -140,11 +138,9 @@
             }
             return token;
         }
-        
         async function loadPromocoes() {
             const token = checkAuth();
             if (!token) return;
-
             try {
                 const response = await fetch('/api/empresa/promocoes', {
                     headers: {
@@ -152,11 +148,9 @@
                         'Accept': 'application/json'
                     }
                 });
-                
                 if (response.ok) {
                     const result = await response.json();
                     promocoes = result.data || [];
-                    
                     if (promocoes.length > 0) {
                         renderPromocoes();
                     } else {
@@ -168,21 +162,18 @@
                     showEmptyState();
                 }
             } catch (error) {
-                console.error('Erro ao carregar promoções:', error);
+                console.error('Erro ao carregar promo��es:', error);
                 showEmptyState();
             } finally {
                 document.getElementById('loading').style.display = 'none';
             }
         }
-        
         function renderPromocoes() {
             const list = document.getElementById('promo-list');
-            
             list.innerHTML = promocoes.map(promo => {
                 const ativo = promo.ativo == 1;
-                const dataInicio = promo.data_inicio ? new Date(promo.data_inicio).toLocaleDateString('pt-BR') : 'Não definida';
-                const dataFim = promo.data_fim ? new Date(promo.data_fim).toLocaleDateString('pt-BR') : 'Não definida';
-                
+                const dataInicio = promo.data_inicio ? new Date(promo.data_inicio).toLocaleDateString('pt-BR') : 'N�o definida';
+                const dataFim = promo.data_fim ? new Date(promo.data_fim).toLocaleDateString('pt-BR') : 'N�o definida';
                 return `
                     <div class="promo-card">
 <div class="promo-badge ${ativo ? 'badge-ativo' : 'badge-inativo'}">
@@ -202,7 +193,7 @@
 <div class="promo-info-value">${promo.pontos_necessarios || 0}</div>
 </div>
 <div class="promo-info-item">
-<div class="promo-info-label">Inàcio</div>
+<div class="promo-info-label">In�cio</div>
 <div class="promo-info-value" style="font-size: 11px;">${dataInicio}</div>
 </div>
 <div class="promo-info-item">
@@ -221,11 +212,9 @@
 </div>
                 `;
             }).join('');
-            
             list.style.display = 'grid';
-            document.getElementById('totalInfo').textContent = `${promocoes.length} ${promocoes.length === 1 ? 'promoção' : 'promoções'}`;
+            document.getElementById('totalInfo').textContent = `${promocoes.length} ${promocoes.length === 1 ? 'promo��o' : 'promo��es'}`;
         }
-        
         function getTipoLabel(tipo) {
             const tipos = {
                 'desconto': 'Desconto',
@@ -235,15 +224,12 @@
             };
             return tipos[tipo] || tipo;
         }
-        
         function openModal(promo = null) {
             const modal = document.getElementById('promoModal');
             const form = document.getElementById('promoForm');
-            
             form.reset();
-            
             if (promo) {
-                document.getElementById('modalTitle').textContent = 'Editar Promoàào';
+                document.getElementById('modalTitle').textContent = 'Editar Promo��o';
                 document.getElementById('promoId').value = promo.id;
                 document.getElementById('nome').value = promo.nome;
                 document.getElementById('descricao').value = promo.descricao || '';
@@ -252,42 +238,34 @@
                 document.getElementById('data_inicio').value = promo.data_inicio || '';
                 document.getElementById('data_fim').value = promo.data_fim || '';
                 document.getElementById('ativo').checked = promo.ativo == 1;
-                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Atualizar Promoàào';
+                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Atualizar Promo��o';
             } else {
-                document.getElementById('modalTitle').textContent = 'Nova Promoàào';
-                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Salvar Promoàào';
+                document.getElementById('modalTitle').textContent = 'Nova Promo��o';
+                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Salvar Promo��o';
             }
-            
             modal.classList.add('show');
         }
-        
         function closeModal() {
             document.getElementById('promoModal').classList.remove('show');
         }
-        
         function editPromocao(id) {
             const promo = promocoes.find(p => p.id === id);
             if (promo) {
                 openModal(promo);
             }
         }
-        
         function deletePromocao(id) {
             deleteId = id;
             document.getElementById('confirmModal').classList.add('show');
         }
-        
         function closeConfirmModal() {
             document.getElementById('confirmModal').classList.remove('show');
             deleteId = null;
         }
-        
         async function confirmDelete() {
             if (!deleteId) return;
-            
             const token = checkAuth();
             if (!token) return;
-
             try {
                 const response = await fetch(`/api/empresa/promocoes/${deleteId}`, {
                     method: 'DELETE',
@@ -296,25 +274,21 @@
                         'Accept': 'application/json'
                     }
                 });
-                
                 if (response.ok) {
                     closeConfirmModal();
                     loadPromocoes();
                 } else {
-                    alert('Erro ao excluir promoàào');
+                    alert('Erro ao excluir promo��o');
                 }
             } catch (error) {
                 console.error('Erro ao excluir:', error);
-                alert('Erro ao excluir promoàào');
+                alert('Erro ao excluir promo��o');
             }
         }
-        
         async function handleSubmit(e) {
             e.preventDefault();
-            
             const token = checkAuth();
             if (!token) return;
-            
             const id = document.getElementById('promoId').value;
             const data = {
                 nome: document.getElementById('nome').value,
@@ -325,11 +299,9 @@
                 data_fim: document.getElementById('data_fim').value,
                 ativo: document.getElementById('ativo').checked ? 1 : 0
             };
-            
             try {
                 const url = id ? `/api/empresa/promocoes/${id}` : '/api/empresa/promocoes';
                 const method = id ? 'PUT' : 'POST';
-                
                 const response = await fetch(url, {
                     method: method,
                     headers: {
@@ -339,24 +311,21 @@
                     },
                     body: JSON.stringify(data)
                 });
-                
                 if (response.ok) {
                     closeModal();
                     loadPromocoes();
                 } else {
-                    alert('Erro ao salvar promoàào');
+                    alert('Erro ao salvar promo��o');
                 }
             } catch (error) {
                 console.error('Erro ao salvar:', error);
-                alert('Erro ao salvar promoàào');
+                alert('Erro ao salvar promo��o');
             }
         }
-        
         function showEmptyState() {
             document.getElementById('empty-state').style.display = 'block';
-            document.getElementById('totalInfo').textContent = '0 promoções';
+            document.getElementById('totalInfo').textContent = '0 promo��es';
         }
-        
         document.addEventListener('DOMContentLoaded', loadPromocoes);
     </script>
 <!-- Bottom Navigation -->
@@ -371,7 +340,7 @@
 </a>
 <a href="empresa-promocoes.html" class="nav-item active">
 <i class="fas fa-gift"></i>
-<span>Promoções</span>
+<span>Promo��es</span>
 </a>
 <a href="empresa-clientes.html" class="nav-item">
 <i class="fas fa-users"></i>
@@ -379,40 +348,20 @@
 </a>
 <a href="empresa-relatorios.html" class="nav-item">
 <i class="fas fa-chart-line"></i>
-<span>Relatórios</span>
+<span>Relat�rios</span>
 </a>
 </nav>
 <script>
-        // Verificação de autenticação SIMPLIFICADA
+        // Verifica��o de autentica��o SIMPLIFICADA
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
-            
             if (!token) {
-                console.warn('⚠️ Sem token - redirecionando...');
+                console.warn('?? Sem token - redirecionando...');
                 window.location.href = '/entrar.html';
                 return;
             }
-
-            console.log('✅ Usuário autenticado - acesso permitido');
+            console.log('? Usu�rio autenticado - acesso permitido');
         });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

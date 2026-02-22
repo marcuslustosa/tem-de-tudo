@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -8,126 +8,310 @@
 <meta name="theme-color" content="#6F1AB6">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - MEUS PONTOS */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; --gray-800: #1F2937;
+    --gray-900: #111827; --white: #FFFFFF; --border-radius: 12px; --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1); --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15); --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+body { font-family: 'Inter', sans-serif; color: var(--gray-900); background: var(--gray-50); min-height: 100vh; margin: 0; padding: 0; }
+.app-page { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+.header-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; }
+.header-nav h1 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); flex: 1; text-align: center; margin: 0 1rem; }
+.back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gray-100); color: var(--gray-700); text-decoration: none; transition: var(--transition); border: none; cursor: pointer; }
+.back-btn:hover { background: var(--gray-200); }
+
+.app-content { flex: 1; padding: 1rem 1.5rem 6rem; }
+.points-hero { background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%);
+    border-radius: var(--border-radius); padding: 3rem 2rem; margin-bottom: 2rem; color: var(--white);
+    text-align: center; position: relative; overflow: hidden; }
+.points-hero::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px;
+    background: rgba(255, 255, 255, 0.1); border-radius: 50%; }
+.points-hero::after { content: ''; position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px;
+    background: rgba(255, 255, 255, 0.05); border-radius: 50%; }
+.points-content { position: relative; z-index: 10; }
+.points-icon { width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2rem;
+    backdrop-filter: blur(10px); }
+.points-value { font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem; }
+.points-label { font-size: 1.125rem; opacity: 0.9; margin-bottom: 2rem; }
+.points-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.points-stat { background: rgba(255, 255, 255, 0.1); border-radius: var(--border-radius); padding: 1rem; text-align: center;
+    backdrop-filter: blur(10px); }
+.points-stat-value { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem; }
+.points-stat-label { font-size: 0.75rem; opacity: 0.9; text-transform: uppercase; }
+
+.section { margin-bottom: 2rem; }
+.section-title { font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.75rem; }
+.section-title i { color: var(--vivo-purple); }
+
+.rewards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.reward-card { background: var(--white); border-radius: var(--border-radius); padding: 1.5rem; 
+    box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); transition: var(--transition); }
+.reward-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.reward-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+.reward-icon { width: 48px; height: 48px; border-radius: var(--border-radius); display: flex;
+    align-items: center; justify-content: center; font-size: 1.25rem; }
+.reward-icon.discount { background: rgba(16, 185, 129, 0.1); color: var(--vivo-green); }
+.reward-icon.product { background: rgba(245, 158, 11, 0.1); color: var(--vivo-orange); }
+.reward-icon.voucher { background: rgba(111, 26, 182, 0.1); color: var(--vivo-purple); }
+.reward-info { flex: 1; }
+.reward-title { font-size: 1rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem; }
+.reward-description { font-size: 0.875rem; color: var(--gray-600); line-height: 1.4; }
+.reward-footer { display: flex; align-items: center; justify-content: space-between; }
+.reward-points { display: flex; align-items: center; gap: 0.25rem; font-weight: 600; color: var(--vivo-purple); }
+.reward-points i { font-size: 0.875rem; }
+.redeem-btn { background: var(--vivo-purple); color: var(--white); border: none; padding: 0.5rem 1rem;
+    border-radius: var(--border-radius); font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
+.redeem-btn:hover { background: var(--vivo-purple-dark); }
+.redeem-btn:disabled { background: var(--gray-300); color: var(--gray-500); cursor: not-allowed; }
+
+.transactions-list { background: var(--white); border-radius: var(--border-radius); padding: 1.5rem; 
+    box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); }
+.transaction-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--gray-100); }
+.transaction-item:last-child { border-bottom: none; }
+.transaction-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.transaction-icon.earned { background: rgba(16, 185, 129, 0.1); color: var(--vivo-green); }
+.transaction-icon.redeemed { background: rgba(239, 68, 68, 0.1); color: var(--vivo-red); }
+.transaction-content { flex: 1; }
+.transaction-title { font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem; }
+.transaction-subtitle { font-size: 0.875rem; color: var(--gray-500); }
+.transaction-amount { font-weight: 700; }
+.transaction-amount.positive { color: var(--vivo-green); }
+.transaction-amount.negative { color: var(--vivo-red); }
+.transaction-time { font-size: 0.75rem; color: var(--gray-400); }
+
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white);
+    border-top: 1px solid var(--gray-200); padding: 0.5rem 0; z-index: 1000; }
+.nav-container { display: flex; justify-content: space-around; align-items: center; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; padding: 0.5rem;
+    text-decoration: none; color: var(--gray-500); transition: var(--transition); font-size: 0.75rem; font-weight: 500; }
+.nav-item.active { color: var(--vivo-purple); }
+.nav-item:hover:not(.active) { color: var(--gray-700); }
+.nav-item i { font-size: 1.25rem; margin-bottom: 2px; }
+
+@media (max-width: 480px) {
+    .app-content { padding: 1rem 1rem 6rem; }
+    .points-hero { padding: 2rem 1.5rem; }
+    .points-value { font-size: 2.5rem; }
+    .points-stats { grid-template-columns: 1fr; gap: 0.75rem; }
+    .rewards-grid { grid-template-columns: 1fr; }
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
+.app-page { animation: fadeIn 0.3s ease-out; }
+.points-hero { animation: bounce 1s ease-out; }
+</style>
 </head>
 <body>
-<div class="app-pontos">
+<div class="app-page">
     <!-- Header -->
-    <header class="header-pontos fade-in">
-        <div class="header-content">
-            <h1><i class="fas fa-coins"></i> Meus Pontos</h1>
-            <p>Acumule pontos e troque por benefícios exclusivos</p>
-        </div>
-    </header>
-
-    <!-- Main Points Card -->
-    <div class="pontos-main-card bounce-in">
-        <div class="saldo-principal">
-            <div class="saldo-icon-container">
-                <i class="fas fa-coins"></i>
-            </div>
-            <div class="saldo-valor-display" id="pontosTotal">2.847</div>
-            <div class="saldo-label-texto">Pontos Disponíveis</div>
-        </div>
-        
-        <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-valor" id="pontosEsteMes">1.250</div>
-                <div class="stat-label">Este Mês</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-valor" id="valorReais">R$ 284,70</div>
-                <div class="stat-label">Valor em Reais</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-valor" id="nivelUsuario">12</div>
-                <div class="stat-label">Nível</div>
-            </div>
+    <div class="app-header">
+        <div class="header-nav">
+            <button class="back-btn" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>Meus Pontos</h1>
+            <div style="width: 40px;"></div>
         </div>
     </div>
 
-    <!-- Level Progress -->
-    <div class="level-progress fade-in">
-        <div class="level-header">
-            <span class="level-current">Nível 12 - Premium</span>
-            <span class="level-next">Próximo: 13</span>
+    <!-- Content -->
+    <div class="app-content">
+        <!-- Points Hero Card -->
+        <div class="points-hero">
+            <div class="points-content">
+                <div class="points-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="points-value" id="pontosTotal">2,847</div>
+                <div class="points-label">Pontos Disponíveis</div>
+                
+                <div class="points-stats">
+                    <div class="points-stat">
+                        <div class="points-stat-value" id="pontosGanhosMes">+456</div>
+                        <div class="points-stat-label">Este Mês</div>
+                    </div>
+                    <div class="points-stat">
+                        <div class="points-stat-value" id="pontosLevel">Gold</div>
+                        <div class="points-stat-label">Nível</div>
+                    </div>
+                    <div class="points-stat">
+                        <div class="points-stat-value" id="pontosProximoLevel">153</div>
+                        <div class="points-stat-label">p/ Próximo</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="levelProgress"></div>
+
+        <!-- Recompensas Disponíveis -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-gift"></i>
+                Recompensas Disponíveis
+            </h2>
+            <div class="rewards-grid">
+                <div class="reward-card">
+                    <div class="reward-header">
+                        <div class="reward-icon discount">
+                            <i class="fas fa-percent"></i>
+                        </div>
+                        <div class="reward-info">
+                            <div class="reward-title">10% de Desconto</div>
+                            <div class="reward-description">Válido em qualquer compra acima de R$ 50</div>
+                        </div>
+                    </div>
+                    <div class="reward-footer">
+                        <div class="reward-points">
+                            <i class="fas fa-coins"></i>
+                            <span>500 pontos</span>
+                        </div>
+                        <button class="redeem-btn" onclick="redeemReward(1, 500)">Resgatar</button>
+                    </div>
+                </div>
+
+                <div class="reward-card">
+                    <div class="reward-header">
+                        <div class="reward-icon product">
+                            <i class="fas fa-coffee"></i>
+                        </div>
+                        <div class="reward-info">
+                            <div class="reward-title">Café Grátis</div>
+                            <div class="reward-description">Um café expresso grátis na nossa cafeteria</div>
+                        </div>
+                    </div>
+                    <div class="reward-footer">
+                        <div class="reward-points">
+                            <i class="fas fa-coins"></i>
+                            <span>200 pontos</span>
+                        </div>
+                        <button class="redeem-btn" onclick="redeemReward(2, 200)">Resgatar</button>
+                    </div>
+                </div>
+
+                <div class="reward-card">
+                    <div class="reward-header">
+                        <div class="reward-icon voucher">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <div class="reward-info">
+                            <div class="reward-title">Voucher R$ 25</div>
+                            <div class="reward-description">Vale presente para usar em qualquer produto</div>
+                        </div>
+                    </div>
+                    <div class="reward-footer">
+                        <div class="reward-points">
+                            <i class="fas fa-coins"></i>
+                            <span>1000 pontos</span>
+                        </div>
+                        <button class="redeem-btn" onclick="redeemReward(3, 1000)">Resgatar</button>
+                    </div>
+                </div>
+
+                <div class="reward-card">
+                    <div class="reward-header">
+                        <div class="reward-icon discount">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div class="reward-info">
+                            <div class="reward-title">Frete Grátis</div>
+                            <div class="reward-description">Entrega gratuita na próxima compra online</div>
+                        </div>
+                    </div>
+                    <div class="reward-footer">
+                        <div class="reward-points">
+                            <i class="fas fa-coins"></i>
+                            <span>300 pontos</span>
+                        </div>
+                        <button class="redeem-btn" onclick="redeemReward(4, 300)">Resgatar</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="progress-text">2.847 / 3.500 pontos para o próximo nível</div>
+
+        <!-- Histórico de Transações -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                Histórico Recente
+            </h2>
+            <div class="transactions-list">
+                <div class="transaction-item">
+                    <div class="transaction-icon earned">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="transaction-content">
+                        <div class="transaction-title">Compra realizada</div>
+                        <div class="transaction-subtitle">Burger Prime - Shopping Center</div>
+                        <div class="transaction-time">Hoje, 14:30</div>
+                    </div>
+                    <div class="transaction-amount positive">+50 pts</div>
+                </div>
+
+                <div class="transaction-item">
+                    <div class="transaction-icon redeemed">
+                        <i class="fas fa-minus"></i>
+                    </div>
+                    <div class="transaction-content">
+                        <div class="transaction-title">Desconto resgatado</div>
+                        <div class="transaction-subtitle">10% OFF - Café Supremo</div>
+                        <div class="transaction-time">Ontem, 10:15</div>
+                    </div>
+                    <div class="transaction-amount negative">-200 pts</div>
+                </div>
+
+                <div class="transaction-item">
+                    <div class="transaction-icon earned">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="transaction-content">
+                        <div class="transaction-title">Bônus de cadastro</div>
+                        <div class="transaction-subtitle">Bem-vindo ao programa!</div>
+                        <div class="transaction-time">2 dias atrás</div>
+                    </div>
+                    <div class="transaction-amount positive">+100 pts</div>
+                </div>
+
+                <div class="transaction-item">
+                    <div class="transaction-icon earned">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="transaction-content">
+                        <div class="transaction-title">Avaliação enviada</div>
+                        <div class="transaction-subtitle">Pizza Mania - 5 estrelas</div>
+                        <div class="transaction-time">3 dias atrás</div>
+                    </div>
+                    <div class="transaction-amount positive">+25 pts</div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Actions Grid -->
-    <section class="actions-section">
-        <h2 class="section-title">
-            <i class="fas fa-star" style="color: var(--vivo-purple);"></i>
-            Ações Rápidas
-        </h2>
-        <div class="actions-grid">
-            <a href="#" class="action-card" onclick="resgatar()">
-                <div class="action-icon">
-                    <i class="fas fa-gift"></i>
-                </div>
-                <div class="action-text">Resgatar Pontos</div>
-            </a>
-            
-            <a href="#" class="action-card" onclick="transferir()">
-                <div class="action-icon">
-                    <i class="fas fa-exchange-alt"></i>
-                </div>
-                <div class="action-text">Transferir</div>
-            </a>
-            
-            <a href="#" class="action-card" onclick="convidar()">
-                <div class="action-icon">
-                    <i class="fas fa-user-plus"></i>
-                </div>
-                <div class="action-text">Convidar Amigos</div>
-            </a>
-            
-            <a href="#" class="action-card" onclick="regras()">
-                <div class="action-icon">
-                    <i class="fas fa-info-circle"></i>
-                </div>
-                <div class="action-text">Como Funciona</div>
-            </a>
-        </div>
-    </section>
-
-    <!-- History Section -->
-    <section class="historia-section">
-        <h2 class="section-title">
-            <i class="fas fa-history" style="color: var(--vivo-purple);"></i>
-            Histórico de Pontos
-        </h2>
-        
-        <div class="historia-filters">
-            <button class="filter-btn active" onclick="filtrarHistorico('todos')">Todos</button>
-            <button class="filter-btn" onclick="filtrarHistorico('ganhou')">Ganhos</button>
-            <button class="filter-btn" onclick="filtrarHistorico('gastou')">Gastos</button>
-            <button class="filter-btn" onclick="filtrarHistorico('mes')">Este Mês</button>
-        </div>
-        
-        <div class="historico-lista" id="historicoLista">
-            <!-- Histórico será inserido aqui -->
-        </div>
-    </section>
 </div>
 
 <!-- Bottom Navigation -->
-<nav class="bottom-nav">
+<div class="bottom-nav">
     <div class="nav-container">
-        <a href="app-inicio.html" class="nav-item">
+        <a href="dashboard-cliente.html" class="nav-item">
             <i class="fas fa-home"></i>
             <span>Início</span>
         </a>
         <a href="app-empresas.html" class="nav-item">
             <i class="fas fa-search"></i>
-            <span>Buscar</span>
+            <span>Explorar</span>
         </a>
-        <a href="app-meus-pontos.html" class="nav-item active">
-            <i class="fas fa-wallet"></i>
+        <a href="app-pontos.html" class="nav-item active">
+            <i class="fas fa-star"></i>
             <span>Pontos</span>
         </a>
         <a href="app-promocoes.html" class="nav-item">
@@ -135,276 +319,98 @@
             <span>Ofertas</span>
         </a>
         <a href="app-perfil.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
         </a>
     </div>
-</nav>
+</div>
 
-<script src="/js/config.js"></script>
 <script>
-// Mock data for points history
-const historicoPontos = [
-    {
-        id: 1,
-        tipo: 'ganhou',
-        descricao: 'Compra no Burger King Premium',
-        data: '04/02/2024',
-        valor: '+150',
-        detalhes: 'Ganhou 150 pontos na compra de R$ 45,00',
-        categoria: 'compra'
-    },
-    {
-        id: 2,
-        tipo: 'gastou',
-        descricao: 'Resgate de desconto',
-        data: '03/02/2024',
-        valor: '-300',
-        detalhes: 'Trocou 300 pontos por desconto de R$ 30,00',
-        categoria: 'resgate'
-    },
-    {
-        id: 3,
-        tipo: 'ganhou',
-        descricao: 'Check-in na TechHub Store',
-        data: '02/02/2024',
-        valor: '+50',
-        detalhes: 'Bonus por visita ao estabelecimento',
-        categoria: 'checkin'
-    },
-    {
-        id: 4,
-        tipo: 'ganhou',
-        descricao: 'Indicação de amigo',
-        data: '01/02/2024',
-        valor: '+500',
-        detalhes: 'Seu amigo João fez o primeiro check-in',
-        categoria: 'indicacao'
-    },
-    {
-        id: 5,
-        tipo: 'ganhou',
-        descricao: 'Compra na Bella Estética',
-        data: '31/01/2024',
-        valor: '+200',
-        detalhes: 'Ganhou 200 pontos na compra de R$ 120,00',
-        categoria: 'compra'
-    },
-    {
-        id: 6,
-        tipo: 'gastou',
-        descricao: 'Resgate de produto',
-        data: '30/01/2024',
-        valor: '-800',
-        detalhes: 'Trocou 800 pontos por fone Bluetooth',
-        categoria: 'resgate'
-    },
-    {
-        id: 7,
-        tipo: 'ganhou',
-        descricao: 'Bonus de aniversário',
-        data: '25/01/2024',
-        valor: '+1000',
-        detalhes: 'Parabéns! Bonus especial de aniversário',
-        categoria: 'bonus'
-    },
-    {
-        id: 8,
-        tipo: 'ganhou',
-        descricao: 'Avaliação 5 estrelas',
-        data: '23/01/2024',
-        valor: '+100',
-        detalhes: 'Bonus por avaliar a FitLife Academia',
-        categoria: 'avaliacao'
-    }
-];
+let currentPoints = 2847;
 
-let filtroAtivo = 'todos';
-
-// Render history list
-function renderizarHistorico(itens = historicoPontos) {
-    const lista = document.getElementById('historicoLista');
+// Load user points data
+function loadPointsData() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
     
-    if (itens.length === 0) {
-        lista.innerHTML = `
-            <div style="text-align: center; padding: var(--space-2xl); color: var(--text-secondary);">
-                <i class="fas fa-history" style="font-size: 2rem; margin-bottom: var(--space-md); opacity: 0.5;"></i>
-                <p>Nenhum histórico encontrado</p>
-            </div>
-        `;
+    currentPoints = user.pontos || 2847;
+    document.getElementById('pontosTotal').textContent = currentPoints.toLocaleString();
+    
+    // Update stats with realistic data
+    const pontosGanhosMes = Math.floor(currentPoints * 0.16);
+    document.getElementById('pontosGanhosMes').textContent = `+${pontosGanhosMes}`;
+    
+    // Determine level
+    let level = 'Bronze';
+    if (currentPoints >= 5000) level = 'Platinum';
+    else if (currentPoints >= 2000) level = 'Gold';
+    else if (currentPoints >= 500) level = 'Silver';
+    
+    document.getElementById('pontosLevel').textContent = level;
+    
+    // Calculate points to next level
+    let nextLevelThreshold = 500;
+    if (currentPoints >= 2000) nextLevelThreshold = 5000;
+    else if (currentPoints >= 500) nextLevelThreshold = 2000;
+    
+    const pontosProximo = Math.max(0, nextLevelThreshold - currentPoints);
+    document.getElementById('pontosProximoLevel').textContent = pontosProximo;
+}
+
+// Redeem reward function
+function redeemReward(rewardId, pointsCost) {
+    if (currentPoints < pointsCost) {
+        alert(`❌ Pontos insuficientes!\n\nVocê precisa de ${pointsCost} pontos para este resgate.\nSaldo atual: ${currentPoints} pontos`);
         return;
     }
     
-    lista.innerHTML = itens.map((item, index) => `
-        <div class="historico-item fade-in" style="animation-delay: ${index * 0.1}s" onclick="verDetalhes(${item.id})">
-            <div class="historico-icon ${item.tipo}">
-                <i class="fas fa-${item.tipo === 'ganhou' ? 'plus' : 'minus'}"></i>
-            </div>
-            <div class="historico-info">
-                <div class="historico-desc">${item.descricao}</div>
-                <div class="historico-data">${item.data}</div>
-            </div>
-            <div class="historico-valor ${item.tipo}">
-                ${item.valor}
-            </div>
-        </div>
-    `).join('');
-}
-
-// Filter history
-function filtrarHistorico(tipo) {
-    // Update active filter button
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    filtroAtivo = tipo;
-    let itensFiltrados = historicoPontos;
-    
-    switch(tipo) {
-        case 'ganhou':
-            itensFiltrados = historicoPontos.filter(item => item.tipo === 'ganhou');
-            break;
-        case 'gastou':
-            itensFiltrados = historicoPontos.filter(item => item.tipo === 'gastou');
-            break;
-        case 'mes':
-            // Filter current month (February 2024 in this example)
-            itensFiltrados = historicoPontos.filter(item => item.data.includes('02/2024'));
-            break;
-    }
-    
-    renderizarHistorico(itensFiltrados);
-}
-
-// Show item details
-function verDetalhes(id) {
-    const item = historicoPontos.find(h => h.id === id);
-    if (item) {
-        alert(`${item.descricao}\n\n${item.detalhes}\n\nData: ${item.data}`);
-    }
-}
-
-// Action functions
-function resgatar() {
-    alert('🎁 Loja de Resgates\n\nVocê tem 2.847 pontos disponíveis!\nValor equivalente: R$ 284,70\n\n✨ Novos produtos adicionados!');
-}
-
-function transferir() {
-    alert('💸 Transferir Pontos\n\nTransfira seus pontos para amigos e família.\n\n• Mínimo: 100 pontos\n• Taxa: 0 pontos\n• Instantâneo');
-}
-
-function convidar() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Tem de Tudo - Convite',
-            text: 'Ganhe pontos no melhor app de cashback! Use meu código: TEMP2847',
-            url: 'https://temdetudo.app/convite/TEMP2847'
-        });
-    } else {
-        alert('👥 Convidar Amigos\n\nGanhe 500 pontos para cada amigo que fizer o primeiro check-in!\n\nSeu código: TEMP2847\n\nCompartilhe: https://temdetudo.app/convite/TEMP2847');
-    }
-}
-
-function regras() {
-    alert(`ℹ️ Como Funciona\n\n🎯 Como Ganhar Pontos:\n• 1 ponto a cada R$ 1,00 gasto\n• Check-in = 50 pontos bonus\n• Convide amigos = 500 pontos\n• Avaliações = 100 pontos\n• Bonus especiais por nível\n\n💰 Como Usar:\n• 1 ponto = R$ 0,10\n• Resgate mínimo: 100 pontos\n• Sem taxa de transferência\n• Validade: 12 meses`);
-}
-
-// Load user data
-async function carregarDadosUsuario() {
-    try {
-        // Simulate API call
-        const pontos = 2847;
-        const pontosEsteMes = 1250;
-        const nivel = 12;
+    if (confirm(`🎁 Confirmar Resgate\n\nVocê deseja resgatar esta recompensa por ${pointsCost} pontos?\n\nSaldo atual: ${currentPoints} pontos\nSaldo após resgate: ${currentPoints - pointsCost} pontos`)) {
+        // Deduct points
+        currentPoints -= pointsCost;
         
-        document.getElementById('pontosTotal').textContent = pontos.toLocaleString();
-        document.getElementById('pontosEsteMes').textContent = pontosEsteMes.toLocaleString();
-        document.getElementById('valorReais').textContent = `R$ ${(pontos * 0.1).toFixed(2)}`;
-        document.getElementById('nivelUsuario').textContent = nivel;
+        // Update display
+        document.getElementById('pontosTotal').textContent = currentPoints.toLocaleString();
         
-        // Update progress bar
-        const progressPercent = (pontos / 3500) * 100;
-        document.getElementById('levelProgress').style.width = `${progressPercent}%`;
+        // Update localStorage
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        user.pontos = currentPoints;
+        localStorage.setItem('user', JSON.stringify(user));
         
-        console.log('✅ Dados do usuário carregados');
-    } catch (error) {
-        console.error('Erro ao carregar dados:', error);
+        // Show success message
+        showNotification(`🎉 Resgate realizado com sucesso!\n\n${pointsCost} pontos foram descontados.\nSaldo atual: ${currentPoints} pontos`, 'success');
+        
+        // Reload points data to update level if needed
+        loadPointsData();
     }
 }
 
-// Simulate points animation
-function animarPontos() {
-    const elemento = document.getElementById('pontosTotal');
-    const valorFinal = 2847;
-    let valorAtual = 0;
-    const incremento = valorFinal / 50;
-    
-    const intervalo = setInterval(() => {
-        valorAtual += incremento;
-        if (valorAtual >= valorFinal) {
-            valorAtual = valorFinal;
-            clearInterval(intervalo);
-        }
-        elemento.textContent = Math.floor(valorAtual).toLocaleString();
-    }, 30);
+// Show notification
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px; background: ${type === 'success' ? 'var(--vivo-green)' : 'var(--vivo-red)'}; 
+        color: white; padding: 1rem 1.5rem; border-radius: var(--border-radius); font-weight: 600; z-index: 10000;
+        box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 0.5rem; max-width: 300px;
+        animation: fadeIn 0.3s ease; white-space: pre-line;
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 4000);
 }
 
 // Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Página Meus Pontos carregada');
+    loadPointsData();
     
-    // Load user data and history
-    carregarDadosUsuario();
-    renderizarHistorico();
-    
-    // Start points animation after a delay
-    setTimeout(() => {
-        animarPontos();
-    }, 500);
-    
-    // Add stagger animation to elements
-    setTimeout(() => {
-        document.querySelectorAll('.fade-in').forEach((el, index) => {
-            el.style.animationDelay = `${index * 0.1}s`;
-        });
-    }, 100);
-});
-
-// Pull to refresh simulation
-let startY = 0;
-let isRefreshing = false;
-
-document.addEventListener('touchstart', function(e) {
-    startY = e.touches[0].pageY;
-});
-
-document.addEventListener('touchmove', function(e) {
-    const currentY = e.touches[0].pageY;
-    const diff = currentY - startY;
-    
-    if (diff > 100 && window.scrollY === 0 && !isRefreshing) {
-        // Trigger refresh
-        isRefreshing = true;
-        carregarDadosUsuario();
-        setTimeout(() => {
-            isRefreshing = false;
-        }, 1000);
-    }
+    // Update redeem buttons based on current points
+    const redeemButtons = document.querySelectorAll('.redeem-btn');
+    redeemButtons.forEach(btn => {
+        const pointsCost = parseInt(btn.getAttribute('onclick').match(/\d+/)[0]);
+        if (currentPoints < pointsCost) {
+            btn.disabled = true;
+            btn.textContent = 'Insuficiente';
+        }
+    });
 });
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

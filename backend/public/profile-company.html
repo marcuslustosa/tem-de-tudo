@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -16,9 +16,8 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
+`n
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <nav class="nav-bar">
 <ul>
@@ -134,15 +133,12 @@
             localStorage.removeItem('user');
             window.location.href = 'entrar.html';
         }
-
         async function loadCompanyData() {
             const token = localStorage.getItem('token');
-            
             if (!token) {
                 window.location.href = 'entrar.html';
                 return;
             }
-
             try {
                 const response = await fetch('/api/user', {
                     headers: {
@@ -151,7 +147,6 @@
                         'X-Requested-With': 'XMLHttpRequest'
                     }
                 });
-
                 if (!response.ok) {
                     if (response.status === 401) {
                         logout();
@@ -159,14 +154,11 @@
                     }
                     throw new Error('Erro ao carregar dados');
                 }
-
                 const data = await response.json();
-
                 if (data.success) {
                     const user = data.data.user || data.data;
                     document.getElementById('companyName').textContent = user.name || 'Minha Empresa';
                 }
-
                 // Carregar estat?sticas da empresa (simulado por enquanto)
                 document.getElementById('totalCustomers').textContent = '156';
                 document.getElementById('pointsDistributed').textContent = '12,450';
@@ -176,7 +168,6 @@
                 console.error('Erro ao carregar dados da empresa:', error);
             }
         }
-
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', loadCompanyData);
         } else {
@@ -185,20 +176,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

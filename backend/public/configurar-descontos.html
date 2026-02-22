@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -16,9 +16,8 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
+`n
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <nav class="nav-bar">
 <ul>
@@ -167,7 +166,6 @@
             localStorage.removeItem('user');
             window.location.href = 'entrar.html';
         }
-
         function checkAuth() {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -176,10 +174,8 @@
             }
             return true;
         }
-
         document.getElementById('discountForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
             const config = {
                 bronze: {
                     points: parseInt(document.getElementById('bronze_points').value),
@@ -202,29 +198,10 @@
                     discount: parseFloat(document.getElementById('diamond_discount').value)
                 }
             };
-
             console.log('Configura??o de descontos:', config);
             alert('Configura??es salvas com sucesso!');
         });
-
         checkAuth();
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

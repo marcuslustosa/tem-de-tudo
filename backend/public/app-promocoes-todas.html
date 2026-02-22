@@ -1,15 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#6A0DAD">
-<title>Promoções - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Promo��es - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
 <script src="/js/config.js"></script>
 <link rel="stylesheet" href="/css/vivo-global.css">
-</head>
 <body>
 <div class="header">
 <div class="header-content">
@@ -17,29 +19,29 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div class="header-title">
-<h1>Todas as Promoções</h1>
+<h1>Todas as Promo��es</h1>
 <p id="totalPromocoes">Carregando...</p>
 </div>
 </div>
 </div>
 <div class="filters">
 <button class="filter-btn active" data-filter="todas">Todas</button>
-<button class="filter-btn" data-filter="proximidade">Mais Próximas</button>
-<button class="filter-btn" data-filter="alimentacao">Alimentação</button>
+<button class="filter-btn" data-filter="proximidade">Mais Pr�ximas</button>
+<button class="filter-btn" data-filter="alimentacao">Alimenta��o</button>
 <button class="filter-btn" data-filter="beleza">Beleza</button>
-<button class="filter-btn" data-filter="saude">Saúde</button>
+<button class="filter-btn" data-filter="saude">Sa�de</button>
 <button class="filter-btn" data-filter="varejo">Varejo</button>
 </div>
 <div class="promocoes-grid" id="promocoesGrid">
 <div class="empty-state">
 <i class="fas fa-spinner fa-spin"></i>
-<p>Carregando promoções...</p>
+<p>Carregando promo��es...</p>
 </div>
 </div>
 <nav class="bottom-nav">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>Início</span>
+<span>In�cio</span>
 </a>
 <a href="app-buscar.html" class="nav-item">
 <i class="fas fa-search"></i>
@@ -54,8 +56,7 @@
         let todasPromocoes = [];
         let filtroAtivo = 'todas';
         let userLocation = null;
-        
-        // Calcular distância entre dois pontos (Haversine formula)
+        // Calcular dist�ncia entre dois pontos (Haversine formula)
         function calcularDistancia(lat1, lon1, lat2, lon2) {
             const R = 6371; // Raio da Terra em km
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -65,14 +66,12 @@
                      Math.sin(dLon/2) * Math.sin(dLon/2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
             const distance = R * c;
-            
             if (distance < 1) {
                 return `${Math.round(distance * 1000)}m`;
             }
             return `${distance.toFixed(1)} km`;
         }
-        
-        // Obter localização do usuário
+        // Obter localiza��o do usu�rio
         function obterLocalizacao() {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
@@ -81,28 +80,25 @@
                             latitude: position.coords.latitude,
                             longitude: position.coords.longitude
                         };
-                        console.log('Localização obtida:', userLocation);
+                        console.log('Localiza��o obtida:', userLocation);
                     },
                     (error) => {
-                        console.warn('Geolocalização não disponível:', error);
+                        console.warn('Geolocaliza��o n�o dispon�vel:', error);
                     }
                 );
             }
         }
-        
         async function loadPromocoes() {
             try {
                 const token = localStorage.getItem('token');
                 const baseURL = API_CONFIG.getBaseURL();
-                
-                // Buscar todas as promoções ativas
+                // Buscar todas as promo��es ativas
                 const response = await fetch(`${baseURL}/api/cliente/promocoes/todas`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
                     }
                 });
-                
                 if (response.ok) {
                     const result = await response.json();
                     todasPromocoes = result.data || result.promocoes || result || [];
@@ -111,26 +107,21 @@
                     renderEmpty();
                 }
             } catch (error) {
-                console.error('Erro ao carregar promoções:', error);
+                console.error('Erro ao carregar promo��es:', error);
                 renderEmpty();
             }
         }
-        
         function renderPromocoes(promocoes) {
             const grid = document.getElementById('promocoesGrid');
             const total = document.getElementById('totalPromocoes');
-            
-            total.textContent = `${promocoes.length} promoções disponíveis`;
-            
+            total.textContent = `${promocoes.length} promo��es dispon�veis`;
             if (promocoes.length === 0) {
                 renderEmpty();
                 return;
             }
-            
-            // Calcular distâncias se temos localização
+            // Calcular dist�ncias se temos localiza��o
             let promocoesComDistancia = promocoes.map(promo => {
                 let distancia = promo.distancia || '-- km';
-                
                 if (userLocation && promo.empresa_latitude && promo.empresa_longitude) {
                     distancia = calcularDistancia(
                         userLocation.latitude,
@@ -139,15 +130,12 @@
                         parseFloat(promo.empresa_longitude)
                     );
                 }
-                
                 return { ...promo, distanciaCalculada: distancia };
             });
-            
             const icons = {
-                'alimentacao': '🍔', 'beleza': '💇', 'saude': '💊',
-                'varejo': '👕', 'servicos': '🔧', 'default': '🎁'
+                'alimentacao': '??', 'beleza': '??', 'saude': '??',
+                'varejo': '??', 'servicos': '??', 'default': '??'
             };
-            
             grid.innerHTML = promocoesComDistancia.map(promo => `
                 <a href="app-promocao-detalhes.html?id=${promo.id}" class="promocao-card">
 <div class="promocao-image">
@@ -161,38 +149,34 @@
 <div class="promocao-footer">
 <div class="promocao-validade">
 <i class="fas fa-clock"></i>
-                                Válido até ${formatarData(promo.validade)}
+                                V�lido at� ${formatarData(promo.validade)}
                             </div>
-<div class="promocao-distancia">📍 ${promo.distanciaCalculada}</div>
+<div class="promocao-distancia">?? ${promo.distanciaCalculada}</div>
 </div>
 </div>
 </a>
             `).join('');
         }
-        
         function renderEmpty() {
             document.getElementById('promocoesGrid').innerHTML = `
                 <div class="empty-state">
 <i class="fas fa-gift"></i>
-<p>Nenhuma promoção disponível no momento</p>
+<p>Nenhuma promo��o dispon�vel no momento</p>
 </div>
             `;
-            document.getElementById('totalPromocoes').textContent = '0 promoções';
+            document.getElementById('totalPromocoes').textContent = '0 promo��es';
         }
-        
         function formatarData(data) {
             if (!data) return 'Sem validade';
             const d = new Date(data);
             return d.toLocaleDateString('pt-BR');
         }
-        
         // Filtros
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 filtroAtivo = btn.dataset.filter;
-                
                 let filtradas = todasPromocoes;
                 if (filtroAtivo !== 'todas') {
                     if (filtroAtivo === 'proximidade') {
@@ -208,7 +192,6 @@
                 renderPromocoes(filtradas);
             });
         });
-        
         // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
             obterLocalizacao();
@@ -217,18 +200,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

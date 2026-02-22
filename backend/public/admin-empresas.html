@@ -9,8 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/css/vivo-global.css">
-<link rel="stylesheet" href="/css/style.css">
-</head>
 <body>
 <div class="admin-companies-page">
     <!-- Page Header -->
@@ -26,7 +24,6 @@
             </a>
         </div>
     </div>
-
     <!-- Content Container -->
     <div class="content-container">
         <!-- Stats Overview -->
@@ -48,7 +45,6 @@
                 <div class="stat-label">Novas Este Mês</div>
             </div>
         </div>
-
         <!-- Companies Section -->
         <div class="companies-section">
             <!-- Section Header -->
@@ -62,7 +58,6 @@
                     Nova Empresa
                 </button>
             </div>
-
             <!-- Search and Filters -->
             <div class="search-filters">
                 <div class="search-box">
@@ -84,7 +79,6 @@
                     <option value="inativo">Inativo</option>
                 </select>
             </div>
-
             <!-- Companies Grid -->
             <div class="company-grid" id="companiesGrid">
                 <div class="empty-state">
@@ -97,7 +91,6 @@
         </div>
     </div>
 </div>
-
 <script>
 // Dados de exemplo das empresas
 const companiesData = [
@@ -132,11 +125,9 @@ const companiesData = [
         created_at: "2024-02-01"
     }
 ];
-
 // Função para carregar empresas
 function loadCompanies() {
     const grid = document.getElementById('companiesGrid');
-    
     if (companiesData.length === 0) {
         grid.innerHTML = `
             <div class="empty-state">
@@ -148,7 +139,6 @@ function loadCompanies() {
         `;
         return;
     }
-    
     grid.innerHTML = companiesData.map(company => `
         <div class="company-card" data-category="${company.category}" data-status="${company.status}">
             <div class="company-header">
@@ -160,7 +150,6 @@ function loadCompanies() {
                     <span class="company-category">${getCategoryLabel(company.category)}</span>
                 </div>
             </div>
-            
             <div class="company-details">
                 <div class="detail-row">
                     <span class="detail-label">Telefone:</span>
@@ -182,7 +171,6 @@ function loadCompanies() {
                     </span>
                 </div>
             </div>
-            
             <div class="company-actions">
                 <button class="action-btn edit" onclick="editCompany(${company.id})" title="Editar">
                     <i class="fas fa-edit"></i>
@@ -193,10 +181,8 @@ function loadCompanies() {
             </div>
         </div>
     `).join('');
-    
     updateStats();
 }
-
 // Função para obter label da categoria
 function getCategoryLabel(category) {
     const labels = {
@@ -208,7 +194,6 @@ function getCategoryLabel(category) {
     };
     return labels[category] || category;
 }
-
 // Função para obter label do status
 function getStatusLabel(status) {
     const labels = {
@@ -218,7 +203,6 @@ function getStatusLabel(status) {
     };
     return labels[status] || status;
 }
-
 // Função para atualizar estatísticas
 function updateStats() {
     const total = companiesData.length;
@@ -229,23 +213,19 @@ function updateStats() {
         const now = new Date();
         return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
     }).length;
-    
     document.getElementById('totalCompanies').textContent = total;
     document.getElementById('activeCompanies').textContent = active;
     document.getElementById('pendingCompanies').textContent = pending;
     document.getElementById('newCompanies').textContent = thisMonth;
 }
-
 // Função para adicionar empresa
 function addCompany() {
     window.location.href = 'admin-criar-empresa.html';
 }
-
 // Função para editar empresa
 function editCompany(companyId) {
     window.location.href = `admin-editar-empresa.html?id=${companyId}`;
 }
-
 // Função para excluir empresa
 function deleteCompany(companyId) {
     if (confirm('Tem certeza que deseja excluir esta empresa?')) {
@@ -257,42 +237,34 @@ function deleteCompany(companyId) {
         }
     }
 }
-
 // Função de busca
 document.getElementById('searchInput').addEventListener('input', function(e) {
     filterCompanies();
 });
-
 // Função de filtro por categoria
 document.getElementById('categoryFilter').addEventListener('change', function(e) {
     filterCompanies();
 });
-
 // Função de filtro por status
 document.getElementById('statusFilter').addEventListener('change', function(e) {
     filterCompanies();
 });
-
 // Função para filtrar empresas
 function filterCompanies() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const categoryFilter = document.getElementById('categoryFilter').value;
     const statusFilter = document.getElementById('statusFilter').value;
     const cards = document.querySelectorAll('.company-card');
-    
     cards.forEach(card => {
         const text = card.textContent.toLowerCase();
         const category = card.getAttribute('data-category');
         const status = card.getAttribute('data-status');
-        
         const matchesSearch = text.includes(searchTerm);
         const matchesCategory = !categoryFilter || category === categoryFilter;
         const matchesStatus = !statusFilter || status === statusFilter;
-        
         card.style.display = matchesSearch && matchesCategory && matchesStatus ? '' : 'none';
     });
 }
-
 // Função para mostrar notificações
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
@@ -309,15 +281,12 @@ function showNotification(message, type = 'info') {
         font-weight: 600;
         animation: slideIn 0.3s ease;
     `;
-    
     notification.textContent = message;
     document.body.appendChild(notification);
-    
     setTimeout(() => {
         notification.remove();
     }, 3000);
 }
-
 // Carregar empresas ao carregar a página
 document.addEventListener('DOMContentLoaded', loadCompanies);
 </script>

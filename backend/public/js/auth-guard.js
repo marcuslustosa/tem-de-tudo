@@ -46,7 +46,25 @@
     const requireAuth = currentScript ? currentScript.getAttribute('data-require-auth') : null;
     const requireAdmin = currentScript ? currentScript.hasAttribute('data-require-admin') : false;
     
-    // Verificar autenticação se necessário
+    // MODO DESENVOLVIMENTO - permite acesso livre em localhost
+    const isDevelopment = window.location.hostname === 'localhost' || 
+                         window.location.hostname === '127.0.0.1' ||
+                         window.location.port === '8080';
+    
+    if (isDevelopment) {
+        console.log('🔧 MODO DESENVOLVIMENTO - Auth Guard desabilitado');
+        // Criar dados de usuário fake para desenvolvimento
+        if (!localStorage.getItem('user')) {
+            localStorage.setItem('user', JSON.stringify({
+                id: 1, name: 'Usuário Teste', email: 'teste@teste.com',
+                perfil: 'cliente', pontos: 2847
+            }));
+            localStorage.setItem('token', 'fake-dev-token-123');
+        }
+        return;
+    }
+    
+    // Verificar autenticação se necessário (apenas em produção)
     if (requireAuth || requireAdmin) {
         const token = localStorage.getItem('token');
         const user = localStorage.getItem('user');

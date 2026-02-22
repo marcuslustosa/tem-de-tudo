@@ -1,525 +1,1067 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#6A0DAD">
-<title>🏪 Descubra Empresas - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empresas Parceiras - Tem de Tudo</title>
+    <meta name="description" content="Descubra empresas parceiras e suas ofertas exclusivas">
+    <meta name="theme-color" content="#6F1AB6">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="global-styles.css">
+    
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-section h1 {
+            color: var(--vivo-purple);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-section p {
+            color: #666;
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .search-filters-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .search-container {
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 18px 60px 18px 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            background: white;
+        }
+
+        .search-box input:focus {
+            border-color: var(--vivo-purple);
+            box-shadow: 0 0 0 4px rgba(111, 26, 182, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--vivo-purple);
+            font-size: 18px;
+        }
+
+        .search-box .location-btn {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--vivo-purple);
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box .location-btn:hover {
+            color: #5d1694;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            background: white;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--vivo-purple);
+        }
+
+        .distance-display {
+            background: linear-gradient(135deg, var(--vivo-purple), #8B4CD6);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 5px;
+        }
+
+        .view-btn {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .view-btn.active {
+            background: var(--vivo-purple);
+            color: white;
+            border-color: var(--vivo-purple);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-count {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .sort-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sort-select {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            background: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .empresas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .empresas-list {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .empresas-list.active {
+            display: flex;
+        }
+
+        .empresas-grid.list-view {
+            display: none;
+        }
+
+        .empresa-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .empresa-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(111, 26, 182, 0.15);
+        }
+
+        .empresa-header {
+            position: relative;
+            height: 160px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .empresa-header.alimentacao {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+        }
+
+        .empresa-header.beleza {
+            background: linear-gradient(45deg, #C471ED, #F64F59);
+        }
+
+        .empresa-header.tecnologia {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .empresa-header.moda {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        .empresa-header.automotivo {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+        }
+
+        .empresa-header.saude {
+            background: linear-gradient(45deg, #43e97b, #38f9d7);
+        }
+
+        .empresa-badge {
+            position: absolute;
+            top: 15px;  
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--vivo-purple);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .empresa-logo {
+            font-size: 3.5rem;
+            opacity: 0.9;
+        }
+
+        .empresa-content {
+            padding: 1.5rem;
+        }
+
+        .empresa-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .empresa-category {
+            color: var(--vivo-purple);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .empresa-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stars {
+            color: #ffa500;
+        }
+
+        .empresa-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .empresa-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .empresa-offers {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--vivo-purple);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .visit-btn {
+            background: var(--vivo-purple);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .visit-btn:hover {
+            background: #5d1694;
+            transform: scale(1.05);
+        }
+
+        /* List View Styles */
+        .empresa-card.list-item {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            gap: 1.5rem;
+        }
+
+        .empresa-card.list-item .empresa-header {
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+            border-radius: 12px;
+        }
+
+        .empresa-card.list-item .empresa-logo {
+            font-size: 2.5rem;
+        }
+
+        .empresa-card.list-item .empresa-content {
+            padding: 0;
+            flex: 1;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+            display: none;
+        }
+
+        .no-results i {
+            font-size: 5rem;
+            color: var(--vivo-purple);
+            opacity: 0.3;
+            margin-bottom: 1.5rem;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .load-more-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .load-more-btn {
+            background: white;
+            color: var(--vivo-purple);
+            border: 2px solid var(--vivo-purple);
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .load-more-btn:hover {
+            background: var(--vivo-purple);
+            color: white;
+        }
+
+        .location-status {
+            background: linear-gradient(135deg, #e3f2fd, #f1f8ff);
+            border-left: 4px solid var(--vivo-purple);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .location-status.active {
+            display: block;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header-section h1 {
+                font-size: 2rem;
+            }
+
+            .search-filters-section {
+                padding: 1.5rem;
+            }
+
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                justify-content: center;
+            }
+
+            .filter-select {
+                flex: 1;
+                min-width: auto;
+            }
+
+            .results-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .empresas-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .empresa-card.list-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .empresa-card.list-item .empresa-header {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .search-box input {
+                padding: 15px 50px 15px 20px;
+            }
+
+            .empresa-content {
+                padding: 1rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(111, 26, 182, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--vivo-purple);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Pulse Effect for Loading Cards */
+        .empresa-card.loading {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading-shimmer 1.5s infinite;
+        }
+
+        @keyframes loading-shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="header">
-<div class="header-content">
-<h1>Buscar</h1>
-<div class="filter-toggle" onclick="toggleFilters()">
-<i class="fas fa-sliders-h"></i>
-</div>
-</div>
-</div>
-<div class="search-section">
-<div class="search-box">
-<i class="fas fa-search search-icon"></i>
-<input type="text" id="searchInput" placeholder="O que você está procurando?">
-<i class="fas fa-search search-icon"></i>
-</div>
-</div>
-<div class="categories-section">
-<div class="categories-grid">
-<div class="category-card" data-category="alimentacao" onclick="filterByCategory('alimentacao')">
-<div class="category-icon">
-<i class="fas fa-hamburger"></i>
-</div>
-<div class="category-name">Alimentos e<br>Bebidas</div>
-<div class="category-count" id="count-alimentacao">0 locais</div>
-</div>
-<div class="category-card" data-category="automotivo" onclick="filterByCategory('automotivo')">
-<div class="category-icon">
-<i class="fas fa-car"></i>
-</div>
-<div class="category-name">Automotivo</div>
-<div class="category-count" id="count-automotivo">0 locais</div>
-</div>
-<div class="category-card" data-category="beleza" onclick="filterByCategory('beleza')">
-<div class="category-icon">
-<i class="fas fa-spa"></i>
-</div>
-<div class="category-name">Beleza e<br>Cuidados</div>
-<div class="category-count" id="count-beleza">0 locais</div>
-</div>
-<div class="category-card" data-category="bemestar" onclick="filterByCategory('bemestar')">
-<div class="category-icon">
-<i class="fas fa-heart"></i>
-</div>
-<div class="category-name">Bem-estar</div>
-<div class="category-count" id="count-bemestar">0 locais</div>
-</div>
-</div>
-</div>
-<div class="section">
-<div class="section-header">
-<div class="section-title">Perto de você</div>
-<div class="view-toggle">
-<button class="view-btn active" onclick="setView('grid')">
-<i class="fas fa-th"></i>
-</button>
-<button class="view-btn" onclick="setView('list')">
-<i class="fas fa-list"></i>
-</button>
-</div>
-</div>
-<div class="empresas-grid" id="empresasContainer">
-<!-- Cards gerados dinamicamente -->
-</div>
-<div class="empty-state" id="emptyState" style="display: none;">
-<i class="fas fa-search"></i>
-<p>Nenhuma empresa encontrada</p>
-</div>
-</div>
-<div class="marcas-section">
-<div class="section-title" style="margin-bottom: 16px;">Parceiros</div>
-<div class="marca-card" data-color="red">
-<div class="marca-discount">30% OFF</div>
-<div class="marca-title">Restaurante Sabor & Arte</div>
-<div class="marca-subtitle">Desconto especial em pratos regionais</div>
-</div>
-<div class="marca-card" data-color="green" style="margin-top: 12px;">
-<div class="marca-discount">25% OFF</div>
-<div class="marca-title">Academia SmartFit</div>
-<div class="marca-subtitle">Matrícula grátis + desconto na mensalidade</div>
-</div>
-<div class="marca-card" data-color="pink" style="margin-top: 12px;">
-<div class="marca-discount">40% OFF</div>
-<div class="marca-title">Salão Beleza Total</div>
-<div class="marca-subtitle">Cortes e tratamentos com mega desconto</div>
-</div>
-</div>
-<nav class="bottom-nav">
-<a href="app-inicio.html" class="nav-item">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="app-empresas.html" class="nav-item active">
-<i class="fas fa-search"></i>
-<span>Buscar</span>
-</a>
-<a href="app-meus-pontos.html" class="nav-item">
-<i class="fas fa-credit-card"></i>
-<span>Meus bônus</span>
-</a>
-<a href="app-promocoes.html" class="nav-item">
-<i class="fas fa-tags"></i>
-<span>Ofertas</span>
-</a>
-<a href="app-perfil.html" class="nav-item">
-<i class="fas fa-bars"></i>
-<span>Mais</span>
-</a>
-</nav>
-<p>Nenhuma empresa encontrada</p>
-</div>
-</div>
-<nav class="bottom-nav">
-<a href="app-inicio.html" class="nav-item"><i class="fas fa-home"></i><span>Início</span></a>
-<a href="app-empresas.html" class="nav-item active"><i class="fas fa-search"></i><span>Buscar</span></a>
-<a href="app-meus-pontos.html" class="nav-item"><i class="fas fa-wallet"></i><span>Pontos</span></a>
-<a href="app-promocoes.html" class="nav-item"><i class="fas fa-tags"></i><span>Promoções</span></a>
-<a href="app-perfil.html" class="nav-item"><i class="fas fa-user"></i><span>Perfil</span></a>
-</nav>
-<script>
-        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-            ? 'http://127.0.0.1:8000' 
-            : 'https://tem-de-tudo.onrender.com';
-        
-        let todasEmpresas = [];
-        let empresasFiltradas = [];
-        let categoriaAtual = 'todos';
-        let viewMode = 'grid';
-        let searchTimeout;
+    <!-- Navigation será inserida aqui pelo global-navbar.js -->
+    <nav id="navbar-container"></nav>
+    
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1>Empresas Parceiras</h1>
+            <p>Descubra estabelecimentos próximos com ofertas exclusivas</p>
+        </div>
 
-        // Mapeamento de categorias do banco para a interface
-        const categoryMapping = {
-            'restaurantes': 'alimentacao',
-            'alimentacao': 'alimentacao',
-            'beleza': 'beleza',
-            'saude': 'bemestar',
-            'fitness': 'bemestar',
-            'servicos': 'automotivo',
-            'automotivo': 'automotivo'
-        };
+        <!-- Location Status -->
+        <div class="location-status" id="locationStatus">
+            <i class="fas fa-map-marker-alt" style="color: var(--vivo-purple); margin-right: 10px;"></i>
+            <strong>Localização detectada:</strong> <span id="userLocation">Carregando...</span>
+        </div>
 
-        // Função para fazer requisições à API
-        async function apiRequest(url, options = {}) {
-            try {
-                const response = await fetch(`${API_BASE_URL}${url}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    ...options
-                });
-                
-                if (response.ok) {
-                    return await response.json();
-                }
-                return null;
-            } catch (error) {
-                console.error('Erro na API:', error);
-                return null;
+        <!-- Search and Filters Section -->
+        <div class="search-filters-section">
+            <!-- Search Container -->
+            <div class="search-container">
+                <div class="search-box">
+                    <button class="location-btn" onclick="requestLocation()" title="Buscar empresas próximas">
+                        <i class="fas fa-crosshairs"></i>
+                    </button>
+                    <input type="text" id="searchInput" placeholder="Buscar empresas, produtos ou serviços...">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+
+            <!-- Filters Row -->
+            <div class="filters-row">
+                <div class="filter-group">
+                    <select class="filter-select" id="categoryFilter">
+                        <option value="">Todas as Categorias</option>
+                        <option value="alimentacao">🍔 Alimentação</option>
+                        <option value="beleza">✨ Beleza & Estética</option>
+                        <option value="esportes">🏋️ Esportes & Fitness</option>
+                        <option value="moda">👗 Moda & Vestuário</option>
+                        <option value="tecnologia">💻 Tecnologia</option>
+                        <option value="automotivo">🚗 Automotivo</option>
+                        <option value="saude">🏥 Saúde & Bem-estar</option>
+                        <option value="educacao">📚 Educação</option>
+                        <option value="casa">🏠 Casa & Construção</option>
+                        <option value="servicos">🛠️ Serviços Gerais</option>
+                    </select>
+
+                    <select class="filter-select" id="distanceFilter">
+                        <option value="">Qualquer distância</option>
+                        <option value="1">Até 1 km</option>
+                        <option value="2">Até 2 km</option>
+                        <option value="5">Até 5 km</option>
+                        <option value="10">Até 10 km</option>
+                        <option value="20">Até 20 km</option>
+                    </select>
+
+                    <select class="filter-select" id="ratingFilter">
+                        <option value="">Qualquer avaliação</option>
+                        <option value="4">4+ estrelas</option>
+                        <option value="4.5">4.5+ estrelas</option>
+                    </select>
+                </div>
+
+                <div class="distance-display" id="distanceDisplay" style="display: none;">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Localização ativa</span>
+                </div>
+
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="switchView('grid')" title="Visualização em grade">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="view-btn" onclick="switchView('list')" title="Visualização em lista">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Header -->
+        <div class="results-header">
+            <div class="results-count" id="resultsCount">
+                Carregando empresas...
+            </div>
+            <div class="sort-container">
+                <label>Ordenar por:</label>
+                <select class="sort-select" id="sortSelect">
+                    <option value="relevance">Relevância</option>
+                    <option value="distance">Distância</option>
+                    <option value="rating">Avaliação</option>
+                    <option value="name">Nome A-Z</option>
+                    <option value="offers">Mais ofertas</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Empresas Grid -->
+        <div class="empresas-grid" id="empresasGrid">
+            <!-- Loading Cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Empresas List -->
+        <div class="empresas-list" id="empresasList">
+            <!-- List items will be dynamically inserted here -->
+        </div>
+
+        <!-- No Results -->
+        <div class="no-results" id="noResults">
+            <i class="fas fa-search"></i>
+            <h3>Nenhuma empresa encontrada</h3>
+            <p>Tente ajustar os filtros ou buscar por outros termos</p>
+        </div>
+
+        <!-- Load More Button -->
+        <div class="load-more-container" id="loadMoreContainer" style="display: none;">
+            <button class="load-more-btn" onclick="loadMoreEmpresas()">
+                <span class="loading" style="display: none;"></span>
+                Carregar mais empresas
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="global-auth.js"></script>
+    <script src="global-navbar.js"></script>
+    
+    <script>
+        let currentView = 'grid';
+        let currentPage = 1;
+        let userLocation = null;
+        let allEmpresas = [];
+        let filteredEmpresas = [];
+
+        // Sample companies data (in production, this would come from API)
+        const empresasData = [
+            {
+                id: 1,
+                name: "Burger Gourmet Palace",
+                category: "alimentacao",
+                rating: 4.8,
+                distance: 1.2,
+                description: "Hambúrgueres artesanais com ingredientes premium e receitas exclusivas.",
+                offers: 3,
+                address: "Rua das Flores, 123",
+                phone: "(11) 99999-0001"
+            },
+            {
+                id: 2,
+                name: "Estética Viva Beleza",
+                category: "beleza",
+                rating: 4.9,
+                distance: 0.8,
+                description: "Tratamentos faciais, corporais e estéticos com tecnologia avançada.",
+                offers: 5,
+                address: "Av. Principal, 456",
+                phone: "(11) 99999-0002"
+            },
+            {
+                id: 3,
+                name: "TechStore Premium",
+                category: "tecnologia",
+                rating: 4.6,
+                distance: 2.1,
+                description: "Eletrônicos, informática e gadgets das melhores marcas.",
+                offers: 7,
+                address: "Shopping Center, Loja 89",
+                phone: "(11) 99999-0003"
+            },
+            {
+                id: 4,
+                name: "Academia Fitness Pro",
+                category: "esportes",
+                rating: 4.7,
+                distance: 1.5,
+                description: "Academia completa com equipamentos modernos e personal trainers.",
+                offers: 2,
+                address: "Rua dos Esportes, 789",
+                phone: "(11) 99999-0004"
+            },
+            {
+                id: 5,
+                name: "Moda Bella Fashion",
+                category: "moda",
+                rating: 4.5,
+                distance: 3.2,
+                description: "Roupas femininas e masculinas com as últimas tendências da moda.",
+                offers: 4,
+                address: "Centro Comercial, Bl A",
+                phone: "(11) 99999-0005"
+            },
+            {
+                id: 6,
+                name: "Auto Service Center",
+                category: "automotivo",
+                rating: 4.4,
+                distance: 4.1,
+                description: "Serviços automotivos completos com garantia e qualidade.",
+                offers: 1,
+                address: "Rod. Principal, Km 15",
+                phone: "(11) 99999-0006"
+            },
+            {
+                id: 7,
+                name: "Clínica Saúde+",
+                category: "saude",
+                rating: 4.9,
+                distance: 1.8,
+                description: "Clínica médica com especialistas e exames de última geração.",
+                offers: 6,
+                address: "Av. da Saúde, 321",
+                phone: "(11) 99999-0007"
+            },
+            {
+                id: 8,
+                name: "Casa & Decoração Ltda",
+                category: "casa", 
+                rating: 4.3,
+                distance: 5.2,
+                description: "Materiais de construção, móveis e artigos para decoração.",
+                offers: 2,
+                address: "Distrito Industrial, 147",
+                phone: "(11) 99999-0008"
+            }
+        ];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            allEmpresas = [...empresasData];
+            filteredEmpresas = [...empresasData];
+            
+            showLoadingCards();
+            
+            setTimeout(() => {
+                renderEmpresas();
+                updateResultsCount();
+            }, 1000);
+
+            // Add event listeners
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            document.getElementById('categoryFilter').addEventListener('change', handleFilters);
+            document.getElementById('distanceFilter').addEventListener('change', handleFilters);
+            document.getElementById('ratingFilter').addEventListener('change', handleFilters);
+            document.getElementById('sortSelect').addEventListener('change', handleSort);
+
+            // Try to get user location
+            setTimeout(requestLocation, 2000);
+        });
+
+        // Show loading cards while data loads
+        function showLoadingCards() {
+            const grid = document.getElementById('empresasGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 6; i++) {
+                const card = document.createElement('div');
+                card.className = 'empresa-card loading';
+                card.style.height = '300px';
+                grid.appendChild(card);
             }
         }
 
-        // Carregar empresas da API ou usar fallback
-        async function loadEmpresas() {
-            try {
-                // Tentar carregar dados reais da API
-                const data = await apiRequest('/api/empresas?limit=50');
-                
-                if (data && data.success && data.data && data.data.length > 0) {
-                    console.log('✅ Carregando dados REAIS do banco:', data.data.length, 'empresas');
-                    todasEmpresas = data.data.map(empresa => ({
-                        ...empresa,
-                        categoria: mapCategory(empresa.categoria || 'servicos')
-                    }));
-                } else {
-                    console.log('⚠️ API não retornou dados, usando fallback fictício');
-                    loadEmpresasFallback();
-                    return;
-                }
-            } catch (error) {
-                console.error('❌ Erro ao carregar da API, usando fallback:', error);
-                loadEmpresasFallback();
+        // Render companies
+        function renderEmpresas() {
+            const grid = document.getElementById('empresasGrid');
+            const list = document.getElementById('empresasList');
+            
+            if (filteredEmpresas.length === 0) {
+                document.getElementById('noResults').style.display = 'block';
+                grid.style.display = 'none';
+                list.style.display = 'none';
                 return;
             }
 
-            // Aplicar filtros da URL se houver
-            aplicarFiltrosURL();
-            atualizarContadoresCategorias();
-            filtrarEmpresas();
-        }
-
-        // Mapear categoria do banco para categoria da interface
-        function mapCategory(dbCategory) {
-            if (!dbCategory) return 'servicos';
-            const mapped = categoryMapping[dbCategory.toLowerCase()];
-            return mapped || 'servicos';
-        }
-
-        // Fallback com dados fictícios (se API falhar)
-        function loadEmpresasFallback() {
-            console.log('📦 Carregando dados FICTÍCIOS de fallback');
+            document.getElementById('noResults').style.display = 'none';
             
-            todasEmpresas = [
-                {
-                    id: 1,
-                    nome: 'Restaurante Sabor & Arte',
-                    descricao: 'Culinária artesanal com pratos regionais',
-                    categoria: 'alimentacao',
-                    logo: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400',
-                    points_multiplier: 1.5,
-                    endereco: 'Rua das Palmeiras, 123',
-                    telefone: '(11) 3456-7890'
-                },
-                {
-                    id: 2,
-                    nome: 'Bella Napoli Pizzeria',
-                    descricao: 'Pizzas artesanais no forno à lenha',
-                    categoria: 'alimentacao',
-                    logo: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400',
-                    points_multiplier: 1.2,
-                    endereco: 'Av. Italia, 456',
-                    telefone: '(11) 2345-6789'
-                },
-                {
-                    id: 3,
-                    nome: 'Salão Beleza Total',
-                    descricao: 'Cortes, penteados e tratamentos estéticos',
-                    categoria: 'beleza',
-                    logo: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400',
-                    points_multiplier: 1.8,
-                    endereco: 'Rua da Beleza, 789',
-                    telefone: '(11) 4567-8901'
-                },
-                {
-                    id: 4,
-                    nome: 'SmartFit Academia',
-                    descricao: 'Academia completa com equipamentos modernos',
-                    categoria: 'bemestar',
-                    logo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400',
-                    points_multiplier: 1.4,
-                    endereco: 'Centro Comercial, Loja 15',
-                    telefone: '(11) 5678-9012'
-                },
-                {
-                    id: 5,
-                    nome: 'Farmácia São José',
-                    descricao: 'Medicamentos e produtos de saúde',
-                    categoria: 'bemestar',
-                    logo: 'https://images.unsplash.com/photo-1576671081837-49000212a370?w=400',
-                    points_multiplier: 1.1,
-                    endereco: 'Praça Central, 111',
-                    telefone: '(11) 6789-0123'
-                },
-                {
-                    id: 6,
-                    nome: 'Pet Shop Amigo Fiel',
-                    descricao: 'Tudo para seu animal de estimação',
-                    categoria: 'automotivo',
-                    logo: 'https://images.unsplash.com/photo-1548681528-6a5c45b66b42?w=400',
-                    points_multiplier: 1.3,
-                    endereco: 'Rua dos Pets, 333',
-                    telefone: '(11) 7890-1234'
-                },
-                {
-                    id: 7,
-                    nome: 'Centro Automotivo Speed',
-                    descricao: 'Manutenção e reparos automotivos',
-                    categoria: 'automotivo',
-                    logo: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400',
-                    points_multiplier: 1.6,
-                    endereco: 'Av. Industrial, 888',
-                    telefone: '(11) 8901-2345'
-                }
-            ];
-
-            aplicarFiltrosURL();
-            atualizarContadoresCategorias();
-            filtrarEmpresas();
-        }
-
-        // Aplicar filtros da URL
-        function aplicarFiltrosURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const query = urlParams.get('q') || '';
-            const category = urlParams.get('category') || '';
-
-            if (query) {
-                document.getElementById('searchInput').value = query;
-            }
-
-            if (category && category !== 'todos') {
-                categoriaAtual = category;
-                ativarCategoriaVisual(category);
+            if (currentView === 'grid') {
+                grid.style.display = 'grid';
+                list.style.display = 'none';
+                grid.innerHTML = filteredEmpresas.map(empresa => createEmpresaCard(empresa)).join('');
+            } else {
+                grid.style.display = 'none';
+                list.style.display = 'flex';
+                list.innerHTML = filteredEmpresas.map(empresa => createEmpresaCard(empresa, true)).join('');
             }
         }
 
-        // Ativar categoria visual
-        function ativarCategoriaVisual(categoria) {
-            document.querySelectorAll('.category-card').forEach(card => {
-                card.classList.remove('active');
-                if (card.dataset.category === categoria) {
-                    card.classList.add('active');
-                }
-            });
-        }
-
-        // Atualizar contadores de categorias
-        function atualizarContadoresCategorias() {
-            const counts = {
-                alimentacao: 0,
-                automotivo: 0,
-                beleza: 0,
-                bemestar: 0
+        // Create company card
+        function createEmpresaCard(empresa, isList = false) {
+            const stars = '★'.repeat(Math.floor(empresa.rating)) + '☆'.repeat(5 - Math.floor(empresa.rating));
+            const categoryIcons = {
+                'alimentacao': 'fa-utensils',
+                'beleza': 'fa-spa',
+                'tecnologia': 'fa-laptop',
+                'esportes': 'fa-dumbbell',
+                'moda': 'fa-tshirt',
+                'automotivo': 'fa-car',
+                'saude': 'fa-heartbeat',
+                'casa': 'fa-home'
             };
 
-            todasEmpresas.forEach(empresa => {
-                const cat = empresa.categoria || 'servicos';
-                if (counts.hasOwnProperty(cat)) {
-                    counts[cat]++;
-                }
+            const categoryNames = {
+                'alimentacao': 'Alimentação',
+                'beleza': 'Beleza & Estética',
+                'tecnologia': 'Tecnologia',
+                'esportes': 'Esportes & Fitness',
+                'moda': 'Moda & Vestuário',
+                'automotivo': 'Automotivo',
+                'saude': 'Saúde & Bem-estar',
+                'casa': 'Casa & Construção'
+            };
+
+            return `
+                <div class="empresa-card ${isList ? 'list-item' : ''}" onclick="visitEmpresa(${empresa.id})">
+                    <div class="empresa-header ${empresa.category}">
+                        <i class="fas ${categoryIcons[empresa.category]} empresa-logo"></i>
+                        ${empresa.offers > 0 ? `<div class="empresa-badge">${empresa.offers} ofertas</div>` : ''}
+                    </div>
+                    <div class="empresa-content">
+                        <h3 class="empresa-title">${empresa.name}</h3>
+                        <p class="empresa-category">${categoryNames[empresa.category]}</p>
+                        <div class="empresa-info">
+                            <div class="rating">
+                                <span class="stars">${stars}</span>
+                                <span>${empresa.rating}</span>
+                            </div>
+                            ${userLocation ? `
+                                <div class="info-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>${empresa.distance} km</span>
+                                </div>
+                            ` : ''}
+                            <div class="info-item">
+                                <i class="fas fa-phone"></i>
+                                <span>${empresa.phone}</span>
+                            </div>
+                        </div>
+                        <p class="empresa-description">${empresa.description}</p>
+                        <div class="empresa-footer">
+                            <div class="empresa-offers">
+                                <i class="fas fa-tags"></i>
+                                <span>${empresa.offers} ofertas ativas</span>
+                            </div>
+                            <button class="visit-btn" onclick="event.stopPropagation(); visitEmpresa(${empresa.id})">
+                                Visitar <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Switch between grid and list view
+        function switchView(view) {
+            currentView = view;
+            
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            event.target.closest('.view-btn').classList.add('active');
+            renderEmpresas();
+        }
+
+        // Handle search
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filterEmpresas();
+        }
+
+        // Handle filters
+        function handleFilters() {
+            filterEmpresas();
+        }
+
+        // Filter companies
+        function filterEmpresas() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const distanceFilter = parseFloat(document.getElementById('distanceFilter').value);
+            const ratingFilter = parseFloat(document.getElementById('ratingFilter').value);
+
+            filteredEmpresas = allEmpresas.filter(empresa => {
+                // Search filter
+                const matchesSearch = searchTerm === '' || 
+                    empresa.name.toLowerCase().includes(searchTerm) ||
+                    empresa.description.toLowerCase().includes(searchTerm);
+
+                // Category filter
+                const matchesCategory = categoryFilter === '' || empresa.category === categoryFilter;
+
+                // Distance filter
+                const matchesDistance = !distanceFilter || empresa.distance <= distanceFilter;
+
+                // Rating filter
+                const matchesRating = !ratingFilter || empresa.rating >= ratingFilter;
+
+                return matchesSearch && matchesCategory && matchesDistance && matchesRating;
             });
 
-            document.getElementById('count-alimentacao').textContent = `${counts.alimentacao} locais`;
-            document.getElementById('count-automotivo').textContent = `${counts.automotivo} locais`;
-            document.getElementById('count-beleza').textContent = `${counts.beleza} locais`;
-            document.getElementById('count-bemestar').textContent = `${counts.bemestar} locais`;
+            handleSort();
         }
 
-        // Buscar empresas (com debounce para performance)
-        async function buscarEmpresas(termo) {
-            if (!termo.trim()) {
-                empresasFiltradas = [...todasEmpresas];
-                renderizarEmpresas();
+        // Handle sorting
+        function handleSort() {
+            const sortBy = document.getElementById('sortSelect').value;
+            
+            switch (sortBy) {
+                case 'distance':
+                    filteredEmpresas.sort((a, b) => a.distance - b.distance);
+                    break;
+                case 'rating':
+                    filteredEmpresas.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'name':
+                    filteredEmpresas.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'offers':
+                    filteredEmpresas.sort((a, b) => b.offers - a.offers);
+                    break;
+                default: // relevance
+                    filteredEmpresas.sort((a, b) => b.rating * b.offers - a.rating * a.offers);
+            }
+
+            renderEmpresas();
+            updateResultsCount();
+        }
+
+        // Update results count
+        function updateResultsCount() {
+            const count = filteredEmpresas.length;
+            const total = allEmpresas.length;
+            document.getElementById('resultsCount').textContent = 
+                `${count} de ${total} empresas encontradas`;
+        }
+
+        // Request user location
+        function requestLocation() {
+            if (!navigator.geolocation) {
+                showToast('Geolocalização não suportada pelo navegador', 'error');
                 return;
             }
 
-            // Tentar busca na API primeiro
-            try {
-                const data = await apiRequest(`/api/empresas?busca=${encodeURIComponent(termo)}&limit=50`);
-                
-                if (data && data.success && data.data) {
-                    console.log(`🔍 Busca API "${termo}": ${data.data.length} resultados`);
-                    empresasFiltradas = data.data.map(empresa => ({
-                        ...empresa,
-                        categoria: mapCategory(empresa.categoria || 'servicos')
-                    }));
-                } else {
-                    // Fallback: busca local
-                    buscarLocal(termo);
-                }
-            } catch (error) {
-                console.error('Erro na busca API, usando busca local:', error);
-                buscarLocal(termo);
-            }
+            showToast('Buscando sua localização...', 'info');
 
-            renderizarEmpresas();
-        }
-
-        // Busca local (fallback)
-        function buscarLocal(termo) {
-            const termoLower = termo.toLowerCase();
-            empresasFiltradas = todasEmpresas.filter(empresa =>
-                (empresa.nome || '').toLowerCase().includes(termoLower) ||
-                (empresa.descricao || '').toLowerCase().includes(termoLower)
-            );
-            console.log(`🔍 Busca local "${termo}": ${empresasFiltradas.length} resultados`);
-        }
-
-        // Filtrar por categoria
-        function filterByCategory(categoria) {
-            categoriaAtual = categoria;
-            ativarCategoriaVisual(categoria);
-            filtrarEmpresas();
-            
-            // Atualizar URL
-            const urlParams = new URLSearchParams(window.location.search);
-            if (categoria === 'todos') {
-                urlParams.delete('category');
-            } else {
-                urlParams.set('category', categoria);
-            }
-            const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
-            window.history.replaceState({}, '', newUrl);
-        }
-
-        // Filtrar empresas
-        function filtrarEmpresas(searchTerm = '') {
-            const termo = searchTerm || document.getElementById('searchInput').value.toLowerCase().trim();
-            
-            if (termo) {
-                buscarEmpresas(termo);
-                return;
-            }
-
-            // Filtrar por categoria
-            if (categoriaAtual === 'todos') {
-                empresasFiltradas = [...todasEmpresas];
-            } else {
-                empresasFiltradas = todasEmpresas.filter(empresa => 
-                    empresa.categoria === categoriaAtual
-                );
-            }
-
-            renderizarEmpresas();
-        }
-
-        // Renderizar empresas
-        function renderizarEmpresas() {
-            const container = document.getElementById('empresasContainer');
-            const emptyState = document.getElementById('emptyState');
-
-            if (empresasFiltradas.length === 0) {
-                container.innerHTML = '';
-                emptyState.style.display = 'block';
-                return;
-            }
-
-            emptyState.style.display = 'none';
-            
-            container.innerHTML = empresasFiltradas.map(empresa => `
-                <a href="app-empresa-detalhes.html?id=${empresa.id}" class="empresa-card">
-<img src="${empresa.logo || 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400'}" 
-                         alt="${empresa.nome || 'Empresa'}" 
-                         class="empresa-img"
-                         onerror="this.src='https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400'">
-<div class="empresa-content">
-<div class="empresa-name">${empresa.nome || 'Nome não informado'}</div>
-<div class="empresa-category">${empresa.descricao || 'Estabelecimento'}</div>
-<div class="empresa-footer">
-<div class="empresa-distance">
-<i class="fas fa-map-marker-alt"></i> ${(Math.random() * 5 + 0.5).toFixed(1)} km
-                            </div>
-<div class="empresa-pontos">
-                                ${empresa.points_multiplier || 1}x pontos
-                            </div>
-</div>
-</div>
-</a>
-            `).join('');
-        }
-
-        // Alternar visualização (grid/list)
-        function setView(mode) {
-            viewMode = mode;
-            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            const container = document.getElementById('empresasContainer');
-            container.className = mode === 'grid' ? 'empresas-grid' : 'empresas-list';
-            
-            renderizarEmpresas();
-        }
-
-        // Toggle de filtros (placeholder)
-        function toggleFilters() {
-            console.log('🎛️ Filtros avançados (em desenvolvimento)');
-        }
-
-        // Event Listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 Inicializando app...');
-            
-            // Carregar empresas
-            loadEmpresas();
-
-            // Busca com debounce
-            const searchInput = document.getElementById('searchInput');
-            searchInput.addEventListener('input', (e) => {
-                const termo = e.target.value.trim();
-                
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    filtrarEmpresas(termo);
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
                     
-                    // Atualizar URL
-                    const urlParams = new URLSearchParams(window.location.search);
-                    if (termo) {
-                        urlParams.set('q', termo);
-                    } else {
-                        urlParams.delete('q');
-                    }
-                    const newUrl = `${window.location.pathname}${urlParams.toString() ? '?' + urlParams.toString() : ''}`;
-                    window.history.replaceState({}, '', newUrl);
-                }, 300);
+                    document.getElementById('locationStatus').classList.add('active');
+                    document.getElementById('userLocation').textContent = 'Centro da cidade'; // Simulate
+                    document.getElementById('distanceDisplay').style.display = 'flex';
+                    
+                    showToast('Localização detectada! Mostrando empresas próximas', 'success');
+                    
+                    // Re-render with distance info
+                    renderEmpresas();
+                },
+                (error) => {
+                    showToast('Não foi possível detectar sua localização', 'error');
+                    console.error('Geolocation error:', error);
+                }
+            );
+        }
+
+        // Visit company
+        function visitEmpresa(empresaId) {
+            const empresa = allEmpresas.find(e => e.id === empresaId);
+            showToast(`Carregando ${empresa.name}...`, 'info');
+            
+            // Simulate navigation to company page
+            setTimeout(() => {
+                // In production, this would navigate to a company detail page
+                showToast(`Bem-vindo à ${empresa.name}! 🎉`, 'success');
+            }, 1000);
+        }
+
+        // Load more companies
+        function loadMoreEmpresas() {
+            const btn = document.querySelector('.load-more-btn');
+            const loading = btn.querySelector('.loading');
+            
+            btn.disabled = true;
+            loading.style.display = 'inline-block';
+            
+            // Simulate loading more data
+            setTimeout(() => {
+                showToast('Não há mais empresas para carregar', 'info');
+                document.getElementById('loadMoreContainer').style.display = 'none';
+            }, 1500);
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const now = new Date().toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
             });
 
-            // Busca com Enter
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    clearTimeout(searchTimeout);
-                    const termo = e.target.value.trim();
-                    filtrarEmpresas(termo);
+            const toast = document.createElement('div');
+            toast.className = `toast ${type} show`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                  type === 'error' ? 'fa-exclamation-circle' : 
+                                  'fa-info-circle'}"></i>
+                    <div class="toast-message">
+                        <strong>${message}</strong>
+                        <small>${now}</small>
+                    </div>
+                </div>
+            `;
+
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
                 }
-            });
-        });
+            }, 3000);
+        }
+
+        // Initialize page
+        console.log('Companies page loaded');
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

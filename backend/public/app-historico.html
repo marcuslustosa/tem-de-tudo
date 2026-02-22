@@ -1,261 +1,408 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#6A0DAD">
-<title>📊 Histórico Premium - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Histórico de Pontos - Tem de Tudo</title>
+<meta name="description" content="Acompanhe todo o histórico das suas transações de pontos">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - HISTÓRICO PAGE */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --vivo-blue: #3B82F6; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151;
+    --gray-800: #1F2937; --gray-900: #111827; --white: #FFFFFF; --border-radius: 12px; --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1); --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15); --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+body { font-family: 'Inter', sans-serif; color: var(--gray-900); background: var(--gray-50); min-height: 100vh; }
+.app-page { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+.header-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; }
+.header-nav h1 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); flex: 1; text-align: center; margin: 0 1rem; }
+.back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gray-100); color: var(--gray-700); border: none; cursor: pointer; transition: var(--transition); }
+.back-btn:hover { background: var(--gray-200); }
+.app-content { flex: 1; padding: 1rem 1.5rem 6rem; }
+
+.section { margin-bottom: 2rem; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.stat-card { background: var(--white); border-radius: var(--border-radius); padding: 1.5rem 1rem; text-align: center;
+    box-shadow: var(--shadow-sm); border: 2px solid var(--gray-100); transition: var(--transition); }
+.stat-card:hover { border-color: var(--vivo-purple); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.stat-value { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+.stat-card:nth-child(1) .stat-value { color: var(--vivo-green); }
+.stat-card:nth-child(2) .stat-value { color: var(--vivo-orange); }
+.stat-card:nth-child(3) .stat-value { color: var(--vivo-purple); }
+.stat-label { font-size: 0.75rem; color: var(--gray-600); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.filter-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
+.filter-tab { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--white);
+    border: 2px solid var(--gray-200); border-radius: 25px; cursor: pointer; transition: var(--transition);
+    white-space: nowrap; font-size: 0.875rem; font-weight: 600; color: var(--gray-600); }
+.filter-tab.active { background: var(--vivo-purple); color: var(--white); border-color: var(--vivo-purple); }
+.filter-tab:hover:not(.active) { border-color: var(--gray-300); }
+
+.timeline { background: var(--white); border-radius: var(--border-radius); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+.timeline-item { display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--gray-100); position: relative; }
+.timeline-item:last-child { border-bottom: none; }
+.timeline-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; color: var(--white); flex-shrink: 0; }
+.timeline-icon.ganho { background: var(--vivo-green); }
+.timeline-icon.checkin { background: var(--vivo-blue); }
+.timeline-icon.resgate { background: var(--vivo-orange); }
+.timeline-icon.expiracao { background: var(--vivo-red); }
+.timeline-content { flex: 1; }
+.timeline-header { display: flex; justify-content: between; align-items: flex-start; margin-bottom: 0.5rem; }
+.timeline-title { font-weight: 600; color: var(--gray-900); flex: 1; }
+.timeline-points { font-weight: 700; font-size: 0.875rem; }
+.timeline-points.positive { color: var(--vivo-green); }
+.timeline-points.negative { color: var(--vivo-red); }
+.timeline-desc { color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.25rem; }
+.timeline-date { color: var(--gray-500); font-size: 0.75rem; }
+
+.empty-state { text-align: center; padding: 4rem 2rem; color: var(--gray-500); }
+.empty-state i { font-size: 4rem; margin-bottom: 1rem; }
+.empty-state p { font-size: 1rem; font-weight: 500; }
+
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white);
+    border-top: 1px solid var(--gray-200); padding: 0.5rem 0; z-index: 1000; }
+.nav-container { display: flex; justify-content: space-around; align-items: center; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; padding: 0.5rem;
+    text-decoration: none; color: var(--gray-500); transition: var(--transition); font-size: 0.75rem; font-weight: 500; }
+.nav-item.active { color: var(--vivo-purple); }
+.nav-item:hover:not(.active) { color: var(--gray-700); }
+.nav-item i { font-size: 1.25rem; margin-bottom: 2px; }
+
+@media (max-width: 480px) {
+    .app-content { padding: 1rem 1rem 6rem; }
+    .stats-grid { gap: 0.75rem; }
+    .stat-card { padding: 1rem 0.75rem; }
+    .stat-value { font-size: 1.25rem; }
+    .filter-tabs { gap: 0.25rem; }
+    .filter-tab { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
+    .timeline-item { gap: 0.75rem; }
+    .timeline-icon { width: 40px; height: 40px; font-size: 1rem; }
+    .timeline-header { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.app-page { animation: fadeIn 0.3s ease-out; }
+.section { animation: fadeIn 0.4s ease-out; }
+.section:nth-child(2) { animation-delay: 0.1s; }
+.section:nth-child(3) { animation-delay: 0.2s; }
+.timeline-item { animation: fadeIn 0.5s ease-out; }
+</style>
 </head>
 <body>
-<div class="header">
-<div class="header-content">
-<button class="back-btn" onclick="window.history.back()">
-<i class="fas fa-arrow-left"></i>
-</button>
-<h1>📊 Histórico Premium</h1>
-</div>
-</div>
-<div class="stats-cards">
-<div class="stat-card">
-<div class="stat-value" id="totalGanho">0</div>
-<div class="stat-label">💰 Ganhos</div>
-</div>
-<div class="stat-card">
-<div class="stat-value" id="totalResgate">0</div>
-<div class="stat-label">🎁 Resgates</div>
-</div>
-<div class="stat-card">
-<div class="stat-value" id="totalTransacoes">0</div>
-<div class="stat-label">📈 Transações</div>
-</div>
-</div>
-<div class="filter-tabs">
-<div class="filter-tab active" data-filter="todos" onclick="filtrar('todos')">
-<i class="fas fa-list"></i> Todos
+<div class="app-page">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="header-nav">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>Histórico de Pontos</h1>
+            <div style="width: 40px;"></div>
         </div>
-<div class="filter-tab" data-filter="ganho" onclick="filtrar('ganho')">
-<i class="fas fa-plus-circle"></i> Ganhos
+    </div>
+
+    <!-- Content -->
+    <div class="app-content">
+        <!-- Statistics Cards -->
+        <div class="section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalGanho">0</div>
+                    <div class="stat-label">Pontos Ganhos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalResgate">0</div>
+                    <div class="stat-label">Pontos Usados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalTransacoes">0</div>
+                    <div class="stat-label">Transações</div>
+                </div>
+            </div>
         </div>
-<div class="filter-tab" data-filter="resgate" onclick="filtrar('resgate')">
-<i class="fas fa-gift"></i> Resgates
+
+        <!-- Filter Tabs -->
+        <div class="section">
+            <div class="filter-tabs">
+                <div class="filter-tab active" data-filter="todos" onclick="filtrar('todos')">
+                    <i class="fas fa-list"></i> 
+                    <span>Todos</span>
+                </div>
+                <div class="filter-tab" data-filter="ganho" onclick="filtrar('ganho')">
+                    <i class="fas fa-plus-circle"></i> 
+                    <span>Ganhos</span>
+                </div>
+                <div class="filter-tab" data-filter="resgate" onclick="filtrar('resgate')">
+                    <i class="fas fa-gift"></i> 
+                    <span>Resgates</span>
+                </div>
+                <div class="filter-tab" data-filter="expiracao" onclick="filtrar('expiracao')">
+                    <i class="fas fa-clock"></i> 
+                    <span>Expirações</span>
+                </div>
+            </div>
         </div>
-<div class="filter-tab" data-filter="expiracao" onclick="filtrar('expiracao')">
-<i class="fas fa-clock"></i> Expirações
+
+        <!-- Timeline -->
+        <div class="section">
+            <div class="timeline" id="timeline">
+                <!-- Timeline items will be generated here -->
+            </div>
+            
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <i class="fas fa-history"></i>
+                <p>Nenhuma transação encontrada</p>
+            </div>
         </div>
+    </div>
 </div>
-<div class="timeline" id="timeline"></div>
-<div class="empty-state" id="emptyState" style="display: none;">
-<i class="fas fa-history"></i>
-<p>Nenhuma transação encontrada</p>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <div class="nav-container">
+        <a href="dashboard-cliente.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="app-empresas.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Explorar</span>
+        </a>
+        <a href="app-pontos.html" class="nav-item active">
+            <i class="fas fa-star"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Ofertas</span>
+        </a>
+        <a href="app-perfil.html" class="nav-item">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+        </a>
+    </div>
 </div>
-<nav class="bottom-nav">
-<div class="nav-items">
-<a href="app-inicio.html" class="nav-item">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="app-empresas.html" class="nav-item">
-<i class="fas fa-search"></i>
-<span>Buscar</span>
-</a>
-<a href="app-cupons.html" class="nav-item">
-<i class="fas fa-ticket-alt"></i>
-<span>Cupons</span>
-</a>
-<a href="app-pontos.html" class="nav-item active">
-<i class="fas fa-coins"></i>
-<span>Pontos</span>
-</a>
-<a href="app-perfil.html" class="nav-item">
-<i class="fas fa-user"></i>
-<span>Perfil</span>
-</a>
-</div>
-</nav>
+
 <script>
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
-        let historico = [];
-        let filtroAtual = 'todos';
-        
-        const icones = {
-            ganho: 'fa-plus-circle',
-            checkin: 'fa-check-circle',
-            resgate: 'fa-gift',
-            expiracao: 'fa-clock'
-        };
+const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '/';
+let historico = [];
+let filtroAtual = 'todos';
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'entrar.html';
-                return;
+const icones = {
+    ganho: 'fa-plus-circle',
+    checkin: 'fa-check-circle', 
+    resgate: 'fa-gift',
+    expiracao: 'fa-clock'
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'entrar.html';
+        return;
+    }
+    await carregarHistorico();
+});
+
+async function carregarHistorico() {
+    const token = localStorage.getItem('token');
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}api/historico`, {
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
             }
-            await carregarHistorico();
         });
-
-        async function carregarHistorico() {
-            const token = localStorage.getItem('token');
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/historico`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                
-                const data = await response.json();
-                
-                if (data.success && data.data) {
-                    historico = data.data;
-                    calcularEstatisticas();
-                    renderizarHistorico();
-                } else {
-                    // Dados mockados para demonstração
-                    historico = [
-                        {
-                            tipo: 'ganho',
-                            pontos: 100,
-                            descricao: 'Check-in Premium',
-                            empresa: 'Loja ABC',
-                            created_at: new Date().toISOString()
-                        },
-                        {
-                            tipo: 'resgate',
-                            pontos: -50,
-                            descricao: 'Cupom de desconto resgatado',
-                            empresa: 'Super Mercado',
-                            created_at: new Date(Date.now() - 86400000).toISOString()
-                        }
-                    ];
-                    calcularEstatisticas();
-                    renderizarHistorico();
-                }
-            } catch (error) {
-                console.error('Erro ao carregar histórico:', error);
-                mostrarFeedback('Erro ao carregar histórico', 'error');
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.data) {
+                historico = data.data;
+            } else {
+                // Dados de exemplo para demonstração
+                historico = gerarHistoricoExemplo();
             }
+        } else {
+            historico = gerarHistoricoExemplo();
         }
+    } catch (error) {
+        console.error('Erro ao carregar histórico:', error);
+        historico = gerarHistoricoExemplo();
+    }
+    
+    calcularEstatisticas();
+    renderizarHistorico();
+}
 
-        function calcularEstatisticas() {
-            const ganhos = historico.filter(h => h.tipo === 'ganho' || h.tipo === 'checkin')
-                .reduce((sum, h) => sum + (h.pontos || 0), 0);
-            
-            const resgates = historico.filter(h => h.tipo === 'resgate')
-                .reduce((sum, h) => sum + Math.abs(h.pontos || 0), 0);
-
-            document.getElementById('totalGanho').textContent = ganhos;
-            document.getElementById('totalResgate').textContent = resgates;
-            document.getElementById('totalTransacoes').textContent = historico.length;
+function gerarHistoricoExemplo() {
+    const hoje = new Date();
+    const ontem = new Date(hoje.getTime() - 24 * 60 * 60 * 1000);
+    const anteontem = new Date(hoje.getTime() - 48 * 60 * 60 * 1000);
+    
+    return [
+        {
+            tipo: 'ganho',
+            pontos: 150,
+            descricao: 'Compra no estabelecimento',
+            empresa: 'Padaria do João',
+            created_at: hoje.toISOString()
+        },
+        {
+            tipo: 'checkin',
+            pontos: 50,
+            descricao: 'Check-in diário',
+            empresa: 'Sistema',
+            created_at: hoje.toISOString()
+        },
+        {
+            tipo: 'resgate',
+            pontos: -100,
+            descricao: 'Cupom de desconto 10%',
+            empresa: 'Loja de Roupas',
+            created_at: ontem.toISOString()
+        },
+        {
+            tipo: 'ganho',
+            pontos: 200,
+            descricao: 'Compra premiada',
+            empresa: 'Super Mercado',
+            created_at: anteontem.toISOString()
+        },
+        {
+            tipo: 'expiracao',
+            pontos: -25,
+            descricao: 'Pontos expirados',
+            empresa: 'Sistema',
+            created_at: anteontem.toISOString()
         }
+    ];
+}
 
-        function filtrar(tipo) {
-            filtroAtual = tipo;
-            
-            // Atualizar tabs ativas
-            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelector(`[data-filter="${tipo}"]`).classList.add('active');
-            
-            renderizarHistorico();
-        }
+function calcularEstatisticas() {
+    const ganhos = historico.filter(h => h.tipo === 'ganho' || h.tipo === 'checkin')
+        .reduce((sum, h) => sum + (h.pontos || 0), 0);
+    
+    const resgates = historico.filter(h => h.tipo === 'resgate' || h.tipo === 'expiracao')
+        .reduce((sum, h) => sum + Math.abs(h.pontos || 0), 0);
+    
+    document.getElementById('totalGanho').textContent = formatNumber(ganhos);
+    document.getElementById('totalResgate').textContent = formatNumber(resgates);
+    document.getElementById('totalTransacoes').textContent = historico.length;
+}
 
-        function renderizarHistorico() {
-            let dados = historico;
-            
-            if (filtroAtual !== 'todos') {
-                dados = historico.filter(h => h.tipo === filtroAtual);
-            }
+function filtrar(tipo) {
+    filtroAtual = tipo;
+    
+    // Atualizar tabs ativas
+    document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelector(`[data-filter="${tipo}"]`).classList.add('active');
+    
+    renderizarHistorico();
+}
 
-            const timeline = document.getElementById('timeline');
-            const empty = document.getElementById('emptyState');
+function renderizarHistorico() {
+    let dados = historico;
+    if (filtroAtual !== 'todos') {
+        dados = historico.filter(h => h.tipo === filtroAtual);
+    }
+    
+    const timeline = document.getElementById('timeline');
+    const empty = document.getElementById('emptyState');
+    
+    if (dados.length === 0) {
+        timeline.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+    }
+    
+    timeline.style.display = 'block';
+    empty.style.display = 'none';
+    
+    // Ordenar por data mais recente
+    dados.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    timeline.innerHTML = dados.map(h => `
+        <div class="timeline-item">
+            <div class="timeline-icon ${h.tipo}">
+                <i class="fas ${icones[h.tipo] || 'fa-circle'}"></i>
+            </div>
+            <div class="timeline-content">
+                <div class="timeline-header">
+                    <div class="timeline-title">${h.descricao || getTipoLabel(h.tipo)}</div>
+                    <div class="timeline-points ${h.pontos > 0 ? 'positive' : 'negative'}">
+                        ${h.pontos > 0 ? '+' : ''}${formatNumber(h.pontos)} pts
+                    </div>
+                </div>
+                <div class="timeline-desc">${h.empresa || 'Sistema'}</div>
+                <div class="timeline-date">${formatDate(h.created_at)}</div>
+            </div>
+        </div>
+    `).join('');
+}
 
-            if (dados.length === 0) {
-                timeline.style.display = 'none';
-                empty.style.display = 'block';
-                return;
-            }
+function getTipoLabel(tipo) {
+    const labels = {
+        ganho: 'Pontos Ganhos',
+        checkin: 'Check-in',
+        resgate: 'Resgate de Pontos',
+        expiracao: 'Pontos Expirados'
+    };
+    return labels[tipo] || tipo;
+}
 
-            timeline.style.display = 'block';
-            empty.style.display = 'none';
+function formatNumber(num) {
+    return new Intl.NumberFormat('pt-BR').format(Math.abs(num));
+}
 
-            timeline.innerHTML = dados.map(h => `
-                <div class="timeline-item">
-<div class="timeline-icon ${h.tipo}">
-<i class="fas ${icones[h.tipo] || 'fa-circle'}"></i>
-</div>
-<div class="timeline-content">
-<div class="timeline-header">
-<div class="timeline-title">${h.descricao || h.tipo}</div>
-<div class="timeline-points ${h.pontos > 0 ? 'positive' : 'negative'}">
-                                ${h.pontos > 0 ? '+' : ''}${h.pontos} pts
-                            </div>
-</div>
-<div class="timeline-desc">🏪 ${h.empresa || 'Sistema'}</div>
-<div class="timeline-date">📅 ${new Date(h.created_at).toLocaleString('pt-BR')}</div>
-</div>
-</div>
-            `).join('');
-        }
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return 'Hoje, ' + date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+    if (diffDays === 1) return 'Ontem, ' + date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+    return date.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
 
-        function mostrarFeedback(mensagem, tipo) {
-            const feedback = document.createElement('div');
-            feedback.style.cssText = `
-                position: fixed;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: ${tipo === 'success' ? 'linear-gradient(135deg, #00d4aa, #00c896)' : tipo === 'error' ? 'linear-gradient(135deg, #ff6b6b, #ff5252)' : 'linear-gradient(135deg, #6F1AB6, #9333EA)'};
-                color: ${tipo === 'success' || tipo === 'error' ? '#fff' : '#0a0a0f'};
-                padding: 12px 24px;
-                border-radius: 16px;
-                font-weight: 600;
-                font-size: 14px;
-                z-index: 10000;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-                animation: slideDown 0.3s ease;
-            `;
-            
-            feedback.textContent = mensagem;
-            document.body.appendChild(feedback);
-            
-            setTimeout(() => {
-                feedback.style.animation = 'slideUp 0.3s ease';
-                setTimeout(() => document.body.removeChild(feedback), 300);
-            }, 3000);
-        }
-
-        // Estilos para animações
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideDown {
-                from { transform: translate(-50%, -100%); opacity: 0; }
-                to { transform: translate(-50%, 0); opacity: 1; }
-            }
-            @keyframes slideUp {
-                from { transform: translate(-50%, 0); opacity: 1; }
-                to { transform: translate(-50%, -100%); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+function mostrarFeedback(mensagem, tipo) {
+    const feedback = document.createElement('div');
+    feedback.style.cssText = `
+        position: fixed; top: 20px; right: 20px; background: var(--vivo-purple); color: white;
+        padding: 1rem 1.5rem; border-radius: var(--border-radius); font-weight: 600; z-index: 10000;
+        box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 0.5rem; max-width: 300px;
+    `;
+    
+    if (tipo === 'success') {
+        feedback.style.background = 'var(--vivo-green)';
+    } else if (tipo === 'error') {
+        feedback.style.background = 'var(--vivo-red)';
+    }
+    
+    feedback.innerHTML = `<i class="fas fa-info-circle"></i> ${mensagem}`;
+    document.body.appendChild(feedback);
+    setTimeout(() => feedback.remove(), 3000);
+}
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

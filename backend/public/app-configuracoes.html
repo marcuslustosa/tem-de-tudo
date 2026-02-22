@@ -1,391 +1,305 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#6A0DAD">
-<title>⚙️ Configurações Premium - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚙️ Configurações - Tem de Tudo</title>
+<meta name="description" content="Configurações personalizadas do aplicativo">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - CONFIGURAÇÕES */
+body { font-family: 'Inter', sans-serif; background: var(--gray-50); min-height: 100vh; color: var(--gray-900); }
+.app-page { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+.header-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; }
+.header-nav h1 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); flex: 1; text-align: center; margin: 0 1rem; }
+.back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gray-100); color: var(--gray-700); text-decoration: none; transition: var(--transition); }
+.back-btn:hover { background: var(--gray-200); }
+.app-content { flex: 1; padding: 1rem 1.5rem 6rem; }
+
+.section { margin-bottom: 2rem; background: var(--white); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); }
+.section-header { padding: 1.5rem 1.5rem 1rem; border-bottom: 1px solid var(--gray-100); }
+.section-title { font-size: 1.125rem; font-weight: 600; color: var(--gray-900); display: flex; align-items: center; gap: 0.75rem; }
+.section-title i { color: var(--vivo-purple); font-size: 1rem; }
+.section-content { padding: 0; }
+
+.setting-item { display: flex; align-items: center; justify-content: space-between; padding: 1.5rem; 
+    border-bottom: 1px solid var(--gray-100); transition: var(--transition); }
+.setting-item:last-child { border-bottom: none; }
+.setting-item:hover { background: var(--gray-50); }
+.setting-info { flex: 1; }
+.setting-label { font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem; }
+.setting-desc { font-size: 0.875rem; color: var(--gray-600); }
+.setting-icon { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--vivo-purple), var(--vivo-purple-dark));
+    display: flex; align-items: center; justify-content: center; color: var(--white); margin-right: 1rem; }
+
+.toggle-switch { position: relative; width: 50px; height: 28px; background: var(--gray-300); border-radius: 14px;
+    cursor: pointer; transition: var(--transition); border: none; outline: none; }
+.toggle-switch.active { background: var(--vivo-purple); }
+.toggle-switch::before { content: ''; position: absolute; top: 2px; left: 2px; width: 24px; height: 24px;
+    background: var(--white); border-radius: 50%; transition: var(--transition); }
+.toggle-switch.active::before { transform: translateX(22px); }
+
+.action-section { padding: 1.5rem; }
+.action-btn { width: 100%; background: var(--white); border: 2px solid var(--gray-200); color: var(--gray-700);
+    padding: 1rem 1.5rem; border-radius: var(--border-radius); font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1rem; }
+.action-btn:hover { border-color: var(--vivo-purple); color: var(--vivo-purple); background: var(--gray-50); }
+.action-btn.danger { border-color: var(--vivo-red); color: var(--vivo-red); }
+.action-btn.danger:hover { background: var(--vivo-red); color: var(--white); }
+
+.success-toast { position: fixed; top: 2rem; left: 50%; transform: translateX(-50%); background: var(--vivo-green);
+    color: var(--white); padding: 1rem 2rem; border-radius: var(--border-radius); font-weight: 600;
+    z-index: 1000; box-shadow: var(--shadow-lg); animation: slideDown 0.3s ease; }
+
+@keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+@keyframes slideUp { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -100%); opacity: 0; } }
+</style>
 </head>
 <body>
-<div class="header">
-<div class="header-content">
-<a href="app-perfil.html" class="back-btn">
-<i class="fas fa-arrow-left"></i>
-</a>
-<h1>⚙️ Configurações Premium</h1>
+<div class="app-page">
+    <div class="app-header">
+        <div class="header-nav">
+            <a href="app-perfil.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1>⚙️ Configurações</h1>
+            <div style="width: 40px;"></div>
+        </div>
+    </div>
+    
+    <div class="app-content">
+        <!-- Seção Notificações -->
+        <div class="section fade-in">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-bell"></i>
+                    Notificações
+                </h2>
+            </div>
+            <div class="section-content">
+                <div class="setting-item">
+                    <div class="setting-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="setting-info">
+                        <div class="setting-label">Notificações Push</div>
+                        <div class="setting-desc">Receber alertas em tempo real</div>
+                    </div>
+                    <button class="toggle-switch active" onclick="toggleSetting('push')">
+                    </button>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="setting-info">
+                        <div class="setting-label">Alertas de Promoções</div>
+                        <div class="setting-desc">Novos cupons e ofertas especiais</div>
+                    </div>
+                    <button class="toggle-switch active" onclick="toggleSetting('promo')">
+                    </button>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="setting-info">
+                        <div class="setting-label">Novos Bônus</div>
+                        <div class="setting-desc">Pontos extras e recompensas</div>
+                    </div>
+                    <button class="toggle-switch active" onclick="toggleSetting('bonus')">
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Seção Privacidade -->
+        <div class="section fade-in">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Privacidade
+                </h2>
+            </div>
+            <div class="section-content">
+                <div class="setting-item">
+                    <div class="setting-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="setting-info">
+                        <div class="setting-label">Usar Localização</div>
+                        <div class="setting-desc">Para check-ins automáticos por GPS</div>
+                    </div>
+                    <button class="toggle-switch active" onclick="toggleSetting('location')">
+                    </button>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="setting-info">
+                        <div class="setting-label">Perfil Público</div>
+                        <div class="setting-desc">Visível para outros usuários</div>
+                    </div>
+                    <button class="toggle-switch" onclick="toggleSetting('public')">
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Seção Aplicativo -->
+        <div class="section fade-in">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-cog"></i>
+                    Aplicativo
+                </h2>
+            </div>
+            <div class="section-content">
+                <div class="setting-item">
+                    <div class="setting-icon">
+                        <i class="fas fa-moon"></i>
+                    </div>
+                    <div class="setting-info">
+                        <div class="setting-label">Tema Escuro</div>
+                        <div class="setting-desc">Interface premium dark mode</div>
+                    </div>
+                    <button class="toggle-switch" onclick="toggleSetting('dark')">
+                    </button>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-icon">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <div class="setting-info">
+                        <div class="setting-label">Som de Notificação</div>
+                        <div class="setting-desc">Efeitos sonoros e feedback</div>
+                    </div>
+                    <button class="toggle-switch active" onclick="toggleSetting('sound')">
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Seção Ações -->
+        <div class="section fade-in">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-tools"></i>
+                    Ações
+                </h2>
+            </div>
+            <div class="action-section">
+                <button class="action-btn" onclick="limparCache()">
+                    <i class="fas fa-broom"></i>
+                    Limpar Cache
+                </button>
+                <button class="action-btn" onclick="sincronizarDados()">
+                    <i class="fas fa-sync"></i>
+                    Sincronizar Dados
+                </button>
+                <button class="action-btn danger" onclick="confirmarLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Sair da Conta
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
-<div class="menu-section">
-<div class="section-title">🔔 Notificações</div>
-<div class="menu-items">
-<div class="menu-item">
-<div class="menu-item-content">
-<div class="menu-item-icon">
-<i class="fas fa-bell"></i>
-</div>
-<div class="menu-item-text">
-<label>Notificações Push</label>
-<div class="menu-item-desc">Receber alertas em tempo real</div>
-</div>
-</div>
-<div class="toggle">
-<input type="checkbox" id="push-notifications" checked>
-<div class="slider"></div>
-</div>
-</div>
-<div class="menu-item">
-<div class="menu-item-content">
-<div class="menu-item-icon">
-<i class="fas fa-tags"></i>
-</div>
-<div class="menu-item-text">
-<label>Alertas de Promoções</label>
-<div class="menu-item-desc">Novos cupons e ofertas especiais</div>
-</div>
-</div>
-<div class="toggle">
-<input type="checkbox" id="promo-alerts" checked>
-<div class="slider"></div>
-</div>
-</div>
-<div class="menu-item">
-<div class="menu-item-content">
-<div class="menu-item-icon">
-<i class="fas fa-gift"></i>
-</div>
-<div class="menu-item-text">
-<label>Novos Bônus</label>
-<div class="menu-item-desc">Pontos extras e recompensas</div>
-</div>
-</div>
-<div class="toggle">
-<input type="checkbox" id="bonus-alerts" checked>
-<div class="slider"></div>
-</div>
-</div>
-</div>
-</div>
-<div class="menu-section">
-<div class="section-title">🔒 Privacidade</div>
-<div class="menu-items">
-<div class="menu-item">
-<div class="menu-item-content">
-<div class="menu-item-icon">
-<i class="fas fa-location-arrow"></i>
-</div>
-<div class="menu-item-text">
-<label>Usar Localização</label>
-<div class="menu-item-desc">Para check-ins automáticos por GPS</div>
-</div>
-</div>
-<div class="toggle">
-<input type="checkbox" id="location-access" checked>
-<div class="slider"></div>
-</div>
-</div>
-<div class="menu-item">
-<div class="menu-item-content">
-<div class="menu-item-icon">
-<i class="fas fa-user-friends"></i>
-</div>
-<div class="menu-item-text">
-<label>Perfil Público</label>
-<div class="menu-item-desc">Visível para outros usuários</div>
-</div>
-</div>
-<div class="toggle">
-<input type="checkbox" id="public-profile">
-<div class="slider"></div>
-</div>
-</div>
-</div>
-</div>
-<div class="menu-section">
-<div class="section-title">📱 Aplicativo</div>
-<div class="menu-items">
-<div class="menu-item">
-<div class="menu-item-content">
-<div class="menu-item-icon">
-<i class="fas fa-moon"></i>
-</div>
-<div class="menu-item-text">
-<label>Tema Escuro</label>
-<div class="menu-item-desc">Interface premium dark mode</div>
-</div>
-</div>
-<div class="toggle">
-<input type="checkbox" id="dark-theme" checked>
-<div class="slider"></div>
-</div>
-</div>
-<div class="menu-item">
-<div class="menu-item-content">
-<div class="menu-item-icon">
-<i class="fas fa-volume-up"></i>
-</div>
-<div class="menu-item-text">
-<label>Som de Notificação</label>
-<div class="menu-item-desc">Efeitos sonoros e feedback</div>
-</div>
-</div>
-<div class="toggle">
-<input type="checkbox" id="notification-sound" checked>
-<div class="slider"></div>
-</div>
-</div>
-</div>
-</div>
-<div class="menu-section">
-<div class="section-title">⚡ Ações</div>
-<div class="action-buttons">
-<button class="action-btn" onclick="limparCache()">
-<i class="fas fa-broom"></i>
-                Limpar Cache
-            </button>
-<button class="action-btn" onclick="sincronizarDados()">
-<i class="fas fa-sync"></i>
-                Sincronizar Dados
-            </button>
-<button class="action-btn danger" onclick="confirmarLogout()">
-<i class="fas fa-sign-out-alt"></i>
-                Sair da Conta
-            </button>
-</div>
-</div>
-<nav class="bottom-nav">
-<div class="nav-items">
-<a href="app-inicio.html" class="nav-item">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="app-empresas.html" class="nav-item">
-<i class="fas fa-search"></i>
-<span>Buscar</span>
-</a>
-<a href="app-cupons.html" class="nav-item">
-<i class="fas fa-ticket-alt"></i>
-<span>Cupons</span>
-</a>
-<a href="app-pontos.html" class="nav-item">
-<i class="fas fa-coins"></i>
-<span>Pontos</span>
-</a>
-<a href="app-perfil.html" class="nav-item active">
-<i class="fas fa-user"></i>
-<span>Perfil</span>
-</a>
-</div>
-</nav>
+
 <script>
-        // Salvar configurações no localStorage
-        const configuracoes = {
-            pushNotifications: true,
-            promoAlerts: true,
-            bonusAlerts: true,
-            locationAccess: true,
-            publicProfile: false,
-            darkTheme: true,
-            notificationSound: true
-        };
+let configuracoes = {
+    push: true,
+    promo: true,
+    bonus: true,
+    location: true,
+    public: false,
+    dark: false,
+    sound: true
+};
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Verificar autenticação
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'entrar.html';
-                return;
+function toggleSetting(key) {
+    configuracoes[key] = !configuracoes[key];
+    const toggle = event.target;
+    
+    if (configuracoes[key]) {
+        toggle.classList.add('active');
+    } else {
+        toggle.classList.remove('active');
+    }
+    
+    // Salvar no localStorage
+    localStorage.setItem('appConfiguracoes', JSON.stringify(configuracoes));
+    
+    showToast('✅ Configuração salva!');
+}
+
+function limparCache() {
+    if (confirm('Tem certeza que deseja limpar o cache do aplicativo?')) {
+        // Simular limpeza
+        setTimeout(() => {
+            showToast('🧹 Cache limpo com sucesso!');
+        }, 1000);
+    }
+}
+
+function sincronizarDados() {
+    showToast('🔄 Sincronizando dados...');
+    // Simular sincronização
+    setTimeout(() => {
+        showToast('✅ Dados sincronizados!');
+    }, 2000);
+}
+
+function confirmarLogout() {
+    if (confirm('Tem certeza que deseja sair da sua conta?')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        showToast('👋 Saindo da conta...');
+        setTimeout(() => {
+            window.location.href = 'entrar.html';
+        }, 1500);
+    }
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'success-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideUp 0.3s ease';
+        setTimeout(() => document.body.removeChild(toast), 300);
+    }, 2000);
+}
+
+// Carregar configurações salvas
+document.addEventListener('DOMContentLoaded', () => {
+    const savedConfig = localStorage.getItem('appConfiguracoes');
+    if (savedConfig) {
+        configuracoes = JSON.parse(savedConfig);
+        
+        // Aplicar estados dos toggles
+        Object.keys(configuracoes).forEach(key => {
+            const toggle = document.querySelector(`[onclick="toggleSetting('${key}')"]`);
+            if (toggle && configuracoes[key]) {
+                toggle.classList.add('active');
             }
-
-            // Carregar configurações salvas
-            carregarConfiguracoes();
-            
-            // Adicionar listeners para os toggles
-            document.querySelectorAll('.toggle input').forEach(toggle => {
-                toggle.addEventListener('change', salvarConfiguracao);
-            });
         });
-
-        function carregarConfiguracoes() {
-            const configSalvas = localStorage.getItem('app-configuracoes');
-            if (configSalvas) {
-                const config = JSON.parse(configSalvas);
-                Object.assign(configuracoes, config);
-            }
-
-            // Aplicar configurações aos toggles
-            document.getElementById('push-notifications').checked = configuracoes.pushNotifications;
-            document.getElementById('promo-alerts').checked = configuracoes.promoAlerts;
-            document.getElementById('bonus-alerts').checked = configuracoes.bonusAlerts;
-            document.getElementById('location-access').checked = configuracoes.locationAccess;
-            document.getElementById('public-profile').checked = configuracoes.publicProfile;
-            document.getElementById('dark-theme').checked = configuracoes.darkTheme;
-            document.getElementById('notification-sound').checked = configuracoes.notificationSound;
-        }
-
-        function salvarConfiguracao(event) {
-            const toggleId = event.target.id;
-            const valor = event.target.checked;
-
-            // Mapear IDs para propriedades
-            const mapeamento = {
-                'push-notifications': 'pushNotifications',
-                'promo-alerts': 'promoAlerts',
-                'bonus-alerts': 'bonusAlerts',
-                'location-access': 'locationAccess',
-                'public-profile': 'publicProfile',
-                'dark-theme': 'darkTheme',
-                'notification-sound': 'notificationSound'
-            };
-
-            if (mapeamento[toggleId]) {
-                configuracoes[mapeamento[toggleId]] = valor;
-                localStorage.setItem('app-configuracoes', JSON.stringify(configuracoes));
-                
-                // Aplicar configurações específicas
-                aplicarConfiguracao(mapeamento[toggleId], valor);
-                
-                // Feedback visual
-                mostrarFeedback('Configuração salva!', 'success');
-            }
-        }
-
-        function aplicarConfiguracao(tipo, valor) {
-            switch(tipo) {
-                case 'darkTheme':
-                    if (!valor) {
-                        // Implementar tema claro no futuro
-                        console.log('Tema claro será implementado em breve');
-                    }
-                    break;
-                case 'locationAccess':
-                    if (valor && 'geolocation' in navigator) {
-                        navigator.geolocation.getCurrentPosition(
-                            () => console.log('Permissão de localização concedida'),
-                            () => console.log('Permissão de localização negada')
-                        );
-                    }
-                    break;
-                case 'pushNotifications':
-                    if (valor && 'Notification' in window) {
-                        Notification.requestPermission();
-                    }
-                    break;
-            }
-        }
-
-        function limparCache() {
-            if (confirm('Tem certeza que deseja limpar o cache? Isso pode afetar a performance do app.')) {
-                // Limpar cache específico do app
-                const keysToKeep = ['token', 'user', 'app-configuracoes'];
-                const keysToRemove = [];
-                
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    if (!keysToKeep.includes(key)) {
-                        keysToRemove.push(key);
-                    }
-                }
-                
-                keysToRemove.forEach(key => localStorage.removeItem(key));
-                
-                // Limpar cache do navegador se disponível
-                if ('caches' in window) {
-                    caches.keys().then(names => {
-                        names.forEach(name => caches.delete(name));
-                    });
-                }
-                
-                mostrarFeedback('Cache limpo com sucesso!', 'success');
-            }
-        }
-
-        function sincronizarDados() {
-            mostrarFeedback('Sincronizando dados...', 'info');
-            
-            // Simular sincronização
-            setTimeout(() => {
-                mostrarFeedback('Dados sincronizados!', 'success');
-            }, 2000);
-        }
-
-        function confirmarLogout() {
-            if (confirm('Tem certeza que deseja sair da sua conta?')) {
-                // Limpar dados do usuário
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                
-                // Manter configurações do app
-                mostrarFeedback('Saindo da conta...', 'info');
-                
-                setTimeout(() => {
-                    window.location.href = 'entrar.html';
-                }, 1000);
-            }
-        }
-
-        function mostrarFeedback(mensagem, tipo) {
-            // Criar elemento de feedback
-            const feedback = document.createElement('div');
-            feedback.style.cssText = `
-                position: fixed;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: ${tipo === 'success' ? 'linear-gradient(135deg, #00d4aa, #00c896)' : tipo === 'error' ? 'linear-gradient(135deg, #ff6b6b, #ff5252)' : 'linear-gradient(135deg, #6F1AB6, #9333EA)'};
-                color: ${tipo === 'success' || tipo === 'error' ? '#fff' : '#0a0a0f'};
-                padding: 12px 24px;
-                border-radius: 16px;
-                font-weight: 600;
-                font-size: 14px;
-                z-index: 10000;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-                animation: slideDown 0.3s ease;
-            `;
-            
-            feedback.textContent = mensagem;
-            document.body.appendChild(feedback);
-            
-            // Remover após 3 segundos
-            setTimeout(() => {
-                feedback.style.animation = 'slideUp 0.3s ease';
-                setTimeout(() => document.body.removeChild(feedback), 300);
-            }, 3000);
-        }
-
-        // Adicionar estilos para animações
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideDown {
-                from { transform: translate(-50%, -100%); opacity: 0; }
-                to { transform: translate(-50%, 0); opacity: 1; }
-            }
-            @keyframes slideUp {
-                from { transform: translate(-50%, 0); opacity: 1; }
-                to { transform: translate(-50%, -100%); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+    }
+});
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

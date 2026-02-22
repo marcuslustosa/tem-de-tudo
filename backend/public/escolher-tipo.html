@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escolha seu Tipo de Conta - Tem de Tudo</title>
+<meta name="description" content="Escolha se você é cliente ou empresa para criar sua conta no Tem de Tudo">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="/css/vivo-global.css">
+<body>
+<div class="choose-type-page">
+    <!-- Background Elements -->
+    <div class="login-bg">
+        <div class="floating-element element-1"></div>
+        <div class="floating-element element-2"></div>
+        <div class="floating-element element-3"></div>
+    </div>
+    
+    <!-- Back Link -->
+    <div class="back-link">
+        <a href="index.html">
+            <i class="fas fa-arrow-left"></i>
+            Voltar
+        </a>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="choose-container">
+        <!-- Logo Section -->
+        <div class="logo-section">
+            <div class="logo-icon">
+                <img src="logo.svg" alt="Tem de Tudo" style="width: 80px; height: 80px; border-radius: 50%;">
+            </div>
+            <h1 class="welcome-title">Criar Nova Conta</h1>
+            <p class="welcome-subtitle">Escolha o tipo de conta que deseja criar</p>
+        </div>
+        
+        <!-- Account Type Cards -->
+        <div class="account-types">
+            <div class="account-type-card" onclick="selectAccountType('cliente')">
+                <div class="card-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3>Sou Cliente</h3>
+                <p>Quero acumular pontos nas minhas compras e trocar por recompensas</p>
+                <div class="card-features">
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span>Cadastro gratuito</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span>Acesso imediato</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span>Acumule pontos</span>
+                    </div>
+                </div>
+                <button class="select-btn">
+                    <i class="fas fa-arrow-right"></i>
+                    Continuar como Cliente
+                </button>
+            </div>
+            
+            <div class="account-type-card" onclick="selectAccountType('empresa')">
+                <div class="card-icon empresa">
+                    <i class="fas fa-store"></i>
+                </div>
+                <h3>Sou Empresa</h3>
+                <p>Quero oferecer programa de fidelidade para os meus clientes</p>
+                <div class="card-features">
+                    <div class="feature">
+                        <i class="fas fa-clock"></i>
+                        <span>Validação necessária</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Planos pagos</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard avançado</span>
+                    </div>
+                </div>
+                <button class="select-btn empresa">
+                    <i class="fas fa-arrow-right"></i>
+                    Continuar como Empresa
+                </button>
+            </div>
+        </div>
+        
+        <!-- Info Section -->
+        <div class="info-section">
+            <div class="info-card">
+                <i class="fas fa-info-circle"></i>
+                <p><strong>Clientes:</strong> Cadastro simples e acesso imediato ao sistema</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-shield-alt"></i>
+                <p><strong>Empresas:</strong> Após cadastro, aguardam validação do administrador para ativação</p>
+            </div>
+        </div>
+        
+        <!-- Login Link -->
+        <div class="login-redirect">
+            <p>Já tem uma conta?</p>
+            <a href="entrar.html">Fazer login</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function selectAccountType(type) {
+    if (type === 'cliente') {
+        window.location.href = 'cadastro.html?type=cliente';
+    } else if (type === 'empresa') {
+        window.location.href = 'cadastro-empresa.html?type=empresa';
+    }
+}
+</script>
+</body>
+</html>

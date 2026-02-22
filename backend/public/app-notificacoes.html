@@ -1,541 +1,299 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notificações - Tem de Tudo</title>
+<title>🔔 Notificações - Tem de Tudo</title>
 <meta name="description" content="Acompanhe suas notificações no Tem de Tudo">
 <meta name="theme-color" content="#6F1AB6">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="manifest" href="/manifest.json">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - NOTIFICAÇÕES */
+body { font-family: 'Inter', sans-serif; background: var(--gray-50); min-height: 100vh; color: var(--gray-900); }
+.app-page { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+.header-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; }
+.header-nav h1 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); flex: 1; text-align: center; margin: 0 1rem; }
+.back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gray-100); color: var(--gray-700); text-decoration: none; transition: var(--transition); }
+.back-btn:hover { background: var(--gray-200); }
+.mark-all-btn { background: var(--vivo-purple); color: var(--white); border: none; padding: 0.5rem; 
+    border-radius: 50%; width: 40px; height: 40px; cursor: pointer; transition: var(--transition); }
+.mark-all-btn:hover { background: var(--vivo-purple-dark); }
+
+.app-content { flex: 1; padding: 0 0 6rem; }
+
+.notifications-filter { padding: 1rem 1.5rem; background: var(--white); border-bottom: 1px solid var(--gray-200); }
+.filter-tabs { display: flex; gap: 0.5rem; overflow-x: auto; }
+.filter-tab { padding: 0.5rem 1rem; border-radius: 20px; background: var(--gray-100); color: var(--gray-600);
+    border: none; font-weight: 600; cursor: pointer; transition: var(--transition); white-space: nowrap; }
+.filter-tab.active { background: var(--vivo-purple); color: var(--white); }
+.filter-tab:hover:not(.active) { background: var(--gray-200); }
+
+.notifications-group { padding: 1.5rem; }
+.group-title { font-size: 1rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem; 
+    display: flex; align-items: center; gap: 0.5rem; }
+.group-title i { color: var(--vivo-purple); }
+
+.notification-items { display: grid; gap: 0.75rem; }
+.notification-item { background: var(--white); border-radius: var(--border-radius); padding: 1rem; 
+    box-shadow: var(--shadow-sm); border-left: 4px solid var(--gray-200); transition: var(--transition); cursor: pointer; }
+.notification-item:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.notification-item.unread { border-left-color: var(--vivo-purple); background: linear-gradient(135deg, #FAFBFF, #F8F9FF); }
+.notification-item.success { border-left-color: var(--vivo-green); }
+.notification-item.warning { border-left-color: var(--vivo-orange); }
+.notification-item.error { border-left-color: var(--vivo-red); }
+
+.notification-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; }
+.notification-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; 
+    justify-content: center; font-size: 1.25rem; color: var(--white); }
+.notification-icon.success { background: linear-gradient(135deg, var(--vivo-green), #059669); }
+.notification-icon.info { background: linear-gradient(135deg, var(--vivo-purple), var(--vivo-purple-dark)); }
+.notification-icon.warning { background: linear-gradient(135deg, var(--vivo-orange), #D97706); }
+.notification-icon.error { background: linear-gradient(135deg, var(--vivo-red), #DC2626); }
+
+.notification-content { flex: 1; }
+.notification-title { font-size: 1rem; font-weight: 600; color: var(--gray-900); margin-bottom: 0.5rem; }
+.notification-message { color: var(--gray-600); font-size: 0.875rem; line-height: 1.5; margin-bottom: 0.5rem; }
+.notification-time { font-size: 0.75rem; color: var(--gray-500); font-weight: 500; }
+
+.notification-badge { width: 8px; height: 8px; background: var(--vivo-purple); border-radius: 50%; }
+.notification-item:not(.unread) .notification-badge { display: none; }
+
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--gray-500); }
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; color: var(--gray-300); }
+
+.toast { position: fixed; top: 2rem; left: 50%; transform: translateX(-50%); background: var(--vivo-green);
+    color: var(--white); padding: 1rem 2rem; border-radius: var(--border-radius); font-weight: 600;
+    z-index: 1000; box-shadow: var(--shadow-lg); animation: slideDown 0.3s ease; }
+
+@keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+@keyframes slideUp { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -100%); opacity: 0; } }
+</style>
 </head>
-<body class="app-page">
-<!-- App Header -->
-<div class="app-header">
-    <button class="app-back-btn" onclick="history.back()">
-        <i class="fas fa-arrow-left"></i>
-    </button>
-    <h1 class="app-title">Notificações</h1>
-    <div class="app-actions">
-        <button class="app-action-btn" onclick="markAllAsRead()">
-            <i class="fas fa-check-double"></i>
-        </button>
+<body>
+<div class="app-page">
+    <div class="app-header">
+        <div class="header-nav">
+            <button class="back-btn" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>🔔 Notificações</h1>
+            <button class="mark-all-btn" onclick="markAllAsRead()" title="Marcar todas como lidas">
+                <i class="fas fa-check-double"></i>
+            </button>
+        </div>
     </div>
-</div>
-
-<!-- Notification Groups -->
-<div class="app-section">
-    <div class="notification-group">
-        <h3 class="notification-group-title">Hoje</h3>
-        
-        <div class="notification-item unread" onclick="markAsRead(this)">
-            <div class="notification-icon notification-success">
-                <i class="fas fa-coins"></i>
-            </div>
-            <div class="notification-content">
-                <h4>Pontos creditados!</h4>
-                <p>Você ganhou 50 pontos na compra da Padaria do João</p>
-                <span class="notification-time">Há 2 horas</span>
-            </div>
-            <div class="notification-badge"></div>
+    
+    <!-- Filtros -->
+    <div class="notifications-filter">
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterNotifications('all')">Todas</button>
+            <button class="filter-tab" onclick="filterNotifications('unread')">Não lidas</button>
+            <button class="filter-tab" onclick="filterNotifications('points')">Pontos</button>
+            <button class="filter-tab" onclick="filterNotifications('offers')">Ofertas</button>
+            <button class="filter-tab" onclick="filterNotifications('system')">Sistema</button>
         </div>
-        
-        <div class="notification-item unread" onclick="markAsRead(this)">
-            <div class="notification-icon notification-info">
-                <i class="fas fa-gift"></i>
-            </div>
-            <div class="notification-content">
-                <h4>Nova recompensa disponível</h4>
-                <p>Desconto de 20% no Restaurante Sabor & Arte</p>
-                <span class="notification-time">Há 3 horas</span>
-            </div>
-            <div class="notification-badge"></div>
-        </div>
-        
-        <div class="notification-item" onclick="markAsRead(this)">
-            <div class="notification-icon notification-warning">
+    </div>
+    
+    <div class="app-content">
+        <!-- Hoje -->
+        <div class="notifications-group">
+            <h2 class="group-title">
                 <i class="fas fa-clock"></i>
-            </div>
-            <div class="notification-content">
-                <h4>Pontos próximos do vencimento</h4>
-                <p>100 pontos vencem em 7 dias. Use antes de perder!</p>
-                <span class="notification-time">Há 5 horas</span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="notification-group">
-        <h3 class="notification-group-title">Ontem</h3>
-        
-        <div class="notification-item" onclick="markAsRead(this)">
-            <div class="notification-icon notification-success">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="notification-content">
-                <h4>Resgate realizado com sucesso</h4>
-                <p>Desconto de R$ 10,00 usado na Farmácia Vida Saudável</p>
-                <span class="notification-time">Ontem às 14:30</span>
-            </div>
-        </div>
-        
-        <div class="notification-item" onclick="markAsRead(this)">
-            <div class="notification-icon notification-info">
-                <i class="fas fa-star"></i>
-            </div>
-            <div class="notification-content">
-                <h4>Novo nível conquistado!</h4>
-                <p>Parabéns! Você alcançou o nível Bronze</p>
-                <span class="notification-time">Ontem às 10:15</span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="notification-group">
-        <h3 class="notification-group-title">Esta semana</h3>
-        
-        <div class="notification-item" onclick="markAsRead(this)">
-            <div class="notification-icon notification-info">
-                <i class="fas fa-store"></i>
-            </div>
-            <div class="notification-content">
-                <h4>Novo estabelecimento parceiro</h4>
-                <p>Agora você pode ganhar pontos na Livraria Conhecimento</p>
-                <span class="notification-time">Segunda-feira</span>
+                Hoje
+            </h2>
+            <div class="notification-items">
+                <div class="notification-item unread success" onclick="markAsRead(this)" data-type="points">
+                    <div class="notification-header">
+                        <div class="notification-icon success">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Pontos creditados!</div>
+                            <div class="notification-message">Você ganhou 50 pontos na compra da Padaria do João</div>
+                            <div class="notification-time">Há 2 horas</div>
+                        </div>
+                        <div class="notification-badge"></div>
+                    </div>
+                </div>
+                
+                <div class="notification-item unread info" onclick="markAsRead(this)" data-type="offers">
+                    <div class="notification-header">
+                        <div class="notification-icon info">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Nova recompensa disponível</div>
+                            <div class="notification-message">Desconto de 20% no Restaurante Sabor & Arte</div>
+                            <div class="notification-time">Há 3 horas</div>
+                        </div>
+                        <div class="notification-badge"></div>
+                    </div>
+                </div>
+                
+                <div class="notification-item warning" onclick="markAsRead(this)" data-type="system">
+                    <div class="notification-header">
+                        <div class="notification-icon warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Cupom expirando em breve</div>
+                            <div class="notification-message">Seu cupom de 15% OFF expira em 2 dias</div>
+                            <div class="notification-time">Há 5 horas</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div class="notification-item" onclick="markAsRead(this)">
-            <div class="notification-icon notification-success">
-                <i class="fas fa-coins"></i>
-            </div>
-            <div class="notification-content">
-                <h4>Pontos em dobro</h4>
-                <p>Você ganhou 100 pontos na promoção especial</p>
-                <span class="notification-time">Domingo</span>
+        <!-- Ontem -->
+        <div class="notifications-group">
+            <h2 class="group-title">
+                <i class="fas fa-calendar-day"></i>
+                Ontem
+            </h2>
+            <div class="notification-items">
+                <div class="notification-item success" onclick="markAsRead(this)" data-type="points">
+                    <div class="notification-header">
+                        <div class="notification-icon success">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Check-in realizado!</div>
+                            <div class="notification-message">+25 pontos por visitar a Loja Tech Store</div>
+                            <div class="notification-time">Ontem às 14:30</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="notification-item info" onclick="markAsRead(this)" data-type="offers">
+                    <div class="notification-header">
+                        <div class="notification-icon info">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Promoção especial!</div>
+                            <div class="notification-message">Flash sale: até 70% OFF na categoria Moda</div>
+                            <div class="notification-time">Ontem às 10:15</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div class="notification-item" onclick="markAsRead(this)">
-            <div class="notification-icon notification-warning">
-                <i class="fas fa-bell"></i>
-            </div>
-            <div class="notification-content">
-                <h4>Lembrete importante</h4>
-                <p>Não esqueça de usar seus pontos! 50 pontos vencem em breve</p>
-                <span class="notification-time">Sábado</span>
+        <!-- Esta Semana -->
+        <div class="notifications-group">
+            <h2 class="group-title">
+                <i class="fas fa-calendar-week"></i>
+                Esta semana
+            </h2>
+            <div class="notification-items">
+                <div class="notification-item success" onclick="markAsRead(this)" data-type="points">
+                    <div class="notification-header">
+                        <div class="notification-icon success">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Meta alcançada!</div>
+                            <div class="notification-message">Parabéns! Você completou 10 check-ins esta semana</div>
+                            <div class="notification-time">3 dias atrás</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Empty State (hidden by default) -->
-<div class="app-section empty-notifications" style="display: none;">
-    <div class="empty-state">
-        <div class="empty-icon">
-            <i class="fas fa-bell-slash"></i>
-        </div>
-        <h3>Nenhuma notificação</h3>
-        <p>Quando você tiver notificações, elas aparecerão aqui</p>
-    </div>
-</div>
-
-<!-- Bottom Navigation -->
-<nav class="bottom-nav">
-    <a href="app-inicio.html" class="nav-item">
-        <i class="fas fa-home"></i>
-        <span>Início</span>
-    </a>
-    <a href="app-meus-pontos.html" class="nav-item">
-        <i class="fas fa-coins"></i>
-        <span>Pontos</span>
-    </a>
-    <a href="app-meu-qrcode.html" class="nav-item">
-        <i class="fas fa-qrcode"></i>
-        <span>QR Code</span>
-    </a>
-    <a href="app-perfil.html" class="nav-item">
-        <i class="fas fa-user"></i>
-        <span>Perfil</span>
-    </a>
-</nav>
 
 <script>
-function markAsRead(notification) {
-    notification.classList.remove('unread');
-    const badge = notification.querySelector('.notification-badge');
-    if (badge) {
-        badge.remove();
-    }
+let allNotifications = [];
+let currentFilter = 'all';
+
+function markAsRead(element) {
+    element.classList.remove('unread');
+    showToast('✅ Notificação marcada como lida');
 }
 
 function markAllAsRead() {
     const unreadNotifications = document.querySelectorAll('.notification-item.unread');
-    unreadNotifications.forEach(notification => {
-        notification.classList.remove('unread');
-        const badge = notification.querySelector('.notification-badge');
-        if (badge) {
-            badge.remove();
+    unreadNotifications.forEach(item => {
+        item.classList.remove('unread');
+    });
+    
+    if (unreadNotifications.length > 0) {
+        showToast(`✅ ${unreadNotifications.length} notificações marcadas como lidas`);
+    } else {
+        showToast('ℹ️ Não há notificações não lidas');
+    }
+}
+
+function filterNotifications(type) {
+    // Atualizar tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Filtrar notificações
+    const notifications = document.querySelectorAll('.notification-item');
+    
+    notifications.forEach(notification => {
+        const notificationType = notification.getAttribute('data-type');
+        
+        if (type === 'all') {
+            notification.style.display = 'block';
+        } else if (type === 'unread') {
+            notification.style.display = notification.classList.contains('unread') ? 'block' : 'none';
+        } else if (notificationType === type) {
+            notification.style.display = 'block';
+        } else {
+            notification.style.display = 'none';
         }
     });
     
-    // Show success message
-    showToast('Todas as notificações foram marcadas como lidas');
+    // Verificar se há notificações visíveis em cada grupo
+    document.querySelectorAll('.notifications-group').forEach(group => {
+        const visibleItems = group.querySelectorAll('.notification-item[style*="block"], .notification-item:not([style])');
+        group.style.display = visibleItems.length > 0 ? 'block' : 'none';
+    });
+    
+    currentFilter = type;
+    showToast(`🔍 Filtro "${getFilterName(type)}" aplicado`);
+}
+
+function getFilterName(type) {
+    const names = {
+        'all': 'Todas',
+        'unread': 'Não lidas',
+        'points': 'Pontos',
+        'offers': 'Ofertas',
+        'system': 'Sistema'
+    };
+    return names[type] || type;
 }
 
 function showToast(message) {
-    // Create toast element
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.textContent = message;
-    
-    // Add to body
     document.body.appendChild(toast);
     
-    // Show with animation
-    setTimeout(() => toast.classList.add('show'), 100);
-    
-    // Remove after delay
     setTimeout(() => {
-        toast.classList.remove('show');
+        toast.style.animation = 'slideUp 0.3s ease';
         setTimeout(() => document.body.removeChild(toast), 300);
-    }, 3000);
+    }, 2500);
 }
 
-// Check if there are notifications
-document.addEventListener('DOMContentLoaded', function() {
-    const notifications = document.querySelectorAll('.notification-item');
-    const emptyState = document.querySelector('.empty-notifications');
-    
-    if (notifications.length === 0) {
-        emptyState.style.display = 'block';
-    }
+// Contar notificações não lidas ao carregar
+document.addEventListener('DOMContentLoaded', () => {
+    const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+    console.log(`🔔 ${unreadCount} notificações não lidas`);
 });
 </script>
-
 </body>
 </html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Central de Avisos - Tem de Tudo</title>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#6A0DAD">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
-<body>
-<div class="header">
-<div class="header-content">
-<button class="btn-back" onclick="window.history.back()">
-<i class="fas fa-arrow-left"></i>
-</button>
-<h1>🔔 Central de Avisos</h1>
-</div>
-</div>
-<div class="stats-row">
-<div class="stat-card">
-<div class="stat-number">7</div>
-<div class="stat-label">Não Lidas</div>
-</div>
-<div class="stat-card">
-<div class="stat-number">23</div>
-<div class="stat-label">Total Hoje</div>
-</div>
-<div class="stat-card">
-<div class="stat-number">156</div>
-<div class="stat-label">Esta Semana</div>
-</div>
-</div>
-<div class="filter-tabs">
-<button class="filter-tab active" onclick="filterNotifications('todas')">Todas</button>
-<button class="filter-tab" onclick="filterNotifications('nao-lidas')">Não Lidas</button>
-<button class="filter-tab" onclick="filterNotifications('importantes')">Importantes</button>
-<button class="filter-tab" onclick="filterNotifications('promocoes')">Ofertas</button>
-</div>
-<div class="notif-list" id="notifList">
-<div class="section-title">📢 Hoje</div>
-<div class="notif-item unread" data-type="importante">
-<div class="notif-icon">
-<i class="fas fa-gift"></i>
-</div>
-<div class="notif-content">
-<div class="notif-title">🎁 Oferta Especial Ativada!</div>
-<div class="notif-desc">Parabéns! Sua conta Premium foi contemplada com 500 pontos extras. Válido até amanhã às 23:59h.</div>
-<div class="notif-meta">
-<div class="notif-date">2 min atrás</div>
-<div class="notif-badge priority-high">URGENTE</div>
-</div>
-</div>
-<button class="mark-read-btn" onclick="markAsRead(this)">
-<i class="fas fa-check"></i>
-</button>
-</div>
-<div class="notif-item unread" data-type="promocao">
-<div class="notif-icon">
-<i class="fas fa-percentage"></i>
-</div>
-<div class="notif-content">
-<div class="notif-title">🔥 Super Desconto Burger King</div>
-<div class="notif-desc">50% OFF em qualquer combo + bebida grátis. Use o cupom PREMIUM50 no checkout. Oferta limitada!</div>
-<div class="notif-meta">
-<div class="notif-date">15 min atrás</div>
-<div class="notif-badge">PROMOÇÃO</div>
-</div>
-</div>
-<button class="mark-read-btn" onclick="markAsRead(this)">
-<i class="fas fa-check"></i>
-</button>
-</div>
-<div class="notif-item unread" data-type="sistema">
-<div class="notif-icon">
-<i class="fas fa-coins"></i>
-</div>
-<div class="notif-content">
-<div class="notif-title">💰 Pontos Adicionados à Conta</div>
-<div class="notif-desc">Você ganhou 125 pontos pela compra realizada na TechHub Store. Seu saldo atual: R$ 2.847,50</div>
-<div class="notif-meta">
-<div class="notif-date">32 min atrás</div>
-<div class="notif-badge priority-medium">SISTEMA</div>
-</div>
-</div>
-<button class="mark-read-btn" onclick="markAsRead(this)">
-<i class="fas fa-check"></i>
-</button>
-</div>
-<div class="notif-item unread" data-type="promocao">
-<div class="notif-icon">
-<i class="fas fa-dumbbell"></i>
-</div>
-<div class="notif-content">
-<div class="notif-title">💪 FitLife Academia - Matrícula Grátis</div>
-<div class="notif-desc">Primeira mensalidade por nossa conta + kit welcome grátis. Válido para novos alunos Premium.</div>
-<div class="notif-meta">
-<div class="notif-date">1h atrás</div>
-<div class="notif-badge">PARCEIRO</div>
-</div>
-</div>
-<button class="mark-read-btn" onclick="markAsRead(this)">
-<i class="fas fa-check"></i>
-</button>
-</div>
-<div class="section-title">📅 Ontem</div>
-<div class="notif-item" data-type="sistema">
-<div class="notif-icon">
-<i class="fas fa-shield-alt"></i>
-</div>
-<div class="notif-content">
-<div class="notif-title">🔐 Login Realizado com Sucesso</div>
-<div class="notif-desc">Novo acesso detectado em São Paulo, SP. Se não foi você, altere sua senha imediatamente.</div>
-<div class="notif-meta">
-<div class="notif-date">Ontem, 14:30</div>
-<div class="notif-badge priority-medium">SEGURANÇA</div>
-</div>
-</div>
-</div>
-<div class="notif-item" data-type="promocao">
-<div class="notif-icon">
-<i class="fas fa-spa"></i>
-</div>
-<div class="notif-content">
-<div class="notif-title">✨ Bella Estética - Desconto Especial</div>
-<div class="notif-desc">30% OFF em todos os procedimentos faciais + consulta grátis. Agende já pelo app!</div>
-<div class="notif-meta">
-<div class="notif-date">Ontem, 10:15</div>
-<div class="notif-badge">BELEZA</div>
-</div>
-</div>
-</div>
-<div class="notif-item unread" data-type="sistema">
-<div class="notif-icon">
-<i class="fas fa-trophy"></i>
-</div>
-<div class="notif-content">
-<div class="notif-title">🏆 Parabéns! Meta Mensal Atingida</div>
-<div class="notif-desc">Você acumulou 1.200 pontos este mês! Bônus de 200 pontos extras foram creditados na sua conta.</div>
-<div class="notif-meta">
-<div class="notif-date">Ontem, 08:00</div>
-<div class="notif-badge priority-high">CONQUISTA</div>
-</div>
-</div>
-<button class="mark-read-btn" onclick="markAsRead(this)">
-<i class="fas fa-check"></i>
-</button>
-</div>
-<div class="section-title">📆 Esta Semana</div>
-<div class="notif-item" data-type="importante">
-<div class="notif-icon">
-<i class="fas fa-bell"></i>
-</div>
-<div class="notif-content">
-<div class="notif-title">📱 Atualização do App Disponível</div>
-<div class="notif-desc">Nova versão com melhorias na interface e correções de bugs. Atualize para a melhor experiência!</div>
-<div class="notif-meta">
-<div class="notif-date">2 dias atrás</div>
-<div class="notif-badge priority-medium">UPDATE</div>
-</div>
-</div>
-</div>
-<div class="notif-item unread" data-type="promocao">
-<div class="notif-icon">
-<i class="fas fa-utensils"></i>
-</div>
-<div class="notif-content">
-<div class="notif-title">🍕 Delivery Grátis - Sabor & Cia</div>
-<div class="notif-desc">Taxa de entrega gratuita em pedidos acima de R$ 35,00. Válido para clientes Premium até domingo.</div>
-<div class="notif-meta">
-<div class="notif-date">3 dias atrás</div>
-<div class="notif-badge">FOOD</div>
-</div>
-</div>
-<button class="mark-read-btn" onclick="markAsRead(this)">
-<i class="fas fa-check"></i>
-</button>
-</div>
-</div>
-<div class="empty-state" id="emptyState" style="display: none;">
-<i class="fas fa-bell-slash"></i>
-<h3>Nenhuma notificação encontrada</h3>
-<p>Quando houver novidades, elas aparecerão aqui.<br>Mantenha as notificações ativadas para não perder nada!</p>
-</div>
-<nav class="bottom-nav">
-<a href="app-inicio.html" class="nav-item">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="app-empresas.html" class="nav-item">
-<i class="fas fa-search"></i>
-<span>Buscar</span>
-</a>
-<a href="app-meus-pontos.html" class="nav-item">
-<i class="fas fa-wallet"></i>
-<span>Pontos</span>
-</a>
-<a href="app-promocoes.html" class="nav-item">
-<i class="fas fa-tags"></i>
-<span>Promoções</span>
-</a>
-<a href="app-perfil.html" class="nav-item">
-<i class="fas fa-user"></i>
-<span>Perfil</span>
-</a>
-</nav>
-<script>
-        // Simular dados das notificações
-        const notifications = [
-            {
-                type: 'importante',
-                unread: true,
-                title: '🎁 Oferta Especial Ativada!',
-                desc: 'Parabéns! Sua conta Premium foi contemplada com 500 pontos extras. Válido até amanhã às 23:59h.',
-                date: '2 min atrás',
-                priority: 'high'
-            },
-            // Mais notificações podem ser adicionadas aqui
-        ];
-
-        function filterNotifications(type) {
-            // Remover classe active de todas as abas
-            document.querySelectorAll('.filter-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Adicionar classe active na aba clicada
-            event.target.classList.add('active');
-            
-            const notifItems = document.querySelectorAll('.notif-item');
-            const emptyState = document.getElementById('emptyState');
-            const notifList = document.getElementById('notifList');
-            
-            let visibleCount = 0;
-            
-            notifItems.forEach(item => {
-                const itemType = item.getAttribute('data-type');
-                let shouldShow = false;
-                
-                switch(type) {
-                    case 'todas':
-                        shouldShow = true;
-                        break;
-                    case 'nao-lidas':
-                        shouldShow = item.classList.contains('unread');
-                        break;
-                    case 'importantes':
-                        shouldShow = itemType === 'importante' || itemType === 'sistema';
-                        break;
-                    case 'promocoes':
-                        shouldShow = itemType === 'promocao';
-                        break;
-                }
-                
-                if (shouldShow) {
-                    item.style.display = 'flex';
-                    visibleCount++;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            
-            // Mostrar/esconder seções baseado na visibilidade dos itens
-            document.querySelectorAll('.section-title').forEach(title => {
-                const nextItems = [];
-                let nextElement = title.nextElementSibling;
-                
-                while (nextElement && !nextElement.classList.contains('section-title')) {
-                    if (nextElement.classList.contains('notif-item')) {
-                        nextItems.push(nextElement);
-                    }
-                    nextElement = nextElement.nextElementSibling;
-                }
-                
-                const hasVisibleItems = nextItems.some(item => item.style.display !== 'none');
-                title.style.display = hasVisibleItems ? 'block' : 'none';
-            });
-            
-            // Mostrar estado vazio se necessário
-            if (visibleCount === 0) {
-                emptyState.style.display = 'block';
-                notifList.style.display = 'none';
-            } else {
-                emptyState.style.display = 'none';
-                notifList.style.display = 'block';
-            }
-        }
-
-        function markAsRead(button) {
-            const notifItem = button.closest('.notif-item');
-            notifItem.classList.remove('unread');
-            button.style.display = 'none';
-            
-            // Atualizar contador
-            const unreadCount = document.querySelectorAll('.notif-item.unread').length;
-            document.querySelector('.stat-card .stat-number').textContent = unreadCount;
-        }
-
-        // Marcar todas como lidas após 5 segundos (simulação)
-        setTimeout(() => {
-            document.querySelectorAll('.notif-item.unread').forEach(item => {
-                // Simular leitura gradual
-            });
-        }, 5000);
-    </script>
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -16,9 +16,8 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/global-unified.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">`n<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
+`n
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <div class="company-header">
 <button class="back-button" onclick="window.history.back()">
@@ -86,14 +85,12 @@
 <script>
         const empresaId = new URLSearchParams(window.location.search).get('id');
         const token = localStorage.getItem('token');
-
         async function carregarEmpresa() {
             if (!empresaId) {
                 alert('Empresa n?o encontrada');
                 window.history.back();
                 return;
             }
-
             try {
                 const token = localStorage.getItem('token');
                 const res = await fetch(`/api/cliente/empresas/${empresaId}`, {
@@ -103,34 +100,28 @@
                     }
                 });
                 const result = await res.json();
-                
                 if (result.success) {
                     const empresa = result.data;
                     document.getElementById('empresaNome').textContent = empresa.nome;
                     document.getElementById('empresaCategoria').textContent = empresa.ramo_formatado || empresa.ramo || 'Estabelecimento';
                     document.getElementById('empresaEndereco').textContent = empresa.endereco || 'N?o informado';
-                    
                     if (empresa.telefone) {
                         document.getElementById('empresaWhatsapp').textContent = empresa.telefone;
                         document.getElementById('empresaWhatsapp').href = `https://wa.me/${empresa.telefone.replace(/\D/g, '')}`;
                     }
-
                     verificarBonusAdesao();
                 }
             } catch (error) {
                 console.error('Erro:', error);
             }
         }
-
         async function verificarBonusAdesao() {
             if (!token) return;
-
             try {
                 const res = await fetch(`/api/cliente/bonus-adesao/${empresaId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
-                
                 if (data.temBonus) {
                     mostrarPopupBonus(data.bonus);
                 }
@@ -138,7 +129,6 @@
                 console.error('Erro ao verificar b?nus:', error);
             }
         }
-
         function mostrarPopupBonus(bonus) {
             const popup = document.createElement('div');
             popup.innerHTML = `
@@ -156,7 +146,6 @@
             `;
             document.body.appendChild(popup);
         }
-
         async function resgatarBonus(bonusId, popup) {
             try {
                 const res = await fetch(`/api/cliente/resgatar-bonus/${bonusId}`, {
@@ -166,7 +155,6 @@
                         'Content-Type': 'application/json'
                     }
                 });
-                
                 if (res.ok) {
                     popup.remove();
                     alert('B?nus resgatado! Mostre esta tela para o estabelecimento.');
@@ -175,25 +163,7 @@
                 alert('Erro ao resgatar b?nus');
             }
         }
-
         carregarEmpresa();
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

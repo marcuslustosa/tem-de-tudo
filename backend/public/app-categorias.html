@@ -1,124 +1,534 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Categorias - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorias - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="global-styles.css">
+    
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-section h1 {
+            color: var(--vivo-purple);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-section p {
+            color: #666;
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .search-container {
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-box input:focus {
+            border-color: var(--vivo-purple);
+            box-shadow: 0 0 0 3px rgba(111, 26, 182, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--vivo-purple);
+            font-size: 18px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 2px solid #f0f0f0;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(111, 26, 182, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .category-card:hover::before {
+            left: 100%;
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(111, 26, 182, 0.15);
+            border-color: var(--vivo-purple);
+        }
+
+        .category-card i {
+            font-size: 3rem;
+            color: var(--vivo-purple);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .category-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-card p {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            display: none;
+        }
+
+        .no-results i {
+            font-size: 4rem;
+            color: var(--vivo-purple);
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        .stats-container {
+            background: linear-gradient(135deg, var(--vivo-purple), #8B4CD6);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .stats-container h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header-section h1 {
+                font-size: 2rem;
+            }
+
+            .header-section p {
+                font-size: 1rem;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                gap: 1rem;
+            }
+
+            .category-card {
+                padding: 1.5rem;
+            }
+
+            .category-card i {
+                font-size: 2.5rem;
+            }
+
+            .category-card h3 {
+                font-size: 1.1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stat-item {
+                padding: 1rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(111, 26, 182, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--vivo-purple);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast Animation */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translate3d(0, -100%, 0);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .toast.show {
+            animation: slideInDown 0.5s ease;
+        }
+    </style>
 </head>
 <body>
-<div class="header">
-<div class="header-content">
-<h1>Categorias</h1>
-<p>Explore todas as categorias disponíveis</p>
-</div>
-</div>
-<div class="search-container">
-<div class="search-box">
-<i class="fas fa-search"></i>
-<input type="text" id="searchInput" placeholder="Buscar categorias ou empresas...">
-</div>
-</div>
-<div class="categories-grid">
-<a href="app-empresas.html?category=alimentacao" class="category-card" data-categoria="alimentacao">
-<i class="fas fa-hamburger"></i>
-<span>Alimentação</span>
-</a>
-<a href="app-empresas.html?category=beleza" class="category-card" data-categoria="beleza">
-<i class="fas fa-spa"></i>
-<span>Beleza & Estética</span>
-</a>
-<a href="app-empresas.html?category=esportes" class="category-card" data-categoria="esportes">
-<i class="fas fa-dumbbell"></i>
-<span>Esportes & Fitness</span>
-</a>
-<a href="app-empresas.html?category=moda" class="category-card" data-categoria="moda">
-<i class="fas fa-tshirt"></i>
-<span>Moda</span>
-</a>
-<a href="app-empresas.html?category=tecnologia" class="category-card" data-categoria="tecnologia">
-<i class="fas fa-laptop"></i>
-<span>Tecnologia</span>
-</a>
-<a href="app-empresas.html?category=automotivo" class="category-card" data-categoria="automotivo">
-<i class="fas fa-car"></i>
-<span>Automotivo</span>
-</a>
-<a href="app-empresas.html?category=saude" class="category-card" data-categoria="saude">
-<i class="fas fa-heartbeat"></i>
-<span>Saúde</span>
-</a>
-<a href="app-empresas.html?category=servicos" class="category-card" data-categoria="servicos">
-<i class="fas fa-wrench"></i>
-<span>Serviços</span>
-</a>
-</div>
-<nav class="bottom-nav">
-<a href="app-inicio.html" class="nav-item">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="app-empresas.html" class="nav-item">
-<i class="fas fa-search"></i>
-<span>Buscar</span>
-</a>
-<a href="app-promocoes.html" class="nav-item">
-<i class="fas fa-tags"></i>
-<span>Promoções</span>
-</a>
-<a href="app-avisos.html" class="nav-item">
-<i class="fas fa-bell"></i>
-<span>Avisos</span>
-</a>
-<a href="app-perfil.html" class="nav-item">
-<i class="fas fa-user"></i>
-<span>Perfil</span>
-</a>
-</nav>
-<script>
-        // Busca funcional
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.category-card');
-            
-            cards.forEach(card => {
-                const categoryName = card.querySelector('span').textContent.toLowerCase();
-                if (categoryName.includes(searchTerm)) {
-                    card.style.display = 'flex';
+    <!-- Navigation será inserida aqui pelo global-navbar.js -->
+    <nav id="navbar-container"></nav>
+    
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1>Categorias</h1>
+            <p>Explore todas as categorias disponíveis no Tem de Tudo</p>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-container">
+            <h2>Descobrir & Explorar</h2>
+            <p>Encontre exatamente o que você procura navegando pelas nossas categorias</p>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">12</span>
+                    <span class="stat-label">Categorias</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">250+</span>
+                    <span class="stat-label">Empresas</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1.5k</span>
+                    <span class="stat-label">Produtos</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Disponível</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Container -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar categorias...">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+
+        <!-- Categories Grid -->
+        <div class="categories-grid" id="categoriesGrid">
+            <a href="app-empresas.html?category=alimentacao" class="category-card" data-categoria="alimentação">
+                <i class="fas fa-utensils"></i>
+                <h3>Alimentação</h3>
+                <p>Restaurantes, lanchonetes, delivery e gastronomia</p>
+            </a>
+
+            <a href="app-empresas.html?category=beleza" class="category-card" data-categoria="beleza">
+                <i class="fas fa-spa"></i>
+                <h3>Beleza & Estética</h3>
+                <p>Salões, clínicas estéticas e tratamentos</p>
+            </a>
+
+            <a href="app-empresas.html?category=esportes" class="category-card" data-categoria="esportes">
+                <i class="fas fa-dumbbell"></i>
+                <h3>Esportes & Fitness</h3>
+                <p>Academias, equipamentos e atividades físicas</p>
+            </a>
+
+            <a href="app-empresas.html?category=moda" class="category-card" data-categoria="moda">
+                <i class="fas fa-tshirt"></i>
+                <h3>Moda & Vestuário</h3>
+                <p>Roupas, calçados, acessórios e tendências</p>
+            </a>
+
+            <a href="app-empresas.html?category=tecnologia" class="category-card" data-categoria="tecnologia">
+                <i class="fas fa-laptop"></i>
+                <h3>Tecnologia</h3>
+                <p>Eletrônicos, informática e gadgets</p>
+            </a>
+
+            <a href="app-empresas.html?category=automotivo" class="category-card" data-categoria="automotivo">
+                <i class="fas fa-car"></i>
+                <h3>Automotivo</h3>
+                <p>Peças, serviços e manutenção veicular</p>
+            </a>
+
+            <a href="app-empresas.html?category=saude" class="category-card" data-categoria="saúde">
+                <i class="fas fa-heartbeat"></i>
+                <h3>Saúde & Bem-estar</h3>
+                <p>Clínicas, farmácias e cuidados médicos</p>
+            </a>
+
+            <a href="app-empresas.html?category=educacao" class="category-card" data-categoria="educação">
+                <i class="fas fa-graduation-cap"></i>
+                <h3>Educação</h3>
+                <p>Cursos, escolas e desenvolvimento pessoal</p>
+            </a>
+
+            <a href="app-empresas.html?category=casa" class="category-card" data-categoria="casa">
+                <i class="fas fa-home"></i>
+                <h3>Casa & Construção</h3>
+                <p>Materiais, móveis e decoração</p>
+            </a>
+
+            <a href="app-empresas.html?category=servicos" class="category-card" data-categoria="serviços">
+                <i class="fas fa-tools"></i>
+                <h3>Serviços Gerais</h3>
+                <p>Reparos, manutenção e consultorias</p>
+            </a>
+
+            <a href="app-empresas.html?category=entretenimento" class="category-card" data-categoria="entretenimento">
+                <i class="fas fa-gamepad"></i>
+                <h3>Entretenimento</h3>
+                <p>Jogos, eventos e atividades de lazer</p>
+            </a>
+
+            <a href="app-empresas.html?category=pets" class="category-card" data-categoria="pets">
+                <i class="fas fa-paw"></i>
+                <h3>Pets & Animais</h3>
+                <p>Pet shops, veterinárias e cuidados</p>
+            </a>
+        </div>
+
+        <!-- No Results -->
+        <div class="no-results" id="noResults">
+            <i class="fas fa-search"></i>
+            <h3>Nenhuma categoria encontrada</h3>
+            <p>Tente buscar por outros termos ou navegue por todas as categorias</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="global-auth.js"></script>
+    <script src="global-navbar.js"></script>
+    
+    <script>
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const categoriesGrid = document.getElementById('categoriesGrid');
+            const noResults = document.getElementById('noResults');
+            const categoryCards = document.querySelectorAll('.category-card');
+
+            // Search filter
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                let hasResults = false;
+
+                categoryCards.forEach(card => {
+                    const categoria = card.getAttribute('data-categoria').toLowerCase();
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const description = card.querySelector('p').textContent.toLowerCase();
+
+                    if (categoria.includes(searchTerm) || 
+                        title.includes(searchTerm) || 
+                        description.includes(searchTerm)) {
+                        card.style.display = 'block';
+                        hasResults = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Show/hide no results message
+                if (hasResults || searchTerm === '') {
+                    noResults.style.display = 'none';
+                    categoriesGrid.style.display = 'grid';
                 } else {
-                    card.style.display = 'none';
+                    noResults.style.display = 'block';
+                    categoriesGrid.style.display = 'none';
+                }
+            });
+
+            // Category click tracking
+            categoryCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    const categoria = this.getAttribute('data-categoria');
+                    const categoryName = this.querySelector('h3').textContent;
+                    
+                    // Show loading feedback
+                    showToast(`Carregando ${categoryName}...`, 'info');
+                    
+                    // Track analytics (simulate)
+                    console.log(`Category clicked: ${categoria}`);
+                    
+                    // Add loading animation to clicked card
+                    const icon = this.querySelector('i');
+                    const originalClass = icon.className;
+                    icon.className = 'loading';
+                    
+                    // Restore icon after delay (to show feedback)
+                    setTimeout(() => {
+                        icon.className = originalClass;
+                    }, 1000);
+                });
+            });
+
+            // Keyboard navigation
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const visibleCards = Array.from(categoryCards).filter(card => 
+                        card.style.display !== 'none'
+                    );
+                    
+                    if (visibleCards.length > 0) {
+                        visibleCards[0].click();
+                    }
                 }
             });
         });
-        
-        // Enter para buscar
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const query = e.target.value.trim();
-                if (query) {
-                    window.location.href = `/app-empresas.html?q=${encodeURIComponent(query)}`;
+
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const now = new Date().toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type} show`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                  type === 'error' ? 'fa-exclamation-circle' : 
+                                  'fa-info-circle'}"></i>
+                    <div class="toast-message">
+                        <strong>${message}</strong>
+                        <small>${now}</small>
+                    </div>
+                </div>
+            `;
+
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
                 }
-            }
+            }, 3000);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus on search input for better UX
+            document.getElementById('searchInput').focus();
+            
+            // Log page view (analytics simulation)
+            console.log('Categories page loaded');
+            
+            // Initialize tooltips if needed
+            const cards = document.querySelectorAll('.category-card');
+            cards.forEach(card => {
+                card.setAttribute('title', card.querySelector('p').textContent);
+            });
         });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

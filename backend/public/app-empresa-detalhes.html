@@ -1,4 +1,4 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,7 +7,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/css/vivo-global.css">
-</head>
 <body>
 <div class="header-image">
 <img id="companyBanner" src="" alt="Banner">
@@ -22,10 +21,10 @@
 </div>
 <div class="company-info">
 <div class="company-header">
-<div id="companyLogo" class="company-logo">üçï</div>
+<div id="companyLogo" class="company-logo">??</div>
 <div class="company-main">
 <div id="companyName" class="company-name">Carregando...</div>
-<div id="companyCategory" class="company-category">‚Ä¢‚Ä¢‚Ä¢</div>
+<div id="companyCategory" class="company-category">ïïï</div>
 <div class="rating">
 <div class="stars">
 <i class="fas fa-star"></i>
@@ -34,7 +33,7 @@
 <i class="fas fa-star"></i>
 <i class="fas fa-star-half-alt"></i>
 </div>
-<span id="companyRating" class="rating-text">4.5 (234 avalia√ß√µes)</span>
+<span id="companyRating" class="rating-text">4.5 (234 avaliaÁıes)</span>
 </div>
 </div>
 </div>
@@ -55,19 +54,19 @@
 </div>
 <div class="info-section">
 <div class="section-title">
-<i class="fas fa-info-circle"></i> Informa√ß√µes
+<i class="fas fa-info-circle"></i> InformaÁıes
         </div>
 <div class="info-item">
 <div class="info-icon"><i class="fas fa-clock"></i></div>
 <div class="info-content">
-<div class="info-label">Hor√°rio de funcionamento</div>
+<div class="info-label">Hor·rio de funcionamento</div>
 <div id="companyHours" class="info-value">Seg-Dom: 11h - 23h</div>
 </div>
 </div>
 <div class="info-item">
 <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
 <div class="info-content">
-<div class="info-label">Endere√ßo</div>
+<div class="info-label">EndereÁo</div>
 <div id="companyAddress" class="info-value">Carregando...</div>
 </div>
 </div>
@@ -84,35 +83,33 @@
 <i class="fas fa-align-left"></i> Sobre
         </div>
 <div id="companyDescription" class="description">
-            Carregando descri√ß√£o...
+            Carregando descriÁ„o...
         </div>
 </div>
 <div class="services-section">
 <div class="section-title">
-<i class="fas fa-th-large"></i> Produtos e Servi√ßos
+<i class="fas fa-th-large"></i> Produtos e ServiÁos
         </div>
 <div id="servicesList"></div>
 </div>
 <div id="cartFooter" class="cart-footer">
 <div class="cart-summary">
 <div class="cart-items"><span id="cartCount">0</span> itens selecionados</div>
-<div class="cart-total">üí∞ <span id="cartTotal">0</span> pts</div>
+<div class="cart-total">?? <span id="cartTotal">0</span> pts</div>
 </div>
 <button class="confirm-btn" onclick="confirmOrder()">
 <i class="fas fa-check-circle"></i> Confirmar Pedido
         </button>
 </div>
 <script>
-        // Vari√°veis globais
+        // Vari·veis globais
         let selectedServices = [];
         let empresaData = null;
         let produtosData = [];
-
         // Pegar ID da empresa da URL
         const urlParams = new URLSearchParams(window.location.search);
         const empresaId = urlParams.get('id') || '1';
-
-        // Fun√ß√£o para fazer requisi√ß√µes
+        // FunÁ„o para fazer requisiÁıes
         async function apiRequest(url, options = {}) {
             try {
                 const response = await fetch(`http://localhost:8888${url}`, {
@@ -122,7 +119,6 @@
                     },
                     ...options
                 });
-                
                 if (response.ok) {
                     return await response.json();
                 }
@@ -131,26 +127,22 @@
             }
             return null;
         }
-
         // Carregar dados da empresa
         async function loadEmpresaData() {
             try {
                 // Buscar dados da empresa
                 const empresaResponse = await apiRequest(`/api/empresas/${empresaId}`);
-                
                 if (empresaResponse && empresaResponse.success) {
                     empresaData = empresaResponse.empresa;
-                    
                     // Atualizar UI com dados reais
                     document.getElementById('companyName').textContent = empresaData.nome;
-                    document.getElementById('companyCategory').textContent = `üè¢ ${empresaData.categoria || 'Estabelecimento'}`;
+                    document.getElementById('companyCategory').textContent = `?? ${empresaData.categoria || 'Estabelecimento'}`;
                     document.getElementById('companyLogo').textContent = getEmojiForCategory(empresaData.categoria);
-                    document.getElementById('companyRating').textContent = `${empresaData.avaliacao_media || '4.5'} (${empresaData.total_avaliacoes || '0'} avalia√ß√µes)`;
-                    document.getElementById('companyHours').textContent = "Seg-Dom: 08h - 22h"; // Padr√£o
+                    document.getElementById('companyRating').textContent = `${empresaData.avaliacao_media || '4.5'} (${empresaData.total_avaliacoes || '0'} avaliaÁıes)`;
+                    document.getElementById('companyHours').textContent = "Seg-Dom: 08h - 22h"; // Padr„o
                     document.getElementById('companyAddress').textContent = empresaData.endereco;
                     document.getElementById('companyPhone').textContent = empresaData.telefone;
                     document.getElementById('companyDescription').textContent = empresaData.descricao || 'Empresa parceira do programa de fidelidade Tem de Tudo.';
-                    
                     // Atualizar banner se tiver logo/foto
                     if (empresaData.logo || empresaData.foto) {
                         document.getElementById('companyBanner').src = empresaData.logo || empresaData.foto;
@@ -165,53 +157,45 @@
                 } else {
                     loadFallbackData();
                 }
-                
             } catch (error) {
                 console.error('Erro ao carregar empresa:', error);
                 loadFallbackData();
             }
         }
-
         // Carregar produtos da empresa
         async function loadProdutos() {
             try {
                 const produtosResponse = await apiRequest(`/api/empresas/${empresaId}/produtos`);
-                
                 if (produtosResponse && produtosResponse.success && produtosResponse.produtos.length > 0) {
                     produtosData = produtosResponse.produtos;
                     renderProdutos(produtosData);
                 } else {
                     loadFallbackProdutos();
                 }
-                
             } catch (error) {
                 console.error('Erro ao carregar produtos:', error);
                 loadFallbackProdutos();
             }
         }
-
-        // Fun√ß√£o para obter emoji baseado na categoria
+        // FunÁ„o para obter emoji baseado na categoria
         function getEmojiForCategory(categoria) {
             const emojis = {
-                'alimentacao': 'üçΩÔ∏è',
-                'beleza': 'üíÑ',
-                'saude': 'üíä',
-                'servicos': 'üîß',
-                'automotivo': 'üöó'
+                'alimentacao': '???',
+                'beleza': '??',
+                'saude': '??',
+                'servicos': '??',
+                'automotivo': '??'
             };
-            return emojis[categoria] || 'üè¢';
+            return emojis[categoria] || '??';
         }
-
         // Dados de fallback caso a API falhe
         function loadFallbackData() {
             const fallbackData = {
-                1: { name: "Pizzaria Bella Napoli", category: "üçï Alimenta√ß√£o ‚Ä¢ Pizzaria", logo: "üçï", rating: "4.5 (234 avalia√ß√µes)", description: "A melhor pizzaria da regi√£o! Massas artesanais e ingredientes frescos." },
-                2: { name: "Burger House Premium", category: "üçî Alimenta√ß√£o ‚Ä¢ Hamburgueria", logo: "üçî", rating: "4.7 (189 avalia√ß√µes)", description: "Hamb√∫rgueres artesanais com carne premium e p√£es caseiros." },
-                3: { name: "Beauty Salon Elite", category: "üíÑ Beleza ‚Ä¢ Sal√£o", logo: "üíÑ", rating: "4.9 (156 avalia√ß√µes)", description: "Sal√£o completo com profissionais especializados em cortes e tratamentos." }
+                1: { name: "Pizzaria Bella Napoli", category: "?? AlimentaÁ„o ï Pizzaria", logo: "??", rating: "4.5 (234 avaliaÁıes)", description: "A melhor pizzaria da regi„o! Massas artesanais e ingredientes frescos." },
+                2: { name: "Burger House Premium", category: "?? AlimentaÁ„o ï Hamburgueria", logo: "??", rating: "4.7 (189 avaliaÁıes)", description: "Hamb˙rgueres artesanais com carne premium e p„es caseiros." },
+                3: { name: "Beauty Salon Elite", category: "?? Beleza ï Sal„o", logo: "??", rating: "4.9 (156 avaliaÁıes)", description: "Sal„o completo com profissionais especializados em cortes e tratamentos." }
             };
-            
             const empresa = fallbackData[empresaId] || fallbackData[1];
-            
             document.getElementById('companyName').textContent = empresa.name;
             document.getElementById('companyCategory').textContent = empresa.category;
             document.getElementById('companyLogo').textContent = empresa.logo;
@@ -221,27 +205,25 @@
             document.getElementById('companyPhone').textContent = "(11) 98765-4321";
             document.getElementById('companyDescription').textContent = empresa.description;
         }
-
         // Produtos de fallback
         function loadFallbackProdutos() {
             const fallbackProdutos = {
                 1: [
-                    { id: 1, nome: "Pizza Margherita", descricao: "Molho, mussarela, tomate e manjeric√£o", categoria: "alimentacao", preco: 45, pontos_calculados: 100 },
+                    { id: 1, nome: "Pizza Margherita", descricao: "Molho, mussarela, tomate e manjeric„o", categoria: "alimentacao", preco: 45, pontos_calculados: 100 },
                     { id: 2, nome: "Pizza Calabresa", descricao: "Molho, mussarela, calabresa e cebola", categoria: "alimentacao", preco: 48, pontos_calculados: 110 },
-                    { id: 3, nome: "Pizza 4 Queijos", descricao: "Mussarela, provolone, parmes√£o e catupiry", categoria: "alimentacao", preco: 52, pontos_calculados: 120 }
+                    { id: 3, nome: "Pizza 4 Queijos", descricao: "Mussarela, provolone, parmes„o e catupiry", categoria: "alimentacao", preco: 52, pontos_calculados: 120 }
                 ],
                 2: [
-                    { id: 4, nome: "Burger Cl√°ssico", descricao: "Hamb√∫rguer, queijo, alface e tomate", categoria: "alimentacao", preco: 35, pontos_calculados: 80 },
-                    { id: 5, nome: "Burger Premium", descricao: "Hamb√∫rguer premium com bacon e molho especial", categoria: "alimentacao", preco: 42, pontos_calculados: 95 }
+                    { id: 4, nome: "Burger Cl·ssico", descricao: "Hamb˙rguer, queijo, alface e tomate", categoria: "alimentacao", preco: 35, pontos_calculados: 80 },
+                    { id: 5, nome: "Burger Premium", descricao: "Hamb˙rguer premium com bacon e molho especial", categoria: "alimentacao", preco: 42, pontos_calculados: 95 }
                 ],
                 3: [
                     { id: 6, nome: "Corte Feminino", descricao: "Corte e escova profissional", categoria: "beleza", preco: 60, pontos_calculados: 140 },
-                    { id: 7, nome: "Colora√ß√£o Completa", descricao: "Colora√ß√£o + corte + hidrata√ß√£o", categoria: "beleza", preco: 120, pontos_calculados: 280 }
+                    { id: 7, nome: "ColoraÁ„o Completa", descricao: "ColoraÁ„o + corte + hidrataÁ„o", categoria: "beleza", preco: 120, pontos_calculados: 280 }
                 ]
             };
         }
-        
-        // Fun√ß√£o para renderizar produtos
+        // FunÁ„o para renderizar produtos
         function renderProdutos(produtos) {
             const servicesList = document.getElementById('servicesList');
             servicesList.innerHTML = produtos.map(produto => {
@@ -252,7 +234,7 @@
 <div class="service-icon">${icon}</div>
 <div class="service-main">
 <div class="service-name">${produto.nome}</div>
-<div class="service-desc">${produto.descricao || 'Produto dispon√≠vel'}</div>
+<div class="service-desc">${produto.descricao || 'Produto disponÌvel'}</div>
 </div>
 </div>
 <div class="service-footer">
@@ -268,24 +250,21 @@
                 `;
             }).join('');
         }
-
-        // Fun√ß√£o para obter √≠cone baseado na categoria do produto
+        // FunÁ„o para obter Ìcone baseado na categoria do produto
         function getIconForCategory(categoria) {
             const icons = {
-                'alimentacao': 'üçΩÔ∏è',
-                'bebidas': 'ü•§',
-                'doces': 'üç∞',
-                'beleza': 'üíÑ',
-                'servicos': 'üîß',
-                'saude': 'üíä'
+                'alimentacao': '???',
+                'bebidas': '??',
+                'doces': '??',
+                'beleza': '??',
+                'servicos': '??',
+                'saude': '??'
             };
-            return icons[categoria] || 'üõçÔ∏è';
+            return icons[categoria] || '???';
         }
-
         function toggleService(produtoId) {
             const serviceElement = document.querySelector(`.service-item[data-id="${produtoId}"]`);
             const index = selectedServices.indexOf(produtoId);
-            
             if (index > -1) {
                 selectedServices.splice(index, 1);
                 serviceElement.classList.remove('selected');
@@ -295,42 +274,32 @@
                 serviceElement.classList.add('selected');
                 serviceElement.querySelector('.add-btn').innerHTML = '<i class="fas fa-check"></i> Adicionado';
             }
-            
             updateCart();
         }
-
         function updateCart() {
             const cartFooter = document.getElementById('cartFooter');
             const cartCount = document.getElementById('cartCount');
             const cartTotal = document.getElementById('cartTotal');
-            
             if (selectedServices.length > 0) {
                 cartFooter.classList.add('active');
                 cartCount.textContent = selectedServices.length;
-                
                 const total = selectedServices.reduce((sum, produtoId) => {
                     const produto = produtosData.find(p => p.id === produtoId);
                     return sum + (produto ? (produto.pontos_calculados || Math.floor(produto.preco / 10)) : 0);
                 }, 0);
-                
                 cartTotal.textContent = total;
             } else {
                 cartFooter.classList.remove('active');
             }
         }
-
         function confirmOrder() {
             if (selectedServices.length === 0) return;
-            
             const items = selectedServices.map(id => {
                 const produto = produtosData.find(p => p.id === id);
                 return produto ? produto.nome : '';
             }).filter(Boolean);
-            
             const empresa = empresaData || { nome: 'Empresa' };
-            
-            alert(`‚úÖ Pedido confirmado!\n\nItens:\n${items.join('\n')}\n\nEmpresa: ${empresa.nome}\n\nVoc√™ receber√° uma notifica√ß√£o quando o pedido for confirmado.`);
-            
+            alert(`? Pedido confirmado!\n\nItens:\n${items.join('\n')}\n\nEmpresa: ${empresa.nome}\n\nVocÍ receber· uma notificaÁ„o quando o pedido for confirmado.`);
             // Limpar carrinho
             selectedServices = [];
             document.querySelectorAll('.service-item.selected').forEach(el => {
@@ -339,13 +308,11 @@
             });
             updateCart();
         }
-
         function toggleFavorite() {
             const btn = document.querySelector('.fav-btn');
             btn.classList.toggle('active');
         }
-
-        // Inicializar p√°gina
+        // Inicializar p·gina
         document.addEventListener('DOMContentLoaded', async () => {
             await loadEmpresaData();
             await loadProdutos();
@@ -353,18 +320,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

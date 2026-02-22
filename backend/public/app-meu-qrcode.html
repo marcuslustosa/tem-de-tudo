@@ -9,9 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="manifest" href="/manifest.json">
-<link rel="stylesheet" href="/css/style.css">
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-</head>
+<link rel="stylesheet" href="/css/vivo-global.css">
 <body class="app-page">
 <!-- App Header -->
 <div class="app-header">
@@ -25,7 +24,6 @@
         </button>
     </div>
 </div>
-
 <!-- User Info -->
 <div class="app-section">
     <div class="qr-user-info">
@@ -39,7 +37,6 @@
         </div>
     </div>
 </div>
-
 <!-- QR Code Section -->
 <div class="app-section">
     <div class="qr-container">
@@ -48,7 +45,6 @@
             <div class="qr-code" id="qrCodeContainer">
                 <canvas id="qrCanvas"></canvas>
             </div>
-            
             <div class="qr-refresh">
                 <button class="qr-refresh-btn" onclick="refreshCode()">
                     <i class="fas fa-sync-alt"></i>
@@ -56,7 +52,6 @@
                 </button>
             </div>
         </div>
-        
         <div class="qr-instructions">
             <h3>Como usar seu QR Code</h3>
             <div class="instruction-list">
@@ -76,11 +71,9 @@
         </div>
     </div>
 </div>
-
 <!-- Quick Actions -->
 <div class="app-section">
     <h2 class="section-title">Ações Rápidas</h2>
-    
     <div class="quick-action-grid">
         <button class="quick-action-card" onclick="increaseScreen()">
             <div class="quick-action-icon">
@@ -88,21 +81,18 @@
             </div>
             <span>Tela Cheia</span>
         </button>
-        
         <button class="quick-action-card" onclick="adjustBrightness()">
             <div class="quick-action-icon">
                 <i class="fas fa-sun"></i>
             </div>
             <span>Brilho Máximo</span>
         </button>
-        
         <button class="quick-action-card" onclick="saveToPhotos()">
             <div class="quick-action-icon">
                 <i class="fas fa-download"></i>
             </div>
             <span>Salvar Imagem</span>
         </button>
-        
         <button class="quick-action-card" onclick="shareCode()">
             <div class="quick-action-icon">
                 <i class="fas fa-share"></i>
@@ -111,11 +101,9 @@
         </button>
     </div>
 </div>
-
 <!-- Alternative Methods -->
 <div class="app-section">
     <h2 class="section-title">Métodos Alternativos</h2>
-    
     <div class="alternative-methods">
         <div class="method-card">
             <div class="method-icon">
@@ -129,7 +117,6 @@
                 <i class="fas fa-copy"></i>
             </button>
         </div>
-        
         <div class="method-card">
             <div class="method-icon">
                 <i class="fas fa-phone"></i>
@@ -144,7 +131,6 @@
         </div>
     </div>
 </div>
-
 <!-- Security Notice -->
 <div class="app-section">
     <div class="security-notice">
@@ -157,7 +143,6 @@
         </div>
     </div>
 </div>
-
 <!-- Bottom Navigation -->
 <nav class="bottom-nav">
     <a href="app-inicio.html" class="nav-item">
@@ -177,10 +162,8 @@
         <span>Perfil</span>
     </a>
 </nav>
-
 <script>
 let currentUserData = {};
-
 // Load user data
 async function loadUserData() {
     try {
@@ -192,23 +175,19 @@ async function loadUserData() {
             phone: '(11) 99999-9999',
             level: 'Bronze'
         };
-        
         // Update UI
         document.getElementById('userName').textContent = currentUserData.name;
         document.getElementById('userId').textContent = `#${currentUserData.id}`;
         document.getElementById('userLevel').textContent = currentUserData.level;
         document.getElementById('userCPF').textContent = currentUserData.cpf;
         document.getElementById('userPhone').textContent = currentUserData.phone;
-        
         // Generate QR Code
         generateQRCode();
-        
     } catch (error) {
         console.error('Error loading user data:', error);
         showToast('Erro ao carregar dados do usuário');
     }
 }
-
 // Generate QR Code
 async function generateQRCode() {
     try {
@@ -218,7 +197,6 @@ async function generateQRCode() {
             timestamp: Date.now(),
             type: 'loyalty_card'
         };
-        
         await QRCode.toCanvas(canvas, JSON.stringify(qrData), {
             width: 200,
             margin: 2,
@@ -227,22 +205,18 @@ async function generateQRCode() {
                 light: '#FFFFFF'
             }
         });
-        
     } catch (error) {
         console.error('Error generating QR code:', error);
         showToast('Erro ao gerar QR Code');
     }
 }
-
 // Refresh QR Code
 function refreshCode() {
     const refreshBtn = document.querySelector('.qr-refresh-btn');
     const icon = refreshBtn.querySelector('i');
-    
     // Add loading state
     icon.classList.add('fa-spin');
     refreshBtn.disabled = true;
-    
     setTimeout(() => {
         icon.classList.remove('fa-spin');
         refreshBtn.disabled = false;
@@ -250,7 +224,6 @@ function refreshCode() {
         generateQRCode();
     }, 1500);
 }
-
 // Share QR Code
 async function shareCode() {
     try {
@@ -258,7 +231,6 @@ async function shareCode() {
             const canvas = document.getElementById('qrCanvas');
             canvas.toBlob(async (blob) => {
                 const file = new File([blob], 'qr-code-tem-de-tudo.png', { type: 'image/png' });
-                
                 await navigator.share({
                     title: 'Meu QR Code - Tem de Tudo',
                     text: 'Veja meu QR Code do programa de fidelidade Tem de Tudo',
@@ -273,7 +245,6 @@ async function shareCode() {
         showToast('Erro ao compartilhar');
     }
 }
-
 // Full screen mode
 function increaseScreen() {
     try {
@@ -287,75 +258,61 @@ function increaseScreen() {
         showToast('Erro ao ativar tela cheia');
     }
 }
-
 // Adjust brightness
 function adjustBrightness() {
     document.body.style.filter = 'brightness(1.3)';
     showToast('Brilho ajustado ao máximo por 10 segundos');
-    
     // Reset after 10 seconds
     setTimeout(() => {
         document.body.style.filter = 'brightness(1)';
         showToast('Brilho restaurado ao normal');
     }, 10000);
 }
-
 // Save QR code to photos
 function saveToPhotos() {
     try {
         const canvas = document.getElementById('qrCanvas');
-        
         // Create a new canvas with more content
         const downloadCanvas = document.createElement('canvas');
         const ctx = downloadCanvas.getContext('2d');
         downloadCanvas.width = 400;
         downloadCanvas.height = 500;
-        
         // Set white background
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, 400, 500);
-        
         // Add header
         ctx.fillStyle = '#6F1AB6';
         ctx.font = 'bold 24px Inter';
         ctx.textAlign = 'center';
         ctx.fillText('Tem de Tudo', 200, 40);
-        
         // Add user info
         ctx.fillStyle = '#333';
         ctx.font = '16px Inter';
         ctx.fillText(currentUserData.name, 200, 70);
         ctx.font = '14px Inter';
         ctx.fillText(`ID: #${currentUserData.id}`, 200, 90);
-        
         // Draw QR code
         ctx.drawImage(canvas, 100, 120, 200, 200);
-        
         // Add instructions
         ctx.fillStyle = '#666';
         ctx.font = '12px Inter';
         ctx.fillText('Apresente este código no estabelecimento', 200, 360);
         ctx.fillText('para acumular pontos', 200, 380);
-        
         // Add timestamp
         ctx.fillStyle = '#999';
         ctx.font = '10px Inter';
         ctx.fillText(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 200, 420);
-        
         // Download
         const link = document.createElement('a');
         link.download = 'qr-code-tem-de-tudo.png';
         link.href = downloadCanvas.toDataURL();
         link.click();
-        
         showToast('QR Code salvo com sucesso!');
-        
     } catch (error) {
         console.error('Error saving QR code:', error);
         showToast('Erro ao salvar QR Code');
     }
 }
-
 // Copy CPF
 async function copyCPF() {
     try {
@@ -366,7 +323,6 @@ async function copyCPF() {
         showToast('Erro ao copiar CPF');
     }
 }
-
 // Copy phone
 async function copyPhone() {
     try {
@@ -377,17 +333,13 @@ async function copyPhone() {
         showToast('Erro ao copiar telefone');
     }
 }
-
 // Toast notification
 function showToast(message) {
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
-    
     document.body.appendChild(toast);
-    
     setTimeout(() => toast.classList.add('show'), 100);
-    
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => {
@@ -397,27 +349,32 @@ function showToast(message) {
         }, 300);
     }, 3000);
 }
+// Global timer reference
+let qrRefreshTimer;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     loadUserData();
-    
     // Auto-refresh QR code every 5 minutes for security
-    setInterval(() => {
+    qrRefreshTimer = setInterval(() => {
         generateQRCode();
     }, 300000);
 });
 
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    if (qrRefreshTimer) {
+        clearInterval(qrRefreshTimer);
+    }
+});
 // Handle offline/online states
 window.addEventListener('online', function() {
     showToast('Conexão restaurada - QR Code atualizado');
     generateQRCode();
 });
-
 window.addEventListener('offline', function() {
     showToast('Sem conexão - QR Code pode estar desatualizado');
 });
 </script>
-
 </body>
 </html>

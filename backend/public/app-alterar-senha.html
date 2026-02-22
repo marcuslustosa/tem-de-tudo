@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -6,10 +6,7 @@
 <title>Alterar Senha - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/theme-escuro.css">
 <link rel="stylesheet" href="/css/vivo-global.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
-</head>
 <body>
 <div class="header">
 <button class="btn-back" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
@@ -18,7 +15,7 @@
 <div class="container">
 <div class="alert">
 <i class="fas fa-info-circle"></i>
-<strong>Dica de seguranÃ§a:</strong> Use uma senha forte com pelo menos 6 caracteres, incluindo letras e nÃºmeros.
+<strong>Dica de segurança:</strong> Use uma senha forte com pelo menos 6 caracteres, incluindo letras e números.
         </div>
 <div class="form-card">
 <form id="formSenha" onsubmit="alterarSenha(event)">
@@ -51,11 +48,9 @@
 </div>
 <script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
-        
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
             const icon = event.target.querySelector('i') || event.target;
-            
             if (input.type === 'password') {
                 input.type = 'text';
                 icon.classList.remove('fa-eye');
@@ -66,31 +61,25 @@
                 icon.classList.add('fa-eye');
             }
         }
-        
         async function alterarSenha(e) {
             e.preventDefault();
-            
             const senhaAtual = document.getElementById('senhaAtual').value;
             const novaSenha = document.getElementById('novaSenha').value;
             const confirmarSenha = document.getElementById('confirmarSenha').value;
-            
             if (novaSenha !== confirmarSenha) {
-                alert('? As senhas nÃ£o coincidem');
+                alert('? As senhas não coincidem');
                 return;
             }
-            
             if (novaSenha.length < 6) {
                 alert('? A nova senha deve ter pelo menos 6 caracteres');
                 return;
             }
-            
             const token = localStorage.getItem('token');
             if (!token) {
-                alert('VocÃª precisa estar logado');
+                alert('Você precisa estar logado');
                 window.location.href = 'entrar.html';
                 return;
             }
-            
             try {
                 const response = await fetch(`${API_BASE_URL}/api/senha`, {
                     method: 'PUT',
@@ -103,9 +92,7 @@
                         nova_senha: novaSenha
                     })
                 });
-                
                 const data = await response.json();
-                
                 if (data.success) {
                     alert('? Senha alterada com sucesso!');
                     document.getElementById('formSenha').reset();
@@ -123,7 +110,7 @@
 <nav class="bottom-nav">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>InÃ­cio</span>
+<span>Início</span>
 </a>
 <a href="app-empresas.html" class="nav-item">
 <i class="fas fa-search"></i>
@@ -135,7 +122,7 @@
 </a>
 <a href="app-promocoes.html" class="nav-item">
 <i class="fas fa-tags"></i>
-<span>PromoÃ§Ãµes</span>
+<span>Promoções</span>
 </a>
 <a href="app-perfil.html" class="nav-item active">
 <i class="fas fa-user"></i>
@@ -144,19 +131,3 @@
 </nav>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

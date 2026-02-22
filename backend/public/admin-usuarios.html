@@ -1,237 +1,1098 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerenciar Usuários - Admin Tem de Tudo</title>
-<meta name="description" content="Painel administrativo para gerenciar usuários do sistema">
-<meta name="theme-color" content="#6F1AB6">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
-<link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Usuários - Admin Tem de Tudo</title>
+    <meta name="description" content="Painel administrativo para gerenciar usuários do sistema">
+    <meta name="theme-color" content="#6F1AB6">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="global-styles.css">
+    
+    <style>
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--vivo-purple), #8B4CD6);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="admin" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23admin)"/></svg>');
+            pointer-events: none;
+        }
+
+        .admin-header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .admin-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .back-link {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--vivo-purple);
+        }
+
+        .stat-icon {
+            background: linear-gradient(135deg, var(--vivo-purple), #8B4CD6);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--vivo-purple);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-change.positive {
+            color: #00d4aa;
+        }
+
+        .stat-change.negative {
+            color: #e74c3c;
+        }
+
+        .users-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            color: var(--vivo-purple);
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-user-btn {
+            background: var(--vivo-purple);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-user-btn:hover {
+            background: #5d1694;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .filters-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .search-box input:focus {
+            border-color: var(--vivo-purple);
+            box-shadow: 0 0 0 3px rgba(111, 26, 182, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--vivo-purple);
+            font-size: 16px;
+        }
+
+        .filter-select {
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            background: white;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--vivo-purple);
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        .users-table th,
+        .users-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .users-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .users-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .users-table tbody tr:hover {
+            background: rgba(111, 26, 182, 0.05);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--vivo-purple), #8B4CD6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-details h4 {
+            margin: 0;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .user-details p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: rgba(0, 212, 170, 0.1);
+            color: #00d4aa;
+        }
+
+        .status-inactive {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+        .status-pending {
+            background: rgba(255, 165, 0, 0.1);
+            color: #ffa500;
+        }
+
+        .actions-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .actions-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .actions-btn:hover {
+            background: #f0f0f0;
+            color: var(--vivo-purple);
+        }
+
+        .actions-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            min-width: 150px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .actions-dropdown.show {
+            display: block;
+        }
+
+        .actions-dropdown a {
+            display: block;
+            padding: 12px 16px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .actions-dropdown a:hover {
+            background: rgba(111, 26, 182, 0.1);
+            color: var(--vivo-purple);
+        }
+
+        .actions-dropdown a:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+
+        .actions-dropdown a:last-child {
+            border-radius: 0 0 12px 12px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .pagination-btn {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .pagination-btn:hover,
+        .pagination-btn.active {
+            background: var(--vivo-purple);
+            color: white;
+            border-color: var(--vivo-purple);
+        }
+
+        .pagination-info {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            display: none;
+        }
+
+        .no-results i {
+            font-size: 4rem;
+            color: var(--vivo-purple);
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .admin-header {
+                padding: 1.5rem;
+            }
+
+            .admin-title {
+                font-size: 1.8rem;
+            }
+
+            .admin-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .users-section {
+                padding: 1.5rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filters-container {
+                flex-direction: column;
+            }
+
+            .users-table {
+                display: none;
+            }
+
+            .mobile-users {
+                display: block;
+            }
+        }
+
+        .mobile-users {
+            display: none;
+        }
+
+        .mobile-user-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--vivo-purple);
+        }
+
+        .mobile-user-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .mobile-user-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .mobile-info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-info-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .mobile-info-value {
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(111, 26, 182, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--vivo-purple);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
-<div class="admin-users-page">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="header-container">
-            <h1 class="page-title">
-                <i class="fas fa-users-cog"></i>
-                Gerenciar Usuários
-            </h1>
-            <a href="admin-painel.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-                Voltar
-            </a>
+    <!-- Navigation será inserida aqui pelo global-navbar.js -->
+    <nav id="navbar-container"></nav>
+    
+    <div class="container">
+        <!-- Admin Header -->
+        <div class="admin-header">
+            <div class="admin-header-content">
+                <div>
+                    <h1 class="admin-title">
+                        <i class="fas fa-users-cog"></i>
+                        Gerenciar Usuários
+                    </h1>
+                    <p class="admin-subtitle">Administre todos os usuários do sistema Tem de Tudo</p>
+                </div>
+                <a href="admin-dashboard.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Voltar ao Dashboard
+                </a>
+            </div>
         </div>
-    </div>
 
-    <!-- Content Container -->
-    <div class="content-container">
+        <!-- Statistics Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number" id="totalUsers">2,847</div>
+                <div class="stat-label">Total de Usuários</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> +12% este mês
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-number" id="activeUsers">2,456</div>
+                <div class="stat-label">Usuários Ativos</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> +8% este mês
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="stat-number" id="newUsers">193</div>
+                <div class="stat-label">Novos Usuários</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i> +15% esta semana
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <div class="stat-number" id="pendingUsers">23</div>
+                <div class="stat-label">Pendentes</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i> -5% esta semana
+                </div>
+            </div>
+        </div>
+
         <!-- Users Section -->
         <div class="users-section">
             <!-- Section Header -->
             <div class="section-header">
                 <h2 class="section-title">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-list"></i>
                     Lista de Usuários
                 </h2>
-                <a href="admin-criar-usuario.html" class="add-user-btn">
+                <button class="add-user-btn" onclick="openAddUserModal()">
                     <i class="fas fa-plus"></i>
                     Adicionar Usuário
-                </a>
+                </button>
             </div>
 
-            <!-- Search Container -->
-            <div class="search-container">
+            <!-- Filters -->
+            <div class="filters-container">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" class="search-input" placeholder="Buscar usuário..." id="searchInput">
+                    <input type="text" id="searchInput" placeholder="Buscar por nome, email ou telefone...">
                 </div>
+                
+                <select class="filter-select" id="statusFilter">
+                    <option value="">Todos os Status</option>
+                    <option value="active">Ativo</option>
+                    <option value="inactive">Inativo</option>
+                    <option value="pending">Pendente</option>
+                </select>
+
+                <select class="filter-select" id="typeFilter">
+                    <option value="">Todos os Tipos</option>
+                    <option value="cliente">Cliente</option>
+                    <option value="empresa">Empresa</option>
+                    <option value="admin">Administrador</option>
+                </select>
+
+                <select class="filter-select" id="sortSelect">
+                    <option value="name">Nome A-Z</option>
+                    <option value="date">Data de Cadastro</option>
+                    <option value="points">Pontos</option>
+                    <option value="last-login">Último Acesso</option>
+                </select>
             </div>
 
-            <!-- Table Container -->
-            <div class="table-container">
-                <table class="users-table" id="usersTable">
+            <!-- Desktop Table -->
+            <div class="table-responsive">
+                <table class="users-table">
                     <thead>
                         <tr>
                             <th>Usuário</th>
-                            <th>Email</th>
                             <th>Tipo</th>
                             <th>Status</th>
+                            <th>Pontos</th>
+                            <th>Último Acesso</th>
                             <th>Cadastro</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
-                        <tr>
-                            <td colspan="6">
-                                <div class="empty-state">
-                                    <div class="empty-icon">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                    <p>Carregando usuários...</p>
-                                </div>
-                            </td>
-                        </tr>
+                        <!-- Users will be dynamically inserted here -->
                     </tbody>
                 </table>
             </div>
+
+            <!-- Mobile Cards -->
+            <div class="mobile-users" id="mobileUsers">
+                <!-- Mobile cards will be dynamically inserted here -->
+            </div>
+
+            <!-- No Results -->
+            <div class="no-results" id="noResults">
+                <i class="fas fa-search"></i>
+                <h3>Nenhum usuário encontrado</h3>
+                <p>Tente ajustar os filtros ou buscar por outros termos</p>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <button class="pagination-btn" onclick="previousPage()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="pagination-info">
+                    Página <span id="currentPage">1</span> de <span id="totalPages">10</span>
+                </span>
+                <button class="pagination-btn" onclick="nextPage()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-// Função para buscar e exibir usuários
-async function loadUsers() {
-    try {
-        const response = await fetch('/api/admin/users');
-        const users = await response.json();
-        
-        const tbody = document.getElementById('usersTableBody');
-        
-        if (users.length === 0) {
-            tbody.innerHTML = `
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="global-auth.js"></script>
+    <script src="global-navbar.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        const usersPerPage = 10;
+        let allUsers = [];
+        let filteredUsers = [];
+
+        // Sample users data (in production, this would come from API)
+        const usersData = [
+            {
+                id: 1,
+                name: "João Silva Santos",
+                email: "joao.silva@email.com",
+                phone: "(11) 99999-0001",
+                type: "cliente",
+                status: "active",
+                points: 2450,
+                lastLogin: "2024-01-15",
+                registerDate: "2023-12-10",
+                avatar: "JS"
+            },
+            {
+                id: 2,
+                name: "Maria Oliveira Costa",
+                email: "maria.oliveira@email.com",
+                phone: "(11) 99999-0002", 
+                type: "cliente",
+                status: "active",
+                points: 1890,
+                lastLogin: "2024-01-14",
+                registerDate: "2023-11-22",
+                avatar: "MO"
+            },
+            {
+                id: 3,
+                name: "Pedro Restaurante Ltda",
+                email: "contato@pedrorestaurante.com",
+                phone: "(11) 99999-0003",
+                type: "empresa",
+                status: "active",
+                points: 0,
+                lastLogin: "2024-01-13",
+                registerDate: "2023-10-05",
+                avatar: "PR"
+            },
+            {
+                id: 4,
+                name: "Ana Paula Ferreira",
+                email: "ana.ferreira@email.com",
+                phone: "(11) 99999-0004",
+                type: "cliente",
+                status: "inactive",
+                points: 340,
+                lastLogin: "2023-12-28",
+                registerDate: "2023-09-15",
+                avatar: "AP"
+            },
+            {
+                id: 5,
+                name: "Carlos Eduardo Admin",
+                email: "admin@temdetudo.com",
+                phone: "(11) 99999-0005",
+                type: "admin",
+                status: "active",
+                points: 0,
+                lastLogin: "2024-01-15",
+                registerDate: "2023-01-01",
+                avatar: "CE"
+            },
+            {
+                id: 6,
+                name: "Luana Beleza & Estética",
+                email: "luana@belezaestetica.com",
+                phone: "(11) 99999-0006",
+                type: "empresa",
+                status: "pending",
+                points: 0,
+                lastLogin: "Never",
+                registerDate: "2024-01-10",
+                avatar: "LB"
+            }
+        ];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            allUsers = [...usersData];
+            filteredUsers = [...usersData];
+            
+            renderUsers();
+            updatePagination();
+
+            // Add event listeners
+            document.getElementById('searchInput').addEventListener('input', handleFilters);
+            document.getElementById('statusFilter').addEventListener('change', handleFilters);
+            document.getElementById('typeFilter').addEventListener('change', handleFilters);
+            document.getElementById('sortSelect').addEventListener('change', handleSort);
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.actions-menu')) {
+                    document.querySelectorAll('.actions-dropdown').forEach(dropdown => {
+                        dropdown.classList.remove('show');
+                    });
+                }
+            });
+        });
+
+        // Render users table/cards
+        function renderUsers() {
+            const tableBody = document.getElementById('usersTableBody');
+            const mobileContainer = document.getElementById('mobileUsers');
+            const noResults = document.getElementById('noResults');
+            
+            const startIndex = (currentPage - 1) * usersPerPage;
+            const endIndex = startIndex + usersPerPage;
+            const pageUsers = filteredUsers.slice(startIndex, endIndex);
+
+            if (pageUsers.length === 0) {
+                noResults.style.display = 'block';
+                tableBody.innerHTML = '';
+                mobileContainer.innerHTML = '';
+                return;
+            }
+
+            noResults.style.display = 'none';
+
+            // Desktop table
+            tableBody.innerHTML = pageUsers.map(user => `
                 <tr>
-                    <td colspan="6">
-                        <div class="empty-state">
-                            <div class="empty-icon">
-                                <i class="fas fa-users"></i>
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar">${user.avatar}</div>
+                            <div class="user-details">
+                                <h4>${user.name}</h4>
+                                <p>${user.email}</p>
                             </div>
-                            <p>Nenhum usuário encontrado.</p>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge status-${user.type}">
+                            ${user.type === 'cliente' ? 'Cliente' : 
+                              user.type === 'empresa' ? 'Empresa' : 'Admin'}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status-badge status-${user.status}">
+                            ${user.status === 'active' ? 'Ativo' : 
+                              user.status === 'inactive' ? 'Inativo' : 'Pendente'}
+                        </span>
+                    </td>
+                    <td>
+                        ${user.points > 0 ? user.points.toLocaleString('pt-BR') : '-'} pts
+                    </td>
+                    <td>${formatDate(user.lastLogin)}</td>
+                    <td>${formatDate(user.registerDate)}</td>
+                    <td>
+                        <div class="actions-menu">
+                            <button class="actions-btn" onclick="toggleActions(this)">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="actions-dropdown">
+                                <a href="#" onclick="editUser(${user.id})">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a href="#" onclick="viewDetails(${user.id})">
+                                    <i class="fas fa-eye"></i> Detalhes
+                                </a>
+                                <a href="#" onclick="toggleStatus(${user.id})">
+                                    <i class="fas fa-power-off"></i> 
+                                    ${user.status === 'active' ? 'Desativar' : 'Ativar'}
+                                </a>
+                                ${user.type !== 'admin' ? `
+                                    <a href="#" onclick="deleteUser(${user.id})" style="color: #e74c3c;">
+                                        <i class="fas fa-trash"></i> Excluir
+                                    </a>
+                                ` : ''}
+                            </div>
                         </div>
                     </td>
                 </tr>
+            `).join('');
+
+            // Mobile cards
+            mobileContainer.innerHTML = pageUsers.map(user => `
+                <div class="mobile-user-card">
+                    <div class="mobile-user-header">
+                        <div class="user-avatar">${user.avatar}</div>
+                        <div class="user-details">
+                            <h4>${user.name}</h4>
+                            <p>${user.email}</p>
+                        </div>
+                    </div>
+                    <div class="mobile-user-info">
+                        <div class="mobile-info-item">
+                            <span class="mobile-info-label">Tipo</span>
+                            <span class="mobile-info-value">
+                                ${user.type === 'cliente' ? 'Cliente' : 
+                                  user.type === 'empresa' ? 'Empresa' : 'Admin'}
+                            </span>
+                        </div>
+                        <div class="mobile-info-item">
+                            <span class="mobile-info-label">Status</span>
+                            <span class="mobile-info-value">
+                                <span class="status-badge status-${user.status}">
+                                    ${user.status === 'active' ? 'Ativo' : 
+                                      user.status === 'inactive' ? 'Inativo' : 'Pendente'}
+                                </span>
+                            </span>
+                        </div>
+                        <div class="mobile-info-item">
+                            <span class="mobile-info-label">Pontos</span>
+                            <span class="mobile-info-value">
+                                ${user.points > 0 ? user.points.toLocaleString('pt-BR') : '-'} pts
+                            </span>
+                        </div>
+                        <div class="mobile-info-item">
+                            <span class="mobile-info-label">Último Acesso</span>
+                            <span class="mobile-info-value">${formatDate(user.lastLogin)}</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <button class="add-user-btn" onclick="editUser(${user.id})" style="width: 100%;">
+                            <i class="fas fa-edit"></i> Gerenciar Usuário
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Handle filters and search
+        function handleFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+
+            filteredUsers = allUsers.filter(user => {
+                const matchesSearch = searchTerm === '' || 
+                    user.name.toLowerCase().includes(searchTerm) ||
+                    user.email.toLowerCase().includes(searchTerm) ||
+                    user.phone.includes(searchTerm);
+
+                const matchesStatus = statusFilter === '' || user.status === statusFilter;
+                const matchesType = typeFilter === '' || user.type === typeFilter;
+
+                return matchesSearch && matchesStatus && matchesType;
+            });
+
+            currentPage = 1;
+            handleSort();
+        }
+
+        // Handle sorting
+        function handleSort() {
+            const sortBy = document.getElementById('sortSelect').value;
+
+            switch (sortBy) {
+                case 'name':
+                    filteredUsers.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'date':
+                    filteredUsers.sort((a, b) => new Date(b.registerDate) - new Date(a.registerDate));
+                    break;
+                case 'points':
+                    filteredUsers.sort((a, b) => b.points - a.points);
+                    break;
+                case 'last-login':
+                    filteredUsers.sort((a, b) => {
+                        if (a.lastLogin === 'Never') return 1;
+                        if (b.lastLogin === 'Never') return -1;
+                        return new Date(b.lastLogin) - new Date(a.lastLogin);
+                    });
+                    break;
+            }
+
+            renderUsers();
+            updatePagination();
+        }
+
+        // Pagination functions
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+            document.getElementById('currentPage').textContent = currentPage;
+            document.getElementById('totalPages').textContent = totalPages;
+
+            const pagination = document.getElementById('pagination');
+            pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderUsers();
+                updatePagination();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderUsers();
+                updatePagination();
+            }
+        }
+
+        // Actions functions
+        function toggleActions(button) {
+            const dropdown = button.nextElementSibling;
+            const allDropdowns = document.querySelectorAll('.actions-dropdown');
+            
+            // Close all other dropdowns
+            allDropdowns.forEach(d => {
+                if (d !== dropdown) d.classList.remove('show');
+            });
+            
+            dropdown.classList.toggle('show');
+        }
+
+        function openAddUserModal() {
+            showToast('Funcionalidade de adicionar usuário em desenvolvimento', 'info');
+            // In production, this would open a modal or redirect to add user page
+        }
+
+        function editUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            showToast(`Editando usuário: ${user.name}`, 'info');
+            // In production, this would open an edit modal or redirect to edit page
+        }
+
+        function viewDetails(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            showToast(`Visualizando detalhes de: ${user.name}`, 'info');
+            // In production, this would show user details in a modal or page
+        }
+
+        function toggleStatus(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            const newStatus = user.status === 'active' ? 'inactive' : 'active';
+            
+            user.status = newStatus;
+            filteredUsers = filteredUsers.map(u => u.id === userId ? user : u);
+            
+            renderUsers();
+            showToast(`Status do usuário alterado para: ${newStatus === 'active' ? 'Ativo' : 'Inativo'}`, 'success');
+        }
+
+        function deleteUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            
+            if (confirm(`Tem certeza que deseja excluir o usuário ${user.name}?`)) {
+                allUsers = allUsers.filter(u => u.id !== userId);
+                filteredUsers = filteredUsers.filter(u => u.id !== userId);
+                
+                renderUsers();
+                updatePagination();
+                showToast('Usuário excluído com sucesso', 'success');
+            }
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (dateString === 'Never') return 'Nunca';
+            
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const now = new Date().toLocaleTimeString('pt-BR', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
+            const toast = document.createElement('div');
+            toast.className = `toast ${type} show`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
+                                  type === 'error' ? 'fa-exclamation-circle' : 
+                                  'fa-info-circle'}"></i>
+                    <div class="toast-message">
+                        <strong>${message}</strong>
+                        <small>${now}</small>
+                    </div>
+                </div>
             `;
-            return;
+
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 3000);
         }
-        
-        tbody.innerHTML = users.map(user => `
-            <tr>
-                <td>
-                    <div class="user-info">
-                        <div class="user-avatar">
-                            ${user.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                            <div class="user-name">${user.name}</div>
-                            <div class="user-email">${user.email}</div>
-                        </div>
-                    </div>
-                </td>
-                <td>${user.email}</td>
-                <td>
-                    <span class="user-role">${user.tipo || 'Cliente'}</span>
-                </td>
-                <td>
-                    <span class="status-badge status-${user.status === 'ativo' ? 'active' : user.status === 'inativo' ? 'inactive' : 'pending'}">
-                        <i class="fas fa-circle"></i>
-                        ${user.status || 'Ativo'}
-                    </span>
-                </td>
-                <td>${formatDate(user.created_at)}</td>
-                <td>
-                    <div class="user-actions">
-                        <button class="action-btn edit" onclick="editUser(${user.id})" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete" onclick="deleteUser(${user.id})" title="Excluir">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Erro ao carregar usuários:', error);
-        document.getElementById('usersTableBody').innerHTML = `
-            <tr>
-                <td colspan="6">
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <p>Erro ao carregar usuários. Tente novamente.</p>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }
-}
 
-// Função para formatar data
-function formatDate(dateString) {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR');
-}
-
-// Função para editar usuário
-function editUser(userId) {
-    window.location.href = `admin-editar-usuario.html?id=${userId}`;
-}
-
-// Função para excluir usuário
-async function deleteUser(userId) {
-    if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
-    
-    try {
-        const response = await fetch(`/api/admin/users/${userId}`, {
-            method: 'DELETE'
-        });
-        
-        if (response.ok) {
-            showNotification('Usuário excluído com sucesso!', 'success');
-            loadUsers(); // Recarrega a lista
-        } else {
-            throw new Error('Erro ao excluir usuário');
-        }
-    } catch (error) {
-        console.error('Erro ao excluir usuário:', error);
-        showNotification('Erro ao excluir usuário.', 'error');
-    }
-}
-
-// Função de busca
-document.getElementById('searchInput').addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const rows = document.querySelectorAll('#usersTableBody tr');
-    
-    rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(searchTerm) ? '' : 'none';
-    });
-});
-
-// Função para mostrar notificações
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6'};
-        color: white;
-        padding: 16px 24px;
-        border-radius: 8px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        z-index: 9999;
-        font-weight: 600;
-        animation: slideIn 0.3s ease;
-    `;
-    
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
-}
-
-// Carregar usuários ao carregar a página
-document.addEventListener('DOMContentLoaded', loadUsers);
-</script>
+        // Initialize page
+        console.log('Admin Users page loaded');
+    </script>
 </body>
 </html>

@@ -1,113 +1,456 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#6A0DAD">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meus Pontos - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="description" content="Acompanhe seus pontos e histórico de transações">
+<meta name="theme-color" content="#6F1AB6">
+<script>
+    // Redirect to the main points page
+    window.location.href = 'app-meus-pontos.html';
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
 </head>
 <body>
-<div class="header">
-<div class="header-content">
-<button class="back-btn" onclick="history.back()">
-<i class="fas fa-arrow-left"></i>
-</button>
-<h1>💰 Meus Pontos Premium</h1>
-<p>Acompanhe seus ganhos e recompensas</p>
+<div class="app-page">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="header-nav">
+            <a href="dashboard-cliente.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1>Meus Pontos</h1>
+            <div class="header-actions">
+                <button class="history-btn" onclick="toggleHistory()">
+                    <i class="fas fa-history"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="app-content">
+        <!-- Points Balance -->
+        <div class="section">
+            <div class="points-balance-card">
+                <div class="balance-header">
+                    <h2>Saldo Atual</h2>
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="balance-amount" id="saldoPontos">1,247</div>
+                <div class="balance-subtitle">pontos disponíveis</div>
+                <div class="balance-actions">
+                    <button class="btn-primary use-points" onclick="openUsePoints()">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Usar Pontos</span>
+                    </button>
+                    <button class="btn-secondary scan-qr" onclick="openScanner()">
+                        <i class="fas fa-qrcode"></i>
+                        <span>Ganhar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-chart-line"></i>
+                Estatísticas
+            </h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalGanhos">2,856</div>
+                        <div class="stat-label">Total Ganho</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-minus-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="totalGastos">1,609</div>
+                        <div class="stat-label">Total Gasto</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="checkins">47</div>
+                        <div class="stat-label">Check-ins</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                Histórico Recente
+            </h2>
+            <div class="transactions-list" id="extratoTransacoes">
+                <!-- Será preenchido via JavaScript -->
+            </div>
+            
+            <!-- View More -->
+            <div class="view-more-section">
+                <button class="btn-outline" onclick="viewFullHistory()">
+                    <span>Ver Histórico Completo</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-bolt"></i>
+                Ações Rápidas
+            </h2>
+            <div class="quick-actions-grid">
+                <a href="app-qrcode.html" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Meu QR Code</h3>
+                        <p>Mostre para ganhar pontos</p>
+                    </div>
+                </a>
+                
+                <a href="app-promocoes.html" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Resgatar Ofertas</h3>
+                        <p>Troque por prêmios</p>
+                    </div>
+                </a>
+                
+                <a href="app-empresas.html" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Encontrar Lojas</h3>
+                        <p>Locais para ganhar pontos</p>
+                    </div>
+                </a>
+                
+                <a href="app-historico.html" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-list-alt"></i>
+                    </div>
+                    <div class="action-content">
+                        <h3>Extrato Completo</h3>
+                        <p>Todas as transações</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <div class="nav-container">
+        <a href="dashboard-cliente.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="app-empresas.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Explorar</span>
+        </a>
+        <a href="app-pontos.html" class="nav-item active">
+            <div style="position: relative;">
+                <i class="fas fa-star"></i>
+                <div class="notification-badge">1.2K</div>
+            </div>
+            <span>Pontos</span>
+        </a>
+        <a href="app-promocoes.html" class="nav-item">
+            <div style="position: relative;">
+                <i class="fas fa-tags"></i>
+                <div class="notification-badge" style="background: #F59E0B;">3</div>
+            </div>
+            <span>Ofertas</span>
+        </a>
+        <a href="app-perfil.html" class="nav-item">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+        </a>
+    </div>
 </div>
-<div class="content">
-<!-- Saldo de Pontos -->
-<div class="pontos-card">
-<div class="saldo" id="saldoPontos">1,247</div>
-<div class="label">Pontos Disponíveis</div>
-</div>
-<!-- Estatísticas -->
-<div class="stats-grid">
-<div class="stat-card">
-<div class="icon">📈</div>
-<div class="value" id="totalGanhos">2,856</div>
-<div class="label">Total Ganhos</div>
-</div>
-<div class="stat-card">
-<div class="icon">🛍️</div>
-<div class="value" id="totalGastos">1,609</div>
-<div class="label">Total Gastos</div>
-</div>
-<div class="stat-card">
-<div class="icon">🏆</div>
-<div class="value" id="checkins">47</div>
-<div class="label">Check-ins</div>
-</div>
-</div>
-<!-- Extrato de Transações -->
-<div class="extrato">
-<div class="section-title">
-<i class="fas fa-history"></i>  Extrato de Pontos  </div>
-<div id="extratoTransacoes">
-<!-- Será preenchido via JavaScript -->
-</div>
-</div>
-</div>
-<nav class="bottom-nav">
-<div class="nav-items">
-<a href="app-inicio.html" class="nav-item">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="app-empresas.html" class="nav-item">
-<i class="fas fa-search"></i>
-<span>Buscar</span>
-</a>
-<a href="app-cupons.html" class="nav-item">
-<i class="fas fa-ticket-alt"></i>
-<span>Cupons</span>
-</a>
-<a href="app-pontos.html" class="nav-item active">
-<i class="fas fa-coins"></i>
-<span>Pontos</span>
-</a>
-<a href="app-perfil.html" class="nav-item">
-<i class="fas fa-user"></i>
-<span>Perfil</span>
-</a>
-</div>
-</nav>
-<script>  const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';  // Dados fictícios para demonstração  const transacoesFicticias = [  {  id: 1,  tipo: 'checkin',  empresa: 'Sabor e Arte',  pontos: 50,  data: '2024-01-15T10:30:00Z',  icon: 'fa-map-marker-alt'  },  {  id: 2,  tipo: 'compra_cupom',  empresa: 'Bella Napoli',  pontos: -80,  data: '2024-01-14T18:45:00Z',  icon: 'fa-ticket-alt'  },  {  id: 3,  tipo: 'checkin',  empresa: 'Academia FitLife',  pontos: 75,  data: '2024-01-13T07:15:00Z',  icon: 'fa-map-marker-alt'  },  {  id: 4,  tipo: 'bonus',  empresa: 'Programa Fidelidade',  pontos: 100,  data: '2024-01-12T12:00:00Z',  icon: 'fa-gift'  },  {  id: 5,  tipo: 'checkin',  empresa: 'Café & Cia',  pontos: 25,  data: '2024-01-11T09:20:00Z',  icon: 'fa-map-marker-alt'  }  ];  let saldoAtual = 1247;  let totalGanhos = 2856;  let totalGastos = 1609;  let totalCheckins = 47;  document.addEventListener('DOMContentLoaded', () => {  const token = localStorage.getItem('token');  if (!token) {  window.location.href = 'entrar.html';  return;  }  // Verificar se é usuário FICTÍCIO (demonstração) ou REAL (uso)  const userStr = localStorage.getItem('user');  const usuariosFicticios = ['maria@email.com', 'joao@email.com', 'saborearte@email.com', 'bellanapoli@email.com'];  let ehUsuarioFicticio = false;  if (userStr) {  try {  const user = JSON.parse(userStr);  ehUsuarioFicticio = usuariosFicticios.includes(user.email);  } catch (e) {  console.error('Erro ao parsear user:', e);  }  }  if (ehUsuarioFicticio) {  console.log('👤 Usuário fictício: usando dados de demonstração');  renderizarDadosFicticios();  } else {  console.log('🔥 Usuário real: carregando dados reais da API');  carregarDadosAPI();  }  });  function renderizarDadosFicticios() {  // Atualizar estatísticas  document.getElementById('saldoPontos').textContent = formatarNumero(saldoAtual);  document.getElementById('totalGanhos').textContent = formatarNumero(totalGanhos);  document.getElementById('totalGastos').textContent = formatarNumero(totalGastos);  document.getElementById('checkins').textContent = totalCheckins;  // Renderizar extrato  renderizarExtrato(transacoesFicticias);  }  async function carregarDadosAPI() {  try {  const token = localStorage.getItem('token');  const response = await fetch(`${API_BASE_URL}/api/pontos`, {  headers: { 'Authorization': `Bearer ${token}` }  });  if (response.ok) {  const data = await response.json();  // Atualizar com dados reais  saldoAtual = data.saldo || 0;  totalGanhos = data.total_ganhos || 0;  totalGastos = data.total_gastos || 0;  totalCheckins = data.total_checkins || 0;  document.getElementById('saldoPontos').textContent = formatarNumero(saldoAtual);  document.getElementById('totalGanhos').textContent = formatarNumero(totalGanhos);  document.getElementById('totalGastos').textContent = formatarNumero(totalGastos);  document.getElementById('checkins').textContent = totalCheckins;  renderizarExtrato(data.transacoes || []);  } else {  console.log('Erro ao carregar dados, usando dados fictícios');  renderizarDadosFicticios();  }  } catch (error) {  console.error('Erro na API:', error);  renderizarDadosFicticios();  }  }  function renderizarExtrato(transacoes) {  const container = document.getElementById('extratoTransacoes');  if (transacoes.length === 0) {  container.innerHTML = `  <div class="empty-state">
-<i class="fas fa-coins"></i>
-<h3>Nenhuma transação ainda</h3>
-<p>Comece fazendo check-ins em empresas parceiras para ganhar pontos!</p>
-</div>  `;  return;  }  container.innerHTML = transacoes.map(transacao => {  const data = new Date(transacao.data || transacao.created_at);  const isPositivo = transacao.pontos > 0;  const iconClass = getIconeTransacao(transacao.tipo);  return `  <div class="transacao">
-<div class="transacao-info">
-<div class="transacao-icon">
-<i class="fas ${iconClass}"></i>
-</div>
-<div class="transacao-detalhes">
-<div class="transacao-titulo">${getTituloTransacao(transacao)}</div>
-<div class="transacao-data">${formatarData(data)}</div>
-</div>
-</div>
-<div class="transacao-pontos ${isPositivo ? 'ganhou' : 'gastou'}">  ${isPositivo ? '+' : ''}${transacao.pontos}  </div>
-</div>  `;  }).join('');  }  function getIconeTransacao(tipo) {  const icones = {  'checkin': 'fa-map-marker-alt',  'compra_cupom': 'fa-ticket-alt',  'uso_cupom': 'fa-gift',  'bonus': 'fa-star',  'cashback': 'fa-coins',  'referencia': 'fa-user-plus'  };  return icones[tipo] || 'fa-coins';  }  function getTituloTransacao(transacao) {  const titulos = {  'checkin': `Check-in em ${transacao.empresa || transacao.empresa_nome}`,  'compra_cupom': `Compra de cupom - ${transacao.empresa || transacao.empresa_nome}`,  'uso_cupom': `Uso de cupom - ${transacao.empresa || transacao.empresa_nome}`,  'bonus': `Bônus - ${transacao.empresa || 'Sistema'}`,  'cashback': `Cashback - ${transacao.empresa || transacao.empresa_nome}`,  'referencia': `Indicação de amigo - ${transacao.empresa || 'Sistema'}`  };  return titulos[transacao.tipo] || `Transação - ${transacao.empresa || 'Sistema'}`;  }  function formatarData(data) {  const agora = new Date();  const diff = agora - data;  const dias = Math.floor(diff / (1000 * 60 * 60 * 24));  if (dias === 0) {  return 'Hoje';  } else if (dias === 1) {  return 'Ontem';  } else if (dias < 7) {  return `${dias} dias atrás`;  } else {  return data.toLocaleDateString('pt-BR');  }  }  function formatarNumero(numero) {  if (numero >= 1000) {  return (numero / 1000).toFixed(1).replace('.', ',') + 'k';  }  return numero.toString();  }  </script>
+
+<script>
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://127.0.0.1:8000' 
+    : 'https://tem-de-tudo.onrender.com';
+
+// Sample data for demonstration
+const transacoesFicticias = [
+    {
+        id: 1,
+        tipo: 'checkin',
+        empresa: 'McDonald\'s',
+        pontos: 50,
+        data: '2024-01-15T10:30:00Z',
+        icon: 'fa-map-marker-alt'
+    },
+    {
+        id: 2,
+        tipo: 'compra_cupom',
+        empresa: 'Subway',
+        pontos: -80,
+        data: '2024-01-14T18:45:00Z',
+        icon: 'fa-gift'
+    },
+    {
+        id: 3,
+        tipo: 'checkin',
+        empresa: 'Farmácia Popular',
+        pontos: 75,
+        data: '2024-01-13T07:15:00Z',
+        icon: 'fa-map-marker-alt'
+    },
+    {
+        id: 4,
+        tipo: 'bonus',
+        empresa: 'Programa Fidelidade',
+        pontos: 100,
+        data: '2024-01-12T12:00:00Z',
+        icon: 'fa-star'
+    },
+    {
+        id: 5,
+        tipo: 'checkin',
+        empresa: 'Uber',
+        pontos: 25,
+        data: '2024-01-11T09:20:00Z',
+        icon: 'fa-map-marker-alt'
+    }
+];
+
+let saldoAtual = 1247;
+let totalGanhos = 2856;
+let totalGastos = 1609;
+let totalCheckins = 47;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'entrar.html';
+        return;
+    }
+
+    // Load user data
+    loadPointsData();
+});
+
+async function loadPointsData() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_BASE_URL}/api/pontos`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            updatePointsDisplay(data);
+        } else {
+            console.log('Using sample data for demonstration');
+            updatePointsDisplay({
+                saldo: saldoAtual,
+                total_ganhos: totalGanhos,
+                total_gastos: totalGastos,
+                total_checkins: totalCheckins,
+                transacoes: transacoesFicticias
+            });
+        }
+    } catch (error) {
+        console.error('Error loading points:', error);
+        updatePointsDisplay({
+            saldo: saldoAtual,
+            total_ganhos: totalGanhos,
+            total_gastos: totalGastos,
+            total_checkins: totalCheckins,
+            transacoes: transacoesFicticias
+        });
+    }
+}
+
+function updatePointsDisplay(data) {
+    document.getElementById('saldoPontos').textContent = formatNumber(data.saldo);
+    document.getElementById('totalGanhos').textContent = formatNumber(data.total_ganhos);
+    document.getElementById('totalGastos').textContent = formatNumber(data.total_gastos);
+    document.getElementById('checkins').textContent = data.total_checkins;
+    
+    renderTransactions(data.transacoes || []);
+}
+
+function renderTransactions(transactions) {
+    const container = document.getElementById('extratoTransacoes');
+    
+    if (transactions.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-star"></i>
+                <h3>Nenhuma transação ainda</h3>
+                <p>Comece fazendo check-ins em empresas parceiras para ganhar pontos!</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Show only the 5 most recent transactions
+    const recentTransactions = transactions.slice(0, 5);
+    
+    container.innerHTML = recentTransactions.map(transaction => {
+        const date = new Date(transaction.data || transaction.created_at);
+        const isPositive = transaction.pontos > 0;
+        const iconClass = getTransactionIcon(transaction.tipo);
+        
+        return `
+            <div class="transaction-item">
+                <div class="transaction-icon ${isPositive ? 'positive' : 'negative'}">
+                    <i class="fas ${iconClass}"></i>
+                </div>
+                <div class="transaction-content">
+                    <div class="transaction-title">${getTransactionTitle(transaction)}</div>
+                    <div class="transaction-date">${formatDate(date)}</div>
+                </div>
+                <div class="transaction-points ${isPositive ? 'positive' : 'negative'}">
+                    ${isPositive ? '+' : ''}${transaction.pontos}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function getTransactionIcon(type) {
+    const icons = {
+        'checkin': 'fa-map-marker-alt',
+        'compra_cupom': 'fa-gift',
+        'uso_cupom': 'fa-ticket-alt',
+        'bonus': 'fa-star',
+        'cashback': 'fa-coins',
+        'referencia': 'fa-user-plus'
+    };
+    return icons[type] || 'fa-star';
+}
+
+function getTransactionTitle(transaction) {
+    const titles = {
+        'checkin': `Check-in em ${transaction.empresa}`,
+        'compra_cupom': `Resgate em ${transaction.empresa}`,
+        'uso_cupom': `Uso de oferta - ${transaction.empresa}`,
+        'bonus': `Bônus - ${transaction.empresa || 'Sistema'}`,
+        'cashback': `Cashback - ${transaction.empresa}`,
+        'referencia': `Indicação de amigo`
+    };
+    return titles[transaction.tipo] || `Transação - ${transaction.empresa}`;
+}
+
+function formatDate(date) {
+    const now = new Date();
+    const diff = now - date;
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    
+    if (days === 0) {
+        return 'Hoje';
+    } else if (days === 1) {
+        return 'Ontem';
+    } else if (days < 7) {
+        return `${days} dias atrás`;
+    } else {
+        return date.toLocaleDateString('pt-BR');
+    }
+}
+
+function formatNumber(number) {
+    if (number >= 1000) {
+        return (number / 1000).toFixed(1).replace('.', ',') + 'k';
+    }
+    return number.toString();
+}
+
+function openUsePoints() {
+    window.location.href = 'app-promocoes.html';
+}
+
+function openScanner() {
+    window.location.href = 'app-qrcode.html';
+}
+
+function toggleHistory() {
+    viewFullHistory();
+}
+
+function viewFullHistory() {
+    window.location.href = 'app-historico.html';
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.innerHTML = `<i class="fas fa-info-circle"></i> ${message}`;
+    notification.className = `notification ${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--vivo-purple);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        z-index: 10000;
+        box-shadow: 0 10px 30px rgba(111, 26, 182, 0.3);
+        animation: slideInRight 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    `;
+    
+    if (type === 'success') {
+        notification.style.background = 'var(--vivo-green)';
+        notification.querySelector('i').className = 'fas fa-check-circle';
+    }
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Add animation styles
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+`;
+document.head.appendChild(style);
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,132 +1,329 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#6A0DAD">
-<title>🎫 Meus Cupons Premium - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎫 Meus Cupons - Tem de Tudo</title>
+<meta name="description" content="Cupons e ofertas exclusivas">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - CUPONS */
+body { font-family: 'Inter', sans-serif; background: var(--gray-50); min-height: 100vh; color: var(--gray-900); }
+.app-page { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header { background: linear-gradient(135deg, var(--vivo-purple), var(--vivo-purple-dark)); color: var(--white); padding: 2rem 1.5rem 1.5rem; }
+.header-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2); color: var(--white); border: none; cursor: pointer; transition: var(--transition); }
+.back-btn:hover { background: rgba(255, 255, 255, 0.3); }
+.header-info h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+.header-info p { font-size: 0.875rem; opacity: 0.9; }
+.pontos-card { background: rgba(255, 255, 255, 0.15); border-radius: var(--border-radius); padding: 1rem; text-align: center; margin-top: 1rem; }
+.pontos-value { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+.pontos-label { font-size: 0.875rem; opacity: 0.9; }
+
+.app-content { flex: 1; padding: 1rem 1.5rem 6rem; }
+
+.tabs-container { background: var(--white); border-radius: var(--border-radius); margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); overflow: hidden; }
+.tabs { display: flex; }
+.tab { flex: 1; padding: 1rem 1.5rem; background: var(--white); border: none; font-weight: 600; cursor: pointer;
+    color: var(--gray-600); transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.tab.active { background: var(--vivo-purple); color: var(--white); }
+.tab:hover:not(.active) { background: var(--gray-50); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.cupons-grid { display: grid; gap: 1rem; }
+.cupon-card { background: var(--white); border-radius: var(--border-radius); box-shadow: var(--shadow-sm); 
+    overflow: hidden; transition: var(--transition); }
+.cupon-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.cupon-header { background: linear-gradient(135deg, var(--vivo-purple), var(--vivo-purple-dark)); 
+    color: var(--white); padding: 1rem; position: relative; }
+.cupon-discount { font-size: 1.5rem; font-weight: 900; }
+.cupon-type { font-size: 0.75rem; opacity: 0.9; margin-top: 0.25rem; }
+.cupon-logo { position: absolute; top: 1rem; right: 1rem; width: 40px; height: 40px; 
+    background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.cupon-content { padding: 1rem; }
+.cupon-title { font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--gray-900); }
+.cupon-desc { color: var(--gray-600); font-size: 0.875rem; margin-bottom: 1rem; }
+.cupon-footer { display: flex; justify-content: space-between; align-items: center; }
+.cupon-price { font-weight: 700; color: var(--vivo-purple); display: flex; align-items: center; gap: 0.25rem; }
+.cupon-btn { background: var(--vivo-purple); color: var(--white); border: none; padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-sm); font-weight: 600; cursor: pointer; transition: var(--transition); }
+.cupon-btn:hover { background: var(--vivo-purple-dark); }
+.cupon-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--gray-500); }
+.empty-state i { font-size: 3rem; margin-bottom: 1rem; color: var(--gray-300); }
+.empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+
+.toast { position: fixed; top: 2rem; left: 50%; transform: translateX(-50%); background: var(--vivo-green);
+    color: var(--white); padding: 1rem 2rem; border-radius: var(--border-radius); font-weight: 600;
+    z-index: 1000; box-shadow: var(--shadow-lg); animation: slideDown 0.3s ease; }
+
+@keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+@keyframes slideUp { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -100%); opacity: 0; } }
+</style>
 </head>
 <body>
-<div class="header">
-<div class="header-content">
-<button class="back-btn" onclick="history.back()">
-<i class="fas fa-arrow-left"></i>
-</button>
-<h1>🎫 Meus Cupons Premium</h1>
-<p>Resgate e economize com estilo</p>
+<div class="app-page">
+    <div class="app-header">
+        <div class="header-nav">
+            <button class="back-btn" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div style="width: 40px;"></div>
+        </div>
+        <div class="header-info">
+            <h1>🎫 Meus Cupons</h1>
+            <p>Resgate e economize com estilo</p>
+        </div>
+        <div class="pontos-card">
+            <div class="pontos-value" id="pontosUser">250 pontos</div>
+            <div class="pontos-label">Seus pontos disponíveis</div>
+        </div>
+    </div>
+    
+    <div class="app-content">
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('shop')">
+                    <i class="fas fa-shopping-bag"></i>
+                    Shop
+                </button>
+                <button class="tab" onclick="switchTab('meus')">
+                    <i class="fas fa-ticket-alt"></i>
+                    Meus Cupons
+                </button>
+            </div>
+        </div>
+        
+        <!-- Shop de Cupons -->
+        <div id="tab-shop" class="tab-content active">
+            <div class="cupons-grid">
+                <div class="cupon-card fade-in">
+                    <div class="cupon-header">
+                        <div>
+                            <div class="cupon-discount">20% OFF</div>
+                            <div class="cupon-type">Desconto</div>
+                        </div>
+                        <div class="cupon-logo">
+                            <i class="fas fa-pizza-slice"></i>
+                        </div>
+                    </div>
+                    <div class="cupon-content">
+                        <h3 class="cupon-title">Pizza Express</h3>
+                        <p class="cupon-desc">Válido para pizzas grandes, exceto finais de semana</p>
+                        <div class="cupon-footer">
+                            <div class="cupon-price">
+                                <i class="fas fa-coins"></i>
+                                50 pontos
+                            </div>
+                            <button class="cupon-btn" onclick="comprarCupon('pizza20')">
+                                Resgatar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cupon-card fade-in">
+                    <div class="cupon-header">
+                        <div>
+                            <div class="cupon-discount">R$ 15 OFF</div>
+                            <div class="cupon-type">Cashback</div>
+                        </div>
+                        <div class="cupon-logo">
+                            <i class="fas fa-tshirt"></i>
+                        </div>
+                    </div>
+                    <div class="cupon-content">
+                        <h3 class="cupon-title">Moda & Style</h3>
+                        <p class="cupon-desc">Desconto em compras acima de R$ 100</p>
+                        <div class="cupon-footer">
+                            <div class="cupon-price">
+                                <i class="fas fa-coins"></i>
+                                75 pontos
+                            </div>
+                            <button class="cupon-btn" onclick="comprarCupon('moda15')">
+                                Resgatar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cupon-card fade-in">
+                    <div class="cupon-header">
+                        <div>
+                            <div class="cupon-discount">GRÁTIS</div>
+                            <div class="cupon-type">Frete</div>
+                        </div>
+                        <div class="cupon-logo">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                    </div>
+                    <div class="cupon-content">
+                        <h3 class="cupon-title">Frete Grátis</h3>
+                        <p class="cupon-desc">Válido para qualquer compra online</p>
+                        <div class="cupon-footer">
+                            <div class="cupon-price">
+                                <i class="fas fa-coins"></i>
+                                30 pontos
+                            </div>
+                            <button class="cupon-btn" onclick="comprarCupon('frete')">
+                                Resgatar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Meus Cupons -->
+        <div id="tab-meus" class="tab-content">
+            <div class="cupons-grid" id="cuponsDisponiveis">
+                <div class="empty-state">
+                    <div class="empty-icon">🎫</div>
+                    <h3>Nenhum cupom ainda</h3>
+                    <p>Resgate cupons na aba Shop para começar a economizar!</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
-<div class="content">
-<!-- Tabs -->
-<div class="tabs">
-<button class="tab active" data-tab="shop">
-<i class="fas fa-shopping-bag" style="margin-right: 8px;"></i>  Shop  </button>
-<button class="tab" data-tab="meus">
-<i class="fas fa-ticket-alt" style="margin-right: 8px;"></i>  Meus Cupons  </button>
-</div>
-<!-- Shop de Cupons (comprar com pontos) -->
-<div id="tab-shop" class="tab-content active">
-<div class="pontos-info">
-<div id="pontosUser">250 pontos</div>
-<div>Seus pontos disponíveis</div>
-</div>
-<div class="cupons-grid" id="cuponsShop">
-<!-- Será preenchido via JavaScript -->
-</div>
-</div>
-<!-- Meus Cupons -->
-<div id="tab-meus" class="tab-content">
-<div class="cupons-grid" id="cuponsDisponiveis">
-<!-- Será preenchido via JavaScript -->
-</div>
-</div>
-<div class="empty-state" id="emptyState" style="display: none;">
-<i class="fas fa-ticket-alt"></i>
-<h3>Nenhum cupom encontrado</h3>
-<p>Visite empresas parceiras para ganhar cupons incríveis</p>
-</div>
-</div>
-<nav class="bottom-nav">
-<div class="nav-items">
-<a href="app-inicio.html" class="nav-item">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a href="app-empresas.html" class="nav-item">
-<i class="fas fa-search"></i>
-<span>Buscar</span>
-</a>
-<a href="app-cupons.html" class="nav-item active">
-<i class="fas fa-ticket-alt"></i>
-<span>Cupons</span>
-</a>
-<a href="app-pontos.html" class="nav-item">
-<i class="fas fa-coins"></i>
-<span>Pontos</span>
-</a>
-<a href="app-perfil.html" class="nav-item">
-<i class="fas fa-user"></i>
-<span>Perfil</span>
-</a>
-</div>
-</nav>
-<script>  const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';  // Dados de exemplo para shop de cupons  const cuponsShop = [  {  id: 1,  empresa: 'Sabor e Arte',  desconto: '20% OFF',  descricao: 'Em qualquer prato do cardápio',  pontos: 100,  economia: 'Economize até R$ 25',  categoria: 'restaurante'  },  {  id: 2,  empresa: 'Bella Napoli',  desconto: 'R$ 15 OFF',  descricao: 'Pizza grande tradicional',  pontos: 80,  economia: 'Economize R$ 15',  categoria: 'restaurante'  },  {  id: 3,  empresa: 'Academia FitLife',  desconto: '1 mês grátis',  descricao: 'Na matrícula anual premium',  pontos: 200,  economia: 'Economize R$ 89',  categoria: 'servicos'  },  {  id: 4,  empresa: 'Café & Cia',  desconto: 'R$ 10 OFF',  descricao: 'Em bebidas especiais',  pontos: 60,  economia: 'Economize R$ 10',  categoria: 'cafe'  }  ];  // Dados fictícios para usuários de DEMONSTRAÇÃO  const cuponsDisponivelsFicticios = [  { id: 1, empresa: 'Sabor e Arte', desconto: '20% OFF', descricao: 'Em qualquer prato', validade: '2026-03-31', codigo: 'SABOR20', usado: false },  { id: 2, empresa: 'Bella Napoli', desconto: 'R$ 15 OFF', descricao: 'Pizza grande', validade: '2026-02-28', codigo: 'PIZZA15', usado: false },  { id: 3, empresa: 'Academia FitLife', desconto: '1 mês grátis', descricao: 'Na matrícula anual', validade: '2026-04-30', codigo: 'FIT1MES', usado: false }  ];  const cuponsUsadosFicticios = [  { id: 4, empresa: 'Café & Cia', desconto: 'R$ 5 OFF', descricao: 'Em qualquer bebida', validade: '2026-01-31', codigo: 'CAFE5', usado: true, dataUso: '2026-01-15' }  ];  let cuponsDisponiveis = [];  let cuponsUsados = [];  let pontosUsuario = 250;  document.addEventListener('DOMContentLoaded', () => {  const token = localStorage.getItem('token');  if (!token) {  window.location.href = 'entrar.html';  return;  }  // Verificar se é usuário FICTÍCIO (demonstração) ou REAL (uso)  const userStr = localStorage.getItem('user');  const usuariosFicticios = ['maria@email.com', 'joao@email.com', 'saborearte@email.com', 'bellanapoli@email.com'];  let ehUsuarioFicticio = false;  if (userStr) {  try {  const user = JSON.parse(userStr);  ehUsuarioFicticio = usuariosFicticios.includes(user.email);  } catch (e) {  console.error('Erro ao parsear user:', e);  }  }  if (ehUsuarioFicticio) {  console.log('👤 Usuário fictício: usando dados de demonstração');  cuponsDisponiveis = cuponsDisponivelsFicticios;  cuponsUsados = cuponsUsadosFicticios;  } else {  console.log('🔥 Usuário real: carregando cupons reais da API');  carregarCuponsAPI();  }  renderizarShopCupons();  renderizarCupons();  configurarTabs();  });  function renderizarShopCupons() {  const grid = document.getElementById('cuponsShop');  grid.innerHTML = cuponsShop.map(cupom => `  <div class="cupom-card">
-<div class="cupom-empresa">${cupom.empresa}</div>
-<div class="cupom-desconto">${cupom.desconto}</div>
-<div class="cupom-detalhes">${cupom.descricao}</div>
-<div class="cupom-preco">
-<div class="pontos">${cupom.pontos} pontos</div>
-<div class="economia">${cupom.economia}</div>
-</div>
-<button class="btn-comprar" onclick="comprarCupom(${cupom.id})" ${pontosUsuario < cupom.pontos ? 'disabled' : ''}>
-<i class="fas fa-shopping-cart" style="margin-right: 8px;"></i>  ${pontosUsuario < cupom.pontos ? 'Pontos insuficientes' : 'Comprar'}  </button>
-</div>  `).join('');  }  function renderizarCupons() {  const grid = document.getElementById('cuponsDisponiveis');  const empty = document.getElementById('emptyState');  if (cuponsDisponiveis.length === 0) {  empty.style.display = 'block';  grid.style.display = 'none';  return;  }  empty.style.display = 'none';  grid.style.display = 'grid';  grid.innerHTML = cuponsDisponiveis.map(cupom => `  <div class="cupom-card ${cupom.usado ? 'cupom-usado' : ''}">
-<div class="cupom-empresa">${cupom.empresa}</div>
-<div class="cupom-desconto">${cupom.desconto}</div>
-<div class="cupom-detalhes">${cupom.descricao}</div>
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-<div style="font-size: 12px; color: rgba(255,255,255,0.6);">
-<i class="fas fa-calendar"></i> Até ${new Date(cupom.validade).toLocaleDateString('pt-BR')}  </div>  ${cupom.usado ? `<div style="color: #00d4aa; font-size: 12px; font-weight: 600;"><i class="fas fa-check"></i> Usado</div>` : ''}  </div>
-<button class="btn-usar" onclick="${cupom.usado ? '' : `usarCupom(${cupom.id})`}" ${cupom.usado ? 'disabled' : ''}>
-<i class="fas fa-${cupom.usado ? 'check' : 'ticket-alt'}" style="margin-right: 8px;"></i>  ${cupom.usado ? 'Cupom Utilizado' : 'Usar Cupom'}  </button>
-</div>  `).join('');  }  function configurarTabs() {  document.querySelectorAll('.tab').forEach(tab => {  tab.addEventListener('click', () => {  // Remove active de todos os tabs  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));  // Ativa o tab clicado  tab.classList.add('active');  const targetTab = tab.dataset.tab;  document.getElementById(`tab-${targetTab}`).classList.add('active');  });  });  }  function comprarCupom(id) {  const cupom = cuponsShop.find(c => c.id === id);  if (!cupom) return;  if (pontosUsuario < cupom.pontos) {  alert('Pontos insuficientes! Você precisa de mais ' + (cupom.pontos - pontosUsuario) + ' pontos.');  return;  }  if (confirm(`Comprar cupom "${cupom.desconto}" por ${cupom.pontos} pontos?`)) {  // Deduzir pontos  pontosUsuario -= cupom.pontos;  document.getElementById('pontosUser').textContent = pontosUsuario + ' pontos';  // Adicionar aos cupons disponíveis  const novoCupom = {  id: Date.now(),  empresa: cupom.empresa,  desconto: cupom.desconto,  descricao: cupom.descricao,  validade: '2026-12-31',  codigo: 'CUPOM' + Math.random().toString(36).substr(2, 5).toUpperCase(),  usado: false  };  cuponsDisponiveis.push(novoCupom);  renderizarShopCupons();  renderizarCupons();  alert('🎉 Cupom adquirido com sucesso!');  }  }  function usarCupom(id) {  if (confirm('Confirmar uso do cupom? Esta ação não pode ser desfeita.')) {  const cupomIndex = cuponsDisponiveis.findIndex(c => c.id === id);  if (cupomIndex !== -1) {  cuponsDisponiveis[cupomIndex].usado = true;  cuponsDisponiveis[cupomIndex].dataUso = new Date().toISOString().split('T')[0];  renderizarCupons();  alert('✅ Cupom utilizado com sucesso!');  }  }  }  async function carregarCuponsAPI() {  try {  const token = localStorage.getItem('token');  const response = await fetch(`${API_BASE_URL}/api/cupons`, {  headers: { 'Authorization': `Bearer ${token}` }  });  if (response.ok) {  const data = await response.json();  cuponsDisponiveis = data.disponiveis || [];  cuponsUsados = data.usados || [];  pontosUsuario = data.pontos || 0;  document.getElementById('pontosUser').textContent = pontosUsuario + ' pontos';  } else {  console.log('Erro ao carregar cupons, usando dados fictícios');  cuponsDisponiveis = cuponsDisponivelsFicticios;  cuponsUsados = cuponsUsadosFicticios;  }  renderizarShopCupons();  renderizarCupons();  } catch (error) {  console.error('Erro na API:', error);  cuponsDisponiveis = cuponsDisponivelsFicticios;  cuponsUsados = cuponsUsadosFicticios;  renderizarShopCupons();  renderizarCupons();  }  }  </script>
+
+<script>
+let meusPontos = 250;
+let meusCupons = [];
+
+function switchTab(tabName) {
+    // Remove active from all tabs and contents
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    
+    // Add active to selected
+    event.target.classList.add('active');
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+}
+
+function comprarCupon(tipo) {
+    const cupons = {
+        'pizza20': { nome: 'Pizza Express 20% OFF', pontos: 50, descricao: 'Válido para pizzas grandes' },
+        'moda15': { nome: 'Moda & Style R$ 15 OFF', pontos: 75, descricao: 'Desconto em compras acima de R$ 100' },
+        'frete': { nome: 'Frete Grátis', pontos: 30, descricao: 'Válido para qualquer compra online' }
+    };
+    
+    const cupon = cupons[tipo];
+    
+    if (meusPontos >= cupon.pontos) {
+        meusPontos -= cupon.pontos;
+        meusCupons.push({
+            ...cupon,
+            id: Date.now(),
+            dataResgate: new Date().toLocaleDateString(),
+            usado: false
+        });
+        
+        // Atualizar pontos na tela
+        document.getElementById('pontosUser').textContent = `${meusPontos} pontos`;
+        
+        // Atualizar meus cupons
+        atualizarMeusCupons();
+        
+        showToast(`✅ Cupom "${cupon.nome}" resgatado com sucesso!`);
+        
+        // Salvar no localStorage
+        localStorage.setItem('meusPontos', meusPontos);
+        localStorage.setItem('meusCupons', JSON.stringify(meusCupons));
+    } else {
+        showToast('❌ Pontos insuficientes!');
+    }
+}
+
+function atualizarMeusCupons() {
+    const container = document.getElementById('cuponsDisponiveis');
+    
+    if (meusCupons.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🎫</div>
+                <h3>Nenhum cupom ainda</h3>
+                <p>Resgate cupons na aba Shop para começar a economizar!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = meusCupons.map(cupon => `
+        <div class="cupon-card">
+            <div class="cupon-header">
+                <div>
+                    <div class="cupon-discount">${cupon.nome.split(' ')[2] || 'CUPOM'}</div>
+                    <div class="cupon-type">Resgatado em ${cupon.dataResgate}</div>
+                </div>
+                <div class="cupon-logo">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+            </div>
+            <div class="cupon-content">
+                <h3 class="cupon-title">${cupon.nome}</h3>
+                <p class="cupon-desc">${cupon.descricao}</p>
+                <div class="cupon-footer">
+                    <div class="cupon-price">
+                        ${cupon.usado ? '✅ Usado' : '⏰ Disponível'}
+                    </div>
+                    <button class="cupon-btn" ${cupon.usado ? 'disabled' : ''} onclick="usarCupon(${cupon.id})">
+                        ${cupon.usado ? 'Usado' : 'Usar'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function usarCupon(id) {
+    const cupon = meusCupons.find(c => c.id === id);
+    if (cupon && !cupon.usado) {
+        cupon.usado = true;
+        atualizarMeusCupons();
+        showToast('🎉 Cupom utilizado com sucesso!');
+        
+        // Salvar no localStorage
+        localStorage.setItem('meusCupons', JSON.stringify(meusCupons));
+    }
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideUp 0.3s ease';
+        setTimeout(() => document.body.removeChild(toast), 300);
+    }, 2500);
+}
+
+// Carregar dados salvos
+document.addEventListener('DOMContentLoaded', () => {
+    const savedPontos = localStorage.getItem('meusPontos');
+    const savedCupons = localStorage.getItem('meusCupons');
+    
+    if (savedPontos) {
+        meusPontos = parseInt(savedPontos);
+        document.getElementById('pontosUser').textContent = `${meusPontos} pontos`;
+    }
+    
+    if (savedCupons) {
+        meusCupons = JSON.parse(savedCupons);
+        atualizarMeusCupons();
+    }
+});
+</script>
 </body>
 </html>
-</div>
-<div class="card">  ${cupom.codigo}  </div>
-</div>  `).join('');  gridUsados.innerHTML = cuponsUsados.map(cupom => `  <div class="card" style="padding: 20px; margin-bottom: 16px; opacity: 0.5;">
-<div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-<div>
-<div style="font-size: 18px; font-weight: 700; color: #888; margin-bottom: 4px;">${cupom.desconto}</div>
-<div style="font-size: 14px; color: #666;">${cupom.empresa}</div>
-</div>
-<div class="badge" style="background: #2a2a3e; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #666;">  Usado  </div>
-</div>
-<p style="font-size: 14px; color: #666; margin-bottom: 12px;">${cupom.descricao}</p>
-<div style="font-size: 12px; color: #555;">
-<i class="fas fa-check-circle"></i> Usado em ${new Date(cupom.dataUso).toLocaleDateString('pt-BR')}  </div>
-</div>  `).join('');  }  async function carregarCuponsAPI() {  const token = localStorage.getItem('token');  try {  const response = await fetch(`${API_BASE_URL}/api/cupons`, {  headers: { 'Authorization': `Bearer ${token}` }  });  const data = await response.json();  if (data.success && data.data) {  // Processar cupons da API  console.log('Cupons da API:', data.data);  }  } catch (error) {  console.error('Erro ao carregar cupons:', error);  document.getElementById('emptyState').style.display = 'block';  }  }  function usarCupom(id) {  if (confirm('Tem certeza que deseja usar este cupom?')) {  alert('Cupom usado com sucesso! Apresente o código no estabelecimento.');  // Mover para usados  const cupom = cuponsDisponiveis.find(c => c.id === id);  if (cupom) {  cupom.usado = true;  cupom.dataUso = new Date().toISOString().split('T')[0];  cuponsUsados.push(cupom);  cuponsDisponiveis.splice(cuponsDisponiveis.findIndex(c => c.id === id), 1);  renderizarCupons();  }  }  }  </script>
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

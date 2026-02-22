@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meus Pontos - Tem de Tudo</title>
+<meta name="description" content="Acompanhe seus pontos e histórico de transações">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
+<script src="global-navbar.js"></script>
+<style>
+/* VIVO DESIGN SYSTEM - POINTS PAGE */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; --gray-800: #1F2937;
+    --gray-900: #111827; --white: #FFFFFF; --border-radius: 12px; --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1); --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15); --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+body { font-family: 'Inter', sans-serif; color: var(--gray-900); background: var(--gray-50); min-height: 100vh; margin: 0; padding: 0; }
+.app-page { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
+.header-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; }
+.header-nav h1 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); flex: 1; text-align: center; margin: 0 1rem; }
+.back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gray-100); color: var(--gray-700); text-decoration: none; transition: var(--transition); border: none; cursor: pointer; }
+.back-btn:hover { background: var(--gray-200); }
+.app-content { flex: 1; padding: 1rem 1.5rem 6rem; }
+
+.points-balance { background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%);
+    border-radius: var(--border-radius); padding: 2rem 1.5rem; margin-bottom: 2rem; color: var(--white);
+    box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+.balance-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+.balance-icon { width: 48px; height: 48px; background: rgba(255, 255, 255, 0.2); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+.balance-info h2 { font-size: 1.125rem; font-weight: 700; margin-bottom: 0.25rem; }
+.balance-info p { opacity: 0.9; font-size: 0.875rem; }
+.balance-amount { text-align: center; margin-bottom: 2rem; }
+.amount { font-size: 3rem; font-weight: 900; display: block; line-height: 1; }
+.currency { font-size: 1rem; font-weight: 600; opacity: 0.9; }
+.balance-actions { display: flex; gap: 1rem; }
+.btn { padding: 0.75rem 1.5rem; border-radius: var(--border-radius); font-size: 0.875rem; font-weight: 600;
+    text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    transition: var(--transition); flex: 1; text-align: center; }
+.btn-primary { background: var(--white); color: var(--vivo-purple); }
+.btn-primary:hover { background: var(--gray-100); transform: translateY(-2px); }
+.btn-secondary { background: rgba(255, 255, 255, 0.1); color: var(--white); border: 1px solid rgba(255, 255, 255, 0.3); }
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
+
+.stats-overview { margin-bottom: 2rem; }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.stat-card { background: var(--white); border-radius: var(--border-radius); padding: 1.5rem 1rem;
+    text-align: center; box-shadow: var(--shadow-sm); transition: var(--transition); }
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.stat-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 1.25rem; margin: 0 auto 1rem; }
+.stat-card.gained .stat-icon { background: rgba(16, 185, 129, 0.1); color: var(--vivo-green); }
+.stat-card.spent .stat-icon { background: rgba(239, 68, 68, 0.1); color: var(--vivo-red); }
+.stat-card.checkins .stat-icon { background: rgba(245, 158, 11, 0.1); color: var(--vivo-orange); }
+.stat-value { font-size: 1.5rem; font-weight: 800; color: var(--gray-900); margin-bottom: 0.5rem; }
+.stat-label { font-size: 0.75rem; color: var(--gray-600); font-weight: 600; text-transform: uppercase; }
+
+.section { margin-bottom: 2rem; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.section-header h3 { font-size: 1.125rem; font-weight: 700; color: var(--gray-900); }
+.view-all { color: var(--vivo-purple); text-decoration: none; font-size: 0.875rem; font-weight: 600;
+    display: flex; align-items: center; gap: 0.25rem; }
+.view-all:hover { color: var(--vivo-purple-dark); }
+
+.transactions-list { background: var(--white); border-radius: var(--border-radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+.transaction-item { display: flex; align-items: center; padding: 1rem; border-bottom: 1px solid var(--gray-100); }
+.transaction-item:last-child { border-bottom: none; }
+.transaction-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 1rem; margin-right: 1rem; }
+.transaction-icon.gain { background: rgba(16, 185, 129, 0.1); color: var(--vivo-green); }
+.transaction-icon.spend { background: rgba(239, 68, 68, 0.1); color: var(--vivo-red); }
+.transaction-info { flex: 1; }
+.transaction-title { font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem; }
+.transaction-date { font-size: 0.75rem; color: var(--gray-500); }
+.transaction-points { font-weight: 700; font-size: 1rem; }
+.transaction-points.gain { color: var(--vivo-green); }
+.transaction-points.spend { color: var(--vivo-red); }
+
+.quick-actions { margin-bottom: 2rem; }
+.actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.action-card { background: var(--white); border-radius: var(--border-radius); padding: 1rem 0.5rem;
+    text-align: center; text-decoration: none; color: var(--gray-700); transition: var(--transition);
+    box-shadow: var(--shadow-sm); }
+.action-card:hover { background: var(--gray-50); transform: translateY(-2px); color: var(--vivo-purple); }
+.action-icon { width: 48px; height: 48px; background: var(--gray-100); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 1.25rem;
+    margin: 0 auto 0.75rem; transition: var(--transition); }
+.action-card:hover .action-icon { background: var(--vivo-purple); color: var(--white); }
+.action-card span { font-size: 0.75rem; font-weight: 600; }
+
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white);
+    border-top: 1px solid var(--gray-200); padding: 0.5rem 0; z-index: 1000; }
+.nav-container { display: flex; justify-content: space-around; align-items: center; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; padding: 0.5rem;
+    text-decoration: none; color: var(--gray-500); transition: var(--transition); font-size: 0.75rem; font-weight: 500; }
+.nav-item.active { color: var(--vivo-purple); }
+.nav-item:hover:not(.active) { color: var(--gray-700); }
+.nav-item i { font-size: 1.25rem; margin-bottom: 2px; }
+
+@media (max-width: 640px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .actions-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .balance-actions { flex-direction: column; }
+    .app-content { padding: 1rem 1rem 6rem; }
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.app-page { animation: fadeIn 0.3s ease-out; }
+</style>
+</head>
+<body>
+<div class="app-page">
+    <!-- Header -->
+    <div class="app-header">
+        <div class="header-nav">
+            <button class="back-btn" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>Meus Pontos</h1>
+            <div style="width: 40px;"></div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="app-content">
+        <!-- Points Balance -->
+        <section class="points-balance">
+            <div class="balance-header">
+                <div class="balance-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <div class="balance-info">
+                    <h2>Saldo Atual</h2>
+                    <p>Pontos disponíveis para uso</p>
+                </div>
+            </div>
+            <div class="balance-amount">
+                <span class="amount" id="saldoPontos">2.847</span>
+                <span class="currency">pontos</span>
+            </div>
+            <div class="balance-actions">
+                <a href="app-qrcode.html" class="btn btn-primary">
+                    <i class="fas fa-qrcode"></i>
+                    Meu QR Code
+                </a>
+                <a href="app-promocoes.html" class="btn btn-secondary">
+                    <i class="fas fa-gift"></i>
+                    Resgatar
+                </a>
+            </div>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="stats-overview">
+            <div class="stats-grid">
+                <div class="stat-card gained">
+                    <div class="stat-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="stat-value" id="totalGanhos">4.156</div>
+                    <div class="stat-label">Total Ganhos</div>
+                </div>
+                <div class="stat-card spent">
+                    <div class="stat-icon">
+                        <i class="fas fa-minus-circle"></i>
+                    </div>
+                    <div class="stat-value" id="totalGastos">1.309</div>
+                    <div class="stat-label">Total Gastos</div>
+                </div>
+                <div class="stat-card checkins">
+                    <div class="stat-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="stat-value" id="checkins">47</div>
+                    <div class="stat-label">Check-ins</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Transactions -->
+        <section class="section">
+            <div class="section-header">
+                <h3>Últimas Transações</h3>
+                <a href="app-historico.html" class="view-all">
+                    Ver todas <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="transactions-list" id="transactionsList">
+                <!-- Transactions loaded here -->
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+            <div class="section-header">
+                <h3>Ações Rápidas</h3>
+            </div>
+            <div class="actions-grid">
+                <a href="app-qrcode.html" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <span>Meu QR</span>
+                </a>
+                <a href="app-historico.html" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <span>Histórico</span>
+                </a>
+                <a href="app-promocoes.html" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <span>Promoções</span>
+                </a>
+                <a href="app-favoritos.html" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <span>Favoritos</span>
+                </a>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+    <div class="nav-container">
+        <a href="dashboard-cliente.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </a>
+        <a href="app-empresas.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Explorar</span>
+        </a>
+        <a href="app-pontos.html" class="nav-item active">
+            <i class="fas fa-star"></i>
+            <span>Pontos</span>
+        </a>
+        <a href="app-promocoes.html" class="nav-item">
+            <i class="fas fa-tags"></i>
+            <span>Ofertas</span>
+        </a>
+        <a href="app-perfil.html" class="nav-item">
+            <i class="fas fa-bars"></i>
+            <span>Menu</span>
+        </a>
+    </div>
+</div>
+
+<script>
+// Dados fictícios para demonstração
+const transacoesFicticias = [
+    {
+        id: 1,
+        tipo: 'ganho',
+        empresa: 'Restaurante Sabor & Arte',
+        pontos: 45,
+        data: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        icon: 'fa-utensils'
+    },
+    {
+        id: 2,
+        tipo: 'gasto',
+        empresa: 'Desconto Farmácia Popular',
+        pontos: -120,
+        data: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+        icon: 'fa-pills'
+    },
+    {
+        id: 3,
+        tipo: 'ganho',
+        empresa: 'Mercado Central',
+        pontos: 78,
+        data: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        icon: 'fa-shopping-cart'
+    },
+    {
+        id: 4,
+        tipo: 'ganho',
+        empresa: 'Café da Praça',
+        pontos: 25,
+        data: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+        icon: 'fa-coffee'
+    }
+];
+
+// Carregar transações
+function carregarTransacoes() {
+    const lista = document.getElementById('transactionsList');
+    lista.innerHTML = transacoesFicticias.map(transacao => `
+        <div class="transaction-item">
+            <div class="transaction-icon ${transacao.tipo === 'ganho' ? 'gain' : 'spend'}">
+                <i class="fas ${transacao.icon}"></i>
+            </div>
+            <div class="transaction-info">
+                <div class="transaction-title">${transacao.empresa}</div>
+                <div class="transaction-date">${transacao.data.toLocaleDateString('pt-BR')}</div>
+            </div>
+            <div class="transaction-points ${transacao.tipo === 'ganho' ? 'gain' : 'spend'}">
+                ${transacao.pontos > 0 ? '+' : ''}${transacao.pontos}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Animação dos números
+function animarNumeros() {
+    const elementos = document.querySelectorAll('.stat-value, .amount');
+    elementos.forEach(elemento => {
+        const valor = parseInt(elemento.textContent.replace(/\D/g, ''));
+        let atual = 0;
+        const incremento = valor / 30;
+        const timer = setInterval(() => {
+            atual += incremento;
+            if (atual >= valor) {
+                atual = valor;
+                clearInterval(timer);
+            }
+            if (elemento.classList.contains('amount')) {
+                elemento.textContent = Math.floor(atual).toLocaleString('pt-BR');
+            } else {
+                elemento.textContent = Math.floor(atual).toLocaleString('pt-BR');
+            }
+        }, 50);
+    });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    carregarTransacoes();
+    setTimeout(animarNumeros, 300);
+});
+</script>
+</body>
+</html> 
+        o}o, 
+        o{ 
+            oido: 2o, 
+            otipo: 'ogasto'o, 
+            oempresao: 'oDescnt10o% - Farmo�ociao'o, 
+            opntso: -o100o, 
+            odatao: new Dateo(oDateo.onwo(o) - 3 * 24 * 60 * 60 * 1000o)o, 
+            oicno: 'ofao-opillso' 
+        o}o, 
+        o{ 
+            oido: 3o, 
+            otipo: 'oganho'o, 
+            oempresao: 'oSupermercadCentralo'o, 
+            opntso: 32o, 
+            odatao: new Dateo(oDateo.onwo(o) - 5 * 24 * 60 * 60 * 1000o)o, 
+            oicno: 'ofao-oshppingo-ocarto' 
+        o}o, 
+        o{ 
+            oido: 4o, 
+            otipo: 'obnuso'o, 
+            oempresao: 'oBo�onus Aniverso�orio'o, 
+            opntso: 100o, 
+            odatao: new Dateo(oDateo.onwo(o) - 7 * 24 * 60 * 60 * 1000o)o, 
+            oicno: 'ofao-ocakeo' 
+        o} 
+    o]o; 
+    // Funo�opara frmatar data 
+    ofunctin frmatarDatao(odatao) { 
+        ocnst hjeo = onew Dateo(o)o; 
+        ocnst diferencao = ohjeo.ogetTimeo(o) - datao.ogetTimeo(o)o; 
+        ocnst diaso = oMatho.ofloro(odiferencao / o(o1000 * 60 * 60 * 24o)o)o; 
+        oif (odiaso === o0o) return 'oHjeo'o; 
+        oif (odiaso === o1o) return 'ontemo'o; 
+        oif (odiaso < o7o) return `o$o{odiaso} dias atro�oso`o; 
+        oreturn datao.otLocaleDateStringo(o'opto-oBRo'o, { 
+ dayo: 'o2o-odigito'o, 
+ mntho: 'o2o-odigito'o, 
+ yearo: 'onumerico' 
+ }o)o; 
+    o} 
+    // Carrega as transao�o�oes 
+    ofunctin carregarTransaceso(o) { 
+        ocnst listao = odcumento.ogetElementByIdo(o'otransactinsListo'o)o; 
+        ocnst htmlo = otransacesFicticiaso.omapo(otransacao => o{ 
+            ocnst sinalClasso = otransacao.opntso > o0 ? 'opsitiveo' : 'onegativeo'o; 
+            ocnst sinalo = otransacao.opntso > o0 ? 'o+o' : 'o'o; 
+            oreturn ` 
+                <div classo="transactino-oitem $o{osinalClasso}">                     <div classo="transactino-oicn">                         <i classo="fas $o{otransacao.oicno}"></oi>                     </odiv>                     <div classo="transactino-oinfo">                         <div classo="transactino-otitle">$o{otransacao.oempresao}</odiv>                         <div classo="transactino-odate">$o{ofrmatarDatao(otransacao.odatao)o}</odiv>                     </odiv>                     <div classo="transactino-oamunt $o{osinalClasso}">
+ $o{osinalo}o$o{oMatho.oabso(otransacao.opntso)o} pts 
+                    </odiv>                 </odiv>
+ `o; 
+        o}o)o.ojino(o'o'o)o; 
+        olistao.oinnerHTMLo = ohtmlo; 
+    o} 
+    // Animao�odos no�omers 
+    ofunctin animarNumerso(o) { 
+        ocnst elementso = odcumento.oquerySelectrAllo(o'o.ostato-ovalueo, .oamunto'o)o; 
+        oelementso.ofrEacho(oelemento => o{ 
+            ocnst valro = oparseInto(oelemento.otextCntento.oreplaceo(/\oD/go, 'o'o)o)o; 
+            olet atualo = o0o; 
+            ocnst incremento = ovalro / o30o; 
+            ocnst timero = osetIntervalo(o(o) => o{ 
+                oatual += oincremento; 
+                oif (oatualo >= valro) { 
+                    oatualo = ovalro; 
+                    oclearIntervalo(otimero)o; 
+                o} 
+                oif (oelemento.oclassListo.ocntainso(o'oamunto'o)o) { 
+                    oelemento.otextCntento = oMatho.ofloro(oatualo)o.otLocaleStringo(o'opto-oBRo'o)o; 
+                o} else { 
+                    oelemento.otextCntento = oMatho.ofloro(oatualo)o; 
+                o} 
+            o}o, 50o)o; 
+        o}o)o; 
+    o} 
+    // Menu tggle 
+    ofunctin tggleMenuo(o) { 
+        // Implementar menu drpdwn se necesso�oriocnsleo.olgo(o'oMenu clickedo'o)o; 
+    o} 
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    carregarTransacoes();
+    setTimeout(animarNumeros, 300);
+});
+</script>
+</body>
+</html>
