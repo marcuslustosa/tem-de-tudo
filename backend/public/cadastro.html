@@ -9,7 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="manifest" href="/manifest.json">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="global-styles.css">
+<script src="global-auth.js"></script>
 <body>
 <div class="register-page">
     <!-- Background Elements -->
@@ -32,7 +33,7 @@
         <!-- Logo Section -->
         <div class="logo-section">
             <div class="logo-icon">
-                <img src="logo.svg" alt="Tem de Tudo" style="width: 80px; height: 80px; border-radius: 50%;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #6F1AB6, #8B5CF6); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: bold; margin: 0 auto;">TDT</div>
             </div>
             <h1 class="welcome-title">Criar Conta</h1>
             <p class="welcome-subtitle">Junte-se ao Tem de Tudo e aproveite benefícios exclusivos</p>
@@ -215,7 +216,6 @@
     </div>
 </div>
 
-<script src="/js/config.js"></script>
 <script>
 // Profile selector functions
 function selectProfile(type) {
@@ -324,6 +324,7 @@ async function handleCadastro(event) {
     }
     
     try {
+        // Tentativa de cadastro real via API
         const response = await fetch('/api/auth/register', {
             method: 'POST',
             headers: {
@@ -342,10 +343,10 @@ async function handleCadastro(event) {
                     window.location.href = 'index.html';
                 }, 2000);
             } else {
-                // Store token and redirect for clients
-                localStorage.setItem('authToken', data.token);
-                localStorage.setItem('userType', data.user.type);
-                localStorage.setItem('userName', data.user.name);
+                // Store token and redirect for clients (usar mesmo padrão do login)
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('userType', data.user.type || data.user.perfil);
                 
                 showSuccess('Conta criada com sucesso!');
                 setTimeout(() => {

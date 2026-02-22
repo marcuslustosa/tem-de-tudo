@@ -259,54 +259,6 @@ async function handleLogin(event) {
     const password = formData.get('password');
 
     try {
-        // Simulação de login para desenvolvimento
-        const isDevMode = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1');
-        
-        if (isDevMode) {
-            // Simular resposta da API para desenvolvimento
-            const mockResponse = {
-                token: 'dev_token_' + Date.now(),
-                user: {
-                    id: 1,
-                    name: email.split('@')[0],
-                    email: email,
-                    type: email.includes('admin') ? 'admin' : 
-                          email.includes('empresa') ? 'empresa' : 'cliente',
-                    perfil: email.includes('admin') ? 'admin' : 
-                            email.includes('empresa') ? 'empresa' : 'cliente'
-                }
-            };
-            
-            // Success - store token and user data
-            localStorage.setItem('token', mockResponse.token);
-            localStorage.setItem('user', JSON.stringify(mockResponse.user));
-            localStorage.setItem('userType', mockResponse.user.type);
-            
-            showSuccess('Login realizado com sucesso!');
-
-            // Redirect based on user type
-            setTimeout(() => {
-                const userType = mockResponse.user.type;
-                let redirectUrl = '/';
-                
-                switch(userType) {
-                    case 'cliente':
-                        redirectUrl = 'dashboard-cliente.html';
-                        break;
-                    case 'empresa':
-                        redirectUrl = 'dashboard-empresa.html';
-                        break;
-                    case 'admin':
-                        redirectUrl = 'admin-dashboard.html';
-                        break;
-                    default:
-                        redirectUrl = 'dashboard-cliente.html';
-                }
-                window.location.href = redirectUrl;
-            }, 1000);
-            return;
-        }
-        
         // Tentativa de login real via API
         const response = await fetch('/api/auth/login', {
             method: 'POST',

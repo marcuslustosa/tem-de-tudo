@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Login - Tem de Tudo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #6F1AB6; color: white; padding: 2rem; }
+        .test-container { max-width: 500px; margin: 0 auto; background: white; color: black; padding: 2rem; border-radius: 12px; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        input { width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        button { background: #6F1AB6; color: white; padding: 1rem 2rem; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; width: 100%; margin-top: 1rem; }
+        button:hover { background: #5A1494; }
+        .message { padding: 1rem; margin: 1rem 0; border-radius: 8px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        #result { margin-top: 1rem; }
+        .debug { background: #f8f9fa; padding: 1rem; margin: 1rem 0; border-radius: 8px; font-family: monospace; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1><i class="fas fa-bug"></i> Teste de Login - Tem de Tudo</h1>
+        <p>Vamos testar se o sistema de login está funcionando corretamente.</p>
+
+        <div class="message info">
+            <strong>Instruções:</strong><br>
+            • Em localhost, qualquer email/senha deve funcionar<br>
+            • Use <strong>admin@test.com</strong> para admin<br>
+            • Use <strong>empresa@test.com</strong> para empresa<br>
+            • Use <strong>cliente@test.com</strong> para cliente<br>
+        </div>
+
+        <form id="testForm">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" value="cliente@test.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" value="123456" required>
+            </div>
+
+            <button type="submit">
+                <i class="fas fa-sign-in-alt"></i> Testar Login
+            </button>
+        </form>
+
+        <div id="result"></div>
+
+        <div class="debug" id="debug">
+            <strong>Debug Info:</strong><br>
+            Hostname: <span id="hostname"></span><br>
+            isDev: <span id="isDev"></span><br>
+            LocalStorage antes: <span id="storageBefore"></span>
+        </div>
+    </div>
+
+    <script>
+        // Mostrar informações de debug
+        document.getElementById('hostname').textContent = window.location.hostname;
+        document.getElementById('isDev').textContent = (window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1'));
+        document.getElementById('storageBefore').textContent = localStorage.getItem('token') || 'nenhum';
+
+        // Função para mostrar mensagens
+        function showMessage(message, type = 'info') {
+            const result = document.getElementById('result');
+            result.innerHTML = `<div class="message ${type}">${message}</div>`;
+        }
+
+        // Teste de login
+        document.getElementById('testForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            showMessage('<i class="fas fa-spinner fa-spin"></i> Testando login...', 'info');
+            
+            try {
+                // Verificar se estamos em modo desenvolvimento
+                const isDevMode = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1');
+                
+                console.log('Debug: isDevMode =', isDevMode);
+                console.log('Debug: hostname =', window.location.hostname);
+                
+                if (isDevMode) {
+                    // Simular resposta da API para desenvolvimento
+                    await new Promise(resolve => setTimeout(resolve, 500)); // simular delay
+                    
+                    const mockResponse = {
+                        token: 'dev_token_' + Date.now(),
+                        user: {
+                            id: 1,
+                            name: email.split('@')[0],
+                            email: email,
+                            type: email.includes('admin') ? 'admin' : 
+                                  email.includes('empresa') ? 'empresa' : 'cliente',
+                            perfil: email.includes('admin') ? 'admin' : 
+                                    email.includes('empresa') ? 'empresa' : 'cliente'
+                        }
+                    };
+                    
+                    // Success - store token and user data
+                    localStorage.setItem('token', mockResponse.token);
+                    localStorage.setItem('user', JSON.stringify(mockResponse.user));
+                    localStorage.setItem('userType', mockResponse.user.type);
+                    
+                    showMessage(`
+                        <strong>✅ Login Bem-Sucedido!</strong><br>
+                        Token: ${mockResponse.token}<br>
+                        Usuário: ${mockResponse.user.name}<br>
+                        Tipo: ${mockResponse.user.type}<br>
+                        <br>
+                        <strong>Próximo passo:</strong> Redirecionaria para dashboard-${mockResponse.user.type}.html
+                    `, 'success');
+                    
+                    // Mostrar o que foi salvo no localStorage
+                    setTimeout(() => {
+                        const savedUser = JSON.parse(localStorage.getItem('user') || '{}');
+                        const savedToken = localStorage.getItem('token');
+                        
+                        showMessage(showMessage.innerHTML + `
+                            <br><br>
+                            <strong>LocalStorage salvo:</strong><br>
+                            Token: ${savedToken}<br>
+                            User: ${JSON.stringify(savedUser, null, 2)}
+                        `, 'success');
+                    }, 1000);
+                    
+                } else {
+                    showMessage('❌ Não está em modo desenvolvimento. API real seria chamada aqui.', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro no teste:', error);
+                showMessage(`❌ Erro: ${error.message}`, 'error');
+            }
+        });
+    </script>
+</body>
+</html>
