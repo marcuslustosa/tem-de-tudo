@@ -3,239 +3,581 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerenciar Promo��es - Admin Tem de Tudo</title>
-<meta name="description" content="Painel administrativo para gerenciar promo��es e campanhas">
+<title>Gerenciar Promoções - Admin Tem de Tudo</title>
+<meta name="description" content="Painel administrativo para gerenciar promoções e campanhas">
 <meta name="theme-color" content="#6F1AB6">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="global-styles.css">
-<script src="global-auth.js"></script>
-<script src="global-navbar.js"></script>
-<link rel="stylesheet" href="/css/vivo-global.css">
+<script src="js/config.js"></script>
+<script src="js/auth-guard.js"></script>
+<style>
+/* RESET E VARIÁVEIS */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --vivo-blue: #3B82F6; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; 
+    --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; 
+    --gray-800: #1F2937; --gray-900: #111827; --white: #FFFFFF; --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    min-height: 100vh;
+    color: var(--gray-800);
+}
+
+/* HEADER */
+.header {
+    background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%);
+    color: var(--white);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.back-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* CONTAINER PRINCIPAL */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* ESTATÍSTICAS */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    border: 1px solid var(--gray-200);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--vivo-purple);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.25rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+/* SEÇÃO PRINCIPAL */
+.promotions-section {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    border: 1px solid var(--gray-200);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.add-btn {
+    background: var(--vivo-purple);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.add-btn:hover {
+    background: var(--vivo-purple-dark);
+    transform: translateY(-2px);
+}
+
+/* FILTROS */
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 250px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--vivo-purple);
+    box-shadow: 0 0 0 3px rgba(111, 26, 182, 0.1);
+}
+
+.filter-select {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--white);
+    cursor: pointer;
+}
+
+/* GRID DE PROMOÇÕES */
+.promotions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.promotion-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--gray-200);
+    transition: all 0.3s ease;
+}
+
+.promotion-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.promotion-image {
+    height: 150px;
+    background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 3rem;
+}
+
+.promotion-status {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-active {
+    background: rgba(16, 185, 129, 0.9);
+    color: var(--white);
+}
+
+.status-pending {
+    background: rgba(245, 158, 11, 0.9);
+    color: var(--white);
+}
+
+.status-expired {
+    background: rgba(156, 163, 175, 0.9);
+    color: var(--white);
+}
+
+.promotion-content {
+    padding: 1.5rem;
+}
+
+.promotion-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.promotion-company {
+    color: var(--gray-600);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.promotion-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.promotion-discount {
+    background: var(--vivo-green);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.promotion-dates {
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    line-height: 1.4;
+}
+
+.promotion-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-edit {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--vivo-blue);
+}
+
+.btn-edit:hover {
+    background: var(--vivo-blue);
+    color: var(--white);
+}
+
+.btn-toggle {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--vivo-orange);
+}
+
+.btn-toggle:hover {
+    background: var(--vivo-orange);
+    color: var(--white);
+}
+
+.btn-delete {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--vivo-red);
+}
+
+.btn-delete:hover {
+    background: var(--vivo-red);
+    color: var(--white);
+}
+
+/* ESTADO VAZIO */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--gray-500);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .container { padding: 1rem; }
+    .header { padding: 1.5rem 1rem; }
+    .section-header { flex-direction: column; gap: 1rem; align-items: stretch; }
+    .filters { flex-direction: column; }
+    .stats { grid-template-columns: 1fr; }
+    .promotions-grid { grid-template-columns: 1fr; }
+    .promotion-details { flex-direction: column; gap: 1rem; align-items: flex-start; }
+    .promotion-dates { text-align: left; }
+}
+</style>
+</head>
 <body>
-<div class="admin-promotions-page">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="header-container">
-            <h1 class="page-title">
+<!-- HEADER -->
+<div class="header">
+    <div class="header-top">
+        <h1 class="page-title">
+            <i class="fas fa-tags"></i>
+            Gerenciar Promoções
+        </h1>
+        <a href="admin-dashboard.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Voltar
+        </a>
+    </div>
+</div>
+
+<!-- CONTAINER PRINCIPAL -->
+<div class="container">
+    <!-- ESTATÍSTICAS -->
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-icon">
                 <i class="fas fa-tags"></i>
-                Gerenciar Promo��es
-            </h1>
-            <a href="admin-painel.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-                Voltar
-            </a>
+            </div>
+            <div class="stat-value" id="totalPromotions">24</div>
+            <div class="stat-label">Total de Promoções</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--vivo-green);">
+                <i class="fas fa-fire"></i>
+            </div>
+            <div class="stat-value" id="activePromotions">12</div>
+            <div class="stat-label">Promoções Ativas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--vivo-orange);">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-value" id="pendingPromotions">5</div>
+            <div class="stat-label">Aguardando Aprovação</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--vivo-blue);">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-value" id="conversionRate">78%</div>
+            <div class="stat-label">Taxa de Conversão</div>
         </div>
     </div>
-    <!-- Page Container -->
-    <div class="page-container">
-        <!-- Page Actions -->
-        <div class="page-actions fade-in">
-            <div class="search-section">
-                <input 
-                    type="text" 
-                    class="search-input" 
-                    id="searchInput" 
-                    placeholder="Buscar promo��es por t�tulo, empresa ou categoria..."
-                    oninput="filterPromotions()"
-                >
-                <button class="filter-btn" id="filterBtn" onclick="toggleFilters()">
-                    <i class="fas fa-filter"></i>
-                    Filtros
-                </button>
-            </div>
-            <button class="create-btn" onclick="createPromotion()">
+
+    <!-- SEÇÃO DE PROMOÇÕES -->
+    <div class="promotions-section">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-list"></i>
+                Lista de Promoções
+            </h2>
+            <button class="add-btn" onclick="createPromotion()">
                 <i class="fas fa-plus"></i>
-                Nova Promo��o
+                Nova Promoção
             </button>
         </div>
-        <!-- Stats Overview -->
-        <div class="stats-overview">
-            <div class="stat-card fade-in animate-delay-1">
-                <div class="stat-icon">
-                    <i class="fas fa-tags"></i>
-                </div>
-                <div class="stat-value" id="totalPromotions">24</div>
-                <div class="stat-label">Total de Promo��es</div>
-            </div>
-            <div class="stat-card fade-in animate-delay-2">
-                <div class="stat-icon">
-                    <i class="fas fa-fire"></i>
-                </div>
-                <div class="stat-value" id="activePromotions">12</div>
-                <div class="stat-label">Promo��es Ativas</div>
-            </div>
-            <div class="stat-card fade-in animate-delay-3">
-                <div class="stat-icon">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <div class="stat-value" id="pendingPromotions">5</div>
-                <div class="stat-label">Aguardando Aprova��o</div>
-            </div>
-            <div class="stat-card fade-in animate-delay-4">
-                <div class="stat-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="stat-value" id="conversionRate">78%</div>
-                <div class="stat-label">Taxa de Convers�o</div>
-            </div>
+
+        <!-- FILTROS -->
+        <div class="filters">
+            <input type="text" class="search-input" placeholder="Buscar promoções por título, empresa..." id="searchInput">
+            <select class="filter-select" id="statusFilter">
+                <option value="">Todos os status</option>
+                <option value="ativa">Ativas</option>
+                <option value="pendente">Pendentes</option>
+                <option value="expirada">Expiradas</option>
+            </select>
+            <select class="filter-select" id="categoryFilter">
+                <option value="">Todas as categorias</option>
+                <option value="alimentacao">Alimentação</option>
+                <option value="moda">Moda</option>
+                <option value="eletrônicos">Eletrônicos</option>
+                <option value="saude">Saúde</option>
+            </select>
         </div>
-        <!-- Promotions Grid -->
+
+        <!-- GRID DE PROMOÇÕES -->
         <div class="promotions-grid" id="promotionsGrid">
-            <!-- Promotions will be loaded here -->
+            <!-- Dados serão carregados via JavaScript -->
         </div>
     </div>
 </div>
-<!-- Bottom Navigation -->
-<div class="bottom-nav">
-    <div class="nav-container">
-        <a href="admin-painel.html" class="nav-item">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="admin-usuarios.html" class="nav-item">
-            <i class="fas fa-users"></i>
-            <span>Usu�rios</span>
-        </a>
-        <a href="admin-empresas.html" class="nav-item">
-            <i class="fas fa-building"></i>
-            <span>Empresas</span>
-        </a>
-        <a href="admin-promocoes.html" class="nav-item active">
-            <i class="fas fa-tags"></i>
-            <span>Promo��es</span>
-        </a>
-        <a href="admin-configuracoes.html" class="nav-item">
-            <i class="fas fa-cogs"></i>
-            <span>Config</span>
-        </a>
-    </div>
-</div>
-<script src="/js/config.js"></script>
+
 <script>
-// Sample promotion data
-const samplePromotions = [
-    {
-        id: 1,
-        titulo: "Black Friday - 50% OFF",
-        empresa: { nome: "TechStore" },
-        desconto: 50,
-        data_inicio: "2024-11-20",
-        validade: "2024-11-30",
-        status: "ativa",
-        imagem: null
+// Dados de exemplo das promoções
+const promotionsData = [
+    { 
+        id: 1, 
+        title: 'Black Friday - 50% OFF', 
+        company: 'TechStore', 
+        discount: 50, 
+        startDate: '2026-01-15', 
+        endDate: '2026-02-15', 
+        status: 'ativa',
+        category: 'eletrônicos'
     },
-    {
-        id: 2,
-        titulo: "Desconto Especial Clientes VIP",
-        empresa: { nome: "Fashion Store" },
-        desconto: 30,
-        data_inicio: "2024-11-01",
-        validade: "2024-12-31",
-        status: "ativa",
-        imagem: null
+    { 
+        id: 2, 
+        title: 'Desconto Especial Clientes VIP', 
+        company: 'Fashion Store', 
+        discount: 30, 
+        startDate: '2026-01-10', 
+        endDate: '2026-03-10', 
+        status: 'ativa',
+        category: 'moda'
     },
-    {
-        id: 3,
-        titulo: "Promo��o de Natal",
-        empresa: { nome: "Casa & Decora��o" },
-        desconto: 25,
-        data_inicio: "2024-12-15",
-        validade: "2024-12-25",
-        status: "pendente",
-        imagem: null
+    { 
+        id: 3, 
+        title: 'Promoção de Verão', 
+        company: 'Casa & Decoração', 
+        discount: 25, 
+        startDate: '2026-02-01', 
+        endDate: '2026-02-28', 
+        status: 'pendente',
+        category: 'casa'
     },
-    {
-        id: 4,
-        titulo: "Liquida��o de Ver�o",
-        empresa: { nome: "Sports Center" },
-        desconto: 40,
-        data_inicio: "2024-10-01",
-        validade: "2024-10-31",
-        status: "expirada",
-        imagem: null
+    { 
+        id: 4, 
+        title: 'Combo Pizza + Refrigerante', 
+        company: 'Pizzaria do João', 
+        discount: 20, 
+        startDate: '2025-12-01', 
+        endDate: '2025-12-31', 
+        status: 'expirada',
+        category: 'alimentacao'
+    },
+    { 
+        id: 5, 
+        title: 'Medicamentos com 15% OFF', 
+        company: 'Farmácia São João', 
+        discount: 15, 
+        startDate: '2026-01-20', 
+        endDate: '2026-04-20', 
+        status: 'ativa',
+        category: 'saude'
     }
 ];
-// Load promotions
-async function loadPromotions() {
-    try {
-        const token = localStorage.getItem('authToken') || localStorage.getItem('token');
-        // Try to fetch from API first
-        try {
-            const response = await fetch(`${API_CONFIG.getBaseURL()}/api/promocoes`, {
-                headers: { 
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/json'
-                }
-            });
-            if (response.ok) {
-                const data = await response.json();
-                const promotions = data.data || data || [];
-                renderPromotions(promotions);
-                updateStats(promotions);
-                return;
-            }
-        } catch (apiError) {
-            console.log('API n�o dispon�vel, usando dados de exemplo');
-        }
-        // Fallback to sample data
-        renderPromotions(samplePromotions);
-        updateStats(samplePromotions);
-    } catch (error) {
-        console.error('Erro ao carregar promo��es:', error);
-        renderPromotions([]);
-    }
-}
-// Render promotions
-function renderPromotions(promotions) {
+
+let filteredPromotions = [...promotionsData];
+
+// Carregamento inicial
+window.addEventListener('DOMContentLoaded', function() {
+    renderPromotions();
+    setupFilters();
+    updateStats();
+});
+
+function renderPromotions() {
     const grid = document.getElementById('promotionsGrid');
-    if (promotions.length === 0) {
+    
+    if (filteredPromotions.length === 0) {
         grid.innerHTML = `
-            <div class="empty-state fade-in">
-                <div class="empty-icon">
-                    <i class="fas fa-tags"></i>
-                </div>
-                <h3>Nenhuma promo��o encontrada</h3>
-                <p>Crie sua primeira promo��o para come�ar</p>
+            <div class="empty-state">
+                <i class="fas fa-tags"></i>
+                <h3>Nenhuma promoção encontrada</h3>
+                <p>Crie sua primeira promoção para começar</p>
             </div>
         `;
         return;
     }
-    grid.innerHTML = promotions.map((promotion, index) => {
+
+    grid.innerHTML = filteredPromotions.map(promotion => {
         const status = getPromotionStatus(promotion);
         const statusClass = getStatusClass(status);
         const statusText = getStatusText(status);
+
         return `
-            <div class="promotion-card fade-in animate-delay-${(index % 4) + 1}">
+            <div class="promotion-card">
                 <div class="promotion-image">
-                    ${promotion.imagem ? 
-                        `<img src="${promotion.imagem}" alt="${promotion.titulo}">` : 
-                        '<div class="placeholder"><i class="fas fa-image"></i></div>'
-                    }
+                    <i class="fas fa-tags"></i>
                     <div class="promotion-status ${statusClass}">
                         ${statusText}
                     </div>
                 </div>
                 <div class="promotion-content">
-                    <h3 class="promotion-title">${promotion.titulo}</h3>
+                    <h3 class="promotion-title">${promotion.title}</h3>
                     <div class="promotion-company">
                         <i class="fas fa-building"></i>
-                        ${promotion.empresa?.nome || 'N/A'}
+                        ${promotion.company}
                     </div>
                     <div class="promotion-details">
                         <div class="promotion-discount">
-                            -${promotion.desconto}%
+                            -${promotion.discount}%
                         </div>
                         <div class="promotion-dates">
-                            <div><strong>In�cio:</strong> ${formatDate(promotion.data_inicio)}</div>
-                            <div><strong>Expira:</strong> ${formatDate(promotion.validade)}</div>
+                            <div><strong>Início:</strong> ${formatDate(promotion.startDate)}</div>
+                            <div><strong>Expira:</strong> ${formatDate(promotion.endDate)}</div>
                         </div>
                     </div>
                     <div class="promotion-actions">
                         <button class="action-btn btn-edit" onclick="editPromotion(${promotion.id})" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="action-btn btn-toggle" onclick="togglePromotionStatus(${promotion.id})" title="Ativar/Desativar">
+                        <button class="action-btn btn-toggle" onclick="togglePromotion(${promotion.id})" title="Ativar/Desativar">
                             <i class="fas fa-toggle-${status === 'ativa' ? 'on' : 'off'}"></i>
                         </button>
                         <button class="action-btn btn-delete" onclick="deletePromotion(${promotion.id})" title="Excluir">
@@ -247,95 +589,106 @@ function renderPromotions(promotions) {
         `;
     }).join('');
 }
-// Update statistics
-function updateStats(promotions) {
-    const active = promotions.filter(p => getPromotionStatus(p) === 'ativa').length;
-    const pending = promotions.filter(p => getPromotionStatus(p) === 'pendente').length;
-    animateValue('totalPromotions', promotions.length);
-    animateValue('activePromotions', active);
-    animateValue('pendingPromotions', pending);
-    animateValue('conversionRate', 78, '%');
+
+function setupFilters() {
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
+
+    [searchInput, statusFilter, categoryFilter].forEach(element => {
+        element.addEventListener('input', filterPromotions);
+    });
 }
-// Helper functions
+
+function filterPromotions() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    const categoryFilter = document.getElementById('categoryFilter').value;
+
+    filteredPromotions = promotionsData.filter(promotion => {
+        const matchesSearch = promotion.title.toLowerCase().includes(searchTerm) || 
+                             promotion.company.toLowerCase().includes(searchTerm);
+        const matchesStatus = !statusFilter || getPromotionStatus(promotion) === statusFilter;
+        const matchesCategory = !categoryFilter || promotion.category === categoryFilter;
+
+        return matchesSearch && matchesStatus && matchesCategory;
+    });
+
+    renderPromotions();
+}
+
+function updateStats() {
+    const total = promotionsData.length;
+    const active = promotionsData.filter(p => getPromotionStatus(p) === 'ativa').length;
+    const pending = promotionsData.filter(p => getPromotionStatus(p) === 'pendente').length;
+
+    document.getElementById('totalPromotions').textContent = total;
+    document.getElementById('activePromotions').textContent = active;
+    document.getElementById('pendingPromotions').textContent = pending;
+}
+
 function getPromotionStatus(promotion) {
     const now = new Date();
-    const startDate = new Date(promotion.data_inicio);
-    const endDate = new Date(promotion.validade);
-    if (endDate < now) return 'expirada';
-    if (startDate > now) return 'pendente';
-    return promotion.status || 'ativa';
+    const startDate = new Date(promotion.startDate);
+    const endDate = new Date(promotion.endDate);
+
+    if (now < startDate) return 'pendente';
+    if (now > endDate) return 'expirada';
+    return promotion.status;
 }
+
 function getStatusClass(status) {
-    return `status-${status === 'ativa' ? 'active' : status === 'pendente' ? 'pending' : 'expired'}`;
+    const statusMap = {
+        'ativa': 'status-active',
+        'pendente': 'status-pending',
+        'expirada': 'status-expired'
+    };
+    return statusMap[status] || 'status-expired';
 }
+
 function getStatusText(status) {
     const statusMap = {
         'ativa': 'Ativa',
-        'pendente': 'Pendente',
+        'pendente': 'Pendente', 
         'expirada': 'Expirada'
     };
     return statusMap[status] || 'Desconhecido';
 }
+
 function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    });
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
 }
-function animateValue(elementId, value, suffix = '') {
-    const element = document.getElementById(elementId);
-    const start = 0;
-    const duration = 1000;
-    const increment = value / (duration / 16);
-    let current = start;
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= value) {
-            element.textContent = value + suffix;
-            clearInterval(timer);
-        } else {
-            element.textContent = Math.floor(current) + suffix;
-        }
-    }, 16);
-}
-// Action functions
+
 function createPromotion() {
-    alert('?? Criar nova promo��o - Funcionalidade em desenvolvimento');
+    alert('Criar nova promoção - Funcionalidade em desenvolvimento');
 }
+
 function editPromotion(id) {
-    alert(`?? Editar promo��o ${id} - Funcionalidade em desenvolvimento`);
+    alert(`Editar promoção ID: ${id}`);
 }
-function togglePromotionStatus(id) {
-    alert(`?? Alternar status da promo��o ${id} - Funcionalidade em desenvolvimento`);
+
+function togglePromotion(id) {
+    const promotion = promotionsData.find(p => p.id === id);
+    if (promotion) {
+        promotion.status = promotion.status === 'ativa' ? 'inativa' : 'ativa';
+        renderPromotions();
+        updateStats();
+        alert(`Promoção ${promotion.status === 'ativa' ? 'ativada' : 'desativada'} com sucesso!`);
+    }
 }
+
 function deletePromotion(id) {
-    if (confirm('Tem certeza que deseja excluir esta promo��o?')) {
-        alert(`??? Promo��o ${id} exclu�da - Funcionalidade em desenvolvimento`);
+    if (confirm('Tem certeza que deseja excluir esta promoção?')) {
+        const index = promotionsData.findIndex(p => p.id === id);
+        if (index > -1) {
+            promotionsData.splice(index, 1);
+            filterPromotions();
+            updateStats();
+            alert('Promoção excluída com sucesso!');
+        }
     }
 }
-function filterPromotions() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    // Implementation for filtering promotions
-    console.log('Filtering promotions with term:', searchTerm);
-}
-function toggleFilters() {
-    alert('?? Filtros avan�ados - Funcionalidade em desenvolvimento');
-}
-// Initialize page
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('P�gina de promo��es carregada');
-    // Check authentication
-    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
-    const userType = localStorage.getItem('userType');
-    if (!token || userType !== 'admin') {
-        alert('?? Acesso negado. Redirecionando...');
-        window.location.href = '/entrar.html';
-        return;
-    }
-    // Load promotions
-    loadPromotions();
-});
 </script>
 </body>
 </html>

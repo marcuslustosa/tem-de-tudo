@@ -1,284 +1,567 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#6F1AB6">
-    <title>Relat�rios Admin - Tem de Tudo</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="global-styles.css">
-<script src="global-auth.js"></script>
-<script src="global-navbar.js"></script>    <link rel="manifest" href="/manifest.json">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/js/config.js"></script>
-<link rel="stylesheet" href="/css/vivo-global.css">
-<body class="modern-interface">
-<!-- Background Elements -->
-<div class="bg-elements">
-    <div class="floating-circle" style="top: 10%; left: 80%;"></div>
-    <div class="floating-square" style="top: 60%; right: 10%;"></div>
-    <div class="gradient-blob" style="top: 40%; left: 5%;"></div>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatórios - Admin Tem de Tudo</title>
+<meta name="description" content="Dashboard de relatórios e analytics administrativo">
+<meta name="theme-color" content="#6F1AB6">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/config.js"></script>
+<script src="js/auth-guard.js"></script>
+<style>
+/* RESET E VARIÁVEIS */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --vivo-blue: #3B82F6; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; 
+    --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; 
+    --gray-800: #1F2937; --gray-900: #111827; --white: #FFFFFF; --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    min-height: 100vh;
+    color: var(--gray-800);
+}
+
+/* HEADER */
+.header {
+    background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%);
+    color: var(--white);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.back-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+/* CONTAINER PRINCIPAL */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* FILTROS */
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-200);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.filter-select, .filter-input {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--white);
+    cursor: pointer;
+    min-width: 150px;
+}
+
+.filter-input:focus, .filter-select:focus {
+    outline: none;
+    border-color: var(--vivo-purple);
+    box-shadow: 0 0 0 3px rgba(111, 26, 182, 0.1);
+}
+
+.filter-btn {
+    background: var(--vivo-purple);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-btn:hover {
+    background: var(--vivo-purple-dark);
+}
+
+/* ESTATÍSTICAS */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    border: 1px solid var(--gray-200);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--vivo-purple);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--vivo-purple);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--gray-600);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.stat-change {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.stat-change.positive {
+    color: var(--vivo-green);
+}
+
+.stat-change.negative {
+    color: var(--vivo-red);
+}
+
+/* GRÁFICOS */
+.charts-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.chart-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-200);
+}
+
+.chart-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+/* TABELAS */
+.table-section {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    border: 1px solid var(--gray-200);
+    margin-bottom: 2rem;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.table-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--gray-200);
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+}
+
+.report-table th {
+    background: var(--gray-50);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--gray-700);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.report-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: middle;
+}
+
+.report-table tr:hover {
+    background: var(--gray-50);
+}
+
+.metric-value {
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.metric-positive {
+    color: var(--vivo-green);
+}
+
+.metric-negative {
+    color: var(--vivo-red);
+}
+
+.export-btn {
+    background: var(--vivo-blue);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.export-btn:hover {
+    background: #2563EB;
+    transform: translateY(-2px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .container { padding: 1rem; }
+    .header { padding: 1.5rem 1rem; }
+    .filters { flex-direction: column; }
+    .stats { grid-template-columns: 1fr; }
+    .charts-section { grid-template-columns: 1fr; }
+    .chart-container { height: 250px; }
+    .table-section { padding: 1rem; }
+    .table-header { flex-direction: column; gap: 1rem; align-items: stretch; }
+}
+</style>
+</head>
+<body>
+<!-- HEADER -->
+<div class="header">
+    <div class="header-top">
+        <h1 class="page-title">
+            <i class="fas fa-chart-bar"></i>
+            Relatórios e Analytics
+        </h1>
+        <a href="admin-dashboard.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Voltar
+        </a>
+    </div>
 </div>
-<!-- Header -->
-<div class="modern-header">
-    <div class="header-content">
-        <div class="header-left">
-            <button class="back-btn" onclick="location.href='admin-painel.html'" title="Voltar">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <div class="header-title">
-                <div class="header-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div>
-                    <h1>Relat�rios</h1>
-                    <span class="subtitle">An�lises e estat�sticas do sistema</span>
-                </div>
-            </div>
+
+<!-- CONTAINER PRINCIPAL -->
+<div class="container">
+    <!-- FILTROS -->
+    <div class="filters">
+        <div class="filter-group">
+            <label class="filter-label">Período</label>
+            <select class="filter-select" id="periodFilter">
+                <option value="today">Hoje</option>
+                <option value="week">Esta Semana</option>
+                <option value="month" selected>Este Mês</option>
+                <option value="quarter">Este Trimestre</option>
+                <option value="year">Este Ano</option>
+            </select>
         </div>
-        <div class="header-actions">
-            <button class="export-btn" onclick="exportReport()">
-                <i class="fas fa-download"></i>
-                <span>Exportar</span>
+        <div class="filter-group">
+            <label class="filter-label">Data Inicial</label>
+            <input type="date" class="filter-input" id="startDate">
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Data Final</label>
+            <input type="date" class="filter-input" id="endDate">
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Tipo</label>
+            <select class="filter-select" id="typeFilter">
+                <option value="all">Todos</option>
+                <option value="users">Usuários</option>
+                <option value="companies">Empresas</option>
+                <option value="promotions">Promoções</option>
+            </select>
+        </div>
+        <div class="filter-group" style="justify-content: flex-end;">
+            <button class="filter-btn" onclick="applyFilters()">
+                <i class="fas fa-search"></i>
+                Aplicar Filtros
             </button>
         </div>
     </div>
-</div>
-<!-- Main Content -->
-<div class="main-container">
-    <div class="page-content">
-        <!-- Period Selector -->
-        <div class="glass-card period-selector">
-            <div class="selector-content">
-                <h3>
-                    <i class="fas fa-calendar-alt"></i>
-                    Per�odo de An�lise
-                </h3>
-                <div class="period-buttons">
-                    <button class="period-btn active" data-period="7">7 dias</button>
-                    <button class="period-btn" data-period="30">30 dias</button>
-                    <button class="period-btn" data-period="90">90 dias</button>
-                </div>
-                <div class="date-range">
-                    <input type="date" id="startDate" class="date-input">
-                    <span>at�</span>
-                    <input type="date" id="endDate" class="date-input">
-                    <button class="apply-btn" onclick="applyDateRange()">
-                        <i class="fas fa-check"></i>
-                    </button>
-                </div>
+
+    <!-- ESTATÍSTICAS PRINCIPAIS -->
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-value" id="totalUsers">847</div>
+            <div class="stat-label">Total de Usuários</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i>
+                +12.5% vs mês anterior
             </div>
         </div>
-        <!-- Stats Overview -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon users">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-trend positive">
-                        <i class="fas fa-arrow-up"></i>
-                        +12%
-                    </div>
-                </div>
-                <div class="stat-value" data-counter="1347">0</div>
-                <div class="stat-label">Total de Usu�rios</div>
-                <div class="stat-description">+156 novos usu�rios este m�s</div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--vivo-green);">
+                <i class="fas fa-building"></i>
             </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon coins">
-                        <i class="fas fa-coins"></i>
-                    </div>
-                    <div class="stat-trend positive">
-                        <i class="fas fa-arrow-up"></i>
-                        +8%
-                    </div>
-                </div>
-                <div class="stat-value" data-counter="89456">0</div>
-                <div class="stat-label">Pontos Distribu�dos</div>
-                <div class="stat-description">7.234 pontos hoje</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon companies">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <div class="stat-trend neutral">
-                        <i class="fas fa-minus"></i>
-                        0%
-                    </div>
-                </div>
-                <div class="stat-value" data-counter="23">0</div>
-                <div class="stat-label">Empresas Ativas</div>
-                <div class="stat-description">2 pendentes de aprova��o</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon coupons">
-                        <i class="fas fa-ticket"></i>
-                    </div>
-                    <div class="stat-trend positive">
-                        <i class="fas fa-arrow-up"></i>
-                        +15%
-                    </div>
-                </div>
-                <div class="stat-value" data-counter="456">0</div>
-                <div class="stat-label">Cupons Resgatados</div>
-                <div class="stat-description">67 resgates hoje</div>
+            <div class="stat-value" id="totalCompanies">156</div>
+            <div class="stat-label">Empresas Cadastradas</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i>
+                +8.3% vs mês anterior
             </div>
         </div>
-        <!-- Charts Section -->
-        <div class="charts-grid">
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>
-                        <i class="fas fa-chart-line"></i>
-                        Crescimento de Usu�rios
-                    </h3>
-                    <div class="chart-actions">
-                        <button class="chart-action" title="Atualizar">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="chart-container">
-                    <canvas id="usersChart"></canvas>
-                </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--vivo-orange);">
+                <i class="fas fa-tags"></i>
             </div>
-            <div class="chart-card">
-                <div class="chart-header">
-                    <h3>
-                        <i class="fas fa-chart-pie"></i>
-                        Distribui��o por Perfil
-                    </h3>
-                </div>
-                <div class="chart-container">
-                    <canvas id="profileChart"></canvas>
-                </div>
+            <div class="stat-value" id="activePromotions">89</div>
+            <div class="stat-label">Promoções Ativas</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i>
+                +15.7% vs mês anterior
             </div>
         </div>
-        <!-- Activity Feed -->
-        <div class="glass-card activity-section">
-            <div class="section-header">
-                <h3>
-                    <i class="fas fa-clock"></i>
-                    Atividade Recente
-                </h3>
-                <button class="view-all-btn">Ver todas</button>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: var(--vivo-blue);">
+                <i class="fas fa-chart-line"></i>
             </div>
-            <div class="activity-feed" id="activityFeed">
-                <!-- Activities will be loaded here -->
+            <div class="stat-value" id="conversionRate">73.2%</div>
+            <div class="stat-label">Taxa de Conversão</div>
+            <div class="stat-change negative">
+                <i class="fas fa-arrow-down"></i>
+                -2.1% vs mês anterior
             </div>
         </div>
-            <h2 style="margin-bottom: 20px; font-size: 20px; font-weight: 900; color: #1D1D1F;">
-                <i class="fas fa-filter" style="color: #6F1AB6; margin-right: 8px;"></i>
-                Filtros
-            </h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
-                <div class="form-group">
-                    <label>Per�odo</label>
-                    <select id="periodFilter" onchange="updateStats()">
-                        <option value="7">�ltimos 7 dias</option>
-                        <option value="30" selected>�ltimos 30 dias</option>
-                        <option value="90">�ltimos 90 dias</option>
-                        <option value="365">�ltimos 12 meses</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Categoria</label>
-                    <select id="categoryFilter" onchange="updateStats()">
-                        <option value="all">Todas</option>
-                        <option value="alimentacao">Alimenta��o</option>
-                        <option value="varejo">Varejo</option>
-                        <option value="servicos">Servi�os</option>
-                        <option value="saude">Sa�de</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Regi�o</label>
-                    <select id="regionFilter" onchange="updateStats()">
-                        <option value="all">Todas</option>
-                        <option value="centro">Centro</option>
-                        <option value="zona-norte">Zona Norte</option>
-                        <option value="zona-sul">Zona Sul</option>
-                    </select>
-                </div>
-                <div class="form-group" style="display: flex; align-items: flex-end;">
-                    <button class="btn-add" onclick="exportReport()" style="width: 100%;">
-                        <i class="fas fa-download"></i> Exportar
-                    </button>
-                </div>
-            </div>
-        </div>
-        <!-- Charts Section -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-            <div class="glass-card">
-                <h3 style="margin-bottom: 20px; font-size: 18px; font-weight: 800; color: #1D1D1F;">
-                    <i class="fas fa-chart-bar" style="color: #6F1AB6; margin-right: 8px;"></i>
-                    Usu�rios por M�s
-                </h3>
-                <canvas id="usersChart" height="200"></canvas>
-            </div>
-            <div class="glass-card">
-                <h3 style="margin-bottom: 20px; font-size: 18px; font-weight: 800; color: #1D1D1F;">
-                    <i class="fas fa-chart-pie" style="color: #6F1AB6; margin-right: 8px;"></i>
-                    Pontos por Categoria
-                </h3>
-                <canvas id="pointsChart" height="200"></canvas>
-            </div>
-        </div>
-        <!-- Top Empresas -->
-        <div class="glass-card">
-            <h3 style="margin-bottom: 20px; font-size: 18px; font-weight: 800; color: #1D1D1F;">
-                <i class="fas fa-trophy" style="color: #6F1AB6; margin-right: 8px;"></i>
-                Top 10 Empresas
+    </div>
+
+    <!-- GRÁFICOS -->
+    <div class="charts-section">
+        <div class="chart-card">
+            <h3 class="chart-title">
+                <i class="fas fa-chart-line"></i>
+                Crescimento de Usuários
             </h3>
+            <div class="chart-container">
+                <canvas id="usersChart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card">
+            <h3 class="chart-title">
+                <i class="fas fa-chart-pie"></i>
+                Distribuição por Tipo
+            </h3>
+            <div class="chart-container">
+                <canvas id="distributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABELA DE MÉTRICAS -->
+    <div class="table-section">
+        <div class="table-header">
+            <h3 class="table-title">
+                <i class="fas fa-table"></i>
+                Métricas Detalhadas
+            </h3>
+            <button class="export-btn" onclick="exportData()">
+                <i class="fas fa-download"></i>
+                Exportar Dados
+            </button>
+        </div>
+        <div class="table-container">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Métrica</th>
+                        <th>Valor Atual</th>
+                        <th>Período Anterior</th>
+                        <th>Variação</th>
+                        <th>Tendência</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Novos Usuários</td>
+                        <td class="metric-value">125</td>
+                        <td>98</td>
+                        <td class="metric-positive">+27.6%</td>
+                        <td><i class="fas fa-trending-up" style="color: var(--vivo-green);"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Empresas Ativas</td>
+                        <td class="metric-value">142</td>
+                        <td>138</td>
+                        <td class="metric-positive">+2.9%</td>
+                        <td><i class="fas fa-trending-up" style="color: var(--vivo-green);"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Promoções Criadas</td>
+                        <td class="metric-value">34</td>
+                        <td>41</td>
+                        <td class="metric-negative">-17.1%</td>
+                        <td><i class="fas fa-trending-down" style="color: var(--vivo-red);"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Engajamento</td>
+                        <td class="metric-value">68.4%</td>
+                        <td>71.2%</td>
+                        <td class="metric-negative">-3.9%</td>
+                        <td><i class="fas fa-trending-down" style="color: var(--vivo-red);"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Receita Estimada</td>
+                        <td class="metric-value">R$ 45.672</td>
+                        <td>R$ 38.945</td>
+                        <td class="metric-positive">+17.3%</td>
+                        <td><i class="fas fa-trending-up" style="color: var(--vivo-green);"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-<!-- Bottom Navigation -->
-<div class="bottom-nav">
-    <div class="nav-container">
-        <a href="admin-painel.html" class="nav-item">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="admin-usuarios.html" class="nav-item">
-            <i class="fas fa-users"></i>
-            <span>Usu�rios</span>
-        </a>
-        <a href="admin-empresas.html" class="nav-item">
-            <i class="fas fa-building"></i>
-            <span>Empresas</span>
-        </a>
-        <a href="admin-relatorios.html" class="nav-item active">
-            <i class="fas fa-chart-line"></i>
-            <span>Relat�rios</span>
-        </a>
-        <a href="admin-configuracoes.html" class="nav-item">
-            <i class="fas fa-cogs"></i>
-            <span>Config</span>
-        </a>
-    </div>
-</div>
+
 <script>
-let usersChart, profileChart;
-// Initialize Charts
+// Inicialização da página
+window.addEventListener('DOMContentLoaded', function() {
+    console.log('Página de relatórios carregada');
+    
+    // Configurar datas padrão
+    const today = new Date();
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    
+    document.getElementById('startDate').valueAsDate = firstDayOfMonth;
+    document.getElementById('endDate').valueAsDate = today;
+    
+    // Inicializar gráficos
+    initializeCharts();
+});
+
+// Inicialização dos gráficos
 function initializeCharts() {
-    // Users Growth Chart
+    // Gráfico de crescimento de usuários
     const usersCtx = document.getElementById('usersChart').getContext('2d');
-    usersChart = new Chart(usersCtx, {
+    new Chart(usersCtx, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+            labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
             datasets: [{
-                label: 'Novos Usu�rios',
-                data: [120, 190, 300, 500, 200, 300],
+                label: 'Usuários',
+                data: [45, 52, 68, 71, 83, 95, 102, 115, 127, 138, 145, 156],
                 borderColor: '#6F1AB6',
                 backgroundColor: 'rgba(111, 26, 182, 0.1)',
-                borderWidth: 3,
                 fill: true,
                 tension: 0.4
             }]
@@ -293,33 +576,25 @@ function initializeCharts() {
             },
             scales: {
                 y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    }
-                },
-                x: {
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    }
+                    beginAtZero: true
                 }
             }
         }
     });
-    // Profile Distribution Chart
-    const profileCtx = document.getElementById('profileChart').getContext('2d');
-    profileChart = new Chart(profileCtx, {
+
+    // Gráfico de distribuição por tipo
+    const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+    new Chart(distributionCtx, {
         type: 'doughnut',
         data: {
             labels: ['Clientes', 'Empresas', 'Administradores'],
             datasets: [{
-                data: [85, 12, 3],
+                data: [678, 156, 13],
                 backgroundColor: [
-                    '#6F1AB6',
-                    '#4A90E2',
-                    '#F59E0B'
-                ],
-                borderWidth: 0
+                    '#3B82F6',
+                    '#10B981', 
+                    '#6F1AB6'
+                ]
             }]
         },
         options: {
@@ -333,267 +608,60 @@ function initializeCharts() {
         }
     });
 }
-// Counter Animation
-function animateCounters() {
-    document.querySelectorAll('[data-counter]').forEach(counter => {
-        const target = parseInt(counter.dataset.counter);
-        const increment = target / 100;
-        let current = 0;
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                current = target;
-                clearInterval(timer);
-            }
-            counter.textContent = Math.floor(current).toLocaleString('pt-BR');
-        }, 20);
-    });
-}
-// Load Activity Feed
-function loadActivity() {
-    const activities = [
-        {
-            icon: 'fas fa-user-plus',
-            text: 'Novo usu�rio registrado: Jo�o Silva',
-            time: '2 min atr�s',
-            type: 'user'
-        },
-        {
-            icon: 'fas fa-coins',
-            text: '1.500 pontos distribu�dos na Farm�cia Central',
-            time: '5 min atr�s',
-            type: 'points'
-        },
-        {
-            icon: 'fas fa-ticket',
-            text: '12 cupons resgatados no �ltimo hora',
-            time: '15 min atr�s',
-            type: 'coupon'
-        },
-        {
-            icon: 'fas fa-building',
-            text: 'Nova empresa cadastrada: Tech Store',
-            time: '1h atr�s',
-            type: 'company'
-        }
-    ];
-    const activityFeed = document.getElementById('activityFeed');
-    activityFeed.innerHTML = activities.map(activity => `
-        <div class="activity-item">
-            <div class="activity-icon ${activity.type}">
-                <i class="${activity.icon}"></i>
-            </div>
-            <div class="activity-content">
-                <div class="activity-text">${activity.text}</div>
-                <div class="activity-time">${activity.time}</div>
-            </div>
-        </div>
-    `).join('');
-}
-// Period Selection
-function selectPeriod(period) {
-    document.querySelectorAll('.period-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    // Update charts and stats based on selected period
-    console.log(`Per�odo selecionado: ${period} dias`);
-}
-// Export Report
-function exportReport() {
-    const btn = event.target.closest('button');
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exportando...';
-    // Simulate export
-    setTimeout(() => {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
-        showMessage('Relat�rio exportado com sucesso!', 'success');
-    }, 2000);
-}
-// Apply Date Range
-function applyDateRange() {
+
+// Aplicar filtros
+function applyFilters() {
+    const period = document.getElementById('periodFilter').value;
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
-    if (startDate && endDate) {
-        console.log(`Per�odo personalizado: ${startDate} at� ${endDate}`);
-        showMessage('Per�odo aplicado com sucesso!', 'success');
-    }
+    const type = document.getElementById('typeFilter').value;
+    
+    console.log('Aplicando filtros:', { period, startDate, endDate, type });
+    
+    // Aqui você implementaria a lógica para filtrar os dados
+    // Por enquanto, apenas mostra um alerta
+    alert(`Filtros aplicados:\nPeríodo: ${period}\nData Inicial: ${startDate}\nData Final: ${endDate}\nTipo: ${type}`);
 }
-// Show Message
-function showMessage(message, type = 'success') {
-    const notification = document.createElement('div');
-    notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-        ${message}
-    `;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#10B981' : '#EF4444'};
-        color: white;
-        padding: 16px 24px;
-        border-radius: 12px;
-        font-weight: 600;
-        z-index: 10000;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        animation: slideIn 0.3s ease;
-    `;
-    document.body.appendChild(notification);
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
+
+// Exportar dados
+function exportData() {
+    alert('Exportando dados para CSV... (Funcionalidade em desenvolvimento)');
+    
+    // Aqui você implementaria a exportação real dos dados
+    // Por exemplo, gerando um arquivo CSV ou Excel
 }
-// Initialize
-document.addEventListener('DOMContentLoaded', function() {
-    // Check authentication
-    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
-    const userType = localStorage.getItem('userType');
-    if (!token || userType !== 'admin') {
-        alert('?? Acesso negado. �rea restrita para administradores.');
-        window.location.href = '/entrar.html';
-        return;
-    }
-    // Initialize everything
-    animateCounters();
-    loadActivity();
-    // Initialize charts after a brief delay
-    setTimeout(() => {
-        initializeCharts();
-    }, 500);
-    // Set today's date as default
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('endDate').value = today;
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    document.getElementById('startDate').value = sevenDaysAgo.toISOString().split('T')[0];
-    // Add event listeners for period buttons
-    document.querySelectorAll('.period-btn').forEach(btn => {
-        btn.addEventListener('click', () => selectPeriod(btn.dataset.period));
+
+// Atualizar dados em tempo real (simulado)
+function updateMetrics() {
+    // Simula atualizações em tempo real dos dados
+    const elements = ['totalUsers', 'totalCompanies', 'activePromotions', 'conversionRate'];
+    
+    elements.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            // Adiciona uma pequena variação aleatória aos valores
+            const currentValue = parseFloat(element.textContent.replace(/[^\d.]/g, ''));
+            const variation = (Math.random() - 0.5) * 0.02; // ±1% de variação
+            const newValue = currentValue * (1 + variation);
+            
+            if (id === 'conversionRate') {
+                element.textContent = newValue.toFixed(1) + '%';
+            } else {
+                element.textContent = Math.round(newValue);
+            }
+        }
     });
-});
-// CSS for animations
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-`;
-document.head.appendChild(style);
+}
+
+// Atualizar métricas a cada 30 segundos (simulação)
+setInterval(updateMetrics, 30000);
 </script>
 </body>
 </html>
-                { rank: 4, nome: 'Academia Fitness Pro', categoria: 'Servi�os', pontos: 76000, cupons: 290, taxa: '82.1%' },
-                { rank: 5, nome: 'Pizzaria Don Giovanni', categoria: 'Alimenta��o', pontos: 65000, cupons: 250, taxa: '78.9%' }
-            ];
-            const tbody = document.getElementById('topEmpresasTable');
-            tbody.innerHTML = topEmpresas.map(e => `
-                <tr>
-                    <td style="font-weight: 700; color: #6F1AB6;">${e.rank}�</td>
-                    <td style="font-weight: 600;">${e.nome}</td>
-                    <td><span class="badge empresa">${e.categoria}</span></td>
-                    <td>${e.pontos.toLocaleString('pt-BR')}</td>
-                    <td>${e.cupons}</td>
-                    <td style="color: #2E7D32; font-weight: 700;">${e.taxa}</td>
-                </tr>
-            `).join('');
-        }
-        function exportReport() {
-            alert('Relat�rio exportado com sucesso! (Funcionalidade ser� implementada)');
-        }
-        // Inicializar charts
-        function initCharts() {
-            // Users Chart
-            const usersCtx = document.getElementById('usersChart').getContext('2d');
-            new Chart(usersCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                    datasets: [{
-                        label: 'Novos Usu�rios',
-                        data: [650, 590, 800, 810, 560, 550, 400, 700, 820, 950, 1100, 1250],
-                        borderColor: '#6F1AB6',
-                        backgroundColor: 'rgba(111, 26, 182, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-            // Points Chart
-            const pointsCtx = document.getElementById('pointsChart').getContext('2d');
-            new Chart(pointsCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Alimenta��o', 'Varejo', 'Servi�os', 'Sa�de', 'Entretenimento'],
-                    datasets: [{
-                        data: [35, 25, 20, 12, 8],
-                        backgroundColor: [
-                            '#6F1AB6',
-                            '#9333EA',
-                            '#10B981',
-                            '#F97316',
-                            '#3B82F6'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 15,
-                                font: { size: 12, weight: '600' }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        // Carregar ao iniciar
-        document.addEventListener('DOMContentLoaded', () => {
-            updateStats();
-            initCharts();
-        });
-    </script>
-    <!-- Bottom Navigation PWA -->
-    <nav class="bottom-nav">
-        <a href="admin-painel.html" class="nav-item">
-            <i class="fas fa-tachometer-alt"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="admin-usuarios.html" class="nav-item">
-            <i class="fas fa-users"></i>
-            <span>Usu�rios</span>
-        </a>
-        <a href="admin-empresas.html" class="nav-item">
-            <i class="fas fa-building"></i>
-            <span>Empresas</span>
-        </a>
-        <a href="admin-relatorios.html" class="nav-item active">
-            <i class="fas fa-chart-line"></i>
-            <span>Relat�rios</span>
-        </a>
-        <a href="admin-configuracoes.html" class="nav-item">
-            <i class="fas fa-cog"></i>
-            <span>Config</span>
-        </a>
-    </nav>
+
+
+                    </div>
+                    <div class="stat-trend positive">
+
 </body>
 </html>
