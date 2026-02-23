@@ -7,17 +7,76 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#6A0DAD">
-<title>?? Promo��es - Tem de Tudo</title>
+<title>🏷️ Promoções - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="global-styles.css">
-<script src="global-auth.js"></script>
-<script src="global-navbar.js"></script><link rel="manifest" href="/manifest.json">
-<script src="/js/config.js"></script>
-<script src="/js/auth-manager.js" defer></script>
-<script src="/js/api-client.js" defer></script>
-<script src="/js/validators.js" defer></script>
-<script src="/js/ui-helpers.js" defer></script>
-<script src="/js/auth-guard.js" data-require-auth="empresa"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
+<style>
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --vivo-blue: #3B82F6; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; 
+    --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; 
+    --gray-800: #1F2937; --gray-900: #111827; --white: #FFFFFF; --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Roboto', sans-serif; background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%); 
+       min-height: 100vh; color: var(--gray-800); }
+
+/* HEADER */
+.header { background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%); 
+          color: var(--white); padding: 1rem; box-shadow: var(--shadow); }
+.header-brand { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 600; 
+                margin-bottom: 1rem; justify-content: center; }
+.header-top { display: flex; justify-content: space-between; align-items: center; }
+.back-btn { background: rgba(255, 255, 255, 0.2); border: none; color: var(--white); padding: 0.5rem; 
+            border-radius: 8px; cursor: pointer; }
+.back-btn:hover { background: rgba(255, 255, 255, 0.3); }
+.add-btn { background: var(--vivo-green); border: none; color: var(--white); padding: 0.75rem 1rem; 
+           border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+.add-btn:hover { background: #0EA471; }
+
+/* CONTENT */
+.content { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+.loading { text-align: center; color: var(--gray-500); padding: 3rem; }
+.empty { text-align: center; padding: 4rem 2rem; background: var(--white); border-radius: 12px; 
+         box-shadow: var(--shadow); }
+.empty i { font-size: 4rem; color: var(--gray-300); margin-bottom: 1rem; }
+.empty h3 { color: var(--gray-600); margin-bottom: 0.5rem; }
+.empty p { color: var(--gray-500); font-size: 0.9rem; }
+
+/* MODAL */
+.modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; 
+         background-color: rgba(0,0,0,0.5); }
+.modal-content { background-color: var(--white); margin: 5% auto; padding: 2rem; border-radius: 12px; 
+                 width: 90%; max-width: 600px; box-shadow: var(--shadow); position: relative; }
+.close { position: absolute; top: 1rem; right: 1.5rem; font-size: 2rem; color: var(--gray-400); 
+         cursor: pointer; }
+.close:hover { color: var(--gray-600); }
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--gray-700); }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; 
+    border: 1px solid var(--gray-300); border-radius: 8px; font-size: 1rem; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
+    outline: none; border-color: var(--vivo-purple); box-shadow: 0 0 0 3px rgba(111, 26, 182, 0.1); }
+
+/* BUTTONS */
+.btn { padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; 
+       display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+.btn-primary { background: var(--vivo-purple); color: var(--white); }
+.btn-primary:hover { background: var(--vivo-purple-dark); }
+.btn-secondary { background: var(--gray-200); color: var(--gray-700); }
+.btn-secondary:hover { background: var(--gray-300); }
+.btn-danger { background: var(--vivo-red); color: var(--white); }
+.btn-danger:hover { background: #DC2626; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .content { padding: 1rem; }
+    .modal-content { margin: 10% auto; width: 95%; padding: 1.5rem; }
+    .header-top { flex-direction: column; gap: 1rem; text-align: center; }
+    .add-btn { order: -1; }
+}
+</style>
 <link rel="stylesheet" href="/css/vivo-global.css">
 <body>
 <div class="header">
@@ -34,12 +93,12 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div>
-<h1>Promo��es</h1>
+<h1>Promoções</h1>
 <p id="totalInfo">Carregando...</p>
 </div>
 </div>
 <button class="add-btn" onclick="openModal()">
-<i class="fas fa-plus"></i> Nova Promo��o
+<i class="fas fa-plus"></i> Nova Promoção
         </button>
 </div>
 <div class="content">
@@ -51,14 +110,14 @@
 <div id="empty-state" class="empty-state" style="display: none;">
 <i class="fas fa-gift"></i>
 <p>Nenhuma promo��o cadastrada</p>
-<small style="display: block; margin-top: 8px; color: #666;">Clique em "Nova Promo��o" para criar</small>
+<small style="display: block; margin-top: 8px; color: #666;">Clique em "Nova Promoção" para criar</small>
 </div>
 </div>
 <!-- Modal de Criar/Editar -->
 <div id="promoModal" class="modal">
 <div class="modal-content">
 <div class="modal-header">
-<h2 id="modalTitle">Nova Promo��o</h2>
+<h2 id="modalTitle">Nova Promoção</h2>
 <button class="close-btn" onclick="closeModal()">
 <i class="fas fa-times"></i>
 </button>
@@ -240,7 +299,7 @@
                 document.getElementById('ativo').checked = promo.ativo == 1;
                 document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Atualizar Promo��o';
             } else {
-                document.getElementById('modalTitle').textContent = 'Nova Promo��o';
+                document.getElementById('modalTitle').textContent = 'Nova Promoção';
                 document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Salvar Promo��o';
             }
             modal.classList.add('show');
@@ -356,7 +415,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
             if (!token) {
-                console.warn('?? Sem token - redirecionando...');
+                console.warn('🛡️ Sem token - redirecionando...');
                 window.location.href = '/entrar.html';
                 return;
             }

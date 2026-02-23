@@ -7,12 +7,64 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#6A0DAD">
-<title>?? Clientes - Tem de Tudo</title>
+<title>💼 Clientes - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="global-styles.css">
-<script src="global-auth.js"></script>
-<script src="global-navbar.js"></script><link rel="manifest" href="/manifest.json">
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="js/config.js"></script>
+<script src="js/auth-guard.js"></script>
+<link rel="manifest" href="/manifest.json">
+<style>
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --vivo-blue: #3B82F6; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; 
+    --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; 
+    --gray-800: #1F2937; --gray-900: #111827; --white: #FFFFFF; --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Roboto', sans-serif; background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%); 
+       min-height: 100vh; color: var(--gray-800); }
+
+/* HEADER */
+.header { background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%); 
+          color: var(--white); padding: 1rem; box-shadow: var(--shadow); }
+.header-brand { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 600; 
+                margin-bottom: 1rem; justify-content: center; }
+.header-top { display: flex; justify-content: space-between; align-items: center; }
+.back-btn { background: rgba(255, 255, 255, 0.2); border: none; color: var(--white); padding: 0.5rem; 
+            border-radius: 8px; cursor: pointer; }
+.back-btn:hover { background: rgba(255, 255, 255, 0.3); }
+
+/* CONTENT */
+.content { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+.loading { text-align: center; color: var(--gray-500); padding: 3rem; }
+.clients-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+.client-card { background: var(--white); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow); 
+               border-left: 4px solid var(--vivo-purple); }
+.client-header { display: flex; justify-content: between; align-items: flex-start; margin-bottom: 1rem; }
+.client-info h3 { color: var(--gray-900); font-weight: 600; margin-bottom: 0.25rem; }
+.client-info p { color: var(--gray-600); font-size: 0.9rem; }
+.client-status { padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+.status-active { background: rgba(16, 185, 129, 0.1); color: var(--vivo-green); }
+.status-inactive { background: rgba(239, 68, 68, 0.1); color: var(--vivo-red); }
+.client-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem; }
+.stat { text-align: center; }
+.stat-value { font-size: 1.2rem; font-weight: 600; color: var(--vivo-purple); }
+.stat-label { font-size: 0.8rem; color: var(--gray-500); }
+
+/* EMPTY STATE */
+.empty { text-align: center; padding: 4rem 2rem; background: var(--white); border-radius: 12px; 
+         box-shadow: var(--shadow); }
+.empty i { font-size: 4rem; color: var(--gray-300); margin-bottom: 1rem; }
+.empty h3 { color: var(--gray-600); margin-bottom: 0.5rem; }
+.empty p { color: var(--gray-500); font-size: 0.9rem; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .content { padding: 1rem; }
+    .clients-grid { grid-template-columns: 1fr; }
+    .client-stats { grid-template-columns: 1fr; }
+}
+</style>
 <body>
 <div class="header">
 <div class="header-content">
