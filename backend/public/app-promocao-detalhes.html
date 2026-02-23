@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Detalhes da Promoção - Tem de Tudo</title>
+<title>Detalhes da Promoï¿½ï¿½o - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/css/vivo-global.css">
@@ -12,7 +12,7 @@
 <button class="btn-back" onclick="history.back()">
 <i class="fas fa-arrow-left"></i>
 </button>
-<div class="promo-badge" id="promoBadge">PROMOÇÃO</div>
+<div class="promo-badge" id="promoBadge">PROMOï¿½ï¿½O</div>
 <h1 class="promo-title" id="promoTitle">Carregando...</h1>
 <div class="promo-empresa">
 <i class="fas fa-store"></i>
@@ -23,7 +23,7 @@
 <div class="info-card">
 <div class="info-row">
 <span class="info-label">
-<i class="fas fa-coins"></i> Pontos Necessários
+<i class="fas fa-coins"></i> Pontos Necessï¿½rios
                 </span>
 <span class="info-value" id="pontosNecessarios">0</span>
 </div>
@@ -35,22 +35,22 @@
 </div>
 <div class="info-row">
 <span class="info-label">
-<i class="fas fa-calendar"></i> Válido até
+<i class="fas fa-calendar"></i> Vï¿½lido atï¿½
                 </span>
 <span class="info-value" id="validade">--/--/----</span>
 </div>
 </div>
 <div class="description" id="descricao">
-            Carregando descrição...
+            Carregando descriï¿½ï¿½o...
         </div>
 <div class="terms">
 <i class="fas fa-exclamation-triangle"></i>
-<strong>Importante:</strong> Após resgatar, você terá um cupom disponível para usar no estabelecimento. Apresente o cupom no caixa antes de realizar o pagamento.
+<strong>Importante:</strong> Apï¿½s resgatar, vocï¿½ terï¿½ um cupom disponï¿½vel para usar no estabelecimento. Apresente o cupom no caixa antes de realizar o pagamento.
         </div>
 <div class="countdown" id="countdown"></div>
 <button class="btn-resgatar" id="btnResgatar" onclick="resgatarPromocao()">
 <i class="fas fa-gift"></i>
-            Resgatar Promoção
+            Resgatar Promoï¿½ï¿½o
         </button>
 </div>
 <script>
@@ -63,7 +63,7 @@
         let userPontos = 0;
         document.addEventListener('DOMContentLoaded', () => {
             if (!promocaoId) {
-                alert('Promoção não encontrada');
+                alert('Promoï¿½ï¿½o nï¿½o encontrada');
                 history.back();
                 return;
             }
@@ -79,12 +79,12 @@
                     renderizarPromocao();
                     iniciarCountdown();
                 } else {
-                    alert('Promoção não encontrada');
+                    alert('Promoï¿½ï¿½o nï¿½o encontrada');
                     history.back();
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao carregar promoção');
+                alert('Erro ao carregar promoï¿½ï¿½o');
                 history.back();
             }
         }
@@ -109,13 +109,13 @@
             document.getElementById('promoTitle').textContent = promocao.titulo;
             document.getElementById('promoEmpresa').textContent = promocao.empresa_nome || 'Estabelecimento';
             document.getElementById('pontosNecessarios').textContent = promocao.pontos_necessarios;
-            document.getElementById('descricao').textContent = promocao.descricao || 'Sem descrição disponível';
+            document.getElementById('descricao').textContent = promocao.descricao || 'Sem descriï¿½ï¿½o disponï¿½vel';
             const validade = new Date(promocao.validade);
             document.getElementById('validade').textContent = validade.toLocaleDateString('pt-BR');
             // Badge baseado no tipo
             const badge = document.getElementById('promoBadge');
             if (promocao.pontos_necessarios < 50) {
-                badge.textContent = 'IMPERDÍVEL';
+                badge.textContent = 'IMPERDï¿½VEL';
                 badge.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a6f)';
                 badge.style.background = 'rgba(239, 68, 68, 0.3)';
             } else if (promocao.pontos_necessarios < 100) {
@@ -142,7 +142,7 @@
             const agora = new Date();
             const diff = validade - agora;
             if (diff <= 0) {
-                document.getElementById('countdown').innerHTML = '? Promoção expirada';
+                document.getElementById('countdown').innerHTML = '? Promoï¿½ï¿½o expirada';
                 document.getElementById('btnResgatar').disabled = true;
                 return;
             }
@@ -154,11 +154,11 @@
         async function resgatarPromocao() {
             const token = localStorage.getItem('token');
             if (!token) {
-                alert('? Você precisa estar logado para resgatar promoções');
+                alert('? Vocï¿½ precisa estar logado para resgatar promoï¿½ï¿½es');
                 window.location.href = 'entrar.html';
                 return;
             }
-            if (!confirm(`Confirma o resgate desta promoção?\n\n${promocao.titulo}\nCusto: ${promocao.pontos_necessarios} pontos`)) {
+            if (!confirm(`Confirma o resgate desta promoï¿½ï¿½o?\n\n${promocao.titulo}\nCusto: ${promocao.pontos_necessarios} pontos`)) {
                 return;
             }
             const btn = document.getElementById('btnResgatar');
@@ -175,18 +175,18 @@
                 });
                 const data = await response.json();
                 if (data.success) {
-                    alert(`? Promoção resgatada com sucesso!\n\nCupom: ${data.data.codigo}\n\nVocê pode encontrá-lo na aba "Cupons" do seu perfil.`);
+                    alert(`? Promoï¿½ï¿½o resgatada com sucesso!\n\nCupom: ${data.data.codigo}\n\nVocï¿½ pode encontrï¿½-lo na aba "Cupons" do seu perfil.`);
                     window.location.href = '/app-perfil-cliente.html?tab=cupons';
                 } else {
-                    alert('? ' + (data.message || 'Erro ao resgatar promoção'));
+                    alert('? ' + (data.message || 'Erro ao resgatar promoï¿½ï¿½o'));
                     btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promoção';
+                    btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promoï¿½ï¿½o';
                 }
             } catch (error) {
                 console.error('Erro:', error);
                 alert('? Erro ao conectar com o servidor');
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promoção';
+                btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promoï¿½ï¿½o';
             }
         }
     </script>
@@ -194,7 +194,7 @@
 <nav class="bottom-nav">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>Início</span>
+<span>Inï¿½cio</span>
 </a>
 <a href="app-empresas.html" class="nav-item">
 <i class="fas fa-search"></i>
@@ -206,7 +206,7 @@
 </a>
 <a href="app-promocoes.html" class="nav-item active">
 <i class="fas fa-tags"></i>
-<span>Promoções</span>
+<span>Promoï¿½ï¿½es</span>
 </a>
 <a href="app-perfil.html" class="nav-item">
 <i class="fas fa-user"></i>

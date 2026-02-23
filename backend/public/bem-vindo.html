@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -79,14 +79,14 @@
         function mostrarErro() {
             document.getElementById('statusIcon').textContent = '??';
             document.getElementById('statusText').textContent = 'Sistema Iniciando';
-            document.getElementById('statusDetail').textContent = 'Clique em "Inicializar Dados" para começar';
+            document.getElementById('statusDetail').textContent = 'Clique em "Inicializar Dados" para comeï¿½ar';
             document.getElementById('statusBox').style.borderColor = 'rgba(255, 152, 0, 0.5)';
         }
         async function inicializarSistema() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('statusIcon').textContent = '?';
             document.getElementById('statusText').textContent = 'Inicializando...';
-            document.getElementById('statusDetail').textContent = 'Criando usuários e dados de teste';
+            document.getElementById('statusDetail').textContent = 'Criando usuï¿½rios e dados de teste';
             try {
                 const response = await fetch(API_BASE + '/api/setup-database?secret=temdetudo2024');
                 const data = await response.json();
@@ -94,21 +94,21 @@
                 if (data.success) {
                     document.getElementById('statusIcon').textContent = '?';
                     document.getElementById('statusText').textContent = 'Sistema Pronto!';
-                    document.getElementById('statusDetail').textContent = `${data.total_users} usuários criados. Faça login agora!`;
+                    document.getElementById('statusDetail').textContent = `${data.total_users} usuï¿½rios criados. Faï¿½a login agora!`;
                     document.getElementById('statusBox').style.borderColor = 'rgba(76, 175, 80, 0.5)';
-                    alert('? Sistema inicializado com sucesso!\n\nVocê já pode fazer login com:\n- admin@temdetudo.com / admin123\n- cliente@teste.com / 123456');
+                    alert('? Sistema inicializado com sucesso!\n\nVocï¿½ jï¿½ pode fazer login com:\n- admin@temdetudo.com / admin123\n- cliente@teste.com / 123456');
                 } else {
                     document.getElementById('statusIcon').textContent = '?';
-                    document.getElementById('statusText').textContent = 'Erro na Inicialização';
+                    document.getElementById('statusText').textContent = 'Erro na Inicializaï¿½ï¿½o';
                     document.getElementById('statusDetail').textContent = data.error || 'Tente novamente em alguns segundos';
-                    alert('Erro: ' + (data.error || 'Falha na inicialização'));
+                    alert('Erro: ' + (data.error || 'Falha na inicializaï¿½ï¿½o'));
                 }
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('statusIcon').textContent = '?';
-                document.getElementById('statusText').textContent = 'Erro de Conexão';
+                document.getElementById('statusText').textContent = 'Erro de Conexï¿½o';
                 document.getElementById('statusDetail').textContent = 'Servidor pode estar reiniciando. Aguarde 2 minutos.';
-                alert('Erro de conexão. O servidor pode estar reiniciando. Aguarde 2-3 minutos e tente novamente.');
+                alert('Erro de conexï¿½o. O servidor pode estar reiniciando. Aguarde 2-3 minutos e tente novamente.');
             }
         }
         // Verificar sistema ao carregar

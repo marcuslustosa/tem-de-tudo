@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -9,100 +9,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-<style>
-/* VIVO DESIGN SYSTEM - QR CODE PAGE */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
-    --vivo-red: #EF4444; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; --gray-300: #D1D5DB;
-    --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; --gray-800: #1F2937;
-    --gray-900: #111827; --white: #FFFFFF; --border-radius: 12px; --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1); --shadow-lg: 0 8px 25px rgba(0, 0, 0, 0.15); --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-body { font-family: 'Inter', sans-serif; color: var(--gray-900); background: var(--gray-50); min-height: 100vh; margin: 0; padding: 0; }
-.app-page { min-height: 100vh; display: flex; flex-direction: column; }
-.app-header { background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; }
-.header-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; }
-.header-nav h1 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); flex: 1; text-align: center; margin: 0 1rem; }
-.back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%;
-    background: var(--gray-100); color: var(--gray-700); text-decoration: none; transition: var(--transition); border: none; cursor: pointer; }
-.back-btn:hover { background: var(--gray-200); }
-.app-content { flex: 1; padding: 1rem 1.5rem 6rem; text-align: center; }
 
-.qr-section { background: var(--white); border-radius: var(--border-radius); padding: 2rem 1.5rem; 
-    margin-bottom: 2rem; box-shadow: var(--shadow-sm); }
-.qr-container { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
-.qr-code-display { width: 250px; height: 250px; margin: 0 auto; padding: 1rem; background: var(--white);
-    border: 2px solid var(--gray-200); border-radius: var(--border-radius); display: flex;
-    align-items: center; justify-content: center; }
-.qr-code-display canvas { max-width: 100%; max-height: 100%; }
-.qr-info { text-align: center; }
-.qr-info h2 { font-size: 1.25rem; font-weight: 700; color: var(--gray-900); margin-bottom: 0.5rem; }
-.qr-info p { color: var(--gray-600); font-size: 0.875rem; line-height: 1.5; }
-
-.user-card { background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%);
-    border-radius: var(--border-radius); padding: 2rem 1.5rem; margin-bottom: 2rem; color: var(--white);
-    box-shadow: var(--shadow-lg); }
-.user-info { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
-.user-avatar { width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-.user-details h3 { font-size: 1.125rem; font-weight: 700; margin-bottom: 0.25rem; }
-.user-details p { opacity: 0.9; font-size: 0.875rem; }
-.user-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-.stat-item { text-align: center; }
-.stat-value { font-size: 1.5rem; font-weight: 800; display: block; }
-.stat-label { font-size: 0.75rem; opacity: 0.9; font-weight: 600; text-transform: uppercase; }
-
-.instructions { background: var(--white); border-radius: var(--border-radius); padding: 2rem 1.5rem;
-    margin-bottom: 2rem; box-shadow: var(--shadow-sm); }
-.instructions h3 { font-size: 1.125rem; font-weight: 700; color: var(--gray-900); margin-bottom: 1rem; text-align: center; }
-.steps-list { text-align: left; max-width: 400px; margin: 0 auto; }
-.step-item { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem;
-    border-bottom: 1px solid var(--gray-100); }
-.step-item:last-child { border-bottom: none; margin-bottom: 0; }
-.step-number { width: 32px; height: 32px; background: var(--vivo-purple); color: var(--white);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 0.875rem; font-weight: 700; flex-shrink: 0; }
-.step-text { flex: 1; }
-.step-title { font-weight: 600; color: var(--gray-900); margin-bottom: 0.25rem; }
-.step-desc { color: var(--gray-600); font-size: 0.875rem; }
-
-.actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem; }
-.action-btn { background: var(--white); border: 2px solid var(--gray-200); border-radius: var(--border-radius);
-    padding: 1rem; color: var(--gray-700); text-decoration: none; display: flex; flex-direction: column;
-    align-items: center; gap: 0.75rem; transition: var(--transition); }
-.action-btn:hover { border-color: var(--vivo-purple); color: var(--vivo-purple); transform: translateY(-2px); }
-.action-btn i { font-size: 1.5rem; }
-.action-btn span { font-size: 0.875rem; font-weight: 600; }
-.action-btn.primary { background: var(--vivo-purple); color: var(--white); border-color: var(--vivo-purple); }
-.action-btn.primary:hover { background: var(--vivo-purple-dark); border-color: var(--vivo-purple-dark); color: var(--white); }
-
-.refresh-info { background: var(--gray-100); border-radius: var(--border-radius); padding: 1rem; 
-    margin-bottom: 2rem; text-align: center; }
-.refresh-info p { color: var(--gray-600); font-size: 0.875rem; margin-bottom: 0.5rem; }
-.refresh-time { font-weight: 600; color: var(--vivo-purple); }
-
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white);
-    border-top: 1px solid var(--gray-200); padding: 0.5rem 0; z-index: 1000; }
-.nav-container { display: flex; justify-content: space-around; align-items: center; }
-.nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; padding: 0.5rem;
-    text-decoration: none; color: var(--gray-500); transition: var(--transition); font-size: 0.75rem; font-weight: 500; }
-.nav-item.active { color: var(--vivo-purple); }
-.nav-item:hover:not(.active) { color: var(--gray-700); }
-.nav-item i { font-size: 1.25rem; margin-bottom: 2px; }
-
-@media (max-width: 480px) {
-    .app-content { padding: 1rem 1rem 6rem; }
-    .qr-code-display { width: 200px; height: 200px; }
-    .user-stats { grid-template-columns: 1fr; }
-    .actions { grid-template-columns: 1fr; }
-}
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-.app-page { animation: fadeIn 0.3s ease-out; }
-.qr-code-display { animation: pulse 2s ease-in-out infinite; }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/vivo-styles.css">
+<script src="js/config.js"></script>
+<script src="js/auth-guard.js"></script>
 </head>
 <body>
 <div class="app-page">

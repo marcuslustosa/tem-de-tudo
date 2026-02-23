@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -42,21 +42,21 @@
 </div>
 </div>
 <div class="empresa-description" id="empresaDescricao">
-            Carregando descrição...
+            Carregando descriï¿½ï¿½o...
         </div>
 <div class="info-section">
-<div class="info-title">Informações</div>
+<div class="info-title">Informaï¿½ï¿½es</div>
 <div class="info-item">
 <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
 <div class="info-content">
-<div class="info-label">Endereço</div>
+<div class="info-label">Endereï¿½o</div>
 <div class="info-value" id="empresaEndereco">-</div>
 </div>
 </div>
 <div class="info-item">
 <div class="info-icon"><i class="fas fa-clock"></i></div>
 <div class="info-content">
-<div class="info-label">Horário</div>
+<div class="info-label">Horï¿½rio</div>
 <div class="info-value" id="empresaHorario">-</div>
 </div>
 </div>
@@ -69,7 +69,7 @@
 </div>
 </div>
 <div class="promocoes-section">
-<div class="info-title">Promoções Disponíveis</div>
+<div class="info-title">Promoï¿½ï¿½es Disponï¿½veis</div>
 <div id="promocoesContainer"></div>
 </div>
 <button class="checkin-button" id="checkinBtn">
@@ -84,8 +84,8 @@
             automotivo: '?? Automotivo',
             beleza: '?? Beleza',
             bemestar: '?? Bem-estar',
-            educacao: '?? Educação',
-            servicos: '??? Serviços'
+            educacao: '?? Educaï¿½ï¿½o',
+            servicos: '??? Serviï¿½os'
         };
         let empresaAtual = null;
         document.addEventListener('DOMContentLoaded', async () => {
@@ -97,7 +97,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const empresaId = urlParams.get('id');
             if (!empresaId) {
-                alert('Empresa não encontrada');
+                alert('Empresa nï¿½o encontrada');
                 window.location.href = '/app-empresas.html';
                 return;
             }
@@ -139,26 +139,26 @@
             document.getElementById('empresaPontos').textContent = 
                 `+${Math.round(10 * (empresa.pontos_cliente || 1))} pts`;
             document.getElementById('empresaDescricao').textContent = 
-                empresa.descricao || 'Empresa parceira do programa Tem de Tudo. Faça check-in e acumule pontos!';
+                empresa.descricao || 'Empresa parceira do programa Tem de Tudo. Faï¿½a check-in e acumule pontos!';
             document.getElementById('empresaEndereco').textContent = 
-                empresa.endereco || 'Não informado';
+                empresa.endereco || 'Nï¿½o informado';
             document.getElementById('empresaHorario').textContent = 
                 empresa.horario_funcionamento || 'Seg-Sex: 08:00-18:00';
             document.getElementById('empresaTelefone').textContent = 
-                empresa.telefone || 'Não informado';
+                empresa.telefone || 'Nï¿½o informado';
             renderizarPromocoes(empresa);
         }
         function renderizarPromocoes(empresa) {
             const container = document.getElementById('promocoesContainer');
             const promocoes = [
                 {
-                    titulo: 'Check-in Diário',
+                    titulo: 'Check-in Diï¿½rio',
                     descricao: `Ganhe ${Math.round(10 * (empresa.pontos_cliente || 1))} pontos a cada visita`,
                     pontos: Math.round(10 * (empresa.pontos_cliente || 1))
                 },
                 {
                     titulo: 'Primeira Visita',
-                    descricao: 'Bônus especial na primeira visita',
+                    descricao: 'Bï¿½nus especial na primeira visita',
                     pontos: Math.round(20 * (empresa.pontos_cliente || 1))
                 }
             ];

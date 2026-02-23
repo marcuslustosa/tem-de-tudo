@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -10,320 +10,7 @@
     <title>?? Admin Premium - Tem de Tudo</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f1419 100%);
-            position: relative;
-            padding: 24px;
-            border-bottom: 1px solid rgba(241, 196, 15, 0.1);
-        }
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(241, 196, 15, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-        }
-        .header-content {
-            position: relative;
-            z-index: 2;
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo-admin {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-        .logo-icon {
-            font-size: 1.5rem;
-            color: #f1c40f;
-        }
-        .logo-text {
-            font-size: 1.4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .badge-admin {
-            background: linear-gradient(135deg, rgba(241, 196, 15, 0.2), rgba(230, 126, 34, 0.2));
-            border: 1px solid rgba(241, 196, 15, 0.3);
-            border-radius: 12px;
-            padding: 4px 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #f1c40f;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .header-left h1 {
-            font-size: 24px;
-            font-weight: 900;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .header-left p {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 500;
-        }
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .user-info {
-            text-align: right;
-            margin-right: 12px;
-        }
-        .user-info .name {
-            font-size: 14px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .user-info .role {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-        }
-        .btn-logout {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #ef4444;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-logout:hover {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.2));
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.2);
-        }
-        /* Main content */
-        .main {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 32px;
-        }
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, rgba(15, 20, 25, 0.6), rgba(15, 20, 25, 0.3));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(241, 196, 15, 0.1);
-            border-radius: 20px;
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(241, 196, 15, 0.1);
-            border-color: rgba(241, 196, 15, 0.2);
-        }
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(241, 196, 15, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-        }
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: #fff;
-        }
-        .stat-icon.users { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-        .stat-icon.companies { background: linear-gradient(135deg, #10b981, #047857); }
-        .stat-icon.transactions { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .stat-icon.points { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
-        .stat-icon.active { background: linear-gradient(135deg, #06d6a0, #118d57); }
-        .stat-icon.revenue { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .stat-value {
-            font-size: 32px;
-            font-weight: 900;
-            color: #f1c40f;
-            margin-bottom: 4px;
-        }
-        .stat-label {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 600;
-        }
-        .stat-change {
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 8px;
-        }
-        .stat-change.positive { color: #10b981; }
-        .stat-change.negative { color: #ef4444; }
-        /* Quick Actions */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 40px;
-        }
-        .action-btn {
-            background: linear-gradient(135deg, rgba(15, 20, 25, 0.6), rgba(15, 20, 25, 0.3));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(241, 196, 15, 0.2);
-            border-radius: 16px;
-            padding: 20px;
-            color: #fff;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(241, 196, 15, 0.15);
-            border-color: rgba(241, 196, 15, 0.4);
-            color: #fff;
-        }
-        .action-btn i {
-            font-size: 18px;
-            color: #f1c40f;
-        }
-        /* Recent Activity */
-        .section-title {
-            font-size: 20px;
-            font-weight: 800;
-            margin-bottom: 24px;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .section-title i {
-            color: #f1c40f;
-        }
-        .activity-list {
-            background: linear-gradient(135deg, rgba(15, 20, 25, 0.6), rgba(15, 20, 25, 0.3));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(241, 196, 15, 0.1);
-            border-radius: 20px;
-            padding: 24px;
-        }
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: #fff;
-            flex-shrink: 0;
-        }
-        .activity-icon.user-action { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-        .activity-icon.company-action { background: linear-gradient(135deg, #10b981, #047857); }
-        .activity-icon.system-action { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
-        .activity-content {
-            flex: 1;
-        }
-        .activity-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .activity-desc {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-        .activity-time {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 500;
-        }
-        /* Responsive */
-        @media (max-width: 768px) {
-            .main { padding: 20px 16px; }
-            .stats-grid { grid-template-columns: 1fr; }
-            .header-content { flex-direction: column; gap: 16px; }
-            .header { padding: 20px 16px; }
-        }
-        /* Loading Animation */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-        .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(241, 196, 15, 0.3);
-            border-top: 2px solid #f1c40f;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
+    
 <link rel="stylesheet" href="/css/vivo-global.css">
 <body>
     <div class="header">
@@ -337,7 +24,7 @@
                     </div>
                 </div>
                 <h1>Painel Administrativo</h1>
-                <p>Gerencie usuários, empresas e monitore o sistema</p>
+                <p>Gerencie usuï¿½rios, empresas e monitore o sistema</p>
             </div>
             <div class="header-right">
                 <div class="user-info">
@@ -358,8 +45,8 @@
                 <div class="stat-header">
                     <div>
                         <div class="stat-value" id="totalUsers">847</div>
-                        <div class="stat-label">Usuários Ativos</div>
-                        <div class="stat-change positive">+12% este mês</div>
+                        <div class="stat-label">Usuï¿½rios Ativos</div>
+                        <div class="stat-change positive">+12% este mï¿½s</div>
                     </div>
                     <div class="stat-icon users">
                         <i class="fas fa-users"></i>
@@ -371,7 +58,7 @@
                     <div>
                         <div class="stat-value" id="totalCompanies">156</div>
                         <div class="stat-label">Empresas Parceiras</div>
-                        <div class="stat-change positive">+8% este mês</div>
+                        <div class="stat-change positive">+8% este mï¿½s</div>
                     </div>
                     <div class="stat-icon companies">
                         <i class="fas fa-building"></i>
@@ -382,7 +69,7 @@
                 <div class="stat-header">
                     <div>
                         <div class="stat-value" id="totalTransactions">2.4k</div>
-                        <div class="stat-label">Transações Hoje</div>
+                        <div class="stat-label">Transaï¿½ï¿½es Hoje</div>
                         <div class="stat-change positive">+15% ontem</div>
                     </div>
                     <div class="stat-icon transactions">
@@ -394,7 +81,7 @@
                 <div class="stat-header">
                     <div>
                         <div class="stat-value" id="totalPoints">89.2k</div>
-                        <div class="stat-label">Pontos em Circulação</div>
+                        <div class="stat-label">Pontos em Circulaï¿½ï¿½o</div>
                         <div class="stat-change positive">+5% esta semana</div>
                     </div>
                     <div class="stat-icon points">
@@ -419,7 +106,7 @@
                     <div>
                         <div class="stat-value" id="monthlyRevenue">R$ 45.8k</div>
                         <div class="stat-label">Receita Mensal</div>
-                        <div class="stat-change positive">+22% mês passado</div>
+                        <div class="stat-change positive">+22% mï¿½s passado</div>
                     </div>
                     <div class="stat-icon revenue">
                         <i class="fas fa-chart-line"></i>
@@ -431,7 +118,7 @@
         <div class="quick-actions">
             <a href="admin-usuarios.html" class="action-btn">
                 <i class="fas fa-users"></i>
-                Gerenciar Usuários
+                Gerenciar Usuï¿½rios
             </a>
             <a href="admin-empresas.html" class="action-btn">
                 <i class="fas fa-building"></i>
@@ -439,19 +126,19 @@
             </a>
             <a href="admin-relatorios.html" class="action-btn">
                 <i class="fas fa-chart-bar"></i>
-                Relatórios
+                Relatï¿½rios
             </a>
             <a href="admin-configuracoes.html" class="action-btn">
                 <i class="fas fa-cogs"></i>
-                Configurações
+                Configuraï¿½ï¿½es
             </a>
             <a href="admin-create-user.html" class="action-btn">
                 <i class="fas fa-user-plus"></i>
-                Criar Usuário
+                Criar Usuï¿½rio
             </a>
             <a href="admin-promocoes.html" class="action-btn">
                 <i class="fas fa-tags"></i>
-                Promoções
+                Promoï¿½ï¿½es
             </a>
         </div>
         <!-- Recent Activity -->
@@ -465,10 +152,10 @@
                     <i class="fas fa-user-plus"></i>
                 </div>
                 <div class="activity-content">
-                    <div class="activity-title">Novo usuário cadastrado</div>
+                    <div class="activity-title">Novo usuï¿½rio cadastrado</div>
                     <div class="activity-desc">Marcus Silva se cadastrou como cliente premium</div>
                 </div>
-                <div class="activity-time">há 5 min</div>
+                <div class="activity-time">hï¿½ 5 min</div>
             </div>
             <div class="activity-item">
                 <div class="activity-icon company-action">
@@ -476,19 +163,19 @@
                 </div>
                 <div class="activity-content">
                     <div class="activity-title">Nova empresa aprovada</div>
-                    <div class="activity-desc">Pizzaria Bella Napoli foi aprovada e está ativa</div>
+                    <div class="activity-desc">Pizzaria Bella Napoli foi aprovada e estï¿½ ativa</div>
                 </div>
-                <div class="activity-time">há 12 min</div>
+                <div class="activity-time">hï¿½ 12 min</div>
             </div>
             <div class="activity-item">
                 <div class="activity-icon system-action">
                     <i class="fas fa-coins"></i>
                 </div>
                 <div class="activity-content">
-                    <div class="activity-title">Pontos distribuídos</div>
-                    <div class="activity-desc">1.245 pontos foram distribuídos hoje</div>
+                    <div class="activity-title">Pontos distribuï¿½dos</div>
+                    <div class="activity-desc">1.245 pontos foram distribuï¿½dos hoje</div>
                 </div>
-                <div class="activity-time">há 1h</div>
+                <div class="activity-time">hï¿½ 1h</div>
             </div>
             <div class="activity-item">
                 <div class="activity-icon user-action">
@@ -496,25 +183,25 @@
                 </div>
                 <div class="activity-content">
                     <div class="activity-title">Check-in realizado</div>
-                    <div class="activity-desc">Ana Costa fez check-in no Café Central</div>
+                    <div class="activity-desc">Ana Costa fez check-in no Cafï¿½ Central</div>
                 </div>
-                <div class="activity-time">há 2h</div>
+                <div class="activity-time">hï¿½ 2h</div>
             </div>
             <div class="activity-item">
                 <div class="activity-icon company-action">
                     <i class="fas fa-tags"></i>
                 </div>
                 <div class="activity-content">
-                    <div class="activity-title">Nova promoção criada</div>
-                    <div class="activity-desc">SmartFit Academia criou promoção "1 mês grátis"</div>
+                    <div class="activity-title">Nova promoï¿½ï¿½o criada</div>
+                    <div class="activity-desc">SmartFit Academia criou promoï¿½ï¿½o "1 mï¿½s grï¿½tis"</div>
                 </div>
-                <div class="activity-time">há 3h</div>
+                <div class="activity-time">hï¿½ 3h</div>
             </div>
         </div>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Verificar autenticação admin
+            // Verificar autenticaï¿½ï¿½o admin
             verificarAuth();
             // Carregar dados do dashboard
             carregarDashboard();
@@ -531,7 +218,7 @@
             try {
                 const userData = JSON.parse(user);
                 if (userData.perfil !== 'admin') {
-                    alert('Acesso negado. Apenas administradores podem acessar esta área.');
+                    alert('Acesso negado. Apenas administradores podem acessar esta ï¿½rea.');
                     localStorage.clear();
                     window.location.href = '/admin-login.html';
                     return;
@@ -539,7 +226,7 @@
                 // Atualizar nome do admin
                 document.getElementById('adminName').textContent = userData.name || 'Administrator';
             } catch (error) {
-                console.error('Erro ao verificar autenticação:', error);
+                console.error('Erro ao verificar autenticaï¿½ï¿½o:', error);
                 localStorage.clear();
                 window.location.href = '/admin-login.html';
             }
@@ -555,14 +242,14 @@
                     activeToday: Math.floor(Math.random() * 50) + 120,
                     monthlyRevenue: 'R$ ' + (Math.random() * 10 + 40).toFixed(1) + 'k'
                 };
-                // Atualizar estatísticas
+                // Atualizar estatï¿½sticas
                 document.getElementById('totalUsers').textContent = dashboardData.totalUsers;
                 document.getElementById('totalCompanies').textContent = dashboardData.totalCompanies;
                 document.getElementById('totalTransactions').textContent = dashboardData.totalTransactions;
                 document.getElementById('totalPoints').textContent = dashboardData.totalPoints;
                 document.getElementById('activeToday').textContent = dashboardData.activeToday;
                 document.getElementById('monthlyRevenue').textContent = dashboardData.monthlyRevenue;
-                // Adicionar efeito de atualização
+                // Adicionar efeito de atualizaï¿½ï¿½o
                 const statValues = document.querySelectorAll('.stat-value');
                 statValues.forEach(stat => {
                     stat.style.transform = 'scale(1.05)';

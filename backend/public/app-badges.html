@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
@@ -18,7 +18,7 @@
 </div>
 </header>
 <div class="container">
-<!-- Estatísticas -->
+<!-- Estatï¿½sticas -->
 <div class="stats-grid" id="statsGrid">
 <div class="stat-card">
 <div class="stat-number" id="totalBadges">-</div>
@@ -30,7 +30,7 @@
 </div>
 <div class="stat-card">
 <div class="stat-number" id="nivelAtual">-</div>
-<div class="stat-label">Nível Atual</div>
+<div class="stat-label">Nï¿½vel Atual</div>
 </div>
 <div class="stat-card">
 <div class="stat-number" id="diasConsecutivos">-</div>
@@ -53,7 +53,7 @@
 </div>
 </div>
 <script>
-        // Verificar autenticação
+        // Verificar autenticaï¿½ï¿½o
         const token = localStorage.getItem('token'); // CORRIGIDO
         if (!token) {
             window.location.href = 'index.html';
@@ -76,19 +76,19 @@
             }
             return await response.json();
         }
-        // Carregar dados do usuário
+        // Carregar dados do usuï¿½rio
         async function carregarDadosUsuario() {
             try {
                 const response = await apiRequest('/me');
                 const user = response;
-                // Atualizar estatísticas
+                // Atualizar estatï¿½sticas
                 document.getElementById('totalPontos').textContent = user.pontos_lifetime || user.pontos || 0;
                 const nivel = calcularNivel(user.pontos_lifetime || user.pontos || 0);
                 document.getElementById('nivelAtual').textContent = nivel.nome;
                 document.getElementById('diasConsecutivos').textContent = user.dias_consecutivos || 0;
             } catch (error) {
-                console.error('Erro ao carregar dados do usuário:', error);
-                showError('Erro ao carregar dados do usuário');
+                console.error('Erro ao carregar dados do usuï¿½rio:', error);
+                showError('Erro ao carregar dados do usuï¿½rio');
             }
         }
         // Carregar badges conquistados
@@ -99,7 +99,7 @@
                 document.getElementById('totalBadges').textContent = badges.length;
                 const container = document.getElementById('badgesConquistados');
                 if (badges.length === 0) {
-                    container.innerHTML = '<div class="no-badges">Você ainda não conquistou nenhum badge. Continue usando o app!</div>';
+                    container.innerHTML = '<div class="no-badges">Vocï¿½ ainda nï¿½o conquistou nenhum badge. Continue usando o app!</div>';
                     return;
                 }
                 container.innerHTML = badges.map(badge => `
@@ -132,7 +132,7 @@
                 const progresso = response.progresso || [];
                 const container = document.getElementById('progressoBadges');
                 if (progresso.length === 0) {
-                    container.innerHTML = '<div class="no-badges">Parabéns! Você conquistou todos os badges disponíveis! ??</div>';
+                    container.innerHTML = '<div class="no-badges">Parabï¿½ns! Vocï¿½ conquistou todos os badges disponï¿½veis! ??</div>';
                     return;
                 }
                 container.innerHTML = progresso.map(item => {
@@ -170,7 +170,7 @@
                     '<div class="error">Erro ao carregar progresso dos badges</div>';
             }
         }
-        // Calcular nível baseado em pontos
+        // Calcular nï¿½vel baseado em pontos
         function calcularNivel(pontos) {
             if (pontos >= 15000) {
                 return { nome: 'Diamante ??', cor: '#b9f2ff' };
@@ -181,7 +181,7 @@
             }
             return { nome: 'Bronze ??', cor: '#cd7f32' };
         }
-        // Obter texto da condição do badge
+        // Obter texto da condiï¿½ï¿½o do badge
         function getCondicaoTexto(badge) {
             const tipos = {
                 'pontos': `Acumular ${badge.condicao_valor} pontos`,
@@ -189,11 +189,11 @@
                 'empresas_visitadas': `Visitar ${badge.condicao_valor} empresas diferentes`,
                 'dias_consecutivos': `${badge.condicao_valor} dias consecutivos de check-in`,
                 'valor_gasto': `Gastar R$ ${(badge.condicao_valor / 100).toFixed(2)}`,
-                'nivel': `Alcançar nível ${badge.condicao_valor}`
+                'nivel': `Alcanï¿½ar nï¿½vel ${badge.condicao_valor}`
             };
-            return tipos[badge.condicao_tipo] || 'Condição especial';
+            return tipos[badge.condicao_tipo] || 'Condiï¿½ï¿½o especial';
         }
-        // Obter unidade da condição
+        // Obter unidade da condiï¿½ï¿½o
         function getUnidadeCondicao(tipo) {
             const unidades = {
                 'pontos': 'pontos',
@@ -201,7 +201,7 @@
                 'empresas_visitadas': 'empresas',
                 'dias_consecutivos': 'dias',
                 'valor_gasto': 'centavos',
-                'nivel': 'nível'
+                'nivel': 'nï¿½vel'
             };
             return unidades[tipo] || '';
         }
@@ -213,7 +213,7 @@
         function showError(message) {
             console.error(message);
         }
-        // Inicializar página
+        // Inicializar pï¿½gina
         async function inicializarPagina() {
             await Promise.all([
                 carregarDadosUsuario(),
@@ -221,7 +221,7 @@
                 carregarProgressoBadges()
             ]);
         }
-        // Iniciar quando a página carregar
+        // Iniciar quando a pï¿½gina carregar
         document.addEventListener('DOMContentLoaded', inicializarPagina);
     </script>
 </body>

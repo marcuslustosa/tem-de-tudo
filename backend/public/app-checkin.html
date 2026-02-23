@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -38,16 +38,16 @@
 <div id="qr-method" class="method-content">
 <div class="scanner-container">
 <div class="scanner-title">?? Scanner QR Code</div>
-<div class="scanner-subtitle">Aponte a câmera para o QR Code da empresa</div>
+<div class="scanner-subtitle">Aponte a cï¿½mera para o QR Code da empresa</div>
 <div id="qr-reader" class="qr-reader"></div>
 <div id="scanner-status" class="scanner-status"></div>
 <button id="start-camera" class="btn" onclick="startScanner()">
 <i class="fas fa-camera"></i>
-                    Iniciar Câmera
+                    Iniciar Cï¿½mera
                 </button>
 <button id="stop-camera" class="btn" onclick="stopScanner()" style="display: none;">
 <i class="fas fa-stop"></i>
-                    Parar Câmera
+                    Parar Cï¿½mera
                 </button>
 </div>
 </div>
@@ -56,15 +56,15 @@
 <div class="location-info">
 <div class="location-item">
 <i class="fas fa-map-marker-alt"></i>
-<span>Sua localização será usada para detectar empresas próximas</span>
+<span>Sua localizaï¿½ï¿½o serï¿½ usada para detectar empresas prï¿½ximas</span>
 </div>
 <div class="location-item">
 <i class="fas fa-shield-alt"></i>
-<span>Seus dados de localização são seguros e criptografados</span>
+<span>Seus dados de localizaï¿½ï¿½o sï¿½o seguros e criptografados</span>
 </div>
 <div class="location-item">
 <i class="fas fa-clock"></i>
-<span>Check-in automático em empresas dentro de 50 metros</span>
+<span>Check-in automï¿½tico em empresas dentro de 50 metros</span>
 </div>
 </div>
 <button id="gps-checkin" class="btn" onclick="gpsCheckin()">
@@ -80,8 +80,8 @@
                 Check-in Manual
             </h3>
 <div class="input-group">
-<label for="empresa-codigo">Código da Empresa</label>
-<input type="text" id="empresa-codigo" placeholder="Digite o código da empresa" maxlength="10">
+<label for="empresa-codigo">Cï¿½digo da Empresa</label>
+<input type="text" id="empresa-codigo" placeholder="Digite o cï¿½digo da empresa" maxlength="10">
 </div>
 <button class="btn" onclick="manualCheckin()">
 <i class="fas fa-check"></i>
@@ -93,7 +93,7 @@
 <div class="nav-items">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>Início</span>
+<span>Inï¿½cio</span>
 </a>
 <a href="app-empresas.html" class="nav-item">
 <i class="fas fa-search"></i>
@@ -164,11 +164,11 @@
                     // Erro silencioso - normal durante scan
                 }
             ).then(() => {
-                showStatus('Câmera iniciada! Aponte para o QR Code.', 'info');
+                showStatus('Cï¿½mera iniciada! Aponte para o QR Code.', 'info');
                 startBtn.style.display = 'none';
                 stopBtn.style.display = 'block';
             }).catch((err) => {
-                showStatus('Erro ao acessar câmera: ' + err, 'error');
+                showStatus('Erro ao acessar cï¿½mera: ' + err, 'error');
                 console.error(err);
             });
         }
@@ -177,7 +177,7 @@
             const stopBtn = document.getElementById('stop-camera');
             if (html5QrCode) {
                 html5QrCode.stop().then(() => {
-                    showStatus('Câmera desligada', 'info');
+                    showStatus('Cï¿½mera desligada', 'info');
                     startBtn.style.display = 'block';
                     stopBtn.style.display = 'none';
                 }).catch((err) => {
@@ -193,14 +193,14 @@
                     const empresaId = data.empresaId || data.empresa_id;
                     realizarCheckin(empresaId, 'qr');
                 } else {
-                    showStatus('QR Code inválido: falta ID da empresa', 'error');
+                    showStatus('QR Code invï¿½lido: falta ID da empresa', 'error');
                 }
             } catch (e) {
-                // Se não for JSON, tratar como código simples
+                // Se nï¿½o for JSON, tratar como cï¿½digo simples
                 if (qrData.length > 3) {
                     realizarCheckin(qrData, 'qr');
                 } else {
-                    showStatus('QR Code inválido: formato não reconhecido', 'error');
+                    showStatus('QR Code invï¿½lido: formato nï¿½o reconhecido', 'error');
                 }
             }
         }
@@ -208,9 +208,9 @@
             const status = document.getElementById('gps-status');
             const button = document.getElementById('gps-checkin');
             button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obtendo localização...';
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obtendo localizaï¿½ï¿½o...';
             if (!navigator.geolocation) {
-                showGpsStatus('GPS não suportado neste dispositivo', 'error');
+                showGpsStatus('GPS nï¿½o suportado neste dispositivo', 'error');
                 button.disabled = false;
                 button.innerHTML = '<i class="fas fa-location-arrow"></i> Fazer Check-in GPS';
                 return;
@@ -221,20 +221,20 @@
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     const accuracy = position.coords.accuracy;
-                    showGpsStatus(`Localização obtida (precisão: ${Math.round(accuracy)}m)`, 'success');
-                    // Simular check-in baseado em localização
+                    showGpsStatus(`Localizaï¿½ï¿½o obtida (precisï¿½o: ${Math.round(accuracy)}m)`, 'success');
+                    // Simular check-in baseado em localizaï¿½ï¿½o
                     setTimeout(() => {
                         realizarCheckin('GPS_LOCATION', 'gps', { lat, lng, accuracy });
                     }, 1000);
                 },
                 (error) => {
-                    let errorMsg = 'Erro ao obter localização: ';
+                    let errorMsg = 'Erro ao obter localizaï¿½ï¿½o: ';
                     switch(error.code) {
                         case error.PERMISSION_DENIED:
-                            errorMsg += 'Permissão negada';
+                            errorMsg += 'Permissï¿½o negada';
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            errorMsg += 'Localização indisponível';
+                            errorMsg += 'Localizaï¿½ï¿½o indisponï¿½vel';
                             break;
                         case error.TIMEOUT:
                             errorMsg += 'Tempo esgotado';
@@ -256,11 +256,11 @@
         function manualCheckin() {
             const codigo = document.getElementById('empresa-codigo').value.trim();
             if (!codigo) {
-                showStatus('Digite o código da empresa', 'error');
+                showStatus('Digite o cï¿½digo da empresa', 'error');
                 return;
             }
             if (codigo.length < 3) {
-                showStatus('Código deve ter pelo menos 3 caracteres', 'error');
+                showStatus('Cï¿½digo deve ter pelo menos 3 caracteres', 'error');
                 return;
             }
             realizarCheckin(codigo, 'manual');
@@ -301,7 +301,7 @@
                 }
             } catch (error) {
                 console.error('Erro no check-in:', error);
-                showStatus('? Erro de conexão. Tente novamente.', 'error');
+                showStatus('? Erro de conexï¿½o. Tente novamente.', 'error');
                 // Reset GPS button on error
                 const gpsBtn = document.getElementById('gps-checkin');
                 if (gpsBtn) {
