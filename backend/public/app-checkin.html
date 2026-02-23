@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
 <link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body>
 <div class="header">
 <div class="header-content">
@@ -38,16 +39,16 @@
 <div id="qr-method" class="method-content">
 <div class="scanner-container">
 <div class="scanner-title">?? Scanner QR Code</div>
-<div class="scanner-subtitle">Aponte a c�mera para o QR Code da empresa</div>
+<div class="scanner-subtitle">Aponte a c?mera para o QR Code da empresa</div>
 <div id="qr-reader" class="qr-reader"></div>
 <div id="scanner-status" class="scanner-status"></div>
 <button id="start-camera" class="btn" onclick="startScanner()">
 <i class="fas fa-camera"></i>
-                    Iniciar C�mera
+                    Iniciar C?mera
                 </button>
 <button id="stop-camera" class="btn" onclick="stopScanner()" style="display: none;">
 <i class="fas fa-stop"></i>
-                    Parar C�mera
+                    Parar C?mera
                 </button>
 </div>
 </div>
@@ -56,15 +57,15 @@
 <div class="location-info">
 <div class="location-item">
 <i class="fas fa-map-marker-alt"></i>
-<span>Sua localiza��o ser� usada para detectar empresas pr�ximas</span>
+<span>Sua localiza??o ser? usada para detectar empresas pr?ximas</span>
 </div>
 <div class="location-item">
 <i class="fas fa-shield-alt"></i>
-<span>Seus dados de localiza��o s�o seguros e criptografados</span>
+<span>Seus dados de localiza??o s?o seguros e criptografados</span>
 </div>
 <div class="location-item">
 <i class="fas fa-clock"></i>
-<span>Check-in autom�tico em empresas dentro de 50 metros</span>
+<span>Check-in autom?tico em empresas dentro de 50 metros</span>
 </div>
 </div>
 <button id="gps-checkin" class="btn" onclick="gpsCheckin()">
@@ -80,8 +81,8 @@
                 Check-in Manual
             </h3>
 <div class="input-group">
-<label for="empresa-codigo">C�digo da Empresa</label>
-<input type="text" id="empresa-codigo" placeholder="Digite o c�digo da empresa" maxlength="10">
+<label for="empresa-codigo">C?digo da Empresa</label>
+<input type="text" id="empresa-codigo" placeholder="Digite o c?digo da empresa" maxlength="10">
 </div>
 <button class="btn" onclick="manualCheckin()">
 <i class="fas fa-check"></i>
@@ -93,7 +94,7 @@
 <div class="nav-items">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>In�cio</span>
+<span>In?cio</span>
 </a>
 <a href="app-empresas.html" class="nav-item">
 <i class="fas fa-search"></i>
@@ -164,11 +165,11 @@
                     // Erro silencioso - normal durante scan
                 }
             ).then(() => {
-                showStatus('C�mera iniciada! Aponte para o QR Code.', 'info');
+                showStatus('C?mera iniciada! Aponte para o QR Code.', 'info');
                 startBtn.style.display = 'none';
                 stopBtn.style.display = 'block';
             }).catch((err) => {
-                showStatus('Erro ao acessar c�mera: ' + err, 'error');
+                showStatus('Erro ao acessar c?mera: ' + err, 'error');
                 console.error(err);
             });
         }
@@ -177,7 +178,7 @@
             const stopBtn = document.getElementById('stop-camera');
             if (html5QrCode) {
                 html5QrCode.stop().then(() => {
-                    showStatus('C�mera desligada', 'info');
+                    showStatus('C?mera desligada', 'info');
                     startBtn.style.display = 'block';
                     stopBtn.style.display = 'none';
                 }).catch((err) => {
@@ -193,14 +194,14 @@
                     const empresaId = data.empresaId || data.empresa_id;
                     realizarCheckin(empresaId, 'qr');
                 } else {
-                    showStatus('QR Code inv�lido: falta ID da empresa', 'error');
+                    showStatus('QR Code inv?lido: falta ID da empresa', 'error');
                 }
             } catch (e) {
-                // Se n�o for JSON, tratar como c�digo simples
+                // Se n?o for JSON, tratar como c?digo simples
                 if (qrData.length > 3) {
                     realizarCheckin(qrData, 'qr');
                 } else {
-                    showStatus('QR Code inv�lido: formato n�o reconhecido', 'error');
+                    showStatus('QR Code inv?lido: formato n?o reconhecido', 'error');
                 }
             }
         }
@@ -208,9 +209,9 @@
             const status = document.getElementById('gps-status');
             const button = document.getElementById('gps-checkin');
             button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obtendo localiza��o...';
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obtendo localiza??o...';
             if (!navigator.geolocation) {
-                showGpsStatus('GPS n�o suportado neste dispositivo', 'error');
+                showGpsStatus('GPS n?o suportado neste dispositivo', 'error');
                 button.disabled = false;
                 button.innerHTML = '<i class="fas fa-location-arrow"></i> Fazer Check-in GPS';
                 return;
@@ -221,20 +222,20 @@
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     const accuracy = position.coords.accuracy;
-                    showGpsStatus(`Localiza��o obtida (precis�o: ${Math.round(accuracy)}m)`, 'success');
-                    // Simular check-in baseado em localiza��o
+                    showGpsStatus(`Localiza??o obtida (precis?o: ${Math.round(accuracy)}m)`, 'success');
+                    // Simular check-in baseado em localiza??o
                     setTimeout(() => {
                         realizarCheckin('GPS_LOCATION', 'gps', { lat, lng, accuracy });
                     }, 1000);
                 },
                 (error) => {
-                    let errorMsg = 'Erro ao obter localiza��o: ';
+                    let errorMsg = 'Erro ao obter localiza??o: ';
                     switch(error.code) {
                         case error.PERMISSION_DENIED:
-                            errorMsg += 'Permiss�o negada';
+                            errorMsg += 'Permiss?o negada';
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            errorMsg += 'Localiza��o indispon�vel';
+                            errorMsg += 'Localiza??o indispon?vel';
                             break;
                         case error.TIMEOUT:
                             errorMsg += 'Tempo esgotado';
@@ -256,11 +257,11 @@
         function manualCheckin() {
             const codigo = document.getElementById('empresa-codigo').value.trim();
             if (!codigo) {
-                showStatus('Digite o c�digo da empresa', 'error');
+                showStatus('Digite o c?digo da empresa', 'error');
                 return;
             }
             if (codigo.length < 3) {
-                showStatus('C�digo deve ter pelo menos 3 caracteres', 'error');
+                showStatus('C?digo deve ter pelo menos 3 caracteres', 'error');
                 return;
             }
             realizarCheckin(codigo, 'manual');
@@ -301,7 +302,7 @@
                 }
             } catch (error) {
                 console.error('Erro no check-in:', error);
-                showStatus('? Erro de conex�o. Tente novamente.', 'error');
+                showStatus('? Erro de conex?o. Tente novamente.', 'error');
                 // Reset GPS button on error
                 const gpsBtn = document.getElementById('gps-checkin');
                 if (gpsBtn) {

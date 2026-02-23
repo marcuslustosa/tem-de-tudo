@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -13,6 +13,7 @@
 `n
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body>
 <div class="container">
 <h1>?? Tem de Tudo</h1>
@@ -79,14 +80,14 @@
         function mostrarErro() {
             document.getElementById('statusIcon').textContent = '??';
             document.getElementById('statusText').textContent = 'Sistema Iniciando';
-            document.getElementById('statusDetail').textContent = 'Clique em "Inicializar Dados" para come�ar';
+            document.getElementById('statusDetail').textContent = 'Clique em "Inicializar Dados" para come?ar';
             document.getElementById('statusBox').style.borderColor = 'rgba(255, 152, 0, 0.5)';
         }
         async function inicializarSistema() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('statusIcon').textContent = '?';
             document.getElementById('statusText').textContent = 'Inicializando...';
-            document.getElementById('statusDetail').textContent = 'Criando usu�rios e dados de teste';
+            document.getElementById('statusDetail').textContent = 'Criando usu?rios e dados de teste';
             try {
                 const response = await fetch(API_BASE + '/api/setup-database?secret=temdetudo2024');
                 const data = await response.json();
@@ -94,21 +95,21 @@
                 if (data.success) {
                     document.getElementById('statusIcon').textContent = '?';
                     document.getElementById('statusText').textContent = 'Sistema Pronto!';
-                    document.getElementById('statusDetail').textContent = `${data.total_users} usu�rios criados. Fa�a login agora!`;
+                    document.getElementById('statusDetail').textContent = `${data.total_users} usu?rios criados. Fa?a login agora!`;
                     document.getElementById('statusBox').style.borderColor = 'rgba(76, 175, 80, 0.5)';
-                    alert('? Sistema inicializado com sucesso!\n\nVoc� j� pode fazer login com:\n- admin@temdetudo.com / admin123\n- cliente@teste.com / 123456');
+                    alert('? Sistema inicializado com sucesso!\n\nVoc? j? pode fazer login com:\n- admin@temdetudo.com / admin123\n- cliente@teste.com / 123456');
                 } else {
                     document.getElementById('statusIcon').textContent = '?';
-                    document.getElementById('statusText').textContent = 'Erro na Inicializa��o';
+                    document.getElementById('statusText').textContent = 'Erro na Inicializa??o';
                     document.getElementById('statusDetail').textContent = data.error || 'Tente novamente em alguns segundos';
-                    alert('Erro: ' + (data.error || 'Falha na inicializa��o'));
+                    alert('Erro: ' + (data.error || 'Falha na inicializa??o'));
                 }
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('statusIcon').textContent = '?';
-                document.getElementById('statusText').textContent = 'Erro de Conex�o';
+                document.getElementById('statusText').textContent = 'Erro de Conex?o';
                 document.getElementById('statusDetail').textContent = 'Servidor pode estar reiniciando. Aguarde 2 minutos.';
-                alert('Erro de conex�o. O servidor pode estar reiniciando. Aguarde 2-3 minutos e tente novamente.');
+                alert('Erro de conex?o. O servidor pode estar reiniciando. Aguarde 2-3 minutos e tente novamente.');
             }
         }
         // Verificar sistema ao carregar

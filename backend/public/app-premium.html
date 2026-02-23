@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -19,11 +19,12 @@
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
 `n    
 <link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body>
 <div class="header">
 <div class="crown-icon"><i class="fas fa-crown"></i></div>
 <h1>Seja Premium</h1>
-<p>Benef�cios exclusivos para voc�</p>
+<p>Benef?cios exclusivos para voc?</p>
 </div>
 <div class="content">
 <div class="benefits-grid">
@@ -38,28 +39,28 @@
 <div class="benefit-icon"><i class="fas fa-gift"></i></div>
 <div class="benefit-info">
 <h3>Recompensas Exclusivas</h3>
-<p>Acesso a pr�mios que apenas membros Premium podem resgatar</p>
+<p>Acesso a pr?mios que apenas membros Premium podem resgatar</p>
 </div>
 </div>
 <div class="benefit-card">
 <div class="benefit-icon"><i class="fas fa-bell"></i></div>
 <div class="benefit-info">
-<h3>Promo��es Antecipadas</h3>
-<p>Seja o primeiro a saber das promo��es dos estabelecimentos</p>
+<h3>Promo??es Antecipadas</h3>
+<p>Seja o primeiro a saber das promo??es dos estabelecimentos</p>
 </div>
 </div>
 <div class="benefit-card">
 <div class="benefit-icon"><i class="fas fa-headset"></i></div>
 <div class="benefit-info">
-<h3>Atendimento Priorit�rio</h3>
+<h3>Atendimento Priorit?rio</h3>
 <p>Suporte VIP e atendimento diferenciado nos estabelecimentos</p>
 </div>
 </div>
 <div class="benefit-card">
 <div class="benefit-icon"><i class="fas fa-birthday-cake"></i></div>
 <div class="benefit-info">
-<h3>Presente de Anivers�rio</h3>
-<p>B�nus especial de 500 pontos no seu anivers�rio</p>
+<h3>Presente de Anivers?rio</h3>
+<p>B?nus especial de 500 pontos no seu anivers?rio</p>
 </div>
 </div>
 </div>
@@ -80,12 +81,12 @@
         async function assinarPlano() {
             const token = localStorage.getItem('token');
             if (!token) {
-                alert('Voc� precisa estar logado');
+                alert('Voc? precisa estar logado');
                 window.location.href = 'entrar.html';
                 return;
             }
-            // Confirma��o
-            if (!confirm('Deseja assinar o Plano Premium por R$ 19,90/m�s?')) {
+            // Confirma??o
+            if (!confirm('Deseja assinar o Plano Premium por R$ 19,90/m?s?')) {
                 return;
             }
             try {
@@ -99,14 +100,14 @@
                 });
                 const data = await response.json();
                 if (data.success) {
-                    alert('? Parab�ns! Voc� agora � Premium!\n\nBenef�cios ativados:\n- Pontos em dobro\n- Recompensas exclusivas\n- Promo��es antecipadas');
+                    alert('? Parab?ns! Voc? agora ? Premium!\n\nBenef?cios ativados:\n- Pontos em dobro\n- Recompensas exclusivas\n- Promo??es antecipadas');
                     window.location.href = '/app-inicio.html';
                 } else {
                     alert('? Erro ao assinar: ' + (data.message || 'Tente novamente mais tarde'));
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('? Assinatura simulada com sucesso!\n\n(Em produ��o, integraria com gateway de pagamento)');
+                alert('? Assinatura simulada com sucesso!\n\n(Em produ??o, integraria com gateway de pagamento)');
                 setTimeout(() => window.location.href = '/app-inicio.html', 1500);
             }
         }

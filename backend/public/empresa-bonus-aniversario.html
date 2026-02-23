@@ -1,14 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#6A0DAD">
-<title>B�nus de Anivers�rio - Empresa</title>
+<title>B?nus de Anivers?rio - Empresa</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="/js/config.js"></script>
 <link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body>
 <div class="header">
 <div class="header-content">
@@ -16,7 +17,7 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div class="header-title">
-<h1>?? B�nus de Anivers�rio</h1>
+<h1>?? B?nus de Anivers?rio</h1>
 <p>Parabenize seus clientes com um presente especial</p>
 </div>
 </div>
@@ -24,12 +25,12 @@
 <div class="container">
 <div class="info-box">
 <h3>?? Como funciona?</h3>
-<p>Todo dia �s 8h da manh�, o sistema verifica automaticamente se algum cliente est� fazendo anivers�rio e envia um cupom de presente com validade de 30 dias. Configure o b�nus que deseja oferecer.</p>
+<p>Todo dia ?s 8h da manh?, o sistema verifica automaticamente se algum cliente est? fazendo anivers?rio e envia um cupom de presente com validade de 30 dias. Configure o b?nus que deseja oferecer.</p>
 </div>
 <div class="form-card">
 <div id="statusBadge"></div>
 <div class="form-group">
-<label>Tipo de B�nus</label>
+<label>Tipo de B?nus</label>
 <div class="radio-group">
 <label class="radio-option">
 <input type="radio" name="tipo_bonus" value="percentual">
@@ -48,14 +49,14 @@
 <label class="radio-option">
 <input type="radio" name="tipo_bonus" value="gratis">
 <div class="radio-label">
-<strong>Servi�o/Produto Gr�tis</strong>
+<strong>Servi?o/Produto Gr?tis</strong>
 <span>Aniversariante ganha um brinde gratuito</span>
 </div>
 </label>
 </div>
 </div>
 <div class="form-group">
-<label id="valorLabel">Valor do B�nus</label>
+<label id="valorLabel">Valor do B?nus</label>
 <div class="input-wrapper">
 <i class="input-icon fas fa-gift"></i>
 <input type="number" id="valorBonus" class="input-with-icon" placeholder="0" min="0" step="0.01">
@@ -65,7 +66,7 @@
 <label>Mensagem Personalizada</label>
 <div class="input-wrapper">
 <i class="input-icon fas fa-birthday-cake"></i>
-<input type="text" id="mensagem" class="input-with-icon" placeholder="Parab�ns! Aqui est� seu presente de anivers�rio ??">
+<input type="text" id="mensagem" class="input-with-icon" placeholder="Parab?ns! Aqui est? seu presente de anivers?rio ??">
 </div>
 </div>
 <div class="form-group">
@@ -77,12 +78,12 @@
 </div>
 </div>
 <div class="preview-card" id="preview">
-<h3>Preview do Cupom de Anivers�rio</h3>
+<h3>Preview do Cupom de Anivers?rio</h3>
 <div class="preview-value" id="previewValue">--</div>
-<div class="preview-desc" id="previewDesc">Configure o b�nus acima</div>
+<div class="preview-desc" id="previewDesc">Configure o b?nus acima</div>
 </div>
 <button class="btn-primary" id="btnSalvar">
-<i class="fas fa-check"></i> Salvar Configura��es
+<i class="fas fa-check"></i> Salvar Configura??es
         </button>
 </div>
 <script>
@@ -113,7 +114,7 @@
                     }
                 }
             } catch (error) {
-                console.error('Erro ao carregar b�nus:', error);
+                console.error('Erro ao carregar b?nus:', error);
             }
         }
         function updatePreview() {
@@ -122,23 +123,23 @@
             const msg = document.getElementById('mensagem').value;
             const dias = document.getElementById('validadeDias').value || 30;
             let previewValue = '--';
-            let previewDesc = 'Configure o b�nus acima';
+            let previewDesc = 'Configure o b?nus acima';
             if (tipo && valor > 0) {
                 switch(tipo) {
                     case 'percentual':
                         previewValue = `${valor}% OFF`;
-                        previewDesc = msg || `?? Feliz Anivers�rio! Ganhe ${valor}% OFF (v�lido por ${dias} dias)`;
+                        previewDesc = msg || `?? Feliz Anivers?rio! Ganhe ${valor}% OFF (v?lido por ${dias} dias)`;
                         document.getElementById('valorLabel').textContent = 'Percentual de Desconto (%)';
                         break;
                     case 'fixo':
                         previewValue = `R$ ${valor.toFixed(2)}`;
-                        previewDesc = msg || `?? Feliz Anivers�rio! R$ ${valor.toFixed(2)} OFF (v�lido por ${dias} dias)`;
+                        previewDesc = msg || `?? Feliz Anivers?rio! R$ ${valor.toFixed(2)} OFF (v?lido por ${dias} dias)`;
                         document.getElementById('valorLabel').textContent = 'Valor Fixo (R$)';
                         break;
                     case 'gratis':
-                        previewValue = '?? GR�TIS';
-                        previewDesc = msg || `?? Feliz Anivers�rio! Presente especial para voc� (v�lido por ${dias} dias)`;
-                        document.getElementById('valorLabel').textContent = 'Valor de Refer�ncia (R$)';
+                        previewValue = '?? GR?TIS';
+                        previewDesc = msg || `?? Feliz Anivers?rio! Presente especial para voc? (v?lido por ${dias} dias)`;
+                        document.getElementById('valorLabel').textContent = 'Valor de Refer?ncia (R$)';
                         break;
                 }
             }
@@ -157,8 +158,8 @@
                 const msg = document.getElementById('mensagem').value;
                 const dias = parseInt(document.getElementById('validadeDias').value);
                 if (!tipo || !valor) {
-                    alert('Preencha o tipo e valor do b�nus');
-                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura��es';
+                    alert('Preencha o tipo e valor do b?nus');
+                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura??es';
                     btn.disabled = false;
                     return;
                 }
@@ -189,13 +190,13 @@
                     }, 1500);
                 } else {
                     alert(result.message || 'Erro ao salvar');
-                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura��es';
+                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura??es';
                     btn.disabled = false;
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao salvar configura��es');
-                btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura��es';
+                alert('Erro ao salvar configura??es');
+                btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura??es';
                 btn.disabled = false;
             }
         });

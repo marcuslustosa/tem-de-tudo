@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body>
 <div class="header-image">
 <img id="companyBanner" src="" alt="Banner">
@@ -24,7 +25,7 @@
 <div id="companyLogo" class="company-logo">??</div>
 <div class="company-main">
 <div id="companyName" class="company-name">Carregando...</div>
-<div id="companyCategory" class="company-category">���</div>
+<div id="companyCategory" class="company-category">???</div>
 <div class="rating">
 <div class="stars">
 <i class="fas fa-star"></i>
@@ -33,7 +34,7 @@
 <i class="fas fa-star"></i>
 <i class="fas fa-star-half-alt"></i>
 </div>
-<span id="companyRating" class="rating-text">4.5 (234 avalia��es)</span>
+<span id="companyRating" class="rating-text">4.5 (234 avalia??es)</span>
 </div>
 </div>
 </div>
@@ -54,19 +55,19 @@
 </div>
 <div class="info-section">
 <div class="section-title">
-<i class="fas fa-info-circle"></i> Informa��es
+<i class="fas fa-info-circle"></i> Informa??es
         </div>
 <div class="info-item">
 <div class="info-icon"><i class="fas fa-clock"></i></div>
 <div class="info-content">
-<div class="info-label">Hor�rio de funcionamento</div>
+<div class="info-label">Hor?rio de funcionamento</div>
 <div id="companyHours" class="info-value">Seg-Dom: 11h - 23h</div>
 </div>
 </div>
 <div class="info-item">
 <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
 <div class="info-content">
-<div class="info-label">Endere�o</div>
+<div class="info-label">Endere?o</div>
 <div id="companyAddress" class="info-value">Carregando...</div>
 </div>
 </div>
@@ -83,12 +84,12 @@
 <i class="fas fa-align-left"></i> Sobre
         </div>
 <div id="companyDescription" class="description">
-            Carregando descri��o...
+            Carregando descri??o...
         </div>
 </div>
 <div class="services-section">
 <div class="section-title">
-<i class="fas fa-th-large"></i> Produtos e Servi�os
+<i class="fas fa-th-large"></i> Produtos e Servi?os
         </div>
 <div id="servicesList"></div>
 </div>
@@ -102,14 +103,14 @@
         </button>
 </div>
 <script>
-        // Vari�veis globais
+        // Vari?veis globais
         let selectedServices = [];
         let empresaData = null;
         let produtosData = [];
         // Pegar ID da empresa da URL
         const urlParams = new URLSearchParams(window.location.search);
         const empresaId = urlParams.get('id') || '1';
-        // Fun��o para fazer requisi��es
+        // Fun??o para fazer requisi??es
         async function apiRequest(url, options = {}) {
             try {
                 const response = await fetch(`http://localhost:8888${url}`, {
@@ -138,8 +139,8 @@
                     document.getElementById('companyName').textContent = empresaData.nome;
                     document.getElementById('companyCategory').textContent = `?? ${empresaData.categoria || 'Estabelecimento'}`;
                     document.getElementById('companyLogo').textContent = getEmojiForCategory(empresaData.categoria);
-                    document.getElementById('companyRating').textContent = `${empresaData.avaliacao_media || '4.5'} (${empresaData.total_avaliacoes || '0'} avalia��es)`;
-                    document.getElementById('companyHours').textContent = "Seg-Dom: 08h - 22h"; // Padr�o
+                    document.getElementById('companyRating').textContent = `${empresaData.avaliacao_media || '4.5'} (${empresaData.total_avaliacoes || '0'} avalia??es)`;
+                    document.getElementById('companyHours').textContent = "Seg-Dom: 08h - 22h"; // Padr?o
                     document.getElementById('companyAddress').textContent = empresaData.endereco;
                     document.getElementById('companyPhone').textContent = empresaData.telefone;
                     document.getElementById('companyDescription').textContent = empresaData.descricao || 'Empresa parceira do programa de fidelidade Tem de Tudo.';
@@ -177,7 +178,7 @@
                 loadFallbackProdutos();
             }
         }
-        // Fun��o para obter emoji baseado na categoria
+        // Fun??o para obter emoji baseado na categoria
         function getEmojiForCategory(categoria) {
             const emojis = {
                 'alimentacao': '???',
@@ -191,9 +192,9 @@
         // Dados de fallback caso a API falhe
         function loadFallbackData() {
             const fallbackData = {
-                1: { name: "Pizzaria Bella Napoli", category: "?? Alimenta��o � Pizzaria", logo: "??", rating: "4.5 (234 avalia��es)", description: "A melhor pizzaria da regi�o! Massas artesanais e ingredientes frescos." },
-                2: { name: "Burger House Premium", category: "?? Alimenta��o � Hamburgueria", logo: "??", rating: "4.7 (189 avalia��es)", description: "Hamb�rgueres artesanais com carne premium e p�es caseiros." },
-                3: { name: "Beauty Salon Elite", category: "?? Beleza � Sal�o", logo: "??", rating: "4.9 (156 avalia��es)", description: "Sal�o completo com profissionais especializados em cortes e tratamentos." }
+                1: { name: "Pizzaria Bella Napoli", category: "?? Alimenta??o ? Pizzaria", logo: "??", rating: "4.5 (234 avalia??es)", description: "A melhor pizzaria da regi?o! Massas artesanais e ingredientes frescos." },
+                2: { name: "Burger House Premium", category: "?? Alimenta??o ? Hamburgueria", logo: "??", rating: "4.7 (189 avalia??es)", description: "Hamb?rgueres artesanais com carne premium e p?es caseiros." },
+                3: { name: "Beauty Salon Elite", category: "?? Beleza ? Sal?o", logo: "??", rating: "4.9 (156 avalia??es)", description: "Sal?o completo com profissionais especializados em cortes e tratamentos." }
             };
             const empresa = fallbackData[empresaId] || fallbackData[1];
             document.getElementById('companyName').textContent = empresa.name;
@@ -209,21 +210,21 @@
         function loadFallbackProdutos() {
             const fallbackProdutos = {
                 1: [
-                    { id: 1, nome: "Pizza Margherita", descricao: "Molho, mussarela, tomate e manjeric�o", categoria: "alimentacao", preco: 45, pontos_calculados: 100 },
+                    { id: 1, nome: "Pizza Margherita", descricao: "Molho, mussarela, tomate e manjeric?o", categoria: "alimentacao", preco: 45, pontos_calculados: 100 },
                     { id: 2, nome: "Pizza Calabresa", descricao: "Molho, mussarela, calabresa e cebola", categoria: "alimentacao", preco: 48, pontos_calculados: 110 },
-                    { id: 3, nome: "Pizza 4 Queijos", descricao: "Mussarela, provolone, parmes�o e catupiry", categoria: "alimentacao", preco: 52, pontos_calculados: 120 }
+                    { id: 3, nome: "Pizza 4 Queijos", descricao: "Mussarela, provolone, parmes?o e catupiry", categoria: "alimentacao", preco: 52, pontos_calculados: 120 }
                 ],
                 2: [
-                    { id: 4, nome: "Burger Cl�ssico", descricao: "Hamb�rguer, queijo, alface e tomate", categoria: "alimentacao", preco: 35, pontos_calculados: 80 },
-                    { id: 5, nome: "Burger Premium", descricao: "Hamb�rguer premium com bacon e molho especial", categoria: "alimentacao", preco: 42, pontos_calculados: 95 }
+                    { id: 4, nome: "Burger Cl?ssico", descricao: "Hamb?rguer, queijo, alface e tomate", categoria: "alimentacao", preco: 35, pontos_calculados: 80 },
+                    { id: 5, nome: "Burger Premium", descricao: "Hamb?rguer premium com bacon e molho especial", categoria: "alimentacao", preco: 42, pontos_calculados: 95 }
                 ],
                 3: [
                     { id: 6, nome: "Corte Feminino", descricao: "Corte e escova profissional", categoria: "beleza", preco: 60, pontos_calculados: 140 },
-                    { id: 7, nome: "Colora��o Completa", descricao: "Colora��o + corte + hidrata��o", categoria: "beleza", preco: 120, pontos_calculados: 280 }
+                    { id: 7, nome: "Colora??o Completa", descricao: "Colora??o + corte + hidrata??o", categoria: "beleza", preco: 120, pontos_calculados: 280 }
                 ]
             };
         }
-        // Fun��o para renderizar produtos
+        // Fun??o para renderizar produtos
         function renderProdutos(produtos) {
             const servicesList = document.getElementById('servicesList');
             servicesList.innerHTML = produtos.map(produto => {
@@ -234,7 +235,7 @@
 <div class="service-icon">${icon}</div>
 <div class="service-main">
 <div class="service-name">${produto.nome}</div>
-<div class="service-desc">${produto.descricao || 'Produto dispon�vel'}</div>
+<div class="service-desc">${produto.descricao || 'Produto dispon?vel'}</div>
 </div>
 </div>
 <div class="service-footer">
@@ -250,7 +251,7 @@
                 `;
             }).join('');
         }
-        // Fun��o para obter �cone baseado na categoria do produto
+        // Fun??o para obter ?cone baseado na categoria do produto
         function getIconForCategory(categoria) {
             const icons = {
                 'alimentacao': '???',
@@ -299,7 +300,7 @@
                 return produto ? produto.nome : '';
             }).filter(Boolean);
             const empresa = empresaData || { nome: 'Empresa' };
-            alert(`? Pedido confirmado!\n\nItens:\n${items.join('\n')}\n\nEmpresa: ${empresa.nome}\n\nVoc� receber� uma notifica��o quando o pedido for confirmado.`);
+            alert(`? Pedido confirmado!\n\nItens:\n${items.join('\n')}\n\nEmpresa: ${empresa.nome}\n\nVoc? receber? uma notifica??o quando o pedido for confirmado.`);
             // Limpar carrinho
             selectedServices = [];
             document.querySelectorAll('.service-item.selected').forEach(el => {
@@ -312,7 +313,7 @@
             const btn = document.querySelector('.fav-btn');
             btn.classList.toggle('active');
         }
-        // Inicializar p�gina
+        // Inicializar p?gina
         document.addEventListener('DOMContentLoaded', async () => {
             await loadEmpresaData();
             await loadProdutos();

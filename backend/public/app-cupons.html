@@ -1,9 +1,9 @@
-Ôªø<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>üé´ Meus Cupons - Tem de Tudo</title>
+<title>?? Meus Cupons - Tem de Tudo</title>
 <meta name="description" content="Cupons e ofertas exclusivas">
 <meta name="theme-color" content="#6F1AB6">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -12,11 +12,7 @@
 <script src="js/auth-guard.js"></script>
 
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/vivo-styles.css">
-<script src="js/config.js"></script>
-<script src="js/auth-guard.js"></script>
 </head>
 <body>
 <div class="app-page">
@@ -28,12 +24,12 @@
             <div style="width: 40px;"></div>
         </div>
         <div class="header-info">
-            <h1>üé´ Meus Cupons</h1>
+            <h1>?? Meus Cupons</h1>
             <p>Resgate e economize com estilo</p>
         </div>
         <div class="pontos-card">
             <div class="pontos-value" id="pontosUser">250 pontos</div>
-            <div class="pontos-label">Seus pontos dispon√≠veis</div>
+            <div class="pontos-label">Seus pontos disponÌveis</div>
         </div>
     </div>
     
@@ -66,7 +62,7 @@
                     </div>
                     <div class="cupon-content">
                         <h3 class="cupon-title">Pizza Express</h3>
-                        <p class="cupon-desc">V√°lido para pizzas grandes, exceto finais de semana</p>
+                        <p class="cupon-desc">V·lido para pizzas grandes, exceto finais de semana</p>
                         <div class="cupon-footer">
                             <div class="cupon-price">
                                 <i class="fas fa-coins"></i>
@@ -107,7 +103,7 @@
                 <div class="cupon-card fade-in">
                     <div class="cupon-header">
                         <div>
-                            <div class="cupon-discount">GR√ÅTIS</div>
+                            <div class="cupon-discount">GR¡TIS</div>
                             <div class="cupon-type">Frete</div>
                         </div>
                         <div class="cupon-logo">
@@ -115,8 +111,8 @@
                         </div>
                     </div>
                     <div class="cupon-content">
-                        <h3 class="cupon-title">Frete Gr√°tis</h3>
-                        <p class="cupon-desc">V√°lido para qualquer compra online</p>
+                        <h3 class="cupon-title">Frete Gr·tis</h3>
+                        <p class="cupon-desc">V·lido para qualquer compra online</p>
                         <div class="cupon-footer">
                             <div class="cupon-price">
                                 <i class="fas fa-coins"></i>
@@ -135,9 +131,9 @@
         <div id="tab-meus" class="tab-content">
             <div class="cupons-grid" id="cuponsDisponiveis">
                 <div class="empty-state">
-                    <div class="empty-icon">üé´</div>
+                    <div class="empty-icon">??</div>
                     <h3>Nenhum cupom ainda</h3>
-                    <p>Resgate cupons na aba Shop para come√ßar a economizar!</p>
+                    <p>Resgate cupons na aba Shop para comeÁar a economizar!</p>
                 </div>
             </div>
         </div>
@@ -160,9 +156,9 @@ function switchTab(tabName) {
 
 function comprarCupon(tipo) {
     const cupons = {
-        'pizza20': { nome: 'Pizza Express 20% OFF', pontos: 50, descricao: 'V√°lido para pizzas grandes' },
+        'pizza20': { nome: 'Pizza Express 20% OFF', pontos: 50, descricao: 'V·lido para pizzas grandes' },
         'moda15': { nome: 'Moda & Style R$ 15 OFF', pontos: 75, descricao: 'Desconto em compras acima de R$ 100' },
-        'frete': { nome: 'Frete Gr√°tis', pontos: 30, descricao: 'V√°lido para qualquer compra online' }
+        'frete': { nome: 'Frete Gr·tis', pontos: 30, descricao: 'V·lido para qualquer compra online' }
     };
     
     const cupon = cupons[tipo];
@@ -182,13 +178,13 @@ function comprarCupon(tipo) {
         // Atualizar meus cupons
         atualizarMeusCupons();
         
-        showToast(`‚úÖ Cupom "${cupon.nome}" resgatado com sucesso!`);
+        showToast(`? Cupom "${cupon.nome}" resgatado com sucesso!`);
         
         // Salvar no localStorage
         localStorage.setItem('meusPontos', meusPontos);
         localStorage.setItem('meusCupons', JSON.stringify(meusCupons));
     } else {
-        showToast('‚ùå Pontos insuficientes!');
+        showToast('? Pontos insuficientes!');
     }
 }
 
@@ -198,9 +194,9 @@ function atualizarMeusCupons() {
     if (meusCupons.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
-                <div class="empty-icon">üé´</div>
+                <div class="empty-icon">??</div>
                 <h3>Nenhum cupom ainda</h3>
-                <p>Resgate cupons na aba Shop para come√ßar a economizar!</p>
+                <p>Resgate cupons na aba Shop para comeÁar a economizar!</p>
             </div>
         `;
         return;
@@ -222,7 +218,7 @@ function atualizarMeusCupons() {
                 <p class="cupon-desc">${cupon.descricao}</p>
                 <div class="cupon-footer">
                     <div class="cupon-price">
-                        ${cupon.usado ? '‚úÖ Usado' : '‚è∞ Dispon√≠vel'}
+                        ${cupon.usado ? '? Usado' : '? DisponÌvel'}
                     </div>
                     <button class="cupon-btn" ${cupon.usado ? 'disabled' : ''} onclick="usarCupon(${cupon.id})">
                         ${cupon.usado ? 'Usado' : 'Usar'}
@@ -238,7 +234,7 @@ function usarCupon(id) {
     if (cupon && !cupon.usado) {
         cupon.usado = true;
         atualizarMeusCupons();
-        showToast('üéâ Cupom utilizado com sucesso!');
+        showToast('?? Cupom utilizado com sucesso!');
         
         // Salvar no localStorage
         localStorage.setItem('meusCupons', JSON.stringify(meusCupons));

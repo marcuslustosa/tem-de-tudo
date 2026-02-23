@@ -51,18 +51,18 @@
                 <i class="fas fa-clock"></i>
             </div>
             <div class="stat-value" id="pendingPromotions">5</div>
-            <div class="stat-label">Aguardando Aprovação</div>
+            <div class="stat-label">Aguardando Aprovaçáo</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon" style="background: var(--vivo-blue);">
                 <i class="fas fa-chart-line"></i>
             </div>
             <div class="stat-value" id="conversionRate">78%</div>
-            <div class="stat-label">Taxa de Conversão</div>
+            <div class="stat-label">Taxa de Conversáo</div>
         </div>
     </div>
 
-    <!-- SEÇÃO DE PROMOÇÕES -->
+    <!-- SEÇáO DE PROMOÇÕES -->
     <div class="promotions-section">
         <div class="section-header">
             <h2 class="section-title">
@@ -71,7 +71,7 @@
             </h2>
             <button class="add-btn" onclick="createPromotion()">
                 <i class="fas fa-plus"></i>
-                Nova Promoção
+                Nova Promoçáo
             </button>
         </div>
 
@@ -86,7 +86,7 @@
             </select>
             <select class="filter-select" id="categoryFilter">
                 <option value="">Todas as categorias</option>
-                <option value="alimentacao">Alimentação</option>
+                <option value="alimentacao">Alimentaçáo</option>
                 <option value="moda">Moda</option>
                 <option value="eletrônicos">Eletrônicos</option>
                 <option value="saude">Saúde</option>
@@ -95,7 +95,7 @@
 
         <!-- GRID DE PROMOÇÕES -->
         <div class="promotions-grid" id="promotionsGrid">
-            <!-- Dados serão carregados via JavaScript -->
+            <!-- Dados seráo carregados via JavaScript -->
         </div>
     </div>
 </div>
@@ -125,8 +125,8 @@ const promotionsData = [
     },
     { 
         id: 3, 
-        title: 'Promoção de Verão', 
-        company: 'Casa & Decoração', 
+        title: 'Promoçáo de Veráo', 
+        company: 'Casa & Decoraçáo', 
         discount: 25, 
         startDate: '2026-02-01', 
         endDate: '2026-02-28', 
@@ -136,7 +136,7 @@ const promotionsData = [
     { 
         id: 4, 
         title: 'Combo Pizza + Refrigerante', 
-        company: 'Pizzaria do João', 
+        company: 'Pizzaria do Joáo', 
         discount: 20, 
         startDate: '2025-12-01', 
         endDate: '2025-12-31', 
@@ -146,7 +146,7 @@ const promotionsData = [
     { 
         id: 5, 
         title: 'Medicamentos com 15% OFF', 
-        company: 'Farmácia São João', 
+        company: 'Farmácia Sáo Joáo', 
         discount: 15, 
         startDate: '2026-01-20', 
         endDate: '2026-04-20', 
@@ -171,8 +171,8 @@ function renderPromotions() {
         grid.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-tags"></i>
-                <h3>Nenhuma promoção encontrada</h3>
-                <p>Crie sua primeira promoção para começar</p>
+                <h3>Nenhuma promoçáo encontrada</h3>
+                <p>Crie sua primeira promoçáo para começar</p>
             </div>
         `;
         return;
@@ -294,11 +294,11 @@ function formatDate(dateString) {
 }
 
 function createPromotion() {
-    alert('Criar nova promoção - Funcionalidade em desenvolvimento');
+    alert('Criar nova promoçáo - Funcionalidade em desenvolvimento');
 }
 
 function editPromotion(id) {
-    alert(`Editar promoção ID: ${id}`);
+    alert(`Editar promoçáo ID: ${id}`);
 }
 
 function togglePromotion(id) {
@@ -307,18 +307,18 @@ function togglePromotion(id) {
         promotion.status = promotion.status === 'ativa' ? 'inativa' : 'ativa';
         renderPromotions();
         updateStats();
-        alert(`Promoção ${promotion.status === 'ativa' ? 'ativada' : 'desativada'} com sucesso!`);
+        alert(`Promoçáo ${promotion.status === 'ativa' ? 'ativada' : 'desativada'} com sucesso!`);
     }
 }
 
 function deletePromotion(id) {
-    if (confirm('Tem certeza que deseja excluir esta promoção?')) {
+    if (confirm('Tem certeza que deseja excluir esta promoçáo?')) {
         const index = promotionsData.findIndex(p => p.id === id);
         if (index > -1) {
             promotionsData.splice(index, 1);
             filterPromotions();
             updateStats();
-            alert('Promoção excluída com sucesso!');
+            alert('Promoçáo excluída com sucesso!');
         }
     }
 }

@@ -12,11 +12,7 @@
     <script src="js/auth-guard.js"></script>
     
     
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/vivo-styles.css">
-<script src="js/config.js"></script>
-<script src="js/auth-guard.js"></script>
 </head>
 <body>
     <!-- Navigation será inserida aqui pelo global-navbar.js -->
@@ -32,7 +28,7 @@
         <!-- Location Status -->
         <div class="location-status" id="locationStatus">
             <i class="fas fa-map-marker-alt" style="color: var(--vivo-purple); margin-right: 10px;"></i>
-            <strong>Localização detectada:</strong> <span id="userLocation">Carregando...</span>
+            <strong>Localizaçáo detectada:</strong> <span id="userLocation">Carregando...</span>
         </div>
 
         <!-- Search and Filters Section -->
@@ -53,16 +49,16 @@
                 <div class="filter-group">
                     <select class="filter-select" id="categoryFilter">
                         <option value="">Todas as Categorias</option>
-                        <option value="alimentacao">🍔 Alimentação</option>
-                        <option value="beleza">✨ Beleza & Estética</option>
-                        <option value="esportes">🏋️ Esportes & Fitness</option>
-                        <option value="moda">👗 Moda & Vestuário</option>
-                        <option value="tecnologia">💻 Tecnologia</option>
-                        <option value="automotivo">🚗 Automotivo</option>
-                        <option value="saude">🏥 Saúde & Bem-estar</option>
-                        <option value="educacao">📚 Educação</option>
-                        <option value="casa">🏠 Casa & Construção</option>
-                        <option value="servicos">🛠️ Serviços Gerais</option>
+                        <option value="alimentacao">?? Alimentaçáo</option>
+                        <option value="beleza">? Beleza & Estética</option>
+                        <option value="esportes">??? Esportes & Fitness</option>
+                        <option value="moda">?? Moda & Vestuário</option>
+                        <option value="tecnologia">?? Tecnologia</option>
+                        <option value="automotivo">?? Automotivo</option>
+                        <option value="saude">?? Saúde & Bem-estar</option>
+                        <option value="educacao">?? Educaçáo</option>
+                        <option value="casa">?? Casa & Construçáo</option>
+                        <option value="servicos">??? Serviços Gerais</option>
                     </select>
 
                     <select class="filter-select" id="distanceFilter">
@@ -75,7 +71,7 @@
                     </select>
 
                     <select class="filter-select" id="ratingFilter">
-                        <option value="">Qualquer avaliação</option>
+                        <option value="">Qualquer avaliaçáo</option>
                         <option value="4">4+ estrelas</option>
                         <option value="4.5">4.5+ estrelas</option>
                     </select>
@@ -83,14 +79,14 @@
 
                 <div class="distance-display" id="distanceDisplay" style="display: none;">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span>Localização ativa</span>
+                    <span>Localizaçáo ativa</span>
                 </div>
 
                 <div class="view-toggle">
-                    <button class="view-btn active" onclick="switchView('grid')" title="Visualização em grade">
+                    <button class="view-btn active" onclick="switchView('grid')" title="Visualizaçáo em grade">
                         <i class="fas fa-th-large"></i>
                     </button>
-                    <button class="view-btn" onclick="switchView('list')" title="Visualização em lista">
+                    <button class="view-btn" onclick="switchView('list')" title="Visualizaçáo em lista">
                         <i class="fas fa-list"></i>
                     </button>
                 </div>
@@ -107,7 +103,7 @@
                 <select class="sort-select" id="sortSelect">
                     <option value="relevance">Relevância</option>
                     <option value="distance">Distância</option>
-                    <option value="rating">Avaliação</option>
+                    <option value="rating">Avaliaçáo</option>
                     <option value="name">Nome A-Z</option>
                     <option value="offers">Mais ofertas</option>
                 </select>
@@ -227,18 +223,18 @@
                 category: "saude",
                 rating: 4.9,
                 distance: 1.8,
-                description: "Clínica médica com especialistas e exames de última geração.",
+                description: "Clínica médica com especialistas e exames de última geraçáo.",
                 offers: 6,
                 address: "Av. da Saúde, 321",
                 phone: "(11) 99999-0007"
             },
             {
                 id: 8,
-                name: "Casa & Decoração Ltda",
+                name: "Casa & Decoraçáo Ltda",
                 category: "casa", 
                 rating: 4.3,
                 distance: 5.2,
-                description: "Materiais de construção, móveis e artigos para decoração.",
+                description: "Materiais de construçáo, móveis e artigos para decoraçáo.",
                 offers: 2,
                 address: "Distrito Industrial, 147",
                 phone: "(11) 99999-0008"
@@ -308,7 +304,7 @@
 
         // Create company card
         function createEmpresaCard(empresa, isList = false) {
-            const stars = '★'.repeat(Math.floor(empresa.rating)) + '☆'.repeat(5 - Math.floor(empresa.rating));
+            const stars = '?'.repeat(Math.floor(empresa.rating)) + '?'.repeat(5 - Math.floor(empresa.rating));
             const categoryIcons = {
                 'alimentacao': 'fa-utensils',
                 'beleza': 'fa-spa',
@@ -321,14 +317,14 @@
             };
 
             const categoryNames = {
-                'alimentacao': 'Alimentação',
+                'alimentacao': 'Alimentaçáo',
                 'beleza': 'Beleza & Estética',
                 'tecnologia': 'Tecnologia',
                 'esportes': 'Esportes & Fitness',
                 'moda': 'Moda & Vestuário',
                 'automotivo': 'Automotivo',
                 'saude': 'Saúde & Bem-estar',
-                'casa': 'Casa & Construção'
+                'casa': 'Casa & Construçáo'
             };
 
             return `
@@ -458,11 +454,11 @@
         // Request user location
         function requestLocation() {
             if (!navigator.geolocation) {
-                showToast('Geolocalização não suportada pelo navegador', 'error');
+                showToast('Geolocalizaçáo náo suportada pelo navegador', 'error');
                 return;
             }
 
-            showToast('Buscando sua localização...', 'info');
+            showToast('Buscando sua localizaçáo...', 'info');
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -475,13 +471,13 @@
                     document.getElementById('userLocation').textContent = 'Centro da cidade'; // Simulate
                     document.getElementById('distanceDisplay').style.display = 'flex';
                     
-                    showToast('Localização detectada! Mostrando empresas próximas', 'success');
+                    showToast('Localizaçáo detectada! Mostrando empresas próximas', 'success');
                     
                     // Re-render with distance info
                     renderEmpresas();
                 },
                 (error) => {
-                    showToast('Não foi possível detectar sua localização', 'error');
+                    showToast('Náo foi possível detectar sua localizaçáo', 'error');
                     console.error('Geolocation error:', error);
                 }
             );
@@ -495,7 +491,7 @@
             // Simulate navigation to company page
             setTimeout(() => {
                 // In production, this would navigate to a company detail page
-                showToast(`Bem-vindo à ${empresa.name}! 🎉`, 'success');
+                showToast(`Bem-vindo à ${empresa.name}! ??`, 'success');
             }, 1000);
         }
 
@@ -509,7 +505,7 @@
             
             // Simulate loading more data
             setTimeout(() => {
-                showToast('Não há mais empresas para carregar', 'info');
+                showToast('Náo há mais empresas para carregar', 'info');
                 document.getElementById('loadMoreContainer').style.display = 'none';
             }, 1500);
         }

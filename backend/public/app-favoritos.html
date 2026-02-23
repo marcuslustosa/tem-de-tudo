@@ -12,11 +12,7 @@
 <script src="js/auth-guard.js"></script>
 
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/vivo-styles.css">
-<script src="js/config.js"></script>
-<script src="js/auth-guard.js"></script>
 </head>
 <body>
 <div class="app-page">
@@ -114,9 +110,9 @@ let filtroAtual = 'todos';
 const favoritosExemplo = [
     {
         id: 1,
-        nome: 'Padaria do João',
-        categoria: 'Alimentação',
-        descricao: 'Pães frescos, doces e salgados artesanais',
+        nome: 'Padaria do Joáo',
+        categoria: 'Alimentaçáo',
+        descricao: 'Páes frescos, doces e salgados artesanais',
         desconto: 15,
         rating: 4.8,
         reviews: 124,
@@ -227,7 +223,7 @@ function renderFavorites() {
             dadosFiltrados = favoritos.filter(f => f.distancia <= 1.0);
             break;
         case 'categoria':
-            dadosFiltrados = favoritos.filter(f => f.categoria === 'Alimentação');
+            dadosFiltrados = favoritos.filter(f => f.categoria === 'Alimentaçáo');
             break;
     }
     
@@ -300,7 +296,7 @@ function toggleFavorite(event, favoriteId) {
     const btn = event.currentTarget;
     const card = btn.closest('.favorite-card');
     
-    // Simular remoção dos favoritos
+    // Simular remoçáo dos favoritos
     card.style.animation = 'fadeOut 0.3s ease-out';
     setTimeout(() => {
         favoritos = favoritos.filter(f => f.id !== favoriteId);
@@ -314,7 +310,7 @@ function updateStats() {
     const dadosFiltrados = filtroAtual === 'todos' ? favoritos : 
         filtroAtual === 'ofertas' ? favoritos.filter(f => f.hasOffer) :
         filtroAtual === 'proximos' ? favoritos.filter(f => f.distancia <= 1.0) :
-        favoritos.filter(f => f.categoria === 'Alimentação');
+        favoritos.filter(f => f.categoria === 'Alimentaçáo');
     
     const totalFavoritos = dadosFiltrados.length;
     const ofertas = dadosFiltrados.filter(f => f.hasOffer).length;
@@ -355,7 +351,7 @@ function showNotification(message, type = 'info') {
     setTimeout(() => notification.remove(), 3000);
 }
 
-// CSS para animação de fadeOut
+// CSS para animaçáo de fadeOut
 const style = document.createElement('style');
 style.textContent = `
     @keyframes fadeOut {
@@ -385,10 +381,10 @@ document.head.appendChild(style);
 </button>
 </a>
 <a href="app-empresa-detalhes.html?id=2" class="empresa-card" data-categoria="beleza">
-<img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&h=200&fit=crop" alt="Bella Est�tica" class="empresa-img">
+<img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&h=200&fit=crop" alt="Bella Est?tica" class="empresa-img">
 <div class="empresa-content">
-<div class="empresa-name">Bella Est�tica Spa</div>
-<div class="empresa-category">Cl�nica de Beleza</div>
+<div class="empresa-name">Bella Est?tica Spa</div>
+<div class="empresa-category">Cl?nica de Beleza</div>
 <div class="empresa-footer">
 <div class="empresa-distance">
 <i class="fas fa-map-marker-alt"></i> 1.2 km
@@ -405,7 +401,7 @@ document.head.appendChild(style);
 <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=200&h=200&fit=crop" alt="TechHub Store" class="empresa-img">
 <div class="empresa-content">
 <div class="empresa-name">TechHub Electronics</div>
-<div class="empresa-category">Eletr�nicos & Gadgets</div>
+<div class="empresa-category">Eletr?nicos & Gadgets</div>
 <div class="empresa-footer">
 <div class="empresa-distance">
 <i class="fas fa-map-marker-alt"></i> 0.5 km
@@ -435,9 +431,9 @@ document.head.appendChild(style);
 </button>
 </a>
 <a href="app-empresa-detalhes.html?id=5" class="empresa-card" data-categoria="alimentacao">
-<img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=200&h=200&fit=crop" alt="Caf� Central" class="empresa-img">
+<img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=200&h=200&fit=crop" alt="Caf? Central" class="empresa-img">
 <div class="empresa-content">
-<div class="empresa-name">Caf� Central Premium</div>
+<div class="empresa-name">Caf? Central Premium</div>
 <div class="empresa-category">Cafeteria Gourmet</div>
 <div class="empresa-footer">
 <div class="empresa-distance">
@@ -472,7 +468,7 @@ document.head.appendChild(style);
 <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=200&h=200&fit=crop" alt="Style Shop" class="empresa-img">
 <div class="empresa-content">
 <div class="empresa-name">Style & Fashion Co.</div>
-<div class="empresa-category">Moda & Acess�rios</div>
+<div class="empresa-category">Moda & Acess?rios</div>
 <div class="empresa-footer">
 <div class="empresa-distance">
 <i class="fas fa-map-marker-alt"></i> 1.4 km
@@ -488,7 +484,7 @@ document.head.appendChild(style);
 <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=200&h=200&fit=crop" alt="HealthCare Plus" class="empresa-img">
 <div class="empresa-content">
 <div class="empresa-name">HealthCare Plus</div>
-<div class="empresa-category">Cl�nica M�dica</div>
+<div class="empresa-category">Cl?nica M?dica</div>
 <div class="empresa-footer">
 <div class="empresa-distance">
 <i class="fas fa-map-marker-alt"></i> 0.9 km
@@ -512,7 +508,7 @@ document.head.appendChild(style);
 <nav class="bottom-nav">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>In�cio</span>
+<span>In?cio</span>
 </a>
 <a href="app-empresas.html" class="nav-item">
 <i class="fas fa-search"></i>
@@ -524,7 +520,7 @@ document.head.appendChild(style);
 </a>
 <a href="app-promocoes.html" class="nav-item">
 <i class="fas fa-tags"></i>
-<span>Promo��es</span>
+<span>Promo??es</span>
 </a>
 <a href="app-perfil.html" class="nav-item">
 <i class="fas fa-user"></i>
@@ -559,7 +555,7 @@ document.head.appendChild(style);
                         shouldShow = distance <= 1.0;
                         break;
                     case 'categoria':
-                        // Para demonstra��o, mostrar apenas alimenta��o
+                        // Para demonstra??o, mostrar apenas alimenta??o
                         shouldShow = categoria === 'alimentacao';
                         break;
                 }
@@ -574,7 +570,7 @@ document.head.appendChild(style);
                 favoritesContent.style.display = 'block';
                 emptyState.style.display = 'none';
             }
-            // Atualizar estat�sticas
+            // Atualizar estat?sticas
             updateStats();
         }
         // Toggle favorito
@@ -586,7 +582,7 @@ document.head.appendChild(style);
             if (isCurrentlyFavorited) {
                 btn.classList.remove('favorited');
                 btn.innerHTML = '<i class="fas fa-heart"></i>';
-                // Simular remo��o com anima��o
+                // Simular remo??o com anima??o
                 setTimeout(() => {
                     btn.closest('.empresa-card').style.display = 'none';
                     updateStats();
@@ -603,7 +599,7 @@ document.head.appendChild(style);
                 btn.style.transform = 'scale(1)';
             }, 200);
         }
-        // Atualizar estat�sticas
+        // Atualizar estat?sticas
         function updateStats() {
             const empresasVisiveis = document.querySelectorAll('.empresa-card[style*="flex"], .empresa-card:not([style])');
             const empresasComOfertas = document.querySelectorAll('.empresa-card .promo-badge');

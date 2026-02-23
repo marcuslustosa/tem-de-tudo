@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="manifest" href="/manifest.json">
 <script src="js/config.js"></script>
+<link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body>
 <div class="register-page">
     <!-- Background Elements -->
@@ -162,7 +164,7 @@
                         <label class="form-label" for="categoria">Categoria</label>
                         <select id="categoria" name="categoria" class="form-input">
                             <option value="">Selecione uma categoria</option>
-                            <option value="alimentacao">Alimentação</option>
+                            <option value="alimentacao">Alimentaçáo</option>
                             <option value="moda">Moda e Vestuário</option>
                             <option value="saude">Saúde e Beleza</option>
                             <option value="servicos">Serviços</option>
@@ -177,7 +179,7 @@
                     <div class="info-card">
                         <i class="fas fa-info-circle"></i>
                         <div>
-                            <strong>Atenção:</strong> Contas empresariais passam por validação do administrador antes da ativação. Você receberá um email com as próximas etapas.
+                            <strong>Atençáo:</strong> Contas empresariais passam por validaçáo do administrador antes da ativaçáo. Você receberá um email com as próximas etapas.
                         </div>
                     </div>
                 </div>
@@ -315,7 +317,7 @@ async function handleCadastro(event) {
     
     // Validate passwords match
     if (cadastroData.password !== cadastroData.password_confirmation) {
-        showError('As senhas não coincidem');
+        showError('As senhas náo coincidem');
         registerBtn.disabled = false;
         registerBtnText.style.display = 'flex';
         registerLoading.style.display = 'none';
@@ -337,12 +339,12 @@ async function handleCadastro(event) {
         if (response.ok) {
             // Success
             if (cadastroData.perfil === 'empresa') {
-                showSuccess('Empresa cadastrada! Aguarde aprovação do administrador.');
+                showSuccess('Empresa cadastrada! Aguarde aprovaçáo do administrador.');
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 2000);
             } else {
-                // Store token and redirect for clients (usar mesmo padrão do login)
+                // Store token and redirect for clients (usar mesmo padráo do login)
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 localStorage.setItem('userType', data.user.type || data.user.perfil);

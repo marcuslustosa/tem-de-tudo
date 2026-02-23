@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔔 Notificações - Tem de Tudo</title>
+<title>?? Notificações - Tem de Tudo</title>
 <meta name="description" content="Acompanhe suas notificações no Tem de Tudo">
 <meta name="theme-color" content="#6F1AB6">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -12,11 +12,7 @@
 <script src="js/auth-guard.js"></script>
 
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/vivo-styles.css">
-<script src="js/config.js"></script>
-<script src="js/auth-guard.js"></script>
 </head>
 <body>
 <div class="app-page">
@@ -25,7 +21,7 @@
             <button class="back-btn" onclick="history.back()">
                 <i class="fas fa-arrow-left"></i>
             </button>
-            <h1>🔔 Notificações</h1>
+            <h1>?? Notificações</h1>
             <button class="mark-all-btn" onclick="markAllAsRead()" title="Marcar todas como lidas">
                 <i class="fas fa-check-double"></i>
             </button>
@@ -36,7 +32,7 @@
     <div class="notifications-filter">
         <div class="filter-tabs">
             <button class="filter-tab active" onclick="filterNotifications('all')">Todas</button>
-            <button class="filter-tab" onclick="filterNotifications('unread')">Não lidas</button>
+            <button class="filter-tab" onclick="filterNotifications('unread')">Náo lidas</button>
             <button class="filter-tab" onclick="filterNotifications('points')">Pontos</button>
             <button class="filter-tab" onclick="filterNotifications('offers')">Ofertas</button>
             <button class="filter-tab" onclick="filterNotifications('system')">Sistema</button>
@@ -58,7 +54,7 @@
                         </div>
                         <div class="notification-content">
                             <div class="notification-title">Pontos creditados!</div>
-                            <div class="notification-message">Você ganhou 50 pontos na compra da Padaria do João</div>
+                            <div class="notification-message">Você ganhou 50 pontos na compra da Padaria do Joáo</div>
                             <div class="notification-time">Há 2 horas</div>
                         </div>
                         <div class="notification-badge"></div>
@@ -120,7 +116,7 @@
                             <i class="fas fa-fire"></i>
                         </div>
                         <div class="notification-content">
-                            <div class="notification-title">Promoção especial!</div>
+                            <div class="notification-title">Promoçáo especial!</div>
                             <div class="notification-message">Flash sale: até 70% OFF na categoria Moda</div>
                             <div class="notification-time">Ontem às 10:15</div>
                         </div>
@@ -159,7 +155,7 @@ let currentFilter = 'all';
 
 function markAsRead(element) {
     element.classList.remove('unread');
-    showToast('✅ Notificação marcada como lida');
+    showToast('? Notificaçáo marcada como lida');
 }
 
 function markAllAsRead() {
@@ -169,9 +165,9 @@ function markAllAsRead() {
     });
     
     if (unreadNotifications.length > 0) {
-        showToast(`✅ ${unreadNotifications.length} notificações marcadas como lidas`);
+        showToast(`? ${unreadNotifications.length} notificações marcadas como lidas`);
     } else {
-        showToast('ℹ️ Não há notificações não lidas');
+        showToast('?? Náo há notificações náo lidas');
     }
 }
 
@@ -206,13 +202,13 @@ function filterNotifications(type) {
     });
     
     currentFilter = type;
-    showToast(`🔍 Filtro "${getFilterName(type)}" aplicado`);
+    showToast(`?? Filtro "${getFilterName(type)}" aplicado`);
 }
 
 function getFilterName(type) {
     const names = {
         'all': 'Todas',
-        'unread': 'Não lidas',
+        'unread': 'Náo lidas',
         'points': 'Pontos',
         'offers': 'Ofertas',
         'system': 'Sistema'
@@ -232,10 +228,10 @@ function showToast(message) {
     }, 2500);
 }
 
-// Contar notificações não lidas ao carregar
+// Contar notificações náo lidas ao carregar
 document.addEventListener('DOMContentLoaded', () => {
     const unreadCount = document.querySelectorAll('.notification-item.unread').length;
-    console.log(`🔔 ${unreadCount} notificações não lidas`);
+    console.log(`?? ${unreadCount} notificações náo lidas`);
 });
 </script>
 </body>

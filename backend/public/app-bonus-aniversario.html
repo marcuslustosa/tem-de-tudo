@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#6A0DAD">
-<title>Feliz Anivers�rio! - Tem de Tudo</title>
+<title>Feliz Anivers?rio! - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="manifest" href="/manifest.json">
@@ -19,17 +19,18 @@
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
 `n    
 <link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body>
 <div class="container">
 <div class="cake-icon"><i class="fas fa-birthday-cake"></i></div>
-<h1>Parab�ns!</h1>
-<p class="subtitle">Hoje � seu dia especial <i class="fas fa-gift"></i></p>
+<h1>Parab?ns!</h1>
+<p class="subtitle">Hoje ? seu dia especial <i class="fas fa-gift"></i></p>
 <div class="bonus-card">
 <div class="points-value">500</div>
-<div class="points-label">Pontos de Anivers�rio</div>
+<div class="points-label">Pontos de Anivers?rio</div>
 </div>
 <div class="message">
-<i class="fas fa-heart"></i> A equipe <strong>Tem de Tudo</strong> deseja um feliz anivers�rio! Aproveite seus pontos extras para resgatar aquela recompensa que voc� tanto queria.
+<i class="fas fa-heart"></i> A equipe <strong>Tem de Tudo</strong> deseja um feliz anivers?rio! Aproveite seus pontos extras para resgatar aquela recompensa que voc? tanto queria.
         </div>
 <button class="action-btn" onclick="resgatarBonus()">
 <i class="fas fa-gift"></i> RESGATAR MEU PRESENTE
@@ -40,7 +41,7 @@
         async function resgatarBonus() {
             const token = localStorage.getItem('token');
             if (!token) {
-                alert('Voc� precisa estar logado');
+                alert('Voc? precisa estar logado');
                 window.location.href = 'entrar.html';
                 return;
             }
@@ -54,14 +55,14 @@
                 });
                 const data = await response.json();
                 if (data.success) {
-                    alert('? Parab�ns! 500 pontos creditados na sua conta!');
+                    alert('? Parab?ns! 500 pontos creditados na sua conta!');
                     window.location.href = '/app-inicio.html';
                 } else {
-                    alert('? ' + (data.message || 'Erro ao resgatar b�nus'));
+                    alert('? ' + (data.message || 'Erro ao resgatar b?nus'));
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('? B�nus de anivers�rio simulado! 500 pontos creditados.');
+                alert('? B?nus de anivers?rio simulado! 500 pontos creditados.');
                 setTimeout(() => window.location.href = '/app-inicio.html', 1500);
             }
         }

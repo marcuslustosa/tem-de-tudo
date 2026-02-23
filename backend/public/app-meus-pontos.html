@@ -12,11 +12,7 @@
 <script src="js/auth-guard.js"></script>
 
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/vivo-styles.css">
-<script src="js/config.js"></script>
-<script src="js/auth-guard.js"></script>
 </head>
 <body>
 <div class="app-page">
@@ -192,7 +188,7 @@
                         <i class="fas fa-star"></i>
                     </div>
                     <div class="transaction-content">
-                        <div class="transaction-title">Avaliação enviada</div>
+                        <div class="transaction-title">Avaliaçáo enviada</div>
                         <div class="transaction-subtitle">Pizza Mania - 5 estrelas</div>
                         <div class="transaction-time">3 dias atrás</div>
                     </div>
@@ -263,11 +259,11 @@ function loadPointsData() {
 // Redeem reward function
 function redeemReward(rewardId, pointsCost) {
     if (currentPoints < pointsCost) {
-        alert(`❌ Pontos insuficientes!\n\nVocê precisa de ${pointsCost} pontos para este resgate.\nSaldo atual: ${currentPoints} pontos`);
+        alert(`? Pontos insuficientes!\n\nVocê precisa de ${pointsCost} pontos para este resgate.\nSaldo atual: ${currentPoints} pontos`);
         return;
     }
     
-    if (confirm(`🎁 Confirmar Resgate\n\nVocê deseja resgatar esta recompensa por ${pointsCost} pontos?\n\nSaldo atual: ${currentPoints} pontos\nSaldo após resgate: ${currentPoints - pointsCost} pontos`)) {
+    if (confirm(`?? Confirmar Resgate\n\nVocê deseja resgatar esta recompensa por ${pointsCost} pontos?\n\nSaldo atual: ${currentPoints} pontos\nSaldo após resgate: ${currentPoints - pointsCost} pontos`)) {
         // Deduct points
         currentPoints -= pointsCost;
         
@@ -280,7 +276,7 @@ function redeemReward(rewardId, pointsCost) {
         localStorage.setItem('user', JSON.stringify(user));
         
         // Show success message
-        showNotification(`🎉 Resgate realizado com sucesso!\n\n${pointsCost} pontos foram descontados.\nSaldo atual: ${currentPoints} pontos`, 'success');
+        showNotification(`?? Resgate realizado com sucesso!\n\n${pointsCost} pontos foram descontados.\nSaldo atual: ${currentPoints} pontos`, 'success');
         
         // Reload points data to update level if needed
         loadPointsData();

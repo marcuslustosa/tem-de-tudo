@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body>
 <div class="admin-companies-page">
     <!-- Page Header -->
@@ -106,7 +107,7 @@ const companiesData = [
     },
     {
         id: 2,
-        name: "Farmácia São José",
+        name: "Farmácia Sáo José",
         category: "farmacia",
         phone: "(11) 88888-8888",
         email: "saojose@farmacia.com",
@@ -125,7 +126,7 @@ const companiesData = [
         created_at: "2024-02-01"
     }
 ];
-// Função para carregar empresas
+// Funçáo para carregar empresas
 function loadCompanies() {
     const grid = document.getElementById('companiesGrid');
     if (companiesData.length === 0) {
@@ -183,7 +184,7 @@ function loadCompanies() {
     `).join('');
     updateStats();
 }
-// Função para obter label da categoria
+// Funçáo para obter label da categoria
 function getCategoryLabel(category) {
     const labels = {
         restaurante: 'Restaurante',
@@ -194,7 +195,7 @@ function getCategoryLabel(category) {
     };
     return labels[category] || category;
 }
-// Função para obter label do status
+// Funçáo para obter label do status
 function getStatusLabel(status) {
     const labels = {
         ativo: 'Ativo',
@@ -203,7 +204,7 @@ function getStatusLabel(status) {
     };
     return labels[status] || status;
 }
-// Função para atualizar estatísticas
+// Funçáo para atualizar estatísticas
 function updateStats() {
     const total = companiesData.length;
     const active = companiesData.filter(c => c.status === 'ativo').length;
@@ -218,15 +219,15 @@ function updateStats() {
     document.getElementById('pendingCompanies').textContent = pending;
     document.getElementById('newCompanies').textContent = thisMonth;
 }
-// Função para adicionar empresa
+// Funçáo para adicionar empresa
 function addCompany() {
     window.location.href = 'admin-criar-empresa.html';
 }
-// Função para editar empresa
+// Funçáo para editar empresa
 function editCompany(companyId) {
     window.location.href = `admin-editar-empresa.html?id=${companyId}`;
 }
-// Função para excluir empresa
+// Funçáo para excluir empresa
 function deleteCompany(companyId) {
     if (confirm('Tem certeza que deseja excluir esta empresa?')) {
         const index = companiesData.findIndex(c => c.id === companyId);
@@ -237,19 +238,19 @@ function deleteCompany(companyId) {
         }
     }
 }
-// Função de busca
+// Funçáo de busca
 document.getElementById('searchInput').addEventListener('input', function(e) {
     filterCompanies();
 });
-// Função de filtro por categoria
+// Funçáo de filtro por categoria
 document.getElementById('categoryFilter').addEventListener('change', function(e) {
     filterCompanies();
 });
-// Função de filtro por status
+// Funçáo de filtro por status
 document.getElementById('statusFilter').addEventListener('change', function(e) {
     filterCompanies();
 });
-// Função para filtrar empresas
+// Funçáo para filtrar empresas
 function filterCompanies() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const categoryFilter = document.getElementById('categoryFilter').value;
@@ -265,7 +266,7 @@ function filterCompanies() {
         card.style.display = matchesSearch && matchesCategory && matchesStatus ? '' : 'none';
     });
 }
-// Função para mostrar notificações
+// Funçáo para mostrar notificações
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.style.cssText = `

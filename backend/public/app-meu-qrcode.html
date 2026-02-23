@@ -11,6 +11,7 @@
 <link rel="manifest" href="/manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body class="app-page">
 <!-- App Header -->
 <div class="app-header">
@@ -31,7 +32,7 @@
             <i class="fas fa-user"></i>
         </div>
         <div class="qr-user-details">
-            <h2 id="userName">João Silva</h2>
+            <h2 id="userName">Joáo Silva</h2>
             <p>Nível: <span class="user-level" id="userLevel">Bronze</span></p>
             <p class="user-id">ID: <span id="userId">#123456</span></p>
         </div>
@@ -65,7 +66,7 @@
                 </div>
                 <div class="instruction-item">
                     <div class="instruction-number">3</div>
-                    <p>Seus pontos serão creditados automaticamente</p>
+                    <p>Seus pontos seráo creditados automaticamente</p>
                 </div>
             </div>
         </div>
@@ -139,7 +140,7 @@
         </div>
         <div class="security-content">
             <h4>Segurança do seu código</h4>
-            <p>Seu QR Code é único e seguro. Não compartilhe com desconhecidos e sempre verifique se está no estabelecimento correto antes de apresentá-lo.</p>
+            <p>Seu QR Code é único e seguro. Náo compartilhe com desconhecidos e sempre verifique se está no estabelecimento correto antes de apresentá-lo.</p>
         </div>
     </div>
 </div>
@@ -170,7 +171,7 @@ async function loadUserData() {
         // Simulate API call - replace with actual API
         currentUserData = {
             id: 'user123456',
-            name: 'João Silva',
+            name: 'Joáo Silva',
             cpf: '123.456.789-00',
             phone: '(11) 99999-9999',
             level: 'Bronze'
@@ -238,7 +239,7 @@ async function shareCode() {
                 });
             });
         } else {
-            showToast('Recurso de compartilhamento não disponível');
+            showToast('Recurso de compartilhamento náo disponível');
         }
     } catch (error) {
         console.error('Error sharing:', error);
@@ -252,7 +253,7 @@ function increaseScreen() {
             document.documentElement.requestFullscreen();
             showToast('Modo tela cheia ativado');
         } else {
-            showToast('Tela cheia não disponível neste navegador');
+            showToast('Tela cheia náo disponível neste navegador');
         }
     } catch (error) {
         showToast('Erro ao ativar tela cheia');
@@ -369,11 +370,11 @@ window.addEventListener('beforeunload', function() {
 });
 // Handle offline/online states
 window.addEventListener('online', function() {
-    showToast('Conexão restaurada - QR Code atualizado');
+    showToast('Conexáo restaurada - QR Code atualizado');
     generateQRCode();
 });
 window.addEventListener('offline', function() {
-    showToast('Sem conexão - QR Code pode estar desatualizado');
+    showToast('Sem conexáo - QR Code pode estar desatualizado');
 });
 </script>
 </body>

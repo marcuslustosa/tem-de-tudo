@@ -1,14 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#6A0DAD">
-<title>Cart�es Fidelidade - Tem de Tudo</title>
+<title>Cart?es Fidelidade - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="/js/config.js"></script>
 <link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body>
 <div class="header">
 <div class="header-content">
@@ -16,7 +17,7 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div class="header-title">
-<h1>Cart�es Fidelidade</h1>
+<h1>Cart?es Fidelidade</h1>
 <p id="totalCartoes">Carregando...</p>
 </div>
 </div>
@@ -24,13 +25,13 @@
 <div class="cartoes-list" id="cartoesList">
 <div class="empty-state">
 <i class="fas fa-spinner fa-spin"></i>
-<p>Carregando cart�es...</p>
+<p>Carregando cart?es...</p>
 </div>
 </div>
 <nav class="bottom-nav">
 <a href="app-inicio-vivo.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>In�cio</span>
+<span>In?cio</span>
 </a>
 <a href="app-buscar-vivo.html" class="nav-item">
 <i class="fas fa-search"></i>
@@ -64,14 +65,14 @@
                     renderEmpty();
                 }
             } catch (error) {
-                console.error('Erro ao carregar cart�es:', error);
+                console.error('Erro ao carregar cart?es:', error);
                 renderEmpty();
             }
         }
         function renderCartoes(cartoes) {
             const list = document.getElementById('cartoesList');
             const total = document.getElementById('totalCartoes');
-            total.textContent = `${cartoes.length} cart�es ativos`;
+            total.textContent = `${cartoes.length} cart?es ativos`;
             if (cartoes.length === 0) {
                 renderEmpty();
                 return;
@@ -120,14 +121,14 @@
             document.getElementById('cartoesList').innerHTML = `
                 <div class="empty-state">
 <i class="fas fa-id-card"></i>
-<p>Voc� ainda n�o tem cart�es fidelidade</p>
+<p>Voc? ainda n?o tem cart?es fidelidade</p>
 <p style="margin-top: 8px; font-size: 14px;">Visite estabelecimentos e comece a acumular!</p>
 </div>
             `;
-            document.getElementById('totalCartoes').textContent = '0 cart�es';
+            document.getElementById('totalCartoes').textContent = '0 cart?es';
         }
         async function resgatarCartao(id) {
-            if (!confirm('Deseja resgatar a recompensa deste cart�o?')) return;
+            if (!confirm('Deseja resgatar a recompensa deste cart?o?')) return;
             try {
                 const token = localStorage.getItem('token');
                 const baseURL = API_CONFIG.getBaseURL();

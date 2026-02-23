@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body>
 <div id="loadingState" class="loading">
 <i class="fas fa-circle-notch"></i>
@@ -42,21 +43,21 @@
 </div>
 </div>
 <div class="empresa-description" id="empresaDescricao">
-            Carregando descri��o...
+            Carregando descri??o...
         </div>
 <div class="info-section">
-<div class="info-title">Informa��es</div>
+<div class="info-title">Informa??es</div>
 <div class="info-item">
 <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
 <div class="info-content">
-<div class="info-label">Endere�o</div>
+<div class="info-label">Endere?o</div>
 <div class="info-value" id="empresaEndereco">-</div>
 </div>
 </div>
 <div class="info-item">
 <div class="info-icon"><i class="fas fa-clock"></i></div>
 <div class="info-content">
-<div class="info-label">Hor�rio</div>
+<div class="info-label">Hor?rio</div>
 <div class="info-value" id="empresaHorario">-</div>
 </div>
 </div>
@@ -69,7 +70,7 @@
 </div>
 </div>
 <div class="promocoes-section">
-<div class="info-title">Promo��es Dispon�veis</div>
+<div class="info-title">Promo??es Dispon?veis</div>
 <div id="promocoesContainer"></div>
 </div>
 <button class="checkin-button" id="checkinBtn">
@@ -84,8 +85,8 @@
             automotivo: '?? Automotivo',
             beleza: '?? Beleza',
             bemestar: '?? Bem-estar',
-            educacao: '?? Educa��o',
-            servicos: '??? Servi�os'
+            educacao: '?? Educa??o',
+            servicos: '??? Servi?os'
         };
         let empresaAtual = null;
         document.addEventListener('DOMContentLoaded', async () => {
@@ -97,7 +98,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const empresaId = urlParams.get('id');
             if (!empresaId) {
-                alert('Empresa n�o encontrada');
+                alert('Empresa n?o encontrada');
                 window.location.href = '/app-empresas.html';
                 return;
             }
@@ -139,26 +140,26 @@
             document.getElementById('empresaPontos').textContent = 
                 `+${Math.round(10 * (empresa.pontos_cliente || 1))} pts`;
             document.getElementById('empresaDescricao').textContent = 
-                empresa.descricao || 'Empresa parceira do programa Tem de Tudo. Fa�a check-in e acumule pontos!';
+                empresa.descricao || 'Empresa parceira do programa Tem de Tudo. Fa?a check-in e acumule pontos!';
             document.getElementById('empresaEndereco').textContent = 
-                empresa.endereco || 'N�o informado';
+                empresa.endereco || 'N?o informado';
             document.getElementById('empresaHorario').textContent = 
                 empresa.horario_funcionamento || 'Seg-Sex: 08:00-18:00';
             document.getElementById('empresaTelefone').textContent = 
-                empresa.telefone || 'N�o informado';
+                empresa.telefone || 'N?o informado';
             renderizarPromocoes(empresa);
         }
         function renderizarPromocoes(empresa) {
             const container = document.getElementById('promocoesContainer');
             const promocoes = [
                 {
-                    titulo: 'Check-in Di�rio',
+                    titulo: 'Check-in Di?rio',
                     descricao: `Ganhe ${Math.round(10 * (empresa.pontos_cliente || 1))} pontos a cada visita`,
                     pontos: Math.round(10 * (empresa.pontos_cliente || 1))
                 },
                 {
                     titulo: 'Primeira Visita',
-                    descricao: 'B�nus especial na primeira visita',
+                    descricao: 'B?nus especial na primeira visita',
                     pontos: Math.round(20 * (empresa.pontos_cliente || 1))
                 }
             ];

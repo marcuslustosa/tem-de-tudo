@@ -12,11 +12,7 @@
 <script src="js/auth-guard.js"></script>
 
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/vivo-styles.css">
-<script src="js/config.js"></script>
-<script src="js/auth-guard.js"></script>
 </head>
 <body>
 <div class="admin-page">
@@ -25,7 +21,7 @@
         <div class="header-content">
             <div class="header-left">
                 <h1>Painel Tem de Tudo</h1>
-                <p>Gestão completa do sistema <span class="admin-badge">Admin</span></p>
+                <p>Gestáo completa do sistema <span class="admin-badge">Admin</span></p>
             </div>
             <button class="logout-btn" onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i>
@@ -102,7 +98,7 @@
 
             <div class="stat-card fade-in animate-delay-2">
                 <div class="stat-header">
-                    <div class="stat-label">Pontos em Circulação</div>
+                    <div class="stat-label">Pontos em Circulaçáo</div>
                     <div class="stat-icon points">
                         <i class="fas fa-coins"></i>
                     </div>
@@ -250,13 +246,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-update stats every 30 seconds
     setInterval(loadAdminStats, 30000);
     
-    // DESENVOLVIMENTO: Bypass da verificação de autenticação para localhost
+    // DESENVOLVIMENTO: Bypass da verificaçáo de autenticaçáo para localhost
     const token = localStorage.getItem('adminToken');
     if (!token && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')) {
-        // Só redireciona para login em produção, não em desenvolvimento
+        // Só redireciona para login em produçáo, náo em desenvolvimento
         window.location.href = 'admin-login.html';
     } else if (!token) {
-        // Em desenvolvimento, criar token fake se não existir
+        // Em desenvolvimento, criar token fake se náo existir
         localStorage.setItem('adminToken', 'dev_admin_token_' + Date.now());
         localStorage.setItem('adminUser', JSON.stringify({
             id: 1,

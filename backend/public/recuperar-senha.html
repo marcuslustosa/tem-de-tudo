@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,15 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/vivo-styles.css">
+</head>
 <body>
 <div class="container">
 <div class="header">
 <i class="fas fa-key"></i>
 <h1>Recuperar Senha</h1>
-<p class="subtitle">Enviaremos um link de recupera��o para seu e-mail</p>
+<p class="subtitle">Enviaremos um link de recupera??o para seu e-mail</p>
 </div>
 <div class="info-box" id="infoBox">
-<p><i class="fas fa-info-circle"></i> Digite o e-mail cadastrado na sua conta. Voc� receber� instru��es para criar uma nova senha.</p>
+<p><i class="fas fa-info-circle"></i> Digite o e-mail cadastrado na sua conta. Voc? receber? instru??es para criar uma nova senha.</p>
 </div>
 <div class="alert alert-success" id="alertSuccess">
 <i class="fas fa-check-circle"></i>
@@ -32,7 +33,7 @@
 </div>
 <button type="submit" class="btn" id="submitBtn">
 <i class="fas fa-paper-plane"></i>
-                Enviar Link de Recupera��o
+                Enviar Link de Recupera??o
             </button>
 </form>
 <div class="back-link">
@@ -87,22 +88,22 @@
                 if (response.ok && data.success) {
                     showSuccess('? E-mail enviado com sucesso! Verifique sua caixa de entrada (e spam).');
                     emailInput.value = '';
-                    // Redirecionar ap�s 3 segundos
+                    // Redirecionar ap?s 3 segundos
                     setTimeout(() => {
                         window.location.href = 'entrar.html';
                     }, 3000);
                 } else {
-                    showError(data.message || 'E-mail n�o encontrado. Verifique e tente novamente.');
+                    showError(data.message || 'E-mail n?o encontrado. Verifique e tente novamente.');
                 }
             } catch (error) {
                 console.error('Erro:', error);
                 showError('Erro ao conectar com o servidor. Tente novamente.');
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Link de Recupera��o';
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Link de Recupera??o';
             }
         });
-        // Valida��o de email em tempo real
+        // Valida??o de email em tempo real
         emailInput.addEventListener('input', () => {
             alertSuccess.style.display = 'none';
             alertError.style.display = 'none';
