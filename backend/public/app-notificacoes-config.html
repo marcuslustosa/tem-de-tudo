@@ -6,16 +6,45 @@
 <title>Central de Notifica��es - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="global-styles.css">
-<script src="global-auth.js"></script>
-<script src="global-navbar.js"></script>
-<!-- EmailJS SDK (GR�TIS - 300 emails/m�s) -->
+<script src="js/config.js"></script>
+<script src="js/auth-guard.js"></script>
+<!-- EmailJS SDK (GRÁTIS - 300 emails/mês) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<link rel="stylesheet" href="/css/vivo-global.css">
+<style>
+:root {
+    --vivo-purple: #6F1AB6; --vivo-purple-dark: #5A1494; --vivo-green: #10B981; --vivo-orange: #F59E0B;
+    --vivo-red: #EF4444; --vivo-blue: #3B82F6; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB; 
+    --gray-300: #D1D5DB; --gray-400: #9CA3AF; --gray-500: #6B7280; --gray-600: #4B5563; --gray-700: #374151; 
+    --gray-800: #1F2937; --gray-900: #111827; --white: #FFFFFF; --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
+       background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%); min-height: 100vh; color: var(--gray-800); }
+.header { background: linear-gradient(135deg, var(--vivo-purple) 0%, var(--vivo-purple-dark) 100%); 
+          color: var(--white); padding: 2rem; text-align: center; }
+.header h1 { font-size: 1.8rem; font-weight: 600; margin-bottom: 0.5rem; }
+.header p { opacity: 0.9; font-size: 1rem; }
+.notification-types { max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+.notification-item { background: var(--white); padding: 1.5rem; margin-bottom: 1rem; border-radius: 12px; 
+                     box-shadow: var(--shadow); border-left: 4px solid var(--vivo-purple); }
+.notification-item h3 { color: var(--gray-900); margin-bottom: 0.5rem; }
+.notification-item p { color: var(--gray-600); margin-bottom: 1rem; font-size: 0.9rem; }
+.switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
+          background-color: var(--gray-300); transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px;
+                 background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--vivo-purple); }
+input:checked + .slider:before { transform: translateX(26px); }
+.save-btn { background: var(--vivo-green); color: var(--white); padding: 1rem 2rem; border: none; 
+            border-radius: 8px; cursor: pointer; font-weight: 600; display: block; margin: 2rem auto; }
+.save-btn:hover { background: #0EA471; }
+</style>
 <body>
 <div class="header">
-<h1><i class="fas fa-bell"></i> Central de Notifica��es</h1>
-<p>Gerencie como voc� recebe notifica��es</p>
+<h1><i class="fas fa-bell"></i> Central de Notificações</h1>
+<p>Gerencie como você recebe notificações</p>
 </div>
 <div class="notification-types">
 <!-- Push Notifications -->
