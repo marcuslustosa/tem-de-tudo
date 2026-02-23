@@ -11,8 +11,8 @@ const CORE_ASSETS = [
     '/app-perfil.html',
     '/app-meu-qrcode.html',
     '/app-scanner.html',
-    '/global-styles.css',
-    '/global-auth.js',
+    '/js/config.js',
+    '/js/auth-guard.js',
     '/global-navbar.js',
     '/manifest.json'
 ];
