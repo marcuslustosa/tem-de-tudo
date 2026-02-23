@@ -12,7 +12,7 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="cliente"></script>
-<link rel="stylesheet" href="/css/vivo-global.css">
+<link rel="stylesheet" href="css/vivo-styles.css">
 <body>
 <div class="header">
 <button class="back-btn" onclick="history.back()" style=" border: 1px solid rgba(255,255,255,0.2); width: 44px; height: 44px; border-radius: 12px; color: #1D1D1F; font-size: 18px; cursor: pointer; margin-bottom: 16px;">
@@ -87,3 +87,4 @@
 </div>  `).join('');  }  function comprarCupom(cupomId) {  const cupom = cuponsShop.find(c => c.id === cupomId);  if (pontosUsuario < cupom.pontos) {  alert('Pontos insuficientes!');  return;  }  // Confirmar compra  if (confirm(`Deseja resgatar "${cupom.titulo}" por ${cupom.pontos} pontos?`)) {  pontosUsuario -= cupom.pontos;  // Adicionar aos meus cupons  const novoCupom = {  id: Date.now(),  titulo: cupom.titulo,  descricao: cupom.descricao,  codigo: gerarCodigo(),  validade: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR'),  usado: false  };  meusCupons.push(novoCupom);  // Atualizar interface  renderizarShop();  renderizarMeusCupons();  alert(`Cupom "${cupom.titulo}" resgatado com sucesso!\\nC�digo: ${novoCupom.codigo}`);  }  }  function usarCupom(codigo) {  if (confirm('Tem certeza que deseja usar este cupom?\\n\\nEsta a��o n�o pode ser desfeita.')) {  const cupom = meusCupons.find(c => c.codigo === codigo);  cupom.usado = true;  renderizarMeusCupons();  alert('Cupom usado com sucesso!');  }  }  function gerarCodigo() {  return Math.random().toString(36).substring(2, 8).toUpperCase();  }  </script>
 </body>
 </html>
+
