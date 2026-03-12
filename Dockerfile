@@ -13,7 +13,7 @@ COPY backend/api/package*.json backend/api/
 RUN npm ci
 
 # Copia código
-COPY backend api ./backend/api
+# Copia API e demais assets do backend (HTML estático)
 COPY backend ./backend
 
 # Porta do serviço (Railway usa $PORT)
