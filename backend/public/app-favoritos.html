@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meus Favoritos - Tem de Tudo</title>
-<meta name="description" content="Suas empresas e ofertas favoritas em um só lugar">
-<meta name="theme-color" content="#6F1AB6">
+<meta name="description" content="Suas empresas e ofertas favoritas em um sÃ³ lugar">
+<meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -19,7 +19,7 @@
 <script src="js/auth-guard.js"></script>
 
 
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link rel="stylesheet" href="/css/vivo-styles.css">
 </head>
 <body>
 <div class="app-page">
@@ -33,7 +33,7 @@
             <div style="width: 40px;"></div>
         </div>
         <div class="header-subtitle">
-            Suas empresas e ofertas preferidas em um só lugar
+            Suas empresas e ofertas preferidas em um sÃ³ lugar
         </div>
     </div>
 
@@ -62,7 +62,7 @@
             <div class="filter-tabs">
                 <button class="filter-tab active" onclick="filterFavorites('todos')">Todos</button>
                 <button class="filter-tab" onclick="filterFavorites('ofertas')">Com Ofertas</button>
-                <button class="filter-tab" onclick="filterFavorites('proximos')">Próximos</button>
+                <button class="filter-tab" onclick="filterFavorites('proximos')">PrÃ³ximos</button>
                 <button class="filter-tab" onclick="filterFavorites('categoria')">Por Categoria</button>
             </div>
         </div>
@@ -76,7 +76,7 @@
             <div class="empty-state" id="emptyState" style="display: none;">
                 <i class="fas fa-heart"></i>
                 <h3>Nenhum favorito encontrado</h3>
-                <p>Que tal explorar nossas ofertas e começar a marcar seus favoritos?</p>
+                <p>Que tal explorar nossas ofertas e comeÃ§ar a marcar seus favoritos?</p>
                 <a href="app-promocoes.html" class="btn">Explorar Ofertas</a>
             </div>
         </div>
@@ -88,7 +88,7 @@
     <div class="nav-container">
         <a href="dashboard-cliente.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>Início</span>
+            <span>InÃ­cio</span>
         </a>
         <a href="app-empresas.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -117,9 +117,9 @@ let filtroAtual = 'todos';
 const favoritosExemplo = [
     {
         id: 1,
-        nome: 'Padaria do Joáo',
-        categoria: 'Alimentaçáo',
-        descricao: 'Páes frescos, doces e salgados artesanais',
+        nome: 'Padaria do JoÃ¡o',
+        categoria: 'AlimentaÃ§Ã¡o',
+        descricao: 'PÃ¡es frescos, doces e salgados artesanais',
         desconto: 15,
         rating: 4.8,
         reviews: 124,
@@ -131,7 +131,7 @@ const favoritosExemplo = [
         id: 2,
         nome: 'Super Mercado Prime',
         categoria: 'Supermercado',
-        descricao: 'Tudo para sua casa com os melhores preços',
+        descricao: 'Tudo para sua casa com os melhores preÃ§os',
         desconto: 20,
         rating: 4.6,
         reviews: 289,
@@ -143,7 +143,7 @@ const favoritosExemplo = [
         id: 3,
         nome: 'Loja de Roupas Fashion',
         categoria: 'Moda',
-        descricao: 'As últimas tendências da moda masculina e feminina',
+        descricao: 'As Ãºltimas tendÃªncias da moda masculina e feminina',
         desconto: 0,
         rating: 4.9,
         reviews: 67,
@@ -153,9 +153,9 @@ const favoritosExemplo = [
     },
     {
         id: 4,
-        nome: 'Farmácia Saúde+',
-        categoria: 'Saúde',
-        descricao: 'Medicamentos, cosméticos e produtos de higiene',
+        nome: 'FarmÃ¡cia SaÃºde+',
+        categoria: 'SaÃºde',
+        descricao: 'Medicamentos, cosmÃ©ticos e produtos de higiene',
         desconto: 10,
         rating: 4.7,
         reviews: 156,
@@ -167,7 +167,7 @@ const favoritosExemplo = [
         id: 5,
         nome: 'Auto Center Premium',
         categoria: 'Automotivo',
-        descricao: 'Serviços automotivos e peças originais',
+        descricao: 'ServiÃ§os automotivos e peÃ§as originais',
         desconto: 25,
         rating: 4.5,
         reviews: 89,
@@ -189,9 +189,9 @@ const favoritosExemplo = [
     },
     {
         id: 7,
-        nome: 'Restaurante Delícia',
+        nome: 'Restaurante DelÃ­cia',
         categoria: 'Restaurante',
-        descricao: 'Pratos deliciosos da culinária brasileira',
+        descricao: 'Pratos deliciosos da culinÃ¡ria brasileira',
         desconto: 30,
         rating: 4.8,
         reviews: 178,
@@ -230,7 +230,7 @@ function renderFavorites() {
             dadosFiltrados = favoritos.filter(f => f.distancia <= 1.0);
             break;
         case 'categoria':
-            dadosFiltrados = favoritos.filter(f => f.categoria === 'Alimentaçáo');
+            dadosFiltrados = favoritos.filter(f => f.categoria === 'AlimentaÃ§Ã¡o');
             break;
     }
     
@@ -303,7 +303,7 @@ function toggleFavorite(event, favoriteId) {
     const btn = event.currentTarget;
     const card = btn.closest('.favorite-card');
     
-    // Simular remoçáo dos favoritos
+    // Simular remoÃ§Ã¡o dos favoritos
     card.style.animation = 'fadeOut 0.3s ease-out';
     setTimeout(() => {
         favoritos = favoritos.filter(f => f.id !== favoriteId);
@@ -317,7 +317,7 @@ function updateStats() {
     const dadosFiltrados = filtroAtual === 'todos' ? favoritos : 
         filtroAtual === 'ofertas' ? favoritos.filter(f => f.hasOffer) :
         filtroAtual === 'proximos' ? favoritos.filter(f => f.distancia <= 1.0) :
-        favoritos.filter(f => f.categoria === 'Alimentaçáo');
+        favoritos.filter(f => f.categoria === 'AlimentaÃ§Ã¡o');
     
     const totalFavoritos = dadosFiltrados.length;
     const ofertas = dadosFiltrados.filter(f => f.hasOffer).length;
@@ -331,7 +331,7 @@ function updateStats() {
 function viewDetails(favoriteId) {
     const favorito = favoritos.find(f => f.id === favoriteId);
     showNotification(`Abrindo detalhes de ${favorito.nome}`, 'info');
-    // Aqui seria o redirecionamento para página de detalhes
+    // Aqui seria o redirecionamento para pÃ¡gina de detalhes
 }
 
 function visitStore(favoriteId) {
@@ -358,7 +358,7 @@ function showNotification(message, type = 'info') {
     setTimeout(() => notification.remove(), 3000);
 }
 
-// CSS para animaçáo de fadeOut
+// CSS para animaÃ§Ã¡o de fadeOut
 const style = document.createElement('style');
 style.textContent = `
     @keyframes fadeOut {
@@ -635,5 +635,7 @@ document.head.appendChild(style);
     </script>
 </body>
 </html>
+
+
 
 

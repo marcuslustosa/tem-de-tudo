@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gerenciar Empresas - Admin Tem de Tudo</title>
 <meta name="description" content="Painel administrativo para gerenciar empresas parceiras">
-<meta name="theme-color" content="#6F1AB6">
+<meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -15,7 +15,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link rel="stylesheet" href="/css/vivo-styles.css">
 </head>
 <body>
 <div class="admin-companies-page">
@@ -50,7 +50,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="newCompanies">0</div>
-                <div class="stat-label">Novas Este Mês</div>
+                <div class="stat-label">Novas Este MÃªs</div>
             </div>
         </div>
         <!-- Companies Section -->
@@ -75,10 +75,10 @@
                 <select class="filter-select" id="categoryFilter">
                     <option value="">Todas as Categorias</option>
                     <option value="restaurante">Restaurantes</option>
-                    <option value="farmacia">Farmácias</option>
+                    <option value="farmacia">FarmÃ¡cias</option>
                     <option value="supermercado">Supermercados</option>
                     <option value="loja">Lojas</option>
-                    <option value="servico">Serviços</option>
+                    <option value="servico">ServiÃ§os</option>
                 </select>
                 <select class="filter-select" id="statusFilter">
                     <option value="">Todos os Status</option>
@@ -114,7 +114,7 @@ const companiesData = [
     },
     {
         id: 2,
-        name: "Farmácia Sáo José",
+        name: "FarmÃ¡cia SÃ¡o JosÃ©",
         category: "farmacia",
         phone: "(11) 88888-8888",
         email: "saojose@farmacia.com",
@@ -133,7 +133,7 @@ const companiesData = [
         created_at: "2024-02-01"
     }
 ];
-// Funçáo para carregar empresas
+// FunÃ§Ã¡o para carregar empresas
 function loadCompanies() {
     const grid = document.getElementById('companiesGrid');
     if (companiesData.length === 0) {
@@ -168,7 +168,7 @@ function loadCompanies() {
                     <span class="detail-value">${company.email}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Endereço:</span>
+                    <span class="detail-label">EndereÃ§o:</span>
                     <span class="detail-value">${company.address}</span>
                 </div>
                 <div class="detail-row">
@@ -191,18 +191,18 @@ function loadCompanies() {
     `).join('');
     updateStats();
 }
-// Funçáo para obter label da categoria
+// FunÃ§Ã¡o para obter label da categoria
 function getCategoryLabel(category) {
     const labels = {
         restaurante: 'Restaurante',
-        farmacia: 'Farmácia',
+        farmacia: 'FarmÃ¡cia',
         supermercado: 'Supermercado',
         loja: 'Loja',
-        servico: 'Serviço'
+        servico: 'ServiÃ§o'
     };
     return labels[category] || category;
 }
-// Funçáo para obter label do status
+// FunÃ§Ã¡o para obter label do status
 function getStatusLabel(status) {
     const labels = {
         ativo: 'Ativo',
@@ -211,7 +211,7 @@ function getStatusLabel(status) {
     };
     return labels[status] || status;
 }
-// Funçáo para atualizar estatísticas
+// FunÃ§Ã¡o para atualizar estatÃ­sticas
 function updateStats() {
     const total = companiesData.length;
     const active = companiesData.filter(c => c.status === 'ativo').length;
@@ -226,38 +226,38 @@ function updateStats() {
     document.getElementById('pendingCompanies').textContent = pending;
     document.getElementById('newCompanies').textContent = thisMonth;
 }
-// Funçáo para adicionar empresa
+// FunÃ§Ã¡o para adicionar empresa
 function addCompany() {
     window.location.href = 'admin-criar-empresa.html';
 }
-// Funçáo para editar empresa
+// FunÃ§Ã¡o para editar empresa
 function editCompany(companyId) {
     window.location.href = `admin-editar-empresa.html?id=${companyId}`;
 }
-// Funçáo para excluir empresa
+// FunÃ§Ã¡o para excluir empresa
 function deleteCompany(companyId) {
     if (confirm('Tem certeza que deseja excluir esta empresa?')) {
         const index = companiesData.findIndex(c => c.id === companyId);
         if (index > -1) {
             companiesData.splice(index, 1);
             loadCompanies();
-            showNotification('Empresa excluída com sucesso!', 'success');
+            showNotification('Empresa excluÃ­da com sucesso!', 'success');
         }
     }
 }
-// Funçáo de busca
+// FunÃ§Ã¡o de busca
 document.getElementById('searchInput').addEventListener('input', function(e) {
     filterCompanies();
 });
-// Funçáo de filtro por categoria
+// FunÃ§Ã¡o de filtro por categoria
 document.getElementById('categoryFilter').addEventListener('change', function(e) {
     filterCompanies();
 });
-// Funçáo de filtro por status
+// FunÃ§Ã¡o de filtro por status
 document.getElementById('statusFilter').addEventListener('change', function(e) {
     filterCompanies();
 });
-// Funçáo para filtrar empresas
+// FunÃ§Ã¡o para filtrar empresas
 function filterCompanies() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const categoryFilter = document.getElementById('categoryFilter').value;
@@ -273,7 +273,7 @@ function filterCompanies() {
         card.style.display = matchesSearch && matchesCategory && matchesStatus ? '' : 'none';
     });
 }
-// Funçáo para mostrar notificações
+// FunÃ§Ã¡o para mostrar notificaÃ§Ãµes
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.style.cssText = `
@@ -295,10 +295,12 @@ function showNotification(message, type = 'info') {
         notification.remove();
     }, 3000);
 }
-// Carregar empresas ao carregar a página
+// Carregar empresas ao carregar a pÃ¡gina
 document.addEventListener('DOMContentLoaded', loadCompanies);
 </script>
 </body>
 </html>
+
+
 
 

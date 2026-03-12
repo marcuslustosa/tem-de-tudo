@@ -288,7 +288,7 @@ function clienteMeuQR() {
                 width: 200,
                 height: 200,
                 color: {
-                    dark: '#6F1AB6',
+                    dark: '#9b59b6',
                     light: '#FFFFFF'
                 }
             });

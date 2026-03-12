@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Relatórios - Admin Tem de Tudo</title>
-<meta name="description" content="Dashboard de relatórios e analytics administrativo">
-<meta name="theme-color" content="#6F1AB6">
+<title>RelatÃ³rios - Admin Tem de Tudo</title>
+<meta name="description" content="Dashboard de relatÃ³rios e analytics administrativo">
+<meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -15,7 +15,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link rel="stylesheet" href="/css/vivo-styles.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/config.js"></script>
 <script src="js/auth-guard.js"></script>
@@ -27,7 +27,7 @@
     <div class="header-top">
         <h1 class="page-title">
             <i class="fas fa-chart-bar"></i>
-            Relatórios e Analytics
+            RelatÃ³rios e Analytics
         </h1>
         <a href="admin-dashboard.html" class="back-btn">
             <i class="fas fa-arrow-left"></i>
@@ -41,11 +41,11 @@
     <!-- FILTROS -->
     <div class="filters">
         <div class="filter-group">
-            <label class="filter-label">Período</label>
+            <label class="filter-label">PerÃ­odo</label>
             <select class="filter-select" id="periodFilter">
                 <option value="today">Hoje</option>
                 <option value="week">Esta Semana</option>
-                <option value="month" selected>Este Mês</option>
+                <option value="month" selected>Este MÃªs</option>
                 <option value="quarter">Este Trimestre</option>
                 <option value="year">Este Ano</option>
             </select>
@@ -62,9 +62,9 @@
             <label class="filter-label">Tipo</label>
             <select class="filter-select" id="typeFilter">
                 <option value="all">Todos</option>
-                <option value="users">Usuários</option>
+                <option value="users">UsuÃ¡rios</option>
                 <option value="companies">Empresas</option>
-                <option value="promotions">Promoções</option>
+                <option value="promotions">PromoÃ§Ãµes</option>
             </select>
         </div>
         <div class="filter-group" style="justify-content: flex-end;">
@@ -75,17 +75,17 @@
         </div>
     </div>
 
-    <!-- ESTATÍSTICAS PRINCIPAIS -->
+    <!-- ESTATÃSTICAS PRINCIPAIS -->
     <div class="stats">
         <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-users"></i>
             </div>
             <div class="stat-value" id="totalUsers">847</div>
-            <div class="stat-label">Total de Usuários</div>
+            <div class="stat-label">Total de UsuÃ¡rios</div>
             <div class="stat-change positive">
                 <i class="fas fa-arrow-up"></i>
-                +12.5% vs mês anterior
+                +12.5% vs mÃªs anterior
             </div>
         </div>
         <div class="stat-card">
@@ -96,7 +96,7 @@
             <div class="stat-label">Empresas Cadastradas</div>
             <div class="stat-change positive">
                 <i class="fas fa-arrow-up"></i>
-                +8.3% vs mês anterior
+                +8.3% vs mÃªs anterior
             </div>
         </div>
         <div class="stat-card">
@@ -104,10 +104,10 @@
                 <i class="fas fa-tags"></i>
             </div>
             <div class="stat-value" id="activePromotions">89</div>
-            <div class="stat-label">Promoções Ativas</div>
+            <div class="stat-label">PromoÃ§Ãµes Ativas</div>
             <div class="stat-change positive">
                 <i class="fas fa-arrow-up"></i>
-                +15.7% vs mês anterior
+                +15.7% vs mÃªs anterior
             </div>
         </div>
         <div class="stat-card">
@@ -115,20 +115,20 @@
                 <i class="fas fa-chart-line"></i>
             </div>
             <div class="stat-value" id="conversionRate">73.2%</div>
-            <div class="stat-label">Taxa de Conversáo</div>
+            <div class="stat-label">Taxa de ConversÃ¡o</div>
             <div class="stat-change negative">
                 <i class="fas fa-arrow-down"></i>
-                -2.1% vs mês anterior
+                -2.1% vs mÃªs anterior
             </div>
         </div>
     </div>
 
-    <!-- GRÁFICOS -->
+    <!-- GRÃFICOS -->
     <div class="charts-section">
         <div class="chart-card">
             <h3 class="chart-title">
                 <i class="fas fa-chart-line"></i>
-                Crescimento de Usuários
+                Crescimento de UsuÃ¡rios
             </h3>
             <div class="chart-container">
                 <canvas id="usersChart"></canvas>
@@ -137,7 +137,7 @@
         <div class="chart-card">
             <h3 class="chart-title">
                 <i class="fas fa-chart-pie"></i>
-                Distribuiçáo por Tipo
+                DistribuiÃ§Ã¡o por Tipo
             </h3>
             <div class="chart-container">
                 <canvas id="distributionChart"></canvas>
@@ -145,12 +145,12 @@
         </div>
     </div>
 
-    <!-- TABELA DE MÉTRICAS -->
+    <!-- TABELA DE MÃ‰TRICAS -->
     <div class="table-section">
         <div class="table-header">
             <h3 class="table-title">
                 <i class="fas fa-table"></i>
-                Métricas Detalhadas
+                MÃ©tricas Detalhadas
             </h3>
             <button class="export-btn" onclick="exportData()">
                 <i class="fas fa-download"></i>
@@ -161,16 +161,16 @@
             <table class="report-table">
                 <thead>
                     <tr>
-                        <th>Métrica</th>
+                        <th>MÃ©trica</th>
                         <th>Valor Atual</th>
-                        <th>Período Anterior</th>
-                        <th>Variaçáo</th>
-                        <th>Tendência</th>
+                        <th>PerÃ­odo Anterior</th>
+                        <th>VariaÃ§Ã¡o</th>
+                        <th>TendÃªncia</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Novos Usuários</td>
+                        <td>Novos UsuÃ¡rios</td>
                         <td class="metric-value">125</td>
                         <td>98</td>
                         <td class="metric-positive">+27.6%</td>
@@ -184,7 +184,7 @@
                         <td><i class="fas fa-trending-up" style="color: var(--vivo-green);"></i></td>
                     </tr>
                     <tr>
-                        <td>Promoções Criadas</td>
+                        <td>PromoÃ§Ãµes Criadas</td>
                         <td class="metric-value">34</td>
                         <td>41</td>
                         <td class="metric-negative">-17.1%</td>
@@ -211,33 +211,33 @@
 </div>
 
 <script>
-// Inicializaçáo da página
+// InicializaÃ§Ã¡o da pÃ¡gina
 window.addEventListener('DOMContentLoaded', function() {
-    console.log('Página de relatórios carregada');
+    console.log('PÃ¡gina de relatÃ³rios carregada');
     
-    // Configurar datas padráo
+    // Configurar datas padrÃ¡o
     const today = new Date();
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     
     document.getElementById('startDate').valueAsDate = firstDayOfMonth;
     document.getElementById('endDate').valueAsDate = today;
     
-    // Inicializar gráficos
+    // Inicializar grÃ¡ficos
     initializeCharts();
 });
 
-// Inicializaçáo dos gráficos
+// InicializaÃ§Ã¡o dos grÃ¡ficos
 function initializeCharts() {
-    // Gráfico de crescimento de usuários
+    // GrÃ¡fico de crescimento de usuÃ¡rios
     const usersCtx = document.getElementById('usersChart').getContext('2d');
     new Chart(usersCtx, {
         type: 'line',
         data: {
             labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
             datasets: [{
-                label: 'Usuários',
+                label: 'UsuÃ¡rios',
                 data: [45, 52, 68, 71, 83, 95, 102, 115, 127, 138, 145, 156],
-                borderColor: '#6F1AB6',
+                borderColor: '#9b59b6',
                 backgroundColor: 'rgba(111, 26, 182, 0.1)',
                 fill: true,
                 tension: 0.4
@@ -259,7 +259,7 @@ function initializeCharts() {
         }
     });
 
-    // Gráfico de distribuiçáo por tipo
+    // GrÃ¡fico de distribuiÃ§Ã¡o por tipo
     const distributionCtx = document.getElementById('distributionChart').getContext('2d');
     new Chart(distributionCtx, {
         type: 'doughnut',
@@ -270,7 +270,7 @@ function initializeCharts() {
                 backgroundColor: [
                     '#3B82F6',
                     '#10B981', 
-                    '#6F1AB6'
+                    '#9b59b6'
                 ]
             }]
         },
@@ -295,30 +295,30 @@ function applyFilters() {
     
     console.log('Aplicando filtros:', { period, startDate, endDate, type });
     
-    // Aqui você implementaria a lógica para filtrar os dados
+    // Aqui vocÃª implementaria a lÃ³gica para filtrar os dados
     // Por enquanto, apenas mostra um alerta
-    alert(`Filtros aplicados:\nPeríodo: ${period}\nData Inicial: ${startDate}\nData Final: ${endDate}\nTipo: ${type}`);
+    alert(`Filtros aplicados:\nPerÃ­odo: ${period}\nData Inicial: ${startDate}\nData Final: ${endDate}\nTipo: ${type}`);
 }
 
 // Exportar dados
 function exportData() {
     alert('Exportando dados para CSV... (Funcionalidade em desenvolvimento)');
     
-    // Aqui você implementaria a exportaçáo real dos dados
+    // Aqui vocÃª implementaria a exportaÃ§Ã¡o real dos dados
     // Por exemplo, gerando um arquivo CSV ou Excel
 }
 
 // Atualizar dados em tempo real (simulado)
 function updateMetrics() {
-    // Simula atualizações em tempo real dos dados
+    // Simula atualizaÃ§Ãµes em tempo real dos dados
     const elements = ['totalUsers', 'totalCompanies', 'activePromotions', 'conversionRate'];
     
     elements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
-            // Adiciona uma pequena variaçáo aleatória aos valores
+            // Adiciona uma pequena variaÃ§Ã¡o aleatÃ³ria aos valores
             const currentValue = parseFloat(element.textContent.replace(/[^\d.]/g, ''));
-            const variation = (Math.random() - 0.5) * 0.02; // ±1% de variaçáo
+            const variation = (Math.random() - 0.5) * 0.02; // Â±1% de variaÃ§Ã¡o
             const newValue = currentValue * (1 + variation);
             
             if (id === 'conversionRate') {
@@ -330,7 +330,7 @@ function updateMetrics() {
     });
 }
 
-// Atualizar métricas a cada 30 segundos (simulaçáo)
+// Atualizar mÃ©tricas a cada 30 segundos (simulaÃ§Ã¡o)
 setInterval(updateMetrics, 30000);
 </script>
 </body>
@@ -342,5 +342,7 @@ setInterval(updateMetrics, 30000);
 
 </body>
 </html>
+
+
 
 

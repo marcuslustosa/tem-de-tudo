@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#6A0DAD">
+<meta name="theme-color content="#9b59b6">
 <title>Scanner QR - Tem de Tudo</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="manifest" href="/manifest.json">
@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link rel="stylesheet" href="/css/vivo-styles.css">
 </head>
 <body>
 <div class="header">
@@ -405,210 +405,6 @@
 <script src="/js/validators.js" defer></script>
 <script src="/js/ui-helpers.js" defer></script>
 <script src="/js/auth-guard.js" data-require-auth="empresa"></script>
-<body>
-<aside class="sidebar">
-<div class="logo">
-<i class="fas fa-gem" style="color: #6F1AB6; margin-right: 8px; font-size: 1.5rem;"></i>
-<h1>Tem de Tudo</h1>
-<p>Painel Empresa</p>
-</div>
-<ul class="nav-menu">
-<li class="nav-item">
-<a href="empresa-dashboard.html" class="nav-link">
-<i class="fas fa-chart-line"></i>
-                    Dashboard
-                </a>
-</li>
-<li class="nav-item">
-<a href="empresa-qrcode.html" class="nav-link">
-<i class="fas fa-qrcode"></i>
-                    QR Code
-                </a>
-</li>
-<li class="nav-item">
-<a href="empresa-scanner.html" class="nav-link active">
-<i class="fas fa-camera"></i>
-                    Scanner
-                </a>
-</li>
-<li class="nav-item">
-<a href="empresa-clientes.html" class="nav-link">
-<i class="fas fa-users"></i>
-                    Clientes
-                </a>
-</li>
-<li class="nav-item">
-<a href="empresa-promocoes.html" class="nav-link">
-<i class="fas fa-gift"></i>
-                    Promo??es
-                </a>
-</li>
-<li class="nav-item">
-<a href="empresa-bonus.html" class="nav-link">
-<i class="fas fa-star"></i>
-                    B?nus
-                </a>
-</li>
-<li class="nav-item">
-<a href="empresa-notificacoes.html" class="nav-link">
-<i class="fas fa-bell"></i>
-                    Notifica??es
-                </a>
-</li>
-<li class="nav-item">
-<a href="empresa-relatorios.html" class="nav-link">
-<i class="fas fa-file-alt"></i>
-                    Relat?rios
-                </a>
-</li>
-<li class="nav-item">
-<a href="empresa-configuracoes.html" class="nav-link">
-<i class="fas fa-cog"></i>
-                    Configura??es
-                </a>
-</li>
-</ul>
-</aside>
-<main class="main-content">
-<div class="header">
-<h2>Scanner de QR Code</h2>
-<p>Escaneie o QR Code dos clientes para creditar pontos</p>
-</div>
-<div class="scanner-container">
-<div class="scanner-card">
-<div id="reader"></div>
-<div class="scanner-controls">
-<button class="scanner-btn" id="startBtn" onclick="startScanner()">
-<i class="fas fa-camera"></i>
-                        Iniciar Scanner
-                    </button>
-<button class="scanner-btn stop" id="stopBtn" onclick="stopScanner()" style="display: none;">
-<i class="fas fa-stop"></i>
-                        Parar Scanner
-                    </button>
-</div>
-<div class="scanner-instructions">
-<h3><i class="fas fa-info-circle"></i> Instru??es</h3>
-<ul>
-<li>Clique em "Iniciar Scanner"</li>
-<li>Permita o acesso ? c?mera</li>
-<li>Aponte para o QR Code do cliente</li>
-<li>Aguarde a confirma??o autom?tica</li>
-</ul>
-</div>
-</div>
-</div>
-</main>
-<div class="success-modal" id="successModal">
-<div class="success-content">
-<div class="success-icon">?</div>
-<div class="success-title">Pontos Creditados!</div>
-<div class="success-details">
-<div class="success-detail-row">
-<span class="success-detail-label">Cliente:</span>
-<span class="success-detail-value" id="clientName">-</span>
-</div>
-<div class="success-detail-row">
-<span class="success-detail-label">Pontos:</span>
-<span class="success-detail-value" id="points">-</span>
-</div>
-<div class="success-detail-row">
-<span class="success-detail-label">Total Acumulado:</span>
-<span class="success-detail-value" id="totalPoints">-</span>
-</div>
-</div>
-<button class="scanner-btn" onclick="closeModal()">
-<i class="fas fa-check"></i>
-                Continuar Escaneando
-            </button>
-</div>
-</div>
-<script>
-        let html5QrcodeScanner;
-        function startScanner() {
-            document.getElementById('startBtn').style.display = 'none';
-            document.getElementById('stopBtn').style.display = 'flex';
-            html5QrcodeScanner = new Html5Qrcode("reader");
-            html5QrcodeScanner.start(
-                { facingMode: "environment" },
-                { fps: 10, qrbox: 250 },
-                onScanSuccess,
-                onScanFailure
-            );
-        }
-        function stopScanner() {
-            html5QrcodeScanner.stop().then(() => {
-                document.getElementById('startBtn').style.display = 'flex';
-                document.getElementById('stopBtn').style.display = 'none';
-            });
-        }
-        function onScanSuccess(decodedText) {
-            try {
-                const data = JSON.parse(decodedText);
-                // Simular chamada API
-                creditPoints(data);
-                // Parar scanner
-                stopScanner();
-            } catch (e) {
-                alert('QR Code inv?lido');
-            }
-        }
-        function onScanFailure(error) {
-            // Ignorar erros de scan cont?nuo
-        }
-        function creditPoints(clientData) {
-            // Mock data - integrar com API real
-            document.getElementById('clientName').textContent = clientData.name || 'Jo?o Silva';
-            document.getElementById('points').textContent = '+50 pontos';
-            document.getElementById('totalPoints').textContent = '1.297 pontos';
-            document.getElementById('successModal').style.display = 'flex';
-            // API call exemplo:
-            // fetch('/api/empresa/credit-points', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ clientId: clientData.id })
-            // });
-        }
-        function closeModal() {
-            document.getElementById('successModal').style.display = 'none';
-            startScanner();
-        }
-    </script>
-<!-- Bottom Navigation -->
-<nav class="bottom-nav">
-<a href="dashboard-empresa-funcional.html" class="nav-item">
-<i class="fas fa-home"></i>
-<span>Dashboard</span>
-</a>
-<a href="empresa-scanner.html" class="nav-item active">
-<i class="fas fa-qrcode"></i>
-<span>Scanner</span>
-</a>
-<a href="empresa-promocoes.html" class="nav-item">
-<i class="fas fa-gift"></i>
-<span>Promo??es</span>
-</a>
-<a href="empresa-clientes.html" class="nav-item">
-<i class="fas fa-users"></i>
-<span>Clientes</span>
-</a>
-<a href="empresa-relatorios.html" class="nav-item">
-<i class="fas fa-chart-line"></i>
-<span>Relat?rios</span>
-</a>
-</nav>
-<script>
-        // Verifica??o de autentica??o SIMPLIFICADA
-        document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                console.warn('?? Sem token - redirecionando...');
-                window.location.href = '/entrar.html';
-                return;
-            }
-            console.log('? Usu?rio autenticado - acesso permitido');
-        });
-    </script>
 </body>
 </html>
 

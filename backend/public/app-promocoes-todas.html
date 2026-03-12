@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#6A0DAD">
+<meta name="theme-color content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -11,12 +11,12 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="img/icon-192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<title>Promoções - Tem de Tudo</title>
+<title>PromoÃ§Ãµes - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="js/config.js"></script>
 <script src="js/auth-guard.js"></script>
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link rel="stylesheet" href="/css/vivo-styles.css">
 </head>
 <body>
 <div class="header">
@@ -25,31 +25,31 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div class="header-title">
-<h1>Todas as Promoções</h1>
+<h1>Todas as PromoÃ§Ãµes</h1>
 <p id="totalPromocoes">Carregando...</p>
 </div>
 </div>
 </div>
 <div class="filters">
 <button class="filter-btn active" data-filter="todas">Todas</button>
-<button class="filter-btn" data-filter="proximidade">Mais Próximas</button>
-<button class="filter-btn" data-filter="alimentacao">Alimentaçáo</button>
+<button class="filter-btn" data-filter="proximidade">Mais PrÃ³ximas</button>
+<button class="filter-btn" data-filter="alimentacao">AlimentaÃ§Ã¡o</button>
 <button class="filter-btn" data-filter="beleza">Beleza</button>
-<button class="filter-btn" data-filter="saude">Saúde</button>
+<button class="filter-btn" data-filter="saude">SaÃºde</button>
 <button class="filter-btn" data-filter="varejo">Varejo</button>
 </div>
 <div class="promocoes-grid" id="promocoesGrid">
 <div class="empty-state">
 <i class="fas fa-spinner fa-spin"></i>
-<p>Carregando promoções...</p>
+<p>Carregando promoÃ§Ãµes...</p>
 </div>
 </div>
 <nav class="bottom-nav">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>Início</span>
+<span>InÃ­cio</span>
 </a>
-<a href="app-buscar.html" class="nav-item">
+<a href="buscar.html" class="nav-item">
 <i class="fas fa-search"></i>
 <span>Buscar</span>
 </a>
@@ -62,7 +62,7 @@
         let todasPromocoes = [];
         let filtroAtivo = 'todas';
         let userLocation = null;
-        // Calcular distância entre dois pontos (Haversine formula)
+        // Calcular distÃ¢ncia entre dois pontos (Haversine formula)
         function calcularDistancia(lat1, lon1, lat2, lon2) {
             const R = 6371; // Raio da Terra em km
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -77,7 +77,7 @@
             }
             return `${distance.toFixed(1)} km`;
         }
-        // Obter localizaçáo do usuário
+        // Obter localizaÃ§Ã¡o do usuÃ¡rio
         function obterLocalizacao() {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
@@ -86,10 +86,10 @@
                             latitude: position.coords.latitude,
                             longitude: position.coords.longitude
                         };
-                        console.log('Localizaçáo obtida:', userLocation);
+                        console.log('LocalizaÃ§Ã¡o obtida:', userLocation);
                     },
                     (error) => {
-                        console.warn('Geolocalizaçáo náo disponível:', error);
+                        console.warn('GeolocalizaÃ§Ã¡o nÃ¡o disponÃ­vel:', error);
                     }
                 );
             }
@@ -98,7 +98,7 @@
             try {
                 const token = localStorage.getItem('token');
                 const baseURL = API_CONFIG.getBaseURL();
-                // Buscar todas as promoções ativas
+                // Buscar todas as promoÃ§Ãµes ativas
                 const response = await fetch(`${baseURL}/api/cliente/promocoes/todas`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -113,19 +113,19 @@
                     renderEmpty();
                 }
             } catch (error) {
-                console.error('Erro ao carregar promoções:', error);
+                console.error('Erro ao carregar promoÃ§Ãµes:', error);
                 renderEmpty();
             }
         }
         function renderPromocoes(promocoes) {
             const grid = document.getElementById('promocoesGrid');
             const total = document.getElementById('totalPromocoes');
-            total.textContent = `${promocoes.length} promoções disponíveis`;
+            total.textContent = `${promocoes.length} promoÃ§Ãµes disponÃ­veis`;
             if (promocoes.length === 0) {
                 renderEmpty();
                 return;
             }
-            // Calcular distâncias se temos localizaçáo
+            // Calcular distÃ¢ncias se temos localizaÃ§Ã¡o
             let promocoesComDistancia = promocoes.map(promo => {
                 let distancia = promo.distancia || '-- km';
                 if (userLocation && promo.empresa_latitude && promo.empresa_longitude) {
@@ -155,7 +155,7 @@
 <div class="promocao-footer">
 <div class="promocao-validade">
 <i class="fas fa-clock"></i>
-                                Válido até ${formatarData(promo.validade)}
+                                VÃ¡lido atÃ© ${formatarData(promo.validade)}
                             </div>
 <div class="promocao-distancia">?? ${promo.distanciaCalculada}</div>
 </div>
@@ -167,10 +167,10 @@
             document.getElementById('promocoesGrid').innerHTML = `
                 <div class="empty-state">
 <i class="fas fa-gift"></i>
-<p>Nenhuma promoçáo disponível no momento</p>
+<p>Nenhuma promoÃ§Ã¡o disponÃ­vel no momento</p>
 </div>
             `;
-            document.getElementById('totalPromocoes').textContent = '0 promoções';
+            document.getElementById('totalPromocoes').textContent = '0 promoÃ§Ãµes';
         }
         function formatarData(data) {
             if (!data) return 'Sem validade';
@@ -206,6 +206,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 

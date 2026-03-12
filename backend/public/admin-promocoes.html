@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerenciar Promoções - Admin Tem de Tudo</title>
-<meta name="description" content="Painel administrativo para gerenciar promoções e campanhas">
-<meta name="theme-color" content="#6F1AB6">
+<title>Gerenciar PromoÃ§Ãµes - Admin Tem de Tudo</title>
+<meta name="description" content="Painel administrativo para gerenciar promoÃ§Ãµes e campanhas">
+<meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -15,7 +15,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link rel="stylesheet" href="/css/vivo-styles.css">
 <script src="js/config.js"></script>
 <script src="js/auth-guard.js"></script>
 </head>
@@ -26,7 +26,7 @@
     <div class="header-top">
         <h1 class="page-title">
             <i class="fas fa-tags"></i>
-            Gerenciar Promoções
+            Gerenciar PromoÃ§Ãµes
         </h1>
         <a href="admin-dashboard.html" class="back-btn">
             <i class="fas fa-arrow-left"></i>
@@ -37,54 +37,54 @@
 
 <!-- CONTAINER PRINCIPAL -->
 <div class="container">
-    <!-- ESTATÍSTICAS -->
+    <!-- ESTATÃSTICAS -->
     <div class="stats">
         <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-tags"></i>
             </div>
             <div class="stat-value" id="totalPromotions">24</div>
-            <div class="stat-label">Total de Promoções</div>
+            <div class="stat-label">Total de PromoÃ§Ãµes</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon" style="background: var(--vivo-green);">
                 <i class="fas fa-fire"></i>
             </div>
             <div class="stat-value" id="activePromotions">12</div>
-            <div class="stat-label">Promoções Ativas</div>
+            <div class="stat-label">PromoÃ§Ãµes Ativas</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon" style="background: var(--vivo-orange);">
                 <i class="fas fa-clock"></i>
             </div>
             <div class="stat-value" id="pendingPromotions">5</div>
-            <div class="stat-label">Aguardando Aprovaçáo</div>
+            <div class="stat-label">Aguardando AprovaÃ§Ã¡o</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon" style="background: var(--vivo-blue);">
                 <i class="fas fa-chart-line"></i>
             </div>
             <div class="stat-value" id="conversionRate">78%</div>
-            <div class="stat-label">Taxa de Conversáo</div>
+            <div class="stat-label">Taxa de ConversÃ¡o</div>
         </div>
     </div>
 
-    <!-- SEÇáO DE PROMOÇÕES -->
+    <!-- SEÃ‡Ã¡O DE PROMOÃ‡Ã•ES -->
     <div class="promotions-section">
         <div class="section-header">
             <h2 class="section-title">
                 <i class="fas fa-list"></i>
-                Lista de Promoções
+                Lista de PromoÃ§Ãµes
             </h2>
             <button class="add-btn" onclick="createPromotion()">
                 <i class="fas fa-plus"></i>
-                Nova Promoçáo
+                Nova PromoÃ§Ã¡o
             </button>
         </div>
 
         <!-- FILTROS -->
         <div class="filters">
-            <input type="text" class="search-input" placeholder="Buscar promoções por título, empresa..." id="searchInput">
+            <input type="text" class="search-input" placeholder="Buscar promoÃ§Ãµes por tÃ­tulo, empresa..." id="searchInput">
             <select class="filter-select" id="statusFilter">
                 <option value="">Todos os status</option>
                 <option value="ativa">Ativas</option>
@@ -93,22 +93,22 @@
             </select>
             <select class="filter-select" id="categoryFilter">
                 <option value="">Todas as categorias</option>
-                <option value="alimentacao">Alimentaçáo</option>
+                <option value="alimentacao">AlimentaÃ§Ã¡o</option>
                 <option value="moda">Moda</option>
-                <option value="eletrônicos">Eletrônicos</option>
-                <option value="saude">Saúde</option>
+                <option value="eletrÃ´nicos">EletrÃ´nicos</option>
+                <option value="saude">SaÃºde</option>
             </select>
         </div>
 
-        <!-- GRID DE PROMOÇÕES -->
+        <!-- GRID DE PROMOÃ‡Ã•ES -->
         <div class="promotions-grid" id="promotionsGrid">
-            <!-- Dados seráo carregados via JavaScript -->
+            <!-- Dados serÃ¡o carregados via JavaScript -->
         </div>
     </div>
 </div>
 
 <script>
-// Dados de exemplo das promoções
+// Dados de exemplo das promoÃ§Ãµes
 const promotionsData = [
     { 
         id: 1, 
@@ -118,7 +118,7 @@ const promotionsData = [
         startDate: '2026-01-15', 
         endDate: '2026-02-15', 
         status: 'ativa',
-        category: 'eletrônicos'
+        category: 'eletrÃ´nicos'
     },
     { 
         id: 2, 
@@ -132,8 +132,8 @@ const promotionsData = [
     },
     { 
         id: 3, 
-        title: 'Promoçáo de Veráo', 
-        company: 'Casa & Decoraçáo', 
+        title: 'PromoÃ§Ã¡o de VerÃ¡o', 
+        company: 'Casa & DecoraÃ§Ã¡o', 
         discount: 25, 
         startDate: '2026-02-01', 
         endDate: '2026-02-28', 
@@ -143,7 +143,7 @@ const promotionsData = [
     { 
         id: 4, 
         title: 'Combo Pizza + Refrigerante', 
-        company: 'Pizzaria do Joáo', 
+        company: 'Pizzaria do JoÃ¡o', 
         discount: 20, 
         startDate: '2025-12-01', 
         endDate: '2025-12-31', 
@@ -153,7 +153,7 @@ const promotionsData = [
     { 
         id: 5, 
         title: 'Medicamentos com 15% OFF', 
-        company: 'Farmácia Sáo Joáo', 
+        company: 'FarmÃ¡cia SÃ¡o JoÃ¡o', 
         discount: 15, 
         startDate: '2026-01-20', 
         endDate: '2026-04-20', 
@@ -178,8 +178,8 @@ function renderPromotions() {
         grid.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-tags"></i>
-                <h3>Nenhuma promoçáo encontrada</h3>
-                <p>Crie sua primeira promoçáo para começar</p>
+                <h3>Nenhuma promoÃ§Ã¡o encontrada</h3>
+                <p>Crie sua primeira promoÃ§Ã¡o para comeÃ§ar</p>
             </div>
         `;
         return;
@@ -209,7 +209,7 @@ function renderPromotions() {
                             -${promotion.discount}%
                         </div>
                         <div class="promotion-dates">
-                            <div><strong>Início:</strong> ${formatDate(promotion.startDate)}</div>
+                            <div><strong>InÃ­cio:</strong> ${formatDate(promotion.startDate)}</div>
                             <div><strong>Expira:</strong> ${formatDate(promotion.endDate)}</div>
                         </div>
                     </div>
@@ -301,11 +301,11 @@ function formatDate(dateString) {
 }
 
 function createPromotion() {
-    alert('Criar nova promoçáo - Funcionalidade em desenvolvimento');
+    alert('Criar nova promoÃ§Ã¡o - Funcionalidade em desenvolvimento');
 }
 
 function editPromotion(id) {
-    alert(`Editar promoçáo ID: ${id}`);
+    alert(`Editar promoÃ§Ã¡o ID: ${id}`);
 }
 
 function togglePromotion(id) {
@@ -314,23 +314,25 @@ function togglePromotion(id) {
         promotion.status = promotion.status === 'ativa' ? 'inativa' : 'ativa';
         renderPromotions();
         updateStats();
-        alert(`Promoçáo ${promotion.status === 'ativa' ? 'ativada' : 'desativada'} com sucesso!`);
+        alert(`PromoÃ§Ã¡o ${promotion.status === 'ativa' ? 'ativada' : 'desativada'} com sucesso!`);
     }
 }
 
 function deletePromotion(id) {
-    if (confirm('Tem certeza que deseja excluir esta promoçáo?')) {
+    if (confirm('Tem certeza que deseja excluir esta promoÃ§Ã¡o?')) {
         const index = promotionsData.findIndex(p => p.id === id);
         if (index > -1) {
             promotionsData.splice(index, 1);
             filterPromotions();
             updateStats();
-            alert('Promoçáo excluída com sucesso!');
+            alert('PromoÃ§Ã¡o excluÃ­da com sucesso!');
         }
     }
 }
 </script>
 </body>
 </html>
+
+
 
 

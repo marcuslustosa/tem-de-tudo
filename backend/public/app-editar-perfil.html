@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Editar Perfil - Tem de Tudo</title>
-<meta name="description" content="Edite suas informações pessoais e preferências">
-<meta name="theme-color" content="#6F1AB6">
+<meta name="description" content="Edite suas informaÃ§Ãµes pessoais e preferÃªncias">
+<meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -19,7 +19,7 @@
 <script src="js/auth-guard.js"></script>
 
 
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link rel="stylesheet" href="/css/vivo-styles.css">
 </head>
 <body>
 <div class="app-page">
@@ -30,7 +30,7 @@
                 <i class="fas fa-arrow-left"></i>
             </a>
             <h1>Editar Perfil</h1>
-            <button class="save-btn" onclick="salvarPerfil()" title="Salvar alterações">
+            <button class="save-btn" onclick="salvarPerfil()" title="Salvar alteraÃ§Ãµes">
                 <i class="fas fa-check"></i>
             </button>
         </div>
@@ -49,7 +49,7 @@
                         <i class="fas fa-camera"></i>
                     </div>
                 </div>
-                <p class="profile-hint">Toque no ícone da câmera para alterar sua foto</p>
+                <p class="profile-hint">Toque no Ã­cone da cÃ¢mera para alterar sua foto</p>
             </div>
         </div>
 
@@ -58,7 +58,7 @@
             <div class="form-section">
                 <div class="section-title">
                     <i class="fas fa-user-edit"></i>
-                    Informações Pessoais
+                    InformaÃ§Ãµes Pessoais
                 </div>
                 
                 <div class="form-group">
@@ -100,13 +100,13 @@
             <div class="preferences-section">
                 <div class="section-title">
                     <i class="fas fa-cog"></i>
-                    Preferências
+                    PreferÃªncias
                 </div>
                 
                 <div class="toggle-group">
                     <div>
-                        <div class="toggle-label">Notificações Push</div>
-                        <div class="toggle-desc">Receba alertas sobre promoções e pontos</div>
+                        <div class="toggle-label">NotificaÃ§Ãµes Push</div>
+                        <div class="toggle-desc">Receba alertas sobre promoÃ§Ãµes e pontos</div>
                     </div>
                     <div class="toggle-switch active" onclick="togglePreference(this, 'notifications')"></div>
                 </div>
@@ -121,8 +121,8 @@
                 
                 <div class="toggle-group">
                     <div>
-                        <div class="toggle-label">Localizaçáo</div>
-                        <div class="toggle-desc">Ofertas baseadas na sua localizaçáo</div>
+                        <div class="toggle-label">LocalizaÃ§Ã¡o</div>
+                        <div class="toggle-desc">Ofertas baseadas na sua localizaÃ§Ã¡o</div>
                     </div>
                     <div class="toggle-switch active" onclick="togglePreference(this, 'location')"></div>
                 </div>
@@ -136,7 +136,7 @@
                 </div>
                 
                 <button class="btn-save" onclick="salvarPerfil()">
-                    <span id="saveText">Salvar Alterações</span>
+                    <span id="saveText">Salvar AlteraÃ§Ãµes</span>
                     <div class="loading" id="saveLoading" style="display: none;"></div>
                 </button>
             </div>
@@ -149,7 +149,7 @@
     <div class="nav-container">
         <a href="dashboard-cliente.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>Início</span>
+            <span>InÃ­cio</span>
         </a>
         <a href="app-empresas.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -195,7 +195,7 @@ function carregarDadosUsuario() {
     if (user.telefone) document.getElementById('telefone').value = user.telefone;
     if (user.data_nascimento) document.getElementById('dataNascimento').value = user.data_nascimento;
     
-    // Carregar preferências
+    // Carregar preferÃªncias
     const savedPrefs = JSON.parse(localStorage.getItem('preferences') || '{}');
     preferences = { ...preferences, ...savedPrefs };
     atualizarToggles();
@@ -233,7 +233,7 @@ function handleAvatarChange(event) {
         reader.onload = function(e) {
             const avatarDisplay = document.getElementById('avatarDisplay');
             avatarDisplay.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
-            showNotification('Foto atualizada! Salve as alterações.', 'success');
+            showNotification('Foto atualizada! Salve as alteraÃ§Ãµes.', 'success');
         };
         reader.readAsDataURL(file);
     }
@@ -280,7 +280,7 @@ async function salvarPerfil() {
         
         showNotification('Perfil atualizado com sucesso!', 'success');
         
-        // Opcional: redirecionar após salvar
+        // Opcional: redirecionar apÃ³s salvar
         setTimeout(() => {
             window.location.href = 'app-perfil.html';
         }, 1000);
@@ -362,7 +362,7 @@ function showNotification(message, type = 'info') {
                         field.style.display = 'none';
                     }
                 });
-                // Preencher campos com dados do usuário
+                // Preencher campos com dados do usuÃ¡rio
                 document.getElementById('nome').value = user.name || user.nome || '';
                 document.getElementById('email').value = user.email || '';
                 document.getElementById('telefone').value = user.telefone || '';
@@ -390,16 +390,16 @@ function showNotification(message, type = 'info') {
             if (isAdmin) {
                 dados.data_nascimento = document.getElementById('dataNascimento').value;
             }
-            // Validaçáo básica
+            // ValidaÃ§Ã¡o bÃ¡sica
             if (!dados.name || !dados.email) {
-                mostrarFeedback('Nome e email sáo obrigatórios!', 'error');
+                mostrarFeedback('Nome e email sÃ¡o obrigatÃ³rios!', 'error');
                 return;
             }
-            mostrarFeedback('Salvando alterações...', 'info');
+            mostrarFeedback('Salvando alteraÃ§Ãµes...', 'info');
             try {
-                // SIMULAÇáO TEMPORÁRIA - Funcionará até backend estar completo
+                // SIMULAÃ‡Ã¡O TEMPORÃRIA - FuncionarÃ¡ atÃ© backend estar completo
                 if (!token) {
-                    mostrarFeedback('?? Você precisa estar logado', 'error');
+                    mostrarFeedback('?? VocÃª precisa estar logado', 'error');
                     setTimeout(() => window.location.href = 'entrar.html', 1500);
                     return;
                 }
@@ -426,7 +426,7 @@ function showNotification(message, type = 'info') {
             }
         }
         function trocarFoto() {
-            mostrarFeedback('?? Funcionalidade de foto será implementada em breve!', 'info');
+            mostrarFeedback('?? Funcionalidade de foto serÃ¡ implementada em breve!', 'info');
         }
         function mostrarFeedback(mensagem, tipo) {
             // Criar elemento de feedback
@@ -436,7 +436,7 @@ function showNotification(message, type = 'info') {
                 top: 20px;
                 left: 50%;
                 transform: translateX(-50%);
-                background: ${tipo === 'success' ? 'linear-gradient(135deg, #00d4aa, #00c896)' : tipo === 'error' ? 'linear-gradient(135deg, #ff6b6b, #ff5252)' : 'linear-gradient(135deg, #6F1AB6, #9333EA)'};
+                background: ${tipo === 'success' ? 'linear-gradient(135deg, #00d4aa, #00c896)' : tipo === 'error' ? 'linear-gradient(135deg, #ff6b6b, #ff5252)' : 'linear-gradient(135deg, #9b59b6, #9333EA)'};
                 color: ${tipo === 'success' || tipo === 'error' ? '#fff' : '#0a0a0f'};
                 padding: 12px 24px;
                 border-radius: 16px;
@@ -448,7 +448,7 @@ function showNotification(message, type = 'info') {
             `;
             feedback.textContent = mensagem;
             document.body.appendChild(feedback);
-            // Remover após 3 segundos
+            // Remover apÃ³s 3 segundos
             setTimeout(() => {
                 feedback.style.animation = 'slideUp 0.3s ease';
                 setTimeout(() => document.body.removeChild(feedback), 300);
@@ -470,5 +470,7 @@ function showNotification(message, type = 'info') {
     </script>
 </body>
 </html>
+
+
 
 

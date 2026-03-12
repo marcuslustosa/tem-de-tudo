@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meu QR Code - Tem de Tudo</title>
 <meta name="description" content="Seu QR Code pessoal para ganhar pontos nos parceiros">
-<meta name="theme-color" content="#6F1AB6">
+<meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -19,7 +19,7 @@
 <script src="js/auth-guard.js"></script>
 
 
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link rel="stylesheet" href="/css/vivo-styles.css">
 </head>
 <body>
 <div class="app-page">
@@ -46,7 +46,7 @@
                 <div class="user-id">ID: <span id="userId">---</span></div>
                 
                 <div class="pontos-info">
-                    <div class="pontos-label">Seus Pontos Disponíveis</div>
+                    <div class="pontos-label">Seus Pontos DisponÃ­veis</div>
                     <div class="pontos-value" id="totalPontos">0</div>
                     <div class="pontos-subtitle">Ganhe mais pontos nas compras!</div>
                 </div>
@@ -58,11 +58,11 @@
             <div class="qr-card">
                 <h2>
                     <i class="fas fa-qrcode"></i>
-                    Seu Código QR
+                    Seu CÃ³digo QR
                 </h2>
                 <div id="qrcode"></div>
                 <p style="color: var(--gray-600); font-size: 0.875rem;">
-                    Apresente este código no caixa para ganhar pontos
+                    Apresente este cÃ³digo no caixa para ganhar pontos
                 </p>
             </div>
         </div>
@@ -81,11 +81,11 @@
                     </li>
                     <li>
                         <div class="step-number">2</div>
-                        <div class="step-text">Aguarde a leitura do código pelo funcionário</div>
+                        <div class="step-text">Aguarde a leitura do cÃ³digo pelo funcionÃ¡rio</div>
                     </li>
                     <li>
                         <div class="step-number">3</div>
-                        <div class="step-text">Seus pontos seráo creditados automaticamente na sua conta!</div>
+                        <div class="step-text">Seus pontos serÃ¡o creditados automaticamente na sua conta!</div>
                     </li>
                 </ul>
             </div>
@@ -108,7 +108,7 @@
                 </button>
                 <button class="btn-action" onclick="verHistorico()">
                     <i class="fas fa-history"></i>
-                    <span>Histórico</span>
+                    <span>HistÃ³rico</span>
                 </button>
             </div>
         </div>
@@ -120,7 +120,7 @@
     <div class="nav-container">
         <a href="dashboard-cliente.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>Início</span>
+            <span>InÃ­cio</span>
         </a>
         <a href="app-empresas.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -143,7 +143,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-// Configuraçáo de API
+// ConfiguraÃ§Ã¡o de API
 let API_URL;
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     API_URL = 'http://127.0.0.1:8000/api';
@@ -151,7 +151,7 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
     API_URL = '/api';
 }
 
-// Verificar autenticaçáo
+// Verificar autenticaÃ§Ã¡o
 const token = localStorage.getItem('token');
 const userStr = localStorage.getItem('user');
 
@@ -172,8 +172,8 @@ try {
     window.location.href = 'entrar.html';
 }
 
-// Exibir dados do usuário
-document.getElementById('userName').textContent = user.name || user.email || 'Usuário';
+// Exibir dados do usuÃ¡rio
+document.getElementById('userName').textContent = user.name || user.email || 'UsuÃ¡rio';
 document.getElementById('userId').textContent = user.id || '---';
 
 // Gerar QR Code
@@ -185,7 +185,7 @@ function generateQRCode() {
         text: `TDT-USER-${user.id}`,
         width: 200,
         height: 200,
-        colorDark: '#6F1AB6',
+        colorDark: '#9b59b6',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H
     });
@@ -223,7 +223,7 @@ function compartilhar() {
             text: 'Confira meu QR Code de fidelidade!',
         }).catch(err => console.log('Erro ao compartilhar:', err));
     } else {
-        showNotification('Compartilhamento náo suportado neste navegador', 'info');
+        showNotification('Compartilhamento nÃ¡o suportado neste navegador', 'info');
     }
 }
 
@@ -281,5 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
+
 
 

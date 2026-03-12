@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Histórico de Pontos - Tem de Tudo</title>
-<meta name="description" content="Acompanhe todo o histórico das suas transações de pontos">
-<meta name="theme-color" content="#6F1AB6">
+<title>HistÃ³rico de Pontos - Tem de Tudo</title>
+<meta name="description" content="Acompanhe todo o histÃ³rico das suas transaÃ§Ãµes de pontos">
+<meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -19,7 +19,7 @@
 <script src="js/auth-guard.js"></script>
 
 
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link rel="stylesheet" href="/css/vivo-styles.css">
 </head>
 <body>
 <div class="app-page">
@@ -29,7 +29,7 @@
             <button class="back-btn" onclick="window.history.back()">
                 <i class="fas fa-arrow-left"></i>
             </button>
-            <h1>Histórico de Pontos</h1>
+            <h1>HistÃ³rico de Pontos</h1>
             <div style="width: 40px;"></div>
         </div>
     </div>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="totalTransacoes">0</div>
-                    <div class="stat-label">Transações</div>
+                    <div class="stat-label">TransaÃ§Ãµes</div>
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
                 </div>
                 <div class="filter-tab" data-filter="expiracao" onclick="filtrar('expiracao')">
                     <i class="fas fa-clock"></i> 
-                    <span>Expirações</span>
+                    <span>ExpiraÃ§Ãµes</span>
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
             
             <div class="empty-state" id="emptyState" style="display: none;">
                 <i class="fas fa-history"></i>
-                <p>Nenhuma transaçáo encontrada</p>
+                <p>Nenhuma transaÃ§Ã¡o encontrada</p>
             </div>
         </div>
     </div>
@@ -95,7 +95,7 @@
     <div class="nav-container">
         <a href="dashboard-cliente.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>Início</span>
+            <span>InÃ­cio</span>
         </a>
         <a href="app-empresas.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -153,14 +153,14 @@ async function carregarHistorico() {
             if (data.success && data.data) {
                 historico = data.data;
             } else {
-                // Dados de exemplo para demonstraçáo
+                // Dados de exemplo para demonstraÃ§Ã¡o
                 historico = gerarHistoricoExemplo();
             }
         } else {
             historico = gerarHistoricoExemplo();
         }
     } catch (error) {
-        console.error('Erro ao carregar histórico:', error);
+        console.error('Erro ao carregar histÃ³rico:', error);
         historico = gerarHistoricoExemplo();
     }
     
@@ -178,13 +178,13 @@ function gerarHistoricoExemplo() {
             tipo: 'ganho',
             pontos: 150,
             descricao: 'Compra no estabelecimento',
-            empresa: 'Padaria do Joáo',
+            empresa: 'Padaria do JoÃ¡o',
             created_at: hoje.toISOString()
         },
         {
             tipo: 'checkin',
             pontos: 50,
-            descricao: 'Check-in diário',
+            descricao: 'Check-in diÃ¡rio',
             empresa: 'Sistema',
             created_at: hoje.toISOString()
         },
@@ -326,5 +326,7 @@ function mostrarFeedback(mensagem, tipo) {
 </script>
 </body>
 </html>
+
+
 
 
