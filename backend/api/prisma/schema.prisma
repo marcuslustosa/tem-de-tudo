@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  company
+  customer
+}
+
+enum TransactionType {
+  earn
+  redeem
+  bonus_signup
+  bonus_birthday
+}
+
+enum RedemptionStatus {
+  reserved
+  used
+  cancelled
+}
+
+model User {
+  id             String    @id @default(uuid())
+  name           String
+  email          String    @unique
+  passwordHash   String
+  role           Role
+  createdAt      DateTime  @default(now())
+
+  companies      Company[] @relation("CompanyOwner")
+  accounts       LoyaltyAccount[] @relation("AccountCustomer")
+  notifications  Notification[]
+}
+
+model Company {
+  id          String           @id @default(uuid())
+  name        String
+  themeColor  String?
+  createdAt   DateTime         @default(now())
+
+  ownerUser   User             @relation("CompanyOwner", fields: [ownerUserId], references: [id])
+  ownerUserId String
+
+  stores      Store[]
+  accounts    LoyaltyAccount[]
+  coupons     Coupon[]
+  qrcodes     QrCode[]
+}
+
+model Store {
+  id         String   @id @default(uuid())
+  name       String
+  address    String?
+  city       String?
+  latitude   Float?
+  longitude  Float?
+  createdAt  DateTime @default(now())
+
+  company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId  String
+
+  qrcodes    QrCode[]
+}
+
+model LoyaltyAccount {
+  id              String           @id @default(uuid())
+  pointsBalance   Int              @default(0)
+  tier            String?
+  createdAt       DateTime         @default(now())
+
+  customer        User             @relation("AccountCustomer", fields: [customerUserId], references: [id], onDelete: Cascade)
+  customerUserId  String
+
+  company         Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId       String
+
+  transactions    Transaction[]
+  redemptions     Redemption[]
+
+  @@unique([customerUserId, companyId], name: "user_company_unique")
+}
+
+model Transaction {
+  id          String           @id @default(uuid())
+  type        TransactionType
+  points      Int
+  description String?
+  meta        Json?
+  createdAt   DateTime         @default(now())
+
+  account     LoyaltyAccount   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId   String
+}
+
+model Coupon {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  pointsCost  Int
+  expiresAt   DateTime?
+  stock       Int?
+  createdAt   DateTime   @default(now())
+
+  company     Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId   String
+
+  redemptions Redemption[]
+}
+
+model Redemption {
+  id          String           @id @default(uuid())
+  status      RedemptionStatus
+  qrcodeToken String           @unique
+  createdAt   DateTime         @default(now())
+  usedAt      DateTime?
+
+  account     LoyaltyAccount   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId   String
+
+  coupon      Coupon           @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  couponId    String
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  body      String
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+}
+
+model QrCode {
+  id         String    @id @default(uuid())
+  token      String    @unique
+  payload    Json?
+  expiresAt  DateTime?
+  redeemedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  company    Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId  String
+
+  store      Store?    @relation(fields: [storeId], references: [id], onDelete: SetNull)
+  storeId    String?
+}
