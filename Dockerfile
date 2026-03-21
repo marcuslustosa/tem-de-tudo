@@ -50,5 +50,9 @@ RUN chown -R www-data:www-data /var/www/html \
 
 EXPOSE 80
 
+# Script de inicialização: garante prefork e sobe Apache
+RUN printf '#!/bin/bash\nset -e\n# Força só um MPM (prefork)\na2dismod mpm_event mpm_worker || true\na2enmod mpm_prefork || true\nexec apache2-foreground\n' > /usr/local/bin/start-apache.sh \
+    && chmod +x /usr/local/bin/start-apache.sh
+
 # Usa envs fornecidos pela Railway; migrations devem rodar em hook ou manualmente
-CMD ["apache2-foreground"]
+CMD ["start-apache.sh"]
