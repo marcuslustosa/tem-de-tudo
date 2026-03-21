@@ -1,26 +1,52 @@
-# Dockerfile para Railway/Render - API Node + front estático
-FROM node:18-slim
+FROM php:8.2-apache
 
-WORKDIR /app
+# Instala dependências do Laravel + extensões comuns
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    libzip-dev \
+    zip unzip git curl \
+    libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_pgsql pgsql zip mbstring exif pcntl bcmath gd \
+    && a2enmod rewrite headers expires \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copia manifests da raiz (postinstall instala backend/api)
-COPY package*.json ./
+# Ajustes PHP
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory-limit.ini \
+    && echo "upload_max_filesize=20M" > /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size=20M" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/uploads.ini
 
-# Copia manifests da API para cache otimizado
-COPY backend/api/package*.json backend/api/
+# Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Instala dependências (raiz e API via postinstall)
-RUN npm ci
+WORKDIR /var/www/html
 
-# Copia código
-# Copia API e demais assets do backend (HTML estático)
-COPY backend ./backend
+# Instala dependências PHP com cache de layers
+COPY backend/composer.json backend/composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
-# Porta do serviço (Railway usa $PORT)
-ENV PORT=3001
+# Copia todo o backend Laravel
+COPY backend ./
 
-# Expor a porta para consistência local
-EXPOSE 3001
+# Autoload otimizado
+RUN composer dump-autoload --optimize --no-dev
 
-# Start: aplica migrations e sobe server (já definido em package.json raiz -> backend/api start)
-CMD ["npm", "start"]
+# Configuração do Apache
+COPY backend/docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
+
+# Diretórios obrigatórios
+RUN mkdir -p \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/framework/cache \
+    storage/logs \
+    bootstrap/cache
+
+# Permissões
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache
+
+EXPOSE 80
+
+# Usa envs fornecidos pela Railway; migrations devem rodar em hook ou manualmente
+CMD ["apache2-foreground"]

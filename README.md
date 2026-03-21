@@ -8,6 +8,16 @@
 
 **Acesso:** `http://localhost:8000`**Acesso:** `http://localhost:8000`
 
+### Deploy na Railway
+
+- A Railway deve construir usando o `Dockerfile` da raiz (PHP 8.2 + Apache).
+- Configure as variáveis no painel da service: `APP_ENV=production`, `APP_DEBUG=false`, `APP_KEY`, `APP_URL`, `DB_CONNECTION=pgsql`, `DB_HOST`, `DB_PORT=5432`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `DB_SSLMODE=prefer`, `SESSION_DRIVER=file`, `CACHE_DRIVER=file`, `QUEUE_CONNECTION=database`.
+- Após o deploy, rode o hook de release/post-deploy:
+  ```
+  php artisan migrate --force --no-interaction && php artisan db:seed --force --class=DatabaseSeeder
+  ```
+  (ou configure no painel de Deploy Hooks).
+
 
 
 ---
