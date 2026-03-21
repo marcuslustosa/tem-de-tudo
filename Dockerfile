@@ -7,6 +7,8 @@ RUN apt-get update && apt-get install -y \
     zip unzip git curl \
     libpng-dev libonig-dev libxml2-dev \
     && docker-php-ext-install pdo pdo_pgsql pgsql zip mbstring exif pcntl bcmath gd \
+    # Garante apenas um MPM (prefork) para mod_php
+    && a2dismod mpm_event && a2enmod mpm_prefork \
     && a2enmod rewrite headers expires \
     && rm -rf /var/lib/apt/lists/*
 
