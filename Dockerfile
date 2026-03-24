@@ -50,9 +50,9 @@ RUN chown -R www-data:www-data /var/www/html \
 
 EXPOSE 80
 
-# Script de inicialização: garante prefork e sobe Apache
-RUN printf '#!/bin/bash\nset -e\n# Força só um MPM (prefork)\na2dismod mpm_event mpm_worker || true\na2enmod mpm_prefork || true\nexec apache2-foreground\n' > /usr/local/bin/start-apache.sh \
-    && chmod +x /usr/local/bin/start-apache.sh
+# Script de inicializacao: adapta porta dinamica da Railway, exporta DB_* a partir de DATABASE_URL e sobe Apache
+RUN printf '#!/bin/bash\nset -euo pipefail\n\nPORT=${PORT:-8080}\n# Ajusta Apache para porta dinamica\nprintf \"Listen ${PORT}\\n\" > /etc/apache2/ports.conf\nsed -i \"s#<VirtualHost .*:.*>#<VirtualHost *:${PORT}>#\" /etc/apache2/sites-available/000-default.conf\n\ncd /var/www/html\n\n# Se so temos DATABASE_URL, derivar DB_* para o Laravel\nif [ -n \"${DATABASE_URL:-}\" ] && [ -z \"${DB_HOST:-}\" ]; then\n  eval \"$(php /var/www/html/docker/export-db-env.php)\"\nfi\n\n# APP_KEY temporario se nao vier do ambiente (evita crash de boot)\nif [ -z \"${APP_KEY:-}\" ]; then\n  export APP_KEY=\"base64:$(php -r 'echo base64_encode(random_bytes(32));')\"\n  echo \"APP_KEY nao definido; usando chave temporaria nesta instancia\"\nfi\n\n# Permissoes\nmkdir -p storage/framework/{sessions,views,cache} storage/logs bootstrap/cache\nchown -R www-data:www-data storage bootstrap/cache\nchmod -R 775 storage bootstrap/cache\n\n# Migrations automatizadas (controlaveis via env)\nif [ \"${RUN_MIGRATIONS_ON_START:-true}\" = \"true\" ]; then\n  php artisan migrate --force --no-interaction\n  if [ \"${SEED_ON_START:-false}\" = \"true\" ]; then\n    php artisan db:seed --force --no-interaction\n  fi\nfi\n\n# Garante MPM correto e inicia Apache\na2dismod mpm_event mpm_worker || true\na2enmod mpm_prefork || true\nexec apache2-foreground\n' > /usr/local/bin/start-railway.sh \
+    && chmod +x /usr/local/bin/start-railway.sh
 
-# Usa envs fornecidos pela Railway; migrations devem rodar em hook ou manualmente
-CMD ["start-apache.sh"]
+# Usa envs fornecidos pela Railway
+CMD ["start-railway.sh"]
