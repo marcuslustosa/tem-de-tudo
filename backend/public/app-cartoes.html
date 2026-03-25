@@ -1,126 +1,119 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Meus Cartes - Tem de Tudo</title>
-<meta name="description" content="Gerencie seus cartes de pagamento">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>?? Meus Cartões - Tem de Tudo</title>
+<meta content="Gerencie seus cartões de pagamento" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 <script src="js/config.js"></script>
 <script src="js/auth-guard.js"></script>
-
-
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="app-page">
-    <div class="app-header">
-        <div class="header-nav">
-            <a href="app-perfil.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <h1> Meus Cartes</h1>
-            <button class="add-btn" onclick="adicionarCartao()">
-                <i class="fas fa-plus"></i> Adicionar
+<div class="app-header">
+<div class="header-nav">
+<a class="back-btn" href="app-perfil.html">
+<i class="fas fa-arrow-left"></i>
+</a>
+<h1>?? Meus Cartões</h1>
+<button class="add-btn" onclick="adicionarCartao()">
+<i class="fas fa-plus"></i> Adicionar
             </button>
-        </div>
-    </div>
-    
-    <div class="app-content">
-        <!-- Informaes de Segurana -->
-        <div class="security-info fade-in">
-            <div class="security-title">
-                <i class="fas fa-shield-alt" style="color: var(--vivo-green);"></i>
-                Seus dados esto seguros
-            </div>
-            <div class="security-text">
-                Todas as informaes dos cartes so criptografadas e armazenadas com segurana.
-            </div>
-        </div>
-        
-        <!-- Lista de Cartes -->
-        <div class="cards-grid" id="cardsGrid">
-            <!-- Carto Visa -->
-            <div class="card-item fade-in">
-                <div class="card-network">
-                    <div class="card-type">VISA</div>
-                    <div class="card-logo">VISA</div>
-                </div>
-                <div class="card-number">   1234</div>
-                <div class="card-footer">
-                    <div class="card-holder">
-                        <div class="card-holder-name">MARCUS SILVA</div>
-                        <div class="card-holder">Titular</div>
-                    </div>
-                    <div class="card-expiry">
-                        <div class="card-exp-date">12/26</div>
-                        <div class="card-exp-label">Vlido at</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card-actions fade-in">
-                <button class="card-btn primary" onclick="editarCartao('visa1234')">
-                    <i class="fas fa-edit"></i> Editar
-                </button>
-                <button class="card-btn" onclick="verDetalhes('visa1234')">
-                    <i class="fas fa-eye"></i> Detalhes
-                </button>
-                <button class="card-btn danger" onclick="removerCartao('visa1234')">
-                    <i class="fas fa-trash"></i> Remover
-                </button>
-            </div>
-            
-            <!-- Carto MasterCard -->
-            <div class="card-item fade-in" style="background: linear-gradient(135deg, #FF5F00, #EB001B);">
-                <div class="card-network">
-                    <div class="card-type">MASTERCARD</div>
-                    <div class="card-logo">MC</div>
-                </div>
-                <div class="card-number">   5678</div>
-                <div class="card-footer">
-                    <div class="card-holder">
-                        <div class="card-holder-name">MARCUS SILVA</div>
-                        <div class="card-holder">Titular</div>
-                    </div>
-                    <div class="card-expiry">
-                        <div class="card-exp-date">08/27</div>
-                        <div class="card-exp-label">Vlido at</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card-actions fade-in">
-                <button class="card-btn primary" onclick="editarCartao('master5678')">
-                    <i class="fas fa-edit"></i> Editar
-                </button>
-                <button class="card-btn" onclick="verDetalhes('master5678')">
-                    <i class="fas fa-eye"></i> Detalhes
-                </button>
-                <button class="card-btn danger" onclick="removerCartao('master5678')">
-                    <i class="fas fa-trash"></i> Remover
-                </button>
-            </div>
-        </div>
-    </div>
 </div>
-
+</div>
+<div class="app-content">
+<!-- Informações de Segurança -->
+<div class="security-info fade-in">
+<div class="security-title">
+<i class="fas fa-shield-alt tdt-inline-8844fd86"></i>
+                Seus dados estáo seguros
+            </div>
+<div class="security-text">
+                Todas as informações dos cartões sáo criptografadas e armazenadas com segurança.
+            </div>
+</div>
+<!-- Lista de Cartões -->
+<div class="cards-grid" id="cardsGrid">
+<!-- Cartáo Visa -->
+<div class="card-item fade-in">
+<div class="card-network">
+<div class="card-type">VISA</div>
+<div class="card-logo">VISA</div>
+</div>
+<div class="card-number">•••• •••• •••• 1234</div>
+<div class="card-footer">
+<div class="card-holder">
+<div class="card-holder-name">MARCUS SILVA</div>
+<div class="card-holder">Titular</div>
+</div>
+<div class="card-expiry">
+<div class="card-exp-date">12/26</div>
+<div class="card-exp-label">Válido até</div>
+</div>
+</div>
+</div>
+<div class="card-actions fade-in">
+<button class="card-btn primary" onclick="editarCartao('visa1234')">
+<i class="fas fa-edit"></i> Editar
+                </button>
+<button class="card-btn" onclick="verDetalhes('visa1234')">
+<i class="fas fa-eye"></i> Detalhes
+                </button>
+<button class="card-btn danger" onclick="removerCartao('visa1234')">
+<i class="fas fa-trash"></i> Remover
+                </button>
+</div>
+<!-- Cartáo MasterCard -->
+<div class="card-item fade-in tdt-inline-649b0898">
+<div class="card-network">
+<div class="card-type">MASTERCARD</div>
+<div class="card-logo">MC</div>
+</div>
+<div class="card-number">•••• •••• •••• 5678</div>
+<div class="card-footer">
+<div class="card-holder">
+<div class="card-holder-name">MARCUS SILVA</div>
+<div class="card-holder">Titular</div>
+</div>
+<div class="card-expiry">
+<div class="card-exp-date">08/27</div>
+<div class="card-exp-label">Válido até</div>
+</div>
+</div>
+</div>
+<div class="card-actions fade-in">
+<button class="card-btn primary" onclick="editarCartao('master5678')">
+<i class="fas fa-edit"></i> Editar
+                </button>
+<button class="card-btn" onclick="verDetalhes('master5678')">
+<i class="fas fa-eye"></i> Detalhes
+                </button>
+<button class="card-btn danger" onclick="removerCartao('master5678')">
+<i class="fas fa-trash"></i> Remover
+                </button>
+</div>
+</div>
+</div>
+</div>
 <script>
 function adicionarCartao() {
-    alert(' Adicionar novo carto\n\nFuncionalidade em desenvolvimento!\n\nEm breve voc poder:\n Adicionar cartes de crdito e dbito\n Validao automtica de dados\n Segurana bancria certificada');
+    alert('?? Adicionar novo cartáo\n\nFuncionalidade em desenvolvimento!\n\nEm breve você poderá:\n• Adicionar cartões de crédito e débito\n• Validaçáo automática de dados\n• Segurança bancária certificada');
 }
 
 function editarCartao(id) {
-    showToast(' Abrir editor de carto #' + id);
+    showToast('?? Abrir editor de cartáo #' + id);
 }
 
 function verDetalhes(id) {
@@ -128,14 +121,14 @@ function verDetalhes(id) {
         'visa1234': {
             nome: 'VISA **** 1234',
             banco: 'Banco do Brasil',
-            tipo: 'Crdito',
+            tipo: 'Crédito',
             limite: 'R$ 5.000,00',
             fatura: 'R$ 1.247,50'
         },
         'master5678': {
             nome: 'MASTERCARD **** 5678',
-            banco: 'Ita',
-            tipo: 'Dbito',
+            banco: 'Itaú',
+            tipo: 'Débito',
             limite: 'Sem limite',
             fatura: 'N/A'
         }
@@ -143,16 +136,16 @@ function verDetalhes(id) {
     
     const cartao = cartoes[id];
     if (cartao) {
-        alert(` ${cartao.nome}\n\n Banco: ${cartao.banco}\n Tipo: ${cartao.tipo}\n Limite: ${cartao.limite}\n Fatura atual: ${cartao.fatura}`);
+        alert(`?? ${cartao.nome}\n\n?? Banco: ${cartao.banco}\n?? Tipo: ${cartao.tipo}\n?? Limite: ${cartao.limite}\n?? Fatura atual: ${cartao.fatura}`);
     }
 }
 
 function removerCartao(id) {
-    if (confirm(' Tem certeza que deseja remover este carto?\n\nEsta ao no pode ser desfeita.')) {
-        showToast('? Carto removido com sucesso!');
-        // Simular remoo visual
+    if (confirm('?? Tem certeza que deseja remover este cartáo?\n\nEsta açáo náo pode ser desfeita.')) {
+        showToast('??? Cartáo removido com sucesso!');
+        // Simular remoçáo visual
         setTimeout(() => {
-            showToast(' Dados atualizados!');
+            showToast('?? Dados atualizados!');
         }, 1500);
     }
 }
@@ -169,14 +162,11 @@ function showToast(message) {
     }, 2500);
 }
 
-// Simulao de carregamento
+// Simulaçáo de carregamento
 document.addEventListener('DOMContentLoaded', () => {
-    console.log(' Sistema de cartes carregado!');
+    console.log('?? Sistema de cartões carregado!');
 });
 </script>
 </body>
 </html>
-
-
-
 

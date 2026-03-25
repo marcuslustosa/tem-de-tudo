@@ -1,237 +1,224 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Meus Pontos - Tem de Tudo</title>
-<meta name="description" content="Gerencie seus pontos e troque por benefcios exclusivos">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta content="Gerencie seus pontos e troque por benefícios exclusivos" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 <script src="js/config.js"></script>
 <script src="js/auth-guard.js"></script>
-
-
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="app-page">
-    <!-- Header -->
-    <div class="app-header">
-        <div class="header-nav">
-            <button class="back-btn" onclick="history.back()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <h1>Meus Pontos</h1>
-            <div style="width: 40px;"></div>
-        </div>
-    </div>
-
-    <!-- Content -->
-    <div class="app-content">
-        <!-- Points Hero Card -->
-        <div class="points-hero">
-            <div class="points-content">
-                <div class="points-icon">
-                    <i class="fas fa-coins"></i>
-                </div>
-                <div class="points-value" id="pontosTotal">2,847</div>
-                <div class="points-label">Pontos Disponveis</div>
-                
-                <div class="points-stats">
-                    <div class="points-stat">
-                        <div class="points-stat-value" id="pontosGanhosMes">+456</div>
-                        <div class="points-stat-label">Este Ms</div>
-                    </div>
-                    <div class="points-stat">
-                        <div class="points-stat-value" id="pontosLevel">Gold</div>
-                        <div class="points-stat-label">Nvel</div>
-                    </div>
-                    <div class="points-stat">
-                        <div class="points-stat-value" id="pontosProximoLevel">153</div>
-                        <div class="points-stat-label">p/ Prximo</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recompensas Disponveis -->
-        <div class="section">
-            <h2 class="section-title">
-                <i class="fas fa-gift"></i>
-                Recompensas Disponveis
-            </h2>
-            <div class="rewards-grid">
-                <div class="reward-card">
-                    <div class="reward-header">
-                        <div class="reward-icon discount">
-                            <i class="fas fa-percent"></i>
-                        </div>
-                        <div class="reward-info">
-                            <div class="reward-title">10% de Desconto</div>
-                            <div class="reward-description">Vlido em qualquer compra acima de R$ 50</div>
-                        </div>
-                    </div>
-                    <div class="reward-footer">
-                        <div class="reward-points">
-                            <i class="fas fa-coins"></i>
-                            <span>500 pontos</span>
-                        </div>
-                        <button class="redeem-btn" onclick="redeemReward(1, 500)">Resgatar</button>
-                    </div>
-                </div>
-
-                <div class="reward-card">
-                    <div class="reward-header">
-                        <div class="reward-icon product">
-                            <i class="fas fa-coffee"></i>
-                        </div>
-                        <div class="reward-info">
-                            <div class="reward-title">Caf Grtis</div>
-                            <div class="reward-description">Um caf expresso grtis na nossa cafeteria</div>
-                        </div>
-                    </div>
-                    <div class="reward-footer">
-                        <div class="reward-points">
-                            <i class="fas fa-coins"></i>
-                            <span>200 pontos</span>
-                        </div>
-                        <button class="redeem-btn" onclick="redeemReward(2, 200)">Resgatar</button>
-                    </div>
-                </div>
-
-                <div class="reward-card">
-                    <div class="reward-header">
-                        <div class="reward-icon voucher">
-                            <i class="fas fa-ticket-alt"></i>
-                        </div>
-                        <div class="reward-info">
-                            <div class="reward-title">Voucher R$ 25</div>
-                            <div class="reward-description">Vale presente para usar em qualquer produto</div>
-                        </div>
-                    </div>
-                    <div class="reward-footer">
-                        <div class="reward-points">
-                            <i class="fas fa-coins"></i>
-                            <span>1000 pontos</span>
-                        </div>
-                        <button class="redeem-btn" onclick="redeemReward(3, 1000)">Resgatar</button>
-                    </div>
-                </div>
-
-                <div class="reward-card">
-                    <div class="reward-header">
-                        <div class="reward-icon discount">
-                            <i class="fas fa-shipping-fast"></i>
-                        </div>
-                        <div class="reward-info">
-                            <div class="reward-title">Frete Grtis</div>
-                            <div class="reward-description">Entrega gratuita na prxima compra online</div>
-                        </div>
-                    </div>
-                    <div class="reward-footer">
-                        <div class="reward-points">
-                            <i class="fas fa-coins"></i>
-                            <span>300 pontos</span>
-                        </div>
-                        <button class="redeem-btn" onclick="redeemReward(4, 300)">Resgatar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Histrico de Transaes -->
-        <div class="section">
-            <h2 class="section-title">
-                <i class="fas fa-history"></i>
-                Histrico Recente
-            </h2>
-            <div class="transactions-list">
-                <div class="transaction-item">
-                    <div class="transaction-icon earned">
-                        <i class="fas fa-plus"></i>
-                    </div>
-                    <div class="transaction-content">
-                        <div class="transaction-title">Compra realizada</div>
-                        <div class="transaction-subtitle">Burger Prime - Shopping Center</div>
-                        <div class="transaction-time">Hoje, 14:30</div>
-                    </div>
-                    <div class="transaction-amount positive">+50 pts</div>
-                </div>
-
-                <div class="transaction-item">
-                    <div class="transaction-icon redeemed">
-                        <i class="fas fa-minus"></i>
-                    </div>
-                    <div class="transaction-content">
-                        <div class="transaction-title">Desconto resgatado</div>
-                        <div class="transaction-subtitle">10% OFF - Caf Supremo</div>
-                        <div class="transaction-time">Ontem, 10:15</div>
-                    </div>
-                    <div class="transaction-amount negative">-200 pts</div>
-                </div>
-
-                <div class="transaction-item">
-                    <div class="transaction-icon earned">
-                        <i class="fas fa-gift"></i>
-                    </div>
-                    <div class="transaction-content">
-                        <div class="transaction-title">Bnus de cadastro</div>
-                        <div class="transaction-subtitle">Bem-vindo ao programa!</div>
-                        <div class="transaction-time">2 dias atrs</div>
-                    </div>
-                    <div class="transaction-amount positive">+100 pts</div>
-                </div>
-
-                <div class="transaction-item">
-                    <div class="transaction-icon earned">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="transaction-content">
-                        <div class="transaction-title">Avaliao enviada</div>
-                        <div class="transaction-subtitle">Pizza Mania - 5 estrelas</div>
-                        <div class="transaction-time">3 dias atrs</div>
-                    </div>
-                    <div class="transaction-amount positive">+25 pts</div>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- Header -->
+<div class="app-header">
+<div class="header-nav">
+<button class="back-btn" onclick="history.back()">
+<i class="fas fa-arrow-left"></i>
+</button>
+<h1>Meus Pontos</h1>
+<div class="tdt-inline-93de2d4b"></div>
 </div>
-
+</div>
+<!-- Content -->
+<div class="app-content">
+<!-- Points Hero Card -->
+<div class="points-hero">
+<div class="points-content">
+<div class="points-icon">
+<i class="fas fa-coins"></i>
+</div>
+<div class="points-value" id="pontosTotal">2,847</div>
+<div class="points-label">Pontos Disponíveis</div>
+<div class="points-stats">
+<div class="points-stat">
+<div class="points-stat-value" id="pontosGanhosMes">+456</div>
+<div class="points-stat-label">Este Mês</div>
+</div>
+<div class="points-stat">
+<div class="points-stat-value" id="pontosLevel">Gold</div>
+<div class="points-stat-label">Nível</div>
+</div>
+<div class="points-stat">
+<div class="points-stat-value" id="pontosProximoLevel">153</div>
+<div class="points-stat-label">p/ Próximo</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recompensas Disponíveis -->
+<div class="section">
+<h2 class="section-title">
+<i class="fas fa-gift"></i>
+                Recompensas Disponíveis
+            </h2>
+<div class="rewards-grid">
+<div class="reward-card">
+<div class="reward-header">
+<div class="reward-icon discount">
+<i class="fas fa-percent"></i>
+</div>
+<div class="reward-info">
+<div class="reward-title">10% de Desconto</div>
+<div class="reward-description">Válido em qualquer compra acima de R$ 50</div>
+</div>
+</div>
+<div class="reward-footer">
+<div class="reward-points">
+<i class="fas fa-coins"></i>
+<span>500 pontos</span>
+</div>
+<button class="redeem-btn" onclick="redeemReward(1, 500)">Resgatar</button>
+</div>
+</div>
+<div class="reward-card">
+<div class="reward-header">
+<div class="reward-icon product">
+<i class="fas fa-coffee"></i>
+</div>
+<div class="reward-info">
+<div class="reward-title">Café Grátis</div>
+<div class="reward-description">Um café expresso grátis na nossa cafeteria</div>
+</div>
+</div>
+<div class="reward-footer">
+<div class="reward-points">
+<i class="fas fa-coins"></i>
+<span>200 pontos</span>
+</div>
+<button class="redeem-btn" onclick="redeemReward(2, 200)">Resgatar</button>
+</div>
+</div>
+<div class="reward-card">
+<div class="reward-header">
+<div class="reward-icon voucher">
+<i class="fas fa-ticket-alt"></i>
+</div>
+<div class="reward-info">
+<div class="reward-title">Voucher R$ 25</div>
+<div class="reward-description">Vale presente para usar em qualquer produto</div>
+</div>
+</div>
+<div class="reward-footer">
+<div class="reward-points">
+<i class="fas fa-coins"></i>
+<span>1000 pontos</span>
+</div>
+<button class="redeem-btn" onclick="redeemReward(3, 1000)">Resgatar</button>
+</div>
+</div>
+<div class="reward-card">
+<div class="reward-header">
+<div class="reward-icon discount">
+<i class="fas fa-shipping-fast"></i>
+</div>
+<div class="reward-info">
+<div class="reward-title">Frete Grátis</div>
+<div class="reward-description">Entrega gratuita na próxima compra online</div>
+</div>
+</div>
+<div class="reward-footer">
+<div class="reward-points">
+<i class="fas fa-coins"></i>
+<span>300 pontos</span>
+</div>
+<button class="redeem-btn" onclick="redeemReward(4, 300)">Resgatar</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Histórico de Transações -->
+<div class="section">
+<h2 class="section-title">
+<i class="fas fa-history"></i>
+                Histórico Recente
+            </h2>
+<div class="transactions-list">
+<div class="transaction-item">
+<div class="transaction-icon earned">
+<i class="fas fa-plus"></i>
+</div>
+<div class="transaction-content">
+<div class="transaction-title">Compra realizada</div>
+<div class="transaction-subtitle">Burger Prime - Shopping Center</div>
+<div class="transaction-time">Hoje, 14:30</div>
+</div>
+<div class="transaction-amount positive">+50 pts</div>
+</div>
+<div class="transaction-item">
+<div class="transaction-icon redeemed">
+<i class="fas fa-minus"></i>
+</div>
+<div class="transaction-content">
+<div class="transaction-title">Desconto resgatado</div>
+<div class="transaction-subtitle">10% OFF - Café Supremo</div>
+<div class="transaction-time">Ontem, 10:15</div>
+</div>
+<div class="transaction-amount negative">-200 pts</div>
+</div>
+<div class="transaction-item">
+<div class="transaction-icon earned">
+<i class="fas fa-gift"></i>
+</div>
+<div class="transaction-content">
+<div class="transaction-title">Bônus de cadastro</div>
+<div class="transaction-subtitle">Bem-vindo ao programa!</div>
+<div class="transaction-time">2 dias atrás</div>
+</div>
+<div class="transaction-amount positive">+100 pts</div>
+</div>
+<div class="transaction-item">
+<div class="transaction-icon earned">
+<i class="fas fa-star"></i>
+</div>
+<div class="transaction-content">
+<div class="transaction-title">Avaliaçáo enviada</div>
+<div class="transaction-subtitle">Pizza Mania - 5 estrelas</div>
+<div class="transaction-time">3 dias atrás</div>
+</div>
+<div class="transaction-amount positive">+25 pts</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <!-- Bottom Navigation -->
 <div class="bottom-nav">
-    <div class="nav-container">
-        <a href="dashboard-cliente.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Incio</span>
-        </a>
-        <a href="app-empresas.html" class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>Explorar</span>
-        </a>
-        <a href="app-pontos.html" class="nav-item active">
-            <i class="fas fa-star"></i>
-            <span>Pontos</span>
-        </a>
-        <a href="app-promocoes.html" class="nav-item">
-            <i class="fas fa-tags"></i>
-            <span>Ofertas</span>
-        </a>
-        <a href="app-perfil.html" class="nav-item">
-            <i class="fas fa-bars"></i>
-            <span>Menu</span>
-        </a>
-    </div>
+<div class="nav-container">
+<a class="nav-item" href="dashboard-cliente.html">
+<i class="fas fa-home"></i>
+<span>Início</span>
+</a>
+<a class="nav-item" href="app-empresas.html">
+<i class="fas fa-search"></i>
+<span>Explorar</span>
+</a>
+<a class="nav-item active" href="app-pontos.html">
+<i class="fas fa-star"></i>
+<span>Pontos</span>
+</a>
+<a class="nav-item" href="app-promocoes.html">
+<i class="fas fa-tags"></i>
+<span>Ofertas</span>
+</a>
+<a class="nav-item" href="app-perfil.html">
+<i class="fas fa-bars"></i>
+<span>Menu</span>
+</a>
 </div>
-
+</div>
 <script>
 let currentPoints = 2847;
 
@@ -266,11 +253,11 @@ function loadPointsData() {
 // Redeem reward function
 function redeemReward(rewardId, pointsCost) {
     if (currentPoints < pointsCost) {
-        alert(`? Pontos insuficientes!\n\nVoc precisa de ${pointsCost} pontos para este resgate.\nSaldo atual: ${currentPoints} pontos`);
+        alert(`? Pontos insuficientes!\n\nVocê precisa de ${pointsCost} pontos para este resgate.\nSaldo atual: ${currentPoints} pontos`);
         return;
     }
     
-    if (confirm(` Confirmar Resgate\n\nVoc deseja resgatar esta recompensa por ${pointsCost} pontos?\n\nSaldo atual: ${currentPoints} pontos\nSaldo aps resgate: ${currentPoints - pointsCost} pontos`)) {
+    if (confirm(`?? Confirmar Resgate\n\nVocê deseja resgatar esta recompensa por ${pointsCost} pontos?\n\nSaldo atual: ${currentPoints} pontos\nSaldo após resgate: ${currentPoints - pointsCost} pontos`)) {
         // Deduct points
         currentPoints -= pointsCost;
         
@@ -283,7 +270,7 @@ function redeemReward(rewardId, pointsCost) {
         localStorage.setItem('user', JSON.stringify(user));
         
         // Show success message
-        showNotification(` Resgate realizado com sucesso!\n\n${pointsCost} pontos foram descontados.\nSaldo atual: ${currentPoints} pontos`, 'success');
+        showNotification(`?? Resgate realizado com sucesso!\n\n${pointsCost} pontos foram descontados.\nSaldo atual: ${currentPoints} pontos`, 'success');
         
         // Reload points data to update level if needed
         loadPointsData();
@@ -321,7 +308,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
-
-
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
@@ -8,13 +8,10 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Pontos - Cliente - Tem de Tudo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="manifest" href="/manifest.json">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="manifest" href="/manifest.json">
-    
-    
-    <script src="/js/config.js"></script>
+<script src="/js/config.js"></script>
     <script src="/js/auth-manager.js" defer></script>
     <script src="/js/api-client.js" defer></script>
     <script src="/js/validators.js" defer></script>
@@ -29,11 +26,11 @@
 <body>
     <nav class="nav-bar">
         <ul>
-            <li><a href="/dashboard-cliente.html"><i class="fas fa-home"></i> Incio</a></li>
+            <li><a href="/dashboard-cliente.html"><i class="fas fa-home"></i> Início</a></li>
             <li><a href="/cliente/perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
             <li><a href="/cliente/pontos.html"><i class="fas fa-star"></i> Pontos</a></li>
             <li><a href="/cliente/cupons.html"><i class="fas fa-ticket-alt"></i> Cupons</a></li>
-            <li><a href="/cliente/historico.html"><i class="fas fa-history"></i> Histrico</a></li>
+            <li><a href="/cliente/historico.html"><i class="fas fa-history"></i> Histórico</a></li>
             <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
         </ul>
     </nav>
@@ -46,21 +43,21 @@
         <div class="points-card">
             <div class="points-label">Seus Pontos Acumulados</div>
             <div class="points-value" id="points-value">0</div>
-            <div class="nivel-badge" id="nivel-badge">Nvel Bronze</div>
+            <div class="nivel-badge" id="nivel-badge">Nível Bronze</div>
         </div>
 
         <div class="info-grid">
             <div class="info-card">
                 <h3><i class="fas fa-trophy"></i> Como Ganhar Pontos</h3>
-                <p>Acumule pontos a cada compra realizada nos estabelecimentos parceiros. Quanto mais voc compra, mais pontos ganha!</p>
+                <p>Acumule pontos a cada compra realizada nos estabelecimentos parceiros. Quanto mais você compra, mais pontos ganha!</p>
             </div>
             <div class="info-card">
                 <h3><i class="fas fa-gift"></i> Troque por Cupons</h3>
                 <p>Use seus pontos para trocar por cupons de desconto exclusivos. Aproveite as melhores ofertas!</p>
             </div>
             <div class="info-card">
-                <h3><i class="fas fa-level-up-alt"></i> Suba de Nvel</h3>
-                <p>Conforme acumula pontos, voc avana nos nveis: Bronze, Prata, Ouro e Platina, desbloqueando benefcios exclusivos!</p>
+                <h3><i class="fas fa-level-up-alt"></i> Suba de Nível</h3>
+                <p>Conforme acumula pontos, você avança nos níveis: Bronze, Prata, Ouro e Diamante, desbloqueando benefícios exclusivos!</p>
             </div>
         </div>
     </div>
@@ -103,12 +100,12 @@
                     const nivel = user.nivel || 'Bronze';
                     
                     document.getElementById('points-value').textContent = pontos.toLocaleString('pt-BR');
-                    document.getElementById('nivel-badge').textContent = `Nvel ${nivel}`;
+                    document.getElementById('nivel-badge').textContent = `Nível ${nivel}`;
                 }
             } catch (error) {
                 console.error('Erro ao carregar pontos:', error);
                 document.getElementById('points-value').textContent = '0';
-                document.getElementById('nivel-badge').textContent = 'Nvel Bronze';
+                document.getElementById('nivel-badge').textContent = 'Nível Bronze';
             }
         }
 
@@ -123,7 +120,7 @@
     <nav class="bottom-nav" style="position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.1);">
         <a href="/dashboard-cliente.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-home" style="font-size: 20px;"></i>
-            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Incio</span>
+            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Início</span>
         </a>
         <a href="/app-empresas.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-store" style="font-size: 20px;"></i>
@@ -131,21 +128,19 @@
         </a>
         <a href="/app-promocoes.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-tags" style="font-size: 20px;"></i>
-            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Promoes</span>
+            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Promoções</span>
         </a>
         <a href="/app-qrcode.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-qrcode" style="font-size: 20px;"></i>
             <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Meu QR</span>
         </a>
-        <a href="/app-perfil.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
+        <a href="/app-perfil-cliente.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-user" style="font-size: 20px;"></i>
             <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Perfil</span>
         </a>
     </nav>
 </body>
 </html>
-
-
 
 
 

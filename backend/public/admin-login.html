@@ -1,100 +1,80 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Login Administrativo - Tem de Tudo</title>
-<meta name="description" content="Acesso administrativo seguro ao sistema Tem de Tudo">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta content="Acesso administrativo seguro ao sistema Tem de Tudo" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 <script src="js/config.js"></script>
-
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="admin-login-page">
-    <!-- Background Decorations -->
-    <div class="bg-decoration">
-        <div class="decoration-circle decoration-1"></div>
-        <div class="decoration-circle decoration-2"></div>
-        <div class="decoration-circle decoration-3"></div>
-    </div>
-
-    <!-- Back to App -->
-    <div class="back-to-app">
-        <a href="index.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i>
-            <span>Voltar ao App</span>
-        </a>
-    </div>
-
-    <!-- Login Container -->
-    <div class="login-container fade-in">
-        <!-- Logo Section -->
-        <div class="logo-section">
-            <div class="icon">
-                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iYWRtaW5HcmFkaWVudCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBzdG9wLWNvbG9yPSIjNkYxQUI2Ii8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzRBMEU4QyIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+CjxyZWN0IHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcng9IjEyIiBmaWxsPSJ1cmwoI2FkbWluR3JhZGllbnQpIi8+Cjxwb2x5Z29uIHBvaW50cz0iMjUsNSAzNSw1IDQ1LDE1IDQ1LDI1IDM1LDM1IDI1LDM1IDE1LDI1IDE1LDE1IiBmaWxsPSIjRkZGRkZGIiBvcGFjaXR5PSIwLjkiLz4KPGNpcmNsZSBjeD0iMzAiIGN5PSIyMCIgcj0iMyIgZmlsbD0iIzZGMUFCNiIvPgo8cGF0aCBkPSJNMjUgMjUgTDMwIDMwIEwzOCAyMiIgc3Ryb2tlPSIjNkYxQUI2IiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KPC9zdmc+" alt="Admin Icon" style="width: 60px; height: 60px; border-radius: 12px; box-shadow: 0 4px 16px rgba(111, 26, 182, 0.3);">
-            </div>
-            <h1>Administrao</h1>
-            <p>Sistema de Gesto Tem de Tudo</p>
-        </div>
-
-        <!-- Alert Messages -->
-        <div id="alertMessage" class="alert error" style="display: none;">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span id="alertText"></span>
-        </div>
-
-        <!-- Login Form -->
-        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
-            <div class="form-group">
-                <label for="adminEmail">Email Administrativo</label>
-                <input type="email" 
-                       id="adminEmail" 
-                       name="email" 
-                       class="form-input" 
-                       placeholder="admin@temdetudo.com" 
-                       required
-                       autocomplete="username">
-            </div>
-
-            <div class="form-group">
-                <label for="adminPassword">Senha</label>
-                <div class="password-input-group">
-                    <input type="password" 
-                           id="adminPassword" 
-                           name="password" 
-                           class="form-input" 
-                           placeholder="Sua senha administrativa" 
-                           required
-                           autocomplete="current-password">
-                    <button type="button" class="password-toggle" onclick="togglePassword('adminPassword')">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-            </div>
-
-            <button type="submit" class="login-btn" id="loginBtn">
-                <span id="loginBtnText">Entrar no Sistema</span>
-                <div class="loading-spinner" id="loginSpinner" style="display: none;"></div>
-            </button>
-        </form>
-
-        <!-- Forgot Password -->
-        <div class="forgot-password">
-            <a href="#" onclick="showForgotPassword()">Esqueceu a senha?</a>
-        </div>
-    </div>
+<!-- Background Decorations -->
+<div class="bg-decoration">
+<div class="decoration-circle decoration-1"></div>
+<div class="decoration-circle decoration-2"></div>
+<div class="decoration-circle decoration-3"></div>
 </div>
-
+<!-- Back to App -->
+<div class="back-to-app">
+<a class="back-btn" href="index.html">
+<i class="fas fa-arrow-left"></i>
+<span>Voltar ao App</span>
+</a>
+</div>
+<!-- Login Container -->
+<div class="login-container fade-in">
+<!-- Logo Section -->
+<div class="logo-section">
+<div class="icon">
+<img alt="Admin Icon" class="tdt-inline-a15f0fe9" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iYWRtaW5HcmFkaWVudCIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBzdG9wLWNvbG9yPSIjNkYxQUI2Ii8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzRBMEU4QyIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+CjxyZWN0IHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcng9IjEyIiBmaWxsPSJ1cmwoI2FkbWluR3JhZGllbnQpIi8+Cjxwb2x5Z29uIHBvaW50cz0iMjUsNSAzNSw1IDQ1LDE1IDQ1LDI1IDM1LDM1IDI1LDM1IDE1LDI1IDE1LDE1IiBmaWxsPSIjRkZGRkZGIiBvcGFjaXR5PSIwLjkiLz4KPGNpcmNsZSBjeD0iMzAiIGN5PSIyMCIgcj0iMyIgZmlsbD0iIzZGMUFCNiIvPgo8cGF0aCBkPSJNMjUgMjUgTDMwIDMwIEwzOCAyMiIgc3Ryb2tlPSIjNkYxQUI2IiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KPC9zdmc+"/>
+</div>
+<h1>Administraçáo</h1>
+<p>Sistema de Gestáo Tem de Tudo</p>
+</div>
+<!-- Alert Messages -->
+<div class="alert error tdt-inline-cb458930" id="alertMessage">
+<i class="fas fa-exclamation-triangle"></i>
+<span id="alertText"></span>
+</div>
+<!-- Login Form -->
+<form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+<div class="form-group">
+<label for="adminEmail">Email Administrativo</label>
+<input autocomplete="username" class="form-input" id="adminEmail" name="email" placeholder="admin@temdetudo.com" required="" type="email"/>
+</div>
+<div class="form-group">
+<label for="adminPassword">Senha</label>
+<div class="password-input-group">
+<input autocomplete="current-password" class="form-input" id="adminPassword" name="password" placeholder="Sua senha administrativa" required="" type="password"/>
+<button class="password-toggle" onclick="togglePassword('adminPassword')" type="button">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+</div>
+<button class="login-btn" id="loginBtn" type="submit">
+<span id="loginBtnText">Entrar no Sistema</span>
+<div class="loading-spinner tdt-inline-cb458930" id="loginSpinner"></div>
+</button>
+</form>
+<!-- Forgot Password -->
+<div class="forgot-password">
+<a href="#" onclick="showForgotPassword()">Esqueceu a senha?</a>
+</div>
+</div>
+</div>
 <script>
 // Admin credentials for demo (in production, use proper authentication)
 const DEMO_ADMIN_CREDENTIALS = {
@@ -142,7 +122,7 @@ async function handleAdminLogin(event) {
             }, 1000);
         } else {
             // Failed authentication
-            throw new Error('Credenciais invlidas');
+            throw new Error('Credenciais inválidas');
         }
     } catch (error) {
         console.error('Erro no login administrativo:', error);
@@ -187,7 +167,7 @@ function togglePassword(inputId) {
 
 // Show forgot password modal (placeholder)
 function showForgotPassword() {
-    alert(' Recurso de recuperao de senha\n\nPara recuperar sua senha administrativa, entre em contato com o suporte tcnico:\n\n suporte@temdetudo.com\n (11) 99999-9999');
+    alert('?? Recurso de recuperaçáo de senha\n\nPara recuperar sua senha administrativa, entre em contato com o suporte técnico:\n\n?? suporte@temdetudo.com\n?? (11) 99999-9999');
 }
 
 // Check if already logged in
@@ -201,14 +181,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Demo credentials hint
 setTimeout(() => {
-    console.log(' Demo Admin Credentials:');
-    console.log(' Email: admin@temdetudo.com');
-    console.log(' Password: admin123');
+    console.log('?? Demo Admin Credentials:');
+    console.log('?? Email: admin@temdetudo.com');
+    console.log('?? Password: admin123');
 }, 2000);
 </script>
 </body>
 </html>
-
-
-
 

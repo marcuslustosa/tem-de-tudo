@@ -1,176 +1,172 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<title>Incio - Tem de Tudo</title>
-<meta name="description" content="Descubra ofertas incrveis e ganhe pontos em suas compras">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<title>Início - Tem de Tudo</title>
+<meta content="Descubra ofertas incríveis e ganhe pontos em suas compras" name="description"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 <script src="js/config.js"></script>
 <script src="js/auth-guard.js"></script>
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="app-inicio">
-    <!-- Enhanced Header -->
-    <header class="header-premium fade-in">
-        <div class="header-top">
-            <div class="user-section">
-                <div class="greeting">Ol, bem-vindo de volta! </div>
-                <div class="user-name" id="userName">-</div>
-                <div class="profile-type" id="profileType">
-                    <i class="fas fa-badge-check"></i> <span id="profileLevel">Carregando n?vel...</span>
+<!-- Enhanced Header -->
+<header class="header-premium fade-in">
+<div class="header-top">
+<div class="user-section">
+<div class="greeting">Olá, bem-vindo de volta! 👋</div>
+<div class="user-name" id="userName">Marcus Silva</div>
+<div class="profile-type" id="profileType">
+<i class="fas fa-crown"></i> Premium Active
                 </div>
-            </div>
-            <div class="saldo-card" onclick="window.location.href='app-meus-pontos.html'">
-                <div class="saldo-label"> Saldo Atual</div>
-                <div class="saldo-value">R$ <span id="saldoValue">0,00</span></div>
-            </div>
-        </div>
-    </header>
-    <!-- Enhanced Search -->
-    <section class="search-section slide-in-left">
-        <form class="search-container" onsubmit="handleSearch(event)">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" 
-                   class="search-input" 
-                   id="searchInput" 
-                   placeholder="Busque por empresas, produtos ou ofertas...">
-            <button type="submit" class="search-btn">
-                <i class="fas fa-arrow-right"></i>
-            </button>
-        </form>
-    </section>
-    <!-- Location Bar -->
-    <div class="location-bar" onclick="showLocationSelector()">
-        <i class="fas fa-map-marker-alt"></i>
-        <span> So Paulo, SP - Centro</span>
-        <i class="fas fa-chevron-down" style="margin-left: auto;"></i>
-    </div>
-    <!-- Quick Actions -->
-    <section class="quick-actions-section">
-        <h2 class="section-title">
-            <i class="fas fa-bolt" style="color: var(--vivo-purple);"></i>
-            Acesso Rpido
+</div>
+<div class="saldo-card" onclick="window.location.href='app-meus-pontos.html'">
+<div class="saldo-label">💰 Saldo Atual</div>
+<div class="saldo-value">R$ <span id="saldoValue">2.847,50</span></div>
+</div>
+</div>
+</header>
+<!-- Enhanced Search -->
+<section class="search-section slide-in-left">
+<form class="search-container" onsubmit="handleSearch(event)">
+<i class="fas fa-search search-icon"></i>
+<input class="search-input" id="searchInput" placeholder="Busque por empresas, produtos ou ofertas..." type="text"/>
+<button class="search-btn" type="submit">
+<i class="fas fa-arrow-right"></i>
+</button>
+</form>
+</section>
+<!-- Location Bar -->
+<div class="location-bar" onclick="showLocationSelector()">
+<i class="fas fa-map-marker-alt"></i>
+<span>📍 Sáo Paulo, SP - Centro</span>
+<i class="fas fa-chevron-down tdt-inline-83456371"></i>
+</div>
+<!-- Quick Actions -->
+<section class="quick-actions-section">
+<h2 class="section-title">
+<i class="fas fa-bolt tdt-inline-4086c525"></i>
+            Acesso Rápido
         </h2>
-        <div class="quick-actions">
-            <a href="app-meus-pontos.html" class="quick-action">
-                <i class="fas fa-coins"></i>
-                <span>Meus Pontos</span>
-            </a>
-            <a href="app-promocoes.html" class="quick-action">
-                <i class="fas fa-fire"></i>
-                <span>Promoes</span>
-            </a>
-            <a href="app-favoritos.html" class="quick-action">
-                <i class="fas fa-heart"></i>
-                <span>Favoritos</span>
-            </a>
-            <a href="app-scanner.html" class="quick-action">
-                <i class="fas fa-qrcode"></i>
-                <span>Scanner</span>
-            </a>
-        </div>
-    </section>
-    <!-- Banner Carousel -->
-    <section class="banner-section">
-        <div class="banner-carousel">
-            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=400&fit=crop" 
-                 alt="Banner Promoo" 
-                 class="banner-img">
-            <div class="banner-overlay">
-                <div class="banner-title"> Super Ofertas de Inverno!</div>
-                <div class="banner-subtitle">At 70% OFF + frete grtis</div>
-            </div>
-        </div>
-    </section>
-    <!-- Categories -->
-    <section class="categories-section">
-        <div class="section-header">
-            <h2 class="section-title">
-                <i class="fas fa-th-large" style="color: var(--vivo-purple);"></i>
+<div class="quick-actions">
+<a class="quick-action" href="app-meus-pontos.html">
+<i class="fas fa-coins"></i>
+<span>Meus Pontos</span>
+</a>
+<a class="quick-action" href="app-promocoes.html">
+<i class="fas fa-fire"></i>
+<span>Promoções</span>
+</a>
+<a class="quick-action" href="app-favoritos.html">
+<i class="fas fa-heart"></i>
+<span>Favoritos</span>
+</a>
+<a class="quick-action" href="app-scanner.html">
+<i class="fas fa-qrcode"></i>
+<span>Scanner</span>
+</a>
+</div>
+</section>
+<!-- Banner Carousel -->
+<section class="banner-section">
+<div class="banner-carousel">
+<img alt="Banner Promoçáo" class="banner-img" src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&amp;h=400&amp;fit=crop"/>
+<div class="banner-overlay">
+<div class="banner-title">🔥 Super Ofertas de Inverno!</div>
+<div class="banner-subtitle">Até 70% OFF + frete grátis</div>
+</div>
+</div>
+</section>
+<!-- Categories -->
+<section class="categories-section">
+<div class="section-header">
+<h2 class="section-title">
+<i class="fas fa-th-large tdt-inline-4086c525"></i>
                 Categorias em Alta
             </h2>
-            <a href="app-categorias.html" class="ver-mais">
+<a class="ver-mais" href="app-categorias.html">
                 Ver todas <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
-        <div class="categories-scroll">
-            <a href="app-categorias.html?categoria=alimentacao" class="category-card">
-                <div class="category-icon"></div>
-                <div class="category-name">Alimentao</div>
-            </a>
-            <a href="app-categorias.html?categoria=beleza" class="category-card">
-                <div class="category-icon"></div>
-                <div class="category-name">Beleza</div>
-            </a>
-            <a href="app-categorias.html?categoria=tecnologia" class="category-card">
-                <div class="category-icon"></div>
-                <div class="category-name">Tecnologia</div>
-            </a>
-            <a href="app-categorias.html?categoria=fitness" class="category-card">
-                <div class="category-icon"></div>
-                <div class="category-name">Fitness</div>
-            </a>
-            <a href="app-categorias.html?categoria=entretenimento" class="category-card">
-                <div class="category-icon"></div>
-                <div class="category-name">Diverso</div>
-            </a>
-            <a href="app-categorias.html?categoria=moda" class="category-card">
-                <div class="category-icon"></div>
-                <div class="category-name">Moda</div>
-            </a>
-        </div>
-    </section>
-    <!-- Empresas Prximas -->
-    <section class="empresas-section">
-        <div class="section-header">
-            <h2 class="section-title">
-                <i class="fas fa-map-marker-alt" style="color: var(--vivo-purple);"></i>
-                Empresas Prximas
+</a>
+</div>
+<div class="categories-scroll">
+<a class="category-card" href="app-categorias.html?categoria=alimentacao">
+<div class="category-icon">🍕</div>
+<div class="category-name">Alimentaçáo</div>
+</a>
+<a class="category-card" href="app-categorias.html?categoria=beleza">
+<div class="category-icon">💄</div>
+<div class="category-name">Beleza</div>
+</a>
+<a class="category-card" href="app-categorias.html?categoria=tecnologia">
+<div class="category-icon">📱</div>
+<div class="category-name">Tecnologia</div>
+</a>
+<a class="category-card" href="app-categorias.html?categoria=fitness">
+<div class="category-icon">💪</div>
+<div class="category-name">Fitness</div>
+</a>
+<a class="category-card" href="app-categorias.html?categoria=entretenimento">
+<div class="category-icon">🎭</div>
+<div class="category-name">Diversáo</div>
+</a>
+<a class="category-card" href="app-categorias.html?categoria=moda">
+<div class="category-icon">👔</div>
+<div class="category-name">Moda</div>
+</a>
+</div>
+</section>
+<!-- Empresas Próximas -->
+<section class="empresas-section">
+<div class="section-header">
+<h2 class="section-title">
+<i class="fas fa-map-marker-alt tdt-inline-4086c525"></i>
+                Empresas Próximas
             </h2>
-            <a href="app-empresas.html" class="ver-mais">
+<a class="ver-mais" href="app-empresas.html">
                 Ver todas <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
-        <div class="empresas-grid" id="empresasGrid">
-            <!-- Empresas carregadas via JavaScript -->
-        </div>
-    </section>
+</a>
+</div>
+<div class="empresas-grid" id="empresasGrid">
+<!-- Empresas carregadas via JavaScript -->
+</div>
+</section>
 </div>
 <!-- Bottom Navigation -->
 <nav class="bottom-nav">
-    <div class="nav-container">
-        <a href="app-inicio.html" class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Incio</span>
-        </a>
-        <a href="app-empresas.html" class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>Buscar</span>
-        </a>
-        <a href="app-meus-pontos.html" class="nav-item">
-            <i class="fas fa-wallet"></i>
-            <span>Pontos</span>
-        </a>
-        <a href="app-promocoes.html" class="nav-item">
-            <i class="fas fa-tags"></i>
-            <span>Ofertas</span>
-        </a>
-        <a href="app-perfil.html" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
-    </div>
+<div class="nav-container">
+<a class="nav-item active" href="app-inicio.html">
+<i class="fas fa-home"></i>
+<span>Início</span>
+</a>
+<a class="nav-item" href="app-empresas.html">
+<i class="fas fa-search"></i>
+<span>Buscar</span>
+</a>
+<a class="nav-item" href="app-meus-pontos.html">
+<i class="fas fa-wallet"></i>
+<span>Pontos</span>
+</a>
+<a class="nav-item" href="app-promocoes.html">
+<i class="fas fa-tags"></i>
+<span>Ofertas</span>
+</a>
+<a class="nav-item" href="app-perfil.html">
+<i class="fas fa-user"></i>
+<span>Perfil</span>
+</a>
+</div>
 </nav>
 <script src="/js/config.js"></script>
 <script>
@@ -201,29 +197,29 @@ async function apiRequest(url, options = {}) {
 // Load User Data
 async function loadUserData() {
     try {
-        console.log(' Carregando dados do usurio...');
+        console.log('🔄 Carregando dados do usuário...');
         // Try to load from API
         const response = await apiRequest('/api/user');
         if (response && response.ok) {
             const data = await response.json();
             if (data.success && data.user) {
-                console.log('? Dados carregados da API:', data.user);
+                console.log('✅ Dados carregados da API:', data.user);
                 updateUserInterface(data.user);
                 localStorage.setItem('user_data', JSON.stringify(data.user));
                 return;
             }
         }
         // Fallback to demo data
-        console.log(' MODO DEMONSTRAOOOo ATIVADO');
+        console.log('🗳️ MODO DEMONSTRAÇáO ATIVADO');
         loadMockData();
     } catch (error) {
-        console.error('Erro ao carregar dados do usurio:', error);
+        console.error('Erro ao carregar dados do usuário:', error);
         loadMockData();
     }
 }
 // Update User Interface
 function updateUserInterface(user) {
-    document.getElementById('userName').textContent = user.name || user.nome || '-';
+    document.getElementById('userName').textContent = user.name || user.nome || 'Marcus Silva';
     document.getElementById('saldoValue').textContent = (user.pontos || 2847.50).toLocaleString('pt-BR', { 
         minimumFractionDigits: 2 
     });
@@ -233,7 +229,7 @@ function updateUserInterface(user) {
 function loadMockData() {
     const cachedUser = localStorage.getItem('user');
     let mockUser = {
-        name: '-',
+        name: 'Marcus Silva',
         pontos: 2847.50,
         perfil: 'premium'
     };
@@ -241,19 +237,19 @@ function loadMockData() {
         try {
             const user = JSON.parse(cachedUser);
             mockUser = {
-                name: user.name || user.nome || '-',
+                name: user.name || user.nome || 'Marcus Silva',
                 pontos: user.pontos || 2847.50,
                 perfil: user.perfil || user.tipo || 'premium'
             };
         } catch (e) {
-            console.log('Cache invlido, usando dados padro');
+            console.log('Cache inválido, usando dados padráo');
         }
     }
     updateUserInterface(mockUser);
     // Add demo indicator
     const greeting = document.querySelector('.greeting');
     if (greeting) {
-        greeting.innerHTML = 'Ol, bem-vindo de volta!  <span style="color: #FEF08A; font-size: 10px; font-weight: 700;"> DEMO</span>';
+        greeting.innerHTML = 'Olá, bem-vindo de volta! 👋 <span style="color: #FEF08A; font-size: 10px; font-weight: 700;">🗳️ DEMO</span>';
     }
 }
 // Update Profile Type Display
@@ -291,7 +287,7 @@ function handleSearch(event) {
 }
 // Show Location Selector
 function showLocationSelector() {
-    alert(' Seletor de localizao em desenvolvimento.\n\nLocalizao atual: So Paulo, SP - Centro');
+    alert('🗺️ Seletor de localizaçáo em desenvolvimento.\n\nLocalizaçáo atual: Sáo Paulo, SP - Centro');
 }
 // Load Nearby Companies
 async function carregarEmpresasProximas() {
@@ -327,10 +323,10 @@ function renderizarEmpresas(empresas) {
         return;
     }
     const categorias = {
-        'restaurante': 'Alimentao',
-        'academia': 'Fitness & Sade',
-        'beleza': 'Beleza & Esttica',
-        'farmacia': 'Sade',
+        'restaurante': 'Alimentaçáo',
+        'academia': 'Fitness & Saúde',
+        'beleza': 'Beleza & Estética',
+        'farmacia': 'Saúde',
         'cafeteria': 'Cafeteria'
     };
     container.innerHTML = empresas.map((empresa, index) => `
@@ -341,7 +337,7 @@ function renderizarEmpresas(empresas) {
                  onerror="this.src='https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400'">
             <div class="empresa-content">
                 <div class="empresa-name">${empresa.nome}</div>
-                <div class="empresa-category">${categorias[empresa.ramo] || empresa.categoria || 'Servios'}</div>
+                <div class="empresa-category">${categorias[empresa.ramo] || empresa.categoria || 'Serviços'}</div>
                 <div class="empresa-footer">
                     <div class="empresa-distance">
                         <i class="fas fa-location-dot"></i>
@@ -362,9 +358,9 @@ function renderizarEmpresasFallback() {
         { id: 1, nome: 'Burger Prime', categoria: 'Hamburgueria Gourmet', logo: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400', points_multiplier: 10 },
         { id: 2, nome: 'Pizza Mania', categoria: 'Pizzaria Artesanal', logo: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=400', points_multiplier: 15 },
         { id: 3, nome: 'Gym Fitness', categoria: 'Academia de Elite', logo: 'https://images.unsplash.com/photo-1572448862527-d3c904757de6?w=400', points_multiplier: 20 },
-        { id: 4, nome: 'Caf Supremo', categoria: 'Cafeteria Artesanal', logo: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400', points_multiplier: 8 },
-        { id: 5, nome: 'Farmcia Sade+', categoria: 'Farmcia e Perfumaria', logo: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400', points_multiplier: 12 },
-        { id: 6, nome: 'Beleza Max', categoria: 'Salo de Beleza', logo: 'https://images.unsplash.com/photo-1485962398705-ef6a13c41e8f?w=400', points_multiplier: 25 }
+        { id: 4, nome: '? Caf� Supremo', categoria: 'Cafeteria Artesanal', logo: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400', points_multiplier: 8 },
+        { id: 5, nome: 'Farmácia Saúde+', categoria: 'Farmácia e Perfumaria', logo: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400', points_multiplier: 12 },
+        { id: 6, nome: 'Beleza Max', categoria: 'Saláo de Beleza', logo: 'https://images.unsplash.com/photo-1485962398705-ef6a13c41e8f?w=400', points_multiplier: 25 }
     ];
     renderizarEmpresas(empresasFallback);
 }
@@ -393,7 +389,7 @@ window.addEventListener('beforeunload', function() {
 });
 // Initialize App
 document.addEventListener('DOMContentLoaded', function() {
-    console.log(' App Tem de Tudo iniciado');
+    console.log('🚀 App Tem de Tudo iniciado');
     // Load user data and companies
     loadUserData();
     carregarEmpresasProximas();
@@ -418,34 +414,7 @@ document.getElementById('searchInput').addEventListener('input', function(e) {
     // TODO: Implement search suggestions
     console.log('Search query:', query);
 });
-
-// Hidratar header com dados do usurio armazenados
-(function hydrateHeader() {
-    const user = JSON.parse(localStorage.getItem('user') || localStorage.getItem('currentUser') || '{}');
-    const nameEl = document.getElementById('userName');
-    const levelEl = document.getElementById('profileLevel');
-    const saldoEl = document.getElementById('saldoValue');
-
-    const pontos = user.pontos || user.points || 0;
-    const nome = user.name || 'Visitante';
-
-    const level = (function calcNivel(p) {
-        if (p >= 5000) return 'Platina';
-        if (p >= 1500) return 'Ouro';
-        if (p >= 500) return 'Prata';
-        return 'Bronze';
-    })(pontos);
-
-    if (nameEl) nameEl.textContent = nome;
-    if (levelEl) levelEl.textContent = level;
-    if (saldoEl && typeof user.saldo !== 'undefined') {
-        saldoEl.textContent = Number(user.saldo).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-    }
-})();
 </script>
 </body>
-</html>  
-
-
-
+</html>
 

@@ -1,29 +1,30 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Detalhes da Empresa - Tem de Tudo</title>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color content="#9b59b6">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="/manifest.json" rel="manifest"/>
+<meta content="#6A0DAD" name="theme-color"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
-<div id="loadingState" class="loading">
+<div class="loading" id="loadingState">
 <i class="fas fa-circle-notch"></i>
 <p>Carregando...</p>
 </div>
-<div id="empresaContent" style="display: none;">
+<div class="tdt-inline-cb458930" id="empresaContent">
 <div class="cover-photo" id="coverPhoto">
-<a href="app-empresas.html" class="back-btn">
+<a class="back-btn" href="app-empresas.html">
 <i class="fas fa-arrow-left"></i>
 </a>
 </div>
 <div class="empresa-header">
 <div class="empresa-logo-wrapper">
-<img src="" alt="Logo" class="empresa-logo" id="empresaLogo">
+<img alt="Logo" class="empresa-logo" id="empresaLogo" src=""/>
 </div>
 <h1 class="empresa-name" id="empresaNome">-</h1>
 <div class="empresa-category" id="empresaCategoria">-</div>
@@ -43,10 +44,10 @@
 </div>
 </div>
 <div class="empresa-description" id="empresaDescricao">
-            Carregando descrio...
+            Carregando descri??o...
         </div>
 <div class="info-section">
-<div class="info-title">Informaes</div>
+<div class="info-title">Informa??es</div>
 <div class="info-item">
 <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
 <div class="info-content">
@@ -70,7 +71,7 @@
 </div>
 </div>
 <div class="promocoes-section">
-<div class="info-title">Promoes Dispon?veis</div>
+<div class="info-title">Promo??es Dispon?veis</div>
 <div id="promocoesContainer"></div>
 </div>
 <button class="checkin-button" id="checkinBtn">
@@ -81,12 +82,12 @@
 <script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : (window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8001' : 'https://tem-de-tudo.onrender.com');
         const categorias = {
-            alimentacao: ' Alimentos',
-            automotivo: ' Automotivo',
-            beleza: ' Beleza',
-            bemestar: ' Bem-estar',
-            educacao: ' Educao',
-            servicos: '? Servi?os'
+            alimentacao: '?? Alimentos',
+            automotivo: '?? Automotivo',
+            beleza: '?? Beleza',
+            bemestar: '?? Bem-estar',
+            educacao: '?? Educa??o',
+            servicos: '??? Servi?os'
         };
         let empresaAtual = null;
         document.addEventListener('DOMContentLoaded', async () => {
@@ -133,7 +134,7 @@
                 empresa.logo || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=200';
             document.getElementById('empresaNome').textContent = empresa.nome;
             document.getElementById('empresaCategoria').textContent = 
-                categorias[empresa.ramo] || ' Outros';
+                categorias[empresa.ramo] || '?? Outros';
             document.getElementById('empresaRating').textContent = '4.8';
             document.getElementById('empresaDistancia').textContent = 
                 `${Math.floor(Math.random() * 5) + 1} km`;
@@ -206,6 +207,4 @@
     </script>
 </body>
 </html>
-
-
 

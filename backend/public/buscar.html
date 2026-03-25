@@ -1,24 +1,25 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
 <title>Buscar Estabelecimentos - Tem de Tudo</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="search-header">
 <div class="search-box">
-<input type="text" class="search-input" id="searchInput" placeholder="Buscar restaurantes, lojas, servi?os...">
+<input class="search-input" id="searchInput" placeholder="Buscar restaurantes, lojas, servi?os..." type="text"/>
 <button class="search-btn" onclick="buscarEmpresas()">
 <i class="fas fa-search"></i>
 </button>
@@ -41,12 +42,12 @@
             </button>
 </div>
 </div>
-<div id="loadingState" class="loading" style="display: none;">
-<i class="fas fa-circle-notch fa-spin" style="font-size: 48px;"></i>
-<p style="margin-top: 20px;">Carregando estabelecimentos...</p>
+<div class="loading tdt-inline-cb458930" id="loadingState">
+<i class="fas fa-circle-notch fa-spin tdt-inline-caf2eddc"></i>
+<p class="tdt-inline-3ae1f62a">Carregando estabelecimentos...</p>
 </div>
-<div id="empresasGrid" class="empresas-grid"></div>
-<div id="emptyState" class="empty-state" style="display: none;">
+<div class="empresas-grid" id="empresasGrid"></div>
+<div class="empty-state tdt-inline-cb458930" id="emptyState">
 <div class="empty-icon">
 <i class="fas fa-search"></i>
 </div>
@@ -54,13 +55,13 @@
 <p>Tente ajustar os filtros ou buscar por outro termo</p>
 </div>
 <script>
-        // Configurao de API mais robusta
+        // Configura??o de API mais robusta
         let API_URL;
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             // LOCAL: Tenta v?rias portas comuns do Laravel
             API_URL = 'http://127.0.0.1:8000/api';
         } else if (window.location.hostname.includes('render.com') || window.location.hostname.includes('herokuapp.com')) {
-            // PRODUO: Render, Heroku, etc
+            // PRODU??O: Render, Heroku, etc
             API_URL = '/api';
         } else {
             // OUTROS: Relative path como fallback
@@ -196,7 +197,4 @@
     </script>
 </body>
 </html>
-
-
-
 

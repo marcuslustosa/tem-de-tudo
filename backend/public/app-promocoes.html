@@ -1,290 +1,275 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-    <title>Promoes - Tem de Tudo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="/css/vivo-styles.css">
-    <script src="js/config.js"></script>
-    <script src="js/auth-guard.js"></script>
-</head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<title>Promoções - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
+<script src="js/config.js"></script>
+<script src="js/auth-guard.js"></script>
 </head>
 <body>
-    <!-- Navigation ser inserida aqui pelo global-navbar.js -->
-    <nav id="navbar-container"></nav>
-    
-    <div class="container">
-        <!-- Header Section -->
-        <div class="header-section">
-            <h1>Promoes Exclusivas</h1>
-            <p>Ofertas imperdveis selecionadas especialmente para voc</p>
-        </div>
-
-        <!-- Hero Banner -->
-        <div class="hero-banner">
-            <div class="hero-content">
-                <h2 class="hero-title"> Super Ofertas da Semana!</h2>
-                <p class="hero-subtitle">
-                    Descontos de at 70% + cashback em pontos para suas prximas compras. 
-                    No perca essas oportunidades nicas!
+<!-- Navigation será inserida aqui pelo global-navbar.js -->
+<nav id="navbar-container"></nav>
+<div class="container">
+<!-- Header Section -->
+<div class="header-section">
+<h1>Promoções Exclusivas</h1>
+<p>Ofertas imperdíveis selecionadas especialmente para você</p>
+</div>
+<!-- Hero Banner -->
+<div class="hero-banner">
+<div class="hero-content">
+<h2 class="hero-title">🔥 Super Ofertas da Semana!</h2>
+<p class="hero-subtitle">
+                    Descontos de até 70% + cashback em pontos para suas próximas compras. 
+                    Náo perca essas oportunidades únicas!
                 </p>
-                <div class="hero-stats">
-                    <div class="hero-stat">
-                        <span class="hero-stat-number">15</span>
-                        <span class="hero-stat-label">Ofertas Ativas</span>
-                    </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-number">70%</span>
-                        <span class="hero-stat-label">Desconto Mximo</span>
-                    </div>
-                    <div class="hero-stat">
-                        <span class="hero-stat-number">2x</span>
-                        <span class="hero-stat-label">Pontos Duplos</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Search Container -->
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar promoes...">
-                <i class="fas fa-search"></i>
-            </div>
-        </div>
-
-        <!-- Filter Tabs -->
-        <div class="filter-tabs">
-            <button class="filter-tab active" data-category="todas" onclick="filterPromocoes('todas')">
-                <i class="fas fa-star"></i>
-                <span>Todas</span>
-                <span class="tab-count">15</span>
-            </button>
-            <button class="filter-tab" data-category="alimentacao" onclick="filterPromocoes('alimentacao')">
-                <i class="fas fa-utensils"></i>
-                <span>Alimentao</span>
-                <span class="tab-count">5</span>
-            </button>
-            <button class="filter-tab" data-category="beleza" onclick="filterPromocoes('beleza')">
-                <i class="fas fa-spa"></i>
-                <span>Beleza</span>
-                <span class="tab-count">3</span>
-            </button>
-            <button class="filter-tab" data-category="tecnologia" onclick="filterPromocoes('tecnologia')">
-                <i class="fas fa-laptop"></i>
-                <span>Tecnologia</span>
-                <span class="tab-count">4</span>
-            </button>
-            <button class="filter-tab" data-category="moda" onclick="filterPromocoes('moda')">
-                <i class="fas fa-tshirt"></i>
-                <span>Moda</span>
-                <span class="tab-count">2</span>
-            </button>
-            <button class="filter-tab" data-category="casa" onclick="filterPromocoes('casa')">
-                <i class="fas fa-home"></i>
-                <span>Casa</span>
-                <span class="tab-count">1</span>
-            </button>
-        </div>
-
-        <!-- Promoes Grid -->
-        <div class="promocoes-grid" id="promocoesGrid">
-            <!-- Promoo 1 - Alimentao -->
-            <div class="promocao-card destaque" data-categoria="alimentacao">
-                <div class="promocao-header alimentacao">
-                    <i class="fas fa-hamburger promocao-icon"></i>
-                    <div class="promocao-badge">50% OFF</div>
-                </div>
-                <div class="promocao-content">
-                    <h3 class="promocao-title">Combo Burger Gourmet</h3>
-                    <p class="promocao-empresa"> Burger Palace</p>
-                    <p class="promocao-descricao">
-                        Sanduche artesanal + batata rstica + refrigerante. 
-                        Vlido para delivery e retirada no local.
+<div class="hero-stats">
+<div class="hero-stat">
+<span class="hero-stat-number">15</span>
+<span class="hero-stat-label">Ofertas Ativas</span>
+</div>
+<div class="hero-stat">
+<span class="hero-stat-number">70%</span>
+<span class="hero-stat-label">Desconto Máximo</span>
+</div>
+<div class="hero-stat">
+<span class="hero-stat-number">2x</span>
+<span class="hero-stat-label">Pontos Duplos</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Search Container -->
+<div class="search-container">
+<div class="search-box">
+<input id="searchInput" placeholder="Buscar promoções..." type="text"/>
+<i class="fas fa-search"></i>
+</div>
+</div>
+<!-- Filter Tabs -->
+<div class="filter-tabs">
+<button class="filter-tab active" data-category="todas" onclick="filterPromocoes('todas')">
+<i class="fas fa-star"></i>
+<span>Todas</span>
+<span class="tab-count">15</span>
+</button>
+<button class="filter-tab" data-category="alimentacao" onclick="filterPromocoes('alimentacao')">
+<i class="fas fa-utensils"></i>
+<span>Alimentaçáo</span>
+<span class="tab-count">5</span>
+</button>
+<button class="filter-tab" data-category="beleza" onclick="filterPromocoes('beleza')">
+<i class="fas fa-spa"></i>
+<span>Beleza</span>
+<span class="tab-count">3</span>
+</button>
+<button class="filter-tab" data-category="tecnologia" onclick="filterPromocoes('tecnologia')">
+<i class="fas fa-laptop"></i>
+<span>Tecnologia</span>
+<span class="tab-count">4</span>
+</button>
+<button class="filter-tab" data-category="moda" onclick="filterPromocoes('moda')">
+<i class="fas fa-tshirt"></i>
+<span>Moda</span>
+<span class="tab-count">2</span>
+</button>
+<button class="filter-tab" data-category="casa" onclick="filterPromocoes('casa')">
+<i class="fas fa-home"></i>
+<span>Casa</span>
+<span class="tab-count">1</span>
+</button>
+</div>
+<!-- Promoções Grid -->
+<div class="promocoes-grid" id="promocoesGrid">
+<!-- Promoçáo 1 - Alimentaçáo -->
+<div class="promocao-card destaque" data-categoria="alimentacao">
+<div class="promocao-header alimentacao">
+<i class="fas fa-hamburger promocao-icon"></i>
+<div class="promocao-badge">50% OFF</div>
+</div>
+<div class="promocao-content">
+<h3 class="promocao-title">Combo Burger Gourmet</h3>
+<p class="promocao-empresa">🍔 Burger Palace</p>
+<p class="promocao-descricao">
+                        Sanduíche artesanal + batata rústica + refrigerante. 
+                        Válido para delivery e retirada no local.
                     </p>
-                    <div class="promocao-details">
-                        <div class="detail-item">
-                            <i class="fas fa-clock"></i>
-                            <span>At 23:59h</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>2.1km</span>
-                        </div>
-                        <div class="cashback-badge">+50 pontos</div>
-                    </div>
-                    <div class="promocao-footer">
-                        <div class="promocao-preco">
-                            <span class="preco-original">R$ 49,90</span>
-                            <span class="preco-promocional">R$ 24,90</span>
-                        </div>
-                        <button class="promocao-cta" onclick="abrirPromocao('burger-combo')">Ver Oferta</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Promoo 2 - Beleza -->
-            <div class="promocao-card" data-categoria="beleza">
-                <div class="promocao-header beleza">
-                    <i class="fas fa-spa promocao-icon"></i>
-                    <div class="promocao-badge">30% OFF</div>
-                </div>
-                <div class="promocao-content">
-                    <h3 class="promocao-title">Tratamento Facial Completo</h3>
-                    <p class="promocao-empresa">? Esttica Viva</p>
-                    <p class="promocao-descricao">
-                        Limpeza de pele + hidratao + mscara revitalizante. 
-                        Agende seu horrio online.
+<div class="promocao-details">
+<div class="detail-item">
+<i class="fas fa-clock"></i>
+<span>Até 23:59h</span>
+</div>
+<div class="detail-item">
+<i class="fas fa-map-marker-alt"></i>
+<span>2.1km</span>
+</div>
+<div class="cashback-badge">+50 pontos</div>
+</div>
+<div class="promocao-footer">
+<div class="promocao-preco">
+<span class="preco-original">R$ 49,90</span>
+<span class="preco-promocional">R$ 24,90</span>
+</div>
+<button class="promocao-cta" onclick="abrirPromocao('burger-combo')">Ver Oferta</button>
+</div>
+</div>
+</div>
+<!-- Promoçáo 2 - Beleza -->
+<div class="promocao-card" data-categoria="beleza">
+<div class="promocao-header beleza">
+<i class="fas fa-spa promocao-icon"></i>
+<div class="promocao-badge">30% OFF</div>
+</div>
+<div class="promocao-content">
+<h3 class="promocao-title">Tratamento Facial Completo</h3>
+<p class="promocao-empresa">✨ Estética Viva</p>
+<p class="promocao-descricao">
+                        Limpeza de pele + hidrataçáo + máscara revitalizante. 
+                        Agende seu horário online.
                     </p>
-                    <div class="promocao-details">
-                        <div class="detail-item">
-                            <i class="fas fa-calendar"></i>
-                            <span>Agendamento</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-star"></i>
-                            <span>4.8 ?</span>
-                        </div>
-                        <div class="cashback-badge">+100 pontos</div>
-                    </div>
-                    <div class="promocao-footer">
-                        <div class="promocao-preco">
-                            <span class="preco-original">R$ 120,00</span>
-                            <span class="preco-promocional">R$ 84,00</span>
-                        </div>
-                        <button class="promocao-cta" onclick="abrirPromocao('facial-tratamento')">Ver Oferta</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Promoo 3 - Tecnologia -->
-            <div class="promocao-card" data-categoria="tecnologia">
-                <div class="promocao-header tecnologia">
-                    <i class="fas fa-headphones promocao-icon"></i>
-                    <div class="promocao-badge">40% OFF</div>
-                </div>
-                <div class="promocao-content">
-                    <h3 class="promocao-title">Fone Bluetooth Premium</h3>
-                    <p class="promocao-empresa"> Tech Store</p>
-                    <p class="promocao-descricao">
-                        Fone sem fio com cancelamento de rudo, bateria 30h. 
-                        Garantia de 2 anos + frete grtis.
+<div class="promocao-details">
+<div class="detail-item">
+<i class="fas fa-calendar"></i>
+<span>Agendamento</span>
+</div>
+<div class="detail-item">
+<i class="fas fa-star"></i>
+<span>4.8 ★</span>
+</div>
+<div class="cashback-badge">+100 pontos</div>
+</div>
+<div class="promocao-footer">
+<div class="promocao-preco">
+<span class="preco-original">R$ 120,00</span>
+<span class="preco-promocional">R$ 84,00</span>
+</div>
+<button class="promocao-cta" onclick="abrirPromocao('facial-tratamento')">Ver Oferta</button>
+</div>
+</div>
+</div>
+<!-- Promoçáo 3 - Tecnologia -->
+<div class="promocao-card" data-categoria="tecnologia">
+<div class="promocao-header tecnologia">
+<i class="fas fa-headphones promocao-icon"></i>
+<div class="promocao-badge">40% OFF</div>
+</div>
+<div class="promocao-content">
+<h3 class="promocao-title">Fone Bluetooth Premium</h3>
+<p class="promocao-empresa">🎧 Tech Store</p>
+<p class="promocao-descricao">
+                        Fone sem fio com cancelamento de ruído, bateria 30h. 
+                        Garantia de 2 anos + frete grátis.
                     </p>
-                    <div class="promocao-details">
-                        <div class="detail-item">
-                            <i class="fas fa-truck"></i>
-                            <span>Frete Grtis</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>2 anos</span>
-                        </div>
-                        <div class="cashback-badge">+200 pontos</div>
-                    </div>
-                    <div class="promocao-footer">
-                        <div class="promocao-preco">
-                            <span class="preco-original">R$ 299,90</span>
-                            <span class="preco-promocional">R$ 179,90</span>
-                        </div>
-                        <button class="promocao-cta" onclick="abrirPromocao('fone-bluetooth')">Ver Oferta</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Promoo 4 - Moda -->
-            <div class="promocao-card" data-categoria="moda">
-                <div class="promocao-header moda">
-                    <i class="fas fa-tshirt promocao-icon"></i>
-                    <div class="promocao-badge">60% OFF</div>
-                </div>
-                <div class="promocao-content">
-                    <h3 class="promocao-title">Coleo Vero 2024</h3>
-                    <p class="promocao-empresa"> Moda Bella</p>
-                    <p class="promocao-descricao">
-                        Peas selecionadas da nova coleo. Vestidos, blusas e 
-                        acessrios com estilo nico.
+<div class="promocao-details">
+<div class="detail-item">
+<i class="fas fa-truck"></i>
+<span>Frete Grátis</span>
+</div>
+<div class="detail-item">
+<i class="fas fa-shield-alt"></i>
+<span>2 anos</span>
+</div>
+<div class="cashback-badge">+200 pontos</div>
+</div>
+<div class="promocao-footer">
+<div class="promocao-preco">
+<span class="preco-original">R$ 299,90</span>
+<span class="preco-promocional">R$ 179,90</span>
+</div>
+<button class="promocao-cta" onclick="abrirPromocao('fone-bluetooth')">Ver Oferta</button>
+</div>
+</div>
+</div>
+<!-- Promoçáo 4 - Moda -->
+<div class="promocao-card" data-categoria="moda">
+<div class="promocao-header moda">
+<i class="fas fa-tshirt promocao-icon"></i>
+<div class="promocao-badge">60% OFF</div>
+</div>
+<div class="promocao-content">
+<h3 class="promocao-title">Coleçáo Veráo 2024</h3>
+<p class="promocao-empresa">👗 Moda Bella</p>
+<p class="promocao-descricao">
+                        Peças selecionadas da nova coleçáo. Vestidos, blusas e 
+                        acessórios com estilo único.
                     </p>
-                    <div class="promocao-details">
-                        <div class="detail-item">
-                            <i class="fas fa-tags"></i>
-                            <span>Mltiplas peas</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-exchange-alt"></i>
-                            <span>Troca fcil</span>
-                        </div>
-                        <div class="cashback-badge">+75 pontos</div>
-                    </div>
-                    <div class="promocao-footer">
-                        <div class="promocao-preco">
-                            <span class="preco-original">R$ 159,90</span>
-                            <span class="preco-promocional">R$ 63,90</span>
-                        </div>
-                        <button class="promocao-cta" onclick="abrirPromocao('colecao-verao')">Ver Oferta</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Promoo 5 - Casa -->
-            <div class="promocao-card" data-categoria="casa">
-                <div class="promocao-header casa">
-                    <i class="fas fa-couch promocao-icon"></i>
-                    <div class="promocao-badge">45% OFF</div>
-                </div>
-                <div class="promocao-content">
-                    <h3 class="promocao-title">Kit Decorao Moderna</h3>
-                    <p class="promocao-empresa"> Casa & Estilo</p>
-                    <p class="promocao-descricao">
+<div class="promocao-details">
+<div class="detail-item">
+<i class="fas fa-tags"></i>
+<span>Múltiplas peças</span>
+</div>
+<div class="detail-item">
+<i class="fas fa-exchange-alt"></i>
+<span>Troca fácil</span>
+</div>
+<div class="cashback-badge">+75 pontos</div>
+</div>
+<div class="promocao-footer">
+<div class="promocao-preco">
+<span class="preco-original">R$ 159,90</span>
+<span class="preco-promocional">R$ 63,90</span>
+</div>
+<button class="promocao-cta" onclick="abrirPromocao('colecao-verao')">Ver Oferta</button>
+</div>
+</div>
+</div>
+<!-- Promoçáo 5 - Casa -->
+<div class="promocao-card" data-categoria="casa">
+<div class="promocao-header casa">
+<i class="fas fa-couch promocao-icon"></i>
+<div class="promocao-badge">45% OFF</div>
+</div>
+<div class="promocao-content">
+<h3 class="promocao-title">Kit Decoraçáo Moderna</h3>
+<p class="promocao-empresa">🏠 Casa &amp; Estilo</p>
+<p class="promocao-descricao">
                         Conjunto de almofadas, vaso decorativo e quadro moderno. 
                         Transforme seu ambiente com estilo.
                     </p>
-                    <div class="promocao-details">
-                        <div class="detail-item">
-                            <i class="fas fa-box"></i>
-                            <span>Kit completo</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-home"></i>
-                            <span>Entrega grtis</span>
-                        </div>
-                        <div class="cashback-badge">+150 pontos</div>
-                    </div>
-                    <div class="promocao-footer">
-                        <div class="promocao-preco">
-                            <span class="preco-original">R$ 199,90</span>
-                            <span class="preco-promocional">R$ 109,90</span>
-                        </div>
-                        <button class="promocao-cta" onclick="abrirPromocao('kit-decoracao')">Ver Oferta</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- No Results -->
-        <div class="no-results" id="noResults">
-            <i class="fas fa-search"></i>
-            <h3>Nenhuma promoo encontrada</h3>
-            <p>Tente buscar por outros termos ou navegue por todas as categorias</p>
-        </div>
-    </div>
-
-    <!-- Toast Container -->
-    <div id="toast-container"></div>
-
-
-    
-    
-    <script>
+<div class="promocao-details">
+<div class="detail-item">
+<i class="fas fa-box"></i>
+<span>Kit completo</span>
+</div>
+<div class="detail-item">
+<i class="fas fa-home"></i>
+<span>Entrega grátis</span>
+</div>
+<div class="cashback-badge">+150 pontos</div>
+</div>
+<div class="promocao-footer">
+<div class="promocao-preco">
+<span class="preco-original">R$ 199,90</span>
+<span class="preco-promocional">R$ 109,90</span>
+</div>
+<button class="promocao-cta" onclick="abrirPromocao('kit-decoracao')">Ver Oferta</button>
+</div>
+</div>
+</div>
+</div>
+<!-- No Results -->
+<div class="no-results" id="noResults">
+<i class="fas fa-search"></i>
+<h3>Nenhuma promoçáo encontrada</h3>
+<p>Tente buscar por outros termos ou navegue por todas as categorias</p>
+</div>
+</div>
+<!-- Toast Container -->
+<div id="toast-container"></div>
+<script>
         // Filter functionality
         function filterPromocoes(categoria) {
             const cards = document.querySelectorAll('.promocao-card');
@@ -322,7 +307,7 @@
             }
 
             // Show toast with category info
-            showToast(`Exibindo promoes: ${categoria === 'todas' ? 'Todas as categorias' : categoria}`, 'info');
+            showToast(`Exibindo promoções: ${categoria === 'todas' ? 'Todas as categorias' : categoria}`, 'info');
         }
 
         // Search functionality
@@ -364,13 +349,13 @@
 
         // Open promotion details
         function abrirPromocao(promocaoId) {
-            showToast('Carregando detalhes da promoo...', 'info');
+            showToast('Carregando detalhes da promoçáo...', 'info');
             
             // Simulate loading and redirect
             setTimeout(() => {
                 // Here you would typically redirect to a detailed promotion page
                 // For now, we'll just show a success message
-                showToast('Promoo adicionada aos favoritos! ', 'success');
+                showToast('Promoçáo adicionada aos favoritos! 🎉', 'success');
                 
                 // Add to favorites simulation
                 const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
@@ -443,7 +428,4 @@
     </script>
 </body>
 </html>
-
-
-
 

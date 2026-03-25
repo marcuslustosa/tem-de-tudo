@@ -1,149 +1,142 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>QR Code - Tem de Tudo</title>
-<meta name="description" content="Seu QR Code pessoal para ganhar pontos">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta content="Seu QR Code pessoal para ganhar pontos" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="app-page">
-    <!-- Header -->
-    <div class="app-header">
-        <div class="header-nav">
-            <button class="back-btn" onclick="history.back()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <h1>Meu QR Code</h1>
-            <div style="width: 40px;"></div>
-        </div>
-    </div>
-
-    <!-- Content -->
-    <div class="app-content">
-        <!-- User Card -->
-        <div class="user-card">
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="user-details">
-                    <h3 id="userName">Usurio Teste</h3>
-                    <p id="userEmail">teste@teste.com</p>
-                </div>
-            </div>
-            <div class="user-stats">
-                <div class="stat-item">
-                    <span class="stat-value" id="userPoints">2.847</span>
-                    <span class="stat-label">Pontos</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-value" id="userLevel">Gold</span>
-                    <span class="stat-label">Nvel</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- QR Code Section -->
-        <div class="qr-section">
-            <div class="qr-container">
-                <div class="qr-code-display" id="qrCodeDisplay">
-                    <!-- QR Code will be generated here -->
-                </div>
-                <div class="qr-info">
-                    <h2>Seu QR Code Pessoal</h2>
-                    <p>Apresente este cdigo nos estabelecimentos parceiros para ganhar pontos automaticamente.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Instructions -->
-        <div class="instructions">
-            <h3>Como usar seu QR Code</h3>
-            <div class="steps-list">
-                <div class="step-item">
-                    <div class="step-number">1</div>
-                    <div class="step-text">
-                        <div class="step-title">V ao estabelecimento</div>
-                        <div class="step-desc">Visite qualquer loja parceira do programa</div>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">2</div>
-                    <div class="step-text">
-                        <div class="step-title">Mostre seu QR Code</div>
-                        <div class="step-desc">Apresente esta tela para o atendente</div>
-                    </div>
-                </div>
-                <div class="step-item">
-                    <div class="step-number">3</div>
-                    <div class="step-text">
-                        <div class="step-title">Ganhe pontos</div>
-                        <div class="step-desc">Pontos so creditados automaticamente</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="actions">
-            <a href="#" class="action-btn primary" onclick="refreshQRCode()">
-                <i class="fas fa-sync-alt"></i>
-                <span>Atualizar</span>
-            </a>
-            <a href="#" class="action-btn" onclick="shareQRCode()">
-                <i class="fas fa-share-alt"></i>
-                <span>Compartilhar</span>
-            </a>
-        </div>
-
-        <!-- Refresh Info -->
-        <div class="refresh-info">
-            <p>QR Code atualizado automaticamente a cada 5 minutos</p>
-            <p class="refresh-time" id="refreshTime">Prxima atualizao em 4:32</p>
-        </div>
-    </div>
+<!-- Header -->
+<div class="app-header">
+<div class="header-nav">
+<button class="back-btn" onclick="history.back()">
+<i class="fas fa-arrow-left"></i>
+</button>
+<h1>Meu QR Code</h1>
+<div class="tdt-inline-93de2d4b"></div>
 </div>
-
+</div>
+<!-- Content -->
+<div class="app-content">
+<!-- User Card -->
+<div class="user-card">
+<div class="user-info">
+<div class="user-avatar">
+<i class="fas fa-user"></i>
+</div>
+<div class="user-details">
+<h3 id="userName">Usuário Teste</h3>
+<p id="userEmail">teste@teste.com</p>
+</div>
+</div>
+<div class="user-stats">
+<div class="stat-item">
+<span class="stat-value" id="userPoints">2.847</span>
+<span class="stat-label">Pontos</span>
+</div>
+<div class="stat-item">
+<span class="stat-value" id="userLevel">Gold</span>
+<span class="stat-label">Nível</span>
+</div>
+</div>
+</div>
+<!-- QR Code Section -->
+<div class="qr-section">
+<div class="qr-container">
+<div class="qr-code-display" id="qrCodeDisplay">
+<!-- QR Code will be generated here -->
+</div>
+<div class="qr-info">
+<h2>Seu QR Code Pessoal</h2>
+<p>Apresente este código nos estabelecimentos parceiros para ganhar pontos automaticamente.</p>
+</div>
+</div>
+</div>
+<!-- Instructions -->
+<div class="instructions">
+<h3>Como usar seu QR Code</h3>
+<div class="steps-list">
+<div class="step-item">
+<div class="step-number">1</div>
+<div class="step-text">
+<div class="step-title">Vá ao estabelecimento</div>
+<div class="step-desc">Visite qualquer loja parceira do programa</div>
+</div>
+</div>
+<div class="step-item">
+<div class="step-number">2</div>
+<div class="step-text">
+<div class="step-title">Mostre seu QR Code</div>
+<div class="step-desc">Apresente esta tela para o atendente</div>
+</div>
+</div>
+<div class="step-item">
+<div class="step-number">3</div>
+<div class="step-text">
+<div class="step-title">Ganhe pontos</div>
+<div class="step-desc">Pontos sáo creditados automaticamente</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="actions">
+<a class="action-btn primary" href="#" onclick="refreshQRCode()">
+<i class="fas fa-sync-alt"></i>
+<span>Atualizar</span>
+</a>
+<a class="action-btn" href="#" onclick="shareQRCode()">
+<i class="fas fa-share-alt"></i>
+<span>Compartilhar</span>
+</a>
+</div>
+<!-- Refresh Info -->
+<div class="refresh-info">
+<p>QR Code atualizado automaticamente a cada 5 minutos</p>
+<p class="refresh-time" id="refreshTime">Próxima atualizaçáo em 4:32</p>
+</div>
+</div>
+</div>
 <!-- Bottom Navigation -->
 <div class="bottom-nav">
-    <div class="nav-container">
-        <a href="dashboard-cliente.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Incio</span>
-        </a>
-        <a href="app-empresas.html" class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>Explorar</span>
-        </a>
-        <a href="app-pontos.html" class="nav-item">
-            <i class="fas fa-star"></i>
-            <span>Pontos</span>
-        </a>
-        <a href="app-promocoes.html" class="nav-item">
-            <i class="fas fa-tags"></i>
-            <span>Ofertas</span>
-        </a>
-        <a href="app-perfil.html" class="nav-item">
-            <i class="fas fa-bars"></i>
-            <span>Menu</span>
-        </a>
-    </div>
+<div class="nav-container">
+<a class="nav-item" href="dashboard-cliente.html">
+<i class="fas fa-home"></i>
+<span>Início</span>
+</a>
+<a class="nav-item" href="app-empresas.html">
+<i class="fas fa-search"></i>
+<span>Explorar</span>
+</a>
+<a class="nav-item" href="app-pontos.html">
+<i class="fas fa-star"></i>
+<span>Pontos</span>
+</a>
+<a class="nav-item" href="app-promocoes.html">
+<i class="fas fa-tags"></i>
+<span>Ofertas</span>
+</a>
+<a class="nav-item" href="app-perfil.html">
+<i class="fas fa-bars"></i>
+<span>Menu</span>
+</a>
 </div>
-
+</div>
 <script>
 let qrRefreshTimer;
 let countdownTimer;
@@ -165,7 +158,7 @@ function generateQRCode() {
         height: 200,
         margin: 1,
         color: {
-            dark: '#9b59b6',
+            dark: '#e10098',
             light: '#FFFFFF'
         }
     }, function (error, canvas) {
@@ -194,7 +187,7 @@ function shareQRCode() {
             text: 'Escaneie meu QR Code para me encontrar no app!'
         });
     } else {
-        showNotification('Compartilhamento no suportado neste dispositivo');
+        showNotification('Compartilhamento náo suportado neste dispositivo');
     }
 }
 
@@ -220,7 +213,7 @@ function startCountdown() {
         const minutes = Math.floor(seconds / 60);
         const secs = seconds % 60;
         document.getElementById('refreshTime').textContent = 
-            `Prxima atualizao em ${minutes}:${secs.toString().padStart(2, '0')}`;
+            `Próxima atualizaçáo em ${minutes}:${secs.toString().padStart(2, '0')}`;
         
         if (seconds <= 0) {
             generateQRCode();
@@ -281,7 +274,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
-
-
 

@@ -1,208 +1,197 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Meus Pontos - Tem de Tudo</title>
-<meta name="description" content="Acompanhe seus pontos e histrico de transaes">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
+<meta content="Acompanhe seus pontos e histórico de transações" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
 <script>
     // Redirect to the main points page
     window.location.href = 'app-meus-pontos.html';
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="app-page">
-    <!-- Header -->
-    <div class="app-header">
-        <div class="header-nav">
-            <a href="dashboard-cliente.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <h1>Meus Pontos</h1>
-            <div class="header-actions">
-                <button class="history-btn" onclick="toggleHistory()">
-                    <i class="fas fa-history"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Content -->
-    <div class="app-content">
-        <!-- Points Balance -->
-        <div class="section">
-            <div class="points-balance-card">
-                <div class="balance-header">
-                    <h2>Saldo Atual</h2>
-                    <i class="fas fa-star"></i>
-                </div>
-                <div class="balance-amount" id="saldoPontos">1,247</div>
-                <div class="balance-subtitle">pontos disponveis</div>
-                <div class="balance-actions">
-                    <button class="btn-primary use-points" onclick="openUsePoints()">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>Usar Pontos</span>
-                    </button>
-                    <button class="btn-secondary scan-qr" onclick="openScanner()">
-                        <i class="fas fa-qrcode"></i>
-                        <span>Ganhar</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Stats Overview -->
-        <div class="section">
-            <h2 class="section-title">
-                <i class="fas fa-chart-line"></i>
-                Estatsticas
-            </h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-plus-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="totalGanhos">2,856</div>
-                        <div class="stat-label">Total Ganho</div>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-minus-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="totalGastos">1,609</div>
-                        <div class="stat-label">Total Gasto</div>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-map-marker-alt"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="checkins">47</div>
-                        <div class="stat-label">Check-ins</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Transaction History -->
-        <div class="section">
-            <h2 class="section-title">
-                <i class="fas fa-history"></i>
-                Histrico Recente
-            </h2>
-            <div class="transactions-list" id="extratoTransacoes">
-                <!-- Ser preenchido via JavaScript -->
-            </div>
-            
-            <!-- View More -->
-            <div class="view-more-section">
-                <button class="btn-outline" onclick="viewFullHistory()">
-                    <span>Ver Histrico Completo</span>
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="section">
-            <h2 class="section-title">
-                <i class="fas fa-bolt"></i>
-                Aes Rpidas
-            </h2>
-            <div class="quick-actions-grid">
-                <a href="app-qrcode.html" class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-qrcode"></i>
-                    </div>
-                    <div class="action-content">
-                        <h3>Meu QR Code</h3>
-                        <p>Mostre para ganhar pontos</p>
-                    </div>
-                </a>
-                
-                <a href="app-promocoes.html" class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-gift"></i>
-                    </div>
-                    <div class="action-content">
-                        <h3>Resgatar Ofertas</h3>
-                        <p>Troque por prmios</p>
-                    </div>
-                </a>
-                
-                <a href="app-empresas.html" class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-store"></i>
-                    </div>
-                    <div class="action-content">
-                        <h3>Encontrar Lojas</h3>
-                        <p>Locais para ganhar pontos</p>
-                    </div>
-                </a>
-                
-                <a href="app-historico.html" class="action-card">
-                    <div class="action-icon">
-                        <i class="fas fa-list-alt"></i>
-                    </div>
-                    <div class="action-content">
-                        <h3>Extrato Completo</h3>
-                        <p>Todas as transaes</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
+<!-- Header -->
+<div class="app-header">
+<div class="header-nav">
+<a class="back-btn" href="dashboard-cliente.html">
+<i class="fas fa-arrow-left"></i>
+</a>
+<h1>Meus Pontos</h1>
+<div class="header-actions">
+<button class="history-btn" onclick="toggleHistory()">
+<i class="fas fa-history"></i>
+</button>
 </div>
-
+</div>
+</div>
+<!-- Content -->
+<div class="app-content">
+<!-- Points Balance -->
+<div class="section">
+<div class="points-balance-card">
+<div class="balance-header">
+<h2>Saldo Atual</h2>
+<i class="fas fa-star"></i>
+</div>
+<div class="balance-amount" id="saldoPontos">1,247</div>
+<div class="balance-subtitle">pontos disponíveis</div>
+<div class="balance-actions">
+<button class="btn-primary use-points" onclick="openUsePoints()">
+<i class="fas fa-shopping-cart"></i>
+<span>Usar Pontos</span>
+</button>
+<button class="btn-secondary scan-qr" onclick="openScanner()">
+<i class="fas fa-qrcode"></i>
+<span>Ganhar</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Stats Overview -->
+<div class="section">
+<h2 class="section-title">
+<i class="fas fa-chart-line"></i>
+                Estatísticas
+            </h2>
+<div class="stats-grid">
+<div class="stat-card">
+<div class="stat-icon">
+<i class="fas fa-plus-circle"></i>
+</div>
+<div class="stat-content">
+<div class="stat-value" id="totalGanhos">2,856</div>
+<div class="stat-label">Total Ganho</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon">
+<i class="fas fa-minus-circle"></i>
+</div>
+<div class="stat-content">
+<div class="stat-value" id="totalGastos">1,609</div>
+<div class="stat-label">Total Gasto</div>
+</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon">
+<i class="fas fa-map-marker-alt"></i>
+</div>
+<div class="stat-content">
+<div class="stat-value" id="checkins">47</div>
+<div class="stat-label">Check-ins</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Transaction History -->
+<div class="section">
+<h2 class="section-title">
+<i class="fas fa-history"></i>
+                Histórico Recente
+            </h2>
+<div class="transactions-list" id="extratoTransacoes">
+<!-- Será preenchido via JavaScript -->
+</div>
+<!-- View More -->
+<div class="view-more-section">
+<button class="btn-outline" onclick="viewFullHistory()">
+<span>Ver Histórico Completo</span>
+<i class="fas fa-arrow-right"></i>
+</button>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="section">
+<h2 class="section-title">
+<i class="fas fa-bolt"></i>
+                Ações Rápidas
+            </h2>
+<div class="quick-actions-grid">
+<a class="action-card" href="app-qrcode.html">
+<div class="action-icon">
+<i class="fas fa-qrcode"></i>
+</div>
+<div class="action-content">
+<h3>Meu QR Code</h3>
+<p>Mostre para ganhar pontos</p>
+</div>
+</a>
+<a class="action-card" href="app-promocoes.html">
+<div class="action-icon">
+<i class="fas fa-gift"></i>
+</div>
+<div class="action-content">
+<h3>Resgatar Ofertas</h3>
+<p>Troque por prêmios</p>
+</div>
+</a>
+<a class="action-card" href="app-empresas.html">
+<div class="action-icon">
+<i class="fas fa-store"></i>
+</div>
+<div class="action-content">
+<h3>Encontrar Lojas</h3>
+<p>Locais para ganhar pontos</p>
+</div>
+</a>
+<a class="action-card" href="app-historico.html">
+<div class="action-icon">
+<i class="fas fa-list-alt"></i>
+</div>
+<div class="action-content">
+<h3>Extrato Completo</h3>
+<p>Todas as transações</p>
+</div>
+</a>
+</div>
+</div>
+</div>
+</div>
 <!-- Bottom Navigation -->
 <div class="bottom-nav">
-    <div class="nav-container">
-        <a href="dashboard-cliente.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Incio</span>
-        </a>
-        <a href="app-empresas.html" class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>Explorar</span>
-        </a>
-        <a href="app-pontos.html" class="nav-item active">
-            <div style="position: relative;">
-                <i class="fas fa-star"></i>
-                <div class="notification-badge">1.2K</div>
-            </div>
-            <span>Pontos</span>
-        </a>
-        <a href="app-promocoes.html" class="nav-item">
-            <div style="position: relative;">
-                <i class="fas fa-tags"></i>
-                <div class="notification-badge" style="background: #F59E0B;">3</div>
-            </div>
-            <span>Ofertas</span>
-        </a>
-        <a href="app-perfil.html" class="nav-item">
-            <i class="fas fa-bars"></i>
-            <span>Menu</span>
-        </a>
-    </div>
+<div class="nav-container">
+<a class="nav-item" href="dashboard-cliente.html">
+<i class="fas fa-home"></i>
+<span>Início</span>
+</a>
+<a class="nav-item" href="app-empresas.html">
+<i class="fas fa-search"></i>
+<span>Explorar</span>
+</a>
+<a class="nav-item active" href="app-pontos.html">
+<div class="tdt-inline-c451fdb0">
+<i class="fas fa-star"></i>
+<div class="notification-badge">1.2K</div>
 </div>
-
+<span>Pontos</span>
+</a>
+<a class="nav-item" href="app-promocoes.html">
+<div class="tdt-inline-c451fdb0">
+<i class="fas fa-tags"></i>
+<div class="notification-badge tdt-inline-0c6847cb">3</div>
+</div>
+<span>Ofertas</span>
+</a>
+<a class="nav-item" href="app-perfil.html">
+<i class="fas fa-bars"></i>
+<span>Menu</span>
+</a>
+</div>
+</div>
 <script>
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://127.0.0.1:8000' 
@@ -229,7 +218,7 @@ const transacoesFicticias = [
     {
         id: 3,
         tipo: 'checkin',
-        empresa: 'Farmcia Popular',
+        empresa: 'Farmácia Popular',
         pontos: 75,
         data: '2024-01-13T07:15:00Z',
         icon: 'fa-map-marker-alt'
@@ -316,7 +305,7 @@ function renderTransactions(transactions) {
         container.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-star"></i>
-                <h3>Nenhuma transao ainda</h3>
+                <h3>Nenhuma transaçáo ainda</h3>
                 <p>Comece fazendo check-ins em empresas parceiras para ganhar pontos!</p>
             </div>
         `;
@@ -365,11 +354,11 @@ function getTransactionTitle(transaction) {
         'checkin': `Check-in em ${transaction.empresa}`,
         'compra_cupom': `Resgate em ${transaction.empresa}`,
         'uso_cupom': `Uso de oferta - ${transaction.empresa}`,
-        'bonus': `Bnus - ${transaction.empresa || 'Sistema'}`,
+        'bonus': `Bônus - ${transaction.empresa || 'Sistema'}`,
         'cashback': `Cashback - ${transaction.empresa}`,
-        'referencia': `Indicao de amigo`
+        'referencia': `Indicaçáo de amigo`
     };
-    return titles[transaction.tipo] || `Transao - ${transaction.empresa}`;
+    return titles[transaction.tipo] || `Transaçáo - ${transaction.empresa}`;
 }
 
 function formatDate(date) {
@@ -382,7 +371,7 @@ function formatDate(date) {
     } else if (days === 1) {
         return 'Ontem';
     } else if (days < 7) {
-        return `${days} dias atrs`;
+        return `${days} dias atrás`;
     } else {
         return date.toLocaleDateString('pt-BR');
     }
@@ -462,7 +451,4 @@ document.head.appendChild(style);
 </script>
 </body>
 </html>
-
-
-
 

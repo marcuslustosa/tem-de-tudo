@@ -1,222 +1,157 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Criar Conta - Tem de Tudo</title>
-<meta name="description" content="Crie sua conta no Tem de Tudo e comece a acumular pontos em compras">
-<meta name="theme-color" content="#9b59b6">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="manifest" href="manifest.json">
+<meta content="Crie sua conta no Tem de Tudo e comece a acumular pontos em compras" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<link href="/manifest.json" rel="manifest"/>
 <script src="js/config.js"></script>
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="register-page">
-    <!-- Background Elements -->
-    <div class="login-bg">
-        <div class="floating-element element-1"></div>
-        <div class="floating-element element-2"></div>
-        <div class="floating-element element-3"></div>
-    </div>
-    
-    <!-- Back Link -->
-    <div class="back-link">
-        <a href="escolher-tipo.html">
-            <i class="fas fa-arrow-left"></i>
+<!-- Background Elements -->
+<div class="login-bg">
+<div class="floating-element element-1"></div>
+<div class="floating-element element-2"></div>
+<div class="floating-element element-3"></div>
+</div>
+<!-- Back Link -->
+<div class="back-link">
+<a href="escolher-tipo.html">
+<i class="fas fa-arrow-left"></i>
             Voltar
         </a>
-    </div>
-    
-    <!-- Register Container -->
-    <div class="register-container">
-        <!-- Logo Section -->
-        <div class="logo-section">
-            <div class="logo-icon">
-                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #9b59b6, #8B5CF6); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: bold; margin: 0 auto;">TDT</div>
-            </div>
-            <h1 class="welcome-title">Criar Conta</h1>
-            <p class="welcome-subtitle">Junte-se ao Tem de Tudo e aproveite benefcios exclusivos</p>
-        </div>
-        
-        <!-- Profile Selector -->
-        <div class="profile-selector">
-            <div class="profile-option active" onclick="selectProfile('cliente')">
-                <i class="fas fa-user"></i>
-                <span>Cliente</span>
-            </div>
-            <div class="profile-option" onclick="selectProfile('empresa')">
-                <i class="fas fa-building"></i>
-                <span>Empresa</span>
-            </div>
-        </div>
-        
-        <!-- Error/Success Messages -->
-        <div class="error-message" id="errorMessage"></div>
-        <div class="success-message" id="successMessage"></div>
-        
-        <!-- Register Form -->
-        <form class="register-form" id="cadastroForm" onsubmit="handleCadastro(event)">
-            <input type="hidden" id="perfil" name="perfil" value="cliente">
-            
-            <div class="form-group">
-                <label class="form-label" for="name">Nome Completo</label>
-                <input 
-                    type="text" 
-                    id="name" 
-                    name="name" 
-                    class="form-input"
-                    required 
-                    placeholder="Seu nome completo"
-                    autocomplete="name"
-                >
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label" for="email">Email</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        class="form-input"
-                        required 
-                        placeholder="seu@email.com"
-                        autocomplete="username"
-                    >
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="telefone">Telefone</label>
-                    <input 
-                        type="tel" 
-                        id="telefone" 
-                        name="telefone" 
-                        class="form-input"
-                        required 
-                        placeholder="(11) 99999-9999"
-                        autocomplete="tel"
-                    >
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label" for="password">Senha</label>
-                    <div class="password-input-group">
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            class="form-input"
-                            required 
-                            placeholder="Mnimo 6 caracteres"
-                            autocomplete="new-password"
-                        >
-                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
-                            <i class="fas fa-eye" id="passwordToggleIcon"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="password_confirmation">Confirmar Senha</label>
-                    <div class="password-input-group">
-                        <input 
-                            type="password" 
-                            id="password_confirmation" 
-                            name="password_confirmation" 
-                            class="form-input"
-                            required 
-                            placeholder="Digite novamente a senha"
-                            autocomplete="new-password"
-                        >
-                        <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation')">
-                            <i class="fas fa-eye" id="passwordConfirmToggleIcon"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Campos especficos da empresa (inicialmente ocultos) -->
-            <div class="empresa-fields" id="empresaFields" style="display: none;">
-                <div class="form-group">
-                    <label class="form-label" for="nome_empresa">Nome da Empresa</label>
-                    <input 
-                        type="text" 
-                        id="nome_empresa" 
-                        name="nome_empresa" 
-                        class="form-input"
-                        placeholder="Nome da sua empresa"
-                    >
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="cnpj">CNPJ</label>
-                        <input 
-                            type="text" 
-                            id="cnpj" 
-                            name="cnpj" 
-                            class="form-input"
-                            placeholder="00.000.000/0000-00"
-                        >
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="categoria">Categoria</label>
-                        <select id="categoria" name="categoria" class="form-input">
-                            <option value="">Selecione uma categoria</option>
-                            <option value="alimentacao">Alimentao</option>
-                            <option value="moda">Moda e Vesturio</option>
-                            <option value="saude">Sade e Beleza</option>
-                            <option value="servicos">Servios</option>
-                            <option value="tecnologia">Tecnologia</option>
-                            <option value="outros">Outros</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Info para empresas -->
-                <div class="empresa-info">
-                    <div class="info-card">
-                        <i class="fas fa-info-circle"></i>
-                        <div>
-                            <strong>Ateno:</strong> Contas empresariais passam por validao do administrador antes da ativao. Voc receber um email com as prximas etapas.
+</div>
+<!-- Register Container -->
+<div class="register-container">
+<!-- Logo Section -->
+<div class="logo-section">
+<div class="logo-icon">
+<div class="tdt-inline-5b573192">TDT</div>
+</div>
+<h1 class="welcome-title">Criar Conta</h1>
+<p class="welcome-subtitle">Junte-se ao Tem de Tudo e aproveite benefícios exclusivos</p>
+</div>
+<!-- Profile Selector -->
+<div class="profile-selector">
+<div class="profile-option active" onclick="selectProfile('cliente')">
+<i class="fas fa-user"></i>
+<span>Cliente</span>
+</div>
+<div class="profile-option" onclick="selectProfile('empresa')">
+<i class="fas fa-building"></i>
+<span>Empresa</span>
+</div>
+</div>
+<!-- Error/Success Messages -->
+<div class="error-message" id="errorMessage"></div>
+<div class="success-message" id="successMessage"></div>
+<!-- Register Form -->
+<form class="register-form" id="cadastroForm" onsubmit="handleCadastro(event)">
+<input id="perfil" name="perfil" type="hidden" value="cliente"/>
+<div class="form-group">
+<label class="form-label" for="name">Nome Completo</label>
+<input autocomplete="name" class="form-input" id="name" name="name" placeholder="Seu nome completo" required="" type="text"/>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label" for="email">Email</label>
+<input autocomplete="username" class="form-input" id="email" name="email" placeholder="seu@email.com" required="" type="email"/>
+</div>
+<div class="form-group">
+<label class="form-label" for="telefone">Telefone</label>
+<input autocomplete="tel" class="form-input" id="telefone" name="telefone" placeholder="(11) 99999-9999" required="" type="tel"/>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label" for="password">Senha</label>
+<div class="password-input-group">
+<input autocomplete="new-password" class="form-input" id="password" name="password" placeholder="Mínimo 6 caracteres" required="" type="password"/>
+<button class="password-toggle" onclick="togglePassword('password')" type="button">
+<i class="fas fa-eye" id="passwordToggleIcon"></i>
+</button>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label" for="password_confirmation">Confirmar Senha</label>
+<div class="password-input-group">
+<input autocomplete="new-password" class="form-input" id="password_confirmation" name="password_confirmation" placeholder="Digite novamente a senha" required="" type="password"/>
+<button class="password-toggle" onclick="togglePassword('password_confirmation')" type="button">
+<i class="fas fa-eye" id="passwordConfirmToggleIcon"></i>
+</button>
+</div>
+</div>
+</div>
+<!-- Campos específicos da empresa (inicialmente ocultos) -->
+<div class="empresa-fields tdt-inline-cb458930" id="empresaFields">
+<div class="form-group">
+<label class="form-label" for="nome_empresa">Nome da Empresa</label>
+<input class="form-input" id="nome_empresa" name="nome_empresa" placeholder="Nome da sua empresa" type="text"/>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label" for="cnpj">CNPJ</label>
+<input class="form-input" id="cnpj" name="cnpj" placeholder="00.000.000/0000-00" type="text"/>
+</div>
+<div class="form-group">
+<label class="form-label" for="categoria">Categoria</label>
+<select class="form-input" id="categoria" name="categoria">
+<option value="">Selecione uma categoria</option>
+<option value="alimentacao">Alimentaçáo</option>
+<option value="moda">Moda e Vestuário</option>
+<option value="saude">Saúde e Beleza</option>
+<option value="servicos">Serviços</option>
+<option value="tecnologia">Tecnologia</option>
+<option value="outros">Outros</option>
+</select>
+</div>
+</div>
+<!-- Info para empresas -->
+<div class="empresa-info">
+<div class="info-card">
+<i class="fas fa-info-circle"></i>
+<div>
+<strong>Atençáo:</strong> Contas empresariais passam por validaçáo do administrador antes da ativaçáo. Você receberá um email com as próximas etapas.
                         </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Termos e Condies -->
-            <div class="terms-section">
-                <label class="terms-checkbox">
-                    <input type="checkbox" id="terms" name="terms" required>
-                    <span class="checkmark"></span>
-                    <span class="terms-text">
+</div>
+</div>
+</div>
+<!-- Termos e Condições -->
+<div class="terms-section">
+<label class="terms-checkbox">
+<input id="terms" name="terms" required="" type="checkbox"/>
+<span class="checkmark"></span>
+<span class="terms-text">
                         Concordo com os 
                         <a href="termos.html" target="_blank">Termos de Uso</a> 
                         e 
-                        <a href="privacidade.html" target="_blank">Poltica de Privacidade</a>
-                    </span>
-                </label>
-            </div>
-            
-            <!-- Submit Button -->
-            <button type="submit" class="register-btn" id="registerBtn">
-                <span id="registerBtnText">
-                    <i class="fas fa-user-plus"></i>
+                        <a href="privacidade.html" target="_blank">Política de Privacidade</a>
+</span>
+</label>
+</div>
+<!-- Submit Button -->
+<button class="register-btn" id="registerBtn" type="submit">
+<span id="registerBtnText">
+<i class="fas fa-user-plus"></i>
                     Criar Conta
                 </span>
-                <div class="loading" id="registerLoading" style="display: none;"></div>
-            </button>
-        </form>
-        
-        <!-- Login Link -->
-        <div class="login-link">
-            <p>J tem uma conta?</p>
-            <a href="entrar.html">Fazer login</a>
-        </div>
-    </div>
+<div class="loading tdt-inline-cb458930" id="registerLoading"></div>
+</button>
+</form>
+<!-- Login Link -->
+<div class="login-link">
+<p>Já tem uma conta?</p>
+<a href="entrar.html">Fazer login</a>
 </div>
-
+</div>
+</div>
 <script>
 // Profile selector functions
 function selectProfile(type) {
@@ -317,7 +252,7 @@ async function handleCadastro(event) {
     
     // Validate passwords match
     if (cadastroData.password !== cadastroData.password_confirmation) {
-        showError('As senhas no coincidem');
+        showError('As senhas náo coincidem');
         registerBtn.disabled = false;
         registerBtnText.style.display = 'flex';
         registerLoading.style.display = 'none';
@@ -339,12 +274,12 @@ async function handleCadastro(event) {
         if (response.ok) {
             // Success
             if (cadastroData.perfil === 'empresa') {
-                showSuccess('Empresa cadastrada! Aguarde aprovao do administrador.');
+                showSuccess('Empresa cadastrada! Aguarde aprovaçáo do administrador.');
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 2000);
             } else {
-                // Store token and redirect for clients (usar mesmo padro do login)
+                // Store token and redirect for clients (usar mesmo padráo do login)
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 localStorage.setItem('userType', data.user.type || data.user.perfil);
@@ -395,6 +330,4 @@ document.getElementById('cnpj').addEventListener('input', function(e) {
 </script>
 </body>
 </html>
-
-
 

@@ -1,168 +1,159 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Notificaes - Tem de Tudo</title>
-<meta name="description" content="Acompanhe suas notificaes no Tem de Tudo">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>?? Notificações - Tem de Tudo</title>
+<meta content="Acompanhe suas notificações no Tem de Tudo" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 <script src="js/config.js"></script>
 <script src="js/auth-guard.js"></script>
-
-
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="app-page">
-    <div class="app-header">
-        <div class="header-nav">
-            <button class="back-btn" onclick="history.back()">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <h1> Notificaes</h1>
-            <button class="mark-all-btn" onclick="markAllAsRead()" title="Marcar todas como lidas">
-                <i class="fas fa-check-double"></i>
-            </button>
-        </div>
-    </div>
-    
-    <!-- Filtros -->
-    <div class="notifications-filter">
-        <div class="filter-tabs">
-            <button class="filter-tab active" onclick="filterNotifications('all')">Todas</button>
-            <button class="filter-tab" onclick="filterNotifications('unread')">No lidas</button>
-            <button class="filter-tab" onclick="filterNotifications('points')">Pontos</button>
-            <button class="filter-tab" onclick="filterNotifications('offers')">Ofertas</button>
-            <button class="filter-tab" onclick="filterNotifications('system')">Sistema</button>
-        </div>
-    </div>
-    
-    <div class="app-content">
-        <!-- Hoje -->
-        <div class="notifications-group">
-            <h2 class="group-title">
-                <i class="fas fa-clock"></i>
+<div class="app-header">
+<div class="header-nav">
+<button class="back-btn" onclick="history.back()">
+<i class="fas fa-arrow-left"></i>
+</button>
+<h1>?? Notificações</h1>
+<button class="mark-all-btn" onclick="markAllAsRead()" title="Marcar todas como lidas">
+<i class="fas fa-check-double"></i>
+</button>
+</div>
+</div>
+<!-- Filtros -->
+<div class="notifications-filter">
+<div class="filter-tabs">
+<button class="filter-tab active" onclick="filterNotifications('all')">Todas</button>
+<button class="filter-tab" onclick="filterNotifications('unread')">Náo lidas</button>
+<button class="filter-tab" onclick="filterNotifications('points')">Pontos</button>
+<button class="filter-tab" onclick="filterNotifications('offers')">Ofertas</button>
+<button class="filter-tab" onclick="filterNotifications('system')">Sistema</button>
+</div>
+</div>
+<div class="app-content">
+<!-- Hoje -->
+<div class="notifications-group">
+<h2 class="group-title">
+<i class="fas fa-clock"></i>
                 Hoje
             </h2>
-            <div class="notification-items">
-                <div class="notification-item unread success" onclick="markAsRead(this)" data-type="points">
-                    <div class="notification-header">
-                        <div class="notification-icon success">
-                            <i class="fas fa-coins"></i>
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-title">Pontos creditados!</div>
-                            <div class="notification-message">Voc ganhou 50 pontos na compra da Padaria do Joo</div>
-                            <div class="notification-time">H 2 horas</div>
-                        </div>
-                        <div class="notification-badge"></div>
-                    </div>
-                </div>
-                
-                <div class="notification-item unread info" onclick="markAsRead(this)" data-type="offers">
-                    <div class="notification-header">
-                        <div class="notification-icon info">
-                            <i class="fas fa-gift"></i>
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-title">Nova recompensa disponvel</div>
-                            <div class="notification-message">Desconto de 20% no Restaurante Sabor & Arte</div>
-                            <div class="notification-time">H 3 horas</div>
-                        </div>
-                        <div class="notification-badge"></div>
-                    </div>
-                </div>
-                
-                <div class="notification-item warning" onclick="markAsRead(this)" data-type="system">
-                    <div class="notification-header">
-                        <div class="notification-icon warning">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-title">Cupom expirando em breve</div>
-                            <div class="notification-message">Seu cupom de 15% OFF expira em 2 dias</div>
-                            <div class="notification-time">H 5 horas</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Ontem -->
-        <div class="notifications-group">
-            <h2 class="group-title">
-                <i class="fas fa-calendar-day"></i>
+<div class="notification-items">
+<div class="notification-item unread success" data-type="points" onclick="markAsRead(this)">
+<div class="notification-header">
+<div class="notification-icon success">
+<i class="fas fa-coins"></i>
+</div>
+<div class="notification-content">
+<div class="notification-title">Pontos creditados!</div>
+<div class="notification-message">Você ganhou 50 pontos na compra da Padaria do Joáo</div>
+<div class="notification-time">Há 2 horas</div>
+</div>
+<div class="notification-badge"></div>
+</div>
+</div>
+<div class="notification-item unread info" data-type="offers" onclick="markAsRead(this)">
+<div class="notification-header">
+<div class="notification-icon info">
+<i class="fas fa-gift"></i>
+</div>
+<div class="notification-content">
+<div class="notification-title">Nova recompensa disponível</div>
+<div class="notification-message">Desconto de 20% no Restaurante Sabor &amp; Arte</div>
+<div class="notification-time">Há 3 horas</div>
+</div>
+<div class="notification-badge"></div>
+</div>
+</div>
+<div class="notification-item warning" data-type="system" onclick="markAsRead(this)">
+<div class="notification-header">
+<div class="notification-icon warning">
+<i class="fas fa-exclamation-triangle"></i>
+</div>
+<div class="notification-content">
+<div class="notification-title">Cupom expirando em breve</div>
+<div class="notification-message">Seu cupom de 15% OFF expira em 2 dias</div>
+<div class="notification-time">Há 5 horas</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Ontem -->
+<div class="notifications-group">
+<h2 class="group-title">
+<i class="fas fa-calendar-day"></i>
                 Ontem
             </h2>
-            <div class="notification-items">
-                <div class="notification-item success" onclick="markAsRead(this)" data-type="points">
-                    <div class="notification-header">
-                        <div class="notification-icon success">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-title">Check-in realizado!</div>
-                            <div class="notification-message">+25 pontos por visitar a Loja Tech Store</div>
-                            <div class="notification-time">Ontem s 14:30</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="notification-item info" onclick="markAsRead(this)" data-type="offers">
-                    <div class="notification-header">
-                        <div class="notification-icon info">
-                            <i class="fas fa-fire"></i>
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-title">Promoo especial!</div>
-                            <div class="notification-message">Flash sale: at 70% OFF na categoria Moda</div>
-                            <div class="notification-time">Ontem s 10:15</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Esta Semana -->
-        <div class="notifications-group">
-            <h2 class="group-title">
-                <i class="fas fa-calendar-week"></i>
+<div class="notification-items">
+<div class="notification-item success" data-type="points" onclick="markAsRead(this)">
+<div class="notification-header">
+<div class="notification-icon success">
+<i class="fas fa-star"></i>
+</div>
+<div class="notification-content">
+<div class="notification-title">Check-in realizado!</div>
+<div class="notification-message">+25 pontos por visitar a Loja Tech Store</div>
+<div class="notification-time">Ontem às 14:30</div>
+</div>
+</div>
+</div>
+<div class="notification-item info" data-type="offers" onclick="markAsRead(this)">
+<div class="notification-header">
+<div class="notification-icon info">
+<i class="fas fa-fire"></i>
+</div>
+<div class="notification-content">
+<div class="notification-title">Promoçáo especial!</div>
+<div class="notification-message">Flash sale: até 70% OFF na categoria Moda</div>
+<div class="notification-time">Ontem às 10:15</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Esta Semana -->
+<div class="notifications-group">
+<h2 class="group-title">
+<i class="fas fa-calendar-week"></i>
                 Esta semana
             </h2>
-            <div class="notification-items">
-                <div class="notification-item success" onclick="markAsRead(this)" data-type="points">
-                    <div class="notification-header">
-                        <div class="notification-icon success">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <div class="notification-content">
-                            <div class="notification-title">Meta alcanada!</div>
-                            <div class="notification-message">Parabns! Voc completou 10 check-ins esta semana</div>
-                            <div class="notification-time">3 dias atrs</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="notification-items">
+<div class="notification-item success" data-type="points" onclick="markAsRead(this)">
+<div class="notification-header">
+<div class="notification-icon success">
+<i class="fas fa-trophy"></i>
 </div>
-
+<div class="notification-content">
+<div class="notification-title">Meta alcançada!</div>
+<div class="notification-message">Parabéns! Você completou 10 check-ins esta semana</div>
+<div class="notification-time">3 dias atrás</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <script>
 let allNotifications = [];
 let currentFilter = 'all';
 
 function markAsRead(element) {
     element.classList.remove('unread');
-    showToast('? Notificao marcada como lida');
+    showToast('? Notificaçáo marcada como lida');
 }
 
 function markAllAsRead() {
@@ -172,9 +163,9 @@ function markAllAsRead() {
     });
     
     if (unreadNotifications.length > 0) {
-        showToast(`? ${unreadNotifications.length} notificaes marcadas como lidas`);
+        showToast(`? ${unreadNotifications.length} notificações marcadas como lidas`);
     } else {
-        showToast(' No h notificaes no lidas');
+        showToast('?? Náo há notificações náo lidas');
     }
 }
 
@@ -185,7 +176,7 @@ function filterNotifications(type) {
     });
     event.target.classList.add('active');
     
-    // Filtrar notificaes
+    // Filtrar notificações
     const notifications = document.querySelectorAll('.notification-item');
     
     notifications.forEach(notification => {
@@ -202,20 +193,20 @@ function filterNotifications(type) {
         }
     });
     
-    // Verificar se h notificaes visveis em cada grupo
+    // Verificar se há notificações visíveis em cada grupo
     document.querySelectorAll('.notifications-group').forEach(group => {
         const visibleItems = group.querySelectorAll('.notification-item[style*="block"], .notification-item:not([style])');
         group.style.display = visibleItems.length > 0 ? 'block' : 'none';
     });
     
     currentFilter = type;
-    showToast(` Filtro "${getFilterName(type)}" aplicado`);
+    showToast(`?? Filtro "${getFilterName(type)}" aplicado`);
 }
 
 function getFilterName(type) {
     const names = {
         'all': 'Todas',
-        'unread': 'No lidas',
+        'unread': 'Náo lidas',
         'points': 'Pontos',
         'offers': 'Ofertas',
         'system': 'Sistema'
@@ -235,15 +226,12 @@ function showToast(message) {
     }, 2500);
 }
 
-// Contar notificaes no lidas ao carregar
+// Contar notificações náo lidas ao carregar
 document.addEventListener('DOMContentLoaded', () => {
     const unreadCount = document.querySelectorAll('.notification-item.unread').length;
-    console.log(` ${unreadCount} notificaes no lidas`);
+    console.log(`?? ${unreadCount} notificações náo lidas`);
 });
 </script>
 </body>
 </html>
-
-
-
 

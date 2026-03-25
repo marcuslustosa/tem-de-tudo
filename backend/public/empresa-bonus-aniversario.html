@@ -1,21 +1,22 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<meta content="#6A0DAD" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
 <title>B?nus de Anivers?rio - Empresa</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 <script src="/js/config.js"></script>
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="header">
@@ -24,14 +25,14 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div class="header-title">
-<h1> B?nus de Anivers?rio</h1>
+<h1>?? B?nus de Anivers?rio</h1>
 <p>Parabenize seus clientes com um presente especial</p>
 </div>
 </div>
 </div>
 <div class="container">
 <div class="info-box">
-<h3> Como funciona?</h3>
+<h3>?? Como funciona?</h3>
 <p>Todo dia ?s 8h da manh?, o sistema verifica automaticamente se algum cliente est? fazendo anivers?rio e envia um cupom de presente com validade de 30 dias. Configure o b?nus que deseja oferecer.</p>
 </div>
 <div class="form-card">
@@ -40,21 +41,21 @@
 <label>Tipo de B?nus</label>
 <div class="radio-group">
 <label class="radio-option">
-<input type="radio" name="tipo_bonus" value="percentual">
+<input name="tipo_bonus" type="radio" value="percentual"/>
 <div class="radio-label">
 <strong>Desconto Percentual</strong>
 <span>Aniversariante ganha X% de desconto</span>
 </div>
 </label>
 <label class="radio-option">
-<input type="radio" name="tipo_bonus" value="fixo">
+<input name="tipo_bonus" type="radio" value="fixo"/>
 <div class="radio-label">
 <strong>Desconto Fixo</strong>
 <span>Aniversariante ganha R$ X de desconto</span>
 </div>
 </label>
 <label class="radio-option">
-<input type="radio" name="tipo_bonus" value="gratis">
+<input name="tipo_bonus" type="radio" value="gratis"/>
 <div class="radio-label">
 <strong>Servi?o/Produto Gr?tis</strong>
 <span>Aniversariante ganha um brinde gratuito</span>
@@ -66,21 +67,21 @@
 <label id="valorLabel">Valor do B?nus</label>
 <div class="input-wrapper">
 <i class="input-icon fas fa-gift"></i>
-<input type="number" id="valorBonus" class="input-with-icon" placeholder="0" min="0" step="0.01">
+<input class="input-with-icon" id="valorBonus" min="0" placeholder="0" step="0.01" type="number"/>
 </div>
 </div>
 <div class="form-group">
 <label>Mensagem Personalizada</label>
 <div class="input-wrapper">
 <i class="input-icon fas fa-birthday-cake"></i>
-<input type="text" id="mensagem" class="input-with-icon" placeholder="Parab?ns! Aqui est? seu presente de anivers?rio ">
+<input class="input-with-icon" id="mensagem" placeholder="Parab?ns! Aqui est? seu presente de anivers?rio ??" type="text"/>
 </div>
 </div>
 <div class="form-group">
 <label>Validade do Cupom (dias)</label>
 <div class="input-wrapper">
 <i class="input-icon fas fa-calendar"></i>
-<input type="number" id="validadeDias" class="input-with-icon" value="30" min="1" max="365">
+<input class="input-with-icon" id="validadeDias" max="365" min="1" type="number" value="30"/>
 </div>
 </div>
 </div>
@@ -90,7 +91,7 @@
 <div class="preview-desc" id="previewDesc">Configure o b?nus acima</div>
 </div>
 <button class="btn-primary" id="btnSalvar">
-<i class="fas fa-check"></i> Salvar Configuraes
+<i class="fas fa-check"></i> Salvar Configura??es
         </button>
 </div>
 <script>
@@ -135,17 +136,17 @@
                 switch(tipo) {
                     case 'percentual':
                         previewValue = `${valor}% OFF`;
-                        previewDesc = msg || ` Feliz Anivers?rio! Ganhe ${valor}% OFF (v?lido por ${dias} dias)`;
+                        previewDesc = msg || `?? Feliz Anivers?rio! Ganhe ${valor}% OFF (v?lido por ${dias} dias)`;
                         document.getElementById('valorLabel').textContent = 'Percentual de Desconto (%)';
                         break;
                     case 'fixo':
                         previewValue = `R$ ${valor.toFixed(2)}`;
-                        previewDesc = msg || ` Feliz Anivers?rio! R$ ${valor.toFixed(2)} OFF (v?lido por ${dias} dias)`;
+                        previewDesc = msg || `?? Feliz Anivers?rio! R$ ${valor.toFixed(2)} OFF (v?lido por ${dias} dias)`;
                         document.getElementById('valorLabel').textContent = 'Valor Fixo (R$)';
                         break;
                     case 'gratis':
-                        previewValue = ' GR?TIS';
-                        previewDesc = msg || ` Feliz Anivers?rio! Presente especial para voc? (v?lido por ${dias} dias)`;
+                        previewValue = '?? GR?TIS';
+                        previewDesc = msg || `?? Feliz Anivers?rio! Presente especial para voc? (v?lido por ${dias} dias)`;
                         document.getElementById('valorLabel').textContent = 'Valor de Refer?ncia (R$)';
                         break;
                 }
@@ -166,7 +167,7 @@
                 const dias = parseInt(document.getElementById('validadeDias').value);
                 if (!tipo || !valor) {
                     alert('Preencha o tipo e valor do b?nus');
-                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configuraes';
+                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura??es';
                     btn.disabled = false;
                     return;
                 }
@@ -197,13 +198,13 @@
                     }, 1500);
                 } else {
                     alert(result.message || 'Erro ao salvar');
-                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configuraes';
+                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura??es';
                     btn.disabled = false;
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao salvar configuraes');
-                btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configuraes';
+                alert('Erro ao salvar configura??es');
+                btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura??es';
                 btn.disabled = false;
             }
         });
@@ -225,7 +226,4 @@
     </script>
 </body>
 </html>
-
-
-
 

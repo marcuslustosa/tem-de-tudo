@@ -1,178 +1,162 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Editar Perfil - Tem de Tudo</title>
-<meta name="description" content="Edite suas informaes pessoais e preferncias">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta content="Edite suas informações pessoais e preferências" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 <script src="js/config.js"></script>
 <script src="js/auth-guard.js"></script>
-
-
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="app-page">
-    <!-- Header -->
-    <div class="app-header">
-        <div class="header-nav">
-            <a href="app-perfil.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <h1>Editar Perfil</h1>
-            <button class="save-btn" onclick="salvarPerfil()" title="Salvar alteraes">
-                <i class="fas fa-check"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Content -->
-    <div class="app-content">
-        <!-- Avatar Section -->
-        <div class="section">
-            <div class="avatar-section">
-                <div class="avatar-wrapper">
-                    <div class="avatar" id="avatarDisplay">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="avatar-edit" onclick="trocarFoto()">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                </div>
-                <p class="profile-hint">Toque no cone da cmera para alterar sua foto</p>
-            </div>
-        </div>
-
-        <!-- Personal Info Section -->
-        <div class="section">
-            <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-user-edit"></i>
-                    Informaes Pessoais
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Nome Completo</label>
-                    <div class="input-group">
-                        <i class="input-icon fas fa-user"></i>
-                        <input type="text" class="form-input" id="nome" placeholder="Digite seu nome completo">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <div class="input-group">
-                        <i class="input-icon fas fa-envelope"></i>
-                        <input type="email" class="form-input" id="email" placeholder="seu@email.com">
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Telefone</label>
-                    <div class="input-group">
-                        <i class="input-icon fas fa-phone"></i>
-                        <input type="tel" class="form-input" id="telefone" placeholder="(11) 99999-9999">
-                    </div>
-                </div>
-                
-                <div class="form-group admin-only-field" style="display: none;">
-                    <label class="form-label">Data de Nascimento (Somente Admin)</label>
-                    <div class="input-group">
-                        <i class="input-icon fas fa-calendar"></i>
-                        <input type="date" class="form-input" id="dataNascimento" disabled>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Preferences Section -->
-        <div class="section">
-            <div class="preferences-section">
-                <div class="section-title">
-                    <i class="fas fa-cog"></i>
-                    Preferncias
-                </div>
-                
-                <div class="toggle-group">
-                    <div>
-                        <div class="toggle-label">Notificaes Push</div>
-                        <div class="toggle-desc">Receba alertas sobre promoes e pontos</div>
-                    </div>
-                    <div class="toggle-switch active" onclick="togglePreference(this, 'notifications')"></div>
-                </div>
-                
-                <div class="toggle-group">
-                    <div>
-                        <div class="toggle-label">Email Marketing</div>
-                        <div class="toggle-desc">Newsletter com ofertas exclusivas</div>
-                    </div>
-                    <div class="toggle-switch" onclick="togglePreference(this, 'email_marketing')"></div>
-                </div>
-                
-                <div class="toggle-group">
-                    <div>
-                        <div class="toggle-label">Localizao</div>
-                        <div class="toggle-desc">Ofertas baseadas na sua localizao</div>
-                    </div>
-                    <div class="toggle-switch active" onclick="togglePreference(this, 'location')"></div>
-                </div>
-                
-                <div class="toggle-group">
-                    <div>
-                        <div class="toggle-label">Tema Escuro</div>
-                        <div class="toggle-desc">Interface com cores escuras</div>
-                    </div>
-                    <div class="toggle-switch" onclick="togglePreference(this, 'dark_mode')"></div>
-                </div>
-                
-                <button class="btn-save" onclick="salvarPerfil()">
-                    <span id="saveText">Salvar Alteraes</span>
-                    <div class="loading" id="saveLoading" style="display: none;"></div>
-                </button>
-            </div>
-        </div>
-    </div>
+<!-- Header -->
+<div class="app-header">
+<div class="header-nav">
+<a class="back-btn" href="app-perfil.html">
+<i class="fas fa-arrow-left"></i>
+</a>
+<h1>Editar Perfil</h1>
+<button class="save-btn" onclick="salvarPerfil()" title="Salvar alterações">
+<i class="fas fa-check"></i>
+</button>
 </div>
-
+</div>
+<!-- Content -->
+<div class="app-content">
+<!-- Avatar Section -->
+<div class="section">
+<div class="avatar-section">
+<div class="avatar-wrapper">
+<div class="avatar" id="avatarDisplay">
+<i class="fas fa-user"></i>
+</div>
+<div class="avatar-edit" onclick="trocarFoto()">
+<i class="fas fa-camera"></i>
+</div>
+</div>
+<p class="profile-hint">Toque no ícone da câmera para alterar sua foto</p>
+</div>
+</div>
+<!-- Personal Info Section -->
+<div class="section">
+<div class="form-section">
+<div class="section-title">
+<i class="fas fa-user-edit"></i>
+                    Informações Pessoais
+                </div>
+<div class="form-group">
+<label class="form-label">Nome Completo</label>
+<div class="input-group">
+<i class="input-icon fas fa-user"></i>
+<input class="form-input" id="nome" placeholder="Digite seu nome completo" type="text"/>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label">Email</label>
+<div class="input-group">
+<i class="input-icon fas fa-envelope"></i>
+<input class="form-input" id="email" placeholder="seu@email.com" type="email"/>
+</div>
+</div>
+<div class="form-group">
+<label class="form-label">Telefone</label>
+<div class="input-group">
+<i class="input-icon fas fa-phone"></i>
+<input class="form-input" id="telefone" placeholder="(11) 99999-9999" type="tel"/>
+</div>
+</div>
+<div class="form-group admin-only-field tdt-inline-cb458930">
+<label class="form-label">Data de Nascimento (Somente Admin)</label>
+<div class="input-group">
+<i class="input-icon fas fa-calendar"></i>
+<input class="form-input" disabled="" id="dataNascimento" type="date"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Preferences Section -->
+<div class="section">
+<div class="preferences-section">
+<div class="section-title">
+<i class="fas fa-cog"></i>
+                    Preferências
+                </div>
+<div class="toggle-group">
+<div>
+<div class="toggle-label">Notificações Push</div>
+<div class="toggle-desc">Receba alertas sobre promoções e pontos</div>
+</div>
+<div class="toggle-switch active" onclick="togglePreference(this, 'notifications')"></div>
+</div>
+<div class="toggle-group">
+<div>
+<div class="toggle-label">Email Marketing</div>
+<div class="toggle-desc">Newsletter com ofertas exclusivas</div>
+</div>
+<div class="toggle-switch" onclick="togglePreference(this, 'email_marketing')"></div>
+</div>
+<div class="toggle-group">
+<div>
+<div class="toggle-label">Localizaçáo</div>
+<div class="toggle-desc">Ofertas baseadas na sua localizaçáo</div>
+</div>
+<div class="toggle-switch active" onclick="togglePreference(this, 'location')"></div>
+</div>
+<div class="toggle-group">
+<div>
+<div class="toggle-label">Tema Escuro</div>
+<div class="toggle-desc">Interface com cores escuras</div>
+</div>
+<div class="toggle-switch" onclick="togglePreference(this, 'dark_mode')"></div>
+</div>
+<button class="btn-save" onclick="salvarPerfil()">
+<span id="saveText">Salvar Alterações</span>
+<div class="loading tdt-inline-cb458930" id="saveLoading"></div>
+</button>
+</div>
+</div>
+</div>
+</div>
 <!-- Bottom Navigation -->
 <div class="bottom-nav">
-    <div class="nav-container">
-        <a href="dashboard-cliente.html" class="nav-item">
-            <i class="fas fa-home"></i>
-            <span>Incio</span>
-        </a>
-        <a href="app-empresas.html" class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>Explorar</span>
-        </a>
-        <a href="app-pontos.html" class="nav-item">
-            <i class="fas fa-star"></i>
-            <span>Pontos</span>
-        </a>
-        <a href="app-promocoes.html" class="nav-item">
-            <i class="fas fa-tags"></i>
-            <span>Ofertas</span>
-        </a>
-        <a href="app-perfil.html" class="nav-item active">
-            <i class="fas fa-bars"></i>
-            <span>Menu</span>
-        </a>
-    </div>
+<div class="nav-container">
+<a class="nav-item" href="dashboard-cliente.html">
+<i class="fas fa-home"></i>
+<span>Início</span>
+</a>
+<a class="nav-item" href="app-empresas.html">
+<i class="fas fa-search"></i>
+<span>Explorar</span>
+</a>
+<a class="nav-item" href="app-pontos.html">
+<i class="fas fa-star"></i>
+<span>Pontos</span>
+</a>
+<a class="nav-item" href="app-promocoes.html">
+<i class="fas fa-tags"></i>
+<span>Ofertas</span>
+</a>
+<a class="nav-item active" href="app-perfil.html">
+<i class="fas fa-bars"></i>
+<span>Menu</span>
+</a>
 </div>
-
+</div>
 <!-- Hidden file input for avatar -->
-<input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarChange(event)">
-
+<input accept="image/*" class="tdt-inline-cb458930" id="avatarInput" onchange="handleAvatarChange(event)" type="file"/>
 <script>
 let preferences = {
     notifications: true,
@@ -195,7 +179,7 @@ function carregarDadosUsuario() {
     if (user.telefone) document.getElementById('telefone').value = user.telefone;
     if (user.data_nascimento) document.getElementById('dataNascimento').value = user.data_nascimento;
     
-    // Carregar preferncias
+    // Carregar preferências
     const savedPrefs = JSON.parse(localStorage.getItem('preferences') || '{}');
     preferences = { ...preferences, ...savedPrefs };
     atualizarToggles();
@@ -233,7 +217,7 @@ function handleAvatarChange(event) {
         reader.onload = function(e) {
             const avatarDisplay = document.getElementById('avatarDisplay');
             avatarDisplay.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
-            showNotification('Foto atualizada! Salve as alteraes.', 'success');
+            showNotification('Foto atualizada! Salve as alterações.', 'success');
         };
         reader.readAsDataURL(file);
     }
@@ -280,7 +264,7 @@ async function salvarPerfil() {
         
         showNotification('Perfil atualizado com sucesso!', 'success');
         
-        // Opcional: redirecionar aps salvar
+        // Opcional: redirecionar após salvar
         setTimeout(() => {
             window.location.href = 'app-perfil.html';
         }, 1000);
@@ -319,29 +303,26 @@ function showNotification(message, type = 'info') {
 </script>
 </body>
 </html>
-</a>
-<a href="app-empresas.html" class="nav-item">
+<a class="nav-item" href="app-empresas.html">
 <i class="fas fa-search"></i>
 <span>Buscar</span>
 </a>
-<a href="app-cupons.html" class="nav-item">
+<a class="nav-item" href="app-cupons.html">
 <i class="fas fa-ticket-alt"></i>
 <span>Cupons</span>
 </a>
-<a href="app-pontos.html" class="nav-item">
+<a class="nav-item" href="app-pontos.html">
 <i class="fas fa-coins"></i>
 <span>Pontos</span>
 </a>
-<a href="app-perfil.html" class="nav-item active">
+<a class="nav-item active" href="app-perfil.html">
 <i class="fas fa-user"></i>
 <span>Perfil</span>
 </a>
-</div>
-</nav>
 <script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         document.addEventListener('DOMContentLoaded', async () => {
-            // Verificar autenticao
+            // Verificar autentica??o
             const token = localStorage.getItem('token');
             const userStr = localStorage.getItem('user');
             if (!token || !userStr) {
@@ -362,7 +343,7 @@ function showNotification(message, type = 'info') {
                         field.style.display = 'none';
                     }
                 });
-                // Preencher campos com dados do usurio
+                // Preencher campos com dados do usuário
                 document.getElementById('nome').value = user.name || user.nome || '';
                 document.getElementById('email').value = user.email || '';
                 document.getElementById('telefone').value = user.telefone || '';
@@ -390,16 +371,16 @@ function showNotification(message, type = 'info') {
             if (isAdmin) {
                 dados.data_nascimento = document.getElementById('dataNascimento').value;
             }
-            // Validao bsica
+            // Validaçáo básica
             if (!dados.name || !dados.email) {
-                mostrarFeedback('Nome e email so obrigatrios!', 'error');
+                mostrarFeedback('Nome e email sáo obrigatórios!', 'error');
                 return;
             }
-            mostrarFeedback('Salvando alteraes...', 'info');
+            mostrarFeedback('Salvando alterações...', 'info');
             try {
-                // SIMULAO TEMPORRIA - Funcionar at backend estar completo
+                // SIMULAÇáO TEMPORÁRIA - Funcionará até backend estar completo
                 if (!token) {
-                    mostrarFeedback(' Voc precisa estar logado', 'error');
+                    mostrarFeedback('?? Você precisa estar logado', 'error');
                     setTimeout(() => window.location.href = 'entrar.html', 1500);
                     return;
                 }
@@ -426,7 +407,7 @@ function showNotification(message, type = 'info') {
             }
         }
         function trocarFoto() {
-            mostrarFeedback(' Funcionalidade de foto ser implementada em breve!', 'info');
+            mostrarFeedback('?? Funcionalidade de foto será implementada em breve!', 'info');
         }
         function mostrarFeedback(mensagem, tipo) {
             // Criar elemento de feedback
@@ -436,7 +417,7 @@ function showNotification(message, type = 'info') {
                 top: 20px;
                 left: 50%;
                 transform: translateX(-50%);
-                background: ${tipo === 'success' ? 'linear-gradient(135deg, #00d4aa, #00c896)' : tipo === 'error' ? 'linear-gradient(135deg, #ff6b6b, #ff5252)' : 'linear-gradient(135deg, #9b59b6, #9333EA)'};
+                background: ${tipo === 'success' ? 'linear-gradient(135deg, #00d4aa, #00c896)' : tipo === 'error' ? 'linear-gradient(135deg, #ff6b6b, #ff5252)' : 'linear-gradient(135deg, #e10098, #9333EA)'};
                 color: ${tipo === 'success' || tipo === 'error' ? '#fff' : '#0a0a0f'};
                 padding: 12px 24px;
                 border-radius: 16px;
@@ -448,13 +429,13 @@ function showNotification(message, type = 'info') {
             `;
             feedback.textContent = mensagem;
             document.body.appendChild(feedback);
-            // Remover aps 3 segundos
+            // Remover após 3 segundos
             setTimeout(() => {
                 feedback.style.animation = 'slideUp 0.3s ease';
                 setTimeout(() => document.body.removeChild(feedback), 300);
             }, 3000);
         }
-        // Adicionar estilos para animaes
+        // Adicionar estilos para anima??es
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideDown {
@@ -468,9 +449,4 @@ function showNotification(message, type = 'info') {
         `;
         document.head.appendChild(style);
     </script>
-</body>
-</html>
-
-
-
 

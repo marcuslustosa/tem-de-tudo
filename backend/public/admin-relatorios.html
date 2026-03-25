@@ -1,243 +1,238 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Relatrios - Admin Tem de Tudo</title>
-<meta name="description" content="Dashboard de relatrios e analytics administrativo">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Relatórios - Admin Tem de Tudo</title>
+<meta content="Dashboard de relatórios e analytics administrativo" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/config.js"></script>
 <script src="js/auth-guard.js"></script>
 </head>
-</head>
 <body>
 <!-- HEADER -->
 <div class="header">
-    <div class="header-top">
-        <h1 class="page-title">
-            <i class="fas fa-chart-bar"></i>
-            Relatrios e Analytics
+<div class="header-top">
+<h1 class="page-title">
+<i class="fas fa-chart-bar"></i>
+            Relatórios e Analytics
         </h1>
-        <a href="admin-dashboard.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i>
+<a class="back-btn" href="admin-dashboard.html">
+<i class="fas fa-arrow-left"></i>
             Voltar
         </a>
-    </div>
 </div>
-
+</div>
 <!-- CONTAINER PRINCIPAL -->
 <div class="container">
-    <!-- FILTROS -->
-    <div class="filters">
-        <div class="filter-group">
-            <label class="filter-label">Perodo</label>
-            <select class="filter-select" id="periodFilter">
-                <option value="today">Hoje</option>
-                <option value="week">Esta Semana</option>
-                <option value="month" selected>Este Ms</option>
-                <option value="quarter">Este Trimestre</option>
-                <option value="year">Este Ano</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label class="filter-label">Data Inicial</label>
-            <input type="date" class="filter-input" id="startDate">
-        </div>
-        <div class="filter-group">
-            <label class="filter-label">Data Final</label>
-            <input type="date" class="filter-input" id="endDate">
-        </div>
-        <div class="filter-group">
-            <label class="filter-label">Tipo</label>
-            <select class="filter-select" id="typeFilter">
-                <option value="all">Todos</option>
-                <option value="users">Usurios</option>
-                <option value="companies">Empresas</option>
-                <option value="promotions">Promoes</option>
-            </select>
-        </div>
-        <div class="filter-group" style="justify-content: flex-end;">
-            <button class="filter-btn" onclick="applyFilters()">
-                <i class="fas fa-search"></i>
+<!-- FILTROS -->
+<div class="filters">
+<div class="filter-group">
+<label class="filter-label">Período</label>
+<select class="filter-select" id="periodFilter">
+<option value="today">Hoje</option>
+<option value="week">Esta Semana</option>
+<option selected="" value="month">Este Mês</option>
+<option value="quarter">Este Trimestre</option>
+<option value="year">Este Ano</option>
+</select>
+</div>
+<div class="filter-group">
+<label class="filter-label">Data Inicial</label>
+<input class="filter-input" id="startDate" type="date"/>
+</div>
+<div class="filter-group">
+<label class="filter-label">Data Final</label>
+<input class="filter-input" id="endDate" type="date"/>
+</div>
+<div class="filter-group">
+<label class="filter-label">Tipo</label>
+<select class="filter-select" id="typeFilter">
+<option value="all">Todos</option>
+<option value="users">Usuários</option>
+<option value="companies">Empresas</option>
+<option value="promotions">Promoções</option>
+</select>
+</div>
+<div class="filter-group tdt-inline-36b745ae">
+<button class="filter-btn" onclick="applyFilters()">
+<i class="fas fa-search"></i>
                 Aplicar Filtros
             </button>
-        </div>
-    </div>
-
-    <!-- ESTATSTICAS PRINCIPAIS -->
-    <div class="stats">
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-users"></i>
+</div>
+</div>
+<!-- ESTATÍSTICAS PRINCIPAIS -->
+<div class="stats">
+<div class="stat-card">
+<div class="stat-icon">
+<i class="fas fa-users"></i>
+</div>
+<div class="stat-value" id="totalUsers">847</div>
+<div class="stat-label">Total de Usuários</div>
+<div class="stat-change positive">
+<i class="fas fa-arrow-up"></i>
+                +12.5% vs mês anterior
             </div>
-            <div class="stat-value" id="totalUsers">847</div>
-            <div class="stat-label">Total de Usurios</div>
-            <div class="stat-change positive">
-                <i class="fas fa-arrow-up"></i>
-                +12.5% vs ms anterior
+</div>
+<div class="stat-card">
+<div class="stat-icon tdt-inline-8db838d5">
+<i class="fas fa-building"></i>
+</div>
+<div class="stat-value" id="totalCompanies">156</div>
+<div class="stat-label">Empresas Cadastradas</div>
+<div class="stat-change positive">
+<i class="fas fa-arrow-up"></i>
+                +8.3% vs mês anterior
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--vivo-green);">
-                <i class="fas fa-building"></i>
+</div>
+<div class="stat-card">
+<div class="stat-icon tdt-inline-95238fb8">
+<i class="fas fa-tags"></i>
+</div>
+<div class="stat-value" id="activePromotions">89</div>
+<div class="stat-label">Promoções Ativas</div>
+<div class="stat-change positive">
+<i class="fas fa-arrow-up"></i>
+                +15.7% vs mês anterior
             </div>
-            <div class="stat-value" id="totalCompanies">156</div>
-            <div class="stat-label">Empresas Cadastradas</div>
-            <div class="stat-change positive">
-                <i class="fas fa-arrow-up"></i>
-                +8.3% vs ms anterior
+</div>
+<div class="stat-card">
+<div class="stat-icon tdt-inline-21aab77f">
+<i class="fas fa-chart-line"></i>
+</div>
+<div class="stat-value" id="conversionRate">73.2%</div>
+<div class="stat-label">Taxa de Conversáo</div>
+<div class="stat-change negative">
+<i class="fas fa-arrow-down"></i>
+                -2.1% vs mês anterior
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--vivo-orange);">
-                <i class="fas fa-tags"></i>
-            </div>
-            <div class="stat-value" id="activePromotions">89</div>
-            <div class="stat-label">Promoes Ativas</div>
-            <div class="stat-change positive">
-                <i class="fas fa-arrow-up"></i>
-                +15.7% vs ms anterior
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--vivo-blue);">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="stat-value" id="conversionRate">73.2%</div>
-            <div class="stat-label">Taxa de Converso</div>
-            <div class="stat-change negative">
-                <i class="fas fa-arrow-down"></i>
-                -2.1% vs ms anterior
-            </div>
-        </div>
-    </div>
-
-    <!-- GRFICOS -->
-    <div class="charts-section">
-        <div class="chart-card">
-            <h3 class="chart-title">
-                <i class="fas fa-chart-line"></i>
-                Crescimento de Usurios
+</div>
+</div>
+<!-- GRÁFICOS -->
+<div class="charts-section">
+<div class="chart-card">
+<h3 class="chart-title">
+<i class="fas fa-chart-line"></i>
+                Crescimento de Usuários
             </h3>
-            <div class="chart-container">
-                <canvas id="usersChart"></canvas>
-            </div>
-        </div>
-        <div class="chart-card">
-            <h3 class="chart-title">
-                <i class="fas fa-chart-pie"></i>
-                Distribuio por Tipo
+<div class="chart-container">
+<canvas id="usersChart"></canvas>
+</div>
+</div>
+<div class="chart-card">
+<h3 class="chart-title">
+<i class="fas fa-chart-pie"></i>
+                Distribuiçáo por Tipo
             </h3>
-            <div class="chart-container">
-                <canvas id="distributionChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- TABELA DE MTRICAS -->
-    <div class="table-section">
-        <div class="table-header">
-            <h3 class="table-title">
-                <i class="fas fa-table"></i>
-                Mtricas Detalhadas
+<div class="chart-container">
+<canvas id="distributionChart"></canvas>
+</div>
+</div>
+</div>
+<!-- TABELA DE MÉTRICAS -->
+<div class="table-section">
+<div class="table-header">
+<h3 class="table-title">
+<i class="fas fa-table"></i>
+                Métricas Detalhadas
             </h3>
-            <button class="export-btn" onclick="exportData()">
-                <i class="fas fa-download"></i>
+<button class="export-btn" onclick="exportData()">
+<i class="fas fa-download"></i>
                 Exportar Dados
             </button>
-        </div>
-        <div class="table-container">
-            <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>Mtrica</th>
-                        <th>Valor Atual</th>
-                        <th>Perodo Anterior</th>
-                        <th>Variao</th>
-                        <th>Tendncia</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Novos Usurios</td>
-                        <td class="metric-value">125</td>
-                        <td>98</td>
-                        <td class="metric-positive">+27.6%</td>
-                        <td><i class="fas fa-trending-up" style="color: var(--vivo-green);"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Empresas Ativas</td>
-                        <td class="metric-value">142</td>
-                        <td>138</td>
-                        <td class="metric-positive">+2.9%</td>
-                        <td><i class="fas fa-trending-up" style="color: var(--vivo-green);"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Promoes Criadas</td>
-                        <td class="metric-value">34</td>
-                        <td>41</td>
-                        <td class="metric-negative">-17.1%</td>
-                        <td><i class="fas fa-trending-down" style="color: var(--vivo-red);"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Engajamento</td>
-                        <td class="metric-value">68.4%</td>
-                        <td>71.2%</td>
-                        <td class="metric-negative">-3.9%</td>
-                        <td><i class="fas fa-trending-down" style="color: var(--vivo-red);"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Receita Estimada</td>
-                        <td class="metric-value">R$ 45.672</td>
-                        <td>R$ 38.945</td>
-                        <td class="metric-positive">+17.3%</td>
-                        <td><i class="fas fa-trending-up" style="color: var(--vivo-green);"></i></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
-
+<div class="table-container">
+<table class="report-table">
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Valor Atual</th>
+<th>Período Anterior</th>
+<th>Variaçáo</th>
+<th>Tendência</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Novos Usuários</td>
+<td class="metric-value">125</td>
+<td>98</td>
+<td class="metric-positive">+27.6%</td>
+<td><i class="fas fa-trending-up tdt-inline-8844fd86"></i></td>
+</tr>
+<tr>
+<td>Empresas Ativas</td>
+<td class="metric-value">142</td>
+<td>138</td>
+<td class="metric-positive">+2.9%</td>
+<td><i class="fas fa-trending-up tdt-inline-8844fd86"></i></td>
+</tr>
+<tr>
+<td>Promoções Criadas</td>
+<td class="metric-value">34</td>
+<td>41</td>
+<td class="metric-negative">-17.1%</td>
+<td><i class="fas fa-trending-down tdt-inline-d81bc40f"></i></td>
+</tr>
+<tr>
+<td>Engajamento</td>
+<td class="metric-value">68.4%</td>
+<td>71.2%</td>
+<td class="metric-negative">-3.9%</td>
+<td><i class="fas fa-trending-down tdt-inline-d81bc40f"></i></td>
+</tr>
+<tr>
+<td>Receita Estimada</td>
+<td class="metric-value">R$ 45.672</td>
+<td>R$ 38.945</td>
+<td class="metric-positive">+17.3%</td>
+<td><i class="fas fa-trending-up tdt-inline-8844fd86"></i></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 <script>
-// Inicializao da pgina
+// Inicializaçáo da página
 window.addEventListener('DOMContentLoaded', function() {
-    console.log('Pgina de relatrios carregada');
+    console.log('Página de relatórios carregada');
     
-    // Configurar datas padro
+    // Configurar datas padráo
     const today = new Date();
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     
     document.getElementById('startDate').valueAsDate = firstDayOfMonth;
     document.getElementById('endDate').valueAsDate = today;
     
-    // Inicializar grficos
+    // Inicializar gráficos
     initializeCharts();
 });
 
-// Inicializao dos grficos
+// Inicializaçáo dos gráficos
 function initializeCharts() {
-    // Grfico de crescimento de usurios
+    // Gráfico de crescimento de usuários
     const usersCtx = document.getElementById('usersChart').getContext('2d');
     new Chart(usersCtx, {
         type: 'line',
         data: {
             labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
             datasets: [{
-                label: 'Usurios',
+                label: 'Usuários',
                 data: [45, 52, 68, 71, 83, 95, 102, 115, 127, 138, 145, 156],
-                borderColor: '#9b59b6',
+                borderColor: '#e10098',
                 backgroundColor: 'rgba(111, 26, 182, 0.1)',
                 fill: true,
                 tension: 0.4
@@ -259,7 +254,7 @@ function initializeCharts() {
         }
     });
 
-    // Grfico de distribuio por tipo
+    // Gráfico de distribuiçáo por tipo
     const distributionCtx = document.getElementById('distributionChart').getContext('2d');
     new Chart(distributionCtx, {
         type: 'doughnut',
@@ -270,7 +265,7 @@ function initializeCharts() {
                 backgroundColor: [
                     '#3B82F6',
                     '#10B981', 
-                    '#9b59b6'
+                    '#e10098'
                 ]
             }]
         },
@@ -295,30 +290,30 @@ function applyFilters() {
     
     console.log('Aplicando filtros:', { period, startDate, endDate, type });
     
-    // Aqui voc implementaria a lgica para filtrar os dados
+    // Aqui você implementaria a lógica para filtrar os dados
     // Por enquanto, apenas mostra um alerta
-    alert(`Filtros aplicados:\nPerodo: ${period}\nData Inicial: ${startDate}\nData Final: ${endDate}\nTipo: ${type}`);
+    alert(`Filtros aplicados:\nPeríodo: ${period}\nData Inicial: ${startDate}\nData Final: ${endDate}\nTipo: ${type}`);
 }
 
 // Exportar dados
 function exportData() {
     alert('Exportando dados para CSV... (Funcionalidade em desenvolvimento)');
     
-    // Aqui voc implementaria a exportao real dos dados
+    // Aqui você implementaria a exportaçáo real dos dados
     // Por exemplo, gerando um arquivo CSV ou Excel
 }
 
 // Atualizar dados em tempo real (simulado)
 function updateMetrics() {
-    // Simula atualizaes em tempo real dos dados
+    // Simula atualizações em tempo real dos dados
     const elements = ['totalUsers', 'totalCompanies', 'activePromotions', 'conversionRate'];
     
     elements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
-            // Adiciona uma pequena variao aleatria aos valores
+            // Adiciona uma pequena variaçáo aleatória aos valores
             const currentValue = parseFloat(element.textContent.replace(/[^\d.]/g, ''));
-            const variation = (Math.random() - 0.5) * 0.02; // 1% de variao
+            const variation = (Math.random() - 0.5) * 0.02; // ±1% de variaçáo
             const newValue = currentValue * (1 + variation);
             
             if (id === 'conversionRate') {
@@ -330,19 +325,10 @@ function updateMetrics() {
     });
 }
 
-// Atualizar mtricas a cada 30 segundos (simulao)
+// Atualizar métricas a cada 30 segundos (simulaçáo)
 setInterval(updateMetrics, 30000);
 </script>
 </body>
 </html>
-
-
-                    </div>
-                    <div class="stat-trend positive">
-
-</body>
-</html>
-
-
-
-
+<div class="stat-trend positive">
+</div>

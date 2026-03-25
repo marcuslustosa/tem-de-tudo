@@ -1,28 +1,29 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>Aplicar Desconto - Tem de Tudo</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="manifest" href="/manifest.json">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<link href="/manifest.json" rel="manifest"/>
 <script src="/js/config.js"></script>
-<script src="/js/auth-manager.js" defer></script>
-<script src="/js/api-client.js" defer></script>
-<script src="/js/validators.js" defer></script>
-<script src="/js/ui-helpers.js" defer></script>
-<script src="/js/auth-guard.js" data-require-auth="cliente"></script>
+<script defer="" src="/js/auth-manager.js"></script>
+<script defer="" src="/js/api-client.js"></script>
+<script defer="" src="/js/validators.js"></script>
+<script defer="" src="/js/ui-helpers.js"></script>
+<script data-require-auth="cliente" src="/js/auth-guard.js"></script>
 `n
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <nav class="nav-bar">
 <ul>
-<li><a href="dashboard-empresa.html"><i class="fas fa-home"></i> Dashboard</a></li>
+<li><a href="dashboard-estabelecimento.html"><i class="fas fa-home"></i> Dashboard</a></li>
 <li><a href="profile-company.html"><i class="fas fa-building"></i> Painel Empresa</a></li>
 <li><a href="configurar-descontos.html"><i class="fas fa-percent"></i> Configurar Descontos</a></li>
 <li><a href="aplicar-desconto.html"><i class="fas fa-tag"></i> Aplicar Desconto</a></li>
@@ -37,12 +38,7 @@
 <div class="container">
 <div class="search-section">
 <h2 class="search-title"><i class="fas fa-search"></i> Buscar Cliente</h2>
-<input 
-                type="text" 
-                class="search-input" 
-                id="searchInput" 
-                placeholder="Digite o CPF, email ou nome do cliente..."
-            >
+<input class="search-input" id="searchInput" placeholder="Digite o CPF, email ou nome do cliente..." type="text"/>
 <button class="search-button" onclick="searchCustomer()">
 <i class="fas fa-search"></i> Buscar Cliente
             </button>
@@ -58,23 +54,15 @@
 <div class="points-display">
 <div class="points-value" id="customerPoints">0</div>
 <div class="points-label">Pontos Acumulados</div>
-<span class="level-badge" id="customerLevel" class="card">Bronze</span>
+<span class="card" id="customerLevel">Bronze</span>
 </div>
 </div>
 <div class="calculator-section" id="calculatorSection">
 <h2 class="calc-title"><i class="fas fa-cash-register"></i> Calcular Desconto</h2>
-<label style="color: var(--gray-700); font-weight: 600; margin-bottom: 0.5rem; display: block;">
+<label class="tdt-inline-9a782958">
                 Valor da Compra (R$)
             </label>
-<input 
-                type="number" 
-                class="purchase-input" 
-                id="purchaseValue" 
-                placeholder="0,00"
-                min="0"
-                step="0.01"
-                oninput="calculateDiscount()"
-            >
+<input class="purchase-input" id="purchaseValue" min="0" oninput="calculateDiscount()" placeholder="0,00" step="0.01" type="number"/>
 <div class="calc-row">
 <span class="calc-label">N?vel do Cliente:</span>
 <span class="calc-value" id="calcLevel">Bronze</span>
@@ -117,13 +105,13 @@
                 alert('Por favor, digite um CPF, email ou nome para buscar.');
                 return;
             }
-            // Simulao de busca (integre com sua API)
+            // Simula??o de busca (integre com sua API)
             currentCustomer = {
                 name: 'Jo?o da Silva',
                 email: 'joao.silva@email.com',
                 points: 5500,
-                level: 'Platina',
-                discount: 20
+                level: 'Ouro',
+                discount: 15
             };
             displayCustomer(currentCustomer);
         }
@@ -142,10 +130,11 @@
                 'Bronze': '#CD7F32',
                 'Prata': '#C0C0C0',
                 'Ouro': '#FFD700',
-                'Platina': '#E5E4E2'
+                'Platina': '#E5E4E2',
+                'Diamante': '#B9F2FF'
             };
             levelBadge.style.background = levelColors[customer.level] || '#CD7F32';
-            levelBadge.style.color = (customer.level === 'Ouro' || customer.level === 'Platina') ? '#333' : 'white';
+            levelBadge.style.color = (customer.level === 'Ouro' || customer.level === 'Platina' || customer.level === 'Diamante') ? '#333' : 'white';
             document.getElementById('calcLevel').textContent = customer.level;
             document.getElementById('calcDiscount').textContent = customer.discount + '%';
             calculateDiscount();
@@ -165,7 +154,7 @@
                 alert('Por favor, informe um valor de compra v?lido.');
                 return;
             }
-            if (confirm(`Confirmar aplicao do desconto de ${currentCustomer.discount}% para ${currentCustomer.name}?`)) {
+            if (confirm(`Confirmar aplica??o do desconto de ${currentCustomer.discount}% para ${currentCustomer.name}?`)) {
                 alert('Desconto aplicado com sucesso! ?');
                 // Limpar formul?rio
                 document.getElementById('searchInput').value = '';
@@ -179,6 +168,4 @@
     </script>
 </body>
 </html>
-
-
 

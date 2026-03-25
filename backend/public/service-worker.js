@@ -1,5 +1,5 @@
 // Service Worker para PWA - Tem de Tudo
-const CACHE_NAME = 'tem-de-tudo-v1.0.1'; // bump para forçar atualização
+const CACHE_NAME = 'tem-de-tudo-v1.0.2'; // bump para forçar atualização
 const urlsToCache = [
   '/',
   '/index.html',

@@ -1,103 +1,104 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Gerenciar Empresas - Admin Tem de Tudo</title>
-<meta name="description" content="Painel administrativo para gerenciar empresas parceiras">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<meta content="Painel administrativo para gerenciar empresas parceiras" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="admin-companies-page">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="header-container">
-            <h1 class="page-title">
-                <i class="fas fa-building"></i>
+<!-- Page Header -->
+<div class="page-header">
+<div class="header-container">
+<h1 class="page-title">
+<i class="fas fa-building"></i>
                 Gerenciar Empresas
             </h1>
-            <a href="admin-painel.html" class="back-btn">
-                <i class="fas fa-arrow-left"></i>
+<a class="back-btn" href="admin-painel.html">
+<i class="fas fa-arrow-left"></i>
                 Voltar
             </a>
-        </div>
-    </div>
-    <!-- Content Container -->
-    <div class="content-container">
-        <!-- Stats Overview -->
-        <div class="stats-overview">
-            <div class="stat-card">
-                <div class="stat-value" id="totalCompanies">0</div>
-                <div class="stat-label">Total de Empresas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="activeCompanies">0</div>
-                <div class="stat-label">Empresas Ativas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="pendingCompanies">0</div>
-                <div class="stat-label">Pendentes</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="newCompanies">0</div>
-                <div class="stat-label">Novas Este Ms</div>
-            </div>
-        </div>
-        <!-- Companies Section -->
-        <div class="companies-section">
-            <!-- Section Header -->
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-list"></i>
+</div>
+</div>
+<!-- Content Container -->
+<div class="content-container">
+<!-- Stats Overview -->
+<div class="stats-overview">
+<div class="stat-card">
+<div class="stat-value" id="totalCompanies">0</div>
+<div class="stat-label">Total de Empresas</div>
+</div>
+<div class="stat-card">
+<div class="stat-value" id="activeCompanies">0</div>
+<div class="stat-label">Empresas Ativas</div>
+</div>
+<div class="stat-card">
+<div class="stat-value" id="pendingCompanies">0</div>
+<div class="stat-label">Pendentes</div>
+</div>
+<div class="stat-card">
+<div class="stat-value" id="newCompanies">0</div>
+<div class="stat-label">Novas Este Mês</div>
+</div>
+</div>
+<!-- Companies Section -->
+<div class="companies-section">
+<!-- Section Header -->
+<div class="section-header">
+<h2 class="section-title">
+<i class="fas fa-list"></i>
                     Lista de Empresas
                 </h2>
-                <button class="add-company-btn" onclick="addCompany()">
-                    <i class="fas fa-plus"></i>
+<button class="add-company-btn" onclick="addCompany()">
+<i class="fas fa-plus"></i>
                     Nova Empresa
                 </button>
-            </div>
-            <!-- Search and Filters -->
-            <div class="search-filters">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" class="search-input" placeholder="Buscar empresa..." id="searchInput">
-                </div>
-                <select class="filter-select" id="categoryFilter">
-                    <option value="">Todas as Categorias</option>
-                    <option value="restaurante">Restaurantes</option>
-                    <option value="farmacia">Farmcias</option>
-                    <option value="supermercado">Supermercados</option>
-                    <option value="loja">Lojas</option>
-                    <option value="servico">Servios</option>
-                </select>
-                <select class="filter-select" id="statusFilter">
-                    <option value="">Todos os Status</option>
-                    <option value="ativo">Ativo</option>
-                    <option value="pendente">Pendente</option>
-                    <option value="inativo">Inativo</option>
-                </select>
-            </div>
-            <!-- Companies Grid -->
-            <div class="company-grid" id="companiesGrid">
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <i class="fas fa-building"></i>
-                    </div>
-                    <p>Carregando empresas...</p>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
+<!-- Search and Filters -->
+<div class="search-filters">
+<div class="search-box">
+<i class="fas fa-search"></i>
+<input class="search-input" id="searchInput" placeholder="Buscar empresa..." type="text"/>
+</div>
+<select class="filter-select" id="categoryFilter">
+<option value="">Todas as Categorias</option>
+<option value="restaurante">Restaurantes</option>
+<option value="farmacia">Farmácias</option>
+<option value="supermercado">Supermercados</option>
+<option value="loja">Lojas</option>
+<option value="servico">Serviços</option>
+</select>
+<select class="filter-select" id="statusFilter">
+<option value="">Todos os Status</option>
+<option value="ativo">Ativo</option>
+<option value="pendente">Pendente</option>
+<option value="inativo">Inativo</option>
+</select>
+</div>
+<!-- Companies Grid -->
+<div class="company-grid" id="companiesGrid">
+<div class="empty-state">
+<div class="empty-icon">
+<i class="fas fa-building"></i>
+</div>
+<p>Carregando empresas...</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 <script>
 // Dados de exemplo das empresas
@@ -114,7 +115,7 @@ const companiesData = [
     },
     {
         id: 2,
-        name: "Farmcia So Jos",
+        name: "Farmácia Sáo José",
         category: "farmacia",
         phone: "(11) 88888-8888",
         email: "saojose@farmacia.com",
@@ -133,7 +134,7 @@ const companiesData = [
         created_at: "2024-02-01"
     }
 ];
-// Funo para carregar empresas
+// Funçáo para carregar empresas
 function loadCompanies() {
     const grid = document.getElementById('companiesGrid');
     if (companiesData.length === 0) {
@@ -168,7 +169,7 @@ function loadCompanies() {
                     <span class="detail-value">${company.email}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Endereo:</span>
+                    <span class="detail-label">Endereço:</span>
                     <span class="detail-value">${company.address}</span>
                 </div>
                 <div class="detail-row">
@@ -191,18 +192,18 @@ function loadCompanies() {
     `).join('');
     updateStats();
 }
-// Funo para obter label da categoria
+// Funçáo para obter label da categoria
 function getCategoryLabel(category) {
     const labels = {
         restaurante: 'Restaurante',
-        farmacia: 'Farmcia',
+        farmacia: 'Farmácia',
         supermercado: 'Supermercado',
         loja: 'Loja',
-        servico: 'Servio'
+        servico: 'Serviço'
     };
     return labels[category] || category;
 }
-// Funo para obter label do status
+// Funçáo para obter label do status
 function getStatusLabel(status) {
     const labels = {
         ativo: 'Ativo',
@@ -211,7 +212,7 @@ function getStatusLabel(status) {
     };
     return labels[status] || status;
 }
-// Funo para atualizar estatsticas
+// Funçáo para atualizar estatísticas
 function updateStats() {
     const total = companiesData.length;
     const active = companiesData.filter(c => c.status === 'ativo').length;
@@ -226,38 +227,38 @@ function updateStats() {
     document.getElementById('pendingCompanies').textContent = pending;
     document.getElementById('newCompanies').textContent = thisMonth;
 }
-// Funo para adicionar empresa
+// Funçáo para adicionar empresa
 function addCompany() {
     window.location.href = 'admin-criar-empresa.html';
 }
-// Funo para editar empresa
+// Funçáo para editar empresa
 function editCompany(companyId) {
     window.location.href = `admin-editar-empresa.html?id=${companyId}`;
 }
-// Funo para excluir empresa
+// Funçáo para excluir empresa
 function deleteCompany(companyId) {
     if (confirm('Tem certeza que deseja excluir esta empresa?')) {
         const index = companiesData.findIndex(c => c.id === companyId);
         if (index > -1) {
             companiesData.splice(index, 1);
             loadCompanies();
-            showNotification('Empresa excluda com sucesso!', 'success');
+            showNotification('Empresa excluída com sucesso!', 'success');
         }
     }
 }
-// Funo de busca
+// Funçáo de busca
 document.getElementById('searchInput').addEventListener('input', function(e) {
     filterCompanies();
 });
-// Funo de filtro por categoria
+// Funçáo de filtro por categoria
 document.getElementById('categoryFilter').addEventListener('change', function(e) {
     filterCompanies();
 });
-// Funo de filtro por status
+// Funçáo de filtro por status
 document.getElementById('statusFilter').addEventListener('change', function(e) {
     filterCompanies();
 });
-// Funo para filtrar empresas
+// Funçáo para filtrar empresas
 function filterCompanies() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const categoryFilter = document.getElementById('categoryFilter').value;
@@ -273,7 +274,7 @@ function filterCompanies() {
         card.style.display = matchesSearch && matchesCategory && matchesStatus ? '' : 'none';
     });
 }
-// Funo para mostrar notificaes
+// Funçáo para mostrar notificações
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.style.cssText = `
@@ -295,12 +296,9 @@ function showNotification(message, type = 'info') {
         notification.remove();
     }, 3000);
 }
-// Carregar empresas ao carregar a pgina
+// Carregar empresas ao carregar a página
 document.addEventListener('DOMContentLoaded', loadCompanies);
 </script>
 </body>
 </html>
-
-
-
 

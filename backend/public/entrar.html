@@ -1,105 +1,80 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Entrar - tem de Tudo</title>
-<meta name="description" content="Faa login na sua conta tem de Tudo e acesse seus pontos e recompensas">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Entrar - Tem de Tudo</title>
+<meta content="Faça login na sua conta Tem de Tudo e acesse seus pontos e recompensas" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 <script src="js/config.js"></script>
-
-<link rel="stylesheet" href="css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="login-page">
-    <!-- Back Link -->
-    <div class="back-link">
-        <a href="index.html">
-            <i class="fas fa-arrow-left"></i>
+<!-- Back Link -->
+<div class="back-link">
+<a href="index.html">
+<i class="fas fa-arrow-left"></i>
             Voltar
         </a>
-    </div>
-    
-    <!-- Login container -->
-    <div class="login-container">
-        <!-- Logo Section -->
-        <div class="logo-section">
-            <div class="logo-icon">
-                <img src="logo.svg" alt="tem de Tudo" class="logo-image">
-            </div>
-            <h1 class="welcome-title">Entrar</h1>
-            <p class="welcome-subtitle">Acesse sua conta e aproveite seus pontos</p>
-        </div>
-        
-        <!-- Error/Success Messages -->
-        <div class="error-message message" id="errorMessage"></div>
-        <div class="success-message message" id="successMessage"></div>
-        
-        <!-- Login Form -->
-        <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label class="form-label" for="email">Email</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    class="form-input"
-                    required 
-                    placeholder="seu@email.com" 
-                    autocomplete="username"
-                >
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label" for="password">Senha</label>
-                <div class="password-input-group">
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        class="form-input"
-                        required 
-                        placeholder="Sua senha" 
-                        autocomplete="current-password"
-                    >
-                    <button type="button" class="password-toggle" onclick="togglePassword()">
-                        <i class="fas fa-eye" id="passwordToggleIcon"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="forgot-password">
-                <a href="recuperar-senha.html">Esqueceu sua senha?</a>
-            </div>
-            
-            <button type="submit" class="login-btn" id="loginBtn">
-                <span id="loginBtnText">Entrar na minha conta</span>
-                <div class="loading" id="loginLoading" style="display: none;"></div>
-            </button>
-        </form>
-        
-        <!-- Divider -->
-        <div class="divider">
-            <span>ou</span>
-        </div>
-        
-        <!-- Register Link -->
-        <div class="register-link">
-            <p>Ainda no tem uma conta?</p>
-            <a href="escolher-tipo.html">Criar conta gratuita</a>
-        </div>
-    </div>
 </div>
-
+<!-- Login Container -->
+<div class="login-container">
+<!-- Logo Section -->
+<div class="logo-section">
+<div class="logo-icon">
+<img alt="Tem de Tudo" class="logo-image" src="logo.svg"/>
+</div>
+<h1 class="welcome-title">Entrar</h1>
+<p class="welcome-subtitle">Acesse sua conta e aproveite seus pontos</p>
+</div>
+<!-- Error/Success Messages -->
+<div class="error-message message" id="errorMessage"></div>
+<div class="success-message message" id="successMessage"></div>
+<!-- Login Form -->
+<form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+<div class="form-group">
+<label class="form-label" for="email">Email</label>
+<input autocomplete="username" class="form-input" id="email" name="email" placeholder="seu@email.com" required="" type="email"/>
+</div>
+<div class="form-group">
+<label class="form-label" for="password">Senha</label>
+<div class="password-input-group">
+<input autocomplete="current-password" class="form-input" id="password" name="password" placeholder="Sua senha" required="" type="password"/>
+<button class="password-toggle" onclick="togglePassword()" type="button">
+<i class="fas fa-eye" id="passwordToggleIcon"></i>
+</button>
+</div>
+</div>
+<div class="forgot-password">
+<a href="recuperar-senha.html">Esqueceu sua senha?</a>
+</div>
+<button class="login-btn" id="loginBtn" type="submit">
+<span id="loginBtnText">Entrar na minha conta</span>
+<div class="loading tdt-inline-cb458930" id="loginLoading"></div>
+</button>
+</form>
+<!-- Divider -->
+<div class="divider">
+<span>ou</span>
+</div>
+<!-- Register Link -->
+<div class="register-link">
+<p>Ainda náo tem uma conta?</p>
+<a href="escolher-tipo.html">Criar conta gratuita</a>
+</div>
+</div>
+</div>
 <script>
 // Toggle password visibility
 function togglePassword() {
@@ -211,7 +186,7 @@ async function handleLogin(event) {
             }, 1000);
         } else {
             const data = await response.json();
-            throw new Error(data.message || 'Credenciais invlidas');
+            throw new Error(data.message || 'Credenciais inválidas');
         }
     } catch (error) {
         console.error('Login error:', error);
@@ -220,7 +195,7 @@ async function handleLogin(event) {
         if (error.message.includes('credenciais') || error.message.includes('invalid')) {
             showError('Email ou senha incorretos. Verifique seus dados e tente novamente.');
         } else if (error.message.includes('network') || error.message.includes('fetch')) {
-            showError('Erro de conexo. Verifique sua internet e tente novamente.');
+            showError('Erro de conexáo. Verifique sua internet e tente novamente.');
         } else {
             showError(error.message || 'Erro ao fazer login. Tente novamente.');
         }
@@ -296,7 +271,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
-
-
 

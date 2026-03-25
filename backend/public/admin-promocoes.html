@@ -1,114 +1,109 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerenciar Promoes - Admin Tem de Tudo</title>
-<meta name="description" content="Painel administrativo para gerenciar promoes e campanhas">
-<meta name="theme-color" content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gerenciar Promoções - Admin Tem de Tudo</title>
+<meta content="Painel administrativo para gerenciar promoções e campanhas" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 <script src="js/config.js"></script>
 <script src="js/auth-guard.js"></script>
-</head>
 </head>
 <body>
 <!-- HEADER -->
 <div class="header">
-    <div class="header-top">
-        <h1 class="page-title">
-            <i class="fas fa-tags"></i>
-            Gerenciar Promoes
+<div class="header-top">
+<h1 class="page-title">
+<i class="fas fa-tags"></i>
+            Gerenciar Promoções
         </h1>
-        <a href="admin-dashboard.html" class="back-btn">
-            <i class="fas fa-arrow-left"></i>
+<a class="back-btn" href="admin-dashboard.html">
+<i class="fas fa-arrow-left"></i>
             Voltar
         </a>
-    </div>
 </div>
-
+</div>
 <!-- CONTAINER PRINCIPAL -->
 <div class="container">
-    <!-- ESTATSTICAS -->
-    <div class="stats">
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="fas fa-tags"></i>
-            </div>
-            <div class="stat-value" id="totalPromotions">24</div>
-            <div class="stat-label">Total de Promoes</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--vivo-green);">
-                <i class="fas fa-fire"></i>
-            </div>
-            <div class="stat-value" id="activePromotions">12</div>
-            <div class="stat-label">Promoes Ativas</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--vivo-orange);">
-                <i class="fas fa-clock"></i>
-            </div>
-            <div class="stat-value" id="pendingPromotions">5</div>
-            <div class="stat-label">Aguardando Aprovao</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: var(--vivo-blue);">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="stat-value" id="conversionRate">78%</div>
-            <div class="stat-label">Taxa de Converso</div>
-        </div>
-    </div>
-
-    <!-- SEO DE PROMOES -->
-    <div class="promotions-section">
-        <div class="section-header">
-            <h2 class="section-title">
-                <i class="fas fa-list"></i>
-                Lista de Promoes
-            </h2>
-            <button class="add-btn" onclick="createPromotion()">
-                <i class="fas fa-plus"></i>
-                Nova Promoo
-            </button>
-        </div>
-
-        <!-- FILTROS -->
-        <div class="filters">
-            <input type="text" class="search-input" placeholder="Buscar promoes por ttulo, empresa..." id="searchInput">
-            <select class="filter-select" id="statusFilter">
-                <option value="">Todos os status</option>
-                <option value="ativa">Ativas</option>
-                <option value="pendente">Pendentes</option>
-                <option value="expirada">Expiradas</option>
-            </select>
-            <select class="filter-select" id="categoryFilter">
-                <option value="">Todas as categorias</option>
-                <option value="alimentacao">Alimentao</option>
-                <option value="moda">Moda</option>
-                <option value="eletrnicos">Eletrnicos</option>
-                <option value="saude">Sade</option>
-            </select>
-        </div>
-
-        <!-- GRID DE PROMOES -->
-        <div class="promotions-grid" id="promotionsGrid">
-            <!-- Dados sero carregados via JavaScript -->
-        </div>
-    </div>
+<!-- ESTATÍSTICAS -->
+<div class="stats">
+<div class="stat-card">
+<div class="stat-icon">
+<i class="fas fa-tags"></i>
 </div>
-
+<div class="stat-value" id="totalPromotions">24</div>
+<div class="stat-label">Total de Promoções</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon tdt-inline-8db838d5">
+<i class="fas fa-fire"></i>
+</div>
+<div class="stat-value" id="activePromotions">12</div>
+<div class="stat-label">Promoções Ativas</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon tdt-inline-95238fb8">
+<i class="fas fa-clock"></i>
+</div>
+<div class="stat-value" id="pendingPromotions">5</div>
+<div class="stat-label">Aguardando Aprovaçáo</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon tdt-inline-21aab77f">
+<i class="fas fa-chart-line"></i>
+</div>
+<div class="stat-value" id="conversionRate">78%</div>
+<div class="stat-label">Taxa de Conversáo</div>
+</div>
+</div>
+<!-- SEÇáO DE PROMOÇÕES -->
+<div class="promotions-section">
+<div class="section-header">
+<h2 class="section-title">
+<i class="fas fa-list"></i>
+                Lista de Promoções
+            </h2>
+<button class="add-btn" onclick="createPromotion()">
+<i class="fas fa-plus"></i>
+                Nova Promoçáo
+            </button>
+</div>
+<!-- FILTROS -->
+<div class="filters">
+<input class="search-input" id="searchInput" placeholder="Buscar promoções por título, empresa..." type="text"/>
+<select class="filter-select" id="statusFilter">
+<option value="">Todos os status</option>
+<option value="ativa">Ativas</option>
+<option value="pendente">Pendentes</option>
+<option value="expirada">Expiradas</option>
+</select>
+<select class="filter-select" id="categoryFilter">
+<option value="">Todas as categorias</option>
+<option value="alimentacao">Alimentaçáo</option>
+<option value="moda">Moda</option>
+<option value="eletrônicos">Eletrônicos</option>
+<option value="saude">Saúde</option>
+</select>
+</div>
+<!-- GRID DE PROMOÇÕES -->
+<div class="promotions-grid" id="promotionsGrid">
+<!-- Dados seráo carregados via JavaScript -->
+</div>
+</div>
+</div>
 <script>
-// Dados de exemplo das promoes
+// Dados de exemplo das promoções
 const promotionsData = [
     { 
         id: 1, 
@@ -118,7 +113,7 @@ const promotionsData = [
         startDate: '2026-01-15', 
         endDate: '2026-02-15', 
         status: 'ativa',
-        category: 'eletrnicos'
+        category: 'eletrônicos'
     },
     { 
         id: 2, 
@@ -132,8 +127,8 @@ const promotionsData = [
     },
     { 
         id: 3, 
-        title: 'Promoo de Vero', 
-        company: 'Casa & Decorao', 
+        title: 'Promoçáo de Veráo', 
+        company: 'Casa & Decoraçáo', 
         discount: 25, 
         startDate: '2026-02-01', 
         endDate: '2026-02-28', 
@@ -143,7 +138,7 @@ const promotionsData = [
     { 
         id: 4, 
         title: 'Combo Pizza + Refrigerante', 
-        company: 'Pizzaria do Joo', 
+        company: 'Pizzaria do Joáo', 
         discount: 20, 
         startDate: '2025-12-01', 
         endDate: '2025-12-31', 
@@ -153,7 +148,7 @@ const promotionsData = [
     { 
         id: 5, 
         title: 'Medicamentos com 15% OFF', 
-        company: 'Farmcia So Joo', 
+        company: 'Farmácia Sáo Joáo', 
         discount: 15, 
         startDate: '2026-01-20', 
         endDate: '2026-04-20', 
@@ -178,8 +173,8 @@ function renderPromotions() {
         grid.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-tags"></i>
-                <h3>Nenhuma promoo encontrada</h3>
-                <p>Crie sua primeira promoo para comear</p>
+                <h3>Nenhuma promoçáo encontrada</h3>
+                <p>Crie sua primeira promoçáo para começar</p>
             </div>
         `;
         return;
@@ -209,7 +204,7 @@ function renderPromotions() {
                             -${promotion.discount}%
                         </div>
                         <div class="promotion-dates">
-                            <div><strong>Incio:</strong> ${formatDate(promotion.startDate)}</div>
+                            <div><strong>Início:</strong> ${formatDate(promotion.startDate)}</div>
                             <div><strong>Expira:</strong> ${formatDate(promotion.endDate)}</div>
                         </div>
                     </div>
@@ -301,11 +296,11 @@ function formatDate(dateString) {
 }
 
 function createPromotion() {
-    alert('Criar nova promoo - Funcionalidade em desenvolvimento');
+    alert('Criar nova promoçáo - Funcionalidade em desenvolvimento');
 }
 
 function editPromotion(id) {
-    alert(`Editar promoo ID: ${id}`);
+    alert(`Editar promoçáo ID: ${id}`);
 }
 
 function togglePromotion(id) {
@@ -314,25 +309,22 @@ function togglePromotion(id) {
         promotion.status = promotion.status === 'ativa' ? 'inativa' : 'ativa';
         renderPromotions();
         updateStats();
-        alert(`Promoo ${promotion.status === 'ativa' ? 'ativada' : 'desativada'} com sucesso!`);
+        alert(`Promoçáo ${promotion.status === 'ativa' ? 'ativada' : 'desativada'} com sucesso!`);
     }
 }
 
 function deletePromotion(id) {
-    if (confirm('Tem certeza que deseja excluir esta promoo?')) {
+    if (confirm('Tem certeza que deseja excluir esta promoçáo?')) {
         const index = promotionsData.findIndex(p => p.id === id);
         if (index > -1) {
             promotionsData.splice(index, 1);
             filterPromotions();
             updateStats();
-            alert('Promoo excluda com sucesso!');
+            alert('Promoçáo excluída com sucesso!');
         }
     }
 }
 </script>
 </body>
 </html>
-
-
-
 

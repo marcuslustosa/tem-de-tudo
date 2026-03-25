@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
@@ -8,8 +8,6 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Pontos - Estabelecimento - Tem de Tudo</title>
-    
-    
     <script src="/js/config.js"></script>
     <script src="/js/auth-manager.js" defer></script>
     <script src="/js/api-client.js" defer></script>
@@ -26,7 +24,7 @@
     <header class="header flex items-center justify-between p-4 bg-white shadow">
         <h1 class="title text-2xl font-bold">Pontos - Estabelecimento</h1>
         <nav>
-            <a href="/dashboard-empresa.html" class="btn btn-primary">Voltar ao Dashboard</a>
+            <a href="/dashboard-estabelecimento.html" class="btn btn-primary">Voltar ao Dashboard</a>
         </nav>
     </header>
     <main class="container glass-card p-6 my-6 max-w-4xl mx-auto">
@@ -46,14 +44,14 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Erro ao obter estatsticas: ' + response.statusText);
+                    throw new Error('Erro ao obter estatísticas: ' + response.statusText);
                 }
 
                 const data = await response.json();
 
                 if (data.success) {
                     const stats = data.data;
-                    display.textContent = `Total de clientes: ${stats.total_clientes} | Pontos distribudos: ${stats.pontos_distribuidos} | QRCodes ativos: ${stats.qrcodes_ativos} | Checkins hoje: ${stats.checkins_hoje}`;
+                    display.textContent = `Total de clientes: ${stats.total_clientes} | Pontos distribuídos: ${stats.pontos_distribuidos} | QRCodes ativos: ${stats.qrcodes_ativos} | Checkins hoje: ${stats.checkins_hoje}`;
                 } else {
                     throw new Error(data.message || 'Falha ao carregar dados de pontos.');
                 }
@@ -70,8 +68,6 @@
     </script>
 </body>
 </html>
-
-
 
 
 

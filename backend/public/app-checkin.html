@@ -1,24 +1,25 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color content="#9b59b6">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Tem de Tudo">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="img/icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<title> Check-in Premium - Tem de Tudo</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="#6A0DAD" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
+<link href="manifest.json" rel="manifest"/>
+<link href="img/icon-192.png" rel="apple-touch-icon"/>
+<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<title>?? Check-in Premium - Tem de Tudo</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body>
 <div class="header">
@@ -26,7 +27,7 @@
 <button class="back-btn" onclick="history.back()">
 <i class="fas fa-arrow-left"></i>
 </button>
-<h1> Check-in Premium</h1>
+<h1>?? Check-in Premium</h1>
 <p>Escaneie QR Code ou use GPS</p>
 </div>
 </div>
@@ -34,62 +35,62 @@
 <!-- Method Tabs -->
 <div class="method-tabs">
 <button class="method-tab active" onclick="switchMethod('qr')">
-<i class="fas fa-qrcode" style="margin-right: 8px;"></i>
+<i class="fas fa-qrcode tdt-inline-d109945c"></i>
                 QR Code
             </button>
 <button class="method-tab" onclick="switchMethod('gps')">
-<i class="fas fa-location-arrow" style="margin-right: 8px;"></i>
+<i class="fas fa-location-arrow tdt-inline-d109945c"></i>
                 GPS
             </button>
 </div>
 <!-- QR Scanner -->
-<div id="qr-method" class="method-content">
+<div class="method-content" id="qr-method">
 <div class="scanner-container">
-<div class="scanner-title"> Scanner QR Code</div>
+<div class="scanner-title">?? Scanner QR Code</div>
 <div class="scanner-subtitle">Aponte a c?mera para o QR Code da empresa</div>
-<div id="qr-reader" class="qr-reader"></div>
-<div id="scanner-status" class="scanner-status"></div>
-<button id="start-camera" class="btn" onclick="startScanner()">
+<div class="qr-reader" id="qr-reader"></div>
+<div class="scanner-status" id="scanner-status"></div>
+<button class="btn" id="start-camera" onclick="startScanner()">
 <i class="fas fa-camera"></i>
                     Iniciar C?mera
                 </button>
-<button id="stop-camera" class="btn" onclick="stopScanner()" style="display: none;">
+<button class="btn tdt-inline-cb458930" id="stop-camera" onclick="stopScanner()">
 <i class="fas fa-stop"></i>
                     Parar C?mera
                 </button>
 </div>
 </div>
 <!-- GPS Method -->
-<div id="gps-method" class="method-content" style="display: none;">
+<div class="method-content tdt-inline-cb458930" id="gps-method">
 <div class="location-info">
 <div class="location-item">
 <i class="fas fa-map-marker-alt"></i>
-<span>Sua localizao ser? usada para detectar empresas pr?ximas</span>
+<span>Sua localiza??o ser? usada para detectar empresas pr?ximas</span>
 </div>
 <div class="location-item">
 <i class="fas fa-shield-alt"></i>
-<span>Seus dados de localizao s?o seguros e criptografados</span>
+<span>Seus dados de localiza??o s?o seguros e criptografados</span>
 </div>
 <div class="location-item">
 <i class="fas fa-clock"></i>
 <span>Check-in autom?tico em empresas dentro de 50 metros</span>
 </div>
 </div>
-<button id="gps-checkin" class="btn" onclick="gpsCheckin()">
+<button class="btn" id="gps-checkin" onclick="gpsCheckin()">
 <i class="fas fa-location-arrow"></i>
                 Fazer Check-in GPS
             </button>
-<div id="gps-status" class="scanner-status"></div>
+<div class="scanner-status" id="gps-status"></div>
 </div>
 <!-- Manual Input -->
 <div class="manual-input">
-<h3 style="color: #ffffff; font-weight: 800; margin-bottom: 16px; font-size: 18px;">
-<i class="fas fa-keyboard" style="margin-right: 8px; color: #9b59b6;"></i>
+<h3 class="tdt-inline-43f25689">
+<i class="fas fa-keyboard tdt-inline-3fec24f3"></i>
                 Check-in Manual
             </h3>
 <div class="input-group">
 <label for="empresa-codigo">C?digo da Empresa</label>
-<input type="text" id="empresa-codigo" placeholder="Digite o c?digo da empresa" maxlength="10">
+<input id="empresa-codigo" maxlength="10" placeholder="Digite o c?digo da empresa" type="text"/>
 </div>
 <button class="btn" onclick="manualCheckin()">
 <i class="fas fa-check"></i>
@@ -99,23 +100,23 @@
 </div>
 <nav class="bottom-nav">
 <div class="nav-items">
-<a href="app-inicio.html" class="nav-item">
+<a class="nav-item" href="app-inicio.html">
 <i class="fas fa-home"></i>
 <span>In?cio</span>
 </a>
-<a href="app-empresas.html" class="nav-item">
+<a class="nav-item" href="app-empresas.html">
 <i class="fas fa-search"></i>
 <span>Buscar</span>
 </a>
-<a href="app-checkin.html" class="nav-item active">
+<a class="nav-item active" href="app-checkin.html">
 <i class="fas fa-qrcode"></i>
 <span>Check-in</span>
 </a>
-<a href="app-pontos.html" class="nav-item">
+<a class="nav-item" href="app-pontos.html">
 <i class="fas fa-coins"></i>
 <span>Pontos</span>
 </a>
-<a href="app-perfil.html" class="nav-item">
+<a class="nav-item" href="app-perfil.html">
 <i class="fas fa-user"></i>
 <span>Perfil</span>
 </a>
@@ -216,7 +217,7 @@
             const status = document.getElementById('gps-status');
             const button = document.getElementById('gps-checkin');
             button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obtendo localizao...';
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obtendo localiza??o...';
             if (!navigator.geolocation) {
                 showGpsStatus('GPS n?o suportado neste dispositivo', 'error');
                 button.disabled = false;
@@ -229,20 +230,20 @@
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
                     const accuracy = position.coords.accuracy;
-                    showGpsStatus(`Localizao obtida (precis?o: ${Math.round(accuracy)}m)`, 'success');
-                    // Simular check-in baseado em localizao
+                    showGpsStatus(`Localiza??o obtida (precis?o: ${Math.round(accuracy)}m)`, 'success');
+                    // Simular check-in baseado em localiza??o
                     setTimeout(() => {
                         realizarCheckin('GPS_LOCATION', 'gps', { lat, lng, accuracy });
                     }, 1000);
                 },
                 (error) => {
-                    let errorMsg = 'Erro ao obter localizao: ';
+                    let errorMsg = 'Erro ao obter localiza??o: ';
                     switch(error.code) {
                         case error.PERMISSION_DENIED:
                             errorMsg += 'Permiss?o negada';
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            errorMsg += 'Localizao indispon?vel';
+                            errorMsg += 'Localiza??o indispon?vel';
                             break;
                         case error.TIMEOUT:
                             errorMsg += 'Tempo esgotado';
@@ -345,7 +346,4 @@
     </script>
 </body>
 </html>
-
-
-
 

@@ -1,167 +1,168 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>QR Code - Tem de Tudo</title>
-<meta name="description" content="Seu QR Code para acumular pontos">
-<meta name="theme-color" content="#9b59b6">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="manifest" href="/manifest.json">
+<meta content="Seu QR Code para acumular pontos" name="description"/>
+<meta content="#e10098" name="theme-color"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<link href="/manifest.json" rel="manifest"/>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-<link rel="stylesheet" href="/css/vivo-styles.css">
+<link href="/css/vivo-styles.css" rel="stylesheet"/>
 </head>
 <body class="app-page">
 <!-- App Header -->
 <div class="app-header">
-    <button class="app-back-btn" onclick="history.back()">
-        <i class="fas fa-arrow-left"></i>
-    </button>
-    <h1 class="app-title">Meu QR Code</h1>
-    <div class="app-actions">
-        <button class="app-action-btn" onclick="shareCode()">
-            <i class="fas fa-share-alt"></i>
-        </button>
-    </div>
+<button class="app-back-btn" onclick="history.back()">
+<i class="fas fa-arrow-left"></i>
+</button>
+<h1 class="app-title">Meu QR Code</h1>
+<div class="app-actions">
+<button class="app-action-btn" onclick="shareCode()">
+<i class="fas fa-share-alt"></i>
+</button>
+</div>
 </div>
 <!-- User Info -->
 <div class="app-section">
-    <div class="qr-user-info">
-        <div class="qr-avatar">
-            <i class="fas fa-user"></i>
-        </div>
-        <div class="qr-user-details">
-            <h2 id="userName">Joo Silva</h2>
-            <p>Nvel: <span class="user-level" id="userLevel">Bronze</span></p>
-            <p class="user-id">ID: <span id="userId">#123456</span></p>
-        </div>
-    </div>
+<div class="qr-user-info">
+<div class="qr-avatar">
+<i class="fas fa-user"></i>
+</div>
+<div class="qr-user-details">
+<h2 id="userName">Joáo Silva</h2>
+<p>Nível: <span class="user-level" id="userLevel">Bronze</span></p>
+<p class="user-id">ID: <span id="userId">#123456</span></p>
+</div>
+</div>
 </div>
 <!-- QR Code Section -->
 <div class="app-section">
-    <div class="qr-container">
-        <div class="qr-code-wrapper">
-            <!-- QR Code Canvas -->
-            <div class="qr-code" id="qrCodeContainer">
-                <canvas id="qrCanvas"></canvas>
-            </div>
-            <div class="qr-refresh">
-                <button class="qr-refresh-btn" onclick="refreshCode()">
-                    <i class="fas fa-sync-alt"></i>
-                    Atualizar cdigo
+<div class="qr-container">
+<div class="qr-code-wrapper">
+<!-- QR Code Canvas -->
+<div class="qr-code" id="qrCodeContainer">
+<canvas id="qrCanvas"></canvas>
+</div>
+<div class="qr-refresh">
+<button class="qr-refresh-btn" onclick="refreshCode()">
+<i class="fas fa-sync-alt"></i>
+                    Atualizar código
                 </button>
-            </div>
-        </div>
-        <div class="qr-instructions">
-            <h3>Como usar seu QR Code</h3>
-            <div class="instruction-list">
-                <div class="instruction-item">
-                    <div class="instruction-number">1</div>
-                    <p>Apresente este cdigo no estabelecimento</p>
-                </div>
-                <div class="instruction-item">
-                    <div class="instruction-number">2</div>
-                    <p>Aguarde o estabelecimento escanear</p>
-                </div>
-                <div class="instruction-item">
-                    <div class="instruction-number">3</div>
-                    <p>Seus pontos sero creditados automaticamente</p>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
+</div>
+<div class="qr-instructions">
+<h3>Como usar seu QR Code</h3>
+<div class="instruction-list">
+<div class="instruction-item">
+<div class="instruction-number">1</div>
+<p>Apresente este código no estabelecimento</p>
+</div>
+<div class="instruction-item">
+<div class="instruction-number">2</div>
+<p>Aguarde o estabelecimento escanear</p>
+</div>
+<div class="instruction-item">
+<div class="instruction-number">3</div>
+<p>Seus pontos seráo creditados automaticamente</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 <!-- Quick Actions -->
 <div class="app-section">
-    <h2 class="section-title">Aes Rpidas</h2>
-    <div class="quick-action-grid">
-        <button class="quick-action-card" onclick="increaseScreen()">
-            <div class="quick-action-icon">
-                <i class="fas fa-expand"></i>
-            </div>
-            <span>Tela Cheia</span>
-        </button>
-        <button class="quick-action-card" onclick="adjustBrightness()">
-            <div class="quick-action-icon">
-                <i class="fas fa-sun"></i>
-            </div>
-            <span>Brilho Mximo</span>
-        </button>
-        <button class="quick-action-card" onclick="saveToPhotos()">
-            <div class="quick-action-icon">
-                <i class="fas fa-download"></i>
-            </div>
-            <span>Salvar Imagem</span>
-        </button>
-        <button class="quick-action-card" onclick="shareCode()">
-            <div class="quick-action-icon">
-                <i class="fas fa-share"></i>
-            </div>
-            <span>Compartilhar</span>
-        </button>
-    </div>
+<h2 class="section-title">Ações Rápidas</h2>
+<div class="quick-action-grid">
+<button class="quick-action-card" onclick="increaseScreen()">
+<div class="quick-action-icon">
+<i class="fas fa-expand"></i>
+</div>
+<span>Tela Cheia</span>
+</button>
+<button class="quick-action-card" onclick="adjustBrightness()">
+<div class="quick-action-icon">
+<i class="fas fa-sun"></i>
+</div>
+<span>Brilho Máximo</span>
+</button>
+<button class="quick-action-card" onclick="saveToPhotos()">
+<div class="quick-action-icon">
+<i class="fas fa-download"></i>
+</div>
+<span>Salvar Imagem</span>
+</button>
+<button class="quick-action-card" onclick="shareCode()">
+<div class="quick-action-icon">
+<i class="fas fa-share"></i>
+</div>
+<span>Compartilhar</span>
+</button>
+</div>
 </div>
 <!-- Alternative Methods -->
 <div class="app-section">
-    <h2 class="section-title">Mtodos Alternativos</h2>
-    <div class="alternative-methods">
-        <div class="method-card">
-            <div class="method-icon">
-                <i class="fas fa-id-card"></i>
-            </div>
-            <div class="method-info">
-                <h4>Informar CPF</h4>
-                <p>Voc tambm pode informar seu CPF: <strong id="userCPF">123.456.789-00</strong></p>
-            </div>
-            <button class="method-copy-btn" onclick="copyCPF()">
-                <i class="fas fa-copy"></i>
-            </button>
-        </div>
-        <div class="method-card">
-            <div class="method-icon">
-                <i class="fas fa-phone"></i>
-            </div>
-            <div class="method-info">
-                <h4>Informar Telefone</h4>
-                <p>Ou seu nmero de telefone: <strong id="userPhone">(11) 99999-9999</strong></p>
-            </div>
-            <button class="method-copy-btn" onclick="copyPhone()">
-                <i class="fas fa-copy"></i>
-            </button>
-        </div>
-    </div>
+<h2 class="section-title">Métodos Alternativos</h2>
+<div class="alternative-methods">
+<div class="method-card">
+<div class="method-icon">
+<i class="fas fa-id-card"></i>
+</div>
+<div class="method-info">
+<h4>Informar CPF</h4>
+<p>Você também pode informar seu CPF: <strong id="userCPF">123.456.789-00</strong></p>
+</div>
+<button class="method-copy-btn" onclick="copyCPF()">
+<i class="fas fa-copy"></i>
+</button>
+</div>
+<div class="method-card">
+<div class="method-icon">
+<i class="fas fa-phone"></i>
+</div>
+<div class="method-info">
+<h4>Informar Telefone</h4>
+<p>Ou seu número de telefone: <strong id="userPhone">(11) 99999-9999</strong></p>
+</div>
+<button class="method-copy-btn" onclick="copyPhone()">
+<i class="fas fa-copy"></i>
+</button>
+</div>
+</div>
 </div>
 <!-- Security Notice -->
 <div class="app-section">
-    <div class="security-notice">
-        <div class="security-icon">
-            <i class="fas fa-shield-alt"></i>
-        </div>
-        <div class="security-content">
-            <h4>Segurana do seu cdigo</h4>
-            <p>Seu QR Code  nico e seguro. No compartilhe com desconhecidos e sempre verifique se est no estabelecimento correto antes de apresent-lo.</p>
-        </div>
-    </div>
+<div class="security-notice">
+<div class="security-icon">
+<i class="fas fa-shield-alt"></i>
+</div>
+<div class="security-content">
+<h4>Segurança do seu código</h4>
+<p>Seu QR Code é único e seguro. Náo compartilhe com desconhecidos e sempre verifique se está no estabelecimento correto antes de apresentá-lo.</p>
+</div>
+</div>
 </div>
 <!-- Bottom Navigation -->
 <nav class="bottom-nav">
-    <a href="app-inicio.html" class="nav-item">
-        <i class="fas fa-home"></i>
-        <span>Incio</span>
-    </a>
-    <a href="app-meus-pontos.html" class="nav-item">
-        <i class="fas fa-coins"></i>
-        <span>Pontos</span>
-    </a>
-    <a href="app-meu-qrcode.html" class="nav-item active">
-        <i class="fas fa-qrcode"></i>
-        <span>QR Code</span>
-    </a>
-    <a href="app-perfil.html" class="nav-item">
-        <i class="fas fa-user"></i>
-        <span>Perfil</span>
-    </a>
+<a class="nav-item" href="app-inicio.html">
+<i class="fas fa-home"></i>
+<span>Início</span>
+</a>
+<a class="nav-item" href="app-meus-pontos.html">
+<i class="fas fa-coins"></i>
+<span>Pontos</span>
+</a>
+<a class="nav-item active" href="app-meu-qrcode.html">
+<i class="fas fa-qrcode"></i>
+<span>QR Code</span>
+</a>
+<a class="nav-item" href="app-perfil.html">
+<i class="fas fa-user"></i>
+<span>Perfil</span>
+</a>
 </nav>
 <script>
 let currentUserData = {};
@@ -171,7 +172,7 @@ async function loadUserData() {
         // Simulate API call - replace with actual API
         currentUserData = {
             id: 'user123456',
-            name: 'Joo Silva',
+            name: 'Joáo Silva',
             cpf: '123.456.789-00',
             phone: '(11) 99999-9999',
             level: 'Bronze'
@@ -186,7 +187,7 @@ async function loadUserData() {
         generateQRCode();
     } catch (error) {
         console.error('Error loading user data:', error);
-        showToast('Erro ao carregar dados do usurio');
+        showToast('Erro ao carregar dados do usuário');
     }
 }
 // Generate QR Code
@@ -202,7 +203,7 @@ async function generateQRCode() {
             width: 200,
             margin: 2,
             color: {
-                dark: '#9b59b6',
+                dark: '#e10098',
                 light: '#FFFFFF'
             }
         });
@@ -221,7 +222,7 @@ function refreshCode() {
     setTimeout(() => {
         icon.classList.remove('fa-spin');
         refreshBtn.disabled = false;
-        showToast('Cdigo atualizado com sucesso!');
+        showToast('Código atualizado com sucesso!');
         generateQRCode();
     }, 1500);
 }
@@ -239,7 +240,7 @@ async function shareCode() {
                 });
             });
         } else {
-            showToast('Recurso de compartilhamento no disponvel');
+            showToast('Recurso de compartilhamento náo disponível');
         }
     } catch (error) {
         console.error('Error sharing:', error);
@@ -253,7 +254,7 @@ function increaseScreen() {
             document.documentElement.requestFullscreen();
             showToast('Modo tela cheia ativado');
         } else {
-            showToast('Tela cheia no disponvel neste navegador');
+            showToast('Tela cheia náo disponível neste navegador');
         }
     } catch (error) {
         showToast('Erro ao ativar tela cheia');
@@ -262,7 +263,7 @@ function increaseScreen() {
 // Adjust brightness
 function adjustBrightness() {
     document.body.style.filter = 'brightness(1.3)';
-    showToast('Brilho ajustado ao mximo por 10 segundos');
+    showToast('Brilho ajustado ao máximo por 10 segundos');
     // Reset after 10 seconds
     setTimeout(() => {
         document.body.style.filter = 'brightness(1)';
@@ -282,7 +283,7 @@ function saveToPhotos() {
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, 400, 500);
         // Add header
-        ctx.fillStyle = '#9b59b6';
+        ctx.fillStyle = '#e10098';
         ctx.font = 'bold 24px Inter';
         ctx.textAlign = 'center';
         ctx.fillText('Tem de Tudo', 200, 40);
@@ -297,7 +298,7 @@ function saveToPhotos() {
         // Add instructions
         ctx.fillStyle = '#666';
         ctx.font = '12px Inter';
-        ctx.fillText('Apresente este cdigo no estabelecimento', 200, 360);
+        ctx.fillText('Apresente este código no estabelecimento', 200, 360);
         ctx.fillText('para acumular pontos', 200, 380);
         // Add timestamp
         ctx.fillStyle = '#999';
@@ -319,7 +320,7 @@ async function copyCPF() {
     try {
         const cpf = currentUserData.cpf.replace(/\D/g, '');
         await navigator.clipboard.writeText(cpf);
-        showToast('CPF copiado para a rea de transferncia');
+        showToast('CPF copiado para a área de transferência');
     } catch (error) {
         showToast('Erro ao copiar CPF');
     }
@@ -329,7 +330,7 @@ async function copyPhone() {
     try {
         const phone = currentUserData.phone.replace(/\D/g, '');
         await navigator.clipboard.writeText(phone);
-        showToast('Telefone copiado para a rea de transferncia');
+        showToast('Telefone copiado para a área de transferência');
     } catch (error) {
         showToast('Erro ao copiar telefone');
     }
@@ -370,15 +371,13 @@ window.addEventListener('beforeunload', function() {
 });
 // Handle offline/online states
 window.addEventListener('online', function() {
-    showToast('Conexo restaurada - QR Code atualizado');
+    showToast('Conexáo restaurada - QR Code atualizado');
     generateQRCode();
 });
 window.addEventListener('offline', function() {
-    showToast('Sem conexo - QR Code pode estar desatualizado');
+    showToast('Sem conexáo - QR Code pode estar desatualizado');
 });
 </script>
 </body>
 </html>
-
-
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
@@ -7,9 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Histrico - Estabelecimento - Tem de Tudo</title>
-    
-    
+    <title>Histórico - Estabelecimento - Tem de Tudo</title>
     <script src="/js/config.js"></script>
     <script src="/js/auth-manager.js" defer></script>
     <script src="/js/api-client.js" defer></script>
@@ -24,15 +22,15 @@
 </head>
 <body>
     <header class="header flex items-center justify-between p-4 bg-white shadow">
-        <h1 class="title text-2xl font-bold">Histrico - Estabelecimento</h1>
+        <h1 class="title text-2xl font-bold">Histórico - Estabelecimento</h1>
         <nav>
-            <a href="/dashboard-empresa.html" class="btn btn-primary">Voltar ao Dashboard</a>
+            <a href="/dashboard-estabelecimento.html" class="btn btn-primary">Voltar ao Dashboard</a>
         </nav>
     </header>
     <main class="container glass-card p-6 my-6 max-w-4xl mx-auto">
         <section>
             <ul id="historico-list" class="divide-y divide-gray-300">
-                <li class="py-2">Carregando histrico...</li>
+                <li class="py-2">Carregando histórico...</li>
             </ul>
         </section>
     </main>
@@ -40,7 +38,7 @@
     <script>
         async function fetchHistorico() {
             const list = document.getElementById('historico-list');
-            list.innerHTML = '<li class="py-2">Carregando histrico...</li>';
+            list.innerHTML = '<li class="py-2">Carregando histórico...</li>';
             try {
                 const response = await fetch('/api/empresa/historico', {
                     credentials: 'include',
@@ -48,7 +46,7 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Erro ao obter histrico: ' + response.statusText);
+                    throw new Error('Erro ao obter histórico: ' + response.statusText);
                 }
 
                 const data = await response.json();
@@ -58,7 +56,7 @@
                     if (data.data.length === 0) {
                         const li = document.createElement('li');
                         li.className = 'py-2';
-                        li.textContent = 'Nenhum histrico disponvel.';
+                        li.textContent = 'Nenhum histórico disponível.';
                         list.appendChild(li);
                         return;
                     }
@@ -70,7 +68,7 @@
                         list.appendChild(li);
                     });
                 } else {
-                    throw new Error(data.message || 'Falha ao carregar histrico.');
+                    throw new Error(data.message || 'Falha ao carregar histórico.');
                 }
             } catch (error) {
                 list.innerHTML = '';
@@ -85,8 +83,6 @@
     </script>
 </body>
 </html>
-
-
 
 
 
