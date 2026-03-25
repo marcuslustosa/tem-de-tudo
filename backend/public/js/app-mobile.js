@@ -375,9 +375,9 @@ class AuthManager {
     }
 
     calculateLevel(points) {
-        if (points >= 10000) return 'diamond';
-        if (points >= 5000) return 'gold';
-        if (points >= 1000) return 'silver';
+        if (points >= 5000) return 'platinum';
+        if (points >= 1500) return 'gold';
+        if (points >= 500) return 'silver';
         return 'bronze';
     }
 }
@@ -456,7 +456,7 @@ class NotificationManager {
             bronze: '🥉 Bronze',
             silver: '🥈 Prata', 
             gold: '🥇 Ouro',
-            diamond: '💎 Diamante'
+            platinum: '💎 Platina'
         };
 
         await this.showNotification('🎊 Parabéns!', {
@@ -1006,13 +1006,13 @@ function updateUserInterface() {
     // Atualizar nível
     const levelElements = document.querySelectorAll('#userLevel, .user-level');
     const levelNames = {
-        bronze: '🥉 Bronze',
-        silver: '🥈 Prata', 
-        gold: '🥇 Ouro',
-        diamond: '💎 Diamante'
+        bronze: 'Bronze',
+        silver: 'Prata', 
+        gold: 'Ouro',
+        platinum: 'Platina'
     };
     levelElements.forEach(el => {
-        if (el) el.textContent = levelNames[user.level] || '🥉 Bronze';
+        if (el) el.textContent = levelNames[user.level] || 'Bronze';
     });
 }
 

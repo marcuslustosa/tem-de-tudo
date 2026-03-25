@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Editar Perfil - Tem de Tudo</title>
-<meta name="description" content="Edite suas informaÃ§Ãµes pessoais e preferÃªncias">
+<meta name="description" content="Edite suas informaÃƒÂ§ÃƒÂµes pessoais e preferÃƒÂªncias">
 <meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -30,7 +30,7 @@
                 <i class="fas fa-arrow-left"></i>
             </a>
             <h1>Editar Perfil</h1>
-            <button class="save-btn" onclick="salvarPerfil()" title="Salvar alteraÃ§Ãµes">
+            <button class="save-btn" onclick="salvarPerfil()" title="Salvar alteraÃƒÂ§ÃƒÂµes">
                 <i class="fas fa-check"></i>
             </button>
         </div>
@@ -49,7 +49,7 @@
                         <i class="fas fa-camera"></i>
                     </div>
                 </div>
-                <p class="profile-hint">Toque no Ã­cone da cÃ¢mera para alterar sua foto</p>
+                <p class="profile-hint">Toque no ÃƒÂ­cone da cÃƒÂ¢mera para alterar sua foto</p>
             </div>
         </div>
 
@@ -58,7 +58,7 @@
             <div class="form-section">
                 <div class="section-title">
                     <i class="fas fa-user-edit"></i>
-                    InformaÃ§Ãµes Pessoais
+                    InformaÃƒÂ§ÃƒÂµes Pessoais
                 </div>
                 
                 <div class="form-group">
@@ -100,13 +100,13 @@
             <div class="preferences-section">
                 <div class="section-title">
                     <i class="fas fa-cog"></i>
-                    PreferÃªncias
+                    PreferÃƒÂªncias
                 </div>
                 
                 <div class="toggle-group">
                     <div>
-                        <div class="toggle-label">NotificaÃ§Ãµes Push</div>
-                        <div class="toggle-desc">Receba alertas sobre promoÃ§Ãµes e pontos</div>
+                        <div class="toggle-label">NotificaÃƒÂ§ÃƒÂµes Push</div>
+                        <div class="toggle-desc">Receba alertas sobre promoÃƒÂ§ÃƒÂµes e pontos</div>
                     </div>
                     <div class="toggle-switch active" onclick="togglePreference(this, 'notifications')"></div>
                 </div>
@@ -121,8 +121,8 @@
                 
                 <div class="toggle-group">
                     <div>
-                        <div class="toggle-label">LocalizaÃ§Ã¡o</div>
-                        <div class="toggle-desc">Ofertas baseadas na sua localizaÃ§Ã¡o</div>
+                        <div class="toggle-label">LocalizaÃƒÂ§ÃƒÂ¡o</div>
+                        <div class="toggle-desc">Ofertas baseadas na sua localizaÃƒÂ§ÃƒÂ¡o</div>
                     </div>
                     <div class="toggle-switch active" onclick="togglePreference(this, 'location')"></div>
                 </div>
@@ -136,7 +136,7 @@
                 </div>
                 
                 <button class="btn-save" onclick="salvarPerfil()">
-                    <span id="saveText">Salvar AlteraÃ§Ãµes</span>
+                    <span id="saveText">Salvar AlteraÃƒÂ§ÃƒÂµes</span>
                     <div class="loading" id="saveLoading" style="display: none;"></div>
                 </button>
             </div>
@@ -149,7 +149,7 @@
     <div class="nav-container">
         <a href="dashboard-cliente.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>InÃ­cio</span>
+            <span>InÃƒÂ­cio</span>
         </a>
         <a href="app-empresas.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -195,7 +195,7 @@ function carregarDadosUsuario() {
     if (user.telefone) document.getElementById('telefone').value = user.telefone;
     if (user.data_nascimento) document.getElementById('dataNascimento').value = user.data_nascimento;
     
-    // Carregar preferÃªncias
+    // Carregar preferÃƒÂªncias
     const savedPrefs = JSON.parse(localStorage.getItem('preferences') || '{}');
     preferences = { ...preferences, ...savedPrefs };
     atualizarToggles();
@@ -233,7 +233,7 @@ function handleAvatarChange(event) {
         reader.onload = function(e) {
             const avatarDisplay = document.getElementById('avatarDisplay');
             avatarDisplay.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
-            showNotification('Foto atualizada! Salve as alteraÃ§Ãµes.', 'success');
+            showNotification('Foto atualizada! Salve as alteraÃƒÂ§ÃƒÂµes.', 'success');
         };
         reader.readAsDataURL(file);
     }
@@ -280,7 +280,7 @@ async function salvarPerfil() {
         
         showNotification('Perfil atualizado com sucesso!', 'success');
         
-        // Opcional: redirecionar apÃ³s salvar
+        // Opcional: redirecionar apÃƒÂ³s salvar
         setTimeout(() => {
             window.location.href = 'app-perfil.html';
         }, 1000);
@@ -362,7 +362,7 @@ function showNotification(message, type = 'info') {
                         field.style.display = 'none';
                     }
                 });
-                // Preencher campos com dados do usuÃ¡rio
+                // Preencher campos com dados do usuÃƒÂ¡rio
                 document.getElementById('nome').value = user.name || user.nome || '';
                 document.getElementById('email').value = user.email || '';
                 document.getElementById('telefone').value = user.telefone || '';
@@ -390,16 +390,16 @@ function showNotification(message, type = 'info') {
             if (isAdmin) {
                 dados.data_nascimento = document.getElementById('dataNascimento').value;
             }
-            // ValidaÃ§Ã¡o bÃ¡sica
+            // ValidaÃƒÂ§ÃƒÂ¡o bÃƒÂ¡sica
             if (!dados.name || !dados.email) {
-                mostrarFeedback('Nome e email sÃ¡o obrigatÃ³rios!', 'error');
+                mostrarFeedback('Nome e email sÃƒÂ¡o obrigatÃƒÂ³rios!', 'error');
                 return;
             }
-            mostrarFeedback('Salvando alteraÃ§Ãµes...', 'info');
+            mostrarFeedback('Salvando alteraÃƒÂ§ÃƒÂµes...', 'info');
             try {
-                // SIMULAÃ‡Ã¡O TEMPORÃRIA - FuncionarÃ¡ atÃ© backend estar completo
+                // SIMULAÃƒâ€¡ÃƒÂ¡O TEMPORÃƒÂRIA - FuncionarÃƒÂ¡ atÃƒÂ© backend estar completo
                 if (!token) {
-                    mostrarFeedback('?? VocÃª precisa estar logado', 'error');
+                    mostrarFeedback('?? VocÃƒÂª precisa estar logado', 'error');
                     setTimeout(() => window.location.href = 'entrar.html', 1500);
                     return;
                 }
@@ -426,7 +426,7 @@ function showNotification(message, type = 'info') {
             }
         }
         function trocarFoto() {
-            mostrarFeedback('?? Funcionalidade de foto serÃ¡ implementada em breve!', 'info');
+            mostrarFeedback('?? Funcionalidade de foto serÃƒÂ¡ implementada em breve!', 'info');
         }
         function mostrarFeedback(mensagem, tipo) {
             // Criar elemento de feedback
@@ -448,7 +448,7 @@ function showNotification(message, type = 'info') {
             `;
             feedback.textContent = mensagem;
             document.body.appendChild(feedback);
-            // Remover apÃ³s 3 segundos
+            // Remover apÃƒÂ³s 3 segundos
             setTimeout(() => {
                 feedback.style.animation = 'slideUp 0.3s ease';
                 setTimeout(() => document.body.removeChild(feedback), 300);

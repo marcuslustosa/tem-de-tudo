@@ -37,7 +37,7 @@
                 <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #9b59b6, #8B5CF6); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: bold; margin: 0 auto;">TDT</div>
             </div>
             <h1 class="welcome-title">Criar Conta</h1>
-            <p class="welcome-subtitle">Junte-se ao Tem de Tudo e aproveite benefÃ­cios exclusivos</p>
+            <p class="welcome-subtitle">Junte-se ao Tem de Tudo e aproveite benefÃƒÂ­cios exclusivos</p>
         </div>
         
         <!-- Profile Selector -->
@@ -110,7 +110,7 @@
                             name="password" 
                             class="form-input"
                             required 
-                            placeholder="MÃ­nimo 6 caracteres"
+                            placeholder="MÃƒÂ­nimo 6 caracteres"
                             autocomplete="new-password"
                         >
                         <button type="button" class="password-toggle" onclick="togglePassword('password')">
@@ -137,7 +137,7 @@
                 </div>
             </div>
             
-            <!-- Campos especÃ­ficos da empresa (inicialmente ocultos) -->
+            <!-- Campos especÃƒÂ­ficos da empresa (inicialmente ocultos) -->
             <div class="empresa-fields" id="empresaFields" style="display: none;">
                 <div class="form-group">
                     <label class="form-label" for="nome_empresa">Nome da Empresa</label>
@@ -164,10 +164,10 @@
                         <label class="form-label" for="categoria">Categoria</label>
                         <select id="categoria" name="categoria" class="form-input">
                             <option value="">Selecione uma categoria</option>
-                            <option value="alimentacao">AlimentaÃ§Ã£o</option>
-                            <option value="moda">Moda e VestuÃ¡rio</option>
-                            <option value="saude">SaÃºde e Beleza</option>
-                            <option value="servicos">ServiÃ§os</option>
+                            <option value="alimentacao">AlimentaÃƒÂ§ÃƒÂ£o</option>
+                            <option value="moda">Moda e VestuÃƒÂ¡rio</option>
+                            <option value="saude">SaÃƒÂºde e Beleza</option>
+                            <option value="servicos">ServiÃƒÂ§os</option>
                             <option value="tecnologia">Tecnologia</option>
                             <option value="outros">Outros</option>
                         </select>
@@ -179,13 +179,13 @@
                     <div class="info-card">
                         <i class="fas fa-info-circle"></i>
                         <div>
-                            <strong>AtenÃ§Ã£o:</strong> Contas empresariais passam por validaÃ§Ã£o do administrador antes da ativaÃ§Ã£o. VocÃª receberÃ¡ um email com as prÃ³ximas etapas.
+                            <strong>AtenÃƒÂ§ÃƒÂ£o:</strong> Contas empresariais passam por validaÃƒÂ§ÃƒÂ£o do administrador antes da ativaÃƒÂ§ÃƒÂ£o. VocÃƒÂª receberÃƒÂ¡ um email com as prÃƒÂ³ximas etapas.
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Termos e CondiÃ§Ãµes -->
+            <!-- Termos e CondiÃƒÂ§ÃƒÂµes -->
             <div class="terms-section">
                 <label class="terms-checkbox">
                     <input type="checkbox" id="terms" name="terms" required>
@@ -194,7 +194,7 @@
                         Concordo com os 
                         <a href="termos.html" target="_blank">Termos de Uso</a> 
                         e 
-                        <a href="privacidade.html" target="_blank">PolÃ­tica de Privacidade</a>
+                        <a href="privacidade.html" target="_blank">PolÃƒÂ­tica de Privacidade</a>
                     </span>
                 </label>
             </div>
@@ -211,7 +211,7 @@
         
         <!-- Login Link -->
         <div class="login-link">
-            <p>JÃ¡ tem uma conta?</p>
+            <p>JÃƒÂ¡ tem uma conta?</p>
             <a href="entrar.html">Fazer login</a>
         </div>
     </div>
@@ -317,7 +317,7 @@ async function handleCadastro(event) {
     
     // Validate passwords match
     if (cadastroData.password !== cadastroData.password_confirmation) {
-        showError('As senhas nÃ¡o coincidem');
+        showError('As senhas nÃƒÂ¡o coincidem');
         registerBtn.disabled = false;
         registerBtnText.style.display = 'flex';
         registerLoading.style.display = 'none';
@@ -339,12 +339,12 @@ async function handleCadastro(event) {
         if (response.ok) {
             // Success
             if (cadastroData.perfil === 'empresa') {
-                showSuccess('Empresa cadastrada! Aguarde aprovaÃ§Ã£o do administrador.');
+                showSuccess('Empresa cadastrada! Aguarde aprovaÃƒÂ§ÃƒÂ£o do administrador.');
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 2000);
             } else {
-                // Store token and redirect for clients (usar mesmo padrÃ£o do login)
+                // Store token and redirect for clients (usar mesmo padrÃƒÂ£o do login)
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 localStorage.setItem('userType', data.user.type || data.user.perfil);

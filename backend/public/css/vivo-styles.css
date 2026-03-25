@@ -121,6 +121,35 @@ Todas as classes seguem o padrão visual do Vipus:
 }
 
 /* ================================================================================
+   LOADING OVERLAY (oculto por padrão)
+================================================================================ */
+.loading-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+}
+.loading-screen .loading-spinner {
+    width: 56px;
+    height: 56px;
+    border: 6px solid rgba(255,255,255,0.3);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+body.loading .loading-screen,
+.loading-screen.show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ================================================================================
    RESET E BASE
 ================================================================================ */
 *, *::before, *::after {

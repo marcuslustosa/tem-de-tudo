@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gerenciar UsuÃ¡rios - Admin Tem de Tudo</title>
-<meta name="description" content="Painel administrativo para gerenciar usuÃ¡rios do sistema">
+<title>Gerenciar UsuÃƒÂ¡rios - Admin Tem de Tudo</title>
+<meta name="description" content="Painel administrativo para gerenciar usuÃƒÂ¡rios do sistema">
 <meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,7 +26,7 @@
     <div class="header-top">
         <h1 class="page-title">
             <i class="fas fa-users"></i>
-            Gerenciar UsuÃ¡rios
+            Gerenciar UsuÃƒÂ¡rios
         </h1>
         <a href="admin-dashboard.html" class="back-btn">
             <i class="fas fa-arrow-left"></i>
@@ -37,21 +37,21 @@
 
 <!-- CONTAINER PRINCIPAL -->
 <div class="container">
-    <!-- ESTATÃSTICAS -->
+    <!-- ESTATÃƒÂSTICAS -->
     <div class="stats">
         <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-users"></i>
             </div>
             <div class="stat-value" id="totalUsers">11</div>
-            <div class="stat-label">Total de UsuÃ¡rios</div>
+            <div class="stat-label">Total de UsuÃƒÂ¡rios</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon" style="background: var(--vivo-green);">
                 <i class="fas fa-user-check"></i>
             </div>
             <div class="stat-value" id="activeUsers">9</div>
-            <div class="stat-label">UsuÃ¡rios Ativos</div>
+            <div class="stat-label">UsuÃƒÂ¡rios Ativos</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon" style="background: var(--vivo-blue);">
@@ -69,16 +69,16 @@
         </div>
     </div>
 
-    <!-- SEÃ‡Ã¡O DE USUÃRIOS -->
+    <!-- SEÃƒâ€¡ÃƒÂ¡O DE USUÃƒÂRIOS -->
     <div class="users-section">
         <div class="section-header">
             <h2 class="section-title">
                 <i class="fas fa-list"></i>
-                Lista de UsuÃ¡rios
+                Lista de UsuÃƒÂ¡rios
             </h2>
             <a href="admin-criar-usuario.html" class="add-btn">
                 <i class="fas fa-plus"></i>
-                Novo UsuÃ¡rio
+                Novo UsuÃƒÂ¡rio
             </a>
         </div>
 
@@ -103,25 +103,25 @@
             <table class="users-table">
                 <thead>
                     <tr>
-                        <th>UsuÃ¡rio</th>
+                        <th>UsuÃƒÂ¡rio</th>
                         <th>Tipo</th>
                         <th>Status</th>
                         <th>Cadastro</th>
-                        <th>AÃ§Ãµes</th>
+                        <th>AÃƒÂ§ÃƒÂµes</th>
                     </tr>
                 </thead>
                 <tbody id="usersTableBody">
-                    <!-- Dados serÃ¡o carregados via JavaScript -->
+                    <!-- Dados serÃƒÂ¡o carregados via JavaScript -->
                 </tbody>
             </table>
         </div>
 
-        <!-- PAGINAÃ‡Ã¡O -->
+        <!-- PAGINAÃƒâ€¡ÃƒÂ¡O -->
         <div class="pagination" id="pagination">
             <button class="page-btn" onclick="previousPage()">
                 <i class="fas fa-chevron-left"></i>
             </button>
-            <span class="page-info" id="pageInfo">PÃ¡gina 1 de 1</span>
+            <span class="page-info" id="pageInfo">PÃƒÂ¡gina 1 de 1</span>
             <button class="page-btn" onclick="nextPage()">
                 <i class="fas fa-chevron-right"></i>
             </button>
@@ -130,16 +130,16 @@
 </div>
 
 <script>
-// Dados de exemplo dos usuÃ¡rios
+// Dados de exemplo dos usuÃƒÂ¡rios
 const usersData = [
     { id: 1, name: 'Administrador Sistema', email: 'admin@temdetudo.com', type: 'admin', status: 'ativo', created: '2026-01-15' },
     { id: 2, name: 'Cliente de Teste', email: 'cliente@teste.com', type: 'cliente', status: 'ativo', created: '2026-01-20' },
     { id: 3, name: 'Empresa de Teste', email: 'empresa@teste.com', type: 'empresa', status: 'ativo', created: '2026-01-22' },
     { id: 4, name: 'Maria Silva Santos', email: 'maria@email.com', type: 'cliente', status: 'ativo', created: '2026-01-25' },
-    { id: 5, name: 'JoÃ¡o Pedro Oliveira', email: 'joao@email.com', type: 'cliente', status: 'ativo', created: '2026-01-28' },
+    { id: 5, name: 'JoÃƒÂ¡o Pedro Oliveira', email: 'joao@email.com', type: 'cliente', status: 'ativo', created: '2026-01-28' },
     { id: 6, name: 'Ana Carolina Lima', email: 'ana@email.com', type: 'cliente', status: 'ativo', created: '2026-02-01' },
     { id: 7, name: 'Restaurante Sabor da Casa', email: 'contato@sabordacasa.com', type: 'empresa', status: 'ativo', created: '2026-02-05' },
-    { id: 8, name: 'FarmÃ¡cia SÃ¡o JoÃ¡o', email: 'contato@farmaciajoao.com', type: 'empresa', status: 'ativo', created: '2026-02-08' },
+    { id: 8, name: 'FarmÃƒÂ¡cia SÃƒÂ¡o JoÃƒÂ¡o', email: 'contato@farmaciajoao.com', type: 'empresa', status: 'ativo', created: '2026-02-08' },
     { id: 9, name: 'Roberto Costa Silva', email: 'roberto@email.com', type: 'cliente', status: 'inativo', created: '2026-02-10' },
     { id: 10, name: 'Patricia Fernandes', email: 'patricia@email.com', type: 'cliente', status: 'inativo', created: '2026-02-12' },
     { id: 11, name: 'Posto Shell Centro', email: 'contato@shellcentro.com', type: 'empresa', status: 'ativo', created: '2026-02-15' }
@@ -235,7 +235,7 @@ function filterUsers() {
 function updatePagination() {
     const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
     const pageInfo = document.getElementById('pageInfo');
-    pageInfo.textContent = `PÃ¡gina ${currentPage} de ${totalPages}`;
+    pageInfo.textContent = `PÃƒÂ¡gina ${currentPage} de ${totalPages}`;
 }
 
 function previousPage() {
@@ -259,8 +259,8 @@ function formatDate(dateString) {
 }
 
 function editUser(userId) {
-    // Implementar ediÃ§Ã¡o de usuÃ¡rio
-    alert(`Editar usuÃ¡rio ID: ${userId}`);
+    // Implementar ediÃƒÂ§ÃƒÂ¡o de usuÃƒÂ¡rio
+    alert(`Editar usuÃƒÂ¡rio ID: ${userId}`);
 }
 
 function toggleUser(userId) {
@@ -268,17 +268,17 @@ function toggleUser(userId) {
     if (user) {
         user.status = user.status === 'ativo' ? 'inativo' : 'ativo';
         renderUsers();
-        alert(`UsuÃ¡rio ${user.status === 'ativo' ? 'ativado' : 'desativado'} com sucesso!`);
+        alert(`UsuÃƒÂ¡rio ${user.status === 'ativo' ? 'ativado' : 'desativado'} com sucesso!`);
     }
 }
 
 function deleteUser(userId) {
-    if (confirm('Tem certeza que deseja excluir este usuÃ¡rio?')) {
+    if (confirm('Tem certeza que deseja excluir este usuÃƒÂ¡rio?')) {
         const index = usersData.findIndex(u => u.id === userId);
         if (index > -1) {
             usersData.splice(index, 1);
             filterUsers();
-            alert('UsuÃ¡rio excluÃ­do com sucesso!');
+            alert('UsuÃƒÂ¡rio excluÃƒÂ­do com sucesso!');
         }
     }
 }

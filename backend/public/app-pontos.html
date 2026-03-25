@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meus Pontos - Tem de Tudo</title>
-<meta name="description" content="Acompanhe seus pontos e histÃ³rico de transaÃ§Ãµes">
+<meta name="description" content="Acompanhe seus pontos e histÃƒÂ³rico de transaÃƒÂ§ÃƒÂµes">
 <meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -48,7 +48,7 @@
                     <i class="fas fa-star"></i>
                 </div>
                 <div class="balance-amount" id="saldoPontos">1,247</div>
-                <div class="balance-subtitle">pontos disponÃ­veis</div>
+                <div class="balance-subtitle">pontos disponÃƒÂ­veis</div>
                 <div class="balance-actions">
                     <button class="btn-primary use-points" onclick="openUsePoints()">
                         <i class="fas fa-shopping-cart"></i>
@@ -66,7 +66,7 @@
         <div class="section">
             <h2 class="section-title">
                 <i class="fas fa-chart-line"></i>
-                EstatÃ­sticas
+                EstatÃƒÂ­sticas
             </h2>
             <div class="stats-grid">
                 <div class="stat-card">
@@ -105,16 +105,16 @@
         <div class="section">
             <h2 class="section-title">
                 <i class="fas fa-history"></i>
-                HistÃ³rico Recente
+                HistÃƒÂ³rico Recente
             </h2>
             <div class="transactions-list" id="extratoTransacoes">
-                <!-- SerÃ¡ preenchido via JavaScript -->
+                <!-- SerÃƒÂ¡ preenchido via JavaScript -->
             </div>
             
             <!-- View More -->
             <div class="view-more-section">
                 <button class="btn-outline" onclick="viewFullHistory()">
-                    <span>Ver HistÃ³rico Completo</span>
+                    <span>Ver HistÃƒÂ³rico Completo</span>
                     <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
@@ -124,7 +124,7 @@
         <div class="section">
             <h2 class="section-title">
                 <i class="fas fa-bolt"></i>
-                AÃ§Ãµes RÃ¡pidas
+                AÃƒÂ§ÃƒÂµes RÃƒÂ¡pidas
             </h2>
             <div class="quick-actions-grid">
                 <a href="app-qrcode.html" class="action-card">
@@ -143,7 +143,7 @@
                     </div>
                     <div class="action-content">
                         <h3>Resgatar Ofertas</h3>
-                        <p>Troque por prÃªmios</p>
+                        <p>Troque por prÃƒÂªmios</p>
                     </div>
                 </a>
                 
@@ -163,7 +163,7 @@
                     </div>
                     <div class="action-content">
                         <h3>Extrato Completo</h3>
-                        <p>Todas as transaÃ§Ãµes</p>
+                        <p>Todas as transaÃƒÂ§ÃƒÂµes</p>
                     </div>
                 </a>
             </div>
@@ -176,7 +176,7 @@
     <div class="nav-container">
         <a href="dashboard-cliente.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>InÃ­cio</span>
+            <span>InÃƒÂ­cio</span>
         </a>
         <a href="app-empresas.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -229,7 +229,7 @@ const transacoesFicticias = [
     {
         id: 3,
         tipo: 'checkin',
-        empresa: 'FarmÃ¡cia Popular',
+        empresa: 'FarmÃƒÂ¡cia Popular',
         pontos: 75,
         data: '2024-01-13T07:15:00Z',
         icon: 'fa-map-marker-alt'
@@ -316,7 +316,7 @@ function renderTransactions(transactions) {
         container.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-star"></i>
-                <h3>Nenhuma transaÃ§Ã¡o ainda</h3>
+                <h3>Nenhuma transaÃƒÂ§ÃƒÂ¡o ainda</h3>
                 <p>Comece fazendo check-ins em empresas parceiras para ganhar pontos!</p>
             </div>
         `;
@@ -365,11 +365,11 @@ function getTransactionTitle(transaction) {
         'checkin': `Check-in em ${transaction.empresa}`,
         'compra_cupom': `Resgate em ${transaction.empresa}`,
         'uso_cupom': `Uso de oferta - ${transaction.empresa}`,
-        'bonus': `BÃ´nus - ${transaction.empresa || 'Sistema'}`,
+        'bonus': `BÃƒÂ´nus - ${transaction.empresa || 'Sistema'}`,
         'cashback': `Cashback - ${transaction.empresa}`,
-        'referencia': `IndicaÃ§Ã¡o de amigo`
+        'referencia': `IndicaÃƒÂ§ÃƒÂ¡o de amigo`
     };
-    return titles[transaction.tipo] || `TransaÃ§Ã¡o - ${transaction.empresa}`;
+    return titles[transaction.tipo] || `TransaÃƒÂ§ÃƒÂ¡o - ${transaction.empresa}`;
 }
 
 function formatDate(date) {
@@ -382,7 +382,7 @@ function formatDate(date) {
     } else if (days === 1) {
         return 'Ontem';
     } else if (days < 7) {
-        return `${days} dias atrÃ¡s`;
+        return `${days} dias atrÃƒÂ¡s`;
     } else {
         return date.toLocaleDateString('pt-BR');
     }

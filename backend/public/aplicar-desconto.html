@@ -122,8 +122,8 @@
                 name: 'Jo?o da Silva',
                 email: 'joao.silva@email.com',
                 points: 5500,
-                level: 'Ouro',
-                discount: 15
+                level: 'Platina',
+                discount: 20
             };
             displayCustomer(currentCustomer);
         }
@@ -142,11 +142,10 @@
                 'Bronze': '#CD7F32',
                 'Prata': '#C0C0C0',
                 'Ouro': '#FFD700',
-                'Platina': '#E5E4E2',
-                'Diamante': '#B9F2FF'
+                'Platina': '#E5E4E2'
             };
             levelBadge.style.background = levelColors[customer.level] || '#CD7F32';
-            levelBadge.style.color = (customer.level === 'Ouro' || customer.level === 'Platina' || customer.level === 'Diamante') ? '#333' : 'white';
+            levelBadge.style.color = (customer.level === 'Ouro' || customer.level === 'Platina') ? '#333' : 'white';
             document.getElementById('calcLevel').textContent = customer.level;
             document.getElementById('calcDiscount').textContent = customer.discount + '%';
             calculateDiscount();

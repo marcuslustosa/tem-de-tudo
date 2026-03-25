@@ -66,10 +66,9 @@ function checkAuthStatus() {
 }
 
 function calculateUserLevel(points) {
-    if (points >= 10000) return 'Diamante';
     if (points >= 5000) return 'Platina';
-    if (points >= 2500) return 'Ouro';
-    if (points >= 1000) return 'Prata';
+    if (points >= 1500) return 'Ouro';
+    if (points >= 500) return 'Prata';
     return 'Bronze';
 }
 
