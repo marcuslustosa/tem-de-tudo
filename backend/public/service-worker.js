@@ -1,5 +1,5 @@
 // Service Worker para PWA - Tem de Tudo
-const CACHE_NAME = 'tem-de-tudo-v1.0.4'; // bump para forçar atualização
+const CACHE_NAME = 'tem-de-tudo-v1.0.5'; // bump para forçar atualização dura
 const urlsToCache = [
   '/',
   '/index.html',
@@ -10,6 +10,7 @@ const urlsToCache = [
   '/app-qrcode.html',
   '/app-empresas.html',
   '/css/style.css',
+  'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap',
   '/js/notification-system-simple.js',
   '/img/icon-192.png',
   '/img/icon-512.png'
