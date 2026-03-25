@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="img/icon-192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<title>Detalhes da Promo??o - Tem de Tudo</title>
+<title>Detalhes da Promoo - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="/css/vivo-styles.css">
@@ -21,7 +21,7 @@
 <button class="btn-back" onclick="history.back()">
 <i class="fas fa-arrow-left"></i>
 </button>
-<div class="promo-badge" id="promoBadge">PROMO??O</div>
+<div class="promo-badge" id="promoBadge">PROMOO</div>
 <h1 class="promo-title" id="promoTitle">Carregando...</h1>
 <div class="promo-empresa">
 <i class="fas fa-store"></i>
@@ -50,7 +50,7 @@
 </div>
 </div>
 <div class="description" id="descricao">
-            Carregando descri??o...
+            Carregando descrio...
         </div>
 <div class="terms">
 <i class="fas fa-exclamation-triangle"></i>
@@ -59,7 +59,7 @@
 <div class="countdown" id="countdown"></div>
 <button class="btn-resgatar" id="btnResgatar" onclick="resgatarPromocao()">
 <i class="fas fa-gift"></i>
-            Resgatar Promo??o
+            Resgatar Promoo
         </button>
 </div>
 <script>
@@ -72,7 +72,7 @@
         let userPontos = 0;
         document.addEventListener('DOMContentLoaded', () => {
             if (!promocaoId) {
-                alert('Promo??o n?o encontrada');
+                alert('Promoo n?o encontrada');
                 history.back();
                 return;
             }
@@ -88,12 +88,12 @@
                     renderizarPromocao();
                     iniciarCountdown();
                 } else {
-                    alert('Promo??o n?o encontrada');
+                    alert('Promoo n?o encontrada');
                     history.back();
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao carregar promo??o');
+                alert('Erro ao carregar promoo');
                 history.back();
             }
         }
@@ -118,7 +118,7 @@
             document.getElementById('promoTitle').textContent = promocao.titulo;
             document.getElementById('promoEmpresa').textContent = promocao.empresa_nome || 'Estabelecimento';
             document.getElementById('pontosNecessarios').textContent = promocao.pontos_necessarios;
-            document.getElementById('descricao').textContent = promocao.descricao || 'Sem descri??o dispon?vel';
+            document.getElementById('descricao').textContent = promocao.descricao || 'Sem descrio dispon?vel';
             const validade = new Date(promocao.validade);
             document.getElementById('validade').textContent = validade.toLocaleDateString('pt-BR');
             // Badge baseado no tipo
@@ -132,7 +132,7 @@
                 badge.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
                 badge.style.background = 'rgba(251, 191, 36, 0.3)';
             } else {
-                badge.textContent = '?? PREMIUM';
+                badge.textContent = ' PREMIUM';
                 badge.style.background = 'rgba(168, 85, 247, 0.3)';
             }
         }
@@ -151,7 +151,7 @@
             const agora = new Date();
             const diff = validade - agora;
             if (diff <= 0) {
-                document.getElementById('countdown').innerHTML = '? Promo??o expirada';
+                document.getElementById('countdown').innerHTML = '? Promoo expirada';
                 document.getElementById('btnResgatar').disabled = true;
                 return;
             }
@@ -163,11 +163,11 @@
         async function resgatarPromocao() {
             const token = localStorage.getItem('token');
             if (!token) {
-                alert('? Voc? precisa estar logado para resgatar promo??es');
+                alert('? Voc? precisa estar logado para resgatar promoes');
                 window.location.href = 'entrar.html';
                 return;
             }
-            if (!confirm(`Confirma o resgate desta promo??o?\n\n${promocao.titulo}\nCusto: ${promocao.pontos_necessarios} pontos`)) {
+            if (!confirm(`Confirma o resgate desta promoo?\n\n${promocao.titulo}\nCusto: ${promocao.pontos_necessarios} pontos`)) {
                 return;
             }
             const btn = document.getElementById('btnResgatar');
@@ -184,18 +184,18 @@
                 });
                 const data = await response.json();
                 if (data.success) {
-                    alert(`? Promo??o resgatada com sucesso!\n\nCupom: ${data.data.codigo}\n\nVoc? pode encontr?-lo na aba "Cupons" do seu perfil.`);
+                    alert(`? Promoo resgatada com sucesso!\n\nCupom: ${data.data.codigo}\n\nVoc? pode encontr?-lo na aba "Cupons" do seu perfil.`);
                     window.location.href = '/app-perfil-cliente.html?tab=cupons';
                 } else {
-                    alert('? ' + (data.message || 'Erro ao resgatar promo??o'));
+                    alert('? ' + (data.message || 'Erro ao resgatar promoo'));
                     btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promo??o';
+                    btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promoo';
                 }
             } catch (error) {
                 console.error('Erro:', error);
                 alert('? Erro ao conectar com o servidor');
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promo??o';
+                btn.innerHTML = '<i class="fas fa-gift"></i> Resgatar Promoo';
             }
         }
     </script>
@@ -215,7 +215,7 @@
 </a>
 <a href="app-promocoes.html" class="nav-item active">
 <i class="fas fa-tags"></i>
-<span>Promo??es</span>
+<span>Promoes</span>
 </a>
 <a href="app-perfil.html" class="nav-item">
 <i class="fas fa-user"></i>

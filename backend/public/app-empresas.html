@@ -22,20 +22,20 @@
 <link rel="stylesheet" href="css/vivo-styles.css">
 </head>
 <body>
-    <!-- Navigation serÃƒÂ¡ inserida aqui pelo global-navbar.js -->
+    <!-- Navigation ser inserida aqui pelo global-navbar.js -->
     <nav id="navbar-container"></nav>
     
     <div class="container">
         <!-- Header Section -->
         <div class="header-section">
             <h1>Empresas Parceiras</h1>
-            <p>Descubra estabelecimentos prÃƒÂ³ximos com ofertas exclusivas</p>
+            <p>Descubra estabelecimentos prximos com ofertas exclusivas</p>
         </div>
 
         <!-- Location Status -->
         <div class="location-status" id="locationStatus">
             <i class="fas fa-map-marker-alt" style="color: var(--vivo-purple); margin-right: 10px;"></i>
-            <strong>LocalizaÃƒÂ§ÃƒÂ£o detectada:</strong> <span id="userLocation">Carregando...</span>
+            <strong>Localizao detectada:</strong> <span id="userLocation">Carregando...</span>
         </div>
 
         <!-- Search and Filters Section -->
@@ -43,10 +43,10 @@
             <!-- Search Container -->
             <div class="search-container">
                 <div class="search-box">
-                    <button class="location-btn" onclick="requestLocation()" title="Buscar empresas prÃƒÂ³ximas">
+                    <button class="location-btn" onclick="requestLocation()" title="Buscar empresas prximas">
                         <i class="fas fa-crosshairs"></i>
                     </button>
-                    <input type="text" id="searchInput" placeholder="Buscar empresas, produtos ou serviÃƒÂ§os...">
+                    <input type="text" id="searchInput" placeholder="Buscar empresas, produtos ou servios...">
                     <i class="fas fa-search"></i>
                 </div>
             </div>
@@ -56,29 +56,29 @@
                 <div class="filter-group">
                     <select class="filter-select" id="categoryFilter">
                         <option value="">Todas as Categorias</option>
-                        <option value="alimentacao">Ã°Å¸Å¸Â£ AlimentaÃƒÂ§ÃƒÂ£o</option>
-                        <option value="beleza">? Beleza & EstÃƒÂ©tica</option>
-                        <option value="esportes">Ã°Å¸Å¸Â£ Esportes & Fitness</option>
-                        <option value="moda">Ã°Å¸Å¸Â£ Moda & VestuÃƒÂ¡rio</option>
-                        <option value="tecnologia">Ã°Å¸Å¸Â£ Tecnologia</option>
-                        <option value="automotivo">Ã°Å¸Å¸Â£ Automotivo</option>
-                        <option value="saude">Ã°Å¸Å¸Â£ SaÃƒÂºde & Bem-estar</option>
-                        <option value="educacao">Ã°Å¸Å¸Â£ EducaÃƒÂ§ÃƒÂ£o</option>
-                        <option value="casa">Ã°Å¸Å¸Â£ Casa & ConstruÃƒÂ§ÃƒÂ£o</option>
-                        <option value="servicos">Ã°Å¸Å¸Â£ ServiÃƒÂ§os Gerais</option>
+                        <option value="alimentacao"> Alimentao</option>
+                        <option value="beleza">? Beleza & Esttica</option>
+                        <option value="esportes"> Esportes & Fitness</option>
+                        <option value="moda"> Moda & Vesturio</option>
+                        <option value="tecnologia"> Tecnologia</option>
+                        <option value="automotivo"> Automotivo</option>
+                        <option value="saude"> Sade & Bem-estar</option>
+                        <option value="educacao"> Educao</option>
+                        <option value="casa"> Casa & Construo</option>
+                        <option value="servicos"> Servios Gerais</option>
                     </select>
 
                     <select class="filter-select" id="distanceFilter">
-                        <option value="">Qualquer distÃƒÂ¢ncia</option>
-                        <option value="1">AtÃƒÂ© 1 km</option>
-                        <option value="2">AtÃƒÂ© 2 km</option>
-                        <option value="5">AtÃƒÂ© 5 km</option>
-                        <option value="10">AtÃƒÂ© 10 km</option>
-                        <option value="20">AtÃƒÂ© 20 km</option>
+                        <option value="">Qualquer distncia</option>
+                        <option value="1">At 1 km</option>
+                        <option value="2">At 2 km</option>
+                        <option value="5">At 5 km</option>
+                        <option value="10">At 10 km</option>
+                        <option value="20">At 20 km</option>
                     </select>
 
                     <select class="filter-select" id="ratingFilter">
-                        <option value="">Qualquer avaliaÃƒÂ§ÃƒÂ£o</option>
+                        <option value="">Qualquer avaliao</option>
                         <option value="4">4+ estrelas</option>
                         <option value="4.5">4.5+ estrelas</option>
                     </select>
@@ -86,14 +86,14 @@
 
                 <div class="distance-display" id="distanceDisplay" style="display: none;">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span>LocalizaÃƒÂ§ÃƒÂ£o ativa</span>
+                    <span>Localizao ativa</span>
                 </div>
 
                 <div class="view-toggle">
-                    <button class="view-btn active" onclick="switchView('grid')" title="VisualizaÃƒÂ§ÃƒÂ£o em grade">
+                    <button class="view-btn active" onclick="switchView('grid')" title="Visualizao em grade">
                         <i class="fas fa-th-large"></i>
                     </button>
-                    <button class="view-btn" onclick="switchView('list')" title="VisualizaÃƒÂ§ÃƒÂ£o em lista">
+                    <button class="view-btn" onclick="switchView('list')" title="Visualizao em lista">
                         <i class="fas fa-list"></i>
                     </button>
                 </div>
@@ -108,9 +108,9 @@
             <div class="sort-container">
                 <label>Ordenar por:</label>
                 <select class="sort-select" id="sortSelect">
-                    <option value="relevance">RelevÃƒÂ¢ncia</option>
-                    <option value="distance">DistÃƒÂ¢ncia</option>
-                    <option value="rating">AvaliaÃƒÂ§ÃƒÂ£o</option>
+                    <option value="relevance">Relevncia</option>
+                    <option value="distance">Distncia</option>
+                    <option value="rating">Avaliao</option>
                     <option value="name">Nome A-Z</option>
                     <option value="offers">Mais ofertas</option>
                 </select>
@@ -164,18 +164,18 @@
                 category: "alimentacao",
                 rating: 4.8,
                 distance: 1.2,
-                description: "HambÃƒÂºrgueres artesanais com ingredientes premium e receitas exclusivas.",
+                description: "Hambrgueres artesanais com ingredientes premium e receitas exclusivas.",
                 offers: 3,
                 address: "Rua das Flores, 123",
                 phone: "(11) 99999-0001"
             },
             {
                 id: 2,
-                name: "EstÃƒÂ©tica Viva Beleza",
+                name: "Esttica Viva Beleza",
                 category: "beleza",
                 rating: 4.9,
                 distance: 0.8,
-                description: "Tratamentos faciais, corporais e estÃƒÂ©ticos com tecnologia avanÃƒÂ§ada.",
+                description: "Tratamentos faciais, corporais e estticos com tecnologia avanada.",
                 offers: 5,
                 address: "Av. Principal, 456",
                 phone: "(11) 99999-0002"
@@ -186,7 +186,7 @@
                 category: "tecnologia",
                 rating: 4.6,
                 distance: 2.1,
-                description: "EletrÃƒÂ´nicos, informÃƒÂ¡tica e gadgets das melhores marcas.",
+                description: "Eletrnicos, informtica e gadgets das melhores marcas.",
                 offers: 7,
                 address: "Shopping Center, Loja 89",
                 phone: "(11) 99999-0003"
@@ -208,7 +208,7 @@
                 category: "moda",
                 rating: 4.5,
                 distance: 3.2,
-                description: "Roupas femininas e masculinas com as ÃƒÂºltimas tendÃƒÂªncias da moda.",
+                description: "Roupas femininas e masculinas com as ltimas tendncias da moda.",
                 offers: 4,
                 address: "Centro Comercial, Bl A",
                 phone: "(11) 99999-0005"
@@ -219,29 +219,29 @@
                 category: "automotivo",
                 rating: 4.4,
                 distance: 4.1,
-                description: "ServiÃƒÂ§os automotivos completos com garantia e qualidade.",
+                description: "Servios automotivos completos com garantia e qualidade.",
                 offers: 1,
                 address: "Rod. Principal, Km 15",
                 phone: "(11) 99999-0006"
             },
             {
                 id: 7,
-                name: "ClÃƒÂ­nica SaÃƒÂºde+",
+                name: "Clnica Sade+",
                 category: "saude",
                 rating: 4.9,
                 distance: 1.8,
-                description: "ClÃƒÂ­nica mÃƒÂ©dica com especialistas e exames de ÃƒÂºltima geraÃƒÂ§ÃƒÂ£o.",
+                description: "Clnica mdica com especialistas e exames de ltima gerao.",
                 offers: 6,
-                address: "Av. da SaÃƒÂºde, 321",
+                address: "Av. da Sade, 321",
                 phone: "(11) 99999-0007"
             },
             {
                 id: 8,
-                name: "Casa & DecoraÃƒÂ§ÃƒÂ£o Ltda",
+                name: "Casa & Decorao Ltda",
                 category: "casa", 
                 rating: 4.3,
                 distance: 5.2,
-                description: "Materiais de construÃƒÂ§ÃƒÂ£o, mÃƒÂ³veis e artigos para decoraÃƒÂ§ÃƒÂ£o.",
+                description: "Materiais de construo, mveis e artigos para decorao.",
                 offers: 2,
                 address: "Distrito Industrial, 147",
                 phone: "(11) 99999-0008"
@@ -324,14 +324,14 @@
             };
 
             const categoryNames = {
-                'alimentacao': 'AlimentaÃƒÂ§ÃƒÂ£o',
-                'beleza': 'Beleza & EstÃƒÂ©tica',
+                'alimentacao': 'Alimentao',
+                'beleza': 'Beleza & Esttica',
                 'tecnologia': 'Tecnologia',
                 'esportes': 'Esportes & Fitness',
-                'moda': 'Moda & VestuÃƒÂ¡rio',
+                'moda': 'Moda & Vesturio',
                 'automotivo': 'Automotivo',
-                'saude': 'SaÃƒÂºde & Bem-estar',
-                'casa': 'Casa & ConstruÃƒÂ§ÃƒÂ£o'
+                'saude': 'Sade & Bem-estar',
+                'casa': 'Casa & Construo'
             };
 
             return `
@@ -461,11 +461,11 @@
         // Request user location
         function requestLocation() {
             if (!navigator.geolocation) {
-                showToast('GeolocalizaÃƒÂ§ÃƒÂ£o nÃƒÂ¡o suportada pelo navegador', 'error');
+                showToast('Geolocalizao no suportada pelo navegador', 'error');
                 return;
             }
 
-            showToast('Buscando sua localizaÃƒÂ§ÃƒÂ£o...', 'info');
+            showToast('Buscando sua localizao...', 'info');
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -478,13 +478,13 @@
                     document.getElementById('userLocation').textContent = 'Centro da cidade'; // Simulate
                     document.getElementById('distanceDisplay').style.display = 'flex';
                     
-                    showToast('LocalizaÃƒÂ§ÃƒÂ£o detectada! Mostrando empresas prÃƒÂ³ximas', 'success');
+                    showToast('Localizao detectada! Mostrando empresas prximas', 'success');
                     
                     // Re-render with distance info
                     renderEmpresas();
                 },
                 (error) => {
-                    showToast('NÃƒÂ¡o foi possÃƒÂ­vel detectar sua localizaÃƒÂ§ÃƒÂ£o', 'error');
+                    showToast('No foi possvel detectar sua localizao', 'error');
                     console.error('Geolocation error:', error);
                 }
             );
@@ -498,7 +498,7 @@
             // Simulate navigation to company page
             setTimeout(() => {
                 // In production, this would navigate to a company detail page
-                showToast(`Bem-vindo ÃƒÂ  ${empresa.name}! Ã°Å¸Å¸Â£`, 'success');
+                showToast(`Bem-vindo  ${empresa.name}! `, 'success');
             }, 1000);
         }
 
@@ -512,7 +512,7 @@
             
             // Simulate loading more data
             setTimeout(() => {
-                showToast('NÃƒÂ¡o hÃƒÂ¡ mais empresas para carregar', 'info');
+                showToast('No h mais empresas para carregar', 'info');
                 document.getElementById('loadMoreContainer').style.display = 'none';
             }, 1500);
         }

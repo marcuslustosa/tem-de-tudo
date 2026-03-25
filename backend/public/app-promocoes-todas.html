@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="img/icon-192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="img/icon-32.png">
-<title>PromoÃƒÂ§ÃƒÂµes - Tem de Tudo</title>
+<title>Promoes - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="js/config.js"></script>
@@ -25,29 +25,29 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div class="header-title">
-<h1>Todas as PromoÃƒÂ§ÃƒÂµes</h1>
+<h1>Todas as Promoes</h1>
 <p id="totalPromocoes">Carregando...</p>
 </div>
 </div>
 </div>
 <div class="filters">
 <button class="filter-btn active" data-filter="todas">Todas</button>
-<button class="filter-btn" data-filter="proximidade">Mais PrÃƒÂ³ximas</button>
-<button class="filter-btn" data-filter="alimentacao">AlimentaÃƒÂ§ÃƒÂ¡o</button>
+<button class="filter-btn" data-filter="proximidade">Mais Prximas</button>
+<button class="filter-btn" data-filter="alimentacao">Alimentao</button>
 <button class="filter-btn" data-filter="beleza">Beleza</button>
-<button class="filter-btn" data-filter="saude">SaÃƒÂºde</button>
+<button class="filter-btn" data-filter="saude">Sade</button>
 <button class="filter-btn" data-filter="varejo">Varejo</button>
 </div>
 <div class="promocoes-grid" id="promocoesGrid">
 <div class="empty-state">
 <i class="fas fa-spinner fa-spin"></i>
-<p>Carregando promoÃƒÂ§ÃƒÂµes...</p>
+<p>Carregando promoes...</p>
 </div>
 </div>
 <nav class="bottom-nav">
 <a href="app-inicio.html" class="nav-item">
 <i class="fas fa-home"></i>
-<span>InÃƒÂ­cio</span>
+<span>Incio</span>
 </a>
 <a href="buscar.html" class="nav-item">
 <i class="fas fa-search"></i>
@@ -62,7 +62,7 @@
         let todasPromocoes = [];
         let filtroAtivo = 'todas';
         let userLocation = null;
-        // Calcular distÃƒÂ¢ncia entre dois pontos (Haversine formula)
+        // Calcular distncia entre dois pontos (Haversine formula)
         function calcularDistancia(lat1, lon1, lat2, lon2) {
             const R = 6371; // Raio da Terra em km
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -77,7 +77,7 @@
             }
             return `${distance.toFixed(1)} km`;
         }
-        // Obter localizaÃƒÂ§ÃƒÂ¡o do usuÃƒÂ¡rio
+        // Obter localizao do usurio
         function obterLocalizacao() {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
@@ -86,10 +86,10 @@
                             latitude: position.coords.latitude,
                             longitude: position.coords.longitude
                         };
-                        console.log('LocalizaÃƒÂ§ÃƒÂ¡o obtida:', userLocation);
+                        console.log('Localizao obtida:', userLocation);
                     },
                     (error) => {
-                        console.warn('GeolocalizaÃƒÂ§ÃƒÂ¡o nÃƒÂ¡o disponÃƒÂ­vel:', error);
+                        console.warn('Geolocalizao no disponvel:', error);
                     }
                 );
             }
@@ -98,7 +98,7 @@
             try {
                 const token = localStorage.getItem('token');
                 const baseURL = API_CONFIG.getBaseURL();
-                // Buscar todas as promoÃƒÂ§ÃƒÂµes ativas
+                // Buscar todas as promoes ativas
                 const response = await fetch(`${baseURL}/api/cliente/promocoes/todas`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -113,19 +113,19 @@
                     renderEmpty();
                 }
             } catch (error) {
-                console.error('Erro ao carregar promoÃƒÂ§ÃƒÂµes:', error);
+                console.error('Erro ao carregar promoes:', error);
                 renderEmpty();
             }
         }
         function renderPromocoes(promocoes) {
             const grid = document.getElementById('promocoesGrid');
             const total = document.getElementById('totalPromocoes');
-            total.textContent = `${promocoes.length} promoÃƒÂ§ÃƒÂµes disponÃƒÂ­veis`;
+            total.textContent = `${promocoes.length} promoes disponveis`;
             if (promocoes.length === 0) {
                 renderEmpty();
                 return;
             }
-            // Calcular distÃƒÂ¢ncias se temos localizaÃƒÂ§ÃƒÂ¡o
+            // Calcular distncias se temos localizao
             let promocoesComDistancia = promocoes.map(promo => {
                 let distancia = promo.distancia || '-- km';
                 if (userLocation && promo.empresa_latitude && promo.empresa_longitude) {
@@ -139,8 +139,8 @@
                 return { ...promo, distanciaCalculada: distancia };
             });
             const icons = {
-                'alimentacao': '??', 'beleza': '??', 'saude': '??',
-                'varejo': '??', 'servicos': '??', 'default': '??'
+                'alimentacao': '', 'beleza': '', 'saude': '',
+                'varejo': '', 'servicos': '', 'default': ''
             };
             grid.innerHTML = promocoesComDistancia.map(promo => `
                 <a href="app-promocao-detalhes.html?id=${promo.id}" class="promocao-card">
@@ -155,9 +155,9 @@
 <div class="promocao-footer">
 <div class="promocao-validade">
 <i class="fas fa-clock"></i>
-                                VÃƒÂ¡lido atÃƒÂ© ${formatarData(promo.validade)}
+                                Vlido at ${formatarData(promo.validade)}
                             </div>
-<div class="promocao-distancia">?? ${promo.distanciaCalculada}</div>
+<div class="promocao-distancia"> ${promo.distanciaCalculada}</div>
 </div>
 </div>
 </a>
@@ -167,10 +167,10 @@
             document.getElementById('promocoesGrid').innerHTML = `
                 <div class="empty-state">
 <i class="fas fa-gift"></i>
-<p>Nenhuma promoÃƒÂ§ÃƒÂ¡o disponÃƒÂ­vel no momento</p>
+<p>Nenhuma promoo disponvel no momento</p>
 </div>
             `;
-            document.getElementById('totalPromocoes').textContent = '0 promoÃƒÂ§ÃƒÂµes';
+            document.getElementById('totalPromocoes').textContent = '0 promoes';
         }
         function formatarData(data) {
             if (!data) return 'Sem validade';

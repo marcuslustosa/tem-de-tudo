@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RelatÃƒÂ³rios - Admin Tem de Tudo</title>
-<meta name="description" content="Dashboard de relatÃƒÂ³rios e analytics administrativo">
+<title>Relatrios - Admin Tem de Tudo</title>
+<meta name="description" content="Dashboard de relatrios e analytics administrativo">
 <meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,7 +27,7 @@
     <div class="header-top">
         <h1 class="page-title">
             <i class="fas fa-chart-bar"></i>
-            RelatÃƒÂ³rios e Analytics
+            Relatrios e Analytics
         </h1>
         <a href="admin-dashboard.html" class="back-btn">
             <i class="fas fa-arrow-left"></i>
@@ -41,11 +41,11 @@
     <!-- FILTROS -->
     <div class="filters">
         <div class="filter-group">
-            <label class="filter-label">PerÃƒÂ­odo</label>
+            <label class="filter-label">Perodo</label>
             <select class="filter-select" id="periodFilter">
                 <option value="today">Hoje</option>
                 <option value="week">Esta Semana</option>
-                <option value="month" selected>Este MÃƒÂªs</option>
+                <option value="month" selected>Este Ms</option>
                 <option value="quarter">Este Trimestre</option>
                 <option value="year">Este Ano</option>
             </select>
@@ -62,9 +62,9 @@
             <label class="filter-label">Tipo</label>
             <select class="filter-select" id="typeFilter">
                 <option value="all">Todos</option>
-                <option value="users">UsuÃƒÂ¡rios</option>
+                <option value="users">Usurios</option>
                 <option value="companies">Empresas</option>
-                <option value="promotions">PromoÃƒÂ§ÃƒÂµes</option>
+                <option value="promotions">Promoes</option>
             </select>
         </div>
         <div class="filter-group" style="justify-content: flex-end;">
@@ -75,17 +75,17 @@
         </div>
     </div>
 
-    <!-- ESTATÃƒÂSTICAS PRINCIPAIS -->
+    <!-- ESTATSTICAS PRINCIPAIS -->
     <div class="stats">
         <div class="stat-card">
             <div class="stat-icon">
                 <i class="fas fa-users"></i>
             </div>
             <div class="stat-value" id="totalUsers">847</div>
-            <div class="stat-label">Total de UsuÃƒÂ¡rios</div>
+            <div class="stat-label">Total de Usurios</div>
             <div class="stat-change positive">
                 <i class="fas fa-arrow-up"></i>
-                +12.5% vs mÃƒÂªs anterior
+                +12.5% vs ms anterior
             </div>
         </div>
         <div class="stat-card">
@@ -96,7 +96,7 @@
             <div class="stat-label">Empresas Cadastradas</div>
             <div class="stat-change positive">
                 <i class="fas fa-arrow-up"></i>
-                +8.3% vs mÃƒÂªs anterior
+                +8.3% vs ms anterior
             </div>
         </div>
         <div class="stat-card">
@@ -104,10 +104,10 @@
                 <i class="fas fa-tags"></i>
             </div>
             <div class="stat-value" id="activePromotions">89</div>
-            <div class="stat-label">PromoÃƒÂ§ÃƒÂµes Ativas</div>
+            <div class="stat-label">Promoes Ativas</div>
             <div class="stat-change positive">
                 <i class="fas fa-arrow-up"></i>
-                +15.7% vs mÃƒÂªs anterior
+                +15.7% vs ms anterior
             </div>
         </div>
         <div class="stat-card">
@@ -115,20 +115,20 @@
                 <i class="fas fa-chart-line"></i>
             </div>
             <div class="stat-value" id="conversionRate">73.2%</div>
-            <div class="stat-label">Taxa de ConversÃƒÂ¡o</div>
+            <div class="stat-label">Taxa de Converso</div>
             <div class="stat-change negative">
                 <i class="fas fa-arrow-down"></i>
-                -2.1% vs mÃƒÂªs anterior
+                -2.1% vs ms anterior
             </div>
         </div>
     </div>
 
-    <!-- GRÃƒÂFICOS -->
+    <!-- GRFICOS -->
     <div class="charts-section">
         <div class="chart-card">
             <h3 class="chart-title">
                 <i class="fas fa-chart-line"></i>
-                Crescimento de UsuÃƒÂ¡rios
+                Crescimento de Usurios
             </h3>
             <div class="chart-container">
                 <canvas id="usersChart"></canvas>
@@ -137,7 +137,7 @@
         <div class="chart-card">
             <h3 class="chart-title">
                 <i class="fas fa-chart-pie"></i>
-                DistribuiÃƒÂ§ÃƒÂ¡o por Tipo
+                Distribuio por Tipo
             </h3>
             <div class="chart-container">
                 <canvas id="distributionChart"></canvas>
@@ -145,12 +145,12 @@
         </div>
     </div>
 
-    <!-- TABELA DE MÃƒâ€°TRICAS -->
+    <!-- TABELA DE MTRICAS -->
     <div class="table-section">
         <div class="table-header">
             <h3 class="table-title">
                 <i class="fas fa-table"></i>
-                MÃƒÂ©tricas Detalhadas
+                Mtricas Detalhadas
             </h3>
             <button class="export-btn" onclick="exportData()">
                 <i class="fas fa-download"></i>
@@ -161,16 +161,16 @@
             <table class="report-table">
                 <thead>
                     <tr>
-                        <th>MÃƒÂ©trica</th>
+                        <th>Mtrica</th>
                         <th>Valor Atual</th>
-                        <th>PerÃƒÂ­odo Anterior</th>
-                        <th>VariaÃƒÂ§ÃƒÂ¡o</th>
-                        <th>TendÃƒÂªncia</th>
+                        <th>Perodo Anterior</th>
+                        <th>Variao</th>
+                        <th>Tendncia</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Novos UsuÃƒÂ¡rios</td>
+                        <td>Novos Usurios</td>
                         <td class="metric-value">125</td>
                         <td>98</td>
                         <td class="metric-positive">+27.6%</td>
@@ -184,7 +184,7 @@
                         <td><i class="fas fa-trending-up" style="color: var(--vivo-green);"></i></td>
                     </tr>
                     <tr>
-                        <td>PromoÃƒÂ§ÃƒÂµes Criadas</td>
+                        <td>Promoes Criadas</td>
                         <td class="metric-value">34</td>
                         <td>41</td>
                         <td class="metric-negative">-17.1%</td>
@@ -211,31 +211,31 @@
 </div>
 
 <script>
-// InicializaÃƒÂ§ÃƒÂ¡o da pÃƒÂ¡gina
+// Inicializao da pgina
 window.addEventListener('DOMContentLoaded', function() {
-    console.log('PÃƒÂ¡gina de relatÃƒÂ³rios carregada');
+    console.log('Pgina de relatrios carregada');
     
-    // Configurar datas padrÃƒÂ¡o
+    // Configurar datas padro
     const today = new Date();
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     
     document.getElementById('startDate').valueAsDate = firstDayOfMonth;
     document.getElementById('endDate').valueAsDate = today;
     
-    // Inicializar grÃƒÂ¡ficos
+    // Inicializar grficos
     initializeCharts();
 });
 
-// InicializaÃƒÂ§ÃƒÂ¡o dos grÃƒÂ¡ficos
+// Inicializao dos grficos
 function initializeCharts() {
-    // GrÃƒÂ¡fico de crescimento de usuÃƒÂ¡rios
+    // Grfico de crescimento de usurios
     const usersCtx = document.getElementById('usersChart').getContext('2d');
     new Chart(usersCtx, {
         type: 'line',
         data: {
             labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
             datasets: [{
-                label: 'UsuÃƒÂ¡rios',
+                label: 'Usurios',
                 data: [45, 52, 68, 71, 83, 95, 102, 115, 127, 138, 145, 156],
                 borderColor: '#9b59b6',
                 backgroundColor: 'rgba(111, 26, 182, 0.1)',
@@ -259,7 +259,7 @@ function initializeCharts() {
         }
     });
 
-    // GrÃƒÂ¡fico de distribuiÃƒÂ§ÃƒÂ¡o por tipo
+    // Grfico de distribuio por tipo
     const distributionCtx = document.getElementById('distributionChart').getContext('2d');
     new Chart(distributionCtx, {
         type: 'doughnut',
@@ -295,30 +295,30 @@ function applyFilters() {
     
     console.log('Aplicando filtros:', { period, startDate, endDate, type });
     
-    // Aqui vocÃƒÂª implementaria a lÃƒÂ³gica para filtrar os dados
+    // Aqui voc implementaria a lgica para filtrar os dados
     // Por enquanto, apenas mostra um alerta
-    alert(`Filtros aplicados:\nPerÃƒÂ­odo: ${period}\nData Inicial: ${startDate}\nData Final: ${endDate}\nTipo: ${type}`);
+    alert(`Filtros aplicados:\nPerodo: ${period}\nData Inicial: ${startDate}\nData Final: ${endDate}\nTipo: ${type}`);
 }
 
 // Exportar dados
 function exportData() {
     alert('Exportando dados para CSV... (Funcionalidade em desenvolvimento)');
     
-    // Aqui vocÃƒÂª implementaria a exportaÃƒÂ§ÃƒÂ¡o real dos dados
+    // Aqui voc implementaria a exportao real dos dados
     // Por exemplo, gerando um arquivo CSV ou Excel
 }
 
 // Atualizar dados em tempo real (simulado)
 function updateMetrics() {
-    // Simula atualizaÃƒÂ§ÃƒÂµes em tempo real dos dados
+    // Simula atualizaes em tempo real dos dados
     const elements = ['totalUsers', 'totalCompanies', 'activePromotions', 'conversionRate'];
     
     elements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
-            // Adiciona uma pequena variaÃƒÂ§ÃƒÂ¡o aleatÃƒÂ³ria aos valores
+            // Adiciona uma pequena variao aleatria aos valores
             const currentValue = parseFloat(element.textContent.replace(/[^\d.]/g, ''));
-            const variation = (Math.random() - 0.5) * 0.02; // Ã‚Â±1% de variaÃƒÂ§ÃƒÂ¡o
+            const variation = (Math.random() - 0.5) * 0.02; // 1% de variao
             const newValue = currentValue * (1 + variation);
             
             if (id === 'conversionRate') {
@@ -330,7 +330,7 @@ function updateMetrics() {
     });
 }
 
-// Atualizar mÃƒÂ©tricas a cada 30 segundos (simulaÃƒÂ§ÃƒÂ¡o)
+// Atualizar mtricas a cada 30 segundos (simulao)
 setInterval(updateMetrics, 30000);
 </script>
 </body>

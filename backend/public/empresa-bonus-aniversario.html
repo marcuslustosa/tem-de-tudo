@@ -24,14 +24,14 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div class="header-title">
-<h1>?? B?nus de Anivers?rio</h1>
+<h1> B?nus de Anivers?rio</h1>
 <p>Parabenize seus clientes com um presente especial</p>
 </div>
 </div>
 </div>
 <div class="container">
 <div class="info-box">
-<h3>?? Como funciona?</h3>
+<h3> Como funciona?</h3>
 <p>Todo dia ?s 8h da manh?, o sistema verifica automaticamente se algum cliente est? fazendo anivers?rio e envia um cupom de presente com validade de 30 dias. Configure o b?nus que deseja oferecer.</p>
 </div>
 <div class="form-card">
@@ -73,7 +73,7 @@
 <label>Mensagem Personalizada</label>
 <div class="input-wrapper">
 <i class="input-icon fas fa-birthday-cake"></i>
-<input type="text" id="mensagem" class="input-with-icon" placeholder="Parab?ns! Aqui est? seu presente de anivers?rio ??">
+<input type="text" id="mensagem" class="input-with-icon" placeholder="Parab?ns! Aqui est? seu presente de anivers?rio ">
 </div>
 </div>
 <div class="form-group">
@@ -90,7 +90,7 @@
 <div class="preview-desc" id="previewDesc">Configure o b?nus acima</div>
 </div>
 <button class="btn-primary" id="btnSalvar">
-<i class="fas fa-check"></i> Salvar Configura??es
+<i class="fas fa-check"></i> Salvar Configuraes
         </button>
 </div>
 <script>
@@ -135,17 +135,17 @@
                 switch(tipo) {
                     case 'percentual':
                         previewValue = `${valor}% OFF`;
-                        previewDesc = msg || `?? Feliz Anivers?rio! Ganhe ${valor}% OFF (v?lido por ${dias} dias)`;
+                        previewDesc = msg || ` Feliz Anivers?rio! Ganhe ${valor}% OFF (v?lido por ${dias} dias)`;
                         document.getElementById('valorLabel').textContent = 'Percentual de Desconto (%)';
                         break;
                     case 'fixo':
                         previewValue = `R$ ${valor.toFixed(2)}`;
-                        previewDesc = msg || `?? Feliz Anivers?rio! R$ ${valor.toFixed(2)} OFF (v?lido por ${dias} dias)`;
+                        previewDesc = msg || ` Feliz Anivers?rio! R$ ${valor.toFixed(2)} OFF (v?lido por ${dias} dias)`;
                         document.getElementById('valorLabel').textContent = 'Valor Fixo (R$)';
                         break;
                     case 'gratis':
-                        previewValue = '?? GR?TIS';
-                        previewDesc = msg || `?? Feliz Anivers?rio! Presente especial para voc? (v?lido por ${dias} dias)`;
+                        previewValue = ' GR?TIS';
+                        previewDesc = msg || ` Feliz Anivers?rio! Presente especial para voc? (v?lido por ${dias} dias)`;
                         document.getElementById('valorLabel').textContent = 'Valor de Refer?ncia (R$)';
                         break;
                 }
@@ -166,7 +166,7 @@
                 const dias = parseInt(document.getElementById('validadeDias').value);
                 if (!tipo || !valor) {
                     alert('Preencha o tipo e valor do b?nus');
-                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura??es';
+                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configuraes';
                     btn.disabled = false;
                     return;
                 }
@@ -197,13 +197,13 @@
                     }, 1500);
                 } else {
                     alert(result.message || 'Erro ao salvar');
-                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura??es';
+                    btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configuraes';
                     btn.disabled = false;
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao salvar configura??es');
-                btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configura??es';
+                alert('Erro ao salvar configuraes');
+                btn.innerHTML = '<i class="fas fa-check"></i> Salvar Configuraes';
                 btn.disabled = false;
             }
         });

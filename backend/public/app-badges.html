@@ -22,7 +22,7 @@
 <button class="back-btn" onclick="history.back()">
 <i class="fas fa-arrow-left"></i>
 </button>
-<h1><span class="badge-emoji">??</span> Meus Badges</h1>
+<h1><span class="badge-emoji"></span> Meus Badges</h1>
 </div>
 </div>
 </header>
@@ -47,14 +47,14 @@
 </div>
 </div>
 <!-- Badges Conquistados -->
-<h2 class="section-title">?? Badges Conquistados</h2>
+<h2 class="section-title"> Badges Conquistados</h2>
 <div class="badges-grid" id="badgesConquistados">
 <div class="loading">
 <i class="fas fa-spinner"></i>
 </div>
 </div>
 <!-- Progresso Badges -->
-<h2 class="section-title">?? Progresso dos Badges</h2>
+<h2 class="section-title"> Progresso dos Badges</h2>
 <div class="badges-grid" id="progressoBadges">
 <div class="loading">
 <i class="fas fa-spinner"></i>
@@ -62,7 +62,7 @@
 </div>
 </div>
 <script>
-        // Verificar autentica??o
+        // Verificar autenticao
         const token = localStorage.getItem('token'); // CORRIGIDO
         if (!token) {
             window.location.href = 'index.html';
@@ -141,7 +141,7 @@
                 const progresso = response.progresso || [];
                 const container = document.getElementById('progressoBadges');
                 if (progresso.length === 0) {
-                    container.innerHTML = '<div class="no-badges">Parab?ns! Voc? conquistou todos os badges dispon?veis! ??</div>';
+                    container.innerHTML = '<div class="no-badges">Parab?ns! Voc? conquistou todos os badges dispon?veis! </div>';
                     return;
                 }
                 container.innerHTML = progresso.map(item => {
@@ -182,15 +182,15 @@
         // Calcular n?vel baseado em pontos
         function calcularNivel(pontos) {
             if (pontos >= 5000) {
-                return { nome: 'Platina ðŸ’Ž', cor: '#e5e4e2' };
+                return { nome: 'Platina ', cor: '#e5e4e2' };
             } else if (pontos >= 1500) {
-                return { nome: 'Ouro ðŸ¥‡', cor: '#ffd700' };
+                return { nome: 'Ouro ', cor: '#ffd700' };
             } else if (pontos >= 500) {
-                return { nome: 'Prata ðŸ¥ˆ', cor: '#c0c0c0' };
+                return { nome: 'Prata ', cor: '#c0c0c0' };
             }
-            return { nome: 'Bronze ðŸ¥‰', cor: '#cd7f32' };
+            return { nome: 'Bronze ', cor: '#cd7f32' };
         }
-        // Obter texto da condi??o do badge
+        // Obter texto da condio do badge
         function getCondicaoTexto(badge) {
             const tipos = {
                 'pontos': `Acumular ${badge.condicao_valor} pontos`,
@@ -200,9 +200,9 @@
                 'valor_gasto': `Gastar R$ ${(badge.condicao_valor / 100).toFixed(2)}`,
                 'nivel': `Alcan?ar n?vel ${badge.condicao_valor}`
             };
-            return tipos[badge.condicao_tipo] || 'Condi??o especial';
+            return tipos[badge.condicao_tipo] || 'Condio especial';
         }
-        // Obter unidade da condi??o
+        // Obter unidade da condio
         function getUnidadeCondicao(tipo) {
             const unidades = {
                 'pontos': 'pontos',

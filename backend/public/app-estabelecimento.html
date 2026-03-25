@@ -36,7 +36,7 @@
 <div class="hero-stats">
 <div class="stat">
 <div class="stat-value" id="empresaRating">-</div>
-<div class="stat-label">Avalia??o</div>
+<div class="stat-label">Avaliao</div>
 </div>
 <div class="stat">
 <div class="stat-value" id="meusPontos">0</div>
@@ -58,11 +58,11 @@
 <div class="info-text" id="empresaEndereco">-</div>
 </div>
 <div class="info-card" id="promocoesCard" style="display: none;">
-<div class="info-title"><i class="fas fa-gift"></i> Promo??es Ativas</div>
+<div class="info-title"><i class="fas fa-gift"></i> Promoes Ativas</div>
 <div class="promocoes-list" id="promocoesList"></div>
 </div>
 <div class="info-card" id="avaliacoesCard" style="display: none;">
-<div class="info-title"><i class="fas fa-star"></i> Avalia??es Recentes</div>
+<div class="info-title"><i class="fas fa-star"></i> Avaliaes Recentes</div>
 <div class="reviews-list" id="reviewsList"></div>
 </div>
 <button class="action-btn" onclick="location.href='app-scanner.html'">
@@ -75,17 +75,17 @@
         let empresaData = null;
         // ?cones por ramo
         const ramoIcons = {
-            'restaurante': '???',
-            'lanchonete': '??',
-            'pizzaria': '??',
+            'restaurante': '?',
+            'lanchonete': '',
+            'pizzaria': '',
             'cafeteria': '?',
-            'padaria': '??',
-            'academia': '??',
-            'farmacia': '??',
-            'petshop': '??',
-            'salao': '??',
-            'mercado': '??',
-            'default': '??'
+            'padaria': '',
+            'academia': '',
+            'farmacia': '',
+            'petshop': '',
+            'salao': '',
+            'mercado': '',
+            'default': ''
         };
         // Pegar ID da URL
         function getEmpresaId() {
@@ -154,41 +154,41 @@
             document.getElementById('meusPontos').textContent = meus_pontos || 0;
             document.getElementById('totalClientes').textContent = empresa.total_clientes || '-';
             // Sobre
-            document.getElementById('empresaDescricao').textContent = empresa.descricao || 'Sem descri??o dispon?vel.';
+            document.getElementById('empresaDescricao').textContent = empresa.descricao || 'Sem descrio dispon?vel.';
             // Endere?o
             document.getElementById('empresaEndereco').innerHTML = `
                 ${empresa.endereco || 'Endere?o n?o informado'}<br>
                 ${empresa.cidade ? `${empresa.cidade}, ${empresa.estado || ''}` : ''}
             `;
-            // Promo??es
+            // Promoes
             if (promocoes && promocoes.length > 0) {
                 document.getElementById('promocoesCard').style.display = 'block';
                 renderPromocoes(promocoes);
             }
-            // Avalia??es
+            // Avaliaes
             if (avaliacoes && avaliacoes.length > 0) {
                 document.getElementById('avaliacoesCard').style.display = 'block';
                 renderAvaliacoes(avaliacoes);
             }
         }
-        // Renderizar promo??es
+        // Renderizar promoes
         function renderPromocoes(promocoes) {
             const list = document.getElementById('promocoesList');
             list.innerHTML = promocoes.map(promo => {
                 let badge = '';
                 if (promo.pontos_necessarios) {
-                    badge = `<span class="promo-badge">?? ${promo.pontos_necessarios} pts</span>`;
+                    badge = `<span class="promo-badge"> ${promo.pontos_necessarios} pts</span>`;
                 }
                 return `
                     <div class="promo-item">
 <h4>${promo.nome}</h4>
-<p>${promo.descricao || 'Promo??o especial!'}</p>
+<p>${promo.descricao || 'Promoo especial!'}</p>
                         ${badge}
                     </div>
                 `;
             }).join('');
         }
-        // Renderizar avalia??es
+        // Renderizar avaliaes
         function renderAvaliacoes(avaliacoes) {
             const list = document.getElementById('reviewsList');
             list.innerHTML = avaliacoes.slice(0, 5).map(review => {
@@ -225,7 +225,7 @@
 </a>
 <a href="app-promocoes.html" class="nav-item">
 <i class="fas fa-tags"></i>
-<span>Promo??es</span>
+<span>Promoes</span>
 </a>
 <a href="app-perfil.html" class="nav-item">
 <i class="fas fa-user"></i>

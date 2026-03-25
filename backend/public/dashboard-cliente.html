@@ -32,7 +32,7 @@
             </button>
         </div>
         <div class="welcome">
-            <h1 id="welcomeText">OlÃ¡, Cliente!</h1>
+            <h1 id="welcomeText">Ol, Cliente!</h1>
             <p>Bem-vindo ao seu painel pessoal</p>
         </div>
     </div>
@@ -46,7 +46,7 @@
                 Seus Pontos Tem de Tudo
             </div>
             <div class="points-value" id="pointsValue">180</div>
-            <div class="points-label">pontos disponÃ­veis</div>
+            <div class="points-label">pontos disponveis</div>
             <div class="points-actions">
                 <a href="app-meu-qrcode.html" class="btn btn-white">
                     <i class="fas fa-qrcode"></i>
@@ -54,12 +54,12 @@
                 </a>
                 <a href="app-promocoes.html" class="btn btn-outline">
                     <i class="fas fa-gift"></i>
-                    Ver PromoÃ§Ãµes
+                    Ver Promoes
                 </a>
             </div>
         </div>
 
-        <!-- ESTATÃSTICAS -->
+        <!-- ESTATSTICAS -->
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-icon">
@@ -80,11 +80,11 @@
                     <i class="fas fa-gift"></i>
                 </div>
                 <div class="stat-value">3</div>
-                <div class="stat-label">PromoÃ§Ãµes</div>
+                <div class="stat-label">Promoes</div>
             </div>
         </div>
 
-        <!-- MENU DE AÃ‡Ã•ES -->
+        <!-- MENU DE AES -->
         <div class="dash-menu">
             <a href="app-meus-pontos.html" class="dash-card">
                 <i class="fas fa-coins"></i>
@@ -92,7 +92,7 @@
             </a>
             <a href="app-promocoes.html" class="dash-card">
                 <i class="fas fa-tags"></i>
-                <span>PromoÃ§Ãµes</span>
+                <span>Promoes</span>
             </a>
             <a href="app-cupons.html" class="dash-card">
                 <i class="fas fa-ticket"></i>
@@ -114,16 +114,16 @@
 
         <!-- OFERTAS -->
         <div class="section">
-            <h2>Ofertas DisponÃ­veis</h2>
+            <h2>Ofertas Disponveis</h2>
             <div class="offers-grid">
                 <div class="offer-card">
                     <div class="offer-image">
                         <i class="fas fa-utensils"></i>
                     </div>
-                    <h3 class="offer-title">10% OFF AlmoÃ§o</h3>
+                    <h3 class="offer-title">10% OFF Almoo</h3>
                     <p class="offer-description">Desconto no Restaurante Sabor</p>
                     <div class="offer-price">Precisa: 50 pontos</div>
-                    <button class="btn-offer" onclick="usePromotion('rest1')">Usar PromoÃ§Ã£o</button>
+                    <button class="btn-offer" onclick="usePromotion('rest1')">Usar Promoo</button>
                 </div>
                 <div class="offer-card">
                     <div class="offer-image">
@@ -132,16 +132,16 @@
                     <h3 class="offer-title">R$ 5 OFF Medicamentos</h3>
                     <p class="offer-description">Desconto na Drogaria Popular</p>
                     <div class="offer-price">Precisa: 25 pontos</div>
-                    <button class="btn-offer" onclick="usePromotion('farm1')">Usar PromoÃ§Ã£o</button>
+                    <button class="btn-offer" onclick="usePromotion('farm1')">Usar Promoo</button>
                 </div>
                 <div class="offer-card">
                     <div class="offer-image">
                         <i class="fas fa-gas-pump"></i>
                     </div>
-                    <h3 class="offer-title">5% OFF CombustÃ­vel</h3>
+                    <h3 class="offer-title">5% OFF Combustvel</h3>
                     <p class="offer-description">Desconto no Posto Energia</p>
                     <div class="offer-price">Precisa: 100 pontos</div>
-                    <button class="btn-offer" onclick="usePromotion('gas1')">Usar PromoÃ§Ã£o</button>
+                    <button class="btn-offer" onclick="usePromotion('gas1')">Usar Promoo</button>
                 </div>
             </div>
         </div>
@@ -161,7 +161,7 @@
         function loadUserData() {
             const userData = JSON.parse(localStorage.getItem('userData') || '{}');
             if (userData.name) {
-                document.getElementById('welcomeText').textContent = 'OlÃ¡, ' + userData.name + '!';
+                document.getElementById('welcomeText').textContent = 'Ol, ' + userData.name + '!';
             }
         }
 
@@ -184,9 +184,9 @@
             const currentPoints = userData.pontos || 180;
             
             var promotions = {
-                'rest1': { name: '10% OFF AlmoÃ§o', points: 50 },
+                'rest1': { name: '10% OFF Almoo', points: 50 },
                 'farm1': { name: 'R$ 5 OFF Medicamentos', points: 25 },
-                'gas1': { name: '5% OFF CombustÃ­vel', points: 100 }
+                'gas1': { name: '5% OFF Combustvel', points: 100 }
             };
             
             var promo = promotions[promoId];
@@ -197,10 +197,10 @@
                     userData.pontos = currentPoints - promo.points;
                     localStorage.setItem('userData', JSON.stringify(userData));
                     document.getElementById('pointsValue').textContent = userData.pontos;
-                    alert('PromoÃ§Ã£o "' + promo.name + '" ativada com sucesso! VocÃª agora tem ' + userData.pontos + ' pontos.');
+                    alert('Promoo "' + promo.name + '" ativada com sucesso! Voc agora tem ' + userData.pontos + ' pontos.');
                 }
             } else {
-                alert('VocÃª precisa de ' + promo.points + ' pontos para usar esta promoÃ§Ã£o. VocÃª tem apenas ' + currentPoints + ' pontos.');
+                alert('Voc precisa de ' + promo.points + ' pontos para usar esta promoo. Voc tem apenas ' + currentPoints + ' pontos.');
             }
         }
     </script>

@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color content="#9b59b6">
-<title>??? PromoÃƒÂ§ÃƒÂµes - Tem de Tudo</title>
+<title>? Promoes - Tem de Tudo</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="manifest" href="/manifest.json">
@@ -29,31 +29,31 @@
 <i class="fas fa-arrow-left"></i>
 </button>
 <div>
-<h1>PromoÃƒÂ§ÃƒÂµes</h1>
+<h1>Promoes</h1>
 <p id="totalInfo">Carregando...</p>
 </div>
 </div>
 <button class="add-btn" onclick="openModal()">
-<i class="fas fa-plus"></i> Nova PromoÃƒÂ§ÃƒÂ¡o
+<i class="fas fa-plus"></i> Nova Promoo
         </button>
 </div>
 <div class="content">
 <div id="loading" class="loading">
 <i class="fas fa-spinner fa-spin"></i>
-<p>Carregando promo??es...</p>
+<p>Carregando promoes...</p>
 </div>
 <div id="promo-list" class="promo-list" style="display: none;"></div>
 <div id="empty-state" class="empty-state" style="display: none;">
 <i class="fas fa-gift"></i>
-<p>Nenhuma promo??o cadastrada</p>
-<small style="display: block; margin-top: 8px; color: #666;">Clique em "Nova PromoÃƒÂ§ÃƒÂ¡o" para criar</small>
+<p>Nenhuma promoo cadastrada</p>
+<small style="display: block; margin-top: 8px; color: #666;">Clique em "Nova Promoo" para criar</small>
 </div>
 </div>
 <!-- Modal de Criar/Editar -->
 <div id="promoModal" class="modal">
 <div class="modal-content">
 <div class="modal-header">
-<h2 id="modalTitle">Nova PromoÃƒÂ§ÃƒÂ¡o</h2>
+<h2 id="modalTitle">Nova Promoo</h2>
 <button class="close-btn" onclick="closeModal()">
 <i class="fas fa-times"></i>
 </button>
@@ -61,15 +61,15 @@
 <form id="promoForm" onsubmit="handleSubmit(event)">
 <input type="hidden" id="promoId">
 <div class="form-group">
-<label class="form-label">Nome da Promo??o *</label>
+<label class="form-label">Nome da Promoo *</label>
 <input type="text" id="nome" class="form-input" placeholder="Ex: Desconto de 15%" required>
 </div>
 <div class="form-group">
-<label class="form-label">Descri??o</label>
-<textarea id="descricao" class="form-textarea" placeholder="Descreva os detalhes da promo??o..."></textarea>
+<label class="form-label">Descrio</label>
+<textarea id="descricao" class="form-textarea" placeholder="Descreva os detalhes da promoo..."></textarea>
 </div>
 <div class="form-group">
-<label class="form-label">Tipo de Promo??o *</label>
+<label class="form-label">Tipo de Promoo *</label>
 <select id="tipo" class="form-select" required>
 <option value="">Selecione...</option>
 <option value="desconto">Desconto</option>
@@ -93,16 +93,16 @@
 <div class="form-group">
 <label class="form-checkbox">
 <input type="checkbox" id="ativo" checked>
-<span>Promo??o ativa</span>
+<span>Promoo ativa</span>
 </label>
 </div>
 <button type="submit" class="btn-submit" id="submitBtn">
-<i class="fas fa-save"></i> Salvar Promo??o
+<i class="fas fa-save"></i> Salvar Promoo
                 </button>
 </form>
 </div>
 </div>
-<!-- Modal de Confirma??o -->
+<!-- Modal de Confirmao -->
 <div id="confirmModal" class="modal">
 <div class="modal-content" style="max-width: 400px;">
 <div class="modal-header">
@@ -111,7 +111,7 @@
 <i class="fas fa-times"></i>
 </button>
 </div>
-<p style="margin-bottom: 24px; color: #b0b0b0;">Tem certeza que deseja excluir esta promo??o?</p>
+<p style="margin-bottom: 24px; color: #b0b0b0;">Tem certeza que deseja excluir esta promoo?</p>
 <div style="display: flex; gap: 8px;">
 <button onclick="closeConfirmModal()" class="btn-action btn-edit" style="flex: 1;">
                     Cancelar
@@ -157,7 +157,7 @@
                     showEmptyState();
                 }
             } catch (error) {
-                console.error('Erro ao carregar promo??es:', error);
+                console.error('Erro ao carregar promoes:', error);
                 showEmptyState();
             } finally {
                 document.getElementById('loading').style.display = 'none';
@@ -208,7 +208,7 @@
                 `;
             }).join('');
             list.style.display = 'grid';
-            document.getElementById('totalInfo').textContent = `${promocoes.length} ${promocoes.length === 1 ? 'promo??o' : 'promo??es'}`;
+            document.getElementById('totalInfo').textContent = `${promocoes.length} ${promocoes.length === 1 ? 'promoo' : 'promoes'}`;
         }
         function getTipoLabel(tipo) {
             const tipos = {
@@ -224,7 +224,7 @@
             const form = document.getElementById('promoForm');
             form.reset();
             if (promo) {
-                document.getElementById('modalTitle').textContent = 'Editar Promo??o';
+                document.getElementById('modalTitle').textContent = 'Editar Promoo';
                 document.getElementById('promoId').value = promo.id;
                 document.getElementById('nome').value = promo.nome;
                 document.getElementById('descricao').value = promo.descricao || '';
@@ -233,10 +233,10 @@
                 document.getElementById('data_inicio').value = promo.data_inicio || '';
                 document.getElementById('data_fim').value = promo.data_fim || '';
                 document.getElementById('ativo').checked = promo.ativo == 1;
-                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Atualizar Promo??o';
+                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Atualizar Promoo';
             } else {
-                document.getElementById('modalTitle').textContent = 'Nova PromoÃƒÂ§ÃƒÂ¡o';
-                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Salvar Promo??o';
+                document.getElementById('modalTitle').textContent = 'Nova Promoo';
+                document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Salvar Promoo';
             }
             modal.classList.add('show');
         }
@@ -273,11 +273,11 @@
                     closeConfirmModal();
                     loadPromocoes();
                 } else {
-                    alert('Erro ao excluir promo??o');
+                    alert('Erro ao excluir promoo');
                 }
             } catch (error) {
                 console.error('Erro ao excluir:', error);
-                alert('Erro ao excluir promo??o');
+                alert('Erro ao excluir promoo');
             }
         }
         async function handleSubmit(e) {
@@ -310,16 +310,16 @@
                     closeModal();
                     loadPromocoes();
                 } else {
-                    alert('Erro ao salvar promo??o');
+                    alert('Erro ao salvar promoo');
                 }
             } catch (error) {
                 console.error('Erro ao salvar:', error);
-                alert('Erro ao salvar promo??o');
+                alert('Erro ao salvar promoo');
             }
         }
         function showEmptyState() {
             document.getElementById('empty-state').style.display = 'block';
-            document.getElementById('totalInfo').textContent = '0 promo??es';
+            document.getElementById('totalInfo').textContent = '0 promoes';
         }
         document.addEventListener('DOMContentLoaded', loadPromocoes);
     </script>
@@ -335,7 +335,7 @@
 </a>
 <a href="empresa-promocoes.html" class="nav-item active">
 <i class="fas fa-gift"></i>
-<span>Promo??es</span>
+<span>Promoes</span>
 </a>
 <a href="empresa-clientes.html" class="nav-item">
 <i class="fas fa-users"></i>
@@ -347,11 +347,11 @@
 </a>
 </nav>
 <script>
-        // Verifica??o de autentica??o SIMPLIFICADA
+        // Verificao de autenticao SIMPLIFICADA
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token');
             if (!token) {
-                console.warn('??? Sem token - redirecionando...');
+                console.warn('? Sem token - redirecionando...');
                 window.location.href = '/entrar.html';
                 return;
             }

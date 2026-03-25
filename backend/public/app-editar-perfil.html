@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Editar Perfil - Tem de Tudo</title>
-<meta name="description" content="Edite suas informaÃƒÂ§ÃƒÂµes pessoais e preferÃƒÂªncias">
+<meta name="description" content="Edite suas informaes pessoais e preferncias">
 <meta name="theme-color" content="#9b59b6">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -30,7 +30,7 @@
                 <i class="fas fa-arrow-left"></i>
             </a>
             <h1>Editar Perfil</h1>
-            <button class="save-btn" onclick="salvarPerfil()" title="Salvar alteraÃƒÂ§ÃƒÂµes">
+            <button class="save-btn" onclick="salvarPerfil()" title="Salvar alteraes">
                 <i class="fas fa-check"></i>
             </button>
         </div>
@@ -49,7 +49,7 @@
                         <i class="fas fa-camera"></i>
                     </div>
                 </div>
-                <p class="profile-hint">Toque no ÃƒÂ­cone da cÃƒÂ¢mera para alterar sua foto</p>
+                <p class="profile-hint">Toque no cone da cmera para alterar sua foto</p>
             </div>
         </div>
 
@@ -58,7 +58,7 @@
             <div class="form-section">
                 <div class="section-title">
                     <i class="fas fa-user-edit"></i>
-                    InformaÃƒÂ§ÃƒÂµes Pessoais
+                    Informaes Pessoais
                 </div>
                 
                 <div class="form-group">
@@ -100,13 +100,13 @@
             <div class="preferences-section">
                 <div class="section-title">
                     <i class="fas fa-cog"></i>
-                    PreferÃƒÂªncias
+                    Preferncias
                 </div>
                 
                 <div class="toggle-group">
                     <div>
-                        <div class="toggle-label">NotificaÃƒÂ§ÃƒÂµes Push</div>
-                        <div class="toggle-desc">Receba alertas sobre promoÃƒÂ§ÃƒÂµes e pontos</div>
+                        <div class="toggle-label">Notificaes Push</div>
+                        <div class="toggle-desc">Receba alertas sobre promoes e pontos</div>
                     </div>
                     <div class="toggle-switch active" onclick="togglePreference(this, 'notifications')"></div>
                 </div>
@@ -121,8 +121,8 @@
                 
                 <div class="toggle-group">
                     <div>
-                        <div class="toggle-label">LocalizaÃƒÂ§ÃƒÂ¡o</div>
-                        <div class="toggle-desc">Ofertas baseadas na sua localizaÃƒÂ§ÃƒÂ¡o</div>
+                        <div class="toggle-label">Localizao</div>
+                        <div class="toggle-desc">Ofertas baseadas na sua localizao</div>
                     </div>
                     <div class="toggle-switch active" onclick="togglePreference(this, 'location')"></div>
                 </div>
@@ -136,7 +136,7 @@
                 </div>
                 
                 <button class="btn-save" onclick="salvarPerfil()">
-                    <span id="saveText">Salvar AlteraÃƒÂ§ÃƒÂµes</span>
+                    <span id="saveText">Salvar Alteraes</span>
                     <div class="loading" id="saveLoading" style="display: none;"></div>
                 </button>
             </div>
@@ -149,7 +149,7 @@
     <div class="nav-container">
         <a href="dashboard-cliente.html" class="nav-item">
             <i class="fas fa-home"></i>
-            <span>InÃƒÂ­cio</span>
+            <span>Incio</span>
         </a>
         <a href="app-empresas.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -195,7 +195,7 @@ function carregarDadosUsuario() {
     if (user.telefone) document.getElementById('telefone').value = user.telefone;
     if (user.data_nascimento) document.getElementById('dataNascimento').value = user.data_nascimento;
     
-    // Carregar preferÃƒÂªncias
+    // Carregar preferncias
     const savedPrefs = JSON.parse(localStorage.getItem('preferences') || '{}');
     preferences = { ...preferences, ...savedPrefs };
     atualizarToggles();
@@ -233,7 +233,7 @@ function handleAvatarChange(event) {
         reader.onload = function(e) {
             const avatarDisplay = document.getElementById('avatarDisplay');
             avatarDisplay.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
-            showNotification('Foto atualizada! Salve as alteraÃƒÂ§ÃƒÂµes.', 'success');
+            showNotification('Foto atualizada! Salve as alteraes.', 'success');
         };
         reader.readAsDataURL(file);
     }
@@ -280,7 +280,7 @@ async function salvarPerfil() {
         
         showNotification('Perfil atualizado com sucesso!', 'success');
         
-        // Opcional: redirecionar apÃƒÂ³s salvar
+        // Opcional: redirecionar aps salvar
         setTimeout(() => {
             window.location.href = 'app-perfil.html';
         }, 1000);
@@ -341,7 +341,7 @@ function showNotification(message, type = 'info') {
 <script>
         const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:8001' : 'https://tem-de-tudo.onrender.com';
         document.addEventListener('DOMContentLoaded', async () => {
-            // Verificar autentica??o
+            // Verificar autenticao
             const token = localStorage.getItem('token');
             const userStr = localStorage.getItem('user');
             if (!token || !userStr) {
@@ -362,7 +362,7 @@ function showNotification(message, type = 'info') {
                         field.style.display = 'none';
                     }
                 });
-                // Preencher campos com dados do usuÃƒÂ¡rio
+                // Preencher campos com dados do usurio
                 document.getElementById('nome').value = user.name || user.nome || '';
                 document.getElementById('email').value = user.email || '';
                 document.getElementById('telefone').value = user.telefone || '';
@@ -390,16 +390,16 @@ function showNotification(message, type = 'info') {
             if (isAdmin) {
                 dados.data_nascimento = document.getElementById('dataNascimento').value;
             }
-            // ValidaÃƒÂ§ÃƒÂ¡o bÃƒÂ¡sica
+            // Validao bsica
             if (!dados.name || !dados.email) {
-                mostrarFeedback('Nome e email sÃƒÂ¡o obrigatÃƒÂ³rios!', 'error');
+                mostrarFeedback('Nome e email so obrigatrios!', 'error');
                 return;
             }
-            mostrarFeedback('Salvando alteraÃƒÂ§ÃƒÂµes...', 'info');
+            mostrarFeedback('Salvando alteraes...', 'info');
             try {
-                // SIMULAÃƒâ€¡ÃƒÂ¡O TEMPORÃƒÂRIA - FuncionarÃƒÂ¡ atÃƒÂ© backend estar completo
+                // SIMULAO TEMPORRIA - Funcionar at backend estar completo
                 if (!token) {
-                    mostrarFeedback('?? VocÃƒÂª precisa estar logado', 'error');
+                    mostrarFeedback(' Voc precisa estar logado', 'error');
                     setTimeout(() => window.location.href = 'entrar.html', 1500);
                     return;
                 }
@@ -426,7 +426,7 @@ function showNotification(message, type = 'info') {
             }
         }
         function trocarFoto() {
-            mostrarFeedback('?? Funcionalidade de foto serÃƒÂ¡ implementada em breve!', 'info');
+            mostrarFeedback(' Funcionalidade de foto ser implementada em breve!', 'info');
         }
         function mostrarFeedback(mensagem, tipo) {
             // Criar elemento de feedback
@@ -448,13 +448,13 @@ function showNotification(message, type = 'info') {
             `;
             feedback.textContent = mensagem;
             document.body.appendChild(feedback);
-            // Remover apÃƒÂ³s 3 segundos
+            // Remover aps 3 segundos
             setTimeout(() => {
                 feedback.style.animation = 'slideUp 0.3s ease';
                 setTimeout(() => document.body.removeChild(feedback), 300);
             }, 3000);
         }
-        // Adicionar estilos para anima??es
+        // Adicionar estilos para animaes
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideDown {
