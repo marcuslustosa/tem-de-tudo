@@ -115,7 +115,7 @@ const companiesData = [
     },
     {
         id: 2,
-        name: "Farmácia Sáo José",
+        name: "Farmácia São José",
         category: "farmacia",
         phone: "(11) 88888-8888",
         email: "saojose@farmacia.com",
@@ -134,7 +134,7 @@ const companiesData = [
         created_at: "2024-02-01"
     }
 ];
-// Funçáo para carregar empresas
+// Função para carregar empresas
 function loadCompanies() {
     const grid = document.getElementById('companiesGrid');
     if (companiesData.length === 0) {
@@ -192,7 +192,7 @@ function loadCompanies() {
     `).join('');
     updateStats();
 }
-// Funçáo para obter label da categoria
+// Função para obter label da categoria
 function getCategoryLabel(category) {
     const labels = {
         restaurante: 'Restaurante',
@@ -203,7 +203,7 @@ function getCategoryLabel(category) {
     };
     return labels[category] || category;
 }
-// Funçáo para obter label do status
+// Função para obter label do status
 function getStatusLabel(status) {
     const labels = {
         ativo: 'Ativo',
@@ -212,7 +212,7 @@ function getStatusLabel(status) {
     };
     return labels[status] || status;
 }
-// Funçáo para atualizar estatísticas
+// Função para atualizar estatísticas
 function updateStats() {
     const total = companiesData.length;
     const active = companiesData.filter(c => c.status === 'ativo').length;
@@ -227,15 +227,15 @@ function updateStats() {
     document.getElementById('pendingCompanies').textContent = pending;
     document.getElementById('newCompanies').textContent = thisMonth;
 }
-// Funçáo para adicionar empresa
+// Função para adicionar empresa
 function addCompany() {
     window.location.href = 'admin-criar-empresa.html';
 }
-// Funçáo para editar empresa
+// Função para editar empresa
 function editCompany(companyId) {
     window.location.href = `admin-editar-empresa.html?id=${companyId}`;
 }
-// Funçáo para excluir empresa
+// Função para excluir empresa
 function deleteCompany(companyId) {
     if (confirm('Tem certeza que deseja excluir esta empresa?')) {
         const index = companiesData.findIndex(c => c.id === companyId);
@@ -246,19 +246,19 @@ function deleteCompany(companyId) {
         }
     }
 }
-// Funçáo de busca
+// Função de busca
 document.getElementById('searchInput').addEventListener('input', function(e) {
     filterCompanies();
 });
-// Funçáo de filtro por categoria
+// Função de filtro por categoria
 document.getElementById('categoryFilter').addEventListener('change', function(e) {
     filterCompanies();
 });
-// Funçáo de filtro por status
+// Função de filtro por status
 document.getElementById('statusFilter').addEventListener('change', function(e) {
     filterCompanies();
 });
-// Funçáo para filtrar empresas
+// Função para filtrar empresas
 function filterCompanies() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const categoryFilter = document.getElementById('categoryFilter').value;
@@ -274,7 +274,7 @@ function filterCompanies() {
         card.style.display = matchesSearch && matchesCategory && matchesStatus ? '' : 'none';
     });
 }
-// Funçáo para mostrar notificações
+// Função para mostrar notificações
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.style.cssText = `

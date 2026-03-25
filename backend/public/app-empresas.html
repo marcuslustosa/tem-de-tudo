@@ -32,7 +32,7 @@
 <!-- Location Status -->
 <div class="location-status" id="locationStatus">
 <i class="fas fa-map-marker-alt tdt-inline-aa5b8fc3"></i>
-<strong>Localizaçáo detectada:</strong> <span id="userLocation">Carregando...</span>
+<strong>Localização detectada:</strong> <span id="userLocation">Carregando...</span>
 </div>
 <!-- Search and Filters Section -->
 <div class="search-filters-section">
@@ -51,15 +51,15 @@
 <div class="filter-group">
 <select class="filter-select" id="categoryFilter">
 <option value="">Todas as Categorias</option>
-<option value="alimentacao">?? Alimentaçáo</option>
+<option value="alimentacao">?? Alimentação</option>
 <option value="beleza">? Beleza &amp; Estética</option>
 <option value="esportes">??? Esportes &amp; Fitness</option>
 <option value="moda">?? Moda &amp; Vestuário</option>
 <option value="tecnologia">?? Tecnologia</option>
 <option value="automotivo">?? Automotivo</option>
 <option value="saude">?? Saúde &amp; Bem-estar</option>
-<option value="educacao">?? Educaçáo</option>
-<option value="casa">?? Casa &amp; Construçáo</option>
+<option value="educacao">?? Educação</option>
+<option value="casa">?? Casa &amp; Construção</option>
 <option value="servicos">??? Serviços Gerais</option>
 </select>
 <select class="filter-select" id="distanceFilter">
@@ -71,20 +71,20 @@
 <option value="20">Até 20 km</option>
 </select>
 <select class="filter-select" id="ratingFilter">
-<option value="">Qualquer avaliaçáo</option>
+<option value="">Qualquer avaliação</option>
 <option value="4">4+ estrelas</option>
 <option value="4.5">4.5+ estrelas</option>
 </select>
 </div>
 <div class="distance-display tdt-inline-cb458930" id="distanceDisplay">
 <i class="fas fa-map-marker-alt"></i>
-<span>Localizaçáo ativa</span>
+<span>Localização ativa</span>
 </div>
 <div class="view-toggle">
-<button class="view-btn active" onclick="switchView('grid')" title="Visualizaçáo em grade">
+<button class="view-btn active" onclick="switchView('grid')" title="Visualização em grade">
 <i class="fas fa-th-large"></i>
 </button>
-<button class="view-btn" onclick="switchView('list')" title="Visualizaçáo em lista">
+<button class="view-btn" onclick="switchView('list')" title="Visualização em lista">
 <i class="fas fa-list"></i>
 </button>
 </div>
@@ -100,7 +100,7 @@
 <select class="sort-select" id="sortSelect">
 <option value="relevance">Relevância</option>
 <option value="distance">Distância</option>
-<option value="rating">Avaliaçáo</option>
+<option value="rating">Avaliação</option>
 <option value="name">Nome A-Z</option>
 <option value="offers">Mais ofertas</option>
 </select>
@@ -211,18 +211,18 @@
                 category: "saude",
                 rating: 4.9,
                 distance: 1.8,
-                description: "Clínica médica com especialistas e exames de última geraçáo.",
+                description: "Clínica médica com especialistas e exames de última geração.",
                 offers: 6,
                 address: "Av. da Saúde, 321",
                 phone: "(11) 99999-0007"
             },
             {
                 id: 8,
-                name: "Casa & Decoraçáo Ltda",
+                name: "Casa & Decoração Ltda",
                 category: "casa", 
                 rating: 4.3,
                 distance: 5.2,
-                description: "Materiais de construçáo, móveis e artigos para decoraçáo.",
+                description: "Materiais de construção, móveis e artigos para decoração.",
                 offers: 2,
                 address: "Distrito Industrial, 147",
                 phone: "(11) 99999-0008"
@@ -305,14 +305,14 @@
             };
 
             const categoryNames = {
-                'alimentacao': 'Alimentaçáo',
+                'alimentacao': 'Alimentação',
                 'beleza': 'Beleza & Estética',
                 'tecnologia': 'Tecnologia',
                 'esportes': 'Esportes & Fitness',
                 'moda': 'Moda & Vestuário',
                 'automotivo': 'Automotivo',
                 'saude': 'Saúde & Bem-estar',
-                'casa': 'Casa & Construçáo'
+                'casa': 'Casa & Construção'
             };
 
             return `
@@ -442,11 +442,11 @@
         // Request user location
         function requestLocation() {
             if (!navigator.geolocation) {
-                showToast('Geolocalizaçáo náo suportada pelo navegador', 'error');
+                showToast('Geolocalização não suportada pelo navegador', 'error');
                 return;
             }
 
-            showToast('Buscando sua localizaçáo...', 'info');
+            showToast('Buscando sua localização...', 'info');
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -459,13 +459,13 @@
                     document.getElementById('userLocation').textContent = 'Centro da cidade'; // Simulate
                     document.getElementById('distanceDisplay').style.display = 'flex';
                     
-                    showToast('Localizaçáo detectada! Mostrando empresas próximas', 'success');
+                    showToast('Localização detectada! Mostrando empresas próximas', 'success');
                     
                     // Re-render with distance info
                     renderEmpresas();
                 },
                 (error) => {
-                    showToast('Náo foi possível detectar sua localizaçáo', 'error');
+                    showToast('Não foi possível detectar sua localização', 'error');
                     console.error('Geolocation error:', error);
                 }
             );
@@ -493,7 +493,7 @@
             
             // Simulate loading more data
             setTimeout(() => {
-                showToast('Náo há mais empresas para carregar', 'info');
+                showToast('Não há mais empresas para carregar', 'info');
                 document.getElementById('loadMoreContainer').style.display = 'none';
             }, 1500);
         }

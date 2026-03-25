@@ -113,7 +113,7 @@
 <i class="fas fa-chart-line"></i>
 </div>
 <div class="stat-value" id="conversionRate">73.2%</div>
-<div class="stat-label">Taxa de Conversáo</div>
+<div class="stat-label">Taxa de Conversão</div>
 <div class="stat-change negative">
 <i class="fas fa-arrow-down"></i>
                 -2.1% vs mês anterior
@@ -134,7 +134,7 @@
 <div class="chart-card">
 <h3 class="chart-title">
 <i class="fas fa-chart-pie"></i>
-                Distribuiçáo por Tipo
+                Distribuição por Tipo
             </h3>
 <div class="chart-container">
 <canvas id="distributionChart"></canvas>
@@ -160,7 +160,7 @@
 <th>Métrica</th>
 <th>Valor Atual</th>
 <th>Período Anterior</th>
-<th>Variaçáo</th>
+<th>Variação</th>
 <th>Tendência</th>
 </tr>
 </thead>
@@ -206,11 +206,11 @@
 </div>
 </div>
 <script>
-// Inicializaçáo da página
+// Inicialização da página
 window.addEventListener('DOMContentLoaded', function() {
     console.log('Página de relatórios carregada');
     
-    // Configurar datas padráo
+    // Configurar datas padrão
     const today = new Date();
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     
@@ -221,7 +221,7 @@ window.addEventListener('DOMContentLoaded', function() {
     initializeCharts();
 });
 
-// Inicializaçáo dos gráficos
+// Inicialização dos gráficos
 function initializeCharts() {
     // Gráfico de crescimento de usuários
     const usersCtx = document.getElementById('usersChart').getContext('2d');
@@ -254,7 +254,7 @@ function initializeCharts() {
         }
     });
 
-    // Gráfico de distribuiçáo por tipo
+    // Gráfico de distribuição por tipo
     const distributionCtx = document.getElementById('distributionChart').getContext('2d');
     new Chart(distributionCtx, {
         type: 'doughnut',
@@ -299,7 +299,7 @@ function applyFilters() {
 function exportData() {
     alert('Exportando dados para CSV... (Funcionalidade em desenvolvimento)');
     
-    // Aqui você implementaria a exportaçáo real dos dados
+    // Aqui você implementaria a exportação real dos dados
     // Por exemplo, gerando um arquivo CSV ou Excel
 }
 
@@ -311,9 +311,9 @@ function updateMetrics() {
     elements.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
-            // Adiciona uma pequena variaçáo aleatória aos valores
+            // Adiciona uma pequena variação aleatória aos valores
             const currentValue = parseFloat(element.textContent.replace(/[^\d.]/g, ''));
-            const variation = (Math.random() - 0.5) * 0.02; // ±1% de variaçáo
+            const variation = (Math.random() - 0.5) * 0.02; // ±1% de variação
             const newValue = currentValue * (1 + variation);
             
             if (id === 'conversionRate') {
@@ -325,7 +325,7 @@ function updateMetrics() {
     });
 }
 
-// Atualizar métricas a cada 30 segundos (simulaçáo)
+// Atualizar métricas a cada 30 segundos (simulação)
 setInterval(updateMetrics, 30000);
 </script>
 </body>

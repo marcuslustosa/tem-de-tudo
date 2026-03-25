@@ -34,7 +34,7 @@
 <div class="filters">
 <button class="filter-btn active" data-filter="todas">Todas</button>
 <button class="filter-btn" data-filter="proximidade">Mais Próximas</button>
-<button class="filter-btn" data-filter="alimentacao">Alimentaçáo</button>
+<button class="filter-btn" data-filter="alimentacao">Alimentação</button>
 <button class="filter-btn" data-filter="beleza">Beleza</button>
 <button class="filter-btn" data-filter="saude">Saúde</button>
 <button class="filter-btn" data-filter="varejo">Varejo</button>
@@ -78,7 +78,7 @@
             }
             return `${distance.toFixed(1)} km`;
         }
-        // Obter localizaçáo do usuário
+        // Obter localização do usuário
         function obterLocalizacao() {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
@@ -87,10 +87,10 @@
                             latitude: position.coords.latitude,
                             longitude: position.coords.longitude
                         };
-                        console.log('Localizaçáo obtida:', userLocation);
+                        console.log('Localização obtida:', userLocation);
                     },
                     (error) => {
-                        console.warn('Geolocalizaçáo náo disponível:', error);
+                        console.warn('Geolocalização não disponível:', error);
                     }
                 );
             }
@@ -126,7 +126,7 @@
                 renderEmpty();
                 return;
             }
-            // Calcular distâncias se temos localizaçáo
+            // Calcular distâncias se temos localização
             let promocoesComDistancia = promocoes.map(promo => {
                 let distancia = promo.distancia || '-- km';
                 if (userLocation && promo.empresa_latitude && promo.empresa_longitude) {
@@ -168,7 +168,7 @@
             document.getElementById('promocoesGrid').innerHTML = `
                 <div class="empty-state">
 <i class="fas fa-gift"></i>
-<p>Nenhuma promoçáo disponível no momento</p>
+<p>Nenhuma promoção disponível no momento</p>
 </div>
             `;
             document.getElementById('totalPromocoes').textContent = '0 promoções';

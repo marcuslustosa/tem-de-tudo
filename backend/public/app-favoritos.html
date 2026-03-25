@@ -110,9 +110,9 @@ let filtroAtual = 'todos';
 const favoritosExemplo = [
     {
         id: 1,
-        nome: 'Padaria do Joáo',
-        categoria: 'Alimentaçáo',
-        descricao: 'Páes frescos, doces e salgados artesanais',
+        nome: 'Padaria do João',
+        categoria: 'Alimentação',
+        descricao: 'Pães frescos, doces e salgados artesanais',
         desconto: 15,
         rating: 4.8,
         reviews: 124,
@@ -223,7 +223,7 @@ function renderFavorites() {
             dadosFiltrados = favoritos.filter(f => f.distancia <= 1.0);
             break;
         case 'categoria':
-            dadosFiltrados = favoritos.filter(f => f.categoria === 'Alimentaçáo');
+            dadosFiltrados = favoritos.filter(f => f.categoria === 'Alimentação');
             break;
     }
     
@@ -296,7 +296,7 @@ function toggleFavorite(event, favoriteId) {
     const btn = event.currentTarget;
     const card = btn.closest('.favorite-card');
     
-    // Simular remoçáo dos favoritos
+    // Simular remoção dos favoritos
     card.style.animation = 'fadeOut 0.3s ease-out';
     setTimeout(() => {
         favoritos = favoritos.filter(f => f.id !== favoriteId);
@@ -310,7 +310,7 @@ function updateStats() {
     const dadosFiltrados = filtroAtual === 'todos' ? favoritos : 
         filtroAtual === 'ofertas' ? favoritos.filter(f => f.hasOffer) :
         filtroAtual === 'proximos' ? favoritos.filter(f => f.distancia <= 1.0) :
-        favoritos.filter(f => f.categoria === 'Alimentaçáo');
+        favoritos.filter(f => f.categoria === 'Alimentação');
     
     const totalFavoritos = dadosFiltrados.length;
     const ofertas = dadosFiltrados.filter(f => f.hasOffer).length;
@@ -351,7 +351,7 @@ function showNotification(message, type = 'info') {
     setTimeout(() => notification.remove(), 3000);
 }
 
-// CSS para animaçáo de fadeOut
+// CSS para animação de fadeOut
 const style = document.createElement('style');
 style.textContent = `
     @keyframes fadeOut {

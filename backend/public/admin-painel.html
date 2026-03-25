@@ -27,7 +27,7 @@
 <div class="header-content">
 <div class="header-left">
 <h1>Painel Tem de Tudo</h1>
-<p>Gestáo completa do sistema <span class="admin-badge">Admin</span></p>
+<p>Gestão completa do sistema <span class="admin-badge">Admin</span></p>
 </div>
 <button class="logout-btn" onclick="logout()">
 <i class="fas fa-sign-out-alt"></i>
@@ -98,7 +98,7 @@
 </div>
 <div class="stat-card fade-in animate-delay-2">
 <div class="stat-header">
-<div class="stat-label">Pontos em Circulaçáo</div>
+<div class="stat-label">Pontos em Circulação</div>
 <div class="stat-icon points">
 <i class="fas fa-coins"></i>
 </div>
@@ -237,13 +237,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-update stats every 30 seconds
     setInterval(loadAdminStats, 30000);
     
-    // DESENVOLVIMENTO: Bypass da verificaçáo de autenticaçáo para localhost
+    // DESENVOLVIMENTO: Bypass da verificação de autenticação para localhost
     const token = localStorage.getItem('adminToken');
     if (!token && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')) {
-        // Só redireciona para login em produçáo, náo em desenvolvimento
+        // Só redireciona para login em produção, não em desenvolvimento
         window.location.href = 'admin-login.html';
     } else if (!token) {
-        // Em desenvolvimento, criar token fake se náo existir
+        // Em desenvolvimento, criar token fake se não existir
         localStorage.setItem('adminToken', 'dev_admin_token_' + Date.now());
         localStorage.setItem('adminUser', JSON.stringify({
             id: 1,
