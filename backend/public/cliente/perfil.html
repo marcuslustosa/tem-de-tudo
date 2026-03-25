@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
@@ -29,11 +29,11 @@
 <body>
     <nav class="nav-bar">
         <ul>
-            <li><a href="/dashboard-cliente.html"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="/dashboard-cliente.html"><i class="fas fa-home"></i> Incio</a></li>
             <li><a href="/cliente/perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
             <li><a href="/cliente/pontos.html"><i class="fas fa-star"></i> Pontos</a></li>
             <li><a href="/cliente/cupons.html"><i class="fas fa-ticket-alt"></i> Cupons</a></li>
-            <li><a href="/cliente/historico.html"><i class="fas fa-history"></i> Histórico</a></li>
+            <li><a href="/cliente/historico.html"><i class="fas fa-history"></i> Histrico</a></li>
             <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
         </ul>
     </nav>
@@ -48,7 +48,7 @@
                 <div class="profile-avatar" id="avatar-initial">?</div>
                 <div class="profile-info">
                     <h2 class="profile-name" id="profile-name">Carregando...</h2>
-                    <p class="profile-email" id="profile-email">—</p>
+                    <p class="profile-email" id="profile-email"></p>
                 </div>
             </div>
 
@@ -59,18 +59,18 @@
                 </div>
                 <div class="info-row">
                     <div class="info-label"><i class="fas fa-user-tag"></i> Perfil:</div>
-                    <div class="info-value" id="profile-perfil">—</div>
+                    <div class="info-value" id="profile-perfil"></div>
                 </div>
                 <div class="info-row">
                     <div class="info-label"><i class="fas fa-check-circle"></i> Status:</div>
-                    <div class="info-value"><span class="status-badge status-ativo" id="profile-status">—</span></div>
+                    <div class="info-value"><span class="status-badge status-ativo" id="profile-status"></span></div>
                 </div>
                 <div class="info-row">
                     <div class="info-label"><i class="fas fa-star"></i> Pontos:</div>
                     <div class="info-value" id="profile-pontos">0</div>
                 </div>
                 <div class="info-row">
-                    <div class="info-label"><i class="fas fa-trophy"></i> Nível:</div>
+                    <div class="info-label"><i class="fas fa-trophy"></i> Nvel:</div>
                     <div class="info-value" id="profile-nivel">Bronze</div>
                 </div>
             </div>
@@ -112,10 +112,10 @@
                 if (data.success) {
                     const user = data.data.user || data.data;
                     
-                    // Atualizar informações
-                    document.getElementById('profile-name').textContent = user.name || 'Usuário';
-                    document.getElementById('profile-email').textContent = user.email || '—';
-                    document.getElementById('profile-telefone').textContent = user.telefone || 'Não informado';
+                    // Atualizar informaes
+                    document.getElementById('profile-name').textContent = user.name || 'Usurio';
+                    document.getElementById('profile-email').textContent = user.email || '';
+                    document.getElementById('profile-telefone').textContent = user.telefone || 'No informado';
                     document.getElementById('profile-perfil').textContent = user.perfil || 'cliente';
                     document.getElementById('profile-status').textContent = user.status || 'ativo';
                     document.getElementById('profile-pontos').textContent = (user.pontos || 0).toLocaleString('pt-BR');
@@ -141,7 +141,7 @@
     <nav class="bottom-nav" style="position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.1);">
         <a href="/dashboard-cliente.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-home" style="font-size: 20px;"></i>
-            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Início</span>
+            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Incio</span>
         </a>
         <a href="/app-empresas.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-store" style="font-size: 20px;"></i>
@@ -149,7 +149,7 @@
         </a>
         <a href="/app-promocoes.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-tags" style="font-size: 20px;"></i>
-            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Promoções</span>
+            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Promoes</span>
         </a>
         <a href="/app-qrcode.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-qrcode" style="font-size: 20px;"></i>

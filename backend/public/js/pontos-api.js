@@ -1,4 +1,4 @@
-﻿/**
+/**
  * API para sistema de pontos e check-ins
  * Tem de Tudo - Sistema de Fidelidade
  */

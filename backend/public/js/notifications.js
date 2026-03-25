@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Firebase Push Notifications - TemDeTudo
  * Sistema completo de notificações para clientes, empresas e admins
  */

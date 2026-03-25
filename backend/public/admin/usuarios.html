@@ -1,9 +1,9 @@
-﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Usuários - Admin</title>
+    <title>Gerenciar Usurios - Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -26,9 +26,9 @@
                 </a>
                 <nav class="nav-menu">
                     <a href="/admin.html"><i class="fas fa-home icon-sm"></i> Dashboard</a>
-                    <a href="/admin/usuarios.html" class="active"><i class="fas fa-users icon-sm"></i> Usuários</a>
+                    <a href="/admin/usuarios.html" class="active"><i class="fas fa-users icon-sm"></i> Usurios</a>
                     <a href="/admin/empresas.html"><i class="fas fa-building icon-sm"></i> Empresas</a>
-                    <a href="/admin-relatorios.html"><i class="fas fa-chart-bar icon-sm"></i> Relatórios</a>
+                    <a href="/admin-relatorios.html"><i class="fas fa-chart-bar icon-sm"></i> Relatrios</a>
                     <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
                 </nav>
             </div>
@@ -42,14 +42,14 @@
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1 style="margin: 0; font-size: 1.75rem; color: var(--gray-900);">
-                                <i class="fas fa-users"></i> Gerenciar Usuários
+                                <i class="fas fa-users"></i> Gerenciar Usurios
                             </h1>
                             <p style="margin: 0.5rem 0 0; color: var(--gray-600);">
                                 Cadastrar, editar e excluir clientes e administradores
                             </p>
                         </div>
                         <button onclick="openCreateModal()" class="btn btn-primary">
-                            <i class="fas fa-user-plus"></i> Novo Usuário
+                            <i class="fas fa-user-plus"></i> Novo Usurio
                         </button>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                     <div class="stat-card">
                         <i class="fas fa-users" style="font-size: 2rem; color: var(--primary-purple);"></i>
                         <div class="stat-value" id="totalUsuarios">0</div>
-                        <div class="stat-label">Total Usuários</div>
+                        <div class="stat-label">Total Usurios</div>
                     </div>
                     <div class="stat-card">
                         <i class="fas fa-user-shield" style="font-size: 2rem; color: var(--accent-orange);"></i>
@@ -82,7 +82,7 @@
                 <div class="card" style="margin-bottom: var(--space-6);">
                     <div class="card-body">
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
-                            <input type="text" id="searchInput" class="form-control" placeholder="🔍 Buscar usuário..." oninput="filterUsuarios()">
+                            <input type="text" id="searchInput" class="form-control" placeholder=" Buscar usurio..." oninput="filterUsuarios()">
                             
                             <select id="tipoFilter" class="form-control" onchange="filterUsuarios()">
                                 <option value="">Todos os Tipos</option>
@@ -119,15 +119,15 @@
                                         <th>Status</th>
                                         <th>Pontos</th>
                                         <th>Cadastro</th>
-                                        <th>Último Acesso</th>
-                                        <th>Ações</th>
+                                        <th>ltimo Acesso</th>
+                                        <th>Aes</th>
                                     </tr>
                                 </thead>
                                 <tbody id="usuariosTableBody">
                                     <tr>
                                         <td colspan="9" style="text-align: center; padding: var(--space-8);">
                                             <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--gray-400);"></i>
-                                            <p style="margin-top: var(--space-4); color: var(--gray-500);">Carregando usuários...</p>
+                                            <p style="margin-top: var(--space-4); color: var(--gray-500);">Carregando usurios...</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -139,11 +139,11 @@
         </main>
     </div>
 
-    <!-- Modal Criar/Editar Usuário -->
+    <!-- Modal Criar/Editar Usurio -->
     <div id="usuarioModal" class="modal">
         <div class="modal-content" style="max-width: 700px;">
             <div class="modal-header">
-                <h2 id="modalTitle"><i class="fas fa-user-plus"></i> Novo Usuário</h2>
+                <h2 id="modalTitle"><i class="fas fa-user-plus"></i> Novo Usurio</h2>
                 <button onclick="closeModal()" class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
@@ -172,7 +172,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Tipo de Usuário *</label>
+                            <label class="form-label">Tipo de Usurio *</label>
                             <select id="tipo" class="form-control" required onchange="handleTipoChange()">
                                 <option value="">Selecione...</option>
                                 <option value="cliente">Cliente</option>
@@ -183,7 +183,7 @@
 
                         <div class="form-group" id="senhaGroup">
                             <label class="form-label">Senha <span id="senhaRequired">*</span></label>
-                            <input type="password" id="senha" class="form-control" placeholder="Mínimo 6 caracteres">
+                            <input type="password" id="senha" class="form-control" placeholder="Mnimo 6 caracteres">
                             <small style="color: var(--gray-500); font-size: 0.75rem;">Deixe em branco para manter a senha atual</small>
                         </div>
 
@@ -196,14 +196,14 @@
                             </select>
                         </div>
 
-                        <!-- Campos específicos para cliente -->
+                        <!-- Campos especficos para cliente -->
                         <div class="form-group cliente-only" style="display: none;">
                             <label class="form-label">Pontos</label>
                             <input type="number" id="pontos" class="form-control" value="0" min="0">
                         </div>
 
                         <div class="form-group cliente-only" style="display: none;">
-                            <label class="form-label">Nível</label>
+                            <label class="form-label">Nvel</label>
                             <select id="nivel" class="form-control">
                                 <option value="bronze">Bronze</option>
                                 <option value="prata">Prata</option>
@@ -212,13 +212,13 @@
                             </select>
                         </div>
 
-                        <!-- Campos específicos para admin -->
+                        <!-- Campos especficos para admin -->
                         <div class="form-group admin-only" style="display: none; grid-column: span 2;">
-                            <label class="form-label">Permissões</label>
+                            <label class="form-label">Permisses</label>
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2);">
                                 <label style="display: flex; align-items: center; gap: 0.5rem;">
                                     <input type="checkbox" class="permissao-check" value="gerenciar_usuarios">
-                                    <span>Gerenciar Usuários</span>
+                                    <span>Gerenciar Usurios</span>
                                 </label>
                                 <label style="display: flex; align-items: center; gap: 0.5rem;">
                                     <input type="checkbox" class="permissao-check" value="gerenciar_empresas">
@@ -226,11 +226,11 @@
                                 </label>
                                 <label style="display: flex; align-items: center; gap: 0.5rem;">
                                     <input type="checkbox" class="permissao-check" value="visualizar_relatorios">
-                                    <span>Visualizar Relatórios</span>
+                                    <span>Visualizar Relatrios</span>
                                 </label>
                                 <label style="display: flex; align-items: center; gap: 0.5rem;">
                                     <input type="checkbox" class="permissao-check" value="configuracoes_sistema">
-                                    <span>Configurações do Sistema</span>
+                                    <span>Configuraes do Sistema</span>
                                 </label>
                             </div>
                         </div>
@@ -239,7 +239,7 @@
                     <div style="display: flex; gap: var(--space-3); justify-content: flex-end; margin-top: var(--space-6);">
                         <button type="button" onclick="closeModal()" class="btn btn-outline">Cancelar</button>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Salvar Usuário
+                            <i class="fas fa-save"></i> Salvar Usurio
                         </button>
                     </div>
                 </form>
@@ -254,7 +254,7 @@
         let filteredUsuarios = [];
         let editingId = null;
 
-        // Verificar autenticação
+        // Verificar autenticao
         function checkAuth() {
             const token = localStorage.getItem('admin_token');
             if (!token) {
@@ -270,7 +270,7 @@
             window.location.href = 'admin-login.html';
         }
 
-        // Carregar usuários
+        // Carregar usurios
         async function loadUsuarios() {
             const token = checkAuth();
             if (!token) return;
@@ -290,7 +290,7 @@
                     updateStats();
                     renderUsuarios();
                 } else {
-                    throw new Error('Erro ao carregar usuários');
+                    throw new Error('Erro ao carregar usurios');
                 }
             } catch (error) {
                 console.error('Erro:', error);
@@ -298,7 +298,7 @@
             }
         }
 
-        // Atualizar estatísticas
+        // Atualizar estatsticas
         function updateStats() {
             document.getElementById('totalUsuarios').textContent = usuarios.length;
             document.getElementById('totalAdmins').textContent = usuarios.filter(u => u.tipo === 'admin' || u.role === 'admin').length;
@@ -315,7 +315,7 @@
                     <tr>
                         <td colspan="9" style="text-align: center; padding: var(--space-8);">
                             <i class="fas fa-users" style="font-size: 3rem; color: var(--gray-300);"></i>
-                            <p style="margin-top: var(--space-4); color: var(--gray-500);">Nenhum usuário encontrado</p>
+                            <p style="margin-top: var(--space-4); color: var(--gray-500);">Nenhum usurio encontrado</p>
                         </td>
                     </tr>
                 `;
@@ -373,7 +373,7 @@
                 <tr>
                     <td colspan="9" style="text-align: center; padding: var(--space-8);">
                         <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--accent-orange);"></i>
-                        <p style="margin-top: var(--space-4); color: var(--gray-600);">Erro ao carregar usuários</p>
+                        <p style="margin-top: var(--space-4); color: var(--gray-600);">Erro ao carregar usurios</p>
                     </td>
                 </tr>
             `;
@@ -421,7 +421,7 @@
 
         function openCreateModal() {
             editingId = null;
-            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Novo Usuário';
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Novo Usurio';
             document.getElementById('usuarioForm').reset();
             document.getElementById('senhaRequired').textContent = '*';
             document.getElementById('senha').required = true;
@@ -439,7 +439,7 @@
             if (!usuario) return;
 
             editingId = id;
-            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit"></i> Editar Usuário';
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-edit"></i> Editar Usurio';
             document.getElementById('usuarioId').value = id;
             document.getElementById('nome').value = usuario.nome || usuario.name || '';
             document.getElementById('email').value = usuario.email;
@@ -496,16 +496,16 @@
                 });
 
                 if (response.ok) {
-                    alert(editingId ? 'Usuário atualizado com sucesso!' : 'Usuário criado com sucesso!');
+                    alert(editingId ? 'Usurio atualizado com sucesso!' : 'Usurio criado com sucesso!');
                     closeModal();
                     loadUsuarios();
                 } else {
                     const error = await response.json();
-                    alert('Erro: ' + (error.message || 'Não foi possível salvar o usuário'));
+                    alert('Erro: ' + (error.message || 'No foi possvel salvar o usurio'));
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao salvar usuário. Tente novamente.');
+                alert('Erro ao salvar usurio. Tente novamente.');
             }
         }
 
@@ -541,7 +541,7 @@
             const token = checkAuth();
             if (!token) return;
 
-            if (!confirm(`Tem certeza que deseja EXCLUIR o usuário "${nome}"?\n\nEsta ação não pode ser desfeita!`)) return;
+            if (!confirm(`Tem certeza que deseja EXCLUIR o usurio "${nome}"?\n\nEsta ao no pode ser desfeita!`)) return;
 
             try {
                 const response = await fetch(`${API_CONFIG.getBaseURL()}/api/admin/usuarios/${id}`, {
@@ -553,14 +553,14 @@
                 });
 
                 if (response.ok) {
-                    alert('Usuário excluído com sucesso!');
+                    alert('Usurio excludo com sucesso!');
                     loadUsuarios();
                 } else {
-                    alert('Erro ao excluir usuário');
+                    alert('Erro ao excluir usurio');
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao excluir usuário. Tente novamente.');
+                alert('Erro ao excluir usurio. Tente novamente.');
             }
         }
 

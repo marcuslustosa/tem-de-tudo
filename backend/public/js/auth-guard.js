@@ -1,4 +1,4 @@
-﻿/**
+/**
  * AUTH GUARD - TEM DE TUDO
  * Proteção automática de rotas - ATIVADO
  * 

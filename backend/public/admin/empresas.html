@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -26,9 +26,9 @@
                 </a>
                 <nav class="nav-menu">
                     <a href="/admin.html"><i class="fas fa-home icon-sm"></i> Dashboard</a>
-                    <a href="/admin/usuarios.html"><i class="fas fa-users icon-sm"></i> Usuários</a>
+                    <a href="/admin/usuarios.html"><i class="fas fa-users icon-sm"></i> Usurios</a>
                     <a href="/admin/empresas.html" class="active"><i class="fas fa-building icon-sm"></i> Empresas</a>
-                    <a href="/admin-relatorios.html"><i class="fas fa-chart-bar icon-sm"></i> Relatórios</a>
+                    <a href="/admin-relatorios.html"><i class="fas fa-chart-bar icon-sm"></i> Relatrios</a>
                     <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt icon-sm"></i> Sair</a>
                 </nav>
             </div>
@@ -58,7 +58,7 @@
                 <div class="card" style="margin-bottom: var(--space-6);">
                     <div class="card-body">
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
-                            <input type="text" id="searchInput" class="form-control" placeholder="🔍 Buscar empresa..." oninput="filterEmpresas()">
+                            <input type="text" id="searchInput" class="form-control" placeholder=" Buscar empresa..." oninput="filterEmpresas()">
                             
                             <select id="statusFilter" class="form-control" onchange="filterEmpresas()">
                                 <option value="">Todos os Status</option>
@@ -73,9 +73,9 @@
                                 <option value="academia">Academia</option>
                                 <option value="cafeteria">Cafeteria</option>
                                 <option value="pet_shop">Pet Shop</option>
-                                <option value="salao">Salão de Beleza</option>
+                                <option value="salao">Salo de Beleza</option>
                                 <option value="mercado">Mercado</option>
-                                <option value="farmacia">Farmácia</option>
+                                <option value="farmacia">Farmcia</option>
                                 <option value="restaurante">Restaurante</option>
                             </select>
 
@@ -101,7 +101,7 @@
                                         <th>Plano</th>
                                         <th>Clientes</th>
                                         <th>Cadastro</th>
-                                        <th>Ações</th>
+                                        <th>Aes</th>
                                     </tr>
                                 </thead>
                                 <tbody id="empresasTableBody">
@@ -159,9 +159,9 @@
                                 <option value="academia">Academia</option>
                                 <option value="cafeteria">Cafeteria</option>
                                 <option value="pet_shop">Pet Shop</option>
-                                <option value="salao">Salão de Beleza</option>
+                                <option value="salao">Salo de Beleza</option>
                                 <option value="mercado">Mercado</option>
-                                <option value="farmacia">Farmácia</option>
+                                <option value="farmacia">Farmcia</option>
                                 <option value="restaurante">Restaurante</option>
                                 <option value="lanchonete">Lanchonete</option>
                                 <option value="padaria">Padaria</option>
@@ -172,15 +172,15 @@
                         <div class="form-group">
                             <label class="form-label">Plano *</label>
                             <select id="plano" class="form-control" required>
-                                <option value="basico">Básico - R$ 49,90/mês</option>
-                                <option value="profissional">Profissional - R$ 99,90/mês</option>
-                                <option value="premium">Premium - R$ 199,90/mês</option>
+                                <option value="basico">Bsico - R$ 49,90/ms</option>
+                                <option value="profissional">Profissional - R$ 99,90/ms</option>
+                                <option value="premium">Premium - R$ 199,90/ms</option>
                             </select>
                         </div>
 
                         <div class="form-group" style="grid-column: span 2;">
-                            <label class="form-label">Endereço Completo *</label>
-                            <input type="text" id="endereco" class="form-control" placeholder="Rua, número, bairro, cidade - UF" required>
+                            <label class="form-label">Endereo Completo *</label>
+                            <input type="text" id="endereco" class="form-control" placeholder="Rua, nmero, bairro, cidade - UF" required>
                         </div>
 
                         <div class="form-group">
@@ -191,7 +191,7 @@
                         <div class="form-group">
                             <label class="form-label">Status *</label>
                             <select id="status" class="form-control" required>
-                                <option value="pendente">Pendente Aprovação</option>
+                                <option value="pendente">Pendente Aprovao</option>
                                 <option value="ativa">Ativa</option>
                                 <option value="inativa">Inativa</option>
                                 <option value="bloqueada">Bloqueada</option>
@@ -204,8 +204,8 @@
                         </div>
 
                         <div class="form-group" style="grid-column: span 2;">
-                            <label class="form-label">Descrição</label>
-                            <textarea id="descricao" class="form-control" rows="3" placeholder="Breve descrição da empresa..."></textarea>
+                            <label class="form-label">Descrio</label>
+                            <textarea id="descricao" class="form-control" rows="3" placeholder="Breve descrio da empresa..."></textarea>
                         </div>
                     </div>
 
@@ -227,7 +227,7 @@
         let filteredEmpresas = [];
         let editingId = null;
 
-        // Verificar autenticação
+        // Verificar autenticao
         function checkAuth() {
             const token = localStorage.getItem('admin_token');
             if (!token) {
@@ -308,7 +308,7 @@
                         <td>${emp.cnpj || '-'}</td>
                         <td><span class="badge badge-info">${emp.ramo_formatado || emp.ramo || '-'}</span></td>
                         <td><span class="badge badge-${statusColors[emp.status] || 'secondary'}">${emp.status || 'pendente'}</span></td>
-                        <td><span class="badge badge-primary">${emp.plano || 'Básico'}</span></td>
+                        <td><span class="badge badge-primary">${emp.plano || 'Bsico'}</span></td>
                         <td>${emp.total_clientes || 0}</td>
                         <td>${new Date(emp.created_at || Date.now()).toLocaleDateString('pt-BR')}</td>
                         <td>
@@ -445,7 +445,7 @@
                     loadEmpresas();
                 } else {
                     const error = await response.json();
-                    alert('Erro: ' + (error.message || 'Não foi possível salvar a empresa'));
+                    alert('Erro: ' + (error.message || 'No foi possvel salvar a empresa'));
                 }
             } catch (error) {
                 console.error('Erro:', error);
@@ -490,7 +490,7 @@
             const token = checkAuth();
             if (!token) return;
 
-            if (!confirm(`Tem certeza que deseja EXCLUIR a empresa "${nome}"?\n\nEsta ação não pode ser desfeita!`)) return;
+            if (!confirm(`Tem certeza que deseja EXCLUIR a empresa "${nome}"?\n\nEsta ao no pode ser desfeita!`)) return;
 
             try {
                 const response = await fetch(`${API_CONFIG.getBaseURL()}/api/admin/empresas/${id}`, {
@@ -502,7 +502,7 @@
                 });
 
                 if (response.ok) {
-                    alert('Empresa excluída com sucesso!');
+                    alert('Empresa excluda com sucesso!');
                     loadEmpresas();
                 } else {
                     alert('Erro ao excluir empresa');

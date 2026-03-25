@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
@@ -46,14 +46,14 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Erro ao obter estatísticas: ' + response.statusText);
+                    throw new Error('Erro ao obter estatsticas: ' + response.statusText);
                 }
 
                 const data = await response.json();
 
                 if (data.success) {
                     const stats = data.data;
-                    display.textContent = `Total de clientes: ${stats.total_clientes} | Pontos distribuídos: ${stats.pontos_distribuidos} | QRCodes ativos: ${stats.qrcodes_ativos} | Checkins hoje: ${stats.checkins_hoje}`;
+                    display.textContent = `Total de clientes: ${stats.total_clientes} | Pontos distribudos: ${stats.pontos_distribuidos} | QRCodes ativos: ${stats.qrcodes_ativos} | Checkins hoje: ${stats.checkins_hoje}`;
                 } else {
                     throw new Error(data.message || 'Falha ao carregar dados de pontos.');
                 }

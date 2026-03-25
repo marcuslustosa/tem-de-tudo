@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
@@ -29,18 +29,18 @@
 <body>
     <nav class="nav-bar">
         <ul>
-            <li><a href="/dashboard-cliente.html"><i class="fas fa-home"></i> Início</a></li>
+            <li><a href="/dashboard-cliente.html"><i class="fas fa-home"></i> Incio</a></li>
             <li><a href="/cliente/perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
             <li><a href="/cliente/pontos.html"><i class="fas fa-star"></i> Pontos</a></li>
             <li><a href="/cliente/cupons.html"><i class="fas fa-ticket-alt"></i> Cupons</a></li>
-            <li><a href="/cliente/historico.html"><i class="fas fa-history"></i> Histórico</a></li>
+            <li><a href="/cliente/historico.html"><i class="fas fa-history"></i> Histrico</a></li>
             <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
         </ul>
     </nav>
 
     <div class="page-header">
         <h1 class="page-title"><i class="fas fa-ticket-alt"></i> Meus Cupons</h1>
-        <p class="page-subtitle">Seus cupons de desconto disponíveis</p>
+        <p class="page-subtitle">Seus cupons de desconto disponveis</p>
     </div>
 
     <div class="container">
@@ -85,7 +85,7 @@
 
                 const data = await response.json();
 
-                // Se não houver dados reais, usar dados mockados para demonstração
+                // Se no houver dados reais, usar dados mockados para demonstrao
                 const cuponsData = (data.success && data.data && data.data.length > 0) ? data.data : [
                     {
                         codigo: 'DESCONTO15',
@@ -94,7 +94,7 @@
                     },
                     {
                         codigo: 'FRETEGRATIS',
-                        descricao: 'Frete grátis para todo o Brasil',
+                        descricao: 'Frete grtis para todo o Brasil',
                         validade: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString()
                     },
                     {
@@ -116,10 +116,10 @@
                         card.className = 'cupom-card';
                         card.innerHTML = `
                             <div class="cupom-codigo">${cupom.codigo || 'CUPOM'}</div>
-                            <div class="cupom-descricao">${cupom.descricao || 'Sem descrição'}</div>
+                            <div class="cupom-descricao">${cupom.descricao || 'Sem descrio'}</div>
                             <div class="cupom-validade">
                                 <i class="fas fa-calendar-alt"></i>
-                                Válido até: ${cupom.validade ? new Date(cupom.validade).toLocaleDateString('pt-BR') : 'Indeterminado'}
+                                Vlido at: ${cupom.validade ? new Date(cupom.validade).toLocaleDateString('pt-BR') : 'Indeterminado'}
                             </div>
                         `;
                         container.appendChild(card);
@@ -128,7 +128,7 @@
                     container.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-ticket-alt"></i>
-                            <p>Você ainda não possui cupons ativos.</p>
+                            <p>Voc ainda no possui cupons ativos.</p>
                         </div>
                     `;
                 }
@@ -154,7 +154,7 @@
     <nav class="bottom-nav" style="position: fixed; bottom: 0; left: 0; right: 0; background: #1e293b; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; box-shadow: 0 -4px 20px rgba(0,0,0,0.1);">
         <a href="/dashboard-cliente.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-home" style="font-size: 20px;"></i>
-            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Início</span>
+            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Incio</span>
         </a>
         <a href="/app-empresas.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-store" style="font-size: 20px;"></i>
@@ -162,7 +162,7 @@
         </a>
         <a href="/app-promocoes.html" class="nav-item active" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: #667eea; background: rgba(102, 126, 234, 0.15); border-radius: 8px;">
             <i class="fas fa-tags" style="font-size: 20px;"></i>
-            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Promoções</span>
+            <span style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Promoes</span>
         </a>
         <a href="/app-qrcode.html" class="nav-item" style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 16px; text-decoration: none; color: rgba(255,255,255,0.6); border-radius: 8px;">
             <i class="fas fa-qrcode" style="font-size: 20px;"></i>

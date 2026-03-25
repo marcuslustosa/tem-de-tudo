@@ -1,4 +1,4 @@
-﻿// Middleware JavaScript para proteção de rotas por perfil
+// Middleware JavaScript para proteção de rotas por perfil
 class AuthMiddleware {
     constructor() {
         this.perfilRoutes = {

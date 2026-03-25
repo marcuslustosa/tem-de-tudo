@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Sistema de QR Code Scanner
  * Substitui o sistema de foto por escaneamento de QR Codes
  */
