@@ -1,19 +1,18 @@
 // Service Worker para PWA - Tem de Tudo
-const CACHE_NAME = 'tem-de-tudo-v1.0.0';
+const CACHE_NAME = 'tem-de-tudo-v1.0.1'; // bump para forçar atualização
 const urlsToCache = [
   '/',
   '/index.html',
   '/entrar.html',
-  '/cadastro.html',
-  '/app-dashboard.html',
-  '/app-empresas.html',
+  '/app-inicio.html',
+  '/app-perfil.html',
   '/app-promocoes.html',
   '/app-qrcode.html',
-  '/app-perfil.html',
-  '/css/theme-escuro.css',
+  '/app-empresas.html',
+  '/css/vivo-styles.css',
   '/js/notification-system-simple.js',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/img/icon-192.png',
+  '/img/icon-512.png'
 ];
 
 // Instalação do Service Worker
