@@ -9,7 +9,7 @@ const urlsToCache = [
   '/app-promocoes.html',
   '/app-qrcode.html',
   '/app-empresas.html',
-  '/css/vivo-styles.css',
+  '/css/style.css',
   '/js/notification-system-simple.js',
   '/img/icon-192.png',
   '/img/icon-512.png'
