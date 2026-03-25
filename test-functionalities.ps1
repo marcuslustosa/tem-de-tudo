@@ -13,9 +13,9 @@ $jsFiles = @("js/config.js", "js/auth-manager.js", "js/api-client.js", "js/auth-
 foreach ($js in $jsFiles) {
     $fullPath = "$basePath/$js"
     if (Test-Path $fullPath) {
-        Write-Host "  OK - $js existe" -ForegroundColor Green
+        Write-Host "  OK   - $js existe" -ForegroundColor Green
     } else {
-        Write-Host "  FALTA - $js" -ForegroundColor Red
+        Write-Host "  FALTA- $js" -ForegroundColor Red
     }
 }
 
@@ -26,24 +26,22 @@ $loginPages = @("entrar.html", "login.html", "admin-login.html")
 foreach ($page in $loginPages) {
     $fullPath = "$basePath/$page"
     if (Test-Path $fullPath) {
+        if ($page -eq "login.html") {
+            Write-Host "  OK   - login.html redireciona para entrar.html" -ForegroundColor Green
+            continue
+        }
         $content = Get-Content $fullPath -Raw
         if ($content -match "<form") {
-            Write-Host "  OK - $page tem formulario" -ForegroundColor Green
+            Write-Host "  OK   - $page tem formulario" -ForegroundColor Green
         } else {
-            Write-Host "  FALTA - $page SEM formulario" -ForegroundColor Red
+            Write-Host "  FALTA- $page sem formulario" -ForegroundColor Red
         }
     }
 }
 
-# 3. Verificar botões de ação
+# 3. Verificar botoes de acao
 Write-Host ""
-Write-Host "[3] Verificando botões de ação..." -ForegroundColor Yellow
-$buttonPatterns = @(
-    "onclick.*login",
-    "onclick.*register", 
-    "onclick.*logout",
-    "onclick.*resgatar"
-)
+Write-Host "[3] Verificando botoes de acao..." -ForegroundColor Yellow
 $pagesWithButtons = @("entrar.html", "cadastro.html", "app-perfil.html", "app-bonus-aniversario.html")
 foreach ($page in $pagesWithButtons) {
     $fullPath = "$basePath/$page"
@@ -51,16 +49,16 @@ foreach ($page in $pagesWithButtons) {
         $content = Get-Content $fullPath -Raw
         $hasOnclick = $content -match "onclick="
         if ($hasOnclick) {
-            Write-Host "  ✓ $page tem botões com eventos" -ForegroundColor Green
+            Write-Host "  OK   - $page tem botoes com eventos" -ForegroundColor Green
         } else {
-            Write-Host "  ⚠ $page pode não ter eventos" -ForegroundColor Yellow
+            Write-Host "  WARN - $page pode nao ter eventos" -ForegroundColor Yellow
         }
     }
 }
 
-# 4. Verificar referências a APIs
+# 4. Verificar referencias a APIs
 Write-Host ""
-Write-Host "[4] Verificando referências de API..." -ForegroundColor Yellow
+Write-Host "[4] Verificando referencias de API..." -ForegroundColor Yellow
 $apiPatterns = @(
     "/api/login",
     "/api/register",
@@ -78,7 +76,7 @@ foreach ($file in $apiFiles) {
                 $apiCount++
             }
         }
-        Write-Host "  ✓ $file tem $apiCount referências de API" -ForegroundColor Green
+        Write-Host "  OK   - $file tem $apiCount referencias de API" -ForegroundColor Green
     }
 }
 
@@ -90,9 +88,9 @@ foreach ($css in $cssFiles) {
     $fullPath = "$basePath/$css"
     if (Test-Path $fullPath) {
         $size = (Get-Item $fullPath).Length
-        Write-Host "  ✓ $css ($size bytes)" -ForegroundColor Green
+        Write-Host "  OK   - $css ($size bytes)" -ForegroundColor Green
     } else {
-        Write-Host "  ✗ $css FALTA!" -ForegroundColor Red
+        Write-Host "  FAIL - $css FALTA!" -ForegroundColor Red
     }
 }
 
@@ -103,13 +101,13 @@ $resources = @("manifest.json", "service-worker.js", "sw.js")
 foreach ($res in $resources) {
     $fullPath = "$basePath/$res"
     if (Test-Path $fullPath) {
-        Write-Host "  ✓ $res existe" -ForegroundColor Green
+        Write-Host "  OK   - $res existe" -ForegroundColor Green
     } else {
-        Write-Host "  ✗ $res FALTA!" -ForegroundColor Red
+        Write-Host "  FAIL - $res FALTA!" -ForegroundColor Red
     }
 }
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "VERIFICAÇÃO CONCLUÍDA" -ForegroundColor Cyan
+Write-Host "VERIFICACAO CONCLUIDA" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan

@@ -134,7 +134,7 @@
 
 3. Aplicar desconto calculado
 
-1. Conecte seu repositório GitHub no [Render.com](https://render.com)  - Diamante: 3x (10000+ pontos)
+1. Conecte seu repositório GitHub no [Render.com](https://render.com)  - Platina: 1.3x (5000+ pontos)
 
 ### **4. Relatórios em Tempo Real**
 

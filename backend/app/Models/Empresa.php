@@ -25,14 +25,18 @@ class Empresa extends Model
         'instagram',
         'facebook',
         'avaliacao_media',
-        'total_avaliacoes'
+        'total_avaliacoes',
+        'latitude',
+        'longitude'
     ];
 
     protected $casts = [
         'ativo' => 'boolean',
         'points_multiplier' => 'float',
         'avaliacao_media' => 'float',
-        'total_avaliacoes' => 'integer'
+        'total_avaliacoes' => 'integer',
+        'latitude' => 'float',
+        'longitude' => 'float'
     ];
 
     public function owner()

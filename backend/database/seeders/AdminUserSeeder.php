@@ -22,7 +22,7 @@ class AdminUserSeeder extends Seeder
                 'password' => Hash::make('admin123'),
                 'perfil' => 'admin',
                 'pontos' => 0,
-                'nivel' => 'Diamante',
+                'nivel' => 'Platina',
                 'telefone' => '(11) 99999-9999',
                 'status' => 'ativo',
                 'email_verified_at' => now()

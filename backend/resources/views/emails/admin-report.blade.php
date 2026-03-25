@@ -139,11 +139,10 @@
                         <td>{{ number_format($user['pontos']) }}</td>
                         <td>
                             @php
-                                $nivel = 'Bronze';
-                                if($user['pontos'] >= 10000) $nivel = '💎 Diamante';
-                                elseif($user['pontos'] >= 5000) $nivel = '🥇 Ouro';
-                                elseif($user['pontos'] >= 2000) $nivel = '🥈 Prata';
-                                else $nivel = '🥉 Bronze';
+                                $nivel = '🥉 Bronze';
+                                if($user['pontos'] >= 5000) $nivel = '💎 Platina';
+                                elseif($user['pontos'] >= 1500) $nivel = '🥇 Ouro';
+                                elseif($user['pontos'] >= 500) $nivel = '🥈 Prata';
                             @endphp
                             {{ $nivel }}
                         </td>

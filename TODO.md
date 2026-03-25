@@ -7,9 +7,9 @@
 - [x] Verificar uso vivo-styles-final.css vs vivo-styles.css (CSS principal ok, unificado)
 - [x] Remover CSS inline se existir (nenhum detectado nas amostras)
 
-### 2. Verificação Links [ ]
-- [ ] Executar verificar-links-quebrados.ps1
-- [ ] Verificar links externos (CDNs)
+### 2. Verificação Links [x]
+- [x] Executar verificar-links-quebrados.ps1
+- [x] Verificar links externos (CDNs)
 
 ### 3. Teste Funcionalidades [ ]
 - [ ] Testar fluxo: index.html → entrar.html → app-inicio.html
@@ -20,12 +20,12 @@
 - [ ] Verificar admin-dashboard.html
 - [ ] Testar fluxos admin
 
-### 5. Testes Automatizados [ ]
-- [ ] Executar verify-system.ps1
-- [ ] Executar test-functionalities.ps1
+### 5. Testes Automatizados [x]
+- [x] Executar verify-system.ps1
+- [x] Executar test-functionalities.ps1
 
-### 6. Relatório Final [ ]
-- [ ] Documentar achados
-- [ ] Sugerir correções pendentes
+### 6. Relatório Final [x]
+- [x] Documentar achados
+- [x] Sugerir correções pendentes
 
 **Próximo passo: Padronizar CSS paths**

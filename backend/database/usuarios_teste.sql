@@ -45,7 +45,7 @@ VALUES (
     perfil = 'cliente',
     status = 'ativo',
     pontos = 465,
-    nivel = 'Ouro',
+    nivel = 'Bronze',
     updated_at = NOW();
 
 -- 3. EMPRESA DE TESTE
@@ -81,7 +81,7 @@ VALUES
         NOW(),
         NOW(),
         2500,
-        'Diamante'
+        'Ouro'
     ),
     (
         'João Silva',
@@ -93,7 +93,7 @@ VALUES
         NOW(),
         NOW(),
         1850,
-        'Platina'
+        'Ouro'
     ),
     (
         'Carlos Mendes',
@@ -105,7 +105,7 @@ VALUES
         NOW(),
         NOW(),
         1200,
-        'Ouro'
+        'Prata'
     ),
     (
         'Ana Paula',

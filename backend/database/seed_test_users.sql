@@ -16,10 +16,10 @@ ON CONFLICT (email) DO NOTHING;
 -- 2. CLIENTES (5 exemplos)
 INSERT INTO users (name, email, cpf_cnpj, telefone, perfil, password, pontos_totais, nivel, status, created_at, updated_at)
 VALUES 
-('João Silva', 'joao@cliente.com', '12345678901', '11987654321', 'cliente', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1500, 'Prata', 'ativo', NOW(), NOW()),
-('Maria Santos', 'maria@cliente.com', '98765432101', '11876543210', 'cliente', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 500, 'Bronze', 'ativo', NOW(), NOW()),
-('Pedro Costa', 'pedro@cliente.com', '11122233344', '11765432109', 'cliente', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 5500, 'Ouro', 'ativo', NOW(), NOW()),
-('Ana Oliveira', 'ana@cliente.com', '55566677788', '11654321098', 'cliente', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 12000, 'Diamante', 'ativo', NOW(), NOW()),
+('João Silva', 'joao@cliente.com', '12345678901', '11987654321', 'cliente', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1400, 'Prata', 'ativo', NOW(), NOW()),
+('Maria Santos', 'maria@cliente.com', '98765432101', '11876543210', 'cliente', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 800, 'Prata', 'ativo', NOW(), NOW()),
+('Pedro Costa', 'pedro@cliente.com', '11122233344', '11765432109', 'cliente', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 4500, 'Ouro', 'ativo', NOW(), NOW()),
+('Ana Oliveira', 'ana@cliente.com', '55566677788', '11654321098', 'cliente', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 12000, 'Platina', 'ativo', NOW(), NOW()),
 ('Carlos Mendes', 'carlos@cliente.com', '99988877766', '11543210987', 'cliente', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 250, 'Bronze', 'ativo', NOW(), NOW())
 ON CONFLICT (email) DO NOTHING;
 

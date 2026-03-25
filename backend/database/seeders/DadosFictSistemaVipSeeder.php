@@ -61,7 +61,7 @@ class DadosFictSistemaVipSeeder extends Seeder
                 'ultimo_checkin' => now(),
                 'empresas_visitadas' => 15,
                 'multiplicador_pontos' => 3.0,
-                'nivel' => 4 // Diamante
+                'nivel' => 4 // Platina
             ]);
         }
 

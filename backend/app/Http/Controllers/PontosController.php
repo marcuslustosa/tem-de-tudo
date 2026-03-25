@@ -25,17 +25,52 @@ class PontosController extends Controller
     {
         try {
             $request->validate([
-                'empresa_id' => 'required|exists:empresas,id',
+                'empresa_id'   => 'required|exists:empresas,id',
                 'valor_compra' => 'required|numeric|min:0.01',
-                'foto_cupom' => 'required|file|mimes:jpeg,jpg,png|max:5120', // 5MB
-                'latitude' => 'nullable|numeric',
-                'longitude' => 'nullable|numeric',
-                'observacoes' => 'nullable|string|max:500',
-                'qr_code_id' => 'nullable|exists:qr_codes,id'
+                'foto_cupom'   => 'required|file|mimes:jpeg,jpg,png|max:5120', // 5MB
+                'latitude'     => 'required|numeric|between:-90,90',
+                'longitude'    => 'required|numeric|between:-180,180',
+                'observacoes'  => 'nullable|string|max:500',
+                'qr_code_id'   => 'required|exists:qr_codes,id'
             ]);
 
             $user = Auth::user();
             $empresa = Empresa::findOrFail($request->empresa_id);
+
+            // Garantir geolocalizaÃ§Ã£o configurada na empresa
+            if (!$empresa->latitude || !$empresa->longitude) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Empresa sem coordenadas configuradas. Cadastre latitude/longitude para habilitar check-in com validaÃ§Ã£o de presenÃ§a.'
+                ], 422);
+            }
+
+            // Validar QR code pertence Ã  empresa e estÃ¡ ativo
+            $qrCode = QRCode::where('id', $request->qr_code_id)
+                ->where('active', true)
+                ->first();
+
+            if (!$qrCode || $qrCode->empresa_id !== $empresa->id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'QR Code invÃ¡lido para este estabelecimento.'
+                ], 400);
+            }
+
+            // Antifraude: exigir proximidade fÃ­sica
+            $distanciaKm = $this->calcularDistanciaKm(
+                (float) $request->latitude,
+                (float) $request->longitude,
+                (float) $empresa->latitude,
+                (float) $empresa->longitude
+            );
+
+            if ($distanciaKm > self::MAX_CHECKIN_DISTANCE_KM) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'VocÃª precisa estar no local para fazer check-in (raio mÃ¡ximo de ' . (self::MAX_CHECKIN_DISTANCE_KM * 1000) . 'm).'
+                ], 403);
+            }
 
             // Verificar se já fez check-in na empresa hoje
             $checkinHoje = CheckIn::where('user_id', $user->id)
@@ -115,18 +150,11 @@ class PontosController extends Controller
         // Regra base: 1 ponto a cada R$ 1,00 gasto
         $pontosBase = floor($valorCompra);
 
-        // Multiplicador baseado no nível do usuário (se configurado)
+        // Multiplicador baseado na configuração da empresa
         $multiplicador = $empresa->getPointsMultiplier($valorCompra);
         
         // Aplicar multiplicador
         $pontosFinais = floor($pontosBase * $multiplicador);
-
-        // Bônus por faixa de valor
-        if ($valorCompra >= 100) {
-            $pontosFinais += 50; // Bônus para compras acima de R$ 100
-        } elseif ($valorCompra >= 50) {
-            $pontosFinais += 20; // Bônus para compras acima de R$ 50
-        }
 
         // Garantir mínimo de 1 ponto para qualquer compra
         return max(1, $pontosFinais);
@@ -432,15 +460,15 @@ class PontosController extends Controller
      */
     private function calcularNivel(int $pontos): array
     {
-        if ($pontos >= 10000) {
-            return ['nome' => 'Diamante', 'cor' => '#b9f2ff', 'min' => 10000, 'proximo' => null];
-        } elseif ($pontos >= 5000) {
-            return ['nome' => 'Ouro', 'cor' => '#ffd700', 'min' => 5000, 'proximo' => 10000];
-        } elseif ($pontos >= 1000) {
-            return ['nome' => 'Prata', 'cor' => '#c0c0c0', 'min' => 1000, 'proximo' => 5000];
+        if ($pontos >= 5000) {
+            return ['nome' => 'Platina', 'cor' => '#e5e4e2', 'min' => 5000, 'proximo' => null];
+        } elseif ($pontos >= 1500) {
+            return ['nome' => 'Ouro', 'cor' => '#ffd700', 'min' => 1500, 'proximo' => 5000];
+        } elseif ($pontos >= 500) {
+            return ['nome' => 'Prata', 'cor' => '#c0c0c0', 'min' => 500, 'proximo' => 1500];
         }
 
-        return ['nome' => 'Bronze', 'cor' => '#cd7f32', 'min' => 0, 'proximo' => 1000];
+        return ['nome' => 'Bronze', 'cor' => '#cd7f32', 'min' => 0, 'proximo' => 500];
     }
 
     /**
@@ -509,4 +537,19 @@ class PontosController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * DistÃ¢ncia entre duas coordenadas (Haversine) em KM
+     */
+    private function calcularDistanciaKm(float $lat1, float $lon1, float $lat2, float $lon2): float
+    {
+        $raioTerraKm = 6371;
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        $a = sin($dLat / 2) ** 2 + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) ** 2;
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        return $raioTerraKm * $c;
+    }
+
+    private const MAX_CHECKIN_DISTANCE_KM = 0.2; // 200 metros
 }

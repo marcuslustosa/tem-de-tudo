@@ -209,7 +209,7 @@ class MercadoPagoService
     private function getDescontoNivel($nivel_id)
     {
         switch ($nivel_id) {
-            case 4: return 15; // Diamante - 15%
+            case 4: return 15; // Platina - 15%
             case 3: return 10; // Ouro - 10%
             case 2: return 5;  // Prata - 5%
             default: return 0;  // Bronze - 0%

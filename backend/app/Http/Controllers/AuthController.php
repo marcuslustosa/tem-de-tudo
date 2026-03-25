@@ -418,9 +418,9 @@ class AuthController extends Controller
      */
     private function calcularNivel($pontos)
     {
-        if ($pontos >= 10000) return 'Diamante';
-        if ($pontos >= 5000) return 'Ouro';
-        if ($pontos >= 1000) return 'Prata';
+        if ($pontos >= 5000) return 'Platina';
+        if ($pontos >= 1500) return 'Ouro';
+        if ($pontos >= 500) return 'Prata';
         return 'Bronze';
     }
 

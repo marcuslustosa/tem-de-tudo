@@ -165,38 +165,38 @@ class User extends Authenticatable implements JWTSubject
     {
         $pontos = $this->pontos_lifetime ?? $this->pontos ?? 0;
 
-        if ($pontos >= 15000) {
+        if ($pontos >= 5000) {
             return [
                 'id' => 4,
-                'nome' => 'Diamante', 
-                'cor' => '#b9f2ff', 
+                'nome' => 'Platina', 
+                'cor' => '#e5e4e2', 
                 'icone' => '💎',
-                'min' => 15000, 
+                'min' => 5000, 
                 'proximo' => null, 
-                'multiplicador' => 3.0,
-                'beneficios' => ['Triplo de pontos', 'Descontos exclusivos', 'Atendimento VIP']
+                'multiplicador' => 1.3,
+                'beneficios' => ['Bônus máx. de pontos', 'Descontos premium', 'Atendimento prioritário']
             ];
-        } elseif ($pontos >= 5000) {
+        } elseif ($pontos >= 1500) {
             return [
                 'id' => 3,
                 'nome' => 'Ouro', 
                 'cor' => '#ffd700', 
                 'icone' => '🥇',
-                'min' => 5000, 
-                'proximo' => 15000, 
-                'multiplicador' => 2.0,
-                'beneficios' => ['Dobro de pontos', 'Descontos especiais', 'Ofertas exclusivas']
+                'min' => 1500, 
+                'proximo' => 5000, 
+                'multiplicador' => 1.2,
+                'beneficios' => ['+20% pontos', 'Descontos especiais', 'Ofertas exclusivas']
             ];
-        } elseif ($pontos >= 1500) {
+        } elseif ($pontos >= 500) {
             return [
                 'id' => 2,
                 'nome' => 'Prata', 
                 'cor' => '#c0c0c0', 
                 'icone' => '🥈',
-                'min' => 1500, 
-                'proximo' => 5000, 
-                'multiplicador' => 1.5,
-                'beneficios' => ['50% mais pontos', 'Descontos especiais']
+                'min' => 500, 
+                'proximo' => 1500, 
+                'multiplicador' => 1.1,
+                'beneficios' => ['+10% pontos', 'Descontos iniciais']
             ];
         }
 
@@ -206,7 +206,7 @@ class User extends Authenticatable implements JWTSubject
             'cor' => '#cd7f32', 
             'icone' => '🥉',
             'min' => 0, 
-            'proximo' => 1500, 
+            'proximo' => 500, 
             'multiplicador' => 1.0,
             'beneficios' => ['Pontos básicos', 'Programa de fidelidade']
         ];

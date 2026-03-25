@@ -59,19 +59,19 @@
         <p>
             @php
                 $nivel = 'Bronze';
-                if($user->pontos >= 10000) $nivel = 'Diamante';
-                elseif($user->pontos >= 5000) $nivel = 'Ouro';
-                elseif($user->pontos >= 2000) $nivel = 'Prata';
+                if($user->pontos >= 5000) $nivel = 'Platina';
+                elseif($user->pontos >= 1500) $nivel = 'Ouro';
+                elseif($user->pontos >= 500) $nivel = 'Prata';
             @endphp
             
             Nível <strong>{{ $nivel }}</strong> 
             
             @if($nivel === 'Bronze')
-                ({{ 2000 - $user->pontos }} pontos para Prata)
+                ({{ 500 - $user->pontos }} pontos para Prata)
             @elseif($nivel === 'Prata')
-                ({{ 5000 - $user->pontos }} pontos para Ouro)
+                ({{ 1500 - $user->pontos }} pontos para Ouro)
             @elseif($nivel === 'Ouro')
-                ({{ 10000 - $user->pontos }} pontos para Diamante)
+                ({{ 5000 - $user->pontos }} pontos para Platina)
             @else
                 - Nível Máximo! 💎
             @endif
