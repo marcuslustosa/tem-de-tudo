@@ -1,7 +1,7 @@
 // Service Worker - Tem de Tudo App
 // Versão otimizada para PWA com cache estratégico
 
-const CACHE_VERSION = 'v3.0.0';
+const CACHE_VERSION = 'v3.0.1';
 const CACHE_NAME = `tem-de-tudo-${CACHE_VERSION}`;
 
 // Assets essenciais para cache (offline first)
@@ -11,6 +11,8 @@ const CORE_ASSETS = [
     '/app-perfil.html',
     '/app-meu-qrcode.html',
     '/app-scanner.html',
+    '/css/style.css',
+    '/css/style.css?v=20260325',
     '/js/config.js',
     '/js/auth-guard.js',
     '/global-navbar.js',
@@ -209,4 +211,3 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 console.log('[SW] Service Worker carregado - Versão:', CACHE_VERSION);
-
