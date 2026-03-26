@@ -1,7 +1,7 @@
 // Service Worker - Tem de Tudo App
 // Versão otimizada para PWA com cache estratégico
 
-const CACHE_VERSION = 'v3.0.2';
+const CACHE_VERSION = 'v3.0.3';
 const CACHE_NAME = `tem-de-tudo-${CACHE_VERSION}`;
 
 // Assets essenciais para cache (offline first)
@@ -12,7 +12,7 @@ const CORE_ASSETS = [
     '/app-meu-qrcode.html',
     '/app-scanner.html',
     '/css/style.css',
-    '/css/style.css?v=20260326',
+    '/css/style.css?v=20260327',
     '/js/config.js',
     '/js/auth-guard.js',
     '/global-navbar.js',
@@ -41,24 +41,14 @@ self.addEventListener('install', (event) => {
 
 // Ativação - limpa caches antigos
 self.addEventListener('activate', (event) => {
-    console.log('[SW] Ativando Service Worker...');
-    
+    console.log('[SW] Ativando Service Worker (wipe all caches)...');
     event.waitUntil(
         caches.keys()
-            .then((cacheNames) => {
-                return Promise.all(
-                    cacheNames.map((cacheName) => {
-                        if (cacheName !== CACHE_NAME) {
-                            console.log('[SW] Removendo cache antigo:', cacheName);
-                            return caches.delete(cacheName);
-                        }
-                    })
-                );
-            })
-            .then(() => {
-                console.log('[SW] Service Worker ativado');
-                return self.clients.claim();
-            })
+            .then((cacheNames) => Promise.all(cacheNames.map((cacheName) => {
+                console.log('[SW] Removendo cache:', cacheName);
+                return caches.delete(cacheName);
+            })))
+            .then(() => self.clients.claim())
     );
 });
 
