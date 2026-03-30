@@ -624,11 +624,14 @@ class AuthController extends Controller
     {
         switch ($perfil) {
             case 'cliente':
+                // Novo front (Stitch) - dashboard do cliente
                 return '/dashboard-cliente.html';
             case 'empresa':
-                return '/dashboard-empresa-funcional.html';
+                // Novo front (Stitch) - dashboard do parceiro/estabelecimento
+                return '/dashboard-empresa.html';
             case 'admin':
-                return '/admin.html';
+                // Novo front (Stitch) - dashboard admin master
+                return '/dashboard-admin.html';
             default:
                 return '/entrar.html';
         }
@@ -967,6 +970,55 @@ class AuthController extends Controller
                 'message' => 'Erro ao processar solicitação'
             ], 500);
         }
+    }
+
+    /**
+     * Redefinir senha com token
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'token' => 'required|string',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $record = DB::table('password_resets')
+            ->where('email', $request->email)
+            ->first();
+
+        if (!$record || !Hash::check($request->token, $record->token)) {
+            return response()->json(['success' => false, 'message' => 'Token inválido ou expirado.'], 422);
+        }
+
+        $user = User::where('email', $request->email)->firstOrFail();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        DB::table('password_resets')->where('email', $request->email)->delete();
+
+        return response()->json(['success' => true, 'message' => 'Senha redefinida com sucesso.']);
+    }
+
+    /**
+     * Alterar senha autenticado
+     */
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $user = $request->user();
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json(['success' => false, 'message' => 'Senha atual incorreta.'], 422);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json(['success' => true, 'message' => 'Senha alterada com sucesso.']);
     }
 
     /**

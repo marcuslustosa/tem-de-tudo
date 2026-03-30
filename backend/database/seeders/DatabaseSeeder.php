@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Notification;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -26,6 +27,13 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Administrador Master',
                 'password' => Hash::make('admin123'),
                 'perfil' => 'admin',
+                'permissions' => json_encode([
+                    'manage_system',
+                    'manage_users',
+                    'view_reports',
+                    'manage_companies',
+                    'manage_promotions'
+                ]),
                 'telefone' => '(11) 99999-0001',
                 'status' => 'ativo',
                 'pontos' => 0,
@@ -63,6 +71,90 @@ class DatabaseSeeder extends Seeder
             ]
         );
         echo "✅ Empresa criada: empresa@teste.com / 123456\n";
+
+        // Empresa vinculada na tabela empresas
+        $empresaRecord = DB::table('empresas')->where('owner_id', $empresa->id)->first();
+        if (!$empresaRecord) {
+            $empresaId = DB::table('empresas')->insertGetId([
+                'owner_id' => $empresa->id,
+                'nome' => 'Empresa Teste Ltda',
+                'ramo' => 'restaurante',
+                'descricao' => 'Empresa seed para demonstração',
+                'logo' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop',
+                'ativo' => true,
+                'points_multiplier' => 1.0,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+            $empresaRecord = DB::table('empresas')->where('id', $empresaId)->first();
+        }
+
+        // Promoções seed (fluxo oficial EmpresaAPIController)
+        $promoId = DB::table('promocoes')
+            ->where('empresa_id', $empresaRecord->id)
+            ->where('titulo', '10% OFF na primeira compra')
+            ->value('id');
+        if (!$promoId) {
+            $promoId = DB::table('promocoes')->insertGetId([
+                'empresa_id' => $empresaRecord->id,
+                'titulo' => '10% OFF na primeira compra',
+                'descricao' => 'Desconto de boas-vindas para novos clientes',
+                'desconto' => 10,
+                'imagem' => 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600',
+                'data_inicio' => now()->subDays(2),
+                'validade' => now()->addMonths(1),
+                'ativo' => true,
+                'status' => 'ativa',
+                'visualizacoes' => 0,
+                'resgates' => 0,
+                'usos' => 0,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
+
+        // Cupom seed para cliente teste
+        $cupomExiste = DB::table('cupons')
+            ->where('user_id', $cliente->id)
+            ->where('promocao_id', $promoId)
+            ->exists();
+        if (!$cupomExiste) {
+            DB::table('cupons')->insert([
+                'user_id' => $cliente->id,
+                'promocao_id' => $promoId,
+                'codigo' => 'CUPOM-SEED-001',
+                'status' => 'pendente',
+                'validade' => now()->addMonths(1),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
+
+        // Notificações de exemplo
+        Notification::updateOrCreate(
+            ['user_id' => $cliente->id, 'title' => 'Boas-vindas'],
+            [
+                'message' => 'Você ganhou 50 pontos de boas-vindas.',
+                'type' => 'info',
+                'payload' => ['origin' => 'seed']
+            ]
+        );
+        Notification::updateOrCreate(
+            ['user_id' => $empresa->id, 'title' => 'Nova promoção ativa'],
+            [
+                'message' => 'Sua promoção de boas-vindas está ativa.',
+                'type' => 'success',
+                'payload' => ['promocao_id' => $promoId]
+            ]
+        );
+        Notification::updateOrCreate(
+            ['user_id' => $admin->id ?? null, 'title' => 'Admin: revise relatórios'],
+            [
+                'message' => 'Relatórios disponíveis para revisão.',
+                'type' => 'alert',
+                'payload' => ['section' => 'reports']
+            ]
+        );
 
         // Criar 50 clientes (cliente1@email.com até cliente50@email.com)
         echo "\n📝 Criando 50 clientes...\n";

@@ -1,0 +1,446 @@
+﻿<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Radiant Admin - RelatÃ³rios e MÃ©tricas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#d5d3df",
+              "surface-container-highest": "#dedbe7",
+              "surface-tint": "#b00076",
+              "on-primary": "#ffeff3",
+              "primary": "#b00076",
+              "inverse-on-surface": "#9e9ca4",
+              "primary-fixed-dim": "#ff49b3",
+              "on-secondary-container": "#712286",
+              "surface-container-low": "#f2eff9",
+              "secondary-fixed-dim": "#f2aaff",
+              "inverse-surface": "#0d0e13",
+              "tertiary-container": "#52e8f7",
+              "on-secondary-fixed": "#5a0371",
+              "on-secondary": "#ffeefd",
+              "secondary": "#87399c",
+              "on-primary-container": "#4a002f",
+              "secondary-container": "#f7bfff",
+              "on-error": "#ffefef",
+              "surface-variant": "#dedbe7",
+              "secondary-fixed": "#f7bfff",
+              "on-primary-fixed-variant": "#5b003b",
+              "secondary-dim": "#7a2c8f",
+              "on-tertiary-container": "#005158",
+              "error-dim": "#a70138",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#005c63",
+              "on-primary-fixed": "#000000",
+              "tertiary-fixed": "#52e8f7",
+              "on-surface-variant": "#5b5b62",
+              "tertiary": "#00666e",
+              "primary-fixed": "#ff6bbb",
+              "tertiary-fixed-dim": "#3ed9e9",
+              "tertiary-dim": "#005960",
+              "on-tertiary": "#d2faff",
+              "outline-variant": "#aeacb4",
+              "primary-container": "#ff6bbb",
+              "error-container": "#f74b6d",
+              "on-surface": "#2e2e34",
+              "surface-container-high": "#e4e1ec",
+              "surface": "#f8f5fe",
+              "background": "#f8f5fe",
+              "surface-bright": "#f8f5fe",
+              "on-secondary-fixed-variant": "#7b2d90",
+              "surface-container": "#e9e7f1",
+              "outline": "#77767d",
+              "on-background": "#2e2e34",
+              "on-tertiary-fixed": "#003d42",
+              "on-error-container": "#510017",
+              "error": "#b41340",
+              "primary-dim": "#9b0067",
+              "inverse-primary": "#ff40b2"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(222, 219, 231, 0.6);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body data-page="relat_rios_gerais_master" class="bg-surface font-body text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-[#f8f5fe] dark:bg-slate-950 font-['Plus_Jakarta_Sans'] font-bold text-slate-900 dark:text-slate-100 border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm dark:shadow-none fixed top-0 w-full z-50 flex justify-between items-center px-6 py-3">
+<div class="flex items-center gap-4">
+<span class="text-xl font-black bg-gradient-to-r from-[#003B49] via-[#7A2C8F] to-[#E10098] bg-clip-text text-transparent">Radiant Admin</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center gap-4">
+<nav class="flex gap-4">
+<span class="text-slate-500 dark:text-slate-400 font-bold hover:bg-[#e9e7f1] transition-colors px-3 py-1 rounded-lg cursor-pointer">Dashboard</span>
+<span class="text-[#E10098] font-bold hover:bg-[#e9e7f1] transition-colors px-3 py-1 rounded-lg cursor-pointer">RelatÃ³rios</span>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-slate-500 hover:bg-[#e9e7f1] p-2 rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined text-slate-500 hover:bg-[#e9e7f1] p-2 rounded-full transition-colors">settings</button>
+<div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden border border-outline-variant/20">
+<img alt="User profile" data-alt="professional headshot of a senior executive male with a friendly expression in a modern office environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRtyKPQeeQBPo2lmqLVkPdRdcvPhFtHTTikCDMnK0sPryZ11fn2i0TcDK1mZ792UarFiUK0zXe2Mh3RwljajtEJFoubbaszOHOSSH9bbdvn0d0-5NMH6DjqW3ynI1bvh5bSnVSksfLjf7i_0Cptyz5FcmefObBvbLtTYX0ZXDtExPTF_IKItFB-WALKmq5EDTO7SGi4_q6mIT2OiiwLXd5A8zq0ck6PYYjNb5EAYr_47qZBsaGnnxjPDQOFpC3jEAe4jaMAotFJ-E7"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="hidden lg:flex flex-col fixed left-0 top-0 h-full w-64 p-4 bg-[#e9e7f1] dark:bg-slate-900 font-['Plus_Jakarta_Sans'] text-sm font-semibold pt-20">
+<div class="mb-8 px-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div>
+<p class="text-[#003B49] dark:text-white font-bold text-lg">Master Admin</p>
+<p class="text-slate-500 text-xs">GestÃ£o Global</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-white/50 transition-transform translate-x-1" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-white/50" href="#">
+<span class="material-symbols-outlined">storefront</span>
+<span>Estabelecimentos</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-800 text-[#E10098] rounded-xl shadow-sm" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>RelatÃ³rios</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-white/50" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span>Financeiro</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-white/50" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>ConfiguraÃ§Ãµes</span>
+</a>
+</nav>
+<div class="mt-auto space-y-2 border-t border-slate-300/30 pt-4">
+<button class="w-full bg-[#E10098] text-white py-3 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add</span>
+<span>Novo Parceiro</span>
+</button>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-[#7A2C8F]" href="#">
+<span class="material-symbols-outlined">help</span>
+<span>Suporte</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:text-[#7A2C8F]" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Sair</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-24 pb-20 px-4 md:px-8 max-w-7xl mx-auto">
+<!-- Header & Filters -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+<div>
+<h1 class="text-3xl font-headline font-extrabold text-on-surface tracking-tight">RelatÃ³rios &amp; MÃ©tricas</h1>
+<p class="text-on-surface-variant">VisÃ£o consolidada da performance do ecossistema Radiant.</p>
+</div>
+<div class="flex items-center gap-3 bg-surface-container-low p-2 rounded-xl">
+<div class="flex items-center gap-2 px-3 py-2 bg-surface-container-lowest rounded-lg shadow-sm border border-outline-variant/10">
+<span class="material-symbols-outlined text-sm text-primary">calendar_today</span>
+<span class="text-sm font-semibold">01 Jan - 31 Mar, 2024</span>
+</div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg text-sm font-bold shadow-md active:scale-95 transition-all">
+                    Filtrar
+                </button>
+</div>
+</div>
+<!-- KPI Cards Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-b-4 border-primary/20">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-primary">group</span>
+</div>
+<span class="text-xs font-bold text-tertiary px-2 py-1 bg-tertiary-container/30 rounded-full">+12.5%</span>
+</div>
+<p class="text-on-surface-variant text-sm font-semibold mb-1">Base Total de UsuÃ¡rios</p>
+<h3 class="text-2xl font-headline font-black text-on-surface">1.248.590</h3>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-b-4 border-secondary/20">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-secondary/10 rounded-lg">
+<span class="material-symbols-outlined text-secondary">redeem</span>
+</div>
+<span class="text-xs font-bold text-tertiary px-2 py-1 bg-tertiary-container/30 rounded-full">+8.2%</span>
+</div>
+<p class="text-on-surface-variant text-sm font-semibold mb-1">Volume de Resgates</p>
+<h3 class="text-2xl font-headline font-black text-on-surface">45.291</h3>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-b-4 border-tertiary/20">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-tertiary/10 rounded-lg">
+<span class="material-symbols-outlined text-tertiary">payments</span>
+</div>
+<span class="text-xs font-bold text-primary px-2 py-1 bg-primary/10 rounded-full">+15.1%</span>
+</div>
+<p class="text-on-surface-variant text-sm font-semibold mb-1">Receita Gerada</p>
+<h3 class="text-2xl font-headline font-black text-on-surface">R$ 2.8M</h3>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm border-b-4 border-on-secondary-fixed-variant/20">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-on-secondary-fixed-variant/10 rounded-lg">
+<span class="material-symbols-outlined text-on-secondary-fixed-variant">trending_up</span>
+</div>
+<span class="text-xs font-bold text-tertiary px-2 py-1 bg-tertiary-container/30 rounded-full">+4.3%</span>
+</div>
+<p class="text-on-surface-variant text-sm font-semibold mb-1">Taxa de ConversÃ£o</p>
+<h3 class="text-2xl font-headline font-black text-on-surface">24.8%</h3>
+</div>
+</div>
+<!-- Main Analytics Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left: Growth Chart (Represented Visually) -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-xl shadow-sm">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-xl font-headline font-bold">Crescimento da Base &amp; Engajamento</h2>
+<div class="flex gap-2">
+<span class="flex items-center gap-1 text-xs font-semibold"><span class="w-3 h-3 bg-primary rounded-full"></span> Ativos</span>
+<span class="flex items-center gap-1 text-xs font-semibold"><span class="w-3 h-3 bg-secondary rounded-full"></span> Novos</span>
+</div>
+</div>
+<div class="relative h-64 w-full flex items-end justify-between gap-2 px-4">
+<!-- Faux Bar Chart -->
+<div class="flex-1 bg-surface-container h-[40%] rounded-t-lg transition-all hover:bg-primary-fixed"></div>
+<div class="flex-1 bg-surface-container h-[55%] rounded-t-lg transition-all hover:bg-primary-fixed"></div>
+<div class="flex-1 bg-surface-container h-[45%] rounded-t-lg transition-all hover:bg-primary-fixed"></div>
+<div class="flex-1 bg-surface-container h-[70%] rounded-t-lg transition-all hover:bg-primary-fixed"></div>
+<div class="flex-1 bg-primary h-[85%] rounded-t-lg relative group">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">124k</div>
+</div>
+<div class="flex-1 bg-surface-container h-[65%] rounded-t-lg transition-all hover:bg-primary-fixed"></div>
+<div class="flex-1 bg-surface-container h-[50%] rounded-t-lg transition-all hover:bg-primary-fixed"></div>
+<div class="flex-1 bg-surface-container h-[75%] rounded-t-lg transition-all hover:bg-primary-fixed"></div>
+<div class="flex-1 bg-surface-container h-[60%] rounded-t-lg transition-all hover:bg-primary-fixed"></div>
+<div class="flex-1 bg-secondary h-[95%] rounded-t-lg"></div>
+<div class="flex-1 bg-surface-container h-[80%] rounded-t-lg transition-all hover:bg-primary-fixed"></div>
+<div class="flex-1 bg-surface-container h-[65%] rounded-t-lg transition-all hover:bg-primary-fixed"></div>
+</div>
+<div class="flex justify-between px-4 mt-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+<span>Jan</span><span>Fev</span><span>Mar</span><span>Abr</span><span>Mai</span><span>Jun</span><span>Jul</span><span>Ago</span><span>Set</span><span>Out</span><span>Nov</span><span>Dez</span>
+</div>
+</div>
+<!-- Right: Categories Breakdown -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm overflow-hidden relative">
+<h2 class="text-xl font-headline font-bold mb-6">Resgates por Categoria</h2>
+<div class="space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between text-sm">
+<span class="font-semibold">Gastronomia</span>
+<span class="font-bold">42%</span>
+</div>
+<div class="h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[42%]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-sm">
+<span class="font-semibold">Varejo &amp; Moda</span>
+<span class="font-bold">28%</span>
+</div>
+<div class="h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[28%]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-sm">
+<span class="font-semibold">SaÃºde &amp; Bem-estar</span>
+<span class="font-bold">18%</span>
+</div>
+<div class="h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[18%]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-sm">
+<span class="font-semibold">EducaÃ§Ã£o</span>
+<span class="font-bold">12%</span>
+</div>
+<div class="h-2 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[12%]"></div>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/10">
+<button class="w-full py-2 text-primary font-bold text-sm hover:bg-primary/5 transition-colors rounded-lg">Ver Detalhamento Completo</button>
+</div>
+</div>
+</div>
+<!-- Global Campaigns Performance -->
+<div class="mt-8">
+<h2 class="text-2xl font-headline font-black mb-6 flex items-center gap-3">
+                Campanhas Ativas
+                <span class="text-xs font-bold bg-tertiary/10 text-tertiary px-3 py-1 rounded-full uppercase">Global</span>
+</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Campaign Card 1 -->
+<div class="bg-surface-container p-1 rounded-xl group cursor-pointer hover:shadow-lg transition-all">
+<div class="bg-surface-container-lowest p-5 rounded-xl">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">celebration</span>
+</div>
+<div>
+<h4 class="font-bold leading-tight">VerÃ£o Radiant 2024</h4>
+<span class="text-xs text-on-surface-variant">Vencimento em 12 dias</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-4">
+<div class="bg-surface p-3 rounded-lg text-center">
+<p class="text-[10px] uppercase font-black text-outline">Alcance</p>
+<p class="text-lg font-black text-on-surface">850k</p>
+</div>
+<div class="bg-surface p-3 rounded-lg text-center">
+<p class="text-[10px] uppercase font-black text-outline">ROI</p>
+<p class="text-lg font-black text-tertiary">4.2x</p>
+</div>
+</div>
+<div class="flex justify-between items-center text-xs font-bold">
+<span class="text-on-surface-variant">Performance</span>
+<span class="text-primary">Excelente</span>
+</div>
+</div>
+</div>
+<!-- Campaign Card 2 -->
+<div class="bg-surface-container p-1 rounded-xl group cursor-pointer hover:shadow-lg transition-all">
+<div class="bg-surface-container-lowest p-5 rounded-xl">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-lg bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div>
+<h4 class="font-bold leading-tight">Semana GastronÃ´mica</h4>
+<span class="text-xs text-on-surface-variant">Vencimento em 5 dias</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-4">
+<div class="bg-surface p-3 rounded-lg text-center">
+<p class="text-[10px] uppercase font-black text-outline">Alcance</p>
+<p class="text-lg font-black text-on-surface">320k</p>
+</div>
+<div class="bg-surface p-3 rounded-lg text-center">
+<p class="text-[10px] uppercase font-black text-outline">ROI</p>
+<p class="text-lg font-black text-tertiary">3.8x</p>
+</div>
+</div>
+<div class="flex justify-between items-center text-xs font-bold">
+<span class="text-on-surface-variant">Performance</span>
+<span class="text-secondary">Acima da mÃ©dia</span>
+</div>
+</div>
+</div>
+<!-- Featured Promotion Banner (Asymmetric Layout) -->
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#003B49] via-[#7A2C8F] to-[#E10098] p-6 flex flex-col justify-between shadow-xl">
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+<div class="relative z-10">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 inline-block">Insights IA</span>
+<h3 class="text-white text-xl font-headline font-black leading-tight mb-2">Aumente o engajamento em 15%</h3>
+<p class="text-on-primary/80 text-xs">Nossa IA detectou uma oportunidade na categoria Fitness. Inicie uma campanha agora.</p>
+</div>
+<button class="relative z-10 mt-4 bg-white text-secondary font-black py-2 rounded-lg text-sm transition-transform active:scale-95">Ver RecomendaÃ§Ã£o</button>
+</div>
+</div>
+</div>
+<!-- Financial Overview Table -->
+<div class="mt-8 bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 overflow-hidden">
+<div class="p-6 border-b border-outline-variant/10 flex justify-between items-center">
+<h2 class="text-xl font-headline font-bold">Resumo Financeiro por RegiÃ£o</h2>
+<button class="text-sm font-bold text-primary flex items-center gap-1">
+                    Exportar PDF <span class="material-symbols-outlined text-sm">download</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low text-on-surface-variant text-[10px] font-black uppercase tracking-widest">
+<tr>
+<th class="px-6 py-4">RegiÃ£o</th>
+<th class="px-6 py-4">TransaÃ§Ãµes</th>
+<th class="px-6 py-4">Valor Bruto</th>
+<th class="px-6 py-4">Cashback AtribuÃ­do</th>
+<th class="px-6 py-4">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-4 font-bold">Sudeste</td>
+<td class="px-6 py-4">15.240</td>
+<td class="px-6 py-4">R$ 1.450.000</td>
+<td class="px-6 py-4">R$ 145.000</td>
+<td class="px-6 py-4"><span class="px-2 py-1 bg-tertiary-container/30 text-tertiary rounded-md text-[10px] font-black">ESTÃVEL</span></td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-4 font-bold">Sul</td>
+<td class="px-6 py-4">8.120</td>
+<td class="px-6 py-4">R$ 720.000</td>
+<td class="px-6 py-4">R$ 72.000</td>
+<td class="px-6 py-4"><span class="px-2 py-1 bg-primary/10 text-primary rounded-md text-[10px] font-black">EM ALTA</span></td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-6 py-4 font-bold">Nordeste</td>
+<td class="px-6 py-4">5.400</td>
+<td class="px-6 py-4">R$ 480.000</td>
+<td class="px-6 py-4">R$ 48.000</td>
+<td class="px-6 py-4"><span class="px-2 py-1 bg-surface-container-highest text-on-surface-variant rounded-md text-[10px] font-black">NEUTRO</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-white dark:bg-slate-950 shadow-[0_-4px_20px_rgba(11,31,58,0.06)] border-t border-[#00666e]/10 flex justify-around items-center px-4 pt-3 pb-safe lg:hidden">
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider">InÃ­cio</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#E10098] relative after:content-[''] after:w-1 after:h-1 after:bg-[#E10098] after:rounded-full after:mt-1 tap-highlight-transparent active:scale-95 transition-all">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider">Vendas</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider">Produtos</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all">
+<span class="material-symbols-outlined">store</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider">Loja</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider">Perfil</span>
+</button>
+</nav>
+<script src="/js/stitch-app.js"></script></body></html>

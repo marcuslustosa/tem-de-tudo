@@ -1,0 +1,78 @@
+# Arquitetura de Perfis e Regras de Acesso - TEM DE TUDO
+
+O sistema **TEM DE TUDO** é estruturado em três níveis de acesso independentes, cada um com sua própria interface (PWA Mobile ou Dashboard Desktop), navegação e permissões.
+
+---
+
+## 1. Perfil: CLIENTE (PWA Mobile-First)
+**O foco é consumo, economia e fidelização.**
+
+*   **Acesso:** Via PWA instalado no smartphone.
+*   **Navegação Inferior (5 Abas):**
+    1.  **Início:** Home promocional com banners, busca e categorias.
+    2.  **Parceiros:** Marketplace de lojas e estabelecimentos locais.
+    3.  **Pontos:** Saldo, extrato, níveis de fidelidade e progresso.
+    4.  **Prêmios:** Catálogo de recompensas e troca de pontos.
+    5.  **Perfil:** Dados pessoais, configurações e suporte.
+*   **Principais Ações:**
+    *   Buscar e visualizar detalhes de parceiros.
+    *   Ativar ofertas e cupons de desconto.
+    *   Acumular pontos em compras nos parceiros.
+    *   Resgatar recompensas com pontos acumulados.
+    *   Acompanhar histórico de uso e benefícios ganhos.
+
+---
+
+## 2. Perfil: ESTABELECIMENTO / PARCEIRO (Mobile-First / Operacional)
+**O foco é operação comercial e gestão de clientes locais.**
+
+*   **Acesso:** Via PWA (acesso logado como parceiro).
+*   **Navegação Inferior (5 Abas):**
+    1.  **Início:** Dashboard de desempenho (vendas, trocas, crescimento).
+    2.  **Métricas:** Relatórios detalhados de campanhas e ofertas.
+    3.  **Ofertas:** Gestão de cupons, descontos e novas promoções.
+    4.  **Validar:** Ferramenta de scanner QR Code para validar resgates.
+    5.  **Perfil:** Dados da loja, horários, localização e fotos.
+*   **Principais Ações:**
+    *   Validar cupons de clientes em tempo real.
+    *   Criar novas campanhas de fidelidade (ex: "Junte 10 selos").
+    *   Acompanhar a base de clientes que frequentam a loja.
+    *   Editar informações comerciais visíveis para os clientes.
+    *   Analisar quais ofertas geram mais retorno.
+
+---
+
+## 3. Perfil: ADMINISTRADOR MASTER (Dashboard Desktop)
+**O foco é controle total, moderação e inteligência de dados da rede.**
+
+*   **Acesso:** Interface Desktop robusta.
+*   **Navegação Lateral (Sidebar):**
+    *   **Dashboard Geral:** Pulso da plataforma em tempo real.
+    *   **Estabelecimentos:** Aprovação de novos parceiros e moderação.
+    *   **Usuários/Clientes:** Gestão da base global e suporte.
+    *   **Conteúdo:** Controle de banners da home cliente e categorias.
+    *   **Campanhas:** Criação de ações globais para toda a rede.
+    *   **Relatórios:** Exportação de dados financeiros e de uso.
+    *   **Configurações:** Regras de pontuação, taxas e parâmetros.
+*   **Principais Ações:**
+    *   Aprovar ou bloquear lojas parceiras.
+    *   Gerenciar o faturamento e transações da plataforma.
+    *   Alterar a identidade visual e banners promocionais.
+    *   Intervir em problemas de usuários ou fraudes.
+    *   Definir metas globais e acompanhar o crescimento da rede.
+
+---
+
+## Resumo de Fluxos de Acesso
+| Funcionalidade | Cliente | Estabelecimento | Admin Master |
+| :--- | :---: | :---: | :---: |
+| Ver Home Promocional | ✅ | ❌ | ❌ |
+| Resgatar Cupom | ✅ | ❌ | ❌ |
+| Validar QR Code | ❌ | ✅ | ❌ |
+| Criar Campanha Própria | ❌ | ✅ | ❌ |
+| Aprovar Novos Parceiros | ❌ | ❌ | ✅ |
+| Editar Categorias Globais | ❌ | ❌ | ✅ |
+| Ver Relatórios Financeiros | ❌ | ⚠️ (Sinal) | ✅ (Total) |
+
+---
+*Este documento serve como guia para a manutenção da consistência de UX e regras de negócio do produto TEM DE TUDO.*

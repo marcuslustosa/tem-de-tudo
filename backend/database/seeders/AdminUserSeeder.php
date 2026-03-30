@@ -21,6 +21,13 @@ class AdminUserSeeder extends Seeder
                 'email' => 'admin@temdetudo.com',
                 'password' => Hash::make('admin123'),
                 'perfil' => 'admin',
+                'permissions' => [
+                    'manage_system',
+                    'manage_users',
+                    'view_reports',
+                    'manage_companies',
+                    'manage_promotions'
+                ],
                 'pontos' => 0,
                 'nivel' => 'Platina',
                 'telefone' => '(11) 99999-9999',
@@ -37,6 +44,10 @@ class AdminUserSeeder extends Seeder
                 'email' => 'operador@temdetudo.com',
                 'password' => Hash::make('operador123'),
                 'perfil' => 'admin',
+                'permissions' => [
+                    'view_reports',
+                    'manage_promotions'
+                ],
                 'pontos' => 0,
                 'nivel' => 'Ouro',
                 'telefone' => '(11) 88888-8888',

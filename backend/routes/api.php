@@ -26,6 +26,8 @@ use App\Http\Controllers\PagamentoController;
 use App\Http\Controllers\CheckInController as MainCheckInController;
 use App\Http\Controllers\PontosController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\PushSubscriptionController;
+use App\Http\Controllers\NotificationController;
 
 // Debug route (remover em produção)
 Route::get('/debug', function () {
@@ -72,6 +74,22 @@ Route::get('/debug/empresas', function () {
     }
 });
 
+// Push Notifications
+Route::get('/push/public-key', [PushSubscriptionController::class, 'publicKey']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/push/subscribe', [PushSubscriptionController::class, 'subscribe']);
+    Route::delete('/push/unsubscribe', [PushSubscriptionController::class, 'unsubscribe']);
+    Route::post('/push/test', [PushSubscriptionController::class, 'test']);
+
+    Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
+
+    // Notificações internas
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/read', [NotificationController::class, 'markRead']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+});
+
 // Setup database manual (APENAS PRODUÇÃO - RENDER)
 Route::get('/setup-database', [SetupController::class, 'setupDatabase']);
 
@@ -83,6 +101,7 @@ Route::get('/setup-database', [SetupController::class, 'setupDatabase']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
 // Empresas (leitura pública)
 Route::get('/empresas', [EmpresaController::class, 'listEmpresas']);
@@ -268,6 +287,9 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa'
     Route::post('/promocoes', [EmpresaAPIController::class, 'criarPromocao']);
     Route::put('/promocoes/{id}', [EmpresaAPIController::class, 'atualizarPromocao']);
     Route::delete('/promocoes/{id}', [EmpresaAPIController::class, 'deletarPromocao']);
+    Route::patch('/promocoes/{id}/ativar', [EmpresaAPIController::class, 'ativarPromocao']);
+    Route::patch('/promocoes/{id}/pausar', [EmpresaAPIController::class, 'pausarPromocao']);
+    Route::get('/resgates', [EmpresaAPIController::class, 'resgates']);
     
     // QR Codes
     Route::get('/qrcodes', [EmpresaAPIController::class, 'qrCodes']);
@@ -384,109 +406,4 @@ Route::prefix('discounts')->group(function () {
         Route::post('/suggest', [OpenAIController::class, 'suggest'])
             ->middleware(['admin.permission:manage_system']);
     });
-});
-
-// ============================================
-// ROTAS DO SISTEMA (QR Code + Fidelidade)
-// ============================================
-
-// Rotas do Cliente (autenticado)
-Route::middleware('auth:sanctum')->prefix('cliente')->group(function () {
-    // QR Code do cliente
-    Route::get('/meu-qrcode', [QRCodeController::class, 'meuQRCode']);
-    
-    // Escanear QR Code da empresa (inscrição)
-    Route::post('/escanear-empresa', [QRCodeController::class, 'escanearEmpresa']);
-    
-    // Bônus de Adesão (Cliente)
-    Route::get('/bonus-disponivel/{empresa_id}', [BonusAdesaoController::class, 'bonusDisponivel']);
-    Route::post('/resgatar-bonus/{empresa_id}', [BonusAdesaoController::class, 'resgatar']);
-    
-    // Cartão Fidelidade (Cliente)
-    Route::get('/meu-progresso', [CartaoFidelidadeController::class, 'meuProgresso']);
-    Route::get('/progresso-empresa/{empresa_id}', [CartaoFidelidadeController::class, 'progressoPorEmpresa']);
-    
-    // Promoções (Cliente)
-    Route::get('/promocoes/{empresa_id}', [PromocaoController::class, 'listarPorEmpresa']);
-    
-    // Avaliações (Cliente)
-    Route::post('/avaliacoes', [AvaliacaoController::class, 'store']);
-    Route::get('/avaliacoes/empresa/{empresa_id}', [AvaliacaoController::class, 'listarPorEmpresa']);
-    Route::get('/minha-avaliacao/{empresa_id}', [AvaliacaoController::class, 'minhaAvaliacao']);
-    Route::delete('/avaliacoes/{empresa_id}', [AvaliacaoController::class, 'destroy']);
-    
-    // Inscrições (Cliente)
-    Route::get('/empresas-inscritas', [InscricaoController::class, 'minhasInscricoes']);
-    Route::get('/inscricao/{empresa_id}', [InscricaoController::class, 'detalhesInscricao']);
-    
-    // Listar TODAS as empresas para busca e navegação
-    Route::get('/empresas', [ClienteController::class, 'listarEmpresas']);
-    Route::get('/historico-pontos', [ClienteController::class, 'historicoPontos']);
-    
-    // ========== ROTAS CLIENTE - Fidelidade ==========
-    // Bônus de Aniversário
-    Route::get('/verificar-aniversario', [ClienteController::class, 'verificarAniversario']);
-    Route::post('/resgatar-bonus-aniversario', [ClienteController::class, 'resgatarBonusAniversario']);
-    
-    // Cartões Fidelidade
-    Route::get('/cartoes-fidelidade', [ClienteController::class, 'cartoesFidelidade']);
-    
-    // Bônus de Adesão
-    Route::get('/bonus-adesao/{empresa_id}', [ClienteController::class, 'verificarBonusAdesao']);
-    Route::post('/resgatar-bonus/{bonus_id}', [ClienteController::class, 'resgatarBonusAdesao']);
-});
-
-// Rotas da Empresa (autenticada)
-Route::middleware('auth:sanctum')->prefix('empresa')->group(function () {
-    // QR Code da empresa
-    Route::get('/meu-qrcode', [QRCodeController::class, 'qrCodeEmpresa']);
-    
-    // Escanear QR Code do cliente (adicionar ponto)
-    Route::post('/escanear-cliente', [QRCodeController::class, 'escanearCliente']);
-    
-    // Bônus de Adesão (CRUD - Empresa)
-    Route::get('/bonus-adesao', [BonusAdesaoController::class, 'index']);
-    Route::post('/bonus-adesao', [BonusAdesaoController::class, 'store']);
-    Route::get('/bonus-adesao/{id}', [BonusAdesaoController::class, 'show']);
-    Route::put('/bonus-adesao/{id}', [BonusAdesaoController::class, 'update']);
-    Route::delete('/bonus-adesao/{id}', [BonusAdesaoController::class, 'destroy']);
-    
-    // Cartão Fidelidade (CRUD - Empresa)
-    Route::get('/cartoes-fidelidade', [CartaoFidelidadeController::class, 'index']);
-    Route::post('/cartoes-fidelidade', [CartaoFidelidadeController::class, 'store']);
-    Route::get('/cartoes-fidelidade/{id}', [CartaoFidelidadeController::class, 'show']);
-    Route::put('/cartoes-fidelidade/{id}', [CartaoFidelidadeController::class, 'update']);
-    Route::delete('/cartoes-fidelidade/{id}', [CartaoFidelidadeController::class, 'destroy']);
-    Route::post('/adicionar-ponto', [CartaoFidelidadeController::class, 'adicionarPonto']);
-    
-    // Promoções (CRUD - Empresa)
-    Route::get('/promocoes', [PromocaoController::class, 'index']);
-    Route::post('/promocoes', [PromocaoController::class, 'store']);
-    Route::get('/promocoes/{id}', [PromocaoController::class, 'show']);
-    Route::put('/promocoes/{id}', [PromocaoController::class, 'update']);
-    Route::delete('/promocoes/{id}', [PromocaoController::class, 'destroy']);
-    Route::post('/promocoes/{id}/enviar-push', [PromocaoController::class, 'enviarPush']);
-    
-    // Avaliações (Empresa - apenas visualizar)
-    Route::get('/avaliacoes/estatisticas', [AvaliacaoController::class, 'estatisticas']);
-    
-    // ========== ROTAS EMPRESA - Promoções e Clientes ==========
-    // Scanner QR Code para Check-in
-    Route::post('/registrar-checkin', [EmpresaPromocaoController::class, 'registrarCheckin']);
-    
-    // Promoções (CRUD Completo)
-    Route::get('/promocoes', [EmpresaPromocaoController::class, 'index']);
-    Route::post('/promocoes', [EmpresaPromocaoController::class, 'store']);
-    Route::get('/promocoes/{id}', [PromocaoController::class, 'show']); // Reutiliza controller existente
-    Route::put('/promocoes/{id}', [EmpresaPromocaoController::class, 'update']);
-    Route::patch('/promocoes/{id}/pausar', [EmpresaPromocaoController::class, 'pausar']);
-    Route::patch('/promocoes/{id}/ativar', [EmpresaPromocaoController::class, 'ativar']);
-    Route::delete('/promocoes/{id}', [EmpresaPromocaoController::class, 'destroy']);
-    
-    // Clientes
-    Route::get('/clientes', [EmpresaPromocaoController::class, 'clientes']);
-    
-    // Notificações Push
-    Route::get('/notificacoes/stats', [EmpresaPromocaoController::class, 'notificacoesStats']);
-    Route::post('/notificacoes/enviar', [EmpresaPromocaoController::class, 'enviarNotificacao']);
 });

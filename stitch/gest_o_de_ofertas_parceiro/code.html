@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tudo Vibrante Admin - Gestão de Ofertas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-error": "#ffefef",
+              "tertiary": "#00666e",
+              "background": "#f8f5fe",
+              "tertiary-container": "#52e8f7",
+              "primary": "#b00076",
+              "tertiary-fixed-dim": "#3ed9e9",
+              "surface-container-lowest": "#ffffff",
+              "error-dim": "#a70138",
+              "surface-variant": "#dedbe7",
+              "surface-bright": "#f8f5fe",
+              "secondary-fixed": "#f7bfff",
+              "secondary-dim": "#7a2c8f",
+              "on-primary-fixed": "#000000",
+              "tertiary-fixed": "#52e8f7",
+              "on-primary-fixed-variant": "#5b003b",
+              "on-tertiary-container": "#005158",
+              "secondary-container": "#f7bfff",
+              "on-tertiary-fixed-variant": "#005c63",
+              "error": "#b41340",
+              "on-primary": "#ffeff3",
+              "inverse-surface": "#0d0e13",
+              "on-surface": "#2e2e34",
+              "on-secondary-fixed-variant": "#7b2d90",
+              "tertiary-dim": "#005960",
+              "surface-dim": "#d5d3df",
+              "surface-container-high": "#e4e1ec",
+              "secondary-fixed-dim": "#f2aaff",
+              "outline-variant": "#aeacb4",
+              "primary-container": "#ff6bbb",
+              "secondary": "#87399c",
+              "error-container": "#f74b6d",
+              "on-primary-container": "#4a002f",
+              "surface-container-low": "#f2eff9",
+              "primary-dim": "#9b0067",
+              "outline": "#77767d",
+              "inverse-primary": "#ff40b2",
+              "on-tertiary-fixed": "#003d42",
+              "on-error-container": "#510017",
+              "surface": "#f8f5fe",
+              "on-tertiary": "#d2faff",
+              "surface-tint": "#b00076",
+              "primary-fixed-dim": "#ff49b3",
+              "on-secondary-container": "#712286",
+              "surface-container-highest": "#dedbe7",
+              "on-surface-variant": "#5b5b5b",
+              "on-secondary-fixed": "#5a0371",
+              "on-background": "#2e2e34",
+              "on-secondary": "#ffeefd",
+              "primary-fixed": "#ff6bbb",
+              "surface-container": "#e9e7f1",
+              "inverse-on-surface": "#9e9ca4"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-dot::after {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background-color: #b00076;
+            border-radius: 50%;
+            margin-top: 4px;
+        }
+        .glass-badge {
+            background: rgba(222, 219, 231, 0.6);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-background antialiased pb-24">
+<!-- TopAppBar -->
+<header class="bg-[#f8f5fe] dark:bg-slate-950 flex justify-between items-center px-6 py-3 w-full sticky top-0 z-40 tonal-shift bg-[#e9e7f1] dark:bg-slate-900 flat no shadows">
+<div class="flex items-center gap-3">
+<span class="text-xl font-black bg-gradient-to-r from-[#003B49] via-[#7A2C8F] to-[#E10098] bg-clip-text text-transparent font-headline">Tudo Vibrante Admin</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-[#dedbe7]/50 transition-colors p-2 rounded-full">notifications</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="close-up portrait of a professional male store manager with a friendly smile and modern spectacles in a bright office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw0rp_qs51Hd6KbfmHpprRikUv9QcLzQFFosG1gRgOpnuE1pH35TBYxm5fcAw6-3SkAXtSqjvRL6sOSni8UIvo_SJEoaBuDJr6rOeUm13TUjkInx8vEIbcMEH8iRSpArRjgPNqfZSYIMFskIGjJdIXByMjPQJgNbPCiXYHrn1Uh-JLLvRieJCW9N-JNFS0SoupiPKJfQPdvTv73gIbKFrmX8z-Ufyhi4snLocoWmoUngtdJcbtzKWf5tQWJc_xxGih-1EPKo8tfjV2"/>
+</div>
+</div>
+</header>
+<main class="px-4 pt-6 max-w-xl mx-auto">
+<!-- Dashboard Header / Welcome -->
+<div class="mb-8">
+<h1 class="text-on-surface font-headline font-bold text-2xl tracking-tight leading-tight">Gestão de Ofertas</h1>
+<p class="text-on-surface-variant text-sm mt-1">Gerencie suas promoções ativas e crie novos impulsos de venda.</p>
+</div>
+<!-- High Impact CTA Section -->
+<div class="mb-8 rounded-xl bg-gradient-to-r from-[#003B49] via-[#7A2C8F] to-[#E10098] p-6 text-on-primary shadow-[0_8px_32px_rgba(11,31,58,0.12)] relative overflow-hidden group">
+<div class="relative z-10 flex flex-col gap-2">
+<span class="font-label text-xs uppercase tracking-widest font-semibold opacity-90">Novas Oportunidades</span>
+<h2 class="font-headline font-extrabold text-xl">Impulsione suas vendas hoje</h2>
+<button class="mt-4 bg-surface-container-lowest text-primary px-5 py-3 rounded-full font-bold text-sm w-fit flex items-center gap-2 hover:bg-surface-container-high transition-all active:scale-95">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+                    Criar Nova Oferta
+                </button>
+</div>
+<!-- Decorative circle -->
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
+</div>
+<!-- Filters / Status Overview -->
+<div class="flex gap-3 mb-6 overflow-x-auto pb-2 no-scrollbar">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap">Todas (12)</button>
+<button class="bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-surface-container-high transition-colors">Ativas (8)</button>
+<button class="bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-surface-container-high transition-colors">Programadas (2)</button>
+<button class="bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-surface-container-high transition-colors">Inativas (2)</button>
+</div>
+<!-- Offers List -->
+<div class="space-y-4">
+<!-- Offer Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex gap-4 transition-all active:bg-surface-container-high relative">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
+<img alt="Produto 1" class="w-full h-full object-cover" data-alt="professional food photography of a gourmet cheeseburger with melting cheese and fresh greens on a rustic wooden board" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjLugw68WVCsyKWyDmNrm99AxbHBlQBcBRkkD_GHEbiTeNu0ZXec09UhqoxXSIzAol_yihuWAO06-o05JEFfeNAfAl-x5TRc3Hz3VZ0fWunAXumCg27E5fivV6JR56hFtpwSD59kpfmZbcSHefDLIhU-O8oMkUDZFhFV9S73NvEmuxn84rb1E7_mm4I5RSRmochU1e0Zi7dRlMk8aI1MOA_-Wl4dNY6UKi0AZ5Vld8yFZDxa5a4BJk3Bnn2ciq6XW2zytV9O9UUbuP"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline font-bold text-on-surface text-base leading-tight">Combo Burger Artesanal Duo</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-xl">more_vert</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-primary font-extrabold text-lg">30% OFF</span>
+<span class="text-outline text-xs line-through">R$ 89,90</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[#00C2D1]"></span>
+<span class="text-[10px] font-label font-bold uppercase text-tertiary">Ativa</span>
+</div>
+<div class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">calendar_today</span>
+                            Expira em 12/10
+                        </div>
+</div>
+</div>
+</div>
+<!-- Offer Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex gap-4 transition-all active:bg-surface-container-high">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
+<img alt="Produto 2" class="w-full h-full object-cover" data-alt="overhead view of a vibrant açai bowl topped with banana slices, granola, and honey drizzle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0ZqZFq8IiWGSq6BaOFAgVAtgOulWCvgRnVA0HfW1kP-OsNrx1g0UqxMXkKBAreEt94aWEH9_L_S1jCd1jbNRh0R1yGuylFv0AAg4F9MiKSwq5BMhJ4p0tDMegWswKqMpxziqyi9pb3GljvRE4sZqPAqDZGLbPrHO2_QgM3Dgnifx3pZPAJmUNZslw2xBgyc4QVmtksl_8YdDLGeor_HfXY07jwUEtgbLHEJT5ntlq-bzqCbehuJeZw-UtyR3wlqr86Fg6g1j7Kqgy"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline font-bold text-on-surface text-base leading-tight">Açai Premium 500ml</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-xl">more_vert</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-primary font-extrabold text-lg">R$ 15,90</span>
+<span class="text-on-surface-variant text-[10px] font-semibold">Preço Fixo</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[#00C2D1]"></span>
+<span class="text-[10px] font-label font-bold uppercase text-tertiary">Ativa</span>
+</div>
+<div class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">calendar_today</span>
+                            Expira em 05/11
+                        </div>
+</div>
+</div>
+</div>
+<!-- Offer Card 3 (Inactive) -->
+<div class="bg-surface-container-lowest opacity-75 grayscale-[0.5] rounded-xl p-4 flex gap-4 transition-all active:bg-surface-container-high">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
+<img alt="Produto 3" class="w-full h-full object-cover" data-alt="close up of several colorful glazed donuts arranged on a white tray with bright daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC8F7RZ4WEs37ZTqhjZ5T7S6-KqLgtDekGUCFBrZhIx2896Yeye8UA0bGCN4ft1muEMGYWBT5Jm3fVkJ_yagqGam4Ajx_ZLh9Ltl4MYi48GFTDUG0koYnIJLF2lZlUclikMXJ5anmEJ7Qkeuqo3EcvLRNok_PaY4sXbyTgOzrr-c9NkfMIi7xtvw7pQoYee5QhocR6cVpt11yt9sfUTuQGub9PsDgibQOWBqiOt5mudWtSF_esDMTnTwMhV9dL02RsK-q2xk7pM5ii"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline font-bold text-on-surface text-base leading-tight">Donut Clássico Pack x4</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-xl">more_vert</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-outline font-extrabold text-lg">20% OFF</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="text-[10px] font-label font-bold uppercase text-outline">Inativa</span>
+</div>
+<div class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">history</span>
+                            Encerrada em 30/09
+                        </div>
+</div>
+</div>
+</div>
+<!-- Offer Card 4 -->
+<div class="bg-surface-container-lowest rounded-xl p-4 flex gap-4 transition-all active:bg-surface-container-high relative">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
+<img alt="Produto 4" class="w-full h-full object-cover" data-alt="close up of an iced coffee with cream swirling in a clear glass on a sunlit marble table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqPiFu0yhLe9ZMkxF4UcvVCGonX_VD3KwNmuNHsbgWrYI4i8aJjEYGQYICEJNeW1mf_lh030lU0IxOZ1Zy9GIfavkZEOu1q-1qNAWsKPn8wth0mwreboUBjUfvdDpnLQSo-a8Mq_MODzq-SOHzdOu4tK5477GAI3x26VMDCJD9n_XEnmdVtMwJR5wi46h0LU8giqJkJROLOWVpRrcjjM3ZVz-L9QrO0AIF_4ll1NEaFhwg-mjXZXF89STww0FAocQQKvVCkTQZs1GA"/>
+</div>
+<div class="flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-headline font-bold text-on-surface text-base leading-tight">Frapê de Caramelo G</h3>
+<span class="material-symbols-outlined text-on-surface-variant text-xl">more_vert</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-primary font-extrabold text-lg">Ganhe 1</span>
+<span class="text-on-surface-variant text-[10px] font-semibold">Leve 2</span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[#00C2D1]"></span>
+<span class="text-[10px] font-label font-bold uppercase text-tertiary">Ativa</span>
+</div>
+<div class="text-[10px] text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">calendar_today</span>
+                            Expira em 15/10
+                        </div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-[0_8px_32px_rgba(176,0,118,0.3)] flex items-center justify-center active:scale-90 transition-transform z-40 lg:hidden">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-3 bg-[#ffffff] dark:bg-slate-900 border-t border-[#00666e]/20 shadow-[0_-4px_20px_rgba(11,31,58,0.06)] rounded-t-[1.5rem] lg:hidden">
+<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out active:bg-[#f8f5fe]" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#E10098] scale-90 duration-150 ease-in-out active:bg-[#f8f5fe] after:content-[''] after:w-1 after:h-1 after:bg-[#E10098] after:rounded-full after:mt-1" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Vendas</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out active:bg-[#f8f5fe]" href="#">
+<div class="bg-primary text-on-primary p-3 rounded-full -mt-8 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined !text-2xl" data-icon="qr_code_scanner" style="font-variation-settings: 'FILL' 1;">qr_code_scanner</span>
+</div>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Validar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out active:bg-[#f8f5fe]" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Métricas</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out active:bg-[#f8f5fe]" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Perfil</span>
+</a>
+</nav>
+</body></html>

@@ -125,6 +125,13 @@ class EmpresaAPIController extends Controller
                 DB::raw('MAX(pontos.created_at) as ultima_visita')
             )
             ->where('pontos.empresa_id', $empresa->id)
+            ->when($request->filled('busca'), function ($q) use ($request) {
+                $term = '%' . $request->busca . '%';
+                $q->where(function ($sub) use ($term) {
+                    $sub->where('users.name', 'ILIKE', $term)
+                        ->orWhere('users.email', 'ILIKE', $term);
+                });
+            })
             ->groupBy('users.id', 'users.name', 'users.email', 'users.telefone')
             ->orderByDesc('total_ganho')
             ->paginate(20);
@@ -170,7 +177,11 @@ class EmpresaAPIController extends Controller
             'titulo' => 'required|string|max:255',
             'descricao' => 'required|string',
             'desconto' => 'required|numeric|min:0|max:100',
-            'imagem' => 'nullable|string'
+            'ativo' => 'boolean',
+            'data_inicio' => 'nullable|date',
+            'validade' => 'nullable|date|after_or_equal:data_inicio',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'imagem_url' => 'nullable|url'
         ]);
         
         $user = Auth::user();
@@ -183,15 +194,23 @@ class EmpresaAPIController extends Controller
             ], 404);
         }
         
+        $imagePath = 'promocao_default.jpg';
+        if ($request->hasFile('imagem')) {
+            $imagePath = '/storage/' . $request->file('imagem')->store('promocoes', 'public');
+        } elseif ($request->filled('imagem_url')) {
+            $imagePath = $request->imagem_url;
+        }
+
         $promocaoId = DB::table('promocoes')->insertGetId([
             'empresa_id' => $empresa->id,
             'titulo' => $request->titulo,
             'descricao' => $request->descricao,
             'desconto' => $request->desconto,
-            'imagem' => $request->imagem ?? 'promocao_default.jpg',
-            'data_inicio' => now(),
-            'ativo' => true,
-            'status' => 'ativa',
+            'imagem' => $imagePath,
+            'data_inicio' => $request->input('data_inicio', now()),
+            'validade' => $request->input('validade'),
+            'ativo' => $request->boolean('ativo', true),
+            'status' => $request->boolean('ativo', true) ? 'ativa' : 'pausada',
             'visualizacoes' => 0,
             'resgates' => 0,
             'usos' => 0,
@@ -217,7 +236,11 @@ class EmpresaAPIController extends Controller
             'titulo' => 'sometimes|string|max:255',
             'descricao' => 'sometimes|string',
             'desconto' => 'sometimes|numeric|min:0|max:100',
-            'ativo' => 'sometimes|boolean'
+            'ativo' => 'sometimes|boolean',
+            'data_inicio' => 'nullable|date',
+            'validade' => 'nullable|date|after_or_equal:data_inicio',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'imagem_url' => 'nullable|url'
         ]);
         
         $user = Auth::user();
@@ -243,7 +266,13 @@ class EmpresaAPIController extends Controller
             ], 404);
         }
         
-        $updateData = $request->only(['titulo', 'descricao', 'desconto', 'ativo']);
+        $updateData = $request->only(['titulo', 'descricao', 'desconto', 'ativo', 'data_inicio', 'validade']);
+        if ($request->hasFile('imagem')) {
+            $path = '/storage/' . $request->file('imagem')->store('promocoes', 'public');
+            $updateData['imagem'] = $path;
+        } elseif ($request->filled('imagem_url')) {
+            $updateData['imagem'] = $request->imagem_url;
+        }
         $updateData['updated_at'] = now();
         
         DB::table('promocoes')
@@ -257,6 +286,68 @@ class EmpresaAPIController extends Controller
             'message' => 'Promoção atualizada com sucesso!',
             'data' => $promocaoAtualizada
         ]);
+    }
+
+    /**
+     * Pausar promoção
+     */
+    public function pausarPromocao($id)
+    {
+        $user = Auth::user();
+        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
+        if (!$empresa) {
+            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+        }
+
+        $promocao = DB::table('promocoes')
+            ->where('id', $id)
+            ->where('empresa_id', $empresa->id)
+            ->first();
+
+        if (!$promocao) {
+            return response()->json(['success' => false, 'message' => 'Promoção não encontrada'], 404);
+        }
+
+        DB::table('promocoes')
+            ->where('id', $id)
+            ->update([
+                'ativo' => false,
+                'status' => 'pausada',
+                'updated_at' => now()
+            ]);
+
+        return response()->json(['success' => true, 'message' => 'Promoção pausada.']);
+    }
+
+    /**
+     * Ativar promoção
+     */
+    public function ativarPromocao($id)
+    {
+        $user = Auth::user();
+        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
+        if (!$empresa) {
+            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+        }
+
+        $promocao = DB::table('promocoes')
+            ->where('id', $id)
+            ->where('empresa_id', $empresa->id)
+            ->first();
+
+        if (!$promocao) {
+            return response()->json(['success' => false, 'message' => 'Promoção não encontrada'], 404);
+        }
+
+        DB::table('promocoes')
+            ->where('id', $id)
+            ->update([
+                'ativo' => true,
+                'status' => 'ativa',
+                'updated_at' => now()
+            ]);
+
+        return response()->json(['success' => true, 'message' => 'Promoção ativada.']);
     }
     
     /**
@@ -535,5 +626,50 @@ class EmpresaAPIController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Histórico detalhado de resgates da empresa
+     */
+    public function resgates(Request $request)
+    {
+        $user = Auth::user();
+        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
+        if (!$empresa) {
+            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+        }
+
+        $status = $request->input('status');
+        $dataInicio = $request->input('data_inicio');
+        $dataFim = $request->input('data_fim');
+
+        $query = DB::table('cupons as c')
+            ->leftJoin('users as u', 'u.id', '=', 'c.user_id')
+            ->leftJoin('promocoes as p', 'p.id', '=', 'c.promocao_id')
+            ->select(
+                'c.id',
+                'c.codigo',
+                'c.status',
+                'c.created_at',
+                'c.data_uso',
+                'u.name as cliente',
+                'u.email as cliente_email',
+                'p.titulo as promocao'
+            )
+            ->where('p.empresa_id', $empresa->id);
+
+        if ($status) {
+            $query->where('c.status', $status);
+        }
+        if ($dataInicio) {
+            $query->whereDate('c.created_at', '>=', $dataInicio);
+        }
+        if ($dataFim) {
+            $query->whereDate('c.created_at', '<=', $dataFim);
+        }
+
+        $resgates = $query->orderByDesc('c.created_at')->paginate(20);
+
+        return response()->json(['success' => true, 'data' => $resgates]);
     }
 }

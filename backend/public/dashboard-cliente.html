@@ -1,814 +1,267 @@
 ﻿<!DOCTYPE html>
 
-<html lang="pt-BR">
-<head>
+<html class="light" lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Dashboard Cliente - Tem de Tudo</title>
-<meta content="Painel do cliente Tem de Tudo" name="description"/>
-<meta content="#e10098" name="theme-color"/>
-<meta content="yes" name="mobile-web-app-capable"/>
-<meta content="yes" name="apple-mobile-web-app-capable"/>
-<meta content="default" name="apple-mobile-web-app-status-bar-style"/>
-<meta content="Tem de Tudo" name="apple-mobile-web-app-title"/>
-<link href="manifest.json" rel="manifest"/>
-<link href="img/icon-192.png" rel="apple-touch-icon"/>
-<link href="img/icon-32.png" rel="icon" sizes="32x32" type="image/png"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
-<link href="/css/style.css?v=20260329" rel="stylesheet"/>
-<script src="js/config.js"></script>
-<script src="js/auth-guard.js"></script>
-</head>
-<body>
-<!-- HEADER -->
-<div class="header">
-<div class="header-top">
-<div class="logo">
-<i class="fas fa-shopping-bag"></i> Tem de Tudo
-        </div>
-<button class="logout-btn" onclick="logout()">
-<i class="fas fa-sign-out-alt"></i>
-            Sair
-        </button>
-</div>
-<div class="welcome">
-<h1 id="welcomeText">Olá, Cliente!</h1>
-<p>Bem-vindo ao seu painel pessoal</p>
-</div>
-</div>
-<!-- CONTAINER PRINCIPAL -->
-<div class="container">
-<!-- CARD DE PONTOS -->
-<div class="points-card">
-<div class="points-title">
-<i class="fas fa-star"></i>
-            Seus Pontos Tem de Tudo
-        </div>
-<div class="points-value" id="pointsValue">180</div>
-<div class="points-label">pontos disponíveis</div>
-<div class="points-actions">
-<a class="btn btn-white" href="app-meu-qrcode.html">
-<i class="fas fa-qrcode"></i>
-                Meu QR Code
-            </a>
-<a class="btn btn-outline" href="app-promocoes.html">
-<i class="fas fa-gift"></i>
-                Ver Promoções
-            </a>
-</div>
-</div>
-<!-- ESTATÍSTICAS -->
-<div class="stats">
-<div class="stat-card">
-<div class="stat-icon">
-<i class="fas fa-shopping-bag"></i>
-</div>
-<div class="stat-value">15</div>
-<div class="stat-label">Compras Realizadas</div>
-</div>
-<div class="stat-card">
-<div class="stat-icon tdt-inline-8db838d5">
-<i class="fas fa-dollar-sign"></i>
-</div>
-<div class="stat-value">R$ 890</div>
-<div class="stat-label">Total Economizado</div>
-</div>
-<div class="stat-card">
-<div class="stat-icon tdt-inline-95238fb8">
-<i class="fas fa-store"></i>
-</div>
-<div class="stat-value">5</div>
-<div class="stat-label">Empresas Diferentes</div>
-</div>
-<div class="stat-card">
-<div class="stat-icon tdt-inline-21aab77f">
-<i class="fas fa-crown"></i>
-</div>
-<div class="stat-value">Gold</div>
-<div class="stat-label">Seu Nível</div>
-</div>
-</div>
-<!-- AÇÕES RÁPIDAS -->
-<div class="section">
-<h2 class="section-title">
-<i class="fas fa-rocket"></i>
-            Ações Rápidas
-        </h2>
-<div class="actions-grid">
-<a class="action-card" href="app-empresas.html">
-<div class="action-icon">
-<i class="fas fa-search"></i>
-</div>
-<div class="action-content">
-<h3>Explorar Empresas</h3>
-<p>Descubra empresas parceiras próximas a você</p>
-</div>
-</a>
-<a class="action-card" href="app-promocoes.html">
-<div class="action-icon tdt-inline-8db838d5">
-<i class="fas fa-percent"></i>
-</div>
-<div class="action-content">
-<h3>Ver Promoções</h3>
-<p>Ofertas exclusivas disponíveis agora</p>
-</div>
-</a>
-<a class="action-card" href="app-meu-qrcode.html">
-<div class="action-icon tdt-inline-95238fb8">
-<i class="fas fa-qrcode"></i>
-</div>
-<div class="action-content">
-<h3>Meu QR Code</h3>
-<p>Mostre na loja para acumular pontos</p>
-</div>
-</a>
-<a class="action-card" href="app-extrato.html">
-<div class="action-icon tdt-inline-21aab77f">
-<i class="fas fa-history"></i>
-</div>
-<div class="action-content">
-<h3>Histórico</h3>
-<p>Veja suas compras e pontos acumulados</p>
-</div>
-</a>
-</div>
-</div>
-<!-- OFERTAS EM DESTAQUE -->
-<div class="section">
-<h2 class="section-title">
-<i class="fas fa-fire"></i>
-            Ofertas Imperdíveis
-        </h2>
-<div class="offers-grid">
-<div class="offer-card">
-<div class="offer-image">
-<i class="fas fa-utensils"></i>
-</div>
-<div class="offer-content">
-<h3 class="offer-title">10% OFF Almoço</h3>
-<p class="offer-description">Desconto especial no Restaurante Sabor da Casa</p>
-<div class="offer-price">Precisa: 50 pontos</div>
-<button class="btn-offer" onclick="usePromotion('rest1')">Usar Promoção</button>
-</div>
-</div>
-<div class="offer-card">
-<div class="offer-image tdt-inline-24a7f2e2">
-<i class="fas fa-pills"></i>
-</div>
-<div class="offer-content">
-<h3 class="offer-title">R$ 5 OFF Medicamentos</h3>
-<p class="offer-description">Desconto na Farmácia São João</p>
-<div class="offer-price">Precisa: 25 pontos</div>
-<button class="btn-offer" onclick="usePromotion('farm1')">Usar Promoção</button>
-</div>
-</div>
-<div class="offer-card">
-<div class="offer-image tdt-inline-d7b92580">
-<i class="fas fa-gas-pump"></i>
-</div>
-<div class="offer-content">
-<h3 class="offer-title">5% OFF Combustível</h3>
-<p class="offer-description">Desconto no Posto Energia</p>
-<div class="offer-price">Precisa: 100 pontos</div>
-<button class="btn-offer" onclick="usePromotion('gas1')">Usar Promoção</button>
-</div>
-</div>
-</div>
-</div>
-</div>
-<script>
-// Carregamento inicial
-window.addEventListener('DOMContentLoaded', function() {
-    initializeDashboard();
-});
-
-function initializeDashboard() {
-    loadUserData();
-    loadUserPoints();
-}
-
-function loadUserData() {
-    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    if (userData.name) {
-        document.getElementById('welcomeText').textContent = `Olá, ${userData.name}!`;
-    }
-}
-
-function loadUserPoints() {
-    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    const points = userData.pontos || 180; // Fallback para Maria com 180 pontos
-    document.getElementById('pointsValue').textContent = points;
-}
-
-function logout() {
-    if (confirm('Tem certeza que deseja sair?')) {
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = 'entrar.html';
-    }
-}
-
-function usePromotion(promoId) {
-    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    const currentPoints = userData.pontos || 180;
-    
-    // Definir pontos necessários para cada promoção
-    const promotions = {
-        'rest1': { name: '10% OFF Almoço', points: 50 },
-        'farm1': { name: 'R$ 5 OFF Medicamentos', points: 25 },
-        'gas1': { name: '5% OFF Combustível', points: 100 }
-    };
-    
-    const promo = promotions[promoId];
-    if (!promo) return;
-    
-    if (currentPoints >= promo.points) {
-        if (confirm(`Usar ${promo.points} pontos para "${promo.name}"?`)) {
-            // Atualizar pontos
-            userData.pontos = currentPoints - promo.points;
-            localStorage.setItem('userData', JSON.stringify(userData));
-            
-            // Atualizar display
-            document.getElementById('pointsValue').textContent = userData.pontos;
-            
-            alert(`🎉 Promoção "${promo.name}" ativada com sucesso! Você agora tem ${userData.pontos} pontos.`);
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;family=Poppins:wght@600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
-    } else {
-        alert(`❌ Você precisa de ${promo.points} pontos para usar esta promoção. Você tem apenas ${currentPoints} pontos.`);
+        .glass-card {
+            background: rgba(222, 219, 231, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #7A2C8F, #E10098);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .bg-brand-gradient {
+            background: linear-gradient(135deg, #003B49 0%, #7A2C8F 50%, #E10098 100%);
+        }
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f8f5fe;
+            color: #2e2e34;
+        }
+        h1, h2, h3, .font-headline {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-surface-variant": "#5b5b62",
+                "tertiary": "#00666e",
+                "tertiary-fixed-dim": "#3ed9e9",
+                "primary-fixed-dim": "#ff49b3",
+                "surface-tint": "#b00076",
+                "surface-variant": "#dedbe7",
+                "surface-bright": "#f8f5fe",
+                "error-container": "#f74b6d",
+                "inverse-primary": "#ff40b2",
+                "on-primary-fixed": "#000000",
+                "secondary-fixed": "#f7bfff",
+                "surface": "#f8f5fe",
+                "surface-dim": "#d5d3df",
+                "primary-fixed": "#ff6bbb",
+                "background": "#f8f5fe",
+                "on-error-container": "#510017",
+                "on-tertiary-fixed-variant": "#005c63",
+                "on-secondary-fixed": "#5a0371",
+                "on-primary": "#ffeff3",
+                "on-secondary-fixed-variant": "#7b2d90",
+                "error": "#b41340",
+                "secondary-dim": "#7a2c8f",
+                "on-primary-fixed-variant": "#5b003b",
+                "surface-container-highest": "#dedbe7",
+                "surface-container-high": "#e4e1ec",
+                "surface-container": "#e9e7f1",
+                "tertiary-fixed": "#52e8f7",
+                "secondary-container": "#f7bfff",
+                "error-dim": "#a70138",
+                "on-tertiary": "#d2faff",
+                "secondary": "#87399c",
+                "on-tertiary-fixed": "#003d42",
+                "primary-container": "#ff6bbb",
+                "on-error": "#ffefef",
+                "tertiary-container": "#52e8f7",
+                "outline-variant": "#aeacb4",
+                "on-surface": "#2e2e34",
+                "inverse-surface": "#0d0e13",
+                "surface-container-low": "#f2eff9",
+                "tertiary-dim": "#005960",
+                "outline": "#77767d",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary": "#ffeefd",
+                "primary-dim": "#9b0067",
+                "on-tertiary-container": "#005158",
+                "on-secondary-container": "#712286",
+                "inverse-on-surface": "#9e9ca4",
+                "secondary-fixed-dim": "#f2aaff",
+                "on-primary-container": "#4a002f",
+                "primary": "#b00076",
+                "on-background": "#2e2e34"
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
     }
-}
-</script>
-</body>
-</html>
-<body>
-<div class="client-dashboard">
-<!-- Dashboard Header -->
-<div class="dashboard-header">
-<div class="header-top">
-<div class="logo-section">
-<img alt="Tem de Tudo" class="header-logo" src="logo.svg"/>
+  </style>
+  </head>
+<body data-page="meus_pontos" class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-[#f8f5fe] dark:bg-slate-950 flex justify-between items-center w-full px-6 py-4 max-w-md mx-auto sticky top-0 z-40">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up portrait of a smiling young professional man with a friendly expression in a bright studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsdPA8oh34rmqV8t6drM0zkp_KhqeUx3mDRMwRf5HDyOf0ySGxn4f1bDslt0EoOHlqgQ_kO8vRtPvT3fPYp042qb7Q2lQPDvUxgXWn562WFFzRvQNLJ3rzJXMO6E_5YSqpvIj27oyfetR5qw9TAS0jZp38Msqsxl6pIsSYv3WxA6gOsLRiV2Pd7fm0F0mLUi4ym1rfOWNHHfEAYq83o91_XjnD_EEi4PYiBzn8BvRwjry9GhPnVts-2QCscZiLka8gaM8zLZvy0XrL"/>
 </div>
-<button class="logout-btn" onclick="logout()">
-<i class="fas fa-sign-out-alt"></i>
-<span>Sair</span>
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-lg text-[#2e2e34] dark:text-white">OlÃ¡, Bem-vindo</span>
+</div>
+<button class="text-[#E10098] dark:text-[#E10098] hover:opacity-80 transition-opacity active:scale-95">
+<span class="material-symbols-outlined text-2xl" data-icon="notifications">notifications</span>
 </button>
+</header>
+<main class="max-w-md mx-auto px-6 pt-2">
+<!-- Main Points Card -->
+<section class="bg-brand-gradient rounded-2xl p-6 relative overflow-hidden shadow-xl mb-8">
+<!-- Decorative circle -->
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+<div class="relative z-10 flex flex-col items-center">
+<span class="text-on-primary/80 font-medium text-sm tracking-wide mb-1">Seu saldo</span>
+<h1 class="font-poppins text-5xl font-bold text-white mb-6">1.500 <span class="text-xl font-medium opacity-90">Pontos</span></h1>
+<!-- Status Badge -->
+<div class="glass-card px-4 py-2 rounded-full flex items-center gap-2 mb-8 border border-white/20">
+<span class="material-symbols-outlined text-[#00C2D1]" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-white font-bold text-sm tracking-wider uppercase">NÃ­vel Diamante</span>
 </div>
-<div class="header-content">
-<div class="welcome-section">
-<h1 id="welcomeText">Olá, Cliente!</h1>
-<p>Bem-vindo ao seu painel pessoal</p>
+<!-- Progress Section -->
+<div class="w-full bg-black/20 rounded-2xl p-4 backdrop-blur-sm border border-white/10">
+<div class="flex justify-between items-end mb-3">
+<div class="flex flex-col">
+<span class="text-white/70 text-xs font-semibold uppercase tracking-tighter">PrÃ³ximo nÃ­vel</span>
+<span class="text-white font-bold">Mestre das Vantagens</span>
 </div>
-<div class="user-avatar">
-<i class="fas fa-user"></i>
+<span class="text-white font-poppins font-bold text-lg tracking-tight">85%</span>
+</div>
+<div class="w-full h-2.5 bg-white/20 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-tertiary-fixed-dim to-secondary-fixed rounded-full" style="width: 85%"></div>
+</div>
+<p class="text-white/60 text-[10px] mt-3 leading-tight italic">Faltam apenas 250 pontos para vocÃª desbloquear o Cashback de 10%!</p>
+</div>
+</div>
+</section>
+<!-- Action Button: Gamified -->
+<button class="w-full mb-10 py-4 bg-surface-container-lowest rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.08)] flex items-center justify-between px-6 border-l-4 border-primary group active:scale-[0.98] transition-transform">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</div>
+<div class="text-left">
+<p class="font-bold text-on-surface leading-none mb-1">Como ganhar mais</p>
+<p class="text-on-surface-variant text-xs">Descubra missÃµes e bÃ´nus diÃ¡rios</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Earnings History (Extrato) -->
+<section class="mb-12">
+<div class="flex justify-between items-center mb-6 px-1">
+<h2 class="font-headline font-bold text-xl text-on-surface">Extrato de pontos</h2>
+<button class="text-primary font-bold text-sm hover:underline">Ver tudo</button>
+</div>
+<div class="space-y-4">
+<!-- Transaction Item 1 -->
+<div class="flex items-center justify-between bg-surface-container-low p-4 rounded-xl transition-colors hover:bg-surface-container">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="shopping_bag">shopping_bag</span>
+</div>
+<div>
+<p class="font-bold text-sm text-on-surface">Supermercado Silva</p>
+<p class="text-on-surface-variant text-[10px] uppercase font-semibold">12 Out 2023 â€¢ 14:30</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-poppins font-bold text-tertiary">+150</p>
+<p class="text-[10px] text-outline font-medium">Pontos</p>
+</div>
+</div>
+<!-- Transaction Item 2 -->
+<div class="flex items-center justify-between bg-surface-container-low p-4 rounded-xl transition-colors hover:bg-surface-container">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary" data-icon="restaurant">restaurant</span>
+</div>
+<div>
+<p class="font-bold text-sm text-on-surface">Pizzaria Napolitana</p>
+<p class="text-on-surface-variant text-[10px] uppercase font-semibold">10 Out 2023 â€¢ 21:15</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-poppins font-bold text-tertiary">+85</p>
+<p class="text-[10px] text-outline font-medium">Pontos</p>
+</div>
+</div>
+<!-- Transaction Item 3 (Redemption) -->
+<div class="flex items-center justify-between bg-surface-container-low p-4 rounded-xl transition-colors hover:bg-surface-container">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-error" data-icon="redeem">redeem</span>
+</div>
+<div>
+<p class="font-bold text-sm text-on-surface">Resgate de Voucher</p>
+<p class="text-on-surface-variant text-[10px] uppercase font-semibold">05 Out 2023 â€¢ 09:45</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-poppins font-bold text-error">-500</p>
+<p class="text-[10px] text-outline font-medium">Resgatado</p>
 </div>
 </div>
 </div>
-<!-- Dashboard Container -->
-<div class="dashboard-container">
-<!-- Points Card -->
-<div class="points-card fade-in">
-<div class="points-header">
-<div class="points-info">
-<div class="points-title">
-<i class="fas fa-star"></i>
-                        Seus Pontos Tem de Tudo
-                    </div>
-<div class="points-value" id="pointsValue">1,250</div>
-<div class="points-subtitle">pontos disponíveis para usar</div>
+</section>
+<!-- Partners Bento Section -->
+<section class="mb-10">
+<h2 class="font-headline font-bold text-xl text-on-surface mb-6 px-1">Turbine seus pontos</h2>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-highest rounded-2xl p-5 flex flex-col gap-4 aspect-square">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary" data-icon="local_gas_station">local_gas_station</span>
 </div>
-<a class="use-points-btn" href="app-pontos.html">
-<i class="fas fa-gift"></i>
-<span>Usar Pontos</span>
+<div>
+<h3 class="font-bold text-sm leading-tight">Postos Shell</h3>
+<p class="text-xs text-on-surface-variant mt-1">AtÃ© 3x mais pontos no App</p>
+</div>
+</div>
+<div class="bg-tertiary/10 rounded-2xl p-5 flex flex-col gap-4 aspect-square border border-tertiary/10">
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-tertiary" data-icon="health_and_safety">health_and_safety</span>
+</div>
+<div>
+<h3 class="font-bold text-sm leading-tight text-on-tertiary-container">FarmÃ¡cias</h3>
+<p class="text-xs text-on-tertiary-fixed-variant mt-1">Ganhe 5 pontos a cada R$ 1</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-xl z-50 rounded-t-[1.5rem] shadow-[0_-8px_32px_rgba(11,31,58,0.08)] border-t border-[#00666e]/20">
+<a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#7A2C8F] transition-colors scale-90 active:transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider mt-1">InÃ­cio</span>
 </a>
-</div>
-<div class="points-actions">
-<a class="points-action" href="app-qrcode.html">
-<i class="fas fa-qrcode"></i>
-<span>Mostrar QR Code</span>
+<a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#7A2C8F] transition-colors scale-90 active:transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider mt-1">Parceiros</span>
 </a>
-<a class="points-action" href="app-extrato.html">
-<i class="fas fa-history"></i>
-<span>Ver Extrato</span>
+<a class="flex flex-col items-center justify-center text-[#E10098] relative after:content-[''] after:w-1 after:h-1 after:bg-[#E10098] after:rounded-full after:mt-1 scale-90 active:transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider mt-1">Pontos</span>
 </a>
-</div>
-</div>
-<!-- Stats Overview -->
-<div class="stats-overview">
-<div class="mini-stat fade-in animate-delay-1">
-<div class="mini-stat-icon">
-<i class="fas fa-shopping-bag"></i>
-</div>
-<div class="mini-stat-content">
-<div class="mini-stat-value">47</div>
-<div class="mini-stat-label">Compras</div>
-</div>
-</div>
-<div class="mini-stat fade-in animate-delay-2">
-<div class="mini-stat-icon">
-<i class="fas fa-credit-card"></i>
-</div>
-<div class="mini-stat-content">
-<div class="mini-stat-value">R$ 2.357</div>
-<div class="mini-stat-label">Valor Gasto</div>
-</div>
-</div>
-<div class="mini-stat fade-in animate-delay-3">
-<div class="mini-stat-icon empresa">
-<i class="fas fa-store"></i>
-</div>
-<div class="mini-stat-content">
-<div class="mini-stat-value">12</div>
-<div class="mini-stat-label">Empresas</div>
-</div>
-</div>
-<div class="mini-stat fade-in animate-delay-4">
-<div class="mini-stat-icon vip">
-<i class="fas fa-crown"></i>
-</div>
-<div class="mini-stat-content">
-<div class="mini-stat-value">Gold</div>
-<div class="mini-stat-label">Status</div>
-</div>
-</div>
-</div>
-<!-- Quick Actions -->
-<div class="dashboard-section">
-<h2 class="section-title fade-in">
-<i class="fas fa-rocket"></i>
-                Ações Rápidas
-            </h2>
-<div class="actions-grid">
-<a class="action-card fade-in animate-delay-1" href="app-empresas.html">
-<div class="action-icon">
-<i class="fas fa-search"></i>
-</div>
-<div class="action-content">
-<h3>Explorar</h3>
-<p>Descubra empresas parceiras e ofertas exclusivas</p>
-</div>
-<div class="action-arrow">
-<i class="fas fa-chevron-right"></i>
-</div>
+<a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#7A2C8F] transition-colors scale-90 active:transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="redeem">redeem</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider mt-1">PrÃªmios</span>
 </a>
-<a class="action-card fade-in animate-delay-2" href="app-pontos.html">
-<div class="action-icon">
-<i class="fas fa-star"></i>
-</div>
-<div class="action-content">
-<h3>Meus Pontos</h3>
-<p>Gerencie e use seus pontos acumulados</p>
-</div>
-<div class="action-arrow">
-<i class="fas fa-chevron-right"></i>
-</div>
+<a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#7A2C8F] transition-colors scale-90 active:transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider mt-1">Perfil</span>
 </a>
-<a class="action-card fade-in animate-delay-3" href="app-qrcode.html">
-<div class="action-icon">
-<i class="fas fa-qrcode"></i>
-</div>
-<div class="action-content">
-<h3>Meu QR Code</h3>
-<p>Mostre na loja para acumular pontos</p>
-</div>
-<div class="action-arrow">
-<i class="fas fa-chevron-right"></i>
-</div>
-</a>
-<a class="action-card fade-in animate-delay-4" href="app-cupons.html">
-<div class="action-icon">
-<i class="fas fa-ticket-alt"></i>
-</div>
-<div class="action-content">
-<h3>Meus Cupons</h3>
-<p>Seus cupons de desconto disponíveis</p>
-</div>
-<div class="action-arrow">
-<i class="fas fa-chevron-right"></i>
-</div>
-</a>
-<a class="action-card fade-in animate-delay-1" href="app-cashback.html">
-<div class="action-icon tdt-inline-8db838d5">
-<i class="fas fa-hand-holding-usd"></i>
-</div>
-<div class="action-content">
-<h3>Cashback</h3>
-<p>Resgate dinheiro de volta nas compras</p>
-</div>
-<div class="action-arrow">
-<i class="fas fa-chevron-right"></i>
-</div>
-</a>
-<a class="action-card fade-in animate-delay-2" href="app-indicar.html">
-<div class="action-icon tdt-inline-21aab77f">
-<i class="fas fa-user-plus"></i>
-</div>
-<div class="action-content">
-<h3>Indicar Amigos</h3>
-<p>Ganhe pontos indicando amigos</p>
-</div>
-<div class="action-arrow">
-<i class="fas fa-chevron-right"></i>
-</div>
-</a>
-</div>
-</div>
-<!-- Ofertas Especiais -->
-<div class="dashboard-section">
-<h2 class="section-title fade-in">
-<i class="fas fa-fire"></i>
-                Ofertas Imperdíveis
-            </h2>
-<div class="offers-carousel">
-<div class="offer-card fade-in animate-delay-1">
-<div class="offer-badge">-50%</div>
-<div class="offer-content">
-<h3>Pizza Hut</h3>
-<p>50% OFF em pizzas grandes</p>
-<div class="offer-validity">Válido até 28/02</div>
-</div>
-<a class="offer-btn" href="app-oferta-detalhe.html?id=1">
-<span>Resgatar</span>
-<i class="fas fa-arrow-right"></i>
-</a>
-</div>
-<div class="offer-card fade-in animate-delay-2">
-<div class="offer-badge">2x</div>
-<div class="offer-content">
-<h3>Farmácia Popular</h3>
-<p>Pontos em dobro em medicamentos</p>
-<div class="offer-validity">Válido até 05/03</div>
-</div>
-<a class="offer-btn" href="app-oferta-detalhe.html?id=2">
-<span>Ativar</span>
-<i class="fas fa-arrow-right"></i>
-</a>
-</div>
-<div class="offer-card fade-in animate-delay-3">
-<div class="offer-badge">R$20</div>
-<div class="offer-content">
-<h3>Uber</h3>
-<p>R$ 20 OFF na primeira corrida</p>
-<div class="offer-validity">Novo usuário</div>
-</div>
-<a class="offer-btn" href="app-oferta-detalhe.html?id=3">
-<span>Usar</span>
-<i class="fas fa-arrow-right"></i>
-</a>
-</div>
-</div>
-</div>
-<!-- Histórico Recente -->
-<div class="dashboard-section">
-<h2 class="section-title fade-in">
-<i class="fas fa-history"></i>
-                Atividades Recentes
-                <a class="section-link" href="app-historico-completo.html">Ver todos</a>
-</h2>
-<div class="activity-list">
-<div class="activity-item fade-in animate-delay-1">
-<div class="activity-icon gained">
-<i class="fas fa-plus"></i>
-</div>
-<div class="activity-content">
-<div class="activity-title">Pontos ganhos - McDonald's</div>
-<div class="activity-subtitle">Hoje, 14:32</div>
-</div>
-<div class="activity-value positive">+120 pts</div>
-</div>
-<div class="activity-item fade-in animate-delay-2">
-<div class="activity-icon used">
-<i class="fas fa-minus"></i>
-</div>
-<div class="activity-content">
-<div class="activity-title">Cupom resgatado - Subway</div>
-<div class="activity-subtitle">Ontem, 19:15</div>
-</div>
-<div class="activity-value negative">-500 pts</div>
-</div>
-<div class="activity-item fade-in animate-delay-3">
-<div class="activity-icon cashback">
-<i class="fas fa-hand-holding-usd"></i>
-</div>
-<div class="activity-content">
-<div class="activity-title">Cashback recebido - iFood</div>
-<div class="activity-subtitle">19/02, 20:45</div>
-</div>
-<div class="activity-value positive">R$ 5,00</div>
-</div>
-</div>
-</div>
-<!-- Status VIP -->
-<div class="dashboard-section">
-<h2 class="section-title fade-in">
-<i class="fas fa-crown"></i>
-                Status VIP Gold
-            </h2>
-<div class="vip-status-card fade-in">
-<div class="vip-header">
-<div class="vip-info">
-<div class="vip-level">GOLD</div>
-<div class="vip-description">Próximo nível: Platinum (em R$ 1.143)</div>
-</div>
-<div class="vip-progress">
-<div class="progress-bar">
-<div class="progress-fill tdt-inline-62c0f8df"></div>
-</div>
-<div class="progress-text">R$ 2.357 / R$ 3.500</div>
-</div>
-</div>
-<div class="vip-benefits">
-<div class="benefit-item">
-<i class="fas fa-percentage"></i>
-<span>5% cashback extra</span>
-</div>
-<div class="benefit-item">
-<i class="fas fa-shipping-fast"></i>
-<span>Frete grátis</span>
-</div>
-<div class="benefit-item">
-<i class="fas fa-birthday-cake"></i>
-<span>Oferta de aniversário</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Notificações -->
-<div class="dashboard-section">
-<h2 class="section-title fade-in">
-<i class="fas fa-bell"></i>
-                Avisos e Notificações
-                <a class="section-link" href="app-notificacoes.html">Ver todas</a>
-</h2>
-<div class="notifications-list">
-<div class="notification-item fade-in animate-delay-1 unread">
-<div class="notification-icon new-offer">
-<i class="fas fa-tag"></i>
-</div>
-<div class="notification-content">
-<div class="notification-title">Nova oferta disponível! 🔥</div>
-<div class="notification-subtitle">Burger King: 30% OFF no combo Whopper</div>
-<div class="notification-time">há 2 horas</div>
-</div>
-</div>
-<div class="notification-item fade-in animate-delay-2">
-<div class="notification-icon points">
-<i class="fas fa-star"></i>
-</div>
-<div class="notification-content">
-<div class="notification-title">Pontos prestes a vencer</div>
-<div class="notification-subtitle">350 pontos vencem em 5 dias</div>
-<div class="notification-time">ontem</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Acesso Rápido - Conta -->
-<div class="dashboard-section">
-<h2 class="section-title fade-in">
-<i class="fas fa-user-cog"></i>
-                Minha Conta
-            </h2>
-<div class="actions-grid">
-<a class="action-card fade-in animate-delay-1" href="app-perfil.html">
-<div class="action-icon">
-<i class="fas fa-user-edit"></i>
-</div>
-<div class="action-content">
-<h3>Meu Perfil</h3>
-<p>Dados pessoais e preferências</p>
-</div>
-<div class="action-arrow">
-<i class="fas fa-chevron-right"></i>
-</div>
-</a>
-<a class="action-card fade-in animate-delay-2" href="app-cartao-fidelidade.html">
-<div class="action-icon tdt-inline-95238fb8">
-<i class="fas fa-id-card"></i>
-</div>
-<div class="action-content">
-<h3>Cartão Fidelidade</h3>
-<p>Seu cartão digital Tem de Tudo</p>
-</div>
-<div class="action-arrow">
-<i class="fas fa-chevron-right"></i>
-</div>
-</a>
-<a class="action-card fade-in animate-delay-3" href="app-configuracoes.html">
-<div class="action-icon">
-<i class="fas fa-cog"></i>
-</div>
-<div class="action-content">
-<h3>Configurações</h3>
-<p>Notificações, privacidade e mais</p>
-</div>
-<div class="action-arrow">
-<i class="fas fa-chevron-right"></i>
-</div>
-</a>
-<a class="action-card fade-in animate-delay-4" href="app-ajuda.html">
-<div class="action-icon tdt-inline-8db838d5">
-<i class="fas fa-headset"></i>
-</div>
-<div class="action-content">
-<h3>Ajuda &amp; Suporte</h3>
-<p>FAQ, chat e contato direto</p>
-</div>
-<div class="action-arrow">
-<i class="fas fa-chevron-right"></i>
-</div>
-</a>
-</div>
-</div>
-</div>
-</div>
-<!-- Bottom Navigation -->
-<div class="bottom-nav">
-<div class="nav-container">
-<a class="nav-item active" href="dashboard-cliente.html">
-<i class="fas fa-home"></i>
-<span>Início</span>
-</a>
-<a class="nav-item" href="app-empresas.html">
-<i class="fas fa-search"></i>
-<span>Explorar</span>
-</a>
-<a class="nav-item" href="app-pontos.html">
-<div class="tdt-inline-c451fdb0">
-<i class="fas fa-star"></i>
-<div class="notification-badge" id="pointsBadge">1.2K</div>
-</div>
-<span>Pontos</span>
-</a>
-<a class="nav-item" href="app-promocoes.html">
-<div class="tdt-inline-c451fdb0">
-<i class="fas fa-tags"></i>
-<div class="notification-badge tdt-inline-0c6847cb">3</div>
-</div>
-<span>Ofertas</span>
-</a>
-<a class="nav-item" href="app-perfil.html">
-<i class="fas fa-bars"></i>
-<span>Menu</span>
-</a>
-</div>
-</div>
-<script>
-// Logout Function
-function logout() {
-    if (confirm('Tem certeza que deseja sair?')) {
-        localStorage.clear();
-        sessionStorage.clear();
-        
-        // Show success notification
-        showNotification('Logout realizado com sucesso!', 'success');
-        
-        setTimeout(() => {
-            window.location.href = '/entrar.html';
-        }, 1000);
-    }
-}
-
-// Show notification
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
-    notification.className = `notification ${type}`;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: var(--vivo-purple);
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: var(--border-radius);
-        font-weight: 600;
-        z-index: 10000;
-        box-shadow: 0 10px 30px rgba(111, 26, 182, 0.3);
-        animation: slideIn 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    `;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
-}
-
-// Initialize Dashboard
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Dashboard cliente carregado com sucesso');
-    
-    // Check authentication - TEMPORARIAMENTE DESABILITADO PARA VISUALIZAção
-    /*
-    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
-    const userType = localStorage.getItem('userType');
-    const userName = localStorage.getItem('userName') || localStorage.getItem('user');
-    
-    if (!token) {
-        showNotification('Sessão expirada. Redirecionando para login...', 'error');
-        setTimeout(() => {
-            window.location.href = '/entrar.html';
-        }, 2000);
-        return;
-    }
-    
-    if (userType && userType !== 'cliente') {
-        showNotification('Área restrita para clientes. Redirecionando...', 'error');
-        setTimeout(() => {
-            window.location.href = '/entrar.html';
-        }, 2000);
-        return;
-    }
-    */
-    
-    // Para visualização do design, simular usuário logado
-    const userName = 'João Silva';
-    
-    // Update welcome text with user name
-    if (userName) {
-        const welcomeText = document.getElementById('welcomeText');
-        let name = userName;
-        
-        if (typeof userName === 'string' && userName.startsWith('{')) {
-            try {
-                const userObj = JSON.parse(userName);
-                name = userObj.name || 'Cliente';
-            } catch (e) {
-                name = userName;
-            }
-        }
-        
-        const firstName = name.split(' ')[0];
-        welcomeText.textContent = `Olá, ${firstName}!`;
-    }
-    
-    // Animate counter for points
-    setTimeout(() => {
-        animateCounter('pointsValue', 1250);
-    }, 500);
-    
-    // Load dashboard data
-    loadDashboardData();
-    
-    // Set up refresh interval
-    setInterval(refreshData, 60000); // Refresh every minute
-});
-
-// Animate number counter
-function animateCounter(elementId, targetValue) {
-    const element = document.getElementById(elementId);
-    const startValue = 0;
-    const duration = 1500;
-    const increment = targetValue / (duration / 16);
-    let currentValue = startValue;
-    
-    const timer = setInterval(() => {
-        currentValue += increment;
-        if (currentValue >= targetValue) {
-            element.textContent = targetValue.toLocaleString();
-            clearInterval(timer);
-        } else {
-            element.textContent = Math.floor(currentValue).toLocaleString();
-        }
-    }, 16);
-}
-
-// Load dashboard data
-async function loadDashboardData() {
-    try {
-        console.log('Carregando dados do dashboard...');
-        // This would typically fetch from API
-        // const response = await fetch('/api/client/dashboard');
-        // const data = await response.json();
-        // updateDashboardStats(data);
-    } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-    }
-}
-
-// Refresh data periodically
-function refreshData() {
-    console.log('Atualizando dados do dashboard...');
-    // loadDashboardData();
-}
-
-// Add CSS animations
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-`;
-document.head.appendChild(style);
-</script>
-</body>
-
+</nav>
+<script src="/js/stitch-app.js"></script></body></html>

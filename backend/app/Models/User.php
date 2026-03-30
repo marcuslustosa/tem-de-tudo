@@ -141,6 +141,28 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * Permissões simplificadas: admin tem todas, demais podem ser expandidas futuramente.
+     */
+    public function hasPermission(string $permission): bool
+    {
+        if ($this->perfil === 'admin') {
+            return true;
+        }
+
+        $perms = $this->permissions;
+        if (is_string($perms)) {
+            $decoded = json_decode($perms, true);
+            $perms = json_last_error() === JSON_ERROR_NONE ? $decoded : [];
+        }
+
+        if (is_array($perms)) {
+            return in_array($permission, $perms);
+        }
+
+        return false;
+    }
+
+    /**
      * Relacionamento com badges conquistados
      */
     public function badges()
