@@ -1221,34 +1221,248 @@
 
     async usuarios() {
       if (!(await auth.guard(['admin']))) return;
-      ui.setPageState('loading', 'Carregando usuÃ¡rios...');
+      ui.setPageState('loading', 'Carregando usuários...');
       const { res, data } = await api.request('/admin/users-report');
-      if (!res.ok) return ui.setPageState('error', 'Endpoint /admin/users-report indisponÃ­vel ou bloqueado.');
-      const lista = data?.data || [];
-      if (!lista.length) {
-        render.section('UsuÃ¡rios', '<p class="text-sm text-on-surface-variant">Nenhum usuÃ¡rio retornado.</p>');
-        return;
+      if (!res.ok) return ui.setPageState('error', 'Endpoint /admin/users-report indisponível ou bloqueado.');
+      const lista = data?.data || data || [];
+
+      const isCliente = (u) => (u.perfil || u.role || '').toString().toLowerCase().includes('cliente');
+      const admins = lista.filter((u) => !isCliente(u));
+
+      const tbody = document.getElementById('adminUsersTable');
+      if (!tbody) {
+        ui.clearPageState();
+        if (!admins.length) return ui.message('Nenhum usuário retornado.', 'warning');
+        return render.section(
+          'Usuários',
+          admins
+            .map(
+              (u) => `
+            <div class="px-4 py-3 flex items-center justify-between text-sm">
+              <div>
+                <p class="font-semibold">${u.name || u.email}</p>
+                <p class="text-on-surface-variant">${u.email}</p>
+              </div>
+                <span class="font-semibold text-primary">${u.perfil || u.role || ''}</span>
+            </div>`
+            )
+            .join('')
+        );
       }
-      ui.clearPageState();
-      render.section(
-        'UsuÃ¡rios',
-        lista
-          .map(
-            (u) => `
-          <div class="px-4 py-3 flex items-center justify-between text-sm">
-            <div>
-              <p class="font-semibold">${u.name || u.email}</p>
-              <p class="text-on-surface-variant">${u.email}</p>
-            </div>
-              <span class="font-semibold text-primary">${u.perfil || u.role || ''}</span>
-          </div>`
-          )
-          .join('')
+
+      const empty = document.getElementById('adminUsersEmpty');
+      const resumo = document.getElementById('adminUsersResumo');
+      const busca = document.getElementById('adminUsuariosBusca');
+
+      const metric = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
+      const statusText = (u) => (u.status || u.situacao || '').toString().toLowerCase();
+      const ativo = (u) => ['ativo', 'active', 'enabled'].includes(statusText(u)) || u.active === true || u.ativo === true;
+      const suspenso = (u) => ['suspenso', 'blocked', 'bloqueado'].includes(statusText(u)) || u.bloqueado === true;
+
+      const atualizarMetricas = (listaAlvo) => {
+        const total = listaAlvo.length;
+        const ativos = listaAlvo.filter(ativo).length;
+        const subs = listaAlvo.filter((u) => (u.perfil || u.role || '').toString().toLowerCase().includes('sub')).length;
+        const bloqueados = listaAlvo.filter(suspenso).length;
+        metric('adminUsersTotal', total || '--');
+        metric('adminUsersAtivosPct', total ? `${Math.round((ativos / total) * 100)}% ativos` : '--');
+        metric('adminUsersSubs', subs || '0');
+        metric('adminUsersBloqueados', bloqueados || '0');
+        metric('adminUsersCrescimento', total ? `${total} registrados` : '');
+        metric('adminUsersNovos', '');
+        metric('adminUsersRevisao', bloqueados ? `${bloqueados} em revisão` : 'OK');
+        if (resumo) resumo.querySelector('p').textContent = total ? `Listando ${total} administradores` : 'Nenhum administrador encontrado';
+      };
+
+      const renderLista = (listaAlvo) => {
+        tbody.querySelectorAll('tr.data-row')?.forEach((tr) => tr.remove());
+        if (!listaAlvo.length) {
+          if (empty) empty.classList.remove('hidden');
+          atualizarMetricas(listaAlvo);
+          ui.clearPageState();
+          return;
+        }
+        if (empty) empty.classList.add('hidden');
+        listaAlvo.forEach((u) => {
+          const tr = document.createElement('tr');
+          tr.className = 'data-row hover:bg-surface-container-low transition-colors group';
+          const nome = u.name || u.nome || u.email || 'Usuário';
+          const email = u.email || '';
+          const perfil = u.perfil || u.role || 'admin';
+          const status = suspenso(u) ? 'Suspenso' : ativo(u) ? 'Ativo' : 'Inativo';
+          const ultimo = u.last_login || u.updated_at || u.created_at || '';
+          tr.innerHTML = `
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold uppercase">${nome.substring(0, 1)}</div>
+                <div>
+                  <p class="font-bold text-on-surface">${nome}</p>
+                  <p class="text-xs text-on-surface-variant">${email}</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[11px] font-bold rounded-full">${perfil}</span>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-1.5 ${status === 'Ativo' ? 'text-tertiary' : status === 'Suspenso' ? 'text-error' : 'text-on-surface-variant'}">
+                <span class="w-2 h-2 rounded-full ${status === 'Ativo' ? 'bg-tertiary' : status === 'Suspenso' ? 'bg-error' : 'bg-outline'}"></span>
+                <span class="text-xs font-bold uppercase">${status}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-sm text-on-surface-variant">${ultimo || '-'}</td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex justify-end gap-2">
+                <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container/20 rounded-lg transition-all" title="Editar"><span class="material-symbols-outlined text-xl">edit</span></button>
+                <button class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-lg transition-all" title="Bloquear"><span class="material-symbols-outlined text-xl">block</span></button>
+              </div>
+            </td>`;
+          tbody.appendChild(tr);
+        });
+        atualizarMetricas(listaAlvo);
+        ui.clearPageState();
+      };
+
+      const bindBusca = (listaOrig) => {
+        if (!busca || busca.dataset.bound) return;
+        busca.dataset.bound = '1';
+        busca.addEventListener('input', () => {
+          const term = busca.value.toLowerCase();
+          const filtrada = listaOrig.filter(
+            (u) =>
+              (u.name || '').toLowerCase().includes(term) ||
+              (u.email || '').toLowerCase().includes(term) ||
+              (u.perfil || u.role || '').toLowerCase().includes(term)
+          );
+          renderLista(filtrada);
+        });
+      };
+
+      const pendenciasEl = document.getElementById('adminPendenciasList');
+      const pendenciasEmpty = document.getElementById('adminPendenciasEmpty');
+      if (pendenciasEl) {
+        pendenciasEl.innerHTML = '';
+        const pendentes = admins.filter(suspenso).slice(0, 3);
+        if (pendentes.length) {
+          pendenciasEl.classList.remove('hidden');
+          pendenciasEmpty?.classList.add('hidden');
+          pendentes.forEach((p) => {
+            const card = document.createElement('div');
+            card.className = 'p-3 bg-white rounded-xl flex items-center gap-3 shadow-sm border border-slate-100';
+            card.innerHTML = `
+              <div class="w-10 h-10 bg-error-container text-error flex items-center justify-center rounded-full">
+                <span class="material-symbols-outlined">report_problem</span>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-bold text-on-surface leading-none">${p.name || p.email}</p>
+                <p class="text-xs text-on-surface-variant">${p.email || 'Conta bloqueada'}</p>
+              </div>
+              <button class="text-tertiary hover:scale-110 transition-transform" title="Revisar"><span class="material-symbols-outlined text-xl">check_circle</span></button>
+            `;
+            pendenciasEl.appendChild(card);
+          });
+        } else {
+          pendenciasEl.classList.add('hidden');
+          pendenciasEmpty?.classList.remove('hidden');
+        }
+      }
+
+      document.getElementById('btnNovoAdmin')?.addEventListener('click', () =>
+        ui.message('Criação de admin via painel: use /admin/create-user com permissões adequadas.', 'info')
       );
+      document.getElementById('btnAudit')?.addEventListener('click', () => (window.location.href = '/relat_rios_gerais_master.html'));
+
+      bindBusca(admins);
+      renderLista(admins);
     },
 
-    async clientes() {
-      return admin.usuarios();
+    async clientesMaster() {
+      if (!(await auth.guard(['admin']))) return;
+      ui.setPageState('loading', 'Carregando clientes...');
+      const { res, data } = await api.request('/admin/users-report');
+      if (!res.ok) return ui.setPageState('error', 'Endpoint /admin/users-report indisponível ou bloqueado.');
+      const lista = data?.data || data || [];
+      const clientes = lista.filter((u) => (u.perfil || u.role || '').toString().toLowerCase().includes('cliente'));
+
+      const tbody = document.getElementById('adminClientesTable');
+      if (!tbody) {
+        ui.clearPageState();
+        if (!clientes.length) return ui.message('Nenhum cliente encontrado.', 'warning');
+        return render.section('Clientes', clientes.map((c) => `<div class=\"px-4 py-3\">${c.name || c.email}</div>`).join(''));
+      }
+
+      const empty = document.getElementById('adminClientesEmpty');
+      const resumo = document.getElementById('adminClientesResumo');
+      const busca = document.getElementById('adminClientesBusca') || document.getElementById('adminClientesBusca2');
+
+      const statusText = (u) => (u.status || u.situacao || '').toString().toLowerCase();
+      const ativo = (u) => ['ativo', 'active', 'enabled'].includes(statusText(u)) || u.active === true || u.ativo === true;
+
+      const atualizarMetricas = (lst) => {
+        const total = lst.length;
+        const ativos = lst.filter(ativo).length;
+        const pts = lst.map((c) => Number(c.pontos || c.saldo || 0)).filter((n) => !Number.isNaN(n));
+        const media = pts.length ? Math.round(pts.reduce((a, b) => a + b, 0) / pts.length) : 0;
+        const novos = lst.filter((c) => c.created_at && new Date(c.created_at) > new Date(Date.now() - 24 * 3600 * 1000)).length;
+        const set = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = val;
+        };
+        set('adminClientesTotal', total || '--');
+        set('adminClientesCrescimento', total ? `${ativos} ativos` : '');
+        set('adminClientesMediaPontos', pts.length ? `${media} pts` : '--');
+        const bar = document.getElementById('adminClientesMediaBar');
+        if (bar) bar.style.width = pts.length ? `${Math.min(100, Math.round((media / 5000) * 100))}%` : '0%';
+        set('adminClientesNovos', novos || '0');
+        if (resumo) resumo.querySelector('p').textContent = total ? `Exibindo ${total} clientes` : 'Nenhum cliente encontrado';
+      };
+
+      const renderLista = (lst) => {
+        tbody.querySelectorAll('tr.data-row')?.forEach((tr) => tr.remove());
+        if (!lst.length) {
+          empty?.classList.remove('hidden');
+          atualizarMetricas(lst);
+          ui.clearPageState();
+          return;
+        }
+        empty?.classList.add('hidden');
+        lst.forEach((c) => {
+          const nome = c.name || c.nome || c.email || 'Cliente';
+          const email = c.email || '';
+          const cpf = c.cpf || c.documento || '---';
+          const pontos = Number(c.pontos || c.saldo || 0);
+          const status = ativo(c) ? 'Ativo' : 'Inativo';
+          const ultima = c.last_login || c.updated_at || c.created_at || '-';
+          const tr = document.createElement('tr');
+          tr.className = 'data-row hover:bg-surface transition-colors group';
+          tr.innerHTML = `\n<td class=\"px-6 py-4\">\n  <div class=\"flex items-center gap-3\">\n    <div class=\"w-10 h-10 rounded-full overflow-hidden bg-surface-container flex items-center justify-center text-primary font-bold uppercase\">${nome.substring(0,1)}</div>\n    <div>\n      <p class=\"font-bold text-sm text-on-surface\">${nome}</p>\n      <p class=\"text-xs text-on-surface-variant\">${email}</p>\n    </div>\n  </div>\n</td>\n<td class=\"px-6 py-4 text-sm text-on-surface-variant\">${cpf}</td>\n<td class=\"px-6 py-4\"><span class=\"text-sm font-bold text-primary\">${pontos.toLocaleString('pt-BR')} pts</span></td>\n<td class=\"px-6 py-4\"><span class=\"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${status === 'Ativo' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}\">${status}</span></td>\n<td class=\"px-6 py-4 text-sm text-on-surface-variant\">${ultima}</td>\n<td class=\"px-6 py-4 text-right space-x-1\">\n  <button class=\"p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all\" title=\"Ver detalhes\"><span class=\"material-symbols-outlined text-[20px]\">visibility</span></button>\n  <button class=\"p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-all\" title=\"Suspender conta\"><span class=\"material-symbols-outlined text-[20px]\">block</span></button>\n</td>\n`;
+          tbody.appendChild(tr);
+        });
+        atualizarMetricas(lst);
+        ui.clearPageState();
+      };
+
+      const bindBusca = (lst) => {
+        const input = busca;
+        if (!input || input.dataset.bound) return;
+        input.dataset.bound = '1';
+        input.addEventListener('input', () => {
+          const term = input.value.toLowerCase();
+          const filtrada = lst.filter(
+            (c) =>
+              (c.name || '').toLowerCase().includes(term) ||
+              (c.email || '').toLowerCase().includes(term) ||
+              (c.cpf || c.documento || '').toLowerCase().includes(term)
+          );
+          renderLista(filtrada);
+        });
+      };
+
+      bindBusca(clientes);
+      renderLista(clientes);
     },
 
     async relatorios() {
@@ -1430,8 +1644,8 @@
     // Admin
     dashboard_admin_master: admin.dashboard,
     gest_o_de_estabelecimentos: admin.empresas,
-    gest_o_de_clientes_master: admin.clientes,
     gest_o_de_usu_rios_master: admin.usuarios,
+    gest_o_de_clientes_master: admin.clientesMaster,
     relat_rios_gerais_master: admin.relatorios,
     banners_e_categorias_master: async () => {
       if (!(await auth.guard(['admin']))) return;

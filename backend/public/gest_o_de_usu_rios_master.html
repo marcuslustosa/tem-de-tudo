@@ -1,14 +1,304 @@
-﻿<!doctype html>
-<html lang="pt-BR">
+﻿<!DOCTYPE html>
+
+<html class="light" lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Tem de Tudo</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.10/dist/tailwind.min.css">
-  <script src="/js/stitch-app.js" defer></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gestão de Usuários | Tem de Tudo Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-dim": "#d5d3df",
+              "surface-container-highest": "#dedbe7",
+              "surface-tint": "#b00076",
+              "on-primary": "#ffeff3",
+              "primary": "#b00076",
+              "inverse-on-surface": "#9e9ca4",
+              "primary-fixed-dim": "#ff49b3",
+              "on-secondary-container": "#712286",
+              "surface-container-low": "#f2eff9",
+              "secondary-fixed-dim": "#f2aaff",
+              "inverse-surface": "#0d0e13",
+              "tertiary-container": "#52e8f7",
+              "on-secondary-fixed": "#5a0371",
+              "on-secondary": "#ffeefd",
+              "secondary": "#87399c",
+              "on-primary-container": "#4a002f",
+              "secondary-container": "#f7bfff",
+              "on-error": "#ffefef",
+              "surface-variant": "#dedbe7",
+              "secondary-fixed": "#f7bfff",
+              "on-primary-fixed-variant": "#5b003b",
+              "secondary-dim": "#7a2c8f",
+              "on-tertiary-container": "#005158",
+              "error-dim": "#a70138",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#005c63",
+              "on-primary-fixed": "#000000",
+              "tertiary-fixed": "#52e8f7",
+              "on-surface-variant": "#5b5b62",
+              "tertiary": "#00666e",
+              "primary-fixed": "#ff6bbb",
+              "tertiary-fixed-dim": "#3ed9e9",
+              "tertiary-dim": "#005960",
+              "on-tertiary": "#d2faff",
+              "outline-variant": "#aeacb4",
+              "primary-container": "#ff6bbb",
+              "error-container": "#f74b6d",
+              "on-surface": "#2e2e34",
+              "surface-container-high": "#e4e1ec",
+              "surface": "#f8f5fe",
+              "background": "#f8f5fe",
+              "surface-bright": "#f8f5fe",
+              "on-secondary-fixed-variant": "#7b2d90",
+              "surface-container": "#e9e7f1",
+              "outline": "#77767d",
+              "on-background": "#2e2e34",
+              "on-tertiary-fixed": "#003d42",
+              "on-error-container": "#510017",
+              "error": "#b41340",
+              "primary-dim": "#9b0067",
+              "inverse-primary": "#ff40b2"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Be Vietnam Pro"],
+              "label": ["Be Vietnam Pro"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-effect {
+            background: rgba(222, 219, 231, 0.6);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+<script src="/js/stitch-app.js" defer></script>
 </head>
-<body data-page="gest_o_de_usu_rios_master" class="min-h-screen bg-slate-50 text-slate-900">
-  <noscript><div class="p-4 text-red-600 text-sm">Ative o JavaScript para usar o aplicativo.</div></noscript>
-  <main class="min-h-screen"></main>
-</body>
-</html>
+<body class="bg-surface text-on-surface" data-page="gest_o_de_usu_rios_master">
+<aside class="hidden lg:flex flex-col fixed left-0 top-0 h-full p-4 bg-[#e9e7f1] dark:bg-slate-900 h-screen w-64 border-r border-transparent translate-x-1 transition-transform z-50">
+<div class="mb-8 px-2">
+<span class="text-lg font-bold text-[#003B49] dark:text-white">Radiant Admin</span>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/dashboard_admin_master.html">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-800 text-[#E10098] rounded-xl shadow-sm font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/gest_o_de_usu_rios_master.html">
+<span class="material-symbols-outlined">group</span>
+                Usuários
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/gest_o_de_estabelecimentos.html">
+<span class="material-symbols-outlined">storefront</span>
+                Estabelecimentos
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/relat_rios_gerais_master.html">
+<span class="material-symbols-outlined">analytics</span>
+                Relatórios
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">payments</span>
+                Financeiro
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-white/50 dark:hover:bg-slate-800/50 transition-colors font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/meu_perfil.html">
+<span class="material-symbols-outlined">settings</span>
+                Configurações
+            </a>
+</nav>
+<div class="mt-auto pt-6 border-t border-slate-200/50 space-y-2">
+<div class="flex items-center gap-3 px-4 py-3 mb-4">
+<img alt="Master Admin" class="w-10 h-10 rounded-full object-cover border-2 border-primary" src="/img/avatar-admin.png"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Master Admin</p>
+<p class="text-xs text-on-surface-variant">Gestão Global</p>
+</div>
+</div>
+<a class="flex items-center gap-3 px-4 py-2 text-slate-600 dark:text-slate-400 hover:text-[#7A2C8F] font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/debug.php">
+<span class="material-symbols-outlined">help</span>
+                Suporte
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 text-error hover:text-error-dim font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/entrar.html" id="btnAdminLogout">
+<span class="material-symbols-outlined">logout</span>
+                Sair
+            </a>
+</div>
+</aside>
+<header class="fixed top-0 left-0 lg:left-64 right-0 z-40 bg-[#f8f5fe] dark:bg-slate-950 flex justify-between items-center w-full px-6 py-3 border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm dark:shadow-none">
+<div class="flex items-center gap-4">
+<button class="lg:hidden p-2 text-slate-600">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-xl font-black bg-gradient-to-r from-[#003B49] via-[#7A2C8F] to-[#E10098] bg-clip-text text-transparent">Gestão de Usuários</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="hidden md:flex items-center bg-surface-container rounded-full px-4 py-1.5 focus-within:ring-2 ring-primary/20 transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">search</span>
+<input id="adminUsuariosBusca" class="bg-transparent border-none focus:ring-0 text-sm w-48 lg:w-64 placeholder:text-on-surface-variant/60" placeholder="Buscar administrador..." type="text"/>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-2 text-slate-500 hover:bg-[#e9e7f1] dark:hover:bg-slate-800 transition-colors rounded-full relative" id="adminNotifBtn">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-[#E10098] rounded-full border-2 border-surface"></span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-[#e9e7f1] dark:hover:bg-slate-800 transition-colors rounded-full">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-20 lg:ml-64 min-h-screen p-6 pb-24 lg:pb-6 bg-surface">
+<div class="max-w-7xl mx-auto space-y-8">
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-[#7A2C8F]">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-secondary bg-secondary-container p-2 rounded-lg">group</span>
+<span class="text-xs font-bold text-tertiary" id="adminUsersCrescimento">&nbsp;</span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium">Total de Usuários</p>
+<h3 class="text-2xl font-black text-on-surface" id="adminUsersTotal">--</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-[#00C2D1]">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-tertiary bg-tertiary-container p-2 rounded-lg">verified_user</span>
+<span class="text-xs font-bold text-tertiary" id="adminUsersAtivosPct">&nbsp;</span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium">Administradores</p>
+<h3 class="text-2xl font-black text-on-surface" id="adminUsersAdmins">--</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-[#E10098]">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-primary bg-primary-container p-2 rounded-lg">security</span>
+<span class="text-xs font-bold text-on-surface-variant" id="adminUsersNovos">&nbsp;</span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium">Sub-Admins</p>
+<h3 class="text-2xl font-black text-on-surface" id="adminUsersSubs">--</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-error">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-error bg-error-container p-2 rounded-lg">block</span>
+<span class="text-xs font-bold text-error" id="adminUsersRevisao">&nbsp;</span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium">Contas Bloqueadas</p>
+<h3 class="text-2xl font-black text-on-surface" id="adminUsersBloqueados">--</h3>
+</div>
+</section>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.06)] overflow-hidden">
+<div class="p-6 border-b border-surface-container flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-3">
+<div class="relative group">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-full text-sm font-semibold transition-all" id="adminFiltroNivel">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+                                Nível de Acesso
+                            </button>
+</div>
+<div class="relative group">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-full text-sm font-semibold transition-all" id="adminFiltroStatus">
+<span class="material-symbols-outlined text-lg">radio_button_checked</span>
+                                Status
+                            </button>
+</div>
+</div>
+<button id="btnNovoAdmin" class="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#7A2C8F] to-[#E10098] text-white rounded-full font-bold shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+<span class="material-symbols-outlined">person_add</span>
+                        Novo Administrador
+                    </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant uppercase text-[10px] font-bold tracking-widest">
+<th class="px-6 py-4">Usuário</th>
+<th class="px-6 py-4">Nível</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Último Acesso</th>
+<th class="px-6 py-4 text-right">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container" id="adminUsersTable">
+<tr id="adminUsersEmpty" class="hidden">
+<td colspan="5" class="px-6 py-4 text-sm text-on-surface-variant">Nenhum usuário encontrado.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-surface-container-low flex items-center justify-between" id="adminUsersResumo">
+<p class="text-xs text-on-surface-variant font-medium">Carregando...</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm text-on-surface-variant hover:text-primary transition-all" id="adminUsersPrev">
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-white font-bold text-xs shadow-md">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-white shadow-sm text-on-surface-variant hover:text-primary transition-all" id="adminUsersNext">
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-gradient-to-br from-[#003B49] to-[#7A2C8F] rounded-2xl p-8 relative overflow-hidden shadow-xl">
+<div class="relative z-10 flex flex-col h-full justify-between">
+<div>
+<span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[10px] font-bold uppercase tracking-widest mb-4">Logs e Auditoria</span>
+<h2 class="text-3xl font-black text-white leading-tight mb-4">Trilha de Auditoria</h2>
+<p class="text-white/80 max-w-md font-medium">Monitore alterações feitas por administradores. Use o botão abaixo para abrir os registros.</p>
+</div>
+<button id="btnAudit" class="mt-8 self-start px-6 py-3 bg-white text-[#7A2C8F] rounded-full font-bold shadow-lg hover:bg-[#f8f5fe] transition-all flex items-center gap-2">
+                            Acessar Logs
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<div class="absolute -right-12 -bottom-12 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+<div class="absolute right-8 top-1/2 -translate-y-1/2 opacity-20">
+<span class="material-symbols-outlined text-[120px] text-white" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+</div>
+<div class="bg-surface-container-highest rounded-2xl p-6 border border-white/40 shadow-inner flex flex-col gap-6">
+<h4 class="font-black text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">verified_user</span>
+                        Solicitações Pendentes
+                    </h4>
+<div id="adminPendenciasList" class="space-y-4 hidden"></div>
+<p id="adminPendenciasEmpty" class="text-sm text-on-surface-variant">Nenhuma solicitação pendente.</p>
+</div>
+</section>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-6 lg:hidden bg-white dark:bg-slate-950 rounded-t-[1.5rem] border-t border-[#00666e]/10 shadow-[0_-4px_20px_rgba(11,31,58,0.06)]">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/dashboard_admin_master.html">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#E10098] relative after:content-[''] after:w-1 after:h-1 after:bg-[#E10098] after:rounded-full after:mt-1 tap-highlight-transparent active:scale-95 transition-all" href="/gest_o_de_usu_rios_master.html">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Usuários</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/gest_o_de_estabelecimentos.html">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Estabs</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/relat_rios_gerais_master.html">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Relatórios</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/meu_perfil.html">
+<span class="material-symbols-outlined">person</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-wider mt-1">Perfil</span>
+</a>
+</nav>
+</body></html>
