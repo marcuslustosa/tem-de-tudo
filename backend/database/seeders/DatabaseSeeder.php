@@ -269,7 +269,7 @@ class DatabaseSeeder extends Seeder
                     'imagem' => $empData['logo'],
                     'data_inicio' => now()->subDays(5),
                     'validade' => now()->addDays(10),
-                    'ativo' => rand(0, 1) === 1,
+                    'ativo' => (bool) rand(0, 1),
                     'status' => rand(0, 1) === 1 ? 'ativa' : 'pausada',
                     'visualizacoes' => rand(5, 30),
                     'resgates' => rand(0, 8),
