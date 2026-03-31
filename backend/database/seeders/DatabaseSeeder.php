@@ -1,19 +1,15 @@
-<?php
+﻿<?php
 
 namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Notification;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         echo "\n========================================\n";
@@ -42,7 +38,7 @@ class DatabaseSeeder extends Seeder
         );
         echo "✅ Admin criado: admin@temdetudo.com / admin123\n";
 
-        // Cliente de Teste
+        // Cliente base
         $cliente = User::updateOrCreate(
             ['email' => 'cliente@teste.com'],
             [
@@ -57,8 +53,8 @@ class DatabaseSeeder extends Seeder
         );
         echo "✅ Cliente criado: cliente@teste.com / 123456\n";
 
-        // Empresa Parceira
-        $empresa = User::updateOrCreate(
+        // Empresa base (usuário tipo empresa)
+        $empresaUser = User::updateOrCreate(
             ['email' => 'empresa@teste.com'],
             [
                 'name' => 'Empresa Teste Ltda',
@@ -72,11 +68,11 @@ class DatabaseSeeder extends Seeder
         );
         echo "✅ Empresa criada: empresa@teste.com / 123456\n";
 
-        // Empresa vinculada na tabela empresas
-        $empresaRecord = DB::table('empresas')->where('owner_id', $empresa->id)->first();
+        // Empresa base na tabela empresas
+        $empresaRecord = DB::table('empresas')->where('owner_id', $empresaUser->id)->first();
         if (!$empresaRecord) {
             $empresaId = DB::table('empresas')->insertGetId([
-                'owner_id' => $empresa->id,
+                'owner_id' => $empresaUser->id,
                 'nome' => 'Empresa Teste Ltda',
                 'ramo' => 'restaurante',
                 'descricao' => 'Empresa seed para demonstração',
@@ -89,7 +85,7 @@ class DatabaseSeeder extends Seeder
             $empresaRecord = DB::table('empresas')->where('id', $empresaId)->first();
         }
 
-        // Promoções seed (fluxo oficial EmpresaAPIController)
+        // Promo seed da empresa base
         $promoId = DB::table('promocoes')
             ->where('empresa_id', $empresaRecord->id)
             ->where('titulo', '10% OFF na primeira compra')
@@ -105,32 +101,30 @@ class DatabaseSeeder extends Seeder
                 'validade' => now()->addMonths(1),
                 'ativo' => true,
                 'status' => 'ativa',
-                'visualizacoes' => 0,
-                'resgates' => 0,
-                'usos' => 0,
+                'visualizacoes' => 10,
+                'resgates' => 2,
+                'usos' => 1,
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
         }
 
         // Cupom seed para cliente teste
-        $cupomExiste = DB::table('cupons')
-            ->where('user_id', $cliente->id)
-            ->where('promocao_id', $promoId)
-            ->exists();
-        if (!$cupomExiste) {
-            DB::table('cupons')->insert([
+        DB::table('cupons')->updateOrInsert(
+            [
                 'user_id' => $cliente->id,
                 'promocao_id' => $promoId,
-                'codigo' => 'CUPOM-SEED-001',
+                'codigo' => 'CUPOM-SEED-001'
+            ],
+            [
                 'status' => 'pendente',
                 'validade' => now()->addMonths(1),
                 'created_at' => now(),
                 'updated_at' => now()
-            ]);
-        }
+            ]
+        );
 
-        // Notificações de exemplo
+        // Notificações base
         Notification::updateOrCreate(
             ['user_id' => $cliente->id, 'title' => 'Boas-vindas'],
             [
@@ -140,7 +134,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
         Notification::updateOrCreate(
-            ['user_id' => $empresa->id, 'title' => 'Nova promoção ativa'],
+            ['user_id' => $empresaUser->id, 'title' => 'Nova promoção ativa'],
             [
                 'message' => 'Sua promoção de boas-vindas está ativa.',
                 'type' => 'success',
@@ -156,142 +150,136 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Criar 50 clientes (cliente1@email.com até cliente50@email.com)
-        echo "\n📝 Criando 50 clientes...\n";
-        for ($i = 1; $i <= 50; $i++) {
-            User::updateOrCreate(
-                ['email' => "cliente{$i}@email.com"],
+        // Clientes demo ricos
+        echo "\n📚 Criando 30 clientes com pontos/cupons/histórico...\n";
+        for ($i = 1; $i <= 30; $i++) {
+            $user = User::updateOrCreate(
+                ['email' => "demo_cliente{$i}@email.com"],
                 [
-                    'name' => "Cliente {$i}",
+                    'name' => "Cliente Demo {$i}",
                     'password' => Hash::make('senha123'),
                     'perfil' => 'cliente',
                     'telefone' => sprintf('(11) 9%04d-%04d', rand(1000, 9999), rand(1000, 9999)),
                     'status' => 'ativo',
-                    'pontos' => rand(0, 1000),
+                    'pontos' => rand(200, 1500),
                     'email_verified_at' => now()
                 ]
             );
-            if ($i % 10 == 0) {
-                echo "  ✓ {$i} clientes criados...\n";
-            }
-        }
-        echo "✅ 50 clientes criados (cliente1@email.com até cliente50@email.com / senha123)\n";
 
-        // DESABILITAR temporariamente criação de empresas e dados adicionais
-        // para garantir que pelo menos os usuários são criados
-        echo "\n⚠️ Empresas e dados adicionais desabilitados temporariamente\n";
-        echo "✅ SETUP BÁSICO CONCLUÍDO - Apenas usuários criados\n";
-        
-        /*
-        // Criar empresas fictícias na tabela empresas
+            for ($j = 0; $j < 3; $j++) {
+                DB::table('pontos')->insert([
+                    'user_id' => $user->id,
+                    'empresa_id' => $empresaRecord->id,
+                    'pontos' => rand(50, 200),
+                    'tipo' => 'ganho',
+                    'descricao' => 'Compra ' . ($j + 1),
+                    'created_at' => now()->subDays(rand(1, 30)),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            DB::table('cupons')->insertOrIgnore([
+                'user_id' => $user->id,
+                'promocao_id' => $promoId,
+                'codigo' => 'CUPOM-DEMO-' . $i,
+                'status' => $i % 2 === 0 ? 'used' : 'pending',
+                'validade' => now()->addDays(30),
+                'created_at' => now()->subDays(rand(1, 10)),
+                'updated_at' => now(),
+            ]);
+
+            Notification::updateOrCreate(
+                ['user_id' => $user->id, 'title' => "Saldo atualizado #{$i}"],
+                [
+                    'message' => 'Você recebeu pontos em sua última compra.',
+                    'type' => 'info',
+                    'payload' => ['origin' => 'seed'],
+                ]
+            );
+
+            if ($i % 10 === 0) echo "  ✅ {$i} clientes demo criados...\n";
+        }
+        echo "✅ Clientes demo criados\n";
+
+        // Empresas adicionais com promoções
         echo "\n🏪 Criando empresas parceiras...\n";
-        
         $empresasData = [
-            [
-                'nome' => 'Restaurante Sabor & Arte', 
-                'ramo' => 'restaurante', 
-                'owner_id' => $empresa->id,
-                'logo' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop',
-                'descricao' => 'Restaurante contemporâneo com pratos autorais e ambiente sofisticado. Especialidade em gastronomia italiana e brasileira.'
-            ],
-            [
-                'nome' => 'Academia Corpo Forte', 
-                'ramo' => 'academia', 
-                'owner_id' => $empresa->id,
-                'logo' => 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=400&fit=crop',
-                'descricao' => 'Academia completa com musculação, funcional, pilates e aulas coletivas. Profissionais qualificados e equipamentos de última geração.'
-            ],
-            [
-                'nome' => 'Cafeteria Aroma Premium', 
-                'ramo' => 'cafeteria', 
-                'owner_id' => $empresa->id,
-                'logo' => 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=400&fit=crop',
-                'descricao' => 'Cafés especiais, doces artesanais e ambiente aconchegante. Grãos selecionados e métodos de preparo tradicionais.'
-            ],
-            [
-                'nome' => 'Pet Shop Amigo Fiel', 
-                'ramo' => 'pet_shop', 
-                'owner_id' => $empresa->id,
-                'logo' => 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=400&fit=crop',
-                'descricao' => 'Tudo para seu pet: ração, acessórios, banho e tosa. Veterinário disponível e produtos premium.'
-            ],
-            [
-                'nome' => 'Salão Beleza Total', 
-                'ramo' => 'salao', 
-                'owner_id' => $empresa->id,
-                'logo' => 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop',
-                'descricao' => 'Salão de beleza completo: cabelo, unhas, estética e maquiagem. Profissionais especializados e produtos de qualidade.'
-            ],
-            [
-                'nome' => 'Mercado Bom Preço', 
-                'ramo' => 'mercado', 
-                'owner_id' => $empresa->id,
-                'logo' => 'https://images.unsplash.com/photo-1583736902931-063382c8e67f?w=400&h=400&fit=crop',
-                'descricao' => 'Supermercado com variedade de produtos, hortifruti fresquinho e ofertas diárias. Delivery disponível.'
-            ],
-            [
-                'nome' => 'Farmácia Saúde Mais', 
-                'ramo' => 'farmacia', 
-                'owner_id' => $empresa->id,
-                'logo' => 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=400&fit=crop',
-                'descricao' => 'Farmácia completa com medicamentos, dermocosméticos e atendimento farmacêutico personalizado.'
-            ],
-            [
-                'nome' => 'Padaria Pão Quentinho', 
-                'ramo' => 'padaria', 
-                'owner_id' => $empresa->id,
-                'logo' => 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop',
-                'descricao' => 'Padaria artesanal com pães frescos, bolos caseiros e salgados deliciosos. Fabricação própria diária.'
-            ],
+            ['nome' => 'Restaurante Sabor & Arte', 'ramo' => 'restaurante', 'logo' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop', 'descricao' => 'Restaurante contemporâneo.'],
+            ['nome' => 'Academia Corpo Forte', 'ramo' => 'academia', 'logo' => 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=400&fit=crop', 'descricao' => 'Academia completa.'],
+            ['nome' => 'Cafeteria Aroma Premium', 'ramo' => 'cafeteria', 'logo' => 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=400&fit=crop', 'descricao' => 'Cafés especiais e doces artesanais.'],
+            ['nome' => 'Pet Shop Amigo Fiel', 'ramo' => 'pet_shop', 'logo' => 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=400&fit=crop', 'descricao' => 'Tudo para seu pet.'],
+            ['nome' => 'Salão Beleza Total', 'ramo' => 'salao', 'logo' => 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop', 'descricao' => 'Beleza completa.'],
+            ['nome' => 'Mercado Bom Preço', 'ramo' => 'mercado', 'logo' => 'https://images.unsplash.com/photo-1583736902931-063382c8e67f?w=400&h=400&fit=crop', 'descricao' => 'Ofertas diárias.'],
+            ['nome' => 'Farmácia Saúde Mais', 'ramo' => 'farmacia', 'logo' => 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=400&fit=crop', 'descricao' => 'Farmácia completa.'],
+            ['nome' => 'Padaria Pão Quentinho', 'ramo' => 'padaria', 'logo' => 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop', 'descricao' => 'Pães frescos diários.'],
         ];
-        
-        foreach ($empresasData as $empData) {
-            // Verificar se empresa já existe
-            $exists = DB::table('empresas')->where('nome', $empData['nome'])->exists();
-            
-            if (!$exists) {
-                // Usar SQL RAW para garantir tipos corretos no PostgreSQL
-                $endereco = 'Rua Exemplo, ' . rand(100, 9999) . ' - São Paulo, SP';
-                $telefone = sprintf('(11) 9%04d-%04d', rand(1000, 9999), rand(1000, 9999));
-                $cnpj = sprintf('%02d.%03d.%03d/%04d-%02d', rand(10, 99), rand(100, 999), rand(100, 999), rand(1000, 9999), rand(10, 99));
-                
-                DB::statement("INSERT INTO empresas 
-                    (nome, owner_id, ramo, logo, descricao, endereco, telefone, cnpj, ativo, points_multiplier, created_at, updated_at) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE, 1.0, NOW(), NOW())",
-                    [
-                        $empData['nome'],
-                        $empData['owner_id'],
-                        $empData['ramo'],
-                        $empData['logo'],
-                        $empData['descricao'],
-                        $endereco,
-                        $telefone,
-                        $cnpj
-                    ]
-                );
-            }
-        }
-        echo "✅ 8 empresas parceiras criadas\n";
 
-        // Chamar DataSeeder para criar empresas e dados adicionais
-        echo "\n📊 Populando dados adicionais...\n";
-        $this->call([
-            DataSeeder::class,
-        ]);
-        */
+        foreach ($empresasData as $empData) {
+            $exists = DB::table('empresas')->where('nome', $empData['nome'])->first();
+            if ($exists) continue;
+            $cid = DB::table('empresas')->insertGetId([
+                'owner_id' => $empresaUser->id,
+                'nome' => $empData['nome'],
+                'ramo' => $empData['ramo'],
+                'logo' => $empData['logo'],
+                'descricao' => $empData['descricao'],
+                'endereco' => 'Rua Exemplo, ' . rand(100, 9999) . ' - São Paulo, SP',
+                'telefone' => sprintf('(11) 9%04d-%04d', rand(1000, 9999), rand(1000, 9999)),
+                'cnpj' => sprintf('%02d.%03d.%03d/%04d-%02d', rand(10, 99), rand(100, 999), rand(100, 999), rand(1000, 9999), rand(10, 99)),
+                'ativo' => true,
+                'points_multiplier' => 1.0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            DB::table('promocoes')->insert([
+                [
+                    'empresa_id' => $cid,
+                    'titulo' => 'Cashback especial',
+                    'descricao' => 'Ganhe pontos extras nas compras desta semana.',
+                    'desconto' => 5,
+                    'imagem' => $empData['logo'],
+                    'data_inicio' => now()->subDays(1),
+                    'validade' => now()->addDays(20),
+                    'ativo' => true,
+                    'status' => 'ativa',
+                    'visualizacoes' => rand(10, 50),
+                    'resgates' => rand(0, 10),
+                    'usos' => rand(0, 5),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'empresa_id' => $cid,
+                    'titulo' => 'Oferta limitada',
+                    'descricao' => 'Desconto progressivo em produtos selecionados.',
+                    'desconto' => 15,
+                    'imagem' => $empData['logo'],
+                    'data_inicio' => now()->subDays(5),
+                    'validade' => now()->addDays(10),
+                    'ativo' => rand(0, 1) === 1,
+                    'status' => rand(0, 1) === 1 ? 'ativa' : 'pausada',
+                    'visualizacoes' => rand(5, 30),
+                    'resgates' => rand(0, 8),
+                    'usos' => rand(0, 4),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+            ]);
+        }
+        echo "✅ Empresas parceiras e promoções criadas\n";
 
         echo "\n========================================\n";
         echo "✅ SEEDER CONCLUÍDO COM SUCESSO!\n";
         echo "========================================\n";
-        echo "\n📋 CREDENCIAIS DE ACESSO:\n";
-        echo "┌─────────────────────────────────────────────┐\n";
-        echo "│ Admin:   admin@temdetudo.com / admin123     │\n";
-        echo "│ Cliente: cliente@teste.com / 123456         │\n";
-        echo "│ Empresa: empresa@teste.com / 123456         │\n";
-        echo "│ Clientes: cliente1-50@email.com / senha123  │\n";
-        echo "└─────────────────────────────────────────────┘\n";
+        echo "\n📃 CREDENCIAIS DE ACESSO:\n";
+        echo "┌────────────────────────────────────────┐\n";
+        echo "│ Admin:   admin@temdetudo.com / admin123         │\n";
+        echo "│ Cliente: cliente@teste.com / 123456             │\n";
+        echo "│ Empresa: empresa@teste.com / 123456             │\n";
+        echo "│ Clientes demo: demo_cliente1-30@email.com / senha123 │\n";
+        echo "└────────────────────────────────────────┘\n";
         echo "\n";
-        
         $totalUsers = User::count();
         echo "📊 Total de usuários: {$totalUsers}\n";
         echo "========================================\n\n";
