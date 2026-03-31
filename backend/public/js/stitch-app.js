@@ -298,49 +298,84 @@
   // ---------------------- PÃ¡ginas: Cliente ---------------------- //
   const cliente = {
     async dashboard() {
-      if (!(await auth.guard(['cliente']))) return;
-      ui.setPageState('loading', 'Carregando dashboard...');
-      const [dadosResp, histResp] = await Promise.all([
-        api.request('/pontos/meus-dados'),
-        api.request('/pontos/historico'),
+      if (!(await auth.guard(['empresa']))) return;
+      ui.setPageState('loading', 'Carregando painel da empresa...');
+      const [promos, clientes, relatorio, resgates] = await Promise.all([
+        api.request('/empresa/promocoes'),
+        api.request('/empresa/clientes'),
+        api.request('/empresa/relatorio-pontos'),
+        api.request('/empresa/resgates'),
       ]);
-      const dados = dadosResp.data?.data || {};
-      const itens = histResp.data?.data?.data || histResp.data?.data || [];
 
+      const kpiVolume = document.getElementById('kpiVolume');
+      const kpiClientes = document.getElementById('kpiClientes');
+      const kpiResgates = document.getElementById('kpiResgates');
+      const campanhasBox = document.getElementById('campanhasAtivas');
+      const campanhasEmpty = document.getElementById('campanhasEmpty');
+      const movDistribuido = document.getElementById('movDistribuido');
+      const movResgatado = document.getElementById('movResgatado');
+      const movClientes = document.getElementById('movClientes');
+      const movMsg = document.getElementById('movMsg');
       ui.clearPageState();
-      render.summary('Sua conta', [
-        { label: 'Pontos', value: dados.pontos_total ?? 'â€”' },
-        { label: 'Pendentes', value: dados.pontos_pendentes ?? 'â€”' },
-        { label: 'NÃ­vel', value: dados.nivel ?? 'â€”' },
-        { label: 'Check-ins', value: dados.checkins_total ?? 'â€”' },
-        { label: 'Cupons ativos', value: dados.cupons_ativos ?? 'â€”' },
-        { label: 'UsuÃ¡rio', value: auth.getStored().user?.email },
-      ]);
 
-      await notifications.load('NotificaÃ§Ãµes');
+      const totals = relatorio.data?.data?.totais || {};
+      const fmtMoeda = (n) => 'R$ ' + (n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+      if (kpiVolume) kpiVolume.textContent = fmtMoeda(totals.total_resgatado || 0);
+      if (kpiClientes) kpiClientes.textContent = (clientes.data?.data?.length || clientes.data?.data?.total || 0).toString();
+      if (kpiResgates) kpiResgates.textContent = (totals.total_resgatado || 0).toString();
 
-      const host = document.querySelector('main') || document.body;
-      if (!Array.isArray(itens) || !itens.length) {
-        render.section('HistÃ³rico de pontos', '<p class="text-sm text-on-surface-variant">Nenhum histÃ³rico ainda.</p>');
-      } else {
-        render.section(
-          'HistÃ³rico de pontos',
-          itens
-            .slice(0, 10)
-            .map(
-              (item) => `
-              <div class="px-4 py-3 flex items-center justify-between text-sm">
+      if (movDistribuido) movDistribuido.textContent = (totals.total_distribuido || 0).toLocaleString('pt-BR');
+      if (movResgatado) movResgatado.textContent = (totals.total_resgatado || 0).toLocaleString('pt-BR');
+      if (movClientes) movClientes.textContent = (totals.total_clientes || 0).toLocaleString('pt-BR');
+      if (movMsg) movMsg.textContent = 'Dados dos últimos 30 dias';
+
+      const listaPromos = promos.data?.data || promos.data || [];
+      if (campanhasBox) {
+        campanhasBox.innerHTML = '';
+        if (!listaPromos.length) {
+          if (campanhasEmpty) campanhasEmpty.classList.remove('hidden');
+        } else {
+          if (campanhasEmpty) campanhasEmpty.classList.add('hidden');
+          listaPromos.slice(0, 4).forEach((p) => {
+            const card = document.createElement('div');
+            card.className = 'bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm flex';
+            const img = p.imagem_url || p.imagem || '/img/placeholder-promo.jpg';
+            const statusAtivo = !(p.status === 'pausada' || p.ativo === false);
+            const status = statusAtivo ? 'Ativa' : 'Pausada';
+            card.innerHTML = `
+              <div class="w-24 h-24 flex-shrink-0">
+                <img alt="${p.nome || 'Promoção'}" class="w-full h-full object-cover" src="${img}"/>
+              </div>
+              <div class="p-4 flex flex-col justify-between flex-grow">
                 <div>
-                  <p class="font-semibold">${item?.empresa?.nome || 'Empresa'}</p>
-                  <p class="text-on-surface-variant">${item.created_at ? new Date(item.created_at).toLocaleString('pt-BR') : ''}</p>
+                  <div class="flex justify-between items-start">
+                    <h4 class="font-headline font-bold text-sm text-on-surface">${p.nome || 'Promoção'}</h4>
+                    <span class="glass-badge px-2 py-0.5 rounded-full text-[9px] font-bold text-primary uppercase">${status}</span>
+                  </div>
+                  <p class="text-xs text-on-surface-variant line-clamp-2">${p.descricao || ''}</p>
                 </div>
-                <span class="text-primary font-bold">${item.pontos || 0} pts</span>
-              </div>`
-            )
-            .join('')
-        );
+                <div class="flex items-center justify-between mt-2 text-[10px] text-on-surface-variant">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full ${statusAtivo ? 'bg-[#00C2D1]' : 'bg-outline'}"></span>
+                    <span class="font-label font-bold uppercase">${status}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">calendar_today</span>
+                    <span>${p.validade || p.fim_vigencia || ''}</span>
+                  </div>
+                </div>
+              </div>`;
+            card.addEventListener('click', () => (window.location.href = '/gest_o_de_ofertas_parceiro.html'));
+            campanhasBox.appendChild(card);
+          });
+        }
       }
+
+      document.getElementById('empresaNotifBtn')?.addEventListener('click', () => {
+        ui.message('Notificações da empresa serão exibidas aqui em breve.', 'info');
+      });
     },
+
 
     async parceiros() {
       if (!(await auth.guard(['cliente']))) return;
@@ -785,86 +820,82 @@
     async dashboard() {
       if (!(await auth.guard(['empresa']))) return;
       ui.setPageState('loading', 'Carregando painel da empresa...');
-      const [promos, clientes, relatorio] = await Promise.all([
+      const [promos, clientes, relatorio, resgates] = await Promise.all([
         api.request('/empresa/promocoes'),
         api.request('/empresa/clientes'),
         api.request('/empresa/relatorio-pontos'),
-      ]);
-      render.summary('Painel do estabelecimento', [
-        { label: 'PromoÃ§Ãµes', value: Array.isArray(promos.data?.data || promos.data) ? (promos.data?.data || promos.data).length : 'â€”' },
-        { label: 'Clientes fidelizados', value: clientes.data?.data?.length || clientes.data?.data?.total || 'â€”' },
-        { label: 'ResponsÃ¡vel', value: auth.getStored().user?.email },
+        api.request('/empresa/resgates'),
       ]);
 
+      const kpiVolume = document.getElementById('kpiVolume');
+      const kpiClientes = document.getElementById('kpiClientes');
+      const kpiResgates = document.getElementById('kpiResgates');
+      const campanhasBox = document.getElementById('campanhasAtivas');
+      const campanhasEmpty = document.getElementById('campanhasEmpty');
+      const movDistribuido = document.getElementById('movDistribuido');
+      const movResgatado = document.getElementById('movResgatado');
+      const movClientes = document.getElementById('movClientes');
+      const movMsg = document.getElementById('movMsg');
       ui.clearPageState();
-      if (relatorio.data?.data?.totais) {
-        const t = relatorio.data.data.totais;
-        render.section(
-          'Pontos / Resgates (Ãºltimos 30 dias)',
-          `
-          <div class="px-4 py-3 text-sm flex justify-between">
-            <span class="font-semibold">Total distribuÃ­do</span>
-            <span class="font-semibold text-primary">${t.total_distribuido || 0}</span>
-          </div>
-          <div class="px-4 py-3 text-sm flex justify-between">
-            <span class="font-semibold">Total resgatado</span>
-            <span class="font-semibold text-primary">${t.total_resgatado || 0}</span>
-          </div>
-          <div class="px-4 py-3 text-sm flex justify-between">
-            <span class="font-semibold">Clientes Ãºnicos</span>
-            <span class="font-semibold text-primary">${t.total_clientes || 0}</span>
-          </div>`
-        );
-      }
 
-      await notifications.load('NotificaÃ§Ãµes');
+      const totals = relatorio.data?.data?.totais || {};
+      const fmtMoeda = (n) => 'R$ ' + (n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+      if (kpiVolume) kpiVolume.textContent = fmtMoeda(totals.total_resgatado || 0);
+      if (kpiClientes) kpiClientes.textContent = (clientes.data?.data?.length || clientes.data?.data?.total || 0).toString();
+      if (kpiResgates) kpiResgates.textContent = (totals.total_resgatado || 0).toString();
 
-      // Check-in / QR Code manual (fallback)
-      const host = document.querySelector('main') || document.body;
-      const checkinBox = document.createElement('section');
-      checkinBox.className = 'max-w-xl mx-auto px-4 pt-4';
-      checkinBox.innerHTML = `
-        <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3">
-          <h3 class="text-lg font-semibold text-on-surface">Registrar check-in (QR)</h3>
-          <p class="text-sm text-on-surface-variant">Cole o conteÃºdo do QR Code lido no app.</p>
-          <input id="qrCliente" class="border rounded-lg px-3 py-2 w-full" placeholder="CLIENT_{id}_hash" />
-          <button id="qrRegistrar" class="px-4 py-2 bg-primary text-white rounded-lg font-semibold w-full">Registrar check-in</button>
-        </div>`;
-      host.prepend(checkinBox);
-      checkinBox.querySelector('#qrRegistrar').addEventListener('click', async () => {
-        const code = checkinBox.querySelector('#qrCliente').value;
-        if (!code) return ui.message('Informe o cÃ³digo/QR.', 'warning');
-        ui.setPageState('loading', 'Registrando check-in...');
-        const { res, data } = await api.request('/empresa/escanear-cliente', { method: 'POST', body: JSON.stringify({ qrcode: code }) });
-        ui.clearPageState();
-        if (res.ok && data?.success) ui.message('Check-in registrado.', 'success');
-        else ui.message(data?.message || 'Erro ao registrar check-in.', 'error');
-      });
+      if (movDistribuido) movDistribuido.textContent = (totals.total_distribuido || 0).toLocaleString('pt-BR');
+      if (movResgatado) movResgatado.textContent = (totals.total_resgatado || 0).toLocaleString('pt-BR');
+      if (movClientes) movClientes.textContent = (totals.total_clientes || 0).toLocaleString('pt-BR');
+      if (movMsg) movMsg.textContent = 'Dados dos últimos 30 dias';
 
-      // Resgates recentes
-      const resgates = await api.request('/empresa/resgates');
-      const lista = resgates.data?.data?.data || resgates.data?.data || [];
-      if (lista.length) {
-        render.section(
-          'Resgates recentes',
-          lista
-            .slice(0, 10)
-            .map(
-              (r) => `
-            <div class="px-4 py-3 flex items-center justify-between text-sm">
-              <div>
-                <p class="font-semibold">${r.promocao || 'PromoÃ§Ã£o'}</p>
-                <p class="text-on-surface-variant">${r.cliente || ''} (${r.cliente_email || ''})</p>
+      const listaPromos = promos.data?.data || promos.data || [];
+      if (campanhasBox) {
+        campanhasBox.innerHTML = '';
+        if (!listaPromos.length) {
+          if (campanhasEmpty) campanhasEmpty.classList.remove('hidden');
+        } else {
+          if (campanhasEmpty) campanhasEmpty.classList.add('hidden');
+          listaPromos.slice(0, 4).forEach((p) => {
+            const card = document.createElement('div');
+            card.className = 'bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm flex';
+            const img = p.imagem_url || p.imagem || '/img/placeholder-promo.jpg';
+            const statusAtivo = !(p.status === 'pausada' || p.ativo === false);
+            const status = statusAtivo ? 'Ativa' : 'Pausada';
+            card.innerHTML = `
+              <div class="w-24 h-24 flex-shrink-0">
+                <img alt="${p.nome || 'Promoção'}" class="w-full h-full object-cover" src="${img}"/>
               </div>
-              <span class="text-primary font-semibold">${r.status || ''}</span>
-            </div>`
-            )
-            .join('')
-        );
-      } else {
-        render.section('Resgates recentes', '<p class="text-sm text-on-surface-variant">Sem resgates recentes.</p>');
+              <div class="p-4 flex flex-col justify-between flex-grow">
+                <div>
+                  <div class="flex justify-between items-start">
+                    <h4 class="font-headline font-bold text-sm text-on-surface">${p.nome || 'Promoção'}</h4>
+                    <span class="glass-badge px-2 py-0.5 rounded-full text-[9px] font-bold text-primary uppercase">${status}</span>
+                  </div>
+                  <p class="text-xs text-on-surface-variant line-clamp-2">${p.descricao || ''}</p>
+                </div>
+                <div class="flex items-center justify-between mt-2 text-[10px] text-on-surface-variant">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full ${statusAtivo ? 'bg-[#00C2D1]' : 'bg-outline'}"></span>
+                    <span class="font-label font-bold uppercase">${status}</span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">calendar_today</span>
+                    <span>${p.validade || p.fim_vigencia || ''}</span>
+                  </div>
+                </div>
+              </div>`;
+            card.addEventListener('click', () => (window.location.href = '/gest_o_de_ofertas_parceiro.html'));
+            campanhasBox.appendChild(card);
+          });
+        }
       }
+
+      document.getElementById('empresaNotifBtn')?.addEventListener('click', () => {
+        ui.message('Notificações da empresa serão exibidas aqui em breve.', 'info');
+      });
     },
+
 
     async clientes() {
       if (!(await auth.guard(['empresa']))) return;
