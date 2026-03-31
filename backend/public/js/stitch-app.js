@@ -549,65 +549,153 @@
       });
     },
 
-    async historico() {
+        async historico() {
       if (!(await auth.guard(['cliente']))) return;
-      ui.setPageState('loading', 'Carregando histÃ³rico...');
+      const loading = document.getElementById('timeline-loading');
+      const empty = document.getElementById('timeline-empty');
+      const list = document.getElementById('timeline-list');
+      const summaryText = document.getElementById('timeline-summary-text');
+      const filterButtons = document.querySelectorAll('[data-filter]');
+
+      const setActiveFilter = (f) => {
+        filterButtons.forEach((btn) => {
+          if (btn.dataset.filter === f) btn.classList.add('bg-primary', 'text-on-primary', 'shadow-md');
+          else btn.classList.remove('bg-primary', 'text-on-primary', 'shadow-md');
+        });
+      };
+
+      const render = (items, filter = 'todas') => {
+        if (!list) return;
+        list.innerHTML = '';
+        const filtered = items.filter((i) => {
+          const tipo = (i.tipo || '').toLowerCase();
+          if (filter === 'ganhos') return tipo.includes('gan') || (i.pontos || 0) > 0;
+          if (filter === 'resgates') return tipo.includes('resg') || (i.pontos || 0) < 0;
+          if (filter === 'cupons') return tipo.includes('cup');
+          return true;
+        });
+        if (!filtered.length) {
+          empty?.classList.remove('hidden');
+          return;
+        }
+        empty?.classList.add('hidden');
+
+        const grouped = filtered.reduce((acc, i) => {
+          const d = i.created_at ? new Date(i.created_at) : new Date();
+          const label = d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+          (acc[label] = acc[label] || []).push(i);
+          return acc;
+        }, {});
+
+        const iconFor = (tipo) => {
+          const t = (tipo || '').toLowerCase();
+          if (t.includes('resg')) return { icon: 'redeem', cls: 'text-secondary', bg: 'bg-secondary-container/30' };
+          if (t.includes('cup')) return { icon: 'confirmation_number', cls: 'text-tertiary', bg: 'bg-tertiary-container/30' };
+          return { icon: 'shopping_bag', cls: 'text-primary', bg: 'bg-primary-container/20' };
+        };
+
+        Object.entries(grouped).forEach(([day, arr]) => {
+          const cards = arr
+            .map((i) => {
+              const { icon, cls, bg } = iconFor(i.tipo);
+              const pts = i.pontos || 0;
+              const sign = pts > 0 ? '+' : '';
+              return `
+              <div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between hover:bg-surface-container-high transition-all active:scale-[0.98]">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-full ${bg} flex items-center justify-center ${cls}">
+                    <span class="material-symbols-outlined" data-icon="${icon}">${icon}</span>
+                  </div>
+                  <div>
+                    <p class="font-headline font-bold text-on-surface text-[15px]">${i?.empresa?.nome || 'Empresa'}</p>
+                    <p class="text-on-surface-variant text-xs">${i.descricao || ''}</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="font-headline font-extrabold ${pts >= 0 ? 'text-primary' : 'text-secondary'} text-base">${sign}${pts} pts</p>
+                  ${i.status ? `<span class="text-[10px] font-bold uppercase text-tertiary">${i.status}</span>` : ''}
+                </div>
+              </div>`;
+            })
+            .join('');
+
+          list.innerHTML += `
+            <div class="space-y-3">
+              <h3 class="font-label text-[11px] font-bold text-outline uppercase tracking-widest flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-secondary"></span>${day}
+              </h3>
+              ${cards}
+            </div>`;
+        });
+      };
+
+      ui.setPageState('loading', 'Carregando histórico...');
       const { data } = await api.request('/pontos/historico');
+      loading?.classList.add('hidden');
       const itens = data?.data?.data || data?.data || [];
-      if (!itens.length) return ui.setPageState('empty', 'Nenhum histÃ³rico encontrado.');
+      if (!itens.length) {
+        ui.setPageState('empty', 'Nenhum histórico encontrado.');
+        return;
+      }
       ui.clearPageState();
-      render.section(
-        'HistÃ³rico completo',
-        itens
-          .map(
-            (i) => `
-          <div class="px-4 py-3 flex items-center justify-between text-sm">
-            <div>
-              <p class="font-semibold">${i?.empresa?.nome || 'Empresa'}</p>
-              <p class="text-on-surface-variant">${i.descricao || ''}</p>
-            </div>
-            <span class="font-semibold text-primary">${i.pontos || 0} pts</span>
-          </div>`
-          )
-          .join('')
+      if (summaryText) summaryText.textContent = `Você tem ${itens.length} atividades registradas.`;
+      render(itens, 'todas');
+      setActiveFilter('todas');
+      filterButtons.forEach((btn) =>
+        btn.addEventListener('click', () => {
+          const f = btn.dataset.filter || 'todas';
+          setActiveFilter(f);
+          render(itens, f);
+        })
       );
     },
 
-    async perfil() {
+        async perfil() {
       if (!(await auth.guard(['cliente', 'empresa', 'admin']))) return;
       ui.setPageState('loading', 'Carregando perfil...');
       const user = await auth.ensure();
+      let dados = {};
+      if (user?.perfil === 'cliente') {
+        try {
+          const resp = await api.request('/pontos/meus-dados');
+          dados = resp.data?.data || {};
+        } catch (_) {}
+      }
       ui.clearPageState();
-      const host = document.querySelector('main') || document.body;
-      const form = document.createElement('section');
-      form.className = 'max-w-3xl mx-auto px-4 pt-4';
-      form.innerHTML = `
-        <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3">
-          <h3 class="text-lg font-semibold text-on-surface">Meu perfil</h3>
-          <div class="grid gap-3 md:grid-cols-2">
-            <input id="pfNome" class="border rounded-lg px-3 py-2" placeholder="Nome" value="${user?.name || user?.nome || ''}" />
-            <input id="pfEmail" class="border rounded-lg px-3 py-2" placeholder="Email" value="${user?.email || ''}" />
-            <input id="pfTelefone" class="border rounded-lg px-3 py-2" placeholder="Telefone" value="${user?.telefone || ''}" />
-            <input id="pfCpf" class="border rounded-lg px-3 py-2" placeholder="CPF" value="${user?.cpf || ''}" />
-            <input id="pfNascimento" class="border rounded-lg px-3 py-2" type="date" value="${user?.data_nascimento || ''}" />
-          </div>
-          <button id="pfSalvar" class="px-4 py-2 bg-primary text-white rounded-lg font-semibold">Salvar</button>
-        </div>
-        <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3 mt-4">
-          <h3 class="text-lg font-semibold text-on-surface">Alterar senha</h3>
-          <input id="pwAtual" type="password" class="border rounded-lg px-3 py-2 w-full" placeholder="Senha atual" />
-          <input id="pwNova" type="password" class="border rounded-lg px-3 py-2 w-full" placeholder="Nova senha" />
-          <input id="pwConf" type="password" class="border rounded-lg px-3 py-2 w-full" placeholder="Confirmar nova senha" />
-          <button id="pwSalvar" class="px-4 py-2 bg-primary text-white rounded-lg font-semibold">Atualizar senha</button>
-        </div>`;
-      host.prepend(form);
-      form.querySelector('#pfSalvar')?.addEventListener('click', async () => {
+
+      const heroName = document.getElementById('hero-name');
+      const heroLevel = document.getElementById('hero-level');
+      const heroStatus = document.getElementById('hero-status');
+      const heroPoints = document.getElementById('hero-points');
+      const heroProgressText = document.getElementById('hero-progress-text');
+      const heroProgressBar = document.getElementById('hero-progress-bar');
+
+      const pontos = dados.pontos_total ?? user?.pontos ?? 0;
+      const pend = dados.pontos_pendentes ?? 0;
+      const nextTarget = Math.max(1000, pontos + 2000);
+      const perc = Math.min(100, Math.round((pontos / nextTarget) * 100));
+
+      if (heroName) heroName.textContent = user?.name || user?.nome || 'Usuário';
+      if (heroLevel) heroLevel.textContent = user?.perfil ? user.perfil.toUpperCase() : 'MEMBRO';
+      if (heroStatus) heroStatus.textContent = user?.status || 'Ativo';
+      if (heroPoints) heroPoints.textContent = pontos;
+      if (heroProgressText) heroProgressText.textContent = `Faltam ${nextTarget - pontos} para o próximo nível`;
+      if (heroProgressBar) heroProgressBar.style.width = `${perc}%`;
+
+      const pf = (id) => document.getElementById(id);
+      pf('pfNome')?.setAttribute('value', user?.name || user?.nome || '');
+      pf('pfEmail')?.setAttribute('value', user?.email || '');
+      pf('pfTelefone')?.setAttribute('value', user?.telefone || '');
+      pf('pfCpf')?.setAttribute('value', user?.cpf || '');
+      pf('pfNascimento')?.setAttribute('value', user?.data_nascimento || '');
+
+      pf('pfSalvar')?.addEventListener('click', async () => {
         const payload = {
-          name: form.querySelector('#pfNome').value,
-          email: form.querySelector('#pfEmail').value,
-          telefone: form.querySelector('#pfTelefone').value,
-          cpf: form.querySelector('#pfCpf').value,
-          data_nascimento: form.querySelector('#pfNascimento').value,
+          name: pf('pfNome')?.value,
+          email: pf('pfEmail')?.value,
+          telefone: pf('pfTelefone')?.value,
+          cpf: pf('pfCpf')?.value,
+          data_nascimento: pf('pfNascimento')?.value,
         };
         const { res, data } = await api.request('/perfil', { method: 'PUT', body: JSON.stringify(payload) });
         if (res.ok && data?.success) {
@@ -618,17 +706,23 @@
         }
       });
 
-      form.querySelector('#pwSalvar')?.addEventListener('click', async () => {
+      pf('pwSalvar')?.addEventListener('click', async () => {
         const payload = {
-          current_password: form.querySelector('#pwAtual').value,
-          password: form.querySelector('#pwNova').value,
-          password_confirmation: form.querySelector('#pwConf').value,
+          current_password: pf('pwAtual')?.value,
+          password: pf('pwNova')?.value,
+          password_confirmation: pf('pwConf')?.value,
         };
         ui.setPageState('loading', 'Atualizando senha...');
         const { res, data } = await api.request('/auth/change-password', { method: 'POST', body: JSON.stringify(payload) });
         ui.clearPageState();
         if (res.ok && data?.success) ui.message('Senha alterada.', 'success');
         else ui.message(data?.message || 'Erro ao alterar senha.', 'error');
+      });
+
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        auth.logout();
+        ui.message('Sessão encerrada.', 'success');
+        setTimeout(() => (window.location.href = '/entrar.html'), 400);
       });
     },
 
