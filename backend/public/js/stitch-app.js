@@ -1206,7 +1206,7 @@
         const endereco = e.endereco || e.logradouro || '';
         const telefone = e.telefone || '';
         const email = e.email || '';
-        card.innerHTML = `
+        card.innerHTML = /* html */ `
           <div class="relative">
             <div class="w-20 h-20 rounded-full overflow-hidden bg-surface-container shadow-inner">
               <img alt="${nome}" class="w-full h-full object-cover" src="${logo}"/>
