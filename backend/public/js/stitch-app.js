@@ -1199,29 +1199,36 @@
         const card = document.createElement('div');
         card.className = 'bg-surface-container-lowest p-5 rounded-xl flex flex-col md:flex-row gap-6 items-center group hover:bg-surface-container-low transition-all border border-transparent hover:border-primary/10';
         const logo = e.logo || '/img/placeholder-store.png';
-        card.innerHTML = 
+        const nome = e.nome || e.nome_fantasia || 'Estabelecimento';
+        const categoria = e.categoria || e.segmento || '';
+        const pontos = e.pontos_totais ?? e.pontos ?? 0;
+        const clientes = e.clientes ?? e.qtd_clientes ?? 0;
+        const endereco = e.endereco || e.logradouro || '';
+        const telefone = e.telefone || '';
+        const email = e.email || '';
+        card.innerHTML = `
           <div class="relative">
             <div class="w-20 h-20 rounded-full overflow-hidden bg-surface-container shadow-inner">
-              <img alt="" class="w-full h-full object-cover" src=""/>
+              <img alt="${nome}" class="w-full h-full object-cover" src="${logo}"/>
             </div>
           </div>
           <div class="flex-1 w-full">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
               <div>
-                <h3 class="font-headline font-bold text-on-surface text-lg"></h3>
-                <p class="text-sm text-outline"></p>
+                <h3 class="font-headline font-bold text-on-surface text-lg">${nome}</h3>
+                <p class="text-sm text-outline">${categoria}</p>
               </div>
               <div class="flex flex-wrap gap-2 text-[10px] uppercase font-bold">
-                <span class="px-2 py-1 rounded-full bg-primary/10 text-primary">Pontos: </span>
-                <span class="px-2 py-1 rounded-full bg-tertiary/10 text-tertiary">Clientes: </span>
+                <span class="px-2 py-1 rounded-full bg-primary/10 text-primary">Pontos: ${pontos}</span>
+                <span class="px-2 py-1 rounded-full bg-tertiary/10 text-tertiary">Clientes: ${clientes}</span>
               </div>
             </div>
             <div class="flex flex-wrap gap-4 mt-3 text-sm text-on-surface-variant">
-              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span><span></span></div>
-              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="call">call</span><span></span></div>
-              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="mail">mail</span><span></span></div>
+              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span><span>${endereco}</span></div>
+              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="call">call</span><span>${telefone}</span></div>
+              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="mail">mail</span><span>${email}</span></div>
             </div>
-          </div>;
+          </div>`;
         listaEl?.appendChild(card);
       });
     },
