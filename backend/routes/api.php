@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AdminReportController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\BonusAdesaoController;
@@ -27,9 +27,8 @@ use App\Http\Controllers\CheckInController as MainCheckInController;
 use App\Http\Controllers\PontosController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\PushSubscriptionController;
-use App\Http\Controllers\NotificationController;
 
-// Debug route (remover em produção)
+// Debug route (remover em produÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o)
 Route::get('/debug', function () {
     try {
         $dbConnection = DB::connection();
@@ -54,7 +53,7 @@ Route::get('/debug', function () {
     }
 });
 
-// Debug - teste de empresas (TEMPORÁRIO)
+// Debug - teste de empresas (TEMPORÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂRIO)
 Route::get('/debug/empresas', function () {
     try {
         $count = \App\Models\Empresa::count();
@@ -83,49 +82,49 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
 
-    // Notificações internas
+    // NotificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes internas
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/read', [NotificationController::class, 'markRead']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead']);
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
 });
 
-// Setup database manual (APENAS PRODUÇÃO - RENDER)
+// Setup database manual (APENAS PRODUÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O - RENDER)
 Route::get('/setup-database', [SetupController::class, 'setupDatabase']);
 
 // ============================================
-// ROTAS PÚBLICAS (SEM AUTENTICAÇÃO)
+// ROTAS PÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â¡BLICAS (SEM AUTENTICAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O)
 // ============================================
 
-// Autenticação
+// AutenticaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
-// Empresas (leitura pública)
+// Empresas (leitura pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblica)
 Route::get('/empresas', [EmpresaController::class, 'listEmpresas']);
 Route::get('/empresas/{id}', [EmpresaController::class, 'getEmpresa']);
 
-// Produtos das empresas (leitura pública) 
+// Produtos das empresas (leitura pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblica) 
 Route::get('/empresas/{empresaId}/produtos', [ProdutoController::class, 'index']);
 Route::get('/empresas/{empresaId}/produtos/{id}', [ProdutoController::class, 'show']);
 
-// Badges (informações públicas)
+// Badges (informaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblicas)
 Route::get('/badges', [BadgeController::class, 'index']);
 Route::get('/badges/{id}', [BadgeController::class, 'show']);
 Route::get('/badges/ranking', [BadgeController::class, 'ranking']);
 
-// Webhook do Mercado Pago (público)
+// Webhook do Mercado Pago (pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblico)
 Route::post('/webhook/mercadopago', [PagamentoController::class, 'webhook'])->name('webhook.mercadopago');
 
 // ============================================
-// ROTAS PROTEGIDAS (REQUER AUTENTICAÇÃO)
+// ROTAS PROTEGIDAS (REQUER AUTENTICAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O)
 // ============================================
 
 Route::middleware('auth:sanctum')->group(function () {
     
-    // Autenticação e Perfil
+    // AutenticaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o e Perfil
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'user']);
     Route::get('/auth/me', [AuthController::class, 'user']);
@@ -155,23 +154,23 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-// Rotas públicas de autenticação
+// Rotas pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblicas de autenticaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 });
 
-// Middleware JavaScript para proteção de rotas por perfil
+// Middleware JavaScript para proteÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de rotas por perfil
 Route::get('/auth/check-access', function () {
     return response()->json(['message' => 'Access check endpoint']);
 });
 
-// Rota para listar empresas (pública para funcionários se cadastrarem)
+// Rota para listar empresas (pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblica para funcionÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios se cadastrarem)
 Route::get('/empresas', [EmpresaController::class, 'listEmpresas']);
 
 // Rotas de admin com JWT
 Route::prefix('admin')->group(function () {
-    // Login de admin (público)
+    // Login de admin (pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblico)
     Route::post('/login', [AuthController::class, 'adminLogin']);
     
     // Rotas protegidas por JWT
@@ -180,7 +179,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/me', [AuthController::class, 'adminProfile']);
         Route::post('/refresh', [AuthController::class, 'refreshToken']);
         
-        // Rotas que requerem permissões específicas
+        // Rotas que requerem permissÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes especÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ficas
         Route::middleware(['admin.permission:create_users'])->group(function () {
             Route::post('/create-user', [AuthController::class, 'createUser']);
         });
@@ -202,7 +201,7 @@ Route::prefix('admin')->group(function () {
             Route::post('/cleanup-logs', [AdminReportController::class, 'cleanupLogs']);
         });
 
-        // Notificações administrativas
+        // NotificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes administrativas
         Route::middleware(['admin.permission:manage_users'])->group(function () {
             Route::post('/notifications/broadcast', [NotificationController::class, 'sendBroadcast']);
             Route::post('/notifications/test', [NotificationController::class, 'testNotification']);
@@ -210,7 +209,7 @@ Route::prefix('admin')->group(function () {
             Route::post('/notifications/process-queue', [NotificationController::class, 'processQueue']);
         });
 
-        // Notificações do admin
+        // NotificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes do admin
         Route::get('/notifications', [NotificationController::class, 'getUserNotifications']);
         Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
         Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
@@ -220,7 +219,7 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-// Rotas protegidas por Sanctum (usuários regulares)
+// Rotas protegidas por Sanctum (usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios regulares)
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -229,7 +228,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //Route::get('/empresas', [EmpresaController::class, 'index']);
     //Route::post('/empresas', [EmpresaController::class, 'store']);
 
-    // Notificações de usuários
+    // NotificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes de usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios
     Route::get('/notifications', [NotificationController::class, 'getUserNotifications']);
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
@@ -238,7 +237,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/notifications/settings', [NotificationController::class, 'updateNotificationSettings']);
 });
 
-// Rotas específicas por perfil
+// Rotas especÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­ficas por perfil
 Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente')->group(function () {
     // QR Code do Cliente
     Route::get('/meu-qrcode', [ClienteAPIController::class, 'meuQRCode']);
@@ -253,14 +252,14 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     // QR Code
     Route::post('/escanear-qrcode', [ClienteAPIController::class, 'escanearQRCode']);
     
-    // Promoções
+    // PromoÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
     Route::get('/promocoes', [ClienteAPIController::class, 'listarPromocoes']);
     Route::post('/resgatar-promocao/{id}', [ClienteAPIController::class, 'resgatarPromocao']);
     
-    // Avaliações
+    // AvaliaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
     Route::post('/avaliar', [ClienteAPIController::class, 'avaliar']);
     
-    // Histórico
+    // HistÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rico
     Route::get('/historico-pontos', [ClienteAPIController::class, 'historicoPontos']);
     
     // Legacy route (manter compatibilidade)
@@ -282,7 +281,7 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa'
     Route::put('/produtos/{id}', [ProdutoController::class, 'update']);
     Route::delete('/produtos/{id}', [ProdutoController::class, 'destroy']);
     
-    // Promoções
+    // PromoÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
     Route::get('/promocoes', [EmpresaAPIController::class, 'promocoes']);
     Route::post('/promocoes', [EmpresaAPIController::class, 'criarPromocao']);
     Route::put('/promocoes/{id}', [EmpresaAPIController::class, 'atualizarPromocao']);
@@ -294,10 +293,10 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa'
     // QR Codes
     Route::get('/qrcodes', [EmpresaAPIController::class, 'qrCodes']);
     
-    // Avaliações
+    // AvaliaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
     Route::get('/avaliacoes', [EmpresaAPIController::class, 'avaliacoes']);
     
-    // Relatórios
+    // RelatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios
     Route::get('/relatorio-pontos', [EmpresaAPIController::class, 'relatorioPontos']);
     
     // Legacy routes (manter compatibilidade)
@@ -314,19 +313,19 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->g
 
 // Rotas do sistema de pontos (protegidas por Sanctum)
 Route::middleware('auth:sanctum')->prefix('pontos')->group(function () {
-    // Check-in do usuário
+    // Check-in do usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
     Route::post('/checkin', [PontosController::class, 'checkin']);
     
     // Resgatar pontos por recompensas
     Route::post('/resgatar', [PontosController::class, 'resgatarPontos']);
     
-    // Dados do usuário (pontos, nível, etc.)
+    // Dados do usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio (pontos, nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­vel, etc.)
     Route::get('/meus-dados', [PontosController::class, 'meusDados']);
     
-    // Histórico de pontos
+    // HistÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rico de pontos
     Route::get('/historico', [PontosController::class, 'historicoPontos']);
     
-    // Cupons do usuário
+    // Cupons do usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio
     Route::get('/meus-cupons', [PontosController::class, 'meusCupons']);
     
     // Usar um cupom
@@ -343,14 +342,14 @@ Route::middleware(['sanctum.auth'])->prefix('admin/pontos')->group(function () {
     Route::get('/checkins-pendentes', [PontosController::class, 'checkinsPendentes'])
         ->middleware(['admin.permission:view_checkins']);
     
-    // Estatísticas do sistema
+    // EstatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­sticas do sistema
     Route::get('/estatisticas', [PontosController::class, 'estatisticas'])
         ->middleware(['admin.permission:view_reports']);
 });
 
 // Rotas do sistema QR Code
 Route::prefix('qrcode')->group(function () {
-    // Escanear QR Code (público - usuários logados)
+    // Escanear QR Code (pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblico - usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios logados)
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/scan', [QRCodeController::class, 'scanQR']);
         Route::post('/checkin', [QRCodeController::class, 'checkinViaQR']);
@@ -366,7 +365,7 @@ Route::prefix('qrcode')->group(function () {
         Route::put('/{qrcode}/offers', [QRCodeController::class, 'updateOffers'])
             ->middleware(['admin.permission:manage_qrcodes']);
         
-        // Estatísticas de uso do QR Code
+        // EstatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­sticas de uso do QR Code
         Route::get('/{qrcode}/stats', [QRCodeController::class, 'getQRStats'])
             ->middleware(['admin.permission:view_reports']);
         
@@ -378,7 +377,7 @@ Route::prefix('qrcode')->group(function () {
 
 // Rotas do sistema de descontos
 Route::prefix('discounts')->group(function () {
-    // Consultar descontos disponíveis (público - usuários logados)
+    // Consultar descontos disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis (pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblico - usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios logados)
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/company/{empresa_id}', [DiscountController::class, 'getCompanyDiscountLevels']);
         Route::post('/calculate', [DiscountController::class, 'calculateUserDiscount']);
@@ -387,7 +386,7 @@ Route::prefix('discounts')->group(function () {
     
     // Rotas administrativas de descontos
     Route::middleware(['sanctum.auth'])->group(function () {
-        // Configurar níveis de desconto
+        // Configurar nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis de desconto
         Route::post('/configure', [DiscountController::class, 'configureCompanyDiscounts'])
             ->middleware(['admin.permission:manage_discounts']);
         

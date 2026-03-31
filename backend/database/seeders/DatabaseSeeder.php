@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace Database\Seeders;
 
@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         echo "\n========================================\n";
-        echo "🌱 SEEDER - Populando banco de dados\n";
+        echo "Ã°Å¸Å’Â± SEEDER - Populando banco de dados\n";
         echo "========================================\n\n";
 
         // Admin Master
@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now()
             ]
         );
-        echo "✅ Admin criado: admin@temdetudo.com / admin123\n";
+        echo "Ã¢Å“â€¦ Admin criado: admin@temdetudo.com / admin123\n";
 
         // Cliente base
         $cliente = User::updateOrCreate(
@@ -51,9 +51,9 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now()
             ]
         );
-        echo "✅ Cliente criado: cliente@teste.com / 123456\n";
+        echo "Ã¢Å“â€¦ Cliente criado: cliente@teste.com / 123456\n";
 
-        // Empresa base (usuário tipo empresa)
+        // Empresa base (usuÃƒÂ¡rio tipo empresa)
         $empresaUser = User::updateOrCreate(
             ['email' => 'empresa@teste.com'],
             [
@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now()
             ]
         );
-        echo "✅ Empresa criada: empresa@teste.com / 123456\n";
+        echo "Ã¢Å“â€¦ Empresa criada: empresa@teste.com / 123456\n";
 
         // Empresa base na tabela empresas
         $empresaRecord = DB::table('empresas')->where('owner_id', $empresaUser->id)->first();
@@ -75,8 +75,11 @@ class DatabaseSeeder extends Seeder
                 'owner_id' => $empresaUser->id,
                 'nome' => 'Empresa Teste Ltda',
                 'ramo' => 'restaurante',
-                'descricao' => 'Empresa seed para demonstração',
+                'descricao' => 'Empresa seed para demonstracao',
                 'logo' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop',
+                'endereco' => 'Av. Central, 1000 - Sao Paulo, SP',
+                'telefone' => '(11) 4000-0000',
+                'cnpj' => '12.345.678/0001-00',
                 'ativo' => true,
                 'points_multiplier' => 1.0,
                 'created_at' => now(),
@@ -110,48 +113,52 @@ class DatabaseSeeder extends Seeder
         }
 
         // Cupom seed para cliente teste
-        DB::table('cupons')->updateOrInsert(
+        DB::table('coupons')->updateOrInsert(
             [
                 'user_id' => $cliente->id,
-                'promocao_id' => $promoId,
                 'codigo' => 'CUPOM-SEED-001'
             ],
             [
-                'status' => 'pendente',
-                'validade' => now()->addMonths(1),
+                'empresa_id' => $empresaRecord->id,
+                'tipo' => 'discount',
+                'descricao' => 'Cupom de boas-vindas',
+                'custo_pontos' => 0,
+                'porcentagem_desconto' => 10,
+                'status' => 'active',
+                'expira_em' => now()->addMonths(1),
                 'created_at' => now(),
                 'updated_at' => now()
             ]
         );
 
-        // Notificações base
+        // NotificaÃƒÂ§ÃƒÂµes base
         Notification::updateOrCreate(
             ['user_id' => $cliente->id, 'title' => 'Boas-vindas'],
             [
-                'message' => 'Você ganhou 50 pontos de boas-vindas.',
+                'message' => 'VocÃƒÂª ganhou 50 pontos de boas-vindas.',
                 'type' => 'info',
                 'payload' => ['origin' => 'seed']
             ]
         );
         Notification::updateOrCreate(
-            ['user_id' => $empresaUser->id, 'title' => 'Nova promoção ativa'],
+            ['user_id' => $empresaUser->id, 'title' => 'Nova promoÃƒÂ§ÃƒÂ£o ativa'],
             [
-                'message' => 'Sua promoção de boas-vindas está ativa.',
+                'message' => 'Sua promoÃƒÂ§ÃƒÂ£o de boas-vindas estÃƒÂ¡ ativa.',
                 'type' => 'success',
                 'payload' => ['promocao_id' => $promoId]
             ]
         );
         Notification::updateOrCreate(
-            ['user_id' => $admin->id ?? null, 'title' => 'Admin: revise relatórios'],
+            ['user_id' => $admin->id ?? null, 'title' => 'Admin: revise relatÃƒÂ³rios'],
             [
-                'message' => 'Relatórios disponíveis para revisão.',
+                'message' => 'RelatÃƒÂ³rios disponÃƒÂ­veis para revisÃƒÂ£o.',
                 'type' => 'alert',
                 'payload' => ['section' => 'reports']
             ]
         );
 
         // Clientes demo ricos
-        echo "\n📚 Criando 30 clientes com pontos/cupons/histórico...\n";
+        echo "\nÃ°Å¸â€œÅ¡ Criando 30 clientes com pontos/cupons/histÃƒÂ³rico...\n";
         for ($i = 1; $i <= 30; $i++) {
             $user = User::updateOrCreate(
                 ['email' => "demo_cliente{$i}@email.com"],
@@ -178,12 +185,17 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
 
-            DB::table('cupons')->insertOrIgnore([
+            DB::table('coupons')->insertOrIgnore([
                 'user_id' => $user->id,
-                'promocao_id' => $promoId,
+                'empresa_id' => $empresaRecord->id,
                 'codigo' => 'CUPOM-DEMO-' . $i,
-                'status' => $i % 2 === 0 ? 'used' : 'pending',
-                'validade' => now()->addDays(30),
+                'tipo' => 'discount',
+                'descricao' => 'Cupom demo',
+                'custo_pontos' => 0,
+                'porcentagem_desconto' => 5,
+                'status' => $i % 2 === 0 ? 'used' : 'active',
+                'expira_em' => now()->addDays(30),
+                'usado_em' => $i % 2 === 0 ? now()->subDays(1) : null,
                 'created_at' => now()->subDays(rand(1, 10)),
                 'updated_at' => now(),
             ]);
@@ -191,27 +203,27 @@ class DatabaseSeeder extends Seeder
             Notification::updateOrCreate(
                 ['user_id' => $user->id, 'title' => "Saldo atualizado #{$i}"],
                 [
-                    'message' => 'Você recebeu pontos em sua última compra.',
+                    'message' => 'VocÃƒÂª recebeu pontos em sua ÃƒÂºltima compra.',
                     'type' => 'info',
                     'payload' => ['origin' => 'seed'],
                 ]
             );
 
-            if ($i % 10 === 0) echo "  ✅ {$i} clientes demo criados...\n";
+            if ($i % 10 === 0) echo "  Ã¢Å“â€¦ {$i} clientes demo criados...\n";
         }
-        echo "✅ Clientes demo criados\n";
+        echo "Ã¢Å“â€¦ Clientes demo criados\n";
 
-        // Empresas adicionais com promoções
-        echo "\n🏪 Criando empresas parceiras...\n";
+        // Empresas adicionais com promoÃƒÂ§ÃƒÂµes
+        echo "\nÃ°Å¸ÂÂª Criando empresas parceiras...\n";
         $empresasData = [
-            ['nome' => 'Restaurante Sabor & Arte', 'ramo' => 'restaurante', 'logo' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop', 'descricao' => 'Restaurante contemporâneo.'],
+            ['nome' => 'Restaurante Sabor & Arte', 'ramo' => 'restaurante', 'logo' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop', 'descricao' => 'Restaurante contemporÃƒÂ¢neo.'],
             ['nome' => 'Academia Corpo Forte', 'ramo' => 'academia', 'logo' => 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=400&fit=crop', 'descricao' => 'Academia completa.'],
-            ['nome' => 'Cafeteria Aroma Premium', 'ramo' => 'cafeteria', 'logo' => 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=400&fit=crop', 'descricao' => 'Cafés especiais e doces artesanais.'],
+            ['nome' => 'Cafeteria Aroma Premium', 'ramo' => 'cafeteria', 'logo' => 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=400&fit=crop', 'descricao' => 'CafÃƒÂ©s especiais e doces artesanais.'],
             ['nome' => 'Pet Shop Amigo Fiel', 'ramo' => 'pet_shop', 'logo' => 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=400&fit=crop', 'descricao' => 'Tudo para seu pet.'],
-            ['nome' => 'Salão Beleza Total', 'ramo' => 'salao', 'logo' => 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop', 'descricao' => 'Beleza completa.'],
-            ['nome' => 'Mercado Bom Preço', 'ramo' => 'mercado', 'logo' => 'https://images.unsplash.com/photo-1583736902931-063382c8e67f?w=400&h=400&fit=crop', 'descricao' => 'Ofertas diárias.'],
-            ['nome' => 'Farmácia Saúde Mais', 'ramo' => 'farmacia', 'logo' => 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=400&fit=crop', 'descricao' => 'Farmácia completa.'],
-            ['nome' => 'Padaria Pão Quentinho', 'ramo' => 'padaria', 'logo' => 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop', 'descricao' => 'Pães frescos diários.'],
+            ['nome' => 'SalÃƒÂ£o Beleza Total', 'ramo' => 'salao', 'logo' => 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop', 'descricao' => 'Beleza completa.'],
+            ['nome' => 'Mercado Bom PreÃƒÂ§o', 'ramo' => 'mercado', 'logo' => 'https://images.unsplash.com/photo-1583736902931-063382c8e67f?w=400&h=400&fit=crop', 'descricao' => 'Ofertas diÃƒÂ¡rias.'],
+            ['nome' => 'FarmÃƒÂ¡cia SaÃƒÂºde Mais', 'ramo' => 'farmacia', 'logo' => 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=400&fit=crop', 'descricao' => 'FarmÃƒÂ¡cia completa.'],
+            ['nome' => 'Padaria PÃƒÂ£o Quentinho', 'ramo' => 'padaria', 'logo' => 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop', 'descricao' => 'PÃƒÂ£es frescos diÃƒÂ¡rios.'],
         ];
 
         foreach ($empresasData as $empData) {
@@ -223,7 +235,7 @@ class DatabaseSeeder extends Seeder
                 'ramo' => $empData['ramo'],
                 'logo' => $empData['logo'],
                 'descricao' => $empData['descricao'],
-                'endereco' => 'Rua Exemplo, ' . rand(100, 9999) . ' - São Paulo, SP',
+                'endereco' => 'Rua Exemplo, ' . rand(100, 9999) . ' - SÃƒÂ£o Paulo, SP',
                 'telefone' => sprintf('(11) 9%04d-%04d', rand(1000, 9999), rand(1000, 9999)),
                 'cnpj' => sprintf('%02d.%03d.%03d/%04d-%02d', rand(10, 99), rand(100, 999), rand(100, 999), rand(1000, 9999), rand(10, 99)),
                 'ativo' => true,
@@ -267,21 +279,21 @@ class DatabaseSeeder extends Seeder
                 ],
             ]);
         }
-        echo "✅ Empresas parceiras e promoções criadas\n";
+        echo "Ã¢Å“â€¦ Empresas parceiras e promoÃƒÂ§ÃƒÂµes criadas\n";
 
         echo "\n========================================\n";
-        echo "✅ SEEDER CONCLUÍDO COM SUCESSO!\n";
+        echo "Ã¢Å“â€¦ SEEDER CONCLUÃƒÂDO COM SUCESSO!\n";
         echo "========================================\n";
-        echo "\n📃 CREDENCIAIS DE ACESSO:\n";
-        echo "┌────────────────────────────────────────┐\n";
-        echo "│ Admin:   admin@temdetudo.com / admin123         │\n";
-        echo "│ Cliente: cliente@teste.com / 123456             │\n";
-        echo "│ Empresa: empresa@teste.com / 123456             │\n";
-        echo "│ Clientes demo: demo_cliente1-30@email.com / senha123 │\n";
-        echo "└────────────────────────────────────────┘\n";
+        echo "\nÃ°Å¸â€œÆ’ CREDENCIAIS DE ACESSO:\n";
+        echo "Ã¢â€Å’Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Â\n";
+        echo "Ã¢â€â€š Admin:   admin@temdetudo.com / admin123         Ã¢â€â€š\n";
+        echo "Ã¢â€â€š Cliente: cliente@teste.com / 123456             Ã¢â€â€š\n";
+        echo "Ã¢â€â€š Empresa: empresa@teste.com / 123456             Ã¢â€â€š\n";
+        echo "Ã¢â€â€š Clientes demo: demo_cliente1-30@email.com / senha123 Ã¢â€â€š\n";
+        echo "Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Ëœ\n";
         echo "\n";
         $totalUsers = User::count();
-        echo "📊 Total de usuários: {$totalUsers}\n";
+        echo "Ã°Å¸â€œÅ  Total de usuÃƒÂ¡rios: {$totalUsers}\n";
         echo "========================================\n\n";
     }
 }
