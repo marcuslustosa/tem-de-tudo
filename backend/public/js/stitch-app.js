@@ -1164,15 +1164,18 @@
         atividades.slice(0, 10).forEach((a) => {
           const item = document.createElement('div');
           item.className = 'flex gap-4 items-start pb-4 border-b border-surface-container-low';
-          item.innerHTML = 
+          const titulo = a?.titulo || a?.message || a?.descricao || 'Atividade';
+          const detalhe = a?.detalhe || a?.description || a?.user || '';
+          const stamp = a?.created_at ? new Date(a.created_at).toLocaleString('pt-BR') : '';
+          item.innerHTML = `
             <div class="w-10 h-10 rounded-full bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-xl" data-icon="">notifications</span>
             </div>
             <div>
-              <p class="text-sm font-semibold text-on-surface"></p>
-              <p class="text-xs text-on-surface-variant"></p>
-              <span class="text-[10px] text-outline mt-1 block"></span>
-            </div>;
+              <p class="text-sm font-semibold text-on-surface">${titulo}</p>
+              <p class="text-xs text-on-surface-variant">${detalhe}</p>
+              <span class="text-[10px] text-outline mt-1 block">${stamp}</span>
+            </div>`;
           list?.appendChild(item);
         });
       }
