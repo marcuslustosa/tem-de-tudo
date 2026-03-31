@@ -954,9 +954,11 @@
     async dashboard() {
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando dashboard admin...');
-      const stats = await api.request('/admin/dashboard-stats');
-      const recent = await api.request('/admin/recent-activity');
-      const empresas = await api.request('/empresas', {}, { requireAuth: false });
+      const [stats, recent, empresas] = await Promise.all([
+        api.request('/admin/dashboard-stats'),
+        api.request('/admin/recent-activity'),
+        api.request('/empresas', {}, { requireAuth: false }),
+      ]);
       ui.clearPageState();
 
       render.summary('Admin Master', [
@@ -980,6 +982,8 @@
             )
             .join('')
         );
+      } else {
+        render.section('Atividades recentes', '<p class="text-sm text-on-surface-variant">Sem atividades recentes.</p>');
       }
 
       if (stats.data?.data) {
@@ -1006,7 +1010,10 @@
       ui.setPageState('loading', 'Carregando estabelecimentos...');
       const { data } = await api.request('/empresas', {}, { requireAuth: false });
       const lista = data?.data || data || [];
-      if (!lista.length) return ui.setPageState('empty', 'Nenhum estabelecimento cadastrado.');
+      if (!lista.length) {
+        render.section('Estabelecimentos', '<p class="text-sm text-on-surface-variant">Nenhum estabelecimento cadastrado.</p>');
+        return;
+      }
       ui.clearPageState();
       render.section(
         'Estabelecimentos',
@@ -1031,7 +1038,10 @@
       const { res, data } = await api.request('/admin/users-report');
       if (!res.ok) return ui.setPageState('error', 'Endpoint /admin/users-report indisponível ou bloqueado.');
       const lista = data?.data || [];
-      if (!lista.length) return ui.setPageState('empty', 'Nenhum usuário retornado.');
+      if (!lista.length) {
+        render.section('Usuários', '<p class="text-sm text-on-surface-variant">Nenhum usuário retornado.</p>');
+        return;
+      }
       ui.clearPageState();
       render.section(
         'Usuários',
@@ -1057,8 +1067,10 @@
     async relatorios() {
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando relatórios...');
-      const stats = await api.request('/admin/dashboard-stats');
-      const checkins = await api.request('/admin/pontos/estatisticas');
+      const [stats, checkins] = await Promise.all([
+        api.request('/admin/dashboard-stats'),
+        api.request('/admin/pontos/estatisticas'),
+      ]);
       ui.clearPageState();
 
       if (stats.data?.data) {
@@ -1074,6 +1086,8 @@
             )
             .join('')
         );
+      } else {
+        render.section('Dashboard', '<p class="text-sm text-on-surface-variant">Sem dados de relatório.</p>');
       }
 
       if (checkins.data?.data) {
