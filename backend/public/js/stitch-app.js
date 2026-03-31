@@ -727,23 +727,55 @@
     },
 
     async validarResgate() {
-      if (!(await auth.guard(['cliente', 'empresa', 'admin']))) return;
-      const host = document.querySelector('main') || document.body;
-      const box = document.createElement('section');
-      box.className = 'max-w-xl mx-auto px-4 pt-4';
-      box.innerHTML = `
-        <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3">
-          <h3 class="text-lg font-semibold text-on-surface">Validar/usar cupom</h3>
-          <input id="cupomId" class="border rounded-lg px-3 py-2 w-full" placeholder="ID do cupom" />
-          <button id="usarCupomBtn" class="px-4 py-2 bg-primary text-white rounded-lg font-semibold w-full">Marcar como usado</button>
-        </div>`;
-      host.prepend(box);
-      box.querySelector('#usarCupomBtn').addEventListener('click', async () => {
-        const id = box.querySelector('#cupomId').value;
-        if (!id) return ui.message('Informe o ID do cupom.', 'warning');
-        const { res, data } = await api.request(`/pontos/usar-cupom/${id}`, { method: 'POST' });
-        if (res.ok && data?.success) ui.message('Cupom marcado como usado.', 'success');
-        else ui.message(data?.message || 'NÃ£o foi possÃ­vel usar o cupom.', 'error');
+      if (!(await auth.guard(['empresa', 'admin']))) return;
+      const input = document.getElementById('cupomId');
+      const btn = document.getElementById('usarCupomBtn');
+      const list = document.getElementById('validacoesRecentes');
+      const empty = document.getElementById('validacoesEmpty');
+      if (!input || !btn) return;
+
+      const renderItem = (item) => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-[0_2px_8px_rgba(11,31,58,0.04)]';
+        div.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+              <span class="material-symbols-outlined">check_circle</span>
+            </div>
+            <div>
+              <p class="text-sm font-bold text-on-surface">${item.cliente || 'Cliente'}</p>
+              <p class="text-[10px] text-on-surface-variant uppercase">Resgate: ${item.beneficio || item.codigo}</p>
+            </div>
+          </div>
+          <p class="text-[10px] font-semibold text-outline">${item.hora}</p>`;
+        return div;
+      };
+
+      const pushItem = (item) => {
+        if (empty) empty.classList.add('hidden');
+        list?.prepend(renderItem(item));
+      };
+
+      btn.addEventListener('click', async () => {
+        const codigo = input.value.trim();
+        if (!codigo) return ui.message('Informe o código do cupom.', 'warning');
+        btn.disabled = true;
+        btn.classList.add('opacity-60');
+        const { res, data } = await api.request(`/pontos/usar-cupom/${encodeURIComponent(codigo)}`, { method: 'POST' });
+        btn.disabled = false;
+        btn.classList.remove('opacity-60');
+        if (res.ok && data?.success) {
+          ui.message('Cupom validado/uso registrado.', 'success');
+          const info = data.data || {};
+          pushItem({
+            cliente: info.cliente_nome || info.cliente || 'Cliente',
+            beneficio: info.promocao || info.recompensa || info.cupom || 'Cupom',
+            codigo: codigo,
+            hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          });
+        } else {
+          ui.message(data?.message || 'NÃ£o foi possÃ­vel usar o cupom.', 'error');
+        }
       });
     },
   };
