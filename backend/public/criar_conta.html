@@ -1,0 +1,44 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Criar conta | Tem de Tudo</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.10/dist/tailwind.min.css">
+  <script src="/js/stitch-app.js" defer></script>
+</head>
+<body data-page="criar_conta" class="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center">
+  <main class="w-full max-w-lg bg-white shadow-lg rounded-2xl p-6 space-y-4">
+    <div class="text-center">
+      <h1 class="text-2xl font-bold">Criar conta</h1>
+      <p class="text-sm text-slate-600">Escolha o tipo de conta e preencha os dados.</p>
+    </div>
+    <form class="space-y-3" id="signupForm">
+      <div class="grid gap-2">
+        <label class="text-sm font-semibold">Tipo de conta</label>
+        <select id="sgPerfil" class="border rounded-lg px-3 py-2" required>
+          <option value="cliente">Cliente</option>
+          <option value="empresa">Estabelecimento</option>
+        </select>
+      </div>
+      <input id="sgNome" class="w-full border rounded-lg px-3 py-2" type="text" placeholder="Nome" required />
+      <input id="sgEmail" class="w-full border rounded-lg px-3 py-2" type="email" placeholder="E-mail" required />
+      <input id="sgTelefone" class="w-full border rounded-lg px-3 py-2" type="text" placeholder="Telefone" />
+      <div id="empresaFields" class="hidden grid gap-2">
+        <input id="sgCnpj" class="w-full border rounded-lg px-3 py-2" type="text" placeholder="CNPJ 00.000.000/0000-00" />
+        <input id="sgEndereco" class="w-full border rounded-lg px-3 py-2" type="text" placeholder="Endereço completo" />
+      </div>
+      <input id="sgSenha" class="w-full border rounded-lg px-3 py-2" type="password" placeholder="Senha" required />
+      <input id="sgSenhaConf" class="w-full border rounded-lg px-3 py-2" type="password" placeholder="Confirmar senha" required />
+      <label class="inline-flex items-center gap-2 text-sm text-slate-700">
+        <input id="sgTerms" type="checkbox" class="rounded" required />
+        <span>Li e aceito os termos.</span>
+      </label>
+      <button class="w-full bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg" type="submit">Criar conta</button>
+    </form>
+    <div class="text-sm text-center">
+      <a class="text-indigo-600 font-semibold" href="/entrar.html">Já tenho conta</a>
+    </div>
+  </main>
+</body>
+</html>

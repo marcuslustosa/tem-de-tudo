@@ -1164,6 +1164,50 @@
     hist_rico_de_uso: cliente.historico,
     meu_perfil: cliente.perfil,
     validar_resgate: cliente.validarResgate,
+    criar_conta: async () => {
+      const form = document.getElementById('signupForm');
+      if (!form) return;
+      const perfilSel = document.getElementById('sgPerfil');
+      const cnpj = document.getElementById('sgCnpj');
+      const end = document.getElementById('sgEndereco');
+      const blocoEmpresa = document.getElementById('empresaFields');
+
+      perfilSel?.addEventListener('change', () => {
+        if (perfilSel.value === 'empresa') blocoEmpresa.classList.remove('hidden');
+        else blocoEmpresa.classList.add('hidden');
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const perfil = perfilSel.value;
+        const payload = {
+          perfil,
+          name: document.getElementById('sgNome').value,
+          email: document.getElementById('sgEmail').value,
+          telefone: document.getElementById('sgTelefone').value,
+          password: document.getElementById('sgSenha').value,
+          password_confirmation: document.getElementById('sgSenhaConf').value,
+          terms: document.getElementById('sgTerms').checked,
+        };
+        if (perfil === 'empresa') {
+          payload.cnpj = cnpj.value;
+          payload.endereco = end.value;
+        }
+        ui.setPageState('loading', 'Criando conta...');
+        const { res, data } = await api.request('/auth/register', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        }, { requireAuth: false });
+        ui.clearPageState();
+        if (res.ok && data?.success !== false) {
+          ui.message('Conta criada. Faça login.', 'success');
+          setTimeout(() => (window.location.href = '/entrar.html'), 800);
+        } else {
+          const errs = data?.errors ? Object.values(data.errors).flat().join(' ') : '';
+          ui.message(data?.message || errs || 'Erro ao criar conta.', 'error');
+        }
+      });
+    },
 
     // Empresa
     dashboard_parceiro: empresa.dashboard,
