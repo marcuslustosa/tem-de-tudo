@@ -172,11 +172,13 @@ class AdminReportController extends Controller
     public function dashboardStats(Request $request)
     {
         try {
+            $hasCheckins = \Schema::hasTable('checkins');
+            $hasPontos = \Schema::hasTable('pontos');
             $stats = [
                 'total_users' => \App\Models\User::count(),
                 'total_empresas' => \App\Models\Empresa::count(),
-                'total_pontos_distribuidos' => \DB::table('pontos')->sum('pontos'),
-                'total_checkins' => \DB::table('checkins')->count(),
+                'total_pontos_distribuidos' => $hasPontos ? \DB::table('pontos')->sum('pontos') : 0,
+                'total_checkins' => $hasCheckins ? \DB::table('checkins')->count() : 0,
                 'users_ativos_hoje' => \App\Models\User::where('updated_at', '>=', today())->count(),
                 'empresas_ativas' => \App\Models\Empresa::where('ativo', true)->count()
             ];

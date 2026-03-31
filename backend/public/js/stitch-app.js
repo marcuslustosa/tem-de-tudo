@@ -7,7 +7,11 @@
   // ---------------------- Constantes ---------------------- //
   const API_BASE = `${window.location.origin}/api`;
   const STORAGE = { token: 'tem_de_tudo_token', user: 'tem_de_tudo_user' };
-  const redirectMap = { cliente: '/dashboard-cliente.html', empresa: '/dashboard-empresa.html', admin: '/dashboard-admin.html' };
+  const redirectMap = {
+    cliente: '/meus_pontos.html',
+    empresa: '/dashboard_parceiro.html',
+    admin: '/dashboard_admin_master.html',
+  };
   const page = document.body?.dataset?.page || location.pathname.replace(/\//g, '').replace('.html', '');
   const VAPID_CACHE_KEY = 'vapid_public_key';
 
@@ -1685,4 +1689,3 @@
     }
   });
 })();
-
