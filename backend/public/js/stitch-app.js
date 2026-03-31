@@ -300,23 +300,29 @@
     async dashboard() {
       if (!(await auth.guard(['cliente']))) return;
       ui.setPageState('loading', 'Carregando dashboard...');
-      const { data: dadosResp } = await api.request('/pontos/meus-dados');
-      const dados = dadosResp?.data || {};
+      const [dadosResp, histResp] = await Promise.all([
+        api.request('/pontos/meus-dados'),
+        api.request('/pontos/historico'),
+      ]);
+      const dados = dadosResp.data?.data || {};
+      const itens = histResp.data?.data?.data || histResp.data?.data || [];
+
       ui.clearPageState();
       render.summary('Sua conta', [
-        { label: 'Pontos', value: dados.pontos_total },
-        { label: 'Pendentes', value: dados.pontos_pendentes },
-        { label: 'Nível', value: dados.nivel },
-        { label: 'Check-ins', value: dados.checkins_total },
-        { label: 'Cupons ativos', value: dados.cupons_ativos },
+        { label: 'Pontos', value: dados.pontos_total ?? '—' },
+        { label: 'Pendentes', value: dados.pontos_pendentes ?? '—' },
+        { label: 'Nível', value: dados.nivel ?? '—' },
+        { label: 'Check-ins', value: dados.checkins_total ?? '—' },
+        { label: 'Cupons ativos', value: dados.cupons_ativos ?? '—' },
         { label: 'Usuário', value: auth.getStored().user?.email },
       ]);
 
       await notifications.load('Notificações');
 
-      const historico = await api.request('/pontos/historico');
-      const itens = historico.data?.data?.data || historico.data?.data || [];
-      if (Array.isArray(itens) && itens.length) {
+      const host = document.querySelector('main') || document.body;
+      if (!Array.isArray(itens) || !itens.length) {
+        render.section('Histórico de pontos', '<p class="text-sm text-on-surface-variant">Nenhum histórico ainda.</p>');
+      } else {
         render.section(
           'Histórico de pontos',
           itens
@@ -326,15 +332,13 @@
               <div class="px-4 py-3 flex items-center justify-between text-sm">
                 <div>
                   <p class="font-semibold">${item?.empresa?.nome || 'Empresa'}</p>
-                  <p class="text-on-surface-variant">${new Date(item.created_at).toLocaleString('pt-BR')}</p>
+                  <p class="text-on-surface-variant">${item.created_at ? new Date(item.created_at).toLocaleString('pt-BR') : ''}</p>
                 </div>
                 <span class="text-primary font-bold">${item.pontos || 0} pts</span>
               </div>`
             )
             .join('')
         );
-      } else {
-        ui.setPageState('empty', 'Nenhum histórico de pontos ainda.');
       }
     },
 
@@ -359,7 +363,10 @@
         const { data } = await api.request(`/cliente/empresas${qs}`);
         ui.clearPageState();
         const lista = data?.data || data || [];
-        if (!lista.length) return ui.setPageState('empty', 'Nenhum parceiro encontrado.');
+        if (!lista.length) {
+          render.section('Parceiros', '<p class="text-sm text-on-surface-variant">Nenhum parceiro encontrado.</p>');
+          return;
+        }
         render.section(
           'Parceiros',
           lista
@@ -405,7 +412,7 @@
         ]);
       }
 
-      const promoList = promos.data?.data || [];
+      const promoList = promos.data?.data || promos.data || [];
       if (promoList.length) {
         render.section(
           'Promoções',
