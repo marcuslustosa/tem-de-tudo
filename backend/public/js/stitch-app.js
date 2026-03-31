@@ -628,15 +628,17 @@
     async dashboard() {
       if (!(await auth.guard(['empresa']))) return;
       ui.setPageState('loading', 'Carregando painel da empresa...');
-      const promos = await api.request('/empresa/promocoes');
-      const clientes = await api.request('/empresa/clientes');
+      const [promos, clientes, relatorio] = await Promise.all([
+        api.request('/empresa/promocoes'),
+        api.request('/empresa/clientes'),
+        api.request('/empresa/relatorio-pontos'),
+      ]);
       render.summary('Painel do estabelecimento', [
         { label: 'Promoções', value: Array.isArray(promos.data?.data || promos.data) ? (promos.data?.data || promos.data).length : '—' },
         { label: 'Clientes fidelizados', value: clientes.data?.data?.length || clientes.data?.data?.total || '—' },
         { label: 'Responsável', value: auth.getStored().user?.email },
       ]);
 
-      const relatorio = await api.request('/empresa/relatorio-pontos');
       ui.clearPageState();
       if (relatorio.data?.data?.totais) {
         const t = relatorio.data.data.totais;
@@ -702,6 +704,8 @@
             )
             .join('')
         );
+      } else {
+        render.section('Resgates recentes', '<p class="text-sm text-on-surface-variant">Sem resgates recentes.</p>');
       }
     },
 
