@@ -899,50 +899,57 @@
 
     async clientes() {
       if (!(await auth.guard(['empresa']))) return;
-      const host = document.querySelector('main') || document.body;
-      const search = document.createElement('section');
-      search.className = 'max-w-5xl mx-auto px-4 pt-4';
-      search.innerHTML = `
-        <div class="flex items-center justify-between gap-3 flex-wrap">
-          <h3 class="text-lg font-semibold text-on-surface">Clientes fidelizados</h3>
-          <div class="flex gap-2 items-center text-sm">
-            <input id="cliBusca" class="border rounded-lg px-3 py-2" placeholder="Buscar nome ou email" />
-            <button id="cliBuscarBtn" class="px-3 py-2 bg-primary text-white rounded-lg">Buscar</button>
-          </div>
-        </div>`;
-      host.prepend(search);
+      const input = document.getElementById('cliBusca');
+      const btn = document.getElementById('cliBuscarBtn');
+      const listaEl = document.getElementById('clientesLista');
+      const vazioEl = document.getElementById('clientesEmpty');
+      const statTotal = document.getElementById('statTotal');
+      const statAtivos = document.getElementById('statAtivos');
+      const statNovos = document.getElementById('statNovos');
 
       const load = async (term = '') => {
         ui.setPageState('loading', 'Carregando clientes...');
         const qs = term ? `?busca=${encodeURIComponent(term)}` : '';
         const { data } = await api.request(`/empresa/clientes${qs}`);
         const lista = data?.data?.data || data?.data || data || [];
-        if (!lista.length) return ui.setPageState('empty', 'Nenhum cliente fidelizado ainda.');
+        if (statTotal) statTotal.textContent = lista.length;
+        if (statAtivos) statAtivos.textContent = lista.length;
+        if (statNovos) statNovos.textContent = '—';
+        if (!lista.length) {
+          ui.setPageState('empty', 'Nenhum cliente fidelizado ainda.');
+          if (vazioEl) vazioEl.classList.remove('hidden');
+          if (listaEl) listaEl.innerHTML = '';
+          return;
+        }
         ui.clearPageState();
-        render.section(
-          'Clientes fidelizados',
-          lista
-            .map(
-              (c) => `
-            <div class="px-4 py-3 flex items-center justify-between text-sm">
-              <div>
-                <p class="font-semibold">${c.name || c.nome}</p>
-                <p class="text-on-surface-variant">${c.email || ''}</p>
+        if (vazioEl) vazioEl.classList.add('hidden');
+        if (listaEl) listaEl.innerHTML = '';
+        lista.forEach((c) => {
+          const card = document.createElement('div');
+          card.className = 'bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 transition-transform active:scale-[0.98] tap-highlight-transparent border border-surface-variant/30';
+          const nome = c.name || c.nome || 'Cliente';
+          const pontos = c.total_ganho || c.pontos || 0;
+          const ultima = c.ultima_visita || c.updated_at;
+          card.innerHTML = `
+            <div class="relative">
+              <div class="w-14 h-14 rounded-full overflow-hidden bg-surface-container">
+                <img alt="${nome}" class="w-full h-full object-cover" src="${c.avatar || '/img/placeholder-user.png'}"/>
               </div>
-              <div class="text-right">
-                <p class="text-primary font-semibold">${c.total_ganho || 0} pts</p>
-                <p class="text-xs text-on-surface-variant">Ãšltima visita: ${c.ultima_visita ? new Date(c.ultima_visita).toLocaleDateString('pt-BR') : 'â€”'}</p>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-headline font-bold text-on-surface">${nome}</h3>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="material-symbols-outlined text-[16px] text-primary" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+                <span class="text-sm font-bold text-primary">${pontos} pontos</span>
               </div>
-            </div>`
-            )
-            .join('')
-        );
+              <p class="text-xs text-outline mt-1">Última visita: ${ultima ? new Date(ultima).toLocaleString('pt-BR') : '—'}</p>
+            </div>
+            <button class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</button>`;
+          listaEl?.appendChild(card);
+        });
       };
 
-      search.querySelector('#cliBuscarBtn')?.addEventListener('click', () => {
-        const term = search.querySelector('#cliBusca').value;
-        load(term);
-      });
+      btn?.addEventListener('click', () => load(input?.value || ''));
 
       await load();
     },
