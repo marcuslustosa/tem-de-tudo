@@ -949,181 +949,165 @@
 
     async promocoes() {
       if (!(await auth.guard(['empresa']))) return;
-      ui.setPageState('loading', 'Carregando promoÃ§Ãµes...');
+      ui.setPageState('loading', 'Carregando promoções...');
       const { data } = await api.request('/empresa/promocoes');
       const lista = data?.data || data || [];
-      if (!lista.length) ui.setPageState('empty', 'Nenhuma promoÃ§Ã£o cadastrada ainda.');
-      else ui.clearPageState();
+      ui.clearPageState();
 
-      if (lista.length) {
-        const wrap = render.section(
-          'PromoÃ§Ãµes',
-          lista
-            .map(
-              (p) => `
-            <div class="px-4 py-3 flex items-center justify-between text-sm" data-promocao="${p.id}">
-              <div>
-                <p class="font-semibold">${p.titulo || p.nome}</p>
-                <p class="text-on-surface-variant">${p.status || 'ativa'}</p>
-              </div>
-              <div class="flex gap-2">
-                <button class="px-3 py-1 rounded-lg bg-primary text-white text-xs" data-action="ativar">Ativar</button>
-                <button class="px-3 py-1 rounded-lg bg-amber-500 text-white text-xs" data-action="pausar">Pausar</button>
-              </div>
-            </div>`
-            )
-            .join('')
-        );
-        wrap.querySelectorAll('[data-promocao]').forEach((row) => {
-          const id = row.getAttribute('data-promocao');
-          row.querySelector('[data-action="ativar"]')?.addEventListener('click', () => empresa.togglePromocao(id, 'ativar'));
-          row.querySelector('[data-action="pausar"]')?.addEventListener('click', () => empresa.togglePromocao(id, 'pausar'));
-        });
-      }
-
-      // FormulÃ¡rio rÃ¡pido de criaÃ§Ã£o (JSON â€“ EmpresaAPIController)
-      const host = document.querySelector('main') || document.body;
+      const btnNova = document.getElementById('novaOfertaBtn');
+      const listaBox = document.getElementById('ofertasLista');
+      const vazio = document.getElementById('ofertasEmpty');
+      const counts = {
+        todas: document.getElementById('countTodas'),
+        ativas: document.getElementById('countAtivas'),
+        programadas: document.getElementById('countProgramadas'),
+        inativas: document.getElementById('countInativas'),
+      };
+      const filtros = {
+        todas: document.getElementById('filterTodas'),
+        ativas: document.getElementById('filterAtivas'),
+        programadas: document.getElementById('filterProgramadas'),
+        inativas: document.getElementById('filterInativas'),
+      };
+      const form = {
+        titulo: document.getElementById('ofertaTitulo'),
+        descricao: document.getElementById('ofertaDescricao'),
+        preco: document.getElementById('ofertaPreco'),
+        tipo: document.getElementById('ofertaTipo'),
+        imagem: document.getElementById('ofertaImagem'),
+        ativa: document.getElementById('ofertaAtiva'),
+        salvar: document.getElementById('ofertaSalvar'),
+        cancelar: document.getElementById('ofertaCancelar'),
+        msg: document.getElementById('ofertaMsg'),
+      };
       let editingId = null;
-      const form = document.createElement('section');
-      form.className = 'max-w-6xl mx-auto px-4 pt-4';
-      form.innerHTML = `
-        <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-on-surface" id="promoFormTitle">Nova promoÃ§Ã£o</h3>
-            <button id="promoReset" class="text-sm text-on-surface-variant underline">Limpar</button>
-          </div>
-          <div class="grid gap-3 md:grid-cols-2">
-            <input id="promoTitulo" class="border rounded-lg px-3 py-2" placeholder="TÃ­tulo" />
-            <input id="promoDesconto" class="border rounded-lg px-3 py-2" placeholder="Desconto (%)" type="number" min="0" max="100" />
-          </div>
-          <textarea id="promoDescricao" class="border rounded-lg px-3 py-2 w-full" rows="3" placeholder="DescriÃ§Ã£o"></textarea>
-          <input id="promoImagem" type="file" accept="image/*" class="border rounded-lg px-3 py-2 w-full" />
-          <input id="promoImagemUrl" type="url" class="border rounded-lg px-3 py-2 w-full" placeholder="Ou URL da imagem" />
-          <button id="promoCriarBtn" class="px-4 py-2 bg-primary text-white rounded-lg font-semibold">Criar</button>
-        </div>`;
-      host.prepend(form);
+      let filtroAtual = 'todas';
 
-      form.querySelector('#promoReset')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        editingId = null;
-        form.querySelector('#promoFormTitle').textContent = 'Nova promoÃ§Ã£o';
-        form.querySelector('#promoCriarBtn').textContent = 'Criar';
-        form.querySelector('#promoTitulo').value = '';
-        form.querySelector('#promoDesconto').value = '';
-        form.querySelector('#promoDescricao').value = '';
-        form.querySelector('#promoImagem').value = '';
-        form.querySelector('#promoImagemUrl').value = '';
-      });
-
-      form.querySelector('#promoCriarBtn')?.addEventListener('click', async () => {
-        const titulo = form.querySelector('#promoTitulo').value;
-        const desconto = Number(form.querySelector('#promoDesconto').value);
-        const descricao = form.querySelector('#promoDescricao').value;
-        const imagemFile = form.querySelector('#promoImagem').files[0];
-        const imagemUrl = form.querySelector('#promoImagemUrl').value;
-        if (!titulo || Number.isNaN(desconto)) return ui.message('Informe tÃ­tulo e desconto.', 'warning');
-
-        let body;
-        let headers = {};
-        if (imagemFile) {
-          body = new FormData();
-          body.append('titulo', titulo);
-          body.append('desconto', desconto);
-          body.append('descricao', descricao);
-          body.append('imagem', imagemFile);
-        } else {
-          const payload = { titulo, desconto, descricao };
-          if (imagemUrl) payload.imagem_url = imagemUrl;
-          body = JSON.stringify(payload);
-          headers['Content-Type'] = 'application/json';
-        }
-
-        const path = editingId ? `/empresa/promocoes/${editingId}` : '/empresa/promocoes';
-        const method = editingId ? 'PUT' : 'POST';
-        const { res, data } = await api.request(path, { method, body, headers });
-        if (res.ok && data?.success) {
-          ui.message(editingId ? 'PromoÃ§Ã£o atualizada.' : 'PromoÃ§Ã£o criada.', 'success');
-          location.reload();
-        } else {
-          ui.message(data?.message || 'Erro ao salvar promoÃ§Ã£o.', 'error');
-        }
-      });
-
-      // Preencher form para ediÃ§Ã£o
-      document.querySelectorAll('[data-promocao]').forEach((row, idx) => {
-        const p = lista[idx];
-        row.addEventListener('click', (ev) => {
-          if (ev.target?.dataset?.action) return; // botÃµes de ativar/pausar tratam separado
-          editingId = p.id;
-          form.querySelector('#promoFormTitle').textContent = `Editar promoÃ§Ã£o #${p.id}`;
-          form.querySelector('#promoCriarBtn').textContent = 'Salvar';
-          form.querySelector('#promoTitulo').value = p.titulo || p.nome || '';
-          form.querySelector('#promoDesconto').value = p.desconto || 0;
-          form.querySelector('#promoDescricao').value = p.descricao || '';
-          form.querySelector('#promoImagemUrl').value = p.imagem && !p.imagem.startsWith('/storage') ? p.imagem : '';
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+      const setCounts = (arr) => {
+        const stats = { todas: arr.length, ativas: 0, programadas: 0, inativas: 0 };
+        arr.forEach((p) => {
+          const st = (p.status || (p.ativo ? 'ativa' : 'inativa')).toString().toLowerCase();
+          if (st.includes('ativa')) stats.ativas += 1;
+          else if (st.includes('program')) stats.programadas += 1;
+          else stats.inativas += 1;
         });
-      });
-
-      // HistÃ³rico detalhado de resgates
-      const hist = document.createElement('section');
-      hist.className = 'max-w-6xl mx-auto px-4 pt-6';
-      hist.innerHTML = `
-        <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3">
-          <div class="flex items-center justify-between gap-3 flex-wrap">
-            <h3 class="text-lg font-semibold text-on-surface">HistÃ³rico de resgates</h3>
-            <div class="flex flex-wrap gap-2 text-sm items-center">
-              <select id="resgStatus" class="border rounded-lg px-3 py-2">
-                <option value="">Todos</option>
-                <option value="usado">Usados</option>
-                <option value="pendente">Pendentes</option>
-              </select>
-              <input id="resgIni" type="date" class="border rounded-lg px-3 py-2" />
-              <input id="resgFim" type="date" class="border rounded-lg px-3 py-2" />
-              <button id="resgFiltrar" class="px-3 py-2 bg-primary text-white rounded-lg">Filtrar</button>
-            </div>
-          </div>
-          <div id="resgLista" class="divide-y divide-surface-variant/50"></div>
-        </div>`;
-      host.append(hist);
-
-      const loadResgates = async () => {
-        const status = hist.querySelector('#resgStatus').value;
-        const di = hist.querySelector('#resgIni').value;
-        const df = hist.querySelector('#resgFim').value;
-        const params = new URLSearchParams();
-        if (status) params.set('status', status);
-        if (di) params.set('data_inicio', di);
-        if (df) params.set('data_fim', df);
-        ui.setPageState('loading', 'Carregando histÃ³rico de resgates...');
-        const { data } = await api.request(`/empresa/resgates?${params.toString()}`);
-        ui.clearPageState();
-        const items = data?.data?.data || data?.data || data || [];
-        const box = hist.querySelector('#resgLista');
-        if (!items.length) {
-          box.innerHTML = '<p class="text-on-surface-variant text-sm">Nenhum resgate encontrado.</p>';
-          return;
-        }
-        box.innerHTML = items
-          .map(
-            (r) => `
-          <div class="py-3 flex items-center justify-between text-sm">
-            <div>
-              <p class="font-semibold">${r.promocao || 'PromoÃ§Ã£o'} â€” ${r.cliente || ''}</p>
-              <p class="text-on-surface-variant">${r.codigo || ''} Â· ${new Date(r.created_at).toLocaleString('pt-BR')}</p>
-            </div>
-            <div class="text-right">
-              <p class="font-semibold text-primary">${r.status || ''}</p>
-              ${r.data_uso ? `<p class="text-on-surface-variant text-xs">Usado em ${new Date(r.data_uso).toLocaleString('pt-BR')}</p>` : ''}
-            </div>
-          </div>`
-          )
-          .join('');
+        Object.entries(stats).forEach(([k, v]) => { if (counts[k]) counts[k].textContent = v; });
       };
 
-      hist.querySelector('#resgFiltrar').addEventListener('click', loadResgates);
-      loadResgates();
+      const renderCards = (arr) => {
+        if (listaBox) listaBox.innerHTML = '';
+        const filtrada = arr.filter((p) => {
+          const st = (p.status || (p.ativo ? 'ativa' : 'inativa')).toString().toLowerCase();
+          if (filtroAtual === 'todas') return true;
+          if (filtroAtual === 'ativas') return st.includes('ativa') && !st.includes('inativa');
+          if (filtroAtual === 'programadas') return st.includes('program');
+          return st.includes('inativa') || st.includes('paus');
+        });
+        if (!filtrada.length) {
+          if (vazio) vazio.classList.remove('hidden');
+          return;
+        }
+        if (vazio) vazio.classList.add('hidden');
+        filtrada.forEach((p) => {
+          const card = document.createElement('div');
+          card.className = 'bg-surface-container-lowest rounded-xl p-4 flex gap-4 transition-all hover:bg-surface-container-high border border-surface-variant/30';
+          const img = p.imagem_url || p.imagem || '/img/placeholder-promo.jpg';
+          const statusAtivo = !(p.status === 'pausada' || p.ativo === false);
+          const status = statusAtivo ? 'Ativa' : 'Pausada';
+          card.innerHTML = `
+            <div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
+              <img alt="${p.nome || p.titulo || 'Oferta'}" class="w-full h-full object-cover" src="${img}" />
+            </div>
+            <div class="flex flex-col justify-between flex-grow">
+              <div>
+                <div class="flex justify-between items-start">
+                  <h3 class="font-headline font-bold text-on-surface text-base leading-tight">${p.nome || p.titulo || 'Oferta'}</h3>
+                  <button class="material-symbols-outlined text-on-surface-variant text-xl" data-action="editar" title="Editar">edit</button>
+                </div>
+                <p class="text-xs text-on-surface-variant line-clamp-2">${p.descricao || ''}</p>
+              </div>
+              <div class="flex items-center justify-between mt-2">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full ${statusAtivo ? 'bg-[#00C2D1]' : 'bg-outline'}"></span>
+                  <span class="text-[10px] font-label font-bold uppercase ${statusAtivo ? 'text-tertiary' : 'text-outline'}">${status}</span>
+                </div>
+                <div class="flex items-center gap-2 text-[10px] text-outline">
+                  <button class="px-3 py-1 rounded-lg bg-primary text-white text-xs" data-action="ativar">Ativar</button>
+                  <button class="px-3 py-1 rounded-lg bg-amber-500 text-white text-xs" data-action="pausar">Pausar</button>
+                </div>
+              </div>
+            </div>`;
+          card.querySelector('[data-action="editar"]')?.addEventListener('click', () => fillForm(p));
+          card.querySelector('[data-action="ativar"]')?.addEventListener('click', () => empresa.togglePromocao(p.id, 'ativar'));
+          card.querySelector('[data-action="pausar"]')?.addEventListener('click', () => empresa.togglePromocao(p.id, 'pausar'));
+          listaBox?.appendChild(card);
+        });
+      };
+
+      const fillForm = (p) => {
+        editingId = p.id;
+        if (form.titulo) form.titulo.value = p.nome || p.titulo || '';
+        if (form.descricao) form.descricao.value = p.descricao || '';
+        if (form.preco) form.preco.value = p.preco || p.valor || '';
+        if (form.tipo) form.tipo.value = p.tipo || 'desconto';
+        if (form.imagem) form.imagem.value = p.imagem_url || p.imagem || '';
+        if (form.ativa) form.ativa.checked = !(p.status === 'pausada' || p.ativo === false);
+        if (form.msg) form.msg.textContent = 'Editando oferta';
+      };
+
+      Object.values(filtros).forEach((btn) => btn?.addEventListener('click', () => {
+        filtroAtual = btn.dataset.status;
+        Object.values(filtros).forEach((b) => b.classList.remove('bg-primary', 'text-on-primary'));
+        btn.classList.add('bg-primary', 'text-on-primary');
+        renderCards(lista);
+      }));
+
+      btnNova?.addEventListener('click', () => {
+        editingId = null;
+        if (form.titulo) form.titulo.value = '';
+        if (form.descricao) form.descricao.value = '';
+        if (form.preco) form.preco.value = '';
+        if (form.imagem) form.imagem.value = '';
+        if (form.ativa) form.ativa.checked = true;
+        if (form.msg) form.msg.textContent = '';
+        document.getElementById('formOferta')?.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      form.cancelar?.addEventListener('click', () => {
+        editingId = null;
+        if (form.msg) form.msg.textContent = '';
+        if (form.titulo) form.titulo.value = '';
+        if (form.descricao) form.descricao.value = '';
+        if (form.preco) form.preco.value = '';
+        if (form.imagem) form.imagem.value = '';
+        if (form.ativa) form.ativa.checked = true;
+      });
+
+      form.salvar?.addEventListener('click', async () => {
+        const payload = {
+          nome: form.titulo?.value,
+          descricao: form.descricao?.value,
+          preco: Number(form.preco?.value || 0),
+          tipo: form.tipo?.value,
+          imagem_url: form.imagem?.value,
+          ativo: form.ativa?.checked ?? true,
+        };
+        if (!payload.nome) return ui.message('Informe o título.', 'warning');
+        const path = editingId ? `/empresa/promocoes/${editingId}` : '/empresa/promocoes';
+        const method = editingId ? 'PUT' : 'POST';
+        const { res, data: resp } = await api.request(path, { method, body: JSON.stringify(payload) }, { headers: { 'Content-Type': 'application/json' } });
+        if (res.ok && resp?.success !== false) {
+          ui.message('Oferta salva.', 'success');
+          window.location.reload();
+        } else {
+          ui.message(resp?.message || 'Erro ao salvar oferta.', 'error');
+        }
+      });
+
+      setCounts(lista);
+      renderCards(lista);
     },
+
 
     async togglePromocao(id, action) {
       const endpoint = action === 'ativar' ? `/empresa/promocoes/${id}/ativar` : `/empresa/promocoes/${id}/pausar`;
