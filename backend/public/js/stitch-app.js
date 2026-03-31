@@ -1467,45 +1467,58 @@
 
     async relatorios() {
       if (!(await auth.guard(['admin']))) return;
-      ui.setPageState('loading', 'Carregando relatÃ³rios...');
+      ui.setPageState('loading', 'Carregando relatórios...');
       const [stats, checkins] = await Promise.all([
         api.request('/admin/dashboard-stats'),
         api.request('/admin/pontos/estatisticas'),
       ]);
       ui.clearPageState();
 
-      if (stats.data?.data) {
-        render.section(
-          'Dashboard',
-          Object.entries(stats.data.data)
-            .map(
-              ([k, v]) => `
-            <div class="px-4 py-3 flex items-center justify-between text-sm">
-              <span class="font-semibold">${k}</span>
-              <span class="font-semibold text-primary">${typeof v === 'number' ? v : JSON.stringify(v)}</span>
-            </div>`
-            )
-            .join('')
-        );
-      } else {
-        render.section('Dashboard', '<p class="text-sm text-on-surface-variant">Sem dados de relatÃ³rio.</p>');
+      const dataStats = stats.data?.data || stats.data || {};
+      const setText = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      };
+
+      const cardsFilled =
+        setText('relEmpresas', dataStats.empresas ?? '--') |
+        setText('relClientes', dataStats.clientes ?? '--') |
+        setText('relPromocoes', dataStats.promocoes ?? '--') |
+        setText('relResgates', dataStats.resgates ?? '--') |
+        setText('relVolume', dataStats.volume ?? '--') |
+        setText('relCrescimento', dataStats.crescimento_texto ?? '');
+
+      const relStatsList = document.getElementById('relStatsList');
+      if (relStatsList) {
+        relStatsList.innerHTML = '';
+        Object.entries(dataStats).forEach(([k, v]) => {
+          const li = document.createElement('div');
+          li.className = 'flex items-center justify-between px-4 py-2 rounded-lg bg-surface-container-low';
+          li.innerHTML = `<span class="text-sm font-semibold capitalize">${k.replace(/_/g, ' ')}</span><span class="text-sm font-bold text-primary">${typeof v === 'number' ? v : v ?? '--'}</span>`;
+          relStatsList.appendChild(li);
+        });
+        if (!Object.keys(dataStats).length) {
+          relStatsList.innerHTML = '<p class="text-sm text-on-surface-variant">Sem dados de relatório.</p>';
+        }
+      } else if (!cardsFilled && !Object.keys(dataStats).length) {
+        render.section('Dashboard', '<p class="text-sm text-on-surface-variant">Sem dados de relatório.</p>');
       }
 
-      if (checkins.data?.data) {
-        render.section(
-          'Pontos / Check-ins',
-          Object.entries(checkins.data.data)
-            .map(
-              ([k, v]) => `
-            <div class="px-4 py-3 flex items-center justify-between text-sm">
-              <span class="font-semibold">${k}</span>
-              <span class="font-semibold text-primary">${v}</span>
-            </div>`
-            )
-            .join('')
-        );
-      } else {
-        ui.message('Sem estatÃ­sticas de pontos disponÃ­veis.', 'warning');
+      const relCheckinsList = document.getElementById('relCheckinsList');
+      const checkData = checkins.data?.data || checkins.data || {};
+      if (relCheckinsList) {
+        relCheckinsList.innerHTML = '';
+        Object.entries(checkData).forEach(([k, v]) => {
+          const row = document.createElement('div');
+          row.className = 'flex items-center justify-between px-4 py-2 rounded-lg bg-surface-container-low';
+          row.innerHTML = `<span class="text-sm font-semibold capitalize">${k.replace(/_/g, ' ')}</span><span class="text-sm font-bold text-tertiary">${v}</span>`;
+          relCheckinsList.appendChild(row);
+        });
+        if (!Object.keys(checkData).length) {
+          relCheckinsList.innerHTML = '<p class="text-sm text-on-surface-variant">Sem estatísticas de pontos disponíveis.</p>';
+        }
+      } else if (!Object.keys(checkData).length) {
+        ui.message('Sem estatísticas de pontos disponíveis.', 'warning');
       }
     },
   };
@@ -1649,7 +1662,9 @@
     relat_rios_gerais_master: admin.relatorios,
     banners_e_categorias_master: async () => {
       if (!(await auth.guard(['admin']))) return;
-      ui.message('Banners/categorias: nenhum endpoint disponÃ­vel identificado. NecessÃ¡rio backend.', 'warning');
+      const status = document.getElementById('conteudoStatus');
+      if (status) status.textContent = 'Nenhum endpoint de banners/categorias disponível no backend. Assim que existir, esta tela será conectada.';
+      ui.message('Banners/categorias: nenhum endpoint disponível identificado. Necessário backend.', 'warning');
     },
   };
 
