@@ -1,7 +1,7 @@
-/**
+﻿/**
  * Stitch Integration Layer (Tem de Tudo)
- * Objetivo: manter comportamento atual, com código mais organizado e claro.
- * Módulos internos: api, auth, ui, render, pages (cliente/empresa/admin/shared).
+ * Objetivo: manter comportamento atual, com cÃ³digo mais organizado e claro.
+ * MÃ³dulos internos: api, auth, ui, render, pages (cliente/empresa/admin/shared).
  */
 (function () {
   // ---------------------- Constantes ---------------------- //
@@ -28,7 +28,7 @@
         pageStateEl.className = 'max-w-4xl mx-auto mt-6 px-4';
         (document.querySelector('main') || document.body).prepend(pageStateEl);
       }
-      pageStateEl.innerHTML = `<div class="border ${palette[type] || palette.info} rounded-xl px-4 py-3 shadow-sm text-sm">${type === 'loading' ? '⏳ ' : ''}${message}</div>`;
+      pageStateEl.innerHTML = `<div class="border ${palette[type] || palette.info} rounded-xl px-4 py-3 shadow-sm text-sm">${type === 'loading' ? 'â³ ' : ''}${message}</div>`;
     }
 
     function clearPageState() {
@@ -128,18 +128,18 @@
 
     async function register() {
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        ui.message('Seu navegador não suporta notificações push.', 'warning');
+        ui.message('Seu navegador nÃ£o suporta notificaÃ§Ãµes push.', 'warning');
         return;
       }
       const permission = await Notification.requestPermission();
       if (permission !== 'granted') {
-        ui.message('Permissão de push negada ou não concedida.', 'warning');
+        ui.message('PermissÃ£o de push negada ou nÃ£o concedida.', 'warning');
         return;
       }
       const reg = await navigator.serviceWorker.register('/sw-push.js');
       const publicKey = await getPublicKey();
       if (!publicKey) {
-        ui.message('Chave pública de push não configurada.', 'warning');
+        ui.message('Chave pÃºblica de push nÃ£o configurada.', 'warning');
         return;
       }
       const sub = await reg.pushManager.subscribe({
@@ -197,11 +197,11 @@
       }
       if (res.status === 401) {
         auth.clear();
-        ui.message('Sessão expirada. Faça login novamente.', 'warning');
+        ui.message('SessÃ£o expirada. FaÃ§a login novamente.', 'warning');
         setTimeout(() => (window.location.href = '/entrar.html'), 300);
       }
       if (res.status === 403) ui.message('Acesso negado para este perfil.', 'warning');
-      if (res.status === 404) ui.message('Recurso não encontrado.', 'warning');
+      if (res.status === 404) ui.message('Recurso nÃ£o encontrado.', 'warning');
       if (res.status >= 500) ui.message('Erro no servidor. Tente novamente em instantes.', 'error');
       return { res, data };
     }
@@ -225,7 +225,7 @@
               (m) => `
             <div class="rounded-2xl p-4 bg-white/80 shadow-sm border border-surface-variant/30">
               <p class="text-xs uppercase tracking-widest text-on-surface-variant font-semibold">${m.label}</p>
-              <p class="mt-2 text-2xl font-bold text-on-surface">${m.value ?? '—'}</p>
+              <p class="mt-2 text-2xl font-bold text-on-surface">${m.value ?? 'â€”'}</p>
               ${m.hint ? `<p class="text-xs text-on-surface-variant mt-1">${m.hint}</p>` : ''}
             </div>`
             )
@@ -256,7 +256,7 @@
     return { summary, section };
   })();
 
-  // ---------------------- Notificações internas ---------------------- //
+  // ---------------------- NotificaÃ§Ãµes internas ---------------------- //
   const notifications = (() => {
     async function fetchAll() {
       const { data } = await api.request('/notifications');
@@ -267,9 +267,9 @@
       await api.request('/notifications/read', { method: 'POST' });
     }
 
-    function renderList(items, title = 'Notificações') {
+    function renderList(items, title = 'NotificaÃ§Ãµes') {
       if (!items.length) {
-        ui.setPageState('empty', 'Sem notificações.');
+        ui.setPageState('empty', 'Sem notificaÃ§Ãµes.');
         return;
       }
       const inner = items
@@ -287,7 +287,7 @@
       render.section(title, inner);
     }
 
-    async function load(title = 'Notificações') {
+    async function load(title = 'NotificaÃ§Ãµes') {
       const items = await fetchAll();
       renderList(items, title);
     }
@@ -295,7 +295,7 @@
     return { load, markAllRead };
   })();
 
-  // ---------------------- Páginas: Cliente ---------------------- //
+  // ---------------------- PÃ¡ginas: Cliente ---------------------- //
   const cliente = {
     async dashboard() {
       if (!(await auth.guard(['cliente']))) return;
@@ -309,22 +309,22 @@
 
       ui.clearPageState();
       render.summary('Sua conta', [
-        { label: 'Pontos', value: dados.pontos_total ?? '—' },
-        { label: 'Pendentes', value: dados.pontos_pendentes ?? '—' },
-        { label: 'Nível', value: dados.nivel ?? '—' },
-        { label: 'Check-ins', value: dados.checkins_total ?? '—' },
-        { label: 'Cupons ativos', value: dados.cupons_ativos ?? '—' },
-        { label: 'Usuário', value: auth.getStored().user?.email },
+        { label: 'Pontos', value: dados.pontos_total ?? 'â€”' },
+        { label: 'Pendentes', value: dados.pontos_pendentes ?? 'â€”' },
+        { label: 'NÃ­vel', value: dados.nivel ?? 'â€”' },
+        { label: 'Check-ins', value: dados.checkins_total ?? 'â€”' },
+        { label: 'Cupons ativos', value: dados.cupons_ativos ?? 'â€”' },
+        { label: 'UsuÃ¡rio', value: auth.getStored().user?.email },
       ]);
 
-      await notifications.load('Notificações');
+      await notifications.load('NotificaÃ§Ãµes');
 
       const host = document.querySelector('main') || document.body;
       if (!Array.isArray(itens) || !itens.length) {
-        render.section('Histórico de pontos', '<p class="text-sm text-on-surface-variant">Nenhum histórico ainda.</p>');
+        render.section('HistÃ³rico de pontos', '<p class="text-sm text-on-surface-variant">Nenhum histÃ³rico ainda.</p>');
       } else {
         render.section(
-          'Histórico de pontos',
+          'HistÃ³rico de pontos',
           itens
             .slice(0, 10)
             .map(
@@ -344,52 +344,69 @@
 
     async parceiros() {
       if (!(await auth.guard(['cliente']))) return;
-      const host = document.querySelector('main') || document.body;
-      const searchBox = document.createElement('section');
-      searchBox.className = 'max-w-5xl mx-auto px-4 pt-4';
-      searchBox.innerHTML = `
-        <div class="flex flex-col md:flex-row items-start md:items-center gap-3 justify-between">
-          <h3 class="text-lg font-semibold text-on-surface">Parcerias</h3>
-          <div class="flex gap-2 items-center">
-            <input id="parceiroBusca" class="border rounded-lg px-3 py-2 w-64" placeholder="Buscar por nome" />
-            <button id="parceiroBuscarBtn" class="px-3 py-2 bg-primary text-white rounded-lg text-sm">Buscar</button>
-          </div>
-        </div>`;
-      host.prepend(searchBox);
 
-      const load = async (busca = '') => {
-        ui.setPageState('loading', 'Carregando parceiros...');
-        const qs = busca ? `?busca=${encodeURIComponent(busca)}` : '';
-        const { data } = await api.request(`/cliente/empresas${qs}`);
-        ui.clearPageState();
-        const lista = data?.data || data || [];
+      const grid = document.getElementById('partners-grid');
+      const searchInput = document.getElementById('parceiroBusca');
+      const emptyMsg = document.getElementById('partners-empty');
+      const loading = document.getElementById('partners-loading');
+
+      const renderCards = (lista = []) => {
+        if (!grid) return;
+        grid.innerHTML = '';
         if (!lista.length) {
-          render.section('Parceiros', '<p class="text-sm text-on-surface-variant">Nenhum parceiro encontrado.</p>');
+          emptyMsg?.classList.remove('hidden');
           return;
         }
-        render.section(
-          'Parceiros',
-          lista
-            .map(
-              (e) => `
-            <div class="px-4 py-3 flex items-center justify-between text-sm">
-              <div>
-                <p class="font-semibold">${e.nome}</p>
-                <p class="text-on-surface-variant">${e.categoria || e.ramo || ''}</p>
+        emptyMsg?.classList.add('hidden');
+        const tpl = (e) => `
+          <article class="bg-surface-container-lowest rounded-xl p-4 flex flex-col gap-4 shadow-[0_8px_32px_rgba(11,31,58,0.06)] hover:bg-surface-container-high transition-colors">
+            <div class="flex gap-4">
+              <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
+                <img class="w-full h-full object-cover" src="${e.logo || '/assets/img/logo.png'}" alt="${e.nome || 'Parceiro'}" loading="lazy" />
               </div>
-              <a class="text-primary font-semibold hover:underline" href="/detalhe_do_parceiro.html?id=${e.id}">Ver detalhes</a>
-            </div>`
-            )
-            .join('')
-        );
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-start gap-2">
+                  <div>
+                    <p class="font-label text-label-sm text-tertiary font-bold tracking-wider mb-1 uppercase">${e.categoria || e.ramo || 'Parceiro'}</p>
+                    <h3 class="font-headline font-bold text-title-md text-on-surface truncate">${e.nome || ''}</h3>
+                  </div>
+                </div>
+                <div class="inline-flex items-center gap-1.5 mt-2 px-2 py-1 bg-secondary-container/30 rounded-lg border border-secondary-container/50">
+                  <span class="material-symbols-outlined text-secondary text-sm" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+                  <span class="text-secondary font-bold text-xs">${e.points_multiplier ? `${e.points_multiplier}x pontos` : 'Parceiro'}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-2 border-t border-surface-container">
+              <div class="flex items-center gap-1 text-outline text-xs">
+                <span class="material-symbols-outlined text-xs" data-icon="location_on">location_on</span>
+                <span>${e.endereco || "—"}</span>
+              </div>
+              <a class="bg-primary text-on-primary px-4 py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity" href="/detalhe_do_parceiro.html?id=${e.id}">Ver parceiro</a>
+            </div>
+          </article>`;
+        grid.innerHTML = lista.map(tpl).join('');
       };
 
-      searchBox.querySelector('#parceiroBuscarBtn')?.addEventListener('click', () => {
-        const term = searchBox.querySelector('#parceiroBusca').value;
-        load(term);
+      const load = async (busca = '') => {
+        loading?.classList.remove('hidden');
+        const qs = busca ? `?busca=${encodeURIComponent(busca)}` : '';
+        const { data } = await api.request(`/cliente/empresas${qs}`);
+        loading?.classList.add('hidden');
+        const lista = data?.data || data || [];
+        renderCards(lista);
+      };
+
+      const triggerLoad = () => load(searchInput?.value || '');
+      searchInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          triggerLoad();
+        }
       });
 
       await load();
+      return;
     },
 
     async detalheParceiro() {
@@ -404,51 +421,65 @@
       const info = detalhe.data?.data || detalhe.data;
       ui.clearPageState();
 
+      const heroName = document.getElementById('partner-name');
+      const heroCat = document.getElementById('partner-category');
+      const heroLogo = document.getElementById('partner-logo');
+      const heroBadge = document.getElementById('partner-badge');
+      const heroDist = document.getElementById('partner-distance');
+
       if (info) {
-        render.summary('Estabelecimento', [
-          { label: 'Nome', value: info.nome },
-          { label: 'Categoria', value: info.categoria },
-          { label: 'Status', value: info.ativo === false ? 'Inativo' : 'Ativo' },
-        ]);
+        if (heroName) heroName.textContent = info.nome || 'Parceiro';
+        if (heroCat) heroCat.textContent = (info.categoria || info.ramo || 'Categoria').toUpperCase();
+        if (heroLogo && info.logo) heroLogo.setAttribute('src', info.logo);
+        if (heroBadge) heroBadge.textContent = info.points_multiplier ? `${info.points_multiplier}x pontos` : 'Parceiro';
+        if (heroDist) heroDist.textContent = info.endereco || '—';
       }
 
       const promoList = promos.data?.data || promos.data || [];
-      if (promoList.length) {
-        render.section(
-          'Promoções',
-          promoList
-            .map(
-              (p) => `
-            <div class="px-4 py-3 flex items-center justify-between text-sm">
-              <div>
-                <p class="font-semibold">${p.titulo || p.nome}</p>
-                <p class="text-on-surface-variant">${p.descricao || ''}</p>
-              </div>
-              <span class="text-primary font-semibold">${p.desconto ? p.desconto + '% off' : ''}</span>
-            </div>`
-            )
-            .join('')
-        );
+      const promoBox = document.getElementById('promos-list');
+      const promoEmpty = document.getElementById('promos-empty');
+      const promoLoad = document.getElementById('promos-loading');
+      promoLoad?.classList.add('hidden');
+      if (promoList.length && promoBox) {
+        promoEmpty?.classList.add('hidden');
+        const tpl = (p) => `
+          <article class="bg-surface-container-lowest rounded-xl p-4 flex justify-between gap-3 shadow-[0_6px_20px_rgba(11,31,58,0.06)]">
+            <div class="space-y-1">
+              <p class="font-label text-label-sm text-tertiary font-bold uppercase">Promoção</p>
+              <h4 class="font-headline font-bold text-title-sm">${p.titulo || p.nome || 'Promoção'}</h4>
+              <p class="text-on-surface-variant text-sm">${p.descricao || ''}</p>
+            </div>
+            <div class="text-right min-w-[80px]">
+              ${p.desconto ? `<span class=\"text-primary font-bold\">${p.desconto}% OFF</span>` : ''}
+              ${p.status ? `<p class=\"text-xs text-outline mt-1\">${p.status}</p>` : ''}
+            </div>
+          </article>`;
+        promoBox.innerHTML = promoList.map(tpl).join('');
+      } else {
+        promoEmpty?.classList.remove('hidden');
       }
 
       const listaProdutos = produtos.data?.data || produtos.data || [];
-      if (listaProdutos.length) {
-        render.section(
-          'Produtos',
-          listaProdutos
-            .map(
-              (p) => `
-            <div class="px-4 py-3 flex items-center justify-between text-sm">
-              <div>
-                <p class="font-semibold">${p.nome || p.titulo}</p>
-                <p class="text-on-surface-variant">${p.descricao || ''}</p>
-              </div>
-              ${p.preco ? `<span class="font-semibold text-primary">R$ ${Number(p.preco).toFixed(2)}</span>` : ''}
-            </div>`
-            )
-            .join('')
-        );
+      const prodBox = document.getElementById('products-list');
+      const prodEmpty = document.getElementById('products-empty');
+      const prodLoad = document.getElementById('products-loading');
+      prodLoad?.classList.add('hidden');
+      if (listaProdutos.length && prodBox) {
+        prodEmpty?.classList.add('hidden');
+        const tplP = (p) => `
+          <article class="bg-surface-container-lowest rounded-xl p-4 flex justify-between items-start shadow-[0_6px_20px_rgba(11,31,58,0.06)]">
+            <div>
+              <p class="font-headline font-semibold">${p.nome || p.titulo || 'Produto'}</p>
+              <p class="text-on-surface-variant text-sm">${p.descricao || ''}</p>
+            </div>
+            ${p.preco ? `<span class=\"font-bold text-primary\">R$ ${Number(p.preco).toFixed(2)}</span>` : ''}
+          </article>`;
+        prodBox.innerHTML = listaProdutos.map(tplP).join('');
+      } else {
+        prodEmpty?.classList.remove('hidden');
       }
+
+      return;
     },
 
     async recompensas() {
@@ -474,7 +505,7 @@
             <div class="px-4 py-3 flex items-center justify-between text-sm">
               <div>
                 <p class="font-semibold">${c.descricao || c.codigo}</p>
-                <p class="text-on-surface-variant">Válido até: ${c.expira_em ? new Date(c.expira_em).toLocaleDateString('pt-BR') : '—'}</p>
+                <p class="text-on-surface-variant">VÃ¡lido atÃ©: ${c.expira_em ? new Date(c.expira_em).toLocaleDateString('pt-BR') : 'â€”'}</p>
               </div>
               <span class="font-semibold ${c.status === 'used' ? 'text-amber-600' : 'text-primary'}">${c.status}</span>
             </div>`
@@ -482,10 +513,10 @@
             .join('')
         );
       } else {
-        ui.setPageState('empty', 'Nenhum cupom disponível ainda.');
+        ui.setPageState('empty', 'Nenhum cupom disponÃ­vel ainda.');
       }
 
-      // Formulário simples de resgate
+      // FormulÃ¡rio simples de resgate
       const host = document.querySelector('main') || document.body;
       const formWrap = document.createElement('section');
       formWrap.className = 'max-w-6xl mx-auto px-4 pt-4';
@@ -493,7 +524,7 @@
         <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3">
           <h3 class="text-lg font-semibold text-on-surface">Resgatar recompensa</h3>
           <div class="grid gap-3 md:grid-cols-3">
-            <input id="resgateDescricao" class="border rounded-lg px-3 py-2" placeholder="Descrição" />
+            <input id="resgateDescricao" class="border rounded-lg px-3 py-2" placeholder="DescriÃ§Ã£o" />
             <input id="resgateTipo" class="border rounded-lg px-3 py-2" placeholder="Tipo (ex: desconto)" />
             <input id="resgatePontos" type="number" class="border rounded-lg px-3 py-2" placeholder="Custo em pontos" />
           </div>
@@ -504,7 +535,7 @@
         const descricao = formWrap.querySelector('#resgateDescricao').value;
         const tipo = formWrap.querySelector('#resgateTipo').value || 'voucher';
         const pontos = Number(formWrap.querySelector('#resgatePontos').value);
-        if (!descricao || !pontos) return ui.message('Preencha descrição e custo em pontos.', 'warning');
+        if (!descricao || !pontos) return ui.message('Preencha descriÃ§Ã£o e custo em pontos.', 'warning');
         const { res, data } = await api.request('/pontos/resgatar', {
           method: 'POST',
           body: JSON.stringify({ recompensa_tipo: tipo, custo_pontos: pontos, descricao }),
@@ -520,13 +551,13 @@
 
     async historico() {
       if (!(await auth.guard(['cliente']))) return;
-      ui.setPageState('loading', 'Carregando histórico...');
+      ui.setPageState('loading', 'Carregando histÃ³rico...');
       const { data } = await api.request('/pontos/historico');
       const itens = data?.data?.data || data?.data || [];
-      if (!itens.length) return ui.setPageState('empty', 'Nenhum histórico encontrado.');
+      if (!itens.length) return ui.setPageState('empty', 'Nenhum histÃ³rico encontrado.');
       ui.clearPageState();
       render.section(
-        'Histórico completo',
+        'HistÃ³rico completo',
         itens
           .map(
             (i) => `
@@ -618,12 +649,12 @@
         if (!id) return ui.message('Informe o ID do cupom.', 'warning');
         const { res, data } = await api.request(`/pontos/usar-cupom/${id}`, { method: 'POST' });
         if (res.ok && data?.success) ui.message('Cupom marcado como usado.', 'success');
-        else ui.message(data?.message || 'Não foi possível usar o cupom.', 'error');
+        else ui.message(data?.message || 'NÃ£o foi possÃ­vel usar o cupom.', 'error');
       });
     },
   };
 
-  // ---------------------- Páginas: Estabelecimento ---------------------- //
+  // ---------------------- PÃ¡ginas: Estabelecimento ---------------------- //
   const empresa = {
     async dashboard() {
       if (!(await auth.guard(['empresa']))) return;
@@ -634,19 +665,19 @@
         api.request('/empresa/relatorio-pontos'),
       ]);
       render.summary('Painel do estabelecimento', [
-        { label: 'Promoções', value: Array.isArray(promos.data?.data || promos.data) ? (promos.data?.data || promos.data).length : '—' },
-        { label: 'Clientes fidelizados', value: clientes.data?.data?.length || clientes.data?.data?.total || '—' },
-        { label: 'Responsável', value: auth.getStored().user?.email },
+        { label: 'PromoÃ§Ãµes', value: Array.isArray(promos.data?.data || promos.data) ? (promos.data?.data || promos.data).length : 'â€”' },
+        { label: 'Clientes fidelizados', value: clientes.data?.data?.length || clientes.data?.data?.total || 'â€”' },
+        { label: 'ResponsÃ¡vel', value: auth.getStored().user?.email },
       ]);
 
       ui.clearPageState();
       if (relatorio.data?.data?.totais) {
         const t = relatorio.data.data.totais;
         render.section(
-          'Pontos / Resgates (últimos 30 dias)',
+          'Pontos / Resgates (Ãºltimos 30 dias)',
           `
           <div class="px-4 py-3 text-sm flex justify-between">
-            <span class="font-semibold">Total distribuído</span>
+            <span class="font-semibold">Total distribuÃ­do</span>
             <span class="font-semibold text-primary">${t.total_distribuido || 0}</span>
           </div>
           <div class="px-4 py-3 text-sm flex justify-between">
@@ -654,13 +685,13 @@
             <span class="font-semibold text-primary">${t.total_resgatado || 0}</span>
           </div>
           <div class="px-4 py-3 text-sm flex justify-between">
-            <span class="font-semibold">Clientes únicos</span>
+            <span class="font-semibold">Clientes Ãºnicos</span>
             <span class="font-semibold text-primary">${t.total_clientes || 0}</span>
           </div>`
         );
       }
 
-      await notifications.load('Notificações');
+      await notifications.load('NotificaÃ§Ãµes');
 
       // Check-in / QR Code manual (fallback)
       const host = document.querySelector('main') || document.body;
@@ -669,14 +700,14 @@
       checkinBox.innerHTML = `
         <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3">
           <h3 class="text-lg font-semibold text-on-surface">Registrar check-in (QR)</h3>
-          <p class="text-sm text-on-surface-variant">Cole o conteúdo do QR Code lido no app.</p>
+          <p class="text-sm text-on-surface-variant">Cole o conteÃºdo do QR Code lido no app.</p>
           <input id="qrCliente" class="border rounded-lg px-3 py-2 w-full" placeholder="CLIENT_{id}_hash" />
           <button id="qrRegistrar" class="px-4 py-2 bg-primary text-white rounded-lg font-semibold w-full">Registrar check-in</button>
         </div>`;
       host.prepend(checkinBox);
       checkinBox.querySelector('#qrRegistrar').addEventListener('click', async () => {
         const code = checkinBox.querySelector('#qrCliente').value;
-        if (!code) return ui.message('Informe o código/QR.', 'warning');
+        if (!code) return ui.message('Informe o cÃ³digo/QR.', 'warning');
         ui.setPageState('loading', 'Registrando check-in...');
         const { res, data } = await api.request('/empresa/escanear-cliente', { method: 'POST', body: JSON.stringify({ qrcode: code }) });
         ui.clearPageState();
@@ -696,7 +727,7 @@
               (r) => `
             <div class="px-4 py-3 flex items-center justify-between text-sm">
               <div>
-                <p class="font-semibold">${r.promocao || 'Promoção'}</p>
+                <p class="font-semibold">${r.promocao || 'PromoÃ§Ã£o'}</p>
                 <p class="text-on-surface-variant">${r.cliente || ''} (${r.cliente_email || ''})</p>
               </div>
               <span class="text-primary font-semibold">${r.status || ''}</span>
@@ -743,7 +774,7 @@
               </div>
               <div class="text-right">
                 <p class="text-primary font-semibold">${c.total_ganho || 0} pts</p>
-                <p class="text-xs text-on-surface-variant">Última visita: ${c.ultima_visita ? new Date(c.ultima_visita).toLocaleDateString('pt-BR') : '—'}</p>
+                <p class="text-xs text-on-surface-variant">Ãšltima visita: ${c.ultima_visita ? new Date(c.ultima_visita).toLocaleDateString('pt-BR') : 'â€”'}</p>
               </div>
             </div>`
             )
@@ -761,15 +792,15 @@
 
     async promocoes() {
       if (!(await auth.guard(['empresa']))) return;
-      ui.setPageState('loading', 'Carregando promoções...');
+      ui.setPageState('loading', 'Carregando promoÃ§Ãµes...');
       const { data } = await api.request('/empresa/promocoes');
       const lista = data?.data || data || [];
-      if (!lista.length) ui.setPageState('empty', 'Nenhuma promoção cadastrada ainda.');
+      if (!lista.length) ui.setPageState('empty', 'Nenhuma promoÃ§Ã£o cadastrada ainda.');
       else ui.clearPageState();
 
       if (lista.length) {
         const wrap = render.section(
-          'Promoções',
+          'PromoÃ§Ãµes',
           lista
             .map(
               (p) => `
@@ -793,7 +824,7 @@
         });
       }
 
-      // Formulário rápido de criação (JSON – EmpresaAPIController)
+      // FormulÃ¡rio rÃ¡pido de criaÃ§Ã£o (JSON â€“ EmpresaAPIController)
       const host = document.querySelector('main') || document.body;
       let editingId = null;
       const form = document.createElement('section');
@@ -801,14 +832,14 @@
       form.innerHTML = `
         <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3">
           <div class="flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-on-surface" id="promoFormTitle">Nova promoção</h3>
+            <h3 class="text-lg font-semibold text-on-surface" id="promoFormTitle">Nova promoÃ§Ã£o</h3>
             <button id="promoReset" class="text-sm text-on-surface-variant underline">Limpar</button>
           </div>
           <div class="grid gap-3 md:grid-cols-2">
-            <input id="promoTitulo" class="border rounded-lg px-3 py-2" placeholder="Título" />
+            <input id="promoTitulo" class="border rounded-lg px-3 py-2" placeholder="TÃ­tulo" />
             <input id="promoDesconto" class="border rounded-lg px-3 py-2" placeholder="Desconto (%)" type="number" min="0" max="100" />
           </div>
-          <textarea id="promoDescricao" class="border rounded-lg px-3 py-2 w-full" rows="3" placeholder="Descrição"></textarea>
+          <textarea id="promoDescricao" class="border rounded-lg px-3 py-2 w-full" rows="3" placeholder="DescriÃ§Ã£o"></textarea>
           <input id="promoImagem" type="file" accept="image/*" class="border rounded-lg px-3 py-2 w-full" />
           <input id="promoImagemUrl" type="url" class="border rounded-lg px-3 py-2 w-full" placeholder="Ou URL da imagem" />
           <button id="promoCriarBtn" class="px-4 py-2 bg-primary text-white rounded-lg font-semibold">Criar</button>
@@ -818,7 +849,7 @@
       form.querySelector('#promoReset')?.addEventListener('click', (e) => {
         e.preventDefault();
         editingId = null;
-        form.querySelector('#promoFormTitle').textContent = 'Nova promoção';
+        form.querySelector('#promoFormTitle').textContent = 'Nova promoÃ§Ã£o';
         form.querySelector('#promoCriarBtn').textContent = 'Criar';
         form.querySelector('#promoTitulo').value = '';
         form.querySelector('#promoDesconto').value = '';
@@ -833,7 +864,7 @@
         const descricao = form.querySelector('#promoDescricao').value;
         const imagemFile = form.querySelector('#promoImagem').files[0];
         const imagemUrl = form.querySelector('#promoImagemUrl').value;
-        if (!titulo || Number.isNaN(desconto)) return ui.message('Informe título e desconto.', 'warning');
+        if (!titulo || Number.isNaN(desconto)) return ui.message('Informe tÃ­tulo e desconto.', 'warning');
 
         let body;
         let headers = {};
@@ -854,20 +885,20 @@
         const method = editingId ? 'PUT' : 'POST';
         const { res, data } = await api.request(path, { method, body, headers });
         if (res.ok && data?.success) {
-          ui.message(editingId ? 'Promoção atualizada.' : 'Promoção criada.', 'success');
+          ui.message(editingId ? 'PromoÃ§Ã£o atualizada.' : 'PromoÃ§Ã£o criada.', 'success');
           location.reload();
         } else {
-          ui.message(data?.message || 'Erro ao salvar promoção.', 'error');
+          ui.message(data?.message || 'Erro ao salvar promoÃ§Ã£o.', 'error');
         }
       });
 
-      // Preencher form para edição
+      // Preencher form para ediÃ§Ã£o
       document.querySelectorAll('[data-promocao]').forEach((row, idx) => {
         const p = lista[idx];
         row.addEventListener('click', (ev) => {
-          if (ev.target?.dataset?.action) return; // botões de ativar/pausar tratam separado
+          if (ev.target?.dataset?.action) return; // botÃµes de ativar/pausar tratam separado
           editingId = p.id;
-          form.querySelector('#promoFormTitle').textContent = `Editar promoção #${p.id}`;
+          form.querySelector('#promoFormTitle').textContent = `Editar promoÃ§Ã£o #${p.id}`;
           form.querySelector('#promoCriarBtn').textContent = 'Salvar';
           form.querySelector('#promoTitulo').value = p.titulo || p.nome || '';
           form.querySelector('#promoDesconto').value = p.desconto || 0;
@@ -877,13 +908,13 @@
         });
       });
 
-      // Histórico detalhado de resgates
+      // HistÃ³rico detalhado de resgates
       const hist = document.createElement('section');
       hist.className = 'max-w-6xl mx-auto px-4 pt-6';
       hist.innerHTML = `
         <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3">
           <div class="flex items-center justify-between gap-3 flex-wrap">
-            <h3 class="text-lg font-semibold text-on-surface">Histórico de resgates</h3>
+            <h3 class="text-lg font-semibold text-on-surface">HistÃ³rico de resgates</h3>
             <div class="flex flex-wrap gap-2 text-sm items-center">
               <select id="resgStatus" class="border rounded-lg px-3 py-2">
                 <option value="">Todos</option>
@@ -907,7 +938,7 @@
         if (status) params.set('status', status);
         if (di) params.set('data_inicio', di);
         if (df) params.set('data_fim', df);
-        ui.setPageState('loading', 'Carregando histórico de resgates...');
+        ui.setPageState('loading', 'Carregando histÃ³rico de resgates...');
         const { data } = await api.request(`/empresa/resgates?${params.toString()}`);
         ui.clearPageState();
         const items = data?.data?.data || data?.data || data || [];
@@ -921,8 +952,8 @@
             (r) => `
           <div class="py-3 flex items-center justify-between text-sm">
             <div>
-              <p class="font-semibold">${r.promocao || 'Promoção'} — ${r.cliente || ''}</p>
-              <p class="text-on-surface-variant">${r.codigo || ''} · ${new Date(r.created_at).toLocaleString('pt-BR')}</p>
+              <p class="font-semibold">${r.promocao || 'PromoÃ§Ã£o'} â€” ${r.cliente || ''}</p>
+              <p class="text-on-surface-variant">${r.codigo || ''} Â· ${new Date(r.created_at).toLocaleString('pt-BR')}</p>
             </div>
             <div class="text-right">
               <p class="font-semibold text-primary">${r.status || ''}</p>
@@ -941,15 +972,15 @@
       const endpoint = action === 'ativar' ? `/empresa/promocoes/${id}/ativar` : `/empresa/promocoes/${id}/pausar`;
       const { res, data } = await api.request(endpoint, { method: 'PATCH' });
       if (res.ok && data?.success !== false) {
-        ui.message('Promoção atualizada.', 'success');
+        ui.message('PromoÃ§Ã£o atualizada.', 'success');
         location.reload();
       } else {
-        ui.message(data?.message || 'Erro ao atualizar promoção.', 'error');
+        ui.message(data?.message || 'Erro ao atualizar promoÃ§Ã£o.', 'error');
       }
     },
   };
 
-  // ---------------------- Páginas: Admin ---------------------- //
+  // ---------------------- PÃ¡ginas: Admin ---------------------- //
   const admin = {
     async dashboard() {
       if (!(await auth.guard(['admin']))) return;
@@ -962,9 +993,9 @@
       ui.clearPageState();
 
       render.summary('Admin Master', [
-        { label: 'Empresas', value: empresas.data?.data?.length || empresas.data?.data?.total || '—' },
+        { label: 'Empresas', value: empresas.data?.data?.length || empresas.data?.data?.total || 'â€”' },
         { label: 'Eventos recentes', value: recent.data?.data?.length || 0 },
-        { label: 'Usuário', value: auth.getStored().user?.email },
+        { label: 'UsuÃ¡rio', value: auth.getStored().user?.email },
       ]);
 
       const atividades = recent.data?.data || [];
@@ -1002,7 +1033,7 @@
         );
       }
 
-      await notifications.load('Notificações');
+      await notifications.load('NotificaÃ§Ãµes');
     },
 
     async empresas() {
@@ -1034,17 +1065,17 @@
 
     async usuarios() {
       if (!(await auth.guard(['admin']))) return;
-      ui.setPageState('loading', 'Carregando usuários...');
+      ui.setPageState('loading', 'Carregando usuÃ¡rios...');
       const { res, data } = await api.request('/admin/users-report');
-      if (!res.ok) return ui.setPageState('error', 'Endpoint /admin/users-report indisponível ou bloqueado.');
+      if (!res.ok) return ui.setPageState('error', 'Endpoint /admin/users-report indisponÃ­vel ou bloqueado.');
       const lista = data?.data || [];
       if (!lista.length) {
-        render.section('Usuários', '<p class="text-sm text-on-surface-variant">Nenhum usuário retornado.</p>');
+        render.section('UsuÃ¡rios', '<p class="text-sm text-on-surface-variant">Nenhum usuÃ¡rio retornado.</p>');
         return;
       }
       ui.clearPageState();
       render.section(
-        'Usuários',
+        'UsuÃ¡rios',
         lista
           .map(
             (u) => `
@@ -1066,7 +1097,7 @@
 
     async relatorios() {
       if (!(await auth.guard(['admin']))) return;
-      ui.setPageState('loading', 'Carregando relatórios...');
+      ui.setPageState('loading', 'Carregando relatÃ³rios...');
       const [stats, checkins] = await Promise.all([
         api.request('/admin/dashboard-stats'),
         api.request('/admin/pontos/estatisticas'),
@@ -1087,7 +1118,7 @@
             .join('')
         );
       } else {
-        render.section('Dashboard', '<p class="text-sm text-on-surface-variant">Sem dados de relatório.</p>');
+        render.section('Dashboard', '<p class="text-sm text-on-surface-variant">Sem dados de relatÃ³rio.</p>');
       }
 
       if (checkins.data?.data) {
@@ -1104,12 +1135,12 @@
             .join('')
         );
       } else {
-        ui.message('Sem estatísticas de pontos disponíveis.', 'warning');
+        ui.message('Sem estatÃ­sticas de pontos disponÃ­veis.', 'warning');
       }
     },
   };
 
-  // ---------------------- Login (público) ---------------------- //
+  // ---------------------- Login (pÃºblico) ---------------------- //
   async function handleLogin() {
     const form = document.querySelector('form');
     if (!form) return;
@@ -1133,14 +1164,14 @@
         setTimeout(() => (window.location.href = target), 500);
       } else {
         ui.clearPageState();
-        ui.message(data?.message || 'Não foi possível entrar.', 'error');
+        ui.message(data?.message || 'NÃ£o foi possÃ­vel entrar.', 'error');
       }
     });
   }
 
   // ---------------------- Dispatcher ---------------------- //
   const handlers = {
-    // Público / shared
+    // PÃºblico / shared
     acessar_conta: handleLogin,
     home_tem_de_tudo: () => {},
     oferta_especial: cliente.detalheParceiro,
@@ -1155,7 +1186,7 @@
         const { res, data } = await api.request('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) }, { requireAuth: false });
         ui.clearPageState();
         if (res.ok && data?.success !== false) ui.message('Se o e-mail existir, enviaremos um link.', 'success');
-        else ui.message(data?.message || 'Erro ao solicitar recuperação.', 'error');
+        else ui.message(data?.message || 'Erro ao solicitar recuperaÃ§Ã£o.', 'error');
       });
     },
     reset_password: async () => {
@@ -1175,7 +1206,7 @@
         const { res, data } = await api.request('/auth/reset-password', { method: 'POST', body: JSON.stringify(payload) }, { requireAuth: false });
         ui.clearPageState();
         if (res.ok && data?.success !== false) {
-          ui.message('Senha redefinida. Faça login.', 'success');
+          ui.message('Senha redefinida. FaÃ§a login.', 'success');
           setTimeout(() => (window.location.href = '/entrar.html'), 800);
         } else ui.message(data?.message || 'Erro ao redefinir senha.', 'error');
       });
@@ -1225,7 +1256,7 @@
         }, { requireAuth: false });
         ui.clearPageState();
         if (res.ok && data?.success !== false) {
-          ui.message('Conta criada. Faça login.', 'success');
+          ui.message('Conta criada. FaÃ§a login.', 'success');
           setTimeout(() => (window.location.href = '/entrar.html'), 800);
         } else {
           const errs = data?.errors ? Object.values(data.errors).flat().join(' ') : '';
@@ -1248,13 +1279,13 @@
     relat_rios_gerais_master: admin.relatorios,
     banners_e_categorias_master: async () => {
       if (!(await auth.guard(['admin']))) return;
-      ui.message('Banners/categorias: nenhum endpoint disponível identificado. Necessário backend.', 'warning');
+      ui.message('Banners/categorias: nenhum endpoint disponÃ­vel identificado. NecessÃ¡rio backend.', 'warning');
     },
   };
 
   document.addEventListener('DOMContentLoaded', async () => {
     const handler = handlers[page];
-    // Autoregistrar push em páginas logadas principais
+    // Autoregistrar push em pÃ¡ginas logadas principais
     const loggedPages = ['meus_pontos', 'dashboard_parceiro', 'dashboard_admin_master'];
     if (loggedPages.includes(page)) {
       push.register().catch(() => {});
@@ -1264,8 +1295,9 @@
         await handler();
       } catch (err) {
         console.error(err);
-        ui.message('Erro ao carregar página.', 'error');
+        ui.message('Erro ao carregar pÃ¡gina.', 'error');
       }
     }
   });
 })();
+
