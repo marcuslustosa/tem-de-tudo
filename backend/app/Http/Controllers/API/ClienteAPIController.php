@@ -497,10 +497,11 @@ class ClienteAPIController extends Controller
             ->orderByDesc('promocoes.created_at')
             ->get();
         
-        // Adicionar contagem de dias restantes
+        // Adicionar contagem de dias restantes (robusto a dados nulos)
         foreach ($promocoes as $promo) {
-            if ($promo->data_fim) {
-                $diasRestantes = now()->diffInDays($promo->data_fim, false);
+            $dataFim = $promo->data_fim ?? $promo->validade ?? $promo->validade_fim ?? null;
+            if ($dataFim) {
+                $diasRestantes = now()->diffInDays(\Carbon\Carbon::parse($dataFim), false);
                 $promo->dias_restantes = $diasRestantes > 0 ? $diasRestantes : 0;
                 $promo->expirada = $diasRestantes < 0;
             } else {

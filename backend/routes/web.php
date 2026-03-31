@@ -18,6 +18,11 @@ Route::get('/api/health', function () {
     return response()->json(['status' => 'healthy']);
 });
 
+// Rota nomeada de login para evitar warnings de middleware
+Route::get('/login', function () {
+    return redirect('/entrar.html');
+})->name('login');
+
 // Rota dinâmica para TODAS as páginas HTML
 // Deve vir DEPOIS das rotas específicas para não conflitar
 Route::get('/{page}', function ($page) {
