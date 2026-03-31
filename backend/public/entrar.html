@@ -1,27 +1,173 @@
-﻿<!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Entrar | Tem de Tudo</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.10/dist/tailwind.min.css">
-  <script src="/js/stitch-app.js" defer></script>
-</head>
-<body data-page="acessar_conta" class="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center">
-  <noscript><div class="p-4 text-red-600 text-sm">Ative o JavaScript para usar o aplicativo.</div></noscript>
-  <main class="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 space-y-4">
-    <div class="text-center">
-      <h1 class="text-2xl font-bold">Entrar</h1>
-      <p class="text-sm text-slate-600">Use seu e-mail e senha cadastrados.</p>
-    </div>
-    <form class="space-y-3">
-      <input class="w-full border rounded-lg px-3 py-2" type="email" placeholder="E-mail" required />
-      <input class="w-full border rounded-lg px-3 py-2" type="password" placeholder="Senha" required />
-      <button class="w-full bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg" type="submit">Entrar</button>
-    </form>
-    <div class="text-sm text-center">
-      <a class="text-indigo-600 font-semibold" href="/forgot_password.html">Esqueci minha senha</a>
-    </div>
-  </main>
-</body>
-</html>
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TEM DE TUDO - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-surface-variant": "#5b5b62",
+                "tertiary": "#00666e",
+                "tertiary-fixed-dim": "#3ed9e9",
+                "primary-fixed-dim": "#ff49b3",
+                "surface-tint": "#b00076",
+                "surface-variant": "#dedbe7",
+                "surface-bright": "#f8f5fe",
+                "error-container": "#f74b6d",
+                "inverse-primary": "#ff40b2",
+                "on-primary-fixed": "#000000",
+                "secondary-fixed": "#f7bfff",
+                "surface": "#f8f5fe",
+                "surface-dim": "#d5d3df",
+                "primary-fixed": "#ff6bbb",
+                "background": "#f8f5fe",
+                "on-error-container": "#510017",
+                "on-tertiary-fixed-variant": "#005c63",
+                "on-secondary-fixed": "#5a0371",
+                "on-primary": "#ffeff3",
+                "on-secondary-fixed-variant": "#7b2d90",
+                "error": "#b41340",
+                "secondary-dim": "#7a2c8f",
+                "on-primary-fixed-variant": "#5b003b",
+                "surface-container-highest": "#dedbe7",
+                "surface-container-high": "#e4e1ec",
+                "surface-container": "#e9e7f1",
+                "tertiary-fixed": "#52e8f7",
+                "secondary-container": "#f7bfff",
+                "error-dim": "#a70138",
+                "on-tertiary": "#d2faff",
+                "secondary": "#87399c",
+                "on-tertiary-fixed": "#003d42",
+                "primary-container": "#ff6bbb",
+                "on-error": "#ffefef",
+                "tertiary-container": "#52e8f7",
+                "outline-variant": "#aeacb4",
+                "on-surface": "#2e2e34",
+                "inverse-surface": "#0d0e13",
+                "surface-container-low": "#f2eff9",
+                "tertiary-dim": "#005960",
+                "outline": "#77767d",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary": "#ffeefd",
+                "primary-dim": "#9b0067",
+                "on-tertiary-container": "#005158",
+                "on-secondary-container": "#712286",
+                "inverse-on-surface": "#9e9ca4",
+                "secondary-fixed-dim": "#f2aaff",
+                "on-primary-container": "#4a002f",
+                "primary": "#b00076",
+                "on-background": "#2e2e34"
+              },
+              fontFamily: {
+                "headline": ["Plus Jakarta Sans"],
+                "body": ["Be Vietnam Pro"],
+                "label": ["Be Vietnam Pro"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f8f5fe;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-radiant-pattern {
+            background: radial-gradient(circle at 0% 0%, #003B49 0%, transparent 50%),
+                        radial-gradient(circle at 100% 100%, #7A2C8F 0%, transparent 50%),
+                        radial-gradient(circle at 100% 0%, #E10098 0%, transparent 40%);
+            background-color: #f8f5fe;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-radiant-pattern" data-page="acessar_conta">
+<!-- Auth Container -->
+<main class="w-full max-w-md space-y-8">
+<!-- Brand Identity & Welcome -->
+<div class="text-center space-y-6">
+<div class="inline-flex items-center justify-center p-4 rounded-3xl bg-surface-container-lowest shadow-[0_8px_32px_rgba(11,31,58,0.08)]">
+<span class="text-3xl font-extrabold tracking-tighter text-on-surface font-headline">
+                    TEM DE <span class="text-primary">TUDO</span>
+</span>
+</div>
+<div class="space-y-2">
+<h1 class="text-2xl font-bold text-on-surface font-headline leading-tight">
+                    Bem-vindo de volta
+                </h1>
+<p class="text-on-surface-variant text-sm font-medium">
+                    Acesse sua conta para aproveitar ofertas exclusivas.
+                </p>
+</div>
+</div>
+<!-- Login Card -->
+<div class="glass-card rounded-3xl p-8 shadow-[0_20px_50px_rgba(11,31,58,0.12)] space-y-6">
+<form class="space-y-5">
+<!-- CPF / Email Input -->
+<div class="space-y-2">
+<label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest pl-1">
+                        E-mail ou CPF
+                    </label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+<input class="block w-full pl-11 pr-4 py-4 bg-surface-container-low border-none rounded-2xl text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all duration-200" placeholder="seu@email.com" type="email" autocomplete="email" required id="email" name="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<div class="flex justify-between items-center px-1">
+<label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">
+                            Senha
+                        </label>
+<a class="text-xs font-semibold text-secondary hover:text-primary transition-colors" href="/forgot_password.html">Esqueci minha senha</a>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+</div>
+<input id="password" name="password" class="block w-full pl-11 pr-4 py-4 bg-surface-container-low border-none rounded-2xl text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all duration-200" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" type="password" autocomplete="current-password" required />
+</div>
+</div>
+<!-- Action Button -->
+<button class="w-full py-4 px-6 bg-gradient-to-r from-secondary to-primary text-on-primary font-bold rounded-2xl shadow-lg shadow-primary/20 hover:opacity-95 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 mt-4" type="submit">
+<span>Entrar</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</form>
+<!-- Footer Link -->
+<p class="text-center text-on-surface-variant font-medium">
+            Ainda nÃ£o tem conta? 
+            <a class="text-primary font-bold hover:underline underline-offset-4 ml-1" href="/criar_conta.html">
+                Criar conta
+            </a>
+</p>
+<!-- Dynamic Decorative Elements (Asymmetric Layout) -->
+<div class="fixed top-20 -left-12 w-64 h-64 bg-tertiary/10 rounded-full blur-3xl -z-10"></div>
+<div class="fixed bottom-20 -right-12 w-80 h-80 bg-primary/10 rounded-full blur-3xl -z-10"></div>
+</main>
+<!-- Support Help Chip -->
+<script src="/js/stitch-app.js"></script>
+</body></html>
