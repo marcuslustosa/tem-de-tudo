@@ -1140,48 +1140,38 @@
       ]);
       ui.clearPageState();
 
-      render.summary('Admin Master', [
-        { label: 'Empresas', value: empresas.data?.data?.length || empresas.data?.data?.total || 'â€”' },
-        { label: 'Eventos recentes', value: recent.data?.data?.length || 0 },
-        { label: 'UsuÃ¡rio', value: auth.getStored().user?.email },
-      ]);
+      const ids = (id) => document.getElementById(id);
+      const totals = stats.data?.data?.totais || stats.data?.totais || {};
+      ids('adminUsers') && (ids('adminUsers').textContent = totals.usuarios || stats.data?.data?.usuarios || '--');
+      ids('adminEmpresas') && (ids('adminEmpresas').textContent = totals.empresas || empresas.data?.data?.length || empresas.data?.data?.total || '--');
+      ids('adminCampanhas') && (ids('adminCampanhas').textContent = totals.campanhas || '--');
+      ids('adminResgates') && (ids('adminResgates').textContent = totals.resgates || '--');
+      if (ids('adminVolume')) ids('adminVolume').textContent = totals.volume ? 'R$ ' + Number(totals.volume).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : 'R$ 0,00';
+      if (ids('adminCrescimentoMsg')) ids('adminCrescimentoMsg').textContent = 'Dados consolidados dos últimos 30 dias';
 
-      const atividades = recent.data?.data || [];
-      if (atividades.length) {
-        render.section(
-          'Atividades recentes',
-          atividades
-            .slice(0, 10)
-            .map(
-              (a) => `
-            <div class="px-4 py-3 text-sm">
-              <p class="font-semibold">${a.titulo || a.type || 'Evento'}</p>
-              <p class="text-on-surface-variant">${a.descricao || a.message || ''}</p>
-            </div>`
-            )
-            .join('')
-        );
+      const atividades = recent.data?.data || recent.data || [];
+      const list = ids('adminRecentList');
+      const empty = ids('adminRecentEmpty');
+      if (list) list.innerHTML = '';
+      if (!atividades.length) {
+        if (empty) empty.classList.remove('hidden');
       } else {
-        render.section('Atividades recentes', '<p class="text-sm text-on-surface-variant">Sem atividades recentes.</p>');
+        if (empty) empty.classList.add('hidden');
+        atividades.slice(0, 10).forEach((a) => {
+          const item = document.createElement('div');
+          item.className = 'flex gap-4 items-start pb-4 border-b border-surface-container-low';
+          item.innerHTML = 
+            <div class="w-10 h-10 rounded-full bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-xl" data-icon="">notifications</span>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-on-surface"></p>
+              <p class="text-xs text-on-surface-variant"></p>
+              <span class="text-[10px] text-outline mt-1 block"></span>
+            </div>;
+          list?.appendChild(item);
+        });
       }
-
-      if (stats.data?.data) {
-        const s = stats.data.data;
-        render.section(
-          'Indicadores',
-          Object.entries(s)
-            .map(
-              ([k, v]) => `
-            <div class="px-4 py-3 flex items-center justify-between text-sm">
-              <p class="font-semibold">${k}</p>
-              <span class="font-semibold text-primary">${typeof v === 'number' ? v : JSON.stringify(v)}</span>
-            </div>`
-            )
-            .join('')
-        );
-      }
-
-      await notifications.load('NotificaÃ§Ãµes');
     },
 
     async empresas() {
@@ -1189,26 +1179,44 @@
       ui.setPageState('loading', 'Carregando estabelecimentos...');
       const { data } = await api.request('/empresas', {}, { requireAuth: false });
       const lista = data?.data || data || [];
+      ui.clearPageState();
+      const listaEl = document.getElementById('estabsLista');
+      const vazioEl = document.getElementById('estabsEmpty');
+      if (listaEl) listaEl.innerHTML = '';
       if (!lista.length) {
-        render.section('Estabelecimentos', '<p class="text-sm text-on-surface-variant">Nenhum estabelecimento cadastrado.</p>');
+        if (vazioEl) vazioEl.classList.remove('hidden');
         return;
       }
-      ui.clearPageState();
-      render.section(
-        'Estabelecimentos',
-        lista
-          .map(
-            (e) => `
-          <div class="px-4 py-3 flex items-center justify-between text-sm">
-            <div>
-              <p class="font-semibold">${e.nome}</p>
-              <p class="text-on-surface-variant">${e.categoria || ''}</p>
+      if (vazioEl) vazioEl.classList.add('hidden');
+      lista.forEach((e) => {
+        const card = document.createElement('div');
+        card.className = 'bg-surface-container-lowest p-5 rounded-xl flex flex-col md:flex-row gap-6 items-center group hover:bg-surface-container-low transition-all border border-transparent hover:border-primary/10';
+        const logo = e.logo || '/img/placeholder-store.png';
+        card.innerHTML = 
+          <div class="relative">
+            <div class="w-20 h-20 rounded-full overflow-hidden bg-surface-container shadow-inner">
+              <img alt="" class="w-full h-full object-cover" src=""/>
             </div>
-            <span class="font-semibold ${e.ativo === false ? 'text-amber-600' : 'text-primary'}">${e.ativo === false ? 'Inativo' : 'Ativo'}</span>
-          </div>`
-          )
-          .join('')
-      );
+          </div>
+          <div class="flex-1 w-full">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+              <div>
+                <h3 class="font-headline font-bold text-on-surface text-lg"></h3>
+                <p class="text-sm text-outline"></p>
+              </div>
+              <div class="flex flex-wrap gap-2 text-[10px] uppercase font-bold">
+                <span class="px-2 py-1 rounded-full bg-primary/10 text-primary">Pontos: </span>
+                <span class="px-2 py-1 rounded-full bg-tertiary/10 text-tertiary">Clientes: </span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-4 mt-3 text-sm text-on-surface-variant">
+              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span><span></span></div>
+              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="call">call</span><span></span></div>
+              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="mail">mail</span><span></span></div>
+            </div>
+          </div>;
+        listaEl?.appendChild(card);
+      });
     },
 
     async usuarios() {
