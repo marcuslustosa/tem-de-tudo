@@ -210,7 +210,7 @@
   })();
 
   // ---------------------- Navegacao de fallback ---------------------- //
-  function wireFallbackLinks() {
+  function getScopeForCurrentPage() {
     const pageGroups = {
       admin: ['dashboard_admin_master', 'gest_o_de_estabelecimentos', 'gest_o_de_usu_rios_master', 'gest_o_de_clientes_master', 'relat_rios_gerais_master', 'banners_e_categorias_master'],
       empresa: ['dashboard_parceiro', 'gest_o_de_ofertas_parceiro', 'minhas_campanhas_loja', 'clientes_fidelizados_loja'],
@@ -220,52 +220,96 @@
     let scope = 'cliente';
     if (pageGroups.admin.includes(page)) scope = 'admin';
     if (pageGroups.empresa.includes(page)) scope = 'empresa';
+    return scope;
+  }
 
+  function getNavMapByScope(scope) {
+    const commonProfile = '/meu_perfil.html';
     const mapByScope = {
       admin: {
         dashboard: '/dashboard_admin_master.html',
         home: '/dashboard_admin_master.html',
         storefront: '/gest_o_de_estabelecimentos.html',
+        store: '/gest_o_de_estabelecimentos.html',
         group: '/gest_o_de_clientes_master.html',
+        person: commonProfile,
+        groups: '/gest_o_de_usu_rios_master.html',
         analytics: '/relat_rios_gerais_master.html',
-        person: '/gest_o_de_usu_rios_master.html',
+        bar_chart: '/relat_rios_gerais_master.html',
+        receipt_long: '/relat_rios_gerais_master.html',
+        image: '/banners_e_categorias_master.html',
+        collections: '/banners_e_categorias_master.html',
+        category: '/banners_e_categorias_master.html',
         settings: '/banners_e_categorias_master.html',
       },
       empresa: {
         dashboard: '/dashboard_parceiro.html',
         home: '/dashboard_parceiro.html',
-        receipt_long: '/gest_o_de_ofertas_parceiro.html',
         storefront: '/clientes_fidelizados_loja.html',
-        store: '/dashboard_parceiro.html',
+        groups: '/clientes_fidelizados_loja.html',
+        receipt_long: '/gest_o_de_ofertas_parceiro.html',
+        campaign: '/minhas_campanhas_loja.html',
+        local_offer: '/gest_o_de_ofertas_parceiro.html',
         inventory_2: '/validar_resgate.html',
-        person: '/meu_perfil.html',
+        qr_code_scanner: '/validar_resgate.html',
+        person: commonProfile,
+        settings: commonProfile,
       },
       cliente: {
         dashboard: '/meus_pontos.html',
         home: '/meus_pontos.html',
         storefront: '/parceiros_tem_de_tudo.html',
+        store: '/parceiros_tem_de_tudo.html',
         stars: '/recompensas.html',
         redeem: '/recompensas.html',
-        person: '/meu_perfil.html',
+        local_offer: '/recompensas.html',
+        history: '/hist_rico_de_uso.html',
+        receipt_long: '/hist_rico_de_uso.html',
+        inventory_2: '/validar_resgate.html',
+        qr_code_scanner: '/validar_resgate.html',
+        person: commonProfile,
       },
     };
 
-    const fallback = mapByScope[scope];
+    return mapByScope[scope] || mapByScope.cliente;
+  }
+
+  function resolveFallbackTarget(scope, iconRaw, textRaw) {
+    const fallback = getNavMapByScope(scope);
+    const icon = (iconRaw || '').toString().toLowerCase().trim();
+    const text = (textRaw || '').toString().toLowerCase().trim();
+    const byIcon = fallback[icon];
+    if (byIcon) return byIcon;
+
+    if (text.includes('dashboard') || text.includes('inicio')) return fallback.dashboard;
+    if (text.includes('usuario')) return scope === 'admin' ? '/gest_o_de_usu_rios_master.html' : '/meu_perfil.html';
+    if (text.includes('cliente')) return scope === 'admin' ? '/gest_o_de_clientes_master.html' : '/clientes_fidelizados_loja.html';
+    if (text.includes('estabelecimento') || text.includes('parceiro')) {
+      return scope === 'admin' ? '/gest_o_de_estabelecimentos.html' : (scope === 'empresa' ? '/clientes_fidelizados_loja.html' : '/parceiros_tem_de_tudo.html');
+    }
+    if (text.includes('relatorio') || text.includes('metrica')) return scope === 'admin' ? '/relat_rios_gerais_master.html' : '/minhas_campanhas_loja.html';
+    if (text.includes('campanha') || text.includes('oferta')) return scope === 'empresa' ? '/gest_o_de_ofertas_parceiro.html' : null;
+    if (text.includes('conteudo') || text.includes('banner') || text.includes('categoria')) return scope === 'admin' ? '/banners_e_categorias_master.html' : null;
+    if (text.includes('perfil') || text.includes('conta')) return '/meu_perfil.html';
+    if (text.includes('suporte')) return '__support__';
+    if (text.includes('novo parceiro') || text.includes('novo estabelecimento')) {
+      return scope === 'admin' ? '/gest_o_de_estabelecimentos.html' : '/gest_o_de_ofertas_parceiro.html';
+    }
+    if (text.includes('ver todas') || text.includes('ver todos')) {
+      return scope === 'admin' ? '/relat_rios_gerais_master.html' : '/gest_o_de_ofertas_parceiro.html';
+    }
+
+    return null;
+  }
+
+  function wireFallbackLinks() {
+    const scope = getScopeForCurrentPage();
 
     document.querySelectorAll('a[href="#"], a[href=""], a[href="javascript:void(0)"]').forEach((a) => {
       const iconEl = a.querySelector('[data-icon], .material-symbols-outlined');
       const icon = iconEl?.getAttribute('data-icon') || iconEl?.textContent?.trim().toLowerCase() || '';
       const text = (a.textContent || '').toLowerCase();
-      const targetByIcon = fallback[icon];
-
-      let target = targetByIcon || null;
-      if (!target) {
-        if (text.includes('dashboard') || text.includes('inicio') || text.includes('inicio')) target = fallback.dashboard;
-        else if (text.includes('usuario') || text.includes('usuario')) target = '/gest_o_de_usu_rios_master.html';
-        else if (text.includes('cliente')) target = scope === 'admin' ? '/gest_o_de_clientes_master.html' : '/clientes_fidelizados_loja.html';
-        else if (text.includes('estabelecimento') || text.includes('parceiro')) target = scope === 'admin' ? '/gest_o_de_estabelecimentos.html' : '/parceiros_tem_de_tudo.html';
-        else if (text.includes('relatorio') || text.includes('relatorio')) target = scope === 'admin' ? '/relat_rios_gerais_master.html' : '/minhas_campanhas_loja.html';
-      }
+      const target = resolveFallbackTarget(scope, icon, text);
 
       if (target) {
         a.setAttribute('href', target);
@@ -274,6 +318,7 @@
   }
 
   function wireFallbackButtons() {
+    const scope = getScopeForCurrentPage();
     const go = (url) => () => {
       window.location.href = url;
     };
@@ -281,24 +326,19 @@
     document.querySelectorAll('button').forEach((btn) => {
       if (btn.dataset.boundAction) return;
       const text = (btn.textContent || '').toLowerCase().trim();
-      if (!text) return;
+      const iconEl = btn.querySelector('[data-icon], .material-symbols-outlined');
+      const icon = iconEl?.getAttribute('data-icon') || iconEl?.textContent?.trim().toLowerCase() || '';
 
-      if (text.includes('novo parceiro')) {
-        btn.dataset.boundAction = '1';
-        btn.addEventListener('click', go('/gest_o_de_estabelecimentos.html'));
-        return;
-      }
-
-      if (text.includes('ver todas')) {
-        btn.dataset.boundAction = '1';
-        if (page.includes('dashboard_admin')) btn.addEventListener('click', go('/relat_rios_gerais_master.html'));
-        else if (page.includes('dashboard_parceiro')) btn.addEventListener('click', go('/gest_o_de_ofertas_parceiro.html'));
-        return;
-      }
-
-      if (text.includes('suporte')) {
+      if (!text && !icon) return;
+      const target = resolveFallbackTarget(scope, icon, text);
+      if (target === '__support__') {
         btn.dataset.boundAction = '1';
         btn.addEventListener('click', () => ui.message('Suporte: contato@temdetudo.com', 'info'));
+        return;
+      }
+      if (target) {
+        btn.dataset.boundAction = '1';
+        btn.addEventListener('click', go(target));
       }
     });
   }
