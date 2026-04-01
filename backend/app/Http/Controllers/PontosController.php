@@ -318,14 +318,22 @@ class PontosController extends Controller
     public function usarCupom(Request $request, $cupomId): JsonResponse
     {
         try {
-            $cupom = Coupon::where('id', $cupomId)
-                ->where('user_id', Auth::id())
-                ->firstOrFail();
+            $query = Coupon::query()->where('user_id', Auth::id());
+            $cupom = ctype_digit((string) $cupomId)
+                ? (clone $query)->where('id', (int) $cupomId)->first()
+                : (clone $query)->where('codigo', (string) $cupomId)->first();
+
+            if (!$cupom) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cupom nao encontrado para este usuario.'
+                ], 404);
+            }
 
             if ($cupom->status !== 'active') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Este cupom não está mais válido.'
+                    'message' => 'Este cupom nao esta mais valido.'
                 ], 400);
             }
 
@@ -350,9 +358,15 @@ class PontosController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            Log::error('Erro ao usar cupom', [
+                'cupom' => $cupomId,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+            ]);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Erro interno do servidor: ' . $e->getMessage()
+                'message' => 'Erro interno do servidor ao usar cupom.'
             ], 500);
         }
     }
