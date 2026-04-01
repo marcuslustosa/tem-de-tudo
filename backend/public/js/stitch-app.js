@@ -1553,15 +1553,19 @@
         { method: 'POST', body: JSON.stringify({ email, password }) },
         { requireAuth: false }
       );
-      if (res.ok && data?.success && data?.data?.token) {
-        auth.save(data.data.token, data.data.user);
-        const target = redirectMap[data.data.user?.perfil] || data.data.redirect_to || '/';
+      const payload = data?.data || data || {};
+      const token = payload.token || payload.access_token || payload?.user?.token;
+      const user = payload.user || payload?.data?.user || payload?.usuario || null;
+      if (res.ok && token && user) {
+        auth.save(token, user);
+        const perfil = user.perfil || user.role || user.tipo;
+        const target = redirectMap[perfil] || payload.redirect_to || '/';
         ui.clearPageState();
         ui.message('Login realizado, redirecionando...', 'success');
-        setTimeout(() => (window.location.href = target), 500);
+        setTimeout(() => (window.location.href = target), 300);
       } else {
         ui.clearPageState();
-        ui.message(data?.message || 'NÃ£o foi possÃ­vel entrar.', 'error');
+        ui.message(data?.message || payload?.message || 'Não foi possível entrar.', 'error');
       }
     });
   }
