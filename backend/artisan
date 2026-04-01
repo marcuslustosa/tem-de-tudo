@@ -6,6 +6,10 @@ use Symfony\Component\Console\Input\ArgvInput;
 
 define('LARAVEL_START', microtime(true));
 
+// Evita que warnings de dependencias vazem para a saida de comandos (impacta CI/deploy parsing).
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
+
 // Register the Composer autoloader...
 require __DIR__.'/vendor/autoload.php';
 

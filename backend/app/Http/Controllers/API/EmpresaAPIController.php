@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 
 class EmpresaAPIController extends Controller
 {
@@ -173,6 +174,11 @@ class EmpresaAPIController extends Controller
      */
     public function criarPromocao(Request $request)
     {
+        $request->merge([
+            'titulo' => $request->input('titulo', $request->input('nome')),
+            'desconto' => $request->input('desconto', $request->input('preco', 0)),
+        ]);
+
         $request->validate([
             'titulo' => 'required|string|max:255',
             'descricao' => 'required|string',
@@ -232,6 +238,17 @@ class EmpresaAPIController extends Controller
      */
     public function atualizarPromocao(Request $request, $id)
     {
+        $payload = [];
+        if ($request->filled('nome') && !$request->filled('titulo')) {
+            $payload['titulo'] = $request->input('nome');
+        }
+        if ($request->has('preco') && !$request->has('desconto')) {
+            $payload['desconto'] = $request->input('preco');
+        }
+        if (!empty($payload)) {
+            $request->merge($payload);
+        }
+
         $request->validate([
             'titulo' => 'sometimes|string|max:255',
             'descricao' => 'sometimes|string',
@@ -629,47 +646,73 @@ class EmpresaAPIController extends Controller
     }
 
     /**
-     * Histórico detalhado de resgates da empresa
+     * Historico detalhado de resgates da empresa.
      */
     public function resgates(Request $request)
     {
         $user = Auth::user();
         $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
         if (!$empresa) {
-            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+            return response()->json(['success' => false, 'message' => 'Empresa nao encontrada'], 404);
         }
 
         $status = $request->input('status');
         $dataInicio = $request->input('data_inicio');
         $dataFim = $request->input('data_fim');
 
-        $query = DB::table('cupons as c')
-            ->leftJoin('users as u', 'u.id', '=', 'c.user_id')
-            ->leftJoin('promocoes as p', 'p.id', '=', 'c.promocao_id')
-            ->select(
-                'c.id',
-                'c.codigo',
-                'c.status',
-                'c.created_at',
-                'c.data_uso',
-                'u.name as cliente',
-                'u.email as cliente_email',
-                'p.titulo as promocao'
-            )
-            ->where('p.empresa_id', $empresa->id);
+        if (Schema::hasTable('coupons')) {
+            $query = DB::table('coupons as c')
+                ->leftJoin('users as u', 'u.id', '=', 'c.user_id')
+                ->select(
+                    'c.id',
+                    'c.codigo',
+                    'c.status',
+                    'c.created_at',
+                    'c.usado_em as data_uso',
+                    'u.name as cliente',
+                    'u.email as cliente_email',
+                    'c.descricao as promocao'
+                )
+                ->where('c.empresa_id', $empresa->id);
 
-        if ($status) {
-            $query->where('c.status', $status);
-        }
-        if ($dataInicio) {
-            $query->whereDate('c.created_at', '>=', $dataInicio);
-        }
-        if ($dataFim) {
-            $query->whereDate('c.created_at', '<=', $dataFim);
-        }
+            if ($status) {
+                $query->where('c.status', $status);
+            }
+            if ($dataInicio) {
+                $query->whereDate('c.created_at', '>=', $dataInicio);
+            }
+            if ($dataFim) {
+                $query->whereDate('c.created_at', '<=', $dataFim);
+            }
 
-        $resgates = $query->orderByDesc('c.created_at')->paginate(20);
+            $resgates = $query->orderByDesc('c.created_at')->paginate(20);
+        } else {
+            $query = DB::table('pontos as p')
+                ->leftJoin('users as u', 'u.id', '=', 'p.user_id')
+                ->select(
+                    'p.id',
+                    DB::raw("NULL as codigo"),
+                    DB::raw("'used' as status"),
+                    'p.created_at',
+                    'p.created_at as data_uso',
+                    'u.name as cliente',
+                    'u.email as cliente_email',
+                    'p.descricao as promocao'
+                )
+                ->where('p.empresa_id', $empresa->id)
+                ->where('p.tipo', 'resgate');
+
+            if ($dataInicio) {
+                $query->whereDate('p.created_at', '>=', $dataInicio);
+            }
+            if ($dataFim) {
+                $query->whereDate('p.created_at', '<=', $dataFim);
+            }
+
+            $resgates = $query->orderByDesc('p.created_at')->paginate(20);
+        }
 
         return response()->json(['success' => true, 'data' => $resgates]);
     }
 }
+

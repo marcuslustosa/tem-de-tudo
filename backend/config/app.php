@@ -1,5 +1,19 @@
 <?php
 
+$appKey = env('APP_KEY');
+
+if (is_string($appKey) && str_starts_with($appKey, 'base64:')) {
+    $decoded = base64_decode(substr($appKey, 7), true);
+    if ($decoded === false || !in_array(strlen($decoded), [16, 32], true)) {
+        $appKey = null;
+    }
+} elseif (is_string($appKey) && !in_array(strlen($appKey), [16, 32], true)) {
+    $appKey = null;
+}
+
+// Fallback defensivo para evitar falha total de boot quando APP_KEY vier invalida no ambiente.
+$appKey = $appKey ?: env('APP_FALLBACK_KEY', 'base64:lFj2Cxt8BkJPFug1FF010Alb2Zj34dGIjaGQvUMQ9Dg=');
+
 return [
 
     /*
@@ -97,7 +111,7 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-    'key' => env('APP_KEY'),
+    'key' => $appKey,
 
     'previous_keys' => [
         ...array_filter(

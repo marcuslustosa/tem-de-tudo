@@ -255,6 +255,7 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     // PromoÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
     Route::get('/promocoes', [ClienteAPIController::class, 'listarPromocoes']);
     Route::post('/resgatar-promocao/{id}', [ClienteAPIController::class, 'resgatarPromocao']);
+    Route::post('/promocoes/{id}/resgatar', [ClienteAPIController::class, 'resgatarPromocao']);
     
     // AvaliaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes
     Route::post('/avaliar', [ClienteAPIController::class, 'avaliar']);

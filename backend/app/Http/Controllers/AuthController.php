@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Models\Admin;
@@ -202,11 +203,14 @@ class AuthController extends Controller
 
             RateLimiter::clear($key);
 
+            $resolvedUser = array_merge($user->toArray(), ['perfil' => $perfil]);
             $response = [
                 'success' => true,
                 'message' => $this->getSuccessMessageForPerfil($perfil),
+                'token' => $token,
+                'user' => $resolvedUser,
                 'data' => [
-                    'user' => array_merge($user->toArray(), ['perfil' => $perfil]),
+                    'user' => $resolvedUser,
                     'token' => $token,
                     'token_type' => 'Bearer',
                     'expires_in' => 60 * 60, // 1 hora em segundos
@@ -307,7 +311,7 @@ class AuthController extends Controller
 
         try {
             $validatedData = $request->validate([
-                'email' => 'required|string|email',
+                'email' => 'required|string|max:255',
                 'password' => 'required|string',
             ]);
 
@@ -328,7 +332,22 @@ class AuthController extends Controller
 
         try {
             // Buscar usuário por email
-            $user = User::where('email', $request->email)->first();
+            $identifier = trim((string) $request->input('email'));
+            $userQuery = User::query();
+
+            if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+                $userQuery->where('email', $identifier);
+            } else {
+                $digits = preg_replace('/\D+/', '', $identifier);
+                $userQuery->where(function ($q) use ($identifier, $digits) {
+                    $q->where('email', $identifier);
+                    if ($digits && Schema::hasColumn('users', 'cpf')) {
+                        $q->orWhereRaw("REPLACE(REPLACE(REPLACE(cpf, '.', ''), '-', ''), '/', '') = ?", [$digits]);
+                    }
+                });
+            }
+
+            $user = $userQuery->first();
 
             if (!$user || !Hash::check($request->password, $user->password)) {
                 RateLimiter::hit($key, 300); // 5 minutos
@@ -366,11 +385,14 @@ class AuthController extends Controller
 
             RateLimiter::clear($key);
 
+            $resolvedUser = array_merge($user->toArray(), ['perfil' => $user->perfil]);
             $response = [
                 'success' => true,
                 'message' => 'Login realizado com sucesso!',
+                'token' => $token,
+                'user' => $resolvedUser,
                 'data' => [
-                    'user' => array_merge($user->toArray(), ['perfil' => $user->perfil]),
+                    'user' => $resolvedUser,
                     'token' => $token,
                     'token_type' => 'Bearer',
                     'expires_in' => 60 * 60, // 1 hora em segundos
@@ -534,8 +556,8 @@ class AuthController extends Controller
         $baseRules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required|string|min:8',
+            'password' => 'required|string|min:6|confirmed',
+            'password_confirmation' => 'required|string|min:6',
             'terms' => 'required|boolean|accepted',
         ];
 
@@ -547,7 +569,12 @@ class AuthController extends Controller
 
             case 'empresa':
                 return array_merge($baseRules, [
-                    'cnpj' => 'required|string|regex:/^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/|unique:empresas',
+                    'cnpj' => [
+                        'required',
+                        'string',
+                        'regex:/^(\d{14}|\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})$/',
+                        'unique:empresas',
+                    ],
                     'endereco' => 'required|string|max:500',
                     'telefone' => 'required|string|max:20',
                 ]);
@@ -625,13 +652,13 @@ class AuthController extends Controller
         switch ($perfil) {
             case 'cliente':
                 // Novo front (Stitch) - dashboard do cliente
-                return '/dashboard-cliente.html';
+                return '/meus_pontos.html';
             case 'empresa':
                 // Novo front (Stitch) - dashboard do parceiro/estabelecimento
-                return '/dashboard-empresa.html';
+                return '/dashboard_parceiro.html';
             case 'admin':
                 // Novo front (Stitch) - dashboard admin master
-                return '/dashboard-admin.html';
+                return '/dashboard_admin_master.html';
             default:
                 return '/entrar.html';
         }
@@ -737,7 +764,7 @@ class AuthController extends Controller
                     'token' => $token,
                     'token_type' => 'Bearer',
                     'expires_in' => 60 * 60, // 1 hora em segundos
-                    'redirect_to' => '/admin.html'
+                    'redirect_to' => '/dashboard_admin_master.html'
                 ]
             ];
 
@@ -923,7 +950,7 @@ class AuthController extends Controller
             $token = bin2hex(random_bytes(32));
             
             // Salvar token no banco
-            DB::table('password_resets')->updateOrInsert(
+            DB::table('password_reset_tokens')->updateOrInsert(
                 ['email' => $request->email],
                 [
                     'token' => Hash::make($token),
@@ -983,7 +1010,7 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
-        $record = DB::table('password_resets')
+        $record = DB::table('password_reset_tokens')
             ->where('email', $request->email)
             ->first();
 
@@ -995,7 +1022,7 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        DB::table('password_resets')->where('email', $request->email)->delete();
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
 
         return response()->json(['success' => true, 'message' => 'Senha redefinida com sucesso.']);
     }
@@ -1086,6 +1113,141 @@ class AuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Erro interno do servidor'
+            ], 500);
+        }
+    }
+
+    /**
+     * Listar usuários (admin).
+     */
+    public function listUsers(Request $request)
+    {
+        $perPage = max(1, min((int) $request->input('per_page', 20), 100));
+
+        $query = User::query()
+            ->select([
+                'id',
+                'name',
+                'email',
+                'perfil',
+                'status',
+                'telefone',
+                'pontos',
+                'created_at',
+                'updated_at',
+            ])
+            ->orderByDesc('created_at');
+
+        if ($request->filled('perfil')) {
+            $query->where('perfil', $request->input('perfil'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        if ($request->filled('search')) {
+            $term = '%' . $request->input('search') . '%';
+            $query->where(function ($q) use ($term) {
+                $q->where('name', 'like', $term)
+                    ->orWhere('email', 'like', $term)
+                    ->orWhere('telefone', 'like', $term);
+            });
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $query->paginate($perPage),
+        ]);
+    }
+
+    /**
+     * Atualizar status de usuário (admin).
+     */
+    public function updateUserStatus(Request $request, int $id)
+    {
+        $payload = $request->validate([
+            'status' => 'required|string|in:ativo,inativo,bloqueado',
+        ]);
+
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuário não encontrado.',
+            ], 404);
+        }
+
+        $user->status = $payload['status'];
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status atualizado com sucesso.',
+            'data' => $user,
+        ]);
+    }
+
+    /**
+     * Criar usuário pelo painel admin.
+     */
+    public function createUser(Request $request)
+    {
+        $payload = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6',
+            'perfil' => 'required|string|in:cliente,empresa,admin',
+            'status' => 'nullable|string|in:ativo,inativo,bloqueado',
+            'telefone' => 'nullable|string|max:20',
+            'cnpj' => 'nullable|string|max:20',
+            'endereco' => 'nullable|string|max:500',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $user = User::create([
+                'name' => $payload['name'],
+                'email' => $payload['email'],
+                'password' => Hash::make($payload['password']),
+                'perfil' => $payload['perfil'],
+                'status' => $payload['status'] ?? 'ativo',
+                'telefone' => $payload['telefone'] ?? null,
+                'email_verified_at' => now(),
+            ]);
+
+            if ($payload['perfil'] === 'empresa') {
+                DB::table('empresas')->insert([
+                    'owner_id' => $user->id,
+                    'nome' => $payload['name'],
+                    'ramo' => 'geral',
+                    'endereco' => $payload['endereco'] ?? 'Não informado',
+                    'telefone' => $payload['telefone'] ?? 'Não informado',
+                    'cnpj' => $payload['cnpj'] ?? sprintf('%02d.%03d.%03d/%04d-%02d', rand(10, 99), rand(100, 999), rand(100, 999), rand(1000, 9999), rand(10, 99)),
+                    'ativo' => true,
+                    'points_multiplier' => 1.0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Usuário criado com sucesso.',
+                'data' => $user,
+            ], 201);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            Log::error('Erro ao criar usuário via admin', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao criar usuário.',
             ], 500);
         }
     }

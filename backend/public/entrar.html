@@ -28,7 +28,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 bg-radiant-pattern">
+<body class="min-h-screen flex items-center justify-center p-4 bg-radiant-pattern" data-page="acessar_conta">
   <main class="w-full max-w-md space-y-8">
     <div class="text-center space-y-6">
       <div class="inline-flex items-center justify-center p-4 rounded-3xl bg-surface-container-lowest shadow-[0_8px_32px_rgba(11,31,58,0.08)]">
@@ -74,7 +74,7 @@
       </form>
     </div>
 
-    <p class="text-center text-on-surface-variant font-medium">Ainda nao tem conta? <a class="text-primary font-bold hover:underline underline-offset-4 ml-1" href="/criar_conta.html">Criar conta</a></p>
+    <p class="text-center text-on-surface-variant font-medium">Ainda não tem conta<a class="text-primary font-bold hover:underline underline-offset-4 ml-1" href="/criar_conta.html">Criar conta</a></p>
   </main>
 
   <div class="fixed top-20 -left-12 w-64 h-64 bg-tertiary/10 rounded-full blur-3xl -z-10"></div>
@@ -86,7 +86,7 @@
     </button>
   </div>
 
-  <script src="/js/stitch-app.js?v=stabilize-auth-20260331"></script>
+  <script src="/js/stitch-app.js?v=main-structural-fix-20260331"></script>
   <script>
     (function () {
       const passInput = document.getElementById('loginPassword');
@@ -128,11 +128,11 @@
         msgBox.textContent = text;
       }
 
-      form?.addEventListener('submit', async (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
         showMsg('', 'info');
-        const email = emailInput?.value?.trim();
-        const password = passInput?.value;
+        const email = emailInput?.value?.trim() || '';
+        const password = passInput?.value || '';
 
         if (!email || !password) {
           showMsg('Informe email/CPF e senha.', 'error');
@@ -155,14 +155,14 @@
 
           if (!res.ok || !token || !user) {
             console.error('LOGIN_INLINE_FAIL', { status: res.status, payload: data });
-            showMsg(data?.message || 'Nao foi possivel entrar.', 'error');
+            showMsg(data?.message || 'Não foi possível entrar.', 'error');
             return;
           }
 
           localStorage.setItem('tem_de_tudo_token', token);
           localStorage.setItem('tem_de_tudo_user', JSON.stringify(user));
 
-          const perfil = user?.perfil || user?.role || user?.tipo;
+          const perfil = user.perfil || user.role || user.tipo;
           const target = redirectMap[perfil] || '/';
 
           console.log('LOGIN_INLINE_OK', { status: res.status, perfil, redirect: target, payload: data });

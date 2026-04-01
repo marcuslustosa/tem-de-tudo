@@ -302,82 +302,84 @@
   // ---------------------- Paginas: Cliente ---------------------- //
   const cliente = {
     async dashboard() {
-      if (!(await auth.guard(['empresa']))) return;
-      ui.setPageState('loading', 'Carregando painel da empresa...');
-      const [promos, clientes, relatorio, resgates] = await Promise.all([
-        api.request('/empresa/promocoes'),
-        api.request('/empresa/clientes'),
-        api.request('/empresa/relatorio-pontos'),
-        api.request('/empresa/resgates'),
+      if (!(await auth.guard(['cliente']))) return;
+      ui.setPageState('loading', 'Carregando painel do cliente...');
+      const [dashboardResp, pontosResp, historicoResp] = await Promise.all([
+        api.request('/cliente/dashboard'),
+        api.request('/pontos/meus-dados'),
+        api.request('/pontos/historico'),
       ]);
-
-      const kpiVolume = document.getElementById('kpiVolume');
-      const kpiClientes = document.getElementById('kpiClientes');
-      const kpiResgates = document.getElementById('kpiResgates');
-      const campanhasBox = document.getElementById('campanhasAtivas');
-      const campanhasEmpty = document.getElementById('campanhasEmpty');
-      const movDistribuido = document.getElementById('movDistribuido');
-      const movResgatado = document.getElementById('movResgatado');
-      const movClientes = document.getElementById('movClientes');
-      const movMsg = document.getElementById('movMsg');
       ui.clearPageState();
 
-      const totals = relatorio.data?.data?.totais || {};
-      const fmtMoeda = (n) => 'R$ ' + (n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-      if (kpiVolume) kpiVolume.textContent = fmtMoeda(totals.total_resgatado || 0);
-      if (kpiClientes) kpiClientes.textContent = (clientes.data?.data?.length || clientes.data?.data?.total || 0).toString();
-      if (kpiResgates) kpiResgates.textContent = (totals.total_resgatado || 0).toString();
+      const dashboard = dashboardResp.data?.data || {};
+      const pontosData = pontosResp.data?.data || {};
+      const historico = historicoResp.data?.data?.data || historicoResp.data?.data || [];
+      const user = await auth.ensure();
 
-      if (movDistribuido) movDistribuido.textContent = (totals.total_distribuido || 0).toLocaleString('pt-BR');
-      if (movResgatado) movResgatado.textContent = (totals.total_resgatado || 0).toLocaleString('pt-BR');
-      if (movClientes) movClientes.textContent = (totals.total_clientes || 0).toLocaleString('pt-BR');
-      if (movMsg) movMsg.textContent = 'Dados dos últimos 30 dias';
+      const saldo = Number(dashboard.usuario?.saldo_pontos ?? pontosData.pontos_total ?? user?.pontos ?? 0);
+      const totalGanho = Number(dashboard.usuario?.total_ganho ?? 0);
+      const totalGasto = Number(dashboard.usuario?.total_gasto ?? 0);
 
-      const listaPromos = promos.data?.data || promos.data || [];
-      if (campanhasBox) {
-        campanhasBox.innerHTML = '';
-        if (!listaPromos.length) {
-          if (campanhasEmpty) campanhasEmpty.classList.remove('hidden');
-        } else {
-          if (campanhasEmpty) campanhasEmpty.classList.add('hidden');
-          listaPromos.slice(0, 4).forEach((p) => {
-            const card = document.createElement('div');
-            card.className = 'bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm flex';
-            const img = p.imagem_url || p.imagem || '/img/placeholder-promo.jpg';
-            const statusAtivo = !(p.status === 'pausada' || p.ativo === false);
-            const status = statusAtivo ? 'Ativa' : 'Pausada';
-            card.innerHTML = `
-              <div class="w-24 h-24 flex-shrink-0">
-                <img alt="${p.nome || 'Promoção'}" class="w-full h-full object-cover" src="${img}"/>
-              </div>
-              <div class="p-4 flex flex-col justify-between flex-grow">
-                <div>
-                  <div class="flex justify-between items-start">
-                    <h4 class="font-headline font-bold text-sm text-on-surface">${p.nome || 'Promoção'}</h4>
-                    <span class="glass-badge px-2 py-0.5 rounded-full text-[9px] font-bold text-primary uppercase">${status}</span>
-                  </div>
-                  <p class="text-xs text-on-surface-variant line-clamp-2">${p.descricao || ''}</p>
-                </div>
-                <div class="flex items-center justify-between mt-2 text-[10px] text-on-surface-variant">
-                  <div class="flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full ${statusAtivo ? 'bg-[#00C2D1]' : 'bg-outline'}"></span>
-                    <span class="font-label font-bold uppercase">${status}</span>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-xs">calendar_today</span>
-                    <span>${p.validade || p.fim_vigencia || ''}</span>
-                  </div>
-                </div>
-              </div>`;
-            card.addEventListener('click', () => (window.location.href = '/gest_o_de_ofertas_parceiro.html'));
-            campanhasBox.appendChild(card);
-          });
-        }
+      const welcomeEl = document.querySelector("header span.font-['Plus_Jakarta_Sans']");
+      if (welcomeEl) welcomeEl.textContent = `Ola, ${user?.name || 'Cliente'}`;
+
+      const saldoEl = document.querySelector('section.bg-brand-gradient h1');
+      if (saldoEl) {
+        saldoEl.innerHTML = `${saldo.toLocaleString('pt-BR')} <span class="text-xl font-medium opacity-90">Pontos</span>`;
       }
 
-      document.getElementById('empresaNotifBtn')?.addEventListener('click', () => {
-        ui.message('Notificações da empresa serão exibidas aqui em breve.', 'info');
+      const nivelEl = document.querySelector('section.bg-brand-gradient .glass-card span:last-child');
+      if (nivelEl) nivelEl.textContent = pontosData.nivel_vip ? `Nivel ${pontosData.nivel_vip}` : 'Nivel Cliente';
+
+      const progressPct = document.querySelector('section.bg-brand-gradient .font-poppins.text-lg');
+      const progressBar = document.querySelector('section.bg-brand-gradient .h-full.bg-gradient-to-r');
+      const meta = Math.max(1000, saldo + 500);
+      const perc = Math.max(0, Math.min(100, Math.round((saldo / meta) * 100)));
+      if (progressPct) progressPct.textContent = `${perc}%`;
+      if (progressBar) progressBar.style.width = `${perc}%`;
+
+      const progressMsg = document.querySelector('section.bg-brand-gradient p.text-white\/60');
+      if (progressMsg) progressMsg.textContent = `Faltam ${Math.max(meta - saldo, 0)} pontos para o proximo nivel.`;
+
+      const ganhosInfo = document.querySelector('button.w-full.mb-10 p.text-on-surface-variant');
+      if (ganhosInfo) ganhosInfo.textContent = `Ganhos: ${totalGanho.toLocaleString('pt-BR')} | Resgates: ${totalGasto.toLocaleString('pt-BR')}`;
+      document.querySelector('button.w-full.mb-10')?.addEventListener('click', () => {
+        window.location.href = '/parceiros_tem_de_tudo.html';
       });
+
+      const historicoContainer = document.querySelector('section.mb-12 .space-y-4');
+      if (historicoContainer) {
+        if (!historico.length) {
+          historicoContainer.innerHTML = '<p class="text-sm text-on-surface-variant">Sem historico de pontos.</p>';
+        } else {
+          historicoContainer.innerHTML = historico.slice(0, 5).map((item) => {
+            const pontos = Number(item.pontos || 0);
+            const tipo = (item.tipo || '').toLowerCase();
+            const positivo = pontos >= 0 && !tipo.includes('resgate');
+            const valor = `${positivo ? '+' : '-'}${Math.abs(pontos)}`;
+            const titulo = item.empresa?.nome || item.empresa_nome || 'Empresa';
+            const data = item.created_at ? new Date(item.created_at).toLocaleString('pt-BR') : '--';
+            const descricao = item.descricao || (positivo ? 'Pontos recebidos' : 'Pontos utilizados');
+            return `
+              <div class="flex items-center justify-between bg-surface-container-low p-4 rounded-xl transition-colors hover:bg-surface-container">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                    <span class="material-symbols-outlined ${positivo ? 'text-tertiary' : 'text-error'}">${positivo ? 'shopping_bag' : 'redeem'}</span>
+                  </div>
+                  <div>
+                    <p class="font-bold text-sm text-on-surface">${titulo}</p>
+                    <p class="text-on-surface-variant text-[10px] uppercase font-semibold">${data}</p>
+                    <p class="text-on-surface-variant text-[10px]">${descricao}</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="font-poppins font-bold ${positivo ? 'text-tertiary' : 'text-error'}">${valor}</p>
+                  <p class="text-[10px] text-outline font-medium">Pontos</p>
+                </div>
+              </div>`;
+          }).join('');
+        }
+      }
     },
 
 
@@ -766,7 +768,7 @@
     },
 
     async validarResgate() {
-      if (!(await auth.guard(['empresa', 'admin']))) return;
+      if (!(await auth.guard(['cliente', 'empresa', 'admin']))) return;
       const input = document.getElementById('cupomId');
       const btn = document.getElementById('usarCupomBtn');
       const list = document.getElementById('validacoesRecentes');
@@ -1045,21 +1047,23 @@
                 <div class="flex items-center gap-2 text-[10px] text-outline">
                   <button class="px-3 py-1 rounded-lg bg-primary text-white text-xs" data-action="ativar">Ativar</button>
                   <button class="px-3 py-1 rounded-lg bg-amber-500 text-white text-xs" data-action="pausar">Pausar</button>
+                  <button class="px-3 py-1 rounded-lg bg-rose-600 text-white text-xs" data-action="deletar">Excluir</button>
                 </div>
               </div>
             </div>`;
           card.querySelector('[data-action="editar"]')?.addEventListener('click', () => fillForm(p));
           card.querySelector('[data-action="ativar"]')?.addEventListener('click', () => empresa.togglePromocao(p.id, 'ativar'));
           card.querySelector('[data-action="pausar"]')?.addEventListener('click', () => empresa.togglePromocao(p.id, 'pausar'));
+          card.querySelector('[data-action=\"deletar\"]')?.addEventListener('click', () => empresa.deletarPromocao(p.id));
           listaBox?.appendChild(card);
         });
       };
 
       const fillForm = (p) => {
         editingId = p.id;
-        if (form.titulo) form.titulo.value = p.nome || p.titulo || '';
+        if (form.titulo) form.titulo.value = p.titulo || p.nome || '';
         if (form.descricao) form.descricao.value = p.descricao || '';
-        if (form.preco) form.preco.value = p.preco || p.valor || '';
+        if (form.preco) form.preco.value = p.desconto || p.preco || p.valor || '';
         if (form.tipo) form.tipo.value = p.tipo || 'desconto';
         if (form.imagem) form.imagem.value = p.imagem_url || p.imagem || '';
         if (form.ativa) form.ativa.checked = !(p.status === 'pausada' || p.ativo === false);
@@ -1096,14 +1100,16 @@
 
       form.salvar?.addEventListener('click', async () => {
         const payload = {
+          titulo: form.titulo?.value,
           nome: form.titulo?.value,
           descricao: form.descricao?.value,
+          desconto: Number(form.preco?.value || 0),
           preco: Number(form.preco?.value || 0),
           tipo: form.tipo?.value,
           imagem_url: form.imagem?.value,
           ativo: form.ativa?.checked ?? true,
         };
-        if (!payload.nome) return ui.message('Informe o título.', 'warning');
+        if (!payload.titulo) return ui.message('Informe o titulo.', 'warning');
         const path = editingId ? `/empresa/promocoes/${editingId}` : '/empresa/promocoes';
         const method = editingId ? 'PUT' : 'POST';
         const { res, data: resp } = await api.request(path, { method, body: JSON.stringify(payload) }, { headers: { 'Content-Type': 'application/json' } });
@@ -1128,6 +1134,17 @@
         location.reload();
       } else {
         ui.message(data?.message || 'Erro ao atualizar promocao.', 'error');
+      }
+    },
+
+    async deletarPromocao(id) {
+      if (!window.confirm('Deseja realmente excluir esta promocao?')) return;
+      const { res, data } = await api.request(`/empresa/promocoes/${id}`, { method: 'DELETE' });
+      if (res.ok && data?.success !== false) {
+        ui.message('Promocao removida.', 'success');
+        location.reload();
+      } else {
+        ui.message(data?.message || 'Erro ao remover promocao.', 'error');
       }
     },
   };
@@ -1576,7 +1593,25 @@
   const handlers = {
     // Publico / shared
     acessar_conta: handleLogin,
-    home_tem_de_tudo: () => {},
+    home_tem_de_tudo: async () => {
+      const cards = document.querySelectorAll('main section.space-y-4 .grid > div');
+      if (!cards.length) return;
+      const { data } = await api.request('/empresas', {}, { requireAuth: false });
+      const empresas = data?.data || data || [];
+      if (!empresas.length) return;
+      cards.forEach((card, idx) => {
+        const empresa = empresas[idx];
+        if (!empresa) return;
+        const img = card.querySelector('img');
+        const title = card.querySelector('h4');
+        const badge = card.querySelector('span.text-xs');
+        const desc = card.querySelector('p.text-xs');
+        if (img) img.src = empresa.logo || '/img/placeholder-store.png';
+        if (title) title.textContent = empresa.nome || 'Parceiro';
+        if (badge) badge.textContent = (empresa.ramo || 'Parceiro').toString().toUpperCase();
+        if (desc) desc.textContent = empresa.endereco || 'Parceiro ativo no programa.';
+      });
+    },
     oferta_especial: cliente.detalheParceiro,
     tudo_vibrante: () => {},
     forgot_password: async () => {
