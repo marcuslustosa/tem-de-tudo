@@ -1556,17 +1556,17 @@
       const payload = data?.data || data || {};
       const token = payload.token || payload.access_token || payload?.user?.token;
       const user = payload.user || payload?.data?.user || payload?.usuario || null;
-      console.log('LOGIN_SUBMIT_OK', { status: res.status, ok: res.ok, payload, perfil: user?.perfil });
+      const perfil = user?.perfil || user?.role || user?.tipo;
+      const target = redirectMap[perfil] || '/';
+      console.log('LOGIN_SUBMIT_OK', JSON.stringify({ status: res.status, payload, perfil, redirect: target }, null, 2));
       if (res.ok && token && user) {
         auth.save(token, user);
-        const perfil = user.perfil || user.role || user.tipo;
-        const target = redirectMap[perfil] || '/';
         ui.clearPageState();
         ui.message('Login realizado, redirecionando...', 'success');
         setTimeout(() => (window.location.href = target), 300);
       } else {
         ui.clearPageState();
-        console.error('LOGIN_SUBMIT_FAIL', { status: res.status, payload: data });
+        console.error('LOGIN_SUBMIT_FAIL', JSON.stringify({ status: res.status, payload: data }, null, 2));
         ui.message(data?.message || payload?.message || 'Não foi possível entrar.', 'error');
       }
     });
