@@ -9,6 +9,12 @@ use App\Models\AuditLog;
 
 class AdminPermissionMiddleware
 {
+    private function isAdminPerfil($perfil): bool
+    {
+        $value = strtolower(trim((string) $perfil));
+        return in_array($value, ['admin', 'administrador', 'master', 'admin_master', 'administrador_master'], true);
+    }
+
     /**
      * Handle an incoming request.
      */
@@ -22,7 +28,7 @@ class AdminPermissionMiddleware
         }
 
         // Super admin tem todas as permissões
-        if (($user->role ?? null) === 'super_admin' || $user->perfil === 'admin') {
+        if (($user->role ?? null) === 'super_admin' || $this->isAdminPerfil($user->perfil ?? null)) {
             return $next($request);
         }
 

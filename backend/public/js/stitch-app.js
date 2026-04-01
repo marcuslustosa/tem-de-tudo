@@ -1376,9 +1376,10 @@
     async usuarios() {
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando usuários...');
-      const { res, data } = await api.request('/admin/users-report');
+      const { res, data } = await api.request('/admin/users-report', {}, { notify: false });
       if (!res.ok) return ui.setPageState('error', 'Endpoint /admin/users-report indisponível ou bloqueado.');
-      const lista = data?.data || data || [];
+      const raw = data?.data ?? data ?? [];
+      const lista = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
 
       const isCliente = (u) => (u.perfil || u.role || '').toString().toLowerCase().includes('cliente');
       const admins = lista.filter((u) => !isCliente(u));
@@ -1536,9 +1537,10 @@
     async clientesMaster() {
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando clientes...');
-      const { res, data } = await api.request('/admin/users-report');
+      const { res, data } = await api.request('/admin/users-report', {}, { notify: false });
       if (!res.ok) return ui.setPageState('error', 'Endpoint /admin/users-report indisponível ou bloqueado.');
-      const lista = data?.data || data || [];
+      const raw = data?.data ?? data ?? [];
+      const lista = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
       const clientes = lista.filter((u) => (u.perfil || u.role || '').toString().toLowerCase().includes('cliente'));
 
       const tbody = document.getElementById('adminClientesTable');

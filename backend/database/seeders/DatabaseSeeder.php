@@ -2,137 +2,312 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
+    private function filterColumns(string $table, array $data): array
+    {
+        if (!Schema::hasTable($table)) {
+            return [];
+        }
+
+        $columns = Schema::getColumnListing($table);
+        $allowed = array_flip($columns);
+
+        return array_intersect_key($data, $allowed);
+    }
+
+    private function upsert(string $table, array $where, array $values): void
+    {
+        if (!Schema::hasTable($table)) {
+            return;
+        }
+
+        $where = $this->filterColumns($table, $where);
+        $values = $this->filterColumns($table, $values);
+
+        if (empty($where) || empty($values)) {
+            return;
+        }
+
+        DB::table($table)->updateOrInsert($where, $values);
+    }
+
     public function run(): void
     {
+        $now = now();
+        $logos = [
+            '/assets/images/company1.jpg',
+            '/assets/images/company2.jpg',
+            '/assets/images/company3.jpg',
+            '/assets/images/company4.jpg',
+        ];
 
-        // Admin Master
+        // Usuarios base obrigatorios
         $admin = User::updateOrCreate(
             ['email' => 'admin@temdetudo.com'],
             [
                 'name' => 'Administrador Master',
                 'password' => Hash::make('admin123'),
                 'perfil' => 'admin',
+                'status' => 'ativo',
+                'telefone' => '(11) 99999-0001',
                 'permissions' => json_encode([
                     'manage_system',
                     'manage_users',
                     'view_reports',
                     'manage_companies',
-                    'manage_promotions'
+                    'manage_promotions',
                 ]),
-                'telefone' => '(11) 99999-0001',
-                'status' => 'ativo',
                 'pontos' => 0,
-                'email_verified_at' => now()
+                'email_verified_at' => $now,
             ]
         );
 
-        // Cliente base
         $cliente = User::updateOrCreate(
             ['email' => 'cliente@teste.com'],
             [
                 'name' => 'Cliente Teste',
                 'password' => Hash::make('123456'),
                 'perfil' => 'cliente',
-                'telefone' => '(11) 99999-0002',
                 'status' => 'ativo',
-                'pontos' => 250,
-                'email_verified_at' => now()
+                'telefone' => '(11) 99999-0002',
+                'pontos' => 350,
+                'email_verified_at' => $now,
             ]
         );
 
-        // Empresa base (usuario tipo empresa)
         $empresaUser = User::updateOrCreate(
             ['email' => 'empresa@teste.com'],
             [
                 'name' => 'Empresa Teste Ltda',
                 'password' => Hash::make('123456'),
                 'perfil' => 'empresa',
-                'telefone' => '(11) 99999-0003',
                 'status' => 'ativo',
+                'telefone' => '(11) 99999-0003',
                 'pontos' => 0,
-                'email_verified_at' => now()
+                'email_verified_at' => $now,
             ]
         );
 
-        // Empresa base na tabela empresas
-        $empresaRecord = DB::table('empresas')->where('owner_id', $empresaUser->id)->first();
-        if (!$empresaRecord) {
-            $empresaId = DB::table('empresas')->insertGetId([
+        // Empresa base
+        $this->upsert('empresas',
+            ['owner_id' => $empresaUser->id],
+            [
                 'owner_id' => $empresaUser->id,
                 'nome' => 'Empresa Teste Ltda',
                 'ramo' => 'restaurante',
                 'descricao' => 'Empresa seed para demonstracao',
-                'logo' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop',
+                'logo' => $logos[0],
                 'endereco' => 'Av. Central, 1000 - Sao Paulo, SP',
                 'telefone' => '(11) 4000-0000',
                 'cnpj' => '12.345.678/0001-00',
                 'ativo' => true,
+                'status' => 'ativo',
                 'points_multiplier' => 1.0,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-            $empresaRecord = DB::table('empresas')->where('id', $empresaId)->first();
-        }
-
-        // Promo seed da empresa base
-        $promoId = DB::table('promocoes')
-            ->where('empresa_id', $empresaRecord->id)
-            ->where('titulo', '10% OFF na primeira compra')
-            ->value('id');
-        if (!$promoId) {
-            $promoId = DB::table('promocoes')->insertGetId([
-                'empresa_id' => $empresaRecord->id,
-                'titulo' => '10% OFF na primeira compra',
-                'descricao' => 'Desconto de boas-vindas para novos clientes',
-                'desconto' => 10,
-                'imagem' => 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600',
-                'data_inicio' => now()->subDays(2),
-                'validade' => now()->addMonths(1),
-                'ativo' => true,
-                'status' => 'ativa',
-                'visualizacoes' => 10,
-                'resgates' => 2,
-                'usos' => 1,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-        }
-
-        // Cupom seed para cliente teste
-        DB::table('coupons')->updateOrInsert(
-            [
-                'user_id' => $cliente->id,
-                'codigo' => 'CUPOM-SEED-001'
-            ],
-            [
-                'empresa_id' => $empresaRecord->id,
-                'tipo' => 'discount',
-                'descricao' => 'Cupom de boas-vindas',
-                'custo_pontos' => 0,
-                'porcentagem_desconto' => 10,
-                'status' => 'active',
-                'expira_em' => now()->addMonths(1),
-                'created_at' => now(),
-                'updated_at' => now()
+                'created_at' => $now,
+                'updated_at' => $now,
             ]
         );
+
+        $empresaBaseId = DB::table('empresas')->where('owner_id', $empresaUser->id)->value('id');
+
+        if ($empresaBaseId && Schema::hasTable('promocoes')) {
+            $this->upsert('promocoes',
+                ['empresa_id' => $empresaBaseId, 'titulo' => '10% OFF na primeira compra'],
+                [
+                    'empresa_id' => $empresaBaseId,
+                    'titulo' => '10% OFF na primeira compra',
+                    'descricao' => 'Desconto de boas-vindas para novos clientes',
+                    'desconto' => 10,
+                    'imagem' => $logos[1],
+                    'data_inicio' => $now->copy()->subDays(2),
+                    'validade' => $now->copy()->addMonths(1),
+                    'ativo' => true,
+                    'status' => 'ativa',
+                    'visualizacoes' => 25,
+                    'resgates' => 4,
+                    'usos' => 2,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
+        }
+
+        // Dados do cliente base
+        if (Schema::hasTable('pontos') && $empresaBaseId) {
+            DB::table('pontos')
+                ->where('user_id', $cliente->id)
+                ->where('descricao', 'like', '[SEED]%')
+                ->delete();
+
+            foreach ([120, 80, 150] as $idx => $pts) {
+                DB::table('pontos')->insert($this->filterColumns('pontos', [
+                    'user_id' => $cliente->id,
+                    'empresa_id' => $empresaBaseId,
+                    'pontos' => $pts,
+                    'tipo' => 'ganho',
+                    'descricao' => '[SEED] Compra ' . ($idx + 1),
+                    'created_at' => $now->copy()->subDays($idx + 1),
+                    'updated_at' => $now,
+                ]));
+            }
+        }
+
+        if (Schema::hasTable('coupons') && $empresaBaseId) {
+            $this->upsert('coupons',
+                ['user_id' => $cliente->id, 'codigo' => 'CUPOM-SEED-001'],
+                [
+                    'user_id' => $cliente->id,
+                    'empresa_id' => $empresaBaseId,
+                    'codigo' => 'CUPOM-SEED-001',
+                    'tipo' => 'discount',
+                    'descricao' => 'Cupom de boas-vindas',
+                    'custo_pontos' => 0,
+                    'porcentagem_desconto' => 10,
+                    'status' => 'active',
+                    'expira_em' => $now->copy()->addMonths(1),
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
+        }
+
+        // Empresas extras para listagem
+        $empresas = [
+            ['nome' => 'Restaurante Sabor & Arte', 'ramo' => 'restaurante', 'descricao' => 'Restaurante contemporaneo.'],
+            ['nome' => 'Academia Corpo Forte', 'ramo' => 'academia', 'descricao' => 'Academia completa.'],
+            ['nome' => 'Cafeteria Aroma Premium', 'ramo' => 'cafeteria', 'descricao' => 'Cafes especiais e doces artesanais.'],
+            ['nome' => 'Pet Shop Amigo Fiel', 'ramo' => 'pet_shop', 'descricao' => 'Tudo para seu pet.'],
+            ['nome' => 'Salao Beleza Total', 'ramo' => 'salao', 'descricao' => 'Beleza completa.'],
+            ['nome' => 'Mercado Bom Preco', 'ramo' => 'mercado', 'descricao' => 'Ofertas diarias.'],
+            ['nome' => 'Farmacia Saude Mais', 'ramo' => 'farmacia', 'descricao' => 'Farmacia completa.'],
+            ['nome' => 'Padaria Pao Quentinho', 'ramo' => 'padaria', 'descricao' => 'Paes frescos diarios.'],
+        ];
+
+        foreach ($empresas as $idx => $empresa) {
+            $logo = $logos[$idx % count($logos)];
+            $this->upsert('empresas',
+                ['nome' => $empresa['nome']],
+                [
+                    'owner_id' => $empresaUser->id,
+                    'nome' => $empresa['nome'],
+                    'ramo' => $empresa['ramo'],
+                    'descricao' => $empresa['descricao'],
+                    'logo' => $logo,
+                    'endereco' => 'Rua Exemplo, ' . (100 + $idx) . ' - Sao Paulo, SP',
+                    'telefone' => sprintf('(11) 9%04d-%04d', 1000 + $idx, 2000 + $idx),
+                    'cnpj' => sprintf('11.111.111/%04d-11', 1000 + $idx),
+                    'ativo' => true,
+                    'status' => 'ativo',
+                    'points_multiplier' => 1.0,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
+
+            $empresaId = DB::table('empresas')->where('nome', $empresa['nome'])->value('id');
+            if ($empresaId && Schema::hasTable('promocoes')) {
+                $this->upsert('promocoes',
+                    ['empresa_id' => $empresaId, 'titulo' => 'Cashback especial'],
+                    [
+                        'empresa_id' => $empresaId,
+                        'titulo' => 'Cashback especial',
+                        'descricao' => 'Ganhe pontos extras nas compras desta semana.',
+                        'desconto' => 5,
+                        'imagem' => $logo,
+                        'data_inicio' => $now->copy()->subDays(1),
+                        'validade' => $now->copy()->addDays(20),
+                        'ativo' => true,
+                        'status' => 'ativa',
+                        'visualizacoes' => 18,
+                        'resgates' => 3,
+                        'usos' => 1,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]
+                );
+
+                $this->upsert('promocoes',
+                    ['empresa_id' => $empresaId, 'titulo' => 'Oferta limitada'],
+                    [
+                        'empresa_id' => $empresaId,
+                        'titulo' => 'Oferta limitada',
+                        'descricao' => 'Desconto progressivo em produtos selecionados.',
+                        'desconto' => 15,
+                        'imagem' => $logo,
+                        'data_inicio' => $now->copy()->subDays(5),
+                        'validade' => $now->copy()->addDays(10),
+                        'ativo' => true,
+                        'status' => 'pausada',
+                        'visualizacoes' => 11,
+                        'resgates' => 1,
+                        'usos' => 0,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]
+                );
+            }
+        }
+
+        // Clientes demo
+        for ($i = 1; $i <= 20; $i++) {
+            $demo = User::updateOrCreate(
+                ['email' => "demo_cliente{$i}@email.com"],
+                [
+                    'name' => "Cliente Demo {$i}",
+                    'password' => Hash::make('senha123'),
+                    'perfil' => 'cliente',
+                    'status' => 'ativo',
+                    'telefone' => sprintf('(11) 9%04d-%04d', 3000 + $i, 4000 + $i),
+                    'pontos' => 200 + ($i * 37),
+                    'email_verified_at' => $now,
+                ]
+            );
+
+            if (Schema::hasTable('coupons') && $empresaBaseId) {
+                $this->upsert('coupons',
+                    ['user_id' => $demo->id, 'codigo' => 'CUPOM-DEMO-' . $i],
+                    [
+                        'user_id' => $demo->id,
+                        'empresa_id' => $empresaBaseId,
+                        'codigo' => 'CUPOM-DEMO-' . $i,
+                        'tipo' => 'discount',
+                        'descricao' => 'Cupom demo',
+                        'custo_pontos' => 0,
+                        'porcentagem_desconto' => 5,
+                        'status' => $i % 2 === 0 ? 'used' : 'active',
+                        'expira_em' => $now->copy()->addDays(30),
+                        'usado_em' => $i % 2 === 0 ? $now->copy()->subDay() : null,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]
+                );
+            }
+
+            Notification::updateOrCreate(
+                ['user_id' => $demo->id, 'title' => "Saldo atualizado #{$i}"],
+                [
+                    'message' => 'Voce recebeu pontos em sua ultima compra.',
+                    'type' => 'info',
+                    'payload' => ['origin' => 'seed'],
+                ]
+            );
+        }
 
         // Notificacoes base
         Notification::updateOrCreate(
             ['user_id' => $cliente->id, 'title' => 'Boas-vindas'],
             [
-                'message' => 'Voce ganhou 50 pontos de boas-vindas.',
+                'message' => 'Voce ganhou pontos de boas-vindas.',
                 'type' => 'info',
-                'payload' => ['origin' => 'seed']
+                'payload' => ['origin' => 'seed'],
             ]
         );
         Notification::updateOrCreate(
@@ -140,176 +315,55 @@ class DatabaseSeeder extends Seeder
             [
                 'message' => 'Sua promocao de boas-vindas esta ativa.',
                 'type' => 'success',
-                'payload' => ['promocao_id' => $promoId]
+                'payload' => ['origin' => 'seed'],
             ]
         );
         Notification::updateOrCreate(
-            ['user_id' => $admin->id ?? null, 'title' => 'Admin: revise relatorios'],
+            ['user_id' => $admin->id, 'title' => 'Admin: revise relatorios'],
             [
                 'message' => 'Relatorios disponiveis para revisao.',
                 'type' => 'alert',
-                'payload' => ['section' => 'reports']
+                'payload' => ['origin' => 'seed'],
             ]
         );
 
-        // Clientes demo ricos
-        for ($i = 1; $i <= 30; $i++) {
-            $user = User::updateOrCreate(
-                ['email' => "demo_cliente{$i}@email.com"],
-                [
-                    'name' => "Cliente Demo {$i}",
-                    'password' => Hash::make('senha123'),
-                    'perfil' => 'cliente',
-                    'telefone' => sprintf('(11) 9%04d-%04d', rand(1000, 9999), rand(1000, 9999)),
-                    'status' => 'ativo',
-                    'pontos' => rand(200, 1500),
-                    'email_verified_at' => now()
-                ]
-            );
-
-            for ($j = 0; $j < 3; $j++) {
-                DB::table('pontos')->insert([
-                    'user_id' => $user->id,
-                    'empresa_id' => $empresaRecord->id,
-                    'pontos' => rand(50, 200),
-                    'tipo' => 'ganho',
-                    'descricao' => 'Compra ' . ($j + 1),
-                    'created_at' => now()->subDays(rand(1, 30)),
-                    'updated_at' => now(),
-                ]);
-            }
-
-            DB::table('coupons')->insertOrIgnore([
-                'user_id' => $user->id,
-                'empresa_id' => $empresaRecord->id,
-                'codigo' => 'CUPOM-DEMO-' . $i,
-                'tipo' => 'discount',
-                'descricao' => 'Cupom demo',
-                'custo_pontos' => 0,
-                'porcentagem_desconto' => 5,
-                'status' => $i % 2 === 0 ? 'used' : 'active',
-                'expira_em' => now()->addDays(30),
-                'usado_em' => $i % 2 === 0 ? now()->subDays(1) : null,
-                'created_at' => now()->subDays(rand(1, 10)),
-                'updated_at' => now(),
-            ]);
-
-            Notification::updateOrCreate(
-                ['user_id' => $user->id, 'title' => "Saldo atualizado #{$i}"],
-                [
-                    'message' => 'Voce recebeu pontos em sua ultima compra.',
-                    'type' => 'info',
-                    'payload' => ['origin' => 'seed'],
-                ]
-            );
-
-        }
-
-        // Empresas adicionais com promocoes
-        $empresasData = [
-            ['nome' => 'Restaurante Sabor & Arte', 'ramo' => 'restaurante', 'logo' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop', 'descricao' => 'Restaurante contemporaneo.'],
-            ['nome' => 'Academia Corpo Forte', 'ramo' => 'academia', 'logo' => 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=400&fit=crop', 'descricao' => 'Academia completa.'],
-            ['nome' => 'Cafeteria Aroma Premium', 'ramo' => 'cafeteria', 'logo' => 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=400&fit=crop', 'descricao' => 'Cafes especiais e doces artesanais.'],
-            ['nome' => 'Pet Shop Amigo Fiel', 'ramo' => 'pet_shop', 'logo' => 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400&h=400&fit=crop', 'descricao' => 'Tudo para seu pet.'],
-            ['nome' => 'Salao Beleza Total', 'ramo' => 'salao', 'logo' => 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop', 'descricao' => 'Beleza completa.'],
-            ['nome' => 'Mercado Bom Preco', 'ramo' => 'mercado', 'logo' => 'https://images.unsplash.com/photo-1583736902931-063382c8e67f?w=400&h=400&fit=crop', 'descricao' => 'Ofertas diarias.'],
-            ['nome' => 'Farmacia Saude Mais', 'ramo' => 'farmacia', 'logo' => 'https://images.unsplash.com/photo-1576602976047-174e57a47881?w=400&h=400&fit=crop', 'descricao' => 'Farmacia completa.'],
-            ['nome' => 'Padaria Pao Quentinho', 'ramo' => 'padaria', 'logo' => 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop', 'descricao' => 'Paes frescos diarios.'],
-        ];
-
-        foreach ($empresasData as $empData) {
-            $exists = DB::table('empresas')->where('nome', $empData['nome'])->first();
-            if ($exists) continue;
-            $cid = DB::table('empresas')->insertGetId([
-                'owner_id' => $empresaUser->id,
-                'nome' => $empData['nome'],
-                'ramo' => $empData['ramo'],
-                'logo' => $empData['logo'],
-                'descricao' => $empData['descricao'],
-                'endereco' => 'Rua Exemplo, ' . rand(100, 9999) . ' - Sao Paulo, SP',
-                'telefone' => sprintf('(11) 9%04d-%04d', rand(1000, 9999), rand(1000, 9999)),
-                'cnpj' => sprintf('%02d.%03d.%03d/%04d-%02d', rand(10, 99), rand(100, 999), rand(100, 999), rand(1000, 9999), rand(10, 99)),
-                'ativo' => true,
-                'points_multiplier' => 1.0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
-            DB::table('promocoes')->insert([
-                [
-                    'empresa_id' => $cid,
-                    'titulo' => 'Cashback especial',
-                    'descricao' => 'Ganhe pontos extras nas compras desta semana.',
-                    'desconto' => 5,
-                    'imagem' => $empData['logo'],
-                    'data_inicio' => now()->subDays(1),
-                    'validade' => now()->addDays(20),
-                    'ativo' => true,
-                    'status' => 'ativa',
-                    'visualizacoes' => rand(10, 50),
-                    'resgates' => rand(0, 10),
-                    'usos' => rand(0, 5),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'empresa_id' => $cid,
-                    'titulo' => 'Oferta limitada',
-                    'descricao' => 'Desconto progressivo em produtos selecionados.',
-                    'desconto' => 15,
-                    'imagem' => $empData['logo'],
-                    'data_inicio' => now()->subDays(5),
-                    'validade' => now()->addDays(10),
-                    'ativo' => (bool) rand(0, 1),
-                    'status' => rand(0, 1) === 1 ? 'ativa' : 'pausada',
-                    'visualizacoes' => rand(5, 30),
-                    'resgates' => rand(0, 8),
-                    'usos' => rand(0, 4),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ]);
-        }
-
+        // Conteudo admin
         if (Schema::hasTable('categorias')) {
-            $categorias = [
+            foreach ([
                 ['name' => 'Restaurantes', 'slug' => 'restaurantes', 'active' => true, 'position' => 1],
                 ['name' => 'Beleza', 'slug' => 'beleza', 'active' => true, 'position' => 2],
-                ['name' => 'Saúde', 'slug' => 'saude', 'active' => true, 'position' => 3],
-            ];
-
-            foreach ($categorias as $cat) {
-                DB::table('categorias')->updateOrInsert(
-                    ['slug' => $cat['slug']],
-                    array_merge($cat, ['updated_at' => now(), 'created_at' => now()])
-                );
+                ['name' => 'Saude', 'slug' => 'saude', 'active' => true, 'position' => 3],
+            ] as $cat) {
+                $this->upsert('categorias', ['slug' => $cat['slug']], array_merge($cat, ['updated_at' => $now, 'created_at' => $now]));
             }
         }
 
         if (Schema::hasTable('banners')) {
-            $banners = [
+            $this->upsert('banners',
+                ['title' => 'Semana de Pontos em Dobro'],
                 [
                     'title' => 'Semana de Pontos em Dobro',
-                    'image_url' => 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1200',
+                    'image_url' => $logos[2],
                     'link' => '/recompensas.html',
                     'active' => true,
                     'position' => 1,
-                ],
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
+
+            $this->upsert('banners',
+                ['title' => 'Novos Parceiros na Plataforma'],
                 [
                     'title' => 'Novos Parceiros na Plataforma',
-                    'image_url' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200',
+                    'image_url' => $logos[3],
                     'link' => '/parceiros_tem_de_tudo.html',
                     'active' => true,
                     'position' => 2,
-                ],
-            ];
-
-            foreach ($banners as $banner) {
-                DB::table('banners')->updateOrInsert(
-                    ['title' => $banner['title']],
-                    array_merge($banner, ['updated_at' => now(), 'created_at' => now()])
-                );
-            }
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
         }
     }
 }

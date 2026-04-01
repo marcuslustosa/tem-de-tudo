@@ -188,7 +188,6 @@ Route::prefix('admin')->group(function () {
             Route::get('/login-stats', [AdminReportController::class, 'getLoginStats']);
             Route::get('/system-stats', [AdminReportController::class, 'getSystemStats']);
             Route::get('/security-events', [AdminReportController::class, 'getSecurityEvents']);
-            Route::get('/users-report', [AdminReportController::class, 'getUsersReport']);
         });
         
         Route::middleware(['admin.permission:manage_system'])->group(function () {
@@ -304,6 +303,7 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->g
     // Rotas exclusivas para administradores
     Route::get('/dashboard-stats', [AdminReportController::class, 'dashboardStats']);
     Route::get('/recent-activity', [AdminReportController::class, 'recentActivity']);
+    Route::get('/users-report', [AdminReportController::class, 'getUsersReport']);
     Route::get('/content', [AdminContentController::class, 'index']);
     Route::post('/content/banners', [AdminContentController::class, 'storeBanner']);
     Route::put('/content/banners/{banner}', [AdminContentController::class, 'updateBanner']);
