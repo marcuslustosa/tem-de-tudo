@@ -124,7 +124,7 @@
       if (userCache) return normalizeUser(userCache);
       const stored = getStored();
       const storedUser = normalizeUser(stored.user);
-      if (storedUser && storedUser.id) {
+      if (storedUser && storedUser.id && storedUser.perfil) {
         userCache = storedUser;
         return userCache;
       }

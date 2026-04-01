@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use App\Models\Empresa;
 
 class EmpresaController extends Controller
@@ -31,10 +32,16 @@ class EmpresaController extends Controller
     {
         try {
             $query = Empresa::where('ativo', true);
+            $hasCategoria = Schema::hasColumn('empresas', 'categoria');
+            $hasRamo = Schema::hasColumn('empresas', 'ramo');
             
             // Filtro por categoria
             if ($request->has('categoria') && $request->categoria !== 'todos') {
-                $query->where('categoria', $request->categoria);
+                if ($hasCategoria) {
+                    $query->where('categoria', $request->categoria);
+                } elseif ($hasRamo) {
+                    $query->where('ramo', $request->categoria);
+                }
             }
 
             // Busca por nome ou descrição
@@ -47,7 +54,9 @@ class EmpresaController extends Controller
             }
             
             $empresas = $query
-                ->select('id', 'nome', 'endereco', 'telefone', 'categoria', 'descricao', 'logo', 'points_multiplier')
+                ->select('id', 'nome', 'endereco', 'telefone', 'descricao', 'logo', 'points_multiplier')
+                ->when($hasCategoria, fn ($q) => $q->addSelect('categoria'))
+                ->when($hasRamo, fn ($q) => $q->addSelect('ramo'))
                 ->orderBy('nome')
                 ->get();
 
@@ -58,7 +67,8 @@ class EmpresaController extends Controller
                         'id' => $empresa->id,
                         'nome' => $empresa->nome,
                         'descricao' => $empresa->descricao,
-                        'categoria' => $empresa->categoria,
+                        'categoria' => $empresa->categoria ?? $empresa->ramo ?? null,
+                        'ramo' => $empresa->ramo ?? $empresa->categoria ?? null,
                         'endereco' => $empresa->endereco,
                         'telefone' => $empresa->telefone,
                         'logo' => $empresa->logo,
@@ -253,11 +263,22 @@ class EmpresaController extends Controller
             $longitude = $request->input('longitude');
             $raio = $request->input('raio', 10); // Raio em km, padrão 10km
 
-            // Buscar todas empresas ativas
-            $query = DB::table('users')
-                ->where('perfil', 'empresa')
-                ->where('ativo', true)
-                ->select('id', 'name as nome', 'razao_social', 'categoria', 'endereco', 'telefone', 'latitude', 'longitude');
+            // Buscar todas empresas ativas (compatível com esquemas diferentes)
+            $query = DB::table('users')->where('perfil', 'empresa');
+            if (Schema::hasColumn('users', 'status')) {
+                $query->where('status', 'ativo');
+            } elseif (Schema::hasColumn('users', 'ativo')) {
+                $query->where('ativo', true);
+            }
+
+            $select = ['id', 'name as nome'];
+            $select[] = Schema::hasColumn('users', 'razao_social') ? 'razao_social' : DB::raw('NULL as razao_social');
+            $select[] = Schema::hasColumn('users', 'categoria') ? 'categoria' : DB::raw('NULL as categoria');
+            $select[] = Schema::hasColumn('users', 'endereco') ? 'endereco' : DB::raw('NULL as endereco');
+            $select[] = Schema::hasColumn('users', 'telefone') ? 'telefone' : DB::raw('NULL as telefone');
+            $select[] = Schema::hasColumn('users', 'latitude') ? 'latitude' : DB::raw('NULL as latitude');
+            $select[] = Schema::hasColumn('users', 'longitude') ? 'longitude' : DB::raw('NULL as longitude');
+            $query->select($select);
 
             // Se temos lat/lon, calcular distância
             if ($latitude && $longitude) {
