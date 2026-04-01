@@ -83,66 +83,75 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'senha' => 'required',
-        ]);
+        try {
+            // Aceita senha tanto em "senha" quanto em "password" (frontend envia password)
+            $payload = $request->all();
+            $payload['password'] = $payload['password'] ?? $payload['senha'] ?? null;
 
-        if ($validator->fails()) {
+            $validator = Validator::make($payload, [
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Dados inválidos',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $user = User::where('email', $payload['email'])->first();
+
+            if (!$user || !Hash::check($payload['password'], $user->password)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email ou senha incorretos'
+                ], 401);
+            }
+
+            if ($user->status !== 'ativo') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuário inativo. Entre em contato com o suporte.'
+                ], 403);
+            }
+
+            $user->update([
+                'ultimo_login' => now(),
+                'ip_ultimo_login' => $request->ip(),
+            ]);
+
+            $user->tokens()->delete();
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+
             return response()->json([
-                'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->senha, $user->password)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Email ou senha incorretos'
-            ], 401);
-        }
-
-        if ($user->status !== 'ativo') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Usuário inativo. Entre em contato com o suporte.'
-            ], 403);
-        }
-
-        // Atualiza último login
-        $user->update([
-            'ultimo_login' => now(),
-            'ip_ultimo_login' => $request->ip(),
-        ]);
-
-        // Revoga tokens anteriores
-        $user->tokens()->delete();
-
-        // Cria novo token
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Login realizado com sucesso!',
-            'data' => [
-                'token' => $token,
-                'user' => [
-                    'id' => $user->id,
-                    'nome' => $user->name,
-                    'email' => $user->email,
-                    'cpf' => $user->cpf,
-                    'telefone' => $user->telefone,
-                    'data_nascimento' => $user->data_nascimento,
-                    'perfil' => $user->perfil,
-                    'pontos' => $user->pontos,
-                    'nivel' => $user->nivel,
-                    'foto_url' => $user->foto_url,
+                'success' => true,
+                'message' => 'Login realizado com sucesso!',
+                'data' => [
+                    'token' => $token,
+                    'user' => [
+                        'id' => $user->id,
+                        'nome' => $user->name,
+                        'email' => $user->email,
+                        'cpf' => $user->cpf,
+                        'telefone' => $user->telefone,
+                        'data_nascimento' => $user->data_nascimento,
+                        'perfil' => $user->perfil,
+                        'pontos' => $user->pontos,
+                        'nivel' => $user->nivel,
+                        'foto_url' => $user->foto_url,
+                    ]
                 ]
-            ]
-        ], 200);
+            ], 200);
+        } catch (\Throwable $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro interno ao autenticar.',
+            ], 500);
+        }
     }
 
     /**
