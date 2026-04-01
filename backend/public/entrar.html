@@ -61,7 +61,7 @@
             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-outline">
               <span class="material-symbols-outlined text-[20px]">lock</span>
             </div>
-            <input id="loginPassword" class="block w-full pl-11 pr-12 py-4 bg-surface-container-low border-none rounded-2xl text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all duration-200" placeholder="••••••••" type="password" />
+            <input id="loginPassword" class="block w-full pl-11 pr-12 py-4 bg-surface-container-low border-none rounded-2xl text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all duration-200" placeholder="********" type="password" />
             <button id="togglePass" class="absolute inset-y-0 right-0 pr-4 flex items-center text-outline hover:text-on-surface-variant" type="button">
               <span id="toggleIcon" class="material-symbols-outlined text-[20px]">visibility</span>
             </button>
@@ -74,7 +74,7 @@
       </form>
     </div>
 
-    <p class="text-center text-on-surface-variant font-medium">Ainda não tem conta? <a class="text-primary font-bold hover:underline underline-offset-4 ml-1" href="/criar_conta.html">Criar conta</a></p>
+    <p class="text-center text-on-surface-variant font-medium">Ainda nao tem conta? <a class="text-primary font-bold hover:underline underline-offset-4 ml-1" href="/criar_conta.html">Criar conta</a></p>
   </main>
 
   <div class="fixed top-20 -left-12 w-64 h-64 bg-tertiary/10 rounded-full blur-3xl -z-10"></div>
@@ -86,11 +86,9 @@
     </button>
   </div>
 
-  <!-- Stitch continua carregado para outras páginas, mas o login é independente -->
-  <script src="/js/stitch-app.js?v=loginfix-inline"></script>
+  <script src="/js/stitch-app.js?v=stabilize-auth-20260331"></script>
   <script>
-    // Toggle de senha
-    (function() {
+    (function () {
       const passInput = document.getElementById('loginPassword');
       const toggleBtn = document.getElementById('togglePass');
       const toggleIcon = document.getElementById('toggleIcon');
@@ -103,8 +101,7 @@
       }
     })();
 
-    // Login inline independente do stitch-app
-    (function() {
+    (function () {
       const form = document.getElementById('loginForm');
       const emailInput = document.getElementById('loginEmail');
       const passInput = document.getElementById('loginPassword');
@@ -115,23 +112,32 @@
         admin: '/dashboard_admin_master.html'
       };
 
-      function showMsg(text, variant = 'error') {
+      function showMsg(text, variant) {
         if (!msgBox) return;
         const palette = {
           error: 'bg-rose-50 text-rose-800 border border-rose-100',
           success: 'bg-emerald-50 text-emerald-800 border border-emerald-100',
           info: 'bg-blue-50 text-blue-800 border border-blue-100'
         };
-        msgBox.className = `text-sm font-semibold px-4 py-3 rounded-xl ${palette[variant] || palette.error}`;
+        if (!text) {
+          msgBox.className = 'hidden text-sm font-semibold px-4 py-3 rounded-xl';
+          msgBox.textContent = '';
+          return;
+        }
+        msgBox.className = 'text-sm font-semibold px-4 py-3 rounded-xl ' + (palette[variant] || palette.error);
         msgBox.textContent = text;
       }
 
       form?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        showMsg('');
+        showMsg('', 'info');
         const email = emailInput?.value?.trim();
         const password = passInput?.value;
-        if (!email || !password) return showMsg('Informe email/CPF e senha.', 'error');
+
+        if (!email || !password) {
+          showMsg('Informe email/CPF e senha.', 'error');
+          return;
+        }
 
         try {
           const res = await fetch('/api/auth/login', {
@@ -142,23 +148,26 @@
             },
             body: JSON.stringify({ email, password })
           });
-          const data = await res.json().catch(() => ({}));
-          const payload = data?.data || data || {};
-          const token = payload.token || payload.access_token || payload?.user?.token;
-          const user = payload.user || payload?.data?.user || payload?.usuario || null;
 
-          if (res.ok && token && user) {
-            localStorage.setItem('tem_de_tudo_token', token);
-            localStorage.setItem('tem_de_tudo_user', JSON.stringify(user));
-            const perfil = user.perfil || user.role || user.tipo;
-            const target = redirectMap[perfil] || '/';
-            console.log('LOGIN_INLINE_OK', { status: res.status, perfil, redirect: target, payload });
-            showMsg('Login realizado, redirecionando...', 'success');
-            setTimeout(() => { window.location.href = target; }, 200);
-          } else {
+          const data = await res.json().catch(() => ({}));
+          const token = data?.token || data?.access_token || data?.data?.token;
+          const user = data?.user || data?.data?.user || data?.usuario;
+
+          if (!res.ok || !token || !user) {
             console.error('LOGIN_INLINE_FAIL', { status: res.status, payload: data });
-            showMsg(data?.message || 'Não foi possível entrar.', 'error');
+            showMsg(data?.message || 'Nao foi possivel entrar.', 'error');
+            return;
           }
+
+          localStorage.setItem('tem_de_tudo_token', token);
+          localStorage.setItem('tem_de_tudo_user', JSON.stringify(user));
+
+          const perfil = user?.perfil || user?.role || user?.tipo;
+          const target = redirectMap[perfil] || '/';
+
+          console.log('LOGIN_INLINE_OK', { status: res.status, perfil, redirect: target, payload: data });
+          showMsg('Login realizado, redirecionando...', 'success');
+          setTimeout(() => { window.location.href = target; }, 150);
         } catch (err) {
           console.error('LOGIN_INLINE_FAIL', err);
           showMsg('Erro de rede ou servidor. Tente novamente.', 'error');

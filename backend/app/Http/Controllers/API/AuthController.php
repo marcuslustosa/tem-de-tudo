@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -117,10 +118,16 @@ class AuthController extends Controller
                 ], 403);
             }
 
-            $user->update([
-                'ultimo_login' => now(),
-                'ip_ultimo_login' => $request->ip(),
-            ]);
+            $updateData = [];
+            if (Schema::hasColumn('users', 'ultimo_login')) {
+                $updateData['ultimo_login'] = now();
+            }
+            if (Schema::hasColumn('users', 'ip_ultimo_login')) {
+                $updateData['ip_ultimo_login'] = $request->ip();
+            }
+            if (!empty($updateData)) {
+                $user->update($updateData);
+            }
 
             $user->tokens()->delete();
 
@@ -129,20 +136,18 @@ class AuthController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Login realizado com sucesso!',
-                'data' => [
-                    'token' => $token,
-                    'user' => [
-                        'id' => $user->id,
-                        'nome' => $user->name,
-                        'email' => $user->email,
-                        'cpf' => $user->cpf,
-                        'telefone' => $user->telefone,
-                        'data_nascimento' => $user->data_nascimento,
-                        'perfil' => $user->perfil,
-                        'pontos' => $user->pontos,
-                        'nivel' => $user->nivel,
-                        'foto_url' => $user->foto_url,
-                    ]
+                'token' => $token,
+                'user' => [
+                    'id' => $user->id,
+                    'nome' => $user->name,
+                    'email' => $user->email,
+                    'cpf' => $user->cpf,
+                    'telefone' => $user->telefone,
+                    'data_nascimento' => $user->data_nascimento,
+                    'perfil' => $user->perfil,
+                    'pontos' => $user->pontos,
+                    'nivel' => $user->nivel,
+                    'foto_url' => $user->foto_url,
                 ]
             ], 200);
         } catch (\Throwable $e) {
