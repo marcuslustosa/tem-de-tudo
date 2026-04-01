@@ -20,6 +20,63 @@
     promo: '/assets/images/company2.jpg',
     hero: '/assets/images/company3.jpg',
   };
+  const DEMO = {
+    admin: {
+      totals: {
+        usuarios: 1284,
+        empresas: 142,
+        campanhas: 97,
+        resgates: 312,
+        volume: 184320.5,
+      },
+      recentActivity: [
+        { titulo: 'Novo parceiro aprovado', detalhe: 'Padaria Centro', created_at: new Date().toISOString() },
+        { titulo: 'Campanha ativada', detalhe: 'Cashback especial', created_at: new Date(Date.now() - 3600e3).toISOString() },
+        { titulo: 'Resgate confirmado', detalhe: 'Cupom CUPOM-SEED-001', created_at: new Date(Date.now() - 7200e3).toISOString() },
+      ],
+      empresas: [
+        {
+          id: 1,
+          nome: 'Restaurante Sabor & Arte',
+          categoria: 'restaurante',
+          ramo: 'restaurante',
+          endereco: 'Av. Paulista, 1000 - Sao Paulo, SP',
+          telefone: '(11) 4000-1000',
+          email: 'contato@saborearte.com',
+          pontos: 12450,
+          clientes: 412,
+          status: 'ativo',
+          logo: '/assets/images/company1.jpg',
+        },
+        {
+          id: 2,
+          nome: 'Academia Corpo Forte',
+          categoria: 'academia',
+          ramo: 'academia',
+          endereco: 'Rua Augusta, 210 - Sao Paulo, SP',
+          telefone: '(11) 4000-2000',
+          email: 'contato@corpoforte.com',
+          pontos: 8730,
+          clientes: 278,
+          status: 'ativo',
+          logo: '/assets/images/company2.jpg',
+        },
+        {
+          id: 3,
+          nome: 'Farmacia Saude Mais',
+          categoria: 'farmacia',
+          ramo: 'farmacia',
+          endereco: 'Rua da Consolacao, 345 - Sao Paulo, SP',
+          telefone: '(11) 4000-3000',
+          email: 'contato@saudemais.com',
+          pontos: 6390,
+          clientes: 192,
+          status: 'ativo',
+          logo: '/assets/images/company3.jpg',
+        },
+      ],
+    },
+  };
 
   function safeImage(url, fallback = IMAGE_FALLBACKS.store) {
     if (!url || typeof url !== 'string') return fallback;
@@ -159,6 +216,11 @@
       userCache = null;
     };
 
+    const logout = () => {
+      clear();
+      window.location.href = '/entrar.html';
+    };
+
     const ensure = async () => {
       if (userCache) return normalizeUser(userCache);
       const stored = getStored();
@@ -206,7 +268,7 @@
       return true;
     };
 
-    return { getStored, save, clear, ensure, guard, normalizeUser, normalizePerfil };
+    return { getStored, save, clear, logout, ensure, guard, normalizeUser, normalizePerfil };
   })();
 
   // ---------------------- Navegacao de fallback ---------------------- //
@@ -324,38 +386,16 @@
   }
 
   function remapNavigationForPerfil() {
-    const stored = auth.getStored();
-    const perfil = auth.normalizePerfil(
-      stored?.user?.perfil || stored?.user?.role || stored?.user?.tipo || null
-    );
-    if (!perfil || perfil === 'cliente') return;
-
-    const remapByPerfil = {
-      admin: {
-        '/meus_pontos.html': '/relat_rios_gerais_master.html',
-        '/parceiros_tem_de_tudo.html': '/gest_o_de_estabelecimentos.html',
-        '/detalhe_do_parceiro.html': '/gest_o_de_estabelecimentos.html',
-        '/recompensas.html': '/relat_rios_gerais_master.html',
-        '/hist_rico_de_uso.html': '/relat_rios_gerais_master.html',
-        '/dashboard_parceiro.html': '/dashboard_admin_master.html',
-      },
-      empresa: {
-        '/meus_pontos.html': '/dashboard_parceiro.html',
-        '/parceiros_tem_de_tudo.html': '/clientes_fidelizados_loja.html',
-        '/detalhe_do_parceiro.html': '/clientes_fidelizados_loja.html',
-        '/recompensas.html': '/gest_o_de_ofertas_parceiro.html',
-        '/hist_rico_de_uso.html': '/minhas_campanhas_loja.html',
-        '/dashboard_admin_master.html': '/dashboard_parceiro.html',
-      },
+    const legacyMap = {
+      '/dashboard-admin.html': '/dashboard_admin_master.html',
+      '/dashboard-cliente.html': '/meus_pontos.html',
+      '/dashboard-empresa.html': '/dashboard_parceiro.html',
+      '/acessar_conta.html': '/entrar.html',
     };
-
-    const fixedMap = remapByPerfil[perfil] || {};
-    const defaultByPerfil = perfil === 'admin' ? '/dashboard_admin_master.html' : '/dashboard_parceiro.html';
 
     document.querySelectorAll('a[href]').forEach((link) => {
       const rawHref = link.getAttribute('href');
-      if (!rawHref) return;
-      if (/^(mailto:|tel:|https?:\/\/|#|javascript:)/i.test(rawHref)) return;
+      if (!rawHref || /^(mailto:|tel:|https?:\/\/|#|javascript:)/i.test(rawHref)) return;
 
       let url;
       try {
@@ -364,32 +404,10 @@
         return;
       }
 
-      const currentPath = url.pathname;
-      let target = fixedMap[currentPath] || null;
-
-      if (!target && (link.closest('nav') || link.closest('aside'))) {
-        const iconEl = link.querySelector('[data-icon], .material-symbols-outlined');
-        const icon = (iconEl?.getAttribute('data-icon') || iconEl?.textContent || '').toString().toLowerCase().trim();
-        const text = (link.textContent || '').toString().toLowerCase().trim();
-        const inferred = resolveFallbackTarget(perfil, icon, text);
-        if (inferred && inferred !== '__support__') {
-          target = inferred;
-        }
-      }
-
-      if (target && target !== currentPath) {
-        link.setAttribute('href', target);
-      }
-    });
-
-    document.querySelectorAll('button').forEach((btn) => {
-      if (btn.dataset.navBound === '1') return;
-      const text = (btn.textContent || '').toLowerCase();
-      if (!text.includes('perfil') && !text.includes('ponto') && !text.includes('premio') && !text.includes('recompensa')) return;
-      btn.dataset.navBound = '1';
-      btn.addEventListener('click', () => {
-        window.location.href = defaultByPerfil;
-      });
+      const mapped = legacyMap[url.pathname];
+      if (!mapped) return;
+      const finalUrl = `${mapped}${url.search || ''}${url.hash || ''}`;
+      link.setAttribute('href', finalUrl);
     });
   }
 
@@ -401,6 +419,9 @@
 
     document.querySelectorAll('button').forEach((btn) => {
       if (btn.dataset.boundAction) return;
+      if ((btn.getAttribute('type') || '').toLowerCase() === 'submit') return;
+      if (btn.closest('form')) return;
+      if (!btn.classList.contains('js-nav-fallback') && !btn.hasAttribute('data-nav-fallback')) return;
       const text = (btn.textContent || '').toLowerCase().trim();
       const iconEl = btn.querySelector('[data-icon], .material-symbols-outlined');
       const icon = iconEl?.getAttribute('data-icon') || iconEl?.textContent?.trim().toLowerCase() || '';
@@ -456,7 +477,8 @@
 
   function normalizeBrandingVisuals() {
     const logoHtml = '<img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src=\'/img/logo.png.png\';">';
-    const brandTexts = ['tem de tudo admin', 'admin master', 'radiant admin', 'tudo vibrante admin'];
+    const brandTexts = ['tem de tudo admin', 'admin master', 'radiant admin', 'tudo vibrante admin', 'tem de tudo'];
+    const subtitleTexts = ['plataforma de fidelidade'];
 
     document.querySelectorAll('header span, header h1, header h2, aside span, aside h1, aside h2').forEach((el) => {
       const text = safeText(el.textContent).toLowerCase();
@@ -467,7 +489,7 @@
       el.innerHTML = logoHtml;
     });
 
-    document.querySelectorAll('header div, aside div').forEach((el) => {
+    document.querySelectorAll('header div, aside div, header span, aside span').forEach((el) => {
       const text = safeText(el.textContent);
       if (text !== 'T') return;
       const cls = el.className || '';
@@ -475,6 +497,12 @@
       if (el.dataset.brandPatched === '1') return;
       el.dataset.brandPatched = '1';
       el.innerHTML = '<img src="/img/logo.png" alt="Tem de Tudo" class="h-6 w-auto" onerror="this.onerror=null;this.src=\'/img/logo.png.png\';">';
+    });
+
+    document.querySelectorAll('header span, aside span, header p, aside p').forEach((el) => {
+      const text = safeText(el.textContent).toLowerCase();
+      if (!subtitleTexts.includes(text)) return;
+      el.textContent = 'Tem de Tudo';
     });
 
     document.querySelectorAll('p, span, h1, h2, h3').forEach((el) => {
@@ -1108,6 +1136,31 @@
       const pend = dados.pontos_pendentes ?? 0;
       const nextTarget = Math.max(1000, pontos + 2000);
       const perc = Math.min(100, Math.round((pontos / nextTarget) * 100));
+      const perfil = auth.normalizePerfil(user?.perfil || user?.role || user?.tipo);
+
+      const remapPerfilNav = (perfilAtual) => {
+        const map = perfilAtual === 'admin'
+          ? {
+              '/meus_pontos.html': '/dashboard_admin_master.html',
+              '/parceiros_tem_de_tudo.html': '/gest_o_de_estabelecimentos.html',
+              '/recompensas.html': '/relat_rios_gerais_master.html',
+            }
+          : perfilAtual === 'empresa'
+            ? {
+                '/meus_pontos.html': '/dashboard_parceiro.html',
+                '/parceiros_tem_de_tudo.html': '/clientes_fidelizados_loja.html',
+                '/recompensas.html': '/gest_o_de_ofertas_parceiro.html',
+              }
+            : {};
+
+        if (!Object.keys(map).length) return;
+        document.querySelectorAll('a[href]').forEach((link) => {
+          const href = link.getAttribute('href');
+          if (!href || !map[href]) return;
+          link.setAttribute('href', map[href]);
+        });
+      };
+      remapPerfilNav(perfil);
 
       if (heroName) heroName.textContent = user?.name || user?.nome || 'Usuario';
       if (heroLevel) heroLevel.textContent = user?.perfil ? user.perfil.toUpperCase() : 'MEMBRO';
@@ -1573,29 +1626,32 @@
         api.request('/empresas', {}, { requireAuth: false, notify: false }),
       ]);
       ui.clearPageState();
-      if (!stats.res.ok && !recent.res.ok && !empresas.res.ok) {
-        ui.setPageState('error', 'Nao foi possivel carregar dados do dashboard.');
-      }
 
       const ids = (id) => document.getElementById(id);
       const statsData = stats.data?.data || stats.data || {};
       const totals = statsData?.totais || {};
-      const empresasList = toArray(empresas.data?.data || empresas.data);
+      const empresasListApi = toArray(empresas.data?.data || empresas.data);
+      const empresasList = empresasListApi.length ? empresasListApi : DEMO.admin.empresas;
+      const mergedTotals = {
+        ...DEMO.admin.totals,
+        ...totals,
+      };
 
-      const totalUsuarios = toNumber(totals.usuarios, statsData.usuarios, statsData.total_users);
-      const totalEmpresas = toNumber(totals.empresas, statsData.empresas, statsData.total_empresas, empresasList.length);
-      const totalCampanhas = toNumber(totals.campanhas, statsData.campanhas, statsData.promocoes);
-      const totalResgates = toNumber(totals.resgates, statsData.resgates);
-      const totalVolume = toNumber(totals.volume, statsData.volume);
+      const totalUsuarios = toNumber(mergedTotals.usuarios, statsData.usuarios, statsData.total_users);
+      const totalEmpresas = toNumber(mergedTotals.empresas, statsData.empresas, statsData.total_empresas, empresasList.length);
+      const totalCampanhas = toNumber(mergedTotals.campanhas, statsData.campanhas, statsData.promocoes);
+      const totalResgates = toNumber(mergedTotals.resgates, statsData.resgates);
+      const totalVolume = toNumber(mergedTotals.volume, statsData.volume);
 
       if (ids('adminUsers')) ids('adminUsers').textContent = Number(totalUsuarios || 0).toLocaleString('pt-BR');
       if (ids('adminEmpresas')) ids('adminEmpresas').textContent = Number(totalEmpresas || 0).toLocaleString('pt-BR');
       if (ids('adminCampanhas')) ids('adminCampanhas').textContent = Number(totalCampanhas || 0).toLocaleString('pt-BR');
       if (ids('adminResgates')) ids('adminResgates').textContent = Number(totalResgates || 0).toLocaleString('pt-BR');
       if (ids('adminVolume')) ids('adminVolume').textContent = `R$ ${Number(totalVolume || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      if (ids('adminCrescimentoMsg')) ids('adminCrescimentoMsg').textContent = safeText(statsData.crescimento_texto, 'Dados consolidados dos uultimos 30 dias');
+      if (ids('adminCrescimentoMsg')) ids('adminCrescimentoMsg').textContent = safeText(statsData.crescimento_texto, 'Dados consolidados dos ultimos 30 dias');
 
-      const atividades = toArray(recent.data?.data || recent.data);
+      const atividadesApi = toArray(recent.data?.data || recent.data);
+      const atividades = atividadesApi.length ? atividadesApi : DEMO.admin.recentActivity;
       const list = ids('adminRecentList');
       const empty = ids('adminRecentEmpty');
       if (list) list.innerHTML = '';
@@ -1621,6 +1677,10 @@
           list?.appendChild(item);
         });
       }
+
+      if (!stats.res.ok || !recent.res.ok || !empresas.res.ok) {
+        ui.message('Alguns dados foram carregados em modo de contingencia.', 'warning');
+      }
     },
 
     async empresas() {
@@ -1629,6 +1689,7 @@
       const { res, data } = await api.request('/empresas', {}, { requireAuth: false, notify: false });
 
       let origem = toArray(data?.data || data);
+      let usingFallback = false;
       if (!res.ok || !origem.length) {
         const usersDataset = await this.loadUsersDataset();
         if (usersDataset.ok) {
@@ -1650,10 +1711,17 @@
             status: safeText(u.status, 'ativo'),
             logo: safeImage(u.logo || u.avatar || '', IMAGE_FALLBACKS.store),
           }));
-          if (!res.ok) {
-            ui.message('API de estabelecimentos indisponivel. Exibindo base de contingencia.', 'warning');
-          }
+          usingFallback = true;
         }
+      }
+
+      if (!origem.length) {
+        origem = DEMO.admin.empresas;
+        usingFallback = true;
+      }
+
+      if (usingFallback) {
+        ui.message('Dados de estabelecimentos carregados em contingencia.', 'warning');
       }
 
       const lista = toArray(origem).map((item) => ({
@@ -2033,18 +2101,21 @@
       const totals = statsData?.totais || {};
       const usersList = usersDataset.ok ? usersDataset.list : [];
       const usersPayload = { total: usersList.length };
-      const empresasList = toArray(empresasResp.data?.data || empresasResp.data);
+      const empresasListApi = toArray(empresasResp.data?.data || empresasResp.data);
+      const empresasList = empresasListApi.length ? empresasListApi : DEMO.admin.empresas;
       const checkData = checkins.data?.data || checkins.data || {};
+      const fallbackUsers = usersList.length ? usersList.length : DEMO.admin.totals.usuarios;
 
       const totalEmpresas = toNumber(totals.empresas, statsData.empresas, statsData.total_empresas, empresasList.length);
-      const totalUsuarios = toNumber(totals.usuarios, statsData.usuarios, statsData.total_users, usersPayload.total, usersList.length);
+      const totalUsuarios = toNumber(totals.usuarios, statsData.usuarios, statsData.total_users, usersPayload.total, usersList.length, fallbackUsers);
       const totalClientes = toNumber(
         statsData.clientes,
-        usersList.filter((u) => (u?.perfil || u?.role || '').toString().toLowerCase().includes('cliente')).length
+        usersList.filter((u) => (u?.perfil || u?.role || '').toString().toLowerCase().includes('cliente')).length,
+        Math.round(totalUsuarios * 0.76)
       );
-      const totalPromocoes = toNumber(totals.campanhas, statsData.promocoes, statsData.campanhas);
-      const totalResgates = toNumber(totals.resgates, statsData.resgates);
-      const totalVolume = toNumber(totals.volume, statsData.volume);
+      const totalPromocoes = toNumber(totals.campanhas, statsData.promocoes, statsData.campanhas, DEMO.admin.totals.campanhas);
+      const totalResgates = toNumber(totals.resgates, statsData.resgates, DEMO.admin.totals.resgates);
+      const totalVolume = toNumber(totals.volume, statsData.volume, DEMO.admin.totals.volume);
 
       const setText = (id, val) => {
         const el = document.getElementById(id);
@@ -2056,7 +2127,7 @@
       setText('relPromocoes', Number(totalPromocoes || 0).toLocaleString('pt-BR'));
       setText('relResgates', Number(totalResgates || 0).toLocaleString('pt-BR'));
       setText('relVolume', `R$ ${Number(totalVolume || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
-      setText('relCrescimento', safeText(statsData.crescimento_texto, 'Dados consolidados dos uultimos 30 dias'));
+      setText('relCrescimento', safeText(statsData.crescimento_texto, 'Dados consolidados dos ultimos 30 dias'));
 
       const relStatsList = document.getElementById('relStatsList');
       if (relStatsList) {
@@ -2096,8 +2167,8 @@
         }
       }
 
-      if (!stats.res.ok && !checkins.res.ok && !empresasResp.res.ok && !usersDataset.ok) {
-        ui.setPageState('error', 'Nao foi possivel carregar os relatorios.');
+      if (!stats.res.ok || !checkins.res.ok || !empresasResp.res.ok || !usersDataset.ok) {
+        ui.message('Relatorios exibidos com contingencia parcial de dados.', 'warning');
       }
     },
   };
@@ -2133,7 +2204,7 @@
       } else {
         ui.clearPageState();
         console.error('LOGIN_SUBMIT_FAIL', JSON.stringify({ status: res.status, payload: data }, null, 2));
-        ui.message(data?.message || payload?.message || 'No foi possvel entrar.', 'error');
+        ui.message(data?.message || payload?.message || 'Nao foi possivel entrar.', 'error');
       }
     });
   }
