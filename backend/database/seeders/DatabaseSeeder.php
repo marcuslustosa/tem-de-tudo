@@ -7,6 +7,7 @@ use App\Models\Notification;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -268,6 +269,47 @@ class DatabaseSeeder extends Seeder
                     'updated_at' => now(),
                 ],
             ]);
+        }
+
+        if (Schema::hasTable('categorias')) {
+            $categorias = [
+                ['name' => 'Restaurantes', 'slug' => 'restaurantes', 'active' => true, 'position' => 1],
+                ['name' => 'Beleza', 'slug' => 'beleza', 'active' => true, 'position' => 2],
+                ['name' => 'Saúde', 'slug' => 'saude', 'active' => true, 'position' => 3],
+            ];
+
+            foreach ($categorias as $cat) {
+                DB::table('categorias')->updateOrInsert(
+                    ['slug' => $cat['slug']],
+                    array_merge($cat, ['updated_at' => now(), 'created_at' => now()])
+                );
+            }
+        }
+
+        if (Schema::hasTable('banners')) {
+            $banners = [
+                [
+                    'title' => 'Semana de Pontos em Dobro',
+                    'image_url' => 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1200',
+                    'link' => '/recompensas.html',
+                    'active' => true,
+                    'position' => 1,
+                ],
+                [
+                    'title' => 'Novos Parceiros na Plataforma',
+                    'image_url' => 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200',
+                    'link' => '/parceiros_tem_de_tudo.html',
+                    'active' => true,
+                    'position' => 2,
+                ],
+            ];
+
+            foreach ($banners as $banner) {
+                DB::table('banners')->updateOrInsert(
+                    ['title' => $banner['title']],
+                    array_merge($banner, ['updated_at' => now(), 'created_at' => now()])
+                );
+            }
         }
     }
 }

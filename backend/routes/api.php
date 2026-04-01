@@ -27,6 +27,7 @@ use App\Http\Controllers\CheckInController as MainCheckInController;
 use App\Http\Controllers\PontosController;
 use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\PushSubscriptionController;
+use App\Http\Controllers\AdminContentController;
 
 // Debug route (remover em produÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o)
 Route::get('/debug', function () {
@@ -303,6 +304,13 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->g
     // Rotas exclusivas para administradores
     Route::get('/dashboard-stats', [AdminReportController::class, 'dashboardStats']);
     Route::get('/recent-activity', [AdminReportController::class, 'recentActivity']);
+    Route::get('/content', [AdminContentController::class, 'index']);
+    Route::post('/content/banners', [AdminContentController::class, 'storeBanner']);
+    Route::put('/content/banners/{banner}', [AdminContentController::class, 'updateBanner']);
+    Route::delete('/content/banners/{banner}', [AdminContentController::class, 'destroyBanner']);
+    Route::post('/content/categorias', [AdminContentController::class, 'storeCategoria']);
+    Route::put('/content/categorias/{categoria}', [AdminContentController::class, 'updateCategoria']);
+    Route::delete('/content/categorias/{categoria}', [AdminContentController::class, 'destroyCategoria']);
 });
 
 // Rotas do sistema de pontos (protegidas por Sanctum)

@@ -1849,8 +1849,217 @@
     banners_e_categorias_master: async () => {
       if (!(await auth.guard(['admin']))) return;
       const status = document.getElementById('conteudoStatus');
-      if (status) status.textContent = 'Nenhum endpoint de banners/categorias disponível no backend. Assim que existir, esta tela será conectada.';
-      ui.message('Banners/categorias: nenhum endpoint disponível identificado. Necessário backend.', 'warning');
+      const sections = document.querySelectorAll('main > section');
+      const bannersSection = sections[1];
+      const categoriasSection = sections[2];
+
+      const escapeHtml = (value) =>
+        String(value ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/\"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+
+      const fetchContent = async () => {
+        const { res, data } = await api.request('/admin/content');
+        if (!res.ok || data?.success === false) throw new Error(data?.message || 'Falha ao carregar conteúdo');
+        return data?.data || { banners: [], categorias: [] };
+      };
+
+      const renderContent = async () => {
+        const { banners = [], categorias = [] } = await fetchContent();
+        if (status) status.textContent = `Conteúdo conectado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
+
+        if (bannersSection) {
+          bannersSection.innerHTML = `
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-headline font-bold text-on-surface">Banners</h3>
+              <button id="novoBannerBtn" class="px-3 py-1.5 rounded-lg bg-primary text-white text-sm font-bold">Novo banner</button>
+            </div>
+            <div id="bannersList" class="space-y-3"></div>
+          `;
+
+          const list = bannersSection.querySelector('#bannersList');
+          if (!banners.length) {
+            list.innerHTML = '<p class="text-sm text-on-surface-variant">Nenhum banner cadastrado.</p>';
+          } else {
+            list.innerHTML = banners.map((b) => `
+              <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="font-bold text-sm text-on-surface truncate">${escapeHtml(b.title)}</p>
+                  <p class="text-xs text-on-surface-variant truncate">${escapeHtml(b.link || '-')}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] font-bold uppercase ${b.active ? 'text-tertiary' : 'text-outline'}">${b.active ? 'Ativo' : 'Inativo'}</span>
+                  <button data-b-action="toggle" data-id="${b.id}" class="px-2 py-1 rounded bg-amber-500 text-white text-xs">Ativar/Pausar</button>
+                  <button data-b-action="edit" data-id="${b.id}" class="px-2 py-1 rounded bg-slate-700 text-white text-xs">Editar</button>
+                  <button data-b-action="delete" data-id="${b.id}" class="px-2 py-1 rounded bg-rose-600 text-white text-xs">Excluir</button>
+                </div>
+              </div>
+            `).join('');
+          }
+
+          bannersSection.querySelector('#novoBannerBtn')?.addEventListener('click', async () => {
+            const title = window.prompt('Título do banner:');
+            if (!title) return;
+            const image_url = window.prompt('URL da imagem:') || '';
+            const link = window.prompt('Link do banner:') || '';
+            const { res, data } = await api.request('/admin/content/banners', { method: 'POST', body: JSON.stringify({ title, image_url, link, active: true }) });
+            if (res.ok && data?.success !== false) {
+              ui.message('Banner criado com sucesso.', 'success');
+              await renderContent();
+            } else {
+              ui.message(data?.message || 'Erro ao criar banner.', 'error');
+            }
+          });
+
+          list?.querySelectorAll('[data-b-action="delete"]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const id = btn.getAttribute('data-id');
+              if (!window.confirm('Excluir banner?')) return;
+              const { res, data } = await api.request(`/admin/content/banners/${id}`, { method: 'DELETE' });
+              if (res.ok && data?.success !== false) {
+                ui.message('Banner removido.', 'success');
+                await renderContent();
+              } else {
+                ui.message(data?.message || 'Erro ao remover banner.', 'error');
+              }
+            });
+          });
+
+          list?.querySelectorAll('[data-b-action="edit"]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const id = btn.getAttribute('data-id');
+              const item = banners.find((b) => String(b.id) === String(id));
+              if (!item) return;
+              const title = window.prompt('Título do banner:', item.title || '');
+              if (!title) return;
+              const image_url = window.prompt('URL da imagem:', item.image_url || '') || '';
+              const link = window.prompt('Link:', item.link || '') || '';
+              const { res, data } = await api.request(`/admin/content/banners/${id}`, { method: 'PUT', body: JSON.stringify({ title, image_url, link }) });
+              if (res.ok && data?.success !== false) {
+                ui.message('Banner atualizado.', 'success');
+                await renderContent();
+              } else {
+                ui.message(data?.message || 'Erro ao atualizar banner.', 'error');
+              }
+            });
+          });
+
+          list?.querySelectorAll('[data-b-action="toggle"]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const id = btn.getAttribute('data-id');
+              const item = banners.find((b) => String(b.id) === String(id));
+              if (!item) return;
+              const { res, data } = await api.request(`/admin/content/banners/${id}`, { method: 'PUT', body: JSON.stringify({ active: !item.active }) });
+              if (res.ok && data?.success !== false) {
+                ui.message('Status do banner atualizado.', 'success');
+                await renderContent();
+              } else {
+                ui.message(data?.message || 'Erro ao atualizar status.', 'error');
+              }
+            });
+          });
+        }
+
+        if (categoriasSection) {
+          categoriasSection.innerHTML = `
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-headline font-bold text-on-surface">Categorias</h3>
+              <button id="novaCategoriaBtn" class="px-3 py-1.5 rounded-lg bg-primary text-white text-sm font-bold">Nova categoria</button>
+            </div>
+            <div id="categoriasList" class="space-y-3"></div>
+          `;
+
+          const list = categoriasSection.querySelector('#categoriasList');
+          if (!categorias.length) {
+            list.innerHTML = '<p class="text-sm text-on-surface-variant">Nenhuma categoria cadastrada.</p>';
+          } else {
+            list.innerHTML = categorias.map((c) => `
+              <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="font-bold text-sm text-on-surface truncate">${escapeHtml(c.name)}</p>
+                  <p class="text-xs text-on-surface-variant truncate">${escapeHtml(c.slug || '-')}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] font-bold uppercase ${c.active ? 'text-tertiary' : 'text-outline'}">${c.active ? 'Ativo' : 'Inativo'}</span>
+                  <button data-c-action="toggle" data-id="${c.id}" class="px-2 py-1 rounded bg-amber-500 text-white text-xs">Ativar/Pausar</button>
+                  <button data-c-action="edit" data-id="${c.id}" class="px-2 py-1 rounded bg-slate-700 text-white text-xs">Editar</button>
+                  <button data-c-action="delete" data-id="${c.id}" class="px-2 py-1 rounded bg-rose-600 text-white text-xs">Excluir</button>
+                </div>
+              </div>
+            `).join('');
+          }
+
+          categoriasSection.querySelector('#novaCategoriaBtn')?.addEventListener('click', async () => {
+            const name = window.prompt('Nome da categoria:');
+            if (!name) return;
+            const slug = (window.prompt('Slug (opcional):') || '').trim();
+            const { res, data } = await api.request('/admin/content/categorias', { method: 'POST', body: JSON.stringify({ name, slug: slug || undefined, active: true }) });
+            if (res.ok && data?.success !== false) {
+              ui.message('Categoria criada.', 'success');
+              await renderContent();
+            } else {
+              ui.message(data?.message || 'Erro ao criar categoria.', 'error');
+            }
+          });
+
+          list?.querySelectorAll('[data-c-action="delete"]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const id = btn.getAttribute('data-id');
+              if (!window.confirm('Excluir categoria?')) return;
+              const { res, data } = await api.request(`/admin/content/categorias/${id}`, { method: 'DELETE' });
+              if (res.ok && data?.success !== false) {
+                ui.message('Categoria removida.', 'success');
+                await renderContent();
+              } else {
+                ui.message(data?.message || 'Erro ao remover categoria.', 'error');
+              }
+            });
+          });
+
+          list?.querySelectorAll('[data-c-action="edit"]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const id = btn.getAttribute('data-id');
+              const item = categorias.find((c) => String(c.id) === String(id));
+              if (!item) return;
+              const name = window.prompt('Nome da categoria:', item.name || '');
+              if (!name) return;
+              const slug = window.prompt('Slug:', item.slug || '') || '';
+              const { res, data } = await api.request(`/admin/content/categorias/${id}`, { method: 'PUT', body: JSON.stringify({ name, slug }) });
+              if (res.ok && data?.success !== false) {
+                ui.message('Categoria atualizada.', 'success');
+                await renderContent();
+              } else {
+                ui.message(data?.message || 'Erro ao atualizar categoria.', 'error');
+              }
+            });
+          });
+
+          list?.querySelectorAll('[data-c-action="toggle"]').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const id = btn.getAttribute('data-id');
+              const item = categorias.find((c) => String(c.id) === String(id));
+              if (!item) return;
+              const { res, data } = await api.request(`/admin/content/categorias/${id}`, { method: 'PUT', body: JSON.stringify({ active: !item.active }) });
+              if (res.ok && data?.success !== false) {
+                ui.message('Status da categoria atualizado.', 'success');
+                await renderContent();
+              } else {
+                ui.message(data?.message || 'Erro ao atualizar status.', 'error');
+              }
+            });
+          });
+        }
+      };
+
+      try {
+        await renderContent();
+      } catch (err) {
+        if (status) status.textContent = 'Erro ao carregar conteúdo.';
+        ui.message('Erro ao carregar banners/categorias.', 'error');
+      }
     },
   };
 
