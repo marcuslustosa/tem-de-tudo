@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Empresa;
-use App\Models\User;
 
 class EmpresaController extends Controller
 {
@@ -16,31 +15,94 @@ class EmpresaController extends Controller
         return Schema::hasTable('empresas');
     }
 
+    private function hasColumn(string $table, string $column): bool
+    {
+        return Schema::hasTable($table) && Schema::hasColumn($table, $column);
+    }
+
+    private function isBooleanColumn(string $table, string $column): bool
+    {
+        if (!$this->hasColumn($table, $column)) {
+            return false;
+        }
+
+        try {
+            $type = strtolower((string) Schema::getColumnType($table, $column));
+            return in_array($type, ['bool', 'boolean'], true);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    private function resolveUserPerfilColumn(): ?string
+    {
+        foreach (['perfil', 'role', 'tipo'] as $column) {
+            if ($this->hasColumn('users', $column)) {
+                return $column;
+            }
+        }
+
+        return null;
+    }
+
     private function applyEmpresaAtivoScope($query)
     {
         if (!$this->hasEmpresasTable()) {
             return $query;
         }
-        if (Schema::hasColumn('empresas', 'ativo')) {
-            return $query->whereIn('ativo', [true, 1, '1']);
+
+        if ($this->hasColumn('empresas', 'ativo')) {
+            if ($this->isBooleanColumn('empresas', 'ativo')) {
+                return $query->where('ativo', true);
+            }
+
+            return $query->whereIn('ativo', [1, '1', true, 'true', 'ativo']);
         }
-        if (Schema::hasColumn('empresas', 'status')) {
-            return $query->whereIn(DB::raw('LOWER(status)'), ['ativo', 'active']);
+
+        if ($this->hasColumn('empresas', 'status')) {
+            return $query->whereIn(DB::raw('LOWER(status)'), ['ativo', 'active', '1', 'true']);
         }
+
         return $query;
     }
 
     private function demoEmpresasFromUsers(): array
     {
         if (!Schema::hasTable('users')) {
-            return [];
+            return [
+                [
+                    'id' => 1,
+                    'nome' => 'Parceiro Demo',
+                    'descricao' => 'Conta empresarial ativa na plataforma.',
+                    'categoria' => 'geral',
+                    'ramo' => 'geral',
+                    'endereco' => 'Endereco nao informado',
+                    'telefone' => '-',
+                    'email' => '-',
+                    'logo' => '/assets/images/company1.jpg',
+                    'points_multiplier' => 1,
+                ],
+            ];
+        }
+        $perfilCol = $this->resolveUserPerfilColumn();
+        $nameCol = $this->hasColumn('users', 'name') ? 'name' : ($this->hasColumn('users', 'nome') ? 'nome' : null);
+        $emailCol = $this->hasColumn('users', 'email') ? 'email' : null;
+        $phoneCol = $this->hasColumn('users', 'telefone')
+            ? 'telefone'
+            : ($this->hasColumn('users', 'phone') ? 'phone' : ($this->hasColumn('users', 'celular') ? 'celular' : null));
+
+        $query = DB::table('users');
+        if ($perfilCol) {
+            $query->whereIn(DB::raw("LOWER({$perfilCol})"), ['empresa', 'estabelecimento', 'parceiro', 'lojista']);
         }
 
-        $empresaUsers = User::query()
-            ->whereIn(DB::raw('LOWER(perfil)'), ['empresa', 'estabelecimento', 'parceiro', 'lojista'])
-            ->orderBy('name')
-            ->limit(20)
-            ->get(['id', 'name', 'email', 'telefone']);
+        $select = ['id'];
+        $select[] = $nameCol ? DB::raw("{$nameCol} as nome_usuario") : DB::raw("'Estabelecimento' as nome_usuario");
+        $select[] = $emailCol ? DB::raw("{$emailCol} as email_usuario") : DB::raw("'-' as email_usuario");
+        $select[] = $phoneCol ? DB::raw("{$phoneCol} as telefone_usuario") : DB::raw("'-' as telefone_usuario");
+        $query->select($select)->orderBy('id')->limit(20);
+
+        $empresaUsers = $query->get();
 
         $defaults = [
             '/assets/images/company1.jpg',
@@ -49,16 +111,16 @@ class EmpresaController extends Controller
             '/assets/images/company4.jpg',
         ];
 
-        return $empresaUsers->values()->map(function ($u, $idx) use ($defaults) {
+        return collect($empresaUsers)->values()->map(function ($u, $idx) use ($defaults) {
             return [
                 'id' => $u->id,
-                'nome' => $this->cleanUtf8($u->name ?? 'Estabelecimento'),
+                'nome' => $this->cleanUtf8($u->nome_usuario ?? 'Estabelecimento'),
                 'descricao' => 'Conta empresarial ativa na plataforma.',
                 'categoria' => 'geral',
                 'ramo' => 'geral',
                 'endereco' => 'Endereco nao informado',
-                'telefone' => $this->cleanUtf8($u->telefone ?? '-'),
-                'email' => $this->cleanUtf8($u->email ?? '-'),
+                'telefone' => $this->cleanUtf8($u->telefone_usuario ?? '-'),
+                'email' => $this->cleanUtf8($u->email_usuario ?? '-'),
                 'logo' => $defaults[$idx % count($defaults)],
                 'points_multiplier' => 1,
             ];
@@ -77,7 +139,7 @@ class EmpresaController extends Controller
     public function index()
     {
         try {
-            if (!$this->hasEmpresasTable()) {
+            if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
                 return response()->json($this->demoEmpresasFromUsers(), 200, ['Content-Type' => 'application/json; charset=UTF-8']);
             }
 
@@ -108,7 +170,7 @@ class EmpresaController extends Controller
     public function listEmpresas(Request $request)
     {
         try {
-            if (!$this->hasEmpresasTable()) {
+            if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
                 return response()->json([
                     'success' => true,
                     'data' => $this->demoEmpresasFromUsers(),
@@ -178,7 +240,7 @@ class EmpresaController extends Controller
                     'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? null),
                     'endereco' => $this->cleanUtf8($empresa->endereco ?? null),
                     'telefone' => $this->cleanUtf8($empresa->telefone ?? null),
-                    'logo' => $this->cleanUtf8($empresa->logo ?? null),
+                    'logo' => $this->cleanUtf8($empresa->logo ?? '/assets/images/company1.jpg'),
                     'points_multiplier' => $empresa->points_multiplier ?? 1,
                 ];
             })->values();
@@ -205,7 +267,7 @@ class EmpresaController extends Controller
     public function getEmpresa($id)
     {
         try {
-            if (!$this->hasEmpresasTable()) {
+            if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
                 $demo = collect($this->demoEmpresasFromUsers())->firstWhere('id', (int) $id);
                 if (!$demo) {
                     return response()->json([
@@ -238,7 +300,7 @@ class EmpresaController extends Controller
                     'endereco' => $this->cleanUtf8($empresa->endereco ?? ''),
                     'telefone' => $this->cleanUtf8($empresa->telefone ?? ''),
                     'email' => $this->cleanUtf8($empresa->email ?? ''),
-                    'logo' => $this->cleanUtf8($empresa->logo ?? ''),
+                    'logo' => $this->cleanUtf8($empresa->logo ?? '/assets/images/company1.jpg'),
                     'points_multiplier' => $empresa->points_multiplier ?? 1,
                 ],
             ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);

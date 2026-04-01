@@ -273,6 +273,36 @@
     });
   }
 
+  function wireFallbackButtons() {
+    const go = (url) => () => {
+      window.location.href = url;
+    };
+
+    document.querySelectorAll('button').forEach((btn) => {
+      if (btn.dataset.boundAction) return;
+      const text = (btn.textContent || '').toLowerCase().trim();
+      if (!text) return;
+
+      if (text.includes('novo parceiro')) {
+        btn.dataset.boundAction = '1';
+        btn.addEventListener('click', go('/gest_o_de_estabelecimentos.html'));
+        return;
+      }
+
+      if (text.includes('ver todas')) {
+        btn.dataset.boundAction = '1';
+        if (page.includes('dashboard_admin')) btn.addEventListener('click', go('/relat_rios_gerais_master.html'));
+        else if (page.includes('dashboard_parceiro')) btn.addEventListener('click', go('/gest_o_de_ofertas_parceiro.html'));
+        return;
+      }
+
+      if (text.includes('suporte')) {
+        btn.dataset.boundAction = '1';
+        btn.addEventListener('click', () => ui.message('Suporte: contato@temdetudo.com', 'info'));
+      }
+    });
+  }
+
   // ---------------------- Push ---------------------- //
   const push = (() => {
     async function getPublicKey() {
@@ -1402,12 +1432,36 @@
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando estabelecimentos...');
       const { res, data } = await api.request('/empresas', {}, { requireAuth: false, notify: false });
-      if (!res.ok) {
-        ui.setPageState('error', data?.message || 'Nao foi possivel carregar estabelecimentos.');
-        return;
+
+      let origem = toArray(data?.data || data);
+      if (!res.ok || !origem.length) {
+        const usersDataset = await this.loadUsersDataset();
+        if (usersDataset.ok) {
+          const candidatos = usersDataset.list.filter((u) =>
+            ['empresa', 'estabelecimento', 'parceiro', 'lojista'].some((tag) =>
+              (u?.perfil || u?.role || u?.tipo || '').toString().toLowerCase().includes(tag)
+            )
+          );
+          origem = candidatos.map((u, idx) => ({
+            id: u.id || `u-${idx}`,
+            nome: safeText(u.name || u.nome || u.email, 'Estabelecimento'),
+            categoria: safeText(u.categoria || u.ramo || u.segmento, 'geral'),
+            ramo: safeText(u.ramo || u.categoria || u.segmento, 'geral'),
+            endereco: safeText(u.endereco || u.address, 'Endereco nao informado'),
+            telefone: safeText(u.telefone || u.phone, '-'),
+            email: safeText(u.email, '-'),
+            pontos_totais: toNumber(u.pontos, u.saldo),
+            clientes: toNumber(u.clientes, u.total_clientes),
+            status: safeText(u.status, 'ativo'),
+            logo: safeImage(u.logo || u.avatar || '', IMAGE_FALLBACKS.store),
+          }));
+          if (!res.ok) {
+            ui.message('API de estabelecimentos indisponivel. Exibindo base de contingencia.', 'warning');
+          }
+        }
       }
 
-      const lista = toArray(data?.data || data).map((item) => ({
+      const lista = toArray(origem).map((item) => ({
         ...item,
         nome: safeText(item?.nome || item?.nome_fantasia, 'Estabelecimento'),
         categoria: safeText(item?.categoria || item?.ramo || item?.segmento, 'Sem categoria'),
@@ -1417,6 +1471,7 @@
         pontos: toNumber(item?.pontos_totais, item?.pontos),
         clientes: toNumber(item?.clientes, item?.qtd_clientes),
         status: safeText(item?.status || (item?.ativo === false ? 'inativo' : 'ativo'), 'ativo').toLowerCase(),
+        logo: safeImage(item?.logo, IMAGE_FALLBACKS.store),
       }));
 
       ui.clearPageState();
@@ -2241,6 +2296,7 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     wireFallbackLinks();
+    wireFallbackButtons();
     const handler = handlers[page];
     if (handler) {
       try {
