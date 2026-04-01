@@ -74,10 +74,23 @@
       user: parseJSON(localStorage.getItem(STORAGE.user) || '{}'),
     });
 
+    const normalizeUser = (raw) => {
+      if (!raw || typeof raw !== 'object') return null;
+      const candidate = raw.user && typeof raw.user === 'object' ? raw.user : raw;
+      if (!candidate || typeof candidate !== 'object') return null;
+      const perfil = candidate.perfil || candidate.role || candidate.tipo || null;
+      return { ...candidate, perfil };
+    };
+
     const save = (token, user) => {
       if (token) localStorage.setItem(STORAGE.token, token);
-      if (user) localStorage.setItem(STORAGE.user, JSON.stringify(user));
-      userCache = user;
+      const normalized = normalizeUser(user);
+      if (normalized) {
+        localStorage.setItem(STORAGE.user, JSON.stringify(normalized));
+        userCache = normalized;
+      } else {
+        userCache = null;
+      }
     };
 
     const clear = () => {
@@ -87,33 +100,48 @@
     };
 
     const ensure = async () => {
-      if (userCache) return userCache;
+      if (userCache) return normalizeUser(userCache);
       const stored = getStored();
-      if (stored.user && stored.user.id) {
-        userCache = stored.user;
+      const storedUser = normalizeUser(stored.user);
+      if (storedUser && storedUser.id) {
+        userCache = storedUser;
         return userCache;
       }
-      const { res, data } = await api.request('/me');
-      if (res.ok && data?.data) {
-        save(stored.token, data.data);
-        return data.data;
+      if (!stored.token) {
+        clear();
+        window.location.href = '/entrar.html';
+        return null;
       }
-      clear();
-      window.location.href = '/entrar.html';
+
+      const { res, data } = await api.request('/auth/me');
+      const apiUser = normalizeUser(data?.user || data?.data?.user || data?.data || data);
+      if (res.ok && apiUser && apiUser.id) {
+        save(stored.token, apiUser);
+        return apiUser;
+      }
+
+      if (res.status === 401) {
+        clear();
+        window.location.href = '/entrar.html';
+        return null;
+      }
+
+      ui.message('Nao foi possivel validar a sessao nesta pagina.', 'error');
       return null;
     };
 
     const guard = async (perfis = []) => {
       const user = await ensure();
       if (!user) return false;
-      if (perfis.length && !perfis.includes(user.perfil)) {
-        window.location.href = redirectMap[user.perfil] || '/entrar.html';
+      const perfil = user.perfil || user.role || user.tipo;
+      if (perfis.length && !perfis.includes(perfil)) {
+        window.location.href = redirectMap[perfil] || '/entrar.html';
         return false;
       }
       return true;
     };
 
-    return { getStored, save, clear, ensure, guard };
+    return { getStored, save, clear, ensure, guard, normalizeUser };
   })();
 
   // ---------------------- Push ---------------------- //
@@ -1570,10 +1598,10 @@
         { method: 'POST', body: JSON.stringify({ email, password }) },
         { requireAuth: false }
       );
-      const payload = data?.data || data || {};
-      const token = payload.token || payload.access_token || payload?.user?.token;
-      const user = payload.user || payload?.data?.user || payload?.usuario || null;
-      const perfil = user?.perfil || user?.role || user?.tipo;
+      const payload = data || {};
+      const token = payload?.token || payload?.access_token || payload?.data?.token || null;
+      const user = auth.normalizeUser(payload?.user || payload?.data?.user || payload?.usuario || null);
+      const perfil = user?.perfil || user?.role || user?.tipo || null;
       const target = redirectMap[perfil] || '/';
       console.log('LOGIN_SUBMIT_OK', JSON.stringify({ status: res.status, payload, perfil, redirect: target }, null, 2));
       if (res.ok && token && user) {
