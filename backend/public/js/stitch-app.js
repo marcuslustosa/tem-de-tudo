@@ -312,7 +312,7 @@
       } catch {
         data = null;
       }
-      if (res.status === 401) {
+      if (res.status === 401 && requireAuth) {
         auth.clear();
         ui.message('Sessao expirada. Faca login novamente.', 'warning');
         setTimeout(() => (window.location.href = '/entrar.html'), 300);
