@@ -88,9 +88,9 @@
 
     const normalizePerfil = (perfil) => {
       if (!perfil) return null;
-      const normalized = String(perfil).toLowerCase();
-      if (['admin', 'administrador', 'master', 'admin_master'].includes(normalized)) return 'admin';
-      if (['empresa', 'estabelecimento', 'parceiro'].includes(normalized)) return 'empresa';
+      const normalized = String(perfil).toLowerCase().trim();
+      if (['admin', 'administrador', 'master', 'admin_master', 'administrador_master', 'admin master'].includes(normalized)) return 'admin';
+      if (['empresa', 'estabelecimento', 'parceiro', 'lojista'].includes(normalized)) return 'empresa';
       if (['cliente', 'customer'].includes(normalized)) return 'cliente';
       return normalized;
     };
@@ -313,9 +313,15 @@
         data = null;
       }
       if (res.status === 401 && requireAuth) {
-        auth.clear();
-        ui.message('Sessao expirada. Faca login novamente.', 'warning');
-        setTimeout(() => (window.location.href = '/entrar.html'), 300);
+        // Evita bounce por 401 em endpoints secundarios.
+        // So forca logout/redirecionamento quando a validacao central de sessao falha.
+        if (path === '/auth/me') {
+          auth.clear();
+          ui.message('Sessao expirada. Faca login novamente.', 'warning');
+          setTimeout(() => (window.location.href = '/entrar.html'), 300);
+        } else {
+          ui.message('Sua sessao nao pode ser validada neste recurso.', 'warning');
+        }
       }
       if (res.status === 403) ui.message('Acesso negado para este perfil.', 'warning');
       if (res.status === 404) ui.message('Recurso nao encontrado.', 'warning');

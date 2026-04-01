@@ -34,6 +34,11 @@ class EmpresaController extends Controller
             $query = Empresa::where('ativo', true);
             $hasCategoria = Schema::hasColumn('empresas', 'categoria');
             $hasRamo = Schema::hasColumn('empresas', 'ramo');
+            $hasDescricao = Schema::hasColumn('empresas', 'descricao');
+            $hasLogo = Schema::hasColumn('empresas', 'logo');
+            $hasTelefone = Schema::hasColumn('empresas', 'telefone');
+            $hasEndereco = Schema::hasColumn('empresas', 'endereco');
+            $hasMultiplier = Schema::hasColumn('empresas', 'points_multiplier');
             
             // Filtro por categoria
             if ($request->has('categoria') && $request->categoria !== 'todos') {
@@ -48,13 +53,32 @@ class EmpresaController extends Controller
             if ($request->has('busca')) {
                 $busca = $request->busca;
                 $query->where(function($q) use ($busca) {
-                    $q->where('nome', 'LIKE', "%{$busca}%")
-                      ->orWhere('descricao', 'LIKE', "%{$busca}%");
+                    $q->where('nome', 'LIKE', "%{$busca}%");
+                    if (Schema::hasColumn('empresas', 'descricao')) {
+                        $q->orWhere('descricao', 'LIKE', "%{$busca}%");
+                    }
                 });
             }
-            
+
+            $select = ['id', 'nome'];
+            if ($hasEndereco) {
+                $select[] = 'endereco';
+            }
+            if ($hasTelefone) {
+                $select[] = 'telefone';
+            }
+            if ($hasDescricao) {
+                $select[] = 'descricao';
+            }
+            if ($hasLogo) {
+                $select[] = 'logo';
+            }
+            if ($hasMultiplier) {
+                $select[] = 'points_multiplier';
+            }
+
             $empresas = $query
-                ->select('id', 'nome', 'endereco', 'telefone', 'descricao', 'logo', 'points_multiplier')
+                ->select($select)
                 ->when($hasCategoria, fn ($q) => $q->addSelect('categoria'))
                 ->when($hasRamo, fn ($q) => $q->addSelect('ramo'))
                 ->orderBy('nome')
@@ -69,9 +93,9 @@ class EmpresaController extends Controller
                         'descricao' => $empresa->descricao,
                         'categoria' => $empresa->categoria ?? $empresa->ramo ?? null,
                         'ramo' => $empresa->ramo ?? $empresa->categoria ?? null,
-                        'endereco' => $empresa->endereco,
-                        'telefone' => $empresa->telefone,
-                        'logo' => $empresa->logo,
+                        'endereco' => $empresa->endereco ?? null,
+                        'telefone' => $empresa->telefone ?? null,
+                        'logo' => $empresa->logo ?? null,
                         'points_multiplier' => $empresa->points_multiplier ?? 1,
                     ];
                 })

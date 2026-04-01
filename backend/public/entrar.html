@@ -2,7 +2,7 @@
 <html class="light" lang="pt-BR"><head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TEM DE TUDO - Login</title>
+  <title>Tem de Tudo - Login</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
@@ -87,7 +87,7 @@
   </div>
 
   <script>window.__inlineLoginManaged = true;</script>
-  <script src="/js/stitch-app.js?v=a5361214"></script>
+  <script src="/js/stitch-app.js?v=20260401-loginfix"></script>
   <script>
 
     (function () {
@@ -130,6 +130,16 @@
         msgBox.textContent = text;
       }
 
+      if (!form || !emailInput || !passInput) return;
+
+      const normalizePerfil = (rawPerfil) => {
+        const value = (rawPerfil || '').toString().toLowerCase().trim();
+        if (['admin', 'administrador', 'master', 'admin_master', 'administrador_master', 'admin master'].includes(value)) return 'admin';
+        if (['empresa', 'estabelecimento', 'parceiro', 'lojista'].includes(value)) return 'empresa';
+        if (['cliente', 'customer'].includes(value)) return 'cliente';
+        return value || null;
+      };
+
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         showMsg('', 'info');
@@ -153,20 +163,20 @@
 
           const data = await res.json().catch(() => ({}));
           const token = data?.token || data?.access_token || data?.data?.token;
-          const user = data?.user || data?.data?.user || data?.usuario;
+          const userRaw = data?.user || data?.data?.user || data?.usuario;
 
-          if (!res.ok || !token || !user) {
+          if (!res.ok || !token || !userRaw) {
             console.error('LOGIN_INLINE_FAIL', { status: res.status, payload: data });
             showMsg(data?.message || 'Não foi possível entrar.', 'error');
             return;
           }
 
+          const perfil = normalizePerfil(userRaw.perfil || userRaw.role || userRaw.tipo);
+          const target = redirectMap[perfil] || '/meus_pontos.html';
+          const user = { ...userRaw, perfil: perfil || userRaw.perfil || userRaw.role || userRaw.tipo || null };
+
           localStorage.setItem('tem_de_tudo_token', token);
           localStorage.setItem('tem_de_tudo_user', JSON.stringify(user));
-
-          const rawPerfil = (user.perfil || user.role || user.tipo || '').toString().toLowerCase();
-          const perfil = rawPerfil === 'administrador' ? 'admin' : rawPerfil === 'estabelecimento' ? 'empresa' : rawPerfil;
-          const target = redirectMap[perfil] || '/meus_pontos.html';
 
           console.log('LOGIN_INLINE_OK', { status: res.status, perfil, redirect: target, payload: data });
           showMsg('Login realizado, redirecionando...', 'success');
