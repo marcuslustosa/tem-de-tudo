@@ -250,7 +250,8 @@
       }
       const permission = await Notification.requestPermission();
       if (permission !== 'granted') {
-        ui.message('Permissao de push negada ou nao concedida.', 'warning');
+        // Nao bloqueia a tela nem polui o fluxo quando o usuario nega push.
+        console.info('Push permission not granted:', permission);
         return;
       }
       const reg = await navigator.serviceWorker.register('/sw-push.js');
@@ -296,7 +297,7 @@
 
   // ---------------------- API ---------------------- //
   const api = (() => {
-    async function request(path, options = {}, { requireAuth = true } = {}) {
+    async function request(path, options = {}, { requireAuth = true, notify = true } = {}) {
       const stored = auth.getStored();
       const isFormData = options.body instanceof FormData;
       const headers = {
@@ -312,7 +313,7 @@
       } catch {
         data = null;
       }
-      if (res.status === 401 && requireAuth) {
+      if (notify && res.status === 401 && requireAuth) {
         // Evita bounce por 401 em endpoints secundarios.
         // So forca logout/redirecionamento quando a validacao central de sessao falha.
         if (path === '/auth/me') {
@@ -320,12 +321,12 @@
           ui.message('Sessao expirada. Faca login novamente.', 'warning');
           setTimeout(() => (window.location.href = '/entrar.html'), 300);
         } else {
-          ui.message('Sua sessao nao pode ser validada neste recurso.', 'warning');
+          console.warn('401 em recurso protegido (sem logout forcado):', path);
         }
       }
-      if (res.status === 403) ui.message('Acesso negado para este perfil.', 'warning');
-      if (res.status === 404) ui.message('Recurso nao encontrado.', 'warning');
-      if (res.status >= 500) ui.message('Erro no servidor. Tente novamente em instantes.', 'error');
+      if (notify && res.status === 403) ui.message('Acesso negado para este perfil.', 'warning');
+      if (notify && res.status === 404) ui.message('Recurso nao encontrado.', 'warning');
+      if (notify && res.status >= 500) ui.message('Erro no servidor. Tente novamente em instantes.', 'error');
       return { res, data };
     }
     return { request };
@@ -1868,20 +1869,26 @@
           .replace(/'/g, '&#39;');
 
       const fetchContent = async () => {
-        const { res, data } = await api.request('/admin/content');
-        if (!res.ok || data?.success === false) throw new Error(data?.message || 'Falha ao carregar conteúdo');
+        const { res, data } = await api.request('/admin/content', {}, { notify: false });
+        if (!res.ok || data?.success === false) throw new Error(data?.message || 'Falha ao carregar conteudo');
         return data?.data || { banners: [], categorias: [] };
       };
 
       const renderContent = async () => {
-        const { banners = [], categorias = [] } = await fetchContent();
-        if (status) status.textContent = `Conteúdo conectado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
+        const payload = await fetchContent();
+        const { banners = [], categorias = [] } = payload;
+        const isPartial = Boolean(payload?.partial);
+        if (status) {
+          status.textContent = isPartial
+            ? `Modo parcial: ${banners.length} banner(s), ${categorias.length} categoria(s). Rode as migrations para habilitar o CRUD completo.`
+            : `Conteudo conectado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
+        }
 
         if (bannersSection) {
           bannersSection.innerHTML = `
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-lg font-headline font-bold text-on-surface">Banners</h3>
-              <button id="novoBannerBtn" class="px-3 py-1.5 rounded-lg bg-primary text-white text-sm font-bold">Novo banner</button>
+              <button id="novoBannerBtn" class="px-3 py-1.5 rounded-lg ${isPartial ? 'bg-outline text-white/80 cursor-not-allowed' : 'bg-primary text-white'} text-sm font-bold" ${isPartial ? 'disabled' : ''}>${isPartial ? 'Indisponivel' : 'Novo banner'}</button>
             </div>
             <div id="bannersList" class="space-y-3"></div>
           `;
@@ -1973,7 +1980,7 @@
           categoriasSection.innerHTML = `
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-lg font-headline font-bold text-on-surface">Categorias</h3>
-              <button id="novaCategoriaBtn" class="px-3 py-1.5 rounded-lg bg-primary text-white text-sm font-bold">Nova categoria</button>
+              <button id="novaCategoriaBtn" class="px-3 py-1.5 rounded-lg ${isPartial ? 'bg-outline text-white/80 cursor-not-allowed' : 'bg-primary text-white'} text-sm font-bold" ${isPartial ? 'disabled' : ''}>${isPartial ? 'Indisponivel' : 'Nova categoria'}</button>
             </div>
             <div id="categoriasList" class="space-y-3"></div>
           `;

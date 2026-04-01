@@ -10,15 +10,44 @@ use App\Models\Empresa;
 
 class EmpresaController extends Controller
 {
+    private function applyEmpresaAtivoScope($query)
+    {
+        if (Schema::hasColumn('empresas', 'ativo')) {
+            return $query->where('ativo', true);
+        }
+        if (Schema::hasColumn('empresas', 'status')) {
+            return $query->where('status', 'ativo');
+        }
+        return $query;
+    }
+
+    private function cleanUtf8($value)
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+        $clean = @iconv('UTF-8', 'UTF-8//IGNORE', $value);
+        return $clean === false ? '' : $clean;
+    }
+
     public function index()
     {
         try {
-            $empresas = Empresa::where('ativo', true)
-                ->select('id', 'nome', 'cnpj', 'telefone', 'endereco', 'logo', 'descricao', 'ativo', 'points_multiplier')
+            $query = Empresa::query();
+            $this->applyEmpresaAtivoScope($query);
+            $select = ['id', 'nome'];
+            foreach (['cnpj', 'telefone', 'endereco', 'logo', 'descricao', 'ativo', 'points_multiplier'] as $column) {
+                if (Schema::hasColumn('empresas', $column)) {
+                    $select[] = $column;
+                }
+            }
+
+            $empresas = $query
+                ->select($select)
                 ->orderBy('nome')
                 ->get();
 
-            return response()->json($empresas, 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
+            return response()->json($empresas, 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         } catch (\Exception $e) {
             Log::error('Erro ao listar empresas: ' . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Erro ao carregar empresas'], 500);
@@ -31,7 +60,8 @@ class EmpresaController extends Controller
     public function listEmpresas(Request $request)
     {
         try {
-            $query = Empresa::where('ativo', true);
+            $query = Empresa::query();
+            $this->applyEmpresaAtivoScope($query);
             $hasCategoria = Schema::hasColumn('empresas', 'categoria');
             $hasRamo = Schema::hasColumn('empresas', 'ramo');
             $hasDescricao = Schema::hasColumn('empresas', 'descricao');
@@ -89,17 +119,17 @@ class EmpresaController extends Controller
                 'data' => $empresas->map(function($empresa) {
                     return [
                         'id' => $empresa->id,
-                        'nome' => $empresa->nome,
-                        'descricao' => $empresa->descricao,
-                        'categoria' => $empresa->categoria ?? $empresa->ramo ?? null,
-                        'ramo' => $empresa->ramo ?? $empresa->categoria ?? null,
-                        'endereco' => $empresa->endereco ?? null,
-                        'telefone' => $empresa->telefone ?? null,
+                        'nome' => $this->cleanUtf8($empresa->nome),
+                        'descricao' => $this->cleanUtf8($empresa->descricao),
+                        'categoria' => $this->cleanUtf8($empresa->categoria ?? $empresa->ramo ?? null),
+                        'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? null),
+                        'endereco' => $this->cleanUtf8($empresa->endereco ?? null),
+                        'telefone' => $this->cleanUtf8($empresa->telefone ?? null),
                         'logo' => $empresa->logo ?? null,
                         'points_multiplier' => $empresa->points_multiplier ?? 1,
                     ];
                 })
-            ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
+            ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         } catch (\Exception $e) {
             Log::error('Erro ao listar empresas: ' . $e->getMessage());
 

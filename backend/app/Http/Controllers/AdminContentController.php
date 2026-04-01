@@ -5,12 +5,30 @@ namespace App\Http\Controllers;
 use App\Models\Banner;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class AdminContentController extends Controller
 {
+    private function hasContentTables(): bool
+    {
+        return Schema::hasTable('banners') && Schema::hasTable('categorias');
+    }
+
     public function index()
     {
+        if (!$this->hasContentTables()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Estrutura de banners/categorias ainda nao migrada neste ambiente.',
+                'data' => [
+                    'banners' => [],
+                    'categorias' => [],
+                    'partial' => true,
+                ],
+            ]);
+        }
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -22,6 +40,13 @@ class AdminContentController extends Controller
 
     public function storeBanner(Request $request)
     {
+        if (!Schema::hasTable('banners')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tabela de banners indisponivel neste ambiente. Execute as migrations.',
+            ], 503);
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'image_url' => 'nullable|string|max:2048',
@@ -47,6 +72,13 @@ class AdminContentController extends Controller
 
     public function updateBanner(Request $request, Banner $banner)
     {
+        if (!Schema::hasTable('banners')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tabela de banners indisponivel neste ambiente. Execute as migrations.',
+            ], 503);
+        }
+
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'image_url' => 'nullable|string|max:2048',
@@ -69,6 +101,13 @@ class AdminContentController extends Controller
 
     public function destroyBanner(Banner $banner)
     {
+        if (!Schema::hasTable('banners')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tabela de banners indisponivel neste ambiente. Execute as migrations.',
+            ], 503);
+        }
+
         $banner->delete();
 
         return response()->json([
@@ -79,6 +118,13 @@ class AdminContentController extends Controller
 
     public function storeCategoria(Request $request)
     {
+        if (!Schema::hasTable('categorias')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tabela de categorias indisponivel neste ambiente. Execute as migrations.',
+            ], 503);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:categorias,slug',
@@ -102,6 +148,13 @@ class AdminContentController extends Controller
 
     public function updateCategoria(Request $request, Categoria $categoria)
     {
+        if (!Schema::hasTable('categorias')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tabela de categorias indisponivel neste ambiente. Execute as migrations.',
+            ], 503);
+        }
+
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:categorias,slug,' . $categoria->id,
@@ -124,6 +177,13 @@ class AdminContentController extends Controller
 
     public function destroyCategoria(Categoria $categoria)
     {
+        if (!Schema::hasTable('categorias')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tabela de categorias indisponivel neste ambiente. Execute as migrations.',
+            ], 503);
+        }
+
         $categoria->delete();
 
         return response()->json([
@@ -132,4 +192,3 @@ class AdminContentController extends Controller
         ]);
     }
 }
-
