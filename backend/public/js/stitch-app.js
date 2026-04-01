@@ -323,6 +323,76 @@
     });
   }
 
+  function remapNavigationForPerfil() {
+    const stored = auth.getStored();
+    const perfil = auth.normalizePerfil(
+      stored?.user?.perfil || stored?.user?.role || stored?.user?.tipo || null
+    );
+    if (!perfil || perfil === 'cliente') return;
+
+    const remapByPerfil = {
+      admin: {
+        '/meus_pontos.html': '/relat_rios_gerais_master.html',
+        '/parceiros_tem_de_tudo.html': '/gest_o_de_estabelecimentos.html',
+        '/detalhe_do_parceiro.html': '/gest_o_de_estabelecimentos.html',
+        '/recompensas.html': '/relat_rios_gerais_master.html',
+        '/hist_rico_de_uso.html': '/relat_rios_gerais_master.html',
+        '/dashboard_parceiro.html': '/dashboard_admin_master.html',
+      },
+      empresa: {
+        '/meus_pontos.html': '/dashboard_parceiro.html',
+        '/parceiros_tem_de_tudo.html': '/clientes_fidelizados_loja.html',
+        '/detalhe_do_parceiro.html': '/clientes_fidelizados_loja.html',
+        '/recompensas.html': '/gest_o_de_ofertas_parceiro.html',
+        '/hist_rico_de_uso.html': '/minhas_campanhas_loja.html',
+        '/dashboard_admin_master.html': '/dashboard_parceiro.html',
+      },
+    };
+
+    const fixedMap = remapByPerfil[perfil] || {};
+    const defaultByPerfil = perfil === 'admin' ? '/dashboard_admin_master.html' : '/dashboard_parceiro.html';
+
+    document.querySelectorAll('a[href]').forEach((link) => {
+      const rawHref = link.getAttribute('href');
+      if (!rawHref) return;
+      if (/^(mailto:|tel:|https?:\/\/|#|javascript:)/i.test(rawHref)) return;
+
+      let url;
+      try {
+        url = new URL(rawHref, window.location.origin);
+      } catch {
+        return;
+      }
+
+      const currentPath = url.pathname;
+      let target = fixedMap[currentPath] || null;
+
+      if (!target && (link.closest('nav') || link.closest('aside'))) {
+        const iconEl = link.querySelector('[data-icon], .material-symbols-outlined');
+        const icon = (iconEl?.getAttribute('data-icon') || iconEl?.textContent || '').toString().toLowerCase().trim();
+        const text = (link.textContent || '').toString().toLowerCase().trim();
+        const inferred = resolveFallbackTarget(perfil, icon, text);
+        if (inferred && inferred !== '__support__') {
+          target = inferred;
+        }
+      }
+
+      if (target && target !== currentPath) {
+        link.setAttribute('href', target);
+      }
+    });
+
+    document.querySelectorAll('button').forEach((btn) => {
+      if (btn.dataset.navBound === '1') return;
+      const text = (btn.textContent || '').toLowerCase();
+      if (!text.includes('perfil') && !text.includes('ponto') && !text.includes('premio') && !text.includes('recompensa')) return;
+      btn.dataset.navBound = '1';
+      btn.addEventListener('click', () => {
+        window.location.href = defaultByPerfil;
+      });
+    });
+  }
+
   function wireFallbackButtons() {
     const scope = getScopeForCurrentPage();
     const go = (url) => () => {
@@ -2460,6 +2530,7 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     normalizeBrandingVisuals();
+    remapNavigationForPerfil();
     wireFallbackLinks();
     wireFallbackButtons();
     wirePushButtons();
