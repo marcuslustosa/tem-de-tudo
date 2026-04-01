@@ -27,6 +27,45 @@
     return trimmed || fallback;
   }
 
+  function decodeMojibake(value) {
+    if (value == null) return '';
+    let text = String(value);
+    for (let i = 0; i < 3; i += 1) {
+      const markers = (text.match(/[Âƒâ€™â€œ]/g) || []).length;
+      if (!markers) break;
+      try {
+        const decoded = decodeURIComponent(escape(text));
+        const newMarkers = (decoded.match(/[Âƒâ€™â€œ]/g) || []).length;
+        if (newMarkers >= markers) break;
+        text = decoded;
+      } catch {
+        break;
+      }
+    }
+    return text;
+  }
+
+  function safeText(value, fallback = '') {
+    const parsed = decodeMojibake(value).trim();
+    return parsed || fallback;
+  }
+
+  function toNumber(...values) {
+    for (const value of values) {
+      if (value === null || value === undefined || value === '') continue;
+      const parsed = Number(value);
+      if (!Number.isNaN(parsed) && Number.isFinite(parsed)) return parsed;
+    }
+    return 0;
+  }
+
+  function toArray(value) {
+    if (Array.isArray(value)) return value;
+    if (Array.isArray(value?.data)) return value.data;
+    if (Array.isArray(value?.items)) return value.items;
+    return [];
+  }
+
   // ---------------------- UI / Estado ---------------------- //
   const ui = (() => {
     let pageStateEl = null;
@@ -124,7 +163,7 @@
       if (userCache) return normalizeUser(userCache);
       const stored = getStored();
       const storedUser = normalizeUser(stored.user);
-      if (storedUser && storedUser.id && storedUser.perfil) {
+      if (storedUser && storedUser.perfil) {
         userCache = storedUser;
         return userCache;
       }
@@ -136,7 +175,7 @@
 
       const { res, data } = await api.request('/auth/me');
       const apiUser = normalizeUser(data?.user || data?.data?.user || data?.data || data);
-      if (res.ok && apiUser && apiUser.id) {
+      if (res.ok && apiUser && apiUser.perfil) {
         save(stored.token, apiUser);
         return apiUser;
       }
@@ -146,8 +185,13 @@
         window.location.href = '/entrar.html';
         return null;
       }
-
-      ui.message('Nao foi possivel validar a sessao nesta pagina.', 'error');
+      if (storedUser && storedUser.perfil) {
+        userCache = storedUser;
+        return userCache;
+      }
+      console.warn('Sessao nao validada por /auth/me; sem dados de usuario no storage.');
+      clear();
+      window.location.href = '/entrar.html';
       return null;
     };
 
@@ -216,11 +260,11 @@
 
       let target = targetByIcon || null;
       if (!target) {
-        if (text.includes('dashboard') || text.includes('inicio') || text.includes('início')) target = fallback.dashboard;
-        else if (text.includes('usuario') || text.includes('usuário')) target = '/gest_o_de_usu_rios_master.html';
+        if (text.includes('dashboard') || text.includes('inicio') || text.includes('inicio')) target = fallback.dashboard;
+        else if (text.includes('usuario') || text.includes('usuario')) target = '/gest_o_de_usu_rios_master.html';
         else if (text.includes('cliente')) target = scope === 'admin' ? '/gest_o_de_clientes_master.html' : '/clientes_fidelizados_loja.html';
         else if (text.includes('estabelecimento') || text.includes('parceiro')) target = scope === 'admin' ? '/gest_o_de_estabelecimentos.html' : '/parceiros_tem_de_tudo.html';
-        else if (text.includes('relatorio') || text.includes('relatório')) target = scope === 'admin' ? '/relat_rios_gerais_master.html' : '/minhas_campanhas_loja.html';
+        else if (text.includes('relatorio') || text.includes('relatorio')) target = scope === 'admin' ? '/relat_rios_gerais_master.html' : '/minhas_campanhas_loja.html';
       }
 
       if (target) {
@@ -315,7 +359,7 @@
       }
       if (notify && res.status === 401 && requireAuth) {
         // Evita bounce por 401 em endpoints secundarios.
-        // So forca logout/redirecionamento quando a validacao central de sessao falha.
+        // So forca logout/redirecionamento quando a validacao central de sesso falha.
         if (path === '/auth/me') {
           auth.clear();
           ui.message('Sessao expirada. Faca login novamente.', 'warning');
@@ -326,7 +370,8 @@
       }
       if (notify && res.status === 403) ui.message('Acesso negado para este perfil.', 'warning');
       if (notify && res.status === 404) ui.message('Recurso nao encontrado.', 'warning');
-      if (notify && res.status >= 500) ui.message('Erro no servidor. Tente novamente em instantes.', 'error');
+      const isPushEndpoint = path.startsWith('/push/');
+      if (notify && res.status >= 500 && !isPushEndpoint) ui.message('Erro no servidor. Tente novamente em instantes.', 'error');
       return { res, data };
     }
     return { request };
@@ -541,7 +586,7 @@
             <div class="flex items-center justify-between pt-2 border-t border-surface-container">
               <div class="flex items-center gap-1 text-outline text-xs">
                 <span class="material-symbols-outlined text-xs" data-icon="location_on">location_on</span>
-                <span>${e.endereco || "—"}</span>
+                <span>${e.endereco || ""}</span>
               </div>
               <a class="bg-primary text-on-primary px-4 py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity" href="/detalhe_do_parceiro.html?id=${e.id}">Ver parceiro</a>
             </div>
@@ -596,7 +641,7 @@
         heroLogo.setAttribute('onerror', `this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'`);
       }
         if (heroBadge) heroBadge.textContent = info.points_multiplier ? `${info.points_multiplier}x pontos` : 'Parceiro';
-        if (heroDist) heroDist.textContent = info.endereco || '—';
+        if (heroDist) heroDist.textContent = info.endereco || '';
       }
 
       const promoList = promos.data?.data || promos.data || [];
@@ -609,8 +654,8 @@
         const tpl = (p) => `
           <article class="bg-surface-container-lowest rounded-xl p-4 flex justify-between gap-3 shadow-[0_6px_20px_rgba(11,31,58,0.06)]">
             <div class="space-y-1">
-              <p class="font-label text-label-sm text-tertiary font-bold uppercase">Promoção</p>
-              <h4 class="font-headline font-bold text-title-sm">${p.titulo || p.nome || 'Promoção'}</h4>
+              <p class="font-label text-label-sm text-tertiary font-bold uppercase">Promocao</p>
+              <h4 class="font-headline font-bold text-title-sm">${p.titulo || p.nome || 'Promocao'}</h4>
               <p class="text-on-surface-variant text-sm">${p.descricao || ''}</p>
             </div>
             <div class="text-right min-w-[80px]">
@@ -793,16 +838,16 @@
         });
       };
 
-      ui.setPageState('loading', 'Carregando histórico...');
+      ui.setPageState('loading', 'Carregando historico...');
       const { data } = await api.request('/pontos/historico');
       loading?.classList.add('hidden');
       const itens = data?.data?.data || data?.data || [];
       if (!itens.length) {
-        ui.setPageState('empty', 'Nenhum histórico encontrado.');
+        ui.setPageState('empty', 'Nenhum historico encontrado.');
         return;
       }
       ui.clearPageState();
-      if (summaryText) summaryText.textContent = `Você tem ${itens.length} atividades registradas.`;
+      if (summaryText) summaryText.textContent = `Voce tem ${itens.length} atividades registradas.`;
       render(itens, 'todas');
       setActiveFilter('todas');
       filterButtons.forEach((btn) =>
@@ -839,11 +884,11 @@
       const nextTarget = Math.max(1000, pontos + 2000);
       const perc = Math.min(100, Math.round((pontos / nextTarget) * 100));
 
-      if (heroName) heroName.textContent = user?.name || user?.nome || 'Usuário';
+      if (heroName) heroName.textContent = user?.name || user?.nome || 'Usuario';
       if (heroLevel) heroLevel.textContent = user?.perfil ? user.perfil.toUpperCase() : 'MEMBRO';
       if (heroStatus) heroStatus.textContent = user?.status || 'Ativo';
       if (heroPoints) heroPoints.textContent = pontos;
-      if (heroProgressText) heroProgressText.textContent = `Faltam ${nextTarget - pontos} para o próximo nível`;
+      if (heroProgressText) heroProgressText.textContent = `Faltam ${nextTarget - pontos} para o proximo nivel`;
       if (heroProgressBar) heroProgressBar.style.width = `${perc}%`;
 
       const pf = (id) => document.getElementById(id);
@@ -885,7 +930,7 @@
 
       document.getElementById('logoutBtn')?.addEventListener('click', () => {
         auth.logout();
-        ui.message('Sessão encerrada.', 'success');
+        ui.message('Sessao encerrada.', 'success');
         setTimeout(() => (window.location.href = '/entrar.html'), 400);
       });
     },
@@ -922,7 +967,7 @@
 
       btn.addEventListener('click', async () => {
         const codigo = input.value.trim();
-        if (!codigo) return ui.message('Informe o código do cupom.', 'warning');
+        if (!codigo) return ui.message('Informe o codigo do cupom.', 'warning');
         btn.disabled = true;
         btn.classList.add('opacity-60');
         const { res, data } = await api.request(`/pontos/usar-cupom/${encodeURIComponent(codigo)}`, { method: 'POST' });
@@ -976,7 +1021,7 @@
       if (movDistribuido) movDistribuido.textContent = (totals.total_distribuido || 0).toLocaleString('pt-BR');
       if (movResgatado) movResgatado.textContent = (totals.total_resgatado || 0).toLocaleString('pt-BR');
       if (movClientes) movClientes.textContent = (totals.total_clientes || 0).toLocaleString('pt-BR');
-      if (movMsg) movMsg.textContent = 'Dados dos últimos 30 dias';
+      if (movMsg) movMsg.textContent = 'Dados dos ultimos 30 dias';
 
       const listaPromos = promos.data?.data || promos.data || [];
       if (campanhasBox) {
@@ -993,12 +1038,12 @@
             const status = statusAtivo ? 'Ativa' : 'Pausada';
             card.innerHTML = `
               <div class="w-24 h-24 flex-shrink-0">
-                <img alt="${p.nome || 'Promoção'}" class="w-full h-full object-cover" src="${img}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'"/>
+                <img alt="${p.nome || 'Promocao'}" class="w-full h-full object-cover" src="${img}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'"/>
               </div>
               <div class="p-4 flex flex-col justify-between flex-grow">
                 <div>
                   <div class="flex justify-between items-start">
-                    <h4 class="font-headline font-bold text-sm text-on-surface">${p.nome || 'Promoção'}</h4>
+                    <h4 class="font-headline font-bold text-sm text-on-surface">${p.nome || 'Promocao'}</h4>
                     <span class="glass-badge px-2 py-0.5 rounded-full text-[9px] font-bold text-primary uppercase">${status}</span>
                   </div>
                   <p class="text-xs text-on-surface-variant line-clamp-2">${p.descricao || ''}</p>
@@ -1021,7 +1066,7 @@
       }
 
       document.getElementById('empresaNotifBtn')?.addEventListener('click', () => {
-        ui.message('Notificações da empresa serão exibidas aqui em breve.', 'info');
+        ui.message('Notificacoes da empresa serao exibidas aqui em breve.', 'info');
       });
     },
 
@@ -1035,15 +1080,17 @@
       const statTotal = document.getElementById('statTotal');
       const statAtivos = document.getElementById('statAtivos');
       const statNovos = document.getElementById('statNovos');
+      const resumoEl = document.getElementById('clientesResumo');
 
       const load = async (term = '') => {
         ui.setPageState('loading', 'Carregando clientes...');
         const qs = term ? `?busca=${encodeURIComponent(term)}` : '';
         const { data } = await api.request(`/empresa/clientes${qs}`);
         const lista = data?.data?.data || data?.data || data || [];
-        if (statTotal) statTotal.textContent = lista.length;
-        if (statAtivos) statAtivos.textContent = lista.length;
-        if (statNovos) statNovos.textContent = '—';
+        if (statTotal) statTotal.textContent = Number(lista.length || 0).toLocaleString('pt-BR');
+        if (statAtivos) statAtivos.textContent = Number(lista.length || 0).toLocaleString('pt-BR');
+        if (statNovos) statNovos.textContent = '0';
+        if (resumoEl) resumoEl.textContent = `Exibindo ${lista.length} resultado(s)`;
         if (!lista.length) {
           ui.setPageState('empty', 'Nenhum cliente fidelizado ainda.');
           if (vazioEl) vazioEl.classList.remove('hidden');
@@ -1071,7 +1118,7 @@
                 <span class="material-symbols-outlined text-[16px] text-primary" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
                 <span class="text-sm font-bold text-primary">${pontos} pontos</span>
               </div>
-              <p class="text-xs text-outline mt-1">Última visita: ${ultima ? new Date(ultima).toLocaleString('pt-BR') : '—'}</p>
+              <p class="text-xs text-outline mt-1">ltima visita: ${ultima ? new Date(ultima).toLocaleString('pt-BR') : ''}</p>
             </div>
             <button class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</button>`;
           listaEl?.appendChild(card);
@@ -1085,7 +1132,7 @@
 
     async promocoes() {
       if (!(await auth.guard(['empresa']))) return;
-      ui.setPageState('loading', 'Carregando promoções...');
+      ui.setPageState('loading', 'Carregando promocoes...');
       const { data } = await api.request('/empresa/promocoes');
       const lista = data?.data || data || [];
       ui.clearPageState();
@@ -1274,6 +1321,24 @@
 
   // ---------------------- Paginas: Admin ---------------------- //
   const admin = {
+    async loadUsersDataset() {
+      const primary = await api.request('/admin/users-report', {}, { notify: false });
+      if (primary.res.ok) {
+        const raw = primary.data?.data ?? primary.data ?? [];
+        const list = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+        return { ok: true, list };
+      }
+
+      const fallback = await api.request('/admin/users', {}, { notify: false });
+      if (fallback.res.ok) {
+        const raw = fallback.data?.data ?? fallback.data ?? [];
+        const list = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+        return { ok: true, list };
+      }
+
+      return { ok: false, list: [] };
+    },
+
     async dashboard() {
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando dashboard admin...');
@@ -1283,20 +1348,29 @@
         api.request('/empresas', {}, { requireAuth: false, notify: false }),
       ]);
       ui.clearPageState();
-      if (!stats.res.ok) ui.message(stats.data?.message || 'Falha ao carregar metricas do dashboard.', 'error');
-      if (!recent.res.ok) ui.message(recent.data?.message || 'Falha ao carregar atividade recente.', 'error');
-      if (!empresas.res.ok) ui.message(empresas.data?.message || 'Falha ao carregar estabelecimentos.', 'error');
+      if (!stats.res.ok && !recent.res.ok && !empresas.res.ok) {
+        ui.setPageState('error', 'Nao foi possivel carregar dados do dashboard.');
+      }
 
       const ids = (id) => document.getElementById(id);
-      const totals = stats.data?.data?.totais || stats.data?.totais || {};
-      ids('adminUsers') && (ids('adminUsers').textContent = totals.usuarios || stats.data?.data?.usuarios || '--');
-      ids('adminEmpresas') && (ids('adminEmpresas').textContent = totals.empresas || empresas.data?.data?.length || empresas.data?.data?.total || '--');
-      ids('adminCampanhas') && (ids('adminCampanhas').textContent = totals.campanhas || '--');
-      ids('adminResgates') && (ids('adminResgates').textContent = totals.resgates || '--');
-      if (ids('adminVolume')) ids('adminVolume').textContent = totals.volume ? 'R$ ' + Number(totals.volume).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : 'R$ 0,00';
-      if (ids('adminCrescimentoMsg')) ids('adminCrescimentoMsg').textContent = 'Dados consolidados dos últimos 30 dias';
+      const statsData = stats.data?.data || stats.data || {};
+      const totals = statsData?.totais || {};
+      const empresasList = toArray(empresas.data?.data || empresas.data);
 
-      const atividades = recent.data?.data || recent.data || [];
+      const totalUsuarios = toNumber(totals.usuarios, statsData.usuarios, statsData.total_users);
+      const totalEmpresas = toNumber(totals.empresas, statsData.empresas, statsData.total_empresas, empresasList.length);
+      const totalCampanhas = toNumber(totals.campanhas, statsData.campanhas, statsData.promocoes);
+      const totalResgates = toNumber(totals.resgates, statsData.resgates);
+      const totalVolume = toNumber(totals.volume, statsData.volume);
+
+      if (ids('adminUsers')) ids('adminUsers').textContent = Number(totalUsuarios || 0).toLocaleString('pt-BR');
+      if (ids('adminEmpresas')) ids('adminEmpresas').textContent = Number(totalEmpresas || 0).toLocaleString('pt-BR');
+      if (ids('adminCampanhas')) ids('adminCampanhas').textContent = Number(totalCampanhas || 0).toLocaleString('pt-BR');
+      if (ids('adminResgates')) ids('adminResgates').textContent = Number(totalResgates || 0).toLocaleString('pt-BR');
+      if (ids('adminVolume')) ids('adminVolume').textContent = `R$ ${Number(totalVolume || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (ids('adminCrescimentoMsg')) ids('adminCrescimentoMsg').textContent = safeText(statsData.crescimento_texto, 'Dados consolidados dos uultimos 30 dias');
+
+      const atividades = toArray(recent.data?.data || recent.data);
       const list = ids('adminRecentList');
       const empty = ids('adminRecentEmpty');
       if (list) list.innerHTML = '';
@@ -1307,8 +1381,8 @@
         atividades.slice(0, 10).forEach((a) => {
           const item = document.createElement('div');
           item.className = 'flex gap-4 items-start pb-4 border-b border-surface-container-low';
-          const titulo = a?.titulo || a?.message || a?.descricao || 'Atividade';
-          const detalhe = a?.detalhe || a?.description || a?.user || '';
+          const titulo = safeText(a?.titulo || a?.message || a?.descricao, 'Atividade');
+          const detalhe = safeText(a?.detalhe || a?.description || a?.user || a?.usuario, '');
           const stamp = a?.created_at ? new Date(a.created_at).toLocaleString('pt-BR') : '';
           item.innerHTML = `
             <div class="w-10 h-10 rounded-full bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
@@ -1332,61 +1406,115 @@
         ui.setPageState('error', data?.message || 'Nao foi possivel carregar estabelecimentos.');
         return;
       }
-      const lista = data?.data || data || [];
+
+      const lista = toArray(data?.data || data).map((item) => ({
+        ...item,
+        nome: safeText(item?.nome || item?.nome_fantasia, 'Estabelecimento'),
+        categoria: safeText(item?.categoria || item?.ramo || item?.segmento, 'Sem categoria'),
+        endereco: safeText(item?.endereco || item?.logradouro, 'Endereco nao informado'),
+        telefone: safeText(item?.telefone, '-'),
+        email: safeText(item?.email, '-'),
+        pontos: toNumber(item?.pontos_totais, item?.pontos),
+        clientes: toNumber(item?.clientes, item?.qtd_clientes),
+        status: safeText(item?.status || (item?.ativo === false ? 'inativo' : 'ativo'), 'ativo').toLowerCase(),
+      }));
+
       ui.clearPageState();
       const listaEl = document.getElementById('estabsLista');
       const vazioEl = document.getElementById('estabsEmpty');
-      if (listaEl) listaEl.innerHTML = '';
-      if (!lista.length) {
-        if (vazioEl) vazioEl.classList.remove('hidden');
-        return;
-      }
-      if (vazioEl) vazioEl.classList.add('hidden');
-      lista.forEach((e) => {
-        const card = document.createElement('div');
-        card.className = 'bg-surface-container-lowest p-5 rounded-xl flex flex-col md:flex-row gap-6 items-center group hover:bg-surface-container-low transition-all border border-transparent hover:border-primary/10';
-        const logo = safeImage(e.logo, IMAGE_FALLBACKS.store);
-        const nome = e.nome || e.nome_fantasia || 'Estabelecimento';
-        const categoria = e.categoria || e.segmento || '';
-        const pontos = e.pontos_totais ?? e.pontos ?? 0;
-        const clientes = e.clientes ?? e.qtd_clientes ?? 0;
-        const endereco = e.endereco || e.logradouro || '';
-        const telefone = e.telefone || '';
-        const email = e.email || '';
-        card.innerHTML = /* html */ `
-          <div class="relative">
-            <div class="w-20 h-20 rounded-full overflow-hidden bg-surface-container shadow-inner">
-              <img alt="${nome}" class="w-full h-full object-cover" src="${logo}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'"/>
-            </div>
-          </div>
-          <div class="flex-1 w-full">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-              <div>
-                <h3 class="font-headline font-bold text-on-surface text-lg">${nome}</h3>
-                <p class="text-sm text-outline">${categoria}</p>
-              </div>
-              <div class="flex flex-wrap gap-2 text-[10px] uppercase font-bold">
-                <span class="px-2 py-1 rounded-full bg-primary/10 text-primary">Pontos: ${pontos}</span>
-                <span class="px-2 py-1 rounded-full bg-tertiary/10 text-tertiary">Clientes: ${clientes}</span>
-              </div>
-            </div>
-            <div class="flex flex-wrap gap-4 mt-3 text-sm text-on-surface-variant">
-              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span><span>${endereco}</span></div>
-              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="call">call</span><span>${telefone}</span></div>
-              <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="mail">mail</span><span>${email}</span></div>
-            </div>
-          </div>`;
-        listaEl?.appendChild(card);
-      });
-    },
+      const resumoEl = document.getElementById('estabsResumo');
+      const totalEl = document.getElementById('estabsTotalBadge');
+      const buscaEl = document.getElementById('estabBusca');
+      const categoriaEl = document.getElementById('estabsCategoriaFilter');
+      const statusEl = document.getElementById('estabsStatusFilter');
 
+      const categorias = ['todas', ...new Set(lista.map((e) => e.categoria.toLowerCase()))];
+      if (categoriaEl && !categoriaEl.dataset.bound) {
+        categoriaEl.innerHTML = categorias
+          .map((c) => `<option value="${c}">${c === 'todas' ? 'Todas' : c.replace(/(^|\s)\S/g, (m) => m.toUpperCase())}</option>`)
+          .join('');
+      }
+      if (statusEl && !statusEl.dataset.bound) {
+        statusEl.innerHTML = ['todos', 'ativo', 'pausado', 'inativo', 'bloqueado']
+          .map((s) => `<option value="${s}">${s.charAt(0).toUpperCase() + s.slice(1)}</option>`)
+          .join('');
+      }
+
+      const renderLista = () => {
+        const termo = (buscaEl?.value || '').toLowerCase().trim();
+        const categoria = (categoriaEl?.value || 'todas').toLowerCase();
+        const status = (statusEl?.value || 'todos').toLowerCase();
+
+        const filtrada = lista.filter((e) => {
+          const byBusca = !termo || [e.nome, e.categoria, e.endereco, e.telefone, e.email].join(' ').toLowerCase().includes(termo);
+          const byCategoria = categoria === 'todas' || e.categoria.toLowerCase() === categoria;
+          const byStatus = status === 'todos' || e.status.includes(status);
+          return byBusca && byCategoria && byStatus;
+        });
+
+        if (listaEl) listaEl.innerHTML = '';
+        if (totalEl) totalEl.textContent = lista.length ? lista.length.toLocaleString('pt-BR') : '--';
+        if (resumoEl) resumoEl.textContent = `Mostrando ${filtrada.length} de ${lista.length} resultados`;
+
+        if (!filtrada.length) {
+          vazioEl?.classList.remove('hidden');
+          return;
+        }
+
+        vazioEl?.classList.add('hidden');
+        filtrada.forEach((e) => {
+          const card = document.createElement('div');
+          card.className = 'bg-surface-container-lowest p-5 rounded-xl flex flex-col md:flex-row gap-6 items-center group hover:bg-surface-container-low transition-all border border-transparent hover:border-primary/10';
+          const logo = safeImage(e.logo, IMAGE_FALLBACKS.store);
+          card.innerHTML = /* html */ `
+            <div class="relative">
+              <div class="w-20 h-20 rounded-full overflow-hidden bg-surface-container shadow-inner">
+                <img alt="${e.nome}" class="w-full h-full object-cover" src="${logo}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'"/>
+              </div>
+            </div>
+            <div class="flex-1 w-full">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <div>
+                  <h3 class="font-headline font-bold text-on-surface text-lg">${e.nome}</h3>
+                  <p class="text-sm text-outline">${e.categoria}</p>
+                </div>
+                <div class="flex flex-wrap gap-2 text-[10px] uppercase font-bold">
+                  <span class="px-2 py-1 rounded-full bg-primary/10 text-primary">Pontos: ${e.pontos.toLocaleString('pt-BR')}</span>
+                  <span class="px-2 py-1 rounded-full bg-tertiary/10 text-tertiary">Clientes: ${e.clientes.toLocaleString('pt-BR')}</span>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-4 mt-3 text-sm text-on-surface-variant">
+                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span><span>${e.endereco}</span></div>
+                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="call">call</span><span>${e.telefone}</span></div>
+                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="mail">mail</span><span>${e.email}</span></div>
+              </div>
+            </div>`;
+          listaEl?.appendChild(card);
+        });
+      };
+
+      if (buscaEl && !buscaEl.dataset.bound) {
+        buscaEl.dataset.bound = '1';
+        buscaEl.addEventListener('input', renderLista);
+      }
+      if (categoriaEl && !categoriaEl.dataset.bound) {
+        categoriaEl.dataset.bound = '1';
+        categoriaEl.addEventListener('change', renderLista);
+      }
+      if (statusEl && !statusEl.dataset.bound) {
+        statusEl.dataset.bound = '1';
+        statusEl.addEventListener('change', renderLista);
+      }
+
+      renderLista();
+    },
     async usuarios() {
       if (!(await auth.guard(['admin']))) return;
-      ui.setPageState('loading', 'Carregando usuários...');
-      const { res, data } = await api.request('/admin/users-report', {}, { notify: false });
-      if (!res.ok) return ui.setPageState('error', 'Endpoint /admin/users-report indisponível ou bloqueado.');
-      const raw = data?.data ?? data ?? [];
-      const lista = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+      ui.setPageState('loading', 'Carregando usuarios...');
+
+      const usersDataset = await this.loadUsersDataset();
+      if (!usersDataset.ok) return ui.setPageState('error', 'Endpoint de usuarios indisponivel.');
+      const lista = usersDataset.list;
 
       const isCliente = (u) => (u.perfil || u.role || '').toString().toLowerCase().includes('cliente');
       const admins = lista.filter((u) => !isCliente(u));
@@ -1394,9 +1522,9 @@
       const tbody = document.getElementById('adminUsersTable');
       if (!tbody) {
         ui.clearPageState();
-        if (!admins.length) return ui.message('Nenhum usuário retornado.', 'warning');
+        if (!admins.length) return ui.message('Nenhum usuario retornado.', 'warning');
         return render.section(
-          'Usuários',
+          'Usuarios',
           admins
             .map(
               (u) => `
@@ -1429,13 +1557,13 @@
         const ativos = listaAlvo.filter(ativo).length;
         const subs = listaAlvo.filter((u) => (u.perfil || u.role || '').toString().toLowerCase().includes('sub')).length;
         const bloqueados = listaAlvo.filter(suspenso).length;
-        metric('adminUsersTotal', total || '--');
-        metric('adminUsersAtivosPct', total ? `${Math.round((ativos / total) * 100)}% ativos` : '--');
-        metric('adminUsersSubs', subs || '0');
-        metric('adminUsersBloqueados', bloqueados || '0');
-        metric('adminUsersCrescimento', total ? `${total} registrados` : '');
+        metric('adminUsersTotal', Number(total || 0).toLocaleString('pt-BR'));
+        metric('adminUsersAtivosPct', total ? `${Math.round((ativos / total) * 100)}% ativos` : '0% ativos');
+        metric('adminUsersSubs', Number(subs || 0).toLocaleString('pt-BR'));
+        metric('adminUsersBloqueados', Number(bloqueados || 0).toLocaleString('pt-BR'));
+        metric('adminUsersCrescimento', total ? `${total} registrados` : 'Sem registros');
         metric('adminUsersNovos', '');
-        metric('adminUsersRevisao', bloqueados ? `${bloqueados} em revisão` : 'OK');
+        metric('adminUsersReviso', bloqueados ? `${bloqueados} em reviso` : 'OK');
         if (resumo) resumo.querySelector('p').textContent = total ? `Listando ${total} administradores` : 'Nenhum administrador encontrado';
       };
 
@@ -1451,7 +1579,7 @@
         listaAlvo.forEach((u) => {
           const tr = document.createElement('tr');
           tr.className = 'data-row hover:bg-surface-container-low transition-colors group';
-          const nome = u.name || u.nome || u.email || 'Usuário';
+          const nome = u.name || u.nome || u.email || 'Usuario';
           const email = u.email || '';
           const perfil = u.perfil || u.role || 'admin';
           const status = suspenso(u) ? 'Suspenso' : ativo(u) ? 'Ativo' : 'Inativo';
@@ -1533,7 +1661,7 @@
       }
 
       document.getElementById('btnNovoAdmin')?.addEventListener('click', () =>
-        ui.message('Criação de admin via painel: use /admin/create-user com permissões adequadas.', 'info')
+        ui.message('Criacao de admin via painel: use /admin/create-user com permissoes adequadas.', 'info')
       );
       document.getElementById('btnAudit')?.addEventListener('click', () => (window.location.href = '/relat_rios_gerais_master.html'));
 
@@ -1544,10 +1672,9 @@
     async clientesMaster() {
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando clientes...');
-      const { res, data } = await api.request('/admin/users-report', {}, { notify: false });
-      if (!res.ok) return ui.setPageState('error', 'Endpoint /admin/users-report indisponível ou bloqueado.');
-      const raw = data?.data ?? data ?? [];
-      const lista = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
+      const usersDataset = await this.loadUsersDataset();
+      if (!usersDataset.ok) return ui.setPageState('error', 'Endpoint de usuarios indisponivel.');
+      const lista = usersDataset.list;
       const clientes = lista.filter((u) => (u.perfil || u.role || '').toString().toLowerCase().includes('cliente'));
 
       const tbody = document.getElementById('adminClientesTable');
@@ -1574,7 +1701,7 @@
           const el = document.getElementById(id);
           if (el) el.textContent = val;
         };
-        set('adminClientesTotal', total || '--');
+        set('adminClientesTotal', Number(total || 0).toLocaleString('pt-BR'));
         set('adminClientesCrescimento', total ? `${ativos} ativos` : '');
         set('adminClientesMediaPontos', pts.length ? `${media} pts` : '--');
         const bar = document.getElementById('adminClientesMediaBar');
@@ -1630,60 +1757,85 @@
 
     async relatorios() {
       if (!(await auth.guard(['admin']))) return;
-      ui.setPageState('loading', 'Carregando relatórios...');
-      const [stats, checkins] = await Promise.all([
+      ui.setPageState('loading', 'Carregando relatorios...');
+
+      const usersDataset = await this.loadUsersDataset();
+      const [stats, checkins, empresasResp] = await Promise.all([
         api.request('/admin/dashboard-stats', {}, { notify: false }),
         api.request('/admin/pontos/estatisticas', {}, { notify: false }),
+        api.request('/empresas', {}, { requireAuth: false, notify: false }),
       ]);
       ui.clearPageState();
-      if (!stats.res.ok) ui.message(stats.data?.message || 'Falha ao carregar estatisticas gerais.', 'error');
-      if (!checkins.res.ok) ui.message(checkins.data?.message || 'Falha ao carregar estatisticas de pontos.', 'error');
 
-      const dataStats = stats.data?.data || stats.data || {};
+      const statsData = stats.data?.data || stats.data || {};
+      const totals = statsData?.totais || {};
+      const usersList = usersDataset.ok ? usersDataset.list : [];
+      const usersPayload = { total: usersList.length };
+      const empresasList = toArray(empresasResp.data?.data || empresasResp.data);
+      const checkData = checkins.data?.data || checkins.data || {};
+
+      const totalEmpresas = toNumber(totals.empresas, statsData.empresas, statsData.total_empresas, empresasList.length);
+      const totalUsuarios = toNumber(totals.usuarios, statsData.usuarios, statsData.total_users, usersPayload.total, usersList.length);
+      const totalClientes = toNumber(
+        statsData.clientes,
+        usersList.filter((u) => (u?.perfil || u?.role || '').toString().toLowerCase().includes('cliente')).length
+      );
+      const totalPromocoes = toNumber(totals.campanhas, statsData.promocoes, statsData.campanhas);
+      const totalResgates = toNumber(totals.resgates, statsData.resgates);
+      const totalVolume = toNumber(totals.volume, statsData.volume);
+
       const setText = (id, val) => {
         const el = document.getElementById(id);
         if (el) el.textContent = val;
       };
 
-      const cardsFilled =
-        setText('relEmpresas', dataStats.empresas ?? '--') |
-        setText('relClientes', dataStats.clientes ?? '--') |
-        setText('relPromocoes', dataStats.promocoes ?? '--') |
-        setText('relResgates', dataStats.resgates ?? '--') |
-        setText('relVolume', dataStats.volume ?? '--') |
-        setText('relCrescimento', dataStats.crescimento_texto ?? '');
+      setText('relEmpresas', Number(totalEmpresas || 0).toLocaleString('pt-BR'));
+      setText('relClientes', Number((totalClientes || totalUsuarios || 0)).toLocaleString('pt-BR'));
+      setText('relPromocoes', Number(totalPromocoes || 0).toLocaleString('pt-BR'));
+      setText('relResgates', Number(totalResgates || 0).toLocaleString('pt-BR'));
+      setText('relVolume', `R$ ${Number(totalVolume || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      setText('relCrescimento', safeText(statsData.crescimento_texto, 'Dados consolidados dos uultimos 30 dias'));
 
       const relStatsList = document.getElementById('relStatsList');
       if (relStatsList) {
+        const resumo = {
+          usuarios: totalUsuarios,
+          clientes: totalClientes,
+          empresas: totalEmpresas,
+          promocoes: totalPromocoes,
+          resgates: totalResgates,
+          volume: totalVolume,
+        };
         relStatsList.innerHTML = '';
-        Object.entries(dataStats).forEach(([k, v]) => {
+        Object.entries(resumo).forEach(([k, v]) => {
           const li = document.createElement('div');
           li.className = 'flex items-center justify-between px-4 py-2 rounded-lg bg-surface-container-low';
-          li.innerHTML = `<span class="text-sm font-semibold capitalize">${k.replace(/_/g, ' ')}</span><span class="text-sm font-bold text-primary">${typeof v === 'number' ? v : v ?? '--'}</span>`;
+          const value = k === 'volume'
+            ? `R$ ${Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+            : (v ? Number(v).toLocaleString('pt-BR') : '--');
+          li.innerHTML = `<span class="text-sm font-semibold capitalize">${k.replace(/_/g, ' ')}</span><span class="text-sm font-bold text-primary">${value}</span>`;
           relStatsList.appendChild(li);
         });
-        if (!Object.keys(dataStats).length) {
-          relStatsList.innerHTML = '<p class="text-sm text-on-surface-variant">Sem dados de relatório.</p>';
-        }
-      } else if (!cardsFilled && !Object.keys(dataStats).length) {
-        render.section('Dashboard', '<p class="text-sm text-on-surface-variant">Sem dados de relatório.</p>');
       }
 
       const relCheckinsList = document.getElementById('relCheckinsList');
-      const checkData = checkins.data?.data || checkins.data || {};
       if (relCheckinsList) {
         relCheckinsList.innerHTML = '';
-        Object.entries(checkData).forEach(([k, v]) => {
-          const row = document.createElement('div');
-          row.className = 'flex items-center justify-between px-4 py-2 rounded-lg bg-surface-container-low';
-          row.innerHTML = `<span class="text-sm font-semibold capitalize">${k.replace(/_/g, ' ')}</span><span class="text-sm font-bold text-tertiary">${v}</span>`;
-          relCheckinsList.appendChild(row);
-        });
-        if (!Object.keys(checkData).length) {
-          relCheckinsList.innerHTML = '<p class="text-sm text-on-surface-variant">Sem estatísticas de pontos disponíveis.</p>';
+        const entries = Object.entries(checkData || {});
+        if (!entries.length) {
+          relCheckinsList.innerHTML = '<p class="text-sm text-on-surface-variant">Sem estatisticas de pontos disponiveis.</p>';
+        } else {
+          entries.forEach(([k, v]) => {
+            const row = document.createElement('div');
+            row.className = 'flex items-center justify-between px-4 py-2 rounded-lg bg-surface-container-low';
+            row.innerHTML = `<span class="text-sm font-semibold capitalize">${k.replace(/_/g, ' ')}</span><span class="text-sm font-bold text-tertiary">${Number(v || 0).toLocaleString('pt-BR')}</span>`;
+            relCheckinsList.appendChild(row);
+          });
         }
-      } else if (!Object.keys(checkData).length) {
-        ui.message('Sem estatísticas de pontos disponíveis.', 'warning');
+      }
+
+      if (!stats.res.ok && !checkins.res.ok && !empresasResp.res.ok && !usersDataset.ok) {
+        ui.setPageState('error', 'Nao foi possivel carregar os relatorios.');
       }
     },
   };
@@ -1719,7 +1871,7 @@
       } else {
         ui.clearPageState();
         console.error('LOGIN_SUBMIT_FAIL', JSON.stringify({ status: res.status, payload: data }, null, 2));
-        ui.message(data?.message || payload?.message || 'Não foi possível entrar.', 'error');
+        ui.message(data?.message || payload?.message || 'No foi possvel entrar.', 'error');
       }
     });
   }
@@ -1925,7 +2077,7 @@
           }
 
           bannersSection.querySelector('#novoBannerBtn')?.addEventListener('click', async () => {
-            const title = window.prompt('Título do banner:');
+            const title = window.prompt('Ttulo do banner:');
             if (!title) return;
             const image_url = window.prompt('URL da imagem:') || '';
             const link = window.prompt('Link do banner:') || '';
@@ -1957,7 +2109,7 @@
               const id = btn.getAttribute('data-id');
               const item = banners.find((b) => String(b.id) === String(id));
               if (!item) return;
-              const title = window.prompt('Título do banner:', item.title || '');
+              const title = window.prompt('Ttulo do banner:', item.title || '');
               if (!title) return;
               const image_url = window.prompt('URL da imagem:', item.image_url || '') || '';
               const link = window.prompt('Link:', item.link || '') || '';
@@ -2081,7 +2233,7 @@
       try {
         await renderContent();
       } catch (err) {
-        if (status) status.textContent = 'Erro ao carregar conteúdo.';
+        if (status) status.textContent = 'Erro ao carregar conteudo.';
         ui.message('Erro ao carregar banners/categorias.', 'error');
       }
     },
@@ -2090,11 +2242,6 @@
   document.addEventListener('DOMContentLoaded', async () => {
     wireFallbackLinks();
     const handler = handlers[page];
-    // Autoregistrar push em paginas logadas principais
-    const loggedPages = ['meus_pontos', 'dashboard_parceiro', 'dashboard_admin_master'];
-    if (loggedPages.includes(page)) {
-      push.register().catch(() => {});
-    }
     if (handler) {
       try {
         await handler();

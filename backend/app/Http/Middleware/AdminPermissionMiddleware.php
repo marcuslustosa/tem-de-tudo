@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\AuditLog;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\AuditLog;
 
 class AdminPermissionMiddleware
 {
@@ -22,22 +22,25 @@ class AdminPermissionMiddleware
     {
         $user = $request->get('authenticated_user') ?? $request->user();
 
-        if (!$user || !method_exists($user, 'hasPermission')) {
-            AuditLog::logEvent('permission_denied', $user->id ?? null, $request, 'Acesso negado - usuário não é admin');
+        if (!$user) {
+            AuditLog::logEvent('permission_denied', null, $request, 'Acesso negado - usuario nao autenticado');
             return response()->json(['success' => false, 'message' => 'Acesso negado'], 403);
         }
 
-        // Super admin tem todas as permissões
+        // Super admin e perfis administrativos podem acessar sem bloqueio adicional.
         if (($user->role ?? null) === 'super_admin' || $this->isAdminPerfil($user->perfil ?? null)) {
             return $next($request);
         }
 
-        if (!empty($permissions)) {
-            foreach ($permissions as $permission) {
-                if (!$user->hasPermission($permission)) {
-                    AuditLog::logEvent('permission_denied', $user->id, $request, "Permissão negada: {$permission}");
-                    return response()->json(['success' => false, 'message' => "Permissão negada para: {$permission}"], 403);
-                }
+        if (!method_exists($user, 'hasPermission')) {
+            AuditLog::logEvent('permission_denied', $user->id ?? null, $request, 'Acesso negado - metodo hasPermission indisponivel');
+            return response()->json(['success' => false, 'message' => 'Acesso negado'], 403);
+        }
+
+        foreach ($permissions as $permission) {
+            if (!$user->hasPermission($permission)) {
+                AuditLog::logEvent('permission_denied', $user->id, $request, "Permissao negada: {$permission}");
+                return response()->json(['success' => false, 'message' => "Permissao negada para: {$permission}"], 403);
             }
         }
 

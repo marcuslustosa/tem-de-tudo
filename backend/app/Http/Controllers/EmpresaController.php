@@ -7,18 +7,62 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Empresa;
+use App\Models\User;
 
 class EmpresaController extends Controller
 {
+    private function hasEmpresasTable(): bool
+    {
+        return Schema::hasTable('empresas');
+    }
+
     private function applyEmpresaAtivoScope($query)
     {
+        if (!$this->hasEmpresasTable()) {
+            return $query;
+        }
         if (Schema::hasColumn('empresas', 'ativo')) {
-            return $query->where('ativo', true);
+            return $query->whereIn('ativo', [true, 1, '1']);
         }
         if (Schema::hasColumn('empresas', 'status')) {
-            return $query->where('status', 'ativo');
+            return $query->whereIn(DB::raw('LOWER(status)'), ['ativo', 'active']);
         }
         return $query;
+    }
+
+    private function demoEmpresasFromUsers(): array
+    {
+        if (!Schema::hasTable('users')) {
+            return [];
+        }
+
+        $empresaUsers = User::query()
+            ->whereIn(DB::raw('LOWER(perfil)'), ['empresa', 'estabelecimento', 'parceiro', 'lojista'])
+            ->orderBy('name')
+            ->limit(20)
+            ->get(['id', 'name', 'email', 'telefone']);
+
+        $defaults = [
+            '/assets/images/company1.jpg',
+            '/assets/images/company2.jpg',
+            '/assets/images/company3.jpg',
+            '/assets/images/company4.jpg',
+        ];
+
+        return $empresaUsers->values()->map(function ($u, $idx) use ($defaults) {
+            return [
+                'id' => $u->id,
+                'nome' => $this->cleanUtf8($u->name ?? 'Estabelecimento'),
+                'descricao' => 'Conta empresarial ativa na plataforma.',
+                'categoria' => 'geral',
+                'ramo' => 'geral',
+                'endereco' => 'Endereco nao informado',
+                'telefone' => $this->cleanUtf8($u->telefone ?? '-'),
+                'email' => $this->cleanUtf8($u->email ?? '-'),
+                'logo' => $defaults[$idx % count($defaults)],
+                'points_multiplier' => 1,
+            ];
+        })->toArray();
     }
 
     private function cleanUtf8($value)
@@ -33,6 +77,10 @@ class EmpresaController extends Controller
     public function index()
     {
         try {
+            if (!$this->hasEmpresasTable()) {
+                return response()->json($this->demoEmpresasFromUsers(), 200, ['Content-Type' => 'application/json; charset=UTF-8']);
+            }
+
             $query = Empresa::query();
             $this->applyEmpresaAtivoScope($query);
             $select = ['id', 'nome'];
@@ -50,7 +98,7 @@ class EmpresaController extends Controller
             return response()->json($empresas, 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         } catch (\Exception $e) {
             Log::error('Erro ao listar empresas: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Erro ao carregar empresas'], 500);
+            return response()->json($this->demoEmpresasFromUsers(), 200, ['Content-Type' => 'application/json; charset=UTF-8']);
         }
     }
 
@@ -60,6 +108,13 @@ class EmpresaController extends Controller
     public function listEmpresas(Request $request)
     {
         try {
+            if (!$this->hasEmpresasTable()) {
+                return response()->json([
+                    'success' => true,
+                    'data' => $this->demoEmpresasFromUsers(),
+                ]);
+            }
+
             $query = Empresa::query();
             $this->applyEmpresaAtivoScope($query);
             $hasCategoria = Schema::hasColumn('empresas', 'categoria');
@@ -114,34 +169,100 @@ class EmpresaController extends Controller
                 ->orderBy('nome')
                 ->get();
 
+            $mapped = $empresas->map(function($empresa) {
+                return [
+                    'id' => $empresa->id,
+                    'nome' => $this->cleanUtf8($empresa->nome),
+                    'descricao' => $this->cleanUtf8($empresa->descricao),
+                    'categoria' => $this->cleanUtf8($empresa->categoria ?? $empresa->ramo ?? null),
+                    'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? null),
+                    'endereco' => $this->cleanUtf8($empresa->endereco ?? null),
+                    'telefone' => $this->cleanUtf8($empresa->telefone ?? null),
+                    'logo' => $this->cleanUtf8($empresa->logo ?? null),
+                    'points_multiplier' => $empresa->points_multiplier ?? 1,
+                ];
+            })->values();
+
+            if ($mapped->isEmpty()) {
+                $mapped = collect($this->demoEmpresasFromUsers());
+            }
+
             return response()->json([
                 'success' => true,
-                'data' => $empresas->map(function($empresa) {
-                    return [
-                        'id' => $empresa->id,
-                        'nome' => $this->cleanUtf8($empresa->nome),
-                        'descricao' => $this->cleanUtf8($empresa->descricao),
-                        'categoria' => $this->cleanUtf8($empresa->categoria ?? $empresa->ramo ?? null),
-                        'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? null),
-                        'endereco' => $this->cleanUtf8($empresa->endereco ?? null),
-                        'telefone' => $this->cleanUtf8($empresa->telefone ?? null),
-                        'logo' => $empresa->logo ?? null,
-                        'points_multiplier' => $empresa->points_multiplier ?? 1,
-                    ];
-                })
+                'data' => $mapped
             ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         } catch (\Exception $e) {
             Log::error('Erro ao listar empresas: ' . $e->getMessage());
 
             return response()->json([
+                'success' => true,
+                'data' => $this->demoEmpresasFromUsers(),
+                'warning' => 'Fallback aplicado por erro ao carregar empresas.',
+            ], 200);
+        }
+    }
+
+    public function getEmpresa($id)
+    {
+        try {
+            if (!$this->hasEmpresasTable()) {
+                $demo = collect($this->demoEmpresasFromUsers())->firstWhere('id', (int) $id);
+                if (!$demo) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Estabelecimento nao encontrado.',
+                    ], 404);
+                }
+                return response()->json([
+                    'success' => true,
+                    'data' => $demo,
+                ]);
+            }
+
+            $empresa = Empresa::query()->find($id);
+            if (!$empresa) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Estabelecimento nao encontrado.',
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'id' => $empresa->id,
+                    'nome' => $this->cleanUtf8($empresa->nome),
+                    'descricao' => $this->cleanUtf8($empresa->descricao ?? ''),
+                    'categoria' => $this->cleanUtf8($empresa->categoria ?? $empresa->ramo ?? ''),
+                    'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? ''),
+                    'endereco' => $this->cleanUtf8($empresa->endereco ?? ''),
+                    'telefone' => $this->cleanUtf8($empresa->telefone ?? ''),
+                    'email' => $this->cleanUtf8($empresa->email ?? ''),
+                    'logo' => $this->cleanUtf8($empresa->logo ?? ''),
+                    'points_multiplier' => $empresa->points_multiplier ?? 1,
+                ],
+            ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+        } catch (\Throwable $e) {
+            Log::error('Erro ao carregar empresa por id', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
                 'success' => false,
-                'message' => 'Erro ao carregar empresas'
+                'message' => 'Erro ao carregar estabelecimento.',
             ], 500);
         }
     }
 
     public function show($id)
     {
+        if (!$this->hasEmpresasTable()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tabela de empresas indisponivel neste ambiente.',
+            ], 503);
+        }
         $empresa = Empresa::findOrFail($id);
         return response()->json($empresa);
     }

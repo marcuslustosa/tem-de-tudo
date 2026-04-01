@@ -304,6 +304,7 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->g
     Route::get('/dashboard-stats', [AdminReportController::class, 'dashboardStats']);
     Route::get('/recent-activity', [AdminReportController::class, 'recentActivity']);
     Route::get('/users-report', [AdminReportController::class, 'getUsersReport']);
+    Route::get('/pontos/estatisticas', [PontosController::class, 'estatisticas']);
     Route::get('/content', [AdminContentController::class, 'index']);
     Route::post('/content/banners', [AdminContentController::class, 'storeBanner']);
     Route::put('/content/banners/{banner}', [AdminContentController::class, 'updateBanner']);
