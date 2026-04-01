@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -8,19 +8,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     /**
-     * Registrar novo usuário
+     * Registro de usuario (API legacy compativel com nome/senha e name/password).
      */
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'nome' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'senha' => 'required|string|min:6',
+        $payload = [
+            'name' => $request->input('name', $request->input('nome')),
+            'email' => $request->input('email'),
+            'password' => $request->input('password', $request->input('senha')),
+            'cpf' => $request->input('cpf'),
+            'telefone' => $request->input('telefone'),
+            'data_nascimento' => $request->input('data_nascimento'),
+            'perfil' => $request->input('perfil', 'cliente'),
+        ];
+
+        $validator = Validator::make($payload, [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6',
             'cpf' => 'nullable|string|max:14',
             'telefone' => 'nullable|string|max:20',
             'data_nascimento' => 'nullable|date',
@@ -30,20 +39,20 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $validator->errors()
+                'message' => 'Dados invalidos.',
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         try {
             $user = User::create([
-                'name' => $request->nome,
-                'email' => $request->email,
-                'password' => Hash::make($request->senha),
-                'cpf' => $request->cpf,
-                'telefone' => $request->telefone,
-                'data_nascimento' => $request->data_nascimento,
-                'perfil' => $request->perfil ?? 'cliente',
+                'name' => $payload['name'],
+                'email' => $payload['email'],
+                'password' => Hash::make($payload['password']),
+                'cpf' => $payload['cpf'],
+                'telefone' => $payload['telefone'],
+                'data_nascimento' => $payload['data_nascimento'],
+                'perfil' => $payload['perfil'] ?? 'cliente',
                 'status' => 'ativo',
                 'pontos' => 0,
                 'nivel' => 'Bronze',
@@ -54,67 +63,56 @@ class AuthController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Cadastro realizado com sucesso!',
-                'data' => [
-                    'token' => $token,
-                    'user' => [
-                        'id' => $user->id,
-                        'nome' => $user->name,
-                        'email' => $user->email,
-                        'cpf' => $user->cpf,
-                        'telefone' => $user->telefone,
-                        'data_nascimento' => $user->data_nascimento,
-                        'perfil' => $user->perfil,
-                        'pontos' => $user->pontos,
-                        'nivel' => $user->nivel,
-                        'foto_url' => $user->foto_url,
-                    ]
-                ]
+                'token' => $token,
+                'user' => $this->serializeUser($user),
             ], 201);
+        } catch (\Throwable $e) {
+            report($e);
 
-        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao criar usuário: ' . $e->getMessage()
+                'message' => 'Erro ao criar usuario.',
             ], 500);
         }
     }
 
     /**
-     * Login de usuário
+     * Login (compativel com password e senha) com contrato plano.
      */
     public function login(Request $request)
     {
+        $payload = [
+            'email' => $request->input('email'),
+            'password' => $request->input('password', $request->input('senha')),
+        ];
+
+        $validator = Validator::make($payload, [
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dados invalidos.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
         try {
-            // Aceita senha tanto em "senha" quanto em "password" (frontend envia password)
-            $payload = $request->all();
-            $payload['password'] = $payload['password'] ?? $payload['senha'] ?? null;
-
-            $validator = Validator::make($payload, [
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Dados inválidos',
-                    'errors' => $validator->errors()
-                ], 422);
-            }
-
             $user = User::where('email', $payload['email'])->first();
 
             if (!$user || !Hash::check($payload['password'], $user->password)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Email ou senha incorretos'
+                    'message' => 'Email ou senha incorretos.',
                 ], 401);
             }
 
-            if ($user->status !== 'ativo') {
+            if (($user->status ?? 'ativo') !== 'ativo') {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Usuário inativo. Entre em contato com o suporte.'
+                    'message' => 'Usuario inativo. Entre em contato com o suporte.',
                 ], 403);
             }
 
@@ -126,32 +124,21 @@ class AuthController extends Controller
                 $updateData['ip_ultimo_login'] = $request->ip();
             }
             if (!empty($updateData)) {
-                $user->update($updateData);
+                $user->forceFill($updateData)->save();
             }
 
             $user->tokens()->delete();
-
             $token = $user->createToken('auth_token')->plainTextToken;
 
             return response()->json([
                 'success' => true,
                 'message' => 'Login realizado com sucesso!',
                 'token' => $token,
-                'user' => [
-                    'id' => $user->id,
-                    'nome' => $user->name,
-                    'email' => $user->email,
-                    'cpf' => $user->cpf,
-                    'telefone' => $user->telefone,
-                    'data_nascimento' => $user->data_nascimento,
-                    'perfil' => $user->perfil,
-                    'pontos' => $user->pontos,
-                    'nivel' => $user->nivel,
-                    'foto_url' => $user->foto_url,
-                ]
+                'user' => $this->serializeUser($user),
             ], 200);
         } catch (\Throwable $e) {
             report($e);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Erro interno ao autenticar.',
@@ -159,54 +146,51 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * Logout
-     */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->user()?->currentAccessToken()?->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Logout realizado com sucesso'
+            'message' => 'Logout realizado com sucesso.',
         ]);
     }
 
-    /**
-     * Obter usuário autenticado
-     */
     public function me(Request $request)
     {
         $user = $request->user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao autenticado.',
+            ], 401);
+        }
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'user' => [
-                    'id' => $user->id,
-                    'nome' => $user->name,
-                    'email' => $user->email,
-                    'cpf' => $user->cpf,
-                    'telefone' => $user->telefone,
-                    'data_nascimento' => $user->data_nascimento,
-                    'perfil' => $user->perfil,
-                    'pontos' => $user->pontos,
-                    'nivel' => $user->nivel,
-                    'foto_url' => $user->foto_url,
-                ]
-            ]
+            'user' => $this->serializeUser($user),
         ]);
     }
 
-    /**
-     * Atualizar perfil
-     */
     public function updateProfile(Request $request)
     {
         $user = $request->user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao autenticado.',
+            ], 401);
+        }
 
-        $validator = Validator::make($request->all(), [
-            'nome' => 'sometimes|string|max:255',
+        $payload = [
+            'name' => $request->input('name', $request->input('nome')),
+            'email' => $request->input('email'),
+            'telefone' => $request->input('telefone'),
+            'data_nascimento' => $request->input('data_nascimento'),
+        ];
+
+        $validator = Validator::make($payload, [
+            'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:users,email,' . $user->id,
             'telefone' => 'nullable|string|max:20',
             'data_nascimento' => 'nullable|date',
@@ -215,91 +199,107 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $validator->errors()
+                'message' => 'Dados invalidos.',
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         try {
-            $user->update([
-                'name' => $request->nome ?? $user->name,
-                'email' => $request->email ?? $user->email,
-                'telefone' => $request->telefone ?? $user->telefone,
-                'data_nascimento' => $request->data_nascimento ?? $user->data_nascimento,
-            ]);
+            $user->fill(array_filter([
+                'name' => $payload['name'],
+                'email' => $payload['email'],
+                'telefone' => $payload['telefone'],
+                'data_nascimento' => $payload['data_nascimento'],
+            ], static fn ($v) => $v !== null));
+            $user->save();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Perfil atualizado com sucesso!',
-                'data' => [
-                    'user' => [
-                        'id' => $user->id,
-                        'nome' => $user->name,
-                        'email' => $user->email,
-                        'cpf' => $user->cpf,
-                        'telefone' => $user->telefone,
-                        'data_nascimento' => $user->data_nascimento,
-                        'perfil' => $user->perfil,
-                        'pontos' => $user->pontos,
-                        'nivel' => $user->nivel,
-                        'foto_url' => $user->foto_url,
-                    ]
-                ]
+                'user' => $this->serializeUser($user),
             ]);
+        } catch (\Throwable $e) {
+            report($e);
 
-        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao atualizar perfil: ' . $e->getMessage()
+                'message' => 'Erro ao atualizar perfil.',
             ], 500);
         }
     }
 
-    /**
-     * Alterar senha
-     */
     public function changePassword(Request $request)
     {
         $user = $request->user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao autenticado.',
+            ], 401);
+        }
 
-        $validator = Validator::make($request->all(), [
-            'senha_atual' => 'required',
-            'nova_senha' => 'required|string|min:6|different:senha_atual',
+        $payload = [
+            'current_password' => $request->input('current_password', $request->input('senha_atual')),
+            'new_password' => $request->input('password', $request->input('nova_senha')),
+            'password_confirmation' => $request->input('password_confirmation', $request->input('nova_senha_confirmacao')),
+        ];
+
+        $validator = Validator::make($payload, [
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:6|different:current_password|confirmed',
+        ], [], [
+            'new_password' => 'password',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $validator->errors()
+                'message' => 'Dados invalidos.',
+                'errors' => $validator->errors(),
             ], 422);
         }
 
-        if (!Hash::check($request->senha_atual, $user->password)) {
+        if (!Hash::check($payload['current_password'], $user->password)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Senha atual incorreta'
+                'message' => 'Senha atual incorreta.',
             ], 401);
         }
 
         try {
-            $user->update([
-                'password' => Hash::make($request->nova_senha)
-            ]);
-
-            // Revoga todos os tokens
+            $user->password = Hash::make($payload['new_password']);
+            $user->save();
             $user->tokens()->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Senha alterada com sucesso! Faça login novamente.'
+                'message' => 'Senha alterada com sucesso. Faca login novamente.',
             ]);
+        } catch (\Throwable $e) {
+            report($e);
 
-        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao alterar senha: ' . $e->getMessage()
+                'message' => 'Erro ao alterar senha.',
             ], 500);
         }
+    }
+
+    private function serializeUser(User $user): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'nome' => $user->name,
+            'email' => $user->email,
+            'cpf' => $user->cpf,
+            'telefone' => $user->telefone,
+            'data_nascimento' => $user->data_nascimento,
+            'perfil' => $user->perfil,
+            'pontos' => $user->pontos,
+            'nivel' => $user->nivel,
+            'foto_url' => $user->foto_url,
+            'status' => $user->status,
+        ];
     }
 }

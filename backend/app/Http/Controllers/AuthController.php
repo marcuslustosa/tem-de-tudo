@@ -292,6 +292,11 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        // Compatibilidade: frontend usa "password", alguns clientes legados ainda enviam "senha".
+        if (!$request->filled('password') && $request->filled('senha')) {
+            $request->merge(['password' => $request->input('senha')]);
+        }
+
         Log::info('=== INÍCIO DO LOGIN ===', [
             'ip' => $request->ip(),
             'user_agent' => $request->userAgent(),
@@ -391,13 +396,9 @@ class AuthController extends Controller
                 'message' => 'Login realizado com sucesso!',
                 'token' => $token,
                 'user' => $resolvedUser,
-                'data' => [
-                    'user' => $resolvedUser,
-                    'token' => $token,
-                    'token_type' => 'Bearer',
-                    'expires_in' => 60 * 60, // 1 hora em segundos
-                    'redirect_to' => $this->getRedirectUrlForPerfil($user->perfil)
-                ]
+                'token_type' => 'Bearer',
+                'expires_in' => 60 * 60, // 1 hora em segundos
+                'redirect_to' => $this->getRedirectUrlForPerfil($user->perfil),
             ];
 
             Log::info('Login realizado com sucesso', [
