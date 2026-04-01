@@ -179,6 +179,23 @@ class DatabaseSeeder extends Seeder
             );
         }
 
+        // Usuarios empresa adicionais para garantir base demo robusta
+        $companyOwners = [$empresaUser];
+        for ($i = 1; $i <= 10; $i++) {
+            $companyOwners[] = User::updateOrCreate(
+                ['email' => "empresa_demo{$i}@teste.com"],
+                [
+                    'name' => "Empresa Demo {$i}",
+                    'password' => Hash::make('123456'),
+                    'perfil' => 'empresa',
+                    'status' => 'ativo',
+                    'telefone' => sprintf('(11) 9%04d-%04d', 5000 + $i, 6000 + $i),
+                    'pontos' => 0,
+                    'email_verified_at' => $now,
+                ]
+            );
+        }
+
         // Empresas extras para listagem
         $empresas = [
             ['nome' => 'Restaurante Sabor & Arte', 'ramo' => 'restaurante', 'descricao' => 'Restaurante contemporaneo.'],
@@ -189,14 +206,21 @@ class DatabaseSeeder extends Seeder
             ['nome' => 'Mercado Bom Preco', 'ramo' => 'mercado', 'descricao' => 'Ofertas diarias.'],
             ['nome' => 'Farmacia Saude Mais', 'ramo' => 'farmacia', 'descricao' => 'Farmacia completa.'],
             ['nome' => 'Padaria Pao Quentinho', 'ramo' => 'padaria', 'descricao' => 'Paes frescos diarios.'],
+            ['nome' => 'Carrefour Bairro Paulista', 'ramo' => 'mercado', 'descricao' => 'Unidade de bairro com programa de fidelidade ativo.'],
+            ['nome' => 'Pao de Acucar Jardins', 'ramo' => 'mercado', 'descricao' => 'Mercado premium com beneficios para clientes recorrentes.'],
+            ['nome' => 'Droga Raia Centro', 'ramo' => 'farmacia', 'descricao' => 'Rede de farmacia com ofertas personalizadas.'],
+            ['nome' => 'Cacau Show Vila Nova', 'ramo' => 'doceria', 'descricao' => 'Loja de chocolates com campanhas sazonais.'],
+            ['nome' => 'Smart Fit Paulista Norte', 'ramo' => 'academia', 'descricao' => 'Academia com plano de pontos por frequencia.'],
+            ['nome' => 'O Boticario Shopping Sul', 'ramo' => 'beleza', 'descricao' => 'Cosmeticos e campanhas de cashback.'],
         ];
 
         foreach ($empresas as $idx => $empresa) {
             $logo = $logos[$idx % count($logos)];
+            $owner = $companyOwners[$idx % count($companyOwners)];
             $this->upsert('empresas',
                 ['nome' => $empresa['nome']],
                 [
-                    'owner_id' => $empresaUser->id,
+                    'owner_id' => $owner->id,
                     'nome' => $empresa['nome'],
                     'ramo' => $empresa['ramo'],
                     'descricao' => $empresa['descricao'],
@@ -249,6 +273,26 @@ class DatabaseSeeder extends Seeder
                         'visualizacoes' => 11,
                         'resgates' => 1,
                         'usos' => 0,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]
+                );
+
+                $this->upsert('promocoes',
+                    ['empresa_id' => $empresaId, 'titulo' => 'Combo fidelidade'],
+                    [
+                        'empresa_id' => $empresaId,
+                        'titulo' => 'Combo fidelidade',
+                        'descricao' => 'Compre 2 itens selecionados e acumule pontos extras.',
+                        'desconto' => 8,
+                        'imagem' => $logo,
+                        'data_inicio' => $now->copy()->subDays(3),
+                        'validade' => $now->copy()->addDays(25),
+                        'ativo' => true,
+                        'status' => 'ativa',
+                        'visualizacoes' => 22,
+                        'resgates' => 2,
+                        'usos' => 1,
                         'created_at' => $now,
                         'updated_at' => $now,
                     ]
@@ -326,6 +370,27 @@ class DatabaseSeeder extends Seeder
                 'payload' => ['origin' => 'seed'],
             ]
         );
+
+        if (Schema::hasTable('audit_logs')) {
+            DB::table('audit_logs')->where('details', 'like', '%[SEED]%')->delete();
+            foreach ([
+                ['action' => 'user_login', 'user_id' => $cliente->id, 'details' => '[SEED] Login cliente'],
+                ['action' => 'user_login', 'user_id' => $empresaUser->id, 'details' => '[SEED] Login empresa'],
+                ['action' => 'admin_login', 'user_id' => $admin->id, 'details' => '[SEED] Login admin'],
+                ['action' => 'cupom_resgatado', 'user_id' => $cliente->id, 'details' => '[SEED] Resgate promocional'],
+                ['action' => 'empresa_criada', 'user_id' => $admin->id, 'details' => '[SEED] Nova empresa aprovada'],
+            ] as $idx => $row) {
+                DB::table('audit_logs')->insert($this->filterColumns('audit_logs', [
+                    'user_id' => $row['user_id'],
+                    'admin_id' => $admin->id,
+                    'action' => $row['action'],
+                    'ip_address' => '127.0.0.1',
+                    'user_agent' => 'seed-script',
+                    'details' => $row['details'],
+                    'created_at' => $now->copy()->subMinutes(20 - ($idx * 3)),
+                ]));
+            }
+        }
 
         // Conteudo admin
         if (Schema::hasTable('categorias')) {

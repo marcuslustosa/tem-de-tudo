@@ -106,6 +106,7 @@ Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 // Empresas (leitura pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblica)
 Route::get('/empresas', [EmpresaController::class, 'listEmpresas']);
 Route::get('/empresas/{id}', [EmpresaController::class, 'getEmpresa']);
+Route::get('/empresas/{id}/promocoes', [EmpresaController::class, 'getEmpresaPromocoes']);
 
 // Produtos das empresas (leitura pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblica) 
 Route::get('/empresas/{empresaId}/produtos', [ProdutoController::class, 'index']);

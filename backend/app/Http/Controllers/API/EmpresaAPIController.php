@@ -187,7 +187,7 @@ class EmpresaAPIController extends Controller
             'data_inicio' => 'nullable|date',
             'validade' => 'nullable|date|after_or_equal:data_inicio',
             'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'imagem_url' => 'nullable|url'
+            'imagem_url' => 'nullable|string|max:2048'
         ]);
         
         $user = Auth::user();
@@ -257,7 +257,7 @@ class EmpresaAPIController extends Controller
             'data_inicio' => 'nullable|date',
             'validade' => 'nullable|date|after_or_equal:data_inicio',
             'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'imagem_url' => 'nullable|url'
+            'imagem_url' => 'nullable|string|max:2048'
         ]);
         
         $user = Auth::user();

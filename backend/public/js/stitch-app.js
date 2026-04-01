@@ -293,7 +293,9 @@
     if (text.includes('perfil') || text.includes('conta')) return '/meu_perfil.html';
     if (text.includes('suporte')) return '__support__';
     if (text.includes('novo parceiro') || text.includes('novo estabelecimento')) {
-      return scope === 'admin' ? '/gest_o_de_estabelecimentos.html' : '/gest_o_de_ofertas_parceiro.html';
+      if (scope === 'admin') return '/criar_conta.html?tipo=empresa&origem=admin';
+      if (scope === 'empresa') return '/criar_conta.html?tipo=empresa&origem=empresa';
+      return '/criar_conta.html?tipo=empresa';
     }
     if (text.includes('ver todas') || text.includes('ver todos')) {
       return scope === 'admin' ? '/relat_rios_gerais_master.html' : '/gest_o_de_ofertas_parceiro.html';
@@ -340,6 +342,36 @@
         btn.dataset.boundAction = '1';
         btn.addEventListener('click', go(target));
       }
+    });
+  }
+
+  function normalizeBrandingVisuals() {
+    const logoHtml = '<img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src=\'/img/logo.png.png\';">';
+    const brandTexts = ['tem de tudo admin', 'admin master', 'radiant admin', 'tudo vibrante admin'];
+
+    document.querySelectorAll('header span, header h1, header h2, aside span, aside h1, aside h2').forEach((el) => {
+      const text = safeText(el.textContent).toLowerCase();
+      if (!brandTexts.includes(text)) return;
+      if (el.dataset.brandPatched === '1') return;
+      el.dataset.brandPatched = '1';
+      el.classList.add('inline-flex', 'items-center');
+      el.innerHTML = logoHtml;
+    });
+
+    document.querySelectorAll('header div, aside div').forEach((el) => {
+      const text = safeText(el.textContent);
+      if (text !== 'T') return;
+      const cls = el.className || '';
+      if (!/(w-10|w-9|w-8)/.test(cls) || !/(h-10|h-9|h-8)/.test(cls)) return;
+      if (el.dataset.brandPatched === '1') return;
+      el.dataset.brandPatched = '1';
+      el.innerHTML = '<img src="/img/logo.png" alt="Tem de Tudo" class="h-6 w-auto" onerror="this.onerror=null;this.src=\'/img/logo.png.png\';">';
+    });
+
+    document.querySelectorAll('p, span, h1, h2, h3').forEach((el) => {
+      const current = el.textContent || '';
+      if (!current.includes('Tem de Tudo Admin')) return;
+      el.textContent = current.replace(/Tem de Tudo Admin/g, 'Tem de Tudo');
     });
   }
 
@@ -411,7 +443,7 @@
 
   // ---------------------- API ---------------------- //
   const api = (() => {
-    async function request(path, options = {}, { requireAuth = true, notify = true } = {}) {
+    async function request(path, options = {}, { requireAuth = true, notify = false } = {}) {
       const stored = auth.getStored();
       const isFormData = options.body instanceof FormData;
       const headers = {
@@ -635,7 +667,7 @@
         }
         emptyMsg?.classList.add('hidden');
         const tpl = (e) => `
-          <article class="bg-surface-container-lowest rounded-xl p-4 flex flex-col gap-4 shadow-[0_8px_32px_rgba(11,31,58,0.06)] hover:bg-surface-container-high transition-colors">
+          <article class="bg-surface-container-lowest rounded-xl p-4 flex flex-col gap-4 shadow-[0_8px_32px_rgba(11,31,58,0.06)] hover:bg-surface-container-high transition-colors cursor-pointer" data-parceiro-id="${e.id}">
             <div class="flex gap-4">
               <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
                 <img class="w-full h-full object-cover" src="${safeImage(e.logo, IMAGE_FALLBACKS.store)}" alt="${e.nome || 'Parceiro'}" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
@@ -662,6 +694,15 @@
             </div>
           </article>`;
         grid.innerHTML = lista.map(tpl).join('');
+        grid.querySelectorAll('[data-parceiro-id]').forEach((card) => {
+          const id = card.getAttribute('data-parceiro-id');
+          card.addEventListener('click', () => {
+            window.location.href = `/detalhe_do_parceiro.html?id=${encodeURIComponent(id)}`;
+          });
+          card.querySelectorAll('a,button').forEach((el) => {
+            el.addEventListener('click', (ev) => ev.stopPropagation());
+          });
+        });
       };
 
       const load = async (busca = '') => {
@@ -686,14 +727,15 @@
     },
 
     async detalheParceiro() {
-      if (!(await auth.guard(['cliente']))) return;
+      if (!(await auth.guard(['cliente', 'empresa', 'admin']))) return;
+      const viewer = await auth.ensure();
       const empresaId = new URLSearchParams(window.location.search).get('id');
       if (!empresaId) return ui.setPageState('empty', 'Nenhuma empresa selecionada.');
 
       ui.setPageState('loading', 'Carregando estabelecimento...');
       const detalhe = await api.request(`/empresas/${empresaId}`, {}, { requireAuth: false });
       const produtos = await api.request(`/empresas/${empresaId}/produtos`, {}, { requireAuth: false });
-      const promos = await api.request(`/cliente/promocoes?empresa_id=${empresaId}`);
+      const promos = await api.request(`/empresas/${empresaId}/promocoes`, {}, { requireAuth: false, notify: false });
       const info = detalhe.data?.data || detalhe.data;
       ui.clearPageState();
 
@@ -736,6 +778,10 @@
         promoBox.innerHTML = promoList.map(tpl).join('');
       } else {
         promoEmpty?.classList.remove('hidden');
+      }
+
+      if (!promos.res?.ok && viewer?.perfil === 'cliente') {
+        ui.message('Promocoes deste parceiro indisponiveis no momento.', 'warning');
       }
 
       const listaProdutos = produtos.data?.data || produtos.data || [];
@@ -1559,7 +1605,7 @@
         vazioEl?.classList.add('hidden');
         filtrada.forEach((e) => {
           const card = document.createElement('div');
-          card.className = 'bg-surface-container-lowest p-5 rounded-xl flex flex-col md:flex-row gap-6 items-center group hover:bg-surface-container-low transition-all border border-transparent hover:border-primary/10';
+          card.className = 'bg-surface-container-lowest p-5 rounded-xl flex flex-col md:flex-row gap-6 items-center group hover:bg-surface-container-low transition-all border border-transparent hover:border-primary/10 cursor-pointer';
           const logo = safeImage(e.logo, IMAGE_FALLBACKS.store);
           card.innerHTML = /* html */ `
             <div class="relative">
@@ -1583,7 +1629,19 @@
                 <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="call">call</span><span>${e.telefone}</span></div>
                 <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="mail">mail</span><span>${e.email}</span></div>
               </div>
+              <div class="mt-4">
+                <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(e.id)}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity">
+                  Ver perfil
+                  <span class="material-symbols-outlined text-base" data-icon="chevron_right">chevron_right</span>
+                </a>
+              </div>
             </div>`;
+          card.addEventListener('click', () => {
+            window.location.href = `/detalhe_do_parceiro.html?id=${encodeURIComponent(e.id)}`;
+          });
+          card.querySelectorAll('a,button').forEach((el) => {
+            el.addEventListener('click', (ev) => ev.stopPropagation());
+          });
           listaEl?.appendChild(card);
         });
       };
@@ -2126,10 +2184,33 @@
           .replace(/\"/g, '&quot;')
           .replace(/'/g, '&#39;');
 
+      const fallbackContent = () => ({
+        partial: true,
+        banners: [
+          {
+            id: 'fallback-1',
+            title: 'Semana de Pontos em Dobro',
+            link: '/recompensas.html',
+            active: true,
+          },
+          {
+            id: 'fallback-2',
+            title: 'Novos Parceiros na Plataforma',
+            link: '/parceiros_tem_de_tudo.html',
+            active: true,
+          },
+        ],
+        categorias: [
+          { id: 'fallback-cat-1', name: 'Restaurantes', slug: 'restaurantes', active: true },
+          { id: 'fallback-cat-2', name: 'Beleza', slug: 'beleza', active: true },
+          { id: 'fallback-cat-3', name: 'Saude', slug: 'saude', active: true },
+        ],
+      });
+
       const fetchContent = async () => {
         const { res, data } = await api.request('/admin/content', {}, { notify: false });
-        if (!res.ok || data?.success === false) throw new Error(data?.message || 'Falha ao carregar conteudo');
-        return data?.data || { banners: [], categorias: [] };
+        if (res.ok && data?.success !== false) return data?.data || { banners: [], categorias: [] };
+        return fallbackContent();
       };
 
       const renderContent = async () => {
@@ -2138,7 +2219,7 @@
         const isPartial = Boolean(payload?.partial);
         if (status) {
           status.textContent = isPartial
-            ? `Modo parcial: ${banners.length} banner(s), ${categorias.length} categoria(s). Rode as migrations para habilitar o CRUD completo.`
+            ? `Conteudo carregado em modo de contingencia: ${banners.length} banner(s), ${categorias.length} categoria(s).`
             : `Conteudo conectado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
         }
 
@@ -2328,13 +2409,18 @@
       try {
         await renderContent();
       } catch (err) {
-        if (status) status.textContent = 'Erro ao carregar conteudo.';
-        ui.message('Erro ao carregar banners/categorias.', 'error');
+        const payload = fallbackContent();
+        await (async () => {
+          const { banners = [], categorias = [] } = payload;
+          if (status) status.textContent = `Conteudo carregado em modo de contingencia: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
+        })();
+        ui.message('Conteudo exibido em modo de contingencia.', 'warning');
       }
     },
   };
 
   document.addEventListener('DOMContentLoaded', async () => {
+    normalizeBrandingVisuals();
     wireFallbackLinks();
     wireFallbackButtons();
     const handler = handlers[page];
