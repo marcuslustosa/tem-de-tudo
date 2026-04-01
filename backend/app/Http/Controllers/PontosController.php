@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Models\User;
@@ -515,14 +516,17 @@ class PontosController extends Controller
             $hoje = today();
             $ontem = $hoje->copy()->subDay();
             $esteMes = now()->startOfMonth();
+            $hasCheckins = Schema::hasTable('checkins');
+            $hasPontos = Schema::hasTable('pontos');
+            $hasCoupons = Schema::hasTable('coupons');
 
             $stats = [
-                'checkins_hoje' => CheckIn::whereDate('created_at', $hoje)->count(),
-                'checkins_ontem' => CheckIn::whereDate('created_at', $ontem)->count(),
-                'checkins_pendentes' => CheckIn::where('status', 'pending')->count(),
-                'pontos_distribuidos_mes' => Ponto::where('created_at', '>=', $esteMes)->where('pontos', '>', 0)->sum('pontos'),
-                'cupons_resgatados_mes' => Coupon::where('created_at', '>=', $esteMes)->count(),
-                'usuarios_ativos_mes' => CheckIn::where('created_at', '>=', $esteMes)->distinct('user_id')->count()
+                'checkins_hoje' => $hasCheckins ? CheckIn::whereDate('created_at', $hoje)->count() : 0,
+                'checkins_ontem' => $hasCheckins ? CheckIn::whereDate('created_at', $ontem)->count() : 0,
+                'checkins_pendentes' => $hasCheckins ? CheckIn::where('status', 'pending')->count() : 0,
+                'pontos_distribuidos_mes' => $hasPontos ? Ponto::where('created_at', '>=', $esteMes)->where('pontos', '>', 0)->sum('pontos') : 0,
+                'cupons_resgatados_mes' => $hasCoupons ? Coupon::where('created_at', '>=', $esteMes)->count() : 0,
+                'usuarios_ativos_mes' => $hasCheckins ? CheckIn::where('created_at', '>=', $esteMes)->distinct('user_id')->count() : 0
             ];
 
             return response()->json([

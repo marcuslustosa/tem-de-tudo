@@ -1278,11 +1278,14 @@
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando dashboard admin...');
       const [stats, recent, empresas] = await Promise.all([
-        api.request('/admin/dashboard-stats'),
-        api.request('/admin/recent-activity'),
-        api.request('/empresas', {}, { requireAuth: false }),
+        api.request('/admin/dashboard-stats', {}, { notify: false }),
+        api.request('/admin/recent-activity', {}, { notify: false }),
+        api.request('/empresas', {}, { requireAuth: false, notify: false }),
       ]);
       ui.clearPageState();
+      if (!stats.res.ok) ui.message(stats.data?.message || 'Falha ao carregar metricas do dashboard.', 'error');
+      if (!recent.res.ok) ui.message(recent.data?.message || 'Falha ao carregar atividade recente.', 'error');
+      if (!empresas.res.ok) ui.message(empresas.data?.message || 'Falha ao carregar estabelecimentos.', 'error');
 
       const ids = (id) => document.getElementById(id);
       const totals = stats.data?.data?.totais || stats.data?.totais || {};
@@ -1324,7 +1327,11 @@
     async empresas() {
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando estabelecimentos...');
-      const { data } = await api.request('/empresas', {}, { requireAuth: false });
+      const { res, data } = await api.request('/empresas', {}, { requireAuth: false, notify: false });
+      if (!res.ok) {
+        ui.setPageState('error', data?.message || 'Nao foi possivel carregar estabelecimentos.');
+        return;
+      }
       const lista = data?.data || data || [];
       ui.clearPageState();
       const listaEl = document.getElementById('estabsLista');
@@ -1625,10 +1632,12 @@
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando relatórios...');
       const [stats, checkins] = await Promise.all([
-        api.request('/admin/dashboard-stats'),
-        api.request('/admin/pontos/estatisticas'),
+        api.request('/admin/dashboard-stats', {}, { notify: false }),
+        api.request('/admin/pontos/estatisticas', {}, { notify: false }),
       ]);
       ui.clearPageState();
+      if (!stats.res.ok) ui.message(stats.data?.message || 'Falha ao carregar estatisticas gerais.', 'error');
+      if (!checkins.res.ok) ui.message(checkins.data?.message || 'Falha ao carregar estatisticas de pontos.', 'error');
 
       const dataStats = stats.data?.data || stats.data || {};
       const setText = (id, val) => {

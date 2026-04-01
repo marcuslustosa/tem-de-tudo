@@ -2,38 +2,73 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\AuditLog;
-use App\Models\User;
 use App\Models\Admin;
+use App\Models\AuditLog;
+use App\Models\Empresa;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class AdminReportController extends Controller
 {
+    private function hasTable(string $table): bool
+    {
+        return Schema::hasTable($table);
+    }
+
+    private function hasColumn(string $table, string $column): bool
+    {
+        return $this->hasTable($table) && Schema::hasColumn($table, $column);
+    }
+
+    private function empresaAtivaQuery()
+    {
+        $query = Empresa::query();
+        if ($this->hasColumn('empresas', 'ativo')) {
+            $query->where('ativo', true);
+        } elseif ($this->hasColumn('empresas', 'status')) {
+            $query->where('status', 'ativo');
+        }
+        return $query;
+    }
+
     /**
-     * Obter estatísticas gerais do sistema
+     * Obter estatisticas gerais do sistema
      */
     public function getSystemStats(Request $request)
     {
-        $days = $request->get('days', 30);
-        
+        $days = (int) $request->get('days', 30);
+
+        $userQuery = User::query();
+        $activeUsers = $this->hasColumn('users', 'is_active')
+            ? (clone $userQuery)->where('is_active', true)->count()
+            : (clone $userQuery)->where('status', 'ativo')->count();
+
+        $adminsTotal = class_exists(Admin::class) && $this->hasTable('admins') ? Admin::count() : 0;
+        $adminsActive = class_exists(Admin::class) && $this->hasColumn('admins', 'is_active')
+            ? Admin::where('is_active', true)->count()
+            : 0;
+
         $stats = [
             'users' => [
-                'total' => User::count(),
-                'active' => User::where('is_active', true)->count(),
+                'total' => $userQuery->count(),
+                'active' => $activeUsers,
                 'new_this_month' => User::where('created_at', '>=', Carbon::now()->subDays(30))->count(),
             ],
             'admins' => [
-                'total' => Admin::count(),
-                'active' => Admin::where('is_active', true)->count(),
+                'total' => $adminsTotal,
+                'active' => $adminsActive,
             ],
-            'security' => AuditLog::getLoginStats($days),
-            'recent_activity' => AuditLog::recent(7)->count()
+            'security' => $this->hasTable('audit_logs') ? AuditLog::getLoginStats($days) : [],
+            'recent_activity' => $this->hasTable('audit_logs') ? AuditLog::recent(7)->count() : 0,
         ];
 
         return response()->json([
             'success' => true,
-            'data' => $stats
+            'data' => $stats,
         ]);
     }
 
@@ -42,58 +77,75 @@ class AdminReportController extends Controller
      */
     public function getAuditLogs(Request $request)
     {
+        if (!$this->hasTable('audit_logs')) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'current_page' => 1,
+                    'data' => [],
+                    'total' => 0,
+                ],
+            ]);
+        }
+
         $query = AuditLog::query();
 
-        // Filtros
-        if ($request->has('action')) {
+        if ($request->filled('action')) {
             $query->where('action', $request->action);
         }
 
-        if ($request->has('user_id')) {
+        if ($request->filled('user_id')) {
             $query->where('user_id', $request->user_id);
         }
 
-        if ($request->has('days')) {
+        if ($request->filled('days')) {
             $query->recent($request->days);
         }
 
-        if ($request->has('security_only') && $request->security_only) {
+        if ($request->boolean('security_only')) {
             $query->securityEvents();
         }
 
         $logs = $query->with(['user', 'admin'])
-                     ->orderBy('created_at', 'desc')
-                     ->paginate($request->get('per_page', 50));
+            ->orderByDesc('created_at')
+            ->paginate((int) $request->get('per_page', 50));
 
         return response()->json([
             'success' => true,
-            'data' => $logs
+            'data' => $logs,
         ]);
     }
 
     /**
-     * Obter eventos de segurança recentes
+     * Obter eventos de seguranca recentes
      */
     public function getSecurityEvents(Request $request)
     {
-        $days = $request->get('days', 7);
+        if (!$this->hasTable('audit_logs')) {
+            return response()->json(['success' => true, 'data' => []]);
+        }
+
+        $days = (int) $request->get('days', 7);
         $events = AuditLog::getSecurityEvents($days);
 
         return response()->json([
             'success' => true,
-            'data' => $events
+            'data' => $events,
         ]);
     }
 
     /**
-     * Obter estatísticas de login detalhadas
+     * Obter estatisticas de login detalhadas
      */
     public function getLoginStats(Request $request)
     {
-        $days = $request->get('days', 30);
+        if (!$this->hasTable('audit_logs')) {
+            return response()->json(['success' => true, 'data' => []]);
+        }
+
+        $days = (int) $request->get('days', 30);
         $stats = AuditLog::getLoginStats($days);
 
-        // Adicionar gráfico de logins por dia
         $loginsByDay = AuditLog::where('action', 'login_success')
             ->where('created_at', '>=', Carbon::now()->subDays($days))
             ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
@@ -105,33 +157,42 @@ class AdminReportController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $stats
+            'data' => $stats,
         ]);
     }
 
     /**
-     * Obter relatório de usuários
+     * Obter relatorio de usuarios
      */
     public function getUsersReport(Request $request)
     {
+        $perPage = max(1, min((int) $request->get('per_page', 100), 500));
         $query = User::query();
 
-        // Filtros
-        if ($request->has('active_only')) {
-            $query->where('is_active', true);
+        if ($request->boolean('active_only')) {
+            if ($this->hasColumn('users', 'is_active')) {
+                $query->where('is_active', true);
+            } elseif ($this->hasColumn('users', 'status')) {
+                $query->where('status', 'ativo');
+            }
         }
 
-        if ($request->has('created_after')) {
+        if ($request->filled('created_after')) {
             $query->where('created_at', '>=', $request->created_after);
         }
 
-        $users = $query->select(['id', 'name', 'email', 'pontos', 'created_at', 'is_active'])
-                      ->orderBy('created_at', 'desc')
-                      ->paginate($request->get('per_page', 100));
+        $columns = ['id', 'name', 'email', 'created_at'];
+        foreach (['perfil', 'status', 'is_active', 'pontos', 'updated_at', 'last_login'] as $col) {
+            if ($this->hasColumn('users', $col)) {
+                $columns[] = $col;
+            }
+        }
+
+        $users = $query->select($columns)->orderByDesc('created_at')->paginate($perPage);
 
         return response()->json([
             'success' => true,
-            'data' => $users
+            'data' => $users,
         ]);
     }
 
@@ -140,29 +201,35 @@ class AdminReportController extends Controller
      */
     public function cleanupLogs(Request $request)
     {
-        $user = $request->get('authenticated_user');
+        $user = $request->get('authenticated_user') ?? $request->user();
 
-        // Verificar se é super admin
-        if ($user->role !== 'super_admin') {
+        if (($user->role ?? null) !== 'super_admin') {
             return response()->json([
                 'success' => false,
-                'message' => 'Apenas super admins podem limpar logs'
+                'message' => 'Apenas super admins podem limpar logs',
             ], 403);
         }
 
-        $keepDays = $request->get('keep_days', 90);
+        if (!$this->hasTable('audit_logs')) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tabela de logs nao existe neste ambiente.',
+                'deleted_count' => 0,
+            ]);
+        }
+
+        $keepDays = (int) $request->get('keep_days', 90);
         $deletedCount = AuditLog::cleanup($keepDays);
 
-        // Log da ação
         AuditLog::logEvent('logs_cleanup', $user->id, $request, [
             'keep_days' => $keepDays,
-            'deleted_count' => $deletedCount
+            'deleted_count' => $deletedCount,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => "Foram removidos {$deletedCount} logs antigos",
-            'deleted_count' => $deletedCount
+            'deleted_count' => $deletedCount,
         ]);
     }
 
@@ -172,30 +239,58 @@ class AdminReportController extends Controller
     public function dashboardStats(Request $request)
     {
         try {
-            $hasCheckins = \Schema::hasTable('checkins');
-            $hasPontos = \Schema::hasTable('pontos');
+            $hasCheckins = $this->hasTable('checkins');
+            $hasPontos = $this->hasTable('pontos');
+            $hasPromocoes = $this->hasTable('promocoes');
+            $hasCoupons = $this->hasTable('coupons');
+            $hasValorCol = $hasCoupons && $this->hasColumn('coupons', 'valor_desconto');
+            $hasCustoCol = $hasCoupons && $this->hasColumn('coupons', 'custo_pontos');
+
+            $usuarios = User::count();
+            $empresas = Empresa::count();
+            $promocoes = $hasPromocoes ? DB::table('promocoes')->count() : 0;
+            $resgates = $hasCoupons ? DB::table('coupons')->whereIn('status', ['used', 'utilizado'])->count() : 0;
+            $volume = $hasCoupons
+                ? DB::table('coupons')->sum($hasValorCol ? 'valor_desconto' : ($hasCustoCol ? 'custo_pontos' : DB::raw('0')))
+                : 0;
+
             $stats = [
-                'total_users' => \App\Models\User::count(),
-                'total_empresas' => \App\Models\Empresa::count(),
-                'total_pontos_distribuidos' => $hasPontos ? \DB::table('pontos')->sum('pontos') : 0,
-                'total_checkins' => $hasCheckins ? \DB::table('checkins')->count() : 0,
-                'users_ativos_hoje' => \App\Models\User::where('updated_at', '>=', today())->count(),
-                'empresas_ativas' => \App\Models\Empresa::where('ativo', true)->count()
+                'total_users' => $usuarios,
+                'total_empresas' => $empresas,
+                'total_pontos_distribuidos' => $hasPontos ? DB::table('pontos')->sum('pontos') : 0,
+                'total_checkins' => $hasCheckins ? DB::table('checkins')->count() : 0,
+                'users_ativos_hoje' => User::where('updated_at', '>=', today())->count(),
+                'empresas_ativas' => $this->empresaAtivaQuery()->count(),
+                // Estrutura esperada pelo frontend
+                'totais' => [
+                    'usuarios' => $usuarios,
+                    'empresas' => $empresas,
+                    'campanhas' => $promocoes,
+                    'resgates' => $resgates,
+                    'volume' => (float) $volume,
+                ],
+                // Chaves de fallback no frontend
+                'usuarios' => $usuarios,
+                'empresas' => $empresas,
+                'promocoes' => $promocoes,
+                'resgates' => $resgates,
+                'volume' => (float) $volume,
+                'crescimento_texto' => 'Dados consolidados',
             ];
 
             return response()->json([
                 'success' => true,
-                'data' => $stats
+                'data' => $stats,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Erro ao carregar dashboard admin', [
+            Log::error('Erro ao carregar dashboard admin', [
                 'error' => $e->getMessage(),
-                'user_id' => $request->user()->id ?? null
+                'user_id' => $request->user()->id ?? null,
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao carregar dados do dashboard'
+                'message' => 'Erro ao carregar dados do dashboard',
             ], 500);
         }
     }
@@ -206,63 +301,83 @@ class AdminReportController extends Controller
     public function recentActivity(Request $request)
     {
         try {
-            $activities = \DB::table('audit_logs')
-                ->join('users', 'audit_logs.user_id', '=', 'users.id')
-                ->select(
-                    'audit_logs.id',
-                    'audit_logs.action',
-                    'audit_logs.details',
-                    'audit_logs.created_at',
-                    'users.name as user_name',
-                    'users.perfil'
-                )
-                ->orderBy('audit_logs.created_at', 'desc')
-                ->limit(20)
-                ->get()
-                ->map(function ($activity) {
-                    return [
-                        'id' => $activity->id,
-                        'acao' => $this->formatAction($activity->action),
-                        'usuario' => $activity->user_name,
-                        'perfil' => $activity->perfil,
-                        'detalhes' => $activity->details,
-                        'created_at' => $activity->created_at
-                    ];
-                });
+            if (!$this->hasTable('audit_logs')) {
+                return response()->json(['success' => true, 'data' => []]);
+            }
+
+            $query = DB::table('audit_logs')->orderByDesc('audit_logs.created_at')->limit(20);
+
+            if ($this->hasTable('users')) {
+                $query->leftJoin('users', 'audit_logs.user_id', '=', 'users.id')
+                    ->addSelect('users.name as user_name');
+                if ($this->hasColumn('users', 'perfil')) {
+                    $query->addSelect('users.perfil');
+                } else {
+                    $query->addSelect(DB::raw("'usuario' as perfil"));
+                }
+            } else {
+                $query->addSelect(DB::raw("'Sistema' as user_name"), DB::raw("'sistema' as perfil"));
+            }
+
+            $query->addSelect(
+                'audit_logs.id',
+                'audit_logs.action',
+                'audit_logs.details',
+                'audit_logs.created_at'
+            );
+
+            $activities = $query->get()->map(function ($activity) {
+                $titulo = $this->formatAction($activity->action ?? 'atividade');
+                $detalhe = is_array($activity->details) ? json_encode($activity->details) : (string) ($activity->details ?? '');
+
+                return [
+                    'id' => $activity->id,
+                    'acao' => $titulo,
+                    'usuario' => $activity->user_name ?? 'Sistema',
+                    'perfil' => $activity->perfil ?? 'sistema',
+                    'detalhes' => $detalhe,
+                    'created_at' => $activity->created_at,
+                    // chaves esperadas pelo frontend
+                    'titulo' => $titulo,
+                    'descricao' => $detalhe,
+                    'message' => $titulo,
+                    'detalhe' => $detalhe,
+                ];
+            });
 
             return response()->json([
                 'success' => true,
-                'data' => $activities
+                'data' => $activities,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Erro ao carregar atividade recente', [
+            Log::error('Erro ao carregar atividade recente', [
                 'error' => $e->getMessage(),
-                'user_id' => $request->user()->id ?? null
+                'user_id' => $request->user()->id ?? null,
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao carregar atividade recente'
+                'message' => 'Erro ao carregar atividade recente',
             ], 500);
         }
     }
 
     /**
-     * Formatar ação para exibição
+     * Formatar acao para exibicao
      */
     private function formatAction($action)
     {
         $actions = [
-            'user_registered' => 'Novo usuário registrado',
+            'user_registered' => 'Novo usuario registrado',
             'user_login' => 'Login realizado',
             'admin_login' => 'Login administrativo',
             'user_logout' => 'Logout realizado',
             'pontos_ganhos' => 'Pontos ganhos',
             'cupom_resgatado' => 'Cupom resgatado',
             'qr_code_criado' => 'QR Code criado',
-            'empresa_criada' => 'Empresa criada'
+            'empresa_criada' => 'Empresa criada',
         ];
 
-        return $actions[$action] ?? ucfirst(str_replace('_', ' ', $action));
+        return $actions[$action] ?? ucfirst(str_replace('_', ' ', (string) $action));
     }
 }
