@@ -13,9 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // CORS deve vir antes de outros middlewares
-        $middleware->group('api', [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        // Mantem o grupo "api" stateless para evitar CSRF em endpoints JSON de login/cadastro.
+        $middleware->appendToGroup('api', [
             \App\Http\Middleware\ForceJsonResponse::class,
         ]);
         

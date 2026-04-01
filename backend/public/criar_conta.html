@@ -1,44 +1,112 @@
 <!doctype html>
-<html lang="pt-BR">
+<html class="light" lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Criar conta | Tem de Tudo</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.10/dist/tailwind.min.css">
-  <script src="/js/stitch-app.js" defer></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEM DE TUDO - Criar Conta</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: "Be Vietnam Pro", sans-serif;
+      background-color: #f8f5fe;
+      min-height: 100dvh;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+    .bg-radiant-pattern {
+      background: radial-gradient(circle at 0% 0%, #003b49 0%, transparent 50%),
+                  radial-gradient(circle at 100% 100%, #7a2c8f 0%, transparent 50%),
+                  radial-gradient(circle at 100% 0%, #e10098 0%, transparent 40%);
+      background-color: #f8f5fe;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+  <script src="/js/stitch-app.js?v=main-structural-fix-20260401" defer></script>
 </head>
-<body data-page="criar_conta" class="min-h-screen bg-slate-50 text-slate-900 flex items-center justify-center">
-  <main class="w-full max-w-lg bg-white shadow-lg rounded-2xl p-6 space-y-4">
-    <div class="text-center">
-      <h1 class="text-2xl font-bold">Criar conta</h1>
-      <p class="text-sm text-slate-600">Escolha o tipo de conta e preencha os dados.</p>
-    </div>
-    <form class="space-y-3" id="signupForm">
-      <div class="grid gap-2">
-        <label class="text-sm font-semibold">Tipo de conta</label>
-        <select id="sgPerfil" class="border rounded-lg px-3 py-2" required>
-          <option value="cliente">Cliente</option>
-          <option value="empresa">Estabelecimento</option>
-        </select>
+<body class="min-h-screen flex items-center justify-center p-4 bg-radiant-pattern" data-page="criar_conta">
+  <main class="w-full max-w-xl space-y-8">
+    <div class="text-center space-y-5">
+      <div class="inline-flex items-center justify-center p-4 rounded-3xl bg-white shadow-[0_8px_32px_rgba(11,31,58,0.08)]">
+        <img alt="Tem de Tudo" src="/img/logo.png" onerror="this.onerror=null;this.src='/img/logo.png.png';" class="h-12 w-auto" />
       </div>
-      <input id="sgNome" class="w-full border rounded-lg px-3 py-2" type="text" placeholder="Nome" required />
-      <input id="sgEmail" class="w-full border rounded-lg px-3 py-2" type="email" placeholder="E-mail" required />
-      <input id="sgTelefone" class="w-full border rounded-lg px-3 py-2" type="text" placeholder="Telefone" />
-      <div id="empresaFields" class="hidden grid gap-2">
-        <input id="sgCnpj" class="w-full border rounded-lg px-3 py-2" type="text" placeholder="CNPJ 00.000.000/0000-00" />
-        <input id="sgEndereco" class="w-full border rounded-lg px-3 py-2" type="text" placeholder="Endereço completo" />
+      <div class="space-y-2">
+        <h1 class="text-2xl font-bold text-slate-900 font-headline leading-tight">Criar conta</h1>
+        <p class="text-slate-600 text-sm font-medium">Escolha o perfil e finalize seu cadastro.</p>
       </div>
-      <input id="sgSenha" class="w-full border rounded-lg px-3 py-2" type="password" placeholder="Senha" required />
-      <input id="sgSenhaConf" class="w-full border rounded-lg px-3 py-2" type="password" placeholder="Confirmar senha" required />
-      <label class="inline-flex items-center gap-2 text-sm text-slate-700">
-        <input id="sgTerms" type="checkbox" class="rounded" required />
-        <span>Li e aceito os termos.</span>
-      </label>
-      <button class="w-full bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg" type="submit">Criar conta</button>
-    </form>
-    <div class="text-sm text-center">
-      <a class="text-indigo-600 font-semibold" href="/entrar.html">Já tenho conta</a>
     </div>
+
+    <section class="glass-card rounded-3xl p-8 shadow-[0_20px_50px_rgba(11,31,58,0.12)] space-y-5">
+      <form id="signupForm" class="space-y-4">
+        <div class="space-y-2">
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-widest pl-1">Tipo de conta</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">group</span>
+            <select id="sgPerfil" class="block w-full pl-11 pr-4 py-3 bg-slate-100 border-none rounded-2xl text-slate-800 focus:ring-2 focus:ring-[#7A2C8F]/20">
+              <option value="cliente">Cliente</option>
+              <option value="empresa">Estabelecimento</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="space-y-2 md:col-span-2">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-widest pl-1">Nome</label>
+            <input id="sgNome" type="text" required class="block w-full px-4 py-3 bg-slate-100 border-none rounded-2xl text-slate-800 focus:ring-2 focus:ring-[#7A2C8F]/20" placeholder="Seu nome completo" />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-widest pl-1">E-mail</label>
+            <input id="sgEmail" type="email" required class="block w-full px-4 py-3 bg-slate-100 border-none rounded-2xl text-slate-800 focus:ring-2 focus:ring-[#7A2C8F]/20" placeholder="voce@email.com" />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-widest pl-1">Telefone</label>
+            <input id="sgTelefone" type="text" class="block w-full px-4 py-3 bg-slate-100 border-none rounded-2xl text-slate-800 focus:ring-2 focus:ring-[#7A2C8F]/20" placeholder="(11) 90000-0000" />
+          </div>
+        </div>
+
+        <div id="empresaFields" class="hidden grid gap-4 md:grid-cols-2">
+          <div class="space-y-2">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-widest pl-1">CNPJ</label>
+            <input id="sgCnpj" type="text" class="block w-full px-4 py-3 bg-slate-100 border-none rounded-2xl text-slate-800 focus:ring-2 focus:ring-[#7A2C8F]/20" placeholder="00.000.000/0000-00" />
+          </div>
+          <div class="space-y-2 md:col-span-1">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-widest pl-1">Endereço</label>
+            <input id="sgEndereco" type="text" class="block w-full px-4 py-3 bg-slate-100 border-none rounded-2xl text-slate-800 focus:ring-2 focus:ring-[#7A2C8F]/20" placeholder="Rua, número, bairro" />
+          </div>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="space-y-2">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-widest pl-1">Senha</label>
+            <input id="sgSenha" type="password" required class="block w-full px-4 py-3 bg-slate-100 border-none rounded-2xl text-slate-800 focus:ring-2 focus:ring-[#7A2C8F]/20" placeholder="Mínimo 6 caracteres" />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-xs font-semibold text-slate-600 uppercase tracking-widest pl-1">Confirmar senha</label>
+            <input id="sgSenhaConf" type="password" required class="block w-full px-4 py-3 bg-slate-100 border-none rounded-2xl text-slate-800 focus:ring-2 focus:ring-[#7A2C8F]/20" placeholder="Repita a senha" />
+          </div>
+        </div>
+
+        <label class="inline-flex items-start gap-2 text-sm text-slate-700">
+          <input id="sgTerms" type="checkbox" class="rounded mt-0.5" required />
+          <span>Li e aceito os termos de uso e política de privacidade.</span>
+        </label>
+
+        <button type="submit" class="w-full py-4 px-6 bg-gradient-to-r from-[#7A2C8F] to-[#E10098] text-white font-bold rounded-2xl shadow-lg shadow-[#7A2C8F]/20 hover:opacity-95 active:scale-[0.98] transition-all duration-200">
+          Criar conta
+        </button>
+      </form>
+
+      <p class="text-center text-slate-600 text-sm font-medium">
+        Já tem conta?
+        <a class="text-[#7A2C8F] font-bold hover:underline underline-offset-4 ml-1" href="/entrar.html">Entrar</a>
+      </p>
+    </section>
   </main>
 </body>
 </html>
