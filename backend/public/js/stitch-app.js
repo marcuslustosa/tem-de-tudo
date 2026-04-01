@@ -1,7 +1,7 @@
-﻿/**
+/**
  * Stitch Integration Layer (Tem de Tudo)
- * Objetivo: manter comportamento atual, com cÃ³digo mais organizado e claro.
- * MÃ³dulos internos: api, auth, ui, render, pages (cliente/empresa/admin/shared).
+ * Objetivo: manter comportamento atual, com codigo mais organizado e claro.
+ * Modulos internos: api, auth, ui, render, pages (cliente/empresa/admin/shared).
  */
 (function () {
   // ---------------------- Constantes ---------------------- //
@@ -32,7 +32,7 @@
         pageStateEl.className = 'max-w-4xl mx-auto mt-6 px-4';
         (document.querySelector('main') || document.body).prepend(pageStateEl);
       }
-      pageStateEl.innerHTML = `<div class="border ${palette[type] || palette.info} rounded-xl px-4 py-3 shadow-sm text-sm">${type === 'loading' ? 'â³ ' : ''}${message}</div>`;
+      pageStateEl.innerHTML = `<div class="border ${palette[type] || palette.info} rounded-xl px-4 py-3 shadow-sm text-sm">${type === 'loading' ? '... ' : ''}${message}</div>`;
     }
 
     function clearPageState() {
@@ -132,18 +132,18 @@
 
     async function register() {
       if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        ui.message('Seu navegador nÃ£o suporta notificaÃ§Ãµes push.', 'warning');
+        ui.message('Seu navegador nao suporta notificacoes push.', 'warning');
         return;
       }
       const permission = await Notification.requestPermission();
       if (permission !== 'granted') {
-        ui.message('PermissÃ£o de push negada ou nÃ£o concedida.', 'warning');
+        ui.message('Permissao de push negada ou nao concedida.', 'warning');
         return;
       }
       const reg = await navigator.serviceWorker.register('/sw-push.js');
       const publicKey = await getPublicKey();
       if (!publicKey) {
-        ui.message('Chave pÃºblica de push nÃ£o configurada.', 'warning');
+        ui.message('Chave publica de push nao configurada.', 'warning');
         return;
       }
       const sub = await reg.pushManager.subscribe({
@@ -201,11 +201,11 @@
       }
       if (res.status === 401) {
         auth.clear();
-        ui.message('SessÃ£o expirada. FaÃ§a login novamente.', 'warning');
+        ui.message('Sessao expirada. Faca login novamente.', 'warning');
         setTimeout(() => (window.location.href = '/entrar.html'), 300);
       }
       if (res.status === 403) ui.message('Acesso negado para este perfil.', 'warning');
-      if (res.status === 404) ui.message('Recurso nÃ£o encontrado.', 'warning');
+      if (res.status === 404) ui.message('Recurso nao encontrado.', 'warning');
       if (res.status >= 500) ui.message('Erro no servidor. Tente novamente em instantes.', 'error');
       return { res, data };
     }
@@ -229,7 +229,7 @@
               (m) => `
             <div class="rounded-2xl p-4 bg-white/80 shadow-sm border border-surface-variant/30">
               <p class="text-xs uppercase tracking-widest text-on-surface-variant font-semibold">${m.label}</p>
-              <p class="mt-2 text-2xl font-bold text-on-surface">${m.value ?? 'â€”'}</p>
+              <p class="mt-2 text-2xl font-bold text-on-surface">${m.value ?? '--'}</p>
               ${m.hint ? `<p class="text-xs text-on-surface-variant mt-1">${m.hint}</p>` : ''}
             </div>`
             )
@@ -260,7 +260,7 @@
     return { summary, section };
   })();
 
-  // ---------------------- NotificaÃ§Ãµes internas ---------------------- //
+  // ---------------------- Notificacoes internas ---------------------- //
   const notifications = (() => {
     async function fetchAll() {
       const { data } = await api.request('/notifications');
@@ -271,9 +271,9 @@
       await api.request('/notifications/read', { method: 'POST' });
     }
 
-    function renderList(items, title = 'NotificaÃ§Ãµes') {
+    function renderList(items, title = 'Notificacoes') {
       if (!items.length) {
-        ui.setPageState('empty', 'Sem notificaÃ§Ãµes.');
+        ui.setPageState('empty', 'Sem notificacoes.');
         return;
       }
       const inner = items
@@ -291,7 +291,7 @@
       render.section(title, inner);
     }
 
-    async function load(title = 'NotificaÃ§Ãµes') {
+    async function load(title = 'Notificacoes') {
       const items = await fetchAll();
       renderList(items, title);
     }
@@ -299,7 +299,7 @@
     return { load, markAllRead };
   })();
 
-  // ---------------------- PÃ¡ginas: Cliente ---------------------- //
+  // ---------------------- Paginas: Cliente ---------------------- //
   const cliente = {
     async dashboard() {
       if (!(await auth.guard(['empresa']))) return;
@@ -544,7 +544,7 @@
             <div class="px-4 py-3 flex items-center justify-between text-sm">
               <div>
                 <p class="font-semibold">${c.descricao || c.codigo}</p>
-                <p class="text-on-surface-variant">VÃ¡lido atÃ©: ${c.expira_em ? new Date(c.expira_em).toLocaleDateString('pt-BR') : 'â€”'}</p>
+                <p class="text-on-surface-variant">Valido ate: ${c.expira_em ? new Date(c.expira_em).toLocaleDateString('pt-BR') : '--'}</p>
               </div>
               <span class="font-semibold ${c.status === 'used' ? 'text-amber-600' : 'text-primary'}">${c.status}</span>
             </div>`
@@ -552,10 +552,10 @@
             .join('')
         );
       } else {
-        ui.setPageState('empty', 'Nenhum cupom disponÃ­vel ainda.');
+        ui.setPageState('empty', 'Nenhum cupom disponivel ainda.');
       }
 
-      // FormulÃ¡rio simples de resgate
+      // Formulario simples de resgate
       const host = document.querySelector('main') || document.body;
       const formWrap = document.createElement('section');
       formWrap.className = 'max-w-6xl mx-auto px-4 pt-4';
@@ -563,7 +563,7 @@
         <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3">
           <h3 class="text-lg font-semibold text-on-surface">Resgatar recompensa</h3>
           <div class="grid gap-3 md:grid-cols-3">
-            <input id="resgateDescricao" class="border rounded-lg px-3 py-2" placeholder="DescriÃ§Ã£o" />
+            <input id="resgateDescricao" class="border rounded-lg px-3 py-2" placeholder="Descricao" />
             <input id="resgateTipo" class="border rounded-lg px-3 py-2" placeholder="Tipo (ex: desconto)" />
             <input id="resgatePontos" type="number" class="border rounded-lg px-3 py-2" placeholder="Custo em pontos" />
           </div>
@@ -574,7 +574,7 @@
         const descricao = formWrap.querySelector('#resgateDescricao').value;
         const tipo = formWrap.querySelector('#resgateTipo').value || 'voucher';
         const pontos = Number(formWrap.querySelector('#resgatePontos').value);
-        if (!descricao || !pontos) return ui.message('Preencha descriÃ§Ã£o e custo em pontos.', 'warning');
+        if (!descricao || !pontos) return ui.message('Preencha descricao e custo em pontos.', 'warning');
         const { res, data } = await api.request('/pontos/resgatar', {
           method: 'POST',
           body: JSON.stringify({ recompensa_tipo: tipo, custo_pontos: pontos, descricao }),
@@ -813,13 +813,13 @@
             hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
           });
         } else {
-          ui.message(data?.message || 'NÃ£o foi possÃ­vel usar o cupom.', 'error');
+          ui.message(data?.message || 'Nao foi possivel usar o cupom.', 'error');
         }
       });
     },
   };
 
-  // ---------------------- PÃ¡ginas: Estabelecimento ---------------------- //
+  // ---------------------- Paginas: Estabelecimento ---------------------- //
   const empresa = {
     async dashboard() {
       if (!(await auth.guard(['empresa']))) return;
@@ -1124,15 +1124,15 @@
       const endpoint = action === 'ativar' ? `/empresa/promocoes/${id}/ativar` : `/empresa/promocoes/${id}/pausar`;
       const { res, data } = await api.request(endpoint, { method: 'PATCH' });
       if (res.ok && data?.success !== false) {
-        ui.message('PromoÃ§Ã£o atualizada.', 'success');
+        ui.message('Promocao atualizada.', 'success');
         location.reload();
       } else {
-        ui.message(data?.message || 'Erro ao atualizar promoÃ§Ã£o.', 'error');
+        ui.message(data?.message || 'Erro ao atualizar promocao.', 'error');
       }
     },
   };
 
-  // ---------------------- PÃ¡ginas: Admin ---------------------- //
+  // ---------------------- Paginas: Admin ---------------------- //
   const admin = {
     async dashboard() {
       if (!(await auth.guard(['admin']))) return;
@@ -1537,7 +1537,7 @@
     },
   };
 
-  // ---------------------- Login (pÃºblico) ---------------------- //
+  // ---------------------- Login (publico) ---------------------- //
   async function handleLogin() {
     const form = document.querySelector('form');
     if (!form) return;
@@ -1574,7 +1574,7 @@
 
   // ---------------------- Dispatcher ---------------------- //
   const handlers = {
-    // PÃºblico / shared
+    // Publico / shared
     acessar_conta: handleLogin,
     home_tem_de_tudo: () => {},
     oferta_especial: cliente.detalheParceiro,
@@ -1589,7 +1589,7 @@
         const { res, data } = await api.request('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) }, { requireAuth: false });
         ui.clearPageState();
         if (res.ok && data?.success !== false) ui.message('Se o e-mail existir, enviaremos um link.', 'success');
-        else ui.message(data?.message || 'Erro ao solicitar recuperaÃ§Ã£o.', 'error');
+        else ui.message(data?.message || 'Erro ao solicitar recuperacao.', 'error');
       });
     },
     reset_password: async () => {
@@ -1609,7 +1609,7 @@
         const { res, data } = await api.request('/auth/reset-password', { method: 'POST', body: JSON.stringify(payload) }, { requireAuth: false });
         ui.clearPageState();
         if (res.ok && data?.success !== false) {
-          ui.message('Senha redefinida. FaÃ§a login.', 'success');
+          ui.message('Senha redefinida. Faca login.', 'success');
           setTimeout(() => (window.location.href = '/entrar.html'), 800);
         } else ui.message(data?.message || 'Erro ao redefinir senha.', 'error');
       });
@@ -1659,7 +1659,7 @@
         }, { requireAuth: false });
         ui.clearPageState();
         if (res.ok && data?.success !== false) {
-          ui.message('Conta criada. FaÃ§a login.', 'success');
+          ui.message('Conta criada. Faca login.', 'success');
           setTimeout(() => (window.location.href = '/entrar.html'), 800);
         } else {
           const errs = data?.errors ? Object.values(data.errors).flat().join(' ') : '';
@@ -1690,7 +1690,7 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     const handler = handlers[page];
-    // Autoregistrar push em pÃ¡ginas logadas principais
+    // Autoregistrar push em paginas logadas principais
     const loggedPages = ['meus_pontos', 'dashboard_parceiro', 'dashboard_admin_master'];
     if (loggedPages.includes(page)) {
       push.register().catch(() => {});
@@ -1700,7 +1700,7 @@
         await handler();
       } catch (err) {
         console.error(err);
-        ui.message('Erro ao carregar pÃ¡gina.', 'error');
+        ui.message('Erro ao carregar pagina.', 'error');
       }
     }
   });
