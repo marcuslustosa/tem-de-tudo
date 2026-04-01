@@ -1,14 +1,68 @@
 <!doctype html>
-<html lang="pt-BR">
+<html class="light" lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Tem de Tudo</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.10/dist/tailwind.min.css">
-  <script src="/js/stitch-app.js" defer></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEM DE TUDO - Escolher Tipo</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: "Be Vietnam Pro", sans-serif;
+      background-color: #f8f5fe;
+      min-height: 100dvh;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+    .bg-radiant-pattern {
+      background: radial-gradient(circle at 0% 0%, #003b49 0%, transparent 50%),
+                  radial-gradient(circle at 100% 100%, #7a2c8f 0%, transparent 50%),
+                  radial-gradient(circle at 100% 0%, #e10098 0%, transparent 40%);
+      background-color: #f8f5fe;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+  <script src="/js/stitch-app.js?v=main-structural-fix-20260401" defer></script>
 </head>
-<body data-page="escolher-tipo" class="min-h-screen bg-slate-50 text-slate-900">
-  <noscript><div class="p-4 text-red-600 text-sm">Ative o JavaScript para usar o aplicativo.</div></noscript>
-  <main class="min-h-screen"></main>
+<body data-page="escolher-tipo" class="min-h-screen flex items-center justify-center p-4 bg-radiant-pattern">
+  <main class="w-full max-w-3xl space-y-8">
+    <header class="text-center space-y-5">
+      <div class="inline-flex items-center justify-center p-4 rounded-3xl bg-white shadow-[0_8px_32px_rgba(11,31,58,0.08)]">
+        <img alt="Tem de Tudo" src="/img/logo.png" onerror="this.onerror=null;this.src='/img/logo.png.png';" class="h-12 w-auto" />
+      </div>
+      <div class="space-y-2">
+        <h1 class="text-2xl font-bold text-slate-900 font-headline">Como você quer acessar?</h1>
+        <p class="text-slate-600 text-sm font-medium">Escolha o perfil para seguir com login ou cadastro.</p>
+      </div>
+    </header>
+
+    <section class="grid gap-4 md:grid-cols-2">
+      <a href="/criar_conta.html?tipo=cliente" class="glass-card rounded-3xl p-6 border border-white/60 shadow-[0_12px_30px_rgba(11,31,58,0.10)] hover:translate-y-[-2px] transition">
+        <div class="w-12 h-12 rounded-2xl bg-[#7A2C8F]/10 text-[#7A2C8F] flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+        <h2 class="text-lg font-bold text-slate-900">Sou Cliente</h2>
+        <p class="text-sm text-slate-600 mt-1">Quero acumular pontos e resgatar recompensas.</p>
+      </a>
+      <a href="/criar_conta.html?tipo=empresa" class="glass-card rounded-3xl p-6 border border-white/60 shadow-[0_12px_30px_rgba(11,31,58,0.10)] hover:translate-y-[-2px] transition">
+        <div class="w-12 h-12 rounded-2xl bg-[#E10098]/10 text-[#E10098] flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined">storefront</span>
+        </div>
+        <h2 class="text-lg font-bold text-slate-900">Sou Estabelecimento</h2>
+        <p class="text-sm text-slate-600 mt-1">Quero criar campanhas e fidelizar clientes.</p>
+      </a>
+    </section>
+
+    <p class="text-center text-slate-600 text-sm font-medium">
+      Já tem conta?
+      <a href="/entrar.html" class="text-[#7A2C8F] font-bold hover:underline underline-offset-4 ml-1">Entrar</a>
+    </p>
+  </main>
 </body>
 </html>

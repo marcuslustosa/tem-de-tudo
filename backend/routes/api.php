@@ -155,18 +155,11 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // Rotas pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblicas de autenticaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
-Route::prefix('auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
-});
 
 // Middleware JavaScript para proteÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de rotas por perfil
 Route::get('/auth/check-access', function () {
     return response()->json(['message' => 'Access check endpoint']);
 });
-
-// Rota para listar empresas (pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblica para funcionÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios se cadastrarem)
-Route::get('/empresas', [EmpresaController::class, 'listEmpresas']);
 
 // Rotas de admin com JWT
 Route::prefix('admin')->group(function () {

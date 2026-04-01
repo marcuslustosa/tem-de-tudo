@@ -11,6 +11,7 @@
     cliente: '/meus_pontos.html',
     empresa: '/dashboard_parceiro.html',
     admin: '/dashboard_admin_master.html',
+    administrador: '/dashboard_admin_master.html',
   };
   const page = document.body?.dataset?.page || location.pathname.replace(/\//g, '').replace('.html', '');
   const VAPID_CACHE_KEY = 'vapid_public_key';
@@ -74,11 +75,20 @@
       user: parseJSON(localStorage.getItem(STORAGE.user) || '{}'),
     });
 
+    const normalizePerfil = (perfil) => {
+      if (!perfil) return null;
+      const normalized = String(perfil).toLowerCase();
+      if (['admin', 'administrador', 'master', 'admin_master'].includes(normalized)) return 'admin';
+      if (['empresa', 'estabelecimento', 'parceiro'].includes(normalized)) return 'empresa';
+      if (['cliente', 'customer'].includes(normalized)) return 'cliente';
+      return normalized;
+    };
+
     const normalizeUser = (raw) => {
       if (!raw || typeof raw !== 'object') return null;
       const candidate = raw.user && typeof raw.user === 'object' ? raw.user : raw;
       if (!candidate || typeof candidate !== 'object') return null;
-      const perfil = candidate.perfil || candidate.role || candidate.tipo || null;
+      const perfil = normalizePerfil(candidate.perfil || candidate.role || candidate.tipo || null);
       return { ...candidate, perfil };
     };
 
@@ -133,7 +143,7 @@
     const guard = async (perfis = []) => {
       const user = await ensure();
       if (!user) return false;
-      const perfil = user.perfil || user.role || user.tipo;
+      const perfil = normalizePerfil(user.perfil || user.role || user.tipo);
       if (perfis.length && !perfis.includes(perfil)) {
         window.location.href = redirectMap[perfil] || '/entrar.html';
         return false;
@@ -141,8 +151,72 @@
       return true;
     };
 
-    return { getStored, save, clear, ensure, guard, normalizeUser };
+    return { getStored, save, clear, ensure, guard, normalizeUser, normalizePerfil };
   })();
+
+  // ---------------------- Navegacao de fallback ---------------------- //
+  function wireFallbackLinks() {
+    const pageGroups = {
+      admin: ['dashboard_admin_master', 'gest_o_de_estabelecimentos', 'gest_o_de_usu_rios_master', 'gest_o_de_clientes_master', 'relat_rios_gerais_master', 'banners_e_categorias_master'],
+      empresa: ['dashboard_parceiro', 'gest_o_de_ofertas_parceiro', 'minhas_campanhas_loja', 'clientes_fidelizados_loja'],
+      cliente: ['meus_pontos', 'parceiros_tem_de_tudo', 'detalhe_do_parceiro', 'recompensas', 'hist_rico_de_uso', 'meu_perfil', 'validar_resgate'],
+    };
+
+    let scope = 'cliente';
+    if (pageGroups.admin.includes(page)) scope = 'admin';
+    if (pageGroups.empresa.includes(page)) scope = 'empresa';
+
+    const mapByScope = {
+      admin: {
+        dashboard: '/dashboard_admin_master.html',
+        home: '/dashboard_admin_master.html',
+        storefront: '/gest_o_de_estabelecimentos.html',
+        group: '/gest_o_de_clientes_master.html',
+        analytics: '/relat_rios_gerais_master.html',
+        person: '/gest_o_de_usu_rios_master.html',
+        settings: '/banners_e_categorias_master.html',
+      },
+      empresa: {
+        dashboard: '/dashboard_parceiro.html',
+        home: '/dashboard_parceiro.html',
+        receipt_long: '/gest_o_de_ofertas_parceiro.html',
+        storefront: '/clientes_fidelizados_loja.html',
+        store: '/dashboard_parceiro.html',
+        inventory_2: '/validar_resgate.html',
+        person: '/meu_perfil.html',
+      },
+      cliente: {
+        dashboard: '/meus_pontos.html',
+        home: '/meus_pontos.html',
+        storefront: '/parceiros_tem_de_tudo.html',
+        stars: '/recompensas.html',
+        redeem: '/recompensas.html',
+        person: '/meu_perfil.html',
+      },
+    };
+
+    const fallback = mapByScope[scope];
+
+    document.querySelectorAll('a[href="#"], a[href=""], a[href="javascript:void(0)"]').forEach((a) => {
+      const iconEl = a.querySelector('[data-icon], .material-symbols-outlined');
+      const icon = iconEl?.getAttribute('data-icon') || iconEl?.textContent?.trim().toLowerCase() || '';
+      const text = (a.textContent || '').toLowerCase();
+      const targetByIcon = fallback[icon];
+
+      let target = targetByIcon || null;
+      if (!target) {
+        if (text.includes('dashboard') || text.includes('inicio') || text.includes('início')) target = fallback.dashboard;
+        else if (text.includes('usuario') || text.includes('usuário')) target = '/gest_o_de_usu_rios_master.html';
+        else if (text.includes('cliente')) target = scope === 'admin' ? '/gest_o_de_clientes_master.html' : '/clientes_fidelizados_loja.html';
+        else if (text.includes('estabelecimento') || text.includes('parceiro')) target = scope === 'admin' ? '/gest_o_de_estabelecimentos.html' : '/parceiros_tem_de_tudo.html';
+        else if (text.includes('relatorio') || text.includes('relatório')) target = scope === 'admin' ? '/relat_rios_gerais_master.html' : '/minhas_campanhas_loja.html';
+      }
+
+      if (target) {
+        a.setAttribute('href', target);
+      }
+    });
+  }
 
   // ---------------------- Push ---------------------- //
   const push = (() => {
@@ -1584,6 +1658,7 @@
 
   // ---------------------- Login (publico) ---------------------- //
   async function handleLogin() {
+    if (window.__inlineLoginManaged) return;
     const form = document.querySelector('form');
     if (!form) return;
     form.addEventListener('submit', async (e) => {
@@ -1694,6 +1769,14 @@
       const end = document.getElementById('sgEndereco');
       const blocoEmpresa = document.getElementById('empresaFields');
 
+      const tipoParam = new URLSearchParams(window.location.search).get('tipo');
+      if (tipoParam && ['cliente', 'empresa'].includes(tipoParam)) {
+        perfilSel.value = tipoParam;
+      }
+
+      if (perfilSel.value === 'empresa') blocoEmpresa.classList.remove('hidden');
+      else blocoEmpresa.classList.add('hidden');
+
       perfilSel?.addEventListener('change', () => {
         if (perfilSel.value === 'empresa') blocoEmpresa.classList.remove('hidden');
         else blocoEmpresa.classList.add('hidden');
@@ -1752,6 +1835,7 @@
   };
 
   document.addEventListener('DOMContentLoaded', async () => {
+    wireFallbackLinks();
     const handler = handlers[page];
     // Autoregistrar push em paginas logadas principais
     const loggedPages = ['meus_pontos', 'dashboard_parceiro', 'dashboard_admin_master'];
