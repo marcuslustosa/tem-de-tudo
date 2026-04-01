@@ -15,6 +15,17 @@
   };
   const page = document.body?.dataset?.page || location.pathname.replace(/\//g, '').replace('.html', '');
   const VAPID_CACHE_KEY = 'vapid_public_key';
+  const IMAGE_FALLBACKS = {
+    store: '/assets/images/company1.jpg',
+    promo: '/assets/images/company2.jpg',
+    hero: '/assets/images/company3.jpg',
+  };
+
+  function safeImage(url, fallback = IMAGE_FALLBACKS.store) {
+    if (!url || typeof url !== 'string') return fallback;
+    const trimmed = url.trim();
+    return trimmed || fallback;
+  }
 
   // ---------------------- UI / Estado ---------------------- //
   const ui = (() => {
@@ -505,7 +516,7 @@
           <article class="bg-surface-container-lowest rounded-xl p-4 flex flex-col gap-4 shadow-[0_8px_32px_rgba(11,31,58,0.06)] hover:bg-surface-container-high transition-colors">
             <div class="flex gap-4">
               <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
-                <img class="w-full h-full object-cover" src="${e.logo || '/assets/img/logo.png'}" alt="${e.nome || 'Parceiro'}" loading="lazy" />
+                <img class="w-full h-full object-cover" src="${safeImage(e.logo, IMAGE_FALLBACKS.store)}" alt="${e.nome || 'Parceiro'}" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
               </div>
               <div class="flex-1 min-w-0">
                 <div class="flex justify-between items-start gap-2">
@@ -573,7 +584,10 @@
       if (info) {
         if (heroName) heroName.textContent = info.nome || 'Parceiro';
         if (heroCat) heroCat.textContent = (info.categoria || info.ramo || 'Categoria').toUpperCase();
-        if (heroLogo && info.logo) heroLogo.setAttribute('src', info.logo);
+      if (heroLogo) {
+        heroLogo.setAttribute('src', safeImage(info.logo, IMAGE_FALLBACKS.store));
+        heroLogo.setAttribute('onerror', `this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'`);
+      }
         if (heroBadge) heroBadge.textContent = info.points_multiplier ? `${info.points_multiplier}x pontos` : 'Parceiro';
         if (heroDist) heroDist.textContent = info.endereco || '—';
       }
@@ -967,12 +981,12 @@
           listaPromos.slice(0, 4).forEach((p) => {
             const card = document.createElement('div');
             card.className = 'bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm flex';
-            const img = p.imagem_url || p.imagem || '/img/placeholder-promo.jpg';
+            const img = safeImage(p.imagem_url || p.imagem, IMAGE_FALLBACKS.promo);
             const statusAtivo = !(p.status === 'pausada' || p.ativo === false);
             const status = statusAtivo ? 'Ativa' : 'Pausada';
             card.innerHTML = `
               <div class="w-24 h-24 flex-shrink-0">
-                <img alt="${p.nome || 'Promoção'}" class="w-full h-full object-cover" src="${img}"/>
+                <img alt="${p.nome || 'Promoção'}" class="w-full h-full object-cover" src="${img}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'"/>
               </div>
               <div class="p-4 flex flex-col justify-between flex-grow">
                 <div>
@@ -1126,12 +1140,12 @@
         filtrada.forEach((p) => {
           const card = document.createElement('div');
           card.className = 'bg-surface-container-lowest rounded-xl p-4 flex gap-4 transition-all hover:bg-surface-container-high border border-surface-variant/30';
-          const img = p.imagem_url || p.imagem || '/img/placeholder-promo.jpg';
+          const img = safeImage(p.imagem_url || p.imagem, IMAGE_FALLBACKS.promo);
           const statusAtivo = !(p.status === 'pausada' || p.ativo === false);
           const status = statusAtivo ? 'Ativa' : 'Pausada';
           card.innerHTML = `
             <div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
-              <img alt="${p.nome || p.titulo || 'Oferta'}" class="w-full h-full object-cover" src="${img}" />
+              <img alt="${p.nome || p.titulo || 'Oferta'}" class="w-full h-full object-cover" src="${img}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" />
             </div>
             <div class="flex flex-col justify-between flex-grow">
               <div>
@@ -1317,7 +1331,7 @@
       lista.forEach((e) => {
         const card = document.createElement('div');
         card.className = 'bg-surface-container-lowest p-5 rounded-xl flex flex-col md:flex-row gap-6 items-center group hover:bg-surface-container-low transition-all border border-transparent hover:border-primary/10';
-        const logo = e.logo || '/img/placeholder-store.png';
+        const logo = safeImage(e.logo, IMAGE_FALLBACKS.store);
         const nome = e.nome || e.nome_fantasia || 'Estabelecimento';
         const categoria = e.categoria || e.segmento || '';
         const pontos = e.pontos_totais ?? e.pontos ?? 0;
@@ -1328,7 +1342,7 @@
         card.innerHTML = /* html */ `
           <div class="relative">
             <div class="w-20 h-20 rounded-full overflow-hidden bg-surface-container shadow-inner">
-              <img alt="${nome}" class="w-full h-full object-cover" src="${logo}"/>
+              <img alt="${nome}" class="w-full h-full object-cover" src="${logo}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'"/>
             </div>
           </div>
           <div class="flex-1 w-full">
@@ -1658,7 +1672,7 @@
 
   // ---------------------- Login (publico) ---------------------- //
   async function handleLogin() {
-    if (window.__inlineLoginManaged) return;
+    if (page === 'acessar_conta' || window.__inlineLoginManaged) return;
     const form = document.querySelector('form');
     if (!form) return;
     form.addEventListener('submit', async (e) => {
@@ -1695,7 +1709,7 @@
   // ---------------------- Dispatcher ---------------------- //
   const handlers = {
     // Publico / shared
-    acessar_conta: handleLogin,
+    acessar_conta: () => {},
     home_tem_de_tudo: async () => {
       const cards = document.querySelectorAll('main section.space-y-4 .grid > div');
       if (!cards.length) return;
@@ -1709,7 +1723,13 @@
         const title = card.querySelector('h4');
         const badge = card.querySelector('span.text-xs');
         const desc = card.querySelector('p.text-xs');
-        if (img) img.src = empresa.logo || '/img/placeholder-store.png';
+        if (img) {
+          img.src = safeImage(empresa.logo, IMAGE_FALLBACKS.store);
+          img.onerror = () => {
+            img.onerror = null;
+            img.src = IMAGE_FALLBACKS.store;
+          };
+        }
         if (title) title.textContent = empresa.nome || 'Parceiro';
         if (badge) badge.textContent = (empresa.ramo || 'Parceiro').toString().toUpperCase();
         if (desc) desc.textContent = empresa.endereco || 'Parceiro ativo no programa.';

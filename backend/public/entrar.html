@@ -67,14 +67,14 @@
             </button>
           </div>
         </div>
-        <button class="w-full py-4 px-6 bg-gradient-to-r from-secondary to-primary text-on-primary font-bold rounded-2xl shadow-lg shadow-primary/20 hover:opacity-95 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 mt-4" type="submit">
+        <button class="w-full py-4 px-6 bg-[#7A2C8F] text-white font-bold rounded-2xl shadow-lg hover:opacity-95 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 mt-4" type="submit">
           <span>Entrar</span>
           <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
         </button>
       </form>
     </div>
 
-    <p class="text-center text-on-surface-variant font-medium">Ainda não tem conta<a class="text-primary font-bold hover:underline underline-offset-4 ml-1" href="/criar_conta.html">Criar conta</a></p>
+    <p class="text-center text-on-surface-variant font-medium">Ainda não tem conta?<a class="text-primary font-bold hover:underline underline-offset-4 ml-1" href="/criar_conta.html">Criar conta</a></p>
   </main>
 
   <div class="fixed top-20 -left-12 w-64 h-64 bg-tertiary/10 rounded-full blur-3xl -z-10"></div>
@@ -86,9 +86,9 @@
     </button>
   </div>
 
-  <script src="/js/stitch-app.js?v=main-structural-fix-20260331"></script>
+  <script>window.__inlineLoginManaged = true;</script>
+  <script src="/js/stitch-app.js?v=main-rescue-20260401-1"></script>
   <script>
-    window.__inlineLoginManaged = true;
 
     (function () {
       const passInput = document.getElementById('loginPassword');
@@ -164,8 +164,9 @@
           localStorage.setItem('tem_de_tudo_token', token);
           localStorage.setItem('tem_de_tudo_user', JSON.stringify(user));
 
-          const perfil = user.perfil || user.role || user.tipo;
-          const target = redirectMap[perfil] || '/';
+          const rawPerfil = (user.perfil || user.role || user.tipo || '').toString().toLowerCase();
+          const perfil = rawPerfil === 'administrador' ? 'admin' : rawPerfil === 'estabelecimento' ? 'empresa' : rawPerfil;
+          const target = redirectMap[perfil] || '/meus_pontos.html';
 
           console.log('LOGIN_INLINE_OK', { status: res.status, perfil, redirect: target, payload: data });
           showMsg('Login realizado, redirecionando...', 'success');
