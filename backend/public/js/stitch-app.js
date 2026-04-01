@@ -282,6 +282,10 @@
     if (byIcon) return byIcon;
 
     if (text.includes('dashboard') || text.includes('inicio')) return fallback.dashboard;
+    if (text.includes('ponto')) return scope === 'cliente' ? '/meus_pontos.html' : (scope === 'empresa' ? '/dashboard_parceiro.html' : '/relat_rios_gerais_master.html');
+    if (text.includes('premio') || text.includes('recompensa') || text.includes('resgate')) {
+      return scope === 'cliente' ? '/recompensas.html' : (scope === 'empresa' ? '/validar_resgate.html' : '/relat_rios_gerais_master.html');
+    }
     if (text.includes('usuario')) return scope === 'admin' ? '/gest_o_de_usu_rios_master.html' : '/meu_perfil.html';
     if (text.includes('cliente')) return scope === 'admin' ? '/gest_o_de_clientes_master.html' : '/clientes_fidelizados_loja.html';
     if (text.includes('estabelecimento') || text.includes('parceiro')) {
@@ -342,6 +346,41 @@
         btn.dataset.boundAction = '1';
         btn.addEventListener('click', go(target));
       }
+    });
+  }
+
+  function wirePushButtons() {
+    const pageScope = getScopeForCurrentPage();
+    if (!['admin', 'empresa', 'cliente'].includes(pageScope)) return;
+
+    const nodes = document.querySelectorAll('button, a');
+    nodes.forEach((node) => {
+      if (node.dataset.pushBound === '1') return;
+      const iconEl = node.querySelector('[data-icon], .material-symbols-outlined');
+      const icon = (iconEl?.getAttribute('data-icon') || iconEl?.textContent || '').toString().toLowerCase().trim();
+      if (!icon.includes('notification')) return;
+      node.dataset.pushBound = '1';
+      node.addEventListener('click', async (ev) => {
+        if (node.tagName === 'A') ev.preventDefault();
+        const stored = auth.getStored();
+        if (!stored?.token) {
+          ui.message('Faca login para ativar notificacoes push.', 'warning');
+          return;
+        }
+
+        try {
+          await push.register();
+          const { res, data } = await api.request('/push/test', { method: 'POST' }, { notify: false });
+          if (res.ok && data?.success !== false) {
+            ui.message('Push ativado e teste enviado.', 'success');
+          } else {
+            ui.message(data?.message || 'Push ativado, mas o teste nao foi concluido.', 'warning');
+          }
+        } catch (err) {
+          console.error('push_enable_fail', err);
+          ui.message('Nao foi possivel ativar push neste momento.', 'error');
+        }
+      });
     });
   }
 
@@ -2423,6 +2462,7 @@
     normalizeBrandingVisuals();
     wireFallbackLinks();
     wireFallbackButtons();
+    wirePushButtons();
     const handler = handlers[page];
     if (handler) {
       try {

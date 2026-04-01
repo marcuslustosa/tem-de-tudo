@@ -138,6 +138,46 @@ class DatabaseSeeder extends Seeder
                     'updated_at' => $now,
                 ]
             );
+
+            $this->upsert('promocoes',
+                ['empresa_id' => $empresaBaseId, 'titulo' => 'Compre e Ganhe Pontos em Dobro'],
+                [
+                    'empresa_id' => $empresaBaseId,
+                    'titulo' => 'Compre e Ganhe Pontos em Dobro',
+                    'descricao' => 'Campanha ativa para aumentar recorrencia de clientes.',
+                    'desconto' => 12,
+                    'imagem' => $logos[2],
+                    'data_inicio' => $now->copy()->subDays(5),
+                    'validade' => $now->copy()->addDays(40),
+                    'ativo' => true,
+                    'status' => 'ativa',
+                    'visualizacoes' => 74,
+                    'resgates' => 19,
+                    'usos' => 11,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
+
+            $this->upsert('promocoes',
+                ['empresa_id' => $empresaBaseId, 'titulo' => 'Oferta Flash Fim de Semana'],
+                [
+                    'empresa_id' => $empresaBaseId,
+                    'titulo' => 'Oferta Flash Fim de Semana',
+                    'descricao' => 'Oferta pausada para testes de ativacao no painel da empresa.',
+                    'desconto' => 20,
+                    'imagem' => $logos[3],
+                    'data_inicio' => $now->copy()->subDays(10),
+                    'validade' => $now->copy()->addDays(15),
+                    'ativo' => true,
+                    'status' => 'pausada',
+                    'visualizacoes' => 31,
+                    'resgates' => 7,
+                    'usos' => 4,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]
+            );
         }
 
         // Dados do cliente base
@@ -333,6 +373,25 @@ class DatabaseSeeder extends Seeder
                         'updated_at' => $now,
                     ]
                 );
+            }
+
+            if (Schema::hasTable('pontos') && $empresaBaseId) {
+                DB::table('pontos')
+                    ->where('user_id', $demo->id)
+                    ->where('descricao', 'like', '[SEED DEMO]%')
+                    ->delete();
+
+                foreach ([60 + ($i * 2), 40 + $i] as $idx => $pts) {
+                    DB::table('pontos')->insert($this->filterColumns('pontos', [
+                        'user_id' => $demo->id,
+                        'empresa_id' => $empresaBaseId,
+                        'pontos' => $pts,
+                        'tipo' => $idx === 0 ? 'ganho' : 'resgate',
+                        'descricao' => '[SEED DEMO] Movimentacao ' . ($idx + 1) . ' cliente ' . $i,
+                        'created_at' => $now->copy()->subDays(($i % 7) + $idx + 1),
+                        'updated_at' => $now,
+                    ]));
+                }
             }
 
             Notification::updateOrCreate(

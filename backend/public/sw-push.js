@@ -8,8 +8,8 @@ self.addEventListener('push', function (event) {
   const options = {
     body: payload.body || '',
     data: payload.data || {},
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-192x192.png',
+    icon: '/img/icon-192.png',
+    badge: '/img/icon-96.png',
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });
