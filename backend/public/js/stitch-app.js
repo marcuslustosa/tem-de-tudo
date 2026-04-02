@@ -1016,6 +1016,48 @@
         prodEmpty?.classList.remove('hidden');
       }
 
+      const ctaBtn = document.querySelector('div.fixed.bottom-24 button');
+      if (ctaBtn && ctaBtn.dataset.boundAction !== '1') {
+        ctaBtn.dataset.boundAction = '1';
+        ctaBtn.addEventListener('click', async () => {
+          const perfilViewer = auth.normalizePerfil(viewer?.perfil || viewer?.role || viewer?.tipo);
+          if (perfilViewer !== 'cliente') {
+            window.location.href = `/validar_resgate.html?id=${encodeURIComponent(empresaId)}`;
+            return;
+          }
+
+          const valorRaw = window.prompt('Informe o valor da compra para acumular pontos (R$):', '50');
+          if (!valorRaw) return;
+          const valorCompra = Number(String(valorRaw).replace(',', '.'));
+          if (!Number.isFinite(valorCompra) || valorCompra <= 0) {
+            ui.message('Valor de compra invalido.', 'warning');
+            return;
+          }
+
+          ui.setPageState('loading', 'Acumulando pontos...');
+          const { res, data } = await api.request('/pontos/checkin', {
+            method: 'POST',
+            body: JSON.stringify({
+              empresa_id: Number(empresaId),
+              valor_compra: valorCompra,
+              observacoes: 'Acumulo via parceiro',
+            }),
+          });
+          ui.clearPageState();
+
+          if (res.ok && data?.success !== false) {
+            const ganhos = toNumber(data?.data?.pontos_calculados, 0);
+            ui.message(`Pontos acumulados com sucesso (+${ganhos}).`, 'success');
+            setTimeout(() => {
+              window.location.href = '/meus_pontos.html';
+            }, 500);
+          } else {
+            const errMsg = data?.message || 'Nao foi possivel acumular pontos agora.';
+            ui.message(errMsg, 'error');
+          }
+        });
+      }
+
       return;
     },
 
