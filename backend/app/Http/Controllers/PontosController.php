@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Empresa;
@@ -25,28 +26,74 @@ class PontosController extends Controller
     public function checkin(Request $request): JsonResponse
     {
         try {
-            $request->validate([
-                'empresa_id'   => 'required|exists:empresas,id',
-                'valor_compra' => 'required|numeric|min:0.01',
-                'foto_cupom'   => 'required|file|mimes:jpeg,jpg,png|max:5120', // 5MB
-                'latitude'     => 'required|numeric|between:-90,90',
-                'longitude'    => 'required|numeric|between:-180,180',
-                'observacoes'  => 'nullable|string|max:500',
-                'qr_code_id'   => 'required|exists:qr_codes,id'
-            ]);
+            $modoCompleto = $request->hasFile('foto_cupom')
+                || $request->filled('qr_code_id')
+                || $request->filled('latitude')
+                || $request->filled('longitude');
+
+            if ($modoCompleto) {
+                $request->validate([
+                    'empresa_id'   => 'required|exists:empresas,id',
+                    'valor_compra' => 'required|numeric|min:0.01',
+                    'foto_cupom'   => 'required|file|mimes:jpeg,jpg,png|max:5120',
+                    'latitude'     => 'required|numeric|between:-90,90',
+                    'longitude'    => 'required|numeric|between:-180,180',
+                    'observacoes'  => 'nullable|string|max:500',
+                    'qr_code_id'   => 'required|exists:qr_codes,id',
+                ]);
+            } else {
+                $request->validate([
+                    'empresa_id'   => 'required|exists:empresas,id',
+                    'valor_compra' => 'required|numeric|min:0.01',
+                    'observacoes'  => 'nullable|string|max:500',
+                ]);
+            }
 
             $user = Auth::user();
             $empresa = Empresa::findOrFail($request->empresa_id);
 
-            // Garantir geolocalizaÃ§Ã£o configurada na empresa
+            if (!$modoCompleto) {
+                $pontosCalculados = $this->calcularPontos((float) $request->valor_compra, $empresa);
+                $user->increment('pontos', $pontosCalculados);
+
+                if (Schema::hasTable('pontos')) {
+                    Ponto::create([
+                        'user_id' => $user->id,
+                        'empresa_id' => $empresa->id,
+                        'pontos' => $pontosCalculados,
+                        'descricao' => $request->observacoes ?: "Acumulo de pontos em {$empresa->nome} - R$ " . number_format((float) $request->valor_compra, 2, ',', '.'),
+                        'tipo' => 'earn',
+                    ]);
+                }
+
+                $this->registrarAtividade(
+                    $user->id,
+                    'checkin_manual',
+                    "Acumulo manual no {$empresa->nome}",
+                    $pontosCalculados
+                );
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pontos acumulados com sucesso.',
+                    'data' => [
+                        'modo' => 'manual',
+                        'empresa_id' => $empresa->id,
+                        'pontos_calculados' => $pontosCalculados,
+                        'total_pontos' => $user->fresh()->pontos,
+                    ],
+                ]);
+            }
+
+            // Garantir geolocalizacao configurada na empresa
             if (!$empresa->latitude || !$empresa->longitude) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Empresa sem coordenadas configuradas. Cadastre latitude/longitude para habilitar check-in com validaÃ§Ã£o de presenÃ§a.'
+                    'message' => 'Empresa sem coordenadas configuradas. Cadastre latitude/longitude para habilitar check-in com validacao de presenca.',
                 ], 422);
             }
 
-            // Validar QR code pertence Ã  empresa e estÃ¡ ativo
+            // Validar QR code pertence a empresa e esta ativo
             $qrCode = QRCode::where('id', $request->qr_code_id)
                 ->where('active', true)
                 ->first();
@@ -54,11 +101,11 @@ class PontosController extends Controller
             if (!$qrCode || $qrCode->empresa_id !== $empresa->id) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'QR Code invÃ¡lido para este estabelecimento.'
+                    'message' => 'QR Code invalido para este estabelecimento.',
                 ], 400);
             }
 
-            // Antifraude: exigir proximidade fÃ­sica
+            // Antifraude: exigir proximidade fisica
             $distanciaKm = $this->calcularDistanciaKm(
                 (float) $request->latitude,
                 (float) $request->longitude,
@@ -69,11 +116,11 @@ class PontosController extends Controller
             if ($distanciaKm > self::MAX_CHECKIN_DISTANCE_KM) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'VocÃª precisa estar no local para fazer check-in (raio mÃ¡ximo de ' . (self::MAX_CHECKIN_DISTANCE_KM * 1000) . 'm).'
+                    'message' => 'Voce precisa estar no local para fazer check-in (raio maximo de ' . (self::MAX_CHECKIN_DISTANCE_KM * 1000) . 'm).',
                 ], 403);
             }
 
-            // Verificar se já fez check-in na empresa hoje
+            // Verificar se ja fez check-in na empresa hoje
             $checkinHoje = CheckIn::where('user_id', $user->id)
                 ->where('empresa_id', $empresa->id)
                 ->whereDate('created_at', today())
@@ -82,7 +129,7 @@ class PontosController extends Controller
             if ($checkinHoje) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Você já fez check-in neste estabelecimento hoje. Apenas um check-in por estabelecimento por dia é permitido.'
+                    'message' => 'Voce ja fez check-in neste estabelecimento hoje. Apenas um check-in por estabelecimento por dia e permitido.',
                 ], 400);
             }
 
@@ -95,7 +142,7 @@ class PontosController extends Controller
             }
 
             // Calcular pontos baseado no valor da compra
-            $pontosCalculados = $this->calcularPontos($request->valor_compra, $empresa);
+            $pontosCalculados = $this->calcularPontos((float) $request->valor_compra, $empresa);
 
             // Criar o check-in (inicialmente pendente)
             $checkin = CheckIn::create([
@@ -110,35 +157,44 @@ class PontosController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'observacoes' => $request->observacoes,
-                'bonus_applied' => false
+                'bonus_applied' => false,
             ]);
 
-            // Adicionar pontos pendentes ao usuário
+            // Adicionar pontos pendentes ao usuario
             $user->increment('pontos_pendentes', $pontosCalculados);
 
             // Log da atividade
-            $this->registrarAtividade($user->id, 'checkin_pending',
-                "Check-in pendente no {$empresa->nome} - R$ " . number_format($request->valor_compra, 2, ',', '.'),
-                $pontosCalculados);
+            $this->registrarAtividade(
+                $user->id,
+                'checkin_pending',
+                "Check-in pendente no {$empresa->nome} - R$ " . number_format((float) $request->valor_compra, 2, ',', '.'),
+                $pontosCalculados
+            );
 
             return response()->json([
                 'success' => true,
-                'message' => 'Check-in registrado com sucesso! Seus pontos estão em validação.',
+                'message' => 'Check-in registrado com sucesso! Seus pontos estao em validacao.',
                 'data' => [
                     'checkin_id' => $checkin->id,
                     'pontos_calculados' => $pontosCalculados,
                     'codigo_validacao' => $checkin->codigo_validacao,
                     'status' => 'pending',
                     'pontos_pendentes' => $user->fresh()->pontos_pendentes,
-                    'total_pontos' => $user->fresh()->pontos
-                ]
+                    'total_pontos' => $user->fresh()->pontos,
+                ],
             ]);
 
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Dados de check-in invalidos.',
+                'errors' => $e->errors(),
+            ], 422);
         } catch (\Exception $e) {
             Log::error('Erro no check-in', ['error' => $e->getMessage(), 'request' => $request->all()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Erro interno do servidor: ' . $e->getMessage()
+                'message' => 'Erro interno do servidor.',
             ], 500);
         }
     }

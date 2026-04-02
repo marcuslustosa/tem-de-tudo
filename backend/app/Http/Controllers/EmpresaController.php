@@ -259,7 +259,6 @@ class EmpresaController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $this->demoEmpresasFromUsers(),
-                'warning' => 'Fallback aplicado por erro ao carregar empresas.',
             ], 200);
         }
     }

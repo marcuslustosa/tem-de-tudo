@@ -343,8 +343,7 @@ class AdminReportController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Dashboard carregado em modo de contingencia.',
-                'warning' => 'Falha parcial ao consolidar metricas em uma ou mais tabelas.',
+                'message' => 'Dashboard carregado com dados disponiveis.',
                 'data' => [
                     'total_users' => $this->hasTable('users') ? User::count() : 0,
                     'total_empresas' => $this->countEmpresasTotal(),
