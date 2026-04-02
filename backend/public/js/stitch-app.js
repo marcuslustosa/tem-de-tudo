@@ -274,7 +274,7 @@
   // ---------------------- Navegacao de fallback ---------------------- //
   function getScopeForCurrentPage() {
     const pageGroups = {
-      admin: ['dashboard_admin_master', 'gest_o_de_estabelecimentos', 'gest_o_de_usu_rios_master', 'gest_o_de_clientes_master', 'relat_rios_gerais_master', 'banners_e_categorias_master'],
+      admin: ['dashboard_admin_master', 'gest_o_de_estabelecimentos', 'gest_o_de_usu_rios_master', 'gest_o_de_clientes_master', 'relat_rios_gerais_master', 'banners_e_categorias_master', 'configuracoes_admin'],
       empresa: ['dashboard_parceiro', 'gest_o_de_ofertas_parceiro', 'minhas_campanhas_loja', 'clientes_fidelizados_loja'],
       cliente: ['meus_pontos', 'parceiros_tem_de_tudo', 'detalhe_do_parceiro', 'recompensas', 'hist_rico_de_uso', 'meu_perfil', 'validar_resgate'],
     };
@@ -305,7 +305,7 @@
         image: '/banners_e_categorias_master.html',
         collections: '/banners_e_categorias_master.html',
         category: '/banners_e_categorias_master.html',
-        settings: '/banners_e_categorias_master.html',
+        settings: '/configuracoes_admin.html',
       },
       empresa: {
         dashboard: '/dashboard_parceiro.html',
@@ -357,8 +357,11 @@
       return scope === 'admin' ? '/gest_o_de_estabelecimentos.html' : (scope === 'empresa' ? '/clientes_fidelizados_loja.html' : '/parceiros_tem_de_tudo.html');
     }
     if (text.includes('relatorio') || text.includes('metrica')) return scope === 'admin' ? '/relat_rios_gerais_master.html' : '/minhas_campanhas_loja.html';
+    if (text.includes('venda')) return scope === 'admin' ? '/relat_rios_gerais_master.html' : '/gest_o_de_ofertas_parceiro.html';
     if (text.includes('campanha') || text.includes('oferta')) return scope === 'empresa' ? '/gest_o_de_ofertas_parceiro.html' : null;
     if (text.includes('conteudo') || text.includes('banner') || text.includes('categoria')) return scope === 'admin' ? '/banners_e_categorias_master.html' : null;
+    if (text.includes('configur')) return scope === 'admin' ? '/configuracoes_admin.html' : '/meu_perfil.html';
+    if (text.includes('comecar agora') || text.includes('gerar relatorio')) return scope === 'admin' ? '/relat_rios_gerais_master.html?gerar=1' : null;
     if (text.includes('perfil') || text.includes('conta')) return '/meu_perfil.html';
     if (text.includes('suporte')) return '__support__';
     if (text.includes('novo parceiro') || text.includes('novo estabelecimento')) {
@@ -425,7 +428,7 @@
 
     const roleMap = perfil === 'admin'
       ? {
-          '/meus_pontos.html': '/dashboard_admin_master.html',
+          '/meus_pontos.html': '/relat_rios_gerais_master.html',
           '/parceiros_tem_de_tudo.html': '/gest_o_de_estabelecimentos.html',
           '/detalhe_do_parceiro.html': '/gest_o_de_estabelecimentos.html',
           '/recompensas.html': '/relat_rios_gerais_master.html',
@@ -521,6 +524,28 @@
           console.error('push_enable_fail', err);
           ui.message('Nao foi possivel ativar push neste momento.', 'error');
         }
+      });
+    });
+  }
+
+  function wireSettingsShortcuts() {
+    const scope = getScopeForCurrentPage();
+    const target = scope === 'admin' ? '/configuracoes_admin.html' : '/meu_perfil.html';
+
+    document.querySelectorAll('button').forEach((btn) => {
+      if (btn.dataset.settingsBound === '1') return;
+      if (btn.closest('form')) return;
+      if ((btn.getAttribute('type') || '').toLowerCase() === 'submit') return;
+
+      const iconEl = btn.querySelector('[data-icon], .material-symbols-outlined');
+      const icon = (iconEl?.getAttribute('data-icon') || iconEl?.textContent || '').toString().toLowerCase().trim();
+      const isSettingsButton = icon === 'settings' || btn.hasAttribute('data-settings-shortcut');
+      if (!isSettingsButton) return;
+
+      btn.dataset.settingsBound = '1';
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        window.location.href = target;
       });
     });
   }
@@ -1258,7 +1283,7 @@
       const remapPerfilNav = (perfilAtual) => {
         const map = perfilAtual === 'admin'
           ? {
-              '/meus_pontos.html': '/dashboard_admin_master.html',
+              '/meus_pontos.html': '/relat_rios_gerais_master.html',
               '/parceiros_tem_de_tudo.html': '/gest_o_de_estabelecimentos.html',
               '/recompensas.html': '/relat_rios_gerais_master.html',
             }
@@ -1313,6 +1338,35 @@
         }
       };
       remapPerfilNav(perfil);
+
+      const menuButtons = Array.from(document.querySelectorAll('main section button'));
+      const go = (url) => () => {
+        window.location.href = url;
+      };
+      menuButtons.forEach((btn) => {
+        if (btn.id === 'logoutBtn') return;
+        if (btn.dataset.profileNavBound === '1') return;
+        const text = (btn.textContent || '').toLowerCase();
+        let target = null;
+
+        if (text.includes('beneficio') || text.includes('recompensa') || text.includes('premio')) {
+          target = perfil === 'admin'
+            ? '/relat_rios_gerais_master.html'
+            : (perfil === 'empresa' ? '/gest_o_de_ofertas_parceiro.html' : '/recompensas.html');
+        } else if (text.includes('historico')) {
+          target = perfil === 'admin'
+            ? '/relat_rios_gerais_master.html'
+            : (perfil === 'empresa' ? '/minhas_campanhas_loja.html' : '/hist_rico_de_uso.html');
+        } else if (text.includes('configur')) {
+          target = perfil === 'admin' ? '/configuracoes_admin.html' : '/meu_perfil.html';
+        } else if (text.includes('ajuda') || text.includes('suporte')) {
+          target = 'mailto:contato@temdetudo.com';
+        }
+
+        if (!target) return;
+        btn.dataset.profileNavBound = '1';
+        btn.addEventListener('click', go(target));
+      });
 
       if (heroName) heroName.textContent = user?.name || user?.nome || 'Usuario';
       if (heroLevel) heroLevel.textContent = user?.perfil ? user.perfil.toUpperCase() : 'MEMBRO';
@@ -1897,6 +1951,44 @@
         });
       }
 
+      document.getElementById('adminGenerateReportBtn')?.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        const reportBtn = document.getElementById('adminGenerateReportBtn');
+        reportBtn?.setAttribute('disabled', 'disabled');
+        reportBtn?.classList.add('opacity-70');
+        try {
+          const stored = auth.getStored();
+          const resp = await fetch(`${API_BASE}/admin/reports/export`, {
+            method: 'GET',
+            headers: {
+              Accept: 'text/csv,application/json',
+              ...(stored?.token ? { Authorization: `Bearer ${stored.token}` } : {}),
+            },
+          });
+          if (resp.ok) {
+            const blob = await resp.blob();
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = `relatorio-admin-${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+            URL.revokeObjectURL(url);
+            ui.message('Relatorio gerado com sucesso.', 'success');
+            return;
+          }
+
+          window.location.href = '/relat_rios_gerais_master.html?gerar=1';
+        } catch (err) {
+          console.error('admin_generate_report_fail', err);
+          window.location.href = '/relat_rios_gerais_master.html?gerar=1';
+        } finally {
+          reportBtn?.removeAttribute('disabled');
+          reportBtn?.classList.remove('opacity-70');
+        }
+      });
+
       // Sem banner de erro global aqui: usamos fallback de dados para manter o painel operacional.
     },
 
@@ -2382,7 +2474,95 @@
         }
       }
 
+      const shouldExport = new URLSearchParams(window.location.search).get('gerar') === '1';
+      if (shouldExport) {
+        const stored = auth.getStored();
+        try {
+          const resp = await fetch(`${API_BASE}/admin/reports/export`, {
+            method: 'GET',
+            headers: {
+              Accept: 'text/csv,application/json',
+              ...(stored?.token ? { Authorization: `Bearer ${stored.token}` } : {}),
+            },
+          });
+          if (resp.ok) {
+            const blob = await resp.blob();
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = `relatorio-admin-${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+            URL.revokeObjectURL(url);
+            ui.message('Relatorio gerado com sucesso.', 'success');
+          } else {
+            ui.message('Nao foi possivel gerar o relatorio agora.', 'error');
+          }
+        } finally {
+          const params = new URLSearchParams(window.location.search);
+          params.delete('gerar');
+          const clean = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+          window.history.replaceState({}, '', clean);
+        }
+      }
+
       // Sem banner de erro global aqui: fallback evita ruido visual.
+    },
+
+    async configuracoes() {
+      if (!(await auth.guard(['admin']))) return;
+      ui.setPageState('loading', 'Carregando configuracoes...');
+      const { res, data } = await api.request('/admin/settings', {}, { notify: false });
+      ui.clearPageState();
+
+      if (!res.ok || data?.success === false || !data?.data) {
+        ui.message(data?.message || 'Nao foi possivel carregar configuracoes.', 'error');
+        return;
+      }
+
+      const cfg = data.data;
+      const bind = (id) => document.getElementById(id);
+
+      if (bind('cfgPlatformName')) bind('cfgPlatformName').value = cfg.platform_name || 'Tem de Tudo';
+      if (bind('cfgSupportEmail')) bind('cfgSupportEmail').value = cfg.support_email || '';
+      if (bind('cfgSupportWhatsapp')) bind('cfgSupportWhatsapp').value = cfg.support_whatsapp || '';
+      if (bind('cfgPointsBase')) bind('cfgPointsBase').value = Number(cfg.points_base_per_real ?? 1);
+      if (bind('cfgPointsExpiration')) bind('cfgPointsExpiration').value = Number(cfg.points_expiration_days ?? 365);
+      if (bind('cfgAllowCliente')) bind('cfgAllowCliente').checked = Boolean(cfg.allow_register_cliente);
+      if (bind('cfgAllowEmpresa')) bind('cfgAllowEmpresa').checked = Boolean(cfg.allow_register_empresa);
+      if (bind('cfgPushEnabled')) bind('cfgPushEnabled').checked = Boolean(cfg.push_enabled);
+      if (bind('cfgMaintenanceMode')) bind('cfgMaintenanceMode').checked = Boolean(cfg.maintenance_mode);
+
+      bind('cfgReloadBtn')?.addEventListener('click', () => window.location.reload());
+
+      bind('cfgSaveBtn')?.addEventListener('click', async () => {
+        const payload = {
+          platform_name: bind('cfgPlatformName')?.value || 'Tem de Tudo',
+          support_email: bind('cfgSupportEmail')?.value || '',
+          support_whatsapp: bind('cfgSupportWhatsapp')?.value || '',
+          points_base_per_real: Number(bind('cfgPointsBase')?.value || 1),
+          points_expiration_days: Number(bind('cfgPointsExpiration')?.value || 365),
+          allow_register_cliente: Boolean(bind('cfgAllowCliente')?.checked),
+          allow_register_empresa: Boolean(bind('cfgAllowEmpresa')?.checked),
+          push_enabled: Boolean(bind('cfgPushEnabled')?.checked),
+          maintenance_mode: Boolean(bind('cfgMaintenanceMode')?.checked),
+        };
+
+        const saveBtn = bind('cfgSaveBtn');
+        saveBtn?.setAttribute('disabled', 'disabled');
+        saveBtn?.classList.add('opacity-70');
+        const resp = await api.request('/admin/settings', { method: 'PUT', body: JSON.stringify(payload) });
+        saveBtn?.removeAttribute('disabled');
+        saveBtn?.classList.remove('opacity-70');
+
+        if (resp.res.ok && resp.data?.success !== false) {
+          ui.message(resp.data?.message || 'Configuracoes salvas com sucesso.', 'success');
+        } else {
+          const errors = resp.data?.errors ? Object.values(resp.data.errors).flat().join(' ') : '';
+          ui.message(resp.data?.message || errors || 'Erro ao salvar configuracoes.', 'error');
+        }
+      });
     },
   };
 
@@ -2562,6 +2742,7 @@
     gest_o_de_usu_rios_master: admin.usuarios,
     gest_o_de_clientes_master: admin.clientesMaster,
     relat_rios_gerais_master: admin.relatorios,
+    configuracoes_admin: admin.configuracoes,
     banners_e_categorias_master: async () => {
       if (!(await auth.guard(['admin']))) return;
       const status = document.getElementById('conteudoStatus');
@@ -2800,11 +2981,38 @@
       try {
         await renderContent();
       } catch (err) {
+        console.error('admin_content_render_fail', err);
         const payload = fallbackContent();
-        await (async () => {
-          const { banners = [], categorias = [] } = payload;
-          if (status) status.textContent = `Conteudo sincronizado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
-        })();
+        const { banners = [], categorias = [] } = payload;
+        if (status) status.textContent = `Conteudo sincronizado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
+        if (bannersSection) {
+          bannersSection.innerHTML = `
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-headline font-bold text-on-surface">Banners</h3>
+            </div>
+            <div class="space-y-3">${banners.map((b) => `
+              <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="font-bold text-sm text-on-surface truncate">${escapeHtml(b.title)}</p>
+                  <p class="text-xs text-on-surface-variant truncate">${escapeHtml(b.link || '-')}</p>
+                </div>
+                <span class="text-[10px] font-bold uppercase ${b.active ? 'text-tertiary' : 'text-outline'}">${b.active ? 'Ativo' : 'Inativo'}</span>
+              </div>`).join('')}</div>`;
+        }
+        if (categoriasSection) {
+          categoriasSection.innerHTML = `
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-headline font-bold text-on-surface">Categorias</h3>
+            </div>
+            <div class="space-y-3">${categorias.map((c) => `
+              <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="font-bold text-sm text-on-surface truncate">${escapeHtml(c.name)}</p>
+                  <p class="text-xs text-on-surface-variant truncate">${escapeHtml(c.slug || '-')}</p>
+                </div>
+                <span class="text-[10px] font-bold uppercase ${c.active ? 'text-tertiary' : 'text-outline'}">${c.active ? 'Ativo' : 'Inativo'}</span>
+              </div>`).join('')}</div>`;
+        }
       }
     },
   };
@@ -2815,6 +3023,7 @@
     harmonizeLinksByStoredPerfil();
     wireFallbackLinks();
     wireFallbackButtons();
+    wireSettingsShortcuts();
     wirePushButtons();
     const handler = handlers[page];
     if (handler) {

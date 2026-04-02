@@ -436,6 +436,49 @@ class AdminReportController extends Controller
         }
     }
 
+    public function exportResumoCsv(Request $request)
+    {
+        try {
+            $totUsuarios = User::count();
+            $totEmpresas = $this->countEmpresasTotal();
+            $totPromocoes = $this->hasTable('promocoes') ? DB::table('promocoes')->count() : 0;
+            $totResgates = $this->hasTable('coupons')
+                ? DB::table('coupons')->whereIn('status', ['used', 'utilizado'])->count()
+                : 0;
+            $totPontos = $this->hasTable('pontos') ? DB::table('pontos')->sum('pontos') : 0;
+
+            $rows = [
+                ['metrica', 'valor'],
+                ['usuarios', $totUsuarios],
+                ['empresas', $totEmpresas],
+                ['promocoes', $totPromocoes],
+                ['resgates', $totResgates],
+                ['pontos_distribuidos', $totPontos],
+                ['gerado_em', now()->toDateTimeString()],
+            ];
+
+            $csv = implode("\n", array_map(function ($row) {
+                return implode(',', array_map(function ($value) {
+                    $val = (string) $value;
+                    $escaped = str_replace('"', '""', $val);
+                    return '"' . $escaped . '"';
+                }, $row));
+            }, $rows));
+
+            return response($csv, 200, [
+                'Content-Type' => 'text/csv; charset=UTF-8',
+                'Content-Disposition' => 'attachment; filename="relatorio-admin.csv"',
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Erro ao exportar relatorio admin', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao foi possivel gerar o relatorio.',
+            ], 500);
+        }
+    }
+
     /**
      * Formatar acao para exibicao
      */

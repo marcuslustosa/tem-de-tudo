@@ -68,21 +68,10 @@ class EmpresaController extends Controller
 
     private function demoEmpresasFromUsers(): array
     {
+        $defaultRows = $this->defaultDemoEmpresas();
+
         if (!Schema::hasTable('users')) {
-            return [
-                [
-                    'id' => 1,
-                    'nome' => 'Parceiro Demo',
-                    'descricao' => 'Conta empresarial ativa na plataforma.',
-                    'categoria' => 'geral',
-                    'ramo' => 'geral',
-                    'endereco' => 'Endereco nao informado',
-                    'telefone' => '-',
-                    'email' => '-',
-                    'logo' => '/assets/images/company1.jpg',
-                    'points_multiplier' => 1,
-                ],
-            ];
+            return $defaultRows;
         }
         $perfilCol = $this->resolveUserPerfilColumn();
         $nameCol = $this->hasColumn('users', 'name') ? 'name' : ($this->hasColumn('users', 'nome') ? 'nome' : null);
@@ -111,7 +100,7 @@ class EmpresaController extends Controller
             '/assets/images/company4.jpg',
         ];
 
-        return collect($empresaUsers)->values()->map(function ($u, $idx) use ($defaults) {
+        $fromUsers = collect($empresaUsers)->values()->map(function ($u, $idx) use ($defaults) {
             return [
                 'id' => $u->id,
                 'nome' => $this->cleanUtf8($u->nome_usuario ?? 'Estabelecimento'),
@@ -123,6 +112,55 @@ class EmpresaController extends Controller
                 'email' => $this->cleanUtf8($u->email_usuario ?? '-'),
                 'logo' => $defaults[$idx % count($defaults)],
                 'points_multiplier' => 1,
+            ];
+        })->toArray();
+
+        if (count($fromUsers) >= 10) {
+            return $fromUsers;
+        }
+
+        $knownNames = array_map(fn ($item) => strtolower((string) ($item['nome'] ?? '')), $fromUsers);
+        foreach ($defaultRows as $row) {
+            $key = strtolower((string) ($row['nome'] ?? ''));
+            if (in_array($key, $knownNames, true)) {
+                continue;
+            }
+            $fromUsers[] = $row;
+            if (count($fromUsers) >= 10) {
+                break;
+            }
+        }
+
+        return $fromUsers;
+    }
+
+    private function defaultDemoEmpresas(): array
+    {
+        $base = [
+            ['nome' => 'Restaurante Sabor & Arte', 'categoria' => 'restaurante', 'ramo' => 'restaurante'],
+            ['nome' => 'Academia Corpo Forte', 'categoria' => 'academia', 'ramo' => 'academia'],
+            ['nome' => 'Cafeteria Aroma Premium', 'categoria' => 'cafeteria', 'ramo' => 'cafeteria'],
+            ['nome' => 'Pet Shop Amigo Fiel', 'categoria' => 'pet_shop', 'ramo' => 'pet_shop'],
+            ['nome' => 'Salao Beleza Total', 'categoria' => 'beleza', 'ramo' => 'salao'],
+            ['nome' => 'Farmacia Saude Mais', 'categoria' => 'farmacia', 'ramo' => 'farmacia'],
+            ['nome' => 'Padaria Pao Quentinho', 'categoria' => 'padaria', 'ramo' => 'padaria'],
+            ['nome' => 'Mercado Bom Preco', 'categoria' => 'mercado', 'ramo' => 'mercado'],
+            ['nome' => 'Droga Raia Centro', 'categoria' => 'farmacia', 'ramo' => 'farmacia'],
+            ['nome' => 'Smart Fit Paulista', 'categoria' => 'academia', 'ramo' => 'academia'],
+        ];
+
+        return collect($base)->values()->map(function ($row, $idx) {
+            return [
+                'id' => $idx + 1,
+                'nome' => $row['nome'],
+                'descricao' => 'Estabelecimento ativo no programa de fidelidade.',
+                'categoria' => $row['categoria'],
+                'ramo' => $row['ramo'],
+                'endereco' => 'Rua Demo, ' . (200 + $idx) . ' - Sao Paulo, SP',
+                'telefone' => sprintf('(11) 9%04d-%04d', 5100 + $idx, 6100 + $idx),
+                'email' => 'contato' . ($idx + 1) . '@demo.com',
+                'logo' => '/assets/images/company' . (($idx % 4) + 1) . '.jpg',
+                'points_multiplier' => 1 + (($idx % 3) * 0.25),
             ];
         })->toArray();
     }
