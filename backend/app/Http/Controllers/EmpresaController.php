@@ -5,19 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Empresa;
 
 class EmpresaController extends Controller
 {
+    // Cache estrutura do banco por 1 hora (3600s) - evita overhead em produção
     private function hasEmpresasTable(): bool
     {
-        return Schema::hasTable('empresas');
+        return Cache::remember('schema:empresas_table_exists', 3600, function () {
+            return Schema::hasTable('empresas');
+        });
     }
 
     private function hasColumn(string $table, string $column): bool
     {
-        return Schema::hasTable($table) && Schema::hasColumn($table, $column);
+        $cacheKey = "schema:{$table}:{$column}_exists";
+        return Cache::remember($cacheKey, 3600, function () use ($table, $column) {
+            return Schema::hasTable($table) && Schema::hasColumn($table, $column);
+        });
     }
 
     private function isBooleanColumn(string $table, string $column): bool
@@ -26,23 +33,27 @@ class EmpresaController extends Controller
             return false;
         }
 
-        try {
-            $type = strtolower((string) Schema::getColumnType($table, $column));
-            return in_array($type, ['bool', 'boolean'], true);
-        } catch (\Throwable) {
-            return false;
-        }
+        $cacheKey = "schema:{$table}:{$column}_is_boolean";
+        return Cache::remember($cacheKey, 3600, function () use ($table, $column) {
+            try {
+                $type = strtolower((string) Schema::getColumnType($table, $column));
+                return in_array($type, ['bool', 'boolean'], true);
+            } catch (\Throwable) {
+                return false;
+            }
+        });
     }
 
     private function resolveUserPerfilColumn(): ?string
     {
-        foreach (['perfil', 'role', 'tipo'] as $column) {
-            if ($this->hasColumn('users', $column)) {
-                return $column;
+        return Cache::remember('schema:users_perfil_column', 3600, function () {
+            foreach (['perfil', 'role', 'tipo'] as $column) {
+                if ($this->hasColumn('users', $column)) {
+                    return $column;
+                }
             }
-        }
-
-        return null;
+            return null;
+        });
     }
 
     private function applyEmpresaAtivoScope($query)
@@ -208,12 +219,16 @@ class EmpresaController extends Controller
     public function listEmpresas(Request $request)
     {
         try {
-            if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
-                return response()->json([
-                    'success' => true,
-                    'data' => $this->demoEmpresasFromUsers(),
-                ]);
-            }
+            // Cache key baseado nos parâmetros da busca
+            $cacheKey = 'empresas.list.' . md5(json_encode($request->all()));
+            
+            return Cache::remember($cacheKey, 300, function () use ($request) {
+                if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
+                    return response()->json([
+                        'success' => true,
+                        'data' => $this->demoEmpresasFromUsers(),
+                    ]);
+                }
 
             $query = Empresa::query();
             $this->applyEmpresaAtivoScope($query);
@@ -291,6 +306,8 @@ class EmpresaController extends Controller
                 'success' => true,
                 'data' => $mapped
             ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            }); // Fecha Cache::remember
+            
         } catch (\Exception $e) {
             Log::error('Erro ao listar empresas: ' . $e->getMessage());
 

@@ -172,15 +172,16 @@ class DadosFictSistemaVipSeeder extends Seeder
                 CheckIn::create([
                     'user_id' => $usuario->id,
                     'empresa_id' => $empresa->id,
+                    'pontos_calculados' => $pontos,
                     'pontos_ganhos' => $pontos,
                     'pontos_base' => intval($pontos / $usuario->multiplicador_pontos),
                     'multiplicador' => $usuario->multiplicador_pontos,
-                    'valor_compra' => $valor_compra,
-                    'detalhes_calculo' => [
+                    'valor_compra' => $valor_compra / 100, // Converter centavos para reais
+                    'detalhes_calculo' => json_encode([
                         'base' => intval($pontos / $usuario->multiplicador_pontos),
                         'multiplicador' => $usuario->multiplicador_pontos,
                         'total' => $pontos
-                    ],
+                    ]),
                     'created_at' => $data_checkin,
                     'updated_at' => $data_checkin
                 ]);
@@ -192,7 +193,6 @@ class DadosFictSistemaVipSeeder extends Seeder
                     'tipo' => 'checkin',
                     'descricao' => "Check-in em {$empresa->nome}",
                     'empresa_id' => $empresa->id,
-                    'data_expiracao' => $data_checkin->copy()->addYear(),
                     'created_at' => $data_checkin,
                     'updated_at' => $data_checkin
                 ]);

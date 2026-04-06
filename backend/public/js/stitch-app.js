@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Stitch Integration Layer (Tem de Tudo)
  * Objetivo: manter comportamento atual, com codigo mais organizado e claro.
  * Modulos internos: api, auth, ui, render, pages (cliente/empresa/admin/shared).
@@ -85,6 +85,11 @@
   }
 
   function decodeMojibake(value) {
+    // ⚠️ OTIMIZAÇÃO: Com UTF-8 configurado corretamente (DB_CHARSET=utf8mb4),
+    // este workaround não é mais necessário. Retornamos direto.
+    return value == null ? '' : String(value);
+    
+    /* CÓDIGO ANTIGO (mantido comentado para rollback se necessário):
     if (value == null) return '';
     let text = String(value);
     for (let i = 0; i < 3; i += 1) {
@@ -100,7 +105,9 @@
       }
     }
     return text;
+    */
   }
+
 
   function safeText(value, fallback = '') {
     const parsed = decodeMojibake(value).trim();

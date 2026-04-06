@@ -29,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.permission' => \App\Http\Middleware\AdminPermissionMiddleware::class,
             'role.permission' => \App\Http\Middleware\RolePermissionMiddleware::class,
             'security' => \App\Http\Middleware\SecurityMiddleware::class,
+            'cache.response' => \App\Http\Middleware\CacheResponse::class,
         ]);
     })
     ->withSchedule(function (Schedule $schedule): void {

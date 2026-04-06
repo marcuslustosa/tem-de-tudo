@@ -104,19 +104,27 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
-// Empresas (leitura pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblica)
-Route::get('/empresas', [EmpresaController::class, 'listEmpresas']);
-Route::get('/empresas/{id}', [EmpresaController::class, 'getEmpresa']);
-Route::get('/empresas/{id}/promocoes', [EmpresaController::class, 'getEmpresaPromocoes']);
+// Empresas (leitura pública) - COM CACHE
+Route::get('/empresas', [EmpresaController::class, 'listEmpresas'])
+    ->middleware('cache.response:300'); // 5 minutos
+Route::get('/empresas/{id}', [EmpresaController::class, 'getEmpresa'])
+    ->middleware('cache.response:600'); // 10 minutos
+Route::get('/empresas/{id}/promocoes', [EmpresaController::class, 'getEmpresaPromocoes'])
+    ->middleware('cache.response:600'); // 10 minutos
 
-// Produtos das empresas (leitura pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblica) 
-Route::get('/empresas/{empresaId}/produtos', [ProdutoController::class, 'index']);
-Route::get('/empresas/{empresaId}/produtos/{id}', [ProdutoController::class, 'show']);
+// Produtos das empresas (leitura pública) - COM CACHE
+Route::get('/empresas/{empresaId}/produtos', [ProdutoController::class, 'index'])
+    ->middleware('cache.response:600'); // 10 minutos
+Route::get('/empresas/{empresaId}/produtos/{id}', [ProdutoController::class, 'show'])
+    ->middleware('cache.response:600'); // 10 minutos
 
-// Badges (informaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblicas)
-Route::get('/badges', [BadgeController::class, 'index']);
-Route::get('/badges/{id}', [BadgeController::class, 'show']);
-Route::get('/badges/ranking', [BadgeController::class, 'ranking']);
+// Badges (informações públicas) - COM CACHE
+Route::get('/badges', [BadgeController::class, 'index'])
+    ->middleware('cache.response:1800'); // 30 minutos
+Route::get('/badges/{id}', [BadgeController::class, 'show'])
+    ->middleware('cache.response:1800'); // 30 minutos
+Route::get('/badges/ranking', [BadgeController::class, 'ranking'])
+    ->middleware('cache.response:1800'); // 30 minutos
 
 // Webhook do Mercado Pago (pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblico)
 Route::post('/webhook/mercadopago', [PagamentoController::class, 'webhook'])->name('webhook.mercadopago');

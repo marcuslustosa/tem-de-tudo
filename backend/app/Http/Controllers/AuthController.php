@@ -28,8 +28,7 @@ class AuthController extends Controller
         Log::info('=== INÍCIO DO REGISTRO ===', [
             'ip' => $request->ip(),
             'user_agent' => $request->userAgent(),
-            'headers' => $request->headers->all(),
-            'data' => $request->all()
+            'tipo_usuario' => $request->input('tipo_usuario')
         ]);
 
         // Rate limiting para registro
