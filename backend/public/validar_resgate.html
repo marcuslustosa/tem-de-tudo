@@ -124,25 +124,37 @@
 </header>
 <!-- QR Scanner Simulator Bento-ish Container -->
 <div class="w-full max-w-md aspect-square bg-surface-container rounded-[1.5rem] relative overflow-hidden flex items-center justify-center mb-8 border-4 border-surface-container-low">
-<!-- Simulated Camera Feed -->
-<div class="absolute inset-0 opacity-40">
-<img alt="Camera background" class="w-full h-full object-cover" data-alt="blurred background of a modern retail store interior with soft bokeh lights and clean minimalist shelves" src="/assets/images/company1.jpg"/>
-</div>
+<!-- Câmera Real -->
+<video id="qrVideo" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
 <!-- Scanning Frame -->
-<div class="relative w-64 h-64 border-2 border-primary/30 rounded-xl overflow-hidden glass-panel flex flex-col items-center justify-center">
+<div class="relative w-64 h-64 border-2 border-primary/30 rounded-xl overflow-hidden glass-panel flex flex-col items-center justify-center z-10" id="scanFrame">
 <div class="qr-scanner-overlay"></div>
 <!-- Visual Placeholder for QR Code -->
-<span class="material-symbols-outlined text-primary text-8xl opacity-60">qr_code_2</span>
+<span class="material-symbols-outlined text-primary text-8xl opacity-60" id="qrPlaceholder">qr_code_2</span>
+<!-- Success indicator (hidden by default) -->
+<div id="scanSuccess" class="hidden absolute inset-0 bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-8xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
 <!-- Corner Accents -->
 <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
 <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
 <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-lg"></div>
 <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
 </div>
-<!-- Focus Help -->
-<div class="absolute bottom-6 flex items-center gap-2 px-4 py-2 bg-surface-container-lowest/80 backdrop-blur rounded-full shadow-sm">
+<!-- Status Message -->
+<div class="absolute top-6 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-surface-container-lowest/90 backdrop-blur rounded-full shadow-sm z-20">
+<span class="text-xs font-bold uppercase tracking-wider text-on-surface" id="scanStatus">Aguardando QR Code...</span>
+</div>
+<!-- Camera Controls -->
+<div class="absolute bottom-6 flex items-center gap-3 z-20">
+<button id="toggleFlash" class="px-4 py-2 bg-surface-container-lowest/80 backdrop-blur rounded-full shadow-sm flex items-center gap-2">
 <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">flashlight_on</span>
-<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface">Ativar Lanterna</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface">Lanterna</span>
+</button>
+<button id="switchCamera" class="px-4 py-2 bg-surface-container-lowest/80 backdrop-blur rounded-full shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">flip_camera_android</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface">Trocar Câmera</span>
+</button>
 </div>
 </div>
 <!-- Manual Entry Section -->
@@ -202,6 +214,190 @@
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Perfil</span>
 </div>
 </nav>
+
+<!-- jsQR Library for QR Code Detection -->
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+
+<script>
+// QR Scanner Real Camera Implementation
+(function() {
+  const video = document.getElementById('qrVideo');
+  const statusText = document.getElementById('scanStatus');
+  const placeholder = document.getElementById('qrPlaceholder');
+  const successIndicator = document.getElementById('scanSuccess');
+  const toggleFlashBtn = document.getElementById('toggleFlash');
+  const switchCameraBtn = document.getElementById('switchCamera');
+  
+  let stream = null;
+  let facingMode = 'environment'; // Start with rear camera
+  let scanning = true;
+  let lastScannedCode = null;
+  let lastScanTime = 0;
+  const SCAN_COOLDOWN = 3000; // 3 seconds between scans
+  
+  async function startCamera() {
+    try {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      
+      const constraints = {
+        video: {
+          facingMode: facingMode,
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      };
+      
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
+      video.srcObject = stream;
+      placeholder.classList.add('hidden');
+      statusText.textContent = 'Câmera ativa - Escaneie o QR Code';
+      
+      // Start scanning loop
+      requestAnimationFrame(scanQRCode);
+    } catch (error) {
+      console.error('Erro ao acessar câmera:', error);
+      statusText.textContent = 'Erro: Permita acesso à câmera';
+      statusText.classList.add('text-error');
+    }
+  }
+  
+  function scanQRCode() {
+    if (!scanning || !video.readyState === video.HAVE_ENOUGH_DATA) {
+      if (scanning) requestAnimationFrame(scanQRCode);
+      return;
+    }
+    
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height');
+    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+      inversionAttempts: 'dontInvert'
+    });
+    
+    if (code && code.data) {
+      const now = Date.now();
+      if (code.data !== lastScannedCode || (now - lastScanTime) > SCAN_COOLDOWN) {
+        lastScannedCode = code.data;
+        lastScanTime = now;
+        handleQRCodeDetected(code.data);
+      }
+    }
+    
+    if (scanning) {
+      requestAnimationFrame(scanQRCode);
+    }
+  }
+  
+  async function handleQRCodeDetected(qrData) {
+    console.log('QR Code detectado:', qrData);
+    
+    // Show success feedback
+    placeholder.classList.add('hidden');
+    successIndicator.classList.remove('hidden');
+    statusText.textContent = 'QR Code detectado! Validando...';
+    statusText.classList.add('text-primary');
+    
+    // Vibrate if supported
+    if (navigator.vibrate) {
+      navigator.vibrate(200);
+    }
+    
+    // Call validation API automatically
+    try {
+      const response = await fetch('/api/checkin/validar-qr', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+        },
+        body: JSON.stringify({ code: qrData })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        statusText.textContent = `✓ Validado! ${data.message || ''}`;
+        statusText.classList.remove('text-error');
+        statusText.classList.add('text-tertiary');
+        
+        // Fill manual input if exists
+        const manualInput = document.getElementById('cupomId');
+        if (manualInput) {
+          manualInput.value = qrData;
+        }
+        
+        // Auto-reload after 2 seconds to show updated list
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        statusText.textContent = `✗ ${data.message || 'QR inválido'}`;
+        statusText.classList.add('text-error');
+        successIndicator.classList.add('hidden');
+        
+        // Reset after 3 seconds
+        setTimeout(() => {
+          statusText.textContent = 'Aguardando próximo QR Code...';
+          statusText.classList.remove('text-error', 'text-primary');
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Erro na validação:', error);
+      statusText.textContent = '✗ Erro de conexão';
+      statusText.classList.add('text-error');
+      successIndicator.classList.add('hidden');
+      
+      setTimeout(() => {
+        statusText.textContent = 'Aguardando próximo QR Code...';
+        statusText.classList.remove('text-error');
+      }, 3000);
+    }
+  }
+  
+  // Toggle flashlight
+  toggleFlashBtn?.addEventListener('click', async () => {
+    if (!stream) return;
+    
+    const track = stream.getVideoTracks()[0];
+    const capabilities = track.getCapabilities();
+    
+    if (capabilities.torch) {
+      const current = track.getSettings();
+      const newState = !current.torch;
+      await track.applyConstraints({ advanced: [{ torch: newState }] });
+      toggleFlashBtn.classList.toggle('bg-primary', newState);
+      toggleFlashBtn.classList.toggle('text-white', newState);
+    } else {
+      alert('Lanterna não disponível neste dispositivo');
+    }
+  });
+  
+  // Switch camera
+  switchCameraBtn?.addEventListener('click', () => {
+    facingMode = facingMode === 'environment' ? 'user' : 'environment';
+    startCamera();
+  });
+  
+  // Initialize camera on page load
+  if (video) {
+    startCamera();
+  }
+  
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', () => {
+    scanning = false;
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+  });
+})();
+</script>
 
 <script src="/dist/stitch-app.min.js?v=20260406-prod"></script>
 </body></html>
