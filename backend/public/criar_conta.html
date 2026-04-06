@@ -22,6 +22,32 @@
       -webkit-backdrop-filter: blur(12px);
     }
   </style>
+  <script>
+    // Controle de acesso: apenas admin pode criar empresas
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const origem = urlParams.get('origem');
+      const tipo = urlParams.get('tipo');
+      const isAdmin = origem === 'admin';
+      
+      const empresaOption = document.getElementById('empresaOption');
+      const perfilSelect = document.getElementById('sgPerfil');
+      const empresaRestricao = document.getElementById('empresaRestricao');
+      
+      if (!isAdmin) {
+        // Público só pode criar conta de CLIENTE
+        empresaOption.remove();
+        perfilSelect.value = 'cliente';
+        perfilSelect.disabled = true;
+        empresaRestricao.classList.remove('hidden');
+      } else if (tipo === 'empresa') {
+        // Admin está criando empresa
+        perfilSelect.value = 'empresa';
+        const empresaFields = document.getElementById('empresaFields');
+        if (empresaFields) empresaFields.classList.remove('hidden');
+      }
+    });
+  </script>
   <script src="/dist/stitch-app.min.js?v=20260406-prod" defer></script>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 bg-white" data-page="criar_conta">
@@ -38,15 +64,19 @@
 
     <section class="glass-card rounded-3xl p-8 shadow-[0_20px_50px_rgba(11,31,58,0.12)] space-y-5">
       <form id="signupForm" class="space-y-4">
-        <div class="space-y-2">
+        <div class="space-y-2" id="perfilContainer">
           <label class="block text-xs font-semibold text-slate-600 uppercase tracking-widest pl-1">Tipo de conta</label>
           <div class="relative">
             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">group</span>
             <select id="sgPerfil" class="block w-full pl-11 pr-4 py-3 bg-slate-100 border-none rounded-2xl text-slate-800 focus:ring-2 focus:ring-[#7A2C8F]/20">
               <option value="cliente">Cliente</option>
-              <option value="empresa">Estabelecimento</option>
+              <option value="empresa" id="empresaOption">Estabelecimento</option>
             </select>
           </div>
+          <p id="empresaRestricao" class="hidden text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg border border-amber-200">
+            <span class="material-symbols-outlined text-sm align-middle">info</span>
+            Cadastro de estabelecimentos é feito pelo administrador após pagamento.
+          </p>
         </div>
 
         <div class="grid gap-4 md:grid-cols-2">

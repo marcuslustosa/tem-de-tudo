@@ -50,6 +50,26 @@ class AuthController extends Controller
             $perfil = $request->perfil;
             Log::info('Perfil selecionado', ['perfil' => $perfil]);
 
+            // RESTRIÇÃO: Apenas admin master pode criar empresas
+            if ($perfil === 'empresa') {
+                $user = $request->user(); // Usuário autenticado via Sanctum
+                
+                if (!$user || $user->role !== 'admin') {
+                    Log::warning('Tentativa de criar empresa sem autorização', [
+                        'ip' => $request->ip(),
+                        'user_id' => $user ? $user->id : null,
+                        'user_role' => $user ? $user->role : 'não autenticado'
+                    ]);
+                    
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Apenas administradores podem criar estabelecimentos. Cliente pode se cadastrar normalmente.'
+                    ], 403);
+                }
+                
+                Log::info('Admin autenticado criando empresa', ['admin_id' => $user->id, 'admin_email' => $user->email]);
+            }
+
             // Validações específicas por perfil
             $validationRules = $this->getValidationRulesForPerfil($perfil);
 

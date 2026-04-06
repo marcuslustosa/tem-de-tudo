@@ -2721,11 +2721,17 @@
           payload.cnpj = cnpj.value;
           payload.endereco = end.value;
         }
+        
+        // Se for admin criando empresa, enviar token de autenticação
+        const urlParams = new URLSearchParams(window.location.search);
+        const origem = urlParams.get('origem');
+        const requireAuth = (perfil === 'empresa' && origem === 'admin');
+        
         ui.setPageState('loading', 'Criando conta...');
         const { res, data } = await api.request('/auth/register', {
           method: 'POST',
           body: JSON.stringify(payload),
-        }, { requireAuth: false });
+        }, { requireAuth });
         ui.clearPageState();
         if (res.ok && data?.success !== false) {
           ui.message('Conta criada. Faca login.', 'success');
