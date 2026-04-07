@@ -1039,7 +1039,7 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
-        $user->password = Hash::make($request->password);
+        $user->password = $request->password;
         $user->save();
 
         DB::table('password_reset_tokens')->where('email', $request->email)->delete();
@@ -1062,7 +1062,7 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'message' => 'Senha atual incorreta.'], 422);
         }
 
-        $user->password = Hash::make($request->password);
+        $user->password = $request->password;
         $user->save();
 
         return response()->json(['success' => true, 'message' => 'Senha alterada com sucesso.']);
@@ -1237,7 +1237,7 @@ class AuthController extends Controller
             $user = User::create([
                 'name' => $payload['name'],
                 'email' => $payload['email'],
-                'password' => Hash::make($payload['password']),
+                'password' => $payload['password'],
                 'perfil' => $payload['perfil'],
                 'status' => $payload['status'] ?? 'ativo',
                 'telefone' => $payload['telefone'] ?? null,
