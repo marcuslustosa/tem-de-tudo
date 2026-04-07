@@ -612,7 +612,7 @@ class AuthController extends Controller
         $baseData = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
             'perfil' => $perfil,
             'status' => 'ativo',
         ];
