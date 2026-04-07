@@ -355,16 +355,16 @@ class AuthController extends Controller
         }
 
         try {
-            // Buscar usuário por email
-            $identifier = trim((string) $request->input('email'));
+            // Buscar usuário por email (case-insensitive)
+            $identifier = strtolower(trim((string) $request->input('email')));
             $userQuery = User::query();
 
             if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
-                $userQuery->where('email', $identifier);
+                $userQuery->whereRaw('LOWER(email) = ?', [$identifier]);
             } else {
                 $digits = preg_replace('/\D+/', '', $identifier);
                 $userQuery->where(function ($q) use ($identifier, $digits) {
-                    $q->where('email', $identifier);
+                    $q->whereRaw('LOWER(email) = ?', [$identifier]);
                     if ($digits && Schema::hasColumn('users', 'cpf')) {
                         $q->orWhereRaw("REPLACE(REPLACE(REPLACE(cpf, '.', ''), '-', ''), '/', '') = ?", [$digits]);
                     }
@@ -611,7 +611,7 @@ class AuthController extends Controller
     {
         $baseData = [
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => strtolower(trim($request->email)),
             'password' => $request->password,
             'perfil' => $perfil,
             'status' => 'ativo',
@@ -1236,7 +1236,7 @@ class AuthController extends Controller
         try {
             $user = User::create([
                 'name' => $payload['name'],
-                'email' => $payload['email'],
+                'email' => strtolower(trim($payload['email'])),
                 'password' => $payload['password'],
                 'perfil' => $payload['perfil'],
                 'status' => $payload['status'] ?? 'ativo',
