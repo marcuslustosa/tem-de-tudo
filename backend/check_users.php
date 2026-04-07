@@ -10,12 +10,12 @@ echo "🔍 USUÁRIOS DE TESTE TEM DE TUDO:\n";
 echo "==================================\n\n";
 
 $emails = [
-    'admin@temdetudo.com.br',
-    'cliente1@temdetudo.com.br', 
-    'empresa1@temdetudo.com.br',
     'admin@temdetudo.com',
-    'cliente@temdetudo.com',
-    'empresa@temdetudo.com'
+    'cliente@teste.com',
+    'empresa@teste.com',
+    'admin@temdetudo.com.br',
+    'cliente1@temdetudo.com.br',
+    'empresa1@temdetudo.com.br',
 ];
 
 $users = DB::table('users')->whereIn('email', $emails)->get();
@@ -33,9 +33,9 @@ if($users->count() > 0) {
     
     echo "\n🎯 CREDENCIAIS PARA TESTE:\n";
     echo "=========================\n";
-    echo "🔴 ADMIN: admin@temdetudo.com.br / Temdetudo123!\n";
-    echo "🔵 CLIENTE: cliente1@temdetudo.com.br / Temdetudo123!\n";
-    echo "🟢 EMPRESA: empresa1@temdetudo.com.br / Temdetudo123!\n\n";
+    echo "🔴 ADMIN:   admin@temdetudo.com / senha123\n";
+    echo "🔵 CLIENTE: cliente@teste.com   / senha123\n";
+    echo "🟢 EMPRESA: empresa@teste.com   / senha123\n\n";
 } else {
     echo "❌ Nenhum usuário de teste encontrado!\n";
     echo "📋 Execute: php seed_users.php para criar os usuários\n";

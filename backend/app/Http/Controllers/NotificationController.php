@@ -15,7 +15,16 @@ class NotificationController extends Controller
             ->orderByDesc('created_at')
             ->paginate(20);
 
-        return response()->json(['success' => true, 'data' => $notifications]);
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'data' => $notifications->items(),
+                'total' => $notifications->total(),
+                'current_page' => $notifications->currentPage(),
+                'per_page' => $notifications->perPage(),
+                'last_page' => $notifications->lastPage()
+            ]
+        ]);
     }
 
     public function markRead(Request $request, $id = null)

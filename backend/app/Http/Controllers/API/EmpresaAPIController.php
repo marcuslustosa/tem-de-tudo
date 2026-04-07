@@ -139,7 +139,13 @@ class EmpresaAPIController extends Controller
         
         return response()->json([
             'success' => true,
-            'data' => $clientes
+            'data' => [
+                'data' => $clientes->items(),
+                'total' => $clientes->total(),
+                'current_page' => $clientes->currentPage(),
+                'per_page' => $clientes->perPage(),
+                'last_page' => $clientes->lastPage()
+            ]
         ]);
     }
     
@@ -712,7 +718,16 @@ class EmpresaAPIController extends Controller
             $resgates = $query->orderByDesc('p.created_at')->paginate(20);
         }
 
-        return response()->json(['success' => true, 'data' => $resgates]);
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'data' => $resgates->items(),
+                'total' => $resgates->total(),
+                'current_page' => $resgates->currentPage(),
+                'per_page' => $resgates->perPage(),
+                'last_page' => $resgates->lastPage()
+            ]
+        ]);
     }
 }
 

@@ -462,7 +462,13 @@ class ClienteAPIController extends Controller
         
         return response()->json([
             'success' => true,
-            'data' => $historico
+            'data' => [
+                'data' => $historico->items(),
+                'total' => $historico->total(),
+                'current_page' => $historico->currentPage(),
+                'per_page' => $historico->perPage(),
+                'last_page' => $historico->lastPage()
+            ]
         ]);
     }
     

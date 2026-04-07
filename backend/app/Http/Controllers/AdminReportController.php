@@ -165,7 +165,13 @@ class AdminReportController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $logs,
+            'data' => [
+                'data' => $logs->items(),
+                'total' => $logs->total(),
+                'current_page' => $logs->currentPage(),
+                'per_page' => $logs->perPage(),
+                'last_page' => $logs->lastPage()
+            ]
         ]);
     }
 
@@ -245,7 +251,13 @@ class AdminReportController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $users,
+            'data' => [
+                'data' => $users->items(),
+                'total' => $users->total(),
+                'current_page' => $users->currentPage(),
+                'per_page' => $users->perPage(),
+                'last_page' => $users->lastPage()
+            ]
         ]);
     }
 

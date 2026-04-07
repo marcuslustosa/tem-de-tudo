@@ -1175,9 +1175,17 @@ class AuthController extends Controller
             });
         }
 
+        $users = $query->paginate($perPage);
+        
         return response()->json([
             'success' => true,
-            'data' => $query->paginate($perPage),
+            'data' => [
+                'data' => $users->items(),
+                'total' => $users->total(),
+                'current_page' => $users->currentPage(),
+                'per_page' => $users->perPage(),
+                'last_page' => $users->lastPage()
+            ]
         ]);
     }
 

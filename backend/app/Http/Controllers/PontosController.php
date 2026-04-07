@@ -468,7 +468,13 @@ class PontosController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $historico
+                'data' => [
+                    'data' => $historico->items(),
+                    'total' => $historico->total(),
+                    'current_page' => $historico->currentPage(),
+                    'per_page' => $historico->perPage(),
+                    'last_page' => $historico->lastPage()
+                ]
             ]);
 
         } catch (\Exception $e) {
@@ -515,7 +521,13 @@ class PontosController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $checkins
+                'data' => [
+                    'data' => $checkins->items(),
+                    'total' => $checkins->total(),
+                    'current_page' => $checkins->currentPage(),
+                    'per_page' => $checkins->perPage(),
+                    'last_page' => $checkins->lastPage()
+                ]
             ]);
 
         } catch (\Exception $e) {
