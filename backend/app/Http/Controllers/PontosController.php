@@ -17,6 +17,7 @@ use App\Models\Ponto;
 use App\Models\CheckIn;
 use App\Models\Coupon;
 use App\Models\QRCode;
+use App\Jobs\SendWebPushJob;
 
 class PontosController extends Controller
 {
@@ -71,6 +72,14 @@ class PontosController extends Controller
                     'checkin_manual',
                     "Acumulo manual no {$empresa->nome}",
                     $pontosCalculados
+                );
+
+                // Notificação push
+                SendWebPushJob::dispatch(
+                    title: '+' . $pontosCalculados . ' pontos!',
+                    body: "Você acumulou pontos em {$empresa->nome}. Saldo: " . ($user->fresh()->pontos) . ' pts.',
+                    data: ['type' => 'checkin', 'empresa' => $empresa->nome, 'url' => '/meus_pontos.html'],
+                    userIds: [$user->id]
                 );
 
                 return response()->json([

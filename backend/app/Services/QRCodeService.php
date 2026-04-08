@@ -16,31 +16,21 @@ class QRCodeService
     public function gerarQRCodeEmpresa(Empresa $empresa)
     {
         // Verificar se empresa já tem QR Code
-        $qrCodeExistente = QRCode::where('empresa_id', $empresa->id)
-            ->where('type', 'empresa')
-            ->first();
+        $qrCodeExistente = QRCode::where('empresa_id', $empresa->id)->first();
 
         if ($qrCodeExistente) {
             return $qrCodeExistente;
         }
 
-        // Gerar código único
-        $code = QRCode::gerarCodigoUnico('empresa', $empresa->id);
+        // Gerar código único (método estático recebe apenas $empresaId)
+        $code = QRCode::gerarCodigoUnico($empresa->id);
 
-        // Gerar imagem do QR Code (formato PNG base64)
-        $qrImage = base64_encode(QrCodeGenerator::format('png')
-            ->size(500)
-            ->errorCorrection('H')
-            ->generate($code));
-
-        // Criar registro no banco
+        // Criar registro no banco com campos corretos da tabela
         $qrCode = QRCode::create([
             'code' => $code,
-            'type' => 'empresa',
+            'name' => 'QR Code Principal',
             'empresa_id' => $empresa->id,
-            'user_id' => null,
-            'qr_image' => $qrImage,
-            'ativo' => true
+            'active' => true,
         ]);
 
         return $qrCode;
@@ -51,35 +41,10 @@ class QRCodeService
      */
     public function gerarQRCodeCliente(User $user)
     {
-        // Verificar se cliente já tem QR Code
-        $qrCodeExistente = QRCode::where('user_id', $user->id)
-            ->where('type', 'cliente')
-            ->first();
-
-        if ($qrCodeExistente) {
-            return $qrCodeExistente;
-        }
-
-        // Gerar código único
-        $code = QRCode::gerarCodigoUnico('cliente', $user->id);
-
-        // Gerar imagem do QR Code (formato PNG base64)
-        $qrImage = base64_encode(QrCodeGenerator::format('png')
-            ->size(400)
-            ->errorCorrection('H')
-            ->generate($code));
-
-        // Criar registro no banco
-        $qrCode = QRCode::create([
-            'code' => $code,
-            'type' => 'cliente',
-            'empresa_id' => null,
-            'user_id' => $user->id,
-            'qr_image' => $qrImage,
-            'ativo' => true
-        ]);
-
-        return $qrCode;
+        // QR Code de cliente é gerado inline em ClienteAPIController::meuQRCode()
+        // A tabela qr_codes não possui coluna user_id, apenas empresa_id
+        // Retorna null silenciosamente para não quebrar o registro
+        return null;
     }
 
     /**
@@ -88,7 +53,7 @@ class QRCodeService
     public function validarCodigo($code)
     {
         $qrCode = QRCode::where('code', $code)
-            ->where('ativo', true)
+            ->where('active', true)
             ->first();
 
         if (!$qrCode) {
@@ -128,17 +93,8 @@ class QRCodeService
             $newCode = QRCode::gerarCodigoUnico('cliente', $qrCode->user_id);
         }
 
-        // Gerar nova imagem
-        $qrImage = base64_encode(QrCodeGenerator::format('png')
-            ->size(500)
-            ->errorCorrection('H')
-            ->generate($newCode));
-
-        // Atualizar registro
-        $qrCode->update([
-            'code' => $newCode,
-            'qr_image' => $qrImage
-        ]);
+        // Atualizar registro com novo código
+        $qrCode->update(['code' => $newCode]);
 
         return $qrCode;
     }
@@ -148,7 +104,7 @@ class QRCodeService
      */
     public function desativarQRCode(QRCode $qrCode)
     {
-        $qrCode->update(['ativo' => false]);
+        $qrCode->update(['active' => false]);
         return $qrCode;
     }
 
@@ -157,7 +113,7 @@ class QRCodeService
      */
     public function reativarQRCode(QRCode $qrCode)
     {
-        $qrCode->update(['ativo' => true]);
+        $qrCode->update(['active' => true]);
         return $qrCode;
     }
 }

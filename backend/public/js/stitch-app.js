@@ -1454,6 +1454,54 @@
 
     async validarResgate() {
       if (!(await auth.guard(['cliente', 'empresa', 'admin']))) return;
+      const user = await auth.ensure();
+      const perfil = auth.normalizePerfil(user?.perfil || user?.role);
+
+      // Para empresa: exibir o QR Code próprio para clientes escanearem
+      if (perfil === 'empresa') {
+        const main = document.querySelector('main') || document.querySelector('.main-content') || document.body;
+        const qrSection = document.createElement('div');
+        qrSection.id = 'empresaQRSection';
+        qrSection.className = 'w-full max-w-md mx-auto mb-6 p-5 bg-surface-container-lowest rounded-2xl shadow-sm';
+        qrSection.innerHTML = `
+          <h3 class="font-headline font-bold text-on-surface mb-3 text-center text-base">QR Code da Loja</h3>
+          <div id="empresaQRContainer" class="flex flex-col items-center gap-2 min-h-[80px] justify-center">
+            <p class="text-sm text-outline">Carregando...</p>
+          </div>
+          <button id="gerarQRBtn" class="mt-4 w-full py-2.5 bg-primary text-white rounded-xl font-semibold text-sm">Gerar / Renovar QR Code</button>`;
+        main.prepend(qrSection);
+
+        const renderQR = async () => {
+          const container = document.getElementById('empresaQRContainer');
+          if (!container) return;
+          const { res, data } = await api.request('/empresa/qrcodes');
+          const qrList = data?.data || [];
+          if (qrList.length && qrList[0].code) {
+            const qr = qrList[0];
+            container.innerHTML = `
+              <p class="text-[11px] text-outline mb-1">Mostre este código para seus clientes escanearem e ganharem pontos</p>
+              <div class="bg-surface-container px-4 py-2 rounded-xl text-center">
+                <span class="text-xs font-mono text-on-surface break-all">${qr.code}</span>
+              </div>
+              <p class="text-[10px] text-outline mt-1">Scans: ${qr.usage_count || 0} &nbsp;|&nbsp; Ativo: ${qr.active ? 'Sim' : 'Não'}</p>`;
+          } else {
+            container.innerHTML = '<p class="text-sm text-outline">Nenhum QR Code gerado ainda. Clique em "Gerar".</p>';
+          }
+        };
+
+        document.getElementById('gerarQRBtn')?.addEventListener('click', async () => {
+          const { res, data } = await api.request('/empresa/qrcode/gerar', { method: 'POST' });
+          if (res.ok && data?.success) {
+            ui.message('QR Code gerado com sucesso!', 'success');
+            await renderQR();
+          } else {
+            ui.message(data?.message || 'Erro ao gerar QR Code.', 'error');
+          }
+        });
+
+        await renderQR();
+      }
+
       const input = document.getElementById('cupomId');
       const btn = document.getElementById('usarCupomBtn');
       const list = document.getElementById('validacoesRecentes');
@@ -2230,6 +2278,19 @@
       }
 
       renderLista();
+
+      // FAB para criar nova empresa
+      if (!document.getElementById('adminNovaEmpresaFab')) {
+        const fab = document.createElement('button');
+        fab.id = 'adminNovaEmpresaFab';
+        fab.title = 'Cadastrar novo estabelecimento';
+        fab.className = 'fixed bottom-24 right-4 w-14 h-14 bg-primary text-white rounded-full shadow-xl flex items-center justify-center z-50';
+        fab.innerHTML = '<span class="material-symbols-outlined text-2xl">add_business</span>';
+        fab.addEventListener('click', () => {
+          window.location.href = '/criar_conta.html?tipo=empresa&origem=admin';
+        });
+        document.body.appendChild(fab);
+      }
     },
     async usuarios() {
       if (!(await auth.guard(['admin']))) return;

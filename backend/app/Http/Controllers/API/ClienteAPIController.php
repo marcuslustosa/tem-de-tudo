@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Jobs\SendWebPushJob;
 
 class ClienteAPIController extends Controller
 {
@@ -275,14 +276,23 @@ class ClienteAPIController extends Controller
                 'usage_count' => DB::raw('usage_count + 1'),
                 'last_used_at' => now()
             ]);
-        
+
+        // Notificação push
+        $novoSaldo = $user->pontos + $pontosGanhos;
+        SendWebPushJob::dispatch(
+            title: '+' . $pontosGanhos . ' pontos!',
+            body: "QR Code escaneado em {$empresa->nome}. Saldo: {$novoSaldo} pts.",
+            data: ['type' => 'qrcode', 'empresa' => $empresa->nome, 'url' => '/meus_pontos.html'],
+            userIds: [$user->id]
+        );
+
         return response()->json([
             'success' => true,
             'message' => 'Pontos adicionados com sucesso!',
             'data' => [
                 'pontos_ganhos' => $pontosGanhos,
                 'empresa' => $empresa->nome,
-                'novo_saldo' => $user->pontos + $pontosGanhos
+                'novo_saldo' => $novoSaldo
             ]
         ]);
     }

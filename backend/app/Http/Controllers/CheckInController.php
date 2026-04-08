@@ -149,26 +149,18 @@ class CheckInController extends Controller
 
         $empresa = $user->empresa;
 
-        // Criar ou atualizar QR Code da empresa
+        // Criar ou atualizar QR Code da empresa (campos corretos da tabela)
         $qrCode = QRCode::updateOrCreate(
             ['empresa_id' => $empresa->id],
             [
-                'codigo' => $this->gerarCodigoUnico(),
-                'ativo' => true,
-                'expiracao' => now()->addDays(30) // QR Code válido por 30 dias
+                'code' => QRCode::gerarCodigoUnico($empresa->id),
+                'name' => 'QR Code Principal',
+                'active' => true,
             ]
         );
 
-        // Dados do QR Code
-        $qr_data = [
-            'type' => 'checkin',
-            'empresa_id' => $empresa->id,
-            'qr_code_id' => $qrCode->id,
-            'codigo' => $qrCode->codigo,
-            'timestamp' => time()
-        ];
-
-        $qr_string = base64_encode(json_encode($qr_data));
+        // String do QR Code é o próprio código (cliente escaneará e enviará para /api/cliente/escanear-qrcode)
+        $qr_string = $qrCode->code;
 
         // Gerar imagem do QR Code
         $qr_image = QrCodeGenerator::format('png')
@@ -180,16 +172,13 @@ class CheckInController extends Controller
         $filename = "qrcodes/empresa_{$empresa->id}.png";
         Storage::disk('public')->put($filename, $qr_image);
 
-        $qrCode->update(['imagem_path' => $filename]);
-
         return response()->json([
             'success' => true,
             'qr_code' => [
                 'id' => $qrCode->id,
-                'codigo' => $qrCode->codigo,
+                'code' => $qrCode->code,
                 'string' => $qr_string,
                 'imagem_url' => Storage::url($filename),
-                'expiracao' => $qrCode->expiracao,
                 'empresa' => $empresa->only(['id', 'nome'])
             ]
         ]);
@@ -285,7 +274,7 @@ class CheckInController extends Controller
             if (isset($decoded['qr_code_id'])) {
                 $qrCode = QRCode::find($decoded['qr_code_id']);
                 
-                if (!$qrCode || !$qrCode->ativo || $qrCode->expiracao < now()) {
+                if (!$qrCode || !$qrCode->active) {
                     return null;
                 }
             }
@@ -340,13 +329,13 @@ class CheckInController extends Controller
     }
 
     /**
-     * Gerar código único para QR Code
+     * Gerar código único para QR Code (legado - use QRCode::gerarCodigoUnico())
      */
     private function gerarCodigoUnico()
     {
         do {
             $codigo = 'QR' . strtoupper(uniqid()) . rand(1000, 9999);
-        } while (QRCode::where('codigo', $codigo)->exists());
+        } while (QRCode::where('code', $codigo)->exists());
 
         return $codigo;
     }

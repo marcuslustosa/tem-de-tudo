@@ -307,22 +307,37 @@
     if (navigator.vibrate) {
       navigator.vibrate(200);
     }
+
+    // Detectar perfil do usuário logado
+    const storedUser = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
+    const perfil = (storedUser.perfil || storedUser.role || '').toLowerCase();
+    const token = localStorage.getItem('tem_de_tudo_token');
+
+    // Cliente escaneia QR da empresa → ganha pontos
+    // Empresa escaneia → apenas valida (informativo)
+    const endpoint = perfil === 'empresa'
+      ? '/api/checkin/validar-qr'
+      : '/api/cliente/escanear-qrcode';
+    const body = perfil === 'empresa'
+      ? { qr_code: qrData }
+      : { code: qrData };
     
     // Call validation API automatically
     try {
-      const response = await fetch('/api/checkin/validar-qr', {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ code: qrData })
+        body: JSON.stringify(body)
       });
       
       const data = await response.json();
       
       if (response.ok && data.success) {
-        statusText.textContent = `✓ Validado! ${data.message || ''}`;
+        const pts = data.data?.pontos_ganhos ? `+${data.data.pontos_ganhos} pts! ` : '';
+        statusText.textContent = `✓ ${pts}${data.message || 'Validado!'}`;
         statusText.classList.remove('text-error');
         statusText.classList.add('text-tertiary');
         
@@ -332,9 +347,13 @@
           manualInput.value = qrData;
         }
         
-        // Auto-reload after 2 seconds to show updated list
+        // Redirect to points page after success (for clientes)
         setTimeout(() => {
-          window.location.reload();
+          if (perfil !== 'empresa') {
+            window.location.href = '/meus_pontos.html';
+          } else {
+            window.location.reload();
+          }
         }, 2000);
       } else {
         statusText.textContent = `✗ ${data.message || 'QR inválido'}`;
@@ -344,7 +363,7 @@
         // Reset after 3 seconds
         setTimeout(() => {
           statusText.textContent = 'Aguardando próximo QR Code...';
-          statusText.classList.remove('text-error', 'text-primary');
+          statusText.classList.remove('text-error', 'text-primary', 'text-tertiary');
         }, 3000);
       }
     } catch (error) {
