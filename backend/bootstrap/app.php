@@ -54,6 +54,17 @@ return Application::configure(basePath: dirname(__DIR__))
             ->onFailure(function () {
                 \Illuminate\Support\Facades\Log::error('Falha ao enviar lembretes de ausência');
             });
+
+        // Expirar pontos mais antigos que o limite configurado
+        $schedule->command('pontos:expirar')
+            ->dailyAt('02:00')
+            ->timezone('America/Sao_Paulo')
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::info('Expiração de pontos processada com sucesso');
+            })
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Falha ao expirar pontos');
+            });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

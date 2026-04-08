@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -43,8 +44,24 @@ class User extends Authenticatable implements JWTSubject
         'ultimo_checkin',
         'empresas_visitadas',
         'multiplicador_pontos',
-        'posicao_ranking'
+        'posicao_ranking',
+        'referral_code',
+        'referred_by'
     ];
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (empty($user->referral_code)) {
+                do {
+                    $code = strtoupper(Str::random(8));
+                } while (self::where('referral_code', $code)->exists());
+                $user->referral_code = $code;
+            }
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -98,6 +115,22 @@ class User extends Authenticatable implements JWTSubject
     public function auditLogs()
     {
         return $this->hasMany(AuditLog::class);
+    }
+
+    /**
+     * Usuários indicados por este usuário.
+     */
+    public function indicados()
+    {
+        return $this->hasMany(User::class, 'referred_by');
+    }
+
+    /**
+     * Usuário que indicou este usuário.
+     */
+    public function quemIndicou()
+    {
+        return $this->belongsTo(User::class, 'referred_by');
     }
 
     /**

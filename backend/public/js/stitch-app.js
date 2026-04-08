@@ -1593,6 +1593,65 @@
         ui.message('Sessao encerrada.', 'success');
         setTimeout(() => (window.location.href = '/entrar.html'), 400);
       });
+
+      // Programa de Indicação — visível apenas para clientes
+      if (perfil === 'cliente') {
+        try {
+          const refResp = await api.request('/referral/meu-codigo', {}, { notify: false });
+          if (refResp.res.ok && refResp.data?.data) {
+            const rd = refResp.data.data;
+            const container = document.querySelector('main') || document.body;
+            const refSection = document.createElement('div');
+            refSection.id = 'referralSection';
+            refSection.className = 'w-full max-w-md mx-auto mb-6 mt-4 p-5 bg-surface-container-lowest rounded-2xl shadow-sm';
+            refSection.innerHTML = `
+              <h3 class="font-headline font-bold text-on-surface mb-1 text-base flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-xl">group_add</span>
+                Indique e Ganhe
+              </h3>
+              <p class="text-xs text-on-surface-variant mb-3">Compartilhe seu código e ganhe <strong>50 pontos</strong> por cada amigo que se cadastrar.</p>
+              <div class="flex items-center gap-2 mb-3">
+                <span id="refCodeDisplay" class="flex-1 text-center text-lg font-bold font-mono tracking-widest bg-surface-container p-2 rounded-xl text-primary">${rd.referral_code}</span>
+                <button id="copyRefCode" class="p-2 bg-primary text-white rounded-xl" title="Copiar código">
+                  <span class="material-symbols-outlined text-base">content_copy</span>
+                </button>
+              </div>
+              <div class="grid grid-cols-2 gap-2 mb-3">
+                <div class="bg-surface-container rounded-xl p-3 text-center">
+                  <p class="text-2xl font-bold text-primary">${rd.total_indicados || 0}</p>
+                  <p class="text-xs text-on-surface-variant">Amigos indicados</p>
+                </div>
+                <div class="bg-surface-container rounded-xl p-3 text-center">
+                  <p class="text-2xl font-bold text-tertiary">${rd.pontos_ganhos || 0}</p>
+                  <p class="text-xs text-on-surface-variant">Pontos ganhos</p>
+                </div>
+              </div>
+              <button id="shareRefLink" class="w-full py-2.5 bg-primary text-white rounded-xl font-semibold text-sm flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-base">share</span>
+                Compartilhar meu link
+              </button>`;
+            // Insere antes do último card ou no final do main
+            const lastCard = container.querySelector('section:last-child') || container.lastElementChild;
+            container.insertBefore(refSection, lastCard);
+
+            document.getElementById('copyRefCode')?.addEventListener('click', () => {
+              navigator.clipboard.writeText(rd.referral_code).then(() => {
+                ui.message('Código copiado!', 'success');
+              });
+            });
+
+            document.getElementById('shareRefLink')?.addEventListener('click', () => {
+              const link = rd.link_indicacao || (window.location.origin + '/criar_conta.html?ref=' + rd.referral_code);
+              const text = `Entrou no Tem de Tudo? Use meu código ${rd.referral_code} e ganhe pontos extras! ${link}`;
+              if (navigator.share) {
+                navigator.share({ title: 'Tem de Tudo – Indicação', text, url: link }).catch(() => {});
+              } else {
+                navigator.clipboard.writeText(text).then(() => ui.message('Link copiado para a área de transferência!', 'success'));
+              }
+            });
+          }
+        } catch (_) { /* silencioso */ }
+      }
     },
 
     async validarResgate() {
@@ -3163,6 +3222,11 @@
           payload.cnpj = cnpj.value;
           payload.endereco = end.value;
         }
+        // Código de indicação: via input ou URL ?ref=
+        const refInput = document.getElementById('sgReferralCode');
+        const refFromUrl = new URLSearchParams(window.location.search).get('ref');
+        const refCode = (refInput?.value || refFromUrl || '').trim().toUpperCase();
+        if (perfil === 'cliente' && refCode) payload.referral_code = refCode;
         
         // Se for admin criando empresa, enviar token de autenticação
         const urlParams = new URLSearchParams(window.location.search);

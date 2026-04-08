@@ -29,6 +29,7 @@ use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\AdminContentController;
 use App\Http\Controllers\AdminSettingsController;
+use App\Http\Controllers\ReferralController;
 
 // Debug route (remover em produÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o)
 Route::get('/debug', function () {
@@ -431,6 +432,12 @@ Route::prefix('openai')->middleware(['auth:sanctum'])->group(function () {
         ->middleware(['admin.permission:manage_system']);
     Route::post('/suggest', [OpenAIController::class, 'suggest'])
         ->middleware(['admin.permission:manage_system']);
+});
+
+// Programa de Indicação (referral) - cliente autenticado
+Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('referral')->group(function () {
+    Route::get('/meu-codigo', [ReferralController::class, 'meuCodigo']);
+    Route::get('/estatisticas', [ReferralController::class, 'estatisticas']);
 });
 
 // Bonus de Adesao (cliente) - pontos ao se cadastrar

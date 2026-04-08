@@ -199,6 +199,55 @@ class AuthController extends Controller
                         'error' => $e->getMessage()
                     ]);
                 }
+
+                // Programa de indicação: processar código de quem indicou
+                if ($request->filled('referral_code')) {
+                    try {
+                        $referrer = \App\Models\User::where('referral_code', $request->referral_code)
+                            ->where('id', '!=', $user->id)
+                            ->where('perfil', 'cliente')
+                            ->first();
+
+                        if ($referrer) {
+                            // Registra quem indicou
+                            $user->referred_by = $referrer->id;
+                            $user->save();
+
+                            // Bônus para o indicador (50 pts)
+                            \App\Models\Ponto::create([
+                                'user_id'  => $referrer->id,
+                                'pontos'   => 50,
+                                'tipo'     => 'bonus_indicacao',
+                                'descricao'=> "Bônus por indicar {$user->name}",
+                                'data'     => now(),
+                            ]);
+                            \App\Models\User::where('id', $referrer->id)
+                                ->increment('pontos', 50);
+                            \App\Models\User::where('id', $referrer->id)
+                                ->increment('pontos_lifetime', 50);
+
+                            // Bônus para o novo usuário (25 pts extras por ter sido indicado)
+                            \App\Models\Ponto::create([
+                                'user_id'  => $user->id,
+                                'pontos'   => 25,
+                                'tipo'     => 'bonus_indicado',
+                                'descricao'=> "Bônus por entrar com código de indicação",
+                                'data'     => now(),
+                            ]);
+
+                            Log::info('Programa de indicação processado', [
+                                'novo_user_id'  => $user->id,
+                                'referrer_id'   => $referrer->id,
+                                'referral_code' => $request->referral_code,
+                            ]);
+                        }
+                    } catch (\Exception $e) {
+                        Log::warning('Erro ao processar indicação', [
+                            'referral_code' => $request->referral_code,
+                            'error'         => $e->getMessage(),
+                        ]);
+                    }
+                }
             }
 
             // Gerar QR Code para empresa (se aplicável)
