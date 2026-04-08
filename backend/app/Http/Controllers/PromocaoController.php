@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Promocao;
 use App\Models\InscricaoEmpresa;
 use App\Models\NotificacaoPush;
+use App\Jobs\SendWebPushJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class PromocaoController extends Controller
 {
@@ -306,8 +308,18 @@ class PromocaoController extends Controller
             'total_envios' => $promocao->total_envios + $enviados
         ]);
 
-        // TODO: Aqui deve disparar o job de envio de push notifications via Firebase
-        // Para agora, apenas criamos os registros na tabela
+        // Disparar push para todos os inscritos
+        $userIds = $inscricoes->pluck('user_id')->values()->all();
+        try {
+            SendWebPushJob::dispatch(
+                title: "🎉 {$empresa->nome} tem uma promoção para você!",
+                body: $promocao->titulo,
+                data: ['type' => 'promocao', 'empresa_id' => $empresa->id, 'url' => '/parceiros.html'],
+                userIds: $userIds
+            );
+        } catch (\Exception $e) {
+            Log::warning('Erro ao enviar push de promoção', ['promocao_id' => $promocao->id, 'error' => $e->getMessage()]);
+        }
 
         return response()->json([
             'success' => true,

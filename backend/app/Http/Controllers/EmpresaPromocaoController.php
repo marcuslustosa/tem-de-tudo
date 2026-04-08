@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use App\Jobs\SendWebPushJob;
+use App\Models\InscricaoEmpresa;
 use App\Models\User;
 use App\Models\Promocao;
 use App\Models\CheckIn;
@@ -106,9 +109,22 @@ class EmpresaPromocaoController extends Controller
                 'usos' => 0
             ]);
 
-            // Se marcou para notificar, enviar notificações
+            // Se marcou para notificar, enviar notificações push aos inscritos
             if ($request->notificar) {
-                // TODO: Implementar envio de notificações push
+                $inscritosIds = InscricaoEmpresa::where('empresa_id', $user->id)
+                    ->pluck('user_id')->values()->all();
+                if (!empty($inscritosIds)) {
+                    try {
+                        SendWebPushJob::dispatch(
+                            title: "🎉 {$user->name} criou uma promoção!",
+                            body: $promocao->titulo,
+                            data: ['type' => 'promocao', 'url' => '/parceiros.html'],
+                            userIds: $inscritosIds
+                        );
+                    } catch (\Exception $pushErr) {
+                        Log::warning('Erro ao enviar push de nova promoção', ['error' => $pushErr->getMessage()]);
+                    }
+                }
             }
 
             return response()->json([
@@ -508,8 +524,21 @@ class EmpresaPromocaoController extends Controller
                     ->pluck('id');
             }
 
-            // TODO: Implementar envio real de push notifications via Firebase
             $enviados = $clientesIds->count();
+
+            // Disparar push para os clientes alvo
+            if ($enviados > 0) {
+                try {
+                    SendWebPushJob::dispatch(
+                        title: $request->titulo,
+                        body: $request->mensagem,
+                        data: ['type' => 'notificacao_empresa', 'url' => '/parceiros.html'],
+                        userIds: $clientesIds->values()->all()
+                    );
+                } catch (\Exception $e) {
+                    Log::warning('Erro ao enviar push segmentado', ['error' => $e->getMessage()]);
+                }
+            }
 
             return response()->json([
                 'success' => true,
