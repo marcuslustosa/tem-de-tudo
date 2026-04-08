@@ -423,4 +423,32 @@ class AdminContentController extends Controller
             'message' => 'Categoria removida com sucesso (fallback local).',
         ]);
     }
+
+    public function publicBanners()
+    {
+        if ($this->hasContentTables()) {
+            return response()->json([
+                'success' => true,
+                'data' => Banner::where('active', true)->orderBy('position')->orderByDesc('id')->get(),
+            ]);
+        }
+
+        $fallback = $this->readFallback();
+        $active = array_values(array_filter($fallback['banners'], fn($b) => $b['active'] ?? true));
+        return response()->json(['success' => true, 'data' => $active]);
+    }
+
+    public function publicCategorias()
+    {
+        if ($this->hasContentTables()) {
+            return response()->json([
+                'success' => true,
+                'data' => Categoria::where('active', true)->orderBy('position')->orderByDesc('id')->get(),
+            ]);
+        }
+
+        $fallback = $this->readFallback();
+        $active = array_values(array_filter($fallback['categorias'], fn($c) => $c['active'] ?? true));
+        return response()->json(['success' => true, 'data' => $active]);
+    }
 }

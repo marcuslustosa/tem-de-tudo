@@ -112,6 +112,12 @@ Route::get('/empresas/{id}', [EmpresaController::class, 'getEmpresa'])
 Route::get('/empresas/{id}/promocoes', [EmpresaController::class, 'getEmpresaPromocoes'])
     ->middleware('cache.response:600'); // 10 minutos
 
+// Banners e Categorias (leitura pública) - COM CACHE
+Route::get('/banners', [AdminContentController::class, 'publicBanners'])
+    ->middleware('cache.response:1800'); // 30 minutos
+Route::get('/categorias', [AdminContentController::class, 'publicCategorias'])
+    ->middleware('cache.response:3600'); // 1 hora
+
 // Produtos das empresas (leitura pública) - COM CACHE
 Route::get('/empresas/{empresaId}/produtos', [ProdutoController::class, 'index'])
     ->middleware('cache.response:600'); // 10 minutos
@@ -356,6 +362,9 @@ Route::middleware('auth:sanctum')->prefix('pontos')->group(function () {
 Route::middleware(['auth:sanctum'])->prefix('admin/pontos')->group(function () {
     // Aprovar/rejeitar check-ins
     Route::post('/checkin/{checkin}/aprovar', [PontosController::class, 'aprovarCheckin'])
+        ->middleware(['admin.permission:manage_checkins']);
+
+    Route::post('/checkin/{checkin}/rejeitar', [PontosController::class, 'rejeitarCheckin'])
         ->middleware(['admin.permission:manage_checkins']);
     
     // Check-ins pendentes

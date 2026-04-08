@@ -227,6 +227,18 @@ class PontosController extends Controller
     }
 
     /**
+     * Rejeitar um check-in (admin) — atalho que delega para aprovarCheckin com aprovado=false
+     */
+    public function rejeitarCheckin(Request $request, $checkinId): JsonResponse
+    {
+        $request->merge([
+            'aprovado' => false,
+            'motivo_rejeicao' => $request->input('motivo_rejeicao', 'Rejeitado pelo administrador.'),
+        ]);
+        return $this->aprovarCheckin($request, $checkinId);
+    }
+
+    /**
      * Aprovar um check-in (admin)
      */
     public function aprovarCheckin(Request $request, $checkinId): JsonResponse
