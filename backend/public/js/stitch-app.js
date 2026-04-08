@@ -2014,6 +2014,14 @@
 
       setCounts(lista);
       renderCards(lista);
+
+      const campMediaSelos = document.getElementById('campMediaSelos');
+      if (campMediaSelos && lista.length) {
+        const totalUsos = lista.reduce((acc, p) => acc + (p.usos || p.resgates || 0), 0);
+        campMediaSelos.textContent = (totalUsos / lista.length).toFixed(1);
+      } else if (campMediaSelos) {
+        campMediaSelos.textContent = '0';
+      }
     },
 
 
