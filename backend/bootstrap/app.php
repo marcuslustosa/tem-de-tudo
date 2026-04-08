@@ -43,6 +43,17 @@ return Application::configure(basePath: dirname(__DIR__))
             ->onFailure(function () {
                 \Illuminate\Support\Facades\Log::error('Falha ao processar bônus de aniversário');
             });
+
+        // Enviar lembretes para clientes ausentes há mais de 30 dias
+        $schedule->command('lembretes:ausencia')
+            ->dailyAt('10:00')
+            ->timezone('America/Sao_Paulo')
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::info('Lembretes de ausência enviados com sucesso');
+            })
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Falha ao enviar lembretes de ausência');
+            });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

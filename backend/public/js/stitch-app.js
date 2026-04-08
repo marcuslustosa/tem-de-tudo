@@ -909,6 +909,46 @@
           }).join('');
         }
       }
+
+      // Badges / Conquistas do cliente
+      const { data: badgesResp } = await api.request('/badges/meus', {}, { notify: false });
+      const meusBadges = badgesResp?.data || [];
+      const { data: progressoResp } = await api.request('/badges/progresso', {}, { notify: false });
+      const progresso = progressoResp?.data || [];
+      if (meusBadges.length || progresso.length) {
+        const host = document.querySelector('main') || document.body;
+        const badgesSection = document.createElement('section');
+        badgesSection.className = 'max-w-6xl mx-auto px-4 pt-4 pb-2';
+        const iconesBadge = { ouro: '🥇', prata: '🥈', bronze: '🥉', default: '🏅' };
+        const badgesHtml = meusBadges.slice(0, 6).map((b) => {
+          const nivel = (b.nivel || b.tipo || 'default').toLowerCase();
+          const icone = iconesBadge[nivel] || iconesBadge.default;
+          return `<div class="flex flex-col items-center gap-1 p-3 rounded-xl bg-white/80 border border-surface-variant/30 shadow-sm min-w-[80px]">
+            <span class="text-2xl">${icone}</span>
+            <p class="text-[10px] font-bold text-center text-on-surface leading-tight">${b.nome || b.name || 'Badge'}</p>
+          </div>`;
+        }).join('');
+        const progressoHtml = progresso.slice(0, 3).map((p) => {
+          const pct = Math.min(100, Math.round(((p.progresso_atual || p.valor_atual || 0) / Math.max(1, p.meta || p.valor_meta || 1)) * 100));
+          return `<div class="mb-2">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-semibold text-on-surface">${p.badge?.nome || p.nome || 'Conquista'}</span>
+              <span class="text-on-surface-variant">${pct}%</span>
+            </div>
+            <div class="h-2 bg-surface-container rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-primary to-tertiary rounded-full" style="width:${pct}%"></div>
+            </div>
+          </div>`;
+        }).join('');
+        badgesSection.innerHTML = `
+          <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4">
+            <h3 class="text-base font-semibold text-on-surface mb-3">Conquistas</h3>
+            ${meusBadges.length ? `<div class="flex gap-3 overflow-x-auto pb-2 mb-3">${badgesHtml}</div>` : ''}
+            ${progresso.length ? `<div>${progressoHtml}</div>` : ''}
+            ${!meusBadges.length && !progresso.length ? '<p class="text-sm text-on-surface-variant">Continue acumulando pontos para conquistar badges!</p>' : ''}
+          </div>`;
+        host.appendChild(badgesSection);
+      }
     },
 
 
@@ -2807,6 +2847,50 @@
         }
       }
 
+      // Check-ins Pendentes de aprovacao
+      const checkinsContainer = document.getElementById('checkinsPendentesContainer');
+      if (checkinsContainer) {
+        const { data: cpData } = await api.request('/admin/pontos/checkins-pendentes', {}, { notify: false });
+        const pendentes = toArray(cpData?.data || cpData);
+        if (!pendentes.length) {
+          checkinsContainer.innerHTML = '<p class="text-sm text-on-surface-variant text-center py-4">Nenhum check-in pendente de aprovacao.</p>';
+        } else {
+          checkinsContainer.innerHTML = pendentes.slice(0, 10).map((c) => {
+            const nome = c.user?.name || c.usuario_nome || 'Cliente';
+            const empresa = c.empresa?.nome || c.empresa_nome || 'Empresa';
+            const pts = Number(c.pontos || c.points || 0).toLocaleString('pt-BR');
+            const data = c.created_at ? new Date(c.created_at).toLocaleString('pt-BR') : '--';
+            return `<div class="flex items-center justify-between bg-surface-container-low p-3 rounded-xl gap-3" data-checkin-id="${c.id}">
+              <div>
+                <p class="font-semibold text-sm text-on-surface">${nome}</p>
+                <p class="text-xs text-on-surface-variant">${empresa} &bull; ${pts} pts &bull; ${data}</p>
+              </div>
+              <div class="flex gap-2">
+                <button class="btn-aprovar-checkin px-3 py-1 text-xs rounded-lg bg-tertiary text-on-tertiary font-semibold hover:opacity-90" data-id="${c.id}">Aprovar</button>
+                <button class="btn-rejeitar-checkin px-3 py-1 text-xs rounded-lg bg-error-container text-on-error-container font-semibold hover:opacity-90" data-id="${c.id}">Rejeitar</button>
+              </div>
+            </div>`;
+          }).join('');
+          checkinsContainer.querySelectorAll('.btn-aprovar-checkin').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const id = btn.dataset.id;
+              const { res } = await api.request(`/admin/pontos/checkin/${id}/aprovar`, { method: 'POST' }, { notify: true });
+              if (res.ok) {
+                btn.closest('[data-checkin-id]')?.remove();
+                ui.message('Check-in aprovado com sucesso.', 'success');
+              }
+            });
+          });
+          checkinsContainer.querySelectorAll('.btn-rejeitar-checkin').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+              const id = btn.dataset.id;
+              const { res } = await api.request(`/admin/pontos/checkin/${id}/rejeitar`, { method: 'POST' }, { notify: true });
+              if (res.ok) btn.closest('[data-checkin-id]')?.remove();
+            });
+          });
+        }
+      }
+
       // Sem banner de erro global aqui: fallback evita ruido visual.
     },
 
@@ -2905,7 +2989,36 @@
   // ---------------------- Dispatcher ---------------------- //
   const handlers = {
     // Publico / shared
-    acessar_conta: () => {},
+    acessar_conta: async () => {
+      // Se usuario ja estiver logado, redireciona ao painel correto
+      const stored = auth.getStored();
+      if (stored?.token && stored?.user?.perfil) {
+        const perfil = auth.normalizePerfil(stored.user.perfil);
+        const destinos = { admin: '/dashboard_admin_master.html', empresa: '/dashboard_parceiro.html', cliente: '/meus_pontos.html' };
+        window.location.href = destinos[perfil] || '/entrar.html';
+        return;
+      }
+      // Redireciona para pagina de login padrao
+      if (!window.location.pathname.includes('entrar')) {
+        window.location.href = '/entrar.html';
+        return;
+      }
+      // Ativa listener no formulario de login desta pagina (se houver)
+      const form = document.querySelector('form[data-login-form], form#loginForm, form');
+      if (!form) return;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const emailEl = form.querySelector('[name="email"], [type="email"]');
+        const senhaEl = form.querySelector('[name="password"], [name="senha"], [type="password"]');
+        if (!emailEl || !senhaEl) return;
+        const { res, data } = await api.request('/login', { method: 'POST', body: JSON.stringify({ email: emailEl.value.trim(), password: senhaEl.value }) });
+        if (!res.ok) { ui.message(data?.message || 'Credenciais invalidas.', 'error'); return; }
+        auth.save(data.token, data.user);
+        const perfil = auth.normalizePerfil(data.user?.perfil);
+        const destinos = { admin: '/dashboard_admin_master.html', empresa: '/dashboard_parceiro.html', cliente: '/meus_pontos.html' };
+        window.location.href = destinos[perfil] || '/meus_pontos.html';
+      });
+    },
     home_tem_de_tudo: async () => {
       const cards = document.querySelectorAll('main section.space-y-4 .grid > div');
       if (!cards.length) return;
@@ -2932,7 +3045,42 @@
       });
     },
     oferta_especial: cliente.detalheParceiro,
-    tudo_vibrante: () => {},
+    tudo_vibrante: async () => {
+      // Carrega lista de empresas parceiras e exibe na pagina
+      const { data } = await api.request('/empresas', {}, { requireAuth: false, notify: false });
+      const empresas = toArray(data?.data || data);
+      if (!empresas.length) return;
+      // Preenche cards de parceiros na pagina (qualquer grid de cards)
+      const cards = document.querySelectorAll('.partner-card, [data-empresa-card], main .grid > div, main section .grid > div');
+      if (cards.length) {
+        cards.forEach((card, idx) => {
+          const emp = empresas[idx];
+          if (!emp) return;
+          const img = card.querySelector('img');
+          const title = card.querySelector('h3, h4, .nome-empresa');
+          const badge = card.querySelector('.ramo, span.text-xs, .categoria');
+          const desc = card.querySelector('p.text-xs, p.text-sm, .descricao');
+          if (img) { img.src = safeImage(emp.logo, IMAGE_FALLBACKS.store); img.alt = emp.nome || 'Parceiro'; }
+          if (title) title.textContent = emp.nome || 'Parceiro';
+          if (badge) badge.textContent = (emp.ramo || 'Parceiro').toString().toUpperCase();
+          if (desc) desc.textContent = emp.descricao || emp.endereco || 'Parceiro ativo no programa.';
+          const link = card.querySelector('a') || card.closest('a');
+          if (link) link.href = `/detalhe_do_parceiro.html?id=${emp.id}`;
+        });
+      } else {
+        // Sem grid estatico: renderiza cards dinamicamente no main
+        const main = document.querySelector('main') || document.body;
+        const grid = document.createElement('div');
+        grid.className = 'max-w-6xl mx-auto px-4 py-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4';
+        grid.innerHTML = empresas.map((emp) => `
+          <a href="/detalhe_do_parceiro.html?id=${emp.id}" class="flex flex-col items-center gap-2 bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+            <img src="${safeImage(emp.logo, IMAGE_FALLBACKS.store)}" alt="${emp.nome || 'Parceiro'}" class="w-14 h-14 rounded-xl object-cover" onerror="this.src='${IMAGE_FALLBACKS.store}'">
+            <p class="font-semibold text-sm text-center text-on-surface leading-tight">${emp.nome || 'Parceiro'}</p>
+            <span class="text-[10px] text-on-surface-variant uppercase tracking-wide">${(emp.ramo || 'Parceiro').toString()}</span>
+          </a>`).join('');
+        main.appendChild(grid);
+      }
+    },
     forgot_password: async () => {
       const form = document.querySelector('form');
       form?.addEventListener('submit', async (e) => {

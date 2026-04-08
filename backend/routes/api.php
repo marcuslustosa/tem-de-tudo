@@ -397,32 +397,44 @@ Route::prefix('qrcode')->group(function () {
 
 // Rotas do sistema de descontos
 Route::prefix('discounts')->group(function () {
-    // Consultar descontos disponÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis (pÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âºblico - usuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rios logados)
+    // Consultar descontos disponiveis (publico - usuarios logados)
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/company/{empresa_id}', [DiscountController::class, 'getCompanyDiscountLevels']);
         Route::post('/calculate', [DiscountController::class, 'calculateUserDiscount']);
         Route::post('/apply', [DiscountController::class, 'applyDiscount']);
     });
-    
+
     // Rotas administrativas de descontos
     Route::middleware(['auth:sanctum'])->group(function () {
-        // Configurar nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­veis de desconto
         Route::post('/configure', [DiscountController::class, 'configureCompanyDiscounts'])
             ->middleware(['admin.permission:manage_discounts']);
-        
-        // Buscar cliente para aplicar desconto
         Route::post('/find-customer', [DiscountController::class, 'findCustomerForDiscount'])
             ->middleware(['admin.permission:manage_discounts']);
     });
+});
 
-    // Rotas OpenAI (admin apenas)
-    Route::prefix('openai')->group(function () {
-        Route::get('/status', [OpenAIController::class, 'status']);
-        Route::get('/test', [OpenAIController::class, 'test'])
-            ->middleware(['admin.permission:manage_system']);
-        Route::post('/chat', [OpenAIController::class, 'chat'])
-            ->middleware(['admin.permission:manage_system']);
-        Route::post('/suggest', [OpenAIController::class, 'suggest'])
-            ->middleware(['admin.permission:manage_system']);
-    });
+// Rotas OpenAI (admin apenas) - separadas do prefix discounts
+Route::prefix('openai')->middleware(['auth:sanctum'])->group(function () {
+    Route::get('/status', [OpenAIController::class, 'status']);
+    Route::get('/test', [OpenAIController::class, 'test'])
+        ->middleware(['admin.permission:manage_system']);
+    Route::post('/chat', [OpenAIController::class, 'chat'])
+        ->middleware(['admin.permission:manage_system']);
+    Route::post('/suggest', [OpenAIController::class, 'suggest'])
+        ->middleware(['admin.permission:manage_system']);
+});
+
+// Bonus de Adesao (cliente) - pontos ao se cadastrar
+Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente/bonus-adesao')->group(function () {
+    Route::get('/disponivel/{empresa_id}', [BonusAdesaoController::class, 'bonusDisponivel']);
+    Route::post('/resgatar/{empresa_id}', [BonusAdesaoController::class, 'resgatar']);
+});
+
+// Bonus de Adesao (admin) - gerenciar configuracoes
+Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/bonus-adesao')->group(function () {
+    Route::get('/', [BonusAdesaoController::class, 'index']);
+    Route::post('/', [BonusAdesaoController::class, 'store']);
+    Route::get('/{id}', [BonusAdesaoController::class, 'show']);
+    Route::put('/{id}', [BonusAdesaoController::class, 'update']);
+    Route::delete('/{id}', [BonusAdesaoController::class, 'destroy']);
 });
