@@ -1114,68 +1114,104 @@
     async recompensas() {
       if (!(await auth.guard(['cliente']))) return;
       ui.setPageState('loading', 'Carregando recompensas...');
-      const { data: pontosResp } = await api.request('/pontos/meus-dados');
-      const { data: cuponsResp } = await api.request('/pontos/meus-cupons');
+
+      const [{ data: pontosResp }, { data: promosResp }, { data: cuponsResp }] = await Promise.all([
+        api.request('/pontos/meus-dados', {}, { notify: false }),
+        api.request('/cliente/promocoes', {}, { notify: false }),
+        api.request('/pontos/meus-cupons', {}, { notify: false }),
+      ]);
       ui.clearPageState();
 
-      render.summary('Saldo e cupons', [
-        { label: 'Pontos', value: pontosResp?.data?.pontos_total },
-        { label: 'Pendentes', value: pontosResp?.data?.pontos_pendentes },
-        { label: 'Cupons ativos', value: cuponsResp?.data?.filter((c) => c.status === 'active')?.length || 0 },
+      const saldoAtual = pontosResp?.data?.pontos_total ?? pontosResp?.data?.saldo ?? 0;
+
+      render.summary('Recompensas', [
+        { label: 'Seus pontos', value: `${Number(saldoAtual).toLocaleString('pt-BR')} pts` },
+        { label: 'Promos disponíveis', value: promosResp?.data?.length ?? promosResp?.total ?? 0 },
+        { label: 'Cupons ativos', value: (cuponsResp?.data || []).filter((c) => c.status === 'active' || c.status === 'ativo').length },
       ]);
 
+      const promos = promosResp?.data || [];
+      const host = document.querySelector('main') || document.body;
+
+      // ---- Promoções disponíveis para resgatar ----
+      if (promos.length) {
+        const promosWrap = document.createElement('section');
+        promosWrap.className = 'max-w-6xl mx-auto px-4 pt-4';
+        promosWrap.innerHTML = `<h3 class="text-lg font-semibold text-on-surface mb-3">Promoções disponíveis</h3>
+          <div id="promosGrid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>`;
+        host.appendChild(promosWrap);
+
+        const grid = promosWrap.querySelector('#promosGrid');
+        promos.forEach((p) => {
+          const custoRaw = p.custo_pontos ?? (p.desconto ? p.desconto * 10 : null);
+          const custoStr = custoRaw != null ? `${Number(custoRaw).toLocaleString('pt-BR')} pts` : 'Grátis';
+          const poderesgatar = custoRaw == null || Number(saldoAtual) >= Number(custoRaw);
+          const diasLabel = p.dias_restantes != null ? `Expira em ${p.dias_restantes}d` : 'Sem prazo';
+          const card = document.createElement('div');
+          card.className = 'rounded-2xl bg-white/80 border border-surface-variant/30 shadow-sm p-4 flex flex-col gap-2';
+          card.innerHTML = `
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <p class="font-bold text-on-surface">${p.titulo || p.nome || 'Promoção'}</p>
+                <p class="text-xs text-on-surface-variant">${p.empresa_nome || ''}</p>
+              </div>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary whitespace-nowrap">${p.desconto ? `${p.desconto}% off` : (p.tipo || 'Promo')}</span>
+            </div>
+            <p class="text-sm text-on-surface-variant line-clamp-2">${p.descricao || ''}</p>
+            <div class="flex items-center justify-between mt-auto pt-2 border-t border-surface-variant/20">
+              <span class="text-xs text-on-surface-variant">${diasLabel}</span>
+              <button data-promo-id="${p.id}" data-custo="${custoRaw ?? 0}" data-titulo="${(p.titulo || 'Promoção').replace(/"/g, '&quot;')}"
+                class="btn-resgatar px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${poderesgatar ? 'bg-primary text-white hover:bg-primary/90' : 'bg-surface-container text-on-surface-variant cursor-not-allowed'}"
+                ${poderesgatar ? '' : 'disabled'}>
+                ${poderesgatar ? `Resgatar (${custoStr})` : `Insuficiente (${custoStr})`}
+              </button>
+            </div>`;
+          grid.appendChild(card);
+        });
+
+        // Event delegation para resgatar promos
+        grid.addEventListener('click', async (e) => {
+          const btn = e.target.closest('.btn-resgatar');
+          if (!btn || btn.disabled) return;
+          const promoId = btn.dataset.promoId;
+          const custo = btn.dataset.custo;
+          const titulo = btn.dataset.titulo;
+          if (!confirm(`Resgatar "${titulo}" por ${Number(custo).toLocaleString('pt-BR')} pontos?`)) return;
+          btn.disabled = true;
+          btn.textContent = 'Processando...';
+          const { res, data } = await api.request(`/cliente/promocoes/${promoId}/resgatar`, { method: 'POST' });
+          if (res.ok && data?.success) {
+            const codigo = data?.data?.codigo_resgate || '';
+            ui.message(`Resgatado! Código: ${codigo}`, 'success');
+            setTimeout(() => cliente.recompensas(), 1500);
+          } else {
+            ui.message(data?.message || 'Falha ao resgatar.', 'error');
+            btn.disabled = false;
+            btn.textContent = `Resgatar (${Number(custo).toLocaleString('pt-BR')} pts)`;
+          }
+        });
+      } else {
+        const empty = document.createElement('p');
+        empty.className = 'max-w-6xl mx-auto px-4 pt-4 text-center text-on-surface-variant';
+        empty.textContent = 'Nenhuma promoção disponível no momento.';
+        host.appendChild(empty);
+      }
+
+      // ---- Meus cupons ----
       const cupons = cuponsResp?.data || [];
       if (cupons.length) {
         render.section(
           'Meus cupons',
-          cupons
-            .map(
-              (c) => `
+          cupons.map((c) => `
             <div class="px-4 py-3 flex items-center justify-between text-sm">
               <div>
-                <p class="font-semibold">${c.descricao || c.codigo}</p>
-                <p class="text-on-surface-variant">Valido ate: ${c.expira_em ? new Date(c.expira_em).toLocaleDateString('pt-BR') : '--'}</p>
+                <p class="font-semibold">${c.descricao || c.codigo || 'Cupom'}</p>
+                <p class="text-on-surface-variant">Válido até: ${c.expira_em ? new Date(c.expira_em).toLocaleDateString('pt-BR') : '--'}</p>
               </div>
               <span class="font-semibold ${c.status === 'used' ? 'text-amber-600' : 'text-primary'}">${c.status}</span>
-            </div>`
-            )
-            .join('')
+            </div>`).join('')
         );
-      } else {
-        ui.setPageState('empty', 'Nenhum cupom disponivel ainda.');
       }
-
-      // Formulario simples de resgate
-      const host = document.querySelector('main') || document.body;
-      const formWrap = document.createElement('section');
-      formWrap.className = 'max-w-6xl mx-auto px-4 pt-4';
-      formWrap.innerHTML = `
-        <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 space-y-3">
-          <h3 class="text-lg font-semibold text-on-surface">Resgatar recompensa</h3>
-          <div class="grid gap-3 md:grid-cols-3">
-            <input id="resgateDescricao" class="border rounded-lg px-3 py-2" placeholder="Descricao" />
-            <input id="resgateTipo" class="border rounded-lg px-3 py-2" placeholder="Tipo (ex: desconto)" />
-            <input id="resgatePontos" type="number" class="border rounded-lg px-3 py-2" placeholder="Custo em pontos" />
-          </div>
-          <button id="resgatarBtn" class="px-4 py-2 bg-primary text-white rounded-lg font-semibold">Resgatar</button>
-        </div>`;
-      host.prepend(formWrap);
-      formWrap.querySelector('#resgatarBtn')?.addEventListener('click', async () => {
-        const descricao = formWrap.querySelector('#resgateDescricao').value;
-        const tipo = formWrap.querySelector('#resgateTipo').value || 'voucher';
-        const pontos = Number(formWrap.querySelector('#resgatePontos').value);
-        if (!descricao || !pontos) return ui.message('Preencha descricao e custo em pontos.', 'warning');
-        const { res, data } = await api.request('/pontos/resgatar', {
-          method: 'POST',
-          body: JSON.stringify({ recompensa_tipo: tipo, custo_pontos: pontos, descricao }),
-        });
-        if (res.ok && data?.success) {
-          ui.message('Resgate realizado!', 'success');
-          location.reload();
-        } else {
-          ui.message(data?.message || 'Falha ao resgatar.', 'error');
-        }
-      });
     },
 
         async historico() {
@@ -2487,6 +2523,30 @@
       const resumo = document.getElementById('adminClientesResumo');
       const busca = document.getElementById('adminClientesBusca') || document.getElementById('adminClientesBusca2');
 
+      // Event delegation para bloquear/reativar usuário
+      if (!tbody.dataset.delegated) {
+        tbody.dataset.delegated = '1';
+        tbody.addEventListener('click', async (e) => {
+          const btn = e.target.closest('.btn-suspender');
+          if (!btn) return;
+          const tr = btn.closest('tr.data-row');
+          if (!tr) return;
+          const userId = tr.dataset.userId;
+          const userName = tr.dataset.userName;
+          const isSuspender = btn.title.includes('Suspender');
+          const novoStatus = isSuspender ? 'bloqueado' : 'ativo';
+          const acao = isSuspender ? 'Suspender' : 'Reativar';
+          if (!confirm(`${acao} conta de "${userName}"?`)) return;
+          const resp = await api.request(`/admin/users/${userId}/status`, { method: 'PUT', body: JSON.stringify({ status: novoStatus }) }, { notify: false });
+          if (resp.res?.ok) {
+            ui.message(`Conta ${isSuspender ? 'suspensa' : 'reativada'} com sucesso.`, 'success');
+            await admin.clientesMaster();
+          } else {
+            ui.message(resp.data?.message || `Erro ao ${acao.toLowerCase()} conta.`, 'error');
+          }
+        });
+      }
+
       const statusText = (u) => (u.status || u.situacao || '').toString().toLowerCase();
       const ativo = (u) => ['ativo', 'active', 'enabled'].includes(statusText(u)) || u.active === true || u.ativo === true;
 
@@ -2527,7 +2587,10 @@
           const ultima = c.last_login || c.updated_at || c.created_at || '-';
           const tr = document.createElement('tr');
           tr.className = 'data-row hover:bg-surface transition-colors group';
-          tr.innerHTML = `\n<td class=\"px-6 py-4\">\n  <div class=\"flex items-center gap-3\">\n    <div class=\"w-10 h-10 rounded-full overflow-hidden bg-surface-container flex items-center justify-center text-primary font-bold uppercase\">${nome.substring(0,1)}</div>\n    <div>\n      <p class=\"font-bold text-sm text-on-surface\">${nome}</p>\n      <p class=\"text-xs text-on-surface-variant\">${email}</p>\n    </div>\n  </div>\n</td>\n<td class=\"px-6 py-4 text-sm text-on-surface-variant\">${cpf}</td>\n<td class=\"px-6 py-4\"><span class=\"text-sm font-bold text-primary\">${pontos.toLocaleString('pt-BR')} pts</span></td>\n<td class=\"px-6 py-4\"><span class=\"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${status === 'Ativo' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}\">${status}</span></td>\n<td class=\"px-6 py-4 text-sm text-on-surface-variant\">${ultima}</td>\n<td class=\"px-6 py-4 text-right space-x-1\">\n  <button class=\"p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all\" title=\"Ver detalhes\"><span class=\"material-symbols-outlined text-[20px]\">visibility</span></button>\n  <button class=\"p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-all\" title=\"Suspender conta\"><span class=\"material-symbols-outlined text-[20px]\">block</span></button>\n</td>\n`;
+          tr.dataset.userId = c.id;
+          tr.dataset.userName = nome;
+          const statusAtual = ativo(c) ? 'ativo' : 'inativo';
+          tr.innerHTML = `\n<td class=\"px-6 py-4\">\n  <div class=\"flex items-center gap-3\">\n    <div class=\"w-10 h-10 rounded-full overflow-hidden bg-surface-container flex items-center justify-center text-primary font-bold uppercase\">${nome.substring(0,1)}</div>\n    <div>\n      <p class=\"font-bold text-sm text-on-surface\">${nome}</p>\n      <p class=\"text-xs text-on-surface-variant\">${email}</p>\n    </div>\n  </div>\n</td>\n<td class=\"px-6 py-4 text-sm text-on-surface-variant\">${cpf}</td>\n<td class=\"px-6 py-4\"><span class=\"text-sm font-bold text-primary\">${pontos.toLocaleString('pt-BR')} pts</span></td>\n<td class=\"px-6 py-4\"><span class=\"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${status === 'Ativo' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}\">${status}</span></td>\n<td class=\"px-6 py-4 text-sm text-on-surface-variant\">${ultima}</td>\n<td class=\"px-6 py-4 text-right space-x-1\">\n  <button class=\"p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all btn-suspender\" title=\"${statusAtual === 'ativo' ? 'Suspender conta' : 'Reativar conta'}\"><span class=\"material-symbols-outlined text-[20px]\">${statusAtual === 'ativo' ? 'block' : 'check_circle'}</span></button>\n</td>\n`;
           tbody.appendChild(tr);
         });
         atualizarMetricas(lst);

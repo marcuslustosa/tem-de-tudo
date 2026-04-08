@@ -313,13 +313,14 @@
     const perfil = (storedUser.perfil || storedUser.role || '').toLowerCase();
     const token = localStorage.getItem('tem_de_tudo_token');
 
-    // Cliente escaneia QR da empresa → ganha pontos
-    // Empresa escaneia → apenas valida (informativo)
-    const endpoint = perfil === 'empresa'
-      ? '/api/checkin/validar-qr'
+    // Empresa escaneia QR do CLIENTE → registra check-in e dá pontos ao cliente
+    // Cliente escaneia QR da EMPRESA → ganha pontos para si
+    const isEmpresa = ['empresa', 'estabelecimento', 'parceiro'].includes(perfil);
+    const endpoint = isEmpresa
+      ? '/api/empresa/escanear-cliente'
       : '/api/cliente/escanear-qrcode';
-    const body = perfil === 'empresa'
-      ? { qr_code: qrData }
+    const body = isEmpresa
+      ? { qrcode: qrData }
       : { code: qrData };
     
     // Call validation API automatically
@@ -336,8 +337,16 @@
       const data = await response.json();
       
       if (response.ok && data.success) {
-        const pts = data.data?.pontos_ganhos ? `+${data.data.pontos_ganhos} pts! ` : '';
-        statusText.textContent = `✓ ${pts}${data.message || 'Validado!'}`;
+        if (isEmpresa && data.data?.cliente) {
+          // Feedback específico para empresa: mostra nome do cliente e pontos dados
+          const cliente = data.data.cliente;
+          const pts = data.data.pontos_ganhos ?? 0;
+          const restantes = data.data.scans_restantes ?? 0;
+          statusText.textContent = `✓ Check-in de ${cliente.nome} (+${pts} pts). Restam ${restantes} check-in(s) hoje.`;
+        } else {
+          const pts = data.data?.pontos_ganhos ? `+${data.data.pontos_ganhos} pts! ` : '';
+          statusText.textContent = `✓ ${pts}${data.message || 'Validado!'}`;
+        }
         statusText.classList.remove('text-error');
         statusText.classList.add('text-tertiary');
         
@@ -349,12 +358,18 @@
         
         // Redirect to points page after success (for clientes)
         setTimeout(() => {
-          if (perfil !== 'empresa') {
+          if (!isEmpresa) {
             window.location.href = '/meus_pontos.html';
           } else {
-            window.location.reload();
+            // Empresa permanece na página para escanear o próximo cliente
+            statusText.textContent = 'Escaneie o QR do próximo cliente...';
+            statusText.classList.remove('text-tertiary');
+            successIndicator.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+            scanning = true;
+            requestAnimationFrame(scanQRCode);
           }
-        }, 2000);
+        }, 2500);
       } else {
         statusText.textContent = `✗ ${data.message || 'QR inválido'}`;
         statusText.classList.add('text-error');
@@ -362,8 +377,12 @@
         
         // Reset after 3 seconds
         setTimeout(() => {
-          statusText.textContent = 'Aguardando próximo QR Code...';
+          statusText.textContent = isEmpresa ? 'Escaneie o QR do cliente...' : 'Aguardando próximo QR Code...';
           statusText.classList.remove('text-error', 'text-primary', 'text-tertiary');
+          if (isEmpresa) {
+            scanning = true;
+            requestAnimationFrame(scanQRCode);
+          }
         }, 3000);
       }
     } catch (error) {
@@ -373,7 +392,7 @@
       successIndicator.classList.add('hidden');
       
       setTimeout(() => {
-        statusText.textContent = 'Aguardando próximo QR Code...';
+        statusText.textContent = isEmpresa ? 'Escaneie o QR do cliente...' : 'Aguardando próximo QR Code...';
         statusText.classList.remove('text-error');
       }, 3000);
     }
