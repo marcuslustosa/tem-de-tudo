@@ -30,6 +30,7 @@ use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\AdminContentController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\ReferralController;
+use App\Http\Controllers\API\CampanhaMultiplicadorController;
 
 // Debug route (remover em produÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o)
 Route::get('/debug', function () {
@@ -273,7 +274,8 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     
     // HistÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rico
     Route::get('/historico-pontos', [ClienteAPIController::class, 'historicoPontos']);
-    
+    // Ranking de pontos
+    Route::get('/ranking-pontos', [ClienteAPIController::class, 'rankingPontos']);    
     // Legacy route (manter compatibilidade)
     Route::get('/dashboard-data', [AuthController::class, 'clienteDashboard']);
 });
@@ -315,6 +317,12 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa'
     // RelatÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rios
     Route::get('/relatorio-pontos', [EmpresaAPIController::class, 'relatorioPontos']);
     
+    // Campanhas de multiplicador temporário
+    Route::get('/campanhas', [CampanhaMultiplicadorController::class, 'index']);
+    Route::post('/campanhas', [CampanhaMultiplicadorController::class, 'store']);
+    Route::put('/campanhas/{id}', [CampanhaMultiplicadorController::class, 'update']);
+    Route::delete('/campanhas/{id}', [CampanhaMultiplicadorController::class, 'destroy']);
+
     // Legacy routes (manter compatibilidade)
     Route::get('/dashboard-stats', [EmpresaController::class, 'dashboardStats']);
     Route::get('/recent-checkins', [EmpresaController::class, 'recentCheckins']);
@@ -337,6 +345,9 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->g
     Route::delete('/content/categorias/{categoria}', [AdminContentController::class, 'destroyCategoria']);
     Route::get('/settings', [AdminSettingsController::class, 'index']);
     Route::put('/settings', [AdminSettingsController::class, 'update']);
+
+    // Campanhas: visão geral admin
+    Route::get('/campanhas', [CampanhaMultiplicadorController::class, 'adminIndex']);
 });
 
 // Rotas do sistema de pontos (protegidas por Sanctum)

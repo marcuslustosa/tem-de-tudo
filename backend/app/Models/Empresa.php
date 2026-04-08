@@ -93,12 +93,20 @@ class Empresa extends Model
     }
 
     /**
-     * Obter multiplicador de pontos baseado no valor da compra
+     * Obter multiplicador de pontos, priorizando campanhas temporárias ativas.
      */
     public function getPointsMultiplier(float $valorCompra = 0): float
     {
-        // Usar multiplicador configurado ou padrão de 1.0
-        return $this->points_multiplier ?? 1.0;
+        $base = (float) ($this->points_multiplier ?? 1.0);
+
+        $campanha = \App\Models\CampanhaMultiplicador::where('empresa_id', $this->id)
+            ->where('ativo', true)
+            ->where('data_inicio', '<=', now())
+            ->where('data_fim', '>=', now())
+            ->orderByDesc('multiplicador')
+            ->first();
+
+        return $campanha ? max($base, $campanha->multiplicador) : $base;
     }
 
     /**
@@ -123,6 +131,14 @@ class Empresa extends Model
     public function discountLevels()
     {
         return $this->hasMany(DiscountLevel::class);
+    }
+
+    /**
+     * Relacionamento com campanhas de multiplicador temporário
+     */
+    public function campanhasMultiplicador()
+    {
+        return $this->hasMany(CampanhaMultiplicador::class);
     }
 
     /**

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Jobs\SendWebPushJob;
+use App\Models\Empresa;
 
 class ClienteAPIController extends Controller
 {
@@ -229,9 +230,9 @@ class ClienteAPIController extends Controller
             ], 404);
         }
         
-        // Buscar empresa
-        $empresa = DB::table('empresas')->where('id', $qrCode->empresa_id)->first();
-        
+        // Buscar empresa via Eloquent para que getPointsMultiplier() use campanhas ativas
+        $empresa = Empresa::findOrFail($qrCode->empresa_id);
+
         // Verificar limite de uso diário (3 scans por dia por empresa)
         $hoje = now()->format('Y-m-d');
         $scansHoje = DB::table('pontos')
@@ -240,18 +241,18 @@ class ClienteAPIController extends Controller
             ->whereDate('created_at', $hoje)
             ->where('descricao', 'LIKE', '%QR Code%')
             ->count();
-        
+
         if ($scansHoje >= 3) {
             return response()->json([
                 'success' => false,
                 'message' => 'Você já atingiu o limite de 3 scans por dia nesta empresa'
             ], 429);
         }
-        
-        // Calcular pontos (base 100 * multiplicador da empresa)
+
+        // Calcular pontos: base 100 * multiplicador (inclui campanha ativa se houver)
         $pontosBase = 100;
-        $multiplicador = $empresa->points_multiplier ?? 1;
-        $pontosGanhos = $pontosBase * $multiplicador;
+        $multiplicador = $empresa->getPointsMultiplier();
+        $pontosGanhos = (int) round($pontosBase * $multiplicador);
         
         // Adicionar pontos
         DB::table('pontos')->insert([
@@ -333,7 +334,31 @@ class ClienteAPIController extends Controller
                 'message' => 'Você já resgatou esta promoção hoje'
             ], 429);
         }
-        
+
+        // Verificar estoque disponível
+        if ($promocao->qtd_disponivel !== null && $promocao->qtd_resgatada >= $promocao->qtd_disponivel) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Esta promoção não possui mais unidades disponíveis.'
+            ], 400);
+        }
+
+        // Verificar limite por usuário
+        $limiteUsuario = $promocao->limite_por_usuario ?? 1;
+        $totalResgatadoUsuario = DB::table('pontos')
+            ->where('user_id', $user->id)
+            ->where('empresa_id', $promocao->empresa_id)
+            ->where('tipo', 'resgate')
+            ->where('descricao', 'LIKE', '%' . $promocao->titulo . '%')
+            ->count();
+
+        if ($totalResgatadoUsuario >= $limiteUsuario) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Você já atingiu o limite de resgates para esta promoção.'
+            ], 400);
+        }
+
         // Pontoscusto (baseado no desconto)
         $pontosCusto = $promocao->desconto * 10; // 10 pontos por % de desconto
         
@@ -361,10 +386,13 @@ class ClienteAPIController extends Controller
             ->where('id', $user->id)
             ->decrement('pontos', $pontosCusto);
         
-        // Incrementar contador de resgates
+        // Incrementar contador de resgates e estoque utilizado
         DB::table('promocoes')
             ->where('id', $promocaoId)
             ->increment('resgates');
+        DB::table('promocoes')
+            ->where('id', $promocaoId)
+            ->increment('qtd_resgatada');
         
         return response()->json([
             'success' => true,
@@ -531,6 +559,44 @@ class ClienteAPIController extends Controller
             'success' => true,
             'data' => $promocoes,
             'total' => $promocoes->count()
+        ]);
+    }
+
+    /**
+     * Ranking de pontos: top 50 clientes + posição do usuário autenticado.
+     */
+    public function rankingPontos(): \Illuminate\Http\JsonResponse
+    {
+        $user = Auth::user();
+
+        $top = DB::table('users')
+            ->where('perfil', 'cliente')
+            ->whereNull('deleted_at')
+            ->orderByDesc('pontos')
+            ->limit(50)
+            ->select('id', 'name', 'pontos', 'nivel', 'posicao_ranking')
+            ->get()
+            ->map(function ($u, $index) {
+                $u->posicao = $u->posicao_ranking ?: ($index + 1);
+                return $u;
+            });
+
+        $minhaPosicao = $user->posicao_ranking;
+        if (!$minhaPosicao) {
+            $minhaPosicao = DB::table('users')
+                ->where('perfil', 'cliente')
+                ->whereNull('deleted_at')
+                ->where('pontos', '>', $user->pontos)
+                ->count() + 1;
+        }
+
+        return response()->json([
+            'success'       => true,
+            'data'          => [
+                'ranking'         => $top,
+                'minha_posicao'   => $minhaPosicao,
+                'meus_pontos'     => $user->pontos,
+            ],
         ]);
     }
 }

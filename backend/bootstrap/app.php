@@ -65,6 +65,28 @@ return Application::configure(basePath: dirname(__DIR__))
             ->onFailure(function () {
                 \Illuminate\Support\Facades\Log::error('Falha ao expirar pontos');
             });
+
+        // Recalcular ranking de pontos diariamente às 03h
+        $schedule->command('ranking:recalcular')
+            ->dailyAt('03:00')
+            ->timezone('America/Sao_Paulo')
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::info('Ranking de pontos recalculado com sucesso');
+            })
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Falha ao recalcular ranking de pontos');
+            });
+
+        // Avaliação anual de nível: executa todo 1º de janeiro às 01h
+        $schedule->command('nivel:avaliar-anual')
+            ->yearlyOn(1, 1, '01:00')
+            ->timezone('America/Sao_Paulo')
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::info('Avaliação anual de nível concluída');
+            })
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Falha na avaliação anual de nível');
+            });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -949,6 +949,45 @@
           </div>`;
         host.appendChild(badgesSection);
       }
+
+      // Ranking de pontos
+      const { data: rankingResp } = await api.request('/cliente/ranking-pontos', {}, { notify: false });
+      if (rankingResp?.data) {
+        const { minha_posicao, ranking } = rankingResp.data;
+        const host = document.querySelector('main') || document.body;
+
+        // Atualizar elemento de posição no DOM se existir
+        const posEl = document.getElementById('posicaoRanking') || document.getElementById('hero-ranking');
+        if (posEl) posEl.textContent = `#${minha_posicao}`;
+
+        // Injetar seção de ranking se não existir no DOM
+        if (!document.getElementById('rankingSection') && Array.isArray(ranking) && ranking.length) {
+          const rankingSection = document.createElement('section');
+          rankingSection.id = 'rankingSection';
+          rankingSection.className = 'max-w-6xl mx-auto px-4 pt-4 pb-6';
+          const nivelIcone = { 1: '🥉', 2: '🥈', 3: '🥇', 4: '💎' };
+          const topRows = ranking.slice(0, 10).map((u, i) => {
+            const pos = u.posicao || (i + 1);
+            const isMe = u.id === user?.id;
+            const icone = nivelIcone[u.nivel] || '⭐';
+            return `<div class="flex items-center gap-3 py-2 ${isMe ? 'bg-primary/10 rounded-lg px-2' : ''}">
+              <span class="w-7 text-center font-bold text-sm ${pos <= 3 ? 'text-yellow-500' : 'text-on-surface-variant'}">#${pos}</span>
+              <span class="flex-1 text-sm font-semibold text-on-surface truncate">${isMe ? '(Você) ' : ''}${u.name || 'Cliente'}</span>
+              <span class="text-xs text-on-surface-variant mr-1">${icone}</span>
+              <span class="text-sm font-bold text-primary">${Number(u.pontos || 0).toLocaleString('pt-BR')}</span>
+            </div>`;
+          }).join('');
+          rankingSection.innerHTML = `
+            <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-base font-semibold text-on-surface">Ranking de Pontos</h3>
+                <span class="text-xs text-on-surface-variant bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">Sua posição: #${minha_posicao}</span>
+              </div>
+              ${topRows}
+            </div>`;
+          host.appendChild(rankingSection);
+        }
+      }
     },
 
 
@@ -2164,6 +2203,184 @@
         ui.message(data?.message || 'Erro ao remover promocao.', 'error');
       }
     },
+
+    // ----- Campanhas de multiplicador temporário -----
+    async campanhas() {
+      if (!(await auth.guard(['empresa']))) return;
+      ui.setPageState('loading', 'Carregando campanhas...');
+      const { res, data } = await api.request('/empresa/campanhas');
+      ui.clearPageState();
+      const lista = data?.data || [];
+
+      const host = document.querySelector('main') || document.getElementById('content') || document.body;
+      host.innerHTML = '';
+
+      // ---- Campanha ativa em destaque ----
+      const now = Date.now();
+      const ativa = lista.find((c) => c.ativo && new Date(c.data_inicio) <= now && new Date(c.data_fim) >= now);
+
+      // ---- Cabeçalho ----
+      const header = document.createElement('div');
+      header.className = 'max-w-2xl mx-auto px-4 pt-6 pb-2';
+      header.innerHTML = `
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-headline font-bold text-on-surface">Campanhas de Pontos</h2>
+          <button id="novaCampanhaBtn" class="flex items-center gap-1 bg-primary text-on-primary px-4 py-2 rounded-xl text-sm font-semibold shadow">
+            <span class="material-symbols-outlined text-base">add</span> Nova campanha
+          </button>
+        </div>
+        ${ativa ? `
+        <div class="rounded-2xl bg-gradient-to-r from-primary to-tertiary text-on-primary p-4 mb-4 flex items-center gap-3">
+          <span class="material-symbols-outlined text-3xl">rocket_launch</span>
+          <div>
+            <p class="font-bold text-base">${ativa.nome} — <span class="text-yellow-200">${ativa.multiplicador}×</span></p>
+            <p class="text-sm opacity-90">Ativa até ${new Date(ativa.data_fim).toLocaleDateString('pt-BR')}</p>
+          </div>
+        </div>` : ''}`;
+      host.appendChild(header);
+
+      // ---- Formulário ----
+      const formWrap = document.createElement('div');
+      formWrap.id = 'campanha-form-wrap';
+      formWrap.className = 'max-w-2xl mx-auto px-4 pb-4 hidden';
+      formWrap.innerHTML = `
+        <div class="rounded-2xl border border-surface-variant/30 bg-surface-container-low p-5">
+          <h3 id="campanha-form-title" class="font-semibold text-base text-on-surface mb-3">Nova campanha</h3>
+          <input id="camp-nome" type="text" placeholder="Nome da campanha" class="w-full border border-surface-variant rounded-lg px-3 py-2 mb-3 text-sm bg-surface text-on-surface" />
+          <textarea id="camp-desc" rows="2" placeholder="Descrição (opcional)" class="w-full border border-surface-variant rounded-lg px-3 py-2 mb-3 text-sm bg-surface text-on-surface"></textarea>
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label class="text-xs text-on-surface-variant mb-1 block">Multiplicador</label>
+              <input id="camp-mult" type="number" step="0.1" min="1.1" max="20" value="2" class="w-full border border-surface-variant rounded-lg px-3 py-2 text-sm bg-surface text-on-surface" />
+            </div>
+            <div class="flex items-end gap-2">
+              <label class="flex items-center gap-2 text-sm text-on-surface cursor-pointer">
+                <input id="camp-ativo" type="checkbox" checked class="accent-primary w-4 h-4" /> Ativa
+              </label>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div>
+              <label class="text-xs text-on-surface-variant mb-1 block">Início</label>
+              <input id="camp-inicio" type="datetime-local" class="w-full border border-surface-variant rounded-lg px-3 py-2 text-sm bg-surface text-on-surface" />
+            </div>
+            <div>
+              <label class="text-xs text-on-surface-variant mb-1 block">Fim</label>
+              <input id="camp-fim" type="datetime-local" class="w-full border border-surface-variant rounded-lg px-3 py-2 text-sm bg-surface text-on-surface" />
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <button id="camp-salvar" class="flex-1 bg-primary text-on-primary rounded-xl py-2 font-semibold text-sm">Salvar</button>
+            <button id="camp-cancelar" class="flex-1 border border-surface-variant text-on-surface rounded-xl py-2 text-sm">Cancelar</button>
+          </div>
+          <p id="camp-msg" class="text-xs mt-2 text-center text-on-surface-variant"></p>
+        </div>`;
+      host.appendChild(formWrap);
+
+      // ---- Lista ----
+      const listaWrap = document.createElement('div');
+      listaWrap.className = 'max-w-2xl mx-auto px-4 pb-6 space-y-3';
+      if (!lista.length) {
+        listaWrap.innerHTML = '<p class="text-sm text-on-surface-variant text-center py-8">Nenhuma campanha cadastrada. Crie uma para multiplicar os pontos dos seus clientes!</p>';
+      } else {
+        lista.forEach((c) => {
+          const isAtiva = c.ativo && new Date(c.data_inicio) <= now && new Date(c.data_fim) >= now;
+          const card = document.createElement('div');
+          card.className = 'rounded-xl border border-surface-variant/30 bg-surface-container-lowest p-4 flex justify-between items-start';
+          card.innerHTML = `
+            <div class="flex-1 min-w-0 pr-3">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-bold text-on-surface text-sm">${c.nome}</span>
+                <span class="text-xs px-2 py-0.5 rounded-full font-bold ${isAtiva ? 'bg-tertiary/20 text-tertiary' : 'bg-outline/10 text-outline'}">${isAtiva ? 'ATIVA' : (c.ativo ? 'AGENDADA' : 'INATIVA')}</span>
+              </div>
+              ${c.descricao ? `<p class="text-xs text-on-surface-variant mb-1 line-clamp-1">${c.descricao}</p>` : ''}
+              <p class="text-xs text-on-surface-variant">
+                <span class="font-bold text-primary">${c.multiplicador}×</span> pontos &nbsp;·&nbsp;
+                ${new Date(c.data_inicio).toLocaleDateString('pt-BR')} → ${new Date(c.data_fim).toLocaleDateString('pt-BR')}
+              </p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              <button data-action="editar" data-id="${c.id}" class="material-symbols-outlined text-on-surface-variant text-xl" title="Editar">edit</button>
+              <button data-action="deletar" data-id="${c.id}" class="material-symbols-outlined text-error text-xl" title="Excluir">delete</button>
+            </div>`;
+          card.querySelector('[data-action="editar"]').addEventListener('click', () => fillForm(c));
+          card.querySelector('[data-action="deletar"]').addEventListener('click', () => deletar(c.id));
+          listaWrap.appendChild(card);
+        });
+      }
+      host.appendChild(listaWrap);
+
+      // ---- Lógica do formulário ----
+      let editingId = null;
+
+      const fillForm = (c) => {
+        editingId = c.id;
+        document.getElementById('campanha-form-title').textContent = 'Editar campanha';
+        document.getElementById('camp-nome').value = c.nome || '';
+        document.getElementById('camp-desc').value = c.descricao || '';
+        document.getElementById('camp-mult').value = c.multiplicador || 2;
+        document.getElementById('camp-ativo').checked = !!c.ativo;
+        document.getElementById('camp-inicio').value = c.data_inicio ? c.data_inicio.replace(' ', 'T').slice(0, 16) : '';
+        document.getElementById('camp-fim').value = c.data_fim ? c.data_fim.replace(' ', 'T').slice(0, 16) : '';
+        formWrap.classList.remove('hidden');
+        formWrap.scrollIntoView({ behavior: 'smooth' });
+      };
+
+      const deletar = async (id) => {
+        if (!window.confirm('Excluir esta campanha?')) return;
+        const { res } = await api.request(`/empresa/campanhas/${id}`, { method: 'DELETE' });
+        if (res.ok) { ui.message('Campanha removida.', 'success'); location.reload(); }
+        else { ui.message('Erro ao remover campanha.', 'error'); }
+      };
+
+      document.getElementById('novaCampanhaBtn').addEventListener('click', () => {
+        editingId = null;
+        document.getElementById('campanha-form-title').textContent = 'Nova campanha';
+        document.getElementById('camp-nome').value = '';
+        document.getElementById('camp-desc').value = '';
+        document.getElementById('camp-mult').value = 2;
+        document.getElementById('camp-ativo').checked = true;
+        document.getElementById('camp-inicio').value = '';
+        document.getElementById('camp-fim').value = '';
+        document.getElementById('camp-msg').textContent = '';
+        formWrap.classList.remove('hidden');
+        formWrap.scrollIntoView({ behavior: 'smooth' });
+      });
+
+      document.getElementById('camp-cancelar').addEventListener('click', () => {
+        editingId = null;
+        formWrap.classList.add('hidden');
+      });
+
+      document.getElementById('camp-salvar').addEventListener('click', async () => {
+        const nome = document.getElementById('camp-nome').value.trim();
+        const multiplicador = parseFloat(document.getElementById('camp-mult').value);
+        const data_inicio = document.getElementById('camp-inicio').value;
+        const data_fim = document.getElementById('camp-fim').value;
+        const msg = document.getElementById('camp-msg');
+        if (!nome) { msg.textContent = 'Informe o nome.'; return; }
+        if (!data_inicio || !data_fim) { msg.textContent = 'Informe início e fim.'; return; }
+        if (multiplicador < 1.1) { msg.textContent = 'Multiplicador mínimo: 1.1×'; return; }
+        msg.textContent = '';
+        const payload = {
+          nome,
+          descricao: document.getElementById('camp-desc').value.trim() || null,
+          multiplicador,
+          data_inicio,
+          data_fim,
+          ativo: document.getElementById('camp-ativo').checked,
+        };
+        const path = editingId ? `/empresa/campanhas/${editingId}` : '/empresa/campanhas';
+        const method = editingId ? 'PUT' : 'POST';
+        const { res, data: resp } = await api.request(path, { method, body: JSON.stringify(payload) }, { headers: { 'Content-Type': 'application/json' } });
+        if (res.ok && resp?.success !== false) {
+          ui.message('Campanha salva!', 'success');
+          location.reload();
+        } else {
+          msg.textContent = resp?.message || 'Erro ao salvar campanha.';
+        }
+      });
+    },
   };
 
   // ---------------------- Paginas: Admin ---------------------- //
@@ -3277,7 +3494,7 @@
     dashboard_parceiro: empresa.dashboard,
     clientes_fidelizados_loja: empresa.clientes,
     gest_o_de_ofertas_parceiro: empresa.promocoes,
-    minhas_campanhas_loja: empresa.promocoes,
+    minhas_campanhas_loja: empresa.campanhas,
 
     // Admin
     dashboard_admin_master: admin.dashboard,
