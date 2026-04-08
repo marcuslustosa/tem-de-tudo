@@ -1328,10 +1328,18 @@
       ui.setPageState('loading', 'Carregando perfil...');
       const user = await auth.ensure();
       let dados = {};
-      if (user?.perfil === 'cliente') {
+      let empresaData = null;
+      const perfil = auth.normalizePerfil(user?.perfil || user?.role || user?.tipo);
+
+      if (perfil === 'cliente') {
         try {
-          const resp = await api.request('/pontos/meus-dados');
+          const resp = await api.request('/pontos/meus-dados', {}, { notify: false });
           dados = resp.data?.data || {};
+        } catch (_) {}
+      } else if (perfil === 'empresa') {
+        try {
+          const resp = await api.request('/empresa/perfil', {}, { notify: false });
+          empresaData = resp.data?.data || null;
         } catch (_) {}
       }
       ui.clearPageState();
@@ -1347,7 +1355,6 @@
       const pend = dados.pontos_pendentes ?? 0;
       const nextTarget = Math.max(1000, pontos + 2000);
       const perc = Math.min(100, Math.round((pontos / nextTarget) * 100));
-      const perfil = auth.normalizePerfil(user?.perfil || user?.role || user?.tipo);
 
       const remapPerfilNav = (perfilAtual) => {
         const map = perfilAtual === 'admin'
@@ -1438,33 +1445,79 @@
       });
 
       if (heroName) heroName.textContent = user?.name || user?.nome || 'Usuario';
-      if (heroLevel) heroLevel.textContent = user?.perfil ? user.perfil.toUpperCase() : 'MEMBRO';
+      if (heroLevel) heroLevel.textContent = perfil ? perfil.toUpperCase() : 'MEMBRO';
       if (heroStatus) heroStatus.textContent = user?.status || 'Ativo';
       if (heroPoints) heroPoints.textContent = pontos;
       if (heroProgressText) heroProgressText.textContent = `Faltam ${nextTarget - pontos} para o proximo nivel`;
       if (heroProgressBar) heroProgressBar.style.width = `${perc}%`;
 
       const pf = (id) => document.getElementById(id);
-      pf('pfNome')?.setAttribute('value', user?.name || user?.nome || '');
-      pf('pfEmail')?.setAttribute('value', user?.email || '');
-      pf('pfTelefone')?.setAttribute('value', user?.telefone || '');
-      pf('pfCpf')?.setAttribute('value', user?.cpf || '');
-      pf('pfNascimento')?.setAttribute('value', user?.data_nascimento || '');
 
+      // Preencher campos comuns
+      if (pf('pfNome')) pf('pfNome').value = user?.name || user?.nome || '';
+      if (pf('pfEmail')) pf('pfEmail').value = user?.email || '';
+      if (pf('pfTelefone')) pf('pfTelefone').value = user?.telefone || '';
+
+      // Campos de cliente
+      if (perfil === 'cliente') {
+        if (pf('pfCpf')) pf('pfCpf').value = user?.cpf || '';
+        if (pf('pfNascimento')) pf('pfNascimento').value = user?.data_nascimento || '';
+      } else {
+        // Esconder campos exclusivos de cliente para empresa/admin
+        const fieldsCpf = document.getElementById('fieldsCpf');
+        const fieldsNasc = document.getElementById('fieldsNascimento');
+        if (fieldsCpf) fieldsCpf.classList.add('hidden');
+        if (fieldsNasc) fieldsNasc.classList.add('hidden');
+      }
+
+      // Campos de empresa
+      if (perfil === 'empresa') {
+        const fieldsEmpresa = document.getElementById('fieldsEmpresa');
+        if (fieldsEmpresa) fieldsEmpresa.classList.remove('hidden');
+        const emp = empresaData?.empresa || {};
+        if (pf('pfEmpresaNome')) pf('pfEmpresaNome').value = emp.nome || '';
+        if (pf('pfEmpresaRamo')) pf('pfEmpresaRamo').value = emp.ramo || '';
+        if (pf('pfEmpresaCnpj')) pf('pfEmpresaCnpj').value = emp.cnpj || '';
+        if (pf('pfEmpresaEndereco')) pf('pfEmpresaEndereco').value = emp.endereco || '';
+        if (pf('pfEmpresaLogo')) pf('pfEmpresaLogo').value = emp.logo || '';
+        // Atualizar hero com nome da empresa em vez do user
+        if (heroName && emp.nome) heroName.textContent = emp.nome;
+      }
+
+      // Salvar dados
       pf('pfSalvar')?.addEventListener('click', async () => {
-        const payload = {
-          name: pf('pfNome')?.value,
-          email: pf('pfEmail')?.value,
-          telefone: pf('pfTelefone')?.value,
-          cpf: pf('pfCpf')?.value,
-          data_nascimento: pf('pfNascimento')?.value,
-        };
-        const { res, data } = await api.request('/perfil', { method: 'PUT', body: JSON.stringify(payload) });
-        if (res.ok && data?.success) {
-          ui.message('Perfil atualizado.', 'success');
-          auth.save(auth.getStored().token, data.data);
+        if (perfil === 'empresa') {
+          const payload = {
+            name:             pf('pfNome')?.value,
+            email:            pf('pfEmail')?.value,
+            telefone:         pf('pfTelefone')?.value,
+            empresa_nome:     pf('pfEmpresaNome')?.value,
+            empresa_ramo:     pf('pfEmpresaRamo')?.value,
+            empresa_cnpj:     pf('pfEmpresaCnpj')?.value,
+            empresa_endereco: pf('pfEmpresaEndereco')?.value,
+            empresa_logo:     pf('pfEmpresaLogo')?.value || undefined,
+          };
+          const { res, data } = await api.request('/empresa/perfil', { method: 'PUT', body: JSON.stringify(payload) });
+          if (res.ok && data?.success) {
+            ui.message('Perfil atualizado.', 'success');
+          } else {
+            ui.message(data?.message || 'Erro ao atualizar perfil.', 'error');
+          }
         } else {
-          ui.message(data?.message || 'Erro ao atualizar perfil.', 'error');
+          const payload = {
+            name:            pf('pfNome')?.value,
+            email:           pf('pfEmail')?.value,
+            telefone:        pf('pfTelefone')?.value,
+            cpf:             pf('pfCpf')?.value,
+            data_nascimento: pf('pfNascimento')?.value,
+          };
+          const { res, data } = await api.request('/perfil', { method: 'PUT', body: JSON.stringify(payload) });
+          if (res.ok && data?.success) {
+            ui.message('Perfil atualizado.', 'success');
+            auth.save(auth.getStored().token, data.data);
+          } else {
+            ui.message(data?.message || 'Erro ao atualizar perfil.', 'error');
+          }
         }
       });
 
@@ -1474,11 +1527,25 @@
           password: pf('pwNova')?.value,
           password_confirmation: pf('pwConf')?.value,
         };
+        if (!payload.current_password || !payload.password) {
+          ui.message('Preencha a senha atual e a nova senha.', 'warning');
+          return;
+        }
+        if (payload.password !== payload.password_confirmation) {
+          ui.message('As senhas não coincidem.', 'warning');
+          return;
+        }
         ui.setPageState('loading', 'Atualizando senha...');
         const { res, data } = await api.request('/auth/change-password', { method: 'POST', body: JSON.stringify(payload) });
         ui.clearPageState();
-        if (res.ok && data?.success) ui.message('Senha alterada.', 'success');
-        else ui.message(data?.message || 'Erro ao alterar senha.', 'error');
+        if (res.ok && data?.success) {
+          ui.message('Senha alterada com sucesso.', 'success');
+          if (pf('pwAtual')) pf('pwAtual').value = '';
+          if (pf('pwNova')) pf('pwNova').value = '';
+          if (pf('pwConf')) pf('pwConf').value = '';
+        } else {
+          ui.message(data?.message || 'Erro ao alterar senha.', 'error');
+        }
       });
 
       document.getElementById('logoutBtn')?.addEventListener('click', () => {
@@ -2953,8 +3020,13 @@
         }, { requireAuth });
         ui.clearPageState();
         if (res.ok && data?.success !== false) {
-          ui.message('Conta criada. Faca login.', 'success');
-          setTimeout(() => (window.location.href = '/entrar.html'), 800);
+          if (perfil === 'empresa' && origem === 'admin') {
+            ui.message('Estabelecimento criado com sucesso!', 'success');
+            setTimeout(() => (window.location.href = '/gest_o_de_estabelecimentos.html'), 800);
+          } else {
+            ui.message('Conta criada. Faca login.', 'success');
+            setTimeout(() => (window.location.href = '/entrar.html'), 800);
+          }
         } else {
           const errs = data?.errors ? Object.values(data.errors).flat().join(' ') : '';
           ui.message(data?.message || errs || 'Erro ao criar conta.', 'error');

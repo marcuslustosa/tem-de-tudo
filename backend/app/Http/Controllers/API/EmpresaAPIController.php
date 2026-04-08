@@ -11,6 +11,98 @@ use Illuminate\Support\Facades\Schema;
 class EmpresaAPIController extends Controller
 {
     /**
+     * Perfil completo da empresa (dados do usuário + dados da empresa)
+     */
+    public function meuPerfil()
+    {
+        $user = Auth::user();
+        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
+
+        if (!$empresa) {
+            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'user' => [
+                    'id'    => $user->id,
+                    'name'  => $user->name,
+                    'email' => $user->email,
+                    'telefone' => $user->telefone,
+                    'perfil' => $user->perfil,
+                    'status' => $user->status,
+                ],
+                'empresa' => [
+                    'id'        => $empresa->id,
+                    'nome'      => $empresa->nome,
+                    'ramo'      => $empresa->ramo ?? $empresa->categoria ?? '',
+                    'cnpj'      => $empresa->cnpj ?? '',
+                    'endereco'  => $empresa->endereco ?? '',
+                    'telefone'  => $empresa->telefone ?? $user->telefone ?? '',
+                    'logo'      => $empresa->logo ?? '',
+                    'descricao' => $empresa->descricao ?? '',
+                    'points_multiplier' => $empresa->points_multiplier ?? 1.0,
+                    'ativo'     => $empresa->ativo ?? true,
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Atualiza perfil do usuário + dados da empresa
+     */
+    public function atualizarPerfil(Request $request)
+    {
+        $user = Auth::user();
+        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
+
+        if (!$empresa) {
+            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+        }
+
+        $validated = $request->validate([
+            'name'     => 'sometimes|string|max:255',
+            'email'    => 'sometimes|email|unique:users,email,' . $user->id,
+            'telefone' => 'sometimes|string|max:20',
+            // empresa fields
+            'empresa_nome'     => 'sometimes|string|max:255',
+            'empresa_ramo'     => 'sometimes|string|max:100',
+            'empresa_cnpj'     => 'sometimes|string|max:18',
+            'empresa_endereco' => 'sometimes|string|max:500',
+            'empresa_logo'     => 'sometimes|nullable|url|max:500',
+        ]);
+
+        // Atualizar users
+        $userFields = array_filter([
+            'name'     => $validated['name'] ?? null,
+            'email'    => $validated['email'] ?? null,
+            'telefone' => $validated['telefone'] ?? null,
+        ]);
+        if ($userFields) {
+            DB::table('users')->where('id', $user->id)->update($userFields);
+        }
+
+        // Atualizar empresas
+        $empresaFields = array_filter([
+            'nome'      => $validated['empresa_nome'] ?? null,
+            'ramo'      => $validated['empresa_ramo'] ?? null,
+            'cnpj'      => $validated['empresa_cnpj'] ?? null,
+            'endereco'  => $validated['empresa_endereco'] ?? null,
+            'logo'      => $validated['empresa_logo'] ?? null,
+            'updated_at' => now(),
+        ], fn($v) => $v !== null);
+        if ($empresaFields) {
+            DB::table('empresas')->where('id', $empresa->id)->update($empresaFields);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Perfil atualizado com sucesso!',
+        ]);
+    }
+
+    /**
      * Dashboard da empresa com estatísticas
      */
     public function dashboard()

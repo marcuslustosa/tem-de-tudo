@@ -135,6 +135,88 @@
 <!-- Decorative circle -->
 <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-accent-cyan opacity-10 rounded-full blur-3xl"></div>
 </section>
+
+<!-- Dados Pessoais / Estabelecimento -->
+<section class="rounded-xl bg-surface-container-lowest shadow-sm p-5 space-y-4">
+  <h3 class="text-on-surface font-bold text-lg font-headline">Meus Dados</h3>
+
+  <!-- Campos comuns (cliente + empresa) -->
+  <div class="grid gap-3 sm:grid-cols-2">
+    <div class="space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Nome</label>
+      <input id="pfNome" type="text" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="Seu nome" />
+    </div>
+    <div class="space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">E-mail</label>
+      <input id="pfEmail" type="email" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="seu@email.com" />
+    </div>
+    <div class="space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Telefone</label>
+      <input id="pfTelefone" type="tel" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="(11) 90000-0000" />
+    </div>
+    <!-- Campos exclusivos de CLIENTE -->
+    <div id="fieldsCpf" class="space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">CPF</label>
+      <input id="pfCpf" type="text" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="000.000.000-00" />
+    </div>
+    <div id="fieldsNascimento" class="space-y-1 sm:col-span-2">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Data de nascimento</label>
+      <input id="pfNascimento" type="date" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" />
+    </div>
+  </div>
+
+  <!-- Campos exclusivos de EMPRESA (ocultos por padrão) -->
+  <div id="fieldsEmpresa" class="hidden grid gap-3 sm:grid-cols-2 pt-2 border-t border-outline-variant/30">
+    <h4 class="sm:col-span-2 text-sm font-semibold text-on-surface-variant">Dados do Estabelecimento</h4>
+    <div class="space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Nome do estabelecimento</label>
+      <input id="pfEmpresaNome" type="text" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="Nome do seu negócio" />
+    </div>
+    <div class="space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Ramo / Categoria</label>
+      <input id="pfEmpresaRamo" type="text" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="Ex: Restaurante, Varejo..." />
+    </div>
+    <div class="space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">CNPJ</label>
+      <input id="pfEmpresaCnpj" type="text" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="00.000.000/0000-00" />
+    </div>
+    <div class="space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Endereço</label>
+      <input id="pfEmpresaEndereco" type="text" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="Rua, número, bairro" />
+    </div>
+    <div class="sm:col-span-2 space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">URL da Logo</label>
+      <input id="pfEmpresaLogo" type="url" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="https://..." />
+    </div>
+  </div>
+
+  <button id="pfSalvar" class="w-full py-3 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl hover:opacity-95 active:scale-[0.98] transition-all">
+    Salvar dados
+  </button>
+</section>
+
+<!-- Alterar Senha -->
+<section class="rounded-xl bg-surface-container-lowest shadow-sm p-5 space-y-4">
+  <h3 class="text-on-surface font-bold text-lg font-headline">Alterar Senha</h3>
+  <div class="grid gap-3">
+    <div class="space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Senha atual</label>
+      <input id="pwAtual" type="password" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="Senha atual" />
+    </div>
+    <div class="space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Nova senha</label>
+      <input id="pwNova" type="password" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="Mínimo 6 caracteres" />
+    </div>
+    <div class="space-y-1">
+      <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Confirmar nova senha</label>
+      <input id="pwConf" type="password" class="block w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-xl text-on-surface text-sm focus:ring-2 focus:ring-primary/30 focus:outline-none" placeholder="Repita a nova senha" />
+    </div>
+  </div>
+  <button id="pwSalvar" class="w-full py-3 bg-surface-container-high text-on-surface font-bold rounded-xl hover:bg-surface-container-highest transition-all">
+    Alterar senha
+  </button>
+</section>
+
 <!-- Menu Grid -->
 <section class="space-y-4">
 <h3 class="text-on-surface font-bold text-lg font-headline px-1">Minha Conta</h3>

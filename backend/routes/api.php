@@ -276,6 +276,10 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa'
     
     // Dashboard da Empresa
     Route::get('/dashboard', [EmpresaAPIController::class, 'dashboard']);
+
+    // Perfil da empresa
+    Route::get('/perfil', [EmpresaAPIController::class, 'meuPerfil']);
+    Route::put('/perfil', [EmpresaAPIController::class, 'atualizarPerfil']);
     
     // Clientes
     Route::get('/clientes', [EmpresaAPIController::class, 'clientes']);
