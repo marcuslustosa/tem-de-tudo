@@ -283,7 +283,7 @@
     const pageGroups = {
       admin: ['dashboard_admin_master', 'gest_o_de_estabelecimentos', 'gest_o_de_usu_rios_master', 'gest_o_de_clientes_master', 'relat_rios_gerais_master', 'banners_e_categorias_master', 'configuracoes_admin'],
       empresa: ['dashboard_parceiro', 'gest_o_de_ofertas_parceiro', 'minhas_campanhas_loja', 'clientes_fidelizados_loja'],
-      cliente: ['meus_pontos', 'parceiros_tem_de_tudo', 'detalhe_do_parceiro', 'recompensas', 'hist_rico_de_uso', 'meu_perfil', 'validar_resgate'],
+      cliente: ['meus_pontos', 'parceiros_tem_de_tudo', 'detalhe_do_parceiro', 'recompensas', 'hist_rico_de_uso', 'meu_perfil', 'validar_resgate', 'configuracoes_cliente'],
     };
 
     let scope = 'cliente';
@@ -325,7 +325,7 @@
         inventory_2: '/validar_resgate.html',
         qr_code_scanner: '/validar_resgate.html',
         person: commonProfile,
-        settings: commonProfile,
+        settings: '/configuracoes_cliente.html',
       },
       cliente: {
         dashboard: '/meus_pontos.html',
@@ -367,7 +367,7 @@
     if (text.includes('venda')) return scope === 'admin' ? '/relat_rios_gerais_master.html' : '/gest_o_de_ofertas_parceiro.html';
     if (text.includes('campanha') || text.includes('oferta')) return scope === 'empresa' ? '/gest_o_de_ofertas_parceiro.html' : null;
     if (text.includes('conteudo') || text.includes('banner') || text.includes('categoria')) return scope === 'admin' ? '/banners_e_categorias_master.html' : null;
-    if (text.includes('configur')) return scope === 'admin' ? '/configuracoes_admin.html' : '/meu_perfil.html';
+    if (text.includes('configur')) return scope === 'admin' ? '/configuracoes_admin.html' : '/configuracoes_cliente.html';
     if (text.includes('comecar agora') || text.includes('gerar relatorio')) return scope === 'admin' ? '/relat_rios_gerais_master.html?gerar=1' : null;
     if (text.includes('perfil') || text.includes('conta')) return '/meu_perfil.html';
     if (text.includes('suporte')) return '__support__';
@@ -537,7 +537,7 @@
 
   function wireSettingsShortcuts() {
     const scope = getScopeForCurrentPage();
-    const target = scope === 'admin' ? '/configuracoes_admin.html' : '/meu_perfil.html';
+    const target = scope === 'admin' ? '/configuracoes_admin.html' : '/configuracoes_cliente.html';
 
     document.querySelectorAll('button').forEach((btn) => {
       if (btn.dataset.settingsBound === '1') return;
@@ -696,7 +696,13 @@
         ...(requireAuth && stored.token ? { Authorization: `Bearer ${stored.token}` } : {}),
         ...(options.headers || {}),
       };
-      const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+      let res;
+      try {
+        res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+      } catch (networkErr) {
+        console.warn('[api] Falha de rede em', path, networkErr.message);
+        return { res: { ok: false, status: 0, statusText: 'Network Error' }, data: null };
+      }
       let data = null;
       try {
         data = await res.json();
@@ -831,25 +837,25 @@
       const totalGanho = Number(dashboard.usuario?.total_ganho ?? 0);
       const totalGasto = Number(dashboard.usuario?.total_gasto ?? 0);
 
-      const welcomeEl = document.querySelector("header span.font-['Plus_Jakarta_Sans']");
+      const welcomeEl = document.getElementById('header-welcome') || document.querySelector('header h1') || document.querySelector('header span');
       if (welcomeEl) welcomeEl.textContent = `Ola, ${user?.name || 'Cliente'}`;
 
-      const saldoEl = document.querySelector('section.bg-brand-gradient h1');
+      const saldoEl = document.getElementById('hero-saldo') || document.querySelector('section.bg-brand-gradient h1');
       if (saldoEl) {
         saldoEl.innerHTML = `${saldo.toLocaleString('pt-BR')} <span class="text-xl font-medium opacity-90">Pontos</span>`;
       }
 
-      const nivelEl = document.querySelector('section.bg-brand-gradient .glass-card span:last-child');
+      const nivelEl = document.getElementById('hero-nivel') || document.querySelector('section.bg-brand-gradient .glass-card span:last-child');
       if (nivelEl) nivelEl.textContent = pontosData.nivel_vip ? `Nivel ${pontosData.nivel_vip}` : 'Nivel Cliente';
 
-      const progressPct = document.querySelector('section.bg-brand-gradient .font-poppins.text-lg');
+      const progressPct = document.getElementById('hero-pct') || document.querySelector('section.bg-brand-gradient .font-poppins.text-lg');
       const progressBar = document.querySelector('section.bg-brand-gradient .h-full.bg-gradient-to-r');
       const meta = Math.max(1000, saldo + 500);
       const perc = Math.max(0, Math.min(100, Math.round((saldo / meta) * 100)));
       if (progressPct) progressPct.textContent = `${perc}%`;
       if (progressBar) progressBar.style.width = `${perc}%`;
 
-      const progressMsg = document.querySelector('section.bg-brand-gradient p.text-white\/60');
+      const progressMsg = document.getElementById('hero-progress-msg');
       if (progressMsg) progressMsg.textContent = `Faltam ${Math.max(meta - saldo, 0)} pontos para o proximo nivel.`;
 
       const ganhosInfo = document.querySelector('button.w-full.mb-10 p.text-on-surface-variant');
@@ -1385,7 +1391,7 @@
             ? '/relat_rios_gerais_master.html'
             : (perfil === 'empresa' ? '/minhas_campanhas_loja.html' : '/hist_rico_de_uso.html');
         } else if (text.includes('configur')) {
-          target = perfil === 'admin' ? '/configuracoes_admin.html' : '/meu_perfil.html';
+          target = perfil === 'admin' ? '/configuracoes_admin.html' : '/configuracoes_cliente.html';
         } else if (text.includes('ajuda') || text.includes('suporte')) {
           target = 'mailto:contato@temdetudo.com';
         }
@@ -1496,6 +1502,59 @@
         } else {
           ui.message(data?.message || 'Nao foi possivel usar o cupom.', 'error');
         }
+      });
+    },
+
+    async configuracoes() {
+      if (!(await auth.guard(['cliente', 'empresa', 'admin']))) return;
+      const user = await auth.ensure();
+
+      const heroName = document.getElementById('cfg-nome');
+      const heroEmail = document.getElementById('cfg-email');
+      if (heroName) heroName.textContent = user?.name || user?.nome || 'Usuario';
+      if (heroEmail) heroEmail.textContent = user?.email || '';
+
+      // Salvar perfil
+      document.getElementById('cfgSalvarPerfil')?.addEventListener('click', async () => {
+        const payload = {
+          name: document.getElementById('cfgNome')?.value,
+          email: document.getElementById('cfgEmail')?.value,
+          telefone: document.getElementById('cfgTelefone')?.value,
+        };
+        const { res, data } = await api.request('/perfil', { method: 'PUT', body: JSON.stringify(payload) });
+        if (res.ok && data?.success) {
+          ui.message('Perfil atualizado com sucesso.', 'success');
+          auth.save(auth.getStored().token, data.data);
+        } else {
+          ui.message(data?.message || 'Erro ao atualizar perfil.', 'error');
+        }
+      });
+
+      // Alterar senha
+      document.getElementById('cfgSalvarSenha')?.addEventListener('click', async () => {
+        const payload = {
+          current_password: document.getElementById('cfgSenhaAtual')?.value,
+          password: document.getElementById('cfgSenhaNova')?.value,
+          password_confirmation: document.getElementById('cfgSenhaConf')?.value,
+        };
+        ui.setPageState('loading', 'Atualizando senha...');
+        const { res, data } = await api.request('/auth/change-password', { method: 'POST', body: JSON.stringify(payload) });
+        ui.clearPageState();
+        if (res.ok && data?.success) ui.message('Senha alterada com sucesso.', 'success');
+        else ui.message(data?.message || 'Erro ao alterar senha.', 'error');
+      });
+
+      // Preencher campos
+      const pf = (id) => document.getElementById(id);
+      if (user) {
+        pf('cfgNome')?.setAttribute('value', user.name || user.nome || '');
+        pf('cfgEmail')?.setAttribute('value', user.email || '');
+        pf('cfgTelefone')?.setAttribute('value', user.telefone || '');
+      }
+
+      // Logout
+      document.getElementById('cfgLogoutBtn')?.addEventListener('click', () => {
+        auth.logout();
       });
     },
   };
@@ -2719,6 +2778,7 @@
     hist_rico_de_uso: cliente.historico,
     meu_perfil: cliente.perfil,
     validar_resgate: cliente.validarResgate,
+    configuracoes_cliente: cliente.configuracoes,
     criar_conta: async () => {
       const form = document.getElementById('signupForm');
       if (!form) return;

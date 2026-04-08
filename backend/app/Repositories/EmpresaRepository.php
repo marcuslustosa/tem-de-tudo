@@ -19,9 +19,10 @@ class EmpresaRepository
         }
 
         if ($busca) {
-            $query->where(function($q) use ($busca) {
-                $q->where('nome', 'ILIKE', "%{$busca}%")
-                  ->orWhere('descricao', 'ILIKE', "%{$busca}%");
+            $lower = strtolower($busca);
+            $query->where(function($q) use ($lower) {
+                $q->whereRaw('LOWER(nome) LIKE ?', ["%{$lower}%"])
+                  ->orWhereRaw('LOWER(descricao) LIKE ?', ["%{$lower}%"]);
             });
         }
 

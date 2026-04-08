@@ -36,14 +36,14 @@ class EmpresaAPIController extends Controller
         // Pontos distribuídos hoje
         $pontosHoje = DB::table('pontos')
             ->where('empresa_id', $empresa->id)
-            ->where('tipo', 'ganho')
+            ->whereNotIn('tipo', ['resgate', 'redeem'])
             ->whereDate('created_at', today())
             ->sum('pontos');
         
         // Pontos distribuídos este mês
         $pontosMes = DB::table('pontos')
             ->where('empresa_id', $empresa->id)
-            ->where('tipo', 'ganho')
+            ->whereNotIn('tipo', ['resgate', 'redeem'])
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->sum('pontos');
@@ -66,7 +66,7 @@ class EmpresaAPIController extends Controller
             ->join('users', 'pontos.user_id', '=', 'users.id')
             ->select('users.name', 'users.email', DB::raw('SUM(pontos.pontos) as total_pontos'))
             ->where('pontos.empresa_id', $empresa->id)
-            ->where('pontos.tipo', 'ganho')
+            ->whereNotIn('pontos.tipo', ['resgate', 'redeem'])
             ->groupBy('users.id', 'users.name', 'users.email')
             ->orderByDesc('total_pontos')
             ->limit(5)
@@ -121,16 +121,16 @@ class EmpresaAPIController extends Controller
                 'users.name',
                 'users.email',
                 'users.telefone',
-                DB::raw('SUM(CASE WHEN pontos.tipo = \'ganho\' THEN pontos.pontos ELSE 0 END) as total_ganho'),
+                DB::raw('SUM(CASE WHEN pontos.tipo NOT IN (\'resgate\', \'redeem\') THEN pontos.pontos ELSE 0 END) as total_ganho'),
                 DB::raw('SUM(CASE WHEN pontos.tipo = \'resgate\' THEN pontos.pontos ELSE 0 END) as total_gasto'),
                 DB::raw('MAX(pontos.created_at) as ultima_visita')
             )
             ->where('pontos.empresa_id', $empresa->id)
             ->when($request->filled('busca'), function ($q) use ($request) {
-                $term = '%' . $request->busca . '%';
+                $term = '%' . strtolower($request->busca) . '%';
                 $q->where(function ($sub) use ($term) {
-                    $sub->where('users.name', 'ILIKE', $term)
-                        ->orWhere('users.email', 'ILIKE', $term);
+                    $sub->whereRaw('LOWER(users.name) LIKE ?', [$term])
+                        ->orWhereRaw('LOWER(users.email) LIKE ?', [$term]);
                 });
             })
             ->groupBy('users.id', 'users.name', 'users.email', 'users.telefone')

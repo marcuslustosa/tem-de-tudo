@@ -50,7 +50,7 @@ class ClienteAPIController extends Controller
         // Pontos totais
         $pontosTotais = DB::table('pontos')
             ->where('user_id', $user->id)
-            ->where('tipo', 'ganho')
+            ->whereNotIn('tipo', ['resgate', 'redeem'])
             ->sum('pontos');
         
         $pontosGastos = DB::table('pontos')
@@ -65,7 +65,7 @@ class ClienteAPIController extends Controller
             ->join('empresas', 'pontos.empresa_id', '=', 'empresas.id')
             ->select('empresas.*', DB::raw('SUM(pontos.pontos) as total_pontos'))
             ->where('pontos.user_id', $user->id)
-            ->where('pontos.tipo', 'ganho')
+            ->whereNotIn('pontos.tipo', ['resgate', 'redeem'])
             ->groupBy('empresas.id')
             ->orderByDesc('total_pontos')
             ->limit(3)
@@ -123,7 +123,8 @@ class ClienteAPIController extends Controller
         
         // Busca por nome
         if ($request->has('busca')) {
-            $query->where('nome', 'ILIKE', '%' . $request->busca . '%');
+            $busca = strtolower($request->busca);
+            $query->whereRaw('LOWER(nome) LIKE ?', ['%' . $busca . '%']);
         }
         
         $empresas = $query->orderBy('nome')->get();
