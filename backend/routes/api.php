@@ -84,6 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/push/test', [PushSubscriptionController::class, 'test']);
 
     Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
+    Route::delete('/auth/delete-account', [AuthController::class, 'deletarConta']);
 
     // NotificaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âµes internas
     Route::get('/notifications', [NotificationController::class, 'index']);

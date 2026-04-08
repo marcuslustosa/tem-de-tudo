@@ -1330,4 +1330,44 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * Excluir (anonimizar) conta do usuário autenticado — LGPD art. 18
+     */
+    public function deletarConta(Request $request): JsonResponse
+    {
+        $request->validate([
+            'password' => 'required|string',
+        ]);
+
+        $user = $request->user();
+
+        if (!\Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Senha incorreta. Por favor, confirme sua senha para excluir a conta.',
+            ], 403);
+        }
+
+        // Anonimizar dados pessoais (LGPD direito ao apagamento)
+        $user->update([
+            'name'            => 'Usuário Removido',
+            'email'           => 'deleted_' . $user->id . '_' . time() . '@removed.local',
+            'telefone'        => null,
+            'data_nascimento' => null,
+            'fcm_token'       => null,
+            'referral_code'   => null,
+            'referred_by'     => null,
+            'status'          => 'deleted',
+            'is_active'       => false,
+        ]);
+
+        // Revogar todos os tokens Sanctum
+        $user->tokens()->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sua conta foi excluída com sucesso. Todos os dados pessoais foram removidos.',
+        ]);
+    }
+
 }

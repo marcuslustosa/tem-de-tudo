@@ -1806,6 +1806,25 @@
       document.getElementById('cfgLogoutBtn')?.addEventListener('click', () => {
         auth.logout();
       });
+
+      // Excluir conta (LGPD — direito ao apagamento)
+      document.getElementById('cfgExcluirContaBtn')?.addEventListener('click', async () => {
+        const senha = prompt('Para confirmar a exclusão, digite sua senha atual:');
+        if (!senha) return;
+        if (!confirm('ATENÇÃO: Esta ação é IRREVERSÍVEL.\nTodos os seus dados pessoais serão removidos permanentemente.\n\nDeseja continuar?')) return;
+        ui.setPageState('loading', 'Excluindo conta...');
+        const { res, data } = await api.request('/auth/delete-account', {
+          method: 'DELETE',
+          body: JSON.stringify({ password: senha }),
+        });
+        ui.clearPageState();
+        if (res.ok && data?.success) {
+          ui.message('Conta excluída. Até logo!', 'success');
+          setTimeout(() => { auth.logout(); }, 1500);
+        } else {
+          ui.message(data?.message || 'Erro ao excluir conta.', 'error');
+        }
+      });
     },
   };
 

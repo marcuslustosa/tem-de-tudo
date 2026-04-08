@@ -289,8 +289,35 @@ class PontosController extends Controller
                     'tipo' => 'earn'
                 ]);
 
-                // Verificar se atingiu novo nível
+                // Verificar se atingiu novo nível e enviar push
                 $this->verificarNivel($user);
+
+                // Atualizar estatísticas (dias consecutivos, pontos_lifetime, empresas visitadas) e verificar badges
+                try {
+                    $novosBadges = $user->processarCheckin($checkin);
+                    foreach ($novosBadges as $badge) {
+                        SendWebPushJob::dispatch(
+                            title: '🏆 Novo badge conquistado!',
+                            body: "Você ganhou o badge \"{$badge->nome}\"!",
+                            data: ['type' => 'badge', 'badge' => $badge->nome, 'url' => '/meu_perfil.html'],
+                            userIds: [$user->id]
+                        );
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Erro ao processar check-in completo', ['checkin_id' => $checkin->id, 'error' => $e->getMessage()]);
+                }
+
+                // Notificar usuário sobre aprovação
+                try {
+                    SendWebPushJob::dispatch(
+                        title: '+' . $checkin->pontos_calculados . ' pontos aprovados! ✅',
+                        body: "Seu check-in em {$checkin->empresa->nome} foi aprovado.",
+                        data: ['type' => 'checkin_aprovado', 'url' => '/meus_pontos.html'],
+                        userIds: [$user->id]
+                    );
+                } catch (\Exception $e) {
+                    Log::warning('Erro ao enviar push de aprovação de check-in', ['checkin_id' => $checkin->id, 'error' => $e->getMessage()]);
+                }
 
                 $message = 'Check-in aprovado com sucesso!';
 
@@ -576,16 +603,24 @@ class PontosController extends Controller
     }
 
     /**
-     * Verificar se usuário atingiu novo nível
+     * Verificar se usuário atingiu novo nível e enviar push de parabéns
      */
     private function verificarNivel(User $user): void
     {
         $nivelAtual = $this->calcularNivel($user->pontos);
-        $nivelAnterior = $this->calcularNivel($user->pontos - $user->pontos_pendentes);
+        $nivelAnterior = $this->calcularNivel(max(0, $user->pontos - $user->pontos_pendentes));
 
         if ($nivelAtual['nome'] !== $nivelAnterior['nome']) {
-            // Usuário subiu de nível - pode enviar notificação
-            // Implementar lógica de notificação aqui
+            try {
+                SendWebPushJob::dispatch(
+                    title: 'Você subiu de nível! 🎉',
+                    body: "Parabéns! Agora você é {$nivelAtual['nome']} no Tem de Tudo.",
+                    data: ['type' => 'nivel_up', 'nivel' => $nivelAtual['nome'], 'url' => '/meu_perfil.html'],
+                    userIds: [$user->id]
+                );
+            } catch (\Exception $e) {
+                Log::warning('Erro ao enviar push de nível', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+            }
         }
     }
 
