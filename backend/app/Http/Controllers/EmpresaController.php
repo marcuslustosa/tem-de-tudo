@@ -744,4 +744,27 @@ class EmpresaController extends Controller
         if ($pontos >= 500) return 'Prata';
         return 'Bronze';
     }
+
+    /**
+     * Ativar ou desativar uma empresa (admin)
+     * PATCH /admin/empresas/{id}/toggle-status
+     */
+    public function toggleStatus(int $id)
+    {
+        $empresa = \App\Models\Empresa::findOrFail($id);
+        $novoStatus = !$empresa->ativo;
+        $empresa->update(['ativo' => $novoStatus]);
+
+        Log::info('Status de empresa alterado pelo admin', [
+            'empresa_id' => $id,
+            'novo_status' => $novoStatus ? 'ativo' : 'inativo',
+            'admin_id' => auth()->id(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'ativo' => $novoStatus,
+            'message' => $novoStatus ? 'Empresa ativada com sucesso.' : 'Empresa desativada com sucesso.',
+        ]);
+    }
 }

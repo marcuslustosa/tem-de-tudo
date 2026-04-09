@@ -210,6 +210,8 @@ Route::prefix('admin')->group(function () {
             Route::put('/users/{id}/status', [AuthController::class, 'updateUserStatus']);
             // CPF e data_nascimento: apenas admin pode alterar (anti-fraude)
             Route::put('/users/{id}/dados-sensiveis', [AuthController::class, 'updateDadosSensiveis']);
+            // Ativar/desativar empresa
+            Route::patch('/empresas/{id}/toggle-status', [EmpresaController::class, 'toggleStatus']);
         });
         
         Route::middleware(['admin.permission:view_reports'])->group(function () {

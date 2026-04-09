@@ -1151,21 +1151,47 @@
         });
       };
 
-      const load = async (busca = '') => {
+      let activeRamo = '';
+
+      const load = async (busca = '', ramo = '') => {
         loading?.classList.remove('hidden');
-        const qs = busca ? `?busca=${encodeURIComponent(busca)}` : '';
+        const params = new URLSearchParams();
+        if (busca) params.set('busca', busca);
+        if (ramo) params.set('ramo', ramo);
+        const qs = params.toString() ? `?${params.toString()}` : '';
         const { data } = await api.request(`/cliente/empresas${qs}`);
         loading?.classList.add('hidden');
         const lista = data?.data || data || [];
-        renderCards(lista);
+        renderCards(Array.isArray(lista) ? lista : []);
       };
 
-      const triggerLoad = () => load(searchInput?.value || '');
+      const triggerLoad = () => load(searchInput?.value || '', activeRamo);
       searchInput?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           triggerLoad();
         }
+      });
+
+      // Filtros de categoria (botões TODOS / SUPERMERCADOS / etc.)
+      const MAP_CATEGORIA = {
+        'TODOS': '',
+        'SUPERMERCADOS': 'mercado',
+        'LOJAS': 'loja',
+        'FARMÁCIAS': 'farmacia',
+        'FARM?CIAS': 'farmacia',
+        'GASTRONOMIA': 'restaurante',
+      };
+      document.querySelectorAll('.parceiro-filtro-btn, main button[class*="rounded-full"]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.parceiro-filtro-btn, main button[class*="rounded-full"]').forEach((b) => {
+            b.className = b.className.replace('bg-primary text-on-primary', 'bg-surface-container-high text-on-surface-variant');
+          });
+          btn.className = btn.className.replace('bg-surface-container-high text-on-surface-variant', 'bg-primary text-on-primary');
+          const label = (btn.textContent || '').trim().toUpperCase();
+          activeRamo = MAP_CATEGORIA[label] ?? label.toLowerCase();
+          triggerLoad();
+        });
       });
 
       await load();
@@ -2809,11 +2835,15 @@
                 <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="call">call</span><span>${e.telefone}</span></div>
                 <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="mail">mail</span><span>${e.email}</span></div>
               </div>
-              <div class="mt-4">
+              <div class="mt-4 flex flex-wrap gap-2">
                 <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(e.id)}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity">
                   Ver perfil
                   <span class="material-symbols-outlined text-base" data-icon="chevron_right">chevron_right</span>
                 </a>
+                <button data-toggle-empresa="${e.id}" data-ativo="${e.status === 'ativo' ? '1' : '0'}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${e.status === 'ativo' ? 'bg-error/10 text-error' : 'bg-tertiary/10 text-tertiary'} text-xs font-bold hover:opacity-90 transition-opacity">
+                  <span class="material-symbols-outlined text-base" data-icon="${e.status === 'ativo' ? 'block' : 'check_circle'}">${e.status === 'ativo' ? 'block' : 'check_circle'}</span>
+                  ${e.status === 'ativo' ? 'Desativar' : 'Ativar'}
+                </button>
               </div>
             </div>`;
           card.addEventListener('click', () => {
@@ -2822,6 +2852,43 @@
           card.querySelectorAll('a,button').forEach((el) => {
             el.addEventListener('click', (ev) => ev.stopPropagation());
           });
+          // Botão de toggle ativar/desativar
+          const toggleBtn = card.querySelector(`[data-toggle-empresa="${e.id}"]`);
+          if (toggleBtn) {
+            toggleBtn.addEventListener('click', async (ev) => {
+              ev.stopPropagation();
+              toggleBtn.disabled = true;
+              const { res, data: tData } = await api.request(
+                `/admin/empresas/${e.id}/toggle-status`,
+                { method: 'PATCH' },
+                { notify: true }
+              );
+              if (res.ok) {
+                ui.message(tData?.message || 'Status atualizado.', 'success');
+                // Re-renderiza lista buscando dados frescos
+                const { data: fresh } = await api.request('/empresas', {}, { requireAuth: false, notify: false });
+                const novaLista = toArray(fresh?.data || fresh);
+                if (novaLista.length) {
+                  lista.length = 0;
+                  novaLista.forEach((item) => lista.push({
+                    ...item,
+                    nome: safeText(item?.nome, 'Estabelecimento'),
+                    categoria: safeText(item?.categoria || item?.ramo, 'Sem categoria'),
+                    endereco: safeText(item?.endereco, 'Endereco nao informado'),
+                    telefone: safeText(item?.telefone, '-'),
+                    email: safeText(item?.email, '-'),
+                    pontos: toNumber(item?.pontos_totais, item?.pontos),
+                    clientes: toNumber(item?.clientes, item?.qtd_clientes),
+                    status: safeText(item?.status || (item?.ativo === false ? 'inativo' : 'ativo'), 'ativo').toLowerCase(),
+                    logo: safeImage(item?.logo, IMAGE_FALLBACKS.store),
+                  }));
+                }
+                renderLista();
+              } else {
+                toggleBtn.disabled = false;
+              }
+            });
+          }
           listaEl?.appendChild(card);
         });
       };
