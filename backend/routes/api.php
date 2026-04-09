@@ -479,9 +479,9 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/bonu
 // NOVOS ENDPOINTS  GAPS 1-10 IMPLEMENTADOS
 // ============================================================
 
-// STREAK: já integrado no check-in (retorno do fazerCheckIn inclui streak)
+// STREAK: jï¿½ integrado no check-in (retorno do fazerCheckIn inclui streak)
 
-// DESAFIOS / MISSÕES
+// DESAFIOS / MISSï¿½ES
 Route::middleware('auth:sanctum')->prefix('desafios')->group(function () {
     Route::get('/', [DesafioController::class, 'index']);
     Route::get('/{id}', [DesafioController::class, 'show']);
@@ -511,7 +511,7 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/nps'
     Route::get('/estatisticas', [NpsController::class, 'estatisticasAdmin']);
 });
 
-// SEGMENTAÇÃO DE CLIENTES (admin)
+// SEGMENTAï¿½ï¿½O DE CLIENTES (admin)
 Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/segmentos')->group(function () {
     Route::get('/', [SegmentoController::class, 'index']);
     Route::post('/', [SegmentoController::class, 'store']);
@@ -521,7 +521,7 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/segm
     Route::post('/{id}/sincronizar', [SegmentoController::class, 'sincronizarManual']);
 });
 
-// WEBHOOKS DE SAÍDA
+// WEBHOOKS DE SAï¿½DA
 Route::middleware('auth:sanctum')->prefix('webhooks')->group(function () {
     Route::get('/', [WebhookSaidaController::class, 'index']);
     Route::post('/', [WebhookSaidaController::class, 'store']);
@@ -576,8 +576,8 @@ Route::middleware('auth:sanctum')->prefix('rede')->group(function () {
     });
 });
 
-// DISCOUNT LEVEL  rota já existe em /discounts 
-// frontend pode consumir diretamente. Dashboard expõe via /cliente/dashboard abaixo:
+// DISCOUNT LEVEL  rota jï¿½ existe em /discounts 
+// frontend pode consumir diretamente. Dashboard expï¿½e via /cliente/dashboard abaixo:
 Route::middleware(['auth:sanctum', 'role.permission:cliente'])->group(function () {
     Route::get('/cliente/desconto', function (\Illuminate\Http\Request $request) {
         $user = $request->user();
