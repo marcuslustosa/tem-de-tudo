@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\Admin;
 use App\Models\AuditLog;
 use App\Models\Cupom;
+use App\Mail\WelcomeMail;
 
 use Carbon\Carbon;
 
@@ -266,6 +267,13 @@ class AuthController extends Controller
 
             DB::commit();
             Log::info('Transação confirmada com sucesso');
+
+            // E-mail de boas-vindas
+            try {
+                Mail::to($user->email)->queue(new WelcomeMail($user, $perfil === 'empresa' ? 'company' : 'client'));
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao enfileirar WelcomeMail', ['user_id' => $user->id, 'error' => $e->getMessage()]);
+            }
 
             // Log do evento de auditoria
             $this->logAuditEvent('user_registered', $user->id, $request);

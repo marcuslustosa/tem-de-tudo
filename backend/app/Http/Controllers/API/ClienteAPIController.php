@@ -393,7 +393,46 @@ class ClienteAPIController extends Controller
         DB::table('promocoes')
             ->where('id', $promocaoId)
             ->increment('qtd_resgatada');
-        
+
+        // Webhook de saída: evento resgate
+        try {
+            app(\App\Services\WebhookService::class)->disparar('resgate', [
+                'user_id'    => $user->id,
+                'empresa_id' => $promocao->empresa_id,
+                'promocao_id' => $promocaoId,
+                'promocao'   => $promocao->titulo,
+                'pontos_gastos' => $pontosCusto,
+            ], $promocao->empresa_id);
+        } catch (\Throwable $e) {}
+
+        // Avançar desafios de tipo 'resgates'
+        try {
+            $desafiosResgate = \App\Models\Desafio::ativos()
+                ->where('tipo', 'resgates')
+                ->where(fn ($q) => $q->whereNull('empresa_id')->orWhere('empresa_id', $promocao->empresa_id))
+                ->get();
+            foreach ($desafiosResgate as $desafio) {
+                $prog = \App\Models\DesafioProgresso::firstOrCreate(
+                    ['user_id' => $user->id, 'desafio_id' => $desafio->id],
+                    ['progresso_atual' => 0, 'concluido' => false]
+                );
+                if (!$prog->concluido) {
+                    $prog->increment('progresso_atual');
+                    $prog->refresh();
+                    if ($prog->progresso_atual >= $desafio->meta) {
+                        $prog->update(['concluido' => true, 'concluido_em' => now()]);
+                        if (!$prog->recompensa_dada && $desafio->recompensa_pontos > 0) {
+                            DB::table('users')->where('id', $user->id)->increment('pontos', $desafio->recompensa_pontos);
+                            \App\Models\Ponto::create(['user_id' => $user->id, 'pontos' => $desafio->recompensa_pontos, 'tipo' => 'bonus_desafio', 'descricao' => "Desafio concluído: {$desafio->nome} 🏆", 'data' => now()]);
+                            $prog->update(['recompensa_dada' => true]);
+                        }
+                    }
+                }
+            }
+        } catch (\Throwable $e) {}
+
+        $codigoResgate = strtoupper(substr(md5($user->id . $promocaoId . now()), 0, 8));
+
         return response()->json([
             'success' => true,
             'message' => 'Promoção resgatada com sucesso!',
@@ -401,7 +440,8 @@ class ClienteAPIController extends Controller
                 'promocao' => $promocao->titulo,
                 'pontos_gastos' => $pontosCusto,
                 'novo_saldo' => $user->pontos - $pontosCusto,
-                'codigo_resgate' => strtoupper(substr(md5($user->id . $promocaoId . now()), 0, 8))
+                'codigo_resgate' => $codigoResgate,
+                'nps_solicitado' => true, // frontend deve exibir modal NPS
             ]
         ]);
     }

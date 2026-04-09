@@ -988,6 +988,111 @@
           host.appendChild(rankingSection);
         }
       }
+
+      // ---- Desconto por nível (Gap 5) ----
+      const { data: descontoResp } = await api.request('/cliente/desconto', {}, { notify: false });
+      if (descontoResp?.data) {
+        const { nivel, desconto_pct, streak_atual, streak_maximo } = descontoResp.data;
+        const host = document.querySelector('main') || document.body;
+        if (!document.getElementById('descontoSection')) {
+          const sec = document.createElement('section');
+          sec.id = 'descontoSection';
+          sec.className = 'max-w-6xl mx-auto px-4 pt-4';
+          const nivelCores = { bronze: 'text-amber-700 bg-amber-50', prata: 'text-slate-500 bg-slate-50', ouro: 'text-yellow-600 bg-yellow-50', platina: 'text-indigo-600 bg-indigo-50' };
+          const cor = nivelCores[nivel] || nivelCores.bronze;
+          sec.innerHTML = `
+            <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4 flex flex-wrap gap-4 items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center ${cor} font-bold text-lg uppercase">${nivel.slice(0, 2)}</div>
+                <div>
+                  <p class="text-xs text-on-surface-variant font-medium uppercase tracking-wide">Seu nível</p>
+                  <p class="font-bold text-on-surface capitalize">${nivel}</p>
+                  ${desconto_pct > 0 ? `<p class="text-xs text-primary font-semibold">${desconto_pct}% de desconto nas compras</p>` : '<p class="text-xs text-on-surface-variant">Evolua para ganhar descontos</p>'}
+                </div>
+              </div>
+              ${streak_atual > 0 ? `
+              <div class="flex items-center gap-2 bg-orange-50 border border-orange-100 px-3 py-2 rounded-xl">
+                <span class="text-xl">🔥</span>
+                <div>
+                  <p class="text-xs text-on-surface-variant font-medium">Sequência atual</p>
+                  <p class="font-bold text-orange-600">${streak_atual} dias <span class="text-xs font-normal text-on-surface-variant">| Recorde: ${streak_maximo}</span></p>
+                </div>
+              </div>` : ''}
+            </div>`;
+          host.appendChild(sec);
+        }
+      }
+
+      // ---- Desafios / Missões (Gap 2) ----
+      const { data: desafiosResp } = await api.request('/desafios', {}, { notify: false });
+      const desafios = desafiosResp?.data || [];
+      if (desafios.length) {
+        const host = document.querySelector('main') || document.body;
+        if (!document.getElementById('desafiosSection')) {
+          const sec = document.createElement('section');
+          sec.id = 'desafiosSection';
+          sec.className = 'max-w-6xl mx-auto px-4 pt-4 pb-2';
+          const cards = desafios.slice(0, 4).map((d) => {
+            const pct = Math.min(100, Math.round(((d.progresso_atual || 0) / Math.max(1, d.meta || 1)) * 100));
+            const concluido = d.concluido || pct >= 100;
+            return `<div class="flex flex-col gap-2 p-3 rounded-xl bg-white/80 border border-surface-variant/30 shadow-sm ${concluido ? 'opacity-60' : ''}">
+              <div class="flex justify-between items-start">
+                <p class="font-semibold text-sm text-on-surface flex-1 leading-tight">${d.nome || 'Missão'}</p>
+                ${concluido ? '<span class="text-green-500 text-sm ml-1">✓</span>' : ''}
+              </div>
+              <p class="text-xs text-on-surface-variant">${d.descricao || ''}</p>
+              <div class="h-1.5 bg-surface-container rounded-full overflow-hidden mt-1">
+                <div class="h-full bg-gradient-to-r from-primary to-tertiary rounded-full" style="width:${pct}%"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-on-surface-variant">
+                <span>${d.progresso_atual || 0} / ${d.meta || 1}</span>
+                <span class="font-semibold text-primary">+${d.recompensa_pontos || 0} pts</span>
+              </div>
+            </div>`;
+          }).join('');
+          sec.innerHTML = `
+            <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4">
+              <h3 class="text-base font-semibold text-on-surface mb-3">Missões em andamento</h3>
+              <div class="grid gap-3 sm:grid-cols-2">${cards}</div>
+            </div>`;
+          host.appendChild(sec);
+        }
+      }
+
+      // ---- Wallet — Google & Apple (Gap 8) ----
+      if (!document.getElementById('walletSection')) {
+        const walletHost = document.querySelector('main') || document.body;
+        const walletSec = document.createElement('section');
+        walletSec.id = 'walletSection';
+        walletSec.className = 'max-w-6xl mx-auto px-4 pt-4 pb-6';
+        walletSec.innerHTML = `
+          <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4">
+            <h3 class="text-base font-semibold text-on-surface mb-3">Seu cartão de fidelidade</h3>
+            <div class="flex flex-wrap gap-3">
+              <a id="btnGoogleWallet" href="#" class="inline-flex items-center gap-2 px-4 py-2 bg-black text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined text-base">credit_card</span> Adicionar ao Google Wallet
+              </a>
+              <a id="btnAppleWallet" href="#" class="inline-flex items-center gap-2 px-4 py-2 bg-black text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined text-base">credit_card</span> Adicionar ao Apple Wallet
+              </a>
+            </div>
+          </div>`;
+        walletHost.appendChild(walletSec);
+        // Preencher link Google Wallet via API
+        api.request('/wallet/google', {}, { notify: false }).then(({ data: w }) => {
+          const btnG = document.getElementById('btnGoogleWallet');
+          if (btnG && w?.data?.add_url) btnG.href = w.data.add_url;
+        });
+        document.getElementById('btnAppleWallet')?.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const { res, data: w } = await api.request('/wallet/apple', {}, { notify: false });
+          if (res.ok && w?.data?.download_url) {
+            window.location.href = w.data.download_url;
+          } else {
+            ui.message('Cartão Apple Wallet não disponível no momento.', 'warning');
+          }
+        });
+      }
     },
 
 
@@ -1176,7 +1281,14 @@
 
           if (res.ok && data?.success !== false) {
             const ganhos = toNumber(data?.data?.pontos_calculados, 0);
-            ui.message(`Pontos acumulados com sucesso (+${ganhos}).`, 'success');
+            const streak = data?.data?.streak;
+            let msg = `Pontos acumulados com sucesso (+${ganhos}).`;
+            if (streak?.streak_atual > 1) {
+              msg += ` 🔥 Sequencia: ${streak.streak_atual} dias consecutivos!`;
+              if (streak.bonus_pontos > 0) msg += ` Bonus streak: +${streak.bonus_pontos} pts`;
+              if (streak.novo_recorde) msg += ` 🏆 Novo recorde!`;
+            }
+            ui.message(msg, 'success');
             setTimeout(() => {
               window.location.href = '/meus_pontos.html';
             }, 500);
@@ -1262,7 +1374,11 @@
           if (res.ok && data?.success) {
             const codigo = data?.data?.codigo_resgate || '';
             ui.message(`Resgatado! Código: ${codigo}`, 'success');
-            setTimeout(() => cliente.recompensas(), 1500);
+            if (data?.data?.nps_solicitado) {
+              setTimeout(() => _showNpsModal(promoId), 800);
+            } else {
+              setTimeout(() => cliente.recompensas(), 1500);
+            }
           } else {
             ui.message(data?.message || 'Falha ao resgatar.', 'error');
             btn.disabled = false;
@@ -3776,6 +3892,48 @@
       }
     },
   };
+
+  // ---- NPS Modal helper (Gap 6) ----
+  function _showNpsModal(promocaoId) {
+    const overlay = document.createElement('div');
+    overlay.id = 'npsModalOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:1rem';
+    overlay.innerHTML = `
+      <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
+        <h3 class="font-bold text-lg text-on-surface mb-1">Avalie sua experiência</h3>
+        <p class="text-sm text-on-surface-variant mb-4">De 0 a 10, o quanto você recomendaria esta promoção a um amigo?</p>
+        <div class="flex flex-wrap gap-2 justify-center mb-4" id="npsButtons">
+          ${[0,1,2,3,4,5,6,7,8,9,10].map((n) => `<button data-nota="${n}" class="nps-btn w-9 h-9 rounded-full border border-surface-variant text-sm font-bold hover:bg-primary hover:text-white transition-colors">${n}</button>`).join('')}
+        </div>
+        <textarea id="npsComentario" class="w-full border border-surface-variant rounded-xl p-2 text-sm resize-none" rows="2" placeholder="Comentário opcional..."></textarea>
+        <div class="flex gap-2 mt-4">
+          <button id="npsEnviar" class="flex-1 bg-primary text-white rounded-xl py-2 font-semibold text-sm hover:bg-primary/90 transition-colors" disabled>Enviar</button>
+          <button id="npsFechar" class="px-4 py-2 rounded-xl border border-surface-variant text-sm text-on-surface-variant hover:bg-surface-container transition-colors">Pular</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    let notaSelecionada = null;
+    overlay.querySelector('#npsButtons').addEventListener('click', (e) => {
+      const btn = e.target.closest('.nps-btn');
+      if (!btn) return;
+      notaSelecionada = Number(btn.dataset.nota);
+      overlay.querySelectorAll('.nps-btn').forEach((b) => b.classList.toggle('bg-primary', Number(b.dataset.nota) === notaSelecionada));
+      overlay.querySelectorAll('.nps-btn').forEach((b) => b.classList.toggle('text-white', Number(b.dataset.nota) === notaSelecionada));
+      overlay.querySelector('#npsEnviar').disabled = false;
+    });
+    overlay.querySelector('#npsFechar').addEventListener('click', () => {
+      overlay.remove();
+      setTimeout(() => cliente.recompensas(), 300);
+    });
+    overlay.querySelector('#npsEnviar').addEventListener('click', async () => {
+      if (notaSelecionada === null) return;
+      const comentario = overlay.querySelector('#npsComentario')?.value || '';
+      await api.request('/nps/responder', { method: 'POST', body: JSON.stringify({ nota: notaSelecionada, comentario, contexto: 'resgate', empresa_id: null }) }, { notify: false });
+      overlay.remove();
+      ui.message('Obrigado pelo seu feedback!', 'success');
+      setTimeout(() => cliente.recompensas(), 800);
+    });
+  }
 
   document.addEventListener('DOMContentLoaded', async () => {
     normalizeBrandingVisuals();

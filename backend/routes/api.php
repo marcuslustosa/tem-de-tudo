@@ -32,6 +32,14 @@ use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\API\CampanhaMultiplicadorController;
 
+// NOVOS CONTROLLERS - GAPS 1-10
+use App\Http\Controllers\DesafioController;
+use App\Http\Controllers\NpsController;
+use App\Http\Controllers\SegmentoController;
+use App\Http\Controllers\WebhookSaidaController;
+use App\Http\Controllers\AjustePontosController;
+use App\Http\Controllers\WalletController;
+
 // Debug route (remover em produÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o)
 Route::get('/debug', function () {
     try {
@@ -465,4 +473,130 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/bonu
     Route::get('/{id}', [BonusAdesaoController::class, 'show']);
     Route::put('/{id}', [BonusAdesaoController::class, 'update']);
     Route::delete('/{id}', [BonusAdesaoController::class, 'destroy']);
+});
+
+// ============================================================
+// NOVOS ENDPOINTS  GAPS 1-10 IMPLEMENTADOS
+// ============================================================
+
+// STREAK: j� integrado no check-in (retorno do fazerCheckIn inclui streak)
+
+// DESAFIOS / MISS�ES
+Route::middleware('auth:sanctum')->prefix('desafios')->group(function () {
+    Route::get('/', [DesafioController::class, 'index']);
+    Route::get('/{id}', [DesafioController::class, 'show']);
+});
+
+Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa/desafios')->group(function () {
+    Route::post('/', [DesafioController::class, 'store']);
+    Route::put('/{id}', [DesafioController::class, 'update']);
+    Route::delete('/{id}', [DesafioController::class, 'destroy']);
+});
+
+Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/desafios')->group(function () {
+    Route::get('/', [DesafioController::class, 'adminIndex']);
+    Route::post('/', [DesafioController::class, 'adminStore']);
+});
+
+// NPS
+Route::middleware('auth:sanctum')->prefix('nps')->group(function () {
+    Route::post('/responder', [NpsController::class, 'responder']);
+});
+
+Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa/nps')->group(function () {
+    Route::get('/estatisticas', [NpsController::class, 'estatisticasEmpresa']);
+});
+
+Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/nps')->group(function () {
+    Route::get('/estatisticas', [NpsController::class, 'estatisticasAdmin']);
+});
+
+// SEGMENTA��O DE CLIENTES (admin)
+Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/segmentos')->group(function () {
+    Route::get('/', [SegmentoController::class, 'index']);
+    Route::post('/', [SegmentoController::class, 'store']);
+    Route::put('/{id}', [SegmentoController::class, 'update']);
+    Route::delete('/{id}', [SegmentoController::class, 'destroy']);
+    Route::get('/{id}/usuarios', [SegmentoController::class, 'usuarios']);
+    Route::post('/{id}/sincronizar', [SegmentoController::class, 'sincronizarManual']);
+});
+
+// WEBHOOKS DE SA�DA
+Route::middleware('auth:sanctum')->prefix('webhooks')->group(function () {
+    Route::get('/', [WebhookSaidaController::class, 'index']);
+    Route::post('/', [WebhookSaidaController::class, 'store']);
+    Route::put('/{id}', [WebhookSaidaController::class, 'update']);
+    Route::delete('/{id}', [WebhookSaidaController::class, 'destroy']);
+    Route::get('/{id}/logs', [WebhookSaidaController::class, 'logs']);
+    Route::post('/{id}/rotacionar-segredo', [WebhookSaidaController::class, 'rotacionarSegredo']);
+});
+
+// AJUSTE MANUAL DE PONTOS (admin)
+Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/ajuste-pontos')->group(function () {
+    Route::post('/usuarios/{id}', [AjustePontosController::class, 'ajustar']);
+    Route::get('/usuarios/{id}/historico', [AjustePontosController::class, 'historico']);
+    Route::get('/historico', [AjustePontosController::class, 'historicoGlobal']);
+});
+
+// GOOGLE WALLET / APPLE WALLET
+Route::middleware('auth:sanctum')->prefix('wallet')->group(function () {
+    Route::get('/google', [WalletController::class, 'googleWalletPass']);
+    Route::get('/apple', [WalletController::class, 'appleWalletPass']);
+});
+
+// MULTI-EMPRESA: saldo de pontos da rede compartilhada
+Route::middleware('auth:sanctum')->prefix('rede')->group(function () {
+    Route::get('/empresas', function () {
+        $empresas = \App\Models\Empresa::where('ativo', true)
+                      ->where('rede_compartilhada', true)
+                      ->get(['id', 'nome', 'logo', 'categoria', 'rede_nome']);
+        return response()->json(['success' => true, 'data' => $empresas]);
+    });
+
+    Route::get('/meus-pontos', function (\Illuminate\Http\Request $request) {
+        $user = $request->user();
+        $empresasRede = \App\Models\Empresa::where('rede_compartilhada', true)->pluck('id');
+        $saldo = \Illuminate\Support\Facades\DB::table('pontos')
+            ->where('user_id', $user->id)
+            ->whereIn('empresa_id', $empresasRede)
+            ->selectRaw("
+                SUM(CASE WHEN tipo NOT IN ('resgate','redeem') THEN pontos ELSE 0 END) as ganhos,
+                SUM(CASE WHEN tipo IN ('resgate','redeem') THEN pontos ELSE 0 END) as gastos
+            ")
+            ->first();
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'saldo_rede'  => max(0, ($saldo->ganhos ?? 0) - ($saldo->gastos ?? 0)),
+                'total_ganho' => $saldo->ganhos ?? 0,
+                'total_gasto' => $saldo->gastos ?? 0,
+                'empresas_rede' => $empresasRede->count(),
+            ],
+        ]);
+    });
+});
+
+// DISCOUNT LEVEL  rota j� existe em /discounts 
+// frontend pode consumir diretamente. Dashboard exp�e via /cliente/dashboard abaixo:
+Route::middleware(['auth:sanctum', 'role.permission:cliente'])->group(function () {
+    Route::get('/cliente/desconto', function (\Illuminate\Http\Request $request) {
+        $user = $request->user();
+        $nivel = strtolower($user->nivel ?? 'bronze');
+        $descontos = [
+            'bronze'  => 0,
+            'prata'   => 5,
+            'ouro'    => 10,
+            'platina' => 15,
+        ];
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'nivel'             => $nivel,
+                'desconto_pct'      => $descontos[$nivel] ?? 0,
+                'pontos_atuais'     => $user->pontos,
+                'streak_atual'      => $user->streak_atual ?? 0,
+                'streak_maximo'     => $user->streak_maximo ?? 0,
+            ],
+        ]);
+    });
 });

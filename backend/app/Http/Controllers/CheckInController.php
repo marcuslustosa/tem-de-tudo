@@ -6,6 +6,8 @@ use App\Models\CheckIn;
 use App\Models\Empresa;
 use App\Models\QRCode;
 use App\Models\User;
+use App\Services\StreakService;
+use App\Services\WebhookService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode as QrCodeGenerator;
@@ -94,6 +96,20 @@ class CheckInController extends Controller
             // Processar para sistema VIP e badges
             $badges_novos = $user->processarCheckin($checkin);
 
+            // Streak: dias consecutivos
+            $streakInfo = app(StreakService::class)->processar($user);
+
+            // Avançar desafios de tipo 'checkins'
+            $this->avancarDesafiosCheckin($user, $empresa->id);
+
+            // Webhook de saída
+            app(WebhookService::class)->disparar('checkin', [
+                'user_id'     => $user->id,
+                'empresa_id'  => $empresa->id,
+                'pontos'      => $pontos_calculados['total'],
+                'checkin_id'  => $checkin->id,
+            ], $empresa->id);
+
             // Verificar se é aniversário (bônus especial)
             $bonus_aniversario = 0;
             if ($user->ehAniversarioHoje()) {
@@ -120,7 +136,8 @@ class CheckInController extends Controller
                     'bonus_aniversario' => $bonus_aniversario,
                     'badges_novos' => $badges_novos,
                     'nivel_atual' => $user->calcularNivel(),
-                    'total_pontos' => $user->pontos
+                    'total_pontos' => $user->pontos,
+                    'streak' => $streakInfo,
                 ]
             ]);
 
@@ -338,6 +355,50 @@ class CheckInController extends Controller
         } while (QRCode::where('code', $codigo)->exists());
 
         return $codigo;
+    }
+
+    /**
+     * Avança progresso de desafios do tipo 'checkins' para o usuário
+     */
+    private function avancarDesafiosCheckin(User $user, int $empresaId): void
+    {
+        $desafios = \App\Models\Desafio::ativos()
+            ->where('tipo', 'checkins')
+            ->where(fn ($q) => $q->whereNull('empresa_id')->orWhere('empresa_id', $empresaId))
+            ->get();
+
+        foreach ($desafios as $desafio) {
+            $progresso = \App\Models\DesafioProgresso::firstOrCreate(
+                ['user_id' => $user->id, 'desafio_id' => $desafio->id],
+                ['progresso_atual' => 0, 'concluido' => false]
+            );
+
+            if ($progresso->concluido) continue;
+
+            $progresso->progresso_atual += 1;
+
+            if ($progresso->progresso_atual >= $desafio->meta) {
+                $progresso->concluido    = true;
+                $progresso->concluido_em = now();
+
+                if (!$progresso->recompensa_dada && $desafio->recompensa_pontos > 0) {
+                    $user->increment('pontos', $desafio->recompensa_pontos);
+                    $user->increment('pontos_lifetime', $desafio->recompensa_pontos);
+
+                    \App\Models\Ponto::create([
+                        'user_id'  => $user->id,
+                        'pontos'   => $desafio->recompensa_pontos,
+                        'tipo'     => 'bonus_desafio',
+                        'descricao' => "Desafio concluído: {$desafio->nome} 🏆",
+                        'data'     => now(),
+                    ]);
+
+                    $progresso->recompensa_dada = true;
+                }
+            }
+
+            $progresso->save();
+        }
     }
 
     /**

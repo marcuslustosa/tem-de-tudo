@@ -272,11 +272,35 @@ class User extends Authenticatable implements JWTSubject
      */
     public function atualizarNivel()
     {
+        $nivelAnterior = $this->nivel;
         $nivel_info = $this->calcularNivel();
         $this->nivel = $nivel_info['id'];
         $this->multiplicador_pontos = $nivel_info['multiplicador'];
         $this->save();
-        
+
+        // Dispara e-mail de notificação quando sobe de nível
+        if ($nivelAnterior !== $nivel_info['id']) {
+            try {
+                $nivelNome = ucfirst($nivel_info['id']);
+                \Illuminate\Support\Facades\Mail::to($this->email)
+                    ->queue(new \App\Mail\PontosNotificationMail(
+                        $this,
+                        $this->pontos,
+                        "Parabéns! Você subiu para o nível {$nivelNome}! 🎉",
+                        'nivel_up'
+                    ));
+
+                // Webhook nível_up
+                app(\App\Services\WebhookService::class)->disparar('nivel_up', [
+                    'user_id'      => $this->id,
+                    'nivel_novo'   => $nivel_info['id'],
+                    'nivel_antigo' => $nivelAnterior,
+                ]);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Falha ao notificar level-up', ['user_id' => $this->id, 'error' => $e->getMessage()]);
+            }
+        }
+
         return $nivel_info;
     }
 
