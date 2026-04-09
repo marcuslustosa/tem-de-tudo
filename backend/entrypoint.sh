@@ -87,6 +87,17 @@ echo "Verificação final..."
 php artisan migrate:status
 
 echo "=== Sistema Pronto ==="
+
+# 11. Iniciar queue worker em background
+echo "Iniciando queue worker..."
+php artisan queue:work --sleep=3 --tries=3 --max-time=3600 --daemon >> /var/log/queue-worker.log 2>&1 &
+echo "Queue worker PID: $!"
+
+# 12. Iniciar scheduler em background (executa a cada 60s)
+echo "Iniciando scheduler..."
+( while true; do php artisan schedule:run >> /var/log/scheduler.log 2>&1; sleep 60; done ) &
+echo "Scheduler PID: $!"
+
 echo "Starting Apache..."
 
 # Start Apache

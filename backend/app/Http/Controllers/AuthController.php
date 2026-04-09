@@ -1147,12 +1147,15 @@ class AuthController extends Controller
                 'nome' => 'sometimes|string|max:255',
                 'email' => 'sometimes|email|unique:users,email,' . $user->id,
                 'telefone' => 'sometimes|string|max:20',
-                'cpf' => 'sometimes|string|max:14',
-                'data_nascimento' => 'sometimes|date'
+                // CPF e data_nascimento NÃO podem ser alterados pelo próprio cliente.
+                // Apenas admins podem alterar via PUT /admin/usuarios/{id}/dados-sensiveis
             ]);
 
-            // Atualizar apenas os campos enviados
-            $user->update(array_filter($validatedData));
+            // Garantir que campos sensíveis nunca sejam atualizados por esta rota,
+            // mesmo que o cliente tente enviá-los manualmente.
+            $camposBloqueados = ['cpf', 'data_nascimento', 'perfil', 'nivel', 'pontos'];
+            $safe = array_diff_key(array_filter($validatedData), array_flip($camposBloqueados));
+            $user->update($safe);
 
             Log::info('Perfil atualizado com sucesso', [
                 'user_id' => $user->id,
@@ -1244,6 +1247,46 @@ class AuthController extends Controller
                 'per_page' => $users->perPage(),
                 'last_page' => $users->lastPage()
             ]
+        ]);
+    }
+
+    /**
+     * Atualizar CPF e/ou data de nascimento de um usuário (somente admin).
+     * Clientes não podem alterar esses campos diretamente para evitar fraudes
+     * (ex: mudar CPF para obter benefícios de primeira compra duas vezes).
+     */
+    public function updateDadosSensiveis(Request $request, int $id)
+    {
+        $admin = Auth::user();
+        if (!$admin || $admin->perfil !== 'admin') {
+            return response()->json(['success' => false, 'message' => 'Acesso negado.'], 403);
+        }
+
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Usuário não encontrado.'], 404);
+        }
+
+        $payload = $request->validate([
+            'cpf'              => 'sometimes|string|max:14',
+            'data_nascimento'  => 'sometimes|date',
+            'motivo'           => 'required|string|max:500',
+        ]);
+
+        $alteracoes = array_diff_key($payload, ['motivo' => true]);
+        $user->update($alteracoes);
+
+        Log::info('Admin alterou dados sensíveis de usuário', [
+            'admin_id'  => $admin->id,
+            'user_id'   => $user->id,
+            'campos'    => array_keys($alteracoes),
+            'motivo'    => $payload['motivo'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Dados sensíveis atualizados com sucesso.',
+            'data'    => ['id' => $user->id, 'cpf' => $user->cpf, 'data_nascimento' => $user->data_nascimento],
         ]);
     }
 

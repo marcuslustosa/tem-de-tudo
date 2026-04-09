@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // Mantem o grupo "api" stateless para evitar CSRF em endpoints JSON de login/cadastro.
         $middleware->appendToGroup('api', [
             \App\Http\Middleware\ForceJsonResponse::class,
+            \App\Http\Middleware\SanitizeInput::class,
+            'throttle:api',
         ]);
         
         // Middleware global de segurança
