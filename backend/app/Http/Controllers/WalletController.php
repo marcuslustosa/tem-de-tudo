@@ -4,175 +4,273 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\PontoTransacao;
 
 /**
- * WalletController — Gera passes para Google Wallet e Apple Wallet (PKPass)
- *
- * Google Wallet: retorna JSON no formato "Generic Pass" que pode ser adicionado
- *                via URL jwt (link direto) ou via Google Wallet API.
- *
- * Apple Wallet:  retorna um .pkpass básico (ZIP de JSONs assinado).
- *                Exige certificado de desenvolvedor Apple para ser válido
- *                em produção. Em desenvolvimento, o arquivo gerado funciona
- *                em smartphones via "Arquivo > Abrir com Carteira".
+ * WalletController — Sistema de Fidelidade Completo
+ * 
+ * Gerencia cartão virtual, pontos, níveis e histórico
  */
 class WalletController extends Controller
 {
-    // ============================================================
-    // GOOGLE WALLET
-    // ============================================================
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
 
     /**
-     * Retorna o JSON de um "Generic Pass" compatível com Google Wallet.
-     * O cliente pode abrir o link:
-     *   https://pay.google.com/gp/v/save/{jwt}
-     * onde jwt é gerado com este payload.
+     * Retorna dados do cartão de fidelidade do usuário
      */
-    public function googleWalletPass(Request $request)
+    public function show(Request $request)
     {
-        $user    = Auth::user();
-        $nivel   = ucfirst($user->nivel ?? 'Bronze');
-        $pontos  = $user->pontos ?? 0;
-        $issuerId = config('services.google_wallet.issuer_id', 'TEM_DE_TUDO');
-
-        // Generic Pass Object (Google Wallet Generic API)
-        $passObject = [
-            'id'     => "{$issuerId}.cliente_{$user->id}",
-            'classId' => "{$issuerId}.cartao_fidelidade",
-            'genericType' => 'GENERIC_PRIVATE',
-            'cardTitle' => [
-                'defaultValue' => ['language' => 'pt-BR', 'value' => 'Tem de Tudo'],
-            ],
-            'subheader' => [
-                'defaultValue' => ['language' => 'pt-BR', 'value' => 'Cartão Fidelidade'],
-            ],
-            'header' => [
-                'defaultValue' => ['language' => 'pt-BR', 'value' => $user->name],
-            ],
-            'textModulesData' => [
-                ['id' => 'pontos', 'header' => 'Pontos', 'body' => (string) $pontos],
-                ['id' => 'nivel',  'header' => 'Nível',  'body' => $nivel],
-            ],
-            'barcode' => [
-                'type'            => 'QR_CODE',
-                'value'           => 'CLIENT_' . $user->id . '_' . md5($user->email),
-                'alternateText'   => 'Apresente ao estabelecimento',
-            ],
-            'hexBackgroundColor' => $this->corPorNivel($user->nivel),
-            'state' => 'ACTIVE',
-        ];
-
-        // URL para adicionar ao Google Wallet
-        $addUrl = 'https://pay.google.com/gp/v/save/' . base64_encode(json_encode([
-            'iss' => config('services.google_wallet.service_account', 'tem-de-tudo@example.com'),
-            'aud' => 'google',
-            'typ' => 'savetowallet',
-            'iat' => time(),
-            'payload' => ['genericObjects' => [$passObject]],
-        ]));
-
+        $user = Auth::user();
+        
         return response()->json([
-            'success'     => true,
+            'success' => true,
             'data' => [
-                'pass_json' => $passObject,
-                'add_url'   => $addUrl,
-                'tipo'      => 'google_wallet',
+                'id' => $user->id,
+                'nome' => $user->name,
+                'email' => $user->email,
+                'pontos' => $user->pontos ?? 0,
+                'nivel' => $user->nivel ?? 'bronze',
+                'nivel_formatado' => ucfirst($user->nivel ?? 'bronze'),
+                'qr_code' => $this->gerarQRCode($user),
+                'cor' => $this->corPorNivel($user->nivel),
+                'proximos_pontos' => $this->pontosProximoNivel($user->pontos ?? 0),
             ],
         ]);
     }
 
-    // ============================================================
-    // APPLE WALLET (PKPass)
-    // ============================================================
+    /**
+     * Adiciona pontos ao usuário (estabelecimento)
+     */
+    public function adicionarPontos(Request $request)
+    {
+        $request->validate([
+            'cliente_id' => 'required|exists:users,id',
+            'pontos' => 'required|integer|min:1|max:1000',
+            'valor_compra' => 'required|numeric|min:0',
+        ]);
+
+        $cliente = User::findOrFail($request->cliente_id);
+        $pontosAnteriores = $cliente->pontos ?? 0;
+        $nivelAnterior = $cliente->nivel ?? 'bronze';
+
+        // Adiciona pontos
+        $cliente->pontos = $pontosAnteriores + $request->pontos;
+        
+        // Atualiza nível
+        $cliente->nivel = $this->calcularNivel($cliente->pontos);
+        $cliente->save();
+
+        // Registra na tabela de transações
+        PontoTransacao::create([
+            'user_id' => $cliente->id,
+            'pontos' => $request->pontos,
+            'tipo' => 'adicao',
+            'descricao' => "Compra no valor de R$ " . number_format($request->valor_compra, 2, ',', '.'),
+            'valor_compra' => $request->valor_compra,
+            'estabelecimento_id' => Auth::id(),
+        ]);
+
+        $nivelSubiu = $nivelAnterior !== $cliente->nivel;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pontos adicionados com sucesso!',
+            'data' => [
+                'pontos_anteriores' => $pontosAnteriores,
+                'pontos_adicionados' => $request->pontos,
+                'pontos_atuais' => $cliente->pontos,
+                'nivel_anterior' => $nivelAnterior,
+                'nivel_atual' => $cliente->nivel,
+                'nivel_subiu' => $nivelSubiu,
+            ],
+        ]);
+    }
 
     /**
-     * Gera um arquivo .pkpass para Apple Wallet.
-     *
-     * Estrutura mínima de um PKPass:
-     *   pass.json        → metadados do cartão
-     *   manifest.json    → SHA1 de cada arquivo
-     *   signature        → assinatura PKCS7 (requer cert Apple)
-     *
-     * Em produção, assinar com openssl + certificado Apple Pass Type ID.
-     * Aqui geramos o zip com os arquivos corretos (sem assinatura real)
-     * para facilitar a integração posterior.
+     * Resgata pontos (troca por benefícios)
      */
-    public function appleWalletPass(Request $request)
+    public function resgatarPontos(Request $request)
     {
-        $user    = Auth::user();
-        $nivel   = ucfirst($user->nivel ?? 'Bronze');
-        $pontos  = $user->pontos ?? 0;
-        $serialNumber = 'TDT-U' . $user->id . '-' . md5($user->email);
+        $request->validate([
+            'pontos' => 'required|integer|min:1',
+            'descricao' => 'required|string|max:255',
+        ]);
 
-        $passJson = [
-            'formatVersion'     => 1,
-            'passTypeIdentifier' => config('services.apple_wallet.pass_type_id', 'pass.br.com.temdetudo'),
-            'serialNumber'      => $serialNumber,
-            'teamIdentifier'    => config('services.apple_wallet.team_id', 'TEAMID'),
-            'organizationName'  => 'Tem de Tudo',
-            'description'       => 'Cartão Fidelidade Tem de Tudo',
-            'foregroundColor'   => 'rgb(255,255,255)',
-            'backgroundColor'   => $this->rgbPorNivel($user->nivel),
-            'generic' => [
-                'primaryFields' => [
-                    ['key' => 'pontos', 'label' => 'PONTOS', 'value' => $pontos],
-                ],
-                'secondaryFields' => [
-                    ['key' => 'nivel', 'label' => 'NÍVEL', 'value' => $nivel],
-                    ['key' => 'nome',  'label' => 'CLIENTE', 'value' => $user->name],
-                ],
-                'auxiliaryFields' => [],
-                'backFields' => [
-                    ['key' => 'info', 'label' => 'Informações', 'value' => 'Apresente o QR Code ao estabelecimento para acumular pontos.'],
-                ],
+        $user = Auth::user();
+        
+        if (($user->pontos ?? 0) < $request->pontos) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pontos insuficientes',
+            ], 400);
+        }
+
+        $pontosAnteriores = $user->pontos;
+        $nivelAnterior = $user->nivel;
+
+        // Remove pontos
+        $user->pontos = $pontosAnteriores - $request->pontos;
+        
+        // Recalcula nível
+        $user->nivel = $this->calcularNivel($user->pontos);
+        $user->save();
+
+        // Registra resgate
+        PontoTransacao::create([
+            'user_id' => $user->id,
+            'pontos' => -$request->pontos,
+            'tipo' => 'resgate',
+            'descricao' => $request->descricao,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pontos resgatados com sucesso!',
+            'data' => [
+                'pontos_anteriores' => $pontosAnteriores,
+                'pontos_resgatados' => $request->pontos,
+                'pontos_atuais' => $user->pontos,
+                'nivel_anterior' => $nivelAnterior,
+                'nivel_atual' => $user->nivel,
             ],
-            'barcode' => [
-                'message'         => 'CLIENT_' . $user->id . '_' . md5($user->email),
-                'format'          => 'PKBarcodeFormatQR',
-                'messageEncoding' => 'iso-8859-1',
+        ]);
+    }
+
+    /**
+     * Histórico de transações de pontos
+     */
+    public function historico(Request $request)
+    {
+        $user = Auth::user();
+        
+        $transacoes = PontoTransacao::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return response()->json([
+            'success' => true,
+            'data' => $transacoes,
+        ]);
+    }
+
+    /**
+     * Valida QR Code do cliente (para estabelecimento escanear)
+     */
+    public function validarQRCode(Request $request)
+    {
+        $request->validate([
+            'qr_code' => 'required|string',
+        ]);
+
+        // Formato: CLIENT_123_hash
+        $parts = explode('_', $request->qr_code);
+        
+        if (count($parts) !== 3 || $parts[0] !== 'CLIENT') {
+            return response()->json([
+                'success' => false,
+                'message' => 'QR Code inválido',
+            ], 400);
+        }
+
+        $userId = $parts[1];
+        $cliente = User::find($userId);
+
+        if (!$cliente) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cliente não encontrado',
+            ], 404);
+        }
+
+        // Valida hash
+        $hashEsperado = md5($cliente->email);
+        if ($parts[2] !== $hashEsperado) {
+            return response()->json([
+                'success' => false,
+                'message' => 'QR Code inválido',
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $cliente->id,
+                'nome' => $cliente->name,
+                'email' => $cliente->email,
+                'pontos' => $cliente->pontos ?? 0,
+                'nivel' => $cliente->nivel ?? 'bronze',
             ],
-        ];
-
-        $passJsonStr  = json_encode($passJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $manifestData = ['pass.json' => sha1($passJsonStr)];
-        $manifestStr  = json_encode($manifestData);
-
-        // Cria ZIP em memória
-        $zip     = new \ZipArchive();
-        $tmpFile = tempnam(sys_get_temp_dir(), 'pkpass_') . '.pkpass';
-        $zip->open($tmpFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
-        $zip->addFromString('pass.json',     $passJsonStr);
-        $zip->addFromString('manifest.json', $manifestStr);
-        // signature vazia – substituir pela assinatura PKCS7 real em produção
-        $zip->addFromString('signature', '');
-        $zip->close();
-
-        return response()->download($tmpFile, 'cartao-fidelidade.pkpass', [
-            'Content-Type' => 'application/vnd.apple.pkpass',
-        ])->deleteFileAfterSend(true);
+        ]);
     }
 
     // ============================================================
     // Helpers
     // ============================================================
 
+    private function gerarQRCode($user): string
+    {
+        return 'CLIENT_' . $user->id . '_' . md5($user->email);
+    }
+
+    private function calcularNivel(int $pontos): string
+    {
+        if ($pontos >= 1000) return 'platina';
+        if ($pontos >= 500) return 'ouro';
+        if ($pontos >= 200) return 'prata';
+        return 'bronze';
+    }
+
+    private function pontosProximoNivel(int $pontos): array
+    {
+        $niveis = [
+            'bronze' => ['pontos' => 200, 'nome' => 'Prata'],
+            'prata' => ['pontos' => 500, 'nome' => 'Ouro'],
+            'ouro' => ['pontos' => 1000, 'nome' => 'Platina'],
+            'platina' => ['pontos' => null, 'nome' => 'Máximo'],
+        ];
+
+        $nivelAtual = $this->calcularNivel($pontos);
+        $proximoNivel = $niveis[$nivelAtual];
+
+        if ($proximoNivel['pontos'] === null) {
+            return [
+                'nivel_atual' => 'platina',
+                'proximo_nivel' => 'Platina (Máximo)',
+                'pontos_faltando' => 0,
+                'porcentagem' => 100,
+            ];
+        }
+
+        $pontosFaltando = $proximoNivel['pontos'] - $pontos;
+        $pontosMinimo = match($nivelAtual) {
+            'bronze' => 0,
+            'prata' => 200,
+            'ouro' => 500,
+            default => 0,
+        };
+
+        $porcentagem = (($pontos - $pontosMinimo) / ($proximoNivel['pontos'] - $pontosMinimo)) * 100;
+
+        return [
+            'nivel_atual' => $nivelAtual,
+            'proximo_nivel' => $proximoNivel['nome'],
+            'pontos_faltando' => $pontosFaltando,
+            'porcentagem' => round($porcentagem, 2),
+        ];
+    }
+
     private function corPorNivel(?string $nivel): string
     {
         return match (strtolower($nivel ?? '')) {
-            'prata'   => '#93A3B8',
-            'ouro'    => '#D4A017',
+            'prata' => '#93A3B8',
+            'ouro' => '#D4A017',
             'platina' => '#A8B820',
-            default   => '#CD7F32', // bronze
-        };
-    }
-
-    private function rgbPorNivel(?string $nivel): string
-    {
-        return match (strtolower($nivel ?? '')) {
-            'prata'   => 'rgb(147,163,184)',
-            'ouro'    => 'rgb(212,160,23)',
-            'platina' => 'rgb(168,184,32)',
-            default   => 'rgb(205,127,50)',
+            default => '#CD7F32', // bronze
         };
     }
 }
+

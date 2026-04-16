@@ -175,6 +175,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/checkin/historico', [MainCheckInController::class, 'meuHistorico']);
     Route::post('/checkin/validar-qr', [MainCheckInController::class, 'validarQRCode']);
     
+    // ========== SISTEMA DE FIDELIDADE - WALLET ==========
+    Route::prefix('fidelidade')->group(function () {
+        Route::get('/cartao', [WalletController::class, 'show']);
+        Route::get('/historico', [WalletController::class, 'historico']);
+        Route::post('/resgatar', [WalletController::class, 'resgatarPontos']);
+        Route::post('/adicionar-pontos', [WalletController::class, 'adicionarPontos']);
+        Route::post('/validar-qrcode', [WalletController::class, 'validarQRCode']);
+    });
+    
     // ========== ROTAS PARA EMPRESAS ==========
     Route::post('/empresa/qrcode/gerar', [MainCheckInController::class, 'gerarQRCode']);
     Route::get('/empresa/checkins', [MainCheckInController::class, 'checkinsEmpresa']);
