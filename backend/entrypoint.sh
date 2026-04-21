@@ -85,4 +85,4 @@ echo "Iniciando scheduler..."
 echo "Scheduler PID: $!"
 
 echo "Starting Apache..."
-exec apache2-foreground
+exec apache2-foreground -q

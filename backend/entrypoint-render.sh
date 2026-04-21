@@ -59,4 +59,4 @@ echo "✅ Deploy concluído! Iniciando servidor..."
 echo "========================================="
 
 # Iniciar Apache
-exec apache2-foreground
+exec apache2-foreground -q
