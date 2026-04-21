@@ -2720,7 +2720,7 @@
       let origem = toArray(data?.data || data);
       let usingFallback = false;
       if (!res.ok || !origem.length) {
-        const usersDataset = await this.loadUsersDataset();
+        const usersDataset = await admin.loadUsersDataset();
         if (usersDataset.ok) {
           const candidatos = usersDataset.list.filter((u) =>
             ['empresa', 'estabelecimento', 'parceiro', 'lojista'].some((tag) =>
@@ -2923,7 +2923,7 @@
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando usuarios...');
 
-      const usersDataset = await this.loadUsersDataset();
+      const usersDataset = await admin.loadUsersDataset();
       if (!usersDataset.ok) return ui.setPageState('error', 'Endpoint de usuarios indisponivel.');
       const lista = usersDataset.list;
 
@@ -2975,7 +2975,8 @@
         metric('adminUsersCrescimento', total ? `${total} registrados` : 'Sem registros');
         metric('adminUsersNovos', '');
         metric('adminUsersReviso', bloqueados ? `${bloqueados} em reviso` : 'OK');
-        if (resumo) resumo.querySelector('p').textContent = total ? `Listando ${total} administradores` : 'Nenhum administrador encontrado';
+        const resumoText = resumo?.querySelector('p');
+        if (resumoText) resumoText.textContent = total ? `Listando ${total} administradores` : 'Nenhum administrador encontrado';
       };
 
       const renderLista = (listaAlvo) => {
@@ -3083,7 +3084,7 @@
     async clientesMaster() {
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando clientes...');
-      const usersDataset = await this.loadUsersDataset();
+      const usersDataset = await admin.loadUsersDataset();
       
       let clientes = [];
       if (usersDataset.ok && usersDataset.list.length) {
@@ -3157,7 +3158,8 @@
         const bar = document.getElementById('adminClientesMediaBar');
         if (bar) bar.style.width = pts.length ? `${Math.min(100, Math.round((media / 5000) * 100))}%` : '0%';
         set('adminClientesNovos', novos || '0');
-        if (resumo) resumo.querySelector('p').textContent = total ? `Exibindo ${total} clientes` : 'Nenhum cliente encontrado';
+        const resumoText = resumo?.querySelector('p');
+        if (resumoText) resumoText.textContent = total ? `Exibindo ${total} clientes` : 'Nenhum cliente encontrado';
       };
 
       const renderLista = (lst) => {
@@ -3212,7 +3214,7 @@
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando relatorios...');
 
-      const usersDataset = await this.loadUsersDataset();
+      const usersDataset = await admin.loadUsersDataset();
       const [stats, checkins, empresasResp] = await Promise.all([
         api.request('/admin/dashboard-stats', {}, { notify: false }),
         api.request('/admin/pontos/estatisticas', {}, { notify: false }),
@@ -3487,7 +3489,11 @@
         const emailEl = form.querySelector('[name="email"], [type="email"]');
         const senhaEl = form.querySelector('[name="password"], [name="senha"], [type="password"]');
         if (!emailEl || !senhaEl) return;
-        const { res, data } = await api.request('/login', { method: 'POST', body: JSON.stringify({ email: emailEl.value.trim(), password: senhaEl.value }) });
+        const { res, data } = await api.request(
+          '/auth/login',
+          { method: 'POST', body: JSON.stringify({ email: emailEl.value.trim(), password: senhaEl.value }) },
+          { requireAuth: false }
+        );
         if (!res.ok) { ui.message(data?.message || 'Credenciais invalidas.', 'error'); return; }
         auth.save(data.token, data.user);
         const perfil = auth.normalizePerfil(data.user?.perfil);
@@ -3519,6 +3525,13 @@
         if (badge) badge.textContent = (empresa.ramo || 'Parceiro').toString().toUpperCase();
         if (desc) desc.textContent = empresa.endereco || 'Parceiro ativo no programa.';
       });
+    },
+    'escolher-tipo': async () => {
+      const stored = auth.getStored();
+      const perfil = auth.normalizePerfil(stored?.user?.perfil || stored?.user?.role || stored?.user?.tipo);
+      if (stored?.token && perfil && redirectMap[perfil]) {
+        window.location.href = redirectMap[perfil];
+      }
     },
     oferta_especial: cliente.detalheParceiro,
     tudo_vibrante: async () => {
