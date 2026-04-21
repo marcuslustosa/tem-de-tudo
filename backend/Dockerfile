@@ -58,4 +58,4 @@ RUN chmod +x /entrypoint.sh && dos2unix /entrypoint.sh
 EXPOSE 80
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["apache2-foreground", "-q"]
+CMD ["apache2-foreground"]

@@ -116,4 +116,4 @@ if [ "$#" -gt 0 ]; then
   exec "$@"
 fi
 
-exec apache2-foreground -q
+exec apache2-foreground
