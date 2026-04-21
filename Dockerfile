@@ -92,7 +92,7 @@ fi
 # Garante MPM correto e inicia Apache
 a2dismod mpm_event mpm_worker || true
 a2enmod mpm_prefork || true
-exec apache2-foreground -q
+exec apache2-foreground
 EOF
 
 # Usa envs fornecidos pela Railway
