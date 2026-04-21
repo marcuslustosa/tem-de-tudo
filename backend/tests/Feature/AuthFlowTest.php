@@ -82,4 +82,39 @@ class AuthFlowTest extends TestCase
             ->assertStatus(401)
             ->assertJsonPath('success', false);
     }
+
+    public function test_empresa_register_requires_admin_token_and_accepts_admin_bearer_on_public_route(): void
+    {
+        $admin = User::factory()->create([
+            'email' => 'admin.flow@example.com',
+            'password' => Hash::make('senha123'),
+            'perfil' => 'admin',
+            'status' => 'ativo',
+        ]);
+
+        $payload = [
+            'perfil' => 'empresa',
+            'name' => 'Empresa Flow',
+            'email' => 'empresa.flow@example.com',
+            'telefone' => '11999999999',
+            'cnpj' => '12.345.678/0001-99',
+            'endereco' => 'Rua Teste, 100',
+            'password' => 'senha123',
+            'password_confirmation' => 'senha123',
+            'terms' => true,
+        ];
+
+        $this->postJson('/api/auth/register', $payload)
+            ->assertStatus(403)
+            ->assertJsonPath('success', false);
+
+        $token = $admin->createToken('test-admin-register')->plainTextToken;
+
+        $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->postJson('/api/auth/register', $payload)
+            ->assertStatus(201)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('user.perfil', 'empresa')
+            ->assertJsonPath('data.user.email', 'empresa.flow@example.com');
+    }
 }

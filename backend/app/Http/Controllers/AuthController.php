@@ -16,6 +16,7 @@ use App\Models\Admin;
 use App\Models\AuditLog;
 use App\Models\Cupom;
 use App\Mail\WelcomeMail;
+use Laravel\Sanctum\PersonalAccessToken;
 
 use Carbon\Carbon;
 
@@ -53,7 +54,7 @@ class AuthController extends Controller
 
             // RESTRIÇÃO: Apenas admin master pode criar empresas
             if ($perfil === 'empresa') {
-                $user = $request->user(); // Usuário autenticado via Sanctum
+                $user = $this->resolveAuthUserFromRequest($request);
                 $perfilAdmin = $user ? strtolower($user->perfil ?? $user->role ?? '') : '';
                 
                 if (!$user || !in_array($perfilAdmin, ['admin', 'administrador', 'master'])) {
@@ -571,6 +572,27 @@ class AuthController extends Controller
             ]
         ]);
     }
+    /**
+     * Resolve usuário autenticado mesmo em rota pública com Bearer token.
+     */
+    private function resolveAuthUserFromRequest(Request $request): ?User
+    {
+        $user = $request->user();
+        if ($user instanceof User) {
+            return $user;
+        }
+
+        $bearerToken = $request->bearerToken();
+        if (!$bearerToken) {
+            return null;
+        }
+
+        $accessToken = PersonalAccessToken::findToken($bearerToken);
+        $tokenable = $accessToken?->tokenable;
+
+        return $tokenable instanceof User ? $tokenable : null;
+    }
+
 
     /**
      * Log de eventos para auditoria

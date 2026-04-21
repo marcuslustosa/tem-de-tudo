@@ -373,12 +373,10 @@
     if (text.includes('suporte')) return '__support__';
     if (text.includes('novo parceiro') || text.includes('novo estabelecimento')) {
       if (scope === 'admin') return '/criar_conta.html?tipo=empresa&origem=admin';
-      if (scope === 'empresa') return '/criar_conta.html?tipo=empresa&origem=empresa';
-      return '/criar_conta.html?tipo=empresa';
+      return '/criar_conta.html?tipo=cliente';
     }
     if (['add', 'add_circle', 'add_business', 'person_add'].includes(icon)) {
       if (scope === 'admin') return '/criar_conta.html?tipo=empresa&origem=admin';
-      if (scope === 'empresa') return '/criar_conta.html?tipo=empresa&origem=empresa';
       return '/criar_conta.html?tipo=cliente';
     }
     if (text.includes('ver todas') || text.includes('ver todos')) {
@@ -3647,16 +3645,49 @@
         const refCode = (refInput?.value || refFromUrl || '').trim().toUpperCase();
         if (perfil === 'cliente' && refCode) payload.referral_code = refCode;
         
-        // Se for admin criando empresa, enviar token de autenticação
+        // Fluxo admin: criação de empresa deve usar endpoint administrativo protegido.
         const urlParams = new URLSearchParams(window.location.search);
         const origem = urlParams.get('origem');
-        const requireAuth = (perfil === 'empresa' && origem === 'admin');
+        const isAdminCompanyFlow = (perfil === 'empresa' && origem === 'admin');
+
+        let endpoint = '/auth/register';
+        let requestPayload = payload;
+        let requestConfig = { requireAuth: false, notify: false };
+
+        if (isAdminCompanyFlow) {
+          const me = await api.request('/auth/me', {}, { requireAuth: true, notify: false });
+          const mePerfil = auth.normalizePerfil(
+            me.data?.data?.user?.perfil ||
+            me.data?.user?.perfil ||
+            me.data?.perfil ||
+            null
+          );
+
+          if (!me.res?.ok || mePerfil !== 'admin') {
+            ui.message('Para cadastrar estabelecimento, faca login como administrador.', 'warning');
+            setTimeout(() => (window.location.href = '/entrar.html'), 800);
+            return;
+          }
+
+          endpoint = '/admin/create-user';
+          requestPayload = {
+            name: payload.name,
+            email: payload.email,
+            password: payload.password,
+            perfil: 'empresa',
+            telefone: payload.telefone || null,
+            cnpj: payload.cnpj || null,
+            endereco: payload.endereco || null,
+            status: 'ativo',
+          };
+          requestConfig = { requireAuth: true, notify: true };
+        }
         
         ui.setPageState('loading', 'Criando conta...');
-        const { res, data } = await api.request('/auth/register', {
+        const { res, data } = await api.request(endpoint, {
           method: 'POST',
-          body: JSON.stringify(payload),
-        }, { requireAuth });
+          body: JSON.stringify(requestPayload),
+        }, requestConfig);
         ui.clearPageState();
         if (res.ok && data?.success !== false) {
           if (perfil === 'empresa' && origem === 'admin') {
