@@ -17,6 +17,8 @@ RUN apt-get update && apt-get install -y \
     && a2enmod rewrite \
     && a2enmod headers \
     && a2enmod expires \
+    && echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf \
+    && a2enconf servername \
     && rm -rf /var/lib/apt/lists/*
 
 # Configurar PHP para produção

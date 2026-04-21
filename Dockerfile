@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     # Garante apenas um MPM (prefork) para mod_php
     && a2dismod mpm_event mpm_worker && a2enmod mpm_prefork \
     && a2enmod rewrite headers expires \
+    && echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf \
+    && a2enconf servername \
     && rm -rf /var/lib/apt/lists/*
 
 # Ajustes PHP
