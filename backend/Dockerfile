@@ -13,11 +13,17 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     dos2unix \
     && docker-php-ext-install pdo pdo_sqlite pdo_pgsql pgsql mbstring exif pcntl bcmath gd \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf \
+    && rm -f /etc/apache2/mods-enabled/mpm_worker.load /etc/apache2/mods-enabled/mpm_worker.conf \
+    && ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load \
+    && ln -sf /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf \
     && a2enmod rewrite \
     && a2enmod headers \
     && a2enmod expires \
     && echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf \
     && a2enconf servername \
+    && apache2ctl -M 2>/dev/null | grep -q 'mpm_prefork_module' \
+    && [ "$(apache2ctl -M 2>/dev/null | grep -c 'mpm_')" -eq 1 ] \
     && rm -rf /var/lib/apt/lists/*
 
 RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory-limit.ini \

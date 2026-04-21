@@ -94,7 +94,24 @@ if [ "${RUN_MIGRATIONS_ON_START:-true}" = "true" ]; then
   fi
 fi
 
-# MPM ja configurado no build; no runtime apenas inicia o Apache
+# Safety net no runtime: garante um unico MPM carregado
+rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf
+rm -f /etc/apache2/mods-enabled/mpm_worker.load /etc/apache2/mods-enabled/mpm_worker.conf
+ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load
+ln -sf /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf
+
+if ! apache2ctl -M 2>/dev/null | grep -q 'mpm_prefork_module'; then
+  echo "ERRO: mpm_prefork nao carregado"
+  apache2ctl -M || true
+  exit 1
+fi
+
+if [ "$(apache2ctl -M 2>/dev/null | grep -c 'mpm_')" -ne 1 ]; then
+  echo "ERRO: mais de um MPM carregado"
+  apache2ctl -M || true
+  exit 1
+fi
+
 exec apache2-foreground
 EOF
 
