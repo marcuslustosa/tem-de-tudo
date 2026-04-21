@@ -40,50 +40,51 @@ use App\Http\Controllers\WebhookSaidaController;
 use App\Http\Controllers\AjustePontosController;
 use App\Http\Controllers\WalletController;
 
-// Debug route (remover em produÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o)
-Route::get('/debug', function () {
-    try {
-        $dbConnection = DB::connection();
-        $dbConnection->getPdo();
+if (app()->environment(['local', 'testing'])) {
+    // Debug route (somente ambiente local/teste)
+    Route::get('/debug', function () {
+        try {
+            $dbConnection = DB::connection();
+            $dbConnection->getPdo();
 
-        return response()->json([
-            'status' => 'OK',
-            'message' => 'API funcionando',
-            'database' => [
-                'connection' => config('database.default'),
-                'status' => 'connected'
-            ],
-            'timestamp' => now(),
-            'environment' => app()->environment()
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'ERROR',
-            'message' => 'Erro na API',
-            'error' => $e->getMessage()
-        ], 500);
-    }
-});
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'API funcionando',
+                'database' => [
+                    'connection' => config('database.default'),
+                    'status' => 'connected'
+                ],
+                'timestamp' => now(),
+                'environment' => app()->environment()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'ERROR',
+                'message' => 'Erro na API'
+            ], 500);
+        }
+    });
 
-// Debug - teste de empresas (TEMPORÃƒÆ’Ã†â€™Ãƒâ€šÃ‚ÂRIO)
-Route::get('/debug/empresas', function () {
-    try {
-        $count = \App\Models\Empresa::count();
-        $empresas = \App\Models\Empresa::where('ativo', true)->take(3)->get(['id', 'nome', 'categoria']);
-        
-        return response()->json([
-            'status' => 'OK',
-            'total_empresas' => $count,
-            'empresas_sample' => $empresas,
-            'message' => 'Empresas carregadas com sucesso'
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'ERROR',
-            'message' => 'Erro ao carregar empresas: ' . $e->getMessage()
-        ], 500);
-    }
-});
+    // Debug - teste de empresas (somente ambiente local/teste)
+    Route::get('/debug/empresas', function () {
+        try {
+            $count = \App\Models\Empresa::count();
+            $empresas = \App\Models\Empresa::where('ativo', true)->take(3)->get(['id', 'nome', 'categoria']);
+
+            return response()->json([
+                'status' => 'OK',
+                'total_empresas' => $count,
+                'empresas_sample' => $empresas,
+                'message' => 'Empresas carregadas com sucesso'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'ERROR',
+                'message' => 'Erro ao carregar empresas'
+            ], 500);
+        }
+    });
+}
 
 // Push Notifications
 Route::get('/push/public-key', [PushSubscriptionController::class, 'publicKey']);
@@ -102,8 +103,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
 });
 
-// Setup database manual (APENAS PRODUÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O - RENDER)
-Route::get('/setup-database', [SetupController::class, 'setupDatabase']);
+// Setup database manual (somente ambiente local/teste)
+if (app()->environment(['local', 'testing'])) {
+    Route::post('/setup-database', [SetupController::class, 'setupDatabase'])
+        ->middleware('throttle:2,1');
+}
 
 // ============================================
 // ROTAS PÃƒÆ’Ã†â€™Ãƒâ€¦Ã‚Â¡BLICAS (SEM AUTENTICAÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢O)

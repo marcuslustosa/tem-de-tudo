@@ -81,7 +81,7 @@ class AuthController extends Controller
             } catch (ValidationException $e) {
                 Log::warning('Erro de validação no registro', [
                     'errors' => $e->errors(),
-                    'data' => $request->all()
+                    'data' => $this->safeRequestData($request)
                 ]);
 
                 return response()->json([
@@ -96,7 +96,7 @@ class AuthController extends Controller
         } catch (ValidationException $e) {
             Log::warning('Erro de validação no registro', [
                 'errors' => $e->errors(),
-                'data' => $request->all()
+                'data' => $this->safeRequestData($request)
             ]);
 
             return response()->json([
@@ -105,23 +105,16 @@ class AuthController extends Controller
                 'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
-            Log::error('Erro CRÍTICO na validação do registro', [
+            Log::error('Erro CRITICO na validacao do registro', [
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-                'request_data' => $request->except(['password', 'password_confirmation'])
+                'request_data' => $this->safeRequestData($request),
             ]);
 
-            // Em produção, retornar erro detalhado para debug
             return response()->json([
                 'success' => false,
-                'message' => 'Erro na validação dos dados: ' . $e->getMessage(),
-                'error_details' => [
-                    'message' => $e->getMessage(),
-                    'file' => basename($e->getFile()),
-                    'line' => $e->getLine()
-                ]
+                'message' => 'Erro na validacao dos dados.',
             ], 400);
         }
 
@@ -310,56 +303,35 @@ class AuthController extends Controller
             Log::error('Erro de banco de dados no registro', [
                 'error' => $e->getMessage(),
                 'code' => $e->getCode(),
-                'sql' => $e->getSql(),
-                'bindings' => $e->getBindings()
+                'sql_state' => $e->errorInfo[0] ?? null,
             ]);
 
-            // Verificar se é erro de email duplicado
-            if ($e->getCode() == 23000) {
+            if ($e->getCode() == 23000 || (($e->errorInfo[0] ?? null) === '23505')) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Este email já está cadastrado. Tente fazer login ou use outro email.'
+                    'message' => 'Este email ja esta cadastrado. Tente fazer login ou use outro email.'
                 ], 422);
             }
 
-            // Retornar erro detalhado do banco de dados
             return response()->json([
                 'success' => false,
                 'message' => 'Erro no banco de dados. Tente novamente em alguns instantes.',
-                'error_details' => [
-                    'type' => 'QueryException',
-                    'message' => $e->getMessage(),
-                    'code' => $e->getCode(),
-                    'sql_state' => $e->errorInfo[0] ?? null,
-                    'driver_code' => $e->errorInfo[1] ?? null,
-                    'driver_message' => $e->errorInfo[2] ?? null,
-                    'file' => basename($e->getFile()),
-                    'line' => $e->getLine()
-                ]
             ], 500);
 
         } catch (\Exception $e) {
             DB::rollBack();
             RateLimiter::hit($key, 300);
 
-            Log::error('Erro CRÍTICO no registro', [
+            Log::error('Erro CRITICO no registro', [
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-                'request_data' => $request->except(['password', 'password_confirmation'])
+                'request_data' => $this->safeRequestData($request),
             ]);
 
-            // Retornar erro detalhado para debug
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao criar conta: ' . $e->getMessage(),
-                'error_details' => [
-                    'type' => get_class($e),
-                    'message' => $e->getMessage(),
-                    'file' => basename($e->getFile()),
-                    'line' => $e->getLine()
-                ]
+                'message' => 'Erro ao criar conta. Tente novamente.',
             ], 500);
         }
     }
@@ -377,7 +349,6 @@ class AuthController extends Controller
         Log::info('=== INÍCIO DO LOGIN ===', [
             'ip' => $request->ip(),
             'user_agent' => $request->userAgent(),
-            'headers' => $request->headers->all(),
             'email' => $request->email
         ]);
 
@@ -502,13 +473,7 @@ class AuthController extends Controller
             // Retornar erro detalhado para debug
             return response()->json([
                 'success' => false,
-                'message' => 'Erro no login: ' . $e->getMessage(),
-                'error_details' => [
-                    'type' => get_class($e),
-                    'message' => $e->getMessage(),
-                    'file' => basename($e->getFile()),
-                    'line' => $e->getLine()
-                ]
+                'message' => 'Erro ao processar login. Tente novamente.',
             ], 500);
         }
     }
@@ -613,21 +578,33 @@ class AuthController extends Controller
     private function logAuditEvent(string $event, int $userId, $request = null): void
     {
         try {
-            // Log simples - em produção, você pode usar um sistema mais robusto
             Log::info("AUDIT: {$event}", [
                 'user_id' => $userId,
                 'ip' => $request ? $request->ip() : null,
                 'user_agent' => $request ? $request->userAgent() : null,
-                'timestamp' => now()
+                'timestamp' => now(),
             ]);
         } catch (\Exception $e) {
-            // Falha silenciosa para não quebrar o fluxo principal
-            Log::error("Erro no log de auditoria: " . $e->getMessage());
+            Log::error('Erro no log de auditoria: ' . $e->getMessage());
         }
     }
 
     /**
-     * Obter regras de validação específicas por perfil
+     * Remove campos sensiveis antes de logar payloads de autenticacao.
+     */
+    private function safeRequestData(Request $request): array
+    {
+        return $request->except([
+            'password',
+            'password_confirmation',
+            'current_password',
+            'token',
+            'remember_token',
+        ]);
+    }
+
+    /**
+     * Obter regras de validacao especificas por perfil
      */
     private function getValidationRulesForPerfil(string $perfil): array
     {

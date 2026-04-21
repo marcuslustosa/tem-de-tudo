@@ -9,135 +9,132 @@ use Illuminate\Support\Facades\Log;
 class SchedulerController extends Controller
 {
     /**
-     * Executa o Laravel Scheduler via HTTP
-     * 
-     * Endpoint protegido por token para ser chamado por cron jobs externos
-     * Ideal para Render Free que não suporta cron nativo
+     * Executa o Laravel Scheduler via HTTP.
      */
     public function run(Request $request)
     {
-        // Validar token de segurança
-        $token = $request->header('X-Scheduler-Token') ?? $request->input('token');
-        $expectedToken = env('SCHEDULER_TOKEN', 'tem-de-tudo-scheduler-2026');
-        
-        if ($token !== $expectedToken) {
-            Log::warning('Tentativa de acesso não autorizado ao scheduler', [
-                'ip' => $request->ip(),
-                'token_provided' => $token ? 'sim' : 'não'
-            ]);
-            
+        if (!$this->isTokenValid($request)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Token inválido'
+                'message' => 'Token invalido',
             ], 401);
         }
-        
+
         try {
-            // Executar o scheduler
             Artisan::call('schedule:run');
             $output = Artisan::output();
-            
+
             Log::info('Scheduler executado via HTTP', [
                 'ip' => $request->ip(),
-                'output' => $output
+                'output' => $output,
             ]);
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Scheduler executado com sucesso',
                 'output' => $output,
-                'timestamp' => now()->toDateTimeString()
+                'timestamp' => now()->toDateTimeString(),
             ]);
-            
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Erro ao executar scheduler via HTTP', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Erro ao executar scheduler',
-                'error' => $e->getMessage()
             ], 500);
         }
     }
-    
+
     /**
-     * Executa apenas o comando de bônus aniversário
-     * 
-     * Útil para testes ou execução manual
+     * Executa apenas o comando de bonus aniversario.
      */
     public function runBirthdayBonus(Request $request)
     {
-        // Validar token de segurança
-        $token = $request->header('X-Scheduler-Token') ?? $request->input('token');
-        $expectedToken = env('SCHEDULER_TOKEN', 'tem-de-tudo-scheduler-2026');
-        
-        if ($token !== $expectedToken) {
+        if (!$this->isTokenValid($request)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Token inválido'
+                'message' => 'Token invalido',
             ], 401);
         }
-        
+
         try {
-            // Executar comando de bônus aniversário
             Artisan::call('bonus:aniversario');
             $output = Artisan::output();
-            
-            Log::info('Bônus aniversário executado via HTTP', [
+
+            Log::info('Bonus aniversario executado via HTTP', [
                 'ip' => $request->ip(),
-                'output' => $output
+                'output' => $output,
             ]);
-            
+
             return response()->json([
                 'success' => true,
-                'message' => 'Bônus aniversário processado com sucesso',
+                'message' => 'Bonus aniversario processado com sucesso',
                 'output' => $output,
-                'timestamp' => now()->toDateTimeString()
+                'timestamp' => now()->toDateTimeString(),
             ]);
-            
-        } catch (\Exception $e) {
-            Log::error('Erro ao executar bônus aniversário via HTTP', [
+        } catch (\Throwable $e) {
+            Log::error('Erro ao executar bonus aniversario via HTTP', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
             ]);
-            
+
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao processar bônus aniversário',
-                'error' => $e->getMessage()
+                'message' => 'Erro ao processar bonus aniversario',
             ], 500);
         }
     }
-    
+
     /**
-     * Status do scheduler
-     * 
-     * Retorna informações sobre o último processamento
+     * Status do scheduler.
      */
     public function status(Request $request)
     {
-        // Validar token de segurança
-        $token = $request->header('X-Scheduler-Token') ?? $request->input('token');
-        $expectedToken = env('SCHEDULER_TOKEN', 'tem-de-tudo-scheduler-2026');
-        
-        if ($token !== $expectedToken) {
+        if (!$this->isTokenValid($request)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Token inválido'
+                'message' => 'Token invalido',
             ], 401);
         }
-        
+
         return response()->json([
             'success' => true,
             'server_time' => now()->toDateTimeString(),
             'timezone' => config('app.timezone'),
             'scheduler_configured' => true,
             'commands' => [
-                'bonus:aniversario' => 'Executa diariamente às 08:00'
-            ]
+                'bonus:aniversario' => 'Executa diariamente as 08:00',
+            ],
         ]);
+    }
+
+    private function isTokenValid(Request $request): bool
+    {
+        $expectedToken = (string) env('SCHEDULER_TOKEN', '');
+        if ($expectedToken === '') {
+            Log::error('SCHEDULER_TOKEN nao configurado para SchedulerController.');
+            return false;
+        }
+
+        $provided = (string) ($request->header('X-Scheduler-Token') ?? $request->input('token', ''));
+        if ($provided === '') {
+            Log::warning('Tentativa de acesso ao scheduler sem token', ['ip' => $request->ip()]);
+            return false;
+        }
+
+        $valid = hash_equals($expectedToken, $provided);
+        if (!$valid) {
+            Log::warning('Tentativa de acesso nao autorizado ao scheduler', [
+                'ip' => $request->ip(),
+                'token_provided' => 'sim',
+            ]);
+        }
+
+        return $valid;
     }
 }
