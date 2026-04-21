@@ -1,104 +1,88 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 echo "=== Iniciando Tem de Tudo ==="
 
 cd /var/www/html
 
-# 1. Preparar diretórios
-echo "Configurando diretórios..."
+echo "Configurando diretorios..."
 mkdir -p storage/framework/{sessions,views,cache}
 mkdir -p storage/logs
 mkdir -p bootstrap/cache
-chmod -R 777 storage bootstrap/cache
+mkdir -p /var/log
+chmod -R 775 storage bootstrap/cache || true
 
-# 2. Configurar .env para produção
-echo "Configurando ambiente..."
-cat > .env << EOF
-APP_NAME="Tem de Tudo"
-APP_ENV=production
-APP_DEBUG=false
-APP_KEY=
+echo "Preparando ambiente..."
+if [ ! -f .env ] && [ -f .env.example ]; then
+  cp .env.example .env
+fi
 
-DB_CONNECTION=pgsql
-DB_HOST=dpg-d3vps0k9c44c738q64gg-a.oregon-postgres.render.com
-DB_PORT=5432
-DB_DATABASE=tem_de_tudo_database
-DB_USERNAME=tem_de_tudo_database_user
-DB_PASSWORD=9P0c4gV4RZd8moh9ZYqGIo0BmyZ10XhA
+if [ -n "${DATABASE_URL:-}" ] && [ -z "${DB_HOST:-}" ] && [ -f "/var/www/html/docker/export-db-env.php" ]; then
+  echo "Derivando DB_* a partir de DATABASE_URL..."
+  eval "$(php /var/www/html/docker/export-db-env.php)"
+fi
 
-SESSION_DRIVER=file
-SESSION_LIFETIME=120
-CACHE_DRIVER=file
-QUEUE_CONNECTION=database
+required_vars=(DB_CONNECTION DB_HOST DB_PORT DB_DATABASE DB_USERNAME DB_PASSWORD)
+for var in "${required_vars[@]}"; do
+  if [ -z "${!var:-}" ]; then
+    echo "Variavel obrigatoria ausente: ${var}"
+    exit 1
+  fi
+done
 
-JWT_SECRET=t3md3tud0syst3mj4wt53cr3tk3y2024s3cur3h4shk3y
-JWT_TTL=60
-JWT_REFRESH_TTL=20160
+if [ -z "${APP_KEY:-}" ]; then
+  if [ -f .env ] && grep -q '^APP_KEY=base64:' .env; then
+    echo "APP_KEY encontrada no .env."
+  else
+    echo "Gerando APP_KEY..."
+    php artisan key:generate --force
+  fi
+else
+  echo "APP_KEY fornecida por variavel de ambiente."
+fi
 
-LOG_CHANNEL=error
-LOG_LEVEL=error
-
-MAIL_MAILER=log
-EOF
-
-# 3. Gerar APP_KEY
-echo "Gerando APP_KEY..."
-php artisan key:generate --force
-
-# 4. Testar conexão com banco
-echo "Testando conexão com PostgreSQL..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\l" || {
-    echo "❌ Erro ao conectar no banco"
+echo "Testando conexao com PostgreSQL..."
+PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\l" > /dev/null || {
+    echo "Erro ao conectar no banco"
     exit 1
 }
-echo "✓ Conexão PostgreSQL estabelecida"
+echo "Conexao PostgreSQL estabelecida"
 
-# 5. Executar migrations na ordem correta
-echo "Executando migrations..."
+if [ "${RUN_MIGRATIONS_ON_START:-true}" = "true" ]; then
+  echo "Executando migrations..."
+  php artisan migrate --force --no-interaction
+else
+  echo "Migrations no start desativadas (RUN_MIGRATIONS_ON_START=false)."
+fi
 
-# Primeiro, garantir que não há tabelas órfãs
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "DROP TABLE IF EXISTS sessions CASCADE;" || true
+if [ "${SEED_ON_START:-false}" = "true" ]; then
+  echo "Executando seeders..."
+  php artisan db:seed --force --no-interaction
+else
+  echo "Seed no start desativado (SEED_ON_START=false)."
+fi
 
-# Executar migrations
-php artisan migrate --force
-
-# 6. Verificar tabelas criadas
-echo "Verificando tabelas criadas..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\dt"
-
-# 7. Executar seeders
-echo "Executando seeders..."
-php artisan db:seed --force
-
-# 8. Limpar caches
 echo "Limpando caches..."
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 php artisan route:clear
 
-# 9. Criar link simbólico do storage (se necessário)
 echo "Configurando storage link..."
 php artisan storage:link || true
 
-# 10. Verificar status final
-echo "Verificação final..."
+echo "Verificacao final..."
 php artisan migrate:status
 
 echo "=== Sistema Pronto ==="
 
-# 11. Iniciar queue worker em background
 echo "Iniciando queue worker..."
 php artisan queue:work --sleep=3 --tries=3 --max-time=3600 --daemon >> /var/log/queue-worker.log 2>&1 &
 echo "Queue worker PID: $!"
 
-# 12. Iniciar scheduler em background (executa a cada 60s)
 echo "Iniciando scheduler..."
 ( while true; do php artisan schedule:run >> /var/log/scheduler.log 2>&1; sleep 60; done ) &
 echo "Scheduler PID: $!"
 
 echo "Starting Apache..."
-
-# Start Apache
 exec apache2-foreground

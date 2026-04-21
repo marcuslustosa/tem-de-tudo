@@ -53,4 +53,10 @@ return [
         'private_key' => env('VAPID_PRIVATE_KEY'),
     ],
 
+    'wallet' => [
+        'google_add_url' => env('GOOGLE_WALLET_ADD_URL'),
+        'apple_download_url' => env('APPLE_WALLET_DOWNLOAD_URL'),
+        'client_qr_ttl' => env('CLIENT_QR_CODE_TTL', 3600),
+    ],
+
 ];

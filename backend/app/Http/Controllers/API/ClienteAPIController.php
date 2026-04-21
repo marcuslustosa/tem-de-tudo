@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Jobs\SendWebPushJob;
 use App\Models\Empresa;
+use App\Services\ClienteQrCodeService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ClienteAPIController extends Controller
 {
@@ -20,7 +21,8 @@ class ClienteAPIController extends Controller
         $user = Auth::user();
         
         // Código único do cliente
-        $codigo = 'CLIENT_' . $user->id . '_' . md5($user->email);
+        $qrData = app(ClienteQrCodeService::class)->gerar($user);
+        $codigo = $qrData['code'];
         
         // Gerar QR Code em SVG
         $qrCodeSvg = QrCode::size(300)
@@ -31,6 +33,8 @@ class ClienteAPIController extends Controller
             'success' => true,
             'data' => [
                 'codigo' => $codigo,
+                'versao' => $qrData['version'],
+                'expira_em' => $qrData['expires_at']->toIso8601String(),
                 'qrcode_svg' => $qrCodeSvg,
                 'usuario' => [
                     'id' => $user->id,

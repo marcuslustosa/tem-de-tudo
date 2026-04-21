@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Services\ClienteQrCodeService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class EmpresaAPIController extends Controller
@@ -648,15 +649,15 @@ class EmpresaAPIController extends Controller
         
         // Extrair ID do cliente do QR Code
         // Formato: CLIENT_{id}_{hash}
-        $qrcode = $request->qrcode;
-        if (!preg_match('/^CLIENT_(\d+)_/', $qrcode, $matches)) {
+        $decodedQr = app(ClienteQrCodeService::class)->decodificar($request->qrcode);
+        if (!$decodedQr) {
             return response()->json([
                 'success' => false,
                 'message' => 'QR Code inválido'
             ], 400);
         }
         
-        $clienteId = $matches[1];
+        $clienteId = (int) $decodedQr['user_id'];
         
         // Verificar se cliente existe
         $cliente = DB::table('users')

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ClienteQrCodeService;
 use App\Jobs\SendWebPushJob;
 use App\Models\InscricaoEmpresa;
 use App\Models\User;
@@ -559,6 +560,11 @@ class EmpresaPromocaoController extends Controller
      */
     private function decodificarQRCode($qrCode)
     {
+        $decodedQr = app(ClienteQrCodeService::class)->decodificar((string) $qrCode);
+        if ($decodedQr) {
+            return (int) $decodedQr['user_id'];
+        }
+
         // Formato simples: user_id direto
         if (is_numeric($qrCode)) {
             return (int) $qrCode;
