@@ -111,6 +111,13 @@ echo "Iniciando scheduler..."
 ( while true; do php artisan schedule:run >> /var/log/scheduler.log 2>&1; sleep 60; done ) &
 echo "Scheduler PID: $!"
 
+# Padrão: usa servidor embutido do Laravel para evitar crashes de MPM no Apache.
+if [ "${WEB_SERVER:-artisan}" = "artisan" ]; then
+  APP_PORT="${PORT:-8080}"
+  echo "Starting Laravel server on port ${APP_PORT} (WEB_SERVER=artisan)..."
+  exec php artisan serve --host=0.0.0.0 --port="${APP_PORT}"
+fi
+
 echo "Starting Apache..."
 # Safety net: garante apenas um MPM (prefork)
 rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf

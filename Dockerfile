@@ -94,6 +94,12 @@ if [ "${RUN_MIGRATIONS_ON_START:-true}" = "true" ]; then
   fi
 fi
 
+# Padrao de execucao no Railway: servidor PHP embutido (evita crash por MPM do Apache)
+if [ "${WEB_SERVER:-artisan}" = "artisan" ]; then
+  echo "Iniciando com php artisan serve na porta ${PORT} (WEB_SERVER=artisan)"
+  exec php artisan serve --host=0.0.0.0 --port="${PORT}"
+fi
+
 # Safety net no runtime: garante um unico MPM carregado
 rm -f /etc/apache2/mods-enabled/mpm_event.load /etc/apache2/mods-enabled/mpm_event.conf
 rm -f /etc/apache2/mods-enabled/mpm_worker.load /etc/apache2/mods-enabled/mpm_worker.conf
@@ -115,5 +121,5 @@ fi
 exec apache2-foreground
 EOF
 
-# Usa envs fornecidos pela Railway
-CMD ["start-railway.sh"]
+# Garante que o script de boot sempre rode (mesmo com command override)
+ENTRYPOINT ["start-railway.sh"]
