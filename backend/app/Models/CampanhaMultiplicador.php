@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CampanhaMultiplicador extends Model
 {
+    protected $table = 'campanhas_multiplicador';
+
     protected $fillable = [
         'empresa_id',
         'nome',

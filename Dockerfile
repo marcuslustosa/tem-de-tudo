@@ -89,9 +89,7 @@ if [ "${RUN_MIGRATIONS_ON_START:-true}" = "true" ]; then
   fi
 fi
 
-# Garante MPM correto e inicia Apache
-a2dismod mpm_event mpm_worker || true
-a2enmod mpm_prefork || true
+# MPM ja configurado no build; no runtime apenas inicia o Apache
 exec apache2-foreground
 EOF
 
