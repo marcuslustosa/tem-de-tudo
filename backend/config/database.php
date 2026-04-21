@@ -85,31 +85,36 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DB_URL'),
-            'host' => env('DB_HOST') ?: getenv('PGHOST') ?: '127.0.0.1',
-            'port' => env('DB_PORT') ?: getenv('PGPORT') ?: '5432',
-            'database' => env('DB_DATABASE') ?: getenv('PGDATABASE') ?: 'laravel',
-            'username' => env('DB_USERNAME') ?: getenv('PGUSER') ?: 'root',
-            'password' => env('DB_PASSWORD') ?: getenv('PGPASSWORD') ?: '',
+            // Railway typically injects DATABASE_URL. Keep compatibility with DB_URL as well.
+            'url' => env('DB_URL', env('DATABASE_URL')),
+            'host' => env('DB_HOST', env('PGHOST', '127.0.0.1')),
+            'port' => env('DB_PORT', env('PGPORT', '5432')),
+            'database' => env('DB_DATABASE', env('PGDATABASE', 'laravel')),
+            'username' => env('DB_USERNAME', env('PGUSER', 'root')),
+            'password' => env('DB_PASSWORD', env('PGPASSWORD', '')),
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => env('DB_SEARCH_PATH', 'public'),
-            'sslmode' => env('DB_SSLMODE', 'require'),
+            'sslmode' => env('DB_SSLMODE', env('PGSSLMODE', 'require')),
             'sslcert' => env('DB_SSLCERT'),
             'sslkey' => env('DB_SSLKEY'),
             'sslrootcert' => env('DB_SSLROOTCERT'),
-            'options' => extension_loaded('pdo_pgsql') ? [
-                PDO::PGSQL_ATTR_DISABLE_PREPARES => true,
-            ] : [],
-            'sslrootcert' => env('DB_SSLROOTCERT'),
-            'options' => extension_loaded('pdo_pgsql') ? array_filter([
-                PDO::ATTR_TIMEOUT => env('DB_TIMEOUT', 60),
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_EMULATE_PREPARES => true,
-                PDO::ATTR_PERSISTENT => false,
-                PDO::ATTR_STRINGIFY_FETCHES => false,
-            ]) : [],
+            'options' => extension_loaded('pdo_pgsql') ? (function () {
+                $options = [
+                    PDO::ATTR_TIMEOUT => env('DB_TIMEOUT', 60),
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_EMULATE_PREPARES => true,
+                    PDO::ATTR_PERSISTENT => false,
+                    PDO::ATTR_STRINGIFY_FETCHES => false,
+                ];
+
+                if (defined('PDO::PGSQL_ATTR_DISABLE_PREPARES')) {
+                    $options[PDO::PGSQL_ATTR_DISABLE_PREPARES] = true;
+                }
+
+                return $options;
+            })() : [],
             'pool' => [
                 'min' => env('DB_POOL_MIN', 2),
                 'max' => env('DB_POOL_MAX', 10),

@@ -13,14 +13,24 @@ if ($parts === false) {
 
 $scheme = $parts['scheme'] ?? 'pgsql';
 $db = ltrim($parts['path'] ?? '', '/');
+$query = [];
+if (!empty($parts['query'])) {
+    parse_str($parts['query'], $query);
+}
+
+$sslMode = $query['sslmode'] ?? 'require';
+$connection = $scheme === 'mysql' ? 'mysql' : 'pgsql';
 
 $exports = [
-    'DB_CONNECTION' => $scheme === 'mysql' ? 'mysql' : 'pgsql',
+    'DB_CONNECTION' => $connection,
+    'DB_URL'        => $url,
     'DB_HOST'       => $parts['host'] ?? '',
     'DB_PORT'       => $parts['port'] ?? ($scheme === 'mysql' ? '3306' : '5432'),
     'DB_DATABASE'   => $db,
     'DB_USERNAME'   => $parts['user'] ?? '',
     'DB_PASSWORD'   => $parts['pass'] ?? '',
+    'DB_SSLMODE'    => $sslMode,
+    'PGSSLMODE'     => $sslMode,
 ];
 
 foreach ($exports as $key => $value) {

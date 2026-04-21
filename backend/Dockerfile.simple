@@ -1,39 +1,34 @@
 FROM php:8.2-apache
 
-# Instalar extensões básicas
 RUN apt-get update && apt-get install -y \
     libpq-dev \
+    postgresql-client \
     libpng-dev \
     zip \
     unzip \
+    dos2unix \
     && docker-php-ext-install pdo pdo_pgsql pgsql gd \
-    && apt-get clean
+    && a2enmod rewrite \
+    && a2enmod headers \
+    && echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf \
+    && a2enconf servername \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copiar composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Habilitar mod_rewrite
-RUN a2enmod rewrite
-
-# Definir workdir
 WORKDIR /var/www/html
 
-# Copiar aplicação
 COPY . /var/www/html/
 
-# Instalar dependências
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Criar diretórios necessários
 RUN mkdir -p storage/framework/{sessions,views,cache} \
     && mkdir -p storage/logs \
     && mkdir -p bootstrap/cache \
-    && mkdir -p database
+    && mkdir -p /var/log \
+    && chmod -R 775 storage bootstrap/cache
 
-# Permissões totais
-RUN chmod -R 777 storage bootstrap/cache database
-
-# Copiar config do Apache
 RUN echo '<VirtualHost *:80>\n\
     DocumentRoot /var/www/html/public\n\
     <Directory /var/www/html/public>\n\
@@ -42,31 +37,10 @@ RUN echo '<VirtualHost *:80>\n\
     </Directory>\n\
 </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
-# Criar startup script simples
-RUN echo '#!/bin/bash\n\
-set -e\n\
-echo "Starting..."\n\
-\n\
-# Copiar env\n\
-if [ -f .env.render ]; then\n\
-    cp .env.render .env\n\
-fi\n\
-\n\
-# SQLite\n\
-touch database/database.sqlite\n\
-chmod 777 database/database.sqlite\n\
-\n\
-# Limpar cache\n\
-php artisan config:clear 2>/dev/null || true\n\
-php artisan cache:clear 2>/dev/null || true\n\
-\n\
-# Migrations\n\
-php artisan migrate --force 2>/dev/null || true\n\
-php artisan db:seed --force 2>/dev/null || true\n\
-\n\
-echo "Apache starting..."\n\
-exec apache2-foreground -q' > /start.sh && chmod +x /start.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh && dos2unix /entrypoint.sh
 
 EXPOSE 80
 
-CMD ["/start.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["apache2-foreground", "-q"]

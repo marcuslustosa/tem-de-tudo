@@ -1,6 +1,5 @@
 FROM php:8.2-apache
 
-# Instalar dependências e extensões PHP
 RUN apt-get update && apt-get install -y \
     libsqlite3-dev \
     libpq-dev \
@@ -21,75 +20,42 @@ RUN apt-get update && apt-get install -y \
     && a2enconf servername \
     && rm -rf /var/lib/apt/lists/*
 
-# Configurar PHP para produção
 RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory-limit.ini \
     && echo "upload_max_filesize=20M" > /usr/local/etc/php/conf.d/uploads.ini \
     && echo "post_max_size=20M" >> /usr/local/etc/php/conf.d/uploads.ini \
     && echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/uploads.ini
 
-# Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Configurar diretório de trabalho
 WORKDIR /var/www/html
 
-# Copiar arquivos de dependências primeiro (melhor cache)
 COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction
 
-# Instalar dependências do Composer
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
-
-# Copiar todos os arquivos do projeto
 COPY . .
 
-# Otimizar autoloader
-RUN composer dump-autoload --optimize --no-dev
+RUN composer dump-autoload --optimize --no-dev --no-interaction
 
-# Copiar configuração do Apache
 COPY docker/apache-default.conf /etc/apache2/sites-available/000-default.conf
 
-# Criar diretórios necessários
 RUN mkdir -p \
     storage/framework/sessions \
     storage/framework/views \
     storage/framework/cache \
     storage/logs \
-    bootstrap/cache
+    bootstrap/cache \
+    /var/log
 
-# Configurar permissões corretas
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
-# Limpar qualquer cache de configuração que possa existir
-RUN rm -f bootstrap/cache/config.php bootstrap/cache/services.php bootstrap/cache/packages.php \
-    && rm -f .env .env.* || true
+RUN rm -f bootstrap/cache/config.php bootstrap/cache/services.php bootstrap/cache/packages.php || true
 
-# Criar banco SQLite
-RUN mkdir -p database && touch database/database.sqlite && chmod 664 database/database.sqlite
-
-# Criar .env com SQLite
-RUN echo 'APP_NAME="Tem de Tudo"' > .env \
-    && echo 'APP_ENV=production' >> .env \
-    && echo 'APP_KEY=base64:4KqJxMzRlNTBiZWItNGY5OC00YzY3LWJhOTEtYmU5ZTc2MGE2YjA1' >> .env \
-    && echo 'APP_DEBUG=false' >> .env \
-    && echo 'APP_URL=https://tem-de-tudo.onrender.com' >> .env \
-    && echo 'LOG_CHANNEL=stack' >> .env \
-    && echo 'LOG_LEVEL=error' >> .env \
-    && echo 'DB_CONNECTION=sqlite' >> .env \
-    && echo 'DB_DATABASE=/var/www/html/database/database.sqlite' >> .env \
-    && echo 'SESSION_DRIVER=database' >> .env \
-    && echo 'CACHE_DRIVER=database' >> .env \
-    && echo 'QUEUE_CONNECTION=database' >> .env \
-    && echo 'SESSION_SECURE_COOKIE=true' >> .env \
-    && echo 'SANCTUM_STATEFUL_DOMAINS=tem-de-tudo.onrender.com' >> .env
-
-# Copiar e configurar entrypoint
-COPY entrypoint-render.sh /entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh && dos2unix /entrypoint.sh
 
-# Expor porta 80
 EXPOSE 80
 
-# Usar entrypoint
-CMD ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["apache2-foreground", "-q"]

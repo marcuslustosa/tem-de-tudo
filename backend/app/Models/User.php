@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Schema;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Str;
 
@@ -54,7 +55,17 @@ class User extends Authenticatable implements JWTSubject
         parent::boot();
 
         static::creating(function ($user) {
-            if (empty($user->referral_code)) {
+            static $supportsReferralCode = null;
+
+            if ($supportsReferralCode === null) {
+                try {
+                    $supportsReferralCode = Schema::hasColumn($user->getTable(), 'referral_code');
+                } catch (\Throwable) {
+                    $supportsReferralCode = false;
+                }
+            }
+
+            if ($supportsReferralCode && empty($user->referral_code)) {
                 do {
                     $code = strtoupper(Str::random(8));
                 } while (self::where('referral_code', $code)->exists());

@@ -22,6 +22,15 @@ if [ -n "${DATABASE_URL:-}" ] && [ -z "${DB_HOST:-}" ] && [ -f "/var/www/html/do
   eval "$(php /var/www/html/docker/export-db-env.php)"
 fi
 
+export DB_CONNECTION="${DB_CONNECTION:-pgsql}"
+export DB_HOST="${DB_HOST:-${PGHOST:-}}"
+export DB_PORT="${DB_PORT:-${PGPORT:-5432}}"
+export DB_DATABASE="${DB_DATABASE:-${PGDATABASE:-}}"
+export DB_USERNAME="${DB_USERNAME:-${PGUSER:-}}"
+export DB_PASSWORD="${DB_PASSWORD:-${PGPASSWORD:-}}"
+export DB_SSLMODE="${DB_SSLMODE:-${PGSSLMODE:-require}}"
+export PGSSLMODE="${PGSSLMODE:-$DB_SSLMODE}"
+
 required_vars=(DB_CONNECTION DB_HOST DB_PORT DB_DATABASE DB_USERNAME DB_PASSWORD)
 for var in "${required_vars[@]}"; do
   if [ -z "${!var:-}" ]; then
@@ -42,10 +51,28 @@ else
 fi
 
 echo "Testando conexao com PostgreSQL..."
-PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USERNAME}" -d "${DB_DATABASE}" -c "\l" > /dev/null || {
-    echo "Erro ao conectar no banco"
-    exit 1
-}
+db_retries="${DB_CONNECT_RETRIES:-20}"
+db_retry_sleep="${DB_CONNECT_RETRY_SLEEP_SECONDS:-3}"
+db_connected="false"
+
+for attempt in $(seq 1 "${db_retries}"); do
+  if PGPASSWORD="${DB_PASSWORD}" PGSSLMODE="${PGSSLMODE}" psql \
+    -h "${DB_HOST}" \
+    -U "${DB_USERNAME}" \
+    -d "${DB_DATABASE}" \
+    -c "SELECT 1;" > /dev/null 2>&1; then
+    db_connected="true"
+    break
+  fi
+
+  echo "Banco indisponivel (tentativa ${attempt}/${db_retries}), aguardando ${db_retry_sleep}s..."
+  sleep "${db_retry_sleep}"
+done
+
+if [ "${db_connected}" != "true" ]; then
+  echo "Erro ao conectar no banco apos ${db_retries} tentativas."
+  exit 1
+fi
 echo "Conexao PostgreSQL estabelecida"
 
 if [ "${RUN_MIGRATIONS_ON_START:-true}" = "true" ]; then
@@ -85,4 +112,8 @@ echo "Iniciando scheduler..."
 echo "Scheduler PID: $!"
 
 echo "Starting Apache..."
+if [ "$#" -gt 0 ]; then
+  exec "$@"
+fi
+
 exec apache2-foreground -q
