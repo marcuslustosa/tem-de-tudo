@@ -45,7 +45,7 @@ $tokenNovo = $r['body']['token'] ?? null;
 // 2. Novo usuário consegue logar imediatamente
 if ($tokenNovo) {
     $r2 = req('GET', "$base/auth/me", null, $tokenNovo);
-    $user = $r2['body']['user'] ?? $r2['body'];
+    $user = $r2['body']['data']['user'] ?? $r2['body']['user'] ?? $r2['body'];
     check('Login pós-cadastro | /auth/me retorna dados', $r2['code'] == 200, 'email=' . ($user['email'] ?? '?'));
     check('Login pós-cadastro | perfil=cliente', ($user['perfil'] ?? '') == 'cliente');
 }
