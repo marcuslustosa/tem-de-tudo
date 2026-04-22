@@ -175,6 +175,7 @@
   // ---------------------- Auth ---------------------- //
   const auth = (() => {
     let userCache = null;
+    let validatedToken = null;
 
     const parseJSON = (str) => {
       try {
@@ -212,8 +213,10 @@
       if (normalized) {
         localStorage.setItem(STORAGE.user, JSON.stringify(normalized));
         userCache = normalized;
+        validatedToken = token || validatedToken;
       } else {
         userCache = null;
+        validatedToken = null;
       }
     };
 
@@ -221,6 +224,7 @@
       localStorage.removeItem(STORAGE.token);
       localStorage.removeItem(STORAGE.user);
       userCache = null;
+      validatedToken = null;
     };
 
     const logout = () => {
@@ -229,33 +233,33 @@
     };
 
     const ensure = async () => {
-      if (userCache) return normalizeUser(userCache);
       const stored = getStored();
+      const token = (stored?.token || '').trim();
       const storedUser = normalizeUser(stored.user);
-      if (storedUser && storedUser.perfil) {
-        userCache = storedUser;
-        return userCache;
-      }
-      if (!stored.token) {
+      if (!token) {
         clear();
         window.location.href = '/entrar.html';
         return null;
       }
 
-      const { res, data } = await api.request('/auth/me');
+      if (userCache && validatedToken === token) return normalizeUser(userCache);
+
+      const { res, data } = await api.request('/auth/me', {}, { notify: false });
       const apiUser = normalizeUser(data?.user || data?.data?.user || data?.data || data);
       if (res.ok && apiUser && apiUser.perfil) {
-        save(stored.token, apiUser);
+        save(token, apiUser);
+        validatedToken = token;
         return apiUser;
       }
 
-      if (res.status === 401) {
+      if (res.status === 401 || res.status === 403) {
         clear();
         window.location.href = '/entrar.html';
         return null;
       }
       if (storedUser && storedUser.perfil) {
         userCache = storedUser;
+        validatedToken = null;
         return userCache;
       }
       console.warn('Sessao nao validada por /auth/me; sem dados de usuario no storage.');
@@ -3075,7 +3079,9 @@
       document.getElementById('btnNovoAdmin')?.addEventListener('click', () =>
         ui.message('Criacao de admin via painel: use /admin/create-user com permissoes adequadas.', 'info')
       );
-      document.getElementById('btnAudit')?.addEventListener('click', () => (window.location.href = '/relat_rios_gerais_master.html'));
+      document.getElementById('btnCreateCompany')?.addEventListener('click', () => {
+        window.location.href = '/criar_conta.html?tipo=empresa&origem=admin';
+      });
 
       bindBusca(admins);
       renderLista(admins);
@@ -3468,14 +3474,6 @@
   const handlers = {
     // Publico / shared
     acessar_conta: async () => {
-      // Se usuario ja estiver logado, redireciona ao painel correto
-      const stored = auth.getStored();
-      if (stored?.token && stored?.user?.perfil) {
-        const perfil = auth.normalizePerfil(stored.user.perfil);
-        const destinos = { admin: '/dashboard_admin_master.html', empresa: '/dashboard_parceiro.html', cliente: '/meus_pontos.html' };
-        window.location.href = destinos[perfil] || '/entrar.html';
-        return;
-      }
       // Redireciona para pagina de login padrao
       if (!window.location.pathname.includes('entrar')) {
         window.location.href = '/entrar.html';
@@ -3527,11 +3525,7 @@
       });
     },
     'escolher-tipo': async () => {
-      const stored = auth.getStored();
-      const perfil = auth.normalizePerfil(stored?.user?.perfil || stored?.user?.role || stored?.user?.tipo);
-      if (stored?.token && perfil && redirectMap[perfil]) {
-        window.location.href = redirectMap[perfil];
-      }
+      // Fluxo publico: manter acesso normal sem redireciono automatico.
     },
     oferta_especial: cliente.detalheParceiro,
     tudo_vibrante: async () => {
