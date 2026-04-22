@@ -66,6 +66,57 @@ class AuthFlowTest extends TestCase
             ->assertJsonPath('success', true);
     }
 
+    public function test_register_token_can_access_me_endpoint(): void
+    {
+        $email = 'cliente.token@example.com';
+        $password = 'senha123';
+
+        $registerResponse = $this->postJson('/api/auth/register', [
+            'perfil' => 'cliente',
+            'name' => 'Cliente Token',
+            'email' => $email,
+            'password' => $password,
+            'password_confirmation' => $password,
+            'terms' => true,
+        ]);
+
+        $registerResponse
+            ->assertStatus(201)
+            ->assertJsonPath('success', true);
+
+        $token = (string) $registerResponse->json('token');
+        $this->assertNotSame('', $token);
+
+        $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->getJson('/api/auth/me')
+            ->assertOk()
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.user.email', $email);
+    }
+
+    public function test_register_rejects_duplicate_email_case_insensitive(): void
+    {
+        $password = 'senha123';
+        $payload = [
+            'perfil' => 'cliente',
+            'name' => 'Cliente Duplicado',
+            'email' => 'duplicado@example.com',
+            'password' => $password,
+            'password_confirmation' => $password,
+            'terms' => true,
+        ];
+
+        $this->postJson('/api/auth/register', $payload)
+            ->assertStatus(201)
+            ->assertJsonPath('success', true);
+
+        $this->postJson('/api/auth/register', array_merge($payload, [
+            'email' => 'DUPLICADO@EXAMPLE.COM',
+        ]))
+            ->assertStatus(422)
+            ->assertJsonPath('success', false);
+    }
+
     public function test_login_with_wrong_password_returns_401(): void
     {
         User::factory()->create([
