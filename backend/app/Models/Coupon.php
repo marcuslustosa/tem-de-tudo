@@ -73,7 +73,7 @@ class Coupon extends Model
      */
     public function checkin()
     {
-        return $this->belongsTo(CheckIn::class);
+        return $this->belongsTo(CheckIn::class, 'checkin_id');
     }
 
     /**

@@ -304,7 +304,10 @@ class AdminReportController extends Controller
     public function dashboardStats(Request $request)
     {
         try {
-            $hasCheckins = $this->hasTable('checkins');
+            $checkinsTable = $this->hasTable('check_ins')
+                ? 'check_ins'
+                : ($this->hasTable('checkins') ? 'checkins' : null);
+            $hasCheckins = $checkinsTable !== null;
             $hasPontos = $this->hasTable('pontos');
             $hasPromocoes = $this->hasTable('promocoes');
             $hasCoupons = $this->hasTable('coupons');
@@ -323,7 +326,7 @@ class AdminReportController extends Controller
                 'total_users' => $usuarios,
                 'total_empresas' => $empresas,
                 'total_pontos_distribuidos' => $hasPontos ? DB::table('pontos')->sum('pontos') : 0,
-                'total_checkins' => $hasCheckins ? DB::table('checkins')->count() : 0,
+                'total_checkins' => $hasCheckins ? DB::table($checkinsTable)->count() : 0,
                 'users_ativos_hoje' => User::where('updated_at', '>=', today())->count(),
                 'empresas_ativas' => $this->countEmpresasAtivas(),
                 // Estrutura esperada pelo frontend

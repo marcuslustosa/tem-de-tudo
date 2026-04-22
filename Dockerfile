@@ -94,9 +94,13 @@ if [ "${RUN_MIGRATIONS_ON_START:-true}" = "true" ]; then
   fi
 fi
 
-# Padrao de execucao no Railway: servidor PHP embutido (evita crash por MPM do Apache)
-if [ "${WEB_SERVER:-artisan}" = "artisan" ]; then
-  echo "Iniciando com php artisan serve na porta ${PORT} (WEB_SERVER=artisan)"
+# Padrao de execucao no Railway: servidor PHP embutido (evita crash por MPM no Apache).
+# Apache so e usado quando WEB_SERVER=apache E ENABLE_APACHE=true.
+if [ "${WEB_SERVER:-artisan}" != "apache" ] || [ "${ENABLE_APACHE:-false}" != "true" ]; then
+  echo "Iniciando com php artisan serve na porta ${PORT} (safe mode)"
+  if [ "${WEB_SERVER:-artisan}" = "apache" ] && [ "${ENABLE_APACHE:-false}" != "true" ]; then
+    echo "WEB_SERVER=apache ignorado porque ENABLE_APACHE!=true."
+  fi
   exec php artisan serve --host=0.0.0.0 --port="${PORT}"
 fi
 

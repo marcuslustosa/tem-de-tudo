@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
@@ -663,19 +664,22 @@ class PontosController extends Controller
             $hoje = today();
             $ontem = $hoje->copy()->subDay();
             $esteMes = now()->startOfMonth();
-            $hasCheckins = Schema::hasTable('checkins');
+            $checkinsTable = Schema::hasTable('check_ins')
+                ? 'check_ins'
+                : (Schema::hasTable('checkins') ? 'checkins' : null);
+            $hasCheckins = $checkinsTable !== null;
             $hasPontos = Schema::hasTable('pontos');
             $hasCoupons = Schema::hasTable('coupons');
-            $checkinsHasCreatedAt = $hasCheckins && Schema::hasColumn('checkins', 'created_at');
+            $checkinsHasCreatedAt = $hasCheckins && Schema::hasColumn($checkinsTable, 'created_at');
 
             $checkinsPendentes = 0;
             if ($hasCheckins) {
-                $pendingQuery = CheckIn::query();
-                if (Schema::hasColumn('checkins', 'status')) {
+                $pendingQuery = DB::table($checkinsTable);
+                if (Schema::hasColumn($checkinsTable, 'status')) {
                     $pendingQuery->whereIn('status', ['pending', 'pendente']);
-                } elseif (Schema::hasColumn('checkins', 'aprovado')) {
+                } elseif (Schema::hasColumn($checkinsTable, 'aprovado')) {
                     $pendingQuery->where('aprovado', false);
-                } elseif (Schema::hasColumn('checkins', 'approved_at')) {
+                } elseif (Schema::hasColumn($checkinsTable, 'approved_at')) {
                     $pendingQuery->whereNull('approved_at');
                 } else {
                     // Sem coluna de estado, nao bloqueia endpoint por schema diferente.
@@ -707,16 +711,16 @@ class PontosController extends Controller
 
             $usuariosAtivosMes = 0;
             if ($hasCheckins) {
-                $ativosQuery = CheckIn::query();
-                if (Schema::hasColumn('checkins', 'created_at')) {
+                $ativosQuery = DB::table($checkinsTable);
+                if (Schema::hasColumn($checkinsTable, 'created_at')) {
                     $ativosQuery->where('created_at', '>=', $esteMes);
                 }
                 $usuariosAtivosMes = $ativosQuery->distinct('user_id')->count();
             }
 
             $stats = [
-                'checkins_hoje' => $checkinsHasCreatedAt ? CheckIn::whereDate('created_at', $hoje)->count() : 0,
-                'checkins_ontem' => $checkinsHasCreatedAt ? CheckIn::whereDate('created_at', $ontem)->count() : 0,
+                'checkins_hoje' => $checkinsHasCreatedAt ? DB::table($checkinsTable)->whereDate('created_at', $hoje)->count() : 0,
+                'checkins_ontem' => $checkinsHasCreatedAt ? DB::table($checkinsTable)->whereDate('created_at', $ontem)->count() : 0,
                 'checkins_pendentes' => $checkinsPendentes,
                 'pontos_distribuidos_mes' => $pontosMes,
                 'cupons_resgatados_mes' => $cuponsMes,

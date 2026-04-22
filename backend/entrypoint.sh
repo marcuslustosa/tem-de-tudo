@@ -111,10 +111,14 @@ echo "Iniciando scheduler..."
 ( while true; do php artisan schedule:run >> /var/log/scheduler.log 2>&1; sleep 60; done ) &
 echo "Scheduler PID: $!"
 
-# Padrão: usa servidor embutido do Laravel para evitar crashes de MPM no Apache.
-if [ "${WEB_SERVER:-artisan}" = "artisan" ]; then
+# Padrao: usa servidor embutido do Laravel para evitar crashes de MPM no Apache.
+# Apache so e usado quando WEB_SERVER=apache E ENABLE_APACHE=true.
+if [ "${WEB_SERVER:-artisan}" != "apache" ] || [ "${ENABLE_APACHE:-false}" != "true" ]; then
   APP_PORT="${PORT:-8080}"
-  echo "Starting Laravel server on port ${APP_PORT} (WEB_SERVER=artisan)..."
+  echo "Starting Laravel server on port ${APP_PORT} (safe mode)..."
+  if [ "${WEB_SERVER:-artisan}" = "apache" ] && [ "${ENABLE_APACHE:-false}" != "true" ]; then
+    echo "WEB_SERVER=apache ignorado porque ENABLE_APACHE!=true."
+  fi
   exec php artisan serve --host=0.0.0.0 --port="${APP_PORT}"
 fi
 
@@ -142,3 +146,4 @@ if [ "$#" -gt 0 ]; then
 fi
 
 exec apache2-foreground
+

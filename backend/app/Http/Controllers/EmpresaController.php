@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Empresa;
+use App\Models\CheckIn;
+use App\Models\QRCode;
 
 class EmpresaController extends Controller
 {
@@ -481,15 +483,15 @@ class EmpresaController extends Controller
 
             $pontosDistribuidos = DB::table('pontos')
                 ->where('empresa_id', $empresa->id)
-                ->where('tipo', 'earn')
+                ->whereIn('tipo', ['earn', 'ganho'])
                 ->sum('pontos');
 
-            $qrcodesAtivos = DB::table('qrcodes')
+            $qrcodesAtivos = QRCode::query()
                 ->where('empresa_id', $empresa->id)
-                ->where('ativo', true)
+                ->where('active', true)
                 ->count();
 
-            $checkinsHoje = DB::table('checkins')
+            $checkinsHoje = CheckIn::query()
                 ->where('empresa_id', $empresa->id)
                 ->whereDate('created_at', today())
                 ->count();
@@ -533,20 +535,21 @@ class EmpresaController extends Controller
                 ], 404);
             }
 
-            $checkins = DB::table('checkins')
-                ->join('users', 'checkins.user_id', '=', 'users.id')
-                ->join('qrcodes', 'checkins.qrcode_id', '=', 'qrcodes.id')
-                ->where('checkins.empresa_id', $empresa->id)
-                ->select(
-                    'checkins.id',
-                    'users.name as cliente_nome',
-                    'qrcodes.nome as qr_nome',
-                    'checkins.pontos',
-                    'checkins.created_at'
-                )
-                ->orderBy('checkins.created_at', 'desc')
+            $checkins = CheckIn::query()
+                ->with(['user:id,name', 'qrCode:id,name'])
+                ->where('empresa_id', $empresa->id)
+                ->orderByDesc('created_at')
                 ->limit(10)
-                ->get();
+                ->get()
+                ->map(function (CheckIn $checkin) {
+                    return [
+                        'id' => $checkin->id,
+                        'cliente_nome' => $checkin->user->name ?? 'Cliente',
+                        'qr_nome' => $checkin->qrCode->name ?? 'QR Code',
+                        'pontos' => (int) ($checkin->pontos ?? $checkin->pontos_ganhos ?? 0),
+                        'created_at' => $checkin->created_at,
+                    ];
+                });
 
             return response()->json([
                 'success' => true,

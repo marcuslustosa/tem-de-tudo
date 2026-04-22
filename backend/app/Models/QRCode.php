@@ -42,7 +42,7 @@ class QRCode extends Model
      */
     public function checkIns()
     {
-        return $this->hasMany(CheckIn::class);
+        return $this->hasMany(CheckIn::class, 'qr_code_id');
     }
 
     /**

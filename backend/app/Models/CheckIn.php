@@ -9,20 +9,28 @@ class CheckIn extends Model
 {
     use HasFactory;
 
+    protected $table = 'check_ins';
+
     protected $fillable = [
         'user_id',
         'empresa_id',
         'qr_code_id',
+        'pontos_ganhos',
+        'pontos_base',
+        'multiplicador',
         'pontos',
         'data',
         'valor_compra',
         'pontos_calculados',
+        'detalhes_calculo',
         'foto_cupom',
         'latitude',
         'longitude',
         'observacoes',
         'status',
         'codigo_validacao',
+        'ip_origem',
+        'user_agent',
         'aprovado_em',
         'aprovado_por',
         'rejeitado_em',
@@ -32,10 +40,14 @@ class CheckIn extends Model
     ];
 
     protected $casts = [
+        'pontos_ganhos' => 'integer',
+        'pontos_base' => 'integer',
+        'multiplicador' => 'decimal:2',
         'pontos' => 'integer',
         'data' => 'datetime',
         'valor_compra' => 'decimal:2',
         'pontos_calculados' => 'integer',
+        'detalhes_calculo' => 'array',
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
         'aprovado_em' => 'datetime',
@@ -64,7 +76,7 @@ class CheckIn extends Model
      */
     public function qrCode()
     {
-        return $this->belongsTo(QRCode::class);
+        return $this->belongsTo(QRCode::class, 'qr_code_id');
     }
 
     /**
@@ -72,7 +84,7 @@ class CheckIn extends Model
      */
     public function pontos()
     {
-        return $this->hasMany(Ponto::class);
+        return $this->hasMany(Ponto::class, 'checkin_id');
     }
 
     /**
@@ -80,7 +92,7 @@ class CheckIn extends Model
      */
     public function cupons()
     {
-        return $this->hasMany(Coupon::class);
+        return $this->hasMany(Coupon::class, 'checkin_id');
     }
 
     /**
