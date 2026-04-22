@@ -1913,12 +1913,18 @@
           const qrList = data?.data || [];
           if (qrList.length && qrList[0].code) {
             const qr = qrList[0];
+            const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(qr.code)}`;
             container.innerHTML = `
               <p class="text-[11px] text-outline mb-1">Mostre este código para seus clientes escanearem e ganharem pontos</p>
+              <img src="${qrImg}" alt="QR Code da loja" class="w-44 h-44 rounded-xl border border-outline-variant/40 bg-white p-2" loading="lazy" />
               <div class="bg-surface-container px-4 py-2 rounded-xl text-center">
                 <span class="text-xs font-mono text-on-surface break-all">${qr.code}</span>
               </div>
+              <button id="copiarQrLoja" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar codigo</button>
               <p class="text-[10px] text-outline mt-1">Scans: ${qr.usage_count || 0} &nbsp;|&nbsp; Ativo: ${qr.active ? 'Sim' : 'Não'}</p>`;
+            document.getElementById('copiarQrLoja')?.addEventListener('click', () => {
+              navigator.clipboard.writeText(qr.code).then(() => ui.message('Codigo da loja copiado.', 'success'));
+            });
           } else {
             container.innerHTML = '<p class="text-sm text-outline">Nenhum QR Code gerado ainda. Clique em "Gerar".</p>';
           }
@@ -1935,6 +1941,44 @@
         });
 
         await renderQR();
+      }
+
+      // Para cliente: exibir QR dinâmico próprio para a empresa escanear (fluxo balcão/caixa)
+      if (perfil === 'cliente') {
+        const main = document.querySelector('main') || document.querySelector('.main-content') || document.body;
+        const myQrSection = document.createElement('div');
+        myQrSection.id = 'clienteQRSection';
+        myQrSection.className = 'w-full max-w-md mx-auto mb-6 p-5 bg-surface-container-lowest rounded-2xl shadow-sm';
+        myQrSection.innerHTML = `
+          <h3 class="font-headline font-bold text-on-surface mb-1 text-center text-base">Meu QR Code</h3>
+          <p class="text-[11px] text-on-surface-variant text-center mb-3">Mostre este QR para o parceiro escanear e creditar seus pontos.</p>
+          <div id="clienteQRContainer" class="flex flex-col items-center gap-2 min-h-[80px] justify-center">
+            <p class="text-sm text-outline">Carregando...</p>
+          </div>
+        `;
+        main.prepend(myQrSection);
+
+        const qrContainer = document.getElementById('clienteQRContainer');
+        const { res, data } = await api.request('/cliente/meu-qrcode', {}, { notify: false });
+        const payload = data?.data || {};
+        if (res.ok && payload?.codigo && payload?.qrcode_svg) {
+          const expiraEm = payload.expira_em ? new Date(payload.expira_em).toLocaleTimeString('pt-BR') : '--';
+          qrContainer.innerHTML = `
+            <div class="w-44 h-44 bg-white rounded-xl border border-outline-variant/40 p-2 flex items-center justify-center overflow-hidden">
+              ${payload.qrcode_svg}
+            </div>
+            <div class="bg-surface-container px-4 py-2 rounded-xl text-center w-full">
+              <span class="text-xs font-mono text-on-surface break-all">${payload.codigo}</span>
+            </div>
+            <button id="copiarMeuQr" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar codigo</button>
+            <p class="text-[10px] text-outline mt-1">Expira às ${expiraEm}</p>
+          `;
+          document.getElementById('copiarMeuQr')?.addEventListener('click', () => {
+            navigator.clipboard.writeText(payload.codigo).then(() => ui.message('Codigo do seu QR copiado.', 'success'));
+          });
+        } else {
+          qrContainer.innerHTML = '<p class="text-sm text-outline">Nao foi possivel carregar seu QR agora.</p>';
+        }
       }
 
       const input = document.getElementById('cupomId');
