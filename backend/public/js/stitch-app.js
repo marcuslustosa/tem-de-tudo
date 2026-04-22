@@ -29,6 +29,53 @@
         resgates: 312,
         volume: 184320.5,
       },
+      reportStats: {
+        checkins_hoje: 184,
+        checkins_ontem: 167,
+        checkins_pendentes: 9,
+        pontos_distribuidos_mes: 42180,
+        cupons_resgatados_mes: 612,
+        usuarios_ativos_mes: 928,
+      },
+      ticketStats: {
+        total: 21,
+        pendentes: 12,
+        resolvidos: 9,
+        urgentes: 3,
+      },
+      tickets: [
+        {
+          id: 'demo-ticket-1',
+          title: 'Falha de resgate no caixa',
+          message: 'Cliente nao conseguiu aplicar cupom no POS.',
+          status: 'pendente',
+          priority: 'alta',
+          category: 'resgate',
+          created_at: new Date().toISOString(),
+          user: { name: 'Loja Centro', email: 'centro@parceiro.demo' },
+        },
+        {
+          id: 'demo-ticket-2',
+          title: 'Divergencia de saldo de pontos',
+          message: 'Usuario reportou saldo diferente do extrato.',
+          status: 'pendente',
+          priority: 'media',
+          category: 'pontos',
+          created_at: new Date(Date.now() - 3600e3).toISOString(),
+          user: { name: 'Suporte Interno', email: 'suporte@temdetudo.com' },
+        },
+        {
+          id: 'demo-ticket-3',
+          title: 'Push nao recebido em Android',
+          message: 'Cliente autorizou notificacoes, mas nao recebeu transacao.',
+          status: 'resolvido',
+          priority: 'baixa',
+          category: 'push',
+          created_at: new Date(Date.now() - 7200e3).toISOString(),
+          read_at: new Date(Date.now() - 5400e3).toISOString(),
+          user: { name: 'Cliente Demo', email: 'cliente.demo@exemplo.com' },
+        },
+      ],
       recentActivity: [
         { titulo: 'Novo parceiro aprovado', detalhe: 'Padaria Centro', created_at: new Date().toISOString() },
         { titulo: 'Campanha ativada', detalhe: 'Cashback especial', created_at: new Date(Date.now() - 3600e3).toISOString() },
@@ -285,7 +332,7 @@
   // ---------------------- Navegacao de fallback ---------------------- //
   function getScopeForCurrentPage() {
     const pageGroups = {
-      admin: ['dashboard_admin_master', 'gest_o_de_estabelecimentos', 'gest_o_de_usu_rios_master', 'gest_o_de_clientes_master', 'relat_rios_gerais_master', 'banners_e_categorias_master', 'configuracoes_admin'],
+      admin: ['dashboard_admin_master', 'gest_o_de_estabelecimentos', 'gest_o_de_usu_rios_master', 'gest_o_de_clientes_master', 'relat_rios_gerais_master', 'tickets_admin_master', 'banners_e_categorias_master', 'configuracoes_admin'],
       empresa: ['dashboard_parceiro', 'gest_o_de_ofertas_parceiro', 'minhas_campanhas_loja', 'clientes_fidelizados_loja'],
       cliente: ['meus_pontos', 'parceiros_tem_de_tudo', 'detalhe_do_parceiro', 'recompensas', 'hist_rico_de_uso', 'meu_perfil', 'validar_resgate', 'configuracoes_cliente'],
     };
@@ -313,6 +360,8 @@
         analytics: '/relat_rios_gerais_master.html',
         bar_chart: '/relat_rios_gerais_master.html',
         receipt_long: '/relat_rios_gerais_master.html',
+        support_agent: '/tickets_admin_master.html',
+        confirmation_number: '/tickets_admin_master.html',
         image: '/banners_e_categorias_master.html',
         collections: '/banners_e_categorias_master.html',
         category: '/banners_e_categorias_master.html',
@@ -368,6 +417,7 @@
       return scope === 'admin' ? '/gest_o_de_estabelecimentos.html' : (scope === 'empresa' ? '/clientes_fidelizados_loja.html' : '/parceiros_tem_de_tudo.html');
     }
     if (text.includes('relatorio') || text.includes('metrica')) return scope === 'admin' ? '/relat_rios_gerais_master.html' : '/minhas_campanhas_loja.html';
+    if (text.includes('ticket')) return scope === 'admin' ? '/tickets_admin_master.html' : null;
     if (text.includes('venda')) return scope === 'admin' ? '/relat_rios_gerais_master.html' : '/gest_o_de_ofertas_parceiro.html';
     if (text.includes('campanha') || text.includes('oferta')) return scope === 'empresa' ? '/gest_o_de_ofertas_parceiro.html' : null;
     if (text.includes('conteudo') || text.includes('banner') || text.includes('categoria')) return scope === 'admin' ? '/banners_e_categorias_master.html' : null;
@@ -2617,10 +2667,11 @@
     async dashboard() {
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando dashboard admin...');
-      const [stats, recent, empresas] = await Promise.all([
+      const [stats, recent, empresas, ticketsStatsResp] = await Promise.all([
         api.request('/admin/dashboard-stats', {}, { notify: false }),
         api.request('/admin/recent-activity', {}, { notify: false }),
         api.request('/empresas', {}, { requireAuth: false, notify: false }),
+        api.request('/admin/tickets/stats', {}, { notify: false }),
       ]);
       ui.clearPageState();
 
@@ -2639,6 +2690,11 @@
       const totalCampanhas = toNumber(mergedTotals.campanhas, statsData.campanhas, statsData.promocoes);
       const totalResgates = toNumber(mergedTotals.resgates, statsData.resgates);
       const totalVolume = toNumber(mergedTotals.volume, statsData.volume);
+      const ticketStatsData = ticketsStatsResp.data?.data || {};
+      const hasTicketData = toNumber(ticketStatsData.total, ticketStatsData.pendentes, ticketStatsData.resolvidos) > 0;
+      const ticketStats = hasTicketData ? ticketStatsData : DEMO.admin.ticketStats;
+      const totalTicketsPendentes = toNumber(ticketStats.pendentes, DEMO.admin.ticketStats.pendentes);
+      const totalTicketsUrgentes = toNumber(ticketStats.urgentes, Math.min(totalTicketsPendentes, DEMO.admin.ticketStats.urgentes));
 
       if (ids('adminUsers')) ids('adminUsers').textContent = Number(totalUsuarios || 0).toLocaleString('pt-BR');
       if (ids('adminEmpresas')) ids('adminEmpresas').textContent = Number(totalEmpresas || 0).toLocaleString('pt-BR');
@@ -2646,6 +2702,10 @@
       if (ids('adminResgates')) ids('adminResgates').textContent = Number(totalResgates || 0).toLocaleString('pt-BR');
       if (ids('adminVolume')) ids('adminVolume').textContent = `R$ ${Number(totalVolume || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       if (ids('adminCrescimentoMsg')) ids('adminCrescimentoMsg').textContent = safeText(statsData.crescimento_texto, 'Dados consolidados dos ultimos 30 dias');
+      if (ids('adminTicketsPendentes')) ids('adminTicketsPendentes').textContent = `${Number(totalTicketsPendentes || 0).toLocaleString('pt-BR')} ticket(s) pendente(s)`;
+      if (ids('adminTicketsUrgentes')) ids('adminTicketsUrgentes').textContent = totalTicketsUrgentes > 0
+        ? `${Number(totalTicketsUrgentes).toLocaleString('pt-BR')} ticket(s) urgente(s)`
+        : 'Sem urgencias no momento';
 
       const atividadesApi = toArray(recent.data?.data || recent.data);
       const atividades = atividadesApi.length ? atividadesApi : DEMO.admin.recentActivity;
@@ -2714,6 +2774,149 @@
       });
 
       // Sem banner de erro global aqui: usamos fallback de dados para manter o painel operacional.
+    },
+
+    async tickets() {
+      if (!(await auth.guard(['admin']))) return;
+      ui.setPageState('loading', 'Carregando tickets...');
+
+      const statusFilter = document.getElementById('ticketStatusFilter');
+      const list = document.getElementById('adminTicketsList');
+      const empty = document.getElementById('adminTicketsEmpty');
+      const searchInput = document.getElementById('ticketBusca');
+      const badge = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
+
+      const loadTickets = async () => {
+        const status = (statusFilter?.value || 'pendente').trim();
+        const busca = (searchInput?.value || '').trim();
+        const query = new URLSearchParams();
+        if (status) query.set('status', status);
+        if (busca) query.set('q', busca);
+        query.set('per_page', '30');
+
+        const [ticketsResp, statsResp] = await Promise.all([
+          api.request('/admin/tickets' + (query.toString() ? `?${query.toString()}` : ''), {}, { notify: false }),
+          api.request('/admin/tickets/stats', {}, { notify: false }),
+        ]);
+
+        ui.clearPageState();
+
+        const apiTickets = toArray(ticketsResp.data?.data?.data || ticketsResp.data?.data || ticketsResp.data);
+        const statsData = statsResp.data?.data || {};
+        const hasApiTickets = apiTickets.length > 0;
+        const hasStatsData = toNumber(statsData.total, statsData.pendentes, statsData.resolvidos) > 0;
+        const tickets = hasApiTickets ? apiTickets : DEMO.admin.tickets;
+        const stats = hasStatsData || hasApiTickets ? statsData : DEMO.admin.ticketStats;
+
+        badge('ticketTotal', Number(toNumber(stats.total, tickets.length)).toLocaleString('pt-BR'));
+        badge('ticketPendentes', Number(toNumber(stats.pendentes, tickets.filter((t) => (t.status || '').toLowerCase() === 'pendente').length)).toLocaleString('pt-BR'));
+        badge('ticketResolvidos', Number(toNumber(stats.resolvidos, tickets.filter((t) => (t.status || '').toLowerCase() === 'resolvido').length)).toLocaleString('pt-BR'));
+        badge('ticketUrgentes', Number(toNumber(stats.urgentes, tickets.filter((t) => (t.priority || '').toLowerCase() === 'alta').length)).toLocaleString('pt-BR'));
+
+        if (!list) return;
+        list.innerHTML = '';
+
+        if (!tickets.length) {
+          empty?.classList.remove('hidden');
+          return;
+        }
+        empty?.classList.add('hidden');
+
+        tickets.forEach((ticket) => {
+          const createdAt = ticket?.created_at ? new Date(ticket.created_at).toLocaleString('pt-BR') : '--';
+          const status = (ticket?.status || (ticket?.read_at ? 'resolvido' : 'pendente')).toLowerCase();
+          const prioridade = (ticket?.priority || 'media').toLowerCase();
+          const chipStatus = status === 'resolvido'
+            ? 'bg-emerald-100 text-emerald-700'
+            : 'bg-amber-100 text-amber-700';
+          const chipPrioridade = prioridade === 'alta'
+            ? 'bg-rose-100 text-rose-700'
+            : prioridade === 'baixa'
+              ? 'bg-slate-100 text-slate-600'
+              : 'bg-indigo-100 text-indigo-700';
+
+          const row = document.createElement('div');
+          row.className = 'p-4 rounded-xl bg-surface-container-low flex flex-col md:flex-row md:items-center md:justify-between gap-3';
+          row.dataset.ticketId = ticket.id;
+          row.innerHTML = `
+            <div class="min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-sm font-bold text-on-surface">${safeText(ticket.title, 'Ticket')}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${chipStatus}">${status}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${chipPrioridade}">${prioridade}</span>
+              </div>
+              <p class="text-xs text-on-surface-variant">${safeText(ticket.message, '')}</p>
+              <p class="text-[10px] text-outline mt-1">
+                ${safeText(ticket.user?.name || ticket.user_name, 'Sistema')} · ${safeText(ticket.user?.email || '', '')} · ${createdAt}
+              </p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button class="ticket-resolver px-3 py-1.5 rounded-lg bg-tertiary text-on-tertiary text-xs font-semibold hover:opacity-90 ${status === 'resolvido' ? 'hidden' : ''}" data-id="${ticket.id}">Resolver</button>
+              <button class="ticket-reabrir px-3 py-1.5 rounded-lg bg-secondary text-on-secondary text-xs font-semibold hover:opacity-90 ${status === 'pendente' ? 'hidden' : ''}" data-id="${ticket.id}">Reabrir</button>
+              <button class="ticket-fechar px-3 py-1.5 rounded-lg bg-error-container text-on-error-container text-xs font-semibold hover:opacity-90" data-id="${ticket.id}">Fechar</button>
+            </div>`;
+          list.appendChild(row);
+        });
+
+        list.querySelectorAll('.ticket-resolver').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const id = btn.dataset.id;
+            if (`${id}`.startsWith('demo-ticket-')) {
+              btn.closest('[data-ticket-id]')?.remove();
+              ui.message('Ticket demo marcado como resolvido.', 'success');
+              return;
+            }
+            const { res, data } = await api.request(`/admin/tickets/${id}/resolve`, { method: 'POST' }, { notify: true });
+            if (res.ok && data?.success !== false) {
+              ui.message('Ticket resolvido com sucesso.', 'success');
+              await loadTickets();
+            }
+          });
+        });
+
+        list.querySelectorAll('.ticket-reabrir').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const id = btn.dataset.id;
+            if (`${id}`.startsWith('demo-ticket-')) {
+              ui.message('Ticket demo reaberto.', 'info');
+              await loadTickets();
+              return;
+            }
+            const { res, data } = await api.request(`/admin/tickets/${id}/reopen`, { method: 'POST' }, { notify: true });
+            if (res.ok && data?.success !== false) {
+              ui.message('Ticket reaberto com sucesso.', 'success');
+              await loadTickets();
+            }
+          });
+        });
+
+        list.querySelectorAll('.ticket-fechar').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const id = btn.dataset.id;
+            if (`${id}`.startsWith('demo-ticket-')) {
+              btn.closest('[data-ticket-id]')?.remove();
+              ui.message('Ticket demo removido.', 'info');
+              return;
+            }
+            const { res, data } = await api.request(`/admin/tickets/${id}`, { method: 'DELETE' }, { notify: true });
+            if (res.ok && data?.success !== false) {
+              btn.closest('[data-ticket-id]')?.remove();
+              ui.message('Ticket encerrado com sucesso.', 'success');
+            }
+          });
+        });
+      };
+
+      statusFilter?.addEventListener('change', loadTickets);
+      searchInput?.addEventListener('input', () => {
+        clearTimeout(searchInput._ticketDebounce);
+        searchInput._ticketDebounce = setTimeout(loadTickets, 250);
+      });
+
+      await loadTickets();
     },
 
     async empresas() {
@@ -3285,11 +3488,21 @@
       const relCheckinsList = document.getElementById('relCheckinsList');
       if (relCheckinsList) {
         relCheckinsList.innerHTML = '';
-        const entries = Object.entries(checkData || {});
-        if (!entries.length) {
+        const entries = Object.entries(checkData || {}).filter(([, value]) => Number.isFinite(Number(value)));
+        const usingFallbackStats = !entries.length;
+        const statsEntries = usingFallbackStats
+          ? Object.entries(DEMO.admin.reportStats)
+          : entries;
+        if (usingFallbackStats) {
+          const note = document.createElement('p');
+          note.className = 'text-xs text-on-surface-variant mb-2';
+          note.textContent = 'Exibindo dados consolidados ficticios para demonstracao.';
+          relCheckinsList.appendChild(note);
+        }
+        if (!statsEntries.length) {
           relCheckinsList.innerHTML = '<p class="text-sm text-on-surface-variant">Sem estatisticas de pontos disponiveis.</p>';
         } else {
-          entries.forEach(([k, v]) => {
+          statsEntries.forEach(([k, v]) => {
             const row = document.createElement('div');
             row.className = 'flex items-center justify-between px-4 py-2 rounded-lg bg-surface-container-low';
             row.innerHTML = `<span class="text-sm font-semibold capitalize">${k.replace(/_/g, ' ')}</span><span class="text-sm font-bold text-tertiary">${Number(v || 0).toLocaleString('pt-BR')}</span>`;
@@ -3723,6 +3936,7 @@
     gest_o_de_usu_rios_master: admin.usuarios,
     gest_o_de_clientes_master: admin.clientesMaster,
     relat_rios_gerais_master: admin.relatorios,
+    tickets_admin_master: admin.tickets,
     configuracoes_admin: admin.configuracoes,
     banners_e_categorias_master: async () => {
       if (!(await auth.guard(['admin']))) return;

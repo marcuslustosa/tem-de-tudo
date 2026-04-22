@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendWebPushJob;
+use App\Models\Notification;
 use App\Services\ClienteQrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +14,7 @@ use Illuminate\Support\Facades\Schema;
 class EmpresaAPIController extends Controller
 {
     /**
-     * Perfil completo da empresa (dados do usuário + dados da empresa)
+     * Perfil completo da empresa (dados do usuÃ¡rio + dados da empresa)
      */
     public function meuPerfil()
     {
@@ -20,7 +22,7 @@ class EmpresaAPIController extends Controller
         $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
 
         if (!$empresa) {
-            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+            return response()->json(['success' => false, 'message' => 'Empresa nÃ£o encontrada'], 404);
         }
 
         return response()->json([
@@ -51,7 +53,7 @@ class EmpresaAPIController extends Controller
     }
 
     /**
-     * Atualiza perfil do usuário + dados da empresa
+     * Atualiza perfil do usuÃ¡rio + dados da empresa
      */
     public function atualizarPerfil(Request $request)
     {
@@ -59,7 +61,7 @@ class EmpresaAPIController extends Controller
         $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
 
         if (!$empresa) {
-            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+            return response()->json(['success' => false, 'message' => 'Empresa nÃ£o encontrada'], 404);
         }
 
         $validated = $request->validate([
@@ -104,19 +106,19 @@ class EmpresaAPIController extends Controller
     }
 
     /**
-     * Dashboard da empresa com estatísticas
+     * Dashboard da empresa com estatÃ­sticas
      */
     public function dashboard()
     {
         $user = Auth::user();
         
-        // Buscar empresa do usuário
+        // Buscar empresa do usuÃ¡rio
         $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
         
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nÃ£o encontrada'
             ], 404);
         }
         
@@ -126,14 +128,14 @@ class EmpresaAPIController extends Controller
             ->distinct('user_id')
             ->count('user_id');
         
-        // Pontos distribuídos hoje
+        // Pontos distribuÃ­dos hoje
         $pontosHoje = DB::table('pontos')
             ->where('empresa_id', $empresa->id)
             ->whereNotIn('tipo', ['resgate', 'redeem'])
             ->whereDate('created_at', today())
             ->sum('pontos');
         
-        // Pontos distribuídos este mês
+        // Pontos distribuÃ­dos este mÃªs
         $pontosMes = DB::table('pontos')
             ->where('empresa_id', $empresa->id)
             ->whereNotIn('tipo', ['resgate', 'redeem'])
@@ -148,7 +150,7 @@ class EmpresaAPIController extends Controller
             ->where('descricao', 'LIKE', '%QR Code%')
             ->count();
         
-        // Promoções ativas
+        // PromoÃ§Ãµes ativas
         $promocoesAtivas = DB::table('promocoes')
             ->where('empresa_id', $empresa->id)
             ->where('ativo', true)
@@ -165,7 +167,7 @@ class EmpresaAPIController extends Controller
             ->limit(5)
             ->get();
         
-        // Últimas transações
+        // Ãšltimas transaÃ§Ãµes
         $ultimasTransacoes = DB::table('pontos')
             ->join('users', 'pontos.user_id', '=', 'users.id')
             ->select('pontos.*', 'users.name as cliente_nome')
@@ -202,7 +204,7 @@ class EmpresaAPIController extends Controller
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nÃ£o encontrada'
             ], 404);
         }
         
@@ -243,7 +245,7 @@ class EmpresaAPIController extends Controller
     }
     
     /**
-     * Listar promoções da empresa
+     * Listar promoÃ§Ãµes da empresa
      */
     public function promocoes()
     {
@@ -253,7 +255,7 @@ class EmpresaAPIController extends Controller
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nÃ£o encontrada'
             ], 404);
         }
         
@@ -269,7 +271,7 @@ class EmpresaAPIController extends Controller
     }
     
     /**
-     * Criar promoção
+     * Criar promoÃ§Ã£o
      */
     public function criarPromocao(Request $request)
     {
@@ -295,7 +297,7 @@ class EmpresaAPIController extends Controller
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nÃ£o encontrada'
             ], 404);
         }
         
@@ -327,13 +329,13 @@ class EmpresaAPIController extends Controller
         
         return response()->json([
             'success' => true,
-            'message' => 'Promoção criada com sucesso!',
+            'message' => 'PromoÃ§Ã£o criada com sucesso!',
             'data' => $promocao
         ], 201);
     }
     
     /**
-     * Atualizar promoção
+     * Atualizar promoÃ§Ã£o
      */
     public function atualizarPromocao(Request $request, $id)
     {
@@ -365,11 +367,11 @@ class EmpresaAPIController extends Controller
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nÃ£o encontrada'
             ], 404);
         }
         
-        // Verificar se a promoção pertence à empresa
+        // Verificar se a promoÃ§Ã£o pertence Ã  empresa
         $promocao = DB::table('promocoes')
             ->where('id', $id)
             ->where('empresa_id', $empresa->id)
@@ -378,7 +380,7 @@ class EmpresaAPIController extends Controller
         if (!$promocao) {
             return response()->json([
                 'success' => false,
-                'message' => 'Promoção não encontrada'
+                'message' => 'PromoÃ§Ã£o nÃ£o encontrada'
             ], 404);
         }
         
@@ -399,20 +401,20 @@ class EmpresaAPIController extends Controller
         
         return response()->json([
             'success' => true,
-            'message' => 'Promoção atualizada com sucesso!',
+            'message' => 'PromoÃ§Ã£o atualizada com sucesso!',
             'data' => $promocaoAtualizada
         ]);
     }
 
     /**
-     * Pausar promoção
+     * Pausar promoÃ§Ã£o
      */
     public function pausarPromocao($id)
     {
         $user = Auth::user();
         $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
         if (!$empresa) {
-            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+            return response()->json(['success' => false, 'message' => 'Empresa nÃ£o encontrada'], 404);
         }
 
         $promocao = DB::table('promocoes')
@@ -421,7 +423,7 @@ class EmpresaAPIController extends Controller
             ->first();
 
         if (!$promocao) {
-            return response()->json(['success' => false, 'message' => 'Promoção não encontrada'], 404);
+            return response()->json(['success' => false, 'message' => 'PromoÃ§Ã£o nÃ£o encontrada'], 404);
         }
 
         DB::table('promocoes')
@@ -432,18 +434,18 @@ class EmpresaAPIController extends Controller
                 'updated_at' => now()
             ]);
 
-        return response()->json(['success' => true, 'message' => 'Promoção pausada.']);
+        return response()->json(['success' => true, 'message' => 'PromoÃ§Ã£o pausada.']);
     }
 
     /**
-     * Ativar promoção
+     * Ativar promoÃ§Ã£o
      */
     public function ativarPromocao($id)
     {
         $user = Auth::user();
         $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
         if (!$empresa) {
-            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+            return response()->json(['success' => false, 'message' => 'Empresa nÃ£o encontrada'], 404);
         }
 
         $promocao = DB::table('promocoes')
@@ -452,7 +454,7 @@ class EmpresaAPIController extends Controller
             ->first();
 
         if (!$promocao) {
-            return response()->json(['success' => false, 'message' => 'Promoção não encontrada'], 404);
+            return response()->json(['success' => false, 'message' => 'PromoÃ§Ã£o nÃ£o encontrada'], 404);
         }
 
         DB::table('promocoes')
@@ -463,11 +465,11 @@ class EmpresaAPIController extends Controller
                 'updated_at' => now()
             ]);
 
-        return response()->json(['success' => true, 'message' => 'Promoção ativada.']);
+        return response()->json(['success' => true, 'message' => 'PromoÃ§Ã£o ativada.']);
     }
     
     /**
-     * Deletar promoção
+     * Deletar promoÃ§Ã£o
      */
     public function deletarPromocao($id)
     {
@@ -477,11 +479,11 @@ class EmpresaAPIController extends Controller
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nÃ£o encontrada'
             ], 404);
         }
         
-        // Verificar se a promoção pertence à empresa
+        // Verificar se a promoÃ§Ã£o pertence Ã  empresa
         $promocao = DB::table('promocoes')
             ->where('id', $id)
             ->where('empresa_id', $empresa->id)
@@ -490,7 +492,7 @@ class EmpresaAPIController extends Controller
         if (!$promocao) {
             return response()->json([
                 'success' => false,
-                'message' => 'Promoção não encontrada'
+                'message' => 'PromoÃ§Ã£o nÃ£o encontrada'
             ], 404);
         }
         
@@ -498,7 +500,7 @@ class EmpresaAPIController extends Controller
         
         return response()->json([
             'success' => true,
-            'message' => 'Promoção deletada com sucesso!'
+            'message' => 'PromoÃ§Ã£o deletada com sucesso!'
         ]);
     }
     
@@ -513,7 +515,7 @@ class EmpresaAPIController extends Controller
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nÃ£o encontrada'
             ], 404);
         }
         
@@ -528,7 +530,7 @@ class EmpresaAPIController extends Controller
     }
     
     /**
-     * Avaliações da empresa
+     * AvaliaÃ§Ãµes da empresa
      */
     public function avaliacoes()
     {
@@ -538,7 +540,7 @@ class EmpresaAPIController extends Controller
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nÃ£o encontrada'
             ], 404);
         }
         
@@ -572,7 +574,7 @@ class EmpresaAPIController extends Controller
     }
     
     /**
-     * Relatório de pontos distribuídos
+     * RelatÃ³rio de pontos distribuÃ­dos
      */
     public function relatorioPontos(Request $request)
     {
@@ -582,11 +584,11 @@ class EmpresaAPIController extends Controller
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nÃ£o encontrada'
             ], 404);
         }
         
-        // Período (padrão: últimos 30 dias)
+        // PerÃ­odo (padrÃ£o: Ãºltimos 30 dias)
         $dataInicio = $request->input('data_inicio', now()->subDays(30)->format('Y-m-d'));
         $dataFim = $request->input('data_fim', now()->format('Y-m-d'));
         
@@ -604,7 +606,7 @@ class EmpresaAPIController extends Controller
             ->orderBy('data')
             ->get();
         
-        // Totais do período
+        // Totais do perÃ­odo
         $totais = DB::table('pontos')
             ->select(
                 DB::raw('SUM(CASE WHEN tipo = \'ganho\' THEN pontos ELSE 0 END) as total_distribuido'),
@@ -643,7 +645,7 @@ class EmpresaAPIController extends Controller
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nÃ£o encontrada'
             ], 404);
         }
         
@@ -653,7 +655,7 @@ class EmpresaAPIController extends Controller
         if (!$decodedQr) {
             return response()->json([
                 'success' => false,
-                'message' => 'QR Code inválido'
+                'message' => 'QR Code invÃ¡lido'
             ], 400);
         }
         
@@ -668,7 +670,7 @@ class EmpresaAPIController extends Controller
         if (!$cliente) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cliente não encontrado'
+                'message' => 'Cliente nÃ£o encontrado'
             ], 404);
         }
         
@@ -684,18 +686,18 @@ class EmpresaAPIController extends Controller
         if ($scansHoje >= 3) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cliente já fez 3 check-ins hoje nesta empresa. Limite diário atingido.'
+                'message' => 'Cliente jÃ¡ fez 3 check-ins hoje nesta empresa. Limite diÃ¡rio atingido.'
             ], 429);
         }
         
         // Calcular pontos
         $pontosBase = 100;
         $multiplicador = $empresa->points_multiplier ?? 1.0;
-        $pontosGanhos = $pontosBase * $multiplicador;
+        $pontosGanhos = (int) round($pontosBase * $multiplicador);
         
         DB::beginTransaction();
         try {
-            // Inserir transação de pontos
+            // Inserir transaÃ§Ã£o de pontos
             DB::table('pontos')->insert([
                 'user_id' => $clienteId,
                 'empresa_id' => $empresa->id,
@@ -717,7 +719,66 @@ class EmpresaAPIController extends Controller
             $novoSaldo = DB::table('users')
                 ->where('id', $clienteId)
                 ->value('pontos');
-            
+
+            try {
+                Notification::create([
+                    'user_id' => $clienteId,
+                    'title' => '+' . $pontosGanhos . ' pontos recebidos',
+                    'message' => "Check-in confirmado na loja {$empresa->nome}. Saldo atual: {$novoSaldo} pts.",
+                    'type' => 'transacao',
+                    'payload' => [
+                        'kind' => 'checkin',
+                        'empresa_id' => (int) $empresa->id,
+                        'empresa_nome' => $empresa->nome,
+                        'pontos' => (int) $pontosGanhos,
+                        'saldo' => (int) $novoSaldo,
+                    ],
+                ]);
+
+                Notification::create([
+                    'user_id' => $user->id,
+                    'title' => 'Check-in validado',
+                    'message' => "{$cliente->name} recebeu {$pontosGanhos} pontos.",
+                    'type' => 'transacao_empresa',
+                    'payload' => [
+                        'kind' => 'checkin_cliente',
+                        'cliente_id' => (int) $cliente->id,
+                        'cliente_nome' => $cliente->name,
+                        'empresa_id' => (int) $empresa->id,
+                        'empresa_nome' => $empresa->nome,
+                        'pontos' => (int) $pontosGanhos,
+                    ],
+                ]);
+
+                SendWebPushJob::dispatch(
+                    title: '+' . $pontosGanhos . ' pontos!',
+                    body: "Check-in confirmado em {$empresa->nome}. Saldo: {$novoSaldo} pts.",
+                    data: [
+                        'type' => 'checkin',
+                        'empresa' => $empresa->nome,
+                        'url' => '/meus_pontos.html',
+                    ],
+                    userIds: [$clienteId]
+                );
+
+                SendWebPushJob::dispatch(
+                    title: 'Novo check-in validado',
+                    body: "{$cliente->name} recebeu {$pontosGanhos} pontos.",
+                    data: [
+                        'type' => 'checkin_cliente',
+                        'cliente' => $cliente->name,
+                        'empresa' => $empresa->nome,
+                        'url' => '/dashboard_parceiro.html',
+                    ],
+                    userIds: [$user->id]
+                );
+            } catch (\Throwable $notifyError) {
+                \Log::warning('Falha ao disparar notificacoes do check-in da empresa', [
+                    'empresa_id' => $empresa->id,
+                    'cliente_id' => $clienteId,
+                    'error' => $notifyError->getMessage(),
+                ]);
+            }
             return response()->json([
                 'success' => true,
                 'message' => 'Check-in registrado com sucesso!',
@@ -823,4 +884,7 @@ class EmpresaAPIController extends Controller
         ]);
     }
 }
+
+
+
 

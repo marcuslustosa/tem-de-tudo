@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendWebPushJob;
 use App\Models\Empresa;
+use App\Models\Notification;
 use App\Services\ClienteQrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,7 @@ class ClienteAPIController extends Controller
     {
         $user = Auth::user();
         
-        // Código único do cliente
+        // CÃ³digo Ãºnico do cliente
         $qrData = app(ClienteQrCodeService::class)->gerar($user);
         $codigo = $qrData['code'];
         
@@ -47,7 +48,7 @@ class ClienteAPIController extends Controller
     }
     
     /**
-     * Dashboard do cliente com todas as informações
+     * Dashboard do cliente com todas as informaÃ§Ãµes
      */
     public function dashboard()
     {
@@ -77,7 +78,7 @@ class ClienteAPIController extends Controller
             ->limit(3)
             ->get();
         
-        // Últimas transações
+        // Ãšltimas transaÃ§Ãµes
         $ultimasTransacoes = DB::table('pontos')
             ->join('empresas', 'pontos.empresa_id', '=', 'empresas.id')
             ->select('pontos.*', 'empresas.nome as empresa_nome')
@@ -86,7 +87,7 @@ class ClienteAPIController extends Controller
             ->limit(10)
             ->get();
         
-        // Promoções disponíveis
+        // PromoÃ§Ãµes disponÃ­veis
         $promocoes = DB::table('promocoes')
             ->join('empresas', 'promocoes.empresa_id', '=', 'empresas.id')
             ->select('promocoes.*', 'empresas.nome as empresa_nome')
@@ -114,7 +115,7 @@ class ClienteAPIController extends Controller
     }
     
     /**
-     * Listar todas as empresas disponíveis
+     * Listar todas as empresas disponÃ­veis
      */
     public function listarEmpresas(Request $request)
     {
@@ -135,7 +136,7 @@ class ClienteAPIController extends Controller
         
         $empresas = $query->orderBy('nome')->get();
         
-        // Para cada empresa, calcular pontos do usuário
+        // Para cada empresa, calcular pontos do usuÃ¡rio
         $user = Auth::user();
         foreach ($empresas as $empresa) {
             $pontos = DB::table('pontos')
@@ -163,7 +164,7 @@ class ClienteAPIController extends Controller
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nÃ£o encontrada'
             ], 404);
         }
         
@@ -176,14 +177,14 @@ class ClienteAPIController extends Controller
             ->where('tipo', 'ganho')
             ->sum('pontos');
         
-        // Promoções ativas
+        // PromoÃ§Ãµes ativas
         $promocoes = DB::table('promocoes')
             ->where('empresa_id', $id)
             ->where('ativo', true)
             ->where('status', 'ativa')
             ->get();
         
-        // Avaliações
+        // AvaliaÃ§Ãµes
         $avaliacoes = DB::table('avaliacoes')
             ->join('users', 'avaliacoes.user_id', '=', 'users.id')
             ->select('avaliacoes.*', 'users.name as cliente_nome')
@@ -192,7 +193,7 @@ class ClienteAPIController extends Controller
             ->limit(10)
             ->get();
         
-        // Minha avaliação
+        // Minha avaliaÃ§Ã£o
         $minhaAvaliacao = DB::table('avaliacoes')
             ->where('empresa_id', $id)
             ->where('user_id', $user->id)
@@ -230,14 +231,14 @@ class ClienteAPIController extends Controller
         if (!$qrCode) {
             return response()->json([
                 'success' => false,
-                'message' => 'QR Code inválido ou inativo'
+                'message' => 'QR Code invÃ¡lido ou inativo'
             ], 404);
         }
         
         // Buscar empresa via Eloquent para que getPointsMultiplier() use campanhas ativas
         $empresa = Empresa::findOrFail($qrCode->empresa_id);
 
-        // Verificar limite de uso diário (3 scans por dia por empresa)
+        // Verificar limite de uso diÃ¡rio (3 scans por dia por empresa)
         $hoje = now()->format('Y-m-d');
         $scansHoje = DB::table('pontos')
             ->where('user_id', $user->id)
@@ -249,7 +250,7 @@ class ClienteAPIController extends Controller
         if ($scansHoje >= 3) {
             return response()->json([
                 'success' => false,
-                'message' => 'Você já atingiu o limite de 3 scans por dia nesta empresa'
+                'message' => 'VocÃª jÃ¡ atingiu o limite de 3 scans por dia nesta empresa'
             ], 429);
         }
 
@@ -269,7 +270,7 @@ class ClienteAPIController extends Controller
             'updated_at' => now()
         ]);
         
-        // Atualizar pontos do usuário
+        // Atualizar pontos do usuÃ¡rio
         DB::table('users')
             ->where('id', $user->id)
             ->increment('pontos', $pontosGanhos);
@@ -282,14 +283,69 @@ class ClienteAPIController extends Controller
                 'last_used_at' => now()
             ]);
 
-        // Notificação push
-        $novoSaldo = $user->pontos + $pontosGanhos;
-        SendWebPushJob::dispatch(
-            title: '+' . $pontosGanhos . ' pontos!',
-            body: "QR Code escaneado em {$empresa->nome}. Saldo: {$novoSaldo} pts.",
-            data: ['type' => 'qrcode', 'empresa' => $empresa->nome, 'url' => '/meus_pontos.html'],
-            userIds: [$user->id]
-        );
+        // Notificacoes internas + push (cliente e empresa)
+        $novoSaldo = (int) DB::table('users')->where('id', $user->id)->value('pontos');
+        $empresaOwnerId = (int) ($empresa->owner_id ?? 0);
+
+        try {
+            Notification::create([
+                'user_id' => $user->id,
+                'title' => '+' . $pontosGanhos . ' pontos recebidos',
+                'message' => "Check-in confirmado em {$empresa->nome}. Saldo atual: {$novoSaldo} pts.",
+                'type' => 'transacao',
+                'payload' => [
+                    'kind' => 'checkin',
+                    'empresa_id' => $empresa->id,
+                    'empresa_nome' => $empresa->nome,
+                    'pontos' => $pontosGanhos,
+                    'saldo' => $novoSaldo,
+                ],
+            ]);
+
+            if ($empresaOwnerId > 0) {
+                Notification::create([
+                    'user_id' => $empresaOwnerId,
+                    'title' => 'Novo check-in registrado',
+                    'message' => "{$user->name} ganhou {$pontosGanhos} pontos em {$empresa->nome}.",
+                    'type' => 'transacao_empresa',
+                    'payload' => [
+                        'kind' => 'checkin_cliente',
+                        'cliente_id' => $user->id,
+                        'cliente_nome' => $user->name,
+                        'empresa_id' => $empresa->id,
+                        'empresa_nome' => $empresa->nome,
+                        'pontos' => $pontosGanhos,
+                    ],
+                ]);
+            }
+
+            SendWebPushJob::dispatch(
+                title: '+' . $pontosGanhos . ' pontos!',
+                body: "QR Code escaneado em {$empresa->nome}. Saldo: {$novoSaldo} pts.",
+                data: ['type' => 'qrcode', 'empresa' => $empresa->nome, 'url' => '/meus_pontos.html'],
+                userIds: [$user->id]
+            );
+
+            if ($empresaOwnerId > 0) {
+                SendWebPushJob::dispatch(
+                    title: 'Novo check-in na sua loja',
+                    body: "{$user->name} acumulou {$pontosGanhos} pontos.",
+                    data: [
+                        'type' => 'checkin_cliente',
+                        'cliente' => $user->name,
+                        'empresa' => $empresa->nome,
+                        'url' => '/dashboard_parceiro.html',
+                    ],
+                    userIds: [$empresaOwnerId]
+                );
+            }
+        } catch (\Throwable $notifyError) {
+            \Log::warning('Falha ao disparar notificacoes de check-in do cliente', [
+                'empresa_id' => $empresa->id,
+                'cliente_id' => $user->id,
+                'error' => $notifyError->getMessage(),
+            ]);
+        }
 
         return response()->json([
             'success' => true,
@@ -303,13 +359,13 @@ class ClienteAPIController extends Controller
     }
     
     /**
-     * Resgatar promoção
+     * Resgatar promoÃ§Ã£o
      */
     public function resgatarPromocao(Request $request, $promocaoId)
     {
         $user = Auth::user();
         
-        // Buscar promoção
+        // Buscar promoÃ§Ã£o
         $promocao = DB::table('promocoes')
             ->where('id', $promocaoId)
             ->where('ativo', true)
@@ -318,11 +374,11 @@ class ClienteAPIController extends Controller
         if (!$promocao) {
             return response()->json([
                 'success' => false,
-                'message' => 'Promoção não encontrada ou inativa'
+                'message' => 'PromoÃ§Ã£o nÃ£o encontrada ou inativa'
             ], 404);
         }
         
-        // Verificar se já resgatou hoje
+        // Verificar se jÃ¡ resgatou hoje
         $hoje = now()->format('Y-m-d');
         $resgatadoHoje = DB::table('pontos')
             ->where('user_id', $user->id)
@@ -335,19 +391,19 @@ class ClienteAPIController extends Controller
         if ($resgatadoHoje) {
             return response()->json([
                 'success' => false,
-                'message' => 'Você já resgatou esta promoção hoje'
+                'message' => 'VocÃª jÃ¡ resgatou esta promoÃ§Ã£o hoje'
             ], 429);
         }
 
-        // Verificar estoque disponível
+        // Verificar estoque disponÃ­vel
         if ($promocao->qtd_disponivel !== null && $promocao->qtd_resgatada >= $promocao->qtd_disponivel) {
             return response()->json([
                 'success' => false,
-                'message' => 'Esta promoção não possui mais unidades disponíveis.'
+                'message' => 'Esta promoÃ§Ã£o nÃ£o possui mais unidades disponÃ­veis.'
             ], 400);
         }
 
-        // Verificar limite por usuário
+        // Verificar limite por usuÃ¡rio
         $limiteUsuario = $promocao->limite_por_usuario ?? 1;
         $totalResgatadoUsuario = DB::table('pontos')
             ->where('user_id', $user->id)
@@ -359,7 +415,7 @@ class ClienteAPIController extends Controller
         if ($totalResgatadoUsuario >= $limiteUsuario) {
             return response()->json([
                 'success' => false,
-                'message' => 'Você já atingiu o limite de resgates para esta promoção.'
+                'message' => 'VocÃª jÃ¡ atingiu o limite de resgates para esta promoÃ§Ã£o.'
             ], 400);
         }
 
@@ -370,7 +426,7 @@ class ClienteAPIController extends Controller
         if ($user->pontos < $pontosCusto) {
             return response()->json([
                 'success' => false,
-                'message' => 'Pontos insuficientes. Você precisa de ' . $pontosCusto . ' pontos.'
+                'message' => 'Pontos insuficientes. VocÃª precisa de ' . $pontosCusto . ' pontos.'
             ], 400);
         }
         
@@ -385,7 +441,7 @@ class ClienteAPIController extends Controller
             'updated_at' => now()
         ]);
         
-        // Atualizar saldo do usuário
+        // Atualizar saldo do usuÃ¡rio
         DB::table('users')
             ->where('id', $user->id)
             ->decrement('pontos', $pontosCusto);
@@ -398,7 +454,85 @@ class ClienteAPIController extends Controller
             ->where('id', $promocaoId)
             ->increment('qtd_resgatada');
 
-        // Webhook de saída: evento resgate
+        $empresaInfo = DB::table('empresas')
+            ->select('id', 'nome', 'owner_id')
+            ->where('id', $promocao->empresa_id)
+            ->first();
+
+        $empresaNome = $empresaInfo->nome ?? 'Empresa parceira';
+        $empresaOwnerId = (int) ($empresaInfo->owner_id ?? 0);
+        $novoSaldo = (int) DB::table('users')->where('id', $user->id)->value('pontos');
+
+        try {
+            Notification::create([
+                'user_id' => $user->id,
+                'title' => 'Resgate confirmado',
+                'message' => "Voce resgatou \"{$promocao->titulo}\" em {$empresaNome}.",
+                'type' => 'resgate',
+                'payload' => [
+                    'kind' => 'resgate_cliente',
+                    'promocao_id' => (int) $promocaoId,
+                    'promocao' => $promocao->titulo,
+                    'empresa_id' => (int) $promocao->empresa_id,
+                    'empresa_nome' => $empresaNome,
+                    'pontos_gastos' => (int) $pontosCusto,
+                    'saldo' => $novoSaldo,
+                ],
+            ]);
+
+            if ($empresaOwnerId > 0) {
+                Notification::create([
+                    'user_id' => $empresaOwnerId,
+                    'title' => 'Novo resgate recebido',
+                    'message' => "{$user->name} resgatou \"{$promocao->titulo}\".",
+                    'type' => 'resgate_empresa',
+                    'payload' => [
+                        'kind' => 'resgate_empresa',
+                        'cliente_id' => $user->id,
+                        'cliente_nome' => $user->name,
+                        'promocao_id' => (int) $promocaoId,
+                        'promocao' => $promocao->titulo,
+                        'empresa_id' => (int) $promocao->empresa_id,
+                        'empresa_nome' => $empresaNome,
+                        'pontos_gastos' => (int) $pontosCusto,
+                    ],
+                ]);
+            }
+
+            SendWebPushJob::dispatch(
+                title: 'Resgate realizado com sucesso',
+                body: "Voce trocou {$pontosCusto} pontos por {$promocao->titulo}.",
+                data: [
+                    'type' => 'resgate',
+                    'promocao' => $promocao->titulo,
+                    'empresa' => $empresaNome,
+                    'url' => '/recompensas.html',
+                ],
+                userIds: [$user->id]
+            );
+
+            if ($empresaOwnerId > 0) {
+                SendWebPushJob::dispatch(
+                    title: 'Novo resgate em sua empresa',
+                    body: "{$user->name} resgatou {$promocao->titulo}.",
+                    data: [
+                        'type' => 'resgate_empresa',
+                        'cliente' => $user->name,
+                        'promocao' => $promocao->titulo,
+                        'url' => '/minhas_campanhas_loja.html',
+                    ],
+                    userIds: [$empresaOwnerId]
+                );
+            }
+        } catch (\Throwable $notifyError) {
+            \Log::warning('Falha ao disparar notificacoes de resgate do cliente', [
+                'promocao_id' => $promocaoId,
+                'cliente_id' => $user->id,
+                'error' => $notifyError->getMessage(),
+            ]);
+        }
+
+        // Webhook de saÃ­da: evento resgate
         try {
             app(\App\Services\WebhookService::class)->disparar('resgate', [
                 'user_id'    => $user->id,
@@ -409,7 +543,7 @@ class ClienteAPIController extends Controller
             ], $promocao->empresa_id);
         } catch (\Throwable $e) {}
 
-        // Avançar desafios de tipo 'resgates'
+        // AvanÃ§ar desafios de tipo 'resgates'
         try {
             $desafiosResgate = \App\Models\Desafio::ativos()
                 ->where('tipo', 'resgates')
@@ -427,7 +561,7 @@ class ClienteAPIController extends Controller
                         $prog->update(['concluido' => true, 'concluido_em' => now()]);
                         if (!$prog->recompensa_dada && $desafio->recompensa_pontos > 0) {
                             DB::table('users')->where('id', $user->id)->increment('pontos', $desafio->recompensa_pontos);
-                            \App\Models\Ponto::create(['user_id' => $user->id, 'pontos' => $desafio->recompensa_pontos, 'tipo' => 'bonus_desafio', 'descricao' => "Desafio concluído: {$desafio->nome} 🏆", 'data' => now()]);
+                            \App\Models\Ponto::create(['user_id' => $user->id, 'pontos' => $desafio->recompensa_pontos, 'tipo' => 'bonus_desafio', 'descricao' => "Desafio concluÃ­do: {$desafio->nome} ðŸ†", 'data' => now()]);
                             $prog->update(['recompensa_dada' => true]);
                         }
                     }
@@ -439,11 +573,11 @@ class ClienteAPIController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Promoção resgatada com sucesso!',
+            'message' => 'PromoÃ§Ã£o resgatada com sucesso!',
             'data' => [
                 'promocao' => $promocao->titulo,
                 'pontos_gastos' => $pontosCusto,
-                'novo_saldo' => $user->pontos - $pontosCusto,
+                'novo_saldo' => $novoSaldo,
                 'codigo_resgate' => $codigoResgate,
                 'nps_solicitado' => true, // frontend deve exibir modal NPS
             ]
@@ -463,14 +597,14 @@ class ClienteAPIController extends Controller
         
         $user = Auth::user();
         
-        // Verificar se já avaliou
+        // Verificar se jÃ¡ avaliou
         $jaAvaliou = DB::table('avaliacoes')
             ->where('user_id', $user->id)
             ->where('empresa_id', $request->empresa_id)
             ->exists();
         
         if ($jaAvaliou) {
-            // Atualizar avaliação existente
+            // Atualizar avaliaÃ§Ã£o existente
             DB::table('avaliacoes')
                 ->where('user_id', $user->id)
                 ->where('empresa_id', $request->empresa_id)
@@ -480,9 +614,9 @@ class ClienteAPIController extends Controller
                     'updated_at' => now()
                 ]);
                 
-            $message = 'Avaliação atualizada com sucesso!';
+            $message = 'AvaliaÃ§Ã£o atualizada com sucesso!';
         } else {
-            // Criar nova avaliação
+            // Criar nova avaliaÃ§Ã£o
             DB::table('avaliacoes')->insert([
                 'user_id' => $user->id,
                 'empresa_id' => $request->empresa_id,
@@ -492,10 +626,10 @@ class ClienteAPIController extends Controller
                 'updated_at' => now()
             ]);
             
-            $message = 'Avaliação criada com sucesso!';
+            $message = 'AvaliaÃ§Ã£o criada com sucesso!';
         }
         
-        // Recalcular média da empresa
+        // Recalcular mÃ©dia da empresa
         $media = DB::table('avaliacoes')
             ->where('empresa_id', $request->empresa_id)
             ->avg('estrelas');
@@ -518,7 +652,7 @@ class ClienteAPIController extends Controller
     }
     
     /**
-     * Histórico de pontos
+     * HistÃ³rico de pontos
      */
     public function historicoPontos(Request $request)
     {
@@ -556,7 +690,7 @@ class ClienteAPIController extends Controller
     }
     
     /**
-     * Listar todas as promoções ativas
+     * Listar todas as promoÃ§Ãµes ativas
      */
     public function listarPromocoes(Request $request)
     {
@@ -577,7 +711,7 @@ class ClienteAPIController extends Controller
             $query->where('promocoes.empresa_id', $request->empresa_id);
         }
         
-        // Filtro por tipo de promoção
+        // Filtro por tipo de promoÃ§Ã£o
         if ($request->has('tipo')) {
             $query->where('promocoes.tipo', $request->tipo);
         }
@@ -607,7 +741,7 @@ class ClienteAPIController extends Controller
     }
 
     /**
-     * Ranking de pontos: top 50 clientes + posição do usuário autenticado.
+     * Ranking de pontos: top 50 clientes + posiÃ§Ã£o do usuÃ¡rio autenticado.
      */
     public function rankingPontos(): \Illuminate\Http\JsonResponse
     {
@@ -644,3 +778,7 @@ class ClienteAPIController extends Controller
         ]);
     }
 }
+
+
+
+

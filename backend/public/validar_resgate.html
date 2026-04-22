@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="light" lang="pt-BR"><head>
 <meta charset="utf-8"/>
@@ -120,11 +120,12 @@
 <!-- Instruction Header -->
 <header class="w-full mb-8">
 <h1 class="font-headline text-2xl font-bold text-on-surface mb-2">Validar Resgate</h1>
-<p class="text-on-surface-variant text-sm leading-relaxed">Posicione o codigo QR do cliente no centro do leitor ou digite o codigo de validacao manualmente abaixo.</p>
+<p class="text-on-surface-variant text-sm leading-relaxed">Use a camera para ler o QR correspondente ao seu perfil (cliente ou empresa) ou digite o codigo manual abaixo.</p>
+<p class="text-xs text-on-surface-variant mt-2" id="scanInstructions">Carregando orientacao do perfil...</p>
 </header>
 <!-- QR Scanner Simulator Bento-ish Container -->
 <div class="w-full max-w-md aspect-square bg-surface-container rounded-[1.5rem] relative overflow-hidden flex items-center justify-center mb-8 border-4 border-surface-container-low">
-<!-- Câmera Real -->
+<!-- CÃ¢mera Real -->
 <video id="qrVideo" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
 <!-- Scanning Frame -->
 <div class="relative w-64 h-64 border-2 border-primary/30 rounded-xl overflow-hidden glass-panel flex flex-col items-center justify-center z-10" id="scanFrame">
@@ -153,7 +154,7 @@
 </button>
 <button id="switchCamera" class="px-4 py-2 bg-surface-container-lowest/80 backdrop-blur rounded-full shadow-sm flex items-center gap-2">
 <span class="material-symbols-outlined text-primary text-sm">flip_camera_android</span>
-<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface">Trocar Câmera</span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-on-surface">Trocar CÃ¢mera</span>
 </button>
 </div>
 </div>
@@ -234,6 +235,15 @@
   let lastScannedCode = null;
   let lastScanTime = 0;
   const SCAN_COOLDOWN = 3000; // 3 seconds between scans
+  const storedUser = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
+  const perfil = (storedUser.perfil || storedUser.role || '').toLowerCase();
+  const isEmpresa = ['empresa', 'estabelecimento', 'parceiro'].includes(perfil);
+  const instructionEl = document.getElementById('scanInstructions');
+  if (instructionEl) {
+    instructionEl.textContent = isEmpresa
+      ? 'Empresa: escaneie o QR dinamico mostrado no app do cliente (Meu QR Code) para creditar pontos.'
+      : 'Cliente: escaneie o QR da loja/parceiro para acumular pontos na sua conta.';
+  }
   
   async function startCamera() {
     try {
@@ -252,19 +262,19 @@
       stream = await navigator.mediaDevices.getUserMedia(constraints);
       video.srcObject = stream;
       placeholder.classList.add('hidden');
-      statusText.textContent = 'Câmera ativa - Escaneie o QR Code';
+      statusText.textContent = 'CÃ¢mera ativa - Escaneie o QR Code';
       
       // Start scanning loop
       requestAnimationFrame(scanQRCode);
     } catch (error) {
-      console.error('Erro ao acessar câmera:', error);
-      statusText.textContent = 'Erro: Permita acesso à câmera';
+      console.error('Erro ao acessar cÃ¢mera:', error);
+      statusText.textContent = 'Erro: Permita acesso Ã  cÃ¢mera';
       statusText.classList.add('text-error');
     }
   }
   
   function scanQRCode() {
-    if (!scanning || !video.readyState === video.HAVE_ENOUGH_DATA) {
+    if (!scanning || video.readyState !== video.HAVE_ENOUGH_DATA) {
       if (scanning) requestAnimationFrame(scanQRCode);
       return;
     }
@@ -308,14 +318,10 @@
       navigator.vibrate(200);
     }
 
-    // Detectar perfil do usuário logado
-    const storedUser = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
-    const perfil = (storedUser.perfil || storedUser.role || '').toLowerCase();
     const token = localStorage.getItem('tem_de_tudo_token');
 
-    // Empresa escaneia QR do CLIENTE → registra check-in e dá pontos ao cliente
-    // Cliente escaneia QR da EMPRESA → ganha pontos para si
-    const isEmpresa = ['empresa', 'estabelecimento', 'parceiro'].includes(perfil);
+    // Empresa escaneia QR do CLIENTE â†’ registra check-in e dÃ¡ pontos ao cliente
+    // Cliente escaneia QR da EMPRESA â†’ ganha pontos para si
     const endpoint = isEmpresa
       ? '/api/empresa/escanear-cliente'
       : '/api/cliente/escanear-qrcode';
@@ -338,14 +344,14 @@
       
       if (response.ok && data.success) {
         if (isEmpresa && data.data?.cliente) {
-          // Feedback específico para empresa: mostra nome do cliente e pontos dados
+          // Feedback especÃ­fico para empresa: mostra nome do cliente e pontos dados
           const cliente = data.data.cliente;
           const pts = data.data.pontos_ganhos ?? 0;
           const restantes = data.data.scans_restantes ?? 0;
-          statusText.textContent = `✓ Check-in de ${cliente.nome} (+${pts} pts). Restam ${restantes} check-in(s) hoje.`;
+          statusText.textContent = `âœ“ Check-in de ${cliente.nome} (+${pts} pts). Restam ${restantes} check-in(s) hoje.`;
         } else {
           const pts = data.data?.pontos_ganhos ? `+${data.data.pontos_ganhos} pts! ` : '';
-          statusText.textContent = `✓ ${pts}${data.message || 'Validado!'}`;
+          statusText.textContent = `âœ“ ${pts}${data.message || 'Validado!'}`;
         }
         statusText.classList.remove('text-error');
         statusText.classList.add('text-tertiary');
@@ -361,8 +367,8 @@
           if (!isEmpresa) {
             window.location.href = '/meus_pontos.html';
           } else {
-            // Empresa permanece na página para escanear o próximo cliente
-            statusText.textContent = 'Escaneie o QR do próximo cliente...';
+            // Empresa permanece na pÃ¡gina para escanear o prÃ³ximo cliente
+            statusText.textContent = 'Escaneie o QR do prÃ³ximo cliente...';
             statusText.classList.remove('text-tertiary');
             successIndicator.classList.add('hidden');
             placeholder.classList.remove('hidden');
@@ -371,13 +377,13 @@
           }
         }, 2500);
       } else {
-        statusText.textContent = `✗ ${data.message || 'QR inválido'}`;
+        statusText.textContent = `âœ— ${data.message || 'QR invÃ¡lido'}`;
         statusText.classList.add('text-error');
         successIndicator.classList.add('hidden');
         
         // Reset after 3 seconds
         setTimeout(() => {
-          statusText.textContent = isEmpresa ? 'Escaneie o QR do cliente...' : 'Aguardando próximo QR Code...';
+          statusText.textContent = isEmpresa ? 'Escaneie o QR do cliente...' : 'Aguardando prÃ³ximo QR Code...';
           statusText.classList.remove('text-error', 'text-primary', 'text-tertiary');
           if (isEmpresa) {
             scanning = true;
@@ -386,13 +392,13 @@
         }, 3000);
       }
     } catch (error) {
-      console.error('Erro na validação:', error);
-      statusText.textContent = '✗ Erro de conexão';
+      console.error('Erro na validaÃ§Ã£o:', error);
+      statusText.textContent = 'âœ— Erro de conexÃ£o';
       statusText.classList.add('text-error');
       successIndicator.classList.add('hidden');
       
       setTimeout(() => {
-        statusText.textContent = isEmpresa ? 'Escaneie o QR do cliente...' : 'Aguardando próximo QR Code...';
+        statusText.textContent = isEmpresa ? 'Escaneie o QR do cliente...' : 'Aguardando prÃ³ximo QR Code...';
         statusText.classList.remove('text-error');
       }, 3000);
     }
@@ -412,7 +418,7 @@
       toggleFlashBtn.classList.toggle('bg-primary', newState);
       toggleFlashBtn.classList.toggle('text-white', newState);
     } else {
-      alert('Lanterna não disponível neste dispositivo');
+      alert('Lanterna nÃ£o disponÃ­vel neste dispositivo');
     }
   });
   
@@ -437,8 +443,10 @@
 })();
 </script>
 
-<script src="/js/stitch-app.js?v=20260422-flowfix"></script>
+<script src="/js/stitch-app.js?v=20260422-fidelityfix"></script>
 </body></html>
+
+
 
 
 

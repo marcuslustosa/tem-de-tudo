@@ -108,6 +108,8 @@ class PainelSmokeTest extends TestCase
             '/api/admin/users',
             '/api/admin/settings',
             '/api/admin/content',
+            '/api/admin/tickets',
+            '/api/admin/tickets/stats',
         ];
 
         foreach ($endpoints as $endpoint) {
@@ -117,4 +119,3 @@ class PainelSmokeTest extends TestCase
         }
     }
 }
-
