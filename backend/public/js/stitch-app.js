@@ -1111,6 +1111,28 @@
         }
       }
 
+      // ---- Politica do programa de fidelidade ----
+      const { data: programaResp } = await api.request('/fidelidade/programa', {}, { notify: false });
+      const programa = programaResp?.data || null;
+      if (programa && !document.getElementById('programaFidelidadeSection')) {
+        const host = document.querySelector('main') || document.body;
+        const sec = document.createElement('section');
+        sec.id = 'programaFidelidadeSection';
+        sec.className = 'max-w-6xl mx-auto px-4 pt-4';
+        const pontosPorReal = Number(programa?.acumulo?.pontos_por_real || 1).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+        const scanBase = Number(programa?.acumulo?.pontos_base_scan || 100).toLocaleString('pt-BR');
+        sec.innerHTML = `
+          <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4">
+            <h3 class="text-base font-semibold text-on-surface mb-2">Como funciona sua fidelidade</h3>
+            <div class="grid gap-2 text-sm text-on-surface-variant">
+              <p><span class="font-semibold text-on-surface">Acumulo por compra:</span> ${pontosPorReal} ponto(s) por R$ 1,00, com multiplicador da empresa.</p>
+              <p><span class="font-semibold text-on-surface">Acumulo por QR:</span> base de ${scanBase} ponto(s), ajustada por campanha/multiplicador.</p>
+              <p><span class="font-semibold text-on-surface">Resgate:</span> custo prioriza pontos_necessarios e limite por usuario/estoque da promocao.</p>
+            </div>
+          </div>`;
+        host.appendChild(sec);
+      }
+
       // ---- Wallet — Google & Apple (Gap 8) ----
       if (!document.getElementById('walletSection')) {
         const walletHost = document.querySelector('main') || document.body;

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Services\LoyaltyProgramService;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -167,5 +168,27 @@ class AuthFlowTest extends TestCase
             ->assertJsonPath('success', true)
             ->assertJsonPath('user.perfil', 'empresa')
             ->assertJsonPath('data.user.email', 'empresa.flow@example.com');
+    }
+
+    public function test_register_respects_cliente_registration_flag_from_settings(): void
+    {
+        $this->mock(LoyaltyProgramService::class, function ($mock) {
+            $mock->shouldReceive('isMaintenanceMode')->andReturn(false);
+            $mock->shouldReceive('isClienteRegistrationAllowed')->andReturn(false);
+            $mock->shouldReceive('isEmpresaRegistrationAllowed')->andReturn(true);
+        });
+
+        $response = $this->postJson('/api/auth/register', [
+            'perfil' => 'cliente',
+            'name' => 'Cliente Bloqueado',
+            'email' => 'cliente.bloqueado@example.com',
+            'password' => 'senha123',
+            'password_confirmation' => 'senha123',
+            'terms' => true,
+        ]);
+
+        $response
+            ->assertStatus(403)
+            ->assertJsonPath('success', false);
     }
 }

@@ -119,6 +119,10 @@ Route::post('/auth/login', [AuthController::class, 'login'])->middleware('thrott
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:5,1');
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1');
 
+// Politica de fidelidade (publica)
+Route::get('/fidelidade/programa', [PontosController::class, 'programa'])
+    ->middleware('cache.response:300');
+
 // Empresas (leitura pÃºblica) - COM CACHE
 Route::get('/empresas', [EmpresaController::class, 'listEmpresas'])
     ->middleware('cache.response:300'); // 5 minutos

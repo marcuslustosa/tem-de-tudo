@@ -4,7 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\SendWebPushJob;
+use App\Models\Empresa;
 use App\Models\Notification;
+use App\Services\LoyaltyProgramService;
 use App\Services\ClienteQrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -217,7 +219,7 @@ class EmpresaAPIController extends Controller
                 'users.email',
                 'users.telefone',
                 DB::raw('SUM(CASE WHEN pontos.tipo NOT IN (\'resgate\', \'redeem\') THEN pontos.pontos ELSE 0 END) as total_ganho'),
-                DB::raw('SUM(CASE WHEN pontos.tipo = \'resgate\' THEN pontos.pontos ELSE 0 END) as total_gasto'),
+                DB::raw('SUM(CASE WHEN pontos.tipo IN (\'resgate\', \'redeem\') THEN pontos.pontos ELSE 0 END) as total_gasto'),
                 DB::raw('MAX(pontos.created_at) as ultima_visita')
             )
             ->where('pontos.empresa_id', $empresa->id)
@@ -596,8 +598,8 @@ class EmpresaAPIController extends Controller
         $pontosPorDia = DB::table('pontos')
             ->select(
                 DB::raw('DATE(created_at) as data'),
-                DB::raw('SUM(CASE WHEN tipo = \'ganho\' THEN pontos ELSE 0 END) as pontos_distribuidos'),
-                DB::raw('SUM(CASE WHEN tipo = \'resgate\' THEN pontos ELSE 0 END) as pontos_resgatados'),
+                DB::raw('SUM(CASE WHEN tipo NOT IN (\'resgate\', \'redeem\') THEN pontos ELSE 0 END) as pontos_distribuidos'),
+                DB::raw('SUM(CASE WHEN tipo IN (\'resgate\', \'redeem\') THEN pontos ELSE 0 END) as pontos_resgatados'),
                 DB::raw('COUNT(DISTINCT user_id) as clientes_unicos')
             )
             ->where('empresa_id', $empresa->id)
@@ -609,8 +611,8 @@ class EmpresaAPIController extends Controller
         // Totais do perÃ­odo
         $totais = DB::table('pontos')
             ->select(
-                DB::raw('SUM(CASE WHEN tipo = \'ganho\' THEN pontos ELSE 0 END) as total_distribuido'),
-                DB::raw('SUM(CASE WHEN tipo = \'resgate\' THEN pontos ELSE 0 END) as total_resgatado'),
+                DB::raw('SUM(CASE WHEN tipo NOT IN (\'resgate\', \'redeem\') THEN pontos ELSE 0 END) as total_distribuido'),
+                DB::raw('SUM(CASE WHEN tipo IN (\'resgate\', \'redeem\') THEN pontos ELSE 0 END) as total_resgatado'),
                 DB::raw('COUNT(DISTINCT user_id) as total_clientes')
             )
             ->where('empresa_id', $empresa->id)
@@ -690,10 +692,10 @@ class EmpresaAPIController extends Controller
             ], 429);
         }
         
-        // Calcular pontos
-        $pontosBase = 100;
-        $multiplicador = $empresa->points_multiplier ?? 1.0;
-        $pontosGanhos = (int) round($pontosBase * $multiplicador);
+        /** @var LoyaltyProgramService $loyalty */
+        $loyalty = app(LoyaltyProgramService::class);
+        $empresaModel = Empresa::query()->find($empresa->id);
+        $pontosGanhos = $loyalty->calculateScanPoints($empresaModel);
         
         DB::beginTransaction();
         try {

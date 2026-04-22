@@ -21,6 +21,7 @@ class AdminSettingsController extends Controller
             'support_whatsapp' => '(11) 99999-0000',
             'points_base_per_real' => 1.0,
             'points_expiration_days' => 365,
+            'scan_base_points' => 100,
             'allow_register_cliente' => true,
             'allow_register_empresa' => true,
             'push_enabled' => true,
@@ -94,6 +95,7 @@ class AdminSettingsController extends Controller
             'support_whatsapp' => 'nullable|string|max:40',
             'points_base_per_real' => 'required|numeric|min:0|max:100',
             'points_expiration_days' => 'required|integer|min:1|max:3650',
+            'scan_base_points' => 'nullable|integer|min:1|max:5000',
             'allow_register_cliente' => 'required',
             'allow_register_empresa' => 'required',
             'push_enabled' => 'required',
@@ -107,6 +109,7 @@ class AdminSettingsController extends Controller
             'support_whatsapp' => trim((string) ($validated['support_whatsapp'] ?? '')),
             'points_base_per_real' => (float) $validated['points_base_per_real'],
             'points_expiration_days' => (int) $validated['points_expiration_days'],
+            'scan_base_points' => (int) ($validated['scan_base_points'] ?? ($current['scan_base_points'] ?? 100)),
             'allow_register_cliente' => $this->normalizeBool($validated['allow_register_cliente'], true),
             'allow_register_empresa' => $this->normalizeBool($validated['allow_register_empresa'], true),
             'push_enabled' => $this->normalizeBool($validated['push_enabled'], true),
@@ -123,4 +126,3 @@ class AdminSettingsController extends Controller
         ]);
     }
 }
-

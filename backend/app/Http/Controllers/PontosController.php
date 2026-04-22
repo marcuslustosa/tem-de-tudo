@@ -19,6 +19,7 @@ use App\Models\CheckIn;
 use App\Models\Coupon;
 use App\Models\QRCode;
 use App\Jobs\SendWebPushJob;
+use App\Services\LoyaltyProgramService;
 
 class PontosController extends Controller
 {
@@ -64,7 +65,7 @@ class PontosController extends Controller
                         'empresa_id' => $empresa->id,
                         'pontos' => $pontosCalculados,
                         'descricao' => $request->observacoes ?: "Acumulo de pontos em {$empresa->nome} - R$ " . number_format((float) $request->valor_compra, 2, ',', '.'),
-                        'tipo' => 'earn',
+                        'tipo' => 'ganho',
                     ]);
                 }
 
@@ -214,17 +215,10 @@ class PontosController extends Controller
      */
     private function calcularPontos(float $valorCompra, Empresa $empresa): int
     {
-        // Regra base: 1 ponto a cada R$ 1,00 gasto
-        $pontosBase = floor($valorCompra);
+        /** @var LoyaltyProgramService $loyalty */
+        $loyalty = app(LoyaltyProgramService::class);
 
-        // Multiplicador baseado na configuração da empresa
-        $multiplicador = $empresa->getPointsMultiplier($valorCompra);
-        
-        // Aplicar multiplicador
-        $pontosFinais = floor($pontosBase * $multiplicador);
-
-        // Garantir mínimo de 1 ponto para qualquer compra
-        return max(1, $pontosFinais);
+        return $loyalty->calculatePurchasePoints($valorCompra, $empresa);
     }
 
     /**
@@ -287,7 +281,7 @@ class PontosController extends Controller
                     'checkin_id' => $checkin->id,
                     'pontos' => $checkin->pontos_calculados,
                     'descricao' => "Check-in aprovado no {$checkin->empresa->nome} - R$ " . number_format($checkin->valor_compra, 2, ',', '.'),
-                    'tipo' => 'earn'
+                    'tipo' => 'ganho'
                 ]);
 
                 // Verificar se atingiu novo nível e enviar push
@@ -397,7 +391,7 @@ class PontosController extends Controller
                 'coupon_id' => $cupom->id,
                 'pontos' => -$request->custo_pontos,
                 'descricao' => "Resgatado: {$request->descricao}",
-                'tipo' => 'redeem'
+                'tipo' => 'resgate'
             ]);
 
             return response()->json([
@@ -644,6 +638,26 @@ class PontosController extends Controller
         } catch (\Exception $e) {
             \Log::error("Erro ao registrar atividade: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Retorna a política de fidelidade ativa (acúmulo, resgate e onboarding).
+     */
+    public function programa(Request $request): JsonResponse
+    {
+        $empresa = null;
+        $empresaId = (int) $request->input('empresa_id', 0);
+        if ($empresaId > 0) {
+            $empresa = Empresa::query()->find($empresaId);
+        }
+
+        /** @var LoyaltyProgramService $loyalty */
+        $loyalty = app(LoyaltyProgramService::class);
+
+        return response()->json([
+            'success' => true,
+            'data' => $loyalty->summary($empresa),
+        ]);
     }
 
     /**

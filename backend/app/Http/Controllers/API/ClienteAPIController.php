@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\SendWebPushJob;
 use App\Models\Empresa;
 use App\Models\Notification;
+use App\Services\LoyaltyProgramService;
 use App\Services\ClienteQrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,7 +63,7 @@ class ClienteAPIController extends Controller
         
         $pontosGastos = DB::table('pontos')
             ->where('user_id', $user->id)
-            ->where('tipo', 'resgate')
+            ->whereIn('tipo', ['resgate', 'redeem'])
             ->sum('pontos');
         
         $saldoPontos = $pontosTotais - $pontosGastos;
@@ -142,7 +143,7 @@ class ClienteAPIController extends Controller
             $pontos = DB::table('pontos')
                 ->where('user_id', $user->id)
                 ->where('empresa_id', $empresa->id)
-                ->where('tipo', 'ganho')
+                ->whereNotIn('tipo', ['resgate', 'redeem'])
                 ->sum('pontos');
             
             $empresa->meus_pontos = $pontos;
@@ -174,7 +175,7 @@ class ClienteAPIController extends Controller
         $meusPontos = DB::table('pontos')
             ->where('user_id', $user->id)
             ->where('empresa_id', $id)
-            ->where('tipo', 'ganho')
+            ->whereNotIn('tipo', ['resgate', 'redeem'])
             ->sum('pontos');
         
         // PromoÃ§Ãµes ativas
@@ -254,10 +255,9 @@ class ClienteAPIController extends Controller
             ], 429);
         }
 
-        // Calcular pontos: base 100 * multiplicador (inclui campanha ativa se houver)
-        $pontosBase = 100;
-        $multiplicador = $empresa->getPointsMultiplier();
-        $pontosGanhos = (int) round($pontosBase * $multiplicador);
+        /** @var LoyaltyProgramService $loyalty */
+        $loyalty = app(LoyaltyProgramService::class);
+        $pontosGanhos = $loyalty->calculateScanPoints($empresa);
         
         // Adicionar pontos
         DB::table('pontos')->insert([
@@ -383,7 +383,7 @@ class ClienteAPIController extends Controller
         $resgatadoHoje = DB::table('pontos')
             ->where('user_id', $user->id)
             ->where('empresa_id', $promocao->empresa_id)
-            ->where('tipo', 'resgate')
+            ->whereIn('tipo', ['resgate', 'redeem'])
             ->whereDate('created_at', $hoje)
             ->where('descricao', 'LIKE', '%' . $promocao->titulo . '%')
             ->exists();
@@ -408,7 +408,7 @@ class ClienteAPIController extends Controller
         $totalResgatadoUsuario = DB::table('pontos')
             ->where('user_id', $user->id)
             ->where('empresa_id', $promocao->empresa_id)
-            ->where('tipo', 'resgate')
+            ->whereIn('tipo', ['resgate', 'redeem'])
             ->where('descricao', 'LIKE', '%' . $promocao->titulo . '%')
             ->count();
 
@@ -419,8 +419,9 @@ class ClienteAPIController extends Controller
             ], 400);
         }
 
-        // Pontoscusto (baseado no desconto)
-        $pontosCusto = $promocao->desconto * 10; // 10 pontos por % de desconto
+        /** @var LoyaltyProgramService $loyalty */
+        $loyalty = app(LoyaltyProgramService::class);
+        $pontosCusto = $loyalty->promotionCost($promocao);
         
         // Verificar saldo
         if ($user->pontos < $pontosCusto) {
@@ -659,8 +660,11 @@ class ClienteAPIController extends Controller
         $user = Auth::user();
         
         $query = DB::table('pontos')
-            ->join('empresas', 'pontos.empresa_id', '=', 'empresas.id')
-            ->select('pontos.*', 'empresas.nome as empresa_nome')
+            ->leftJoin('empresas', 'pontos.empresa_id', '=', 'empresas.id')
+            ->select(
+                'pontos.*',
+                DB::raw("COALESCE(empresas.nome, 'Tem de Tudo') as empresa_nome")
+            )
             ->where('pontos.user_id', $user->id);
         
         // Filtro por tipo

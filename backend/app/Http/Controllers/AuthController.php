@@ -52,6 +52,29 @@ class AuthController extends Controller
             $perfil = $request->perfil;
             Log::info('Perfil selecionado', ['perfil' => $perfil]);
 
+            /** @var \App\Services\LoyaltyProgramService $loyaltySettings */
+            $loyaltySettings = app(\App\Services\LoyaltyProgramService::class);
+            if ($loyaltySettings->isMaintenanceMode()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cadastro temporariamente indisponivel em manutencao programada.',
+                ], 503);
+            }
+
+            if ($perfil === 'cliente' && !$loyaltySettings->isClienteRegistrationAllowed()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Novos cadastros de clientes estao temporariamente desativados.',
+                ], 403);
+            }
+
+            if ($perfil === 'empresa' && !$loyaltySettings->isEmpresaRegistrationAllowed()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Novos cadastros de empresas estao temporariamente desativados.',
+                ], 403);
+            }
+
             // Normaliza email para evitar divergencia de caixa/espacos entre cadastro e login.
             $normalizedEmail = strtolower(trim((string) $request->input('email', '')));
             if ($normalizedEmail !== '') {
@@ -577,7 +600,7 @@ class AuthController extends Controller
             'user_id' => $user->id,
             'pontos' => $request->pontos,
             'descricao' => $request->descricao ?? 'Pontos adicionados manualmente',
-            'tipo' => 'earn'
+            'tipo' => 'ganho'
         ]);
 
         return response()->json([
