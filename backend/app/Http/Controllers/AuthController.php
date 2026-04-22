@@ -52,6 +52,23 @@ class AuthController extends Controller
             $perfil = $request->perfil;
             Log::info('Perfil selecionado', ['perfil' => $perfil]);
 
+            // Normaliza email para evitar divergencia de caixa/espacos entre cadastro e login.
+            $normalizedEmail = strtolower(trim((string) $request->input('email', '')));
+            if ($normalizedEmail !== '') {
+                $request->merge(['email' => $normalizedEmail]);
+            }
+
+            // Barreira adicional para evitar duplicidade mesmo em bases sem constraint unica.
+            if ($normalizedEmail !== '' && filter_var($normalizedEmail, FILTER_VALIDATE_EMAIL)) {
+                $emailExists = User::whereRaw('LOWER(email) = ?', [$normalizedEmail])->exists();
+                if ($emailExists) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Este email ja esta cadastrado. Tente fazer login ou use outro email.'
+                    ], 422);
+                }
+            }
+
             // RESTRIÇÃO: Apenas admin master pode criar empresas
             if ($perfil === 'empresa') {
                 $user = $this->resolveAuthUserFromRequest($request);
@@ -403,7 +420,7 @@ class AuthController extends Controller
 
             $user = $userQuery->first();
 
-            if (!$user || !Hash::check($request->password, $user->password)) {
+            if (!$user || !$this->isValidUserPassword($user, (string) $request->password)) {
                 RateLimiter::hit($key, 300); // 5 minutos
                 Log::warning('Tentativa de login falhou', [
                     'email' => $request->email,
@@ -669,7 +686,7 @@ class AuthController extends Controller
         $baseData = [
             'name' => $request->name,
             'email' => strtolower(trim($request->email)),
-            'password' => $request->password,
+            'password' => Hash::make($request->password),
             'perfil' => $perfil,
             'status' => 'ativo',
         ];
@@ -797,7 +814,7 @@ class AuthController extends Controller
                 ->whereIn('perfil', ['admin', 'administrador'])
                 ->first();
 
-            if (!$user || !Hash::check($request->password, $user->password)) {
+            if (!$user || !$this->isValidUserPassword($user, (string) $request->password)) {
                 RateLimiter::hit($key, 300); // 5 minutos
                 Log::warning('Tentativa de login admin falhou', [
                     'email' => $request->email,
@@ -1337,7 +1354,7 @@ class AuthController extends Controller
             $user = User::create([
                 'name' => $payload['name'],
                 'email' => strtolower(trim($payload['email'])),
-                'password' => $payload['password'],
+                'password' => Hash::make($payload['password']),
                 'perfil' => $payload['perfil'],
                 'status' => $payload['status'] ?? 'ativo',
                 'telefone' => $payload['telefone'] ?? null,
@@ -1420,4 +1437,35 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Valida senha atual e migra automaticamente credenciais legadas em texto puro.
+     */
+    private function isValidUserPassword(User $user, string $plainPassword): bool
+    {
+        $storedPassword = (string) ($user->password ?? '');
+
+        if ($storedPassword === '') {
+            return false;
+        }
+
+        if (Hash::check($plainPassword, $storedPassword)) {
+            return true;
+        }
+
+        // Fallback de compatibilidade: credenciais legadas eventualmente gravadas sem hash.
+        if (hash_equals($storedPassword, $plainPassword)) {
+            $user->password = Hash::make($plainPassword);
+            $user->save();
+
+            Log::warning('Senha legada migrada para hash seguro no login', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+            ]);
+
+            return true;
+        }
+
+        return false;
+    }
 }
+
