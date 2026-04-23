@@ -89,6 +89,30 @@ else
   echo "Seed no start desativado (SEED_ON_START=false)."
 fi
 
+# Provisionar acessos demo para handoff
+if [ "${ENSURE_DEMO_ACCESS_ON_START:-true}" = "true" ]; then
+  echo "Garantindo acessos demo..."
+  DEMO_SYNC_ARG=""
+  if [ "${DEMO_FORCE_PASSWORD_RESET:-true}" = "true" ]; then
+    DEMO_SYNC_ARG="--sync-passwords"
+  fi
+  php artisan app:ensure-demo-access ${DEMO_SYNC_ARG} --no-interaction
+else
+  echo "Provisionamento de acessos demo desativado."
+fi
+
+# Verificar assets visuais criticos
+if [ "${VERIFY_FRONTEND_ON_START:-true}" = "true" ]; then
+  echo "Validando assets visuais..."
+  FRONTEND_FIX_ARG=""
+  if [ "${AUTO_FIX_FRONTEND_ASSETS:-true}" = "true" ]; then
+    FRONTEND_FIX_ARG="--fix"
+  fi
+  php artisan app:verify-frontend-assets ${FRONTEND_FIX_ARG} --no-interaction
+else
+  echo "Validacao de assets visuais desativada."
+fi
+
 echo "Limpando caches..."
 php artisan config:clear
 php artisan cache:clear
@@ -103,13 +127,21 @@ php artisan migrate:status
 
 echo "=== Sistema Pronto ==="
 
-echo "Iniciando queue worker..."
-php artisan queue:work --sleep=3 --tries=3 --max-time=3600 --daemon >> /var/log/queue-worker.log 2>&1 &
-echo "Queue worker PID: $!"
+if [ "${RUN_QUEUE_WORKER_ON_START:-true}" = "true" ]; then
+  echo "Iniciando queue worker..."
+  php artisan queue:work --sleep=3 --tries="${QUEUE_WORKER_TRIES:-3}" --max-time="${QUEUE_WORKER_MAX_TIME:-3600}" --daemon >> /var/log/queue-worker.log 2>&1 &
+  echo "Queue worker PID: $!"
+else
+  echo "Queue worker desativado por ambiente."
+fi
 
-echo "Iniciando scheduler..."
-( while true; do php artisan schedule:run >> /var/log/scheduler.log 2>&1; sleep 60; done ) &
-echo "Scheduler PID: $!"
+if [ "${RUN_SCHEDULER_ON_START:-true}" = "true" ]; then
+  echo "Iniciando scheduler..."
+  ( while true; do php artisan schedule:run >> /var/log/scheduler.log 2>&1; sleep 60; done ) &
+  echo "Scheduler PID: $!"
+else
+  echo "Scheduler desativado por ambiente."
+fi
 
 # Padrao: usa servidor embutido do Laravel para evitar crashes de MPM no Apache.
 # Apache so e usado quando WEB_SERVER=apache E ENABLE_APACHE=true.

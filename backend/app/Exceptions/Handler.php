@@ -21,25 +21,36 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            // Log estruturado com contexto
+            $request = request();
+
             $context = [
                 'exception' => get_class($e),
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-                'url' => request()->fullUrl(),
-                'method' => request()->method(),
-                'ip' => request()->ip(),
+                'url' => $request?->fullUrl(),
+                'method' => $request?->method(),
+                'ip' => $request?->ip(),
                 'user_id' => auth()->id(),
             ];
-            
-            Log::error('Exception occurred', $context);
-            
-            // TODO: Integrar com Sentry
-            // if (app()->bound('sentry')) {
-            //     app('sentry')->captureException($e);
-            // }
+
+            if (config('app.debug')) {
+                $context['trace'] = $e->getTraceAsString();
+            }
+
+            Log::error('exception.reported', $context);
+
+            // Integracao opcional com Sentry quando o SDK estiver instalado.
+            if (app()->bound('sentry')) {
+                try {
+                    app('sentry')->captureException($e);
+                } catch (\Throwable $sentryError) {
+                    Log::warning('exception.sentry_capture_failed', [
+                        'message' => $sentryError->getMessage(),
+                    ]);
+                }
+            }
         });
     }
 }
+

@@ -29,6 +29,7 @@ class User extends Authenticatable implements JWTSubject
         'telefone',
         'data_nascimento',
         'status',
+        'is_active',
         'pontos',
         'pontos_pendentes',
         'nivel',
@@ -47,7 +48,12 @@ class User extends Authenticatable implements JWTSubject
         'multiplicador_pontos',
         'posicao_ranking',
         'referral_code',
-        'referred_by'
+        'referred_by',
+        'terms_accepted_at',
+        'privacy_policy_accepted_at',
+        'data_processing_consent_at',
+        'marketing_consent',
+        'consent_version',
     ];
 
     protected static function boot(): void
@@ -102,13 +108,18 @@ class User extends Authenticatable implements JWTSubject
             'points_notifications' => 'boolean',
             'security_notifications' => 'boolean',
             'promotional_notifications' => 'boolean',
+            'is_active' => 'boolean',
             'pontos_lifetime' => 'integer',
             'valor_gasto_total' => 'integer',
             'dias_consecutivos' => 'integer',
             'ultimo_checkin' => 'date',
             'empresas_visitadas' => 'integer',
             'multiplicador_pontos' => 'decimal:2',
-            'posicao_ranking' => 'integer'
+            'posicao_ranking' => 'integer',
+            'terms_accepted_at' => 'datetime',
+            'privacy_policy_accepted_at' => 'datetime',
+            'data_processing_consent_at' => 'datetime',
+            'marketing_consent' => 'boolean',
         ];
     }
 
@@ -150,6 +161,11 @@ class User extends Authenticatable implements JWTSubject
     public function pushNotifications()
     {
         return $this->hasMany(PushNotification::class);
+    }
+
+    public function dataPrivacyRequests()
+    {
+        return $this->hasMany(DataPrivacyRequest::class);
     }
 
     /**

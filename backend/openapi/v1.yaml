@@ -1,0 +1,113 @@
+openapi: 3.0.3
+info:
+  title: Tem de Tudo API
+  version: 1.0.0
+  description: Especificacao OpenAPI v1 (baseline de producao)
+servers:
+  - url: /api
+tags:
+  - name: Auth
+  - name: Wallet
+  - name: Redemption
+  - name: Health
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login com email e senha
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Login efetuado
+        "401":
+          description: Credenciais invalidas
+  /fidelidade/resgatar:
+    post:
+      tags: [Wallet]
+      summary: Resgatar pontos
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: X-Idempotency-Key
+          required: false
+          schema:
+            type: string
+          description: Recomendado para evitar resgates duplicados.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pontos]
+              properties:
+                pontos:
+                  type: integer
+                  minimum: 1
+                descricao:
+                  type: string
+      responses:
+        "200":
+          description: Resgate concluido
+        "422":
+          description: Falha de validacao
+  /redemption/request:
+    post:
+      tags: [Redemption]
+      summary: Solicitar reserva de resgate no PDV
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: X-Idempotency-Key
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id, company_id, points, operator_pin]
+              properties:
+                user_id:
+                  type: integer
+                company_id:
+                  type: integer
+                points:
+                  type: integer
+                operator_pin:
+                  type: string
+      responses:
+        "200":
+          description: Reserva criada
+        "409":
+          description: Conflito de idempotencia
+  /health:
+    get:
+      tags: [Health]
+      summary: Healthcheck da API
+      responses:
+        "200":
+          description: API saudavel
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+

@@ -13,45 +13,27 @@ class SecurityMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Forçar HTTPS em produção
-        if (config('security.force_https') && !$request->secure()) {
+        // Forca HTTPS apenas em producao quando habilitado.
+        if (config('security.force_https') && app()->environment('production') && !$request->secure()) {
             return redirect()->secure($request->getRequestUri(), 301);
         }
 
         $response = $next($request);
 
-        // Adicionar cabeçalhos de segurança
+        // Aplica apenas os headers definidos na configuracao central.
         $headers = config('security.security_headers', []);
 
-        // Verificar se $response tem método header, pois pode ser BinaryFileResponse
         if (method_exists($response, 'header')) {
             foreach ($headers as $header => $value) {
                 $response->header($header, $value);
             }
 
-            // Content Security Policy
-            $csp = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self'; font-src 'self'; frame-ancestors 'none';";
-            $response->header('Content-Security-Policy', $csp);
-
-            // HSTS Header para HTTPS
             if ($request->secure()) {
                 $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-            }
-
-            // CORS headers para API
-            if ($request->is('api/*')) {
-                $response->header('Access-Control-Allow-Origin', '*');
-                $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-                $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-                $response->header('Access-Control-Max-Age', '86400');
-
-                // Handle preflight OPTIONS requests
-                if ($request->getMethod() === 'OPTIONS') {
-                    return response('', 200);
-                }
             }
         }
 
         return $response;
     }
 }
+

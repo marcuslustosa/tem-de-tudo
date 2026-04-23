@@ -96,6 +96,31 @@ else
   echo "RUN_MIGRATIONS_ON_START=false: migrations no start desativadas."
 fi
 
+# Storage link para uploads/public assets
+php artisan storage:link --no-interaction || true
+
+# Provisionamento de acessos de demo para handoff (admin/empresa/cliente)
+if [ "${ENSURE_DEMO_ACCESS_ON_START:-true}" = "true" ]; then
+  DEMO_SYNC_ARG=""
+  if [ "${DEMO_FORCE_PASSWORD_RESET:-true}" = "true" ]; then
+    DEMO_SYNC_ARG="--sync-passwords"
+  fi
+  php artisan app:ensure-demo-access ${DEMO_SYNC_ARG} --no-interaction
+else
+  echo "ENSURE_DEMO_ACCESS_ON_START=false: provisionamento de acessos demo desativado."
+fi
+
+# Validacao visual automatica (assets criticos)
+if [ "${VERIFY_FRONTEND_ON_START:-true}" = "true" ]; then
+  FRONTEND_FIX_ARG=""
+  if [ "${AUTO_FIX_FRONTEND_ASSETS:-true}" = "true" ]; then
+    FRONTEND_FIX_ARG="--fix"
+  fi
+  php artisan app:verify-frontend-assets ${FRONTEND_FIX_ARG} --no-interaction
+else
+  echo "VERIFY_FRONTEND_ON_START=false: validacao de assets visuais desativada."
+fi
+
 # Processos auxiliares (queue e scheduler) opcionais
 if [ "${RUN_QUEUE_WORKER_ON_START:-true}" = "true" ]; then
   echo "Iniciando queue worker..."

@@ -133,6 +133,80 @@ class BillingServiceTest extends TestCase
         $this->assertStringContainsString('trial', mb_strtolower($result['reason']));
     }
 
+    public function test_process_payment_retries_recovers_invoice_when_gateway_reports_paid(): void
+    {
+        $company = Empresa::factory()->create();
+        $subscription = $this->billingService->createSubscription($company->id, 'basic');
+        $subscription->update(['status' => CompanySubscription::STATUS_ACTIVE]);
+
+        $invoice = $this->billingService->generateInvoice($subscription, now()->subDays(2));
+        $invoice->update([
+            'status' => Invoice::STATUS_OVERDUE,
+            'payment_id' => 'PAY-001',
+            'payment_metadata' => ['mock_gateway_status' => 'paid'],
+            'next_retry_at' => now()->subMinute(),
+        ]);
+
+        $result = $this->billingService->processPaymentRetries();
+
+        $invoice->refresh();
+        $this->assertSame(1, $result['attempted']);
+        $this->assertSame(1, $result['recovered']);
+        $this->assertSame(Invoice::STATUS_PAID, $invoice->status);
+        $this->assertDatabaseHas('billing_events', [
+            'company_id' => $company->id,
+            'invoice_id' => $invoice->id,
+            'event_type' => 'payment_retry_recovered',
+        ]);
+    }
+
+    public function test_process_payment_retries_reschedules_when_status_is_not_paid(): void
+    {
+        $company = Empresa::factory()->create();
+        $subscription = $this->billingService->createSubscription($company->id, 'basic');
+        $subscription->update(['status' => CompanySubscription::STATUS_ACTIVE]);
+
+        $invoice = $this->billingService->generateInvoice($subscription, now()->subDays(2));
+        $invoice->update([
+            'status' => Invoice::STATUS_OVERDUE,
+            'payment_id' => 'PAY-002',
+            'payment_metadata' => ['mock_gateway_status' => 'pending'],
+            'next_retry_at' => now()->subMinute(),
+            'retry_count' => 0,
+        ]);
+
+        $result = $this->billingService->processPaymentRetries();
+
+        $invoice->refresh();
+        $this->assertSame(1, $result['attempted']);
+        $this->assertSame(1, $result['rescheduled']);
+        $this->assertSame(Invoice::STATUS_OVERDUE, $invoice->status);
+        $this->assertSame(1, $invoice->retry_count);
+        $this->assertNotNull($invoice->next_retry_at);
+    }
+
+    public function test_reconcile_pending_invoices_marks_paid_when_external_status_is_approved(): void
+    {
+        $company = Empresa::factory()->create();
+        $subscription = $this->billingService->createSubscription($company->id, 'basic');
+        $subscription->update(['status' => CompanySubscription::STATUS_ACTIVE]);
+
+        $invoice = $this->billingService->generateInvoice($subscription, now()->subDay());
+        $invoice->update([
+            'status' => Invoice::STATUS_PENDING,
+            'payment_id' => 'PAY-003',
+            'payment_metadata' => ['external_status' => 'approved'],
+        ]);
+
+        $result = $this->billingService->reconcilePendingInvoices();
+
+        $invoice->refresh();
+        $this->assertSame(1, $result['checked']);
+        $this->assertSame(1, $result['paid']);
+        $this->assertSame(Invoice::STATUS_PAID, $invoice->status);
+        $this->assertSame('reconciled', $invoice->reconciliation_status);
+    }
+
     public function test_billing_notifications_sent_at_milestones(): void
     {
         $company = Empresa::factory()->create();

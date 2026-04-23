@@ -1,0 +1,232 @@
+openapi: 3.0.3
+info:
+  title: Tem de Tudo API
+  version: 2.0.0
+  description: >
+    Especificacao OpenAPI v2 com governanca de privacidade (LGPD),
+    conciliacao de billing e idempotencia estrita em producao.
+servers:
+  - url: /api
+tags:
+  - name: Auth
+  - name: Wallet
+  - name: Redemption
+  - name: Privacy
+  - name: Docs
+  - name: Health
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login com email e senha
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Login efetuado
+        "401":
+          description: Credenciais invalidas
+  /fidelidade/resgatar:
+    post:
+      tags: [Wallet]
+      summary: Resgatar pontos
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: X-Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+          description: Obrigatorio em producao para operacoes mutaveis.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [pontos]
+              properties:
+                pontos:
+                  type: integer
+                  minimum: 1
+                descricao:
+                  type: string
+      responses:
+        "200":
+          description: Resgate concluido
+        "400":
+          description: Header idempotente ausente em producao
+        "409":
+          description: Chave reutilizada com payload diferente
+  /redemption/request:
+    post:
+      tags: [Redemption]
+      summary: Solicitar reserva de resgate no PDV
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: header
+          name: X-Idempotency-Key
+          required: true
+          schema:
+            type: string
+            minLength: 8
+            maxLength: 128
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id, company_id, points, operator_pin]
+              properties:
+                user_id:
+                  type: integer
+                company_id:
+                  type: integer
+                points:
+                  type: integer
+                operator_pin:
+                  type: string
+      responses:
+        "200":
+          description: Reserva criada
+        "400":
+          description: Header idempotente ausente em producao
+        "409":
+          description: Conflito de idempotencia
+  /privacy/status:
+    get:
+      tags: [Privacy]
+      summary: Consultar consentimentos e historico LGPD
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Dados de privacidade do usuario autenticado
+  /privacy/consent:
+    put:
+      tags: [Privacy]
+      summary: Atualizar consentimentos de privacidade
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                marketing_consent:
+                  type: boolean
+                terms_accepted:
+                  type: boolean
+                privacy_policy_accepted:
+                  type: boolean
+                data_processing_consent:
+                  type: boolean
+                consent_version:
+                  type: string
+      responses:
+        "200":
+          description: Consentimentos atualizados
+  /privacy/export:
+    post:
+      tags: [Privacy]
+      summary: Solicitar exportacao de dados pessoais
+      security:
+        - bearerAuth: []
+      responses:
+        "202":
+          description: Exportacao gerada e pronta para download
+  /privacy/export/{privacyRequestId}/download:
+    get:
+      tags: [Privacy]
+      summary: Download do pacote de dados pessoais
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: privacyRequestId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Arquivo JSON de exportacao
+        "404":
+          description: Solicitacao nao encontrada
+  /privacy/delete-account:
+    post:
+      tags: [Privacy]
+      summary: Solicitar exclusao/anonimizacao da conta (LGPD art. 18)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [password]
+              properties:
+                password:
+                  type: string
+                reason:
+                  type: string
+      responses:
+        "200":
+          description: Conta anonimizada com sucesso
+        "403":
+          description: Senha incorreta
+  /docs/openapi:
+    get:
+      tags: [Docs]
+      summary: Lista versoes publicadas da OpenAPI
+      responses:
+        "200":
+          description: Versoes disponiveis
+  /docs/openapi/{version}:
+    get:
+      tags: [Docs]
+      summary: Recuperar spec OpenAPI por versao
+      parameters:
+        - in: path
+          name: version
+          required: true
+          schema:
+            type: string
+            enum: [v1, v2]
+      responses:
+        "200":
+          description: Conteudo YAML da OpenAPI
+        "404":
+          description: Versao nao encontrada
+  /health:
+    get:
+      tags: [Health]
+      summary: Healthcheck da API
+      responses:
+        "200":
+          description: API saudavel
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+

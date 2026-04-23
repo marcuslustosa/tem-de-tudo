@@ -100,6 +100,7 @@ class WalletController extends Controller
                 points: $pontosAdicionados,
                 description: "Compra no valor de R$ " . number_format((float) $validated['valor_compra'], 2, ',', '.'),
                 options: [
+                    'idempotency_key' => $this->resolveIdempotencyKey($request),
                     'company_id' => $operador->empresa_id ?? null,
                     'type' => 'earn',
                     'source' => 'api',
@@ -173,6 +174,7 @@ class WalletController extends Controller
                 points: $pontosSolicitados,
                 description: $validated['descricao'],
                 options: [
+                    'idempotency_key' => $this->resolveIdempotencyKey($request),
                     'type' => 'redeem',
                     'source' => 'api',
                 ]
@@ -451,5 +453,15 @@ class WalletController extends Controller
             'qr_code' => $qrData['code'],
             'qr_expira_em' => $qrData['expires_at']->toIso8601String(),
         ];
+    }
+
+    private function resolveIdempotencyKey(Request $request): ?string
+    {
+        $key = $request->header('X-Idempotency-Key') ?? $request->header('Idempotency-Key');
+        if (is_string($key) && trim($key) !== '') {
+            return trim($key);
+        }
+
+        return null;
     }
 }

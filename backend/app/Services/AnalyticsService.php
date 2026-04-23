@@ -194,11 +194,12 @@ class AnalyticsService
             ->get();
 
         $totalTransacoes = $transacoes->count();
-        $pontosEmitidos = $transacoes->where('type', 'earn')->sum('points');
-        $pontosResgatados = abs($transacoes->whereIn('type', ['redeem', 'reserved'])->sum('points'));
-        $pontosExpirados = abs($transacoes->where('type', 'expiration')->sum('points'));
+        $transacoesEarn = $transacoes->whereIn('transaction_type', ['earn', 'earn_bonus']);
+        $pontosEmitidos = $transacoesEarn->sum('points');
+        $pontosResgatados = abs($transacoes->whereIn('transaction_type', ['redeem', 'reserved'])->sum('points'));
+        $pontosExpirados = abs($transacoes->where('transaction_type', 'expiration')->sum('points'));
 
-        $ticketMedio = $totalTransacoes > 0 ? $pontosEmitidos / $transacoes->where('type', 'earn')->count() : 0;
+        $ticketMedio = $transacoesEarn->count() > 0 ? $pontosEmitidos / $transacoesEarn->count() : 0;
 
         return [
             'total_transacoes' => $totalTransacoes,

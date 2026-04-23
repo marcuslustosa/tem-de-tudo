@@ -37,6 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'security.headers' => \App\Http\Middleware\SecurityHeadersMiddleware::class,
             'subscription.check' => \App\Http\Middleware\CheckCompanySubscription::class,
             'request.logger' => \App\Http\Middleware\RequestLogger::class,
+            'idempotency' => \App\Http\Middleware\IdempotencyMiddleware::class,
         ]);
         
         // Middleware global de logging (apenas produção)

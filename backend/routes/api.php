@@ -46,11 +46,15 @@ use App\Http\Controllers\API\LoyaltyPolicyController;
 use App\Http\Controllers\CampanhaController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\PrivacyController;
+use App\Http\Controllers\ApiDocsController;
 
 // Health checks e métricas (público)
 Route::get('/ping', [HealthController::class, 'ping']);
 Route::get('/health', [HealthController::class, 'health']);
 Route::get('/metrics', [HealthController::class, 'metrics'])->middleware('throttle:60,1');
+Route::get('/docs/openapi', [ApiDocsController::class, 'index'])->middleware('cache.response:600');
+Route::get('/docs/openapi/{version}', [ApiDocsController::class, 'show'])->middleware('cache.response:600');
 
 if (app()->environment(['local', 'testing'])) {
     // Debug route (somente ambiente local/teste)
@@ -107,6 +111,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
     Route::delete('/auth/delete-account', [AuthController::class, 'deletarConta']);
+
+    Route::prefix('privacy')->group(function () {
+        Route::get('/status', [PrivacyController::class, 'status']);
+        Route::put('/consent', [PrivacyController::class, 'updateConsent']);
+        Route::post('/export', [PrivacyController::class, 'requestExport'])->middleware('rate.limit:3:1');
+        Route::get('/export/{privacyRequestId}/download', [PrivacyController::class, 'downloadExport']);
+        Route::post('/delete-account', [PrivacyController::class, 'deleteAccount'])->middleware('rate.limit:2:1');
+    });
 
     // NotificaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes internas
     Route::get('/notifications', [NotificationController::class, 'index']);
@@ -185,7 +197,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/badges/progresso', [BadgeController::class, 'progresso']);
     
     // ========== PAGAMENTOS MERCADO PAGO ==========
-    Route::post('/pagamentos/pix', [PagamentoController::class, 'criarPagamentoPix']);
+    Route::post('/pagamentos/pix', [PagamentoController::class, 'criarPagamentoPix'])
+        ->middleware(['rate.limit:10:1', 'idempotency:3600']);
     Route::get('/pagamentos/meus', [PagamentoController::class, 'meusPagamentos']);
     Route::get('/pagamentos/{id}/status', [PagamentoController::class, 'consultarStatus']);
     Route::post('/pagamentos/{id}/cancelar', [PagamentoController::class, 'cancelar']);
@@ -199,26 +212,34 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('fidelidade')->group(function () {
         Route::get('/cartao', [WalletController::class, 'show']);
         Route::get('/historico', [WalletController::class, 'historico'])->middleware('rate.limit:100:1');
-        Route::post('/resgatar', [WalletController::class, 'resgatarPontos'])->middleware('rate.limit:5:1');
-        Route::post('/adicionar-pontos', [WalletController::class, 'adicionarPontos'])->middleware('rate.limit:10:1');
+        Route::post('/resgatar', [WalletController::class, 'resgatarPontos'])
+            ->middleware(['rate.limit:5:1', 'idempotency:3600']);
+        Route::post('/adicionar-pontos', [WalletController::class, 'adicionarPontos'])
+            ->middleware(['rate.limit:10:1', 'idempotency:3600']);
         Route::post('/validar-qrcode', [WalletController::class, 'validarQRCode'])->middleware('rate.limit:20:1');
     });
     
     // ========== SISTEMA DE RESGATE PDV (RESERVA/CONFIRMA/ESTORNA) ==========
     Route::prefix('redemption')->group(function () {
-        Route::post('/request', [RedemptionController::class, 'request'])->middleware('rate.limit:10:1');
-        Route::post('/confirm', [RedemptionController::class, 'confirm'])->middleware('rate.limit:10:1');
-        Route::post('/cancel', [RedemptionController::class, 'cancel'])->middleware('rate.limit:10:1');
-        Route::post('/reverse', [RedemptionController::class, 'reverse'])->middleware('rate.limit:10:1'); // Admin only
+        Route::post('/request', [RedemptionController::class, 'request'])
+            ->middleware(['rate.limit:10:1', 'idempotency:3600']);
+        Route::post('/confirm', [RedemptionController::class, 'confirm'])
+            ->middleware(['rate.limit:10:1', 'idempotency:3600']);
+        Route::post('/cancel', [RedemptionController::class, 'cancel'])
+            ->middleware(['rate.limit:10:1', 'idempotency:3600']);
+        Route::post('/reverse', [RedemptionController::class, 'reverse'])
+            ->middleware(['rate.limit:10:1', 'idempotency:3600']); // Admin only
         Route::get('/{intentId}', [RedemptionController::class, 'show'])->middleware('rate.limit:60:1');
         Route::get('/user/{userId}', [RedemptionController::class, 'userHistory'])->middleware('rate.limit:60:1');
         Route::get('/company/{companyId}/pending', [RedemptionController::class, 'companyPending'])->middleware('rate.limit:60:1');
     });
     
     // ========== ROTAS PARA EMPRESAS ==========
-    Route::post('/empresa/qrcode/gerar', [MainCheckInController::class, 'gerarQRCode']);
-    Route::get('/empresa/checkins', [MainCheckInController::class, 'checkinsEmpresa']);
-    Route::get('/empresa/pagamentos/estatisticas', [PagamentoController::class, 'estatisticasEmpresa']);
+    Route::middleware(['role.permission:empresa', 'subscription.check'])->group(function () {
+        Route::post('/empresa/qrcode/gerar', [MainCheckInController::class, 'gerarQRCode']);
+        Route::get('/empresa/checkins', [MainCheckInController::class, 'checkinsEmpresa']);
+        Route::get('/empresa/pagamentos/estatisticas', [PagamentoController::class, 'estatisticasEmpresa']);
+    });
 
 });
 
@@ -334,7 +355,7 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     Route::get('/dashboard-data', [AuthController::class, 'clienteDashboard']);
 });
 
-Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa')->group(function () {
+Route::middleware(['auth:sanctum', 'role.permission:empresa', 'subscription.check'])->prefix('empresa')->group(function () {
     // Escanear QR do Cliente
     Route::post('/escanear-cliente', [EmpresaAPIController::class, 'escanearCliente'])->middleware('rate.limit:20:1');
     
@@ -559,7 +580,7 @@ Route::middleware('auth:sanctum')->prefix('desafios')->group(function () {
     Route::get('/{id}', [DesafioController::class, 'show']);
 });
 
-Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa/desafios')->group(function () {
+Route::middleware(['auth:sanctum', 'role.permission:empresa', 'subscription.check'])->prefix('empresa/desafios')->group(function () {
     Route::post('/', [DesafioController::class, 'store']);
     Route::put('/{id}', [DesafioController::class, 'update']);
     Route::delete('/{id}', [DesafioController::class, 'destroy']);
@@ -575,7 +596,7 @@ Route::middleware('auth:sanctum')->prefix('nps')->group(function () {
     Route::post('/responder', [NpsController::class, 'responder']);
 });
 
-Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa/nps')->group(function () {
+Route::middleware(['auth:sanctum', 'role.permission:empresa', 'subscription.check'])->prefix('empresa/nps')->group(function () {
     Route::get('/estatisticas', [NpsController::class, 'estatisticasEmpresa']);
 });
 
@@ -618,7 +639,7 @@ Route::middleware('auth:sanctum')->prefix('campanhas')->group(function () {
     Route::get('/multiplicador-ativo', [CampanhaController::class, 'multiplicadorAtivo'])->middleware('throttle:60,1');
     
     // Empresa: gerenciar suas próprias campanhas
-    Route::middleware('role.permission:empresa')->group(function () {
+    Route::middleware(['role.permission:empresa', 'subscription.check'])->group(function () {
         Route::get('/', [CampanhaController::class, 'index']);
         Route::get('/ativas', [CampanhaController::class, 'ativas']);
         Route::post('/', [CampanhaController::class, 'store'])->middleware('rate.limit:10:1');
@@ -741,5 +762,3 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->group(function (
         ]);
     });
 });
-
-

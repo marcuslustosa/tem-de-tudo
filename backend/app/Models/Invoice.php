@@ -24,6 +24,13 @@ class Invoice extends Model
         'payment_id',
         'payment_url',
         'payment_metadata',
+        'retry_count',
+        'last_retry_at',
+        'next_retry_at',
+        'last_failure_reason',
+        'reconciliation_status',
+        'external_status',
+        'reconciled_at',
         'notes',
     ];
 
@@ -34,6 +41,10 @@ class Invoice extends Model
         'due_date' => 'date',
         'paid_at' => 'date',
         'payment_metadata' => 'array',
+        'retry_count' => 'integer',
+        'last_retry_at' => 'datetime',
+        'next_retry_at' => 'datetime',
+        'reconciled_at' => 'datetime',
     ];
 
     /**
@@ -61,6 +72,11 @@ class Invoice extends Model
     public function notifications()
     {
         return $this->hasMany(BillingNotification::class);
+    }
+
+    public function billingEvents()
+    {
+        return $this->hasMany(BillingEvent::class, 'invoice_id');
     }
 
     /**

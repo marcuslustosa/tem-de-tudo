@@ -15,12 +15,12 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie', '*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
-    'allowed_origins' => env('APP_ENV') === 'production' 
-        ? explode(',', env('ALLOWED_ORIGINS', 'https://vipus.com.br,https://www.vipus.com.br,https://app.vipus.com.br'))
+    'allowed_origins' => env('APP_ENV') === 'production'
+        ? explode(',', env('ALLOWED_ORIGINS', 'https://tem-de-tudo.up.railway.app,https://vipus.com.br,https://www.vipus.com.br,https://app.vipus.com.br'))
         : ['http://localhost:3000', 'http://localhost:8000', 'http://127.0.0.1:8000'], // Dev: apenas localhost
 
     'allowed_origins_patterns' => [],

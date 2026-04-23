@@ -16,6 +16,7 @@ use App\Models\Admin;
 use App\Models\AuditLog;
 use App\Models\Cupom;
 use App\Mail\WelcomeMail;
+use App\Services\DataPrivacyService;
 use Laravel\Sanctum\PersonalAccessToken;
 
 use Carbon\Carbon;
@@ -685,6 +686,9 @@ class AuthController extends Controller
             'password' => 'required|string|min:6|confirmed',
             'password_confirmation' => 'required|string|min:6',
             'terms' => 'required|boolean|accepted',
+            'privacy_policy' => 'sometimes|boolean',
+            'marketing_consent' => 'sometimes|boolean',
+            'consent_version' => 'sometimes|string|max:20',
         ];
 
         switch ($perfil) {
@@ -721,6 +725,11 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'perfil' => $perfil,
             'status' => 'ativo',
+            'terms_accepted_at' => now(),
+            'privacy_policy_accepted_at' => $request->boolean('privacy_policy', true) ? now() : null,
+            'data_processing_consent_at' => $request->boolean('terms', true) ? now() : null,
+            'marketing_consent' => $request->boolean('marketing_consent', false),
+            'consent_version' => $request->input('consent_version', config('privacy.default_consent_version', 'v1')),
         ];
 
         switch ($perfil) {
@@ -1436,11 +1445,12 @@ class AuthController extends Controller
     {
         $request->validate([
             'password' => 'required|string',
+            'reason' => 'nullable|string|max:1000',
         ]);
 
         $user = $request->user();
 
-        if (!\Hash::check($request->password, $user->password)) {
+        if (!$this->isValidUserPassword($user, $request->password)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Senha incorreta. Por favor, confirme sua senha para excluir a conta.',
@@ -1462,6 +1472,15 @@ class AuthController extends Controller
 
         // Revogar todos os tokens Sanctum
         $user->tokens()->delete();
+
+        app(DataPrivacyService::class)->deleteAccount(
+            $user,
+            $request->input('reason'),
+            [
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]
+        );
 
         return response()->json([
             'success' => true,

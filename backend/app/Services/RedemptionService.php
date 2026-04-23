@@ -73,6 +73,7 @@ class RedemptionService
                 points: $points,
                 description: "Reserva para resgate - Intent #{$intent->intent_id}",
                 options: [
+                    'idempotency_key' => "redemption:reserve:{$intent->intent_id}",
                     'company_id' => $companyId,
                     'metadata' => [
                         'redemption_intent_id' => $intent->id,
@@ -127,6 +128,7 @@ class RedemptionService
                 points: $pointsToConfirm,
                 description: "Resgate confirmado - Intent #{$intent->intent_id}",
                 options: [
+                    'idempotency_key' => "redemption:confirm:{$intent->intent_id}",
                     'company_id' => $intent->company_id,
                     'metadata' => [
                         'redemption_intent_id' => $intent->id,
@@ -279,9 +281,14 @@ class RedemptionService
     /**
      * Histórico de resgates do usuário
      */
-    public function getUserRedemptions(int $userId, int $limit = 20): \Illuminate\Database\Eloquent\Collection
+    public function getUserRedemptions(
+        int $userId,
+        int $limit = 20,
+        ?int $companyId = null
+    ): \Illuminate\Database\Eloquent\Collection
     {
         return RedemptionIntent::where('user_id', $userId)
+            ->when($companyId !== null, fn ($query) => $query->where('company_id', $companyId))
             ->with(['company', 'confirmedLedger'])
             ->latest()
             ->limit($limit)

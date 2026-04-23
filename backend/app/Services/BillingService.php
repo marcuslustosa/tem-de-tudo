@@ -2,33 +2,21 @@
 
 namespace App\Services;
 
+use App\Mail\BillingNotificationMail;
+use App\Models\BillingEvent;
+use App\Models\BillingNotification;
 use App\Models\CompanySubscription;
 use App\Models\Empresa;
 use App\Models\Invoice;
 use App\Models\SubscriptionPlan;
-use App\Models\BillingNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 
-/**
- * BillingService - Gerencia cobrança de empresas.
- * 
- * Funcionalidades:
- * - Criar assinaturas com trial
- * - Gerar faturas automáticas
- * - Bloquear empresas inadimplentes
- * - Enviar notificações de cobrança
- */
 class BillingService
 {
-    /**
-     * Cria assinatura para empresa nova
-     * 
-     * @param int $companyId
-     * @param string $planName (basic, professional, enterprise)
-     * @return CompanySubscription
-     */
     public function createSubscription(int $companyId, string $planName = 'basic'): CompanySubscription
     {
         $plan = SubscriptionPlan::where('name', $planName)->firstOrFail();
@@ -36,7 +24,7 @@ class BillingService
 
         $trialEndsAt = Carbon::now()->addDays($plan->trial_days);
 
-        return CompanySubscription::create([
+        $subscription = CompanySubscription::create([
             'company_id' => $companyId,
             'subscription_plan_id' => $plan->id,
             'status' => CompanySubscription::STATUS_TRIAL,
@@ -44,34 +32,27 @@ class BillingService
             'trial_ends_at' => $trialEndsAt,
             'current_period_start' => Carbon::now(),
             'current_period_end' => $trialEndsAt,
-            'billing_day' => 1,  // Primeiro dia do mês
+            'billing_day' => 1,
             'grace_period_days' => 7,
         ]);
+
+        $this->recordEvent('subscription_created', [
+            'plan' => $planName,
+            'status' => $subscription->status,
+        ], null, $subscription, $companyId);
+
+        return $subscription;
     }
 
-    /**
-     * Gera fatura para período de cobrança
-     * 
-     * @param CompanySubscription $subscription
-     * @param Carbon|null $dueDate
-     * @return Invoice
-     */
     public function generateInvoice(CompanySubscription $subscription, ?Carbon $dueDate = null): Invoice
     {
         $plan = $subscription->plan;
-        
-        // Define vencimento
-        if (!$dueDate) {
-            $dueDate = Carbon::now()->addDays(5); // 5 dias para pagar
-        }
+        $dueDate = $dueDate ?: Carbon::now()->addDays(5);
 
-        // Calcula desconto (se houver)
         $discountCents = 0;
-        // TODO: Implementar lógica de desconto (ex: plano anual, cupom)
-
         $totalCents = $plan->monthly_price_cents - $discountCents;
 
-        return Invoice::create([
+        $invoice = Invoice::create([
             'subscription_id' => $subscription->id,
             'company_id' => $subscription->company_id,
             'invoice_number' => Invoice::generateInvoiceNumber(),
@@ -80,34 +61,47 @@ class BillingService
             'total_cents' => $totalCents,
             'status' => Invoice::STATUS_PENDING,
             'due_date' => $dueDate,
+            'reconciliation_status' => 'pending',
         ]);
+
+        $this->recordEvent('invoice_generated', [
+            'invoice_id' => $invoice->id,
+            'total_cents' => $invoice->total_cents,
+            'due_date' => $invoice->due_date?->toDateString(),
+        ], $invoice, $subscription, $subscription->company_id);
+
+        return $invoice;
     }
 
-    /**
-     * Marca fatura como paga
-     * 
-     * @param int $invoiceId
-     * @param array $paymentData
-     * @return Invoice
-     */
     public function markInvoicePaid(int $invoiceId, array $paymentData = []): Invoice
     {
-        return DB::transaction(function () use ($invoiceId, $paymentData) {
+        /** @var Invoice $invoice */
+        $invoice = DB::transaction(function () use ($invoiceId, $paymentData) {
             $invoice = Invoice::lockForUpdate()->findOrFail($invoiceId);
 
             if ($invoice->isPaid()) {
-                return $invoice; // Já paga, retorna
+                return $invoice;
+            }
+
+            $paymentMetadata = $paymentData['metadata'] ?? $invoice->payment_metadata;
+            if (is_array($paymentMetadata)) {
+                $paymentMetadata['paid_via'] = $paymentData['source'] ?? 'manual';
+                $paymentMetadata['paid_at'] = now()->toIso8601String();
             }
 
             $invoice->update([
                 'status' => Invoice::STATUS_PAID,
                 'paid_at' => now(),
-                'payment_method' => $paymentData['method'] ?? $paymentData['payment_method'] ?? null,
-                'payment_id' => $paymentData['id'] ?? $paymentData['transaction_id'] ?? null,
-                'payment_metadata' => $paymentData['metadata'] ?? null,
+                'payment_method' => $paymentData['method'] ?? $paymentData['payment_method'] ?? $invoice->payment_method,
+                'payment_id' => $paymentData['id'] ?? $paymentData['transaction_id'] ?? $invoice->payment_id,
+                'payment_metadata' => $paymentMetadata,
+                'reconciliation_status' => 'reconciled',
+                'external_status' => $paymentData['external_status'] ?? $invoice->external_status ?? 'paid',
+                'reconciled_at' => now(),
+                'next_retry_at' => null,
+                'last_failure_reason' => null,
             ]);
 
-            // Atualiza status da assinatura
             $subscription = $invoice->subscription;
             if ($subscription->status !== CompanySubscription::STATUS_ACTIVE) {
                 $subscription->update([
@@ -117,15 +111,17 @@ class BillingService
                 ]);
             }
 
-            return $invoice;
+            return $invoice->fresh();
         });
+
+        $this->recordEvent('invoice_paid', [
+            'payment_method' => $invoice->payment_method,
+            'payment_id' => $invoice->payment_id,
+        ], $invoice, $invoice->subscription, $invoice->company_id);
+
+        return $invoice;
     }
 
-    /**
-     * Processa faturas vencidas e bloqueia empresas
-     * 
-     * Deve rodar diariamente via cron/scheduler
-     */
     public function processOverdueInvoices(): array
     {
         $processed = [
@@ -134,17 +130,23 @@ class BillingService
             'subscriptions_suspended' => 0,
         ];
 
-        // 1. Marca faturas vencidas
         $overdueInvoices = Invoice::where('status', Invoice::STATUS_PENDING)
             ->where('due_date', '<', Carbon::now())
             ->get();
 
         foreach ($overdueInvoices as $invoice) {
-            $invoice->update(['status' => Invoice::STATUS_OVERDUE]);
+            $invoice->update([
+                'status' => Invoice::STATUS_OVERDUE,
+                'reconciliation_status' => 'pending',
+            ]);
             $processed['overdue_marked']++;
+
+            $this->recordEvent('invoice_marked_overdue', [
+                'invoice_id' => $invoice->id,
+                'due_date' => $invoice->due_date?->toDateString(),
+            ], $invoice, $invoice->subscription, $invoice->company_id, 'warning');
         }
 
-        // 2. Atualiza assinaturas para past_due
         $subscriptionsWithOverdue = CompanySubscription::whereHas('invoices', function ($q) {
             $q->where('status', Invoice::STATUS_OVERDUE);
         })->where('status', CompanySubscription::STATUS_ACTIVE)->get();
@@ -152,9 +154,12 @@ class BillingService
         foreach ($subscriptionsWithOverdue as $subscription) {
             $subscription->update(['status' => CompanySubscription::STATUS_PAST_DUE]);
             $processed['subscriptions_past_due']++;
+
+            $this->recordEvent('subscription_past_due', [
+                'subscription_id' => $subscription->id,
+            ], null, $subscription, $subscription->company_id, 'warning');
         }
 
-        // 3. Suspende assinaturas apos grace period
         $toSuspend = CompanySubscription::where('status', CompanySubscription::STATUS_PAST_DUE)->get();
 
         foreach ($toSuspend as $subscription) {
@@ -168,17 +173,170 @@ class BillingService
             if ($hasExpiredDebt) {
                 $subscription->update(['status' => CompanySubscription::STATUS_SUSPENDED]);
                 $processed['subscriptions_suspended']++;
+
+                $this->recordEvent('subscription_suspended', [
+                    'subscription_id' => $subscription->id,
+                    'grace_period_days' => $subscription->grace_period_days,
+                ], null, $subscription, $subscription->company_id, 'critical');
             }
         }
 
         return $processed;
     }
 
-    /**
-     * Envia notificações de cobrança
-     * 
-     * Deve rodar diariamente via cron/scheduler
-     */
+    public function processPaymentRetries(): array
+    {
+        $result = [
+            'attempted' => 0,
+            'recovered' => 0,
+            'rescheduled' => 0,
+            'exhausted' => 0,
+        ];
+
+        if (!(bool) config('billing.payment_retry.enabled', true)) {
+            return $result;
+        }
+
+        $maxAttempts = max(1, (int) config('billing.payment_retry.max_attempts', 3));
+        $backoffDays = $this->retryBackoffDays();
+
+        $candidates = Invoice::query()
+            ->whereIn('status', [Invoice::STATUS_PENDING, Invoice::STATUS_OVERDUE])
+            ->where(function ($query) {
+                $query->whereNull('next_retry_at')
+                    ->orWhere('next_retry_at', '<=', now());
+            })
+            ->where('retry_count', '<', $maxAttempts)
+            ->orderBy('due_date')
+            ->get();
+
+        foreach ($candidates as $invoice) {
+            $result['attempted']++;
+            $attemptNumber = ((int) $invoice->retry_count) + 1;
+            $externalStatus = $this->resolveExternalStatus($invoice);
+
+            if ($this->isPaidStatus($externalStatus)) {
+                $this->markInvoicePaid($invoice->id, [
+                    'external_status' => $externalStatus,
+                    'source' => 'retry',
+                    'metadata' => $invoice->payment_metadata,
+                    'id' => $invoice->payment_id,
+                ]);
+
+                $result['recovered']++;
+                $this->recordEvent('payment_retry_recovered', [
+                    'invoice_id' => $invoice->id,
+                    'attempt' => $attemptNumber,
+                    'external_status' => $externalStatus,
+                ], $invoice, $invoice->subscription, $invoice->company_id);
+                continue;
+            }
+
+            $hasAttemptsLeft = $attemptNumber < $maxAttempts;
+            $invoice->update([
+                'retry_count' => $attemptNumber,
+                'last_retry_at' => now(),
+                'next_retry_at' => $hasAttemptsLeft ? now()->addDays($this->retryOffsetDays($attemptNumber, $backoffDays)) : null,
+                'last_failure_reason' => sprintf('Gateway status: %s', $externalStatus ?? 'unknown'),
+            ]);
+
+            if ($hasAttemptsLeft) {
+                $result['rescheduled']++;
+                $this->recordEvent('payment_retry_scheduled', [
+                    'invoice_id' => $invoice->id,
+                    'attempt' => $attemptNumber,
+                    'next_retry_at' => optional($invoice->next_retry_at)->toIso8601String(),
+                    'external_status' => $externalStatus,
+                ], $invoice, $invoice->subscription, $invoice->company_id, 'warning');
+            } else {
+                $result['exhausted']++;
+                $this->recordEvent('payment_retry_exhausted', [
+                    'invoice_id' => $invoice->id,
+                    'attempt' => $attemptNumber,
+                    'external_status' => $externalStatus,
+                ], $invoice, $invoice->subscription, $invoice->company_id, 'critical');
+            }
+        }
+
+        return $result;
+    }
+
+    public function reconcilePendingInvoices(): array
+    {
+        $result = [
+            'checked' => 0,
+            'paid' => 0,
+            'canceled' => 0,
+            'unchanged' => 0,
+        ];
+
+        if (!(bool) config('billing.reconciliation.enabled', true)) {
+            return $result;
+        }
+
+        $lookbackDays = max(1, (int) config('billing.reconciliation.lookback_days', 30));
+        $threshold = now()->subDays($lookbackDays);
+
+        $invoices = Invoice::query()
+            ->whereIn('status', [Invoice::STATUS_PENDING, Invoice::STATUS_OVERDUE])
+            ->whereNotNull('payment_id')
+            ->where('updated_at', '>=', $threshold)
+            ->orderByDesc('updated_at')
+            ->get();
+
+        foreach ($invoices as $invoice) {
+            $result['checked']++;
+            $externalStatus = $this->resolveExternalStatus($invoice);
+
+            if ($this->isPaidStatus($externalStatus)) {
+                $this->markInvoicePaid($invoice->id, [
+                    'external_status' => $externalStatus,
+                    'source' => 'reconciliation',
+                    'metadata' => $invoice->payment_metadata,
+                    'id' => $invoice->payment_id,
+                ]);
+
+                $result['paid']++;
+                $this->recordEvent('invoice_reconciled_paid', [
+                    'invoice_id' => $invoice->id,
+                    'external_status' => $externalStatus,
+                ], $invoice, $invoice->subscription, $invoice->company_id);
+                continue;
+            }
+
+            if ($this->isCanceledStatus($externalStatus)) {
+                $invoice->update([
+                    'status' => Invoice::STATUS_CANCELED,
+                    'reconciliation_status' => 'reconciled',
+                    'external_status' => $externalStatus,
+                    'reconciled_at' => now(),
+                    'next_retry_at' => null,
+                ]);
+
+                $result['canceled']++;
+                $this->recordEvent('invoice_reconciled_canceled', [
+                    'invoice_id' => $invoice->id,
+                    'external_status' => $externalStatus,
+                ], $invoice, $invoice->subscription, $invoice->company_id, 'warning');
+                continue;
+            }
+
+            $invoice->update([
+                'reconciliation_status' => $externalStatus ? 'pending_confirmation' : 'no_signal',
+                'external_status' => $externalStatus,
+                'reconciled_at' => now(),
+            ]);
+
+            $result['unchanged']++;
+            $this->recordEvent('invoice_reconciled_no_change', [
+                'invoice_id' => $invoice->id,
+                'external_status' => $externalStatus,
+            ], $invoice, $invoice->subscription, $invoice->company_id);
+        }
+
+        return $result;
+    }
+
     public function sendBillingNotifications(): array
     {
         $sent = [
@@ -189,45 +347,38 @@ class BillingService
             'overdue_7_days' => 0,
         ];
 
-        // Faturas pendentes
         $pendingInvoices = Invoice::where('status', Invoice::STATUS_PENDING)->get();
 
         foreach ($pendingInvoices as $invoice) {
             $daysUntilDue = $invoice->daysUntilDue();
 
-            // Lembrete 3 dias antes
-            if ($daysUntilDue == 3) {
+            if ($daysUntilDue === 3) {
                 $this->sendNotification($invoice, BillingNotification::TYPE_REMINDER_3_DAYS);
                 $sent['reminder_3_days']++;
             }
 
-            // Lembrete 1 dia antes
-            if ($daysUntilDue == 1) {
+            if ($daysUntilDue === 1) {
                 $this->sendNotification($invoice, BillingNotification::TYPE_REMINDER_1_DAY);
                 $sent['reminder_1_day']++;
             }
 
-            // No vencimento
-            if ($daysUntilDue == 0) {
+            if ($daysUntilDue === 0) {
                 $this->sendNotification($invoice, BillingNotification::TYPE_DUE_DATE);
                 $sent['due_date']++;
             }
         }
 
-        // Faturas vencidas
         $overdueInvoices = Invoice::where('status', Invoice::STATUS_OVERDUE)->get();
 
         foreach ($overdueInvoices as $invoice) {
             $daysSinceDue = $invoice->daysSinceDue();
 
-            // 3 dias após vencimento
-            if ($daysSinceDue == 3) {
+            if ($daysSinceDue === 3) {
                 $this->sendNotification($invoice, BillingNotification::TYPE_OVERDUE_3_DAYS);
                 $sent['overdue_3_days']++;
             }
 
-            // 7 dias - suspensão
-            if ($daysSinceDue == 7) {
+            if ($daysSinceDue === 7) {
                 $this->sendNotification($invoice, BillingNotification::TYPE_OVERDUE_7_DAYS);
                 $sent['overdue_7_days']++;
             }
@@ -236,72 +387,78 @@ class BillingService
         return $sent;
     }
 
-    /**
-     * Envia notificação individual
-     */
     protected function sendNotification(Invoice $invoice, string $type): void
     {
-        // Verifica se já enviou
         $exists = BillingNotification::where('invoice_id', $invoice->id)
             ->where('type', $type)
             ->where('sent', true)
             ->exists();
 
         if ($exists) {
-            return; // Já enviou
+            return;
         }
 
         $notification = BillingNotification::create([
             'invoice_id' => $invoice->id,
             'company_id' => $invoice->company_id,
             'type' => $type,
-            'channel' => 'email',  // TODO: Adicionar push
+            'channel' => 'email',
             'sent' => false,
         ]);
 
         try {
-            // TODO: Implementar envio real de email
-            // Mail::to($invoice->company->email)->send(new InvoiceNotification($invoice, $type));
+            $recipient = $invoice->company?->owner?->email;
+            if (!$recipient) {
+                throw new \RuntimeException("Empresa #{$invoice->company_id} sem email de contato do responsavel.");
+            }
 
-            Log::info("Billing notification sent", [
-                'invoice_id' => $invoice->id,
-                'type' => $type,
-                'company' => $invoice->company->nome,
-            ]);
+            Mail::to($recipient)->send(new BillingNotificationMail($invoice, $type));
 
             $notification->update([
                 'sent' => true,
                 'sent_at' => now(),
             ]);
-        } catch (\Exception $e) {
+
+            Log::info('Billing notification sent', [
+                'invoice_id' => $invoice->id,
+                'type' => $type,
+                'company_id' => $invoice->company_id,
+                'recipient' => $recipient,
+            ]);
+
+            $this->recordEvent('billing_notification_sent', [
+                'type' => $type,
+                'recipient' => $recipient,
+                'notification_id' => $notification->id,
+            ], $invoice, $invoice->subscription, $invoice->company_id);
+        } catch (\Throwable $e) {
             $notification->update([
                 'error' => $e->getMessage(),
             ]);
 
-            Log::error("Failed to send billing notification", [
+            Log::error('Failed to send billing notification', [
                 'invoice_id' => $invoice->id,
                 'error' => $e->getMessage(),
             ]);
+
+            $this->recordEvent('billing_notification_failed', [
+                'type' => $type,
+                'error' => $e->getMessage(),
+                'notification_id' => $notification->id,
+            ], $invoice, $invoice->subscription, $invoice->company_id, 'error');
         }
     }
 
-    /**
-     * Gera faturas mensais para todas assinaturas ativas
-     * 
-     * Deve rodar no dia de cobrança de cada empresa
-     */
     public function generateMonthlyInvoices(): int
     {
         $generated = 0;
         $today = Carbon::now()->day;
 
-        // Busca assinaturas que devem ser cobradas hoje
         $subscriptions = CompanySubscription::where('status', CompanySubscription::STATUS_ACTIVE)
             ->where('billing_day', $today)
             ->get();
 
         foreach ($subscriptions as $subscription) {
-            // Verifica se já tem fatura pendente para este período
             $hasInvoice = $subscription->invoices()
                 ->where('status', Invoice::STATUS_PENDING)
                 ->where('due_date', '>=', Carbon::now())
@@ -316,12 +473,6 @@ class BillingService
         return $generated;
     }
 
-    /**
-     * Verifica se empresa pode operar
-     * 
-     * @param int $companyId
-     * @return array ['allowed' => bool, 'reason' => string|null]
-     */
     public function canOperate(int $companyId): array
     {
         $subscription = CompanySubscription::where('company_id', $companyId)
@@ -342,7 +493,7 @@ class BillingService
         ) {
             return [
                 'allowed' => false,
-                'reason' => 'Período de trial expirado. Realize o pagamento para continuar.',
+                'reason' => 'Periodo de trial expirado. Realize o pagamento para continuar.',
             ];
         }
 
@@ -352,8 +503,8 @@ class BillingService
 
         if ($subscription->status === CompanySubscription::STATUS_PAST_DUE) {
             return [
-                'allowed' => true, // Ainda permite com aviso
-                'reason' => 'Pagamento em atraso. Sistema será bloqueado em breve.',
+                'allowed' => true,
+                'reason' => 'Pagamento em atraso. Sistema sera bloqueado em breve.',
             ];
         }
 
@@ -362,4 +513,112 @@ class BillingService
             'reason' => 'Assinatura suspensa. Entre em contato com o suporte.',
         ];
     }
+
+    private function resolveExternalStatus(Invoice $invoice): ?string
+    {
+        $metadata = $invoice->payment_metadata;
+        if (!is_array($metadata)) {
+            return null;
+        }
+
+        $candidates = [
+            $metadata['mock_gateway_status'] ?? null,
+            $metadata['gateway_status'] ?? null,
+            $metadata['external_status'] ?? null,
+            $metadata['status'] ?? null,
+        ];
+
+        foreach ($candidates as $candidate) {
+            if (!is_string($candidate)) {
+                continue;
+            }
+
+            $value = strtolower(trim($candidate));
+            if ($value !== '') {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+
+    private function isPaidStatus(?string $status): bool
+    {
+        return in_array($status, ['paid', 'approved', 'authorized', 'succeeded', 'success'], true);
+    }
+
+    private function isCanceledStatus(?string $status): bool
+    {
+        return in_array($status, ['canceled', 'cancelled', 'refunded', 'rejected', 'expired'], true);
+    }
+
+    private function retryBackoffDays(): array
+    {
+        $config = config('billing.payment_retry.backoff_days', [1, 3, 5]);
+        if (is_array($config)) {
+            $values = $config;
+        } else {
+            $values = explode(',', (string) $config);
+        }
+
+        $days = [];
+        foreach ($values as $value) {
+            $parsed = (int) trim((string) $value);
+            if ($parsed > 0) {
+                $days[] = $parsed;
+            }
+        }
+
+        return $days !== [] ? array_values($days) : [1, 3, 5];
+    }
+
+    private function retryOffsetDays(int $attemptNumber, array $backoffDays): int
+    {
+        $index = max(0, $attemptNumber - 1);
+        return $backoffDays[$index] ?? end($backoffDays);
+    }
+
+    private function recordEvent(
+        string $eventType,
+        array $payload = [],
+        ?Invoice $invoice = null,
+        ?CompanySubscription $subscription = null,
+        ?int $companyId = null,
+        string $level = 'info'
+    ): void {
+        static $eventsTableExists = null;
+        if ($eventsTableExists === null) {
+            $eventsTableExists = Schema::hasTable('billing_events');
+        }
+
+        if (!$eventsTableExists) {
+            return;
+        }
+
+        try {
+            $resolvedCompanyId = $companyId
+                ?? $invoice?->company_id
+                ?? $subscription?->company_id;
+
+            if (!$resolvedCompanyId) {
+                return;
+            }
+
+            BillingEvent::create([
+                'company_id' => $resolvedCompanyId,
+                'subscription_id' => $subscription?->id ?? $invoice?->subscription_id,
+                'invoice_id' => $invoice?->id,
+                'event_type' => $eventType,
+                'level' => $level,
+                'payload' => $payload,
+                'occurred_at' => now(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao registrar evento de billing', [
+                'event_type' => $eventType,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
 }
+
