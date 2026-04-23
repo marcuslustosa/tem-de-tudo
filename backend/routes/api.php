@@ -39,6 +39,14 @@ use App\Http\Controllers\SegmentoController;
 use App\Http\Controllers\WebhookSaidaController;
 use App\Http\Controllers\AjustePontosController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\RedemptionController;
+use App\Http\Controllers\HealthController;
+use App\Http\Controllers\API\LoyaltyPolicyController;
+
+// Health checks e métricas (público)
+Route::get('/ping', [HealthController::class, 'ping']);
+Route::get('/health', [HealthController::class, 'health']);
+Route::get('/metrics', [HealthController::class, 'metrics'])->middleware('throttle:60,1');
 
 if (app()->environment(['local', 'testing'])) {
     // Debug route (somente ambiente local/teste)
@@ -186,10 +194,21 @@ Route::middleware('auth:sanctum')->group(function () {
     // ========== SISTEMA DE FIDELIDADE - WALLET ==========
     Route::prefix('fidelidade')->group(function () {
         Route::get('/cartao', [WalletController::class, 'show']);
-        Route::get('/historico', [WalletController::class, 'historico']);
-        Route::post('/resgatar', [WalletController::class, 'resgatarPontos']);
-        Route::post('/adicionar-pontos', [WalletController::class, 'adicionarPontos']);
-        Route::post('/validar-qrcode', [WalletController::class, 'validarQRCode']);
+        Route::get('/historico', [WalletController::class, 'historico'])->middleware('rate.limit:100:1');
+        Route::post('/resgatar', [WalletController::class, 'resgatarPontos'])->middleware('rate.limit:10:1');
+        Route::post('/adicionar-pontos', [WalletController::class, 'adicionarPontos'])->middleware('rate.limit:10:1');
+        Route::post('/validar-qrcode', [WalletController::class, 'validarQRCode'])->middleware('rate.limit:20:1');
+    });
+    
+    // ========== SISTEMA DE RESGATE PDV (RESERVA/CONFIRMA/ESTORNA) ==========
+    Route::prefix('redemption')->group(function () {
+        Route::post('/request', [RedemptionController::class, 'request'])->middleware('rate.limit:20:1');
+        Route::post('/confirm', [RedemptionController::class, 'confirm'])->middleware('rate.limit:20:1');
+        Route::post('/cancel', [RedemptionController::class, 'cancel'])->middleware('rate.limit:20:1');
+        Route::post('/reverse', [RedemptionController::class, 'reverse'])->middleware('rate.limit:10:1'); // Admin only
+        Route::get('/{intentId}', [RedemptionController::class, 'show'])->middleware('rate.limit:60:1');
+        Route::get('/user/{userId}', [RedemptionController::class, 'userHistory'])->middleware('rate.limit:60:1');
+        Route::get('/company/{companyId}/pending', [RedemptionController::class, 'companyPending'])->middleware('rate.limit:60:1');
     });
     
     // ========== ROTAS PARA EMPRESAS ==========
@@ -291,12 +310,12 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     Route::get('/empresas/{id}', [ClienteAPIController::class, 'empresaDetalhes']);
     
     // QR Code
-    Route::post('/escanear-qrcode', [ClienteAPIController::class, 'escanearQRCode']);
+    Route::post('/escanear-qrcode', [ClienteAPIController::class, 'escanearQRCode'])->middleware('rate.limit:20:1');
     
-    // PromoÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
+    // PromoÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
     Route::get('/promocoes', [ClienteAPIController::class, 'listarPromocoes']);
-    Route::post('/resgatar-promocao/{id}', [ClienteAPIController::class, 'resgatarPromocao']);
-    Route::post('/promocoes/{id}/resgatar', [ClienteAPIController::class, 'resgatarPromocao']);
+    Route::post('/resgatar-promocao/{id}', [ClienteAPIController::class, 'resgatarPromocao'])->middleware('rate.limit:10:1');
+    Route::post('/promocoes/{id}/resgatar', [ClienteAPIController::class, 'resgatarPromocao'])->middleware('rate.limit:10:1');
     
     // AvaliaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
     Route::post('/avaliar', [ClienteAPIController::class, 'avaliar']);
@@ -311,7 +330,7 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
 
 Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa')->group(function () {
     // Escanear QR do Cliente
-    Route::post('/escanear-cliente', [EmpresaAPIController::class, 'escanearCliente']);
+    Route::post('/escanear-cliente', [EmpresaAPIController::class, 'escanearCliente'])->middleware('rate.limit:20:1');
     
     // Dashboard da Empresa
     Route::get('/dashboard', [EmpresaAPIController::class, 'dashboard']);
@@ -319,6 +338,9 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa'
     // Perfil da empresa
     Route::get('/perfil', [EmpresaAPIController::class, 'meuPerfil']);
     Route::put('/perfil', [EmpresaAPIController::class, 'atualizarPerfil']);
+    Route::get('/fidelidade/config', [LoyaltyPolicyController::class, 'companyConfig']);
+    Route::put('/fidelidade/config', [LoyaltyPolicyController::class, 'companyUpdateConfig']);
+    Route::get('/fidelidade/onboarding', [LoyaltyPolicyController::class, 'companyOnboardingStatus']);
     
     // Clientes
     Route::get('/clientes', [EmpresaAPIController::class, 'clientes']);
@@ -377,6 +399,9 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->g
 
     // Campanhas: visÃ£o geral admin
     Route::get('/campanhas', [CampanhaMultiplicadorController::class, 'adminIndex']);
+    Route::get('/empresas/{companyId}/fidelidade/config', [LoyaltyPolicyController::class, 'adminCompanyConfig']);
+    Route::put('/empresas/{companyId}/fidelidade/config', [LoyaltyPolicyController::class, 'adminUpdateCompanyConfig']);
+    Route::get('/empresas/{companyId}/fidelidade/onboarding', [LoyaltyPolicyController::class, 'adminCompanyOnboardingStatus']);
 
     // Tickets de suporte (painel admin)
     Route::get('/tickets', [NotificationController::class, 'listTickets']);
@@ -629,4 +654,5 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->group(function (
         ]);
     });
 });
+
 

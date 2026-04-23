@@ -15,10 +15,6 @@ Route::get('/health', function () {
     return response()->json(['status' => 'OK']);
 });
 
-Route::get('/api/health', function () {
-    return response()->json(['status' => 'healthy']);
-});
-
 // Named login route to avoid middleware warnings.
 Route::get('/login', function () {
     return redirect('/entrar.html');

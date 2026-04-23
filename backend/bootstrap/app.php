@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Middleware global de segurança
         $middleware->web(append: [
             \App\Http\Middleware\SecurityMiddleware::class,
+            \App\Http\Middleware\SecurityHeadersMiddleware::class,
         ]);
         
         $middleware->alias([
@@ -32,7 +33,18 @@ return Application::configure(basePath: dirname(__DIR__))
             'role.permission' => \App\Http\Middleware\RolePermissionMiddleware::class,
             'security' => \App\Http\Middleware\SecurityMiddleware::class,
             'cache.response' => \App\Http\Middleware\CacheResponse::class,
+            'rate.limit' => \App\Http\Middleware\RateLimitMiddleware::class,
+            'security.headers' => \App\Http\Middleware\SecurityHeadersMiddleware::class,
+            'subscription.check' => \App\Http\Middleware\CheckCompanySubscription::class,
+            'request.logger' => \App\Http\Middleware\RequestLogger::class,
         ]);
+        
+        // Middleware global de logging (apenas produção)
+        if (($_ENV['APP_ENV'] ?? env('APP_ENV')) === 'production') {
+            $middleware->api(append: [
+                \App\Http\Middleware\RequestLogger::class,
+            ]);
+        }
     })
     ->withSchedule(function (Schedule $schedule): void {
         // Processar bônus de aniversário diariamente às 8h da manhã
@@ -88,6 +100,37 @@ return Application::configure(basePath: dirname(__DIR__))
             })
             ->onFailure(function () {
                 \Illuminate\Support\Facades\Log::error('Falha na avaliação anual de nível');
+            });
+        
+        // Processar billing (faturas e suspensões) - diariamente às 06h
+        $schedule->command('billing:process')
+            ->dailyAt('06:00')
+            ->timezone('America/Sao_Paulo')
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::info('Billing processado com sucesso');
+            })
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Falha ao processar billing');
+            });
+        
+        // Processar reservas expiradas - a cada 5 minutos
+        $schedule->command('redemptions:process-expired')
+            ->everyFiveMinutes()
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::info('Reservas expiradas processadas');
+            })
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Falha ao processar reservas expiradas');
+            });
+        
+        // Monitorar sistema - a cada 10 minutos
+        $schedule->command('monitor:system')
+            ->everyTenMinutes()
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::info('Sistema monitorado');
+            })
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Falha ao monitorar sistema');
             });
     })
     ->withExceptions(function (Exceptions $exceptions): void {

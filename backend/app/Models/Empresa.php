@@ -142,6 +142,14 @@ class Empresa extends Model
     }
 
     /**
+     * Configuração de política de fidelidade por empresa.
+     */
+    public function loyaltyConfig()
+    {
+        return $this->hasOne(CompanyLoyaltyConfig::class, 'company_id');
+    }
+
+    /**
      * Relacionamento com inscrições de clientes
      */
     public function inscricoes()

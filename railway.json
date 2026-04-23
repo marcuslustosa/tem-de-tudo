@@ -5,6 +5,8 @@
     "dockerfilePath": "Dockerfile"
   },
   "deploy": {
-    "restartPolicyType": "ALWAYS"
+    "restartPolicyType": "ALWAYS",
+    "healthcheckPath": "/api/ping",
+    "preDeployCommand": "cd /var/www/html && php artisan migrate --force --no-interaction"
   }
 }

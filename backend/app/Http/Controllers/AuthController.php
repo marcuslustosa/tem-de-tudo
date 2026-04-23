@@ -218,18 +218,27 @@ class AuthController extends Controller
                     ]);
                 }
                 
-                // Bônus de adesão: 10 pontos
+                // Bonus de adesao configuravel via politica global de fidelidade.
                 try {
-                    \App\Models\Ponto::create([
-                        'user_id' => $user->id,
-                        'pontos' => 10,
-                        'tipo' => 'bonus_adesao',
-                        'descricao' => 'Bônus de boas-vindas Tem de Tudo',
-                        'data' => now()
-                    ]);
-                    Log::info('Bônus de adesão de 10 pontos creditado', ['user_id' => $user->id]);
+                    $welcomeBonus = app(\App\Services\LoyaltyProgramService::class)->welcomeBonusPoints();
+                    if ($welcomeBonus > 0) {
+                        \App\Models\Ponto::create([
+                            'user_id' => $user->id,
+                            'pontos' => $welcomeBonus,
+                            'tipo' => 'bonus_adesao',
+                            'descricao' => 'Bonus de boas-vindas Tem de Tudo',
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                        \App\Models\User::where('id', $user->id)->increment('pontos', $welcomeBonus);
+
+                        Log::info('Bonus de adesao creditado', [
+                            'user_id' => $user->id,
+                            'points' => $welcomeBonus,
+                        ]);
+                    }
                 } catch (\Exception $e) {
-                    Log::warning('Erro ao creditar bônus de adesão', [
+                    Log::warning('Erro ao creditar bonus de adesao', [
                         'user_id' => $user->id,
                         'error' => $e->getMessage()
                     ]);

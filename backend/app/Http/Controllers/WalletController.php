@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\PontoTransacao;
 use App\Models\User;
 use App\Services\ClienteQrCodeService;
+use App\Services\LedgerService;
+use App\Services\LoyaltyProgramService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,11 +16,14 @@ use Illuminate\Support\Facades\DB;
  * WalletController - Sistema de Fidelidade Completo
  *
  * Gerencia cartao virtual, pontos, niveis e historico.
+ * Usa LedgerService para todas operações de pontos.
  */
 class WalletController extends Controller
 {
     public function __construct(
-        private readonly ClienteQrCodeService $clienteQrCodeService
+        private readonly ClienteQrCodeService $clienteQrCodeService,
+        private readonly LedgerService $ledgerService,
+        private readonly LoyaltyProgramService $loyaltyProgramService
     ) {
         $this->middleware('auth:sanctum');
     }
@@ -69,12 +74,9 @@ class WalletController extends Controller
             'valor_compra' => 'required|numeric|min:0',
         ]);
 
-        DB::beginTransaction();
         try {
-            $cliente = User::query()->lockForUpdate()->find((int) $validated['cliente_id']);
+            $cliente = User::find((int) $validated['cliente_id']);
             if (!$cliente) {
-                DB::rollBack();
-
                 return response()->json([
                     'success' => false,
                     'message' => 'Cliente nao encontrado.',
@@ -82,32 +84,40 @@ class WalletController extends Controller
             }
 
             if (!$this->isCliente($cliente)) {
-                DB::rollBack();
-
                 return response()->json([
                     'success' => false,
                     'message' => 'Pontos so podem ser creditados para usuarios com perfil cliente.',
                 ], 422);
             }
 
-            $pontosAnteriores = (int) ($cliente->pontos ?? 0);
+            $pontosAnteriores = $this->ledgerService->getBalance($cliente->id);
             $nivelAnterior = (string) ($cliente->nivel ?? 'bronze');
             $pontosAdicionados = (int) $validated['pontos'];
 
-            $cliente->pontos = $pontosAnteriores + $pontosAdicionados;
-            $cliente->nivel = $this->calcularNivel((int) $cliente->pontos);
-            $cliente->save();
+            // Usa LedgerService para adicionar pontos
+            $ledger = $this->ledgerService->credit(
+                userId: $cliente->id,
+                points: $pontosAdicionados,
+                description: "Compra no valor de R$ " . number_format((float) $validated['valor_compra'], 2, ',', '.'),
+                options: [
+                    'company_id' => $operador->empresa_id ?? null,
+                    'type' => 'earn',
+                    'source' => 'api',
+                    'metadata' => [
+                        'valor_compra' => $validated['valor_compra'],
+                        'estabelecimento_id' => $operador->id,
+                        'estabelecimento_nome' => $operador->name,
+                    ],
+                ]
+            );
 
-            PontoTransacao::create([
-                'user_id' => $cliente->id,
-                'pontos' => $pontosAdicionados,
-                'tipo' => 'adicao',
-                'descricao' => "Compra no valor de R$ " . number_format((float) $validated['valor_compra'], 2, ',', '.'),
-                'valor_compra' => $validated['valor_compra'],
-                'estabelecimento_id' => $operador->id,
-            ]);
-
-            DB::commit();
+            // Atualiza nível
+            $cliente->refresh();
+            $novoNivel = $this->calcularNivel((int) $cliente->pontos);
+            if ($cliente->nivel !== $novoNivel) {
+                $cliente->nivel = $novoNivel;
+                $cliente->save();
+            }
 
             return response()->json([
                 'success' => true,
@@ -119,15 +129,15 @@ class WalletController extends Controller
                     'nivel_anterior' => $nivelAnterior,
                     'nivel_atual' => $cliente->nivel,
                     'nivel_subiu' => $nivelAnterior !== $cliente->nivel,
+                    'ledger_id' => $ledger->id,
                 ],
             ]);
         } catch (\Throwable $e) {
-            DB::rollBack();
             report($e);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Falha ao adicionar pontos.',
+                'message' => $e->getMessage() ?? 'Falha ao adicionar pontos.',
             ], 500);
         }
     }
@@ -144,43 +154,37 @@ class WalletController extends Controller
 
         $user = Auth::user();
 
-        DB::beginTransaction();
         try {
-            $lockedUser = User::query()->lockForUpdate()->find($user->id);
-            if (!$lockedUser) {
-                DB::rollBack();
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Usuario nao encontrado.',
-                ], 404);
-            }
-
             $pontosSolicitados = (int) $validated['pontos'];
-            if (((int) ($lockedUser->pontos ?? 0)) < $pontosSolicitados) {
-                DB::rollBack();
-
+            $minimoResgate = $this->loyaltyProgramService->minRedeemPoints();
+            if ($pontosSolicitados < $minimoResgate) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Pontos insuficientes',
-                ], 400);
+                    'message' => "Resgate minimo de {$minimoResgate} pontos.",
+                ], 422);
             }
 
-            $pontosAnteriores = (int) ($lockedUser->pontos ?? 0);
-            $nivelAnterior = (string) ($lockedUser->nivel ?? 'bronze');
+            $pontosAnteriores = $this->ledgerService->getBalance($user->id);
+            $nivelAnterior = (string) ($user->nivel ?? 'bronze');
 
-            $lockedUser->pontos = $pontosAnteriores - $pontosSolicitados;
-            $lockedUser->nivel = $this->calcularNivel((int) $lockedUser->pontos);
-            $lockedUser->save();
+            // Usa LedgerService para debitar pontos
+            $ledger = $this->ledgerService->debit(
+                userId: $user->id,
+                points: $pontosSolicitados,
+                description: $validated['descricao'],
+                options: [
+                    'type' => 'redeem',
+                    'source' => 'api',
+                ]
+            );
 
-            PontoTransacao::create([
-                'user_id' => $lockedUser->id,
-                'pontos' => -$pontosSolicitados,
-                'tipo' => 'resgate',
-                'descricao' => $validated['descricao'],
-            ]);
-
-            DB::commit();
+            // Atualiza nível
+            $user->refresh();
+            $novoNivel = $this->calcularNivel((int) $user->pontos);
+            if ($user->nivel !== $novoNivel) {
+                $user->nivel = $novoNivel;
+                $user->save();
+            }
 
             return response()->json([
                 'success' => true,
@@ -188,18 +192,18 @@ class WalletController extends Controller
                 'data' => [
                     'pontos_anteriores' => $pontosAnteriores,
                     'pontos_resgatados' => $pontosSolicitados,
-                    'pontos_atuais' => $lockedUser->pontos,
+                    'pontos_atuais' => $user->pontos,
                     'nivel_anterior' => $nivelAnterior,
-                    'nivel_atual' => $lockedUser->nivel,
+                    'nivel_atual' => $user->nivel,
+                    'ledger_id' => $ledger->id,
                 ],
             ]);
         } catch (\Throwable $e) {
-            DB::rollBack();
             report($e);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Falha ao resgatar pontos.',
+                'message' => $e->getMessage() ?? 'Falha ao resgatar pontos.',
             ], 500);
         }
     }
@@ -210,14 +214,24 @@ class WalletController extends Controller
     public function historico(Request $request): JsonResponse
     {
         $user = Auth::user();
+        $page = (int) $request->get('page', 1);
+        $perPage = (int) $request->get('per_page', 20);
 
-        $transacoes = PontoTransacao::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        // Usa LedgerService para buscar histórico
+        $transacoes = $this->ledgerService->getHistory(
+            userId: $user->id,
+            limit: $perPage,
+            offset: ($page - 1) * $perPage
+        );
 
         return response()->json([
             'success' => true,
-            'data' => $transacoes,
+            'data' => [
+                'current_page' => $page,
+                'per_page' => $perPage,
+                'data' => $transacoes,
+                'total' => $transacoes->count(),
+            ],
         ]);
     }
 
@@ -439,4 +453,3 @@ class WalletController extends Controller
         ];
     }
 }
-

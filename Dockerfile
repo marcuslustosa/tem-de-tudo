@@ -92,6 +92,26 @@ if [ "${RUN_MIGRATIONS_ON_START:-true}" = "true" ]; then
   if [ "${SEED_ON_START:-false}" = "true" ]; then
     php artisan db:seed --force --no-interaction
   fi
+else
+  echo "RUN_MIGRATIONS_ON_START=false: migrations no start desativadas."
+fi
+
+# Processos auxiliares (queue e scheduler) opcionais
+if [ "${RUN_QUEUE_WORKER_ON_START:-true}" = "true" ]; then
+  echo "Iniciando queue worker..."
+  php artisan queue:work --sleep=3 --tries="${QUEUE_WORKER_TRIES:-3}" --max-time="${QUEUE_WORKER_MAX_TIME:-3600}" \
+    >> /var/log/queue-worker.log 2>&1 &
+  echo "Queue worker iniciado com PID $!"
+else
+  echo "RUN_QUEUE_WORKER_ON_START=false: queue worker desativado."
+fi
+
+if [ "${RUN_SCHEDULER_ON_START:-true}" = "true" ]; then
+  echo "Iniciando scheduler worker..."
+  php artisan schedule:work >> /var/log/scheduler.log 2>&1 &
+  echo "Scheduler worker iniciado com PID $!"
+else
+  echo "RUN_SCHEDULER_ON_START=false: scheduler desativado."
 fi
 
 # Padrao de execucao no Railway: servidor PHP embutido (evita crash por MPM no Apache).

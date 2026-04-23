@@ -421,7 +421,8 @@ class ClienteAPIController extends Controller
 
         /** @var LoyaltyProgramService $loyalty */
         $loyalty = app(LoyaltyProgramService::class);
-        $pontosCusto = $loyalty->promotionCost($promocao);
+        $empresaPromocao = Empresa::query()->find((int) $promocao->empresa_id);
+        $pontosCusto = $loyalty->promotionCost($promocao, $empresaPromocao);
         
         // Verificar saldo
         if ($user->pontos < $pontosCusto) {
