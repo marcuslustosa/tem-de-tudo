@@ -14,33 +14,22 @@ use Illuminate\Support\Facades\Schema;
 
 class AdminReportController extends Controller
 {
-    private function hasTable(string $table): bool
-    {
-        return Schema::hasTable($table);
-    }
+    // Métodos hasTable removidos - tabelas sempre existem em produção
 
-    private function hasColumn(string $table, string $column): bool
+    private function resolveUserRoleColumn(): string
     {
-        return $this->hasTable($table) && Schema::hasColumn($table, $column);
-    }
-
-    private function resolveUserRoleColumn(): ?string
-    {
-        foreach (['perfil', 'role', 'tipo'] as $column) {
-            if ($this->hasColumn('users', $column)) {
-                return $column;
-            }
+        // Verificar qual coluna existe para perfil/role
+        if (Schema::hasColumn('users', 'perfil')) {
+            return 'perfil';
         }
-
-        return null;
+        if (Schema::hasColumn('users', 'role')) {
+            return 'role';
+        }
+        return 'tipo'; // Fallback padrão
     }
 
     private function empresasUsersQuery()
     {
-        if (!$this->hasTable('users')) {
-            return null;
-        }
-
         $roleColumn = $this->resolveUserRoleColumn();
         if (!$roleColumn) {
             return null;
@@ -51,41 +40,12 @@ class AdminReportController extends Controller
 
     private function countEmpresasTotal(): int
     {
-        if ($this->hasTable('empresas')) {
-            return Empresa::count();
-        }
-
-        $query = $this->empresasUsersQuery();
-        return $query ? (int) $query->count() : 0;
+        return Empresa::count();
     }
 
     private function countEmpresasAtivas(): int
     {
-        if ($this->hasTable('empresas')) {
-            $query = Empresa::query();
-            if ($this->hasColumn('empresas', 'ativo')) {
-                $query->where('ativo', true);
-            } elseif ($this->hasColumn('empresas', 'status')) {
-                $query->whereIn(DB::raw('LOWER(status)'), ['ativo', 'active', '1', 'true']);
-            }
-
-            return (int) $query->count();
-        }
-
-        $query = $this->empresasUsersQuery();
-        if (!$query) {
-            return 0;
-        }
-
-        if ($this->hasColumn('users', 'is_active')) {
-            $query->where('is_active', true);
-        } elseif ($this->hasColumn('users', 'ativo')) {
-            $query->where('ativo', true);
-        } elseif ($this->hasColumn('users', 'status')) {
-            $query->whereIn(DB::raw('LOWER(status)'), ['ativo', 'active', '1', 'true']);
-        }
-
-        return (int) $query->count();
+        return Empresa::where('ativo', true)->count();
     }
 
     /**
@@ -96,14 +56,10 @@ class AdminReportController extends Controller
         $days = (int) $request->get('days', 30);
 
         $userQuery = User::query();
-        $activeUsers = $this->hasColumn('users', 'is_active')
-            ? (clone $userQuery)->where('is_active', true)->count()
-            : (clone $userQuery)->where('status', 'ativo')->count();
+        $activeUsers = User::where('is_active', true)->count();
 
-        $adminsTotal = class_exists(Admin::class) && $this->hasTable('admins') ? Admin::count() : 0;
-        $adminsActive = class_exists(Admin::class) && $this->hasColumn('admins', 'is_active')
-            ? Admin::where('is_active', true)->count()
-            : 0;
+        $adminsTotal = class_exists(Admin::class) ? Admin::count() : 0;
+        $adminsActive = class_exists(Admin::class) ? Admin::where('is_active', true)->count() : 0;
 
         $stats = [
             'users' => [
@@ -115,8 +71,8 @@ class AdminReportController extends Controller
                 'total' => $adminsTotal,
                 'active' => $adminsActive,
             ],
-            'security' => $this->hasTable('audit_logs') ? AuditLog::getLoginStats($days) : [],
-            'recent_activity' => $this->hasTable('audit_logs') ? AuditLog::recent(7)->count() : 0,
+            'security' => AuditLog::getLoginStats($days),
+            'recent_activity' => AuditLog::recent(7)->count(),
         ];
 
         return response()->json([
@@ -130,17 +86,6 @@ class AdminReportController extends Controller
      */
     public function getAuditLogs(Request $request)
     {
-        if (!$this->hasTable('audit_logs')) {
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'current_page' => 1,
-                    'data' => [],
-                    'total' => 0,
-                ],
-            ]);
-        }
-
         $query = AuditLog::query();
 
         if ($request->filled('action')) {

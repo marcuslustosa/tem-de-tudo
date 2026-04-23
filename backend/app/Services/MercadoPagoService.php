@@ -7,6 +7,7 @@ use App\Models\Produto;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class MercadoPagoService
 {
@@ -53,15 +54,7 @@ class MercadoPagoService
                 'transaction_amount' => $valor_final / 100, // MP espera em reais
                 'description' => "Compra: {$produto->nome} - {$produto->empresa->nome}",
                 'payment_method_id' => 'pix',
-                'payer' => [
-                    'email' => $user->email,
-                    'first_name' => explode(' ', $user->name)[0],
-                    'last_name' => explode(' ', $user->name, 2)[1] ?? '',
-                    'identification' => [
-                        'type' => 'CPF',
-                        'number' => '11122233344' // Usar CPF real em produção
-                    ]
-                ],
+                'payer' => $this->buildPayer($user),
                 'external_reference' => "TDT-{$pagamento->id}",
                 'notification_url' => route('webhook.mercadopago')
             ];
@@ -225,6 +218,49 @@ class MercadoPagoService
         $pontos_base = intval($valor_centavos / 100); // 1 ponto por real
         
         return intval($pontos_base * $nivel_info['multiplicador']);
+    }
+
+    /**
+     * Monta payload de pagador para o Mercado Pago sem usar dados hardcoded.
+     */
+    private function buildPayer(User $user): array
+    {
+        $name = trim((string) $user->name);
+        $parts = preg_split('/\s+/', $name, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+
+        $payer = [
+            'email' => (string) $user->email,
+            'first_name' => $parts[0] ?? 'Cliente',
+            'last_name' => implode(' ', array_slice($parts, 1)),
+        ];
+
+        $cpf = $this->resolveUserCpf($user);
+        if ($cpf !== null) {
+            $payer['identification'] = [
+                'type' => 'CPF',
+                'number' => $cpf,
+            ];
+        }
+
+        return $payer;
+    }
+
+    /**
+     * Retorna CPF com 11 dígitos apenas quando disponível/valido.
+     */
+    private function resolveUserCpf(User $user): ?string
+    {
+        if (!Schema::hasColumn($user->getTable(), 'cpf')) {
+            return null;
+        }
+
+        $digits = preg_replace('/\D+/', '', (string) ($user->cpf ?? ''));
+
+        if (strlen((string) $digits) !== 11) {
+            return null;
+        }
+
+        return (string) $digits;
     }
 
     /**

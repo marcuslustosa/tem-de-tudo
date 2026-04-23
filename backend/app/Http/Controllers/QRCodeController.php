@@ -30,7 +30,8 @@ class QRCodeController extends Controller
                 'success' => true,
                 'data' => [
                     'code' => $qrCode->code,
-                    'qr_image' => $this->qrCodeService->getQRCodeImageDataUrl($qrCode)
+                    'qr_url' => $this->qrCodeService->getQRCodeUrl($qrCode), // URL do arquivo
+                    'qr_image' => $this->qrCodeService->getQRCodeImageDataUrl($qrCode) // Base64 (compatibilidade)
                 ]
             ]);
         } catch (\Exception $e) {
@@ -58,7 +59,8 @@ class QRCodeController extends Controller
                 'success' => true,
                 'data' => [
                     'code' => $qrCode->code,
-                    'qr_image' => $this->qrCodeService->getQRCodeImageDataUrl($qrCode),
+                    'qr_url' => $this->qrCodeService->getQRCodeUrl($qrCode), // URL do arquivo
+                    'qr_image' => $this->qrCodeService->getQRCodeImageDataUrl($qrCode), // Base64 (compatibilidade)
                     'empresa' => ['id' => $empresa->id, 'nome' => $empresa->nome]
                 ]
             ]);

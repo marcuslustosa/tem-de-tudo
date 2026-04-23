@@ -30,6 +30,7 @@ use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Controllers\AdminContentController;
 use App\Http\Controllers\AdminSettingsController;
 use App\Http\Controllers\ReferralController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\API\CampanhaMultiplicadorController;
 
 // NOVOS CONTROLLERS - GAPS 1-10
@@ -42,6 +43,9 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\RedemptionController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\API\LoyaltyPolicyController;
+use App\Http\Controllers\CampanhaController;
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\LeaderboardController;
 
 // Health checks e métricas (público)
 Route::get('/ping', [HealthController::class, 'ping']);
@@ -122,8 +126,8 @@ if (app()->environment(['local', 'testing'])) {
 // ============================================
 
 // AutenticaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â£o
-Route::post('/auth/register', [AuthController::class, 'register'])->middleware('throttle:10,1');
-Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+Route::post('/auth/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:5,1');
 Route::post('/auth/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1');
 
@@ -195,16 +199,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('fidelidade')->group(function () {
         Route::get('/cartao', [WalletController::class, 'show']);
         Route::get('/historico', [WalletController::class, 'historico'])->middleware('rate.limit:100:1');
-        Route::post('/resgatar', [WalletController::class, 'resgatarPontos'])->middleware('rate.limit:10:1');
+        Route::post('/resgatar', [WalletController::class, 'resgatarPontos'])->middleware('rate.limit:5:1');
         Route::post('/adicionar-pontos', [WalletController::class, 'adicionarPontos'])->middleware('rate.limit:10:1');
         Route::post('/validar-qrcode', [WalletController::class, 'validarQRCode'])->middleware('rate.limit:20:1');
     });
     
     // ========== SISTEMA DE RESGATE PDV (RESERVA/CONFIRMA/ESTORNA) ==========
     Route::prefix('redemption')->group(function () {
-        Route::post('/request', [RedemptionController::class, 'request'])->middleware('rate.limit:20:1');
-        Route::post('/confirm', [RedemptionController::class, 'confirm'])->middleware('rate.limit:20:1');
-        Route::post('/cancel', [RedemptionController::class, 'cancel'])->middleware('rate.limit:20:1');
+        Route::post('/request', [RedemptionController::class, 'request'])->middleware('rate.limit:10:1');
+        Route::post('/confirm', [RedemptionController::class, 'confirm'])->middleware('rate.limit:10:1');
+        Route::post('/cancel', [RedemptionController::class, 'cancel'])->middleware('rate.limit:10:1');
         Route::post('/reverse', [RedemptionController::class, 'reverse'])->middleware('rate.limit:10:1'); // Admin only
         Route::get('/{intentId}', [RedemptionController::class, 'show'])->middleware('rate.limit:60:1');
         Route::get('/user/{userId}', [RedemptionController::class, 'userHistory'])->middleware('rate.limit:60:1');
@@ -252,8 +256,10 @@ Route::prefix('admin')->group(function () {
         
         Route::middleware(['admin.permission:view_reports'])->group(function () {
             Route::get('/audit-logs', [AdminReportController::class, 'getAuditLogs']);
-            Route::get('/login-stats', [AdminReportController::class, 'getLoginStats']);
-            Route::get('/system-stats', [AdminReportController::class, 'getSystemStats']);
+            Route::get('/login-stats', [AdminReportController::class, 'getLoginStats'])
+                ->middleware('cache.response:1800'); // 30 min
+            Route::get('/system-stats', [AdminReportController::class, 'getSystemStats'])
+                ->middleware('cache.response:3600'); // 1 hora
             Route::get('/security-events', [AdminReportController::class, 'getSecurityEvents']);
         });
         
@@ -314,8 +320,8 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     
     // PromoÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
     Route::get('/promocoes', [ClienteAPIController::class, 'listarPromocoes']);
-    Route::post('/resgatar-promocao/{id}', [ClienteAPIController::class, 'resgatarPromocao'])->middleware('rate.limit:10:1');
-    Route::post('/promocoes/{id}/resgatar', [ClienteAPIController::class, 'resgatarPromocao'])->middleware('rate.limit:10:1');
+    Route::post('/resgatar-promocao/{id}', [ClienteAPIController::class, 'resgatarPromocao'])->middleware('rate.limit:5:1');
+    Route::post('/promocoes/{id}/resgatar', [ClienteAPIController::class, 'resgatarPromocao'])->middleware('rate.limit:5:1');
     
     // AvaliaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
     Route::post('/avaliar', [ClienteAPIController::class, 'avaliar']);
@@ -374,10 +380,13 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa'])->prefix('empresa'
     Route::put('/campanhas/{id}', [CampanhaMultiplicadorController::class, 'update']);
     Route::delete('/campanhas/{id}', [CampanhaMultiplicadorController::class, 'destroy']);
 
-    // Legacy routes (manter compatibilidade)
-    Route::get('/dashboard-stats', [EmpresaController::class, 'dashboardStats']);
-    Route::get('/recent-checkins', [EmpresaController::class, 'recentCheckins']);
-    Route::get('/top-clients', [EmpresaController::class, 'topClients']);
+    // Legacy routes (manter compatibilidade) - COM CACHE
+    Route::get('/dashboard-stats', [EmpresaController::class, 'dashboardStats'])
+        ->middleware('cache.response:300'); // 5 min
+    Route::get('/recent-checkins', [EmpresaController::class, 'recentCheckins'])
+        ->middleware('cache.response:180'); // 3 min
+    Route::get('/top-clients', [EmpresaController::class, 'topClients'])
+        ->middleware('cache.response:600'); // 10 min
 });
 
 Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->group(function () {
@@ -410,6 +419,15 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->g
     Route::post('/tickets/{id}/resolve', [NotificationController::class, 'resolveTicket']);
     Route::post('/tickets/{id}/reopen', [NotificationController::class, 'reopenTicket']);
     Route::delete('/tickets/{id}', [NotificationController::class, 'closeTicket']);
+
+    // Banners - CRUD completo
+    Route::get('/banners', [BannerController::class, 'index']);
+    Route::post('/banners', [BannerController::class, 'store']);
+    Route::get('/banners/{id}', [BannerController::class, 'show']);
+    Route::post('/banners/{id}', [BannerController::class, 'update']); // POST para suportar upload de imagem
+    Route::delete('/banners/{id}', [BannerController::class, 'destroy']);
+    Route::post('/banners/{id}/toggle', [BannerController::class, 'toggleStatus']);
+    Route::post('/banners/reorder', [BannerController::class, 'reorder']);
 });
 
 // Rotas do sistema de pontos (protegidas por Sanctum)
@@ -590,6 +608,75 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/ajus
     Route::post('/usuarios/{id}', [AjustePontosController::class, 'ajustar']);
     Route::get('/usuarios/{id}/historico', [AjustePontosController::class, 'historico']);
     Route::get('/historico', [AjustePontosController::class, 'historicoGlobal']);
+});
+
+// ============================================================
+// CAMPANHAS DE MULTIPLICADOR (empresa/admin)
+// ============================================================
+Route::middleware('auth:sanctum')->prefix('campanhas')->group(function () {
+    // Consultar multiplicador ativo (qualquer autenticado)
+    Route::get('/multiplicador-ativo', [CampanhaController::class, 'multiplicadorAtivo'])->middleware('throttle:60,1');
+    
+    // Empresa: gerenciar suas próprias campanhas
+    Route::middleware('role.permission:empresa')->group(function () {
+        Route::get('/', [CampanhaController::class, 'index']);
+        Route::get('/ativas', [CampanhaController::class, 'ativas']);
+        Route::post('/', [CampanhaController::class, 'store'])->middleware('rate.limit:10:1');
+        Route::put('/{id}', [CampanhaController::class, 'update'])->middleware('rate.limit:10:1');
+        Route::delete('/{id}', [CampanhaController::class, 'destroy'])->middleware('rate.limit:5:1');
+    });
+    
+    // Admin: gerenciar campanhas de todas as empresas
+    Route::middleware('role.permission:admin')->prefix('admin')->group(function () {
+        Route::get('/todas', [CampanhaController::class, 'index']);
+        Route::post('/criar', [CampanhaController::class, 'store']);
+    });
+});
+
+// ============================================================
+// ANALYTICS / MÉTRICAS DE NEGÓCIO (admin/empresa)
+// ============================================================
+Route::middleware(['auth:sanctum'])->prefix('analytics')->group(function () {
+    // Dashboard completo
+    Route::get('/dashboard', [AnalyticsController::class, 'dashboard'])->middleware('throttle:30,1');
+    
+    // Métricas específicas
+    Route::get('/cltv', [AnalyticsController::class, 'cltv'])->middleware('throttle:30,1');
+    Route::get('/retention', [AnalyticsController::class, 'retention'])->middleware('throttle:30,1');
+    Route::get('/churn', [AnalyticsController::class, 'churn'])->middleware('throttle:30,1');
+    Route::get('/cohort', [AnalyticsController::class, 'cohort'])->middleware('throttle:20,1');
+    Route::get('/transactions', [AnalyticsController::class, 'transactions'])->middleware('throttle:30,1');
+    Route::get('/level-distribution', [AnalyticsController::class, 'levelDistribution'])->middleware('throttle:30,1');
+    Route::get('/top-users', [AnalyticsController::class, 'topUsers'])->middleware('throttle:30,1');
+});
+
+// ============================================================
+// LEADERBOARDS / RANKING AO VIVO (gamificação)
+// ============================================================
+Route::prefix('leaderboard')->group(function () {
+    // Rankings públicos (sem autenticação) - COM CACHE
+    Route::get('/global', [LeaderboardController::class, 'global'])
+        ->middleware(['throttle:60,1', 'cache.response:300']); // 5 min
+    Route::get('/monthly', [LeaderboardController::class, 'monthly'])
+        ->middleware(['throttle:60,1', 'cache.response:300']); // 5 min
+    Route::get('/badges', [LeaderboardController::class, 'badges'])
+        ->middleware(['throttle:60,1', 'cache.response:300']); // 5 min
+    Route::get('/company/{empresaId}', [LeaderboardController::class, 'company'])
+        ->middleware(['throttle:60,1', 'cache.response:300']); // 5 min
+    Route::get('/stats', [LeaderboardController::class, 'stats'])
+        ->middleware(['throttle:30,1', 'cache.response:600']); // 10 min
+    Route::get('/user/{userId}', [LeaderboardController::class, 'userPosition'])
+        ->middleware(['throttle:60,1', 'cache.response:180']); // 3 min
+    
+    // Rankings autenticados
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/my-position', [LeaderboardController::class, 'myPosition'])->middleware('throttle:60,1');
+    });
+    
+    // Admin: limpar cache
+    Route::middleware(['auth:sanctum', 'role.permission:admin'])->group(function () {
+        Route::post('/clear-cache', [LeaderboardController::class, 'clearCache'])->middleware('rate.limit:5:1');
+    });
 });
 
 // GOOGLE WALLET / APPLE WALLET

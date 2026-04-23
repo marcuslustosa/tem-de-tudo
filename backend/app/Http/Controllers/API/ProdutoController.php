@@ -18,7 +18,8 @@ class ProdutoController extends Controller
         try {
             $empresa = Empresa::findOrFail($empresaId);
             
-            $query = Produto::where('empresa_id', $empresaId)
+            $query = Produto::with('empresa')
+                ->where('empresa_id', $empresaId)
                 ->where('ativo', true);
             
             // Filtrar por categoria se especificado

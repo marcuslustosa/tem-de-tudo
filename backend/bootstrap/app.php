@@ -80,6 +80,17 @@ return Application::configure(basePath: dirname(__DIR__))
                 \Illuminate\Support\Facades\Log::error('Falha ao expirar pontos');
             });
 
+        // Notificar sobre pontos expirando (7 dias antes)
+        $schedule->command('pontos:notificar-expiracao')
+            ->dailyAt('09:00')
+            ->timezone('America/Sao_Paulo')
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::info('Notificações de expiração enviadas com sucesso');
+            })
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Falha ao enviar notificações de expiração');
+            });
+
         // Recalcular ranking de pontos diariamente às 03h
         $schedule->command('ranking:recalcular')
             ->dailyAt('03:00')
@@ -131,6 +142,18 @@ return Application::configure(basePath: dirname(__DIR__))
             })
             ->onFailure(function () {
                 \Illuminate\Support\Facades\Log::error('Falha ao monitorar sistema');
+            });
+
+        // Rotação de secrets - mensalmente (1º dia do mês às 00:00)
+        // NOTA: Este comando apenas GERA os novos secrets, a aplicação é manual
+        $schedule->command('secrets:rotate --force')
+            ->monthlyOn(1, '00:00')
+            ->timezone('America/Sao_Paulo')
+            ->onSuccess(function () {
+                \Illuminate\Support\Facades\Log::warning('⚠️ SECRETS GERADOS - Aplicar manualmente no .env');
+            })
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('Falha ao gerar novos secrets');
             });
     })
     ->withExceptions(function (Exceptions $exceptions): void {

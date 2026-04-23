@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html class="light" lang="pt-BR">
 <head>
   <meta charset="utf-8" />
@@ -35,20 +35,20 @@
       const empresaRestricao = document.getElementById('empresaRestricao');
       
       if (!isAdmin) {
-        // PÃºblico sÃ³ pode criar conta de CLIENTE
+        // Público só pode criar conta de CLIENTE
         empresaOption.remove();
         perfilSelect.value = 'cliente';
         perfilSelect.disabled = true;
         empresaRestricao.classList.remove('hidden');
       } else if (tipo === 'empresa') {
-        // Admin estÃ¡ criando empresa
+        // Admin está criando empresa
         perfilSelect.value = 'empresa';
         const empresaFields = document.getElementById('empresaFields');
         if (empresaFields) empresaFields.classList.remove('hidden');
       }
     });
   </script>
-  <script src="/js/stitch-app.js?v=20260422-fidelityfix" defer></script>
+  <script src="/dist/stitch-app.min.js?v=20260422-optimized" defer></script>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 bg-white" data-page="criar_conta">
   <main class="w-full max-w-xl space-y-8">
@@ -75,7 +75,7 @@
           </div>
           <p id="empresaRestricao" class="hidden text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg border border-amber-200">
             <span class="material-symbols-outlined text-sm align-middle">info</span>
-            Cadastro de estabelecimentos Ã© feito pelo administrador apÃ³s pagamento.
+            Cadastro de estabelecimentos é feito pelo administrador após pagamento.
           </p>
         </div>
 
@@ -121,9 +121,9 @@
           <span>Li e aceito os termos de uso e politica de privacidade.</span>
         </label>
 
-        <!-- CÃ³digo de indicaÃ§Ã£o (opcional) -->
+        <!-- Código de indicação (opcional) -->
         <div id="referralField" class="space-y-1">
-          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-widest pl-1">CÃ³digo de indicaÃ§Ã£o <span class="normal-case font-normal">(opcional)</span></label>
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-widest pl-1">Código de indicação <span class="normal-case font-normal">(opcional)</span></label>
           <input id="sgReferralCode" type="text" maxlength="12"
             class="block w-full px-4 py-3 bg-slate-100 border-none rounded-2xl text-slate-800 focus:ring-2 focus:ring-[#7A2C8F]/20 uppercase tracking-widest"
             placeholder="Ex: ABC12XYZ" />
