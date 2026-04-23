@@ -48,12 +48,28 @@ class AdminReportController extends Controller
 
     private function countEmpresasTotal(): int
     {
+        if (!$this->hasTable('empresas')) {
+            return 0;
+        }
+
         return Empresa::count();
     }
 
     private function countEmpresasAtivas(): int
     {
-        return Empresa::where('ativo', true)->count();
+        if (!$this->hasTable('empresas')) {
+            return 0;
+        }
+
+        if ($this->hasColumn('empresas', 'ativo')) {
+            return Empresa::where('ativo', true)->count();
+        }
+
+        if ($this->hasColumn('empresas', 'status')) {
+            return Empresa::where('status', 'ativo')->count();
+        }
+
+        return Empresa::count();
     }
 
     /**
@@ -257,30 +273,38 @@ class AdminReportController extends Controller
     public function dashboardStats(Request $request)
     {
         try {
+            $hasUsers = $this->hasTable('users');
             $checkinsTable = $this->hasTable('check_ins')
                 ? 'check_ins'
                 : ($this->hasTable('checkins') ? 'checkins' : null);
             $hasCheckins = $checkinsTable !== null;
             $hasPontos = $this->hasTable('pontos');
+            $hasPontosCol = $hasPontos && $this->hasColumn('pontos', 'pontos');
             $hasPromocoes = $this->hasTable('promocoes');
             $hasCoupons = $this->hasTable('coupons');
             $hasValorCol = $hasCoupons && $this->hasColumn('coupons', 'valor_desconto');
             $hasCustoCol = $hasCoupons && $this->hasColumn('coupons', 'custo_pontos');
 
-            $usuarios = User::count();
+            $usuarios = $hasUsers ? User::count() : 0;
             $empresas = $this->countEmpresasTotal();
             $promocoes = $hasPromocoes ? DB::table('promocoes')->count() : 0;
             $resgates = $hasCoupons ? DB::table('coupons')->whereIn('status', ['used', 'utilizado'])->count() : 0;
-            $volume = $hasCoupons
-                ? DB::table('coupons')->sum($hasValorCol ? 'valor_desconto' : ($hasCustoCol ? 'custo_pontos' : DB::raw('0')))
-                : 0;
+
+            $volume = 0.0;
+            if ($hasCoupons) {
+                if ($hasValorCol) {
+                    $volume = (float) DB::table('coupons')->sum('valor_desconto');
+                } elseif ($hasCustoCol) {
+                    $volume = (float) DB::table('coupons')->sum('custo_pontos');
+                }
+            }
 
             $stats = [
                 'total_users' => $usuarios,
                 'total_empresas' => $empresas,
-                'total_pontos_distribuidos' => $hasPontos ? DB::table('pontos')->sum('pontos') : 0,
+                'total_pontos_distribuidos' => $hasPontosCol ? DB::table('pontos')->sum('pontos') : 0,
                 'total_checkins' => $hasCheckins ? DB::table($checkinsTable)->count() : 0,
-                'users_ativos_hoje' => User::where('updated_at', '>=', today())->count(),
+                'users_ativos_hoje' => ($hasUsers && $this->hasColumn('users', 'updated_at')) ? User::where('updated_at', '>=', today())->count() : 0,
                 'empresas_ativas' => $this->countEmpresasAtivas(),
                 // Estrutura esperada pelo frontend
                 'totais' => [
@@ -303,10 +327,10 @@ class AdminReportController extends Controller
                 'success' => true,
                 'data' => $stats,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Erro ao carregar dashboard admin', [
                 'error' => $e->getMessage(),
-                'user_id' => $request->user()->id ?? null,
+                'user_id' => $request->user()?->id,
             ]);
 
             return response()->json([

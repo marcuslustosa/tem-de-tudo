@@ -118,4 +118,20 @@ class PainelSmokeTest extends TestCase
                 ->assertStatus(200, "Falha no endpoint do admin: {$endpoint}");
         }
     }
+
+    public function test_endpoint_publico_de_produtos_responde_sem_500(): void
+    {
+        $empresaUser = User::factory()->create([
+            'perfil' => 'empresa',
+            'status' => 'ativo',
+        ]);
+
+        $empresa = $this->createEmpresaParaUsuario($empresaUser);
+
+        $this->getJson("/api/empresas/{$empresa->id}/produtos")
+            ->assertStatus(200);
+
+        $this->getJson('/api/empresas/999999/produtos')
+            ->assertStatus(404);
+    }
 }

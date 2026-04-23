@@ -132,27 +132,25 @@
   }
 
   function decodeMojibake(value) {
-    // ⚠️ OTIMIZAÇÃO: Com UTF-8 configurado corretamente (DB_CHARSET=utf8mb4),
-    // este workaround não é mais necessário. Retornamos direto.
-    return value == null ? '' : String(value);
-    
-    /* CÓDIGO ANTIGO (mantido comentado para rollback se necessário):
     if (value == null) return '';
     let text = String(value);
-    for (let i = 0; i < 3; i += 1) {
-      const markers = (text.match(/[Âƒâ€™â€œ]/g) || []).length;
-      if (!markers) break;
+    const markerRegex = /(?:Ã.|Â.|â€™|â€œ|â€|�)/g;
+    if (!markerRegex.test(text)) return text;
+    markerRegex.lastIndex = 0;
+
+    for (let i = 0; i < 2; i += 1) {
+      const currentMarkers = (text.match(markerRegex) || []).length;
+      if (!currentMarkers) break;
       try {
         const decoded = decodeURIComponent(escape(text));
-        const newMarkers = (decoded.match(/[Âƒâ€™â€œ]/g) || []).length;
-        if (newMarkers >= markers) break;
+        const newMarkers = (decoded.match(markerRegex) || []).length;
+        if (newMarkers > currentMarkers) break;
         text = decoded;
       } catch {
         break;
       }
     }
     return text;
-    */
   }
 
 
@@ -583,6 +581,17 @@
           console.error('push_enable_fail', err);
           ui.message('Nao foi possivel ativar push neste momento.', 'error');
         }
+      });
+    });
+  }
+
+  function wireAvatarFallbacks() {
+    document.querySelectorAll('img[src="/img/avatar-admin.png"]').forEach((img) => {
+      if (img.dataset.avatarFallbackBound === '1') return;
+      img.dataset.avatarFallbackBound = '1';
+      img.addEventListener('error', () => {
+        img.onerror = null;
+        img.src = '/img/logo.png';
       });
     });
   }
@@ -1330,7 +1339,7 @@
         ui.message('Promocoes deste parceiro indisponiveis no momento.', 'warning');
       }
 
-      const listaProdutos = produtos.data?.data || produtos.data || [];
+      const listaProdutos = toArray(produtos.data?.data || produtos.data?.produtos || produtos.data);
       const prodBox = document.getElementById('products-list');
       const prodEmpty = document.getElementById('products-empty');
       const prodLoad = document.getElementById('products-loading');
@@ -1348,6 +1357,10 @@
         prodBox.innerHTML = listaProdutos.map(tplP).join('');
       } else {
         prodEmpty?.classList.remove('hidden');
+      }
+
+      if (!produtos.res?.ok && viewer?.perfil === 'cliente') {
+        ui.message('Produtos deste parceiro indisponiveis no momento.', 'warning');
       }
 
       const ctaBtn = document.querySelector('div.fixed.bottom-24 button');
@@ -3763,17 +3776,29 @@
       if (!form) return;
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const emailEl = form.querySelector('[name="email"], [type="email"]');
-        const senhaEl = form.querySelector('[name="password"], [name="senha"], [type="password"]');
-        if (!emailEl || !senhaEl) return;
+        const fallbackInputs = form.querySelectorAll('input');
+        const emailEl = form.querySelector('[name="email"], [type="email"], #loginEmail, input[type="text"]');
+        const senhaEl = form.querySelector('[name="password"], [name="senha"], [type="password"], #loginPassword');
+        const email = (emailEl?.value || fallbackInputs[0]?.value || '').trim();
+        const password = senhaEl?.value || fallbackInputs[1]?.value || '';
+        if (!email || !password) {
+          ui.message('Informe email/CPF e senha.', 'warning');
+          return;
+        }
         const { res, data } = await api.request(
           '/auth/login',
-          { method: 'POST', body: JSON.stringify({ email: emailEl.value.trim(), password: senhaEl.value }) },
+          { method: 'POST', body: JSON.stringify({ email, password }) },
           { requireAuth: false }
         );
-        if (!res.ok) { ui.message(data?.message || 'Credenciais invalidas.', 'error'); return; }
-        auth.save(data.token, data.user);
-        const perfil = auth.normalizePerfil(data.user?.perfil);
+        const payload = data || {};
+        const token = payload?.token || payload?.access_token || payload?.data?.token || null;
+        const user = auth.normalizeUser(payload?.user || payload?.data?.user || payload?.usuario || null);
+        if (!res.ok || !token || !user) {
+          ui.message(data?.message || payload?.message || 'Credenciais invalidas.', 'error');
+          return;
+        }
+        auth.save(token, user);
+        const perfil = auth.normalizePerfil(user?.perfil || user?.role || user?.tipo);
         const destinos = { admin: '/dashboard_admin_master.html', empresa: '/dashboard_parceiro.html', cliente: '/meus_pontos.html' };
         window.location.href = destinos[perfil] || '/meus_pontos.html';
       });
@@ -4322,6 +4347,7 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     normalizeBrandingVisuals();
+    wireAvatarFallbacks();
     remapNavigationForPerfil();
     harmonizeLinksByStoredPerfil();
     wireFallbackLinks();
