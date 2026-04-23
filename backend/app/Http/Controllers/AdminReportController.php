@@ -14,7 +14,15 @@ use Illuminate\Support\Facades\Schema;
 
 class AdminReportController extends Controller
 {
-    // Métodos hasTable removidos - tabelas sempre existem em produção
+    private function hasTable(string $table): bool
+    {
+        return Schema::hasTable($table);
+    }
+
+    private function hasColumn(string $table, string $column): bool
+    {
+        return Schema::hasTable($table) && Schema::hasColumn($table, $column);
+    }
 
     private function resolveUserRoleColumn(): string
     {
