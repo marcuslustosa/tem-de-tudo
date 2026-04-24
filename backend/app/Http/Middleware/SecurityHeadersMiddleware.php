@@ -46,7 +46,7 @@ class SecurityHeadersMiddleware
         return implode(' ', [
             "default-src 'self';",
             "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com;",
             "img-src 'self' data: https: blob:;",
             "font-src 'self' data: https://fonts.gstatic.com;",
             'connect-src ' . implode(' ', array_unique($connectSources)) . ';',
