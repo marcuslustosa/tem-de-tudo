@@ -475,43 +475,78 @@ class BillingService
 
     public function canOperate(int $companyId): array
     {
-        $subscription = CompanySubscription::where('company_id', $companyId)
-            ->orderBy('id', 'desc')
-            ->first();
+        try {
+            $subscriptionTable = (new CompanySubscription())->getTable();
+            if (!Schema::hasTable($subscriptionTable)) {
+                return [
+                    'allowed' => true,
+                    'reason' => 'Sistema de assinatura em modo de compatibilidade.',
+                ];
+            }
 
-        if (!$subscription) {
+            if (!Schema::hasColumn($subscriptionTable, 'company_id') || !Schema::hasColumn($subscriptionTable, 'status')) {
+                return [
+                    'allowed' => true,
+                    'reason' => 'Sistema de assinatura em modo de compatibilidade.',
+                ];
+            }
+
+            $query = CompanySubscription::query()->where('company_id', $companyId);
+            if (Schema::hasColumn($subscriptionTable, 'id')) {
+                $query->orderByDesc('id');
+            }
+
+            $subscription = $query->first();
+
+            if (!$subscription) {
+                return [
+                    'allowed' => false,
+                    'reason' => 'Nenhuma assinatura encontrada',
+                ];
+            }
+
+            $trialExpired = false;
+            if (
+                Schema::hasColumn($subscriptionTable, 'trial_ends_at')
+                && (string) $subscription->status === CompanySubscription::STATUS_TRIAL
+                && !empty($subscription->trial_ends_at)
+            ) {
+                $trialExpired = Carbon::parse($subscription->trial_ends_at)->isPast();
+            }
+
+            if ($trialExpired) {
+                return [
+                    'allowed' => false,
+                    'reason' => 'Periodo de trial expirado. Realize o pagamento para continuar.',
+                ];
+            }
+
+            if ($subscription->isActive()) {
+                return ['allowed' => true, 'reason' => null];
+            }
+
+            if ((string) $subscription->status === CompanySubscription::STATUS_PAST_DUE) {
+                return [
+                    'allowed' => true,
+                    'reason' => 'Pagamento em atraso. Sistema sera bloqueado em breve.',
+                ];
+            }
+
             return [
                 'allowed' => false,
-                'reason' => 'Nenhuma assinatura encontrada',
+                'reason' => 'Assinatura suspensa. Entre em contato com o suporte.',
             ];
-        }
+        } catch (\Throwable $e) {
+            Log::warning('BillingService::canOperate em modo de compatibilidade', [
+                'company_id' => $companyId,
+                'error' => $e->getMessage(),
+            ]);
 
-        if (
-            $subscription->status === CompanySubscription::STATUS_TRIAL
-            && $subscription->trial_ends_at
-            && Carbon::parse($subscription->trial_ends_at)->isPast()
-        ) {
-            return [
-                'allowed' => false,
-                'reason' => 'Periodo de trial expirado. Realize o pagamento para continuar.',
-            ];
-        }
-
-        if ($subscription->isActive()) {
-            return ['allowed' => true, 'reason' => null];
-        }
-
-        if ($subscription->status === CompanySubscription::STATUS_PAST_DUE) {
             return [
                 'allowed' => true,
-                'reason' => 'Pagamento em atraso. Sistema sera bloqueado em breve.',
+                'reason' => 'Sistema de assinatura em modo de compatibilidade.',
             ];
         }
-
-        return [
-            'allowed' => false,
-            'reason' => 'Assinatura suspensa. Entre em contato com o suporte.',
-        ];
     }
 
     private function resolveExternalStatus(Invoice $invoice): ?string
@@ -621,4 +656,3 @@ class BillingService
         }
     }
 }
-

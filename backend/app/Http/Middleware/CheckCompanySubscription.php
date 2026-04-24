@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\BillingService;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /**
  * CheckCompanySubscription - Bloqueia acesso de empresas inadimplentes.
@@ -41,7 +42,17 @@ class CheckCompanySubscription
             ], 403);
         }
 
-        $check = $this->billingService->canOperate($companyId);
+        try {
+            $check = $this->billingService->canOperate($companyId);
+        } catch (\Throwable $e) {
+            Log::warning('CheckCompanySubscription fallback', [
+                'user_id' => $user->id,
+                'company_id' => $companyId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return $next($request);
+        }
 
         // Modo de compatibilidade: ainda permite operar sem assinatura vinculada.
         $allowNoSubscription = (bool) config('billing.allow_without_subscription', true);
@@ -72,23 +83,32 @@ class CheckCompanySubscription
 
     private function resolveCompanyId(User $user): ?int
     {
-        if (isset($user->empresa_id) && is_numeric($user->empresa_id) && (int) $user->empresa_id > 0) {
-            return (int) $user->empresa_id;
-        }
-
-        if (method_exists($user, 'empresa')) {
-            $empresa = $user->empresa()->first();
-            if ($empresa?->id) {
-                return (int) $empresa->id;
+        try {
+            if (isset($user->empresa_id) && is_numeric($user->empresa_id) && (int) $user->empresa_id > 0) {
+                return (int) $user->empresa_id;
             }
-        }
 
-        // Compatibilidade com modelos antigos onde user_id de empresa = empresa.id
-        if (Empresa::query()->whereKey($user->id)->exists()) {
-            return (int) $user->id;
-        }
+            if (method_exists($user, 'empresa')) {
+                $empresa = $user->empresa()->first();
+                if ($empresa?->id) {
+                    return (int) $empresa->id;
+                }
+            }
 
-        return null;
+            // Compatibilidade com modelos antigos onde user_id de empresa = empresa.id
+            if (Empresa::query()->whereKey($user->id)->exists()) {
+                return (int) $user->id;
+            }
+
+            return null;
+        } catch (\Throwable $e) {
+            Log::warning('Nao foi possivel resolver company_id no middleware de assinatura', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
     }
 
     private function normalizePerfil(?string $perfil): ?string
@@ -113,4 +133,3 @@ class CheckCompanySubscription
         return $value;
     }
 }
-

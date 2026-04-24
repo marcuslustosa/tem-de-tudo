@@ -185,15 +185,7 @@ class AuthController extends Controller
                         'cnpj' => $request->cnpj,
                         'owner_id' => $user->id,
                     ]);
-                    $empresa = \App\Models\Empresa::create([
-                        'nome' => $request->name,
-                        'endereco' => $request->endereco,
-                        'telefone' => $request->telefone,
-                        'cnpj' => $request->cnpj,
-                        'owner_id' => $user->id,
-                        'ativo' => true,
-                        'points_multiplier' => 1.0,
-                    ]);
+                    $empresa = $this->createEmpresaForUser($user, $request);
 
                     Log::info('Empresa criada com sucesso', ['empresa_id' => $empresa->id, 'user_id' => $user->id]);
                 } catch (\Exception $e) {
@@ -250,7 +242,7 @@ class AuthController extends Controller
                     try {
                         $referrer = \App\Models\User::where('referral_code', $request->referral_code)
                             ->where('id', '!=', $user->id)
-                            ->where('perfil', 'cliente')
+                            ->where($this->resolveUsersRoleColumn(), 'cliente')
                             ->first();
 
                         if ($referrer) {
@@ -468,7 +460,10 @@ class AuthController extends Controller
             }
 
             // Verificar se usuário está ativo
-            if ($user->status !== 'ativo') {
+            $roleColumn = $this->resolveUsersRoleColumn();
+            $perfil = $this->getPerfilFromRole((string) ($user->{$roleColumn} ?? $user->perfil ?? $user->role ?? 'cliente'));
+
+            if (Schema::hasColumn('users', 'status') && strtolower((string) $user->status) !== 'ativo') {
                 Log::warning('Tentativa de login com usuário inativo', [
                     'user_id' => $user->id,
                     'email' => $user->email,
@@ -489,7 +484,7 @@ class AuthController extends Controller
 
             RateLimiter::clear($key);
 
-            $resolvedUser = array_merge($user->toArray(), ['perfil' => $user->perfil]);
+            $resolvedUser = array_merge($user->toArray(), ['perfil' => $perfil]);
             $response = [
                 'success' => true,
                 'message' => 'Login realizado com sucesso!',
@@ -497,13 +492,13 @@ class AuthController extends Controller
                 'user' => $resolvedUser,
                 'token_type' => 'Bearer',
                 'expires_in' => 60 * 60, // 1 hora em segundos
-                'redirect_to' => $this->getRedirectUrlForPerfil($user->perfil),
+                'redirect_to' => $this->getRedirectUrlForPerfil($perfil),
             ];
 
             Log::info('Login realizado com sucesso', [
                 'user_id' => $user->id,
                 'email' => $user->email,
-                'perfil' => $user->perfil,
+                'perfil' => $perfil,
                 'ip' => $request->ip()
             ]);
 
@@ -804,20 +799,56 @@ class AuthController extends Controller
         }
     }
 
+    private function filterTableColumns(string $table, array $payload): array
+    {
+        try {
+            if (!Schema::hasTable($table)) {
+                return [];
+            }
+
+            $columns = Schema::getColumnListing($table);
+            if (!$columns) {
+                return [];
+            }
+
+            return array_intersect_key($payload, array_flip($columns));
+        } catch (\Throwable $e) {
+            Log::warning('Nao foi possivel filtrar colunas da tabela', [
+                'table' => $table,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [];
+        }
+    }
+
     /**
      * Criar empresa para usuário do tipo empresa
      */
     private function createEmpresaForUser(User $user, Request $request)
     {
-        return \App\Models\Empresa::create([
-            'nome' => $request->name,
-            'endereco' => $request->endereco,
-            'telefone' => $request->telefone,
-            'cnpj' => $request->cnpj,
+        $payload = [
             'owner_id' => $user->id,
+            'user_id' => $user->id,
+            'nome' => $request->input('name'),
+            'ramo' => 'geral',
+            'endereco' => $request->input('endereco'),
+            'telefone' => $request->input('telefone'),
+            'cnpj' => $request->input('cnpj'),
             'ativo' => true,
+            'status' => 'ativo',
             'points_multiplier' => 1.0,
-        ]);
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+
+        $safePayload = $this->filterTableColumns('empresas', $payload);
+        if (empty($safePayload)) {
+            throw new \RuntimeException('Tabela empresas indisponivel ou sem colunas compativeis.');
+        }
+
+        $empresaId = DB::table('empresas')->insertGetId($safePayload);
+        return \App\Models\Empresa::query()->find($empresaId);
     }
 
     /**
@@ -860,7 +891,17 @@ class AuthController extends Controller
      */
     private function getPerfilFromRole(string $role): string
     {
-        return $role;
+        $value = strtolower(trim($role));
+
+        if (in_array($value, ['admin', 'administrador', 'master', 'admin_master', 'administrador_master'], true)) {
+            return 'admin';
+        }
+
+        if (in_array($value, ['empresa', 'estabelecimento', 'parceiro', 'lojista'], true)) {
+            return 'empresa';
+        }
+
+        return 'cliente';
     }
 
     /**
@@ -868,6 +909,9 @@ class AuthController extends Controller
      */
     public function adminLogin(Request $request)
     {
+        if (!$request->filled('password') && $request->filled('senha')) {
+            $request->merge(['password' => $request->input('senha')]);
+        }
         Log::info('=== INÍCIO DO LOGIN ADMIN ===', [
             'ip' => $request->ip(),
             'user_agent' => $request->userAgent(),
@@ -907,8 +951,9 @@ class AuthController extends Controller
 
         try {
             // Buscar usuário admin (aceita 'admin' ou 'administrador' por compatibilidade)
+            $roleColumn = $this->resolveUsersRoleColumn();
             $user = User::where('email', $request->email)
-                ->whereIn('perfil', ['admin', 'administrador'])
+                ->whereIn($roleColumn, ['admin', 'administrador', 'master', 'admin_master', 'administrador_master'])
                 ->first();
 
             if (!$user || !$this->isValidUserPassword($user, (string) $request->password)) {
@@ -926,7 +971,7 @@ class AuthController extends Controller
             }
 
             // Verificar se usuário está ativo
-            if ($user->status !== 'ativo') {
+            if (Schema::hasColumn('users', 'status') && strtolower((string) $user->status) !== 'ativo') {
                 Log::warning('Tentativa de login admin com usuário inativo', [
                     'user_id' => $user->id,
                     'email' => $user->email,
@@ -1033,7 +1078,10 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'Token válido',
                 'data' => [
-                    'user' => array_merge($user->toArray(), ['perfil' => $user->perfil]),
+                    'user' => array_merge(
+                        $user->toArray(),
+                        ['perfil' => $this->getPerfilFromRole((string) ($user->{$this->resolveUsersRoleColumn()} ?? 'cliente'))]
+                    ),
                     'valid' => true
                 ]
             ]);
@@ -1286,7 +1334,7 @@ class AuthController extends Controller
                     'telefone' => $user->telefone,
                     'cpf' => $user->cpf,
                     'data_nascimento' => $user->data_nascimento,
-                    'perfil' => $user->perfil
+                    'perfil' => $this->getPerfilFromRole((string) ($user->{$this->resolveUsersRoleColumn()} ?? 'cliente'))
                 ]
             ]);
 
@@ -1317,26 +1365,24 @@ class AuthController extends Controller
     public function listUsers(Request $request)
     {
         $perPage = max(1, min((int) $request->input('per_page', 20), 100));
+        $roleColumn = $this->resolveUsersRoleColumn();
+
+        $columns = ['id', 'name', 'email', 'created_at', 'updated_at'];
+        foreach ([$roleColumn, 'perfil', 'status', 'telefone', 'pontos'] as $column) {
+            if (!in_array($column, $columns, true) && Schema::hasColumn('users', $column)) {
+                $columns[] = $column;
+            }
+        }
 
         $query = User::query()
-            ->select([
-                'id',
-                'name',
-                'email',
-                'perfil',
-                'status',
-                'telefone',
-                'pontos',
-                'created_at',
-                'updated_at',
-            ])
+            ->select($columns)
             ->orderByDesc('created_at');
 
         if ($request->filled('perfil')) {
-            $query->where('perfil', $request->input('perfil'));
+            $query->where($roleColumn, $request->input('perfil'));
         }
 
-        if ($request->filled('status')) {
+        if ($request->filled('status') && Schema::hasColumn('users', 'status')) {
             $query->where('status', $request->input('status'));
         }
 
@@ -1344,8 +1390,11 @@ class AuthController extends Controller
             $term = '%' . $request->input('search') . '%';
             $query->where(function ($q) use ($term) {
                 $q->where('name', 'like', $term)
-                    ->orWhere('email', 'like', $term)
-                    ->orWhere('telefone', 'like', $term);
+                    ->orWhere('email', 'like', $term);
+
+                if (Schema::hasColumn('users', 'telefone')) {
+                    $q->orWhere('telefone', 'like', $term);
+                }
             });
         }
 
@@ -1435,6 +1484,10 @@ class AuthController extends Controller
      */
     public function createUser(Request $request)
     {
+        if (!$request->filled('password') && $request->filled('senha')) {
+            $request->merge(['password' => $request->input('senha')]);
+        }
+
         $payload = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
@@ -1448,30 +1501,57 @@ class AuthController extends Controller
 
         DB::beginTransaction();
         try {
-            $user = User::create([
+            $roleColumn = $this->resolveUsersRoleColumn();
+            $userPayload = [
                 'name' => $payload['name'],
                 'email' => strtolower(trim($payload['email'])),
                 'password' => Hash::make($payload['password']),
-                'perfil' => $payload['perfil'],
+                $roleColumn => $payload['perfil'],
                 'status' => $payload['status'] ?? 'ativo',
                 'telefone' => $payload['telefone'] ?? null,
                 'email_verified_at' => now(),
-            ]);
+                'is_active' => DB::connection()->getDriverName() === 'pgsql' ? 'true' : true,
+                'pontos' => 0,
+            ];
+
+            $safeUserPayload = $this->filterUsersColumns($userPayload);
+            if (empty($safeUserPayload)) {
+                throw new \RuntimeException('Tabela users indisponivel ou sem colunas compativeis.');
+            }
+
+            $user = User::create($safeUserPayload);
 
             if ($payload['perfil'] === 'empresa') {
-                DB::table('empresas')->insert([
+                $empresaPayload = [
                     'owner_id' => $user->id,
+                    'user_id' => $user->id,
                     'nome' => $payload['name'],
                     'ramo' => 'geral',
-                    'endereco' => $payload['endereco'] ?? 'Não informado',
-                    'telefone' => $payload['telefone'] ?? 'Não informado',
-                    'cnpj' => $payload['cnpj'] ?? sprintf('%02d.%03d.%03d/%04d-%02d', rand(10, 99), rand(100, 999), rand(100, 999), rand(1000, 9999), rand(10, 99)),
-                    'ativo' => true,
+                    'endereco' => $payload['endereco'] ?? 'Nao informado',
+                    'telefone' => $payload['telefone'] ?? 'Nao informado',
+                    'cnpj' => $payload['cnpj'] ?? sprintf(
+                        '%02d.%03d.%03d/%04d-%02d',
+                        rand(10, 99),
+                        rand(100, 999),
+                        rand(100, 999),
+                        rand(1000, 9999),
+                        rand(10, 99)
+                    ),
+                    'ativo' => DB::connection()->getDriverName() === 'pgsql' ? 'true' : true,
+                    'status' => 'ativo',
                     'points_multiplier' => 1.0,
                     'created_at' => now(),
                     'updated_at' => now(),
-                ]);
+                ];
+
+                $safeEmpresaPayload = $this->filterTableColumns('empresas', $empresaPayload);
+                if (empty($safeEmpresaPayload)) {
+                    throw new \RuntimeException('Tabela empresas indisponivel ou sem colunas compativeis.');
+                }
+
+                DB::table('empresas')->insert($safeEmpresaPayload);
             }
+
 
             DB::commit();
 
@@ -1575,4 +1655,3 @@ class AuthController extends Controller
         return false;
     }
 }
-

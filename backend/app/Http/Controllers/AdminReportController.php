@@ -16,12 +16,20 @@ class AdminReportController extends Controller
 {
     private function hasTable(string $table): bool
     {
-        return Schema::hasTable($table);
+        try {
+            return Schema::hasTable($table);
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     private function hasColumn(string $table, string $column): bool
     {
-        return Schema::hasTable($table) && Schema::hasColumn($table, $column);
+        try {
+            return Schema::hasTable($table) && Schema::hasColumn($table, $column);
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     private function resolveUserRoleColumn(): string
@@ -48,28 +56,38 @@ class AdminReportController extends Controller
 
     private function countEmpresasTotal(): int
     {
-        if (!$this->hasTable('empresas')) {
+        try {
+            if (!$this->hasTable('empresas')) {
+                return 0;
+            }
+
+            return Empresa::count();
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao contar empresas totais', ['error' => $e->getMessage()]);
             return 0;
         }
-
-        return Empresa::count();
     }
 
     private function countEmpresasAtivas(): int
     {
-        if (!$this->hasTable('empresas')) {
+        try {
+            if (!$this->hasTable('empresas')) {
+                return 0;
+            }
+
+            if ($this->hasColumn('empresas', 'ativo')) {
+                return Empresa::where('ativo', true)->count();
+            }
+
+            if ($this->hasColumn('empresas', 'status')) {
+                return Empresa::where('status', 'ativo')->count();
+            }
+
+            return Empresa::count();
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao contar empresas ativas', ['error' => $e->getMessage()]);
             return 0;
         }
-
-        if ($this->hasColumn('empresas', 'ativo')) {
-            return Empresa::where('ativo', true)->count();
-        }
-
-        if ($this->hasColumn('empresas', 'status')) {
-            return Empresa::where('status', 'ativo')->count();
-        }
-
-        return Empresa::count();
     }
 
     /**

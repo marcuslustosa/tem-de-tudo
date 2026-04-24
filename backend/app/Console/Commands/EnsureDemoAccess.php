@@ -88,11 +88,23 @@ class EnsureDemoAccess extends Command
     ): User {
         $user = User::query()->firstOrNew(['email' => strtolower(trim($email))]);
         $isNew = !$user->exists;
+        $roleColumn = $this->resolveUsersRoleColumn();
 
-        $user->name = $name;
-        $user->perfil = $perfil;
-        $user->status = 'ativo';
-        $user->telefone = $telefone;
+        if (Schema::hasColumn('users', 'name')) {
+            $user->name = $name;
+        }
+        if (Schema::hasColumn('users', $roleColumn)) {
+            $user->{$roleColumn} = $perfil;
+        }
+        if ($roleColumn !== 'perfil' && Schema::hasColumn('users', 'perfil')) {
+            $user->perfil = $perfil;
+        }
+        if (Schema::hasColumn('users', 'status')) {
+            $user->status = 'ativo';
+        }
+        if (Schema::hasColumn('users', 'telefone')) {
+            $user->telefone = $telefone;
+        }
         if (Schema::hasColumn('users', 'is_active')) {
             $user->is_active = $this->dbBooleanValue('users', 'is_active', true);
         }
@@ -148,6 +160,21 @@ class EnsureDemoAccess extends Command
         return $user;
     }
 
+    private function resolveUsersRoleColumn(): string
+    {
+        if (Schema::hasColumn('users', 'perfil')) {
+            return 'perfil';
+        }
+        if (Schema::hasColumn('users', 'role')) {
+            return 'role';
+        }
+        if (Schema::hasColumn('users', 'tipo')) {
+            return 'tipo';
+        }
+
+        return 'perfil';
+    }
+
     private function ensureEmpresaForOwner(User $owner): ?int
     {
         if (!Schema::hasTable('empresas')) {
@@ -189,16 +216,18 @@ class EnsureDemoAccess extends Command
     private function dbBooleanValue(string $table, string $column, bool $value)
     {
         try {
+            $driver = DB::connection()->getDriverName();
+            // PostgreSQL nao aceita inteiro em coluna boolean em alguns cenarios.
+            // Forcamos literal textual para evitar mismatch (boolean vs integer).
+            if ($driver === 'pgsql') {
+                return $value ? 'true' : 'false';
+            }
+
             if (!Schema::hasColumn($table, $column)) {
                 return $value;
             }
 
-            $driver = DB::connection()->getDriverName();
             $columnType = strtolower((string) Schema::getColumnType($table, $column));
-
-            if ($driver === 'pgsql' && in_array($columnType, ['bool', 'boolean'], true)) {
-                return $value ? 'true' : 'false';
-            }
 
             if (in_array($columnType, ['tinyint', 'smallint', 'int', 'integer'], true)) {
                 return $value ? 1 : 0;
