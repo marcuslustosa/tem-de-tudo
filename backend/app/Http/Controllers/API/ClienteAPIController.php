@@ -11,6 +11,8 @@ use App\Services\ClienteQrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ClienteAPIController extends Controller
@@ -54,50 +56,105 @@ class ClienteAPIController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
-        
-        // Pontos totais
-        $pontosTotais = DB::table('pontos')
-            ->where('user_id', $user->id)
-            ->whereNotIn('tipo', ['resgate', 'redeem'])
-            ->sum('pontos');
-        
-        $pontosGastos = DB::table('pontos')
-            ->where('user_id', $user->id)
-            ->whereIn('tipo', ['resgate', 'redeem'])
-            ->sum('pontos');
-        
-        $saldoPontos = $pontosTotais - $pontosGastos;
-        
-        // Empresas favoritas (onde tem mais pontos)
-        $empresasFavoritas = DB::table('pontos')
-            ->join('empresas', 'pontos.empresa_id', '=', 'empresas.id')
-            ->select('empresas.*', DB::raw('SUM(pontos.pontos) as total_pontos'))
-            ->where('pontos.user_id', $user->id)
-            ->whereNotIn('pontos.tipo', ['resgate', 'redeem'])
-            ->groupBy('empresas.id')
-            ->orderByDesc('total_pontos')
-            ->limit(3)
-            ->get();
-        
-        // Ãšltimas transaÃ§Ãµes
-        $ultimasTransacoes = DB::table('pontos')
-            ->join('empresas', 'pontos.empresa_id', '=', 'empresas.id')
-            ->select('pontos.*', 'empresas.nome as empresa_nome')
-            ->where('pontos.user_id', $user->id)
-            ->orderByDesc('pontos.created_at')
-            ->limit(10)
-            ->get();
-        
-        // PromoÃ§Ãµes disponÃ­veis
-        $promocoes = DB::table('promocoes')
-            ->join('empresas', 'promocoes.empresa_id', '=', 'empresas.id')
-            ->select('promocoes.*', 'empresas.nome as empresa_nome')
-            ->where('promocoes.ativo', true)
-            ->where('promocoes.status', 'ativa')
-            ->orderByDesc('promocoes.created_at')
-            ->limit(6)
-            ->get();
-        
+
+        $pontosTotais = 0;
+        $pontosGastos = 0;
+        $empresasFavoritas = collect();
+        $ultimasTransacoes = collect();
+        $promocoes = collect();
+
+        if ($this->hasTable('pontos')) {
+            try {
+                $pontosTotais = (int) DB::table('pontos')
+                    ->where('user_id', $user->id)
+                    ->whereNotIn('tipo', ['resgate', 'redeem'])
+                    ->sum('pontos');
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao calcular pontos totais no dashboard do cliente', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            try {
+                $pontosGastos = (int) DB::table('pontos')
+                    ->where('user_id', $user->id)
+                    ->whereIn('tipo', ['resgate', 'redeem'])
+                    ->sum('pontos');
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao calcular pontos gastos no dashboard do cliente', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($this->hasTable('pontos') && $this->hasTable('empresas') && $this->hasColumn('pontos', 'empresa_id')) {
+            try {
+                $empresasFavoritas = DB::table('pontos')
+                    ->join('empresas', 'pontos.empresa_id', '=', 'empresas.id')
+                    ->select('empresas.*', DB::raw('SUM(pontos.pontos) as total_pontos'))
+                    ->where('pontos.user_id', $user->id)
+                    ->whereNotIn('pontos.tipo', ['resgate', 'redeem'])
+                    ->groupBy('empresas.id')
+                    ->orderByDesc('total_pontos')
+                    ->limit(3)
+                    ->get();
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao carregar empresas favoritas no dashboard do cliente', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            try {
+                $ultimasTransacoes = DB::table('pontos')
+                    ->join('empresas', 'pontos.empresa_id', '=', 'empresas.id')
+                    ->select('pontos.*', 'empresas.nome as empresa_nome')
+                    ->where('pontos.user_id', $user->id)
+                    ->orderByDesc('pontos.created_at')
+                    ->limit(10)
+                    ->get();
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao carregar transacoes no dashboard do cliente', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($this->hasTable('promocoes')) {
+            try {
+                $query = DB::table('promocoes');
+
+                if ($this->hasTable('empresas') && $this->hasColumn('promocoes', 'empresa_id')) {
+                    $query->join('empresas', 'promocoes.empresa_id', '=', 'empresas.id')
+                        ->select('promocoes.*', 'empresas.nome as empresa_nome');
+                } else {
+                    $query->select('promocoes.*');
+                }
+
+                if ($this->hasColumn('promocoes', 'ativo')) {
+                    $query->where('promocoes.ativo', true);
+                }
+                if ($this->hasColumn('promocoes', 'status')) {
+                    $query->where('promocoes.status', 'ativa');
+                }
+                if ($this->hasColumn('promocoes', 'created_at')) {
+                    $query->orderByDesc('promocoes.created_at');
+                }
+
+                $promocoes = $query->limit(6)->get();
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao carregar promocoes no dashboard do cliente', [
+                    'user_id' => $user->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        $saldoPontos = max(0, $pontosTotais - $pontosGastos);
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -114,7 +171,7 @@ class ClienteAPIController extends Controller
             ]
         ]);
     }
-    
+
     /**
      * Listar todas as empresas disponÃ­veis
      */
@@ -782,8 +839,24 @@ class ClienteAPIController extends Controller
             ],
         ]);
     }
+
+    private function hasTable(string $table): bool
+    {
+        try {
+            return Schema::hasTable($table);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    private function hasColumn(string $table, string $column): bool
+    {
+        try {
+            return Schema::hasTable($table) && Schema::hasColumn($table, $column);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
 }
-
-
 
 

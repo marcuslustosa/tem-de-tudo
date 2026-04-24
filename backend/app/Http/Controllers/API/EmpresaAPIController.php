@@ -11,6 +11,7 @@ use App\Services\ClienteQrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 class EmpresaAPIController extends Controller
@@ -113,71 +114,143 @@ class EmpresaAPIController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
-        
-        // Buscar empresa do usuÃ¡rio
-        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
-        
+        $empresa = $this->resolveEmpresaForUser((int) $user->id);
+
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa nÃ£o encontrada'
+                'message' => 'Empresa nao encontrada'
             ], 404);
         }
-        
-        // Total de clientes
-        $totalClientes = DB::table('pontos')
-            ->where('empresa_id', $empresa->id)
-            ->distinct('user_id')
-            ->count('user_id');
-        
-        // Pontos distribuÃ­dos hoje
-        $pontosHoje = DB::table('pontos')
-            ->where('empresa_id', $empresa->id)
-            ->whereNotIn('tipo', ['resgate', 'redeem'])
-            ->whereDate('created_at', today())
-            ->sum('pontos');
-        
-        // Pontos distribuÃ­dos este mÃªs
-        $pontosMes = DB::table('pontos')
-            ->where('empresa_id', $empresa->id)
-            ->whereNotIn('tipo', ['resgate', 'redeem'])
-            ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->sum('pontos');
-        
-        // Scans de QR Code hoje
-        $scansHoje = DB::table('pontos')
-            ->where('empresa_id', $empresa->id)
-            ->whereDate('created_at', today())
-            ->where('descricao', 'LIKE', '%QR Code%')
-            ->count();
-        
-        // PromoÃ§Ãµes ativas
-        $promocoesAtivas = DB::table('promocoes')
-            ->where('empresa_id', $empresa->id)
-            ->where('ativo', true)
-            ->count();
-        
-        // Top 5 clientes
-        $topClientes = DB::table('pontos')
-            ->join('users', 'pontos.user_id', '=', 'users.id')
-            ->select('users.name', 'users.email', DB::raw('SUM(pontos.pontos) as total_pontos'))
-            ->where('pontos.empresa_id', $empresa->id)
-            ->whereNotIn('pontos.tipo', ['resgate', 'redeem'])
-            ->groupBy('users.id', 'users.name', 'users.email')
-            ->orderByDesc('total_pontos')
-            ->limit(5)
-            ->get();
-        
-        // Ãšltimas transaÃ§Ãµes
-        $ultimasTransacoes = DB::table('pontos')
-            ->join('users', 'pontos.user_id', '=', 'users.id')
-            ->select('pontos.*', 'users.name as cliente_nome')
-            ->where('pontos.empresa_id', $empresa->id)
-            ->orderByDesc('pontos.created_at')
-            ->limit(10)
-            ->get();
-        
+
+        $totalClientes = 0;
+        $pontosHoje = 0;
+        $pontosMes = 0;
+        $scansHoje = 0;
+        $promocoesAtivas = 0;
+        $topClientes = collect();
+        $ultimasTransacoes = collect();
+
+        if ($this->hasTable('pontos') && $this->hasColumn('pontos', 'empresa_id')) {
+            try {
+                $totalClientes = (int) DB::table('pontos')
+                    ->where('empresa_id', $empresa->id)
+                    ->distinct('user_id')
+                    ->count('user_id');
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao calcular total de clientes no dashboard da empresa', [
+                    'empresa_id' => $empresa->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            try {
+                $query = DB::table('pontos')->where('empresa_id', $empresa->id);
+                if ($this->hasColumn('pontos', 'tipo')) {
+                    $query->whereNotIn('tipo', ['resgate', 'redeem']);
+                }
+                if ($this->hasColumn('pontos', 'created_at')) {
+                    $query->whereDate('created_at', today());
+                }
+                if ($this->hasColumn('pontos', 'pontos')) {
+                    $pontosHoje = (int) $query->sum('pontos');
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao calcular pontos de hoje no dashboard da empresa', [
+                    'empresa_id' => $empresa->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            try {
+                $query = DB::table('pontos')->where('empresa_id', $empresa->id);
+                if ($this->hasColumn('pontos', 'tipo')) {
+                    $query->whereNotIn('tipo', ['resgate', 'redeem']);
+                }
+                if ($this->hasColumn('pontos', 'created_at')) {
+                    $query->whereMonth('created_at', now()->month)
+                        ->whereYear('created_at', now()->year);
+                }
+                if ($this->hasColumn('pontos', 'pontos')) {
+                    $pontosMes = (int) $query->sum('pontos');
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao calcular pontos do mes no dashboard da empresa', [
+                    'empresa_id' => $empresa->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            try {
+                $query = DB::table('pontos')->where('empresa_id', $empresa->id);
+                if ($this->hasColumn('pontos', 'created_at')) {
+                    $query->whereDate('created_at', today());
+                }
+                if ($this->hasColumn('pontos', 'descricao')) {
+                    $query->where('descricao', 'LIKE', '%QR Code%');
+                }
+                $scansHoje = (int) $query->count();
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao calcular scans de hoje no dashboard da empresa', [
+                    'empresa_id' => $empresa->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            if ($this->hasTable('users')) {
+                try {
+                    $topClientes = DB::table('pontos')
+                        ->join('users', 'pontos.user_id', '=', 'users.id')
+                        ->select('users.name', 'users.email', DB::raw('SUM(pontos.pontos) as total_pontos'))
+                        ->where('pontos.empresa_id', $empresa->id)
+                        ->when($this->hasColumn('pontos', 'tipo'), function ($q) {
+                            $q->whereNotIn('pontos.tipo', ['resgate', 'redeem']);
+                        })
+                        ->groupBy('users.id', 'users.name', 'users.email')
+                        ->orderByDesc('total_pontos')
+                        ->limit(5)
+                        ->get();
+                } catch (\Throwable $e) {
+                    Log::warning('Falha ao carregar top clientes no dashboard da empresa', [
+                        'empresa_id' => $empresa->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+
+                try {
+                    $ultimasTransacoes = DB::table('pontos')
+                        ->join('users', 'pontos.user_id', '=', 'users.id')
+                        ->select('pontos.*', 'users.name as cliente_nome')
+                        ->where('pontos.empresa_id', $empresa->id)
+                        ->when($this->hasColumn('pontos', 'created_at'), function ($q) {
+                            $q->orderByDesc('pontos.created_at');
+                        })
+                        ->limit(10)
+                        ->get();
+                } catch (\Throwable $e) {
+                    Log::warning('Falha ao carregar ultimas transacoes no dashboard da empresa', [
+                        'empresa_id' => $empresa->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            }
+        }
+
+        if ($this->hasTable('promocoes') && $this->hasColumn('promocoes', 'empresa_id')) {
+            try {
+                $query = DB::table('promocoes')->where('empresa_id', $empresa->id);
+                if ($this->hasColumn('promocoes', 'ativo')) {
+                    $query->where('ativo', true);
+                }
+                $promocoesAtivas = (int) $query->count();
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao calcular promocoes ativas no dashboard da empresa', [
+                    'empresa_id' => $empresa->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -194,84 +267,138 @@ class EmpresaAPIController extends Controller
             ]
         ]);
     }
-    
+
     /**
      * Listar clientes da empresa
      */
     public function clientes(Request $request)
     {
         $user = Auth::user();
-        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
-        
+        $empresa = $this->resolveEmpresaForUser((int) $user->id);
+
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa nÃ£o encontrada'
+                'message' => 'Empresa nao encontrada'
             ], 404);
         }
-        
-        // Buscar todos os clientes que interagiram com a empresa
-        $clientes = DB::table('pontos')
-            ->join('users', 'pontos.user_id', '=', 'users.id')
-            ->select(
-                'users.id',
-                'users.name',
-                'users.email',
-                'users.telefone',
-                DB::raw('SUM(CASE WHEN pontos.tipo NOT IN (\'resgate\', \'redeem\') THEN pontos.pontos ELSE 0 END) as total_ganho'),
-                DB::raw('SUM(CASE WHEN pontos.tipo IN (\'resgate\', \'redeem\') THEN pontos.pontos ELSE 0 END) as total_gasto'),
-                DB::raw('MAX(pontos.created_at) as ultima_visita')
-            )
-            ->where('pontos.empresa_id', $empresa->id)
-            ->when($request->filled('busca'), function ($q) use ($request) {
-                $term = '%' . strtolower($request->busca) . '%';
-                $q->where(function ($sub) use ($term) {
-                    $sub->whereRaw('LOWER(users.name) LIKE ?', [$term])
-                        ->orWhereRaw('LOWER(users.email) LIKE ?', [$term]);
-                });
-            })
-            ->groupBy('users.id', 'users.name', 'users.email', 'users.telefone')
-            ->orderByDesc('total_ganho')
-            ->paginate(20);
-        
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'data' => $clientes->items(),
-                'total' => $clientes->total(),
-                'current_page' => $clientes->currentPage(),
-                'per_page' => $clientes->perPage(),
-                'last_page' => $clientes->lastPage()
-            ]
-        ]);
+
+        if (!$this->hasTable('pontos') || !$this->hasTable('users')) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'data' => [],
+                    'total' => 0,
+                    'current_page' => 1,
+                    'per_page' => 20,
+                    'last_page' => 1,
+                ],
+            ]);
+        }
+
+        try {
+            $clientes = DB::table('pontos')
+                ->join('users', 'pontos.user_id', '=', 'users.id')
+                ->select(
+                    'users.id',
+                    'users.name',
+                    'users.email',
+                    'users.telefone',
+                    DB::raw("SUM(CASE WHEN pontos.tipo NOT IN ('resgate', 'redeem') THEN pontos.pontos ELSE 0 END) as total_ganho"),
+                    DB::raw("SUM(CASE WHEN pontos.tipo IN ('resgate', 'redeem') THEN pontos.pontos ELSE 0 END) as total_gasto"),
+                    DB::raw('MAX(pontos.created_at) as ultima_visita')
+                )
+                ->where('pontos.empresa_id', $empresa->id)
+                ->when($request->filled('busca'), function ($q) use ($request) {
+                    $term = '%' . strtolower($request->busca) . '%';
+                    $q->where(function ($sub) use ($term) {
+                        $sub->whereRaw('LOWER(users.name) LIKE ?', [$term])
+                            ->orWhereRaw('LOWER(users.email) LIKE ?', [$term]);
+                    });
+                })
+                ->groupBy('users.id', 'users.name', 'users.email', 'users.telefone')
+                ->orderByDesc('total_ganho')
+                ->paginate(20);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'data' => $clientes->items(),
+                    'total' => $clientes->total(),
+                    'current_page' => $clientes->currentPage(),
+                    'per_page' => $clientes->perPage(),
+                    'last_page' => $clientes->lastPage()
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao listar clientes da empresa', [
+                'empresa_id' => $empresa->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'data' => [],
+                    'total' => 0,
+                    'current_page' => 1,
+                    'per_page' => 20,
+                    'last_page' => 1,
+                ],
+            ]);
+        }
     }
-    
+
     /**
      * Listar promoÃ§Ãµes da empresa
      */
     public function promocoes()
     {
         $user = Auth::user();
-        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
-        
+        $empresa = $this->resolveEmpresaForUser((int) $user->id);
+
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa nÃ£o encontrada'
+                'message' => 'Empresa nao encontrada'
             ], 404);
         }
-        
-        $promocoes = DB::table('promocoes')
-            ->where('empresa_id', $empresa->id)
-            ->orderByDesc('created_at')
-            ->get();
-        
-        return response()->json([
-            'success' => true,
-            'data' => $promocoes
-        ]);
+
+        if (!$this->hasTable('promocoes')) {
+            return response()->json([
+                'success' => true,
+                'data' => []
+            ]);
+        }
+
+        try {
+            $query = DB::table('promocoes');
+            if ($this->hasColumn('promocoes', 'empresa_id')) {
+                $query->where('empresa_id', $empresa->id);
+            }
+            if ($this->hasColumn('promocoes', 'created_at')) {
+                $query->orderByDesc('created_at');
+            }
+
+            $promocoes = $query->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $promocoes
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao listar promocoes da empresa', [
+                'empresa_id' => $empresa->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => []
+            ]);
+        }
     }
-    
+
     /**
      * Criar promoÃ§Ã£o
      */
@@ -581,57 +708,95 @@ class EmpresaAPIController extends Controller
     public function relatorioPontos(Request $request)
     {
         $user = Auth::user();
-        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
-        
+        $empresa = $this->resolveEmpresaForUser((int) $user->id);
+
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa nÃ£o encontrada'
+                'message' => 'Empresa nao encontrada'
             ], 404);
         }
-        
-        // PerÃ­odo (padrÃ£o: Ãºltimos 30 dias)
+
         $dataInicio = $request->input('data_inicio', now()->subDays(30)->format('Y-m-d'));
         $dataFim = $request->input('data_fim', now()->format('Y-m-d'));
-        
-        // Pontos por dia
-        $pontosPorDia = DB::table('pontos')
-            ->select(
-                DB::raw('DATE(created_at) as data'),
-                DB::raw('SUM(CASE WHEN tipo NOT IN (\'resgate\', \'redeem\') THEN pontos ELSE 0 END) as pontos_distribuidos'),
-                DB::raw('SUM(CASE WHEN tipo IN (\'resgate\', \'redeem\') THEN pontos ELSE 0 END) as pontos_resgatados'),
-                DB::raw('COUNT(DISTINCT user_id) as clientes_unicos')
-            )
-            ->where('empresa_id', $empresa->id)
-            ->whereBetween('created_at', [$dataInicio, $dataFim])
-            ->groupBy('data')
-            ->orderBy('data')
-            ->get();
-        
-        // Totais do perÃ­odo
-        $totais = DB::table('pontos')
-            ->select(
-                DB::raw('SUM(CASE WHEN tipo NOT IN (\'resgate\', \'redeem\') THEN pontos ELSE 0 END) as total_distribuido'),
-                DB::raw('SUM(CASE WHEN tipo IN (\'resgate\', \'redeem\') THEN pontos ELSE 0 END) as total_resgatado'),
-                DB::raw('COUNT(DISTINCT user_id) as total_clientes')
-            )
-            ->where('empresa_id', $empresa->id)
-            ->whereBetween('created_at', [$dataInicio, $dataFim])
-            ->first();
-        
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'periodo' => [
-                    'inicio' => $dataInicio,
-                    'fim' => $dataFim
-                ],
-                'totais' => $totais,
-                'por_dia' => $pontosPorDia
-            ]
-        ]);
+
+        if (!$this->hasTable('pontos') || !$this->hasColumn('pontos', 'empresa_id')) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'periodo' => [
+                        'inicio' => $dataInicio,
+                        'fim' => $dataFim
+                    ],
+                    'totais' => [
+                        'total_distribuido' => 0,
+                        'total_resgatado' => 0,
+                        'total_clientes' => 0,
+                    ],
+                    'por_dia' => [],
+                ]
+            ]);
+        }
+
+        try {
+            $pontosPorDia = DB::table('pontos')
+                ->select(
+                    DB::raw('DATE(created_at) as data'),
+                    DB::raw("SUM(CASE WHEN tipo NOT IN ('resgate', 'redeem') THEN pontos ELSE 0 END) as pontos_distribuidos"),
+                    DB::raw("SUM(CASE WHEN tipo IN ('resgate', 'redeem') THEN pontos ELSE 0 END) as pontos_resgatados"),
+                    DB::raw('COUNT(DISTINCT user_id) as clientes_unicos')
+                )
+                ->where('empresa_id', $empresa->id)
+                ->whereBetween('created_at', [$dataInicio, $dataFim])
+                ->groupBy('data')
+                ->orderBy('data')
+                ->get();
+
+            $totais = DB::table('pontos')
+                ->select(
+                    DB::raw("SUM(CASE WHEN tipo NOT IN ('resgate', 'redeem') THEN pontos ELSE 0 END) as total_distribuido"),
+                    DB::raw("SUM(CASE WHEN tipo IN ('resgate', 'redeem') THEN pontos ELSE 0 END) as total_resgatado"),
+                    DB::raw('COUNT(DISTINCT user_id) as total_clientes')
+                )
+                ->where('empresa_id', $empresa->id)
+                ->whereBetween('created_at', [$dataInicio, $dataFim])
+                ->first();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'periodo' => [
+                        'inicio' => $dataInicio,
+                        'fim' => $dataFim
+                    ],
+                    'totais' => $totais,
+                    'por_dia' => $pontosPorDia
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao gerar relatorio de pontos da empresa', [
+                'empresa_id' => $empresa->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'periodo' => [
+                        'inicio' => $dataInicio,
+                        'fim' => $dataFim
+                    ],
+                    'totais' => [
+                        'total_distribuido' => 0,
+                        'total_resgatado' => 0,
+                        'total_clientes' => 0,
+                    ],
+                    'por_dia' => [],
+                ]
+            ]);
+        }
     }
-    
+
     /**
      * Escanear QR Code do cliente e dar pontos
      */
@@ -885,8 +1050,56 @@ class EmpresaAPIController extends Controller
             ]
         ]);
     }
+
+    private function hasTable(string $table): bool
+    {
+        try {
+            return Schema::hasTable($table);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    private function hasColumn(string $table, string $column): bool
+    {
+        try {
+            return Schema::hasTable($table) && Schema::hasColumn($table, $column);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    private function resolveEmpresaForUser(int $userId): ?object
+    {
+        if (!$this->hasTable('empresas')) {
+            return null;
+        }
+
+        try {
+            $query = DB::table('empresas');
+
+            if ($this->hasColumn('empresas', 'owner_id')) {
+                $empresa = (clone $query)->where('owner_id', $userId)->first();
+                if ($empresa) {
+                    return $empresa;
+                }
+            }
+
+            if ($this->hasColumn('empresas', 'user_id')) {
+                $empresa = (clone $query)->where('user_id', $userId)->first();
+                if ($empresa) {
+                    return $empresa;
+                }
+            }
+
+            return (clone $query)->where('id', $userId)->first();
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao resolver empresa para usuario', [
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
 }
-
-
-
-
