@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Empresa;
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
@@ -92,7 +93,9 @@ class EnsureDemoAccess extends Command
         $user->perfil = $perfil;
         $user->status = 'ativo';
         $user->telefone = $telefone;
-        $user->is_active = true;
+        if (Schema::hasColumn('users', 'is_active')) {
+            $user->is_active = $this->dbBooleanValue('users', 'is_active', true);
+        }
 
         if (!$user->email_verified_at) {
             $user->email_verified_at = now();
@@ -111,7 +114,7 @@ class EnsureDemoAccess extends Command
         }
 
         if (Schema::hasColumn('users', 'marketing_consent')) {
-            $user->marketing_consent = false;
+            $user->marketing_consent = $this->dbBooleanValue('users', 'marketing_consent', false);
         }
 
         if (Schema::hasColumn('users', 'consent_version') && empty($user->consent_version)) {
@@ -158,7 +161,7 @@ class EnsureDemoAccess extends Command
             'endereco' => 'Av. Paulista, 1000 - Sao Paulo/SP',
             'telefone' => '(11) 4000-9000',
             'cnpj' => (string) env('DEMO_EMPRESA_CNPJ', '98.765.432/0001-10'),
-            'ativo' => true,
+            'ativo' => $this->dbBooleanValue('empresas', 'ativo', true),
             'status' => 'ativo',
             'points_multiplier' => 1.0,
             'logo' => '/img/logo.png',
@@ -177,5 +180,33 @@ class EnsureDemoAccess extends Command
         $empresa->save();
 
         return (int) $empresa->id;
+    }
+
+    /**
+     * Garante serializacao compativel de boolean entre bancos.
+     * Postgres rejeita inteiro em coluna boolean em alguns ambientes.
+     */
+    private function dbBooleanValue(string $table, string $column, bool $value)
+    {
+        try {
+            if (!Schema::hasColumn($table, $column)) {
+                return $value;
+            }
+
+            $driver = DB::connection()->getDriverName();
+            $columnType = strtolower((string) Schema::getColumnType($table, $column));
+
+            if ($driver === 'pgsql' && in_array($columnType, ['bool', 'boolean'], true)) {
+                return $value ? 'true' : 'false';
+            }
+
+            if (in_array($columnType, ['tinyint', 'smallint', 'int', 'integer'], true)) {
+                return $value ? 1 : 0;
+            }
+        } catch (\Throwable) {
+            // fallback para tipo nativo PHP
+        }
+
+        return $value;
     }
 }

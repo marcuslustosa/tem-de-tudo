@@ -105,7 +105,9 @@ if [ "${ENSURE_DEMO_ACCESS_ON_START:-true}" = "true" ]; then
   if [ "${DEMO_FORCE_PASSWORD_RESET:-true}" = "true" ]; then
     DEMO_SYNC_ARG="--sync-passwords"
   fi
-  php artisan app:ensure-demo-access ${DEMO_SYNC_ARG} --no-interaction
+  if ! php artisan app:ensure-demo-access ${DEMO_SYNC_ARG} --no-interaction; then
+    echo "WARN: app:ensure-demo-access falhou, seguindo inicializacao sem bloquear deploy."
+  fi
 else
   echo "ENSURE_DEMO_ACCESS_ON_START=false: provisionamento de acessos demo desativado."
 fi
@@ -116,7 +118,9 @@ if [ "${VERIFY_FRONTEND_ON_START:-true}" = "true" ]; then
   if [ "${AUTO_FIX_FRONTEND_ASSETS:-true}" = "true" ]; then
     FRONTEND_FIX_ARG="--fix"
   fi
-  php artisan app:verify-frontend-assets ${FRONTEND_FIX_ARG} --no-interaction
+  if ! php artisan app:verify-frontend-assets ${FRONTEND_FIX_ARG} --no-interaction; then
+    echo "WARN: app:verify-frontend-assets falhou, seguindo inicializacao sem bloquear deploy."
+  fi
 else
   echo "VERIFY_FRONTEND_ON_START=false: validacao de assets visuais desativada."
 fi
