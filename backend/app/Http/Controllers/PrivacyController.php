@@ -38,11 +38,11 @@ class PrivacyController extends Controller
             'success' => true,
             'data' => [
                 'consents' => [
-                    'terms_accepted_at' => $user->terms_accepted_at,
-                    'privacy_policy_accepted_at' => $user->privacy_policy_accepted_at,
-                    'data_processing_consent_at' => $user->data_processing_consent_at,
+                    'terms_accepted_at' => $user->terms_accepted_at ?? null,
+                    'privacy_policy_accepted_at' => $user->privacy_policy_accepted_at ?? null,
+                    'data_processing_consent_at' => $user->data_processing_consent_at ?? null,
                     'marketing_consent' => (bool) ($user->marketing_consent ?? false),
-                    'consent_version' => $user->consent_version,
+                    'consent_version' => $user->consent_version ?? 'v1',
                 ],
                 'requests' => $history,
             ],
@@ -72,11 +72,11 @@ class PrivacyController extends Controller
             'success' => true,
             'message' => 'Preferencias de privacidade atualizadas com sucesso.',
             'data' => [
-                'terms_accepted_at' => $user->terms_accepted_at,
-                'privacy_policy_accepted_at' => $user->privacy_policy_accepted_at,
-                'data_processing_consent_at' => $user->data_processing_consent_at,
+                'terms_accepted_at' => $user->terms_accepted_at ?? null,
+                'privacy_policy_accepted_at' => $user->privacy_policy_accepted_at ?? null,
+                'data_processing_consent_at' => $user->data_processing_consent_at ?? null,
                 'marketing_consent' => (bool) ($user->marketing_consent ?? false),
-                'consent_version' => $user->consent_version,
+                'consent_version' => $user->consent_version ?? 'v1',
             ],
         ]);
     }
