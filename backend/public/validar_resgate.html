@@ -136,6 +136,10 @@
 <div id="scanSuccess" class="hidden absolute inset-0 bg-primary/20 flex items-center justify-center">
 <span class="material-symbols-outlined text-primary text-8xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
 </div>
+<!-- BOTÃO FECHAR QR SCANNER -->
+<button id="closeQRScanner" class="absolute top-4 right-4 w-10 h-10 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/80 transition-colors z-30 shadow-lg" title="Fechar scanner">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
 <!-- Corner Accents -->
 <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
 <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-lg"></div>
@@ -426,6 +430,20 @@
   switchCameraBtn?.addEventListener('click', () => {
     facingMode = facingMode === 'environment' ? 'user' : 'environment';
     startCamera();
+  });
+  
+  // ISSUE #2: Botão de fechar QR Scanner
+  const closeScannerBtn = document.getElementById('closeQRScanner');
+  closeScannerBtn?.addEventListener('click', () => {
+    scanning = false;
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+    // Redirecionar baseado no perfil
+    const storedUser = JSON.parse(localStorage.getItem('tem_de_tudo_user') || '{}');
+    const perfil = (storedUser.perfil || storedUser.role || '').toLowerCase();
+    const isEmpresa = ['empresa', 'estabelecimento', 'parceiro'].includes(perfil);
+    window.location.href = isEmpresa ? '/dashboard_parceiro.html' : '/meus_pontos.html';
   });
   
   // Initialize camera on page load
