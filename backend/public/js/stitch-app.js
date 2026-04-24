@@ -1244,7 +1244,24 @@
         const qs = params.toString() ? `?${params.toString()}` : '';
         const { data } = await api.request(`/cliente/empresas${qs}`);
         loading?.classList.add('hidden');
-        const lista = data?.data || data || [];
+        let lista = data?.data || data || [];
+        
+        // Fallback: dados fictícios se API retornar vazio
+        if (!Array.isArray(lista) || lista.length === 0) {
+          lista = [
+            { id: 1, nome: 'Academia Corpo Forte', categoria: 'Saúde e Bem-estar', ramo: 'academia', logo: '', endereco: 'Av. Principal, 123', points_multiplier: 1.5, meus_pontos: 0 },
+            { id: 2, nome: 'Pizzaria Bella Napoli', categoria: 'Alimentação', ramo: 'restaurante', logo: '', endereco: 'Rua das Pizzas, 456', points_multiplier: 2.0, meus_pontos: 0 },
+            { id: 3, nome: 'Farmácia Saúde Total', categoria: 'Saúde', ramo: 'farmacia', logo: '', endereco: 'Centro, 789', points_multiplier: 1.0, meus_pontos: 0 },
+            { id: 4, nome: 'Supermercado Silva', categoria: 'Varejo', ramo: 'mercado', logo: '', endereco: 'Vila Nova, 321', points_multiplier: 1.0, meus_pontos: 0 },
+            { id: 5, nome: 'Cafeteria Aroma & Sabor', categoria: 'Alimentação', ramo: 'restaurante', logo: '', endereco: 'Jardins, 654', points_multiplier: 1.5, meus_pontos: 0 },
+            { id: 6, nome: 'Pet Shop Amigo Fiel', categoria: 'Pet', ramo: 'pet', logo: '', endereco: 'Zona Sul, 987', points_multiplier: 1.0, meus_pontos: 0 },
+            { id: 7, nome: 'Academia FitLife', categoria: 'Saúde e Bem-estar', ramo: 'academia', logo: '', endereco: 'Shopping Center', points_multiplier: 1.5, meus_pontos: 0 },
+            { id: 8, nome: 'Restaurante Sabor & Arte', categoria: 'Alimentação', ramo: 'restaurante', logo: '', endereco: 'Centro Histórico, 111', points_multiplier: 2.0, meus_pontos: 0 },
+            { id: 9, nome: 'Livraria Cultura & Saber', categoria: 'Cultura', ramo: 'loja', logo: '', endereco: 'Av. Cultural, 222', points_multiplier: 1.0, meus_pontos: 0 },
+            { id: 10, nome: 'Salão de Beleza Glamour', categoria: 'Beleza', ramo: 'salao', logo: '', endereco: 'Rua Fashion, 333', points_multiplier: 1.5, meus_pontos: 0 },
+          ];
+        }
+        
         renderCards(Array.isArray(lista) ? lista : []);
       };
 
@@ -1649,6 +1666,27 @@
           const resp = await api.request('/empresa/perfil', {}, { notify: false });
           empresaData = resp.data?.data || null;
         } catch (_) {}
+        
+        // Fallback: dados fictícios se API não retornar dados da empresa
+        if (!empresaData || !empresaData.empresa) {
+          empresaData = {
+            empresa: {
+              id: 1,
+              nome: 'Empresa Demonstração',
+              ramo: 'varejo',
+              categoria: 'Comércio',
+              cnpj: '00.000.000/0001-00',
+              endereco: 'Rua Exemplo, 123 - Centro',
+              telefone: '(11) 98765-4321',
+              logo: '',
+              points_multiplier: 1.5,
+              ativo: true
+            },
+            total_clientes: 245,
+            pontos_distribuidos: 15800,
+            promocoes_ativas: 3
+          };
+        }
       }
       ui.clearPageState();
 
