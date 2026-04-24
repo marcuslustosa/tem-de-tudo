@@ -20,19 +20,25 @@ class PrivacyController extends Controller
     {
         $user = $request->user();
 
-        $history = DataPrivacyRequest::query()
-            ->where('user_id', $user->id)
-            ->orderByDesc('id')
-            ->limit(20)
-            ->get([
-                'id',
-                'request_type',
-                'status',
-                'reason',
-                'requested_at',
-                'processed_at',
-                'created_at',
-            ]);
+        // Tentar obter histórico, mas ser resiliente se tabela não existir
+        try {
+            $history = DataPrivacyRequest::query()
+                ->where('user_id', $user->id)
+                ->orderByDesc('id')
+                ->limit(20)
+                ->get([
+                    'id',
+                    'request_type',
+                    'status',
+                    'reason',
+                    'requested_at',
+                    'processed_at',
+                    'created_at',
+                ]);
+        } catch (\Exception $e) {
+            // Tabela data_privacy_requests pode não existir ainda
+            $history = [];
+        }
 
         return response()->json([
             'success' => true,
