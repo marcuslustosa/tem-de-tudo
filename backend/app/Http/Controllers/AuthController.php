@@ -719,32 +719,88 @@ class AuthController extends Controller
      */
     private function prepareUserDataForPerfil(string $perfil, Request $request): array
     {
+        $roleColumn = $this->resolveUsersRoleColumn();
         $baseData = [
             'name' => $request->name,
             'email' => strtolower(trim($request->email)),
             'password' => Hash::make($request->password),
-            'perfil' => $perfil,
-            'status' => 'ativo',
-            'terms_accepted_at' => now(),
-            'privacy_policy_accepted_at' => $request->boolean('privacy_policy', true) ? now() : null,
-            'data_processing_consent_at' => $request->boolean('terms', true) ? now() : null,
-            'marketing_consent' => $request->boolean('marketing_consent', false),
-            'consent_version' => $request->input('consent_version', config('privacy.default_consent_version', 'v1')),
+            $roleColumn => $perfil,
         ];
 
+        if (Schema::hasColumn('users', 'status')) {
+            $baseData['status'] = 'ativo';
+        }
+        if (Schema::hasColumn('users', 'terms_accepted_at')) {
+            $baseData['terms_accepted_at'] = now();
+        }
+        if (Schema::hasColumn('users', 'privacy_policy_accepted_at')) {
+            $baseData['privacy_policy_accepted_at'] = $request->boolean('privacy_policy', true) ? now() : null;
+        }
+        if (Schema::hasColumn('users', 'data_processing_consent_at')) {
+            $baseData['data_processing_consent_at'] = $request->boolean('terms', true) ? now() : null;
+        }
+        if (Schema::hasColumn('users', 'marketing_consent')) {
+            $baseData['marketing_consent'] = $request->boolean('marketing_consent', false);
+        }
+        if (Schema::hasColumn('users', 'consent_version')) {
+            $baseData['consent_version'] = $request->input('consent_version', config('privacy.default_consent_version', 'v1'));
+        }
+
+        $finalData = $baseData;
         switch ($perfil) {
             case 'cliente':
-                return array_merge($baseData, [
-                    'telefone' => $request->telefone,
-                ]);
+                if (Schema::hasColumn('users', 'telefone')) {
+                    $finalData['telefone'] = $request->telefone;
+                }
+                break;
 
             case 'empresa':
-                return array_merge($baseData, [
-                    'telefone' => $request->telefone,
-                ]);
+                if (Schema::hasColumn('users', 'telefone')) {
+                    $finalData['telefone'] = $request->telefone;
+                }
+                break;
 
             default:
-                return $baseData;
+                break;
+        }
+
+        return $this->filterUsersColumns($finalData);
+    }
+
+    private function resolveUsersRoleColumn(): string
+    {
+        if (Schema::hasColumn('users', 'perfil')) {
+            return 'perfil';
+        }
+        if (Schema::hasColumn('users', 'role')) {
+            return 'role';
+        }
+        if (Schema::hasColumn('users', 'tipo')) {
+            return 'tipo';
+        }
+
+        return 'perfil';
+    }
+
+    private function filterUsersColumns(array $payload): array
+    {
+        try {
+            if (!Schema::hasTable('users')) {
+                return $payload;
+            }
+
+            $columns = Schema::getColumnListing('users');
+            if (!$columns) {
+                return $payload;
+            }
+
+            return array_intersect_key($payload, array_flip($columns));
+        } catch (\Throwable $e) {
+            Log::warning('Nao foi possivel filtrar colunas de users para cadastro', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return $payload;
         }
     }
 
