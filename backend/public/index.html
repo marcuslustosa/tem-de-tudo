@@ -3,155 +3,189 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tem de Tudo</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#E10098',
-            secondary: '#00BCD4',
-            tertiary: '#7A2C8F',
-            surface: '#fef7ff',
-            'surface-container': '#f3edf7',
-            'surface-container-low': '#f7f2fa',
-            'surface-container-lowest': '#ffffff',
-            'surface-container-high': '#ede6f0',
-            'on-surface': '#1d1b20',
-            'on-surface-variant': '#49454f',
-            outline: '#79747e',
-            'outline-variant': '#cac4d0'
-          }
-        }
-      }
-    }
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+  <title>Tem de Tudo - Programa de Fidelidade</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
   <style>
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-    .glass-badge { background: rgba(222, 219, 231, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-    .main-gradient { background: linear-gradient(135deg, #00BCD4 0%, #7A2C8F 50%, #E10098 100%); }
-    body { font-family: 'Be Vietnam Pro', sans-serif; -webkit-tap-highlight-color: transparent; }
-    h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-hero { background: linear-gradient(135deg, #E10098 0%, #7A2C8F 100%); }
   </style>
-  <script src="/dist/stitch-app.min.js?v=20260422-optimized" defer></script>
 </head>
-<body class="bg-surface text-on-surface" data-page="home_tem_de_tudo">
-  <header class="main-gradient text-white py-6 px-6 lg:px-10 shadow-lg">
-    <div class="max-w-6xl mx-auto flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center font-black"><img src="/img/logo.png" alt="Tem de Tudo" class="h-6 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" /></div>
-        <div>
-          <p class="text-xs uppercase tracking-[0.2em] font-semibold">Programa de Fidelidade</p>
-          <h1 class="text-2xl font-black">Tem de Tudo</h1>
+<body class="bg-gray-50" data-page="home_tem_de_tudo">
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.style.display='none'" />
+          <span class="text-xl font-bold text-gray-900">Tem de Tudo</span>
         </div>
-      </div>
-      <div class="hidden md:flex items-center gap-3">
-        <a href="/entrar.html" class="px-4 py-2 rounded-full text-white font-bold shadow hover:translate-y-[-1px] transition" style="background-color:#7A2C8F;">Entrar</a>
-        <a href="/criar_conta.html" class="px-4 py-2 rounded-full border border-white/60 text-white font-bold hover:bg-white/10 transition">Criar conta</a>
+        <div class="flex items-center gap-3">
+          <a href="/entrar.html" class="hidden sm:inline-flex px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">Entrar</a>
+          <a href="/criar_conta.html" class="inline-flex px-4 py-2 text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 rounded-lg transition">Criar conta</a>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-6 lg:px-10 py-10 space-y-10">
-    <!-- Hero -->
-    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-      <div class="space-y-4">
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold text-xs">Fidelidade real</span>
-        <h2 class="text-3xl lg:text-4xl font-black text-on-surface">Ganhe e use pontos com parceiros reais.</h2>
-        <p class="text-on-surface-variant text-lg">Use o mesmo login para ver pontos, resgatar recompensas e acompanhar ofertas ao vivo.</p>
-        <div class="flex flex-wrap gap-3">
-          <a href="/entrar.html" class="px-5 py-3 rounded-full text-white font-bold shadow hover:shadow-lg transition" style="background-color:#7A2C8F;">Entrar</a>
-          <a href="/criar_conta.html" class="px-5 py-3 rounded-full border border-primary text-primary font-bold hover:bg-primary/5 transition">Criar conta</a>
-          <a href="/parceiros_tem_de_tudo.html" class="px-5 py-3 rounded-full border border-outline-variant text-on-surface font-semibold hover:bg-surface-container transition">Ver parceiros</a>
+  <!-- Hero Section -->
+  <section class="gradient-hero text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium">
+            <span class="material-symbols-outlined text-base">stars</span>
+            Programa de Fidelidade
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+            Ganhe pontos em lojas reais
+          </h1>
+          <p class="text-lg sm:text-xl text-white/90 max-w-xl">
+            Acumule pontos comprando em estabelecimentos parceiros e troque por recompensas exclusivas.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 pt-4">
+            <a href="/criar_conta.html" class="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-pink-600 bg-white hover:bg-gray-50 rounded-lg transition">
+              Começar agora
+              <span class="material-symbols-outlined ml-2">arrow_forward</span>
+            </a>
+            <a href="/parceiros_tem_de_tudo.html" class="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg transition">
+              Ver parceiros
+            </a>
+          </div>
+        </div>
+        <div class="hidden lg:block">
+          <div class="relative">
+            <div class="aspect-square max-w-md mx-auto bg-white/10 backdrop-blur-sm rounded-3xl p-8">
+              <div class="h-full w-full bg-white/10 rounded-2xl flex items-center justify-center">
+                <span class="material-symbols-outlined text-white/50" style="font-size: 120px;">loyalty</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="relative">
-        <div class="rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.12)]">
-          <img src="/assets/images/company2.jpg" alt="Experiencia Tem de Tudo" class="w-full h-full object-cover" />
-        </div>
-        <div class="absolute -bottom-6 -left-4 glass-badge px-4 py-3 rounded-2xl shadow-lg text-sm text-on-surface flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">verified</span>
-          <div><p class="font-bold">Tem de Tudo</p><p class="text-xs text-on-surface-variant">Programa de fidelidade</p></div>
-        </div>
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Destaques dinamicos -->
-    <section class="space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="text-xl font-headline font-bold">Parceiros em destaque</h3>
-        <a href="/parceiros_tem_de_tudo.html" class="text-primary font-semibold text-sm">Ver todos</a>
+  <!-- Features -->
+  <section class="py-16 sm:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Como funciona</h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">Simples, rápido e sem complicação</p>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="min-w-[280px] bg-surface-container-lowest rounded-2xl overflow-hidden shadow border border-outline-variant/20 p-4 flex flex-col gap-2">
-          <div class="h-32 bg-slate-200 rounded-xl overflow-hidden">
-            <img src="/assets/images/company1.jpg" alt="Parceiro" class="w-full h-full object-cover" />
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center space-y-4">
+          <div class="w-16 h-16 bg-pink-100 rounded-2xl flex items-center justify-center mx-auto">
+            <span class="material-symbols-outlined text-pink-600" style="font-size: 32px;">person_add</span>
           </div>
-          <div class="flex items-center justify-between">
-            <h4 class="font-bold text-sm">Parceiro carregado via API</h4>
-            <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">Dinamico</span>
-          </div>
-          <p class="text-xs text-outline">Atualize em "Ver todos" para dados reais.</p>
+          <h3 class="text-xl font-bold text-gray-900">1. Cadastre-se</h3>
+          <p class="text-gray-600">Crie sua conta gratuitamente em menos de 1 minuto</p>
         </div>
-        <div class="min-w-[280px] bg-surface-container-lowest rounded-2xl overflow-hidden shadow border border-outline-variant/20 p-4 flex flex-col gap-2">
-          <div class="h-32 bg-slate-200 rounded-xl overflow-hidden">
-            <img src="/assets/images/company3.jpg" alt="Parceiro" class="w-full h-full object-cover" />
+        <div class="text-center space-y-4">
+          <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto">
+            <span class="material-symbols-outlined text-purple-600" style="font-size: 32px;">shopping_bag</span>
           </div>
-          <div class="flex items-center justify-between">
-            <h4 class="font-bold text-sm">Catalogo vivo</h4>
-            <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">Dinamico</span>
-          </div>
-          <p class="text-xs text-outline">Dados vem do backend ou seeds.</p>
+          <h3 class="text-xl font-bold text-gray-900">2. Compre</h3>
+          <p class="text-gray-600">Faça compras nos estabelecimentos parceiros</p>
         </div>
-        <div class="min-w-[280px] bg-surface-container-lowest rounded-2xl overflow-hidden shadow border border-outline-variant/20 p-4 flex flex-col gap-2">
-          <div class="h-32 bg-slate-200 rounded-xl overflow-hidden">
-            <img src="/assets/images/company4.jpg" alt="Parceiro" class="w-full h-full object-cover" />
+        <div class="text-center space-y-4">
+          <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto">
+            <span class="material-symbols-outlined text-blue-600" style="font-size: 32px;">redeem</span>
           </div>
-          <div class="flex items-center justify-between">
-            <h4 class="font-bold text-sm">Ofertas reais</h4>
-            <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">Dinamico</span>
-          </div>
-          <p class="text-xs text-outline">Visite a lista para ver promocoes ativas.</p>
+          <h3 class="text-xl font-bold text-gray-900">3. Resgate</h3>
+          <p class="text-gray-600">Troque seus pontos por recompensas exclusivas</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Chamada de confiana -->
-    <section class="bg-surface-container-low rounded-3xl p-6 flex flex-col md:flex-row items-center gap-6">
-      <div class="flex-1 space-y-2">
-        <h3 class="text-xl font-headline font-bold">Conteudo dinamico, sem mock.</h3>
-        <p class="text-on-surface-variant">Navegue pelos parceiros, ofertas e recompensas da plataforma.</p>
+  <!-- Parceiros em destaque -->
+  <section class="py-16 sm:py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-3xl font-bold text-gray-900">Parceiros em destaque</h2>
+        <a href="/parceiros_tem_de_tudo.html" class="text-pink-600 hover:text-pink-700 font-medium flex items-center gap-1">
+          Ver todos
+          <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </a>
       </div>
-      <a href="/entrar.html" class="px-5 py-3 rounded-full text-white font-bold shadow hover:shadow-lg transition" style="background-color:#7A2C8F;">Entrar e ver meus pontos</a>
-    </section>
-  </main>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 space-y-4">
+          <div class="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+            <img src="/assets/images/company1.jpg" alt="Loja" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\'h-full flex items-center justify-center\'><span class=\'material-symbols-outlined text-gray-400\' style=\'font-size:48px\'>store</span></div>'" />
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-900">Tem de Tudo</h3>
+            <p class="text-sm text-gray-500 mt-1">Varejo • Centro</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 space-y-4">
+          <div class="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+            <img src="/assets/images/company3.jpg" alt="Café" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\'h-full flex items-center justify-center\'><span class=\'material-symbols-outlined text-gray-400\' style=\'font-size:48px\'>local_cafe</span></div>'" />
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-900">Café Aroma</h3>
+            <p class="text-sm text-gray-500 mt-1">Alimentação • Praça</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-6 space-y-4">
+          <div class="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+            <img src="/assets/images/company4.jpg" alt="Salão" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\'h-full flex items-center justify-center\'><span class=\'material-symbols-outlined text-gray-400\' style=\'font-size:48px\'>content_cut</span></div>'" />
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-900">Salão Estilo</h3>
+            <p class="text-sm text-gray-500 mt-1">Beleza • Jardim</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <!-- Bottom nav -->
-  <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-xl z-50 rounded-t-[1.5rem] shadow-[0_-8px_32px_rgba(11,31,58,0.08)] border-t border-[#00666e]/20">
-    <a class="flex flex-col items-center justify-center text-[#E10098] relative after:content-[''] after:w-1 after:h-1 after:bg-[#E10098] after:rounded-full after:mt-1 scale-90" href="/index.html">
-      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
-      <span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider">Inicio</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#7A2C8F] transition-colors scale-90" href="/parceiros_tem_de_tudo.html">
-      <span class="material-symbols-outlined">storefront</span>
-      <span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider">Parceiros</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#7A2C8F] transition-colors scale-90" href="/entrar.html">
-      <span class="material-symbols-outlined">stars</span>
-      <span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider">Entrar</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#7A2C8F] transition-colors scale-90" href="/criar_conta.html">
-      <span class="material-symbols-outlined">redeem</span>
-      <span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider">Criar conta</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#7A2C8F] transition-colors scale-90" href="/entrar.html">
-      <span class="material-symbols-outlined">person</span>
-      <span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider">Perfil</span>
-    </a>
-  </nav>
+  <!-- CTA Final -->
+  <section class="py-16 sm:py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">Pronto para começar?</h2>
+      <p class="text-lg text-gray-600">Junte-se a milhares de clientes que já estão economizando com nosso programa de fidelidade</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+        <a href="/criar_conta.html" class="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-pink-600 hover:bg-pink-700 rounded-lg transition">
+          Criar conta grátis
+        </a>
+        <a href="/entrar.html" class="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition">
+          Já tenho conta
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <h3 class="text-white font-bold mb-4">Tem de Tudo</h3>
+          <p class="text-sm">Programa de fidelidade para lojas e clientes reais</p>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold mb-4">Links</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/parceiros_tem_de_tudo.html" class="hover:text-white">Parceiros</a></li>
+            <li><a href="/entrar.html" class="hover:text-white">Entrar</a></li>
+            <li><a href="/criar_conta.html" class="hover:text-white">Criar conta</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold mb-4">Suporte</h4>
+          <p class="text-sm">suporte@temdetudo.com</p>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 text-center text-sm">
+        <p>&copy; 2026 Tem de Tudo. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>
 
