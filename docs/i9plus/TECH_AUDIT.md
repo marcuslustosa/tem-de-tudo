@@ -2072,3 +2072,63 @@ php artisan migrate --pretend
 php artisan route:list
 php artisan test
 ```
+
+## Atualizacao Fase 9 - 2026-05-14
+
+### Objetivo desta etapa
+
+- preparar a aplicacao para apresentacao ao cliente sem abrir regra nova de negocio;
+- garantir que a camada visual i9Plus esta efetivamente carregada nas paginas-chave;
+- criar massa de dados demo canonicamente alinhada ao Laravel;
+- documentar credenciais, roteiro e limitacoes de apresentacao.
+
+### Estado visual confirmado
+
+- `backend/public/css/i9plus-phase8.css` ja estava ligado em 11 das 12 paginas criticas da demo;
+- `backend/public/index.html` era a unica pagina principal fora do contrato visual e passou a carregar a camada i9Plus;
+- a home publica passou a mostrar CTA pill, cards brancos e acabamento coerente com o gradiente azul/verde/magenta;
+- as demais telas prioritarias da Fase 8 foram preservadas sem refatoracao visual ampla.
+
+### Seed demo canonica criada
+
+- seed nova:
+  - `backend/database/seeders/I9PlusDemoSeeder.php`
+- execucao prevista:
+  - `php artisan db:seed --class=I9PlusDemoSeeder`
+- a seed:
+  - cria admin demo em `users`;
+  - cria empresas ativas, pendente e suspensa;
+  - cria clientes demo com `data_nascimento`;
+  - cria vinculos via `InscricaoEmpresa`;
+  - gera QR da empresa por `QRCodeService`;
+  - deixa o QR do cliente para geracao sob demanda por `ClienteQrCodeService`;
+  - monta bonus de adesao, fidelidade, promocoes, aniversario, lembrete, avaliacoes e notificacoes fake.
+
+### Documentacao de demo
+
+- criado:
+  - `docs/i9plus/DEMO_GUIDE.md`
+- conteudo incluido:
+  - credenciais demo;
+  - seed a rodar;
+  - URLs principais;
+  - roteiro de apresentacao;
+  - limitacoes de push e deploy.
+
+### Manifest e assets publicos
+
+- `backend/public/manifest.json` permanece JSON valido;
+- os assets e paginas hoje referenciados pelo manifest existem neste checkout;
+- a observacao anterior sobre assets ausentes do manifest fica superada pelo saneamento e pela validacao desta etapa.
+
+### Bloqueios remanescentes fora do escopo da demo
+
+- `backend/vendor` continua ausente neste ambiente;
+- `composer` continua indisponivel no PATH local desta sessao;
+- por isso, seguem pendentes em ambiente Laravel valido:
+  - `composer install`
+  - `php artisan migrate --pretend`
+  - `php artisan route:list`
+  - `php artisan test`
+- push real continua dependente de `VAPID_*` e subscriptions reais do navegador;
+- o link publico atual continuara exibindo a versao antiga ate push/deploy.

@@ -1295,7 +1295,7 @@ Aplicar o contrato visual i9Plus sobre a base funcional resultante, respeitando 
 - dependencia de minificacao manual quando esse arquivo e alterado;
 - coexistencia de tabelas/rotas legadas e canonicas em partes do dominio;
 - qualidade de dado historico ainda influencia relatorios agregados.
-- `manifest.json` continua apontando para assets ausentes neste checkout atual (`/img/screenshot-mobile.png` e `/img/icon-profile.png`), o que precisa ser corrigido antes de producao PWA.
+- `manifest.json` foi saneado nas etapas finais e validado contra assets existentes neste checkout.
 
 ### Pre-deploy minimo
 
@@ -1319,3 +1319,71 @@ Aplicar o contrato visual i9Plus sobre a base funcional resultante, respeitando 
 - scheduler/cron continua pendente quando a operacao exigir automacao;
 - o ambiente desta auditoria final nao tinha `backend/vendor` nem `composer`, entao a validacao Laravel completa segue obrigatoria em staging/CI antes de producao;
 - a Fase 8 foi concluida como fechamento visual e tecnico seguro, nao como expansao funcional do produto.
+
+## Fase 9 - Preparacao de demo/apresentacao - 2026-05-14
+
+### Status
+
+- executada sem abrir regra nova de negocio;
+- sem uso de `backend/api` Node;
+- sem reativar `QRCodeController`;
+- focada em apresentacao local/staging com massa de dados convincente.
+
+### Entregas
+
+- verificacao do carregamento real da camada visual `i9plus-phase8.css`;
+- ajuste da home publica `index.html` para entrar no contrato visual i9Plus;
+- criacao da seed canonica:
+  - `backend/database/seeders/I9PlusDemoSeeder.php`
+- criacao do guia de demo:
+  - `docs/i9plus/DEMO_GUIDE.md`
+- atualizacao da auditoria tecnica com:
+  - seed demo;
+  - credenciais demo;
+  - limitacoes de push/deploy;
+  - comandos obrigatorios antes de staging tecnico.
+
+### Massa demo prevista
+
+- admin:
+  - `admin@demo.local`
+- empresas ativas:
+  - `Malagueta Galpao`
+  - `Texano Burger`
+  - `Makoto Sushi`
+  - `Florenza Boutique`
+- empresas de governanca:
+  - `Empresa Pendente Demo`
+  - `Empresa Suspensa Demo`
+- clientes:
+  - `Joao Cliente Demo`
+  - `Maria Aniversariante`
+  - `Pedro Inativo`
+  - `Ana Fidelidade`
+
+### Cenarios demonstrados pela seed
+
+- empresa publica ativa e empresas nao publicas por status;
+- QR da empresa persistido pelo servico canonico;
+- QR do cliente gerado sob demanda no fluxo real;
+- vinculos, bonus de adesao, cartao fidelidade e pontos;
+- promocoes visiveis mesmo sem push real;
+- aniversario elegivel no mes atual;
+- lembrete de retorno para cliente inativo;
+- avaliacoes com media visivel;
+- dados suficientes para dashboards e relatorios.
+
+### Como apresentar
+
+- rodar:
+  - `php artisan db:seed --class=I9PlusDemoSeeder`
+- seguir o roteiro descrito em:
+  - `docs/i9plus/DEMO_GUIDE.md`
+
+### Limites desta fase
+
+- sem deploy;
+- sem push;
+- sem alteracao de dominio;
+- sem testes Laravel executados neste ambiente por ausencia de `vendor/composer`;
+- o link publico atual so mudara depois de push/deploy coordenado.
