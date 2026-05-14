@@ -79,7 +79,7 @@ O objetivo aqui nao e redesenhar a aplicacao agora, e sim identificar o que ja p
 ### Ganhos visuais reais da Fase 3
 
 - a pagina publica da empresa ja comeca a comunicar o beneficio central do produto em vez de deixar apenas placeholder de fases futuras;
-- a empresa passou a ter uma area operacional minima coerente com o fluxo de balcão;
+- a empresa passou a ter uma area operacional minima coerente com o fluxo de balcÃ£o;
 - o scanner da empresa agora distingue melhor o fluxo de bonus do fluxo legado de validacao.
 
 ### Limites visuais que continuam abertos
@@ -121,7 +121,7 @@ O objetivo aqui nao e redesenhar a aplicacao agora, e sim identificar o que ja p
 ### Ganhos visuais reais da Fase 4
 
 - a pagina publica da empresa deixou de tratar fidelidade como placeholder e passou a comunicar uma mecanica concreta do produto;
-- a area da empresa ficou mais coerente com uma rotina de balcão, sem precisar abrir tela paralela;
+- a area da empresa ficou mais coerente com uma rotina de balcÃ£o, sem precisar abrir tela paralela;
 - o scanner passou a suportar melhor o contexto operacional de leitura do QR do cliente para bonus e fidelidade.
 
 ### Limites visuais que continuam abertos
@@ -207,7 +207,7 @@ Conclusao:
   - alto arredondamento;
   - sombras suaves;
   - gradientes;
-  - icones e navegação inferior em telas mobile.
+  - icones e navegaÃ§Ã£o inferior em telas mobile.
 
 ### Divergencias em relacao ao contrato
 
@@ -235,7 +235,7 @@ Conclusao:
 - parecer app/PWA;
 - fluxo simples;
 - coluna unica;
-- botões grandes;
+- botÃµes grandes;
 - cards empilhados;
 - navegacao inferior;
 - QR Code como acao central.
@@ -407,3 +407,61 @@ Motivo:
 - Validar, no inicio da implementacao visual, se o time quer manter a tipografia atual ou migrar para os tokens de contrato.
 - Decidir se o shell do cliente continuara em HTML + `stitch-app.js` ou se a camada visual sera consolidada em assets Vite, sem criar segunda aplicacao.
 - Produzir inventario de componentes reais dentro de `stitch-app.js` para separar layout reaproveitavel de conteudo que precisara ser reescrito.
+
+## Atualizacao Fase 8 - 2026-05-14
+
+### Telas refinadas nesta fase
+
+- `criar_conta.html`
+- `entrar.html`
+- `meus_pontos.html`
+- `detalhe_do_parceiro.html`
+- `validar_resgate.html`
+- `gest_o_de_ofertas_parceiro.html`
+- `dashboard_parceiro.html`
+- `clientes_fidelizados_loja.html`
+- `dashboard_admin_master.html`
+- `relat_rios_gerais_master.html`
+- `gest_o_de_estabelecimentos.html`
+
+### Estrategia visual aplicada
+
+- criacao de uma camada compartilhada `backend/public/css/i9plus-phase8.css`;
+- uso incremental dos tokens navy/blue/teal/magenta e de cards brancos com pill buttons;
+- preservacao do HTML existente sempre que possivel;
+- reforco do contraste app-like no mobile e painel-like no desktop;
+- sem reescrever `stitch-app.js` nem redesenhar o produto do zero.
+
+### Ganhos visuais reais da Fase 8
+
+- telas de autenticacao passaram a ter shell mais proximo de PWA/app instalado;
+- dashboard da empresa deixou de ficar preso ao shell estreito no desktop;
+- scanner operacional ganhou leitura melhor em desktop com bloco principal + coluna lateral;
+- gestao de ofertas ficou mais coerente como tela operacional e nao apenas lista mobile;
+- dashboards admin e listas admin/empresa ganharam melhor uso de largura, hierarquia e consistencia;
+- labels visuais incoerentes com o fluxo real foram corrigidos em navegacao e chips operacionais;
+- a acao de QR/validacao da empresa ficou visualmente mais central no mobile quando aplicavel.
+
+### O que foi mantido de proposito
+
+- nenhuma feature nova de negocio;
+- nenhum redesenho estrutural completo de cliente, empresa ou admin;
+- nenhuma mudanca em service worker, manifest ou fluxos PWA alem do refinamento visual;
+- nenhuma reativacao de `QRCodeController`.
+
+### Limites visuais que ainda existem
+
+- a base continua com muito Tailwind inline e HTML legado;
+- `stitch-app.js` ainda define boa parte do comportamento e do HTML dinamico;
+- nem todas as telas publicas do produto receberam a nova camada visual nesta fase;
+- a identidade continua hibrida entre a marca existente "Tem de Tudo" e o contrato visual inspirado no i9Plus;
+- `parceiros_tem_de_tudo.html`, `index.html`, `recompensas.html` e outras telas secundarias ainda podem receber lapidacao futura.
+- a experiencia de instalacao PWA ainda perde acabamento porque o manifest referencia assets ausentes neste checkout atual:
+  - `/img/screenshot-mobile.png`
+  - `/img/icon-profile.png`
+
+### Fechamento visual final
+
+- mobile: mais proximo do contrato i9Plus, com cards claros, gradiente azul/verde/magenta e botoes pill;
+- desktop: mais proximo de painel/site responsivo, sem depender do shell de celular ampliado;
+- status da Fase 8 visual: concluida no escopo incremental definido, com backlog residual apenas de acabamento fino e consolidacao de estilo global.

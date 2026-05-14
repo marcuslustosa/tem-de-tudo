@@ -94,24 +94,12 @@ class AuthController extends Controller
                 }
             }
 
-            // RESTRIÇÃO: Apenas admin master pode criar empresas
+            // O cadastro publico de empresa permanece permitido.
+            // Quando um admin cria a empresa por esta mesma rota, apenas registramos a autoria.
             if ($perfil === 'empresa') {
                 $user = $this->resolveAuthUserFromRequest($request);
                 $perfilAdmin = $user ? strtolower($user->perfil ?? $user->role ?? '') : '';
-                
-                if (false) {
-                    Log::warning('Tentativa de criar empresa sem autorização', [
-                        'ip' => $request->ip(),
-                        'user_id' => $user ? $user->id : null,
-                        'user_role' => $user ? ($user->perfil ?? $user->role) : 'não autenticado'
-                    ]);
-                    
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Apenas administradores podem criar estabelecimentos. Cliente pode se cadastrar normalmente.'
-                    ], 403);
-                }
-                
+
                 if ($user && in_array($perfilAdmin, ['admin', 'administrador', 'master'], true)) {
                     Log::info('Admin autenticado criando empresa', ['admin_id' => $user->id, 'admin_email' => $user->email]);
                 }

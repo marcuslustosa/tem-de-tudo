@@ -1923,3 +1923,152 @@ Classificacao:
 - Manter `backend/api` fora do caminho principal nas fases seguintes.
 - Validar todos os fluxos de resgate para garantir que nenhum permita conclusao apenas pelo cliente.
 - Mapear em fase funcional quais tabelas legadas de fidelidade seguem canonicas e quais sao sobra historica.
+
+## Atualizacao Fase 8 - 2026-05-14
+
+### Escopo executado
+
+- auditoria final do working tree antes das mudancas;
+- refinamento visual incremental mobile-first e desktop-first sem criar feature nova;
+- limpeza tecnica segura de codigo morto e labels quebrados;
+- marcacao explicita de rotas legadas de QR e compatibilidade admin;
+- atualizacao da documentacao final de fechamento.
+
+### Arquivos alterados na Fase 8
+
+- `backend/app/Http/Controllers/AuthController.php`
+- `backend/routes/api.php`
+- `backend/public/css/i9plus-phase8.css`
+- `backend/public/criar_conta.html`
+- `backend/public/entrar.html`
+- `backend/public/meus_pontos.html`
+- `backend/public/detalhe_do_parceiro.html`
+- `backend/public/validar_resgate.html`
+- `backend/public/gest_o_de_ofertas_parceiro.html`
+- `backend/public/dashboard_parceiro.html`
+- `backend/public/clientes_fidelizados_loja.html`
+- `backend/public/dashboard_admin_master.html`
+- `backend/public/relat_rios_gerais_master.html`
+- `backend/public/gest_o_de_estabelecimentos.html`
+- `docs/i9plus/TECH_AUDIT.md`
+- `docs/i9plus/VISUAL_AUDIT.md`
+- `docs/i9plus/IMPLEMENTATION_PLAN.md`
+
+### Arquivos criados na Fase 8
+
+- `backend/public/css/i9plus-phase8.css`
+
+### Endpoints e rotas
+
+- nenhum endpoint novo foi criado;
+- nenhuma regra de negocio foi alterada;
+- rotas legadas continuaram expostas apenas por compatibilidade;
+- `QRCodeController` permaneceu legado e nao foi reativado como caminho canonico.
+
+### Limpeza tecnica segura concluida
+
+- remocao do gate morto `if (false)` em `AuthController.php`;
+- remocao do gate morto inline em `criar_conta.html`;
+- normalizacao do fechamento de `gest_o_de_ofertas_parceiro.html`;
+- labels administrativos/operacionais ajustados em telas que exibiam nomes incoerentes com o fluxo real;
+- rotas legadas receberam comentarios deprecando expansao futura.
+
+### Riscos remanescentes apos a Fase 8
+
+- `backend/vendor` continua ausente neste ambiente, entao a validacao Laravel completa segue bloqueada;
+- `composer` nao estava disponivel no PATH deste ambiente, entao `composer install`, `php artisan migrate --pretend`, `php artisan route:list` e `php artisan test` nao puderam ser executados aqui;
+- `stitch-app.js` continua monolitico e concentrando muito comportamento cliente/empresa/admin;
+- as rotas legadas de `QRCodeController` permanecem publicadas por compatibilidade e devem ser removidas so com plano de migracao seguro;
+- os relatorios continuam dependentes da consistencia historica entre tabelas legadas e canonicas;
+- scheduler/cron para disparos automatizados continua pendente; os envios elegiveis seguem manuais por endpoint.
+- `backend/public/manifest.json` foi saneado nesta etapa, mas a experiencia PWA continua dependente da curadoria futura de screenshots reais caso a operacao queira enriquecer instalacao e marketplace listing;
+
+### Fechamento atual das fases
+
+- Fases 0 a 7: preservadas.
+- Fase 8: concluida no escopo funcional e visual definido.
+- Validacao automatizada: parcial no ambiente, condicionada a restaurar `backend/vendor`.
+
+### Instrucoes de deploy e pre-subida
+
+- `composer install`
+- `php artisan migrate`
+- `php artisan test`
+
+Comandos adicionais quando houver pipeline frontend real:
+
+- rebuild do bundle somente se `backend/public/js/stitch-app.js` for alterado;
+- publicar assets estaticos conforme processo do ambiente.
+
+### Variaveis importantes para operacao
+
+- `APP_*`
+- `DB_*`
+- `SESSION_*`, `CACHE_*`, `QUEUE_*`, `REDIS_*`
+- `MAIL_*`
+- `JWT_SECRET`
+- `VAPID_PUBLIC_KEY`
+- `VAPID_PRIVATE_KEY`
+- `VAPID_SUBJECT`
+- credenciais de push/FCM existentes, se usadas no ambiente
+
+### Observacao operacional
+
+- `backend/api` Node/Express/Prisma segue fora do caminho principal;
+- `QRCodeController` segue deprecated/legado;
+- o manifest PWA ficou consistente para commit seletivo, mas ainda pode receber screenshots reais em etapa futura de acabamento;
+- scheduler/cron ainda depende de configuracao futura se a operacao quiser disparos automativos de aniversario ou retorno sem acao manual.
+
+## Saneamento Pre-Commit - 2026-05-14
+
+### Manifest
+
+- `backend/public/manifest.json` foi saneado sem gerar asset novo;
+- a chave opcional `screenshots` foi removida temporariamente porque `/img/screenshot-mobile.png` nao existe neste checkout;
+- o atalho `Meu Perfil` passou a apontar para `/img/icon-96.png`, que existe em `backend/public/img`;
+- status atual:
+  - JSON valido;
+  - assets atualmente referenciados existem;
+  - `start_url` e os targets de `shortcuts` continuam presentes no `public/`.
+
+### Arquivos sensiveis e historicos
+
+- `backend/.env.local`
+  - `tracked`
+  - mantido fora deste commit seletivo;
+  - acao segura recomendada, somente com confirmacao humana:
+    - `git rm --cached backend/.env.local`
+- `ITEM_3_SEGURANCA_CONCLUIDO.md`
+  - `tracked`
+  - expunha `JWT_SECRET` real em texto;
+  - saneado nesta etapa com placeholder:
+    - `JWT_SECRET=[DEFINIR_APENAS_NO_AMBIENTE]`
+- `*.sql`
+  - atualmente ha varios arquivos `tracked` no repositorio;
+  - devem ficar fora do commit atual;
+  - nao remover automaticamente sem revisao humana.
+- `backend/node_modules`
+  - `untracked`
+  - manter fora do commit;
+  - coberto por `.gitignore`.
+
+### Regras para commit seletivo
+
+- nao usar `git add .` enquanto existirem artefatos sensiveis/historicos tracked no repositorio;
+- usar `git add` seletivo apenas para arquivos funcionais/documentais auditados;
+- manter fora do staging:
+  - `.env*`
+  - `*.sql`
+  - `node_modules/`
+  - `vendor/`
+  - dumps, logs e backups locais
+
+### Comandos obrigatorios em ambiente com Composer
+
+```bash
+cd backend
+composer install
+php artisan migrate --pretend
+php artisan route:list
+php artisan test
+```

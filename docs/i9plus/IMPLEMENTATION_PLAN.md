@@ -1203,3 +1203,119 @@ Aplicar o contrato visual i9Plus sobre a base funcional resultante, respeitando 
 - QR de empresa e QR de cliente seguem contrato seguro e canonico;
 - push respeita vinculo cliente/empresa;
 - mobile e desktop convergem para o contrato visual sem segunda aplicacao paralela.
+
+## Fase 8 - Execucao finalizada em 2026-05-14
+
+### Status
+
+- Fase 8 executada sem abrir funcionalidade nova de negocio.
+- Fases 0 a 7 preservadas.
+- Backend canonico permaneceu Laravel.
+- `backend/api` Node nao foi usado.
+
+### O que foi entregue
+
+- auditoria final do working tree e dos riscos de deploy;
+- camada visual compartilhada `backend/public/css/i9plus-phase8.css`;
+- refinamento incremental nas telas mobile prioritarias;
+- refinamento incremental nas telas desktop/admin/empresa prioritarias;
+- limpeza segura de codigo morto e labels quebrados;
+- comentarios de deprecacao em rotas legadas relevantes;
+- documentacao final de fechamento.
+
+### Arquivos alterados nesta execucao
+
+- `backend/app/Http/Controllers/AuthController.php`
+- `backend/routes/api.php`
+- `backend/public/css/i9plus-phase8.css`
+- `backend/public/criar_conta.html`
+- `backend/public/entrar.html`
+- `backend/public/meus_pontos.html`
+- `backend/public/detalhe_do_parceiro.html`
+- `backend/public/validar_resgate.html`
+- `backend/public/gest_o_de_ofertas_parceiro.html`
+- `backend/public/dashboard_parceiro.html`
+- `backend/public/clientes_fidelizados_loja.html`
+- `backend/public/dashboard_admin_master.html`
+- `backend/public/relat_rios_gerais_master.html`
+- `backend/public/gest_o_de_estabelecimentos.html`
+- `docs/i9plus/TECH_AUDIT.md`
+- `docs/i9plus/VISUAL_AUDIT.md`
+- `docs/i9plus/IMPLEMENTATION_PLAN.md`
+
+### Arquivos criados nesta execucao
+
+- `backend/public/css/i9plus-phase8.css`
+
+### Migrations
+
+- nenhuma migration nova.
+
+### Endpoints
+
+- nenhum endpoint novo;
+- nenhuma alteracao de contrato funcional obrigatoria;
+- apenas comentarios de deprecacao/compatibilidade em rotas legadas.
+
+### Fluxos implementados e preservados
+
+- cliente:
+  - cadastro com `data_nascimento`
+  - login
+  - home
+  - meu QR Code
+  - leitura de QR da empresa
+  - vinculo com empresa
+  - pagina publica da empresa
+  - bonus, fidelidade, promocoes, aniversario e avaliacoes
+- empresa:
+  - cadastro pendente
+  - login
+  - QR da empresa
+  - leitura de QR do cliente
+  - validacao presencial de beneficios
+  - gestao de ofertas/bonus/fidelidade/aniversario/lembrete
+  - clientes e relatorios
+- admin:
+  - aprovacao/rejeicao/suspensao de empresa
+  - visualizacao por status
+  - relatorio geral
+
+### Fluxos que continuam pendentes para producao
+
+- restaurar `backend/vendor` para rodar a suite Laravel local completa;
+- disponibilizar `composer` no ambiente de validacao para executar `composer install`, `php artisan migrate --pretend`, `php artisan route:list` e `php artisan test`;
+- definir politica final para remocao das rotas legadas de `QRCodeController`;
+- configurar scheduler/cron se a operacao quiser disparos automaticos e nao apenas manuais por endpoint;
+- consolidar acabamento visual de telas fora da lista prioritaria desta fase.
+
+### Riscos remanescentes
+
+- monolito frontend em `stitch-app.js`;
+- dependencia de minificacao manual quando esse arquivo e alterado;
+- coexistencia de tabelas/rotas legadas e canonicas em partes do dominio;
+- qualidade de dado historico ainda influencia relatorios agregados.
+- `manifest.json` continua apontando para assets ausentes neste checkout atual (`/img/screenshot-mobile.png` e `/img/icon-profile.png`), o que precisa ser corrigido antes de producao PWA.
+
+### Pre-deploy minimo
+
+- `composer install`
+- `php artisan migrate`
+- `php artisan test`
+
+### Variaveis relevantes
+
+- `APP_*`
+- `DB_*`
+- `SESSION_*`, `CACHE_*`, `QUEUE_*`, `REDIS_*`
+- `MAIL_*`
+- `JWT_SECRET`
+- `VAPID_PUBLIC_KEY`
+- `VAPID_PRIVATE_KEY`
+- `VAPID_SUBJECT`
+
+### Observacao final
+
+- scheduler/cron continua pendente quando a operacao exigir automacao;
+- o ambiente desta auditoria final nao tinha `backend/vendor` nem `composer`, entao a validacao Laravel completa segue obrigatoria em staging/CI antes de producao;
+- a Fase 8 foi concluida como fechamento visual e tecnico seguro, nao como expansao funcional do produto.

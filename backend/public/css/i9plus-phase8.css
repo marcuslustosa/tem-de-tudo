@@ -1,0 +1,310 @@
+:root {
+  --i9-navy: #111b3f;
+  --i9-blue: #133f8c;
+  --i9-teal: #00afa8;
+  --i9-magenta: #b01774;
+  --i9-pink: #e91e85;
+  --i9-bg: #f7f7f7;
+  --i9-surface: #ffffff;
+  --i9-surface-soft: #f2f5f9;
+  --i9-border: rgba(17, 27, 63, 0.08);
+  --i9-text: #1e1e1e;
+  --i9-text-muted: #667085;
+  --i9-gradient: linear-gradient(135deg, #133f8c 0%, #00afa8 48%, #b01774 100%);
+  --i9-gradient-soft: linear-gradient(180deg, rgba(19, 63, 140, 0.06) 0%, rgba(0, 175, 168, 0.03) 55%, rgba(176, 23, 116, 0.06) 100%);
+  --i9-shadow-card: 0 18px 45px rgba(8, 10, 18, 0.08);
+  --i9-shadow-soft: 0 10px 28px rgba(17, 27, 63, 0.08);
+  --i9-shadow-strong: 0 22px 55px rgba(17, 27, 63, 0.14);
+  --i9-radius-card: 28px;
+  --i9-radius-pill: 999px;
+  --i9-mobile-shell: 430px;
+  --i9-desktop-shell: 1180px;
+}
+
+body[data-page="criar_conta"],
+body[data-page="entrar"],
+body[data-page="dashboard_parceiro"],
+body[data-page="clientes_fidelizados_loja"],
+body[data-page="dashboard_admin_master"],
+body[data-page="relat_rios_gerais_master"],
+body[data-page="gest_o_de_estabelecimentos"],
+body[data-page="gest_o_de_ofertas_parceiro"],
+body[data-page="validar_resgate"] {
+  background:
+    radial-gradient(circle at top left, rgba(0, 175, 168, 0.14), transparent 24%),
+    radial-gradient(circle at top right, rgba(176, 23, 116, 0.12), transparent 28%),
+    linear-gradient(180deg, #eef6ff 0%, #f7f7f7 40%, #ffffff 100%);
+}
+
+body[data-page="criar_conta"],
+body[data-page="entrar"] {
+  min-height: 100dvh;
+}
+
+body[data-page="criar_conta"] main,
+body[data-page="entrar"] main {
+  max-width: 460px;
+}
+
+body[data-page="criar_conta"] .glass-card,
+body[data-page="entrar"] .glass-card {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid var(--i9-border);
+  border-radius: 32px;
+  box-shadow: var(--i9-shadow-strong);
+}
+
+body[data-page="criar_conta"] input:not([type="checkbox"]),
+body[data-page="criar_conta"] select,
+body[data-page="entrar"] input:not([type="checkbox"]) {
+  min-height: 52px;
+  border: 1px solid rgba(17, 27, 63, 0.06) !important;
+  border-radius: var(--i9-radius-pill) !important;
+  background: rgba(242, 245, 249, 0.9) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body[data-page="criar_conta"] button[type="submit"],
+body[data-page="entrar"] button[type="submit"] {
+  min-height: 54px;
+  border-radius: var(--i9-radius-pill) !important;
+  background: var(--i9-gradient) !important;
+  box-shadow: 0 14px 30px rgba(19, 63, 140, 0.22);
+}
+
+body[data-page="criar_conta"] #empresaRestricao {
+  border-radius: 18px;
+}
+
+body[data-page="meus_pontos"] #linkedCompaniesList > *,
+body[data-page="meus_pontos"] #featuredCompaniesList > *,
+body[data-page="detalhe_do_parceiro"] #partnerPromotionsList > *,
+body[data-page="detalhe_do_parceiro"] #partnerReviewsList > *,
+body[data-page="detalhe_do_parceiro"] #partnerReviewsDistribution > * {
+  box-shadow: var(--i9-shadow-soft);
+}
+
+body[data-page="meus_pontos"] nav,
+body[data-page="detalhe_do_parceiro"] nav {
+  border-top: 1px solid rgba(17, 27, 63, 0.08);
+  box-shadow: 0 -12px 36px rgba(17, 27, 63, 0.12);
+}
+
+body[data-page="detalhe_do_parceiro"] #partnerReviewStars .partner-review-star {
+  border: 1px solid rgba(17, 27, 63, 0.08);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+body[data-page="detalhe_do_parceiro"] #partnerReviewStars .partner-review-star:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--i9-shadow-soft);
+}
+
+body[data-page="validar_resgate"] > nav:first-of-type,
+body[data-page="gest_o_de_ofertas_parceiro"] > header,
+body[data-page="dashboard_parceiro"] > header {
+  width: min(var(--i9-desktop-shell), calc(100% - 24px));
+  max-width: var(--i9-desktop-shell);
+  margin: 12px auto 0;
+  border: 1px solid var(--i9-border);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(14px);
+  box-shadow: var(--i9-shadow-soft);
+}
+
+body[data-page="validar_resgate"] main,
+body[data-page="gest_o_de_ofertas_parceiro"] main,
+body[data-page="dashboard_parceiro"] main {
+  width: min(var(--i9-desktop-shell), calc(100% - 24px));
+  margin: 0 auto;
+}
+
+body[data-page="validar_resgate"] main > div:nth-of-type(1),
+body[data-page="validar_resgate"] main > div:nth-of-type(2) {
+  max-width: none;
+}
+
+body[data-page="validar_resgate"] main > div:nth-of-type(1) {
+  border: 1px solid rgba(17, 27, 63, 0.08);
+  box-shadow: var(--i9-shadow-strong);
+}
+
+body[data-page="validar_resgate"] main > div:nth-of-type(2) > * {
+  border-radius: 24px;
+  box-shadow: var(--i9-shadow-card);
+}
+
+body[data-page="validar_resgate"] #usarCupomBtn,
+body[data-page="validar_resgate"] #bonusValidationAction,
+body[data-page="validar_resgate"] #birthdayValidationAction,
+body[data-page="validar_resgate"] #loyaltyValidationAddPoint,
+body[data-page="validar_resgate"] #loyaltyValidationRedeem,
+body[data-page="validar_resgate"] #promotionValidationAction {
+  border-radius: var(--i9-radius-pill);
+}
+
+body[data-page="gest_o_de_ofertas_parceiro"] main {
+  max-width: 1280px;
+  padding-bottom: 120px;
+}
+
+body[data-page="gest_o_de_ofertas_parceiro"] main > div,
+body[data-page="gest_o_de_ofertas_parceiro"] main section {
+  box-shadow: var(--i9-shadow-card);
+}
+
+body[data-page="gest_o_de_ofertas_parceiro"] #filterTodas,
+body[data-page="gest_o_de_ofertas_parceiro"] #filterAtivas,
+body[data-page="gest_o_de_ofertas_parceiro"] #filterProgramadas,
+body[data-page="gest_o_de_ofertas_parceiro"] #filterInativas,
+body[data-page="gest_o_de_ofertas_parceiro"] #novaOfertaBtn,
+body[data-page="gest_o_de_ofertas_parceiro"] #bonusScanCta {
+  border-radius: var(--i9-radius-pill) !important;
+}
+
+body[data-page="gest_o_de_ofertas_parceiro"] #ofertasLista {
+  display: grid;
+  gap: 16px;
+}
+
+body[data-page="dashboard_parceiro"] main {
+  max-width: 1180px;
+  padding-top: 24px;
+}
+
+body[data-page="dashboard_parceiro"] section > div[id="campanhasAtivas"] > *,
+body[data-page="dashboard_parceiro"] #empresaRecentClients > *,
+body[data-page="dashboard_parceiro"] #empresaLatestRedemptions > * {
+  background: var(--i9-surface);
+  border: 1px solid var(--i9-border);
+  border-radius: 24px;
+  box-shadow: var(--i9-shadow-card);
+  padding: 16px;
+}
+
+body[data-page="dashboard_parceiro"] > header h1 {
+  color: var(--i9-navy) !important;
+}
+
+body[data-page="clientes_fidelizados_loja"],
+body[data-page="dashboard_admin_master"],
+body[data-page="relat_rios_gerais_master"],
+body[data-page="gest_o_de_estabelecimentos"] {
+  min-height: 100vh;
+}
+
+body[data-page="clientes_fidelizados_loja"] > header,
+body[data-page="dashboard_admin_master"] > header,
+body[data-page="relat_rios_gerais_master"] > header,
+body[data-page="gest_o_de_estabelecimentos"] > main > header {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(17, 27, 63, 0.08);
+}
+
+body[data-page="clientes_fidelizados_loja"] > nav.hidden,
+body[data-page="dashboard_admin_master"] > aside,
+body[data-page="relat_rios_gerais_master"] aside,
+body[data-page="gest_o_de_estabelecimentos"] > aside {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-right: 1px solid rgba(17, 27, 63, 0.08);
+  box-shadow: 8px 0 24px rgba(17, 27, 63, 0.04);
+}
+
+body[data-page="clientes_fidelizados_loja"] main,
+body[data-page="dashboard_admin_master"] main,
+body[data-page="relat_rios_gerais_master"] main,
+body[data-page="gest_o_de_estabelecimentos"] main {
+  max-width: 1440px;
+}
+
+body[data-page="clientes_fidelizados_loja"] #clientesLista,
+body[data-page="gest_o_de_estabelecimentos"] #estabsLista {
+  display: grid;
+  gap: 16px;
+}
+
+body[data-page="clientes_fidelizados_loja"] #clientesLista > *,
+body[data-page="gest_o_de_estabelecimentos"] #estabsLista > * {
+  box-shadow: var(--i9-shadow-card);
+  border-radius: 28px;
+}
+
+body[data-page="dashboard_admin_master"] .bg-surface-container-lowest,
+body[data-page="relat_rios_gerais_master"] .bg-surface-container-lowest,
+body[data-page="gest_o_de_estabelecimentos"] .bg-surface-container-lowest {
+  border: 1px solid rgba(17, 27, 63, 0.06);
+  box-shadow: var(--i9-shadow-card);
+}
+
+body[data-page="dashboard_admin_master"] #adminRecentList > *,
+body[data-page="dashboard_admin_master"] #adminCompanyStatusList > *,
+body[data-page="dashboard_admin_master"] #adminTopCompaniesList > *,
+body[data-page="relat_rios_gerais_master"] #relStatsList > *,
+body[data-page="relat_rios_gerais_master"] #relCheckinsList > *,
+body[data-page="relat_rios_gerais_master"] #relCompaniesStatus > *,
+body[data-page="relat_rios_gerais_master"] #relTopCompaniesClients > *,
+body[data-page="relat_rios_gerais_master"] #relTopCompaniesRedemptions > * {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid rgba(17, 27, 63, 0.06);
+  border-radius: 18px;
+  padding: 12px 14px;
+}
+
+@media (min-width: 960px) {
+  body[data-page="validar_resgate"] main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 420px);
+    align-items: start;
+    gap: 24px;
+  }
+
+  body[data-page="validar_resgate"] main > header {
+    grid-column: 1 / -1;
+  }
+
+  body[data-page="validar_resgate"] main > div:nth-of-type(2) {
+    position: sticky;
+    top: 104px;
+  }
+
+  body[data-page="gest_o_de_ofertas_parceiro"] #ofertasLista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body[data-page="clientes_fidelizados_loja"] #clientesLista,
+  body[data-page="gest_o_de_estabelecimentos"] #estabsLista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1023px) {
+  body[data-page="dashboard_parceiro"] > nav:last-of-type,
+  body[data-page="clientes_fidelizados_loja"] > nav:last-of-type,
+  body[data-page="dashboard_admin_master"] > nav:last-of-type,
+  body[data-page="relat_rios_gerais_master"] > nav:last-of-type,
+  body[data-page="gest_o_de_ofertas_parceiro"] > nav:last-of-type,
+  body[data-page="gest_o_de_estabelecimentos"] > nav:last-of-type {
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(var(--i9-mobile-shell), calc(100% - 16px));
+    border: 1px solid rgba(17, 27, 63, 0.08);
+    border-bottom: 0;
+    box-shadow: 0 -10px 28px rgba(17, 27, 63, 0.12);
+  }
+
+  body[data-page="dashboard_parceiro"] > nav:last-of-type a[href="/validar_resgate.html"] {
+    min-width: 76px;
+    min-height: 76px;
+    transform: translateY(-24px);
+    border-radius: 999px;
+    background: var(--i9-gradient);
+    color: #ffffff !important;
+    box-shadow: 0 16px 34px rgba(19, 63, 140, 0.28);
+  }
+
+  body[data-page="dashboard_parceiro"] > nav:last-of-type a[href="/validar_resgate.html"] .material-symbols-outlined {
+    font-variation-settings: "FILL" 1, "wght" 500, "GRAD" 0, "opsz" 24;
+  }
+}

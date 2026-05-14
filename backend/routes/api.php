@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\OpenAIController;
+// Legacy-only controller kept for backward compatibility. New QR flows must remain on
+// ClienteQrCodeService + QRCodeService and must not expand this controller again.
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\BonusAdesaoController;
 use App\Http\Controllers\BonusAniversarioController;
@@ -282,7 +284,8 @@ Route::prefix('admin')->group(function () {
             Route::post('/empresas/{id}/approve', [EmpresaController::class, 'approve']);
             Route::post('/empresas/{id}/reject', [EmpresaController::class, 'reject']);
             Route::post('/empresas/{id}/suspend', [EmpresaController::class, 'suspend']);
-            // Ativar/desativar empresa
+            // Legacy compatibility route preserved for older admin clients.
+            // Prefer the explicit approve/reject/suspend transitions above.
             Route::patch('/empresas/{id}/toggle-status', [EmpresaController::class, 'toggleStatus']);
         });
         
@@ -455,6 +458,7 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa', 'subscription.chec
     Route::delete('/campanhas/{id}', [CampanhaMultiplicadorController::class, 'destroy']);
 
     // Legacy routes (manter compatibilidade) - COM CACHE
+    // Preferir `/empresa/relatorios/resumo` e endpoints canonicos da Fase 7/8.
     Route::get('/dashboard-stats', [EmpresaController::class, 'dashboardStats'])
         ->middleware('cache.response:300'); // 5 min
     Route::get('/recent-checkins', [EmpresaController::class, 'recentCheckins'])
@@ -465,6 +469,7 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa', 'subscription.chec
 
 Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->group(function () {
     // Rotas exclusivas para administradores
+    // `dashboard-stats` segue legado para clientes antigos; o resumo canonico e `/admin/relatorios/resumo`.
     Route::get('/dashboard-stats', [AdminReportController::class, 'dashboardStats']);
     Route::get('/relatorios/resumo', [AdminReportController::class, 'summary']);
     Route::get('/recent-activity', [AdminReportController::class, 'recentActivity']);
@@ -544,7 +549,8 @@ Route::middleware(['auth:sanctum'])->prefix('admin/pontos')->group(function () {
         ->middleware(['admin.permission:view_reports']);
 });
 
-// Rotas do sistema QR Code
+// Rotas legadas do sistema QR Code.
+// Mantidas somente por compatibilidade com clientes antigos; nao reutilizar em novos fluxos.
 Route::prefix('qrcode')->group(function () {
     // Escanear QR Code (pÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âºblico - usuÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡rios logados)
     Route::middleware('auth:sanctum')->group(function () {
