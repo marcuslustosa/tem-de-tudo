@@ -1,0 +1,342 @@
+{
+  "version": 2,
+  "context": {
+    "goal": "Documentar o contrato inicial de telas da adaptacao i9Plus sobre a base atual do projeto.",
+    "note": "Este arquivo e um contrato visual e funcional de referencia. Nao representa implementacao pronta."
+  },
+  "screens": [
+    {
+      "id": "splash_install_qrcode",
+      "name": "Splash / Instalacao / QR Code",
+      "purpose": "Tela publica ou institucional para entrada por QR Code e incentivo de instalacao do PWA.",
+      "mobileBehavior": [
+        "Tela mobile-first em coluna unica com foco no QR Code e no CTA principal.",
+        "Deve parecer abertura de app/PWA, com leitura rapida e acoes simples.",
+        "A orientacao para adicionar a tela inicial precisa ficar visivel sem poluir a dobra inicial."
+      ],
+      "desktopBehavior": [
+        "Pode usar hero section com area ampla para QR Code, beneficios e instrucao de instalacao.",
+        "Deve parecer uma pagina institucional ou landing, nao um celular ampliado.",
+        "Pode distribuir conteudo em duas colunas mantendo a identidade visual."
+      ],
+      "requiredComponents": [
+        "logo",
+        "gradiente",
+        "QR Code grande",
+        "texto de chamada",
+        "instrucao para adicionar a tela inicial"
+      ],
+      "visualNotes": [
+        "Usar gradiente principal como assinatura visual.",
+        "Botoes pill grandes com alto contraste.",
+        "A tela precisa transmitir produto promocional e moderno."
+      ],
+      "businessNotes": [
+        "Pode ser porta de entrada para vinculo com a empresa.",
+        "Se o acesso vier do adesivo fisico, o fluxo deve preservar o contexto da empresa.",
+        "Nao pressupoe implementacao imediata de qualquer regra backend nesta etapa."
+      ]
+    },
+    {
+      "id": "customer_home",
+      "name": "Customer Home",
+      "purpose": "Home principal do cliente com atalhos de QR Code, empresas cadastradas e destaques.",
+      "mobileBehavior": [
+        "Experiencia de app/PWA instalado com menu inferior.",
+        "Cards empilhados e acoes centrais para Ler QR Code e Meu QR Code.",
+        "Conteudo orientado a uso rapido em loja, restaurante ou balcao."
+      ],
+      "desktopBehavior": [
+        "Layout mais amplo com secoes organizadas para atalhos, empresas e destaques.",
+        "Pode usar grids e blocos laterais sem perder a identidade mobile-first.",
+        "Nao deve parecer apenas uma tela mobile esticada."
+      ],
+      "requiredComponents": [
+        "logo",
+        "saudacao",
+        "botao Ler QR Code",
+        "botao Meu QR Code",
+        "empresas cadastradas",
+        "empresas em destaque",
+        "menu inferior"
+      ],
+      "visualNotes": [
+        "Cards brancos com sombras suaves.",
+        "Acoes principais devem ter destaque de cor e formato pill.",
+        "A hierarquia precisa favorecer leitura imediata de saldo, vinculos e proximas acoes."
+      ],
+      "businessNotes": [
+        "Deve concentrar a experiencia do perfil customer.",
+        "Empresas exibidas precisam respeitar vinculo e destaque configurado.",
+        "Meu QR Code deve ser um atalho central do produto."
+      ]
+    },
+    {
+      "id": "customer_search_categories",
+      "name": "Customer Search and Categories",
+      "purpose": "Tela para busca de empresas por nome, codigo e categoria.",
+      "mobileBehavior": [
+        "Busca no topo com acesso imediato a filtros e categorias.",
+        "Categorias em grid de duas colunas no mobile.",
+        "Resultados devem ser mostrados em cards com leitura rapida."
+      ],
+      "desktopBehavior": [
+        "Pode ampliar area de busca e exibir filtros laterais ou horizontais.",
+        "Resultados podem usar grid responsivo ou listas mais largas.",
+        "A tela deve parecer catalogo web, nao apenas uma tela mobile centralizada."
+      ],
+      "requiredComponents": [
+        "input de busca",
+        "lupa magenta",
+        "grid de categorias",
+        "cards com imagem",
+        "menu inferior"
+      ],
+      "visualNotes": [
+        "A busca deve usar elementos arredondados e limpos.",
+        "Categorias precisam ser faceis de reconhecer visualmente.",
+        "A lupa magenta funciona como ponto de acento da interface."
+      ],
+      "businessNotes": [
+        "A busca precisa considerar nome, codigo e categoria.",
+        "Categorias iniciais previstas incluem restaurantes, sorveterias, bares, japonesa, petshops e beleza.",
+        "A descoberta de empresas faz parte do funil de vinculacao e conversao."
+      ]
+    },
+    {
+      "id": "company_public_page",
+      "name": "Company Public Page",
+      "purpose": "Pagina publica da empresa para exibicao de identidade, promocoes, fidelidade e reputacao.",
+      "mobileBehavior": [
+        "Topo escuro forte, conteudo em coluna unica e cards empilhados.",
+        "Promocoes, cartao fidelidade e contatos devem aparecer com navegacao simples.",
+        "O usuario deve entender rapidamente como se vincular ou usar a empresa."
+      ],
+      "desktopBehavior": [
+        "Pode usar header mais largo e seccoes com duas colunas.",
+        "Contato, endereco e avaliacoes podem ganhar area lateral ou secoes dedicadas.",
+        "Deve parecer pagina de empresa em site moderno, nao app esticado."
+      ],
+      "requiredComponents": [
+        "topo escuro",
+        "logo",
+        "nome da empresa",
+        "avaliacao",
+        "promocoes",
+        "cartao fidelidade",
+        "contatos",
+        "avaliacoes"
+      ],
+      "visualNotes": [
+        "O topo escuro da empresa e parte da assinatura visual.",
+        "Promocoes devem ter cara de banners comerciais.",
+        "Informacoes institucionais precisam ter boa separacao visual."
+      ],
+      "businessNotes": [
+        "Apenas empresas ativas devem aparecer publicamente.",
+        "Essa tela pode ser a primeira experiencia apos leitura do QR Code da empresa.",
+        "Promocoes e fidelidade precisam refletir apenas beneficios validos."
+      ]
+    },
+    {
+      "id": "promotion_notification",
+      "name": "Promotion Notification",
+      "purpose": "Card ou modal de promocao instantanea entregue por notificacao.",
+      "mobileBehavior": [
+        "Deve abrir rapido, com imagem e CTA visiveis na primeira dobra.",
+        "A interacao precisa ser simples, com botao unico ou fluxo curto.",
+        "Deve funcionar bem como modal, sheet ou pagina de detalhe."
+      ],
+      "desktopBehavior": [
+        "Pode ser modal mais amplo ou pagina de detalhe contextual.",
+        "A imagem pode ocupar area maior sem perder foco na chamada principal.",
+        "A acao principal deve continuar evidente."
+      ],
+      "requiredComponents": [
+        "imagem",
+        "titulo",
+        "descricao",
+        "validade",
+        "botao OK",
+        "indicacao de notificacao"
+      ],
+      "visualNotes": [
+        "Imagem promocional e obrigatoria e precisa ter destaque.",
+        "Usar branco, magenta e teal para contraste comercial.",
+        "O card deve parecer promocional, nao administrativo."
+      ],
+      "businessNotes": [
+        "A notificacao deve ser enviada apenas para clientes vinculados.",
+        "Promocoes precisam ter validade e texto controlado.",
+        "O resgate final nunca deve depender apenas da acao do cliente."
+      ]
+    },
+    {
+      "id": "company_reviews",
+      "name": "Company Reviews",
+      "purpose": "Tela de avaliacoes da empresa com media, distribuicao e comentarios.",
+      "mobileBehavior": [
+        "Lista vertical clara com foco em leitura e reputacao.",
+        "Media e estrelas devem aparecer no topo com alto entendimento visual.",
+        "Comentarios nao podem ficar densos demais em telas pequenas."
+      ],
+      "desktopBehavior": [
+        "Pode combinar resumo estatistico lateral com lista detalhada.",
+        "Distribuicao por estrelas pode ganhar area grafica mais ampla.",
+        "A interface deve parecer painel de reputacao leve e organizado."
+      ],
+      "requiredComponents": [
+        "media",
+        "estrelas",
+        "total de avaliacoes",
+        "distribuicao",
+        "lista de avaliacoes"
+      ],
+      "visualNotes": [
+        "Estrelas devem ter destaque sem excesso de ruido.",
+        "Manter padrao de card branco e sombra suave.",
+        "Tipografia precisa favorecer leitura de comentarios."
+      ],
+      "businessNotes": [
+        "Somente clientes vinculados devem poder avaliar.",
+        "A media da empresa deve refletir atualizacao consistente.",
+        "A tela reforca confianca e influencia descoberta e conversao."
+      ]
+    },
+    {
+      "id": "birthday_bonus",
+      "name": "Birthday Bonus",
+      "purpose": "Tela de bonus de aniversario para o cliente visualizar e apresentar na empresa.",
+      "mobileBehavior": [
+        "Tela comemorativa, curta e orientada a uso presencial.",
+        "Banner, beneficio e validade devem ficar claros na primeira leitura.",
+        "O CTA deve levar a apresentacao do beneficio ou ao QR Code do cliente."
+      ],
+      "desktopBehavior": [
+        "Pode ampliar o destaque do banner sem transformar a tela em landing generica.",
+        "As regras de uso e validade podem aparecer em bloco lateral ou inferior.",
+        "A experiencia deve continuar clara para operacao em loja."
+      ],
+      "requiredComponents": [
+        "banner feliz aniversario",
+        "imagem",
+        "titulo",
+        "descricao",
+        "validade",
+        "botao para apresentar/usar",
+        "validacao pela empresa"
+      ],
+      "visualNotes": [
+        "Pode usar composicao mais vibrante dentro da paleta definida.",
+        "A mensagem deve parecer presente promocional, nao aviso burocratico.",
+        "Equilibrar clima comemorativo com clareza operacional."
+      ],
+      "businessNotes": [
+        "O beneficio depende da data de nascimento do cliente.",
+        "O resgate deve ser validado pela empresa lendo o QR Code do cliente.",
+        "A regra alvo e um resgate por ano por empresa."
+      ]
+    },
+    {
+      "id": "company_dashboard",
+      "name": "Company Dashboard",
+      "purpose": "Painel operacional da empresa dentro do mesmo PWA, com atalhos de gestao e leitura de QR Code.",
+      "mobileBehavior": [
+        "Painel mobile-first com blocos operacionais e atalhos grandes.",
+        "Scanner, QR Code da empresa e campanhas precisam ter acesso rapido.",
+        "Evitar densidade excessiva na primeira camada de uso."
+      ],
+      "desktopBehavior": [
+        "Pode usar estrutura de painel responsivo com sidebar, cards e tabelas.",
+        "Relatorios e listas podem ganhar distribuicao mais ampla.",
+        "A tela precisa parecer painel web, nao apenas um celular grande."
+      ],
+      "requiredComponents": [
+        "logo",
+        "dados da empresa",
+        "engrenagem/configuracoes",
+        "botao ler QR Code",
+        "QR Code da empresa",
+        "atalhos para campanhas",
+        "clientes",
+        "relatorios"
+      ],
+      "visualNotes": [
+        "Separar visualmente area operacional e identidade comercial da empresa.",
+        "Manter visual coerente com os demais perfis, mas com foco utilitario.",
+        "Cards e atalhos devem comunicar prioridade de uso."
+      ],
+      "businessNotes": [
+        "A empresa acessa pelo mesmo PWA com role separado.",
+        "Deve centralizar campanhas, clientes, scanner e relatorios.",
+        "A conta pode ter status pendente, ativa ou suspensa, refletido na interface."
+      ]
+    },
+    {
+      "id": "company_scan_customer_qr",
+      "name": "Company Scan Customer QR",
+      "purpose": "Tela em que a empresa le o QR Code do cliente para validar bonus, promocoes, pontos e recompensas.",
+      "mobileBehavior": [
+        "Experiencia focada na camera e na acao rapida do operador.",
+        "Os dados lidos precisam aparecer imediatamente apos o scan.",
+        "As acoes de validar, adicionar ponto ou resgatar devem ser objetivas."
+      ],
+      "desktopBehavior": [
+        "Pode usar webcam com painel lateral para resultado e acoes.",
+        "A area de leitura precisa continuar destacada e simples.",
+        "A operacao deve funcionar bem em caixa, balcao ou atendimento."
+      ],
+      "requiredComponents": [
+        "scanner",
+        "dados do cliente",
+        "pontos atuais",
+        "bonus disponiveis",
+        "promocoes disponiveis",
+        "acoes de validar/adicionar ponto/resgatar"
+      ],
+      "visualNotes": [
+        "Estados de sucesso, alerta e erro precisam ser muito claros.",
+        "A interface nao pode competir com a area de scan.",
+        "Privilegiar velocidade e legibilidade operacional."
+      ],
+      "businessNotes": [
+        "A empresa deve validar a acao lendo o QR Code do cliente.",
+        "Resgates nao podem ser concluidos apenas pelo cliente.",
+        "Esse fluxo e central para fidelidade, bonus e promocoes."
+      ]
+    },
+    {
+      "id": "admin_company_approval",
+      "name": "Admin Company Approval",
+      "purpose": "Painel administrativo para aprovacao, rejeicao e suspensao de empresas.",
+      "mobileBehavior": [
+        "Deve existir de forma enxuta, com cards por empresa e acoes resumidas.",
+        "Em telas pequenas, priorizar triagem e decisao objetiva.",
+        "Detalhes comerciais podem abrir em modal ou expandir por item."
+      ],
+      "desktopBehavior": [
+        "Pode usar tabela, filtros e painel de detalhe lateral.",
+        "A experiencia deve favorecer analise administrativa e volume operacional.",
+        "Visual precisa parecer painel web de gestao."
+      ],
+      "requiredComponents": [
+        "lista de empresas pendentes",
+        "detalhes da empresa",
+        "botao aprovar",
+        "botao rejeitar",
+        "botao suspender",
+        "status comercial"
+      ],
+      "visualNotes": [
+        "A composicao deve ser mais administrativa e menos promocional.",
+        "Status precisam ter sinalizacao clara e sobria.",
+        "Desktop pode explorar melhor tabelas e filtros."
+      ],
+      "businessNotes": [
+        "A aprovacao e manual e depende de pagamento externo.",
+        "Empresas pendentes nao aparecem publicamente.",
+        "Admin tambem pode suspender empresa e gerenciar destaque e categorias em fases futuras."
+      ]
+    }
+  ]
+}

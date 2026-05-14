@@ -6,7 +6,7 @@
 (function () {
   // ---------------------- Constantes ---------------------- //
   const API_BASE = `${window.location.origin}/api`;
-  const STORAGE = { token: 'tem_de_tudo_token', user: 'tem_de_tudo_user' };
+  const STORAGE = { token: 'tem_de_tudo_token', user: 'tem_de_tudo_user', pendingCompanyQr: 'tem_de_tudo_pending_company_qr' };
   const redirectMap = {
     cliente: '/meus_pontos.html',
     empresa: '/dashboard_parceiro.html',
@@ -173,6 +173,231 @@
     if (Array.isArray(value?.data)) return value.data;
     if (Array.isArray(value?.items)) return value.items;
     return [];
+  }
+
+  function setPendingCompanyQr(code) {
+    if (!code) return;
+    localStorage.setItem(STORAGE.pendingCompanyQr, String(code));
+  }
+
+  function getPendingCompanyQr() {
+    return (localStorage.getItem(STORAGE.pendingCompanyQr) || '').trim();
+  }
+
+  function clearPendingCompanyQr() {
+    localStorage.removeItem(STORAGE.pendingCompanyQr);
+  }
+
+  function buildCompanyLinkPageUrl(code) {
+    return `/vincular_empresa.html?code=${encodeURIComponent(String(code || ''))}`;
+  }
+
+  function buildLoginRedirectForCompanyQr(code) {
+    const next = buildCompanyLinkPageUrl(code);
+    return `/entrar.html?next=${encodeURIComponent(next)}`;
+  }
+
+  function resolveCompanyQrRedirect(perfil) {
+    const pendingCode = getPendingCompanyQr();
+    if (!pendingCode || perfil !== 'cliente') return null;
+    return buildCompanyLinkPageUrl(pendingCode);
+  }
+
+  function renderStars(rating = 0) {
+    const total = 5;
+    const normalized = Math.max(0, Math.min(5, Number(rating || 0)));
+    return Array.from({ length: total }, (_, index) => (index < Math.round(normalized) ? '★' : '☆')).join('');
+  }
+
+  function formatDatePtBr(value, fallback = 'Nao informada') {
+    if (!value) return fallback;
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return fallback;
+    return parsed.toLocaleDateString('pt-BR');
+  }
+
+  function formatDateRangePtBr(start, end, fallback = 'Nao informada') {
+    if (!start && !end) return fallback;
+    const startLabel = formatDatePtBr(start, '');
+    const endLabel = formatDatePtBr(end, '');
+    if (startLabel && endLabel) return `${startLabel} ate ${endLabel}`;
+    return startLabel || endLabel || fallback;
+  }
+
+  function bonusStatusMeta(status) {
+    switch (String(status || '').toLowerCase()) {
+      case 'available':
+        return {
+          label: 'Disponivel',
+          badgeClass: 'bg-emerald-50 text-emerald-700',
+          message: 'Apresente seu QR Code no estabelecimento para resgatar.',
+        };
+      case 'redeemed':
+        return {
+          label: 'Ja utilizado',
+          badgeClass: 'bg-slate-100 text-slate-600',
+          message: 'Este bonus de adesao ja foi utilizado.',
+        };
+      case 'expired':
+        return {
+          label: 'Expirado',
+          badgeClass: 'bg-amber-50 text-amber-700',
+          message: 'O bonus de adesao desta empresa expirou.',
+        };
+      case 'not_linked':
+        return {
+          label: 'Exige vinculo',
+          badgeClass: 'bg-blue-50 text-blue-700',
+          message: 'Leia o QR Code da empresa para liberar o bonus de adesao.',
+        };
+      default:
+        return {
+          label: 'Indisponivel',
+          badgeClass: 'bg-slate-100 text-slate-600',
+          message: 'Nenhum bonus de adesao ativo no momento.',
+        };
+    }
+  }
+
+  function loyaltyStatusMeta(status) {
+    switch (String(status || '').toLowerCase()) {
+      case 'reward_available':
+        return {
+          label: 'Recompensa liberada',
+          badgeClass: 'bg-emerald-50 text-emerald-700',
+          message: 'Cliente ja pode resgatar a recompensa no estabelecimento.',
+        };
+      case 'available':
+        return {
+          label: 'Acumulando',
+          badgeClass: 'bg-blue-50 text-blue-700',
+          message: 'Apresente seu QR Code no estabelecimento para acumular pontos ou resgatar.',
+        };
+      case 'not_linked':
+        return {
+          label: 'Exige vinculo',
+          badgeClass: 'bg-slate-100 text-slate-600',
+          message: 'Leia o QR Code da empresa para liberar o progresso individual.',
+        };
+      case 'expired':
+        return {
+          label: 'Expirado',
+          badgeClass: 'bg-amber-50 text-amber-700',
+          message: 'O cartao fidelidade desta empresa expirou.',
+        };
+      case 'inactive':
+        return {
+          label: 'Inativo',
+          badgeClass: 'bg-slate-100 text-slate-600',
+          message: 'A empresa ainda nao esta operando este cartao no momento.',
+        };
+      default:
+        return {
+          label: 'Indisponivel',
+          badgeClass: 'bg-slate-100 text-slate-600',
+          message: 'Nenhum cartao fidelidade ativo no momento.',
+        };
+    }
+  }
+
+  function promotionStatusMeta(status) {
+    switch (String(status || '').toLowerCase()) {
+      case 'available':
+        return {
+          label: 'Disponivel',
+          badgeClass: 'bg-emerald-50 text-emerald-700',
+          message: 'Apresente seu QR Code no estabelecimento para validar.',
+        };
+      case 'redeemed':
+        return {
+          label: 'Ja utilizada',
+          badgeClass: 'bg-slate-100 text-slate-600',
+          message: 'Esta promocao ja foi validada para este cliente.',
+        };
+      case 'not_linked':
+        return {
+          label: 'Exige vinculo',
+          badgeClass: 'bg-blue-50 text-blue-700',
+          message: 'Vincule-se a empresa para ficar elegivel a esta promocao.',
+        };
+      case 'expired':
+        return {
+          label: 'Expirada',
+          badgeClass: 'bg-amber-50 text-amber-700',
+          message: 'A promocao expirou e nao pode mais ser validada.',
+        };
+      case 'inactive':
+        return {
+          label: 'Inativa',
+          badgeClass: 'bg-slate-100 text-slate-600',
+          message: 'A empresa pausou esta promocao no momento.',
+        };
+      case 'public':
+        return {
+          label: 'Publica',
+          badgeClass: 'bg-fuchsia-50 text-fuchsia-700',
+          message: 'Entre como cliente e apresente seu QR Code no estabelecimento para validar.',
+        };
+      default:
+        return {
+          label: 'Indisponivel',
+          badgeClass: 'bg-slate-100 text-slate-600',
+          message: 'Nenhuma promocao ativa no momento.',
+        };
+    }
+  }
+
+  function birthdayBonusStatusMeta(status) {
+    switch (String(status || '').toLowerCase()) {
+      case 'available':
+        return {
+          label: 'Elegivel',
+          badgeClass: 'bg-emerald-50 text-emerald-700',
+          message: 'Apresente seu QR Code no estabelecimento para resgatar o bonus aniversario.',
+        };
+      case 'redeemed':
+        return {
+          label: 'Ja utilizado',
+          badgeClass: 'bg-slate-100 text-slate-600',
+          message: 'Este bonus aniversario ja foi utilizado neste ano.',
+        };
+      case 'not_linked':
+        return {
+          label: 'Exige vinculo',
+          badgeClass: 'bg-blue-50 text-blue-700',
+          message: 'Vincule-se a empresa para liberar o bonus aniversario.',
+        };
+      case 'missing_birth_date':
+        return {
+          label: 'Atualize seu cadastro',
+          badgeClass: 'bg-amber-50 text-amber-700',
+          message: 'Informe sua data de nascimento para a empresa liberar o bonus aniversario.',
+        };
+      case 'out_of_window':
+        return {
+          label: 'Fora da janela',
+          badgeClass: 'bg-fuchsia-50 text-fuchsia-700',
+          message: 'Este bonus aparece apenas no mes do aniversario ou na janela configurada pela empresa.',
+        };
+      case 'public':
+        return {
+          label: 'Consulte no app',
+          badgeClass: 'bg-sky-50 text-sky-700',
+          message: 'Entre como cliente vinculado para verificar sua elegibilidade ao bonus aniversario.',
+        };
+      case 'inactive':
+        return {
+          label: 'Inativo',
+          badgeClass: 'bg-slate-100 text-slate-600',
+          message: 'A empresa nao esta operando bonus aniversario no momento.',
+        };
+      default:
+        return {
+          label: 'Indisponivel',
+          badgeClass: 'bg-slate-100 text-slate-600',
+          message: 'Nenhum bonus aniversario ativo no momento.',
+        };
+    }
   }
 
   // ---------------------- UI / Estado ---------------------- //
@@ -880,7 +1105,158 @@
   // ---------------------- Paginas: Cliente ---------------------- //
   const cliente = {
     async dashboard() {
-      if (!(await auth.guard(['cliente']))) return;
+      {
+        if (!(await auth.guard(['cliente']))) return;
+        const pendingCompanyQr = resolveCompanyQrRedirect('cliente');
+        if (pendingCompanyQr && !new URLSearchParams(window.location.search).has('ignore_pending_qr')) {
+          window.location.href = pendingCompanyQr;
+          return;
+        }
+
+        ui.setPageState('loading', 'Carregando sua home...');
+        const [{ data: dashboardResp }, { data: myQrResp }] = await Promise.all([
+          api.request('/cliente/dashboard', {}, { notify: false }),
+          api.request('/cliente/meu-qrcode', {}, { notify: false }),
+        ]);
+        ui.clearPageState();
+
+        const payload = dashboardResp?.data || {};
+        const currentUser = await auth.ensure();
+        const linkedCompanies = toArray(payload.empresas_vinculadas);
+        const featuredCompanies = toArray(payload.empresas_destaque);
+        const quickActions = payload.acoes_rapidas || {};
+        const myQr = myQrResp?.data || {};
+        const params = new URLSearchParams(window.location.search);
+
+        const welcomeEl = document.getElementById('header-welcome');
+        if (welcomeEl) {
+          const firstName = safeText(currentUser?.name || currentUser?.nome || 'Cliente').split(' ')[0];
+          welcomeEl.textContent = `Ola, ${firstName}`;
+        }
+
+        const renderCompanyCard = (company) => {
+          const rating = Number(company.avaliacao_media || 0);
+          const reviews = Number(company.total_avaliacoes || 0);
+          const linkedBadge = company.vinculada
+            ? '<span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald-700">Vinculada</span>'
+            : '';
+
+          return `
+            <article class="rounded-[24px] bg-white p-4 shadow-[0_12px_32px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
+              <div class="flex items-start gap-4">
+                <img class="h-16 w-16 rounded-2xl bg-slate-50 object-cover" src="${safeImage(company.logo, IMAGE_FALLBACKS.store)}" alt="${safeText(company.nome, 'Empresa')}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-start justify-between gap-2">
+                    <div>
+                      <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#B01774]">${safeText(company.categoria || company.ramo, 'Empresa')}</p>
+                      <h3 class="mt-1 text-lg font-extrabold leading-tight text-[#111B3F]">${safeText(company.nome, 'Empresa')}</h3>
+                    </div>
+                    ${linkedBadge}
+                  </div>
+                  <div class="mt-2 flex items-center gap-2 text-xs text-slate-500">
+                    <span class="font-bold text-amber-400">${renderStars(rating)}</span>
+                    <span>${rating > 0 ? rating.toFixed(1).replace('.', ',') : 'Novo'}${reviews ? ` • ${reviews} avaliações` : ''}</span>
+                  </div>
+                  <p class="mt-2 line-clamp-2 text-sm text-slate-500">${safeText(company.endereco, 'Endereco nao informado')}</p>
+                </div>
+              </div>
+              <div class="mt-4 flex gap-3">
+                <a class="inline-flex h-11 flex-1 items-center justify-center rounded-full bg-[linear-gradient(90deg,#00AFA8_0%,#133F8C_45%,#B01774_100%)] px-4 text-sm font-extrabold text-white" href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}">Abrir empresa</a>
+                <button class="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 px-4 text-sm font-bold text-slate-600" type="button" data-company-open="${encodeURIComponent(company.id)}">Ver</button>
+              </div>
+            </article>
+          `;
+        };
+
+        const linkedList = document.getElementById('linkedCompaniesList');
+        const linkedEmpty = document.getElementById('linkedCompaniesEmpty');
+        const linkedCount = document.getElementById('linkedCompaniesCount');
+        if (linkedList) {
+          linkedList.innerHTML = linkedCompanies.map(renderCompanyCard).join('');
+        }
+        if (linkedEmpty) linkedEmpty.classList.toggle('hidden', linkedCompanies.length > 0);
+        if (linkedCount) linkedCount.textContent = linkedCompanies.length ? `${linkedCompanies.length} empresa(s)` : 'Nenhuma empresa vinculada ainda';
+
+        const featuredList = document.getElementById('featuredCompaniesList');
+        const featuredSection = document.getElementById('featuredCompaniesSection');
+        if (featuredList) {
+          featuredList.innerHTML = featuredCompanies.map(renderCompanyCard).join('');
+        }
+        if (featuredSection) {
+          featuredSection.classList.toggle('hidden', featuredCompanies.length === 0);
+        }
+
+        document.querySelectorAll('[data-company-open]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const id = button.getAttribute('data-company-open');
+            if (id) window.location.href = `/detalhe_do_parceiro.html?id=${encodeURIComponent(id)}`;
+          });
+        });
+
+        const readQrUrl = quickActions.ler_qr_empresa_url || '/validar_resgate.html?modo=vinculo-empresa';
+        document.getElementById('btnReadCompanyQr')?.addEventListener('click', () => {
+          window.location.href = readQrUrl;
+        });
+        document.getElementById('btnBottomScan')?.addEventListener('click', () => {
+          window.location.href = readQrUrl;
+        });
+
+        const qrCard = document.getElementById('homeMyQrCard');
+        const qrContainer = document.getElementById('homeMyQrContainer');
+        const toggleQrBtn = document.getElementById('btnShowMyQr');
+        const revealMyQr = () => {
+          qrCard?.classList.remove('hidden');
+          qrCard?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (toggleQrBtn) {
+            toggleQrBtn.textContent = 'Ocultar Meu QR Code';
+          }
+        };
+        const hideMyQr = () => {
+          qrCard?.classList.add('hidden');
+          if (toggleQrBtn) {
+            toggleQrBtn.textContent = 'Meu QR Code';
+          }
+        };
+
+        if (qrContainer) {
+          if (myQr.codigo && myQr.qrcode_svg) {
+            const expiresAt = myQr.expira_em ? new Date(myQr.expira_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '--';
+            qrContainer.innerHTML = `
+              <div class="mx-auto flex h-64 w-64 items-center justify-center rounded-[28px] bg-white p-4 shadow-[0_18px_45px_rgba(8,10,18,0.12)] ring-1 ring-black/5">${myQr.qrcode_svg}</div>
+              <div class="mt-4 rounded-[20px] bg-slate-50 px-4 py-3 text-center">
+                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Codigo seguro</p>
+                <p class="mt-2 break-all font-mono text-sm font-bold text-[#111B3F]">${safeText(myQr.codigo)}</p>
+              </div>
+              <div class="mt-3 flex flex-wrap items-center justify-center gap-3">
+                <button id="copyCustomerQrCode" class="inline-flex h-11 items-center justify-center rounded-full bg-[#111B3F] px-5 text-sm font-bold text-white" type="button">Copiar codigo</button>
+                <p class="text-xs text-slate-500">Expira às ${expiresAt}</p>
+              </div>
+            `;
+            document.getElementById('copyCustomerQrCode')?.addEventListener('click', () => {
+              navigator.clipboard.writeText(myQr.codigo).then(() => ui.message('Codigo do seu QR copiado.', 'success'));
+            });
+          } else {
+            qrContainer.innerHTML = '<p class="text-sm text-slate-500">Nao foi possivel carregar seu QR Code agora.</p>';
+          }
+        }
+
+        toggleQrBtn?.addEventListener('click', () => {
+          if (qrCard?.classList.contains('hidden')) {
+            revealMyQr();
+          } else {
+            hideMyQr();
+          }
+        });
+
+        if (params.get('mostrar') === 'meu-qrcode') {
+          revealMyQr();
+        } else {
+          hideMyQr();
+        }
+
+        return;
+      }
+
       ui.setPageState('loading', 'Carregando painel do cliente...');
       const [dashboardResp, pontosResp, historicoResp] = await Promise.all([
         api.request('/cliente/dashboard'),
@@ -1299,10 +1675,709 @@
     },
 
     async detalheParceiro() {
-      if (!(await auth.guard(['cliente', 'empresa', 'admin']))) return;
-      const viewer = await auth.ensure();
-      const empresaId = new URLSearchParams(window.location.search).get('id');
-      if (!empresaId) return ui.setPageState('empty', 'Nenhuma empresa selecionada.');
+      {
+        const stored = auth.getStored();
+        const viewer = auth.normalizeUser(stored?.user);
+        const perfilViewer = auth.normalizePerfil(viewer?.perfil || viewer?.role || viewer?.tipo);
+        const selectedCompanyId = new URLSearchParams(window.location.search).get('id');
+        if (!selectedCompanyId) return ui.setPageState('empty', 'Nenhuma empresa selecionada.');
+
+        ui.setPageState('loading', 'Carregando empresa...');
+        const { res, data } = await api.request(`/empresas/${selectedCompanyId}`, {}, { requireAuth: false, notify: false });
+        ui.clearPageState();
+
+        if (!res.ok || data?.success === false) {
+          ui.setPageState('empty', data?.message || 'Empresa indisponivel no momento.');
+          return;
+        }
+
+        const companyInfo = data?.data || data || {};
+        const publicPromotionsResponse = await api.request(`/empresas/${selectedCompanyId}/promocoes`, {}, { requireAuth: false, notify: false });
+        const publicReviewsResponse = await api.request(`/empresas/${selectedCompanyId}/avaliacoes`, {}, { requireAuth: false, notify: false });
+        const publicPromotions = toArray(publicPromotionsResponse.data?.data || publicPromotionsResponse.data);
+        const publicReviewsPayload = publicReviewsResponse.res.ok && publicReviewsResponse.data?.success !== false
+          ? (publicReviewsResponse.data?.data || {})
+          : {
+              summary: {
+                average: Number(companyInfo.avaliacao_media || 0),
+                total: Number(companyInfo.total_avaliacoes || 0),
+                distribution: [],
+              },
+              items: [],
+            };
+        const params = new URLSearchParams(window.location.search);
+        const setText = (id, value, fallback = 'Nao informado') => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = safeText(value, fallback);
+        };
+        const setLink = (id, value, formatter) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          if (!value) {
+            el.classList.add('hidden');
+            return;
+          }
+          el.classList.remove('hidden');
+          el.href = formatter ? formatter(value) : value;
+        };
+        const renderBonusCard = (payload) => {
+          const bonus = payload?.bonus || null;
+          const meta = bonusStatusMeta(payload?.status);
+          const titleEl = document.getElementById('partnerBonusTitle');
+          const statusEl = document.getElementById('partnerBonusStatus');
+          const descriptionEl = document.getElementById('partnerBonusDescription');
+          const expiryEl = document.getElementById('partnerBonusExpiry');
+          const hintEl = document.getElementById('partnerBonusHint');
+          const imageEl = document.getElementById('partnerBonusImage');
+          const actionEl = document.getElementById('partnerBonusAction');
+
+          if (titleEl) titleEl.textContent = bonus?.titulo || 'Bonus de adesao';
+          if (statusEl) {
+            statusEl.textContent = meta.label;
+            statusEl.className = `inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] ${meta.badgeClass}`;
+          }
+          if (descriptionEl) {
+            descriptionEl.textContent = bonus?.descricao || meta.message;
+          }
+          if (expiryEl) {
+            expiryEl.textContent = formatDatePtBr(bonus?.data_expiracao, 'Nao informada');
+          }
+          if (hintEl) {
+            hintEl.textContent = meta.message;
+          }
+          if (imageEl) {
+            imageEl.src = safeImage(bonus?.imagem_url || bonus?.imagem, IMAGE_FALLBACKS.promo);
+            imageEl.onerror = () => {
+              imageEl.onerror = null;
+              imageEl.src = IMAGE_FALLBACKS.promo;
+            };
+          }
+          if (!actionEl) return;
+
+          if (!perfilViewer) {
+            actionEl.textContent = 'Entrar como cliente';
+            actionEl.onclick = () => {
+              window.location.href = '/entrar.html';
+            };
+            return;
+          }
+
+          if (perfilViewer !== 'cliente') {
+            actionEl.textContent = 'Voltar ao painel';
+            actionEl.onclick = () => {
+              window.location.href = redirectMap[perfilViewer] || '/meus_pontos.html';
+            };
+            return;
+          }
+
+          if (payload?.status === 'available' || payload?.status === 'redeemed') {
+            actionEl.textContent = 'Mostrar meu QR Code';
+            actionEl.onclick = () => {
+              window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
+            };
+            return;
+          }
+
+          actionEl.textContent = 'Ler QR da empresa';
+          actionEl.onclick = () => {
+            window.location.href = '/validar_resgate.html?modo=vinculo-empresa';
+          };
+        };
+        const renderBirthdayCard = (payload) => {
+          const bonus = payload?.bonus || payload || null;
+          const status = payload?.status || (bonus?.status === 'available' ? 'public' : bonus?.status);
+          const meta = birthdayBonusStatusMeta(status);
+          const titleEl = document.getElementById('partnerBirthdayTitle');
+          const statusEl = document.getElementById('partnerBirthdayStatus');
+          const descriptionEl = document.getElementById('partnerBirthdayDescription');
+          const validityEl = document.getElementById('partnerBirthdayValidity');
+          const hintEl = document.getElementById('partnerBirthdayHint');
+          const imageEl = document.getElementById('partnerBirthdayImage');
+          const actionEl = document.getElementById('partnerBirthdayAction');
+
+          if (titleEl) titleEl.textContent = bonus?.titulo || 'Bonus aniversario';
+          if (statusEl) {
+            statusEl.textContent = meta.label;
+            statusEl.className = `inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] ${meta.badgeClass}`;
+          }
+          if (descriptionEl) {
+            descriptionEl.textContent = bonus?.descricao || meta.message;
+          }
+          if (validityEl) {
+            validityEl.textContent = bonus?.validade_descricao
+              || formatDateRangePtBr(payload?.valid_from, payload?.valid_until, 'Consulte a regra da empresa');
+          }
+          if (hintEl) {
+            hintEl.textContent = payload?.message || meta.message;
+          }
+          if (imageEl) {
+            imageEl.src = safeImage(bonus?.imagem_url || bonus?.imagem, IMAGE_FALLBACKS.promo);
+            imageEl.onerror = () => {
+              imageEl.onerror = null;
+              imageEl.src = IMAGE_FALLBACKS.promo;
+            };
+          }
+          if (!actionEl) return;
+
+          actionEl.disabled = false;
+          actionEl.classList.remove('opacity-60', 'cursor-not-allowed');
+
+          if (!perfilViewer) {
+            actionEl.textContent = 'Entrar como cliente';
+            actionEl.onclick = () => {
+              window.location.href = '/entrar.html';
+            };
+            return;
+          }
+
+          if (perfilViewer !== 'cliente') {
+            actionEl.textContent = 'Voltar ao painel';
+            actionEl.onclick = () => {
+              window.location.href = redirectMap[perfilViewer] || '/meus_pontos.html';
+            };
+            return;
+          }
+
+          if (status === 'missing_birth_date') {
+            actionEl.textContent = 'Atualizar meu perfil';
+            actionEl.onclick = () => {
+              window.location.href = '/meu_perfil.html';
+            };
+            return;
+          }
+
+          if (status === 'not_linked') {
+            actionEl.textContent = 'Ler QR da empresa';
+            actionEl.onclick = () => {
+              window.location.href = '/validar_resgate.html?modo=vinculo-empresa';
+            };
+            return;
+          }
+
+          if (status === 'available' || status === 'redeemed') {
+            actionEl.textContent = 'Mostrar meu QR Code';
+            actionEl.onclick = () => {
+              window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
+            };
+            return;
+          }
+
+          actionEl.textContent = 'Aguardar periodo valido';
+          actionEl.onclick = null;
+          actionEl.disabled = true;
+          actionEl.classList.add('opacity-60', 'cursor-not-allowed');
+        };
+        const renderLoyaltyCard = (payload) => {
+          const loyalty = payload?.card || companyInfo.cartao_fidelidade || null;
+          const progress = payload?.progress || null;
+          const meta = loyaltyStatusMeta(payload?.status || loyalty?.status);
+          const titleEl = document.getElementById('partnerLoyaltyTitle');
+          const statusEl = document.getElementById('partnerLoyaltyStatus');
+          const descriptionEl = document.getElementById('partnerLoyaltyDescription');
+          const ruleEl = document.getElementById('partnerLoyaltyRule');
+          const rewardEl = document.getElementById('partnerLoyaltyReward');
+          const progressLabelEl = document.getElementById('partnerLoyaltyProgressLabel');
+          const progressStatusEl = document.getElementById('partnerLoyaltyProgressStatus');
+          const progressBarEl = document.getElementById('partnerLoyaltyProgressBar');
+          const hintEl = document.getElementById('partnerLoyaltyHint');
+          const actionEl = document.getElementById('partnerLoyaltyAction');
+          const pointsPerVisitEl = document.getElementById('partnerLoyaltyPointsPerVisit');
+          const targetEl = document.getElementById('partnerLoyaltyTarget');
+          const expiryEl = document.getElementById('partnerLoyaltyExpiry');
+
+          const requiredPoints = Math.max(0, Number(loyalty?.pontos_necessarios || progress?.required_points || 0));
+          const currentPoints = Math.max(0, Number(progress?.current_points || 0));
+          const progressPercent = Math.max(0, Math.min(100, Number(progress?.percentage || 0)));
+          const rewardAvailable = Boolean(progress?.reward_available);
+
+          if (titleEl) titleEl.textContent = loyalty?.titulo || 'Cartao fidelidade';
+          if (statusEl) {
+            statusEl.textContent = meta.label;
+            statusEl.className = `inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] ${meta.badgeClass}`;
+          }
+          if (descriptionEl) {
+            descriptionEl.textContent = loyalty?.descricao || meta.message;
+          }
+          if (ruleEl) {
+            ruleEl.textContent = loyalty?.regra_ganho || 'Ganhe pontos por visita.';
+          }
+          if (rewardEl) {
+            rewardEl.textContent = loyalty?.recompensa_descricao || 'Ainda nao informada';
+          }
+          if (progressLabelEl) {
+            progressLabelEl.textContent = progress?.progress_label || `${currentPoints} de ${requiredPoints} pontos`;
+          }
+          if (progressStatusEl) {
+            progressStatusEl.textContent = rewardAvailable
+              ? 'Recompensa pronta'
+              : (payload?.status === 'not_linked' ? 'Exige vinculo' : 'Em andamento');
+          }
+          if (progressBarEl) {
+            progressBarEl.style.width = `${progressPercent}%`;
+          }
+          if (hintEl) {
+            hintEl.textContent = meta.message;
+          }
+          if (pointsPerVisitEl) {
+            pointsPerVisitEl.textContent = String(loyalty?.pontos_por_visita || progress?.points_per_visit || 0);
+          }
+          if (targetEl) {
+            targetEl.textContent = `${requiredPoints} pontos`;
+          }
+          if (expiryEl) {
+            expiryEl.textContent = formatDatePtBr(loyalty?.data_expiracao, 'Nao informada');
+          }
+
+          if (!actionEl) return;
+
+          if (!perfilViewer) {
+            actionEl.textContent = 'Entrar como cliente';
+            actionEl.onclick = () => {
+              window.location.href = '/entrar.html';
+            };
+            return;
+          }
+
+          if (perfilViewer !== 'cliente') {
+            actionEl.textContent = 'Voltar ao painel';
+            actionEl.onclick = () => {
+              window.location.href = redirectMap[perfilViewer] || '/meus_pontos.html';
+            };
+            return;
+          }
+
+          if (payload?.status === 'not_linked') {
+            actionEl.textContent = 'Ler QR da empresa';
+            actionEl.onclick = () => {
+              window.location.href = '/validar_resgate.html?modo=vinculo-empresa';
+            };
+            return;
+          }
+
+          actionEl.textContent = rewardAvailable ? 'Mostrar meu QR para resgatar' : 'Mostrar meu QR Code';
+          actionEl.onclick = () => {
+            window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
+          };
+        };
+        const renderPromotionCards = (publicItems, viewerItems = []) => {
+          const section = document.getElementById('partnerPromotionsCard');
+          const listEl = document.getElementById('partnerPromotionsList');
+          const emptyEl = document.getElementById('partnerPromotionsEmpty');
+          const statusEl = document.getElementById('partnerPromotionsStatus');
+          const messageEl = document.getElementById('partnerPromotionsMessage');
+          if (!section || !listEl || !emptyEl || !statusEl || !messageEl) return;
+
+          const viewerMap = new Map(toArray(viewerItems).map((item) => [Number(item?.id || 0), item]));
+          const merged = toArray(publicItems).map((item) => {
+            const viewerItem = viewerMap.get(Number(item?.id || 0));
+            if (viewerItem) {
+              return { ...item, ...viewerItem };
+            }
+
+            return {
+              ...item,
+              viewer_status: perfilViewer === 'cliente'
+                ? 'not_linked'
+                : (!perfilViewer ? 'public' : 'inactive'),
+              can_self_redeem: false,
+              can_present_qr: false,
+            };
+          });
+          const items = merged.length ? merged : toArray(viewerItems);
+          const normalizedItems = items.map((item) => {
+            const normalized = { ...item };
+            if (!normalized.viewer_status) {
+              if (perfilViewer === 'cliente') {
+                normalized.viewer_status = 'not_linked';
+              } else if (!perfilViewer) {
+                normalized.viewer_status = 'public';
+              } else {
+                normalized.viewer_status = 'inactive';
+              }
+            }
+            return normalized;
+          });
+
+          listEl.innerHTML = '';
+          emptyEl.classList.toggle('hidden', normalizedItems.length > 0);
+
+          const summaryStatus = normalizedItems.some((item) => item.viewer_status === 'available')
+            ? 'available'
+            : normalizedItems.some((item) => item.viewer_status === 'redeemed')
+              ? 'redeemed'
+              : normalizedItems.some((item) => item.viewer_status === 'not_linked')
+                ? 'not_linked'
+                : normalizedItems.some((item) => item.viewer_status === 'public')
+                  ? 'public'
+                  : (normalizedItems[0]?.status || 'inactive');
+          const summaryMeta = promotionStatusMeta(summaryStatus);
+          statusEl.textContent = summaryMeta.label;
+          statusEl.className = `inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] ${summaryMeta.badgeClass}`;
+          messageEl.textContent = normalizedItems.length
+            ? summaryMeta.message
+            : 'Nenhuma promocao ativa no momento.';
+
+          normalizedItems.forEach((promo) => {
+            const meta = promotionStatusMeta(promo.viewer_status || promo.status);
+            const card = document.createElement('article');
+            card.className = 'overflow-hidden rounded-[26px] bg-slate-50 shadow-sm ring-1 ring-black/5';
+            card.innerHTML = `
+              <div class="grid gap-0 md:grid-cols-[200px_minmax(0,1fr)]">
+                <img class="h-full min-h-[180px] w-full object-cover" src="${safeImage(promo.imagem_url || promo.imagem, IMAGE_FALLBACKS.promo)}" alt="${safeText(promo.titulo || 'Promocao')}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" />
+                <div class="space-y-4 p-5">
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h3 class="text-xl font-extrabold text-[#111B3F]">${safeText(promo.titulo, 'Promocao instantanea')}</h3>
+                      <p class="mt-2 text-sm leading-7 text-slate-600">${safeText(promo.descricao, meta.message)}</p>
+                    </div>
+                    <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}">${meta.label}</span>
+                  </div>
+                  <div class="grid gap-3 sm:grid-cols-2">
+                    <div class="rounded-[20px] bg-white p-4">
+                      <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Validade</p>
+                      <p class="mt-2 text-sm font-semibold text-[#111B3F]">${formatDatePtBr(promo.data_expiracao || promo.validade, 'Nao informada')}</p>
+                    </div>
+                    <div class="rounded-[20px] bg-white p-4">
+                      <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Como validar</p>
+                      <p class="mt-2 text-sm font-semibold text-[#111B3F]">Apresente seu QR Code no estabelecimento para validar.</p>
+                    </div>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-3">
+                    <button type="button" class="partner-promo-action inline-flex h-11 items-center justify-center rounded-full bg-[linear-gradient(90deg,#00AFA8_0%,#133F8C_45%,#B01774_100%)] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(0,0,0,0.12)]">Continuar</button>
+                    <span class="text-sm text-slate-500">${safeText(promo.message, meta.message)}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+
+            const actionBtn = card.querySelector('.partner-promo-action');
+            if (actionBtn) {
+              if (!perfilViewer) {
+                actionBtn.textContent = 'Entrar como cliente';
+                actionBtn.onclick = () => { window.location.href = '/entrar.html'; };
+              } else if (perfilViewer !== 'cliente') {
+                actionBtn.textContent = 'Voltar ao painel';
+                actionBtn.onclick = () => { window.location.href = redirectMap[perfilViewer] || '/meus_pontos.html'; };
+              } else if (promo.viewer_status === 'available') {
+                actionBtn.textContent = 'Mostrar meu QR Code';
+                actionBtn.onclick = () => { window.location.href = '/meus_pontos.html?mostrar=meu-qrcode'; };
+              } else if (promo.viewer_status === 'redeemed') {
+                actionBtn.textContent = 'Ja utilizada';
+                actionBtn.disabled = true;
+                actionBtn.classList.add('opacity-60', 'cursor-not-allowed');
+              } else {
+                actionBtn.textContent = 'Ler QR da empresa';
+                actionBtn.onclick = () => { window.location.href = '/validar_resgate.html?modo=vinculo-empresa'; };
+              }
+            }
+
+            listEl.appendChild(card);
+          });
+        };
+        const reviewForm = document.getElementById('partnerReviewForm');
+        const reviewCommentEl = document.getElementById('partnerReviewComment');
+        const reviewStatusEl = document.getElementById('partnerReviewStatus');
+        const reviewSubmitEl = document.getElementById('partnerReviewSubmit');
+        const reviewShowQrEl = document.getElementById('partnerReviewShowQr');
+        const reviewHintEl = document.getElementById('partnerMyReviewHint');
+        const reviewStars = Array.from(document.querySelectorAll('.partner-review-star'));
+        let selectedReviewRating = 0;
+        let myReview = null;
+
+        const setReviewRating = (rating = 0) => {
+          selectedReviewRating = Number(rating || 0);
+          reviewStars.forEach((button) => {
+            const buttonRating = Number(button.dataset.rating || 0);
+            const isActive = buttonRating <= selectedReviewRating;
+            button.className = `partner-review-star inline-flex h-11 w-11 items-center justify-center rounded-full text-lg font-extrabold shadow-sm transition-all ${
+              isActive
+                ? 'bg-[#111B3F] text-white'
+                : 'bg-white text-slate-400'
+            }`;
+          });
+        };
+
+        const setReviewMode = (mode) => {
+          const editable = mode === 'editable';
+          reviewStars.forEach((button) => {
+            button.disabled = !editable;
+            button.classList.toggle('cursor-not-allowed', !editable);
+            button.classList.toggle('opacity-60', !editable);
+          });
+          if (reviewCommentEl) reviewCommentEl.disabled = !editable;
+          if (reviewSubmitEl) {
+            reviewSubmitEl.disabled = !editable;
+            reviewSubmitEl.classList.toggle('opacity-60', !editable);
+            reviewSubmitEl.classList.toggle('cursor-not-allowed', !editable);
+          }
+        };
+
+        reviewStars.forEach((button) => {
+          if (button.dataset.bound === '1') return;
+          button.dataset.bound = '1';
+          button.addEventListener('click', () => {
+            setReviewRating(Number(button.dataset.rating || 0));
+          });
+        });
+
+        if (reviewShowQrEl && reviewShowQrEl.dataset.bound !== '1') {
+          reviewShowQrEl.dataset.bound = '1';
+          reviewShowQrEl.addEventListener('click', () => {
+            if (perfilViewer === 'cliente') {
+              window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
+            } else if (!perfilViewer) {
+              window.location.href = '/entrar.html';
+            } else {
+              window.location.href = redirectMap[perfilViewer] || '/meus_pontos.html';
+            }
+          });
+        }
+
+        const renderReviews = (payload, ownReview = null) => {
+          const summary = payload?.summary || {};
+          const items = toArray(payload?.items);
+          const average = Number(summary.average || companyInfo.avaliacao_media || 0);
+          const total = Number(summary.total || companyInfo.total_avaliacoes || 0);
+          const distribution = toArray(summary.distribution);
+          const averageLabel = average > 0 ? average.toFixed(1).replace('.', ',') : '0,0';
+
+          setText('partnerReviewsAverage', averageLabel, '0,0');
+          setText('partnerReviewsStarsLarge', renderStars(average), renderStars(0));
+          setText('partnerReviewsTotal', total ? `${total} avaliações` : 'Sem avaliações', 'Sem avaliações');
+          setText('partnerReviewsSubtitle', total ? 'Comentários recentes de clientes vinculados.' : 'Ainda não há avaliações públicas desta empresa.');
+
+          const distributionEl = document.getElementById('partnerReviewsDistribution');
+          if (distributionEl) {
+            distributionEl.innerHTML = '';
+            distribution.forEach((entry) => {
+              const entryTotal = Number(entry?.total || 0);
+              const percent = total > 0 ? Math.round((entryTotal / total) * 100) : 0;
+              const row = document.createElement('div');
+              row.className = 'flex items-center gap-3';
+              row.innerHTML = `
+                <span class="w-10 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">${entry.star}★</span>
+                <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+                  <div class="h-full rounded-full bg-[linear-gradient(90deg,#00AFA8_0%,#133F8C_45%,#B01774_100%)]" style="width:${percent}%"></div>
+                </div>
+                <span class="w-14 text-right text-xs font-semibold text-slate-500">${entryTotal}</span>
+              `;
+              distributionEl.appendChild(row);
+            });
+          }
+
+          const listEl = document.getElementById('partnerReviewsList');
+          const emptyEl = document.getElementById('partnerReviewsEmpty');
+          if (listEl) listEl.innerHTML = '';
+          if (emptyEl) emptyEl.classList.toggle('hidden', items.length > 0);
+
+          items.forEach((review) => {
+            const card = document.createElement('article');
+            card.className = 'rounded-[22px] bg-slate-50 p-4';
+            card.innerHTML = `
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p class="text-sm font-extrabold text-[#111B3F]">${safeText(review?.cliente?.nome, 'Cliente')}</p>
+                  <p class="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-[#B01774]">${renderStars(Number(review?.nota || review?.estrelas || 0))}</p>
+                </div>
+                <span class="text-xs text-slate-400">${formatDatePtBr(review?.updated_at || review?.created_at, 'Agora')}</span>
+              </div>
+              <p class="mt-3 text-sm leading-6 text-slate-600">${safeText(review?.comentario, 'Cliente avaliou sem comentário adicional.')}</p>
+            `;
+            listEl?.appendChild(card);
+          });
+
+          myReview = ownReview || null;
+          if (myReview) {
+            setReviewRating(Number(myReview?.nota || myReview?.estrelas || 0));
+            if (reviewCommentEl) reviewCommentEl.value = safeText(myReview?.comentario, '');
+            if (reviewStatusEl) reviewStatusEl.textContent = 'Sua avaliação atual já foi carregada. Você pode editar a nota e o comentário.';
+            if (reviewSubmitEl) reviewSubmitEl.textContent = 'Atualizar avaliação';
+          } else {
+            setReviewRating(0);
+            if (reviewCommentEl) reviewCommentEl.value = '';
+            if (reviewStatusEl) reviewStatusEl.textContent = 'Escolha uma nota de 1 a 5 e adicione um comentário opcional.';
+            if (reviewSubmitEl) reviewSubmitEl.textContent = 'Salvar avaliação';
+          }
+
+          if (!perfilViewer) {
+            setReviewMode('readonly');
+            if (reviewHintEl) reviewHintEl.textContent = 'Entre com uma conta de cliente para registrar sua avaliação.';
+            if (reviewStatusEl) reviewStatusEl.textContent = 'A avaliação é permitida apenas para clientes autenticados e vinculados.';
+            if (reviewSubmitEl) reviewSubmitEl.textContent = 'Entrar para avaliar';
+            return;
+          }
+
+          if (perfilViewer !== 'cliente') {
+            setReviewMode('readonly');
+            if (reviewHintEl) reviewHintEl.textContent = 'Somente clientes vinculados podem avaliar. Perfis de empresa e admin apenas consultam este painel.';
+            if (reviewStatusEl) reviewStatusEl.textContent = 'Use uma conta de cliente vinculada para avaliar.';
+            if (reviewSubmitEl) reviewSubmitEl.textContent = 'Voltar ao painel';
+            return;
+          }
+
+          setReviewMode('editable');
+          if (reviewHintEl) reviewHintEl.textContent = 'Avalie de 1 a 5 apenas se você já estiver vinculado a esta empresa.';
+        };
+
+        if (reviewForm && reviewForm.dataset.bound !== '1') {
+          reviewForm.dataset.bound = '1';
+          reviewForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            if (perfilViewer !== 'cliente') {
+              window.location.href = !perfilViewer ? '/entrar.html' : (redirectMap[perfilViewer] || '/meus_pontos.html');
+              return;
+            }
+
+            if (selectedReviewRating < 1 || selectedReviewRating > 5) {
+              ui.message('Escolha uma nota de 1 a 5 antes de enviar sua avaliação.', 'warning');
+              return;
+            }
+
+            ui.setPageState('loading', 'Salvando avaliação...');
+            const endpoint = myReview
+              ? `/empresas/${encodeURIComponent(selectedCompanyId)}/avaliacoes/minha`
+              : `/empresas/${encodeURIComponent(selectedCompanyId)}/avaliacoes`;
+            const method = myReview ? 'PUT' : 'POST';
+            const { res: saveRes, data: saveData } = await api.request(endpoint, {
+              method,
+              body: JSON.stringify({
+                estrelas: selectedReviewRating,
+                comentario: reviewCommentEl?.value?.trim() || '',
+              }),
+            }, { notify: false });
+            ui.clearPageState();
+
+            if (!saveRes.ok || saveData?.success === false) {
+              ui.message(saveData?.message || 'Não foi possível salvar sua avaliação agora.', 'error');
+              return;
+            }
+
+            myReview = saveData?.data?.avaliacao || myReview;
+            ui.message(saveData?.message || 'Avaliação salva com sucesso.', 'success');
+
+            const refreshedReviews = await api.request(`/empresas/${selectedCompanyId}/avaliacoes`, {}, { requireAuth: false, notify: false });
+            const refreshedPayload = refreshedReviews.res.ok && refreshedReviews.data?.success !== false
+              ? (refreshedReviews.data?.data || {})
+              : publicReviewsPayload;
+            renderReviews(refreshedPayload, myReview);
+          });
+        }
+
+        const heroLogo = document.getElementById('partner-logo');
+        if (heroLogo) {
+          heroLogo.src = safeImage(companyInfo.logo, IMAGE_FALLBACKS.store);
+          heroLogo.onerror = () => {
+            heroLogo.onerror = null;
+            heroLogo.src = IMAGE_FALLBACKS.store;
+          };
+        }
+
+        setText('partner-category', companyInfo.categoria || companyInfo.ramo, 'Empresa');
+        setText('partner-name', companyInfo.nome, 'Empresa');
+        setText('partner-address', companyInfo.endereco, 'Endereco nao informado');
+        setText('partner-about', companyInfo.descricao, 'Esta empresa ja esta pronta para receber clientes via QR Code e operar bonus ou fidelidade conforme configuracao ativa.');
+        setText('partner-phone', companyInfo.telefone, 'Nao informado');
+        setText('partner-whatsapp', companyInfo.whatsapp, 'Nao informado');
+        setText('partner-instagram', companyInfo.instagram, 'Nao informado');
+        setText('partner-facebook', companyInfo.facebook, 'Nao informado');
+
+        const rating = Number(companyInfo.avaliacao_media || 0);
+        const totalReviews = Number(companyInfo.total_avaliacoes || 0);
+        setText('partner-rating', rating > 0 ? rating.toFixed(1).replace('.', ',') : 'Novo', 'Novo');
+        setText('partner-review-count', totalReviews ? `${totalReviews} avaliações` : 'Sem avaliações ainda', 'Sem avaliações ainda');
+        setText('partner-rating-stars', renderStars(rating), renderStars(0));
+
+        setLink('partnerWhatsappLink', companyInfo.whatsapp, (value) => `https://wa.me/${String(value).replace(/\D/g, '')}`);
+        setLink('partnerInstagramLink', companyInfo.instagram, (value) => String(value).startsWith('http') ? value : `https://instagram.com/${String(value).replace(/^@/, '')}`);
+        setLink('partnerFacebookLink', companyInfo.facebook, (value) => String(value).startsWith('http') ? value : `https://facebook.com/${String(value).replace(/^@/, '')}`);
+
+        const statusBadge = document.getElementById('partner-status-badge');
+        if (statusBadge) statusBadge.textContent = companyInfo.publicamente_visivel ? 'Empresa ativa no app' : 'Empresa indisponivel';
+
+        const ctaBtn = document.getElementById('partnerPrimaryAction');
+        if (ctaBtn) {
+          if (perfilViewer === 'cliente') {
+            ctaBtn.textContent = 'Ler QR Code da Empresa';
+            ctaBtn.addEventListener('click', () => {
+              window.location.href = '/validar_resgate.html?modo=vinculo-empresa';
+            });
+          } else if (!perfilViewer) {
+            ctaBtn.textContent = 'Entrar para continuar';
+            ctaBtn.addEventListener('click', () => {
+              window.location.href = '/entrar.html';
+            });
+          } else {
+            ctaBtn.textContent = 'Voltar ao painel';
+            ctaBtn.addEventListener('click', () => {
+              window.location.href = redirectMap[perfilViewer] || '/meus_pontos.html';
+            });
+          }
+        }
+
+        renderBonusCard(null);
+        renderBirthdayCard(companyInfo?.bonus_aniversario
+          ? {
+              status: companyInfo.bonus_aniversario?.status === 'available'
+                ? 'public'
+                : companyInfo.bonus_aniversario?.status,
+              message: companyInfo.bonus_aniversario?.status === 'available'
+                ? 'Entre como cliente vinculado para consultar sua elegibilidade ao bonus aniversario.'
+                : 'A empresa nao esta operando bonus aniversario no momento.',
+              bonus: companyInfo.bonus_aniversario,
+            }
+          : null);
+        renderLoyaltyCard(null);
+        let viewerPromotions = [];
+
+        if (perfilViewer === 'cliente' && stored?.token) {
+          const [bonusResponse, birthdayResponse, loyaltyResponse, promotionsResponse, myReviewResponse] = await Promise.all([
+            api.request(`/cliente/bonus-adesao/disponivel/${encodeURIComponent(selectedCompanyId)}`, {}, { notify: false }),
+            api.request(`/cliente/bonus-aniversario/disponiveis?empresa_id=${encodeURIComponent(selectedCompanyId)}`, {}, { notify: false }),
+            api.request(`/cliente/cartao-fidelidade/progresso/${encodeURIComponent(selectedCompanyId)}`, {}, { notify: false }),
+            api.request(`/cliente/promocoes?empresa_id=${encodeURIComponent(selectedCompanyId)}`, {}, { notify: false }),
+            api.request(`/cliente/avaliacoes?empresa_id=${encodeURIComponent(selectedCompanyId)}`, {}, { notify: false }),
+          ]);
+          if (bonusResponse.res.ok && bonusResponse.data?.success !== false) {
+            const bonusPayload = bonusResponse.data?.data || {};
+            renderBonusCard(bonusPayload);
+            if (params.get('linked') === '1') {
+              ui.message(
+                bonusPayload.status === 'available'
+                  ? 'Empresa vinculada com sucesso. Bonus de adesao disponivel para apresentar no estabelecimento.'
+                  : 'Empresa vinculada com sucesso.',
+                'success'
+              );
+            }
+          } else if (params.get('linked') === '1') {
+            ui.message('Empresa vinculada com sucesso.', 'success');
+          }
+
+          if (loyaltyResponse.res.ok && loyaltyResponse.data?.success !== false) {
+            renderLoyaltyCard(loyaltyResponse.data?.data || {});
+          }
+
+          if (birthdayResponse.res.ok && birthdayResponse.data?.success !== false) {
+            const birthdayItems = toArray(birthdayResponse.data?.data?.items || birthdayResponse.data?.data);
+            renderBirthdayCard(birthdayItems[0] || null);
+          }
+
+          if (promotionsResponse.res.ok && promotionsResponse.data?.success !== false) {
+            viewerPromotions = toArray(promotionsResponse.data?.data || promotionsResponse.data);
+          }
+
+          if (myReviewResponse.res.ok && myReviewResponse.data?.success !== false) {
+            myReview = toArray(myReviewResponse.data?.data?.items || myReviewResponse.data?.data)[0] || null;
+          }
+        } else if (params.get('linked') === '1') {
+          ui.message('Empresa vinculada com sucesso.', 'success');
+        }
+
+        renderReviews(publicReviewsPayload, myReview);
+        renderPromotionCards(publicPromotions, viewerPromotions);
+
+        return;
+      }
 
       ui.setPageState('loading', 'Carregando estabelecimento...');
       const detalhe = await api.request(`/empresas/${empresaId}`, {}, { requireAuth: false });
@@ -1451,83 +2526,65 @@
         { label: 'Cupons ativos', value: (cuponsResp?.data || []).filter((c) => c.status === 'active' || c.status === 'ativo').length },
       ]);
 
-      const promos = promosResp?.data || [];
-      
-      // ISSUE #9: Dados fictícios se API estiver vazia
-      let promosComFallback = promos.length ? promos : [
-        { id: 'demo-1', titulo: 'Pizza 50% OFF', empresa_nome: 'Pizzaria Bella Napoli', descricao: 'Desconto de 50% em qualquer pizza tamanho família', desconto: 50, custo_pontos: 250, dias_restantes: 15, tipo: 'desconto' },
-        { id: 'demo-2', titulo: 'Café Grátis', empresa_nome: 'Café Premium', descricao: 'Um café expresso grátis na sua próxima visita', desconto: null, custo_pontos: 100, dias_restantes: 30, tipo: 'brinde' },
-        { id: 'demo-3', titulo: 'Cashback 20%', empresa_nome: 'Supermercado Silva', descricao: 'Ganhe 20% de volta em pontos em compras acima de R$ 50', desconto: 20, custo_pontos: 500, dias_restantes: 7, tipo: 'cashback' },
-        { id: 'demo-4', titulo: 'Corte + Barba Grátis', empresa_nome: 'Barbearia Estilo', descricao: 'Serviço completo de corte e barba', desconto: null, custo_pontos: 800, dias_restantes: 20, tipo: 'servico' }
-      ];
-      
+      const promos = toArray(promosResp?.data || promosResp);
       const host = document.querySelector('main') || document.body;
 
-      // ---- Promoções disponíveis para resgatar ----
-      if (promosComFallback.length) {
+      // ---- Promocoes instantaneas canônicas ----
+      if (promos.length) {
         const promosWrap = document.createElement('section');
         promosWrap.className = 'max-w-6xl mx-auto px-4 pt-4';
-        promosWrap.innerHTML = `<h3 class="text-lg font-semibold text-on-surface mb-3">Promoções disponíveis</h3>
+        promosWrap.innerHTML = `<h3 class="text-lg font-semibold text-on-surface mb-3">Promocoes instantaneas</h3>
           <div id="promosGrid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>`;
         host.appendChild(promosWrap);
 
         const grid = promosWrap.querySelector('#promosGrid');
-        promosComFallback.forEach((p) => {
-          const custoRaw = p.custo_pontos ?? (p.desconto ? p.desconto * 10 : null);
-          const custoStr = custoRaw != null ? `${Number(custoRaw).toLocaleString('pt-BR')} pts` : 'Grátis';
-          const poderesgatar = custoRaw == null || Number(saldoAtual) >= Number(custoRaw);
-          const diasLabel = p.dias_restantes != null ? `Expira em ${p.dias_restantes}d` : 'Sem prazo';
+        promos.forEach((p) => {
+          const meta = promotionStatusMeta(p.viewer_status || p.status);
+          const empresaUrl = p?.empresa?.public_page_url || (p?.empresa?.id ? `/detalhe_do_parceiro.html?id=${p.empresa.id}` : '#');
+          const ctaLabel = p.viewer_status === 'available'
+            ? 'Apresentar QR no estabelecimento'
+            : (p.viewer_status === 'redeemed' ? 'Ja utilizada' : 'Ver empresa');
           const card = document.createElement('div');
           card.className = 'rounded-2xl bg-white/80 border border-surface-variant/30 shadow-sm p-4 flex flex-col gap-2';
           card.innerHTML = `
             <div class="flex items-start justify-between gap-2">
               <div>
-                <p class="font-bold text-on-surface">${p.titulo || p.nome || 'Promoção'}</p>
-                <p class="text-xs text-on-surface-variant">${p.empresa_nome || ''}</p>
+                <p class="font-bold text-on-surface">${p.titulo || p.nome || 'Promocao'}</p>
+                <p class="text-xs text-on-surface-variant">${p?.empresa?.nome || p.empresa_nome || ''}</p>
               </div>
-              <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary whitespace-nowrap">${p.desconto ? `${p.desconto}% off` : (p.tipo || 'Promo')}</span>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${meta.badgeClass}">${meta.label}</span>
             </div>
             <p class="text-sm text-on-surface-variant line-clamp-2">${p.descricao || ''}</p>
             <div class="flex items-center justify-between mt-auto pt-2 border-t border-surface-variant/20">
-              <span class="text-xs text-on-surface-variant">${diasLabel}</span>
-              <button data-promo-id="${p.id}" data-custo="${custoRaw ?? 0}" data-titulo="${(p.titulo || 'Promoção').replace(/"/g, '&quot;')}"
-                class="btn-resgatar px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${poderesgatar ? 'bg-primary text-white hover:bg-primary/90' : 'bg-surface-container text-on-surface-variant cursor-not-allowed'}"
-                ${poderesgatar ? '' : 'disabled'}>
-                ${poderesgatar ? `Resgatar (${custoStr})` : `Insuficiente (${custoStr})`}
+              <span class="text-xs text-on-surface-variant">${formatDatePtBr(p.data_expiracao || p.validade, 'Sem prazo')}</span>
+              <button data-promo-id="${p.id}" data-promo-status="${p.viewer_status || p.status || 'public'}" data-promo-url="${empresaUrl}"
+                class="btn-promo-info px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${p.viewer_status === 'redeemed' ? 'bg-surface-container text-on-surface-variant cursor-not-allowed' : 'bg-primary text-white hover:bg-primary/90'}"
+                ${p.viewer_status === 'redeemed' ? 'disabled' : ''}>
+                ${ctaLabel}
               </button>
             </div>`;
           grid.appendChild(card);
         });
 
-        // Event delegation para resgatar promos
+        // Event delegation para orientar a validacao presencial
         grid.addEventListener('click', async (e) => {
-          const btn = e.target.closest('.btn-resgatar');
+          const btn = e.target.closest('.btn-promo-info');
           if (!btn || btn.disabled) return;
-          const promoId = btn.dataset.promoId;
-          const custo = btn.dataset.custo;
-          const titulo = btn.dataset.titulo;
-          if (!confirm(`Resgatar "${titulo}" por ${Number(custo).toLocaleString('pt-BR')} pontos?`)) return;
-          btn.disabled = true;
-          btn.textContent = 'Processando...';
-          const { res, data } = await api.request(`/cliente/promocoes/${promoId}/resgatar`, { method: 'POST' });
-          if (res.ok && data?.success) {
-            const codigo = data?.data?.codigo_resgate || '';
-            ui.message(`Resgatado! Código: ${codigo}`, 'success');
-            if (data?.data?.nps_solicitado) {
-              setTimeout(() => _showNpsModal(promoId), 800);
-            } else {
-              setTimeout(() => cliente.recompensas(), 1500);
-            }
+          const status = btn.dataset.promoStatus || 'public';
+          const targetUrl = btn.dataset.promoUrl || '/parceiros_tem_de_tudo.html';
+          if (status === 'available') {
+            ui.message('Apresente seu QR Code no estabelecimento para validar esta promocao.', 'success');
+            setTimeout(() => {
+              window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
+            }, 300);
           } else {
-            ui.message(data?.message || 'Falha ao resgatar.', 'error');
-            btn.disabled = false;
-            btn.textContent = `Resgatar (${Number(custo).toLocaleString('pt-BR')} pts)`;
+            window.location.href = targetUrl;
           }
         });
       } else {
         const empty = document.createElement('p');
         empty.className = 'max-w-6xl mx-auto px-4 pt-4 text-center text-on-surface-variant';
-        empty.textContent = 'Nenhuma promoção disponível no momento.';
+        empty.textContent = 'Nenhuma promocao disponivel no momento.';
         host.appendChild(empty);
       }
 
@@ -1550,33 +2607,33 @@
       // ---- ISSUE #11: Botões "Trocar pontos" (Gift Cards/Vouchers) ----
       // Adiciona event listeners aos botões de trocar pontos presentes no HTML
       setTimeout(() => {
-        const trocarButtons = Array.from(document.querySelectorAll('button')).filter(btn => 
+        const trocarButtons = Array.from(document.querySelectorAll('button')).filter((btn) =>
           btn.textContent.trim().toLowerCase() === 'trocar'
         );
-        
-        trocarButtons.forEach(btn => {
+
+        trocarButtons.forEach((btn) => {
           btn.addEventListener('click', async () => {
             // Extrair informações do card pai
             const card = btn.closest('.bg-surface-container-lowest');
             if (!card) return;
-            
+
             const titulo = card.querySelector('h4')?.textContent || 'Voucher';
             const pontosText = card.querySelector('.text-primary')?.textContent;
             const pontos = pontosText ? parseInt(pontosText.replace(/\D/g, '')) : 0;
-            
+
             // Verificar se tem pontos suficientes
             if (pontos > Number(saldoAtual)) {
               ui.message(`Pontos insuficientes! Você tem ${Number(saldoAtual).toLocaleString('pt-BR')} pts, precisa de ${pontos} pts.`, 'error');
               return;
             }
-            
+
             // Confirmar troca
             if (!confirm(`Trocar ${pontos} pontos por "${titulo}"?\n\nSeu saldo atual: ${Number(saldoAtual).toLocaleString('pt-BR')} pts\nNovo saldo: ${(Number(saldoAtual) - pontos).toLocaleString('pt-BR')} pts`)) return;
-            
+
             btn.disabled = true;
             const textoOriginal = btn.textContent;
             btn.textContent = 'Processando...';
-            
+
             // API de troca de pontos por voucher
             const { res, data } = await api.request('/pontos/trocar-voucher', {
               method: 'POST',
@@ -1586,7 +2643,7 @@
                 tipo: 'voucher'
               })
             });
-            
+
             if (res.ok && data?.success) {
               const codigo = data?.data?.codigo || data?.codigo || 'VCH' + Math.random().toString(36).substr(2, 9).toUpperCase();
               ui.message(`✅ Voucher resgatado com sucesso!\n\nCódigo: ${codigo}\n\nGuarde este código para utilizar.`, 'success');
@@ -1730,7 +2787,7 @@
           const resp = await api.request('/empresa/perfil', {}, { notify: false });
           empresaData = resp.data?.data || null;
         } catch (_) {}
-        
+
         // Fallback: dados fictícios se API não retornar dados da empresa
         if (!empresaData || !empresaData.empresa) {
           empresaData = {
@@ -2028,8 +3085,66 @@
       if (!(await auth.guard(['cliente', 'empresa', 'admin']))) return;
       const user = await auth.ensure();
       const perfil = auth.normalizePerfil(user?.perfil || user?.role);
+      const mode = new URLSearchParams(window.location.search).get('modo') || (perfil === 'empresa' ? 'validacao-cliente' : 'vinculo-empresa');
+      const customerCompanyLinkMode = perfil === 'cliente' && mode === 'vinculo-empresa';
+      const companyBenefitMode = perfil === 'empresa' && ['bonus-adesao', 'fidelidade', 'aniversario', 'beneficios'].includes(mode);
+      const companyBonusMode = perfil === 'empresa' && mode === 'bonus-adesao';
 
-      // Para empresa: exibir o QR Code próprio para clientes escanearem
+      const titleEl = document.querySelector('main header h1');
+      const copyEl = document.getElementById('scanInstructions');
+      const buttonLabel = document.getElementById('usarCupomBtn');
+      const manualInput = document.getElementById('cupomId');
+      const input = document.getElementById('cupomId');
+      const btn = document.getElementById('usarCupomBtn');
+      const list = document.getElementById('validacoesRecentes');
+      const empty = document.getElementById('validacoesEmpty');
+      const bonusPanel = document.getElementById('bonusValidationPanel');
+      const bonusActionBtn = document.getElementById('bonusValidationAction');
+      const birthdayValidationSection = document.getElementById('birthdayValidationSection');
+      const birthdayValidationTitle = document.getElementById('birthdayValidationTitle');
+      const birthdayValidationStatus = document.getElementById('birthdayValidationStatus');
+      const birthdayValidationDescription = document.getElementById('birthdayValidationDescription');
+      const birthdayValidationWindow = document.getElementById('birthdayValidationWindow');
+      const birthdayValidationAction = document.getElementById('birthdayValidationAction');
+      const loyaltyAddPointBtn = document.getElementById('loyaltyValidationAddPoint');
+      const loyaltyRedeemBtn = document.getElementById('loyaltyValidationRedeem');
+      const promotionValidationSection = document.getElementById('promotionValidationSection');
+      const promotionValidationTitle = document.getElementById('promotionValidationTitle');
+      const promotionValidationStatus = document.getElementById('promotionValidationStatus');
+      const promotionValidationDescription = document.getElementById('promotionValidationDescription');
+      const promotionValidationList = document.getElementById('promotionValidationList');
+
+      if (!input || !btn) return;
+
+      if (titleEl) {
+        titleEl.textContent = perfil === 'empresa'
+          ? (companyBenefitMode ? 'Consultar cliente e validar beneficios' : 'Ler QR do Cliente')
+          : 'Ler QR da Empresa';
+      }
+      if (copyEl) {
+        copyEl.textContent = perfil === 'empresa'
+          ? (companyBenefitMode
+              ? 'Empresa: consulte o cliente pelo QR Code e valide bonus de adesao, bonus aniversario, pontos e resgates somente no estabelecimento.'
+              : 'Empresa: escaneie o QR do cliente para validar acoes futuras e registrar atendimento.')
+          : 'Cliente: escaneie o QR do adesivo da empresa para se vincular no app.';
+      }
+      if (buttonLabel) {
+        buttonLabel.innerHTML = perfil === 'empresa'
+          ? (companyBenefitMode
+              ? '<span class="material-symbols-outlined" style="font-variation-settings: \'FILL\' 1;">qr_code_scanner</span> Consultar Cliente'
+              : '<span class="material-symbols-outlined" style="font-variation-settings: \'FILL\' 1;">verified</span> Validar Agora')
+          : '<span class="material-symbols-outlined" style="font-variation-settings: \'FILL\' 1;">link</span> Vincular Agora';
+      }
+      if (manualInput && customerCompanyLinkMode) {
+        manualInput.placeholder = 'Cole o codigo do QR da empresa...';
+      }
+      if (manualInput && companyBenefitMode) {
+        manualInput.placeholder = 'Cole o QR dinamico do cliente...';
+      }
+      if (bonusPanel && !companyBenefitMode) {
+        bonusPanel.classList.add('hidden');
+      }
+
       if (perfil === 'empresa') {
         const main = document.querySelector('main') || document.querySelector('.main-content') || document.body;
         const qrSection = document.createElement('div');
@@ -2048,19 +3163,24 @@
           if (!container) return;
           const { res, data } = await api.request('/empresa/qrcodes');
           const qrList = data?.data || [];
-          if (qrList.length && qrList[0].code) {
+          if (res.ok && qrList.length && qrList[0].code) {
             const qr = qrList[0];
-            const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(qr.code)}`;
             container.innerHTML = `
-              <p class="text-[11px] text-outline mb-1">Mostre este código para seus clientes escanearem e ganharem pontos</p>
-              <img src="${qrImg}" alt="QR Code da loja" class="w-44 h-44 rounded-xl border border-outline-variant/40 bg-white p-2" loading="lazy" />
+              <p class="text-[11px] text-outline mb-1">Use este QR no adesivo fisico para abrir o fluxo publico de vinculo da empresa.</p>
+              <img src="${qr.qr_image || qr.qr_url}" alt="QR Code da loja" class="w-44 h-44 rounded-xl border border-outline-variant/40 bg-white p-2" loading="lazy" />
               <div class="bg-surface-container px-4 py-2 rounded-xl text-center">
                 <span class="text-xs font-mono text-on-surface break-all">${qr.code}</span>
               </div>
-              <button id="copiarQrLoja" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar codigo</button>
-              <p class="text-[10px] text-outline mt-1">Scans: ${qr.usage_count || 0} &nbsp;|&nbsp; Ativo: ${qr.active ? 'Sim' : 'Não'}</p>`;
+              <div class="flex flex-wrap items-center justify-center gap-2">
+                <button id="copiarQrLoja" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar codigo</button>
+                <button id="copiarLinkQrLoja" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar link</button>
+              </div>
+              <p class="text-[10px] text-outline mt-1">Scans: ${qr.usage_count || 0} | Ativo: ${qr.active ? 'Sim' : 'Nao'}</p>`;
             document.getElementById('copiarQrLoja')?.addEventListener('click', () => {
               navigator.clipboard.writeText(qr.code).then(() => ui.message('Codigo da loja copiado.', 'success'));
+            });
+            document.getElementById('copiarLinkQrLoja')?.addEventListener('click', () => {
+              navigator.clipboard.writeText(qr.scan_url || '').then(() => ui.message('Link publico do QR copiado.', 'success'));
             });
           } else {
             container.innerHTML = '<p class="text-sm text-outline">Nenhum QR Code gerado ainda. Clique em "Gerar".</p>';
@@ -2080,7 +3200,6 @@
         await renderQR();
       }
 
-      // Para cliente: exibir QR dinâmico próprio para a empresa escanear (fluxo balcão/caixa)
       if (perfil === 'cliente') {
         const main = document.querySelector('main') || document.querySelector('.main-content') || document.body;
         const myQrSection = document.createElement('div');
@@ -2088,7 +3207,7 @@
         myQrSection.className = 'w-full max-w-md mx-auto mb-6 p-5 bg-surface-container-lowest rounded-2xl shadow-sm';
         myQrSection.innerHTML = `
           <h3 class="font-headline font-bold text-on-surface mb-1 text-center text-base">Meu QR Code</h3>
-          <p class="text-[11px] text-on-surface-variant text-center mb-3">Mostre este QR para o parceiro escanear e creditar seus pontos.</p>
+          <p class="text-[11px] text-on-surface-variant text-center mb-3">Mostre este QR para o parceiro escanear e validar seus beneficios.</p>
           <div id="clienteQRContainer" class="flex flex-col items-center gap-2 min-h-[80px] justify-center">
             <p class="text-sm text-outline">Carregando...</p>
           </div>
@@ -2108,7 +3227,7 @@
               <span class="text-xs font-mono text-on-surface break-all">${payload.codigo}</span>
             </div>
             <button id="copiarMeuQr" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar codigo</button>
-            <p class="text-[10px] text-outline mt-1">Expira às ${expiraEm}</p>
+            <p class="text-[10px] text-outline mt-1">Expira as ${expiraEm}</p>
           `;
           document.getElementById('copiarMeuQr')?.addEventListener('click', () => {
             navigator.clipboard.writeText(payload.codigo).then(() => ui.message('Codigo do seu QR copiado.', 'success'));
@@ -2117,12 +3236,6 @@
           qrContainer.innerHTML = '<p class="text-sm text-outline">Nao foi possivel carregar seu QR agora.</p>';
         }
       }
-
-      const input = document.getElementById('cupomId');
-      const btn = document.getElementById('usarCupomBtn');
-      const list = document.getElementById('validacoesRecentes');
-      const empty = document.getElementById('validacoesEmpty');
-      if (!input || !btn) return;
 
       const renderItem = (item) => {
         const div = document.createElement('div');
@@ -2145,27 +3258,397 @@
         if (empty) empty.classList.add('hidden');
         list?.prepend(renderItem(item));
       };
+      let latestCompanyLookup = null;
+
+      const renderBonusLookup = (lookup) => {
+        if (!bonusPanel || !companyBenefitMode) return;
+        latestCompanyLookup = {
+          ...(latestCompanyLookup || {}),
+          ...(lookup || {}),
+          cliente: lookup?.cliente || latestCompanyLookup?.cliente || {},
+          empresa: lookup?.empresa || latestCompanyLookup?.empresa || {},
+          vinculo: lookup?.vinculo || latestCompanyLookup?.vinculo || {},
+          bonus_adesao: lookup?.bonus_adesao || latestCompanyLookup?.bonus_adesao || {},
+          bonus_aniversario: lookup?.bonus_aniversario || latestCompanyLookup?.bonus_aniversario || {},
+          cartao_fidelidade: lookup?.cartao_fidelidade || latestCompanyLookup?.cartao_fidelidade || {},
+          promocoes: lookup?.promocoes || latestCompanyLookup?.promocoes || {},
+        };
+
+        const cliente = latestCompanyLookup?.cliente || {};
+        const vinculo = latestCompanyLookup?.vinculo || {};
+        const bonus = latestCompanyLookup?.bonus_adesao || {};
+        const bonusInfo = bonus?.bonus || {};
+        const meta = bonusStatusMeta(bonus.status);
+        const birthday = latestCompanyLookup?.bonus_aniversario || {};
+        const birthdayInfo = birthday?.bonus || {};
+        const birthdayMeta = birthdayBonusStatusMeta(birthday?.status);
+        const loyalty = latestCompanyLookup?.cartao_fidelidade || {};
+        const loyaltyCard = loyalty?.card || {};
+        const loyaltyProgress = loyalty?.progress || {};
+        const loyaltyMeta = loyaltyStatusMeta(loyalty?.status);
+        const loyaltyHistory = Array.isArray(loyalty?.history_summary) ? loyalty.history_summary : [];
+        const promotions = latestCompanyLookup?.promocoes || {};
+        const promotionItems = Array.isArray(promotions?.items) ? promotions.items : [];
+
+        bonusPanel.classList.remove('hidden');
+        document.getElementById('bonusValidationClientName').textContent = cliente.nome || 'Cliente';
+        document.getElementById('bonusValidationClientPhone').textContent = cliente.telefone || 'Nao informado';
+        document.getElementById('bonusValidationCompany').textContent = latestCompanyLookup?.empresa?.nome || 'Nao identificada';
+        document.getElementById('bonusValidationLinkStatus').textContent = vinculo.existe
+          ? `Cliente vinculado desde ${formatDatePtBr(vinculo.data_inscricao, 'data nao informada')}`
+          : 'Cliente ainda nao vinculado a esta empresa';
+        document.getElementById('bonusValidationBonusStatus').textContent = meta.label;
+        document.getElementById('bonusValidationBonusStatus').className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}`;
+        document.getElementById('bonusValidationBonusTitle').textContent = bonusInfo.titulo || 'Bonus de adesao';
+        document.getElementById('bonusValidationBonusDescription').textContent = bonusInfo.descricao || meta.message;
+        document.getElementById('bonusValidationBonusExpiry').textContent = formatDatePtBr(bonusInfo.data_expiracao, 'Nao informada');
+        document.getElementById('bonusValidationMessage').textContent = bonus.message || loyalty.message || meta.message;
+
+        if (birthdayValidationSection && birthdayValidationStatus && birthdayValidationDescription) {
+          birthdayValidationSection.classList.remove('hidden');
+          if (birthdayValidationTitle) {
+            birthdayValidationTitle.textContent = birthdayInfo.titulo || 'Nenhum bonus aniversario configurado';
+          }
+          birthdayValidationStatus.textContent = birthdayMeta.label;
+          birthdayValidationStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${birthdayMeta.badgeClass}`;
+          birthdayValidationDescription.textContent = birthdayInfo.descricao || birthday.message || birthdayMeta.message;
+          if (birthdayValidationWindow) {
+            birthdayValidationWindow.textContent = birthdayInfo.validade_descricao
+              || formatDateRangePtBr(birthday?.valid_from, birthday?.valid_until, 'Validade nao informada');
+          }
+        }
+
+        document.getElementById('loyaltyValidationTitle').textContent = loyaltyCard.titulo || 'Nenhum cartao configurado';
+        document.getElementById('loyaltyValidationStatus').textContent = loyaltyMeta.label;
+        document.getElementById('loyaltyValidationStatus').className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${loyaltyMeta.badgeClass}`;
+        document.getElementById('loyaltyValidationDescription').textContent = loyaltyCard.descricao || loyaltyMeta.message;
+        document.getElementById('loyaltyValidationRule').textContent = loyaltyCard.regra_ganho || 'Ganhe pontos por visita.';
+        document.getElementById('loyaltyValidationReward').textContent = loyaltyCard.recompensa_descricao || 'Ainda nao informada';
+        document.getElementById('loyaltyValidationPoints').textContent = String(loyaltyProgress.current_points || 0);
+        document.getElementById('loyaltyValidationTarget').textContent = `${Number(loyaltyProgress.required_points || loyaltyCard.pontos_necessarios || 0)} pontos`;
+        document.getElementById('loyaltyValidationProgressLabel').textContent = loyaltyProgress.progress_label || `0 de ${Number(loyaltyCard.pontos_necessarios || 0)} pontos`;
+        document.getElementById('loyaltyValidationProgressState').textContent = loyaltyProgress.reward_available
+          ? 'Recompensa liberada'
+          : (loyalty.status === 'not_linked' ? 'Exige vinculo' : 'Em andamento');
+        document.getElementById('loyaltyValidationProgressBar').style.width = `${Math.max(0, Math.min(100, Number(loyaltyProgress.percentage || 0)))}%`;
+
+        const historyHost = document.getElementById('loyaltyValidationHistory');
+        if (historyHost) {
+          if (!loyaltyHistory.length) {
+            historyHost.innerHTML = '<p>Nenhuma movimentacao registrada ainda.</p>';
+          } else {
+            historyHost.innerHTML = loyaltyHistory.map((item) => `
+              <div class="rounded-lg bg-white p-3 ring-1 ring-black/5">
+                <div class="flex items-center justify-between gap-3">
+                  <span class="text-xs font-bold uppercase tracking-[0.12em] ${item.tipo === 'redeemed' ? 'text-rose-600' : 'text-[#111B3F]'}">${item.tipo === 'redeemed' ? 'Resgate' : 'Ponto'}</span>
+                  <span class="text-[11px] font-semibold text-on-surface-variant">${formatDatePtBr(item.created_at, 'Agora')}</span>
+                </div>
+                <p class="mt-1 text-sm font-semibold text-on-surface">${item.descricao || 'Movimentacao registrada.'}</p>
+              </div>
+            `).join('');
+          }
+        }
+
+        if (promotionValidationSection && promotionValidationStatus && promotionValidationDescription && promotionValidationList) {
+          promotionValidationSection.classList.remove('hidden');
+          const promotionSummaryStatus = promotionItems.some((item) => item.viewer_status === 'available')
+            ? 'available'
+            : promotionItems.some((item) => item.viewer_status === 'redeemed')
+              ? 'redeemed'
+              : promotionItems.some((item) => item.viewer_status === 'not_linked')
+                ? 'not_linked'
+                : (promotions?.status || 'inactive');
+          const promotionMeta = promotionStatusMeta(promotionSummaryStatus);
+
+          if (promotionValidationTitle) {
+            promotionValidationTitle.textContent = promotionItems.length
+              ? `${promotionItems.length} promocao(oes) consultada(s)`
+              : 'Nenhuma promocao elegivel';
+          }
+          promotionValidationStatus.textContent = promotionMeta.label;
+          promotionValidationStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${promotionMeta.badgeClass}`;
+          promotionValidationDescription.textContent = promotions?.message || promotionMeta.message;
+
+          if (!promotionItems.length) {
+            promotionValidationList.innerHTML = '<p>Nenhuma promocao elegivel para este cliente no momento.</p>';
+          } else {
+            promotionValidationList.innerHTML = promotionItems.map((promo) => {
+              const metaPromo = promotionStatusMeta(promo.viewer_status || promo.status);
+              const canValidatePromo = Boolean(promo.viewer_status === 'available' && promo.id && cliente.id);
+
+              return `
+                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                      <p class="text-sm font-bold text-on-surface">${safeText(promo.titulo, 'Promocao instantanea')}</p>
+                      <p class="mt-1 text-xs leading-5 text-on-surface-variant">${safeText(promo.descricao, metaPromo.message)}</p>
+                    </div>
+                    <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${metaPromo.badgeClass}">${metaPromo.label}</span>
+                  </div>
+                  <div class="mt-3 flex items-center justify-between gap-3">
+                    <p class="text-[11px] font-semibold text-on-surface-variant">Validade: ${formatDatePtBr(promo.data_expiracao || promo.validade, 'Nao informada')}</p>
+                    <button type="button" data-action="validar-promocao" data-promocao-id="${promo.id}"
+                      class="rounded-[1rem] px-3 py-2 text-xs font-bold ${canValidatePromo ? 'bg-gradient-to-r from-[#00BCD4] via-[#7A2C8F] to-[#E10098] text-white shadow-sm' : 'bg-surface-container text-on-surface-variant'}"
+                      ${canValidatePromo ? '' : 'disabled'}>
+                      ${canValidatePromo ? 'Validar promocao' : 'Sem acao'}
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('');
+
+            promotionValidationList.querySelectorAll('[data-action="validar-promocao"]').forEach((button) => {
+              button.addEventListener('click', async () => {
+                const promotionId = Number(button.getAttribute('data-promocao-id') || 0);
+                if (!promotionId || !cliente.id) return;
+
+                button.disabled = true;
+                button.classList.add('opacity-60');
+                const { res, data } = await api.request(`/empresa/promocoes/${promotionId}/validar`, {
+                  method: 'POST',
+                  body: JSON.stringify({ cliente_id: cliente.id }),
+                });
+                button.disabled = false;
+                button.classList.remove('opacity-60');
+
+                if (res.ok && data?.success) {
+                  ui.message(data?.message || 'Promocao validada com sucesso.', 'success');
+                  renderBonusLookup({
+                    ...(latestCompanyLookup || {}),
+                    ...(data.data || {}),
+                    promocoes: data?.data?.promocoes || latestCompanyLookup?.promocoes,
+                  });
+                  const validatedPromotion = promotionItems.find((item) => Number(item?.id || 0) === promotionId);
+                  pushItem({
+                    cliente: cliente.nome || 'Cliente',
+                    beneficio: validatedPromotion?.titulo || 'Promocao instantanea',
+                    hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                  });
+                } else {
+                  ui.message(data?.message || 'Nao foi possivel validar a promocao.', 'error');
+                }
+              });
+            });
+          }
+        }
+
+        if (bonusActionBtn) {
+          const canValidate = Boolean(bonus.can_validate && bonusInfo.id && cliente.id);
+          if (!canValidate) {
+            bonusActionBtn.classList.add('hidden');
+            bonusActionBtn.onclick = null;
+          } else {
+            bonusActionBtn.classList.remove('hidden');
+            bonusActionBtn.textContent = 'Validar bonus';
+            bonusActionBtn.onclick = async () => {
+              bonusActionBtn.disabled = true;
+              bonusActionBtn.classList.add('opacity-60');
+              const { res, data } = await api.request(`/empresa/bonus-adesao/${bonusInfo.id}/validar`, {
+                method: 'POST',
+                body: JSON.stringify({ cliente_id: cliente.id }),
+              });
+              bonusActionBtn.disabled = false;
+              bonusActionBtn.classList.remove('opacity-60');
+
+              if (res.ok && data?.success) {
+                ui.message(data?.message || 'Bonus validado com sucesso.', 'success');
+                renderBonusLookup(data.data || {});
+                pushItem({
+                  cliente: cliente.nome || 'Cliente',
+                  beneficio: bonusInfo.titulo || 'Bonus de adesao',
+                  hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                });
+              } else {
+                ui.message(data?.message || 'Nao foi possivel validar o bonus.', 'error');
+              }
+            };
+          }
+        }
+
+        if (birthdayValidationAction) {
+          const canValidateBirthday = Boolean(birthday.can_validate && birthdayInfo.id && cliente.id);
+          if (!canValidateBirthday) {
+            birthdayValidationAction.classList.add('hidden');
+            birthdayValidationAction.onclick = null;
+          } else {
+            birthdayValidationAction.classList.remove('hidden');
+            birthdayValidationAction.textContent = 'Validar bonus aniversario';
+            birthdayValidationAction.onclick = async () => {
+              birthdayValidationAction.disabled = true;
+              birthdayValidationAction.classList.add('opacity-60');
+              const { res, data } = await api.request(`/empresa/bonus-aniversario/${birthdayInfo.id}/validar`, {
+                method: 'POST',
+                body: JSON.stringify({ cliente_id: cliente.id }),
+              });
+              birthdayValidationAction.disabled = false;
+              birthdayValidationAction.classList.remove('opacity-60');
+
+              if (res.ok && data?.success) {
+                ui.message(data?.message || 'Bonus aniversario validado com sucesso.', 'success');
+                renderBonusLookup({
+                  ...(latestCompanyLookup || {}),
+                  bonus_aniversario: data?.data?.bonus_aniversario || latestCompanyLookup?.bonus_aniversario,
+                });
+                pushItem({
+                  cliente: cliente.nome || 'Cliente',
+                  beneficio: birthdayInfo.titulo || 'Bonus aniversario',
+                  hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                });
+              } else {
+                ui.message(data?.message || 'Nao foi possivel validar o bonus aniversario.', 'error');
+              }
+            };
+          }
+        }
+
+        if (loyaltyAddPointBtn) {
+          const canAddPoint = Boolean(loyalty.can_add_point && loyaltyCard.id && cliente.id);
+          if (!canAddPoint) {
+            loyaltyAddPointBtn.classList.add('hidden');
+            loyaltyAddPointBtn.onclick = null;
+          } else {
+            loyaltyAddPointBtn.classList.remove('hidden');
+            loyaltyAddPointBtn.onclick = async () => {
+              loyaltyAddPointBtn.disabled = true;
+              loyaltyAddPointBtn.classList.add('opacity-60');
+              const { res, data } = await api.request(`/empresa/cartao-fidelidade/${loyaltyCard.id}/clientes/${cliente.id}/adicionar-ponto`, {
+                method: 'POST',
+                body: JSON.stringify({}),
+              });
+              loyaltyAddPointBtn.disabled = false;
+              loyaltyAddPointBtn.classList.remove('opacity-60');
+
+              if (res.ok && data?.success) {
+                ui.message(data?.message || 'Ponto registrado com sucesso.', 'success');
+                renderBonusLookup({
+                  ...(latestCompanyLookup || {}),
+                  ...(data.data || {}),
+                  cartao_fidelidade: data?.data?.cartao_fidelidade || latestCompanyLookup?.cartao_fidelidade,
+                });
+                pushItem({
+                  cliente: cliente.nome || 'Cliente',
+                  beneficio: `+${loyaltyCard.pontos_por_visita || loyaltyProgress.points_per_visit || 1} ponto(s)`,
+                  hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                });
+              } else {
+                ui.message(data?.message || 'Nao foi possivel adicionar ponto.', 'error');
+              }
+            };
+          }
+        }
+
+        if (loyaltyRedeemBtn) {
+          const canRedeem = Boolean(loyalty.can_redeem && loyaltyCard.id && cliente.id);
+          if (!canRedeem) {
+            loyaltyRedeemBtn.classList.add('hidden');
+            loyaltyRedeemBtn.onclick = null;
+          } else {
+            loyaltyRedeemBtn.classList.remove('hidden');
+            loyaltyRedeemBtn.onclick = async () => {
+              loyaltyRedeemBtn.disabled = true;
+              loyaltyRedeemBtn.classList.add('opacity-60');
+              const { res, data } = await api.request(`/empresa/cartao-fidelidade/${loyaltyCard.id}/clientes/${cliente.id}/resgatar`, {
+                method: 'POST',
+                body: JSON.stringify({}),
+              });
+              loyaltyRedeemBtn.disabled = false;
+              loyaltyRedeemBtn.classList.remove('opacity-60');
+
+              if (res.ok && data?.success) {
+                ui.message(data?.message || 'Recompensa validada com sucesso.', 'success');
+                renderBonusLookup({
+                  ...(latestCompanyLookup || {}),
+                  ...(data.data || {}),
+                  cartao_fidelidade: data?.data?.cartao_fidelidade || latestCompanyLookup?.cartao_fidelidade,
+                });
+                pushItem({
+                  cliente: cliente.nome || 'Cliente',
+                  beneficio: loyaltyCard.recompensa_descricao || 'Recompensa fidelidade',
+                  hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                });
+              } else {
+                ui.message(data?.message || 'Nao foi possivel resgatar a recompensa.', 'error');
+              }
+            };
+          }
+        }
+      };
+
+      if (companyBenefitMode) {
+        window.addEventListener('empresa-bonus-lookup', (event) => {
+          renderBonusLookup(event.detail || {});
+        });
+      }
 
       btn.addEventListener('click', async () => {
         const codigo = input.value.trim();
-        if (!codigo) return ui.message('Informe o codigo do cupom.', 'warning');
+        if (!codigo) {
+          return ui.message(
+            perfil === 'empresa'
+              ? (companyBenefitMode ? 'Informe o QR do cliente.' : 'Informe o codigo do cupom.')
+              : 'Informe o codigo do QR da empresa.',
+            'warning'
+          );
+        }
+
         btn.disabled = true;
         btn.classList.add('opacity-60');
-        const { res, data } = await api.request(`/pontos/usar-cupom/${encodeURIComponent(codigo)}`, { method: 'POST' });
+
+        let response;
+        if (perfil === 'empresa' && companyBenefitMode) {
+          response = await api.request('/empresa/clientes/qrcode/consultar', {
+            method: 'POST',
+            body: JSON.stringify({ qrcode: codigo }),
+          });
+        } else if (perfil === 'empresa') {
+          response = await api.request(`/pontos/usar-cupom/${encodeURIComponent(codigo)}`, { method: 'POST' });
+        } else {
+          response = await api.request('/cliente/vincular-empresa-qrcode', {
+            method: 'POST',
+            body: JSON.stringify({ code: codigo }),
+          });
+        }
+
+        const { res, data } = response;
         btn.disabled = false;
         btn.classList.remove('opacity-60');
+
         if (res.ok && data?.success) {
-          ui.message('Cupom validado/uso registrado.', 'success');
-          const info = data.data || {};
-          pushItem({
-            cliente: info.cliente_nome || info.cliente || 'Cliente',
-            beneficio: info.promocao || info.recompensa || info.cupom || 'Cupom',
-            codigo: codigo,
-            hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-          });
-        } else {
-          ui.message(data?.message || 'Nao foi possivel usar o cupom.', 'error');
+          if (perfil === 'empresa' && companyBenefitMode) {
+            renderBonusLookup(data.data || {});
+            ui.message(data?.message || 'Cliente consultado com sucesso.', 'success');
+            return;
+          }
+
+          if (perfil === 'empresa') {
+            ui.message('Cupom validado/uso registrado.', 'success');
+            const info = data.data || {};
+            pushItem({
+              cliente: info.cliente_nome || info.cliente || 'Cliente',
+              beneficio: info.promocao || info.recompensa || info.cupom || 'Cupom',
+              codigo,
+              hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            });
+            return;
+          }
+
+          clearPendingCompanyQr();
+          ui.message(data?.message || 'Empresa vinculada com sucesso.', 'success');
+          const target = `${data?.data?.public_page_url || `/detalhe_do_parceiro.html?id=${encodeURIComponent(data?.data?.empresa?.id || '')}`}&linked=1`.replace('?&', '?');
+          setTimeout(() => {
+            window.location.href = target.includes('?') ? target : `${target}?linked=1`;
+          }, 500);
+          return;
         }
+
+        ui.message(
+          data?.message || (
+            perfil === 'empresa'
+              ? (companyBenefitMode ? 'Nao foi possivel consultar este cliente.' : 'Nao foi possivel usar o cupom.')
+              : 'Nao foi possivel vincular esta empresa.'
+          ),
+          'error'
+        );
       });
     },
 
@@ -2247,47 +3730,50 @@
     async dashboard() {
       if (!(await auth.guard(['empresa']))) return;
       ui.setPageState('loading', 'Carregando painel da empresa...');
-      const [promos, clientes, relatorio, resgates] = await Promise.all([
+      const [promos, resumo] = await Promise.all([
         api.request('/empresa/promocoes'),
-        api.request('/empresa/clientes'),
-        api.request('/empresa/relatorio-pontos'),
-        api.request('/empresa/resgates'),
+        api.request('/empresa/relatorios/resumo', {}, { notify: false }),
       ]);
 
       const kpiVolume = document.getElementById('kpiVolume');
       const kpiClientes = document.getElementById('kpiClientes');
       const kpiResgates = document.getElementById('kpiResgates');
+      const kpiVolumeDesc = document.getElementById('kpiVolumeDesc');
+      const kpiVolumeTrend = document.getElementById('kpiVolumeTrend');
       const campanhasBox = document.getElementById('campanhasAtivas');
       const campanhasEmpty = document.getElementById('campanhasEmpty');
       const movDistribuido = document.getElementById('movDistribuido');
       const movResgatado = document.getElementById('movResgatado');
       const movClientes = document.getElementById('movClientes');
       const movMsg = document.getElementById('movMsg');
+      const recentClientsBox = document.getElementById('empresaRecentClients');
+      const recentClientsEmpty = document.getElementById('empresaRecentClientsEmpty');
+      const latestRedemptionsBox = document.getElementById('empresaLatestRedemptions');
+      const latestRedemptionsEmpty = document.getElementById('empresaLatestRedemptionsEmpty');
       ui.clearPageState();
 
-      // Dados demo para quando API estiver vazia (Issues #3 e #4)
-      const DEMO_EMPRESA_STATS = {
-        volume: 12450.00,
-        clientes: 142,
-        resgates: 68,
-        distribuido: 8520,
-        resgatado: 3280,
-        clientesUnicos: 89
-      };
+      const resumoData = resumo.data?.data || {};
+      const cards = resumoData.cards || {};
+      const totalClientes = Number(cards.total_clientes_vinculados || 0);
+      const aniversariantes = Number(cards.clientes_aniversariantes_mes || 0);
+      const totalAvaliacoes = Number(cards.total_avaliacoes || 0);
+      const mediaAvaliacao = Number(cards.media_avaliacao || 0);
+      const notificacoes = Number(cards.total_notificacoes_enviadas || 0);
 
-      const totals = relatorio.data?.data?.totais || {};
-      const hasRealData = totals.total_resgatado || totals.total_distribuido || totals.total_clientes;
-      const fmtMoeda = (n) => 'R$ ' + (n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-      
-      // Usar dados demo se API estiver vazia
-      if (kpiVolume) kpiVolume.textContent = fmtMoeda(hasRealData ? totals.total_resgatado : DEMO_EMPRESA_STATS.volume);
-      if (kpiClientes) kpiClientes.textContent = (clientes.data?.data?.length || clientes.data?.data?.total || DEMO_EMPRESA_STATS.clientes).toString();
-      if (kpiResgates) kpiResgates.textContent = (hasRealData ? totals.total_resgatado : DEMO_EMPRESA_STATS.resgates).toString();
+      if (kpiVolume) kpiVolume.textContent = Number(totalClientes).toLocaleString('pt-BR');
+      if (kpiClientes) kpiClientes.textContent = Number(aniversariantes).toLocaleString('pt-BR');
+      if (kpiResgates) kpiResgates.textContent = Number(totalAvaliacoes).toLocaleString('pt-BR');
+      if (kpiVolumeDesc) kpiVolumeDesc.textContent = `${Number(cards.novos_clientes_mes || 0).toLocaleString('pt-BR')} novo(s) cliente(s) no mes atual`;
+      if (kpiVolumeTrend) kpiVolumeTrend.textContent = notificacoes > 0
+        ? `${notificacoes.toLocaleString('pt-BR')} notificacao(oes) ja enviadas para clientes vinculados`
+        : 'Nenhuma notificacao enviada ainda';
 
-      if (movDistribuido) movDistribuido.textContent = (hasRealData ? totals.total_distribuido : DEMO_EMPRESA_STATS.distribuido).toLocaleString('pt-BR');
-      if (movResgatado) movResgatado.textContent = (hasRealData ? totals.total_resgatado : DEMO_EMPRESA_STATS.resgatado).toLocaleString('pt-BR');
-      if (movClientes) movClientes.textContent = (hasRealData ? totals.total_clientes : DEMO_EMPRESA_STATS.clientesUnicos).toLocaleString('pt-BR');
-      if (movMsg) movMsg.textContent = hasRealData ? 'Dados dos ultimos 30 dias' : '📊 Dados de demonstração (API sem dados reais)';
+      if (movDistribuido) movDistribuido.textContent = Number(cards.total_pontos_distribuidos || 0).toLocaleString('pt-BR');
+      if (movResgatado) movResgatado.textContent = Number(cards.total_promocoes_resgatadas || 0).toLocaleString('pt-BR');
+      if (movClientes) movClientes.textContent = Number(cards.clientes_inativos || 0).toLocaleString('pt-BR');
+      if (movMsg) movMsg.textContent = totalAvaliacoes > 0
+        ? `Media de avaliacao atual: ${mediaAvaliacao.toFixed(1).replace('.', ',')}`
+        : 'Sem avaliacoes registradas ate o momento.';
 
       const listaPromos = promos.data?.data || promos.data || [];
       if (campanhasBox) {
@@ -2331,6 +3817,46 @@
         }
       }
 
+      const recentClients = toArray(resumoData.clientes_recentes);
+      if (recentClientsBox) {
+        recentClientsBox.innerHTML = '';
+        recentClientsEmpty?.classList.toggle('hidden', recentClients.length > 0);
+        recentClients.slice(0, 5).forEach((cliente) => {
+          const item = document.createElement('div');
+          item.className = 'rounded-xl bg-surface-container-low p-3';
+          item.innerHTML = `
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-sm font-bold text-on-surface">${safeText(cliente?.nome, 'Cliente')}</p>
+                <p class="mt-1 text-xs text-on-surface-variant">${safeText(cliente?.email, 'Sem email')} • ${formatDatePtBr(cliente?.data_vinculo, 'Vinculo recente')}</p>
+              </div>
+              <span class="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-tertiary">${Number(cliente?.dias_inatividade || 0).toLocaleString('pt-BR')}d</span>
+            </div>
+          `;
+          recentClientsBox.appendChild(item);
+        });
+      }
+
+      const latestRedemptions = toArray(resumoData.ultimos_resgates);
+      if (latestRedemptionsBox) {
+        latestRedemptionsBox.innerHTML = '';
+        latestRedemptionsEmpty?.classList.toggle('hidden', latestRedemptions.length > 0);
+        latestRedemptions.slice(0, 5).forEach((evento) => {
+          const item = document.createElement('div');
+          item.className = 'rounded-xl bg-surface-container-low p-3';
+          item.innerHTML = `
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-sm font-bold text-on-surface">${safeText(evento?.cliente_nome, 'Cliente')}</p>
+                <p class="mt-1 text-xs text-on-surface-variant">${safeText(evento?.titulo, 'Beneficio validado')} • ${safeText(evento?.tipo, 'resgate')}</p>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-[0.14em] text-primary">${formatDatePtBr(evento?.data, 'Agora')}</span>
+            </div>
+          `;
+          latestRedemptionsBox.appendChild(item);
+        });
+      }
+
       document.getElementById('empresaNotifBtn')?.addEventListener('click', () => {
         ui.message('Notificacoes da empresa serao exibidas aqui em breve.', 'info');
       });
@@ -2352,11 +3878,14 @@
         ui.setPageState('loading', 'Carregando clientes...');
         const qs = term ? `?busca=${encodeURIComponent(term)}` : '';
         const { data } = await api.request(`/empresa/clientes${qs}`);
-        const lista = data?.data?.data || data?.data || data || [];
-        if (statTotal) statTotal.textContent = Number(lista.length || 0).toLocaleString('pt-BR');
-        if (statAtivos) statAtivos.textContent = Number(lista.length || 0).toLocaleString('pt-BR');
-        if (statNovos) statNovos.textContent = '0';
-        if (resumoEl) resumoEl.textContent = `Exibindo ${lista.length} resultado(s)`;
+        const payload = data?.data || {};
+        const lista = payload?.data || data?.data || data || [];
+        const ativos = lista.filter((item) => item?.status_inatividade !== 'inactive').length;
+        const inativos = lista.filter((item) => item?.status_inatividade === 'inactive').length;
+        if (statTotal) statTotal.textContent = Number(payload?.total || lista.length || 0).toLocaleString('pt-BR');
+        if (statAtivos) statAtivos.textContent = Number(ativos || 0).toLocaleString('pt-BR');
+        if (statNovos) statNovos.textContent = Number(inativos || 0).toLocaleString('pt-BR');
+        if (resumoEl) resumoEl.textContent = `Exibindo ${lista.length} cliente(s) • ${inativos} inativo(s) no filtro atual`;
         if (!lista.length) {
           ui.setPageState('empty', 'Nenhum cliente fidelizado ainda.');
           if (vazioEl) vazioEl.classList.remove('hidden');
@@ -2368,25 +3897,54 @@
         if (listaEl) listaEl.innerHTML = '';
         lista.forEach((c) => {
           const card = document.createElement('div');
-          card.className = 'bg-surface-container-lowest rounded-xl p-4 flex items-center gap-4 transition-transform active:scale-[0.98] tap-highlight-transparent border border-surface-variant/30';
+          card.className = 'bg-surface-container-lowest rounded-xl p-4 transition-transform active:scale-[0.98] tap-highlight-transparent border border-surface-variant/30';
           const nome = c.name || c.nome || 'Cliente';
-          const pontos = c.total_ganho || c.pontos || 0;
+          const pontos = Number(c.pontos_atuais || c.total_ganho || c.pontos || 0);
           const ultima = c.ultima_visita || c.updated_at;
+          const inativo = c.status_inatividade === 'inactive';
+          const nascimento = formatDatePtBr(c.data_nascimento, 'Nao informado');
+          const vinculo = formatDatePtBr(c.data_vinculo, 'Nao informado');
           card.innerHTML = `
-            <div class="relative">
-              <div class="w-14 h-14 rounded-full overflow-hidden bg-surface-container">
-                <img alt="${nome}" class="w-full h-full object-cover" src="${c.avatar || '/img/placeholder-user.png'}"/>
+            <div class="flex items-start gap-4">
+              <div class="relative">
+                <div class="w-14 h-14 rounded-full overflow-hidden bg-surface-container">
+                  <img alt="${nome}" class="w-full h-full object-cover" src="${c.avatar || '/img/placeholder-user.png'}"/>
+                </div>
+              </div>
+              <div class="flex-1">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h3 class="font-headline font-bold text-on-surface">${nome}</h3>
+                    <p class="mt-1 text-xs text-on-surface-variant">${safeText(c.email, 'Sem email')} • ${safeText(c.telefone, 'Sem telefone')}</p>
+                  </div>
+                  <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${inativo ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}">${inativo ? 'Inativo' : 'Ativo'}</span>
+                </div>
+                <div class="mt-3 grid gap-2 sm:grid-cols-2">
+                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Pontos atuais</p>
+                    <p class="mt-1 text-sm font-bold text-primary">${pontos.toLocaleString('pt-BR')} pts</p>
+                  </div>
+                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Ultima visita</p>
+                    <p class="mt-1 text-sm font-semibold text-on-surface">${formatDatePtBr(ultima, 'Nao informada')}</p>
+                  </div>
+                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Nascimento</p>
+                    <p class="mt-1 text-sm font-semibold text-on-surface">${nascimento}</p>
+                  </div>
+                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Vinculo</p>
+                    <p class="mt-1 text-sm font-semibold text-on-surface">${vinculo}</p>
+                  </div>
+                </div>
+                <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-on-surface-variant">
+                  <span>${Number(c.total_promocoes_resgatadas || 0).toLocaleString('pt-BR')} promocao(oes)</span>
+                  <span>${Number(c.total_recompensas_resgatadas || 0).toLocaleString('pt-BR')} recompensa(s)</span>
+                  <span>${Number(c.dias_inatividade || 0).toLocaleString('pt-BR')} dia(s) sem visita</span>
+                </div>
               </div>
             </div>
-            <div class="flex-1">
-              <h3 class="font-headline font-bold text-on-surface">${nome}</h3>
-              <div class="flex items-center gap-2 mt-0.5">
-                <span class="material-symbols-outlined text-[16px] text-primary" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
-                <span class="text-sm font-bold text-primary">${pontos} pontos</span>
-              </div>
-              <p class="text-xs text-outline mt-1">ltima visita: ${ultima ? new Date(ultima).toLocaleString('pt-BR') : ''}</p>
-            </div>
-            <button class="material-symbols-outlined text-outline-variant hover:text-primary transition-colors" data-icon="chevron_right">chevron_right</button>`;
+          `;
           listaEl?.appendChild(card);
         });
       };
@@ -2401,6 +3959,7 @@
       ui.setPageState('loading', 'Carregando promocoes...');
       const { data } = await api.request('/empresa/promocoes');
       const lista = data?.data || data || [];
+      const weeklyStatus = data?.meta?.weekly_limit || { limit: 2, used: 0, remaining: 2 };
       ui.clearPageState();
 
       const btnNova = document.getElementById('novaOfertaBtn');
@@ -2421,23 +3980,31 @@
       const form = {
         titulo: document.getElementById('ofertaTitulo'),
         descricao: document.getElementById('ofertaDescricao'),
+        validade: document.getElementById('ofertaValidade'),
         preco: document.getElementById('ofertaPreco'),
         tipo: document.getElementById('ofertaTipo'),
         imagem: document.getElementById('ofertaImagem'),
+        notificationTitle: document.getElementById('ofertaNotificationTitle'),
+        notificationBody: document.getElementById('ofertaNotificationBody'),
         ativa: document.getElementById('ofertaAtiva'),
         salvar: document.getElementById('ofertaSalvar'),
         cancelar: document.getElementById('ofertaCancelar'),
         msg: document.getElementById('ofertaMsg'),
+        weeklyInfo: document.getElementById('promoWeeklyInfo'),
       };
       let editingId = null;
       let filtroAtual = 'todas';
 
+      if (form.weeklyInfo) {
+        form.weeklyInfo.textContent = `Limite semanal: ${weeklyStatus.used}/${weeklyStatus.limit} envios utilizados | Restantes: ${weeklyStatus.remaining}`;
+      }
+
       const setCounts = (arr) => {
         const stats = { todas: arr.length, ativas: 0, programadas: 0, inativas: 0 };
         arr.forEach((p) => {
-          const st = (p.status || (p.ativo ? 'ativa' : 'inativa')).toString().toLowerCase();
-          if (st.includes('ativa')) stats.ativas += 1;
-          else if (st.includes('program')) stats.programadas += 1;
+          const st = String(p.status || (p.ativo ? 'available' : 'inactive')).toLowerCase();
+          if (st === 'available') stats.ativas += 1;
+          else if (p.enviada_em || p.data_envio) stats.programadas += 1;
           else stats.inativas += 1;
         });
         Object.entries(stats).forEach(([k, v]) => { if (counts[k]) counts[k].textContent = v; });
@@ -2446,11 +4013,11 @@
       const renderCards = (arr) => {
         if (listaBox) listaBox.innerHTML = '';
         const filtrada = arr.filter((p) => {
-          const st = (p.status || (p.ativo ? 'ativa' : 'inativa')).toString().toLowerCase();
+          const st = String(p.status || (p.ativo ? 'available' : 'inactive')).toLowerCase();
           if (filtroAtual === 'todas') return true;
-          if (filtroAtual === 'ativas') return st.includes('ativa') && !st.includes('inativa');
-          if (filtroAtual === 'programadas') return st.includes('program');
-          return st.includes('inativa') || st.includes('paus');
+          if (filtroAtual === 'ativas') return st === 'available';
+          if (filtroAtual === 'programadas') return Boolean(p.enviada_em || p.data_envio);
+          return st !== 'available';
         });
         if (!filtrada.length) {
           if (vazio) vazio.classList.remove('hidden');
@@ -2461,8 +4028,8 @@
           const card = document.createElement('div');
           card.className = 'bg-surface-container-lowest rounded-xl p-4 flex gap-4 transition-all hover:bg-surface-container-high border border-surface-variant/30';
           const img = safeImage(p.imagem_url || p.imagem, IMAGE_FALLBACKS.promo);
-          const statusAtivo = !(p.status === 'pausada' || p.ativo === false);
-          const status = statusAtivo ? 'Ativa' : 'Pausada';
+          const meta = promotionStatusMeta(p.status);
+          const canSend = Boolean(p.ativo && p.status === 'available' && !p.enviada_em && weeklyStatus.remaining > 0);
           card.innerHTML = `
             <div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
               <img alt="${p.nome || p.titulo || 'Oferta'}" class="w-full h-full object-cover" src="${img}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" />
@@ -2474,22 +4041,43 @@
                   <button class="material-symbols-outlined text-on-surface-variant text-xl" data-action="editar" title="Editar">edit</button>
                 </div>
                 <p class="text-xs text-on-surface-variant line-clamp-2">${p.descricao || ''}</p>
+                <p class="mt-1 text-[11px] text-on-surface-variant">Validade: ${formatDatePtBr(p.data_expiracao || p.validade, 'Nao informada')}</p>
+                <p class="mt-1 text-[11px] text-on-surface-variant">Push: ${p.notification_title || p.titulo || 'Nao informado'}</p>
               </div>
               <div class="flex items-center justify-between mt-2">
                 <div class="flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full ${statusAtivo ? 'bg-[#00C2D1]' : 'bg-outline'}"></span>
-                  <span class="text-[10px] font-label font-bold uppercase ${statusAtivo ? 'text-tertiary' : 'text-outline'}">${status}</span>
+                  <span class="w-2 h-2 rounded-full ${p.status === 'available' ? 'bg-[#00C2D1]' : 'bg-outline'}"></span>
+                  <span class="text-[10px] font-label font-bold uppercase ${meta.badgeClass} px-2 py-1 rounded-full">${meta.label}</span>
                 </div>
                 <div class="flex items-center gap-2 text-[10px] text-outline">
-                  <button class="px-3 py-1 rounded-lg bg-primary text-white text-xs" data-action="ativar">Ativar</button>
-                  <button class="px-3 py-1 rounded-lg bg-amber-500 text-white text-xs" data-action="pausar">Pausar</button>
+                  <button class="px-3 py-1 rounded-lg ${p.ativo ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'} text-xs" data-action="toggle">${p.ativo ? 'Pausar' : 'Ativar'}</button>
+                  <button class="px-3 py-1 rounded-lg ${canSend ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'} text-xs" data-action="enviar" ${canSend ? '' : 'disabled'}>${p.enviada_em ? 'Push enviado' : 'Enviar push'}</button>
                   <button class="px-3 py-1 rounded-lg bg-rose-600 text-white text-xs" data-action="deletar">Excluir</button>
                 </div>
               </div>
             </div>`;
           card.querySelector('[data-action="editar"]')?.addEventListener('click', () => fillForm(p));
-          card.querySelector('[data-action="ativar"]')?.addEventListener('click', () => empresa.togglePromocao(p.id, 'ativar'));
-          card.querySelector('[data-action="pausar"]')?.addEventListener('click', () => empresa.togglePromocao(p.id, 'pausar'));
+          card.querySelector('[data-action="toggle"]')?.addEventListener('click', async () => {
+            const { res, data: resp } = await api.request(`/empresa/promocoes/${p.id}/toggle`, {
+              method: 'PATCH',
+              body: JSON.stringify({ ativo: !p.ativo }),
+            });
+            if (res.ok && resp?.success !== false) {
+              ui.message(resp?.message || 'Promocao atualizada.', 'success');
+              location.reload();
+            } else {
+              ui.message(resp?.message || 'Erro ao atualizar promocao.', 'error');
+            }
+          });
+          card.querySelector('[data-action="enviar"]')?.addEventListener('click', async () => {
+            const { res, data: resp } = await api.request(`/empresa/promocoes/${p.id}/enviar`, { method: 'POST' });
+            if (res.ok && resp?.success) {
+              ui.message(resp?.message || 'Push enviado com sucesso.', 'success');
+              location.reload();
+            } else {
+              ui.message(resp?.message || 'Nao foi possivel enviar a promocao.', 'error');
+            }
+          });
           card.querySelector('[data-action=\"deletar\"]')?.addEventListener('click', () => empresa.deletarPromocao(p.id));
           listaBox?.appendChild(card);
         });
@@ -2499,9 +4087,12 @@
         editingId = p.id;
         if (form.titulo) form.titulo.value = p.titulo || p.nome || '';
         if (form.descricao) form.descricao.value = p.descricao || '';
+        if (form.validade) form.validade.value = (p.data_expiracao || p.validade || '').slice(0, 10);
         if (form.preco) form.preco.value = p.desconto || p.preco || p.valor || '';
         if (form.tipo) form.tipo.value = p.tipo || 'desconto';
         if (form.imagem) form.imagem.value = p.imagem_url || p.imagem || '';
+        if (form.notificationTitle) form.notificationTitle.value = p.notification_title || p.titulo || '';
+        if (form.notificationBody) form.notificationBody.value = p.notification_body || p.descricao || '';
         if (form.ativa) form.ativa.checked = !(p.status === 'pausada' || p.ativo === false);
         if (form.msg) form.msg.textContent = 'Editando oferta';
       };
@@ -2517,8 +4108,11 @@
         editingId = null;
         if (form.titulo) form.titulo.value = '';
         if (form.descricao) form.descricao.value = '';
+        if (form.validade) form.validade.value = '';
         if (form.preco) form.preco.value = '';
         if (form.imagem) form.imagem.value = '';
+        if (form.notificationTitle) form.notificationTitle.value = '';
+        if (form.notificationBody) form.notificationBody.value = '';
         if (form.ativa) form.ativa.checked = true;
         if (form.msg) form.msg.textContent = '';
         document.getElementById('formOferta')?.scrollIntoView({ behavior: 'smooth' });
@@ -2529,8 +4123,11 @@
         if (form.msg) form.msg.textContent = '';
         if (form.titulo) form.titulo.value = '';
         if (form.descricao) form.descricao.value = '';
+        if (form.validade) form.validade.value = '';
         if (form.preco) form.preco.value = '';
         if (form.imagem) form.imagem.value = '';
+        if (form.notificationTitle) form.notificationTitle.value = '';
+        if (form.notificationBody) form.notificationBody.value = '';
         if (form.ativa) form.ativa.checked = true;
       });
 
@@ -2539,13 +4136,17 @@
           titulo: form.titulo?.value,
           nome: form.titulo?.value,
           descricao: form.descricao?.value,
+          validade: form.validade?.value || null,
           desconto: Number(form.preco?.value || 0),
           preco: Number(form.preco?.value || 0),
           tipo: form.tipo?.value,
           imagem_url: form.imagem?.value,
+          notification_title: form.notificationTitle?.value || null,
+          notification_body: form.notificationBody?.value || null,
           ativo: form.ativa?.checked ?? true,
         };
         if (!payload.titulo) return ui.message('Informe o titulo.', 'warning');
+        if (!payload.imagem_url) return ui.message('Informe a imagem obrigatoria da promocao.', 'warning');
         const path = editingId ? `/empresa/promocoes/${editingId}` : '/empresa/promocoes';
         const method = editingId ? 'PUT' : 'POST';
         const { res, data: resp } = await api.request(path, { method, body: JSON.stringify(payload) }, { headers: { 'Content-Type': 'application/json' } });
@@ -2559,6 +4160,734 @@
 
       setCounts(lista);
       renderCards(lista);
+
+      const bonusUi = {
+        id: document.getElementById('bonusId'),
+        titulo: document.getElementById('bonusTitulo'),
+        descricao: document.getElementById('bonusDescricao'),
+        validade: document.getElementById('bonusValidade'),
+        imagem: document.getElementById('bonusImagem'),
+        termos: document.getElementById('bonusTermos'),
+        ativo: document.getElementById('bonusAtivo'),
+        salvar: document.getElementById('bonusSalvar'),
+        cancelar: document.getElementById('bonusCancelar'),
+        mensagem: document.getElementById('bonusMensagem'),
+        list: document.getElementById('bonusAdesaoList'),
+        empty: document.getElementById('bonusAdesaoEmpty'),
+        total: document.getElementById('bonusTotal'),
+        previewTitle: document.getElementById('bonusPreviewTitle'),
+        previewDescription: document.getElementById('bonusPreviewDescription'),
+        previewStatus: document.getElementById('bonusPreviewStatus'),
+        previewValidity: document.getElementById('bonusPreviewValidity'),
+        previewImage: document.getElementById('bonusPreviewImage'),
+      };
+
+      if (bonusUi.salvar && bonusUi.list) {
+        let bonusItems = [];
+        let bonusEditingId = null;
+
+        const updateBonusPreview = () => {
+          const payload = {
+            titulo: bonusUi.titulo?.value?.trim() || 'Bonus de adesao',
+            descricao: bonusUi.descricao?.value?.trim() || 'Configure o beneficio exibido ao cliente vinculado.',
+            data_expiracao: bonusUi.validade?.value || null,
+            imagem_url: bonusUi.imagem?.value?.trim() || '',
+            ativo: bonusUi.ativo?.checked ?? false,
+          };
+          const meta = bonusStatusMeta(payload.ativo ? 'available' : 'unavailable');
+          if (bonusUi.previewTitle) bonusUi.previewTitle.textContent = payload.titulo;
+          if (bonusUi.previewDescription) bonusUi.previewDescription.textContent = payload.descricao;
+          if (bonusUi.previewStatus) {
+            bonusUi.previewStatus.textContent = payload.ativo ? 'Ativo' : 'Inativo';
+            bonusUi.previewStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}`;
+          }
+          if (bonusUi.previewValidity) {
+            bonusUi.previewValidity.textContent = payload.data_expiracao
+              ? `Validade: ${formatDatePtBr(payload.data_expiracao)}`
+              : 'Validade nao informada';
+          }
+          if (bonusUi.previewImage) {
+            bonusUi.previewImage.src = safeImage(payload.imagem_url, IMAGE_FALLBACKS.promo);
+            bonusUi.previewImage.onerror = () => {
+              bonusUi.previewImage.onerror = null;
+              bonusUi.previewImage.src = IMAGE_FALLBACKS.promo;
+            };
+          }
+        };
+
+        const resetBonusForm = () => {
+          bonusEditingId = null;
+          if (bonusUi.id) bonusUi.id.value = '';
+          if (bonusUi.titulo) bonusUi.titulo.value = '';
+          if (bonusUi.descricao) bonusUi.descricao.value = '';
+          if (bonusUi.validade) bonusUi.validade.value = '';
+          if (bonusUi.imagem) bonusUi.imagem.value = '';
+          if (bonusUi.termos) bonusUi.termos.value = '';
+          if (bonusUi.ativo) bonusUi.ativo.checked = true;
+          if (bonusUi.mensagem) bonusUi.mensagem.textContent = '';
+          updateBonusPreview();
+        };
+
+        const fillBonusForm = (bonus) => {
+          bonusEditingId = bonus.id;
+          if (bonusUi.id) bonusUi.id.value = bonus.id;
+          if (bonusUi.titulo) bonusUi.titulo.value = bonus.titulo || '';
+          if (bonusUi.descricao) bonusUi.descricao.value = bonus.descricao || '';
+          if (bonusUi.validade) bonusUi.validade.value = bonus.data_expiracao ? new Date(bonus.data_expiracao).toISOString().slice(0, 10) : '';
+          if (bonusUi.imagem) bonusUi.imagem.value = bonus.imagem_url || bonus.imagem || '';
+          if (bonusUi.termos) bonusUi.termos.value = bonus.termos || '';
+          if (bonusUi.ativo) bonusUi.ativo.checked = Boolean(bonus.ativo);
+          if (bonusUi.mensagem) bonusUi.mensagem.textContent = 'Editando bonus selecionado.';
+          updateBonusPreview();
+        };
+
+        const renderBonusList = () => {
+          if (bonusUi.list) bonusUi.list.innerHTML = '';
+          if (bonusUi.total) bonusUi.total.textContent = `${bonusItems.length} item${bonusItems.length === 1 ? '' : 's'}`;
+          if (bonusUi.empty) bonusUi.empty.classList.toggle('hidden', bonusItems.length > 0);
+
+          bonusItems.forEach((bonus) => {
+            const meta = bonusStatusMeta(bonus.status);
+            const card = document.createElement('div');
+            card.className = 'rounded-[18px] bg-white p-3 shadow-sm ring-1 ring-black/5';
+            card.innerHTML = `
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-bold text-on-surface">${bonus.titulo || 'Bonus de adesao'}</p>
+                  <p class="mt-1 text-xs leading-5 text-on-surface-variant">${bonus.descricao || 'Sem descricao.'}</p>
+                  <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Validade: ${formatDatePtBr(bonus.data_expiracao, 'Nao informada')}</p>
+                </div>
+                <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}">${meta.label}</span>
+              </div>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button data-action="edit" class="rounded-lg bg-surface-container px-3 py-2 text-xs font-semibold text-on-surface">Editar</button>
+                <button data-action="toggle" class="rounded-lg ${bonus.ativo ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'} px-3 py-2 text-xs font-semibold">${bonus.ativo ? 'Desativar' : 'Ativar'}</button>
+              </div>`;
+            card.querySelector('[data-action="edit"]')?.addEventListener('click', () => fillBonusForm(bonus));
+            card.querySelector('[data-action="toggle"]')?.addEventListener('click', async () => {
+              const { res, data } = await api.request(`/empresa/bonus-adesao/${bonus.id}/toggle`, {
+                method: 'PATCH',
+                body: JSON.stringify({ ativo: !bonus.ativo }),
+              });
+              if (res.ok && data?.success) {
+                ui.message(data?.message || 'Status do bonus atualizado.', 'success');
+                await loadBonusList();
+              } else {
+                ui.message(data?.message || 'Nao foi possivel atualizar o bonus.', 'error');
+              }
+            });
+            bonusUi.list?.appendChild(card);
+          });
+        };
+
+        const loadBonusList = async () => {
+          const { res, data } = await api.request('/empresa/bonus-adesao');
+          bonusItems = res.ok && data?.success !== false ? toArray(data?.data ?? data) : [];
+          renderBonusList();
+        };
+
+        [bonusUi.titulo, bonusUi.descricao, bonusUi.validade, bonusUi.imagem, bonusUi.termos, bonusUi.ativo]
+          .filter(Boolean)
+          .forEach((field) => {
+            field.addEventListener('input', updateBonusPreview);
+            field.addEventListener('change', updateBonusPreview);
+          });
+
+        bonusUi.cancelar?.addEventListener('click', () => {
+          resetBonusForm();
+        });
+
+        bonusUi.salvar?.addEventListener('click', async () => {
+          const payload = {
+            titulo: bonusUi.titulo?.value?.trim() || '',
+            descricao: bonusUi.descricao?.value?.trim() || '',
+            data_expiracao: bonusUi.validade?.value || null,
+            imagem_url: bonusUi.imagem?.value?.trim() || null,
+            termos: bonusUi.termos?.value?.trim() || null,
+            ativo: bonusUi.ativo?.checked ?? true,
+          };
+
+          if (!payload.titulo) {
+            return ui.message('Informe o titulo do bonus de adesao.', 'warning');
+          }
+
+          const path = bonusEditingId ? `/empresa/bonus-adesao/${bonusEditingId}` : '/empresa/bonus-adesao';
+          const method = bonusEditingId ? 'PUT' : 'POST';
+          const { res, data } = await api.request(path, {
+            method,
+            body: JSON.stringify(payload),
+          });
+
+          if (res.ok && data?.success) {
+            ui.message(data?.message || 'Bonus de adesao salvo.', 'success');
+            resetBonusForm();
+            await loadBonusList();
+          } else {
+            ui.message(data?.message || 'Nao foi possivel salvar o bonus de adesao.', 'error');
+          }
+        });
+
+        resetBonusForm();
+        await loadBonusList();
+      }
+
+      const loyaltyUi = {
+        id: document.getElementById('cartaoFidelidadeId'),
+        titulo: document.getElementById('cartaoTitulo'),
+        descricao: document.getElementById('cartaoDescricao'),
+        regraGanho: document.getElementById('cartaoRegraGanho'),
+        pontosPorVisita: document.getElementById('cartaoPontosPorVisita'),
+        pontosNecessarios: document.getElementById('cartaoPontosNecessarios'),
+        validade: document.getElementById('cartaoValidade'),
+        recompensa: document.getElementById('cartaoRecompensa'),
+        ativo: document.getElementById('cartaoAtivo'),
+        salvar: document.getElementById('cartaoSalvar'),
+        cancelar: document.getElementById('cartaoCancelar'),
+        mensagem: document.getElementById('cartaoMensagem'),
+        list: document.getElementById('cartaoFidelidadeList'),
+        empty: document.getElementById('cartaoFidelidadeEmpty'),
+        total: document.getElementById('cartaoTotal'),
+        previewTitle: document.getElementById('cartaoPreviewTitle'),
+        previewDescription: document.getElementById('cartaoPreviewDescription'),
+        previewStatus: document.getElementById('cartaoPreviewStatus'),
+        previewRule: document.getElementById('cartaoPreviewRule'),
+        previewReward: document.getElementById('cartaoPreviewReward'),
+        previewMeta: document.getElementById('cartaoPreviewMeta'),
+      };
+
+      if (loyaltyUi.salvar && loyaltyUi.list) {
+        let loyaltyItems = [];
+        let loyaltyEditingId = null;
+
+        const updateLoyaltyPreview = () => {
+          const payload = {
+            titulo: loyaltyUi.titulo?.value?.trim() || 'Cartao fidelidade',
+            descricao: loyaltyUi.descricao?.value?.trim() || 'Configure a regra de pontos e a recompensa que o cliente vera na pagina publica.',
+            regra_ganho: loyaltyUi.regraGanho?.value?.trim() || 'Ganhe 1 ponto a cada visita.',
+            pontos_por_visita: Number(loyaltyUi.pontosPorVisita?.value || 1),
+            pontos_necessarios: Number(loyaltyUi.pontosNecessarios?.value || 0),
+            recompensa_descricao: loyaltyUi.recompensa?.value?.trim() || 'Ainda nao informada',
+            data_expiracao: loyaltyUi.validade?.value || null,
+            ativo: loyaltyUi.ativo?.checked ?? false,
+          };
+          const meta = loyaltyStatusMeta(payload.ativo ? 'available' : 'inactive');
+          if (loyaltyUi.previewTitle) loyaltyUi.previewTitle.textContent = payload.titulo;
+          if (loyaltyUi.previewDescription) loyaltyUi.previewDescription.textContent = payload.descricao;
+          if (loyaltyUi.previewRule) loyaltyUi.previewRule.textContent = payload.regra_ganho;
+          if (loyaltyUi.previewReward) loyaltyUi.previewReward.textContent = payload.recompensa_descricao;
+          if (loyaltyUi.previewStatus) {
+            loyaltyUi.previewStatus.textContent = payload.ativo ? 'Ativo' : 'Inativo';
+            loyaltyUi.previewStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}`;
+          }
+          if (loyaltyUi.previewMeta) {
+            loyaltyUi.previewMeta.textContent = `Meta: ${payload.pontos_necessarios} pontos | ${payload.data_expiracao ? `Validade ${formatDatePtBr(payload.data_expiracao)}` : 'Validade nao informada'}`;
+          }
+        };
+
+        const resetLoyaltyForm = () => {
+          loyaltyEditingId = null;
+          if (loyaltyUi.id) loyaltyUi.id.value = '';
+          if (loyaltyUi.titulo) loyaltyUi.titulo.value = '';
+          if (loyaltyUi.descricao) loyaltyUi.descricao.value = '';
+          if (loyaltyUi.regraGanho) loyaltyUi.regraGanho.value = 'Ganhe 1 ponto a cada visita.';
+          if (loyaltyUi.pontosPorVisita) loyaltyUi.pontosPorVisita.value = 1;
+          if (loyaltyUi.pontosNecessarios) loyaltyUi.pontosNecessarios.value = 10;
+          if (loyaltyUi.validade) loyaltyUi.validade.value = '';
+          if (loyaltyUi.recompensa) loyaltyUi.recompensa.value = '';
+          if (loyaltyUi.ativo) loyaltyUi.ativo.checked = true;
+          if (loyaltyUi.mensagem) loyaltyUi.mensagem.textContent = '';
+          updateLoyaltyPreview();
+        };
+
+        const fillLoyaltyForm = (card) => {
+          loyaltyEditingId = card.id;
+          if (loyaltyUi.id) loyaltyUi.id.value = card.id;
+          if (loyaltyUi.titulo) loyaltyUi.titulo.value = card.titulo || '';
+          if (loyaltyUi.descricao) loyaltyUi.descricao.value = card.descricao || '';
+          if (loyaltyUi.regraGanho) loyaltyUi.regraGanho.value = card.regra_ganho || 'Ganhe 1 ponto a cada visita.';
+          if (loyaltyUi.pontosPorVisita) loyaltyUi.pontosPorVisita.value = card.pontos_por_visita || 1;
+          if (loyaltyUi.pontosNecessarios) loyaltyUi.pontosNecessarios.value = card.pontos_necessarios || 10;
+          if (loyaltyUi.validade) loyaltyUi.validade.value = card.data_expiracao || '';
+          if (loyaltyUi.recompensa) loyaltyUi.recompensa.value = card.recompensa_descricao || '';
+          if (loyaltyUi.ativo) loyaltyUi.ativo.checked = Boolean(card.ativo);
+          if (loyaltyUi.mensagem) loyaltyUi.mensagem.textContent = 'Editando cartao selecionado.';
+          updateLoyaltyPreview();
+        };
+
+        const renderLoyaltyList = () => {
+          if (loyaltyUi.list) loyaltyUi.list.innerHTML = '';
+          if (loyaltyUi.total) loyaltyUi.total.textContent = `${loyaltyItems.length} item${loyaltyItems.length === 1 ? '' : 's'}`;
+          if (loyaltyUi.empty) loyaltyUi.empty.classList.toggle('hidden', loyaltyItems.length > 0);
+
+          loyaltyItems.forEach((card) => {
+            const meta = loyaltyStatusMeta(card.status);
+            const item = document.createElement('div');
+            item.className = 'rounded-[18px] bg-white p-3 shadow-sm ring-1 ring-black/5';
+            item.innerHTML = `
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-bold text-on-surface">${card.titulo || 'Cartao fidelidade'}</p>
+                  <p class="mt-1 text-xs leading-5 text-on-surface-variant">${card.regra_ganho || 'Ganhe pontos por visita.'}</p>
+                  <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Meta: ${card.pontos_necessarios || 0} pontos | Recompensa: ${card.recompensa_descricao || 'Nao informada'}</p>
+                </div>
+                <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}">${meta.label}</span>
+              </div>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button data-action="edit" class="rounded-lg bg-surface-container px-3 py-2 text-xs font-semibold text-on-surface">Editar</button>
+                <button data-action="toggle" class="rounded-lg ${card.ativo ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'} px-3 py-2 text-xs font-semibold">${card.ativo ? 'Desativar' : 'Ativar'}</button>
+              </div>`;
+            item.querySelector('[data-action="edit"]')?.addEventListener('click', () => fillLoyaltyForm(card));
+            item.querySelector('[data-action="toggle"]')?.addEventListener('click', async () => {
+              const { res, data } = await api.request(`/empresa/cartao-fidelidade/${card.id}/toggle`, {
+                method: 'PATCH',
+                body: JSON.stringify({ ativo: !card.ativo }),
+              });
+              if (res.ok && data?.success) {
+                ui.message(data?.message || 'Status do cartao atualizado.', 'success');
+                await loadLoyaltyList();
+              } else {
+                ui.message(data?.message || 'Nao foi possivel atualizar o cartao.', 'error');
+              }
+            });
+            loyaltyUi.list?.appendChild(item);
+          });
+        };
+
+        const loadLoyaltyList = async () => {
+          const { res, data } = await api.request('/empresa/cartao-fidelidade');
+          loyaltyItems = res.ok && data?.success !== false ? toArray(data?.data ?? data) : [];
+          renderLoyaltyList();
+        };
+
+        [loyaltyUi.titulo, loyaltyUi.descricao, loyaltyUi.regraGanho, loyaltyUi.pontosPorVisita, loyaltyUi.pontosNecessarios, loyaltyUi.validade, loyaltyUi.recompensa, loyaltyUi.ativo]
+          .filter(Boolean)
+          .forEach((field) => {
+            field.addEventListener('input', updateLoyaltyPreview);
+            field.addEventListener('change', updateLoyaltyPreview);
+          });
+
+        loyaltyUi.cancelar?.addEventListener('click', () => {
+          resetLoyaltyForm();
+        });
+
+        loyaltyUi.salvar?.addEventListener('click', async () => {
+          const payload = {
+            titulo: loyaltyUi.titulo?.value?.trim() || '',
+            descricao: loyaltyUi.descricao?.value?.trim() || '',
+            regra_ganho: loyaltyUi.regraGanho?.value?.trim() || 'Ganhe 1 ponto a cada visita.',
+            pontos_por_visita: Number(loyaltyUi.pontosPorVisita?.value || 1),
+            pontos_necessarios: Number(loyaltyUi.pontosNecessarios?.value || 0),
+            recompensa_descricao: loyaltyUi.recompensa?.value?.trim() || '',
+            data_expiracao: loyaltyUi.validade?.value || null,
+            ativo: loyaltyUi.ativo?.checked ?? true,
+          };
+
+          if (!payload.titulo) return ui.message('Informe o titulo do cartao fidelidade.', 'warning');
+          if (!payload.pontos_necessarios || payload.pontos_necessarios < 1) return ui.message('Informe a meta de pontos.', 'warning');
+          if (!payload.recompensa_descricao) return ui.message('Informe a recompensa do cartao fidelidade.', 'warning');
+
+          const path = loyaltyEditingId ? `/empresa/cartao-fidelidade/${loyaltyEditingId}` : '/empresa/cartao-fidelidade';
+          const method = loyaltyEditingId ? 'PUT' : 'POST';
+          const { res, data } = await api.request(path, {
+            method,
+            body: JSON.stringify(payload),
+          });
+
+          if (res.ok && data?.success) {
+            ui.message(data?.message || 'Cartao fidelidade salvo.', 'success');
+            resetLoyaltyForm();
+            await loadLoyaltyList();
+          } else {
+            ui.message(data?.message || 'Nao foi possivel salvar o cartao fidelidade.', 'error');
+          }
+        });
+
+        resetLoyaltyForm();
+        await loadLoyaltyList();
+      }
+
+      const birthdayUi = {
+        id: document.getElementById('birthdayBonusId'),
+        titulo: document.getElementById('birthdayBonusTitle'),
+        descricao: document.getElementById('birthdayBonusDescription'),
+        diasValidade: document.getElementById('birthdayBonusDaysValidity'),
+        imagem: document.getElementById('birthdayBonusImage'),
+        notificationTitle: document.getElementById('birthdayBonusNotificationTitle'),
+        notificationBody: document.getElementById('birthdayBonusNotificationBody'),
+        ativo: document.getElementById('birthdayBonusActive'),
+        salvar: document.getElementById('birthdayBonusSave'),
+        enviar: document.getElementById('birthdayBonusSend'),
+        cancelar: document.getElementById('birthdayBonusCancel'),
+        mensagem: document.getElementById('birthdayBonusMessage'),
+        list: document.getElementById('birthdayBonusList'),
+        empty: document.getElementById('birthdayBonusEmpty'),
+        total: document.getElementById('birthdayBonusTotal'),
+        previewTitle: document.getElementById('birthdayBonusPreviewTitle'),
+        previewDescription: document.getElementById('birthdayBonusPreviewDescription'),
+        previewStatus: document.getElementById('birthdayBonusPreviewStatus'),
+        previewValidity: document.getElementById('birthdayBonusPreviewValidity'),
+        previewNotification: document.getElementById('birthdayBonusPreviewNotification'),
+        previewImage: document.getElementById('birthdayBonusPreviewImage'),
+      };
+
+      if (birthdayUi.salvar && birthdayUi.list) {
+        let birthdayItems = [];
+        let birthdayEditingId = null;
+
+        const updateBirthdayPreview = () => {
+          const payload = {
+            titulo: birthdayUi.titulo?.value?.trim() || 'Bonus aniversario',
+            descricao: birthdayUi.descricao?.value?.trim() || 'Configure o beneficio anual exibido para o cliente elegivel.',
+            dias_validade: Number(birthdayUi.diasValidade?.value || 0),
+            imagem_url: birthdayUi.imagem?.value?.trim() || '',
+            notification_title: birthdayUi.notificationTitle?.value?.trim() || '',
+            notification_body: birthdayUi.notificationBody?.value?.trim() || '',
+            ativo: birthdayUi.ativo?.checked ?? false,
+          };
+          const meta = birthdayBonusStatusMeta(payload.ativo ? 'available' : 'inactive');
+          if (birthdayUi.previewTitle) birthdayUi.previewTitle.textContent = payload.titulo;
+          if (birthdayUi.previewDescription) birthdayUi.previewDescription.textContent = payload.descricao;
+          if (birthdayUi.previewStatus) {
+            birthdayUi.previewStatus.textContent = payload.ativo ? 'Ativo' : 'Inativo';
+            birthdayUi.previewStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}`;
+          }
+          if (birthdayUi.previewValidity) {
+            birthdayUi.previewValidity.textContent = payload.dias_validade > 0
+              ? `Valido por ${payload.dias_validade} dia(s) a partir do aniversario`
+              : 'Valido durante todo o mes do aniversario';
+          }
+          if (birthdayUi.previewNotification) {
+            const title = payload.notification_title || 'Nao configurado';
+            const body = payload.notification_body || 'Sem mensagem';
+            birthdayUi.previewNotification.textContent = `Push: ${title} | ${body}`;
+          }
+          if (birthdayUi.previewImage) {
+            birthdayUi.previewImage.src = safeImage(payload.imagem_url, IMAGE_FALLBACKS.promo);
+            birthdayUi.previewImage.onerror = () => {
+              birthdayUi.previewImage.onerror = null;
+              birthdayUi.previewImage.src = IMAGE_FALLBACKS.promo;
+            };
+          }
+        };
+
+        const resetBirthdayForm = () => {
+          birthdayEditingId = null;
+          if (birthdayUi.id) birthdayUi.id.value = '';
+          if (birthdayUi.titulo) birthdayUi.titulo.value = '';
+          if (birthdayUi.descricao) birthdayUi.descricao.value = '';
+          if (birthdayUi.diasValidade) birthdayUi.diasValidade.value = '';
+          if (birthdayUi.imagem) birthdayUi.imagem.value = '';
+          if (birthdayUi.notificationTitle) birthdayUi.notificationTitle.value = '';
+          if (birthdayUi.notificationBody) birthdayUi.notificationBody.value = '';
+          if (birthdayUi.ativo) birthdayUi.ativo.checked = true;
+          if (birthdayUi.mensagem) birthdayUi.mensagem.textContent = '';
+          updateBirthdayPreview();
+        };
+
+        const fillBirthdayForm = (bonus) => {
+          birthdayEditingId = bonus.id;
+          if (birthdayUi.id) birthdayUi.id.value = bonus.id;
+          if (birthdayUi.titulo) birthdayUi.titulo.value = bonus.titulo || '';
+          if (birthdayUi.descricao) birthdayUi.descricao.value = bonus.descricao || '';
+          if (birthdayUi.diasValidade) birthdayUi.diasValidade.value = bonus.dias_validade || '';
+          if (birthdayUi.imagem) birthdayUi.imagem.value = bonus.imagem_url || bonus.imagem || '';
+          if (birthdayUi.notificationTitle) birthdayUi.notificationTitle.value = bonus.notification_title || bonus.titulo || '';
+          if (birthdayUi.notificationBody) birthdayUi.notificationBody.value = bonus.notification_body || bonus.descricao || '';
+          if (birthdayUi.ativo) birthdayUi.ativo.checked = Boolean(bonus.ativo);
+          if (birthdayUi.mensagem) birthdayUi.mensagem.textContent = 'Editando bonus aniversario selecionado.';
+          updateBirthdayPreview();
+        };
+
+        const renderBirthdayList = () => {
+          if (birthdayUi.list) birthdayUi.list.innerHTML = '';
+          if (birthdayUi.total) birthdayUi.total.textContent = `${birthdayItems.length} item${birthdayItems.length === 1 ? '' : 's'}`;
+          if (birthdayUi.empty) birthdayUi.empty.classList.toggle('hidden', birthdayItems.length > 0);
+
+          birthdayItems.forEach((bonus) => {
+            const meta = birthdayBonusStatusMeta(bonus.status);
+            const canSend = Boolean(bonus.ativo && bonus.id);
+            const card = document.createElement('div');
+            card.className = 'rounded-[18px] bg-white p-3 shadow-sm ring-1 ring-black/5';
+            card.innerHTML = `
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-bold text-on-surface">${bonus.titulo || 'Bonus aniversario'}</p>
+                  <p class="mt-1 text-xs leading-5 text-on-surface-variant">${bonus.descricao || 'Sem descricao.'}</p>
+                  <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">${safeText(bonus.validade_descricao, 'Validade nao informada')}</p>
+                </div>
+                <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}">${meta.label}</span>
+              </div>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button data-action="edit" class="rounded-lg bg-surface-container px-3 py-2 text-xs font-semibold text-on-surface">Editar</button>
+                <button data-action="toggle" class="rounded-lg ${bonus.ativo ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'} px-3 py-2 text-xs font-semibold">${bonus.ativo ? 'Desativar' : 'Ativar'}</button>
+                <button data-action="send" class="rounded-lg ${canSend ? 'bg-[#111B3F] text-white' : 'bg-surface-container text-on-surface-variant'} px-3 py-2 text-xs font-semibold" ${canSend ? '' : 'disabled'}>Enviar push</button>
+              </div>`;
+            card.querySelector('[data-action="edit"]')?.addEventListener('click', () => fillBirthdayForm(bonus));
+            card.querySelector('[data-action="toggle"]')?.addEventListener('click', async () => {
+              const { res, data } = await api.request(`/empresa/bonus-aniversario/${bonus.id}/toggle`, {
+                method: 'PATCH',
+                body: JSON.stringify({ ativo: !bonus.ativo }),
+              });
+              if (res.ok && data?.success) {
+                ui.message(data?.message || 'Status do bonus aniversario atualizado.', 'success');
+                await loadBirthdayList();
+              } else {
+                ui.message(data?.message || 'Nao foi possivel atualizar o bonus aniversario.', 'error');
+              }
+            });
+            card.querySelector('[data-action="send"]')?.addEventListener('click', async () => {
+              const { res, data } = await api.request(`/empresa/bonus-aniversario/${bonus.id}/enviar-elegiveis`, {
+                method: 'POST',
+              });
+              if (res.ok && data?.success) {
+                const sent = Number(data?.meta?.delivery?.total_sent || 0);
+                ui.message(data?.message || `Envio concluido para ${sent} cliente(s).`, 'success');
+              } else {
+                ui.message(data?.message || 'Nao foi possivel enviar o bonus aniversario.', 'error');
+              }
+            });
+            birthdayUi.list?.appendChild(card);
+          });
+        };
+
+        const loadBirthdayList = async () => {
+          const { res, data } = await api.request('/empresa/bonus-aniversario');
+          birthdayItems = res.ok && data?.success !== false ? toArray(data?.data ?? data) : [];
+          renderBirthdayList();
+        };
+
+        [birthdayUi.titulo, birthdayUi.descricao, birthdayUi.diasValidade, birthdayUi.imagem, birthdayUi.notificationTitle, birthdayUi.notificationBody, birthdayUi.ativo]
+          .filter(Boolean)
+          .forEach((field) => {
+            field.addEventListener('input', updateBirthdayPreview);
+            field.addEventListener('change', updateBirthdayPreview);
+          });
+
+        birthdayUi.cancelar?.addEventListener('click', () => {
+          resetBirthdayForm();
+        });
+
+        birthdayUi.salvar?.addEventListener('click', async () => {
+          const payload = {
+            titulo: birthdayUi.titulo?.value?.trim() || '',
+            descricao: birthdayUi.descricao?.value?.trim() || '',
+            dias_validade: birthdayUi.diasValidade?.value ? Number(birthdayUi.diasValidade.value) : null,
+            imagem_url: birthdayUi.imagem?.value?.trim() || null,
+            notification_title: birthdayUi.notificationTitle?.value?.trim() || null,
+            notification_body: birthdayUi.notificationBody?.value?.trim() || null,
+            ativo: birthdayUi.ativo?.checked ?? true,
+          };
+
+          if (!payload.titulo) return ui.message('Informe o titulo do bonus aniversario.', 'warning');
+          if (!payload.descricao) return ui.message('Informe a descricao do bonus aniversario.', 'warning');
+
+          const path = birthdayEditingId ? `/empresa/bonus-aniversario/${birthdayEditingId}` : '/empresa/bonus-aniversario';
+          const method = birthdayEditingId ? 'PUT' : 'POST';
+          const { res, data } = await api.request(path, {
+            method,
+            body: JSON.stringify(payload),
+          });
+
+          if (res.ok && data?.success) {
+            ui.message(data?.message || 'Bonus aniversario salvo.', 'success');
+            resetBirthdayForm();
+            await loadBirthdayList();
+          } else {
+            ui.message(data?.message || 'Nao foi possivel salvar o bonus aniversario.', 'error');
+          }
+        });
+
+        birthdayUi.enviar?.addEventListener('click', async () => {
+          const target = birthdayItems.find((item) => item.ativo) || birthdayItems[0];
+          if (!target?.id) {
+            ui.message('Cadastre um bonus aniversario antes de enviar.', 'warning');
+            return;
+          }
+
+          const { res, data } = await api.request(`/empresa/bonus-aniversario/${target.id}/enviar-elegiveis`, {
+            method: 'POST',
+          });
+          if (res.ok && data?.success) {
+            const sent = Number(data?.meta?.delivery?.total_sent || 0);
+            ui.message(data?.message || `Envio concluido para ${sent} cliente(s).`, 'success');
+          } else {
+            ui.message(data?.message || 'Nao foi possivel enviar o bonus aniversario.', 'error');
+          }
+        });
+
+        resetBirthdayForm();
+        await loadBirthdayList();
+      }
+
+      const reminderUi = {
+        id: document.getElementById('returnReminderId'),
+        dias: document.getElementById('returnReminderDays'),
+        titulo: document.getElementById('returnReminderTitle'),
+        mensagem: document.getElementById('returnReminderMessageInput'),
+        ativo: document.getElementById('returnReminderActive'),
+        salvar: document.getElementById('returnReminderSave'),
+        enviar: document.getElementById('returnReminderSend'),
+        cancelar: document.getElementById('returnReminderCancel'),
+        feedback: document.getElementById('returnReminderFeedback'),
+        list: document.getElementById('returnReminderList'),
+        empty: document.getElementById('returnReminderEmpty'),
+        total: document.getElementById('returnReminderTotal'),
+        previewTitle: document.getElementById('returnReminderPreviewTitle'),
+        previewMessage: document.getElementById('returnReminderPreviewMessage'),
+        previewStatus: document.getElementById('returnReminderPreviewStatus'),
+        previewMeta: document.getElementById('returnReminderPreviewMeta'),
+      };
+
+      if (reminderUi.salvar && reminderUi.list) {
+        let reminderItems = [];
+        let reminderEditingId = null;
+
+        const updateReminderPreview = () => {
+          const payload = {
+            dias_sem_visita: Number(reminderUi.dias?.value || 30),
+            titulo: reminderUi.titulo?.value?.trim() || 'Lembrete de retorno',
+            mensagem: reminderUi.mensagem?.value?.trim() || 'Sentimos sua falta. Volte para aproveitar as novidades da loja.',
+            ativo: reminderUi.ativo?.checked ?? false,
+          };
+          if (reminderUi.previewTitle) reminderUi.previewTitle.textContent = payload.titulo;
+          if (reminderUi.previewMessage) reminderUi.previewMessage.textContent = payload.mensagem;
+          if (reminderUi.previewStatus) {
+            reminderUi.previewStatus.textContent = payload.ativo ? 'Ativo' : 'Inativo';
+            reminderUi.previewStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${payload.ativo ? 'bg-emerald-500/20 text-white' : 'bg-white/10 text-white/80'}`;
+          }
+          if (reminderUi.previewMeta) {
+            reminderUi.previewMeta.textContent = `Disparo apos ${payload.dias_sem_visita} dia(s) sem visita`;
+          }
+        };
+
+        const resetReminderForm = () => {
+          reminderEditingId = null;
+          if (reminderUi.id) reminderUi.id.value = '';
+          if (reminderUi.dias) reminderUi.dias.value = 30;
+          if (reminderUi.titulo) reminderUi.titulo.value = '';
+          if (reminderUi.mensagem) reminderUi.mensagem.value = '';
+          if (reminderUi.ativo) reminderUi.ativo.checked = true;
+          if (reminderUi.feedback) reminderUi.feedback.textContent = '';
+          updateReminderPreview();
+        };
+
+        const fillReminderForm = (reminder) => {
+          reminderEditingId = reminder.id;
+          if (reminderUi.id) reminderUi.id.value = reminder.id;
+          if (reminderUi.dias) reminderUi.dias.value = reminder.dias_sem_visita || reminder.dias_ausencia || 30;
+          if (reminderUi.titulo) reminderUi.titulo.value = reminder.titulo || '';
+          if (reminderUi.mensagem) reminderUi.mensagem.value = reminder.mensagem || '';
+          if (reminderUi.ativo) reminderUi.ativo.checked = Boolean(reminder.ativo);
+          if (reminderUi.feedback) reminderUi.feedback.textContent = 'Editando lembrete selecionado.';
+          updateReminderPreview();
+        };
+
+        const renderReminderList = () => {
+          if (reminderUi.list) reminderUi.list.innerHTML = '';
+          if (reminderUi.total) reminderUi.total.textContent = `${reminderItems.length} item${reminderItems.length === 1 ? '' : 's'}`;
+          if (reminderUi.empty) reminderUi.empty.classList.toggle('hidden', reminderItems.length > 0);
+
+          reminderItems.forEach((reminder) => {
+            const active = Boolean(reminder.ativo);
+            const item = document.createElement('div');
+            item.className = 'rounded-[18px] bg-white p-3 shadow-sm ring-1 ring-black/5';
+            item.innerHTML = `
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-bold text-on-surface">${reminder.titulo || 'Lembrete de retorno'}</p>
+                  <p class="mt-1 text-xs leading-5 text-on-surface-variant">${reminder.mensagem || 'Sem mensagem.'}</p>
+                  <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Disparo apos ${reminder.dias_sem_visita || reminder.dias_ausencia || 0} dia(s) sem visita</p>
+                </div>
+                <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${active ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}">${active ? 'Ativo' : 'Inativo'}</span>
+              </div>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button data-action="edit" class="rounded-lg bg-surface-container px-3 py-2 text-xs font-semibold text-on-surface">Editar</button>
+                <button data-action="toggle" class="rounded-lg ${active ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'} px-3 py-2 text-xs font-semibold">${active ? 'Desativar' : 'Ativar'}</button>
+              </div>`;
+            item.querySelector('[data-action="edit"]')?.addEventListener('click', () => fillReminderForm(reminder));
+            item.querySelector('[data-action="toggle"]')?.addEventListener('click', async () => {
+              const { res, data } = await api.request(`/empresa/lembrete-retorno/${reminder.id}/toggle`, {
+                method: 'PATCH',
+                body: JSON.stringify({ ativo: !active }),
+              });
+              if (res.ok && data?.success) {
+                ui.message(data?.message || 'Status do lembrete atualizado.', 'success');
+                await loadReminderList();
+              } else {
+                ui.message(data?.message || 'Nao foi possivel atualizar o lembrete.', 'error');
+              }
+            });
+            reminderUi.list?.appendChild(item);
+          });
+        };
+
+        const loadReminderList = async () => {
+          const { res, data } = await api.request('/empresa/lembrete-retorno');
+          reminderItems = res.ok && data?.success !== false ? toArray(data?.data ?? data) : [];
+          renderReminderList();
+        };
+
+        [reminderUi.dias, reminderUi.titulo, reminderUi.mensagem, reminderUi.ativo]
+          .filter(Boolean)
+          .forEach((field) => {
+            field.addEventListener('input', updateReminderPreview);
+            field.addEventListener('change', updateReminderPreview);
+          });
+
+        reminderUi.cancelar?.addEventListener('click', () => {
+          resetReminderForm();
+        });
+
+        reminderUi.salvar?.addEventListener('click', async () => {
+          const payload = {
+            dias_sem_visita: Number(reminderUi.dias?.value || 0),
+            titulo: reminderUi.titulo?.value?.trim() || '',
+            mensagem: reminderUi.mensagem?.value?.trim() || '',
+            ativo: reminderUi.ativo?.checked ?? true,
+          };
+
+          if (!payload.dias_sem_visita || payload.dias_sem_visita < 1) return ui.message('Informe os dias sem visita.', 'warning');
+          if (!payload.titulo) return ui.message('Informe o titulo do lembrete.', 'warning');
+          if (!payload.mensagem) return ui.message('Informe a mensagem do lembrete.', 'warning');
+
+          const path = reminderEditingId ? `/empresa/lembrete-retorno/${reminderEditingId}` : '/empresa/lembrete-retorno';
+          const method = reminderEditingId ? 'PUT' : 'POST';
+          const { res, data } = await api.request(path, {
+            method,
+            body: JSON.stringify(payload),
+          });
+
+          if (res.ok && data?.success) {
+            ui.message(data?.message || 'Lembrete de retorno salvo.', 'success');
+            resetReminderForm();
+            await loadReminderList();
+          } else {
+            ui.message(data?.message || 'Nao foi possivel salvar o lembrete.', 'error');
+          }
+        });
+
+        reminderUi.enviar?.addEventListener('click', async () => {
+          const target = reminderItems.find((item) => item.ativo) || reminderItems[0];
+          if (!target?.id) {
+            ui.message('Cadastre um lembrete antes de enviar.', 'warning');
+            return;
+          }
+
+          const { res, data } = await api.request('/empresa/lembrete-retorno/enviar-elegiveis', {
+            method: 'POST',
+            body: JSON.stringify({ lembrete_id: target.id }),
+          });
+          if (res.ok && data?.success) {
+            const sent = Number(data?.meta?.delivery?.total_sent || 0);
+            ui.message(data?.message || `Lembretes enviados para ${sent} cliente(s).`, 'success');
+          } else {
+            ui.message(data?.message || 'Nao foi possivel enviar os lembretes.', 'error');
+          }
+        });
+
+        resetReminderForm();
+        await loadReminderList();
+      }
 
       const campMediaSelos = document.getElementById('campMediaSelos');
       if (campMediaSelos && lista.length) {
@@ -2861,16 +5190,19 @@
     async dashboard() {
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando dashboard admin...');
-      const [stats, recent, empresas, ticketsStatsResp] = await Promise.all([
+      const [stats, recent, empresas, ticketsStatsResp, adminSummaryResp] = await Promise.all([
         api.request('/admin/dashboard-stats', {}, { notify: false }),
         api.request('/admin/recent-activity', {}, { notify: false }),
         api.request('/empresas', {}, { requireAuth: false, notify: false }),
         api.request('/admin/tickets/stats', {}, { notify: false }),
+        api.request('/admin/relatorios/resumo', {}, { notify: false }),
       ]);
       ui.clearPageState();
 
       const ids = (id) => document.getElementById(id);
       const statsData = stats.data?.data || stats.data || {};
+      const adminSummary = adminSummaryResp.data?.data || {};
+      const summaryCards = adminSummary?.cards || {};
       const totals = statsData?.totais || {};
       const empresasListApi = toArray(empresas.data?.data || empresas.data);
       const empresasList = empresasListApi.length ? empresasListApi : DEMO.admin.empresas;
@@ -2880,9 +5212,9 @@
       };
 
       const totalUsuarios = toNumber(mergedTotals.usuarios, statsData.usuarios, statsData.total_users);
-      const totalEmpresas = toNumber(mergedTotals.empresas, statsData.empresas, statsData.total_empresas, empresasList.length);
-      const totalCampanhas = toNumber(mergedTotals.campanhas, statsData.campanhas, statsData.promocoes);
-      const totalResgates = toNumber(mergedTotals.resgates, statsData.resgates);
+      const totalEmpresas = toNumber(summaryCards.total_empresas, mergedTotals.empresas, statsData.empresas, statsData.total_empresas, empresasList.length);
+      const totalCampanhas = toNumber(summaryCards.total_promocoes, mergedTotals.campanhas, statsData.campanhas, statsData.promocoes);
+      const totalResgates = toNumber(summaryCards.total_resgates, mergedTotals.resgates, statsData.resgates);
       const totalVolume = toNumber(mergedTotals.volume, statsData.volume);
       const ticketStatsData = ticketsStatsResp.data?.data || {};
       const hasTicketData = toNumber(ticketStatsData.total, ticketStatsData.pendentes, ticketStatsData.resolvidos) > 0;
@@ -2895,7 +5227,12 @@
       if (ids('adminCampanhas')) ids('adminCampanhas').textContent = Number(totalCampanhas || 0).toLocaleString('pt-BR');
       if (ids('adminResgates')) ids('adminResgates').textContent = Number(totalResgates || 0).toLocaleString('pt-BR');
       if (ids('adminVolume')) ids('adminVolume').textContent = `R$ ${Number(totalVolume || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      if (ids('adminCrescimentoMsg')) ids('adminCrescimentoMsg').textContent = safeText(statsData.crescimento_texto, 'Dados consolidados dos ultimos 30 dias');
+      if (ids('adminCrescimentoMsg')) ids('adminCrescimentoMsg').textContent = safeText(
+        statsData.crescimento_texto,
+        summaryCards.total_notificacoes !== undefined
+          ? `Resumo consolidado: ${Number(summaryCards.total_notificacoes || 0).toLocaleString('pt-BR')} notificacao(oes) enviadas na base.`
+          : 'Dados consolidados dos ultimos 30 dias'
+      );
       if (ids('adminTicketsPendentes')) ids('adminTicketsPendentes').textContent = `${Number(totalTicketsPendentes || 0).toLocaleString('pt-BR')} ticket(s) pendente(s)`;
       if (ids('adminTicketsUrgentes')) ids('adminTicketsUrgentes').textContent = totalTicketsUrgentes > 0
         ? `${Number(totalTicketsUrgentes).toLocaleString('pt-BR')} ticket(s) urgente(s)`
@@ -3115,57 +5452,6 @@
 
     async empresas() {
       if (!(await auth.guard(['admin']))) return;
-      ui.setPageState('loading', 'Carregando estabelecimentos...');
-      const { res, data } = await api.request('/empresas', {}, { requireAuth: false, notify: false });
-
-      let origem = toArray(data?.data || data);
-      let usingFallback = false;
-      if (!res.ok || !origem.length) {
-        const usersDataset = await admin.loadUsersDataset();
-        if (usersDataset.ok) {
-          const candidatos = usersDataset.list.filter((u) =>
-            ['empresa', 'estabelecimento', 'parceiro', 'lojista'].some((tag) =>
-              (u?.perfil || u?.role || u?.tipo || '').toString().toLowerCase().includes(tag)
-            )
-          );
-          origem = candidatos.map((u, idx) => ({
-            id: u.id || `u-${idx}`,
-            nome: safeText(u.name || u.nome || u.email, 'Estabelecimento'),
-            categoria: safeText(u.categoria || u.ramo || u.segmento, 'geral'),
-            ramo: safeText(u.ramo || u.categoria || u.segmento, 'geral'),
-            endereco: safeText(u.endereco || u.address, 'Endereco nao informado'),
-            telefone: safeText(u.telefone || u.phone, '-'),
-            email: safeText(u.email, '-'),
-            pontos_totais: toNumber(u.pontos, u.saldo),
-            clientes: toNumber(u.clientes, u.total_clientes),
-            status: safeText(u.status, 'ativo'),
-            logo: safeImage(u.logo || u.avatar || '', IMAGE_FALLBACKS.store),
-          }));
-          usingFallback = true;
-        }
-      }
-
-      if (!origem.length) {
-        origem = DEMO.admin.empresas;
-        usingFallback = true;
-      }
-
-      // Sem banner de erro global aqui: fallback evita tela vazia.
-
-      const lista = toArray(origem).map((item) => ({
-        ...item,
-        nome: safeText(item?.nome || item?.nome_fantasia, 'Estabelecimento'),
-        categoria: safeText(item?.categoria || item?.ramo || item?.segmento, 'Sem categoria'),
-        endereco: safeText(item?.endereco || item?.logradouro, 'Endereco nao informado'),
-        telefone: safeText(item?.telefone, '-'),
-        email: safeText(item?.email, '-'),
-        pontos: toNumber(item?.pontos_totais, item?.pontos),
-        clientes: toNumber(item?.clientes, item?.qtd_clientes),
-        status: safeText(item?.status || (item?.ativo === false ? 'inativo' : 'ativo'), 'ativo').toLowerCase(),
-        logo: safeImage(item?.logo, IMAGE_FALLBACKS.store),
-      }));
-
-      ui.clearPageState();
       const listaEl = document.getElementById('estabsLista');
       const vazioEl = document.getElementById('estabsEmpty');
       const resumoEl = document.getElementById('estabsResumo');
@@ -3173,128 +5459,156 @@
       const buscaEl = document.getElementById('estabBusca');
       const categoriaEl = document.getElementById('estabsCategoriaFilter');
       const statusEl = document.getElementById('estabsStatusFilter');
+      const statusMeta = {
+        pending: { label: 'Pendente', badge: 'bg-amber-100 text-amber-700', action: 'approve', actionLabel: 'Aprovar', actionClass: 'bg-tertiary/10 text-tertiary', secondaryAction: 'reject', secondaryLabel: 'Rejeitar', secondaryClass: 'bg-error/10 text-error' },
+        active: { label: 'Ativa', badge: 'bg-emerald-100 text-emerald-700', action: 'suspend', actionLabel: 'Suspender', actionClass: 'bg-error/10 text-error' },
+        suspended: { label: 'Suspensa', badge: 'bg-slate-200 text-slate-700', action: 'approve', actionLabel: 'Reativar', actionClass: 'bg-tertiary/10 text-tertiary' },
+        rejected: { label: 'Rejeitada', badge: 'bg-rose-100 text-rose-700', action: 'approve', actionLabel: 'Ativar', actionClass: 'bg-tertiary/10 text-tertiary' },
+      };
 
-      const categorias = ['todas', ...new Set(lista.map((e) => e.categoria.toLowerCase()))];
-      if (categoriaEl && !categoriaEl.dataset.bound) {
-        categoriaEl.innerHTML = categorias
-          .map((c) => `<option value="${c}">${c === 'todas' ? 'Todas' : c.replace(/(^|\s)\S/g, (m) => m.toUpperCase())}</option>`)
-          .join('');
-      }
-      if (statusEl && !statusEl.dataset.bound) {
-        statusEl.innerHTML = ['todos', 'ativo', 'pausado', 'inativo', 'bloqueado']
-          .map((s) => `<option value="${s}">${s.charAt(0).toUpperCase() + s.slice(1)}</option>`)
-          .join('');
-      }
+      const actionEndpoint = (id, action) => {
+        if (action === 'suspend') return `/admin/empresas/${id}/suspend`;
+        if (action === 'reject') return `/admin/empresas/${id}/reject`;
+        return `/admin/empresas/${id}/approve`;
+      };
 
-      const renderLista = () => {
-        const termo = (buscaEl?.value || '').toLowerCase().trim();
+      const statusLabel = (value) => statusMeta[value]?.label || safeText(value, 'Desconhecido');
+
+      const fetchCompanies = async () => {
+        const params = new URLSearchParams();
+        const termo = (buscaEl?.value || '').trim();
         const categoria = (categoriaEl?.value || 'todas').toLowerCase();
         const status = (statusEl?.value || 'todos').toLowerCase();
+        if (termo) params.set('search', termo);
+        if (categoria && categoria !== 'todas') params.set('categoria', categoria);
+        if (status && status !== 'todos') params.set('status', status);
 
-        const filtrada = lista.filter((e) => {
-          const byBusca = !termo || [e.nome, e.categoria, e.endereco, e.telefone, e.email].join(' ').toLowerCase().includes(termo);
-          const byCategoria = categoria === 'todas' || e.categoria.toLowerCase() === categoria;
-          const byStatus = status === 'todos' || e.status.includes(status);
-          return byBusca && byCategoria && byStatus;
-        });
+        ui.setPageState('loading', 'Carregando estabelecimentos...');
+        const { res, data } = await api.request(`/admin/empresas${params.toString() ? `?${params.toString()}` : ''}`, {}, { notify: false });
+        if (!res.ok || data?.success === false) {
+          ui.setPageState('error', data?.message || 'Nao foi possivel carregar estabelecimentos.');
+          return null;
+        }
+
+        ui.clearPageState();
+        return data?.data || { empresas: [], summary: null };
+      };
+
+      const renderLista = async () => {
+        const payload = await fetchCompanies();
+        if (!payload) return;
+
+        const lista = toArray(payload?.empresas).map((item) => ({
+          ...item,
+          nome: safeText(item?.nome || item?.nome_fantasia, 'Estabelecimento'),
+          categoria: safeText(item?.categoria || item?.ramo || 'Sem categoria', 'Sem categoria'),
+          endereco: safeText(item?.endereco, 'Endereco nao informado'),
+          telefone: safeText(item?.telefone, '-'),
+          whatsapp: safeText(item?.whatsapp, ''),
+          email: safeText(item?.email, '-'),
+          responsavel: safeText(item?.responsavel, '-'),
+          status: safeText(item?.status, 'pending').toLowerCase(),
+          ativo: Boolean(item?.ativo),
+          publicamente_visivel: Boolean(item?.publicamente_visivel),
+          qr_code_ready: Boolean(item?.qr_code_ready),
+          logo: safeImage(item?.logo, IMAGE_FALLBACKS.store),
+        }));
+
+        if (categoriaEl && !categoriaEl.dataset.bound) {
+          const categorias = ['todas', ...new Set(lista.map((e) => (e.categoria || '').toLowerCase()).filter(Boolean))];
+          categoriaEl.innerHTML = categorias
+            .map((c) => `<option value="${c}">${c === 'todas' ? 'Todas' : c.replace(/(^|\s)\S/g, (m) => m.toUpperCase())}</option>`)
+            .join('');
+        }
+        if (statusEl && !statusEl.dataset.bound) {
+          statusEl.innerHTML = ['todos', 'pending', 'active', 'suspended', 'rejected']
+            .map((s) => `<option value="${s}">${s === 'todos' ? 'Todos' : statusLabel(s)}</option>`)
+            .join('');
+        }
 
         if (listaEl) listaEl.innerHTML = '';
-        if (totalEl) totalEl.textContent = lista.length ? lista.length.toLocaleString('pt-BR') : '--';
-        if (resumoEl) resumoEl.textContent = `Mostrando ${filtrada.length} de ${lista.length} resultados`;
+        if (totalEl) totalEl.textContent = `${payload?.summary?.total ?? lista.length}`;
+        if (resumoEl) {
+          const summary = payload?.summary || {};
+          resumoEl.textContent = `Pendentes ${summary.pending ?? 0} | Ativas ${summary.active ?? 0} | Suspensas ${summary.suspended ?? 0} | Rejeitadas ${summary.rejected ?? 0}`;
+        }
 
-        if (!filtrada.length) {
+        if (!lista.length) {
           vazioEl?.classList.remove('hidden');
           return;
         }
 
         vazioEl?.classList.add('hidden');
-        filtrada.forEach((e) => {
+        lista.forEach((e) => {
+          const meta = statusMeta[e.status] || statusMeta.pending;
           const card = document.createElement('div');
-          card.className = 'bg-surface-container-lowest p-5 rounded-xl flex flex-col md:flex-row gap-6 items-center group hover:bg-surface-container-low transition-all border border-transparent hover:border-primary/10 cursor-pointer';
-          const logo = safeImage(e.logo, IMAGE_FALLBACKS.store);
+          card.className = 'bg-surface-container-lowest p-5 rounded-xl flex flex-col md:flex-row gap-6 items-start group hover:bg-surface-container-low transition-all border border-transparent hover:border-primary/10';
           card.innerHTML = /* html */ `
             <div class="relative">
               <div class="w-20 h-20 rounded-full overflow-hidden bg-surface-container shadow-inner">
-                <img alt="${e.nome}" class="w-full h-full object-cover" src="${logo}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'"/>
+                <img alt="${e.nome}" class="w-full h-full object-cover" src="${e.logo}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'"/>
               </div>
             </div>
             <div class="flex-1 w-full">
-              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+              <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                 <div>
-                  <h3 class="font-headline font-bold text-on-surface text-lg">${e.nome}</h3>
-                  <p class="text-sm text-outline">${e.categoria}</p>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h3 class="font-headline font-bold text-on-surface text-lg">${e.nome}</h3>
+                    <span class="px-2 py-1 rounded-full text-[10px] uppercase font-black ${meta.badge}">${meta.label}</span>
+                    <span class="px-2 py-1 rounded-full text-[10px] uppercase font-black ${e.publicamente_visivel ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-700'}">${e.publicamente_visivel ? 'Publica' : 'Oculta'}</span>
+                  </div>
+                  <p class="text-sm text-outline mt-1">${e.categoria}</p>
+                  <p class="text-xs text-on-surface-variant mt-2">Responsavel: <span class="font-bold">${e.responsavel}</span> · ${e.email}</p>
                 </div>
                 <div class="flex flex-wrap gap-2 text-[10px] uppercase font-bold">
-                  <span class="px-2 py-1 rounded-full bg-primary/10 text-primary">Pontos: ${e.pontos.toLocaleString('pt-BR')}</span>
-                  <span class="px-2 py-1 rounded-full bg-tertiary/10 text-tertiary">Clientes: ${e.clientes.toLocaleString('pt-BR')}</span>
+                  <span class="px-2 py-1 rounded-full bg-primary/10 text-primary">QR ${e.qr_code_ready ? 'Pronto' : 'Pendente'}</span>
+                  <span class="px-2 py-1 rounded-full bg-surface-container-high text-on-surface-variant">${e.ativo ? 'Ativo' : 'Inativo'}</span>
                 </div>
               </div>
               <div class="flex flex-wrap gap-4 mt-3 text-sm text-on-surface-variant">
                 <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span><span>${e.endereco}</span></div>
                 <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="call">call</span><span>${e.telefone}</span></div>
-                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="mail">mail</span><span>${e.email}</span></div>
+                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="chat">chat</span><span>${e.whatsapp || '-'}</span></div>
               </div>
               <div class="mt-4 flex flex-wrap gap-2">
                 <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(e.id)}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity">
                   Ver perfil
                   <span class="material-symbols-outlined text-base" data-icon="chevron_right">chevron_right</span>
                 </a>
-                <button data-toggle-empresa="${e.id}" data-ativo="${e.status === 'ativo' ? '1' : '0'}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${e.status === 'ativo' ? 'bg-error/10 text-error' : 'bg-tertiary/10 text-tertiary'} text-xs font-bold hover:opacity-90 transition-opacity">
-                  <span class="material-symbols-outlined text-base" data-icon="${e.status === 'ativo' ? 'block' : 'check_circle'}">${e.status === 'ativo' ? 'block' : 'check_circle'}</span>
-                  ${e.status === 'ativo' ? 'Desativar' : 'Ativar'}
+                <button data-company-action="${meta.action}" data-company-id="${e.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${meta.actionClass} text-xs font-bold hover:opacity-90 transition-opacity">
+                  ${meta.actionLabel}
                 </button>
+                ${meta.secondaryAction ? `<button data-company-action="${meta.secondaryAction}" data-company-id="${e.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${meta.secondaryClass} text-xs font-bold hover:opacity-90 transition-opacity">${meta.secondaryLabel}</button>` : ''}
               </div>
             </div>`;
-          card.addEventListener('click', () => {
-            window.location.href = `/detalhe_do_parceiro.html?id=${encodeURIComponent(e.id)}`;
-          });
+
           card.querySelectorAll('a,button').forEach((el) => {
-            el.addEventListener('click', (ev) => ev.stopPropagation());
-          });
-          // Botão de toggle ativar/desativar
-          const toggleBtn = card.querySelector(`[data-toggle-empresa="${e.id}"]`);
-          if (toggleBtn) {
-            toggleBtn.addEventListener('click', async (ev) => {
+            el.addEventListener('click', async (ev) => {
               ev.stopPropagation();
-              toggleBtn.disabled = true;
-              const { res, data: tData } = await api.request(
-                `/admin/empresas/${e.id}/toggle-status`,
-                { method: 'PATCH' },
-                { notify: true }
-              );
-              if (res.ok) {
-                ui.message(tData?.message || 'Status atualizado.', 'success');
-                // Re-renderiza lista buscando dados frescos
-                const { data: fresh } = await api.request('/empresas', {}, { requireAuth: false, notify: false });
-                const novaLista = toArray(fresh?.data || fresh);
-                if (novaLista.length) {
-                  lista.length = 0;
-                  novaLista.forEach((item) => lista.push({
-                    ...item,
-                    nome: safeText(item?.nome, 'Estabelecimento'),
-                    categoria: safeText(item?.categoria || item?.ramo, 'Sem categoria'),
-                    endereco: safeText(item?.endereco, 'Endereco nao informado'),
-                    telefone: safeText(item?.telefone, '-'),
-                    email: safeText(item?.email, '-'),
-                    pontos: toNumber(item?.pontos_totais, item?.pontos),
-                    clientes: toNumber(item?.clientes, item?.qtd_clientes),
-                    status: safeText(item?.status || (item?.ativo === false ? 'inativo' : 'ativo'), 'ativo').toLowerCase(),
-                    logo: safeImage(item?.logo, IMAGE_FALLBACKS.store),
-                  }));
-                }
-                renderLista();
+              if (el.tagName.toLowerCase() !== 'button') return;
+              el.disabled = true;
+              const action = el.dataset.companyAction;
+              const endpoint = actionEndpoint(e.id, action);
+              const { res, data } = await api.request(endpoint, { method: 'POST' }, { notify: true });
+              if (res.ok && data?.success !== false) {
+                ui.message(data?.message || 'Status atualizado.', 'success');
+                await renderLista();
               } else {
-                toggleBtn.disabled = false;
+                el.disabled = false;
               }
             });
-          }
+          });
+
           listaEl?.appendChild(card);
         });
       };
 
       if (buscaEl && !buscaEl.dataset.bound) {
         buscaEl.dataset.bound = '1';
-        buscaEl.addEventListener('input', renderLista);
+        buscaEl.addEventListener('input', () => {
+          clearTimeout(buscaEl._companyDebounce);
+          buscaEl._companyDebounce = setTimeout(renderLista, 250);
+        });
       }
       if (categoriaEl && !categoriaEl.dataset.bound) {
         categoriaEl.dataset.bound = '1';
@@ -3305,7 +5619,7 @@
         statusEl.addEventListener('change', renderLista);
       }
 
-      renderLista();
+      await renderLista();
 
       // FAB para criar nova empresa
       if (!document.getElementById('adminNovaEmpresaFab')) {
@@ -3618,14 +5932,17 @@
       ui.setPageState('loading', 'Carregando relatorios...');
 
       const usersDataset = await admin.loadUsersDataset();
-      const [stats, checkins, empresasResp] = await Promise.all([
+      const [stats, checkins, empresasResp, adminSummaryResp] = await Promise.all([
         api.request('/admin/dashboard-stats', {}, { notify: false }),
         api.request('/admin/pontos/estatisticas', {}, { notify: false }),
         api.request('/empresas', {}, { requireAuth: false, notify: false }),
+        api.request('/admin/relatorios/resumo', {}, { notify: false }),
       ]);
       ui.clearPageState();
 
       const statsData = stats.data?.data || stats.data || {};
+      const adminSummary = adminSummaryResp.data?.data || {};
+      const summaryCards = adminSummary?.cards || {};
       const totals = statsData?.totais || {};
       const usersList = usersDataset.ok ? usersDataset.list : [];
       const usersPayload = { total: usersList.length };
@@ -3634,15 +5951,19 @@
       const checkData = checkins.data?.data || checkins.data || {};
       const fallbackUsers = usersList.length ? usersList.length : DEMO.admin.totals.usuarios;
 
-      const totalEmpresas = toNumber(totals.empresas, statsData.empresas, statsData.total_empresas, empresasList.length);
+      const totalEmpresas = toNumber(summaryCards.total_empresas, totals.empresas, statsData.empresas, statsData.total_empresas, empresasList.length);
       const totalUsuarios = toNumber(totals.usuarios, statsData.usuarios, statsData.total_users, usersPayload.total, usersList.length, fallbackUsers);
       const totalClientes = toNumber(
+        summaryCards.total_clientes,
         statsData.clientes,
         usersList.filter((u) => (u?.perfil || u?.role || '').toString().toLowerCase().includes('cliente')).length,
         Math.round(totalUsuarios * 0.76)
       );
-      const totalPromocoes = toNumber(totals.campanhas, statsData.promocoes, statsData.campanhas, DEMO.admin.totals.campanhas);
-      const totalResgates = toNumber(totals.resgates, statsData.resgates, DEMO.admin.totals.resgates);
+      const totalPromocoes = toNumber(summaryCards.total_promocoes, totals.campanhas, statsData.promocoes, statsData.campanhas, DEMO.admin.totals.campanhas);
+      const totalResgates = toNumber(summaryCards.total_resgates, totals.resgates, statsData.resgates, DEMO.admin.totals.resgates);
+      const totalVinculos = toNumber(summaryCards.total_vinculos_cliente_empresa);
+      const totalNotificacoes = toNumber(summaryCards.total_notificacoes);
+      const mediaGeralAvaliacoes = Number(toNumber(summaryCards.media_geral_avaliacoes, 0)).toFixed(1);
       const totalVolume = toNumber(totals.volume, statsData.volume, DEMO.admin.totals.volume);
 
       const setText = (id, val) => {
@@ -3655,29 +5976,98 @@
       setText('relPromocoes', Number(totalPromocoes || 0).toLocaleString('pt-BR'));
       setText('relResgates', Number(totalResgates || 0).toLocaleString('pt-BR'));
       setText('relVolume', `R$ ${Number(totalVolume || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
-      setText('relCrescimento', safeText(statsData.crescimento_texto, 'Dados consolidados dos ultimos 30 dias'));
+      setText(
+        'relCrescimento',
+        safeText(
+          statsData.crescimento_texto,
+          summaryCards.media_geral_avaliacoes !== undefined
+            ? `Media geral das avaliacoes: ${mediaGeralAvaliacoes}`
+            : 'Dados consolidados dos ultimos 30 dias'
+        )
+      );
+
+      const renderMetricRows = (containerId, rows, accentClass, emptyText) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+
+        if (!rows.length) {
+          const empty = document.createElement('p');
+          empty.className = 'text-sm text-on-surface-variant';
+          empty.textContent = emptyText;
+          container.appendChild(empty);
+          return;
+        }
+
+        rows.forEach(({ label, value }) => {
+          const row = document.createElement('div');
+          row.className = 'flex items-center justify-between px-4 py-2 rounded-lg bg-surface-container-low';
+
+          const labelEl = document.createElement('span');
+          labelEl.className = 'text-sm font-semibold text-on-surface';
+          labelEl.textContent = label;
+
+          const valueEl = document.createElement('span');
+          valueEl.className = `text-sm font-bold ${accentClass}`;
+          valueEl.textContent = value;
+
+          row.appendChild(labelEl);
+          row.appendChild(valueEl);
+          container.appendChild(row);
+        });
+      };
 
       const relStatsList = document.getElementById('relStatsList');
       if (relStatsList) {
-        const resumo = {
-          usuarios: totalUsuarios,
-          clientes: totalClientes,
-          empresas: totalEmpresas,
-          promocoes: totalPromocoes,
-          resgates: totalResgates,
-          volume: totalVolume,
-        };
-        relStatsList.innerHTML = '';
-        Object.entries(resumo).forEach(([k, v]) => {
-          const li = document.createElement('div');
-          li.className = 'flex items-center justify-between px-4 py-2 rounded-lg bg-surface-container-low';
-          const value = k === 'volume'
-            ? `R$ ${Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-            : (v ? Number(v).toLocaleString('pt-BR') : '--');
-          li.innerHTML = `<span class="text-sm font-semibold capitalize">${k.replace(/_/g, ' ')}</span><span class="text-sm font-bold text-primary">${value}</span>`;
-          relStatsList.appendChild(li);
-        });
+        renderMetricRows(
+          'relStatsList',
+          [
+            { label: 'Usuarios', value: Number(totalUsuarios || 0).toLocaleString('pt-BR') },
+            { label: 'Clientes', value: Number(totalClientes || 0).toLocaleString('pt-BR') },
+            { label: 'Empresas', value: Number(totalEmpresas || 0).toLocaleString('pt-BR') },
+            { label: 'Vinculos cliente x empresa', value: Number(totalVinculos || 0).toLocaleString('pt-BR') },
+            { label: 'Promocoes', value: Number(totalPromocoes || 0).toLocaleString('pt-BR') },
+            { label: 'Resgates', value: Number(totalResgates || 0).toLocaleString('pt-BR') },
+            { label: 'Notificacoes', value: Number(totalNotificacoes || 0).toLocaleString('pt-BR') },
+            { label: 'Media geral de avaliacoes', value: mediaGeralAvaliacoes },
+            { label: 'Volume estimado', value: `R$ ${Number(totalVolume || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` },
+          ],
+          'text-primary',
+          'Sem metricas administrativas consolidadas.'
+        );
       }
+
+      renderMetricRows(
+        'relCompaniesStatus',
+        [
+          { label: 'Pendentes', value: Number(summaryCards.empresas_pending || 0).toLocaleString('pt-BR') },
+          { label: 'Ativas', value: Number(summaryCards.empresas_active || 0).toLocaleString('pt-BR') },
+          { label: 'Suspensas', value: Number(summaryCards.empresas_suspended || 0).toLocaleString('pt-BR') },
+          { label: 'Rejeitadas', value: Number(summaryCards.empresas_rejected || 0).toLocaleString('pt-BR') },
+        ],
+        'text-secondary',
+        'Resumo de status indisponivel.'
+      );
+
+      renderMetricRows(
+        'relTopCompaniesClients',
+        toArray(adminSummary.empresas_com_mais_clientes).map((item) => ({
+          label: safeText(item?.nome, 'Empresa'),
+          value: `${Number(item?.total_clientes || 0).toLocaleString('pt-BR')} cliente(s)`,
+        })),
+        'text-secondary',
+        'Nenhum ranking de clientes disponivel.'
+      );
+
+      renderMetricRows(
+        'relTopCompaniesRedemptions',
+        toArray(adminSummary.empresas_com_mais_resgates).map((item) => ({
+          label: safeText(item?.nome, 'Empresa'),
+          value: `${Number(item?.total_resgates || 0).toLocaleString('pt-BR')} resgate(s)`,
+        })),
+        'text-tertiary',
+        'Nenhum ranking de resgates disponivel.'
+      );
 
       const relCheckinsList = document.getElementById('relCheckinsList');
       if (relCheckinsList) {
@@ -3918,6 +6308,81 @@
         window.location.href = destinos[perfil] || '/meus_pontos.html';
       });
     },
+    vincular_empresa: async () => {
+      const params = new URLSearchParams(window.location.search);
+      const code = (params.get('code') || '').trim();
+      const titleEl = document.getElementById('companyLinkName');
+      const statusEl = document.getElementById('companyLinkStatus');
+      const messageEl = document.getElementById('companyLinkMessage');
+      const primaryBtn = document.getElementById('companyLinkPrimary');
+      const secondaryBtn = document.getElementById('companyLinkSecondary');
+
+      if (!code) {
+        if (messageEl) messageEl.textContent = 'QR Code da empresa nao informado.';
+        return;
+      }
+
+      ui.setPageState('loading', 'Validando QR da empresa...');
+      const { res, data } = await api.request(`/qrcode/empresa/${encodeURIComponent(code)}`, {}, { requireAuth: false, notify: false });
+      ui.clearPageState();
+
+      if (!res.ok || data?.success === false) {
+        if (statusEl) statusEl.textContent = 'QR indisponivel';
+        if (messageEl) messageEl.textContent = data?.message || 'Nao foi possivel identificar esta empresa.';
+        primaryBtn?.addEventListener('click', () => { window.location.href = '/entrar.html'; });
+        return;
+      }
+
+      const payload = data?.data || {};
+      const company = payload.empresa || {};
+      if (titleEl) titleEl.textContent = safeText(company.nome, 'Empresa');
+      if (statusEl) statusEl.textContent = safeText(company.categoria || company.ramo, 'Empresa');
+
+      const stored = auth.getStored();
+      const viewer = auth.normalizeUser(stored?.user);
+      const perfil = auth.normalizePerfil(viewer?.perfil || viewer?.role || viewer?.tipo);
+
+      if (!stored?.token || !perfil) {
+        setPendingCompanyQr(code);
+        if (messageEl) messageEl.textContent = 'Redirecionando para entrar ou criar conta e concluir o vínculo com a empresa.';
+        primaryBtn?.addEventListener('click', () => { window.location.href = buildLoginRedirectForCompanyQr(code); });
+        secondaryBtn?.addEventListener('click', () => {
+          setPendingCompanyQr(code);
+          window.location.href = '/criar_conta.html?tipo=cliente';
+        });
+        setTimeout(() => {
+          window.location.href = buildLoginRedirectForCompanyQr(code);
+        }, 350);
+        return;
+      }
+
+      if (perfil !== 'cliente') {
+        if (messageEl) messageEl.textContent = 'Apenas clientes podem se vincular a empresas por este fluxo.';
+        primaryBtn?.addEventListener('click', () => {
+          window.location.href = redirectMap[perfil] || '/meus_pontos.html';
+        });
+        return;
+      }
+
+      if (messageEl) messageEl.textContent = `Vinculando sua conta a ${safeText(company.nome, 'esta empresa')}...`;
+      setPendingCompanyQr(code);
+      const linkResponse = await api.request('/cliente/vincular-empresa-qrcode', {
+        method: 'POST',
+        body: JSON.stringify({ code }),
+      });
+      if (!linkResponse.res.ok || linkResponse.data?.success === false) {
+        if (messageEl) messageEl.textContent = linkResponse.data?.message || 'Nao foi possivel concluir o vínculo.';
+        primaryBtn?.addEventListener('click', () => { window.location.href = '/meus_pontos.html?ignore_pending_qr=1'; });
+        return;
+      }
+
+      clearPendingCompanyQr();
+      const target = linkResponse.data?.data?.public_page_url || `/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id || '')}`;
+      if (messageEl) messageEl.textContent = 'Vínculo concluído. Abrindo a página da empresa...';
+      setTimeout(() => {
+        window.location.href = target.includes('?') ? `${target}&linked=1` : `${target}?linked=1`;
+      }, 350);
+    },
     home_tem_de_tudo: async () => {
       const cards = document.querySelectorAll('main section.space-y-4 .grid > div');
       if (!cards.length) return;
@@ -4032,55 +6497,101 @@
       const form = document.getElementById('signupForm');
       if (!form) return;
       const perfilSel = document.getElementById('sgPerfil');
+      const nomeInput = document.getElementById('sgNome');
+      const nomeLabel = document.getElementById('sgNomeLabel');
       const cnpj = document.getElementById('sgCnpj');
       const end = document.getElementById('sgEndereco');
+      const whatsapp = document.getElementById('sgWhatsApp');
+      const categoria = document.getElementById('sgCategoria');
+      const nomeFantasia = document.getElementById('sgNomeFantasia');
       const blocoEmpresa = document.getElementById('empresaFields');
+      const nascimentoGroup = document.getElementById('sgNascimentoGroup');
+      const nascimentoInput = document.getElementById('sgDataNascimento');
+      const referralField = document.getElementById('referralField');
+      const empresaRestricao = document.getElementById('empresaRestricao');
 
-      const tipoParam = new URLSearchParams(window.location.search).get('tipo');
+      const urlParams = new URLSearchParams(window.location.search);
+      const tipoParam = urlParams.get('tipo');
+      const origem = urlParams.get('origem');
+      const isAdminCompanyFlow = origem === 'admin' && tipoParam === 'empresa';
+
+      const loadCategorias = async () => {
+        if (!categoria || categoria.dataset.loaded) return;
+        categoria.dataset.loaded = '1';
+        categoria.innerHTML = '<option value="">Selecione uma categoria</option>';
+
+        const { res, data } = await api.request('/categorias', {}, { requireAuth: false, notify: false });
+        const categorias = toArray(data?.data || data?.categorias || [])
+          .map((item) => ({
+            label: safeText(item?.name || item?.nome, ''),
+            value: safeText(item?.slug || item?.name || item?.nome, ''),
+          }))
+          .filter((item) => item.label && item.value);
+
+        categorias.forEach((item) => {
+          const option = document.createElement('option');
+          option.value = item.value;
+          option.textContent = item.label;
+          categoria.appendChild(option);
+        });
+      };
+
+      const syncPerfilState = async () => {
+        const isEmpresa = perfilSel.value === 'empresa';
+        blocoEmpresa?.classList.toggle('hidden', !isEmpresa);
+        nascimentoGroup?.classList.toggle('hidden', isEmpresa);
+        if (nascimentoInput) nascimentoInput.required = !isEmpresa;
+        referralField?.classList.toggle('hidden', isEmpresa);
+        empresaRestricao?.classList.toggle('hidden', !isEmpresa || isAdminCompanyFlow);
+        if (nomeLabel) nomeLabel.textContent = isEmpresa ? 'Responsavel' : 'Nome';
+        if (nomeInput) nomeInput.placeholder = isEmpresa ? 'Nome do responsavel' : 'Seu nome completo';
+        if (isEmpresa) await loadCategorias();
+      };
+
       if (tipoParam && ['cliente', 'empresa'].includes(tipoParam)) {
         perfilSel.value = tipoParam;
       }
 
-      if (perfilSel.value === 'empresa') blocoEmpresa.classList.remove('hidden');
-      else blocoEmpresa.classList.add('hidden');
-
-      perfilSel?.addEventListener('change', () => {
-        if (perfilSel.value === 'empresa') blocoEmpresa.classList.remove('hidden');
-        else blocoEmpresa.classList.add('hidden');
+      await syncPerfilState();
+      perfilSel?.addEventListener('change', async () => {
+        await syncPerfilState();
       });
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const perfil = perfilSel.value;
+        const responsavel = nomeInput?.value?.trim() || '';
         const payload = {
           perfil,
-          name: document.getElementById('sgNome').value,
+          name: responsavel,
           email: document.getElementById('sgEmail').value,
           telefone: document.getElementById('sgTelefone').value,
+          data_nascimento: nascimentoInput?.value || '',
           password: document.getElementById('sgSenha').value,
           password_confirmation: document.getElementById('sgSenhaConf').value,
           terms: document.getElementById('sgTerms').checked,
         };
+
         if (perfil === 'empresa') {
-          payload.cnpj = cnpj.value;
-          payload.endereco = end.value;
+          delete payload.data_nascimento;
+          payload.responsavel = responsavel;
+          payload.nome_fantasia = nomeFantasia?.value?.trim() || '';
+          payload.cnpj = cnpj?.value || '';
+          payload.endereco = end?.value || '';
+          payload.whatsapp = whatsapp?.value || '';
+          payload.categoria = categoria?.value || '';
         }
-        // Código de indicação: via input ou URL ?ref=
+
         const refInput = document.getElementById('sgReferralCode');
-        const refFromUrl = new URLSearchParams(window.location.search).get('ref');
+        const refFromUrl = urlParams.get('ref');
         const refCode = (refInput?.value || refFromUrl || '').trim().toUpperCase();
         if (perfil === 'cliente' && refCode) payload.referral_code = refCode;
-        
-        // Fluxo admin: criação de empresa deve usar endpoint administrativo protegido.
-        const urlParams = new URLSearchParams(window.location.search);
-        const origem = urlParams.get('origem');
-        const isAdminCompanyFlow = (perfil === 'empresa' && origem === 'admin');
 
         let endpoint = '/auth/register';
         let requestPayload = payload;
         let requestConfig = { requireAuth: false, notify: false };
 
-        if (isAdminCompanyFlow) {
+        if (isAdminCompanyFlow && perfil === 'empresa') {
           const me = await api.request('/auth/me', {}, { requireAuth: true, notify: false });
           const mePerfil = auth.normalizePerfil(
             me.data?.data?.user?.perfil ||
@@ -4098,17 +6609,21 @@
           endpoint = '/admin/create-user';
           requestPayload = {
             name: payload.name,
+            responsavel: payload.responsavel || payload.name,
+            nome_fantasia: payload.nome_fantasia || '',
             email: payload.email,
             password: payload.password,
             perfil: 'empresa',
             telefone: payload.telefone || null,
+            whatsapp: payload.whatsapp || null,
+            categoria: payload.categoria || null,
             cnpj: payload.cnpj || null,
             endereco: payload.endereco || null,
             status: 'ativo',
           };
           requestConfig = { requireAuth: true, notify: true };
         }
-        
+
         ui.setPageState('loading', 'Criando conta...');
         const { res, data } = await api.request(endpoint, {
           method: 'POST',
@@ -4116,9 +6631,12 @@
         }, requestConfig);
         ui.clearPageState();
         if (res.ok && data?.success !== false) {
-          if (perfil === 'empresa' && origem === 'admin') {
+          if (perfil === 'empresa' && isAdminCompanyFlow) {
             ui.message('Estabelecimento criado com sucesso!', 'success');
             setTimeout(() => (window.location.href = '/gest_o_de_estabelecimentos.html'), 800);
+          } else if (perfil === 'empresa') {
+            ui.message(data?.message || 'Solicitacao enviada. Aguarde aprovacao do administrador.', 'success');
+            setTimeout(() => (window.location.href = '/entrar.html'), 1200);
           } else {
             ui.message('Conta criada. Faca login.', 'success');
             setTimeout(() => (window.location.href = '/entrar.html'), 800);

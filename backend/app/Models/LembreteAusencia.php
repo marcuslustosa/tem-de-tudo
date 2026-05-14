@@ -9,31 +9,44 @@ class LembreteAusencia extends Model
 {
     use HasFactory;
 
+    public const STATUS_AVAILABLE = 'available';
+    public const STATUS_INACTIVE = 'inactive';
+    public const MAX_MENSAGEM = 300;
+
     protected $table = 'lembretes_ausencia';
 
     protected $fillable = [
         'empresa_id',
         'dias_ausencia',
+        'dias_sem_visita',
         'titulo',
         'mensagem',
-        'ativo'
+        'ativo',
     ];
 
     protected $casts = [
         'dias_ausencia' => 'integer',
+        'dias_sem_visita' => 'integer',
         'ativo' => 'boolean',
     ];
 
-    /**
-     * Relacionamento com Empresa
-     */
     public function empresa()
     {
         return $this->belongsTo(Empresa::class);
     }
 
-    /**
-     * Validação de tamanho de texto
-     */
-    const MAX_MENSAGEM = 300;
+    public function envios()
+    {
+        return $this->hasMany(LembreteEnvio::class, 'lembrete_id');
+    }
+
+    public function daysWithoutVisit(): int
+    {
+        return max(1, (int) ($this->dias_sem_visita ?? $this->dias_ausencia ?? 0));
+    }
+
+    public function isOperationallyAvailable(): bool
+    {
+        return (bool) $this->ativo && $this->daysWithoutVisit() > 0;
+    }
 }

@@ -5,9 +5,13 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendWebPushJob;
 use App\Models\Empresa;
+use App\Models\InscricaoEmpresa;
 use App\Models\Notification;
+use App\Models\Promocao;
 use App\Services\LoyaltyProgramService;
 use App\Services\ClienteQrCodeService;
+use App\Services\PromocaoInstantaneaService;
+use App\Services\QRCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -154,6 +158,8 @@ class ClienteAPIController extends Controller
         }
 
         $saldoPontos = max(0, $pontosTotais - $pontosGastos);
+        $empresasVinculadas = $this->linkedCompaniesForUser((int) $user->id);
+        $empresasDestaque = $this->featuredCompaniesForUser((int) $user->id, 4, $empresasVinculadas->pluck('id')->all());
 
         return response()->json([
             'success' => true,
@@ -166,6 +172,12 @@ class ClienteAPIController extends Controller
                     'total_gasto' => $pontosGastos
                 ],
                 'empresas_favoritas' => $empresasFavoritas,
+                'empresas_vinculadas' => $empresasVinculadas->values(),
+                'empresas_destaque' => $empresasDestaque->values(),
+                'acoes_rapidas' => [
+                    'ler_qr_empresa_url' => '/validar_resgate.html?modo=vinculo-empresa',
+                    'meu_qr_url' => '/meus_pontos.html?mostrar=meu-qrcode',
+                ],
                 'ultimas_transacoes' => $ultimasTransacoes,
                 'promocoes_disponiveis' => $promocoes
             ]
@@ -177,9 +189,17 @@ class ClienteAPIController extends Controller
      */
     public function listarEmpresas(Request $request)
     {
-        $query = DB::table('empresas')
-            ->where('ativo', true)
-            ->select('empresas.*');
+        $query = Empresa::query()->select('empresas.*');
+
+        if ($this->hasColumn('empresas', 'ativo')) {
+            $query->where('ativo', true);
+        }
+        if ($this->hasColumn('empresas', 'status')) {
+            $query->whereIn(
+                DB::raw('LOWER(status)'),
+                Empresa::normalizedStatusAliases(Empresa::STATUS_ACTIVE)
+            );
+        }
         
         // Filtro por ramo
         if ($request->has('ramo')) {
@@ -196,14 +216,27 @@ class ClienteAPIController extends Controller
         
         // Para cada empresa, calcular pontos do usuÃ¡rio
         $user = Auth::user();
-        foreach ($empresas as $empresa) {
-            $pontos = DB::table('pontos')
+        $linkedCompanyIds = $this->hasTable('inscricoes_empresa')
+            ? InscricaoEmpresa::query()
                 ->where('user_id', $user->id)
-                ->where('empresa_id', $empresa->id)
-                ->whereNotIn('tipo', ['resgate', 'redeem'])
-                ->sum('pontos');
+                ->pluck('empresa_id')
+                ->map(fn ($id) => (int) $id)
+                ->all()
+            : [];
+        foreach ($empresas as $empresa) {
+            $pontos = 0;
+            if ($this->hasTable('pontos')) {
+                $pontos = DB::table('pontos')
+                    ->where('user_id', $user->id)
+                    ->where('empresa_id', $empresa->id)
+                    ->whereNotIn('tipo', ['resgate', 'redeem'])
+                    ->sum('pontos');
+            }
             
             $empresa->meus_pontos = $pontos;
+            $empresa->vinculada = in_array((int) $empresa->id, $linkedCompanyIds, true);
+            $empresa->avaliacao_media = (float) ($empresa->avaliacao_media ?? 0);
+            $empresa->total_avaliacoes = (int) ($empresa->total_avaliacoes ?? 0);
         }
         
         return response()->json([
@@ -217,7 +250,19 @@ class ClienteAPIController extends Controller
      */
     public function empresaDetalhes($id)
     {
-        $empresa = DB::table('empresas')->where('id', $id)->first();
+        $empresaQuery = Empresa::query()->where('id', $id);
+
+        if ($this->hasColumn('empresas', 'ativo')) {
+            $empresaQuery->where('ativo', true);
+        }
+        if ($this->hasColumn('empresas', 'status')) {
+            $empresaQuery->whereIn(
+                DB::raw('LOWER(status)'),
+                Empresa::normalizedStatusAliases(Empresa::STATUS_ACTIVE)
+            );
+        }
+
+        $empresa = $empresaQuery->first();
         
         if (!$empresa) {
             return response()->json([
@@ -418,9 +463,109 @@ class ClienteAPIController extends Controller
     /**
      * Resgatar promoÃ§Ã£o
      */
+    public function vincularEmpresaViaQr(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string|max:2048',
+        ]);
+
+        $user = Auth::user();
+        $resolved = $this->resolveCompanyQr((string) $request->input('code'));
+
+        if (!$resolved) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa indisponivel para vinculacao.',
+            ], 404);
+        }
+
+        /** @var Empresa $empresa */
+        $empresa = $resolved['empresa'];
+        $qrCode = $resolved['qr_code'];
+
+        $inscricao = InscricaoEmpresa::query()->firstOrCreate(
+            [
+                'user_id' => $user->id,
+                'empresa_id' => $empresa->id,
+            ],
+            [
+                'data_inscricao' => now(),
+                'ultima_visita' => null,
+                'bonus_adesao_resgatado' => false,
+            ]
+        );
+
+        if (method_exists($qrCode, 'incrementarUso')) {
+            $qrCode->incrementarUso();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $inscricao->wasRecentlyCreated
+                ? 'Cliente vinculado a empresa com sucesso.'
+                : 'Cliente ja estava vinculado a empresa.',
+            'data' => [
+                'empresa' => $this->serializeCompanyCard($empresa, [
+                    'vinculada' => true,
+                ]),
+                'inscricao' => [
+                    'id' => $inscricao->id,
+                    'data_inscricao' => optional($inscricao->data_inscricao)->toIso8601String(),
+                    'ultima_visita' => optional($inscricao->ultima_visita)->toIso8601String(),
+                    'bonus_adesao_resgatado' => (bool) $inscricao->bonus_adesao_resgatado,
+                ],
+                'vinculo_criado' => $inscricao->wasRecentlyCreated,
+                'public_page_url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
+                'scan_url' => app(QRCodeService::class)->getCompanyScanUrl($qrCode),
+            ],
+        ], $inscricao->wasRecentlyCreated ? 201 : 200);
+    }
+
     public function resgatarPromocao(Request $request, $promocaoId)
     {
         $user = Auth::user();
+
+        $promocao = Promocao::query()->find((int) $promocaoId);
+        if (!$promocao) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Promocao nao encontrada.',
+            ], 404);
+        }
+
+        $empresa = Empresa::query()->publiclyVisible()->find((int) $promocao->empresa_id);
+        if (!$empresa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'A empresa desta promocao nao esta disponivel publicamente.',
+            ], 409);
+        }
+
+        /** @var PromocaoInstantaneaService $promocaoService */
+        $promocaoService = app(PromocaoInstantaneaService::class);
+        $snapshot = $promocaoService->customerPromotions($empresa, $user);
+        $promotionItem = collect($snapshot['items'] ?? [])->firstWhere('id', (int) $promocao->id);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'A promocao instantanea so pode ser validada pela empresa lendo o QR Code do cliente.',
+            'data' => [
+                'promocao' => $promotionItem ?: $promocaoService->serializePromotion($promocao, [
+                    'viewer_status' => 'not_linked',
+                    'message' => 'A validacao acontece somente no estabelecimento.',
+                    'can_self_redeem' => false,
+                    'can_present_qr' => false,
+                    'redeemed_at' => null,
+                ]),
+                'empresa' => [
+                    'id' => $empresa->id,
+                    'nome' => $empresa->nome,
+                    'public_page_url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
+                ],
+                'promotions_snapshot' => $snapshot,
+                'next_step' => 'Apresente seu QR Code no estabelecimento para validar esta promocao.',
+            ],
+        ], 409);
         
         // Buscar promoÃ§Ã£o
         $promocao = DB::table('promocoes')
@@ -756,6 +901,21 @@ class ClienteAPIController extends Controller
      */
     public function listarPromocoes(Request $request)
     {
+        $user = Auth::user();
+
+        /** @var PromocaoInstantaneaService $promocaoService */
+        $promocaoService = app(PromocaoInstantaneaService::class);
+        $promocoes = $promocaoService->listPromotionsForCustomer(
+            $user,
+            $request->filled('empresa_id') ? (int) $request->input('empresa_id') : null
+        );
+
+        return response()->json([
+            'success' => true,
+            'data' => $promocoes,
+            'total' => count($promocoes),
+        ]);
+
         $query = DB::table('promocoes')
             ->join('empresas', 'promocoes.empresa_id', '=', 'empresas.id')
             ->select(
@@ -840,6 +1000,129 @@ class ClienteAPIController extends Controller
         ]);
     }
 
+    private function resolveCompanyQr(string $code): ?array
+    {
+        $normalizedCode = $this->normalizeCompanyQrInput($code);
+        if ($normalizedCode === '') {
+            return null;
+        }
+
+        /** @var QRCodeService $service */
+        $service = app(QRCodeService::class);
+        $validation = $service->validarCodigo($normalizedCode);
+
+        if (!($validation['valido'] ?? false) || ($validation['type'] ?? null) !== 'empresa') {
+            return null;
+        }
+
+        $empresa = $validation['empresa'] ?? null;
+        if (!$empresa instanceof Empresa || !$empresa->isPubliclyVisible()) {
+            return null;
+        }
+
+        return [
+            'empresa' => $empresa,
+            'qr_code' => $validation['qr_code'],
+        ];
+    }
+
+    private function normalizeCompanyQrInput(string $value): string
+    {
+        $value = trim($value);
+        if ($value === '') {
+            return '';
+        }
+
+        if (!str_contains($value, '://') && !str_contains($value, '?code=')) {
+            return $value;
+        }
+
+        $query = parse_url($value, PHP_URL_QUERY);
+        if (!is_string($query) || $query === '') {
+            return $value;
+        }
+
+        parse_str($query, $params);
+        $embeddedCode = trim((string) ($params['code'] ?? ''));
+
+        return $embeddedCode !== '' ? $embeddedCode : $value;
+    }
+
+    private function linkedCompaniesForUser(int $userId)
+    {
+        if (!$this->hasTable('inscricoes_empresa')) {
+            return collect();
+        }
+
+        return InscricaoEmpresa::query()
+            ->with('empresa')
+            ->where('user_id', $userId)
+            ->orderByDesc('data_inscricao')
+            ->get()
+            ->filter(function (InscricaoEmpresa $inscricao) {
+                return $inscricao->empresa instanceof Empresa
+                    && $inscricao->empresa->isPubliclyVisible();
+            })
+            ->map(function (InscricaoEmpresa $inscricao) {
+                return $this->serializeCompanyCard($inscricao->empresa, [
+                    'vinculada' => true,
+                    'data_inscricao' => optional($inscricao->data_inscricao)->toIso8601String(),
+                    'ultima_visita' => optional($inscricao->ultima_visita)->toIso8601String(),
+                ]);
+            })
+            ->values();
+    }
+
+    private function featuredCompaniesForUser(int $userId, int $limit = 4, array $excludeIds = [])
+    {
+        $query = Empresa::query()->select('empresas.*');
+
+        if ($this->hasColumn('empresas', 'ativo')) {
+            $query->where('ativo', true);
+        }
+        if ($this->hasColumn('empresas', 'status')) {
+            $query->whereIn(
+                DB::raw('LOWER(status)'),
+                Empresa::normalizedStatusAliases(Empresa::STATUS_ACTIVE)
+            );
+        }
+        if ($excludeIds !== []) {
+            $query->whereNotIn('id', array_map('intval', $excludeIds));
+        }
+        if ($this->hasColumn('empresas', 'total_avaliacoes')) {
+            $query->orderByDesc('total_avaliacoes');
+        }
+
+        return $query
+            ->orderBy('nome')
+            ->limit($limit)
+            ->get()
+            ->map(fn (Empresa $empresa) => $this->serializeCompanyCard($empresa, [
+                'vinculada' => false,
+            ]))
+            ->values();
+    }
+
+    private function serializeCompanyCard(Empresa $empresa, array $extra = []): array
+    {
+        return array_merge([
+            'id' => $empresa->id,
+            'nome' => $empresa->nome,
+            'categoria' => $empresa->categoria ?? $empresa->ramo ?? '',
+            'ramo' => $empresa->ramo ?? $empresa->categoria ?? '',
+            'logo' => $empresa->logo ?: '/assets/images/company1.jpg',
+            'endereco' => $empresa->endereco ?? '',
+            'telefone' => $empresa->telefone ?? '',
+            'whatsapp' => $empresa->whatsapp ?? '',
+            'instagram' => $empresa->instagram ?? '',
+            'facebook' => $empresa->facebook ?? '',
+            'avaliacao_media' => (float) ($empresa->avaliacao_media ?? 0),
+            'total_avaliacoes' => (int) ($empresa->total_avaliacoes ?? 0),
+            'public_page_url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
+            'status' => $empresa->operationalStatus(),
+        ], $extra);
+    }
+
     private function hasTable(string $table): bool
     {
         try {
@@ -858,5 +1141,3 @@ class ClienteAPIController extends Controller
         }
     }
 }
-
-

@@ -3,421 +3,360 @@
 namespace App\Http\Controllers;
 
 use App\Models\CartaoFidelidade;
-use App\Models\CartaoFidelidadeProgresso;
-use App\Models\InscricaoEmpresa;
+use App\Models\Empresa;
+use App\Models\User;
+use App\Services\CartaoFidelidadeService;
+use DomainException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Schema;
 
 class CartaoFidelidadeController extends Controller
 {
-    /**
-     * Listar cartões de fidelidade da empresa
-     */
-    public function index()
+    public function __construct(
+        private readonly CartaoFidelidadeService $cartaoService
+    ) {
+    }
+
+    public function index(): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'empresa') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas empresas podem acessar esta funcionalidade'
-            ], 403);
-        }
-
-        $empresa = $user->empresa;
+        $empresa = $this->resolveOwnedEmpresa(Auth::user());
         if (!$empresa) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Empresa não encontrada'
-            ], 404);
+            return $this->empresaNaoEncontrada();
         }
 
-        $cartoes = CartaoFidelidade::where('empresa_id', $empresa->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $cards = $this->cartaoService->companyCards($empresa)
+            ->get()
+            ->map(fn (CartaoFidelidade $card) => $this->cartaoService->serializeCard($card))
+            ->values();
 
         return response()->json([
             'success' => true,
-            'data' => $cartoes
+            'data' => $cards,
         ]);
     }
 
-    /**
-     * Criar novo cartão de fidelidade
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'empresa') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas empresas podem criar cartões de fidelidade'
-            ], 403);
-        }
-
-        $empresa = $user->empresa;
+        $empresa = $this->resolveOwnedEmpresa(Auth::user());
         if (!$empresa) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Empresa não encontrada'
-            ], 404);
+            return $this->empresaNaoEncontrada();
         }
 
-        $validator = Validator::make($request->all(), [
-            'titulo' => 'required|string|max:255',
-            'descricao' => 'required|string',
-            'meta_pontos' => 'required|integer|min:1',
-            'recompensa' => 'required|string|max:255',
-            'ativo' => 'boolean'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // ✅ REGRA: Apenas 1 cartão ativo por empresa
-        $cartaoAtivoExistente = CartaoFidelidade::where('empresa_id', $empresa->id)
-            ->where('ativo', true)
-            ->first();
-        
-        if ($cartaoAtivoExistente && ($request->input('ativo', true) === true)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Você já possui um cartão de fidelidade ativo. Desative o cartão atual antes de criar um novo.',
-                'cartao_ativo' => $cartaoAtivoExistente
-            ], 422);
-        }
-
-        $data = $validator->validated();
-        $data['empresa_id'] = $empresa->id;
-
-        $cartao = CartaoFidelidade::create($data);
+        $payload = $this->validatePayload($request);
+        $card = $this->cartaoService->saveCard($empresa, $payload);
 
         return response()->json([
             'success' => true,
-            'message' => 'Cartão de fidelidade criado com sucesso',
-            'data' => $cartao
+            'message' => 'Cartao fidelidade salvo com sucesso.',
+            'data' => $this->cartaoService->serializeCard($card),
         ], 201);
     }
 
-    /**
-     * Obter detalhes de um cartão
-     */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        $cartao = CartaoFidelidade::with('empresa')->find($id);
-        
-        if (!$cartao) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cartão não encontrado'
-            ], 404);
+        $card = CartaoFidelidade::query()->find($id);
+        if (!$card) {
+            return $this->cartaoNaoEncontrado();
+        }
+
+        if (!$this->canAccessCard(Auth::user(), $card)) {
+            return $this->forbidden('Voce nao pode visualizar este cartao fidelidade.');
         }
 
         return response()->json([
             'success' => true,
-            'data' => $cartao
+            'data' => $this->cartaoService->serializeCard($card),
         ]);
     }
 
-    /**
-     * Atualizar cartão de fidelidade
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'empresa') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas empresas podem atualizar cartões'
-            ], 403);
+        $card = CartaoFidelidade::query()->find($id);
+        if (!$card) {
+            return $this->cartaoNaoEncontrado();
         }
 
-        $empresa = $user->empresa;
-        $cartao = CartaoFidelidade::find($id);
-        
-        if (!$cartao) {
+        if (!$this->canAccessCard(Auth::user(), $card)) {
+            return $this->forbidden('Voce nao pode alterar este cartao fidelidade.');
+        }
+
+        $payload = $this->validatePayload($request, true);
+        $updated = $this->cartaoService->saveCard($card->empresa, $payload, $card);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cartao fidelidade atualizado com sucesso.',
+            'data' => $this->cartaoService->serializeCard($updated),
+        ]);
+    }
+
+    public function toggle(Request $request, int $id): JsonResponse
+    {
+        $card = CartaoFidelidade::query()->find($id);
+        if (!$card) {
+            return $this->cartaoNaoEncontrado();
+        }
+
+        if (!$this->canAccessCard(Auth::user(), $card)) {
+            return $this->forbidden('Voce nao pode alterar este cartao fidelidade.');
+        }
+
+        $validated = $request->validate([
+            'ativo' => 'sometimes|boolean',
+        ]);
+
+        $updated = $this->cartaoService->saveCard($card->empresa, [
+            'ativo' => array_key_exists('ativo', $validated)
+                ? (bool) $validated['ativo']
+                : !(bool) $card->ativo,
+        ], $card);
+
+        return response()->json([
+            'success' => true,
+            'message' => $updated->ativo
+                ? 'Cartao fidelidade ativado com sucesso.'
+                : 'Cartao fidelidade desativado com sucesso.',
+            'data' => $this->cartaoService->serializeCard($updated),
+        ]);
+    }
+
+    public function progressoCliente(int $empresaId): JsonResponse
+    {
+        $user = Auth::user();
+        if ($this->normalizePerfil($user->perfil ?? $user->role ?? $user->tipo ?? null) !== 'cliente') {
+            return $this->forbidden('Apenas clientes podem consultar o progresso do cartao fidelidade.');
+        }
+
+        $empresa = Empresa::query()->publiclyVisible()->find($empresaId);
+        if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cartão não encontrado'
+                'message' => 'Empresa indisponivel para consulta do cartao fidelidade.',
             ], 404);
         }
 
-        if ($cartao->empresa_id !== $empresa->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Você não tem permissão para atualizar este cartão'
-            ], 403);
+        $snapshot = $this->cartaoService->customerCardSnapshot($empresa, $user);
+
+        return response()->json([
+            'success' => true,
+            'message' => $snapshot['message'],
+            'data' => array_merge($snapshot, [
+                'empresa' => [
+                    'id' => $empresa->id,
+                    'nome' => $empresa->nome,
+                    'status' => $empresa->operationalStatus(),
+                    'ativo' => (bool) $empresa->ativo,
+                ],
+            ]),
+        ]);
+    }
+
+    public function adicionarPonto(Request $request, int $id, int $clienteId): JsonResponse
+    {
+        $empresa = $this->resolveOwnedEmpresa(Auth::user());
+        if (!$empresa) {
+            return $this->empresaNaoEncontrada();
         }
 
-        $validator = Validator::make($request->all(), [
-            'titulo' => 'sometimes|string|max:255',
-            'descricao' => 'sometimes|string',
-            'meta_pontos' => 'sometimes|integer|min:1',
-            'recompensa' => 'sometimes|string|max:255',
-            'ativo' => 'sometimes|boolean'
-        ]);
+        $card = CartaoFidelidade::query()->find($id);
+        if (!$card) {
+            return $this->cartaoNaoEncontrado();
+        }
 
-        if ($validator->fails()) {
+        $customer = User::query()->find($clienteId);
+        if (!$customer) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $validator->errors()
+                'message' => 'Cliente nao encontrado.',
+            ], 404);
+        }
+
+        if ($this->normalizePerfil($customer->perfil ?? $customer->role ?? $customer->tipo ?? null) !== 'cliente') {
+            return response()->json([
+                'success' => false,
+                'message' => 'A fidelidade so pode ser operada para clientes.',
             ], 422);
         }
 
-        // ✅ REGRA: Apenas 1 cartão ativo por empresa
-        if ($request->has('ativo') && $request->input('ativo') === true) {
-            $cartaoAtivoExistente = CartaoFidelidade::where('empresa_id', $empresa->id)
-                ->where('ativo', true)
-                ->where('id', '!=', $id)
-                ->first();
-            
-            if ($cartaoAtivoExistente) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Você já possui outro cartão de fidelidade ativo. Desative o cartão atual antes de ativar este.',
-                    'cartao_ativo' => $cartaoAtivoExistente
-                ], 422);
+        try {
+            $snapshot = $this->cartaoService->addVisitPoint($empresa, $card, $customer, Auth::user());
+        } catch (DomainException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 409);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ponto registrado com sucesso.',
+            'data' => [
+                'cliente' => [
+                    'id' => $customer->id,
+                    'nome' => $customer->name,
+                    'telefone' => $customer->telefone,
+                ],
+                'cartao_fidelidade' => $snapshot,
+            ],
+        ]);
+    }
+
+    public function resgatar(Request $request, int $id, int $clienteId): JsonResponse
+    {
+        $empresa = $this->resolveOwnedEmpresa(Auth::user());
+        if (!$empresa) {
+            return $this->empresaNaoEncontrada();
+        }
+
+        $card = CartaoFidelidade::query()->find($id);
+        if (!$card) {
+            return $this->cartaoNaoEncontrado();
+        }
+
+        $customer = User::query()->find($clienteId);
+        if (!$customer) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cliente nao encontrado.',
+            ], 404);
+        }
+
+        if ($this->normalizePerfil($customer->perfil ?? $customer->role ?? $customer->tipo ?? null) !== 'cliente') {
+            return response()->json([
+                'success' => false,
+                'message' => 'A fidelidade so pode ser operada para clientes.',
+            ], 422);
+        }
+
+        try {
+            $snapshot = $this->cartaoService->redeemReward($empresa, $card, $customer, Auth::user());
+        } catch (DomainException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 409);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Recompensa validada com sucesso.',
+            'data' => [
+                'cliente' => [
+                    'id' => $customer->id,
+                    'nome' => $customer->name,
+                    'telefone' => $customer->telefone,
+                ],
+                'cartao_fidelidade' => $snapshot,
+            ],
+        ]);
+    }
+
+    private function validatePayload(Request $request, bool $partial = false): array
+    {
+        $rules = [
+            'titulo' => ($partial ? 'sometimes' : 'required') . '|string|max:80',
+            'descricao' => 'nullable|string|max:280',
+            'regra_ganho' => 'nullable|string|max:160',
+            'pontos_por_visita' => 'nullable|integer|min:1|max:100',
+            'pontos_necessarios' => 'nullable|integer|min:1|max:500',
+            'recompensa_descricao' => 'nullable|string|max:280',
+            'data_expiracao' => 'nullable|date',
+            'ativo' => 'sometimes|boolean',
+        ];
+
+        return $request->validate($rules);
+    }
+
+    private function canAccessCard(User $user, CartaoFidelidade $card): bool
+    {
+        if ($this->normalizePerfil($user->perfil ?? $user->role ?? $user->tipo ?? null) !== 'empresa') {
+            return false;
+        }
+
+        $empresa = $this->resolveOwnedEmpresa($user);
+
+        return $empresa?->id === $card->empresa_id;
+    }
+
+    private function resolveOwnedEmpresa(User $user): ?Empresa
+    {
+        if (method_exists($user, 'empresa')) {
+            $empresa = $user->empresa()->first();
+            if ($empresa instanceof Empresa) {
+                return $empresa;
             }
         }
 
-        $cartao->update($validator->validated());
+        $query = Empresa::query();
+        if (isset($user->empresa_id) && is_numeric($user->empresa_id)) {
+            $empresa = (clone $query)->find((int) $user->empresa_id);
+            if ($empresa instanceof Empresa) {
+                return $empresa;
+            }
+        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Cartão atualizado com sucesso',
-            'data' => $cartao
-        ]);
+        if (Schema::hasColumn('empresas', 'owner_id')) {
+            $empresa = (clone $query)->where('owner_id', $user->id)->first();
+            if ($empresa instanceof Empresa) {
+                return $empresa;
+            }
+        }
+
+        if (Schema::hasColumn('empresas', 'user_id')) {
+            $empresa = (clone $query)->where('user_id', $user->id)->first();
+            if ($empresa instanceof Empresa) {
+                return $empresa;
+            }
+        }
+
+        return null;
     }
 
-    /**
-     * Deletar cartão de fidelidade
-     */
-    public function destroy($id)
+    private function normalizePerfil(?string $perfil): ?string
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'empresa') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas empresas podem deletar cartões'
-            ], 403);
+        if (!$perfil) {
+            return null;
         }
 
-        $empresa = $user->empresa;
-        $cartao = CartaoFidelidade::find($id);
-        
-        if (!$cartao) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cartão não encontrado'
-            ], 404);
+        $value = strtolower(trim($perfil));
+        if (in_array($value, ['empresa', 'estabelecimento', 'parceiro', 'lojista'], true)) {
+            return 'empresa';
         }
 
-        if ($cartao->empresa_id !== $empresa->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Você não tem permissão para deletar este cartão'
-            ], 403);
+        if (in_array($value, ['cliente', 'customer'], true)) {
+            return 'cliente';
         }
 
-        $cartao->delete();
+        if (in_array($value, ['admin', 'administrador', 'master', 'admin_master', 'administrador_master'], true)) {
+            return 'admin';
+        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Cartão deletado com sucesso'
-        ]);
+        return $value;
     }
 
-    /**
-     * Adicionar ponto ao cartão do cliente
-     */
-    public function adicionarPonto(Request $request)
+    private function forbidden(string $message): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'empresa') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas empresas podem adicionar pontos'
-            ], 403);
-        }
-
-        $empresa = $user->empresa;
-
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
-            'cartao_fidelidade_id' => 'required|exists:cartoes_fidelidade,id'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // Verificar se o cartão pertence à empresa
-        $cartao = CartaoFidelidade::find($request->cartao_fidelidade_id);
-        if ($cartao->empresa_id !== $empresa->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Este cartão não pertence à sua empresa'
-            ], 403);
-        }
-
-        // Verificar se o cliente está inscrito
-        $inscricao = InscricaoEmpresa::where('user_id', $request->user_id)
-            ->where('empresa_id', $empresa->id)
-            ->first();
-
-        if (!$inscricao) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cliente não está inscrito na empresa'
-            ], 404);
-        }
-
-        // Buscar ou criar progresso
-        $progresso = CartaoFidelidadeProgresso::firstOrCreate(
-            [
-                'user_id' => $request->user_id,
-                'cartao_fidelidade_id' => $request->cartao_fidelidade_id
-            ],
-            [
-                'pontos_atuais' => 0,
-                'vezes_resgatado' => 0
-            ]
-        );
-
-        // Adicionar ponto
-        $progresso->pontos_atuais += 1;
-        $progresso->ultimo_ponto = now();
-
-        // Verificar se completou o cartão
-        if ($progresso->pontos_atuais >= $cartao->meta_pontos) {
-            $progresso->vezes_resgatado += 1;
-            $progresso->pontos_atuais = 0; // Reset
-            
-            $mensagem = 'Parabéns! Cliente completou o cartão de fidelidade!';
-            $completou = true;
-        } else {
-            $mensagem = 'Ponto adicionado com sucesso!';
-            $completou = false;
-        }
-
-        $progresso->save();
-
-        // Atualizar ultima_visita
-        $inscricao->update(['ultima_visita' => now()]);
-
         return response()->json([
-            'success' => true,
-            'message' => $mensagem,
-            'data' => [
-                'progresso' => $progresso,
-                'cartao' => $cartao,
-                'completou' => $completou,
-                'pontos_atuais' => $progresso->pontos_atuais,
-                'meta_pontos' => $cartao->meta_pontos,
-                'vezes_resgatado' => $progresso->vezes_resgatado
-            ]
-        ]);
+            'success' => false,
+            'message' => $message,
+        ], 403);
     }
 
-    /**
-     * Listar progresso do cliente em todos os cartões
-     */
-    public function meuProgresso()
+    private function empresaNaoEncontrada(): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'cliente') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas clientes podem ver progresso'
-            ], 403);
-        }
-
-        $progressos = CartaoFidelidadeProgresso::with(['cartaoFidelidade.empresa'])
-            ->where('user_id', $user->id)
-            ->get();
-
         return response()->json([
-            'success' => true,
-            'data' => $progressos
-        ]);
+            'success' => false,
+            'message' => 'Empresa nao encontrada.',
+        ], 404);
     }
 
-    /**
-     * Ver progresso do cliente em uma empresa específica
-     */
-    public function progressoPorEmpresa($empresa_id)
+    private function cartaoNaoEncontrado(): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'cliente') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas clientes podem ver progresso'
-            ], 403);
-        }
-
-        // Verificar inscrição
-        $inscricao = InscricaoEmpresa::where('user_id', $user->id)
-            ->where('empresa_id', $empresa_id)
-            ->first();
-
-        if (!$inscricao) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Você não está inscrito nesta empresa'
-            ], 404);
-        }
-
-        // Buscar cartões ativos da empresa
-        $cartoes = CartaoFidelidade::where('empresa_id', $empresa_id)
-            ->where('ativo', true)
-            ->get();
-
-        // Buscar progresso do cliente
-        $progressos = CartaoFidelidadeProgresso::where('user_id', $user->id)
-            ->whereIn('cartao_fidelidade_id', $cartoes->pluck('id'))
-            ->get()
-            ->keyBy('cartao_fidelidade_id');
-
-        // Combinar cartões com progresso
-        $resultado = $cartoes->map(function ($cartao) use ($progressos) {
-            $progresso = $progressos->get($cartao->id);
-            
-            return [
-                'cartao' => $cartao,
-                'progresso' => $progresso ? [
-                    'pontos_atuais' => $progresso->pontos_atuais,
-                    'vezes_resgatado' => $progresso->vezes_resgatado,
-                    'ultimo_ponto' => $progresso->ultimo_ponto,
-                    'percentual' => round(($progresso->pontos_atuais / $cartao->meta_pontos) * 100, 2)
-                ] : [
-                    'pontos_atuais' => 0,
-                    'vezes_resgatado' => 0,
-                    'ultimo_ponto' => null,
-                    'percentual' => 0
-                ]
-            ];
-        });
-
         return response()->json([
-            'success' => true,
-            'data' => $resultado
-        ]);
+            'success' => false,
+            'message' => 'Cartao fidelidade nao encontrado.',
+        ], 404);
     }
 }

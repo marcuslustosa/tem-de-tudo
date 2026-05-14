@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class BonusAdesao extends Model
 {
     use HasFactory;
+
+    public const TYPE_ADHESION_BONUS = 'adhesion_bonus';
 
     protected $table = 'bonus_adesao';
 
@@ -18,30 +21,50 @@ class BonusAdesao extends Model
         'tipo_desconto',
         'valor_desconto',
         'imagem',
-        'ativo'
+        'ativo',
+        'data_expiracao',
+        'limite_por_cliente',
+        'tipo',
+        'ordem',
+        'termos',
     ];
 
     protected $casts = [
         'valor_desconto' => 'decimal:2',
         'ativo' => 'boolean',
+        'data_expiracao' => 'datetime',
+        'limite_por_cliente' => 'integer',
+        'ordem' => 'integer',
     ];
 
-    /**
-     * Relacionamento com Empresa
-     */
     public function empresa()
     {
         return $this->belongsTo(Empresa::class);
     }
 
-    /**
-     * Formatar desconto para exibição
-     */
+    public function resgates()
+    {
+        return $this->hasMany(BonusAdesaoResgate::class, 'bonus_id');
+    }
+
     public function getDescontoFormatadoAttribute()
     {
         if ($this->tipo_desconto === 'porcentagem') {
             return $this->valor_desconto . '%';
         }
-        return 'R$ ' . number_format($this->valor_desconto, 2, ',', '.');
+
+        return 'R$ ' . number_format((float) $this->valor_desconto, 2, ',', '.');
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->data_expiracao instanceof Carbon
+            ? $this->data_expiracao->isPast()
+            : false;
+    }
+
+    public function isOperationallyAvailable(): bool
+    {
+        return (bool) $this->ativo && !$this->isExpired();
     }
 }

@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class QRCode extends Model
 {
     use HasFactory;
+
+    public const COMPANY_CODE_PREFIX = 'COMPANY_V1_';
+    public const LEGACY_CLIENT_CODE_PREFIX = 'CLIENT_LEGACY_';
 
     protected $table = 'qr_codes';
 
@@ -19,7 +23,8 @@ class QRCode extends Model
         'active',
         'active_offers',
         'usage_count',
-        'last_used_at'
+        'last_used_at',
+        'qr_path'
     ];
 
     protected $casts = [
@@ -65,9 +70,22 @@ class QRCode extends Model
     /**
      * Gerar código único para QR Code
      */
-    public static function gerarCodigoUnico($empresaId)
+    public static function gerarCodigoUnico($typeOrEmpresaId = null, ?int $ownerId = null): string
     {
-        // Formato: EMP-ID-TIMESTAMP-RANDOM
-        return 'QR-' . $empresaId . '-' . time() . '-' . strtoupper(substr(md5(uniqid()), 0, 6));
+        $type = 'empresa';
+
+        if (is_string($typeOrEmpresaId) && !is_numeric($typeOrEmpresaId)) {
+            $type = strtolower($typeOrEmpresaId);
+        }
+
+        $prefix = $type === 'cliente'
+            ? self::LEGACY_CLIENT_CODE_PREFIX
+            : self::COMPANY_CODE_PREFIX;
+
+        do {
+            $code = $prefix . Str::upper(Str::random(40));
+        } while (self::query()->where('code', $code)->exists());
+
+        return $code;
     }
 }

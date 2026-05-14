@@ -42,6 +42,24 @@ class CheckCompanySubscription
             ], 403);
         }
 
+        $company = Empresa::query()->find($companyId);
+        if (!$company) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Estabelecimento vinculado nao encontrado.',
+                'error' => 'company_not_found',
+            ], 403);
+        }
+
+        if ($company->operationalStatus() !== Empresa::STATUS_ACTIVE || !(bool) $company->ativo) {
+            return response()->json([
+                'success' => false,
+                'message' => $this->blockedCompanyMessage($company),
+                'error' => 'company_status_blocked',
+                'company_status' => $company->operationalStatus(),
+            ], 403);
+        }
+
         try {
             $check = $this->billingService->canOperate($companyId);
         } catch (\Throwable $e) {
@@ -79,6 +97,16 @@ class CheckCompanySubscription
         }
 
         return $response;
+    }
+
+    private function blockedCompanyMessage(Empresa $company): string
+    {
+        return match ($company->operationalStatus()) {
+            Empresa::STATUS_PENDING => 'Cadastro da empresa pendente de aprovacao administrativa.',
+            Empresa::STATUS_REJECTED => 'Cadastro da empresa rejeitado. Entre em contato com o suporte.',
+            Empresa::STATUS_SUSPENDED => 'Empresa suspensa. Regularize a situacao para voltar a operar.',
+            default => 'Empresa indisponivel para operacao no momento.',
+        };
     }
 
     private function resolveCompanyId(User $user): ?int

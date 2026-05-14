@@ -2,378 +2,489 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Empresa;
 use App\Models\Promocao;
-use App\Models\InscricaoEmpresa;
-use App\Models\NotificacaoPush;
-use App\Jobs\SendWebPushJob;
+use App\Models\User;
+use App\Services\BonusAdesaoService;
+use App\Services\CartaoFidelidadeService;
+use App\Services\PromocaoInstantaneaService;
+use DomainException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
 
 class PromocaoController extends Controller
 {
-    /**
-     * Listar promoções da empresa
-     */
-    public function index()
+    public function __construct(
+        private readonly PromocaoInstantaneaService $promocaoService,
+        private readonly BonusAdesaoService $bonusService,
+        private readonly CartaoFidelidadeService $cartaoService
+    ) {
+    }
+
+    public function index(): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'empresa') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas empresas podem acessar promoções'
-            ], 403);
-        }
-
-        $empresa = $user->empresa;
+        $empresa = $this->resolveOwnedEmpresa(Auth::user());
         if (!$empresa) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Empresa não encontrada'
-            ], 404);
+            return $this->empresaNaoEncontrada();
         }
 
-        $promocoes = Promocao::where('empresa_id', $empresa->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $promocoes = $this->promocaoService->companyPromotions($empresa)
+            ->get()
+            ->map(fn (Promocao $promocao) => $this->promocaoService->serializePromotion($promocao))
+            ->values();
 
         return response()->json([
             'success' => true,
-            'data' => $promocoes
+            'data' => $promocoes,
+            'meta' => [
+                'weekly_limit' => $this->promocaoService->weeklySendStatus($empresa),
+            ],
         ]);
     }
 
-    /**
-     * Criar nova promoção
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'empresa') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas empresas podem criar promoções'
-            ], 403);
-        }
-
-        $empresa = $user->empresa;
+        $empresa = $this->resolveOwnedEmpresa(Auth::user());
         if (!$empresa) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Empresa não encontrada'
-            ], 404);
+            return $this->empresaNaoEncontrada();
         }
 
-        $validator = Validator::make($request->all(), [
-            'titulo' => 'required|string|max:100',
-            'descricao' => 'required|string|max:500',
-            'desconto' => 'required|numeric|min:0|max:100', // % de desconto
-            'pontos_necessarios' => 'required|integer|min:10', // Mínimo 10 pontos
-            'data_inicio' => 'nullable|date|after_or_equal:today',
-            'validade' => 'nullable|date|after_or_equal:data_inicio',
-            'imagem' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'ativo' => 'boolean'
+        $validated = $request->validate([
+            'titulo' => 'required|string|max:80',
+            'descricao' => 'required|string|max:240',
+            'validade' => 'nullable|date',
+            'notification_title' => 'nullable|string|max:80',
+            'notification_body' => 'nullable|string|max:120',
+            'ativo' => 'sometimes|boolean',
+            'desconto' => 'nullable|numeric|min:0|max:100',
+            'tipo_recompensa' => 'nullable|string|max:60',
+            'tipo' => 'nullable|string|max:60',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'imagem_url' => 'required_without:imagem|string|max:2048',
         ]);
 
-        if ($validator->fails()) {
+        $payload = $this->buildPromotionPayload($request, $validated);
+
+        try {
+            $promocao = $this->promocaoService->savePromotion($empresa, $payload);
+        } catch (DomainException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $validator->errors()
+                'message' => $e->getMessage(),
             ], 422);
         }
 
-        $data = $validator->validated();
-        $data['empresa_id'] = $empresa->id;
-        
-        // Status baseado na validade
-        if (isset($data['validade']) && $data['validade'] < now()->toDateString()) {
-            $data['status'] = 'expirada';
-            $data['ativo'] = false;
-        } else {
-            $data['status'] = 'ativa';
-        }
-
-        // Upload obrigatório da imagem
-        if ($request->hasFile('imagem')) {
-            $path = $request->file('imagem')->store('promocoes', 'public');
-            $data['imagem'] = $path;
-        }
-
-        $promocao = Promocao::create($data);
-
         return response()->json([
             'success' => true,
-            'message' => 'Promoção criada com sucesso',
-            'data' => $promocao
+            'message' => 'Promocao instantanea salva com sucesso.',
+            'data' => $this->promocaoService->serializePromotion($promocao),
         ], 201);
     }
 
-    /**
-     * Obter detalhes de uma promoção
-     */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
-        $promocao = Promocao::with('empresa')->find($id);
-        
+        $promocao = Promocao::query()->find($id);
         if (!$promocao) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Promoção não encontrada'
-            ], 404);
+            return $this->promocaoNaoEncontrada();
+        }
+
+        if (!$this->canAccessPromotion(Auth::user(), $promocao)) {
+            return $this->forbidden('Voce nao pode visualizar esta promocao.');
         }
 
         return response()->json([
             'success' => true,
-            'data' => $promocao
+            'data' => $this->promocaoService->serializePromotion($promocao),
         ]);
     }
 
-    /**
-     * Atualizar promoção
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'empresa') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas empresas podem atualizar promoções'
-            ], 403);
-        }
-
-        $empresa = $user->empresa;
-        $promocao = Promocao::find($id);
-        
+        $promocao = Promocao::query()->find($id);
         if (!$promocao) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Promoção não encontrada'
-            ], 404);
+            return $this->promocaoNaoEncontrada();
         }
 
-        if ($promocao->empresa_id !== $empresa->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Você não tem permissão para atualizar esta promoção'
-            ], 403);
+        if (!$this->canAccessPromotion(Auth::user(), $promocao)) {
+            return $this->forbidden('Voce nao pode alterar esta promocao.');
         }
 
-        $validator = Validator::make($request->all(), [
-            'titulo' => 'sometimes|string|max:100',
-            'descricao' => 'sometimes|string|max:500',
-            'imagem' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'ativo' => 'sometimes|boolean'
+        $validated = $request->validate([
+            'titulo' => 'sometimes|string|max:80',
+            'descricao' => 'sometimes|string|max:240',
+            'validade' => 'nullable|date',
+            'notification_title' => 'nullable|string|max:80',
+            'notification_body' => 'nullable|string|max:120',
+            'ativo' => 'sometimes|boolean',
+            'desconto' => 'nullable|numeric|min:0|max:100',
+            'tipo_recompensa' => 'nullable|string|max:60',
+            'tipo' => 'nullable|string|max:60',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'imagem_url' => 'nullable|string|max:2048',
+            'remover_imagem' => 'sometimes|boolean',
         ]);
 
-        if ($validator->fails()) {
+        $oldImage = $promocao->imagem;
+        $payload = $this->buildPromotionPayload($request, $validated, $promocao);
+
+        try {
+            $updated = $this->promocaoService->savePromotion($promocao->empresa, $payload, $promocao);
+        } catch (DomainException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $validator->errors()
+                'message' => $e->getMessage(),
             ], 422);
         }
 
-        $data = $validator->validated();
-
-        // Upload de nova imagem
-        if ($request->hasFile('imagem')) {
-            if ($promocao->imagem) {
-                Storage::disk('public')->delete($promocao->imagem);
-            }
-            $path = $request->file('imagem')->store('promocoes', 'public');
-            $data['imagem'] = $path;
+        if (($payload['imagem'] ?? null) && $oldImage && $oldImage !== $updated->imagem) {
+            $this->deleteStoredImageIfNeeded($oldImage);
         }
-
-        $promocao->update($data);
 
         return response()->json([
             'success' => true,
-            'message' => 'Promoção atualizada com sucesso',
-            'data' => $promocao
+            'message' => 'Promocao instantanea atualizada com sucesso.',
+            'data' => $this->promocaoService->serializePromotion($updated),
         ]);
     }
 
-    /**
-     * Deletar promoção
-     */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'empresa') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas empresas podem deletar promoções'
-            ], 403);
-        }
-
-        $empresa = $user->empresa;
-        $promocao = Promocao::find($id);
-        
+        $promocao = Promocao::query()->find($id);
         if (!$promocao) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Promoção não encontrada'
-            ], 404);
+            return $this->promocaoNaoEncontrada();
         }
 
-        if ($promocao->empresa_id !== $empresa->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Você não tem permissão para deletar esta promoção'
-            ], 403);
+        if (!$this->canAccessPromotion(Auth::user(), $promocao)) {
+            return $this->forbidden('Voce nao pode remover esta promocao.');
         }
 
-        // Deletar imagem
-        if ($promocao->imagem) {
-            Storage::disk('public')->delete($promocao->imagem);
-        }
-
-        $promocao->delete();
+        $this->promocaoService->deletePromotion($promocao);
 
         return response()->json([
             'success' => true,
-            'message' => 'Promoção deletada com sucesso'
+            'message' => 'Promocao removida com sucesso.',
         ]);
     }
 
-    /**
-     * Enviar push notification de promoção para todos os clientes inscritos
-     */
-    public function enviarPush($id)
+    public function toggle(Request $request, int $id): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'empresa') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas empresas podem enviar promoções'
-            ], 403);
-        }
-
-        $empresa = $user->empresa;
-        $promocao = Promocao::find($id);
-        
+        $promocao = Promocao::query()->find($id);
         if (!$promocao) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Promoção não encontrada'
-            ], 404);
+            return $this->promocaoNaoEncontrada();
         }
 
-        if ($promocao->empresa_id !== $empresa->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Você não tem permissão para enviar esta promoção'
-            ], 403);
+        if (!$this->canAccessPromotion(Auth::user(), $promocao)) {
+            return $this->forbidden('Voce nao pode alterar esta promocao.');
         }
 
-        // Buscar todos os clientes inscritos
-        $inscricoes = InscricaoEmpresa::where('empresa_id', $empresa->id)->get();
-
-        if ($inscricoes->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Nenhum cliente inscrito para receber a promoção'
-            ], 400);
-        }
-
-        $enviados = 0;
-
-        foreach ($inscricoes as $inscricao) {
-            // Criar notificação push
-            NotificacaoPush::create([
-                'user_id' => $inscricao->user_id,
-                'empresa_id' => $empresa->id,
-                'tipo' => 'promocao',
-                'titulo' => $promocao->titulo,
-                'mensagem' => $promocao->descricao,
-                'imagem' => $promocao->imagem,
-                'enviado' => false, // Será processado por job/cron
-                'data_envio' => null
-            ]);
-
-            $enviados++;
-        }
-
-        // Atualizar promoção
-        $promocao->update([
-            'data_envio' => now(),
-            'total_envios' => $promocao->total_envios + $enviados
+        $validated = $request->validate([
+            'ativo' => 'sometimes|boolean',
         ]);
 
-        // Disparar push para todos os inscritos
-        $userIds = $inscricoes->pluck('user_id')->values()->all();
+        $payload = [
+            'ativo' => array_key_exists('ativo', $validated)
+                ? (bool) $validated['ativo']
+                : !(bool) $promocao->ativo,
+        ];
+
         try {
-            SendWebPushJob::dispatch(
-                title: "🎉 {$empresa->nome} tem uma promoção para você!",
-                body: $promocao->titulo,
-                data: ['type' => 'promocao', 'empresa_id' => $empresa->id, 'url' => '/parceiros.html'],
-                userIds: $userIds
-            );
-        } catch (\Exception $e) {
-            Log::warning('Erro ao enviar push de promoção', ['promocao_id' => $promocao->id, 'error' => $e->getMessage()]);
+            $updated = $this->promocaoService->savePromotion($promocao->empresa, $payload, $promocao);
+        } catch (DomainException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
         }
 
         return response()->json([
             'success' => true,
-            'message' => "Promoção enviada para {$enviados} cliente(s)!",
-            'data' => [
-                'promocao' => $promocao,
-                'total_envios' => $enviados
-            ]
+            'message' => $updated->ativo
+                ? 'Promocao ativada com sucesso.'
+                : 'Promocao pausada com sucesso.',
+            'data' => $this->promocaoService->serializePromotion($updated),
         ]);
     }
 
-    /**
-     * Listar promoções de uma empresa (para clientes)
-     */
-    public function listarPorEmpresa($empresa_id)
+    public function ativar(int $id): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'cliente') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas clientes podem listar promoções'
-            ], 403);
+        return $this->toggleWithState($id, true);
+    }
+
+    public function pausar(int $id): JsonResponse
+    {
+        return $this->toggleWithState($id, false);
+    }
+
+    public function enviar(int $id): JsonResponse
+    {
+        $empresa = $this->resolveOwnedEmpresa(Auth::user());
+        if (!$empresa) {
+            return $this->empresaNaoEncontrada();
         }
 
-        // Verificar se está inscrito
-        $inscricao = InscricaoEmpresa::where('user_id', $user->id)
-            ->where('empresa_id', $empresa_id)
-            ->first();
-
-        if (!$inscricao) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Você não está inscrito nesta empresa'
-            ], 404);
+        $promocao = Promocao::query()->find($id);
+        if (!$promocao) {
+            return $this->promocaoNaoEncontrada();
         }
 
-        // Buscar promoções ativas e válidas
-        $promocoes = Promocao::where('empresa_id', $empresa_id)
-            ->where('ativo', true)
-            ->where(function($query) {
-                $query->whereNull('validade')
-                      ->orWhere('validade', '>=', now()->toDateString());
-            })
-            ->where(function($query) {
-                $query->whereNull('data_inicio')
-                      ->orWhere('data_inicio', '<=', now()->toDateString());
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
+        try {
+            $result = $this->promocaoService->sendPromotion($empresa, $promocao, Auth::user());
+        } catch (DomainException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 409);
+        }
 
         return response()->json([
             'success' => true,
-            'data' => $promocoes
+            'message' => 'Promocao enviada para clientes vinculados com processamento individual por subscription.',
+            'data' => $result['promocao'],
+            'meta' => [
+                'weekly_limit' => $result['weekly_limit'],
+                'delivery' => $result['delivery'],
+            ],
         ]);
+    }
+
+    public function validar(Request $request, int $id): JsonResponse
+    {
+        $validated = $request->validate([
+            'cliente_id' => 'required|integer|min:1',
+        ]);
+
+        $empresa = $this->resolveOwnedEmpresa(Auth::user());
+        if (!$empresa) {
+            return $this->empresaNaoEncontrada();
+        }
+
+        $promocao = Promocao::query()->find($id);
+        if (!$promocao) {
+            return $this->promocaoNaoEncontrada();
+        }
+
+        $customer = User::query()->find((int) $validated['cliente_id']);
+        if (!$customer) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cliente nao encontrado.',
+            ], 404);
+        }
+
+        if ($this->normalizePerfil($customer->perfil ?? $customer->role ?? $customer->tipo ?? null) !== 'cliente') {
+            return response()->json([
+                'success' => false,
+                'message' => 'A promocao so pode ser validada para clientes.',
+            ], 422);
+        }
+
+        try {
+            $this->promocaoService->validatePromotion($empresa, $promocao, $customer, Auth::user());
+            $lookup = $this->bonusService->lookupCustomer($empresa, $customer);
+            $lookup = $this->attachLoyaltySnapshot($empresa, $lookup);
+            $lookup = $this->attachPromotionSnapshot($empresa, $customer, $lookup);
+        } catch (DomainException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 409);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Promocao validada com sucesso.',
+            'data' => $lookup,
+        ]);
+    }
+
+    private function toggleWithState(int $id, bool $active): JsonResponse
+    {
+        $promocao = Promocao::query()->find($id);
+        if (!$promocao) {
+            return $this->promocaoNaoEncontrada();
+        }
+
+        if (!$this->canAccessPromotion(Auth::user(), $promocao)) {
+            return $this->forbidden('Voce nao pode alterar esta promocao.');
+        }
+
+        try {
+            $updated = $this->promocaoService->savePromotion($promocao->empresa, [
+                'ativo' => $active,
+            ], $promocao);
+        } catch (DomainException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $active ? 'Promocao ativada.' : 'Promocao pausada.',
+            'data' => $this->promocaoService->serializePromotion($updated),
+        ]);
+    }
+
+    private function buildPromotionPayload(Request $request, array $validated, ?Promocao $promocao = null): array
+    {
+        $payload = $validated;
+
+        if ($request->boolean('remover_imagem') && !$request->hasFile('imagem') && !$request->filled('imagem_url')) {
+            $payload['imagem'] = null;
+        } elseif ($request->hasFile('imagem')) {
+            $payload['imagem'] = $request->file('imagem')->store('promocoes', 'public');
+        } elseif ($request->filled('imagem_url')) {
+            $payload['imagem'] = trim((string) $request->input('imagem_url'));
+        } elseif ($promocao) {
+            $payload['imagem'] = $promocao->imagem;
+        }
+
+        return $payload;
+    }
+
+    private function canAccessPromotion(User $user, Promocao $promocao): bool
+    {
+        if ($this->normalizePerfil($user->perfil ?? $user->role ?? $user->tipo ?? null) !== 'empresa') {
+            return false;
+        }
+
+        $empresa = $this->resolveOwnedEmpresa($user);
+
+        return $empresa?->id === $promocao->empresa_id;
+    }
+
+    private function resolveOwnedEmpresa(User $user): ?Empresa
+    {
+        if (method_exists($user, 'empresa')) {
+            $empresa = $user->empresa()->first();
+            if ($empresa instanceof Empresa) {
+                return $empresa;
+            }
+        }
+
+        $query = Empresa::query();
+        if (isset($user->empresa_id) && is_numeric($user->empresa_id)) {
+            $empresa = (clone $query)->find((int) $user->empresa_id);
+            if ($empresa instanceof Empresa) {
+                return $empresa;
+            }
+        }
+
+        if (Schema::hasColumn('empresas', 'owner_id')) {
+            $empresa = (clone $query)->where('owner_id', $user->id)->first();
+            if ($empresa instanceof Empresa) {
+                return $empresa;
+            }
+        }
+
+        if (Empresa::query()->whereKey($user->id)->exists()) {
+            return Empresa::query()->find((int) $user->id);
+        }
+
+        return null;
+    }
+
+    private function attachLoyaltySnapshot(Empresa $empresa, array $lookup): array
+    {
+        $customerId = (int) ($lookup['cliente']['id'] ?? 0);
+        if ($customerId <= 0) {
+            $lookup['cartao_fidelidade'] = [
+                'status' => 'unavailable',
+                'message' => 'Cliente nao identificado para consulta da fidelidade.',
+                'card' => null,
+                'progress' => null,
+                'history_summary' => [],
+                'can_add_point' => false,
+                'can_redeem' => false,
+            ];
+
+            return $lookup;
+        }
+
+        $customer = User::query()->find($customerId);
+        if (!$customer) {
+            $lookup['cartao_fidelidade'] = [
+                'status' => 'unavailable',
+                'message' => 'Cliente nao encontrado para consulta da fidelidade.',
+                'card' => null,
+                'progress' => null,
+                'history_summary' => [],
+                'can_add_point' => false,
+                'can_redeem' => false,
+            ];
+
+            return $lookup;
+        }
+
+        $lookup['cartao_fidelidade'] = $this->cartaoService->customerCardSnapshot($empresa, $customer);
+
+        return $lookup;
+    }
+
+    private function attachPromotionSnapshot(Empresa $empresa, User $customer, array $lookup): array
+    {
+        $lookup['promocoes'] = $this->promocaoService->customerPromotions($empresa, $customer);
+
+        return $lookup;
+    }
+
+    private function deleteStoredImageIfNeeded(?string $path): void
+    {
+        $path = trim((string) $path);
+        if ($path === '' || str_starts_with($path, 'http://') || str_starts_with($path, 'https://') || str_starts_with($path, '/storage/')) {
+            return;
+        }
+
+        Storage::disk('public')->delete($path);
+    }
+
+    private function normalizePerfil(?string $perfil): ?string
+    {
+        if (!$perfil) {
+            return null;
+        }
+
+        $value = strtolower(trim($perfil));
+        if (in_array($value, ['admin', 'administrador', 'master', 'admin_master', 'administrador_master'], true)) {
+            return 'admin';
+        }
+
+        if (in_array($value, ['empresa', 'estabelecimento', 'parceiro', 'lojista'], true)) {
+            return 'empresa';
+        }
+
+        if (in_array($value, ['cliente', 'customer'], true)) {
+            return 'cliente';
+        }
+
+        return $value;
+    }
+
+    private function forbidden(string $message): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+        ], 403);
+    }
+
+    private function empresaNaoEncontrada(): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'Empresa nao encontrada para este usuario.',
+        ], 404);
+    }
+
+    private function promocaoNaoEncontrada(): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'Promocao nao encontrada.',
+        ], 404);
     }
 }

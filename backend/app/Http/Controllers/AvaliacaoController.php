@@ -2,236 +2,255 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Avaliacao;
 use App\Models\Empresa;
-use App\Models\InscricaoEmpresa;
+use App\Models\User;
+use App\Services\AvaliacaoService;
+use DomainException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 
 class AvaliacaoController extends Controller
 {
-    /**
-     * Criar avaliação para uma empresa
-     */
-    public function store(Request $request)
+    public function __construct(
+        private readonly AvaliacaoService $avaliacaoService
+    ) {
+    }
+
+    public function listarPorEmpresa(Request $request, int $empresaId): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'cliente') {
+        $empresa = Empresa::query()->publiclyVisible()->find($empresaId);
+        if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Apenas clientes podem avaliar empresas'
-            ], 403);
+                'message' => 'Empresa nao encontrada para avaliacoes.',
+            ], 404);
         }
-
-        $validator = Validator::make($request->all(), [
-            'empresa_id' => 'required|exists:empresas,id',
-            'estrelas' => 'required|integer|min:1|max:5',
-            'comentario' => 'nullable|string|max:500'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Dados inválidos',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        // Verificar se está inscrito
-        $inscricao = InscricaoEmpresa::where('user_id', $user->id)
-            ->where('empresa_id', $request->empresa_id)
-            ->first();
-
-        if (!$inscricao) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Você precisa estar inscrito na empresa para avaliá-la'
-            ], 403);
-        }
-
-        // Verificar se já avaliou
-        $avaliacaoExistente = Avaliacao::where('user_id', $user->id)
-            ->where('empresa_id', $request->empresa_id)
-            ->first();
-
-        if ($avaliacaoExistente) {
-            // Atualizar avaliação existente
-            $avaliacaoExistente->update([
-                'estrelas' => $request->estrelas,
-                'comentario' => $request->comentario
-            ]);
-
-            // Recalcular média
-            $this->atualizarMediaEmpresa($request->empresa_id);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Avaliação atualizada com sucesso',
-                'data' => $avaliacaoExistente
-            ]);
-        }
-
-        // Criar nova avaliação
-        $avaliacao = Avaliacao::create([
-            'user_id' => $user->id,
-            'empresa_id' => $request->empresa_id,
-            'estrelas' => $request->estrelas,
-            'comentario' => $request->comentario
-        ]);
-
-        // Atualizar média da empresa
-        $this->atualizarMediaEmpresa($request->empresa_id);
 
         return response()->json([
             'success' => true,
-            'message' => 'Avaliação criada com sucesso',
-            'data' => $avaliacao
+            'data' => $this->avaliacaoService->publicPayload(
+                $empresa,
+                (int) $request->input('limit', 10)
+            ),
+        ]);
+    }
+
+    public function store(Request $request, ?int $empresaId = null): JsonResponse
+    {
+        $customer = Auth::user();
+        if (!$customer instanceof User || $this->normalizePerfil($customer) !== 'cliente') {
+            return $this->forbidden('Apenas clientes podem avaliar empresas.');
+        }
+
+        $validated = $request->validate([
+            'empresa_id' => 'sometimes|integer|min:1',
+            'estrelas' => 'required|integer|min:1|max:5',
+            'comentario' => 'nullable|string|max:500',
+        ]);
+
+        $resolvedEmpresaId = $empresaId ?: (int) ($validated['empresa_id'] ?? 0);
+        $empresa = Empresa::query()->find($resolvedEmpresaId);
+        if (!$empresa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa nao encontrada.',
+            ], 404);
+        }
+
+        try {
+            $avaliacao = $this->avaliacaoService->createCustomerReview($empresa, $customer, $validated);
+        } catch (DomainException $e) {
+            return $this->domainErrorResponse($e);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Avaliacao registrada com sucesso.',
+            'data' => [
+                'avaliacao' => $this->avaliacaoService->serializeReview($avaliacao, includeCompany: true),
+                'summary' => $this->avaliacaoService->summary($empresa->fresh()),
+            ],
         ], 201);
     }
 
-    /**
-     * Listar avaliações de uma empresa
-     */
-    public function listarPorEmpresa($empresa_id)
+    public function updateMinha(Request $request, int $empresaId): JsonResponse
     {
-        $empresa = Empresa::find($empresa_id);
-        
+        $customer = Auth::user();
+        if (!$customer instanceof User || $this->normalizePerfil($customer) !== 'cliente') {
+            return $this->forbidden('Apenas clientes podem editar avaliacoes.');
+        }
+
+        $validated = $request->validate([
+            'estrelas' => 'required|integer|min:1|max:5',
+            'comentario' => 'nullable|string|max:500',
+        ]);
+
+        $empresa = Empresa::query()->find($empresaId);
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nao encontrada.',
             ], 404);
         }
 
-        $avaliacoes = Avaliacao::with('user:id,name')
-            ->where('empresa_id', $empresa_id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        try {
+            $avaliacao = $this->avaliacaoService->updateCustomerReview($empresa, $customer, $validated);
+        } catch (DomainException $e) {
+            return $this->domainErrorResponse($e);
+        }
 
         return response()->json([
             'success' => true,
+            'message' => 'Avaliacao atualizada com sucesso.',
             'data' => [
-                'empresa' => [
-                    'id' => $empresa->id,
-                    'nome' => $empresa->nome,
-                    'avaliacao_media' => $empresa->avaliacao_media,
-                    'total_avaliacoes' => $empresa->total_avaliacoes
-                ],
-                'avaliacoes' => $avaliacoes
-            ]
+                'avaliacao' => $this->avaliacaoService->serializeReview($avaliacao, includeCompany: true),
+                'summary' => $this->avaliacaoService->summary($empresa->fresh()),
+            ],
         ]);
     }
 
-    /**
-     * Obter minha avaliação de uma empresa
-     */
-    public function minhaAvaliacao($empresa_id)
+    public function minhasAvaliacoes(Request $request): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'cliente') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas clientes podem consultar avaliações'
-            ], 403);
+        $customer = Auth::user();
+        if (!$customer instanceof User || $this->normalizePerfil($customer) !== 'cliente') {
+            return $this->forbidden('Apenas clientes podem consultar suas avaliacoes.');
         }
 
-        $avaliacao = Avaliacao::where('user_id', $user->id)
-            ->where('empresa_id', $empresa_id)
-            ->first();
+        return response()->json([
+            'success' => true,
+            'data' => $this->avaliacaoService->customerPayload(
+                $customer,
+                $request->filled('empresa_id') ? (int) $request->input('empresa_id') : null
+            ),
+        ]);
+    }
+
+    public function empresaAvaliacoes(Request $request): JsonResponse
+    {
+        $user = Auth::user();
+        if (!$user instanceof User || $this->normalizePerfil($user) !== 'empresa') {
+            return $this->forbidden('Apenas empresas podem consultar avaliacoes recebidas.');
+        }
+
+        $empresa = $this->resolveOwnedEmpresa($user);
+        if (!$empresa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa nao encontrada.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $this->avaliacaoService->companyPayload(
+                $empresa,
+                (int) $request->input('limit', 50)
+            ),
+        ]);
+    }
+
+    public function minhaAvaliacao(int $empresaId): JsonResponse
+    {
+        $customer = Auth::user();
+        if (!$customer instanceof User || $this->normalizePerfil($customer) !== 'cliente') {
+            return $this->forbidden('Apenas clientes podem consultar sua avaliacao.');
+        }
+
+        $empresa = Empresa::query()->find($empresaId);
+        if (!$empresa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa nao encontrada.',
+            ], 404);
+        }
+
+        $avaliacao = $this->avaliacaoService->findCustomerReview($empresa, $customer);
 
         return response()->json([
             'success' => true,
             'data' => $avaliacao
+                ? $this->avaliacaoService->serializeReview($avaliacao, includeCompany: true)
+                : null,
         ]);
     }
 
-    /**
-     * Deletar minha avaliação
-     */
-    public function destroy($empresa_id)
+    public function estatisticas(int $empresaId): JsonResponse
     {
-        $user = Auth::user();
-        
-        if ($user->perfil !== 'cliente') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Apenas clientes podem deletar avaliações'
-            ], 403);
-        }
-
-        $avaliacao = Avaliacao::where('user_id', $user->id)
-            ->where('empresa_id', $empresa_id)
-            ->first();
-
-        if (!$avaliacao) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Avaliação não encontrada'
-            ], 404);
-        }
-
-        $avaliacao->delete();
-
-        // Recalcular média
-        $this->atualizarMediaEmpresa($empresa_id);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Avaliação deletada com sucesso'
-        ]);
-    }
-
-    /**
-     * Atualizar média de avaliações da empresa
-     */
-    private function atualizarMediaEmpresa($empresa_id)
-    {
-        $empresa = Empresa::find($empresa_id);
-        
-        if ($empresa) {
-            $empresa->atualizarAvaliacaoMedia();
-        }
-    }
-
-    /**
-     * Estatísticas de avaliações da empresa
-     */
-    public function estatisticas($empresa_id)
-    {
-        $empresa = Empresa::find($empresa_id);
-        
+        $empresa = Empresa::query()->publiclyVisible()->find($empresaId);
         if (!$empresa) {
             return response()->json([
                 'success' => false,
-                'message' => 'Empresa não encontrada'
+                'message' => 'Empresa nao encontrada.',
             ], 404);
-        }
-
-        // Contar avaliações por estrelas
-        $distribuicao = Avaliacao::where('empresa_id', $empresa_id)
-            ->select('estrelas', DB::raw('count(*) as total'))
-            ->groupBy('estrelas')
-            ->orderBy('estrelas', 'desc')
-            ->get()
-            ->pluck('total', 'estrelas');
-
-        // Preencher estrelas faltantes com zero
-        $distribuicaoCompleta = [];
-        for ($i = 5; $i >= 1; $i--) {
-            $distribuicaoCompleta[$i] = $distribuicao->get($i, 0);
         }
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'avaliacao_media' => $empresa->avaliacao_media,
-                'total_avaliacoes' => $empresa->total_avaliacoes,
-                'distribuicao' => $distribuicaoCompleta
-            ]
+            'data' => $this->avaliacaoService->summary($empresa),
         ]);
+    }
+
+    private function forbidden(string $message): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+        ], 403);
+    }
+
+    private function domainErrorResponse(DomainException $e): JsonResponse
+    {
+        $message = $e->getMessage();
+        $normalized = strtolower(trim($message));
+        $status = 422;
+
+        if (str_contains($normalized, 'ja avaliou')) {
+            $status = 409;
+        } elseif (str_contains($normalized, 'ainda nao avaliou')) {
+            $status = 404;
+        } elseif (
+            str_contains($normalized, 'apenas clientes') ||
+            str_contains($normalized, 'precisa estar vinculado') ||
+            str_contains($normalized, 'nao esta apta')
+        ) {
+            $status = 403;
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+        ], $status);
+    }
+
+    private function resolveOwnedEmpresa(User $user): ?Empresa
+    {
+        if (method_exists($user, 'empresa')) {
+            $empresa = $user->empresa()->first();
+            if ($empresa instanceof Empresa) {
+                return $empresa;
+            }
+        }
+
+        return Empresa::query()->where('owner_id', $user->id)->first();
+    }
+
+    private function normalizePerfil(User $user): string
+    {
+        $perfil = strtolower(trim((string) ($user->perfil ?? $user->role ?? $user->tipo ?? '')));
+
+        if (in_array($perfil, ['cliente', 'customer'], true)) {
+            return 'cliente';
+        }
+
+        if (in_array($perfil, ['empresa', 'company'], true)) {
+            return 'empresa';
+        }
+
+        if (in_array($perfil, ['admin', 'administrador'], true)) {
+            return 'admin';
+        }
+
+        return $perfil;
     }
 }

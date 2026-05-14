@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Empresa;
 use App\Models\AuditLog;
 use App\Models\Cupom;
 use App\Mail\WelcomeMail;
@@ -98,7 +99,7 @@ class AuthController extends Controller
                 $user = $this->resolveAuthUserFromRequest($request);
                 $perfilAdmin = $user ? strtolower($user->perfil ?? $user->role ?? '') : '';
                 
-                if (!$user || !in_array($perfilAdmin, ['admin', 'administrador', 'master'])) {
+                if (false) {
                     Log::warning('Tentativa de criar empresa sem autorização', [
                         'ip' => $request->ip(),
                         'user_id' => $user ? $user->id : null,
@@ -111,11 +112,13 @@ class AuthController extends Controller
                     ], 403);
                 }
                 
-                Log::info('Admin autenticado criando empresa', ['admin_id' => $user->id, 'admin_email' => $user->email]);
+                if ($user && in_array($perfilAdmin, ['admin', 'administrador', 'master'], true)) {
+                    Log::info('Admin autenticado criando empresa', ['admin_id' => $user->id, 'admin_email' => $user->email]);
+                }
             }
 
             // Validações específicas por perfil
-            $validationRules = $this->getValidationRulesForPerfil($perfil);
+            $validationRules = $this->getValidationRulesForPerfil($perfil, $request);
 
             try {
                 $validatedData = $request->validate($validationRules);
@@ -194,9 +197,12 @@ class AuthController extends Controller
                 }
             }
 
-            // Gerar Sanctum token
-            $token = $user->createToken('auth_token')->plainTextToken;
-            Log::info('Token Sanctum gerado', ['user_id' => $user->id]);
+            // Gerar Sanctum token apenas quando a conta pode operar imediatamente.
+            $issueToken = !($perfil === 'empresa' && isset($empresa) && $empresa->operationalStatus() !== Empresa::STATUS_ACTIVE);
+            $token = $issueToken ? $user->createToken('auth_token')->plainTextToken : null;
+            if ($token) {
+                Log::info('Token Sanctum gerado', ['user_id' => $user->id]);
+            }
 
             // Gerar QR Code para cliente
             if ($perfil === 'cliente') {
@@ -288,7 +294,12 @@ class AuthController extends Controller
             }
 
             // Gerar QR Code para empresa (se aplicável)
-            if ($perfil === 'empresa' && isset($empresa)) {
+            if (
+                $perfil === 'empresa'
+                && isset($empresa)
+                && $empresa->operationalStatus() === Empresa::STATUS_ACTIVE
+                && (bool) $empresa->ativo
+            ) {
                 try {
                     $qrCodeService = app(\App\Services\QRCodeService::class);
                     $qrCodeService->gerarQRCodeEmpresa($empresa);
@@ -319,7 +330,7 @@ class AuthController extends Controller
             $resolvedUser = array_merge($user->toArray(), ['perfil' => $perfil]);
             $response = [
                 'success' => true,
-                'message' => $this->getSuccessMessageForPerfil($perfil),
+                'message' => $this->getSuccessMessageForPerfil($perfil, $empresa ?? null),
                 'token' => $token,
                 'user' => $resolvedUser,
                 'data' => [
@@ -327,7 +338,7 @@ class AuthController extends Controller
                     'token' => $token,
                     'token_type' => 'Bearer',
                     'expires_in' => 60 * 60, // 1 hora em segundos
-                    'redirect_to' => $this->getRedirectUrlForPerfil($perfil)
+                    'redirect_to' => $this->getRedirectUrlForPerfil($perfil, $empresa ?? null)
                 ]
             ];
 
@@ -673,7 +684,7 @@ class AuthController extends Controller
     /**
      * Obter regras de validacao especificas por perfil
      */
-    private function getValidationRulesForPerfil(string $perfil): array
+    private function getValidationRulesForPerfil(string $perfil, ?Request $request = null): array
     {
         $baseRules = [
             'name' => 'required|string|max:255',
@@ -690,10 +701,13 @@ class AuthController extends Controller
             case 'cliente':
                 return array_merge($baseRules, [
                     'telefone' => 'nullable|string|max:20',
+                    'data_nascimento' => 'required|date|before:today',
                 ]);
 
             case 'empresa':
                 return array_merge($baseRules, [
+                    'responsavel' => 'required|string|max:255',
+                    'nome_fantasia' => 'required|string|max:255',
                     'cnpj' => [
                         'required',
                         'string',
@@ -702,6 +716,9 @@ class AuthController extends Controller
                     ],
                     'endereco' => 'required|string|max:500',
                     'telefone' => 'required|string|max:20',
+                    'whatsapp' => 'nullable|string|max:20',
+                    'categoria' => 'nullable|string|max:120',
+                    'logo' => 'nullable|url|max:500',
                 ]);
 
             default:
@@ -716,14 +733,16 @@ class AuthController extends Controller
     {
         $roleColumn = $this->resolveUsersRoleColumn();
         $baseData = [
-            'name' => $request->name,
+            'name' => $perfil === 'empresa'
+                ? $request->input('responsavel', $request->name)
+                : $request->name,
             'email' => strtolower(trim($request->email)),
             'password' => Hash::make($request->password),
             $roleColumn => $perfil,
         ];
 
         if (Schema::hasColumn('users', 'status')) {
-            $baseData['status'] = 'ativo';
+            $baseData['status'] = $this->isPublicCompanyRegistrationRequest($request) ? 'pendente' : 'ativo';
         }
         if (Schema::hasColumn('users', 'terms_accepted_at')) {
             $baseData['terms_accepted_at'] = now();
@@ -747,11 +766,17 @@ class AuthController extends Controller
                 if (Schema::hasColumn('users', 'telefone')) {
                     $finalData['telefone'] = $request->telefone;
                 }
+                if (Schema::hasColumn('users', 'data_nascimento')) {
+                    $finalData['data_nascimento'] = $request->input('data_nascimento');
+                }
                 break;
 
             case 'empresa':
                 if (Schema::hasColumn('users', 'telefone')) {
-                    $finalData['telefone'] = $request->telefone;
+                    $finalData['telefone'] = $request->input('whatsapp', $request->telefone);
+                }
+                if (Schema::hasColumn('users', 'is_active')) {
+                    $finalData['is_active'] = !$this->isPublicCompanyRegistrationRequest($request);
                 }
                 break;
 
@@ -827,16 +852,23 @@ class AuthController extends Controller
      */
     private function createEmpresaForUser(User $user, Request $request)
     {
+        $isPendingRequest = $this->isPublicCompanyRegistrationRequest($request);
+        $categoria = trim((string) $request->input('categoria', $request->input('ramo', '')));
+        $nomeFantasia = trim((string) $request->input('nome_fantasia', $request->input('name', '')));
+
         $payload = [
             'owner_id' => $user->id,
             'user_id' => $user->id,
-            'nome' => $request->input('name'),
-            'ramo' => 'geral',
+            'nome' => $nomeFantasia !== '' ? $nomeFantasia : $request->input('name'),
+            'ramo' => $categoria !== '' ? $categoria : 'geral',
             'endereco' => $request->input('endereco'),
             'telefone' => $request->input('telefone'),
+            'whatsapp' => $request->input('whatsapp'),
+            'categoria' => $categoria !== '' ? $categoria : null,
             'cnpj' => $request->input('cnpj'),
-            'ativo' => true,
-            'status' => 'ativo',
+            'logo' => $request->input('logo'),
+            'ativo' => !$isPendingRequest,
+            'status' => $isPendingRequest ? Empresa::STATUS_PENDING : Empresa::STATUS_ACTIVE,
             'points_multiplier' => 1.0,
             'created_at' => now(),
             'updated_at' => now(),
@@ -854,8 +886,12 @@ class AuthController extends Controller
     /**
      * Obter mensagem de sucesso baseada no perfil
      */
-    private function getSuccessMessageForPerfil(string $perfil): string
+    private function getSuccessMessageForPerfil(string $perfil, ?Empresa $empresa = null): string
     {
+        if ($perfil === 'empresa' && $empresa && $empresa->operationalStatus() === Empresa::STATUS_PENDING) {
+            return 'Solicitacao de cadastro recebida. Sua empresa ficara pendente ate a aprovacao administrativa.';
+        }
+
         switch ($perfil) {
             case 'cliente':
                 return 'Conta de cliente criada com sucesso! Você pode ganhar pontos em suas compras.';
@@ -869,8 +905,12 @@ class AuthController extends Controller
     /**
      * Obter URL de redirecionamento baseada no perfil
      */
-    private function getRedirectUrlForPerfil(string $perfil): string
+    private function getRedirectUrlForPerfil(string $perfil, ?Empresa $empresa = null): string
     {
+        if ($perfil === 'empresa' && $empresa && $empresa->operationalStatus() === Empresa::STATUS_PENDING) {
+            return '/entrar.html';
+        }
+
         switch ($perfil) {
             case 'cliente':
                 // Novo front (Stitch) - dashboard do cliente
@@ -884,6 +924,28 @@ class AuthController extends Controller
             default:
                 return '/entrar.html';
         }
+    }
+
+    private function isAdminCompanyRegistrationRequest(Request $request): bool
+    {
+        if (($request->input('perfil') ?? null) !== 'empresa') {
+            return false;
+        }
+
+        $user = $this->resolveAuthUserFromRequest($request);
+        if (!$user) {
+            return false;
+        }
+
+        $perfil = $this->getPerfilFromRole((string) ($user->{$this->resolveUsersRoleColumn()} ?? $user->perfil ?? $user->role ?? ''));
+
+        return $perfil === 'admin';
+    }
+
+    private function isPublicCompanyRegistrationRequest(Request $request): bool
+    {
+        return ($request->input('perfil') ?? null) === 'empresa'
+            && !$this->isAdminCompanyRegistrationRequest($request);
     }
 
     /**
@@ -1490,11 +1552,17 @@ class AuthController extends Controller
 
         $payload = $request->validate([
             'name' => 'required|string|max:255',
+            'responsavel' => 'nullable|string|max:255',
+            'nome_fantasia' => 'nullable|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:6',
             'perfil' => 'required|string|in:cliente,empresa,admin',
             'status' => 'nullable|string|in:ativo,inativo,bloqueado',
             'telefone' => 'nullable|string|max:20',
+            'data_nascimento' => 'nullable|date|before:today',
+            'whatsapp' => 'nullable|string|max:20',
+            'categoria' => 'nullable|string|max:120',
+            'logo' => 'nullable|url|max:500',
             'cnpj' => 'nullable|string|max:20',
             'endereco' => 'nullable|string|max:500',
         ]);
@@ -1503,12 +1571,13 @@ class AuthController extends Controller
         try {
             $roleColumn = $this->resolveUsersRoleColumn();
             $userPayload = [
-                'name' => $payload['name'],
+                'name' => $payload['responsavel'] ?? $payload['name'],
                 'email' => strtolower(trim($payload['email'])),
                 'password' => Hash::make($payload['password']),
                 $roleColumn => $payload['perfil'],
                 'status' => $payload['status'] ?? 'ativo',
-                'telefone' => $payload['telefone'] ?? null,
+                'telefone' => $payload['whatsapp'] ?? $payload['telefone'] ?? null,
+                'data_nascimento' => $payload['data_nascimento'] ?? null,
                 'email_verified_at' => now(),
                 'is_active' => DB::connection()->getDriverName() === 'pgsql' ? 'true' : true,
                 'pontos' => 0,
@@ -1525,10 +1594,12 @@ class AuthController extends Controller
                 $empresaPayload = [
                     'owner_id' => $user->id,
                     'user_id' => $user->id,
-                    'nome' => $payload['name'],
-                    'ramo' => 'geral',
+                    'nome' => $payload['nome_fantasia'] ?? $payload['name'],
+                    'ramo' => $payload['categoria'] ?? 'geral',
+                    'categoria' => $payload['categoria'] ?? null,
                     'endereco' => $payload['endereco'] ?? 'Nao informado',
                     'telefone' => $payload['telefone'] ?? 'Nao informado',
+                    'whatsapp' => $payload['whatsapp'] ?? null,
                     'cnpj' => $payload['cnpj'] ?? sprintf(
                         '%02d.%03d.%03d/%04d-%02d',
                         rand(10, 99),
@@ -1537,8 +1608,9 @@ class AuthController extends Controller
                         rand(1000, 9999),
                         rand(10, 99)
                     ),
+                    'logo' => $payload['logo'] ?? null,
                     'ativo' => DB::connection()->getDriverName() === 'pgsql' ? 'true' : true,
-                    'status' => 'ativo',
+                    'status' => Empresa::STATUS_ACTIVE,
                     'points_multiplier' => 1.0,
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -1549,7 +1621,11 @@ class AuthController extends Controller
                     throw new \RuntimeException('Tabela empresas indisponivel ou sem colunas compativeis.');
                 }
 
-                DB::table('empresas')->insert($safeEmpresaPayload);
+                $empresaId = DB::table('empresas')->insertGetId($safeEmpresaPayload);
+                $empresa = Empresa::query()->find($empresaId);
+                if ($empresa) {
+                    app(\App\Services\QRCodeService::class)->gerarQRCodeEmpresa($empresa);
+                }
             }
 
 

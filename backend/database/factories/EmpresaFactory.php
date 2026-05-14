@@ -41,7 +41,7 @@ class EmpresaFactory extends Factory
             ]),
             'points_multiplier' => 1.0,
             'ativo' => true,
+            'status' => Empresa::STATUS_ACTIVE,
         ];
     }
 }
-

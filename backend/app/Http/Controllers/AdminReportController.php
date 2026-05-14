@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\AuditLog;
 use App\Models\Empresa;
 use App\Models\User;
+use App\Services\RelatorioOperacionalService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -376,6 +377,29 @@ class AdminReportController extends Controller
                     'crescimento_texto' => 'Dados consolidados',
                 ],
             ], 200);
+        }
+    }
+
+    public function summary(Request $request)
+    {
+        try {
+            /** @var RelatorioOperacionalService $service */
+            $service = app(RelatorioOperacionalService::class);
+
+            return response()->json([
+                'success' => true,
+                'data' => $service->adminSummary(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Erro ao carregar resumo admin da Fase 7', [
+                'error' => $e->getMessage(),
+                'user_id' => $request->user()?->id,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao foi possivel carregar o resumo administrativo agora.',
+            ], 500);
         }
     }
 

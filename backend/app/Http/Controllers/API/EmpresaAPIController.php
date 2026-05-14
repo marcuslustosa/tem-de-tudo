@@ -8,6 +8,7 @@ use App\Models\Empresa;
 use App\Models\Notification;
 use App\Services\LoyaltyProgramService;
 use App\Services\ClienteQrCodeService;
+use App\Services\RelatorioOperacionalService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,11 +23,13 @@ class EmpresaAPIController extends Controller
     public function meuPerfil()
     {
         $user = Auth::user();
-        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
+        $empresaRow = $this->resolveEmpresaForUser((int) $user->id);
 
-        if (!$empresa) {
+        if (!$empresaRow) {
             return response()->json(['success' => false, 'message' => 'Empresa nÃ£o encontrada'], 404);
         }
+
+        $empresa = $empresaRow;
 
         return response()->json([
             'success' => true,
@@ -61,11 +64,13 @@ class EmpresaAPIController extends Controller
     public function atualizarPerfil(Request $request)
     {
         $user = Auth::user();
-        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
+        $empresaRow = $this->resolveEmpresaForUser((int) $user->id);
 
-        if (!$empresa) {
+        if (!$empresaRow) {
             return response()->json(['success' => false, 'message' => 'Empresa nÃ£o encontrada'], 404);
         }
+
+        $empresa = $empresaRow;
 
         $validated = $request->validate([
             'name'     => 'sometimes|string|max:255',
@@ -274,8 +279,16 @@ class EmpresaAPIController extends Controller
     public function clientes(Request $request)
     {
         $user = Auth::user();
-        $empresa = $this->resolveEmpresaForUser((int) $user->id);
+        $empresaRow = $this->resolveEmpresaForUser((int) $user->id);
 
+        if (!$empresaRow) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa nao encontrada'
+            ], 404);
+        }
+
+        $empresa = Empresa::query()->find((int) $empresaRow->id);
         if (!$empresa) {
             return response()->json([
                 'success' => false,
@@ -283,52 +296,17 @@ class EmpresaAPIController extends Controller
             ], 404);
         }
 
-        if (!$this->hasTable('pontos') || !$this->hasTable('users')) {
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'data' => [],
-                    'total' => 0,
-                    'current_page' => 1,
-                    'per_page' => 20,
-                    'last_page' => 1,
-                ],
-            ]);
-        }
-
         try {
-            $clientes = DB::table('pontos')
-                ->join('users', 'pontos.user_id', '=', 'users.id')
-                ->select(
-                    'users.id',
-                    'users.name',
-                    'users.email',
-                    'users.telefone',
-                    DB::raw("SUM(CASE WHEN pontos.tipo NOT IN ('resgate', 'redeem') THEN pontos.pontos ELSE 0 END) as total_ganho"),
-                    DB::raw("SUM(CASE WHEN pontos.tipo IN ('resgate', 'redeem') THEN pontos.pontos ELSE 0 END) as total_gasto"),
-                    DB::raw('MAX(pontos.created_at) as ultima_visita')
-                )
-                ->where('pontos.empresa_id', $empresa->id)
-                ->when($request->filled('busca'), function ($q) use ($request) {
-                    $term = '%' . strtolower($request->busca) . '%';
-                    $q->where(function ($sub) use ($term) {
-                        $sub->whereRaw('LOWER(users.name) LIKE ?', [$term])
-                            ->orWhereRaw('LOWER(users.email) LIKE ?', [$term]);
-                    });
-                })
-                ->groupBy('users.id', 'users.name', 'users.email', 'users.telefone')
-                ->orderByDesc('total_ganho')
-                ->paginate(20);
+            /** @var RelatorioOperacionalService $service */
+            $service = app(RelatorioOperacionalService::class);
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'data' => $clientes->items(),
-                    'total' => $clientes->total(),
-                    'current_page' => $clientes->currentPage(),
-                    'per_page' => $clientes->perPage(),
-                    'last_page' => $clientes->lastPage()
-                ]
+                'data' => $service->companyClients(
+                    $empresa,
+                    $request->input('busca'),
+                    (int) $request->input('per_page', 20)
+                ),
             ]);
         } catch (\Throwable $e) {
             Log::warning('Falha ao listar clientes da empresa', [
@@ -344,6 +322,10 @@ class EmpresaAPIController extends Controller
                     'current_page' => 1,
                     'per_page' => 20,
                     'last_page' => 1,
+                    'summary' => [
+                        'threshold_days' => null,
+                        'clientes_inativos' => 0,
+                    ],
                 ],
             ]);
         }
@@ -639,7 +621,7 @@ class EmpresaAPIController extends Controller
     public function qrCodes()
     {
         $user = Auth::user();
-        $empresa = DB::table('empresas')->where('owner_id', $user->id)->first();
+        $empresa = $this->resolveEmpresaForUser((int) $user->id);
         
         if (!$empresa) {
             return response()->json([
@@ -648,13 +630,38 @@ class EmpresaAPIController extends Controller
             ], 404);
         }
         
-        $qrCodes = DB::table('qr_codes')
-            ->where('empresa_id', $empresa->id)
-            ->get();
+        $empresa = Empresa::query()->find((int) $empresa->id);
+        if (!$empresa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa nao encontrada'
+            ], 404);
+        }
+
+        $service = app(\App\Services\QRCodeService::class);
+        $qrCode = $service->gerarQRCodeEmpresa($empresa);
         
         return response()->json([
             'success' => true,
-            'data' => $qrCodes
+            'data' => [[
+                'id' => $qrCode->id,
+                'empresa_id' => $empresa->id,
+                'name' => $qrCode->name,
+                'code' => $qrCode->code,
+                'active' => (bool) $qrCode->active,
+                'usage_count' => (int) ($qrCode->usage_count ?? 0),
+                'last_used_at' => optional($qrCode->last_used_at)->toIso8601String(),
+                'qr_url' => $service->getQRCodeUrl($qrCode),
+                'qr_image' => $service->getQRCodeImageDataUrl($qrCode),
+                'scan_url' => $service->getCompanyScanUrl($qrCode),
+                'public_page_url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
+                'empresa' => [
+                    'id' => $empresa->id,
+                    'nome' => $empresa->nome,
+                    'status' => $empresa->operationalStatus(),
+                    'ativo' => (bool) $empresa->ativo,
+                ],
+            ]]
         ]);
     }
     
@@ -705,6 +712,47 @@ class EmpresaAPIController extends Controller
     /**
      * RelatÃ³rio de pontos distribuÃ­dos
      */
+    public function relatorioResumo(Request $request)
+    {
+        $user = Auth::user();
+        $empresaRow = $this->resolveEmpresaForUser((int) $user->id);
+
+        if (!$empresaRow) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa nao encontrada'
+            ], 404);
+        }
+
+        $empresa = Empresa::query()->find((int) $empresaRow->id);
+        if (!$empresa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa nao encontrada'
+            ], 404);
+        }
+
+        try {
+            /** @var RelatorioOperacionalService $service */
+            $service = app(RelatorioOperacionalService::class);
+
+            return response()->json([
+                'success' => true,
+                'data' => $service->companySummary($empresa),
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao gerar resumo operacional da empresa', [
+                'empresa_id' => $empresa->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao foi possivel gerar o resumo operacional agora.',
+            ], 500);
+        }
+    }
+
     public function relatorioPontos(Request $request)
     {
         $user = Auth::user();

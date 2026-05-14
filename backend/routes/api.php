@@ -9,7 +9,9 @@ use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\OpenAIController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\BonusAdesaoController;
+use App\Http\Controllers\BonusAniversarioController;
 use App\Http\Controllers\CartaoFidelidadeController;
+use App\Http\Controllers\LembreteRetornoController;
 use App\Http\Controllers\PromocaoController;
 use App\Http\Controllers\AvaliacaoController;
 use App\Http\Controllers\InscricaoController;
@@ -152,8 +154,12 @@ Route::get('/empresas', [EmpresaController::class, 'listEmpresas'])
     ->middleware('cache.response:300'); // 5 minutos
 Route::get('/empresas/{id}', [EmpresaController::class, 'getEmpresa'])
     ->middleware('cache.response:600'); // 10 minutos
+Route::get('/qrcode/empresa/{code}', [EmpresaController::class, 'getEmpresaByQrCode'])
+    ->middleware('cache.response:60');
 Route::get('/empresas/{id}/promocoes', [EmpresaController::class, 'getEmpresaPromocoes'])
     ->middleware('cache.response:600'); // 10 minutos
+Route::get('/empresas/{id}/avaliacoes', [AvaliacaoController::class, 'listarPorEmpresa'])
+    ->middleware('cache.response:300');
 
 // Banners e Categorias (leitura pÃºblica) - COM CACHE
 Route::get('/banners', [AdminContentController::class, 'publicBanners'])
@@ -271,6 +277,11 @@ Route::prefix('admin')->group(function () {
             Route::put('/users/{id}/status', [AuthController::class, 'updateUserStatus']);
             // CPF e data_nascimento: apenas admin pode alterar (anti-fraude)
             Route::put('/users/{id}/dados-sensiveis', [AuthController::class, 'updateDadosSensiveis']);
+            Route::get('/empresas', [EmpresaController::class, 'adminIndex']);
+            Route::get('/empresas/{id}/qrcode', [EmpresaController::class, 'adminQrCode']);
+            Route::post('/empresas/{id}/approve', [EmpresaController::class, 'approve']);
+            Route::post('/empresas/{id}/reject', [EmpresaController::class, 'reject']);
+            Route::post('/empresas/{id}/suspend', [EmpresaController::class, 'suspend']);
             // Ativar/desativar empresa
             Route::patch('/empresas/{id}/toggle-status', [EmpresaController::class, 'toggleStatus']);
         });
@@ -338,6 +349,7 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     
     // QR Code
     Route::post('/escanear-qrcode', [ClienteAPIController::class, 'escanearQRCode'])->middleware('rate.limit:20:1');
+    Route::post('/vincular-empresa-qrcode', [ClienteAPIController::class, 'vincularEmpresaViaQr'])->middleware('rate.limit:20:1');
     
     // PromoÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
     Route::get('/promocoes', [ClienteAPIController::class, 'listarPromocoes']);
@@ -345,19 +357,28 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     Route::post('/promocoes/{id}/resgatar', [ClienteAPIController::class, 'resgatarPromocao'])->middleware('rate.limit:5:1');
     
     // AvaliaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
-    Route::post('/avaliar', [ClienteAPIController::class, 'avaliar']);
+    Route::post('/avaliar', [AvaliacaoController::class, 'store']);
+    Route::get('/avaliacoes', [AvaliacaoController::class, 'minhasAvaliacoes']);
     
     // HistÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³rico
     Route::get('/historico-pontos', [ClienteAPIController::class, 'historicoPontos']);
+    Route::get('/cartao-fidelidade/progresso/{empresa_id}', [CartaoFidelidadeController::class, 'progressoCliente']);
+    Route::get('/bonus-aniversario/disponiveis', [BonusAniversarioController::class, 'disponiveis']);
     // Ranking de pontos
     Route::get('/ranking-pontos', [ClienteAPIController::class, 'rankingPontos']);    
     // Legacy route (manter compatibilidade)
     Route::get('/dashboard-data', [AuthController::class, 'clienteDashboard']);
 });
 
+Route::middleware(['auth:sanctum', 'role.permission:cliente'])->group(function () {
+    Route::post('/empresas/{id}/avaliacoes', [AvaliacaoController::class, 'store'])->whereNumber('id');
+    Route::put('/empresas/{id}/avaliacoes/minha', [AvaliacaoController::class, 'updateMinha'])->whereNumber('id');
+});
+
 Route::middleware(['auth:sanctum', 'role.permission:empresa', 'subscription.check'])->prefix('empresa')->group(function () {
     // Escanear QR do Cliente
     Route::post('/escanear-cliente', [EmpresaAPIController::class, 'escanearCliente'])->middleware('rate.limit:20:1');
+    Route::post('/clientes/qrcode/consultar', [BonusAdesaoController::class, 'consultarClienteQr'])->middleware('rate.limit:20:1');
     
     // Dashboard da Empresa
     Route::get('/dashboard', [EmpresaAPIController::class, 'dashboard']);
@@ -378,22 +399,54 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa', 'subscription.chec
     Route::delete('/produtos/{id}', [ProdutoController::class, 'destroy']);
     
     // PromoÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
-    Route::get('/promocoes', [EmpresaAPIController::class, 'promocoes']);
-    Route::post('/promocoes', [EmpresaAPIController::class, 'criarPromocao']);
-    Route::put('/promocoes/{id}', [EmpresaAPIController::class, 'atualizarPromocao']);
-    Route::delete('/promocoes/{id}', [EmpresaAPIController::class, 'deletarPromocao']);
-    Route::patch('/promocoes/{id}/ativar', [EmpresaAPIController::class, 'ativarPromocao']);
-    Route::patch('/promocoes/{id}/pausar', [EmpresaAPIController::class, 'pausarPromocao']);
+    Route::get('/promocoes', [PromocaoController::class, 'index']);
+    Route::post('/promocoes', [PromocaoController::class, 'store'])->middleware('rate.limit:10:1');
+    Route::get('/promocoes/{id}', [PromocaoController::class, 'show']);
+    Route::put('/promocoes/{id}', [PromocaoController::class, 'update'])->middleware('rate.limit:10:1');
+    Route::delete('/promocoes/{id}', [PromocaoController::class, 'destroy'])->middleware('rate.limit:5:1');
+    Route::patch('/promocoes/{id}/toggle', [PromocaoController::class, 'toggle'])->middleware('rate.limit:10:1');
+    Route::patch('/promocoes/{id}/ativar', [PromocaoController::class, 'ativar'])->middleware('rate.limit:10:1');
+    Route::patch('/promocoes/{id}/pausar', [PromocaoController::class, 'pausar'])->middleware('rate.limit:10:1');
+    Route::post('/promocoes/{id}/enviar', [PromocaoController::class, 'enviar'])->middleware('rate.limit:5:1');
+    Route::post('/promocoes/{id}/validar', [PromocaoController::class, 'validar'])->middleware('rate.limit:20:1');
     Route::get('/resgates', [EmpresaAPIController::class, 'resgates']);
     
     // QR Codes
     Route::get('/qrcodes', [EmpresaAPIController::class, 'qrCodes']);
+    Route::get('/cartao-fidelidade', [CartaoFidelidadeController::class, 'index']);
+    Route::post('/cartao-fidelidade', [CartaoFidelidadeController::class, 'store'])->middleware('rate.limit:10:1');
+    Route::get('/cartao-fidelidade/{id}', [CartaoFidelidadeController::class, 'show']);
+    Route::put('/cartao-fidelidade/{id}', [CartaoFidelidadeController::class, 'update'])->middleware('rate.limit:10:1');
+    Route::patch('/cartao-fidelidade/{id}/toggle', [CartaoFidelidadeController::class, 'toggle'])->middleware('rate.limit:10:1');
+    Route::post('/cartao-fidelidade/{id}/clientes/{cliente_id}/adicionar-ponto', [CartaoFidelidadeController::class, 'adicionarPonto'])->middleware('rate.limit:20:1');
+    Route::post('/cartao-fidelidade/{id}/clientes/{cliente_id}/resgatar', [CartaoFidelidadeController::class, 'resgatar'])->middleware('rate.limit:20:1');
+    Route::get('/bonus-adesao', [BonusAdesaoController::class, 'index']);
+    Route::post('/bonus-adesao', [BonusAdesaoController::class, 'store'])->middleware('rate.limit:10:1');
+    Route::get('/bonus-adesao/{id}', [BonusAdesaoController::class, 'show']);
+    Route::put('/bonus-adesao/{id}', [BonusAdesaoController::class, 'update'])->middleware('rate.limit:10:1');
+    Route::delete('/bonus-adesao/{id}', [BonusAdesaoController::class, 'destroy'])->middleware('rate.limit:5:1');
+    Route::patch('/bonus-adesao/{id}/toggle', [BonusAdesaoController::class, 'toggle'])->middleware('rate.limit:10:1');
+    Route::post('/bonus-adesao/{id}/validar', [BonusAdesaoController::class, 'validar'])->middleware('rate.limit:20:1');
+    Route::get('/bonus-aniversario', [BonusAniversarioController::class, 'index']);
+    Route::post('/bonus-aniversario', [BonusAniversarioController::class, 'store'])->middleware('rate.limit:10:1');
+    Route::get('/bonus-aniversario/{id}', [BonusAniversarioController::class, 'show'])->whereNumber('id');
+    Route::put('/bonus-aniversario/{id}', [BonusAniversarioController::class, 'update'])->middleware('rate.limit:10:1')->whereNumber('id');
+    Route::patch('/bonus-aniversario/{id}/toggle', [BonusAniversarioController::class, 'toggle'])->middleware('rate.limit:10:1')->whereNumber('id');
+    Route::post('/bonus-aniversario/{id}/validar', [BonusAniversarioController::class, 'validar'])->middleware('rate.limit:20:1')->whereNumber('id');
+    Route::post('/bonus-aniversario/{id}/enviar-elegiveis', [BonusAniversarioController::class, 'enviarElegiveis'])->middleware('rate.limit:5:1')->whereNumber('id');
+    Route::get('/lembrete-retorno', [LembreteRetornoController::class, 'index']);
+    Route::post('/lembrete-retorno', [LembreteRetornoController::class, 'store'])->middleware('rate.limit:10:1');
+    Route::post('/lembrete-retorno/enviar-elegiveis', [LembreteRetornoController::class, 'enviarElegiveis'])->middleware('rate.limit:5:1');
+    Route::get('/lembrete-retorno/{id}', [LembreteRetornoController::class, 'show'])->whereNumber('id');
+    Route::put('/lembrete-retorno/{id}', [LembreteRetornoController::class, 'update'])->middleware('rate.limit:10:1')->whereNumber('id');
+    Route::patch('/lembrete-retorno/{id}/toggle', [LembreteRetornoController::class, 'toggle'])->middleware('rate.limit:10:1')->whereNumber('id');
     
     // AvaliaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
-    Route::get('/avaliacoes', [EmpresaAPIController::class, 'avaliacoes']);
+    Route::get('/avaliacoes', [AvaliacaoController::class, 'empresaAvaliacoes']);
     
     // RelatÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³rios
     Route::get('/relatorio-pontos', [EmpresaAPIController::class, 'relatorioPontos']);
+    Route::get('/relatorios/resumo', [EmpresaAPIController::class, 'relatorioResumo']);
     
     // Campanhas de multiplicador temporÃ¡rio
     Route::get('/campanhas', [CampanhaMultiplicadorController::class, 'index']);
@@ -413,6 +466,7 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa', 'subscription.chec
 Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->group(function () {
     // Rotas exclusivas para administradores
     Route::get('/dashboard-stats', [AdminReportController::class, 'dashboardStats']);
+    Route::get('/relatorios/resumo', [AdminReportController::class, 'summary']);
     Route::get('/recent-activity', [AdminReportController::class, 'recentActivity']);
     Route::get('/users-report', [AdminReportController::class, 'getUsersReport']);
     Route::get('/reports/export', [AdminReportController::class, 'exportResumoCsv']);
@@ -566,6 +620,7 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/bonu
     Route::get('/{id}', [BonusAdesaoController::class, 'show']);
     Route::put('/{id}', [BonusAdesaoController::class, 'update']);
     Route::delete('/{id}', [BonusAdesaoController::class, 'destroy']);
+    Route::patch('/{id}/toggle', [BonusAdesaoController::class, 'toggle']);
 });
 
 // ============================================================

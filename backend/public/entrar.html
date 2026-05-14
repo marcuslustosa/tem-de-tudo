@@ -81,7 +81,7 @@
   </div>
 
   <script>window.__inlineLoginManaged = true;</script>
-  <script src="/dist/stitch-app.min.js?v=20260422-optimized"></script>
+  <script src="/dist/stitch-app.min.js?v=20260507-phase2"></script>
   <script>
 
     (function () {
@@ -107,6 +107,26 @@
         empresa: '/dashboard_parceiro.html',
         admin: '/dashboard_admin_master.html'
       };
+      const pendingCompanyQrKey = 'tem_de_tudo_pending_company_qr';
+
+      function resolvePostLoginTarget(perfil) {
+        const pendingCode = (localStorage.getItem(pendingCompanyQrKey) || '').trim();
+        if (perfil === 'cliente' && pendingCode) {
+          return `/vincular_empresa.html?code=${encodeURIComponent(pendingCode)}`;
+        }
+
+        const nextParam = new URLSearchParams(window.location.search).get('next');
+        if (nextParam) {
+          try {
+            const targetUrl = new URL(nextParam, window.location.origin);
+            if (targetUrl.origin === window.location.origin) {
+              return `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
+            }
+          } catch (_) {}
+        }
+
+        return redirectMap[perfil] || '/meus_pontos.html';
+      }
 
       function showMsg(text, variant) {
         if (!msgBox) return;
@@ -166,7 +186,7 @@
           }
 
           const perfil = normalizePerfil(userRaw.perfil || userRaw.role || userRaw.tipo);
-          const target = redirectMap[perfil] || '/meus_pontos.html';
+          const target = resolvePostLoginTarget(perfil);
           const user = { ...userRaw, perfil: perfil || userRaw.perfil || userRaw.role || userRaw.tipo || null };
 
           localStorage.setItem('tem_de_tudo_token', token);
@@ -183,7 +203,5 @@
     })();
   </script>
 </body></html>
-
-
 
 

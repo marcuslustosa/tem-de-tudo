@@ -14,12 +14,17 @@ class NotificacaoPush extends Model
     protected $fillable = [
         'user_id',
         'empresa_id',
+        'promocao_id',
+        'bonus_aniversario_id',
+        'lembrete_id',
         'tipo',
         'titulo',
         'mensagem',
         'imagem',
+        'status',
+        'erro',
         'enviado',
-        'data_envio'
+        'data_envio',
     ];
 
     protected $casts = [
@@ -27,25 +32,31 @@ class NotificacaoPush extends Model
         'data_envio' => 'datetime',
     ];
 
-    /**
-     * Relacionamento com User (Cliente)
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Relacionamento com Empresa
-     */
     public function empresa()
     {
         return $this->belongsTo(Empresa::class);
     }
 
-    /**
-     * Marcar como enviada
-     */
+    public function promocao()
+    {
+        return $this->belongsTo(Promocao::class, 'promocao_id');
+    }
+
+    public function bonusAniversario()
+    {
+        return $this->belongsTo(BonusAniversario::class, 'bonus_aniversario_id');
+    }
+
+    public function lembrete()
+    {
+        return $this->belongsTo(LembreteAusencia::class, 'lembrete_id');
+    }
+
     public function marcarComoEnviada()
     {
         $this->enviado = true;
@@ -53,17 +64,11 @@ class NotificacaoPush extends Model
         $this->save();
     }
 
-    /**
-     * Scope para notificações pendentes
-     */
     public function scopePendentes($query)
     {
         return $query->where('enviado', false);
     }
 
-    /**
-     * Scope para notificações enviadas
-     */
     public function scopeEnviadas($query)
     {
         return $query->where('enviado', true);

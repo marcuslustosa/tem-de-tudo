@@ -14,7 +14,7 @@ class EmpresaController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Empresa::where('ativo', true);
+        $query = Empresa::query()->publiclyVisible();
 
         // Filtro por categoria
         if ($request->has('categoria')) {
@@ -57,7 +57,7 @@ class EmpresaController extends Controller
      */
     public function show($id)
     {
-        $empresa = Empresa::findOrFail($id);
+        $empresa = Empresa::query()->publiclyVisible()->findOrFail($id);
 
         return response()->json([
             'success' => true,

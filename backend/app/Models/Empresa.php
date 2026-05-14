@@ -3,11 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class Empresa extends Model
 {
     use HasFactory;
+
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_SUSPENDED = 'suspended';
+    public const STATUS_REJECTED = 'rejected';
 
     protected $fillable = [
         'nome',
@@ -19,6 +27,7 @@ class Empresa extends Model
         'categoria',
         'points_multiplier',
         'ativo',
+        'status',
         'owner_id',
         'ramo',
         'whatsapp',
@@ -114,7 +123,70 @@ class Empresa extends Model
      */
     public function isAtiva(): bool
     {
-        return $this->ativo ?? true;
+        return $this->isPubliclyVisible();
+    }
+
+    public function isPubliclyVisible(): bool
+    {
+        $isEnabled = (bool) ($this->ativo ?? true);
+
+        return $isEnabled && $this->operationalStatus() === self::STATUS_ACTIVE;
+    }
+
+    public function operationalStatus(): string
+    {
+        return self::normalizeOperationalStatus(
+            $this->attributes['status'] ?? null,
+            $this->attributes['ativo'] ?? null
+        );
+    }
+
+    public function setStatusAttribute($value): void
+    {
+        $this->attributes['status'] = self::normalizeOperationalStatus(
+            $value,
+            $this->attributes['ativo'] ?? null
+        );
+    }
+
+    public function scopePubliclyVisible(Builder $query): Builder
+    {
+        if (Schema::hasColumn($this->getTable(), 'ativo')) {
+            $query->where('ativo', true);
+        }
+
+        if (Schema::hasColumn($this->getTable(), 'status')) {
+            $query->whereIn(
+                DB::raw('LOWER(status)'),
+                self::normalizedStatusAliases(self::STATUS_ACTIVE)
+            );
+        }
+
+        return $query;
+    }
+
+    public static function normalizeOperationalStatus($status, $ativo = null): string
+    {
+        $normalized = strtolower(trim((string) ($status ?? '')));
+
+        return match ($normalized) {
+            self::STATUS_PENDING, 'pendente' => self::STATUS_PENDING,
+            self::STATUS_ACTIVE, 'ativo', 'ativa', 'approved' => self::STATUS_ACTIVE,
+            self::STATUS_SUSPENDED, 'suspenso', 'suspensa', 'inativo', 'inativa', 'inactive', 'blocked', 'bloqueado' => self::STATUS_SUSPENDED,
+            self::STATUS_REJECTED, 'rejected', 'rejeitado', 'rejeitada' => self::STATUS_REJECTED,
+            default => (bool) ($ativo ?? true) ? self::STATUS_ACTIVE : self::STATUS_SUSPENDED,
+        };
+    }
+
+    public static function normalizedStatusAliases(string $status): array
+    {
+        return match (self::normalizeOperationalStatus($status)) {
+            self::STATUS_PENDING => [self::STATUS_PENDING, 'pendente'],
+            self::STATUS_ACTIVE => [self::STATUS_ACTIVE, 'ativo', 'ativa', 'approved'],
+            self::STATUS_SUSPENDED => [self::STATUS_SUSPENDED, 'suspenso', 'suspensa', 'inativo', 'inativa', 'inactive', 'bloqueado'],
+            self::STATUS_REJECTED => [self::STATUS_REJECTED, 'rejeitado', 'rejeitada'],
+            default => [self::STATUS_ACTIVE],
+        };
     }
 
     /**

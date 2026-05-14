@@ -117,6 +117,7 @@
 <div class="mb-8">
 <h1 class="text-on-surface font-headline font-bold text-2xl tracking-tight leading-tight">Gestao de Ofertas</h1>
 <p class="text-on-surface-variant text-sm mt-1">Gerencie suas promocoes ativas e crie novos impulsos de venda.</p>
+<p id="promoWeeklyInfo" class="mt-3 inline-flex rounded-full bg-surface-container px-4 py-2 text-xs font-semibold text-on-surface-variant">Limite semanal em verificacao</p>
 </div>
 <!-- High Impact CTA Section -->
 <div class="mb-8 rounded-xl bg-gradient-to-r from-[#00BCD4] via-[#7A2C8F] to-[#E10098] p-6 text-on-primary shadow-[0_8px_32px_rgba(11,31,58,0.12)] relative overflow-hidden group">
@@ -135,7 +136,7 @@
 <div class="flex gap-3 mb-6 overflow-x-auto pb-2 no-scrollbar">
 <button id="filterTodas" data-status="todas" class="bg-primary text-on-primary px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap">Todas (<span id="countTodas">0</span>)</button>
 <button id="filterAtivas" data-status="ativas" class="bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-surface-container-high transition-colors">Ativas (<span id="countAtivas">0</span>)</button>
-<button id="filterProgramadas" data-status="programadas" class="bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-surface-container-high transition-colors">Programadas (<span id="countProgramadas">0</span>)</button>
+<button id="filterProgramadas" data-status="programadas" class="bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-surface-container-high transition-colors">Enviadas (<span id="countProgramadas">0</span>)</button>
 <button id="filterInativas" data-status="inativas" class="bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap hover:bg-surface-container-high transition-colors">Inativas (<span id="countInativas">0</span>)</button>
 </div>
 <!-- Offers List -->
@@ -151,6 +152,16 @@
 <div class="space-y-2">
 <label class="text-xs font-semibold text-on-surface-variant uppercase">Descricao</label>
 <textarea id="ofertaDescricao" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" rows="2" placeholder="Detalhes"></textarea>
+</div>
+<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+<div class="space-y-2">
+<label class="text-xs font-semibold text-on-surface-variant uppercase">Validade</label>
+<input id="ofertaValidade" type="date" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold text-on-surface-variant uppercase">Titulo da notificacao</label>
+<input id="ofertaNotificationTitle" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" maxlength="80" placeholder="Ex: Oferta relampago para clientes vinculados"/>
+</div>
 </div>
 <div class="grid grid-cols-2 gap-3">
 <div class="space-y-2">
@@ -169,6 +180,8 @@
 <div class="space-y-2">
 <label class="text-xs font-semibold text-on-surface-variant uppercase">Imagem da Oferta (URL)</label>
 <input id="ofertaImagem" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" placeholder="https://exemplo.com/imagem.jpg"/>
+<label class="mt-3 block text-xs font-semibold text-on-surface-variant uppercase">Corpo da notificacao</label>
+<textarea id="ofertaNotificationBody" class="mt-2 w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" rows="2" maxlength="120" placeholder="Resumo curto enviado via push para clientes vinculados."></textarea>
 <p class="text-[10px] text-on-surface-variant italic leading-relaxed">
 💡 <strong>Instruções:</strong> Cole a URL de uma imagem hospedada. <br>
 📐 Dimensões recomendadas: <strong>800x600px</strong> (proporção 4:3)<br>
@@ -184,6 +197,294 @@
 <button id="ofertaCancelar" type="button" class="px-4 py-3 rounded-xl border border-outline text-on-surface text-sm">Cancelar</button>
 </div>
 <p id="ofertaMsg" class="text-xs text-outline"></p>
+</section>
+<section id="bonusAdesaoSection" class="mt-8 space-y-4 rounded-2xl bg-surface-container-lowest p-4 shadow-sm border border-surface-variant/40">
+<div class="flex items-start justify-between gap-3">
+<div>
+<p class="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">Bônus de adesão</p>
+<h3 class="mt-1 font-headline text-lg font-bold text-on-surface">Primeiro benefício do cliente vinculado</h3>
+<p class="mt-1 text-sm text-on-surface-variant">Configure um benefício único por cliente e valide somente lendo o QR Code dele no estabelecimento.</p>
+</div>
+<a id="bonusScanCta" href="/validar_resgate.html?modo=bonus-adesao" class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-xs font-bold text-white shadow-sm">Ler QR do cliente</a>
+</div>
+<div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px]">
+<form id="bonusAdesaoForm" class="space-y-3">
+<input id="bonusId" type="hidden" />
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Titulo</label>
+<input id="bonusTitulo" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" maxlength="80" placeholder="Ex: Bem-vindo! Ganhe um brinde na primeira compra" />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Descricao</label>
+<textarea id="bonusDescricao" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" rows="3" maxlength="280" placeholder="Explique o benefício e a regra de uso único."></textarea>
+</div>
+<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Validade</label>
+<input id="bonusValidade" type="date" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Imagem (URL)</label>
+<input id="bonusImagem" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" placeholder="https://exemplo.com/bonus.jpg" />
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Regras</label>
+<textarea id="bonusTermos" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" rows="2" maxlength="500" placeholder="Ex: válido somente na primeira compra e mediante leitura do QR do cliente."></textarea>
+</div>
+<label class="flex items-center gap-2 text-sm text-on-surface">
+<input id="bonusAtivo" type="checkbox" class="rounded border-surface-variant text-primary focus:ring-primary" />
+<span>Bonus ativo</span>
+</label>
+<div class="flex gap-2">
+<button id="bonusSalvar" type="button" class="flex-1 rounded-xl bg-primary py-3 font-semibold text-white">Salvar bonus</button>
+<button id="bonusCancelar" type="button" class="px-4 py-3 rounded-xl border border-outline text-on-surface text-sm">Cancelar</button>
+</div>
+<p id="bonusMensagem" class="text-xs text-outline"></p>
+</form>
+<div class="space-y-3">
+<div class="rounded-[24px] bg-white p-4 shadow-sm ring-1 ring-black/5">
+<p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Preview</p>
+<div id="bonusPreviewCard" class="mt-3 overflow-hidden rounded-[22px] bg-slate-50">
+<img id="bonusPreviewImage" class="h-32 w-full object-cover" src="/assets/images/company2.jpg" alt="Preview do bonus" />
+<div class="space-y-2 p-4">
+<div class="flex items-center justify-between gap-2">
+<h4 id="bonusPreviewTitle" class="text-base font-extrabold text-[#111B3F]">Bonus de adesao</h4>
+<span id="bonusPreviewStatus" class="rounded-full bg-[#F1F1F1] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Inativo</span>
+</div>
+<p id="bonusPreviewDescription" class="text-sm leading-6 text-slate-600">Configure o primeiro beneficio que o cliente vera depois do vinculo.</p>
+<p id="bonusPreviewValidity" class="text-xs font-semibold text-slate-500">Validade nao informada</p>
+</div>
+</div>
+</div>
+<div class="rounded-[24px] bg-surface-container-low p-4">
+<div class="flex items-center justify-between gap-2">
+<p class="text-sm font-bold text-on-surface">Bônus cadastrados</p>
+<span id="bonusTotal" class="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">0 itens</span>
+</div>
+<div id="bonusAdesaoList" class="mt-3 space-y-3"></div>
+<p id="bonusAdesaoEmpty" class="mt-2 text-xs text-outline">Nenhum bonus de adesao configurado ainda.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="cartaoFidelidadeSection" class="mt-8 space-y-4 rounded-2xl bg-surface-container-lowest p-4 shadow-sm border border-surface-variant/40">
+<div class="flex items-start justify-between gap-3">
+<div>
+<p class="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">Cartao fidelidade</p>
+<h3 class="mt-1 font-headline text-lg font-bold text-on-surface">Pontos por visita com resgate validado pela empresa</h3>
+<p class="mt-1 text-sm text-on-surface-variant">Configure a regra de ganho, a meta de pontos e a recompensa. A validacao continua obrigatoriamente pela leitura do QR do cliente.</p>
+</div>
+<a id="loyaltyScanCta" href="/validar_resgate.html?modo=fidelidade" class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-xs font-bold text-white shadow-sm">Ler QR do cliente</a>
+</div>
+<div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
+<form id="cartaoFidelidadeForm" class="space-y-3">
+<input id="cartaoFidelidadeId" type="hidden" />
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Titulo</label>
+<input id="cartaoTitulo" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" maxlength="80" placeholder="Ex: Ganhe 1 ponto a cada visita" />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Descricao</label>
+<textarea id="cartaoDescricao" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" rows="3" maxlength="280" placeholder="Explique rapidamente a mecânica do cartão."></textarea>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Regra de ganho</label>
+<input id="cartaoRegraGanho" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" maxlength="160" placeholder="Ex: Ganhe 1 ponto a cada visita" />
+</div>
+<div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Pontos por visita</label>
+<input id="cartaoPontosPorVisita" type="number" min="1" max="100" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" value="1" />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Meta</label>
+<input id="cartaoPontosNecessarios" type="number" min="1" max="500" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" value="10" />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Validade</label>
+<input id="cartaoValidade" type="date" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" />
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Recompensa</label>
+<textarea id="cartaoRecompensa" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" rows="2" maxlength="280" placeholder="Ex: Com 15 pontos, ganhe 1 sobremesa grátis."></textarea>
+</div>
+<label class="flex items-center gap-2 text-sm text-on-surface">
+<input id="cartaoAtivo" type="checkbox" class="rounded border-surface-variant text-primary focus:ring-primary" />
+<span>Cartao ativo</span>
+</label>
+<div class="flex gap-2">
+<button id="cartaoSalvar" type="button" class="flex-1 rounded-xl bg-primary py-3 font-semibold text-white">Salvar cartao</button>
+<button id="cartaoCancelar" type="button" class="px-4 py-3 rounded-xl border border-outline text-on-surface text-sm">Cancelar</button>
+</div>
+<p id="cartaoMensagem" class="text-xs text-outline"></p>
+</form>
+<div class="space-y-3">
+<div class="rounded-[24px] bg-white p-4 shadow-sm ring-1 ring-black/5">
+<p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Preview</p>
+<div class="mt-3 rounded-[22px] bg-[#111B3F] p-4 text-white">
+<div class="flex items-center justify-between gap-2">
+<h4 id="cartaoPreviewTitle" class="text-lg font-extrabold">Cartao fidelidade</h4>
+<span id="cartaoPreviewStatus" class="rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white/80">Inativo</span>
+</div>
+<p id="cartaoPreviewDescription" class="mt-3 text-sm leading-6 text-white/78">Configure a recompensa que seu cliente verá na página pública da empresa.</p>
+<div class="mt-4 grid gap-3 sm:grid-cols-2">
+<div class="rounded-[18px] bg-white/8 p-3">
+<p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/55">Regra</p>
+<p id="cartaoPreviewRule" class="mt-2 text-sm font-semibold text-white">Ganhe 1 ponto a cada visita.</p>
+</div>
+<div class="rounded-[18px] bg-white/8 p-3">
+<p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/55">Recompensa</p>
+<p id="cartaoPreviewReward" class="mt-2 text-sm font-semibold text-white">Ainda nao informada</p>
+</div>
+</div>
+<p id="cartaoPreviewMeta" class="mt-4 text-xs font-semibold text-white/72">Meta: 0 pontos | Validade nao informada</p>
+</div>
+</div>
+<div class="rounded-[24px] bg-surface-container-low p-4">
+<div class="flex items-center justify-between gap-2">
+<p class="text-sm font-bold text-on-surface">Cartoes cadastrados</p>
+<span id="cartaoTotal" class="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">0 itens</span>
+</div>
+<div id="cartaoFidelidadeList" class="mt-3 space-y-3"></div>
+<p id="cartaoFidelidadeEmpty" class="mt-2 text-xs text-outline">Nenhum cartao fidelidade configurado ainda.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="birthdayBonusSection" class="mt-8 space-y-4 rounded-2xl bg-surface-container-lowest p-4 shadow-sm border border-surface-variant/40">
+<div class="flex items-start justify-between gap-3">
+<div>
+<p class="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">Bonus aniversario</p>
+<h3 class="mt-1 font-headline text-lg font-bold text-on-surface">Beneficio anual com validacao presencial</h3>
+<p class="mt-1 text-sm text-on-surface-variant">Configure o bonus aniversario, defina a janela de validade e envie push apenas para clientes vinculados e elegiveis.</p>
+</div>
+<a id="birthdayScanCta" href="/validar_resgate.html?modo=beneficios" class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-xs font-bold text-white shadow-sm">Ler QR do cliente</a>
+</div>
+<div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
+<form id="birthdayBonusForm" class="space-y-3">
+<input id="birthdayBonusId" type="hidden" />
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Titulo</label>
+<input id="birthdayBonusTitle" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" maxlength="80" placeholder="Ex: Mês do aniversariante ganha sobremesa" />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Descricao</label>
+<textarea id="birthdayBonusDescription" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" rows="3" maxlength="280" placeholder="Explique o presente e lembre que a validacao ocorre lendo o QR do cliente."></textarea>
+</div>
+<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Janela em dias</label>
+<input id="birthdayBonusDaysValidity" type="number" min="1" max="90" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" placeholder="Vazio = mês do aniversário" />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Imagem (URL)</label>
+<input id="birthdayBonusImage" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" placeholder="https://exemplo.com/aniversario.jpg" />
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Titulo do push</label>
+<input id="birthdayBonusNotificationTitle" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" maxlength="80" placeholder="Ex: Seu bonus de aniversario chegou" />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Mensagem do push</label>
+<textarea id="birthdayBonusNotificationBody" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" rows="2" maxlength="120" placeholder="Ex: Passe na loja neste mês e apresente seu QR Code para validar."></textarea>
+</div>
+<label class="flex items-center gap-2 text-sm text-on-surface">
+<input id="birthdayBonusActive" type="checkbox" class="rounded border-surface-variant text-primary focus:ring-primary" />
+<span>Bonus aniversario ativo</span>
+</label>
+<div class="grid gap-2 sm:grid-cols-3">
+<button id="birthdayBonusSave" type="button" class="rounded-xl bg-primary py-3 font-semibold text-white">Salvar bonus</button>
+<button id="birthdayBonusSend" type="button" class="rounded-xl bg-[#111B3F] py-3 font-semibold text-white">Enviar elegiveis</button>
+<button id="birthdayBonusCancel" type="button" class="rounded-xl border border-outline text-on-surface text-sm">Cancelar</button>
+</div>
+<p id="birthdayBonusMessage" class="text-xs text-outline"></p>
+</form>
+<div class="space-y-3">
+<div class="rounded-[24px] bg-white p-4 shadow-sm ring-1 ring-black/5">
+<p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Preview</p>
+<div class="mt-3 overflow-hidden rounded-[22px] bg-slate-50">
+<img id="birthdayBonusPreviewImage" class="h-32 w-full object-cover" src="/assets/images/company3.jpg" alt="Preview do bonus aniversario" />
+<div class="space-y-2 p-4">
+<div class="flex items-center justify-between gap-2">
+<h4 id="birthdayBonusPreviewTitle" class="text-base font-extrabold text-[#111B3F]">Bonus aniversario</h4>
+<span id="birthdayBonusPreviewStatus" class="rounded-full bg-[#F1F1F1] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Inativo</span>
+</div>
+<p id="birthdayBonusPreviewDescription" class="text-sm leading-6 text-slate-600">Configure o beneficio anual exibido para o cliente elegivel.</p>
+<p id="birthdayBonusPreviewValidity" class="text-xs font-semibold text-slate-500">Válido no mês do aniversário</p>
+<p id="birthdayBonusPreviewNotification" class="text-xs text-slate-500">Push: não configurado</p>
+</div>
+</div>
+</div>
+<div class="rounded-[24px] bg-surface-container-low p-4">
+<div class="flex items-center justify-between gap-2">
+<p class="text-sm font-bold text-on-surface">Bônus aniversário cadastrados</p>
+<span id="birthdayBonusTotal" class="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">0 itens</span>
+</div>
+<div id="birthdayBonusList" class="mt-3 space-y-3"></div>
+<p id="birthdayBonusEmpty" class="mt-2 text-xs text-outline">Nenhum bonus aniversario configurado ainda.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="returnReminderSection" class="mt-8 space-y-4 rounded-2xl bg-surface-container-lowest p-4 shadow-sm border border-surface-variant/40">
+<div class="flex items-start justify-between gap-3">
+<div>
+<p class="text-xs font-semibold uppercase tracking-[0.18em] text-on-surface-variant">Lembrete de retorno</p>
+<h3 class="mt-1 font-headline text-lg font-bold text-on-surface">Push para clientes sem visita recente</h3>
+<p class="mt-1 text-sm text-on-surface-variant">Defina quantos dias sem visita disparam o lembrete e envie o push somente uma vez por ciclo de inatividade.</p>
+</div>
+<button id="returnReminderSend" type="button" class="inline-flex h-11 items-center justify-center rounded-full bg-[#111B3F] px-4 text-xs font-bold text-white shadow-sm">Enviar elegiveis</button>
+</div>
+<div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_240px]">
+<form id="returnReminderForm" class="space-y-3">
+<input id="returnReminderId" type="hidden" />
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Dias sem visita</label>
+<input id="returnReminderDays" type="number" min="1" max="365" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" placeholder="Ex: 30" />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Titulo</label>
+<input id="returnReminderTitle" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" maxlength="80" placeholder="Ex: Sentimos sua falta" />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Mensagem</label>
+<textarea id="returnReminderMessageInput" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" rows="3" maxlength="300" placeholder="Ex: Faz 30 dias desde sua última visita. Volte para aproveitar as novidades."></textarea>
+</div>
+<label class="flex items-center gap-2 text-sm text-on-surface">
+<input id="returnReminderActive" type="checkbox" class="rounded border-surface-variant text-primary focus:ring-primary" />
+<span>Lembrete ativo</span>
+</label>
+<div class="grid gap-2 sm:grid-cols-2">
+<button id="returnReminderSave" type="button" class="rounded-xl bg-primary py-3 font-semibold text-white">Salvar lembrete</button>
+<button id="returnReminderCancel" type="button" class="rounded-xl border border-outline text-on-surface text-sm">Cancelar</button>
+</div>
+<p id="returnReminderFeedback" class="text-xs text-outline"></p>
+</form>
+<div class="space-y-3">
+<div class="rounded-[24px] bg-[#111B3F] p-4 text-white">
+<p class="text-[11px] font-bold uppercase tracking-[0.18em] text-white/55">Preview</p>
+<div class="mt-3 space-y-2">
+<div class="flex items-center justify-between gap-2">
+<h4 id="returnReminderPreviewTitle" class="text-lg font-extrabold">Lembrete de retorno</h4>
+<span id="returnReminderPreviewStatus" class="rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-white/80">Inativo</span>
+</div>
+<p id="returnReminderPreviewMessage" class="text-sm leading-6 text-white/78">Configure o texto que o cliente receberá quando ficar muito tempo sem visitar sua empresa.</p>
+<p id="returnReminderPreviewMeta" class="text-xs font-semibold text-white/72">Disparo após 30 dias sem visita</p>
+</div>
+</div>
+<div class="rounded-[24px] bg-surface-container-low p-4">
+<div class="flex items-center justify-between gap-2">
+<p class="text-sm font-bold text-on-surface">Lembretes cadastrados</p>
+<span id="returnReminderTotal" class="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">0 itens</span>
+</div>
+<div id="returnReminderList" class="mt-3 space-y-3"></div>
+<p id="returnReminderEmpty" class="mt-2 text-xs text-outline">Nenhum lembrete de retorno configurado ainda.</p>
+</div>
+</div>
+</div>
 </section>
 </div>
 </div>
@@ -213,8 +514,4 @@
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Perfil</span>
 </a>
 </nav>
-</body><script src="/dist/stitch-app.min.js?v=20260422-optimized"></script></html>
-
-
-
-
+</body><script src="/dist/stitch-app.min.js?v=20260513-phase6"></script></html>

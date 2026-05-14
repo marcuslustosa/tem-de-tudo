@@ -1,0 +1,277 @@
+:root {
+  --color-primary-navy: #111b3f;
+  --color-primary-blue: #133f8c;
+  --color-primary-teal: #00afa8;
+  --color-primary-magenta: #b01774;
+  --color-accent-pink: #e91e85;
+
+  --color-bg: #f7f7f7;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f1f1f1;
+  --color-text-primary: #1e1e1e;
+  --color-text-secondary: #8a8a8a;
+  --color-text-inverse: #ffffff;
+  --color-border: #e4e4e4;
+  --color-dark-header: #080a12;
+
+  --gradient-main: linear-gradient(135deg, #133f8c 0%, #00afa8 48%, #b01774 100%);
+  --gradient-company-highlight: linear-gradient(90deg, #00afa8 0%, #133f8c 45%, #b01774 100%);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-modal: 0 18px 45px rgba(0, 0, 0, 0.22);
+  --shadow-button: 0 6px 14px rgba(0, 0, 0, 0.12);
+
+  --mobile-max-width: 430px;
+  --desktop-content-max-width: 1180px;
+  --bottom-nav-height: 68px;
+
+  --font-main: "Inter", "Montserrat", Arial, sans-serif;
+}
+
+.i9-app-shell {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-main);
+}
+
+.i9-mobile-shell {
+  width: 100%;
+  max-width: var(--mobile-max-width);
+  min-height: 100vh;
+  margin: 0 auto;
+  background: var(--color-surface);
+  position: relative;
+  overflow-x: hidden;
+  padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+}
+
+.i9-desktop-shell {
+  width: 100%;
+  max-width: var(--desktop-content-max-width);
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.i9-gradient-bg {
+  background: var(--gradient-main);
+  color: var(--color-text-inverse);
+}
+
+.i9-dark-company-header {
+  background: var(--color-dark-header);
+  color: var(--color-text-inverse);
+  padding: var(--space-lg);
+  border-bottom-left-radius: var(--radius-xl);
+  border-bottom-right-radius: var(--radius-xl);
+}
+
+.i9-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-md);
+}
+
+.i9-btn {
+  border: 0;
+  height: 44px;
+  padding: 0 var(--space-lg);
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow-button);
+}
+
+.i9-btn-primary {
+  color: var(--color-text-inverse);
+  background: var(--gradient-company-highlight);
+}
+
+.i9-btn-teal {
+  color: var(--color-text-inverse);
+  background: linear-gradient(135deg, var(--color-primary-teal), var(--color-primary-navy));
+}
+
+.i9-btn-magenta {
+  color: var(--color-text-inverse);
+  background: linear-gradient(135deg, var(--color-primary-magenta), var(--color-primary-navy));
+}
+
+.i9-qr-action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+}
+
+.i9-company-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.i9-company-list-item {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: var(--space-md);
+  align-items: center;
+  min-height: 88px;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.i9-company-list-item.is-highlight {
+  color: var(--color-text-inverse);
+  background: var(--gradient-company-highlight);
+}
+
+.i9-company-logo {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.i9-company-name {
+  font-size: 18px;
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.i9-company-category {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.i9-rating-stars {
+  margin-top: 4px;
+  color: #ffc107;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.i9-search-box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  height: 48px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  padding: 0 var(--space-md);
+  border: 1px solid var(--color-border);
+}
+
+.i9-category-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg) var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.i9-category-card {
+  text-align: center;
+}
+
+.i9-category-card-image {
+  width: 100%;
+  aspect-ratio: 1.35;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.i9-promotion-banner {
+  width: 100%;
+  aspect-ratio: 2.4;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+}
+
+.i9-notification-modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-modal);
+  padding: var(--space-lg);
+}
+
+.i9-bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--mobile-max-width);
+  height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding-bottom: env(safe-area-inset-bottom);
+  z-index: 20;
+}
+
+.i9-bottom-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cfcfcf;
+  font-size: 22px;
+}
+
+.i9-bottom-nav-item.is-active {
+  color: var(--color-accent-pink);
+}
+
+@media (min-width: 768px) {
+  .i9-mobile-shell {
+    max-width: 100%;
+    padding-bottom: 0;
+  }
+
+  .i9-bottom-nav {
+    display: none;
+  }
+
+  .i9-desktop-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: 100vh;
+  }
+
+  .i9-desktop-content {
+    max-width: var(--desktop-content-max-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: var(--space-xl);
+  }
+
+  .i9-desktop-card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .i9-desktop-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-lg);
+  }
+}

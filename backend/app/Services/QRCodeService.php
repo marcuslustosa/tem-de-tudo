@@ -2,216 +2,201 @@
 
 namespace App\Services;
 
-use App\Models\QRCode;
 use App\Models\Empresa;
+use App\Models\QRCode;
 use App\Models\User;
-use SimpleSoftwareIO\QrCode\Facades\QrCode as QrCodeGenerator;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode as QrCodeGenerator;
 
 class QRCodeService
 {
+    public function getCompanyScanUrl(QRCode $qrCode): string
+    {
+        return url('/vincular_empresa.html') . '?code=' . rawurlencode((string) $qrCode->code);
+    }
+
+    public function getQrPayload(QRCode $qrCode): string
+    {
+        if ($qrCode->empresa_id) {
+            return $this->getCompanyScanUrl($qrCode);
+        }
+
+        return (string) $qrCode->code;
+    }
+
     /**
-     * Gerar QR Code para Empresa
+     * Gera ou reaproveita o QR canonical da empresa.
      */
     public function gerarQRCodeEmpresa(Empresa $empresa)
     {
-        // Verificar se empresa já tem QR Code
         $qrCodeExistente = QRCode::where('empresa_id', $empresa->id)->first();
 
         if ($qrCodeExistente) {
-            // Se existe mas não tem arquivo, gerar arquivo
-            if (!$qrCodeExistente->qr_path) {
-                $this->salvarQRCodeNoStorage($qrCodeExistente);
+            if (!$qrCodeExistente->code) {
+                $qrCodeExistente->update([
+                    'code' => QRCode::gerarCodigoUnico($empresa->id),
+                    'active' => true,
+                ]);
             }
-            return $qrCodeExistente;
+
+            $this->salvarQRCodeNoStorage($qrCodeExistente);
+
+            return $qrCodeExistente->refresh();
         }
 
-        // Gerar código único (método estático recebe apenas $empresaId)
-        $code = QRCode::gerarCodigoUnico($empresa->id);
-
-        // Criar registro no banco com campos corretos da tabela
         $qrCode = QRCode::create([
-            'code' => $code,
+            'code' => QRCode::gerarCodigoUnico($empresa->id),
             'name' => 'QR Code Principal',
             'empresa_id' => $empresa->id,
             'active' => true,
         ]);
 
-        // Salvar QR Code como arquivo PNG
         $this->salvarQRCodeNoStorage($qrCode);
 
-        return $qrCode;
+        return $qrCode->refresh();
     }
 
     /**
-     * Gerar QR Code para Cliente
+     * Caminho canonico do cliente:
+     * QR assinado e temporario via ClienteQrCodeService.
+     * Mantemos esse metodo como no-op por compatibilidade.
      */
     public function gerarQRCodeCliente(User $user)
     {
-        // QR Code de cliente é gerado inline em ClienteAPIController::meuQRCode()
-        // A tabela qr_codes não possui coluna user_id, apenas empresa_id
-        // Retorna null silenciosamente para não quebrar o registro
         return null;
     }
 
     /**
-     * Validar código do QR Code
+     * Valida QR da empresa persistido na tabela qr_codes.
      */
     public function validarCodigo($code)
     {
-        $qrCode = QRCode::where('code', $code)
-            ->where('active', true)
-            ->first();
+        $query = QRCode::where('code', $code);
+
+        if (Schema::hasColumn('qr_codes', 'active')) {
+            $query->where('active', true);
+        } elseif (Schema::hasColumn('qr_codes', 'ativo')) {
+            $query->where('ativo', true);
+        }
+
+        $qrCode = $query->first();
 
         if (!$qrCode) {
             return [
                 'valido' => false,
-                'mensagem' => 'QR Code inválido ou inativo'
+                'mensagem' => 'QR Code invalido ou inativo',
             ];
         }
 
-        // Retornar informações do QR Code
         return [
             'valido' => true,
-            'type' => $qrCode->type,
+            'type' => 'empresa',
             'qr_code' => $qrCode,
             'empresa' => $qrCode->empresa,
-            'user' => $qrCode->user
+            'user' => null,
         ];
     }
 
-    /**
-     * Obter imagem do QR Code como Data URL
-     */
     public function getQRCodeImageDataUrl(QRCode $qrCode)
     {
-        // Se tem base64 salvo, retorna
         if ($qrCode->qr_image) {
             return 'data:image/png;base64,' . $qrCode->qr_image;
         }
 
-        // Se tem arquivo, lê e converte para base64
         if ($qrCode->qr_path && Storage::disk('public')->exists($qrCode->qr_path)) {
             $imageData = Storage::disk('public')->get($qrCode->qr_path);
+
             return 'data:image/png;base64,' . base64_encode($imageData);
         }
 
-        // Se não tem nada, gera e retorna
+        $payload = $this->getQrPayload($qrCode);
         $qrImage = QrCodeGenerator::format('png')
             ->size(300)
             ->errorCorrection('H')
             ->margin(2)
-            ->generate($qrCode->code);
+            ->generate($payload);
 
         return 'data:image/png;base64,' . base64_encode($qrImage);
     }
 
-    /**
-     * Regenerar QR Code (caso necessário)
-     */
     public function regenerarQRCode(QRCode $qrCode)
     {
-        // Gerar novo código
-        if ($qrCode->type === 'empresa') {
-            $newCode = QRCode::gerarCodigoUnico('empresa', $qrCode->empresa_id);
-        } else {
-            $newCode = QRCode::gerarCodigoUnico('cliente', $qrCode->user_id);
-        }
+        $qrCode->update([
+            'code' => QRCode::gerarCodigoUnico($qrCode->empresa_id ?: null),
+        ]);
 
-        // Atualizar registro com novo código
-        $qrCode->update(['code' => $newCode]);
+        $this->salvarQRCodeNoStorage($qrCode->refresh());
 
-        return $qrCode;
+        return $qrCode->refresh();
     }
 
-    /**
-     * Desativar QR Code
-     */
     public function desativarQRCode(QRCode $qrCode)
     {
         $qrCode->update(['active' => false]);
+
         return $qrCode;
     }
 
-    /**
-     * Reativar QR Code
-     */
     public function reativarQRCode(QRCode $qrCode)
     {
         $qrCode->update(['active' => true]);
+
         return $qrCode;
     }
 
-    /**
-     * Salvar QR Code como arquivo PNG no storage
-     */
     public function salvarQRCodeNoStorage(QRCode $qrCode)
     {
-        // Determinar o tipo e ID para o caminho
-        $folder = $qrCode->empresa_id ? 'qrcodes/empresas' : 'qrcodes/clientes';
-        $id = $qrCode->empresa_id ?? $qrCode->user_id ?? $qrCode->id;
-        
-        // Gerar imagem do QR Code como PNG
+        $folder = $qrCode->empresa_id ? 'qrcodes/empresas' : 'qrcodes/generic';
+        $id = $qrCode->empresa_id ?? $qrCode->id;
+        $payload = $this->getQrPayload($qrCode);
+
         $qrImage = QrCodeGenerator::format('png')
             ->size(300)
             ->errorCorrection('H')
             ->margin(2)
-            ->generate($qrCode->code);
+            ->generate($payload);
 
-        // Salvar no storage público
         $filename = "{$id}_{$qrCode->id}.png";
         $path = "{$folder}/{$filename}";
-        
+
         Storage::disk('public')->put($path, $qrImage);
 
-        // Atualizar registro com o caminho
         $qrCode->update([
-            'qr_path' => $path
+            'qr_path' => $path,
         ]);
 
         return $qrCode;
     }
 
-    /**
-     * Migrar QR Code de base64 para arquivo (se necessário)
-     */
     public function migrarBase64ParaArquivo(QRCode $qrCode)
     {
-        // Se já tem arquivo, não faz nada
         if ($qrCode->qr_path && Storage::disk('public')->exists($qrCode->qr_path)) {
             return $qrCode;
         }
 
-        // Se tem base64, converte para arquivo
         if ($qrCode->qr_image) {
-            $folder = $qrCode->empresa_id ? 'qrcodes/empresas' : 'qrcodes/clientes';
-            $id = $qrCode->empresa_id ?? $qrCode->user_id ?? $qrCode->id;
+            $folder = $qrCode->empresa_id ? 'qrcodes/empresas' : 'qrcodes/generic';
+            $id = $qrCode->empresa_id ?? $qrCode->id;
             $filename = "{$id}_{$qrCode->id}.png";
             $path = "{$folder}/{$filename}";
 
-            // Decodificar base64 e salvar
             $imageData = base64_decode($qrCode->qr_image);
             Storage::disk('public')->put($path, $imageData);
 
-            // Atualizar registro
             $qrCode->update([
                 'qr_path' => $path,
-                'qr_image' => null // Limpar base64 para economizar espaço
+                'qr_image' => null,
             ]);
         } else {
-            // Gerar do zero
             $this->salvarQRCodeNoStorage($qrCode);
         }
 
         return $qrCode;
     }
 
-    /**
-     * Obter URL pública do QR Code
-     */
     public function getQRCodeUrl(QRCode $qrCode)
     {
-        // Garantir que existe arquivo
         if (!$qrCode->qr_path) {
             $this->salvarQRCodeNoStorage($qrCode);
             $qrCode->refresh();
@@ -220,9 +205,6 @@ class QRCodeService
         return Storage::url($qrCode->qr_path);
     }
 
-    /**
-     * Migrar todos os QR codes existentes de base64 para arquivos
-     */
     public function migrarTodosQRCodes()
     {
         $qrCodes = QRCode::whereNull('qr_path')->get();
@@ -242,7 +224,7 @@ class QRCodeService
         return [
             'total' => $qrCodes->count(),
             'migrados' => $migrados,
-            'erros' => $erros
+            'erros' => $erros,
         ];
     }
 }

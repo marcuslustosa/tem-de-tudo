@@ -16,7 +16,7 @@ class CartaoFidelidadeProgresso extends Model
         'cartao_fidelidade_id',
         'pontos_atuais',
         'vezes_resgatado',
-        'ultimo_ponto'
+        'ultimo_ponto',
     ];
 
     protected $casts = [
@@ -25,46 +25,25 @@ class CartaoFidelidadeProgresso extends Model
         'ultimo_ponto' => 'datetime',
     ];
 
-    /**
-     * Relacionamento com User (Cliente)
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Relacionamento com Cartão Fidelidade
-     */
     public function cartao()
     {
         return $this->belongsTo(CartaoFidelidade::class, 'cartao_fidelidade_id');
     }
 
-    /**
-     * Adicionar ponto ao cartão
-     */
-    public function adicionarPonto()
+    public function cartaoFidelidade()
     {
-        $this->pontos_atuais++;
-        $this->ultimo_ponto = now();
-        
-        // Se completou o cartão
-        if ($this->pontos_atuais >= $this->cartao->meta_pontos) {
-            $this->vezes_resgatado++;
-            $this->pontos_atuais = 0; // Resetar
-        }
-        
-        $this->save();
-        return $this;
+        return $this->belongsTo(CartaoFidelidade::class, 'cartao_fidelidade_id');
     }
 
-    /**
-     * Calcular porcentagem de progresso
-     */
     public function getPorcentagemProgressoAttribute()
     {
-        $meta = $this->cartao->meta_pontos;
+        $meta = max(1, (int) ($this->cartao?->pontos_necessarios ?? $this->cartao?->meta_pontos ?? 1));
+
         return ($this->pontos_atuais / $meta) * 100;
     }
 }

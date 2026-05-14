@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Schema;
 use App\Models\Empresa;
 use App\Models\CheckIn;
 use App\Models\QRCode;
+use App\Models\User;
+use App\Services\BonusAniversarioService;
+use App\Services\CartaoFidelidadeService;
 
 class EmpresaController extends Controller
 {
@@ -66,14 +69,17 @@ class EmpresaController extends Controller
 
         if ($this->hasColumn('empresas', 'ativo')) {
             if ($this->isBooleanColumn('empresas', 'ativo')) {
-                return $query->where('ativo', true);
+                $query->where('ativo', true);
+            } else {
+                $query->whereIn('ativo', [1, '1', true, 'true', 'ativo']);
             }
-
-            return $query->whereIn('ativo', [1, '1', true, 'true', 'ativo']);
         }
 
         if ($this->hasColumn('empresas', 'status')) {
-            return $query->whereIn(DB::raw('LOWER(status)'), ['ativo', 'active', '1', 'true']);
+            $query->whereIn(
+                DB::raw('LOWER(status)'),
+                Empresa::normalizedStatusAliases(Empresa::STATUS_ACTIVE)
+            );
         }
 
         return $query;
@@ -187,6 +193,55 @@ class EmpresaController extends Controller
         return $clean === false ? '' : $clean;
     }
 
+    private function serializePublicEmpresa(
+        Empresa $empresa,
+        bool $includeLoyaltyCard = false,
+        bool $includeBirthdayBonus = false
+    ): array
+    {
+        $payload = [
+            'id' => $empresa->id,
+            'nome' => $this->cleanUtf8($empresa->nome),
+            'descricao' => $this->cleanUtf8($empresa->descricao ?? ''),
+            'categoria' => $this->cleanUtf8($empresa->categoria ?? $empresa->ramo ?? ''),
+            'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? ''),
+            'endereco' => $this->cleanUtf8($empresa->endereco ?? ''),
+            'telefone' => $this->cleanUtf8($empresa->telefone ?? ''),
+            'email' => $this->cleanUtf8($empresa->email ?? ''),
+            'whatsapp' => $this->cleanUtf8($empresa->whatsapp ?? ''),
+            'instagram' => $this->cleanUtf8($empresa->instagram ?? ''),
+            'facebook' => $this->cleanUtf8($empresa->facebook ?? ''),
+            'logo' => $this->cleanUtf8($empresa->logo ?? '/assets/images/company1.jpg'),
+            'points_multiplier' => $empresa->points_multiplier ?? 1,
+            'avaliacao_media' => (float) ($empresa->avaliacao_media ?? 0),
+            'total_avaliacoes' => (int) ($empresa->total_avaliacoes ?? 0),
+            'public_page_url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
+            'publicamente_visivel' => $empresa->isPubliclyVisible(),
+            'status' => $empresa->operationalStatus(),
+        ];
+
+        if ($includeLoyaltyCard) {
+            $card = app(CartaoFidelidadeService::class)->activeCompanyCard($empresa)
+                ?? app(CartaoFidelidadeService::class)->latestCompanyCard($empresa);
+
+            $payload['cartao_fidelidade'] = $card
+                ? app(CartaoFidelidadeService::class)->serializeCard($card)
+                : null;
+        }
+
+        if ($includeBirthdayBonus) {
+            $bonusService = app(BonusAniversarioService::class);
+            $birthdayBonus = $bonusService->activeCompanyBonus($empresa)
+                ?? $bonusService->latestCompanyBonus($empresa);
+
+            $payload['bonus_aniversario'] = $birthdayBonus
+                ? $bonusService->serializeBonus($birthdayBonus)
+                : null;
+        }
+
+        return $payload;
+    }
+
     public function index()
     {
         try {
@@ -278,6 +333,11 @@ class EmpresaController extends Controller
             if ($hasMultiplier) {
                 $select[] = 'points_multiplier';
             }
+            foreach (['whatsapp', 'instagram', 'facebook', 'avaliacao_media', 'total_avaliacoes'] as $column) {
+                if (Schema::hasColumn('empresas', $column)) {
+                    $select[] = $column;
+                }
+            }
 
             $empresas = $query
                 ->select($select)
@@ -287,22 +347,8 @@ class EmpresaController extends Controller
                 ->get();
 
             $mapped = $empresas->map(function($empresa) {
-                return [
-                    'id' => $empresa->id,
-                    'nome' => $this->cleanUtf8($empresa->nome),
-                    'descricao' => $this->cleanUtf8($empresa->descricao),
-                    'categoria' => $this->cleanUtf8($empresa->categoria ?? $empresa->ramo ?? null),
-                    'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? null),
-                    'endereco' => $this->cleanUtf8($empresa->endereco ?? null),
-                    'telefone' => $this->cleanUtf8($empresa->telefone ?? null),
-                    'logo' => $this->cleanUtf8($empresa->logo ?? '/assets/images/company1.jpg'),
-                    'points_multiplier' => $empresa->points_multiplier ?? 1,
-                ];
+                return $this->serializePublicEmpresa($empresa);
             })->values();
-
-            if ($mapped->isEmpty()) {
-                $mapped = collect($this->demoEmpresasFromUsers());
-            }
 
             return response()->json([
                 'success' => true,
@@ -337,15 +383,10 @@ class EmpresaController extends Controller
                 ]);
             }
 
-            $empresa = Empresa::query()->find($id);
+            $empresaQuery = Empresa::query();
+            $this->applyEmpresaAtivoScope($empresaQuery);
+            $empresa = $empresaQuery->find($id);
             if (!$empresa) {
-                $demoUser = collect($this->demoEmpresasFromUsers())->firstWhere('id', (int) $id);
-                if ($demoUser) {
-                    return response()->json([
-                        'success' => true,
-                        'data' => $demoUser,
-                    ]);
-                }
                 return response()->json([
                     'success' => false,
                     'message' => 'Estabelecimento nao encontrado.',
@@ -354,18 +395,7 @@ class EmpresaController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'id' => $empresa->id,
-                    'nome' => $this->cleanUtf8($empresa->nome),
-                    'descricao' => $this->cleanUtf8($empresa->descricao ?? ''),
-                    'categoria' => $this->cleanUtf8($empresa->categoria ?? $empresa->ramo ?? ''),
-                    'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? ''),
-                    'endereco' => $this->cleanUtf8($empresa->endereco ?? ''),
-                    'telefone' => $this->cleanUtf8($empresa->telefone ?? ''),
-                    'email' => $this->cleanUtf8($empresa->email ?? ''),
-                    'logo' => $this->cleanUtf8($empresa->logo ?? '/assets/images/company1.jpg'),
-                    'points_multiplier' => $empresa->points_multiplier ?? 1,
-                ],
+                'data' => $this->serializePublicEmpresa($empresa, true, true),
             ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         } catch (\Throwable $e) {
             Log::error('Erro ao carregar empresa por id', [
@@ -380,6 +410,44 @@ class EmpresaController extends Controller
         }
     }
 
+    public function getEmpresaByQrCode(string $code)
+    {
+        try {
+            $qrCode = QRCode::query()
+                ->with('empresa')
+                ->where('code', $code)
+                ->when($this->hasColumn('qr_codes', 'active'), fn ($query) => $query->where('active', true))
+                ->first();
+
+            if (!$qrCode || !$qrCode->empresa || !$qrCode->empresa->isPubliclyVisible()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Estabelecimento indisponivel para vinculacao.',
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'code' => $qrCode->code,
+                    'scan_url' => app(\App\Services\QRCodeService::class)->getCompanyScanUrl($qrCode),
+                    'link_page_url' => '/vincular_empresa.html?code=' . rawurlencode($qrCode->code),
+                    'empresa' => $this->serializePublicEmpresa($qrCode->empresa, true, true),
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Erro ao resolver empresa por QR code', [
+                'code' => $code,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao foi possivel resolver o QR Code da empresa.',
+            ], 500);
+        }
+    }
+
     public function getEmpresaPromocoes($id)
     {
         try {
@@ -389,6 +457,22 @@ class EmpresaController extends Controller
                     'data' => [],
                 ]);
             }
+
+            $empresa = Empresa::query()->publiclyVisible()->find((int) $id);
+            if (!$empresa) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Empresa indisponivel publicamente.',
+                    'data' => [],
+                ], 404);
+            }
+
+            $promocoes = app(\App\Services\PromocaoInstantaneaService::class)->publicPromotions($empresa);
+
+            return response()->json([
+                'success' => true,
+                'data' => $promocoes,
+            ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
 
             $query = DB::table('promocoes')->where('empresa_id', $id);
             if (Schema::hasColumn('promocoes', 'ativo')) {
@@ -748,26 +832,301 @@ class EmpresaController extends Controller
         return 'Bronze';
     }
 
+    public function adminIndex(Request $request)
+    {
+        try {
+            if (!$this->hasEmpresasTable()) {
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'empresas' => [],
+                        'summary' => $this->emptyAdminCompanySummary(),
+                    ],
+                ]);
+            }
+
+            $status = strtolower(trim((string) $request->input('status', 'todos')));
+            $categoria = strtolower(trim((string) $request->input('categoria', 'todas')));
+            $search = strtolower(trim((string) $request->input('search', $request->input('busca', ''))));
+
+            $query = Empresa::query()
+                ->with(['owner:id,name,email,telefone,status'])
+                ->withCount('qrCodes');
+
+            if ($status !== '' && !in_array($status, ['todos', 'all'], true)) {
+                $query->whereIn(
+                    DB::raw('LOWER(status)'),
+                    Empresa::normalizedStatusAliases($status)
+                );
+            }
+
+            if ($categoria !== '' && !in_array($categoria, ['todas', 'todos', 'all'], true)) {
+                if ($this->hasColumn('empresas', 'categoria')) {
+                    $query->whereRaw('LOWER(categoria) = ?', [$categoria]);
+                } elseif ($this->hasColumn('empresas', 'ramo')) {
+                    $query->whereRaw('LOWER(ramo) = ?', [$categoria]);
+                }
+            }
+
+            if ($search !== '') {
+                $query->where(function ($companyQuery) use ($search) {
+                    $companyQuery->whereRaw('LOWER(nome) LIKE ?', ["%{$search}%"]);
+
+                    if ($this->hasColumn('empresas', 'cnpj')) {
+                        $companyQuery->orWhereRaw('LOWER(cnpj) LIKE ?', ["%{$search}%"]);
+                    }
+                    if ($this->hasColumn('empresas', 'telefone')) {
+                        $companyQuery->orWhereRaw('LOWER(telefone) LIKE ?', ["%{$search}%"]);
+                    }
+                    if ($this->hasColumn('empresas', 'whatsapp')) {
+                        $companyQuery->orWhereRaw('LOWER(whatsapp) LIKE ?', ["%{$search}%"]);
+                    }
+
+                    $companyQuery->orWhereHas('owner', function ($ownerQuery) use ($search) {
+                        $ownerQuery
+                            ->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                            ->orWhereRaw('LOWER(email) LIKE ?', ["%{$search}%"]);
+                    });
+                });
+            }
+
+            $empresas = $query->get()
+                ->sortBy(fn (Empresa $empresa) => sprintf(
+                    '%02d-%s',
+                    $this->companyStatusOrder($empresa->operationalStatus()),
+                    strtolower((string) $empresa->nome)
+                ))
+                ->values();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'empresas' => $empresas->map(fn (Empresa $empresa) => $this->serializeAdminEmpresa($empresa))->all(),
+                    'summary' => $this->buildAdminCompanySummary(),
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Erro ao listar empresas no painel admin', [
+                'error' => $e->getMessage(),
+                'admin_id' => auth()->id(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao carregar estabelecimentos.',
+            ], 500);
+        }
+    }
+
+    public function approve(int $id)
+    {
+        return $this->transitionOperationalStatus($id, Empresa::STATUS_ACTIVE, 'ativo');
+    }
+
+    public function reject(int $id)
+    {
+        return $this->transitionOperationalStatus($id, Empresa::STATUS_REJECTED, 'inativo');
+    }
+
+    public function suspend(int $id)
+    {
+        return $this->transitionOperationalStatus($id, Empresa::STATUS_SUSPENDED, 'bloqueado');
+    }
+
+    public function adminQrCode(int $id)
+    {
+        $empresa = Empresa::query()->withCount('qrCodes')->findOrFail($id);
+        $service = app(\App\Services\QRCodeService::class);
+        $qrCode = $empresa->qrCodes()->first();
+
+        if (!$qrCode && $empresa->operationalStatus() !== Empresa::STATUS_ACTIVE) {
+            return response()->json([
+                'success' => false,
+                'message' => 'QR Code liberado apenas para empresas ativas.',
+            ], 409);
+        }
+
+        if (!$qrCode) {
+            $qrCode = $service->gerarQRCodeEmpresa($empresa);
+            $empresa->refresh()->loadCount('qrCodes');
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'empresa' => $this->serializeAdminEmpresa($empresa),
+                'qr_code' => [
+                    'id' => $qrCode->id,
+                    'code' => $qrCode->code,
+                    'active' => (bool) $qrCode->active,
+                    'usage_count' => (int) ($qrCode->usage_count ?? 0),
+                    'last_used_at' => optional($qrCode->last_used_at)->toIso8601String(),
+                    'scan_url' => $service->getCompanyScanUrl($qrCode),
+                    'qr_url' => $service->getQRCodeUrl($qrCode),
+                    'qr_image' => $service->getQRCodeImageDataUrl($qrCode),
+                ],
+            ],
+        ]);
+    }
+
+    private function transitionOperationalStatus(int $id, string $status, string $ownerStatus)
+    {
+        $empresa = Empresa::query()->with(['owner'])->withCount('qrCodes')->findOrFail($id);
+        $shouldBeActive = $status === Empresa::STATUS_ACTIVE;
+
+        $empresa->update([
+            'ativo' => $shouldBeActive,
+            'status' => $status,
+        ]);
+
+        $empresa->refresh()->loadMissing(['owner'])->loadCount('qrCodes');
+        $this->syncCompanyOwnerAccess($empresa->owner, $ownerStatus, $shouldBeActive);
+
+        if ($status === Empresa::STATUS_ACTIVE) {
+            app(\App\Services\QRCodeService::class)->gerarQRCodeEmpresa($empresa);
+            $empresa->refresh()->loadMissing(['owner'])->loadCount('qrCodes');
+        }
+
+        Log::info('Status operacional de empresa atualizado pelo admin', [
+            'empresa_id' => $empresa->id,
+            'novo_status' => $status,
+            'admin_id' => auth()->id(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => $this->companyStatusMessage($status),
+            'data' => $this->serializeAdminEmpresa($empresa),
+        ]);
+    }
+
+    private function syncCompanyOwnerAccess(?User $owner, string $status, bool $isActive): void
+    {
+        if (!$owner) {
+            return;
+        }
+
+        $payload = [];
+        if (Schema::hasColumn('users', 'status')) {
+            $payload['status'] = $status;
+        }
+        if (Schema::hasColumn('users', 'is_active')) {
+            $payload['is_active'] = $isActive;
+        }
+
+        if ($payload !== []) {
+            User::query()->whereKey($owner->id)->update($payload);
+        }
+    }
+
+    private function serializeAdminEmpresa(Empresa $empresa): array
+    {
+        $owner = $empresa->owner;
+
+        return [
+            'id' => $empresa->id,
+            'nome' => $this->cleanUtf8($empresa->nome),
+            'categoria' => $this->cleanUtf8($empresa->categoria ?? $empresa->ramo ?? 'Sem categoria'),
+            'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? 'Sem categoria'),
+            'endereco' => $this->cleanUtf8($empresa->endereco ?? 'Endereco nao informado'),
+            'telefone' => $this->cleanUtf8($empresa->telefone ?? '-'),
+            'whatsapp' => $this->cleanUtf8($empresa->whatsapp ?? ''),
+            'email' => $this->cleanUtf8($owner->email ?? '-'),
+            'responsavel' => $this->cleanUtf8($owner->name ?? '-'),
+            'responsavel_status' => $this->cleanUtf8($owner->status ?? ''),
+            'cnpj' => $this->cleanUtf8($empresa->cnpj ?? ''),
+            'logo' => $this->cleanUtf8($empresa->logo ?? '/assets/images/company1.jpg'),
+            'status' => $empresa->operationalStatus(),
+            'ativo' => (bool) $empresa->ativo,
+            'publicamente_visivel' => $empresa->isPubliclyVisible(),
+            'qr_code_ready' => (int) ($empresa->qr_codes_count ?? 0) > 0,
+            'created_at' => optional($empresa->created_at)->toISOString(),
+            'updated_at' => optional($empresa->updated_at)->toISOString(),
+        ];
+    }
+
+    private function buildAdminCompanySummary(): array
+    {
+        if (!$this->hasEmpresasTable()) {
+            return $this->emptyAdminCompanySummary();
+        }
+
+        $summary = $this->emptyAdminCompanySummary();
+        Empresa::query()->get(['status', 'ativo'])->each(function (Empresa $empresa) use (&$summary) {
+            $status = $empresa->operationalStatus();
+            $summary['total']++;
+            if (array_key_exists($status, $summary)) {
+                $summary[$status]++;
+            }
+            if ($empresa->isPubliclyVisible()) {
+                $summary['publicas']++;
+            }
+        });
+
+        return $summary;
+    }
+
+    private function emptyAdminCompanySummary(): array
+    {
+        return [
+            'total' => 0,
+            'pending' => 0,
+            'active' => 0,
+            'suspended' => 0,
+            'rejected' => 0,
+            'publicas' => 0,
+        ];
+    }
+
+    private function companyStatusOrder(string $status): int
+    {
+        return match ($status) {
+            Empresa::STATUS_PENDING => 0,
+            Empresa::STATUS_ACTIVE => 1,
+            Empresa::STATUS_SUSPENDED => 2,
+            Empresa::STATUS_REJECTED => 3,
+            default => 9,
+        };
+    }
+
+    private function companyStatusMessage(string $status): string
+    {
+        return match ($status) {
+            Empresa::STATUS_ACTIVE => 'Empresa aprovada e ativada com sucesso.',
+            Empresa::STATUS_REJECTED => 'Empresa rejeitada com sucesso.',
+            Empresa::STATUS_SUSPENDED => 'Empresa suspensa com sucesso.',
+            default => 'Status da empresa atualizado com sucesso.',
+        };
+    }
+
     /**
      * Ativar ou desativar uma empresa (admin)
      * PATCH /admin/empresas/{id}/toggle-status
      */
     public function toggleStatus(int $id)
     {
-        $empresa = \App\Models\Empresa::findOrFail($id);
+        $empresa = \App\Models\Empresa::query()->with('owner')->findOrFail($id);
         $novoStatus = !$empresa->ativo;
-        $empresa->update(['ativo' => $novoStatus]);
+        $operationalStatus = $novoStatus ? Empresa::STATUS_ACTIVE : Empresa::STATUS_SUSPENDED;
+        $empresa->update([
+            'ativo' => $novoStatus,
+            'status' => $operationalStatus,
+        ]);
+        $this->syncCompanyOwnerAccess($empresa->owner, $novoStatus ? 'ativo' : 'bloqueado', $novoStatus);
+        if ($novoStatus) {
+            app(\App\Services\QRCodeService::class)->gerarQRCodeEmpresa($empresa->fresh());
+        }
 
         Log::info('Status de empresa alterado pelo admin', [
             'empresa_id' => $id,
-            'novo_status' => $novoStatus ? 'ativo' : 'inativo',
+            'novo_status' => $operationalStatus,
             'admin_id' => auth()->id(),
         ]);
 
         return response()->json([
             'success' => true,
             'ativo' => $novoStatus,
-            'message' => $novoStatus ? 'Empresa ativada com sucesso.' : 'Empresa desativada com sucesso.',
+            'message' => $novoStatus ? 'Empresa ativada com sucesso.' : 'Empresa suspensa com sucesso.',
         ]);
     }
 }
