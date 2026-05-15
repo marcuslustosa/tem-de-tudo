@@ -13,7 +13,7 @@ class AvaliacaoService
     public function publicPayload(Empresa $empresa, int $limit = 10): array
     {
         $items = Avaliacao::query()
-            ->with(['user:id,name'])
+            ->with(['user'])
             ->where('empresa_id', $empresa->id)
             ->orderByDesc('updated_at')
             ->orderByDesc('created_at')
@@ -30,7 +30,7 @@ class AvaliacaoService
     public function customerPayload(User $customer, ?int $empresaId = null): array
     {
         $query = Avaliacao::query()
-            ->with(['empresa:id,nome,logo,status,ativo'])
+            ->with(['empresa'])
             ->where('user_id', $customer->id)
             ->orderByDesc('updated_at')
             ->orderByDesc('created_at');
@@ -52,7 +52,7 @@ class AvaliacaoService
     public function companyPayload(Empresa $empresa, int $limit = 50): array
     {
         $items = Avaliacao::query()
-            ->with(['user:id,name,email,telefone'])
+            ->with(['user'])
             ->where('empresa_id', $empresa->id)
             ->orderByDesc('updated_at')
             ->orderByDesc('created_at')
@@ -85,7 +85,7 @@ class AvaliacaoService
 
         $empresa->refresh()->atualizarAvaliacaoMedia();
 
-        return $avaliacao->fresh(['user:id,name', 'empresa:id,nome,logo,status,ativo']);
+        return $avaliacao->fresh(['user', 'empresa']);
     }
 
     public function upsertCustomerReview(Empresa $empresa, User $customer, array $attributes): Avaliacao
@@ -115,13 +115,13 @@ class AvaliacaoService
 
         $empresa->refresh()->atualizarAvaliacaoMedia();
 
-        return $avaliacao->fresh(['user:id,name', 'empresa:id,nome,logo,status,ativo']);
+        return $avaliacao->fresh(['user', 'empresa']);
     }
 
     public function findCustomerReview(Empresa $empresa, User $customer): ?Avaliacao
     {
         return Avaliacao::query()
-            ->with(['user:id,name', 'empresa:id,nome,logo,status,ativo'])
+            ->with(['user', 'empresa'])
             ->where('empresa_id', $empresa->id)
             ->where('user_id', $customer->id)
             ->first();
@@ -196,9 +196,9 @@ class AvaliacaoService
         if ($includeUser) {
             $payload['cliente'] = [
                 'id' => (int) ($avaliacao->user?->id ?? $avaliacao->user_id),
-                'nome' => $avaliacao->user?->name,
+                'nome' => $avaliacao->user?->name ?? $avaliacao->user?->nome,
                 'email' => $avaliacao->user?->email,
-                'telefone' => $avaliacao->user?->telefone,
+                'telefone' => $avaliacao->user?->telefone ?? $avaliacao->user?->phone ?? $avaliacao->user?->celular,
             ];
         }
 

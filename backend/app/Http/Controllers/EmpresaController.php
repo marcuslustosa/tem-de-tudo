@@ -221,22 +221,39 @@ class EmpresaController extends Controller
         ];
 
         if ($includeLoyaltyCard) {
-            $card = app(CartaoFidelidadeService::class)->activeCompanyCard($empresa)
-                ?? app(CartaoFidelidadeService::class)->latestCompanyCard($empresa);
+            try {
+                $loyaltyService = app(CartaoFidelidadeService::class);
+                $card = $loyaltyService->activeCompanyCard($empresa)
+                    ?? $loyaltyService->latestCompanyCard($empresa);
 
-            $payload['cartao_fidelidade'] = $card
-                ? app(CartaoFidelidadeService::class)->serializeCard($card)
-                : null;
+                $payload['cartao_fidelidade'] = $card
+                    ? $loyaltyService->serializeCard($card)
+                    : null;
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao serializar cartao fidelidade publico da empresa', [
+                    'empresa_id' => $empresa->id,
+                    'error' => $e->getMessage(),
+                ]);
+                $payload['cartao_fidelidade'] = null;
+            }
         }
 
         if ($includeBirthdayBonus) {
-            $bonusService = app(BonusAniversarioService::class);
-            $birthdayBonus = $bonusService->activeCompanyBonus($empresa)
-                ?? $bonusService->latestCompanyBonus($empresa);
+            try {
+                $bonusService = app(BonusAniversarioService::class);
+                $birthdayBonus = $bonusService->activeCompanyBonus($empresa)
+                    ?? $bonusService->latestCompanyBonus($empresa);
 
-            $payload['bonus_aniversario'] = $birthdayBonus
-                ? $bonusService->serializeBonus($birthdayBonus)
-                : null;
+                $payload['bonus_aniversario'] = $birthdayBonus
+                    ? $bonusService->serializeBonus($birthdayBonus)
+                    : null;
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao serializar bonus aniversario publico da empresa', [
+                    'empresa_id' => $empresa->id,
+                    'error' => $e->getMessage(),
+                ]);
+                $payload['bonus_aniversario'] = null;
+            }
         }
 
         return $payload;

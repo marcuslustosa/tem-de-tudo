@@ -9,6 +9,7 @@ use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AvaliacaoController extends Controller
 {
@@ -27,13 +28,41 @@ class AvaliacaoController extends Controller
             ], 404);
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $this->avaliacaoService->publicPayload(
-                $empresa,
-                (int) $request->input('limit', 10)
-            ),
-        ]);
+        try {
+            return response()->json([
+                'success' => true,
+                'data' => $this->avaliacaoService->publicPayload(
+                    $empresa,
+                    (int) $request->input('limit', 10)
+                ),
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao carregar avaliacoes publicas da empresa', [
+                'empresa_id' => $empresaId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'empresa' => [
+                        'id' => (int) $empresa->id,
+                        'nome' => $empresa->nome,
+                        'avaliacao_media' => round((float) ($empresa->avaliacao_media ?? 0), 1),
+                        'total_avaliacoes' => (int) ($empresa->total_avaliacoes ?? 0),
+                        'status' => $empresa->operationalStatus(),
+                        'ativo' => (bool) $empresa->ativo,
+                    ],
+                    'summary' => [
+                        'average' => round((float) ($empresa->avaliacao_media ?? 0), 1),
+                        'total' => (int) ($empresa->total_avaliacoes ?? 0),
+                        'distribution' => [],
+                    ],
+                    'items' => [],
+                ],
+                'warning' => 'Falha parcial ao carregar avaliacoes.',
+            ]);
+        }
     }
 
     public function store(Request $request, ?int $empresaId = null): JsonResponse
