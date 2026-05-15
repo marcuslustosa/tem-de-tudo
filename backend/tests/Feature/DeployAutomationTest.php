@@ -28,24 +28,24 @@ class DeployAutomationTest extends TestCase
         $this->assertSame(0, $exitCode);
 
         $this->assertDatabaseHas('users', [
-            'email' => 'admin.demo@temdetudo.com',
+            'email' => 'admin@demo.local',
             'perfil' => 'admin',
             'status' => 'ativo',
         ]);
 
         $this->assertDatabaseHas('users', [
-            'email' => 'empresa.demo@temdetudo.com',
+            'email' => 'malagueta@demo.local',
             'perfil' => 'empresa',
             'status' => 'ativo',
         ]);
 
         $this->assertDatabaseHas('users', [
-            'email' => 'cliente.demo@temdetudo.com',
+            'email' => 'joao@demo.local',
             'perfil' => 'cliente',
             'status' => 'ativo',
         ]);
 
-        $empresaUserId = User::query()->where('email', 'empresa.demo@temdetudo.com')->value('id');
+        $empresaUserId = User::query()->where('email', 'malagueta@demo.local')->value('id');
         $this->assertNotNull($empresaUserId);
 
         $this->assertNotNull(
@@ -62,4 +62,3 @@ class DeployAutomationTest extends TestCase
         $this->assertSame(0, $exitCode);
     }
 }
-

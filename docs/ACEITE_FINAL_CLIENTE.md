@@ -9,9 +9,9 @@
 - Responsável cliente: `________________________`
 
 ## Acessos de validação
-- Admin: `admin.demo@temdetudo.com` / `DemoAdmin@2026!`
-- Empresa: `empresa.demo@temdetudo.com` / `DemoEmpresa@2026!`
-- Cliente: `cliente.demo@temdetudo.com` / `DemoCliente@2026!`
+- Admin: `admin@demo.local` / `password`
+- Empresa: `malagueta@demo.local` / `password`
+- Cliente: `joao@demo.local` / `password`
 
 ## Checklist de aceite (Passou/Falhou)
 

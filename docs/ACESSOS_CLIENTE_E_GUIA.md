@@ -5,16 +5,16 @@
 
 ## Acessos por perfil
 - **Admin**
-  - Email: `admin.demo@temdetudo.com`
-  - Senha: `DemoAdmin@2026!`
+  - Email: `admin@demo.local`
+  - Senha: `password`
   - Uso: gestão geral (usuários, empresas, relatórios, conteúdo)
 - **Empresa**
-  - Email: `empresa.demo@temdetudo.com`
-  - Senha: `DemoEmpresa@2026!`
+  - Email: `malagueta@demo.local`
+  - Senha: `password`
   - Uso: operação do parceiro (ofertas, validação, clientes)
 - **Cliente**
-  - Email: `cliente.demo@temdetudo.com`
-  - Senha: `DemoCliente@2026!`
+  - Email: `joao@demo.local`
+  - Senha: `password`
   - Uso: saldo, histórico, recompensas e resgates
 
 ## Fluxo de validação recomendado (passo a passo)

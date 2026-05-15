@@ -24,23 +24,23 @@ class DemoAccessAuthRegressionTest extends TestCase
         $this->assertSame(0, $exitCode);
 
         $this->postJson('/api/admin/login', [
-            'email' => 'admin.demo@temdetudo.com',
-            'password' => 'DemoAdmin@2026!',
+            'email' => 'admin@demo.local',
+            'password' => 'password',
         ])
             ->assertStatus(200)
             ->assertJsonPath('success', true);
 
         $this->postJson('/api/auth/login', [
-            'email' => 'empresa.demo@temdetudo.com',
-            'password' => 'DemoEmpresa@2026!',
+            'email' => 'malagueta@demo.local',
+            'password' => 'password',
         ])
             ->assertStatus(200)
             ->assertJsonPath('success', true)
             ->assertJsonPath('user.perfil', 'empresa');
 
         $this->postJson('/api/auth/login', [
-            'email' => 'cliente.demo@temdetudo.com',
-            'password' => 'DemoCliente@2026!',
+            'email' => 'joao@demo.local',
+            'password' => 'password',
         ])
             ->assertStatus(200)
             ->assertJsonPath('success', true)
@@ -108,4 +108,3 @@ class DemoAccessAuthRegressionTest extends TestCase
             ->assertJsonPath('user.perfil', 'cliente');
     }
 }
-

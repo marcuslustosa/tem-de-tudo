@@ -24,28 +24,28 @@ class EnsureDemoAccess extends Command
         $syncPasswords = (bool) $this->option('sync-passwords');
 
         $admin = $this->upsertUser(
-            email: (string) env('DEMO_ADMIN_EMAIL', 'admin.demo@temdetudo.com'),
-            name: (string) env('DEMO_ADMIN_NAME', 'Admin Demo'),
+            email: (string) env('DEMO_ADMIN_EMAIL', 'admin@demo.local'),
+            name: (string) env('DEMO_ADMIN_NAME', 'Admin Demo i9Plus'),
             perfil: 'admin',
-            password: (string) env('DEMO_ADMIN_PASSWORD', 'DemoAdmin@2026!'),
+            password: (string) env('DEMO_ADMIN_PASSWORD', 'password'),
             telefone: '(11) 99999-1001',
             syncPassword: $syncPasswords
         );
 
         $empresaUser = $this->upsertUser(
-            email: (string) env('DEMO_EMPRESA_EMAIL', 'empresa.demo@temdetudo.com'),
-            name: (string) env('DEMO_EMPRESA_NAME', 'Empresa Demo'),
+            email: (string) env('DEMO_EMPRESA_EMAIL', 'malagueta@demo.local'),
+            name: (string) env('DEMO_EMPRESA_NAME', 'Camila Malagueta'),
             perfil: 'empresa',
-            password: (string) env('DEMO_EMPRESA_PASSWORD', 'DemoEmpresa@2026!'),
+            password: (string) env('DEMO_EMPRESA_PASSWORD', 'password'),
             telefone: '(11) 99999-1002',
             syncPassword: $syncPasswords
         );
 
         $cliente = $this->upsertUser(
-            email: (string) env('DEMO_CLIENTE_EMAIL', 'cliente.demo@temdetudo.com'),
-            name: (string) env('DEMO_CLIENTE_NAME', 'Cliente Demo'),
+            email: (string) env('DEMO_CLIENTE_EMAIL', 'joao@demo.local'),
+            name: (string) env('DEMO_CLIENTE_NAME', 'Joao Cliente Demo'),
             perfil: 'cliente',
-            password: (string) env('DEMO_CLIENTE_PASSWORD', 'DemoCliente@2026!'),
+            password: (string) env('DEMO_CLIENTE_PASSWORD', 'password'),
             telefone: '(11) 99999-1003',
             syncPassword: $syncPasswords
         );
@@ -182,14 +182,18 @@ class EnsureDemoAccess extends Command
         }
 
         $defaults = [
-            'nome' => (string) env('DEMO_EMPRESA_RAZAO', 'Empresa Demo Tem de Tudo'),
-            'ramo' => 'varejo',
-            'descricao' => 'Conta de demonstracao para validacao visual e funcional.',
-            'endereco' => 'Av. Paulista, 1000 - Sao Paulo/SP',
-            'telefone' => '(11) 4000-9000',
-            'cnpj' => (string) env('DEMO_EMPRESA_CNPJ', '98.765.432/0001-10'),
+            'nome' => (string) env('DEMO_EMPRESA_RAZAO', 'Malagueta Galpao'),
+            'ramo' => 'restaurante',
+            'categoria' => 'Restaurante',
+            'descricao' => 'Galpao gastronomico com almoco executivo, happy hour e fidelizacao por QR Code.',
+            'endereco' => 'Rua do Mercado, 128 - Centro, Sao Paulo - SP',
+            'telefone' => '(11) 4002-1101',
+            'whatsapp' => '(11) 98888-2101',
+            'instagram' => '@malaguetagalpao',
+            'facebook' => 'malaguetagalpao',
+            'cnpj' => (string) env('DEMO_EMPRESA_CNPJ', '11.111.111/0001-11'),
             'ativo' => $this->dbBooleanValue('empresas', 'ativo', true),
-            'status' => 'ativo',
+            'status' => Empresa::STATUS_ACTIVE,
             'points_multiplier' => 1.0,
             'logo' => '/img/logo.png',
         ];
