@@ -1749,9 +1749,18 @@
       const perfilViewer = auth.normalizePerfil(viewer?.perfil || viewer?.role || viewer?.tipo);
       const grid = document.getElementById('partners-grid');
       const searchInput = document.getElementById('parceiroBusca');
+      const searchBtn = document.getElementById('parceiroBuscaBtn');
+      const searchHint = document.getElementById('partnersSearchHint');
       const emptyMsg = document.getElementById('partners-empty');
       const loading = document.getElementById('partners-loading');
       const filterButtons = Array.from(document.querySelectorAll('.parceiro-filtro-btn'));
+
+      const syncSearchHint = (value = '') => {
+        if (!searchHint) return;
+        const term = String(value || '').trim();
+        const shouldWarn = term.length > 0 && term.length < 4;
+        searchHint.classList.toggle('hidden', !shouldWarn);
+      };
 
       const matchesCategory = (item, categoryKey) => {
         if (!categoryKey || categoryKey === 'todos') return true;
@@ -1794,6 +1803,14 @@
             ? `${rating.toFixed(1).replace('.', ',')} • ${reviews || 0} avaliacao(oes)`
             : 'Novo parceiro';
 
+          const linked = Boolean(
+            e?.vinculada
+            || e?.inscrito
+            || e?.ja_vinculado
+            || e?.is_linked
+            || e?.cliente_vinculado
+          );
+          const actionLabel = perfilViewer === 'cliente' && !linked ? 'Me cadastrar' : 'Abrir empresa';
           return `
             <article class="bg-surface-container-lowest rounded-[28px] p-4 flex flex-col gap-4 shadow-[0_12px_32px_rgba(11,31,58,0.06)] hover:bg-surface-container-high transition-colors cursor-pointer" data-parceiro-id="${e.id}">
               <div class="flex gap-4">
@@ -1819,7 +1836,7 @@
                   <span class="material-symbols-outlined text-sm text-[#E10098]" style="font-variation-settings: 'FILL' 1;">storefront</span>
                   Empresa ativa
                 </span>
-                <a class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-semibold text-on-primary hover:opacity-90 transition-opacity" href="/detalhe_do_parceiro.html?id=${e.id}">Abrir empresa</a>
+                <a class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-semibold text-on-primary hover:opacity-90 transition-opacity" href="/detalhe_do_parceiro.html?id=${e.id}">${actionLabel}</a>
               </div>
             </article>`;
         };
@@ -1856,9 +1873,11 @@
       };
 
       const load = async (busca = '') => {
+        const term = String(busca || '').trim();
+        syncSearchHint(term);
         loading?.classList.remove('hidden');
         const params = new URLSearchParams();
-        if (busca) params.set('busca', busca);
+        if (term && term.length >= 4) params.set('busca', term);
         const qs = params.toString() ? `?${params.toString()}` : '';
         const prefersClientEndpoint = perfilViewer === 'cliente' && stored?.token;
         const primaryPath = `${prefersClientEndpoint ? '/cliente/empresas' : '/empresas'}${qs}`;
@@ -1879,13 +1898,21 @@
         renderCards(filtered);
       };
 
-      const triggerLoad = () => load(searchInput?.value || '');
+      const triggerLoad = () => {
+        const term = String(searchInput?.value || '').trim();
+        syncSearchHint(term);
+        return load(term);
+      };
       searchInput?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
           triggerLoad();
         }
       });
+      searchInput?.addEventListener('input', () => {
+        syncSearchHint(searchInput.value || '');
+      });
+      searchBtn?.addEventListener('click', triggerLoad);
 
       filterButtons.forEach((button) => {
         if (button.dataset.boundFilter === '1') return;
@@ -1897,6 +1924,7 @@
       });
 
       setActiveFilter('todos');
+      syncSearchHint(searchInput?.value || '');
       await load();
       return;
     },
@@ -2038,13 +2066,19 @@
           const imageEl = document.getElementById('partnerBirthdayImage');
           const actionEl = document.getElementById('partnerBirthdayAction');
 
-          if (titleEl) titleEl.textContent = bonus?.titulo || 'Bonus aniversario';
+          if (titleEl) {
+            titleEl.textContent = status === 'available'
+              ? 'FELIZ ANIVERSARIO!'
+              : (bonus?.titulo || 'Bonus aniversario');
+          }
           if (statusEl) {
             statusEl.textContent = meta.label;
             statusEl.className = `inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] ${meta.badgeClass}`;
           }
           if (descriptionEl) {
-            descriptionEl.textContent = bonus?.descricao || meta.message;
+            descriptionEl.textContent = status === 'available'
+              ? (bonus?.descricao || 'Comemore seu aniversario conosco e ganhe uma cortesia especial.')
+              : (bonus?.descricao || meta.message);
           }
           if (validityEl) {
             validityEl.textContent = bonus?.validade_descricao
@@ -2127,6 +2161,7 @@
           const pointsPerVisitEl = document.getElementById('partnerLoyaltyPointsPerVisit');
           const targetEl = document.getElementById('partnerLoyaltyTarget');
           const expiryEl = document.getElementById('partnerLoyaltyExpiry');
+          const requiredLabelEl = document.getElementById('partnerLoyaltyRequiredLabel');
 
           const requiredPoints = Math.max(0, Number(loyalty?.pontos_necessarios || progress?.required_points || 0));
           const currentPoints = Math.max(0, Number(progress?.current_points || 0));
@@ -2144,11 +2179,14 @@
           if (ruleEl) {
             ruleEl.textContent = loyalty?.regra_ganho || 'Ganhe pontos por visita.';
           }
+          if (requiredLabelEl) {
+            requiredLabelEl.textContent = `${requiredPoints || 0} pontos`;
+          }
           if (rewardEl) {
             rewardEl.textContent = loyalty?.recompensa_descricao || 'Ainda nao informada';
           }
           if (progressLabelEl) {
-            progressLabelEl.textContent = progress?.progress_label || `${currentPoints} de ${requiredPoints} pontos`;
+            progressLabelEl.textContent = `${currentPoints} / ${requiredPoints} pontos`;
           }
           if (progressStatusEl) {
             progressStatusEl.textContent = rewardAvailable
@@ -2414,17 +2452,22 @@
           if (emptyEl) emptyEl.classList.toggle('hidden', items.length > 0);
 
           items.forEach((review) => {
+            const reviewerName = safeText(review?.cliente?.nome, 'Cliente');
+            const reviewerInitial = reviewerName.charAt(0).toUpperCase();
             const card = document.createElement('article');
-            card.className = 'rounded-[22px] bg-slate-50 p-4';
+            card.className = 'partner-review-item rounded-[22px] bg-slate-50 p-4';
             card.innerHTML = `
-              <div class="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p class="text-sm font-extrabold text-[#111B3F]">${safeText(review?.cliente?.nome, 'Cliente')}</p>
-                  <p class="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-[#B01774]">${renderStars(Number(review?.nota || review?.estrelas || 0))}</p>
+              <div class="partner-review-avatar">${reviewerInitial}</div>
+              <div class="partner-review-copy">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p class="text-sm font-extrabold text-[#111B3F]">${reviewerName}</p>
+                    <p class="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-[#B01774]">${renderStars(Number(review?.nota || review?.estrelas || 0))}</p>
+                  </div>
+                  <span class="text-xs text-slate-400">${formatDatePtBr(review?.updated_at || review?.created_at, 'Agora')}</span>
                 </div>
-                <span class="text-xs text-slate-400">${formatDatePtBr(review?.updated_at || review?.created_at, 'Agora')}</span>
+                <p class="mt-3 text-sm leading-6 text-slate-600">${safeText(review?.comentario, 'Cliente avaliou sem comentário adicional.')}</p>
               </div>
-              <p class="mt-3 text-sm leading-6 text-slate-600">${safeText(review?.comentario, 'Cliente avaliou sem comentário adicional.')}</p>
             `;
             listEl?.appendChild(card);
           });
@@ -2516,9 +2559,10 @@
           };
         }
 
-        setText('partner-category', companyInfo.categoria || companyInfo.ramo, 'Empresa');
+        setText('partner-category', String(companyInfo.categoria || companyInfo.ramo || 'Empresa').toUpperCase(), 'EMPRESA');
         setText('partner-name', companyInfo.nome, 'Empresa');
         setText('partner-address', companyInfo.endereco, 'Endereco nao informado');
+        setText('partner-full-address', companyInfo.endereco, 'Nao informado');
         setText('partner-about', companyInfo.descricao, 'Esta empresa ja esta pronta para receber clientes via QR Code e operar bonus ou fidelidade conforme configuracao ativa.');
         setText('partner-phone', companyInfo.telefone, 'Nao informado');
         setText('partner-whatsapp', companyInfo.whatsapp, 'Nao informado');
@@ -5925,6 +5969,10 @@
       const vazioEl = document.getElementById('estabsEmpty');
       const resumoEl = document.getElementById('estabsResumo');
       const totalEl = document.getElementById('estabsTotalBadge');
+      const pendingEl = document.getElementById('estabsPendingBadge');
+      const activeEl = document.getElementById('estabsActiveBadge');
+      const suspendedEl = document.getElementById('estabsSuspendedBadge');
+      const rejectedEl = document.getElementById('estabsRejectedBadge');
       const buscaEl = document.getElementById('estabBusca');
       const categoriaEl = document.getElementById('estabsCategoriaFilter');
       const statusEl = document.getElementById('estabsStatusFilter');
@@ -6008,6 +6056,10 @@
 
         if (listaEl) listaEl.innerHTML = '';
         if (totalEl) totalEl.textContent = `${payload?.summary?.total ?? lista.length}`;
+        if (pendingEl) pendingEl.textContent = `${payload?.summary?.pending ?? 0}`;
+        if (activeEl) activeEl.textContent = `${payload?.summary?.active ?? 0}`;
+        if (suspendedEl) suspendedEl.textContent = `${payload?.summary?.suspended ?? 0}`;
+        if (rejectedEl) rejectedEl.textContent = `${payload?.summary?.rejected ?? 0}`;
         if (resumoEl) {
           const summary = payload?.summary || {};
           resumoEl.textContent = `Pendentes ${summary.pending ?? 0} | Ativas ${summary.active ?? 0} | Suspensas ${summary.suspended ?? 0} | Rejeitadas ${summary.rejected ?? 0}`;

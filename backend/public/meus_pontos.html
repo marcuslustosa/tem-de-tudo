@@ -24,22 +24,30 @@
 <body class="pb-28 text-[#1E1E1E]" data-page="meus_pontos">
   <main class="mx-auto w-full max-w-[1180px] px-4 pb-10 pt-5 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-[430px] lg:max-w-none">
-      <header class="rounded-[32px] bg-[#080A12] px-5 py-6 text-white shadow-[0_18px_50px_rgba(8,10,18,0.26)] lg:flex lg:items-end lg:justify-between lg:px-8 lg:py-8">
-        <div>
-          <div class="flex items-center gap-3">
-            <div class="inline-flex rounded-[20px] bg-white/8 px-4 py-3 ring-1 ring-white/10">
-              <img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
+      <header class="home-client-hero rounded-[32px] px-5 py-6 text-white shadow-[0_18px_50px_rgba(8,10,18,0.26)] lg:flex lg:items-end lg:justify-between lg:px-8 lg:py-8">
+        <div class="w-full">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="inline-flex rounded-[20px] bg-white/10 px-4 py-3 ring-1 ring-white/10">
+                <img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
+              </div>
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-white/60">App de fidelidade</p>
+                <span class="mt-2 inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/72">Cliente</span>
+              </div>
             </div>
-            <span class="inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/72">Cliente</span>
+            <a id="clientHomeMenuBtn" href="/meu_perfil.html" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/14 bg-white/8 text-white shadow-[0_10px_24px_rgba(0,0,0,0.16)]" aria-label="Abrir atalhos do perfil">
+              <span class="material-symbols-outlined">more_horiz</span>
+            </a>
           </div>
-          <p class="mt-4 text-[11px] font-bold uppercase tracking-[0.24em] text-white/60">Carteira de fidelidade</p>
+          <p class="mt-5 text-[11px] font-bold uppercase tracking-[0.24em] text-white/60">Carteira de fidelidade</p>
           <h1 id="header-welcome" class="mt-3 text-[28px] font-extrabold leading-tight">Ola, Cliente</h1>
-          <p class="mt-3 max-w-xl text-sm leading-6 text-white/75">Leia o QR Code da empresa, acompanhe os parceiros vinculados e mantenha seu QR pessoal pronto para apresentar no balcao.</p>
+          <p class="mt-3 max-w-xl text-sm leading-6 text-white/78">Leia o QR Code da empresa, acompanhe os parceiros vinculados e mantenha seu QR pessoal pronto para apresentar no balcao.</p>
         </div>
-        <div class="mt-6 rounded-[28px] bg-white/8 p-4 ring-1 ring-white/10 lg:mt-0 lg:w-[320px]">
+        <div class="mt-6 rounded-[28px] bg-white/10 p-4 ring-1 ring-white/10 lg:mt-0 lg:w-[320px]">
           <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/55">Acao central</p>
           <p class="mt-2 text-lg font-extrabold">QR Code em destaque</p>
-          <p class="mt-2 text-sm text-white/70">Use "Ler QR Code" para se vincular a uma empresa ativa em segundos.</p>
+          <p class="mt-2 text-sm text-white/72">Use "Ler QR Code" para se vincular a uma empresa ativa em segundos e exiba "Meu QR Code" para validar beneficios no caixa.</p>
         </div>
       </header>
 
@@ -53,7 +61,7 @@
               <span class="material-symbols-outlined">qr_code_scanner</span>
               Ler QR Code
             </button>
-            <button id="btnShowMyQr" class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/8 px-5 text-sm font-extrabold text-white">
+            <button id="btnShowMyQr" class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-5 text-sm font-extrabold text-white">
               <span class="material-symbols-outlined">qr_code_2</span>
               Meu QR Code
             </button>
@@ -78,7 +86,7 @@
         <div class="flex items-end justify-between gap-3">
           <div>
             <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Empresas vinculadas</p>
-            <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Minha rede no app</h2>
+            <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Empresas cadastradas</h2>
           </div>
           <p id="linkedCompaniesCount" class="text-sm font-semibold text-slate-500">Carregando...</p>
         </div>
@@ -89,7 +97,7 @@
       <section id="featuredCompaniesSection" class="mt-8 hidden">
         <div>
           <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Empresas em destaque</p>
-          <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Descubra novas empresas</h2>
+          <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Novidades para pontuar</h2>
         </div>
         <div id="featuredCompaniesList" class="mt-4 grid gap-4 lg:grid-cols-2"></div>
       </section>
@@ -103,15 +111,15 @@
     </a>
     <a class="flex flex-col items-center justify-center text-slate-400" href="/parceiros_tem_de_tudo.html">
       <span class="material-symbols-outlined">storefront</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Empresas</span>
+      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Buscar</span>
     </a>
     <button id="btnBottomScan" class="flex flex-col items-center justify-center text-slate-400" type="button">
       <span class="material-symbols-outlined">qr_code_scanner</span>
       <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">QR</span>
     </button>
     <a class="flex flex-col items-center justify-center text-slate-400" href="/recompensas.html">
-      <span class="material-symbols-outlined">redeem</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Premios</span>
+      <span class="material-symbols-outlined">notifications</span>
+      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Novidades</span>
     </a>
     <a class="flex flex-col items-center justify-center text-slate-400" href="/meu_perfil.html">
       <span class="material-symbols-outlined">person</span>

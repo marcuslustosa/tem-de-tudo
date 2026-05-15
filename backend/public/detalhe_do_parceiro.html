@@ -24,9 +24,9 @@
   <main class="mx-auto w-full max-w-[1180px] px-4 pb-10 pt-5 sm:px-6 lg:px-8">
     <section class="partner-hero-card overflow-hidden rounded-[34px] bg-[#080A12] px-5 pb-7 pt-6 text-white shadow-[0_20px_60px_rgba(8,10,18,0.28)] lg:px-8 lg:pb-8">
       <div class="flex items-center justify-between gap-3">
-        <a class="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/6 px-4 text-sm font-bold text-white" href="/parceiros_tem_de_tudo.html">
-          <span class="material-symbols-outlined text-base">arrow_back</span>
-          Voltar
+        <a class="partner-hero-close inline-flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/6 px-4 text-sm font-bold text-white" href="/parceiros_tem_de_tudo.html">
+          <span class="material-symbols-outlined text-base">close</span>
+          Fechar
         </a>
         <span class="inline-flex rounded-full bg-white/8 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/68">Validacao presencial</span>
       </div>
@@ -46,8 +46,8 @@
         </div>
         <div class="partner-hero-rating flex flex-wrap items-center gap-3">
           <span id="partner-status-badge" class="inline-flex rounded-full bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/80">Ativa</span>
-          <div class="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/90">
-            <span id="partner-rating-stars">â˜†â˜†â˜†â˜†â˜†</span>
+          <div class="partner-rating-pill rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/90">
+            <span id="partner-rating-stars">★★★★★</span>
             <span class="ml-2" id="partner-rating">Novo</span>
           </div>
           <span id="partner-review-count" class="text-sm text-white/70">Sem avaliacoes ainda</span>
@@ -62,7 +62,7 @@
           <p id="partner-about" class="mt-4 text-sm leading-7 text-slate-600">Descricao nao informada.</p>
         </article>
 
-        <article id="partnerBonusCard" class="partner-surface-card partner-benefit-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
+        <article id="partnerBonusCard" class="partner-surface-card partner-benefit-card partner-bonus-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Bonus de adesao</p>
@@ -83,6 +83,7 @@
                   <p id="partnerBonusHint" class="mt-2 text-sm font-semibold text-[#111B3F]">Apresente seu QR Code no estabelecimento para resgatar.</p>
                 </div>
               </div>
+              <p class="partner-presential-note text-sm font-semibold text-[#111B3F]">Apresente seu QR Code no estabelecimento para validar.</p>
               <button id="partnerBonusAction" class="inline-flex h-12 items-center justify-center rounded-full bg-[linear-gradient(90deg,#00AFA8_0%,#133F8C_45%,#B01774_100%)] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(0,0,0,0.12)]" type="button">Ver como liberar</button>
             </div>
             <div class="overflow-hidden rounded-[26px] bg-[#F1F1F1]">
@@ -91,7 +92,7 @@
           </div>
         </article>
 
-        <article id="partnerLoyaltyCard" class="partner-surface-card partner-benefit-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
+        <article id="partnerLoyaltyCard" class="partner-surface-card partner-benefit-card partner-loyalty-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Cartao fidelidade</p>
@@ -102,21 +103,22 @@
           <div class="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px]">
             <div class="space-y-4">
               <p id="partnerLoyaltyDescription" class="text-sm leading-7 text-slate-600">A empresa pode configurar um cartao fidelidade por pontos baseado em visitas. Se voce estiver vinculado, seu progresso aparecera aqui.</p>
+              <p class="partner-loyalty-validity-line text-sm text-slate-500">Validade: <span id="partnerLoyaltyExpiry" class="font-semibold text-slate-600">Nao informada</span></p>
               <div class="grid gap-3 sm:grid-cols-2">
                 <div class="rounded-[22px] bg-slate-50 p-4">
                   <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Regra de ganho</p>
-                  <p id="partnerLoyaltyRule" class="mt-2 text-sm font-semibold text-[#111B3F]">Ganhe pontos por visita.</p>
+                  <p id="partnerLoyaltyRule" class="mt-2 text-sm font-semibold text-[#111B3F]">GANHE 1 PONTO A CADA VISITA</p>
                 </div>
                 <div class="rounded-[22px] bg-slate-50 p-4">
-                  <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Recompensa</p>
+                  <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Com <span id="partnerLoyaltyRequiredLabel">15 pontos</span>:</p>
                   <p id="partnerLoyaltyReward" class="mt-2 text-sm font-semibold text-[#111B3F]">Ainda nao informada</p>
                 </div>
               </div>
-              <div class="rounded-[24px] bg-slate-50 p-4">
+              <div id="partnerLoyaltyProgressCard" class="rounded-[24px] bg-slate-50 p-4">
                 <div class="flex items-center justify-between gap-3">
                   <div>
-                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Seu progresso</p>
-                    <p id="partnerLoyaltyProgressLabel" class="mt-2 text-lg font-extrabold text-[#111B3F]">0 de 0 pontos</p>
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Voce ja acumulou</p>
+                    <p id="partnerLoyaltyProgressLabel" class="mt-2 text-lg font-extrabold text-[#111B3F]">0 / 15 pontos</p>
                   </div>
                   <span id="partnerLoyaltyProgressStatus" class="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Sem vinculo</span>
                 </div>
@@ -139,15 +141,15 @@
                   <p id="partnerLoyaltyTarget" class="mt-2 text-2xl font-extrabold">0 pontos</p>
                 </div>
                 <div class="rounded-[20px] bg-white/8 p-4">
-                  <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/55">Validade</p>
-                  <p id="partnerLoyaltyExpiry" class="mt-2 text-sm font-semibold text-white/90">Nao informada</p>
+                  <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/55">Como validar</p>
+                  <p class="mt-2 text-sm font-semibold text-white/90">Apresente seu QR Code no estabelecimento.</p>
                 </div>
               </div>
             </div>
           </div>
         </article>
 
-        <article id="partnerPromotionsCard" class="partner-surface-card partner-benefit-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
+        <article id="partnerPromotionsCard" class="partner-surface-card partner-benefit-card partner-promotions-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Promocoes instantaneas</p>
@@ -160,7 +162,7 @@
           <p id="partnerPromotionsEmpty" class="mt-4 text-sm text-slate-500">Nenhuma promocao ativa no momento.</p>
         </article>
 
-        <article class="partner-surface-card partner-benefit-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
+        <article id="partnerBirthdayCard" class="partner-surface-card partner-benefit-card partner-birthday-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
           <div class="flex items-center justify-between gap-3">
             <div>
               <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Bonus aniversario</p>
@@ -199,7 +201,7 @@
           </div>
         </article>
 
-        <article id="partnerReviewsCard" class="partner-surface-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
+        <article id="partnerReviewsCard" class="partner-surface-card partner-reviews-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
           <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Avaliacoes</p>
@@ -208,12 +210,16 @@
             </div>
             <div class="rounded-[24px] bg-slate-50 px-5 py-4 text-right">
               <p id="partnerReviewsAverage" class="text-3xl font-extrabold text-[#111B3F]">0,0</p>
-              <p id="partnerReviewsStarsLarge" class="mt-2 text-lg font-bold text-[#B01774]">â˜†â˜†â˜†â˜†â˜†</p>
+              <p id="partnerReviewsStarsLarge" class="mt-2 text-lg font-bold text-[#B01774]">★★★★★</p>
               <p id="partnerReviewsTotal" class="mt-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Sem avaliacoes</p>
             </div>
           </div>
           <div class="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(290px,0.85fr)]">
             <div class="space-y-4">
+              <div class="flex items-center justify-between gap-3">
+                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Avaliacoes dos usuarios</p>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Mais recentes</span>
+              </div>
               <div id="partnerReviewsDistribution" class="space-y-2"></div>
               <div id="partnerReviewsList" class="space-y-3"></div>
               <p id="partnerReviewsEmpty" class="text-sm text-slate-500">Nenhuma avaliacao publicada ate agora.</p>
@@ -245,12 +251,20 @@
         <article class="partner-surface-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
           <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Contato</p>
           <div class="mt-5 space-y-4">
-            <div class="rounded-[22px] bg-slate-50 p-4">
-              <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Telefone</p>
-              <p id="partner-phone" class="mt-2 text-sm font-semibold text-[#111B3F]">Nao informado</p>
+            <div class="partner-contact-row rounded-[22px] bg-slate-50 p-4">
+              <div class="partner-contact-icon">
+                <span class="material-symbols-outlined">call</span>
+              </div>
+              <div>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Telefone</p>
+                <p id="partner-phone" class="mt-2 text-sm font-semibold text-[#111B3F]">Nao informado</p>
+              </div>
             </div>
-            <div class="rounded-[22px] bg-slate-50 p-4">
-              <div class="flex items-center justify-between gap-3">
+            <div class="partner-contact-row rounded-[22px] bg-slate-50 p-4">
+              <div class="partner-contact-icon">
+                <span class="material-symbols-outlined">chat</span>
+              </div>
+              <div class="flex flex-1 items-center justify-between gap-3">
                 <div>
                   <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">WhatsApp</p>
                   <p id="partner-whatsapp" class="mt-2 text-sm font-semibold text-[#111B3F]">Nao informado</p>
@@ -258,8 +272,20 @@
                 <a id="partnerWhatsappLink" class="hidden rounded-full bg-[#111B3F] px-4 py-2 text-xs font-bold text-white" href="#" target="_blank" rel="noreferrer">Abrir</a>
               </div>
             </div>
-            <div class="rounded-[22px] bg-slate-50 p-4">
-              <div class="flex items-center justify-between gap-3">
+            <div class="partner-contact-row rounded-[22px] bg-slate-50 p-4">
+              <div class="partner-contact-icon">
+                <span class="material-symbols-outlined">location_on</span>
+              </div>
+              <div>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Endereco</p>
+                <p id="partner-full-address" class="mt-2 text-sm font-semibold text-[#111B3F]">Nao informado</p>
+              </div>
+            </div>
+            <div class="partner-contact-row rounded-[22px] bg-slate-50 p-4">
+              <div class="partner-contact-icon">
+                <span class="material-symbols-outlined">photo_camera</span>
+              </div>
+              <div class="flex flex-1 items-center justify-between gap-3">
                 <div>
                   <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Instagram</p>
                   <p id="partner-instagram" class="mt-2 text-sm font-semibold text-[#111B3F]">Nao informado</p>
@@ -267,8 +293,11 @@
                 <a id="partnerInstagramLink" class="hidden rounded-full bg-[#111B3F] px-4 py-2 text-xs font-bold text-white" href="#" target="_blank" rel="noreferrer">Abrir</a>
               </div>
             </div>
-            <div class="rounded-[22px] bg-slate-50 p-4">
-              <div class="flex items-center justify-between gap-3">
+            <div class="partner-contact-row rounded-[22px] bg-slate-50 p-4">
+              <div class="partner-contact-icon">
+                <span class="material-symbols-outlined">thumb_up</span>
+              </div>
+              <div class="flex flex-1 items-center justify-between gap-3">
                 <div>
                   <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Facebook</p>
                   <p id="partner-facebook" class="mt-2 text-sm font-semibold text-[#111B3F]">Nao informado</p>
