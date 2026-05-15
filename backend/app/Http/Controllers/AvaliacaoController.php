@@ -9,7 +9,10 @@ use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Carbon;
 
 class AvaliacaoController extends Controller
 {
@@ -20,15 +23,17 @@ class AvaliacaoController extends Controller
 
     public function listarPorEmpresa(Request $request, int $empresaId): JsonResponse
     {
-        $empresa = Empresa::query()->publiclyVisible()->find($empresaId);
-        if (!$empresa) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Empresa nao encontrada para avaliacoes.',
-            ], 404);
-        }
+        $empresa = null;
 
         try {
+            $empresa = Empresa::query()->publiclyVisible()->find($empresaId);
+            if (!$empresa) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Empresa nao encontrada para avaliacoes.',
+                ], 404);
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => $this->avaliacaoService->publicPayload(
@@ -42,24 +47,17 @@ class AvaliacaoController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
+            $fallback = $this->buildSafePublicPayload($empresa, $empresaId, (int) $request->input('limit', 10));
+            if ($fallback === null) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Empresa nao encontrada para avaliacoes.',
+                ], 404);
+            }
+
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'empresa' => [
-                        'id' => (int) $empresa->id,
-                        'nome' => $empresa->nome,
-                        'avaliacao_media' => round((float) ($empresa->avaliacao_media ?? 0), 1),
-                        'total_avaliacoes' => (int) ($empresa->total_avaliacoes ?? 0),
-                        'status' => $empresa->operationalStatus(),
-                        'ativo' => (bool) $empresa->ativo,
-                    ],
-                    'summary' => [
-                        'average' => round((float) ($empresa->avaliacao_media ?? 0), 1),
-                        'total' => (int) ($empresa->total_avaliacoes ?? 0),
-                        'distribution' => [],
-                    ],
-                    'items' => [],
-                ],
+                'data' => $fallback,
                 'warning' => 'Falha parcial ao carregar avaliacoes.',
             ]);
         }
@@ -250,6 +248,180 @@ class AvaliacaoController extends Controller
             'success' => false,
             'message' => $message,
         ], $status);
+    }
+
+    private function buildSafePublicPayload(?Empresa $empresa, int $empresaId, int $limit = 10): ?array
+    {
+        try {
+            $empresa ??= Empresa::query()->publiclyVisible()->find($empresaId);
+        } catch (\Throwable) {
+            $empresa = null;
+        }
+
+        if (!$empresa) {
+            return null;
+        }
+
+        $average = round((float) ($empresa->avaliacao_media ?? 0), 1);
+        $total = (int) ($empresa->total_avaliacoes ?? 0);
+        $distribution = [];
+        $items = [];
+
+        if (
+            Schema::hasTable('avaliacoes')
+            && Schema::hasColumn('avaliacoes', 'empresa_id')
+            && Schema::hasColumn('avaliacoes', 'estrelas')
+        ) {
+            try {
+                $baseQuery = DB::table('avaliacoes')->where('empresa_id', $empresaId);
+
+                $aggregate = (clone $baseQuery)
+                    ->selectRaw('AVG(estrelas) as average, COUNT(*) as total')
+                    ->first();
+
+                $average = round((float) ($aggregate->average ?? $average), 1);
+                $total = (int) ($aggregate->total ?? $total);
+
+                $counts = (clone $baseQuery)
+                    ->selectRaw('estrelas, COUNT(*) as total')
+                    ->groupBy('estrelas')
+                    ->pluck('total', 'estrelas');
+
+                for ($star = 5; $star >= 1; $star -= 1) {
+                    $distribution[] = [
+                        'star' => $star,
+                        'total' => (int) ($counts[$star] ?? 0),
+                    ];
+                }
+
+                $reviewColumns = ['id', 'empresa_id', 'user_id', 'estrelas'];
+                foreach (['comentario', 'created_at', 'updated_at'] as $optionalColumn) {
+                    if (Schema::hasColumn('avaliacoes', $optionalColumn)) {
+                        $reviewColumns[] = $optionalColumn;
+                    }
+                }
+
+                $reviewRows = (clone $baseQuery)
+                    ->select($reviewColumns)
+                    ->orderByDesc('updated_at')
+                    ->orderByDesc('created_at')
+                    ->limit(max(1, $limit))
+                    ->get();
+
+                $usersById = $this->loadReviewUsers($reviewRows->pluck('user_id')->filter()->values()->all());
+
+                $items = $reviewRows->map(function ($row) use ($usersById) {
+                    $user = $usersById[(int) ($row->user_id ?? 0)] ?? null;
+
+                    return [
+                        'id' => (int) ($row->id ?? 0),
+                        'empresa_id' => (int) ($row->empresa_id ?? 0),
+                        'user_id' => (int) ($row->user_id ?? 0),
+                        'nota' => (int) ($row->estrelas ?? 0),
+                        'estrelas' => (int) ($row->estrelas ?? 0),
+                        'comentario' => $this->safeString($row->comentario ?? null),
+                        'created_at' => $this->formatTimestamp($row->created_at ?? null),
+                        'updated_at' => $this->formatTimestamp($row->updated_at ?? null),
+                        'cliente' => [
+                            'id' => (int) ($row->user_id ?? 0),
+                            'nome' => $this->safeString($user['nome'] ?? null),
+                            'email' => $this->safeString($user['email'] ?? null),
+                            'telefone' => $this->safeString($user['telefone'] ?? null),
+                        ],
+                    ];
+                })->values()->all();
+            } catch (\Throwable $nested) {
+                Log::warning('Fallback de avaliacoes publicas reduziu payload para resumo vazio', [
+                    'empresa_id' => $empresaId,
+                    'error' => $nested->getMessage(),
+                ]);
+            }
+        }
+
+        return [
+            'empresa' => [
+                'id' => (int) $empresa->id,
+                'nome' => $this->safeString($empresa->nome, 'Empresa'),
+                'avaliacao_media' => $average,
+                'total_avaliacoes' => $total,
+                'status' => $empresa->operationalStatus(),
+                'ativo' => (bool) $empresa->ativo,
+            ],
+            'summary' => [
+                'average' => $average,
+                'total' => $total,
+                'distribution' => $distribution,
+            ],
+            'items' => $items,
+        ];
+    }
+
+    private function loadReviewUsers(array $userIds): array
+    {
+        if (empty($userIds) || !Schema::hasTable('users')) {
+            return [];
+        }
+
+        $available = array_values(array_filter([
+            Schema::hasColumn('users', 'name') ? 'name' : null,
+            Schema::hasColumn('users', 'nome') ? 'nome' : null,
+            Schema::hasColumn('users', 'email') ? 'email' : null,
+            Schema::hasColumn('users', 'telefone') ? 'telefone' : null,
+            Schema::hasColumn('users', 'phone') ? 'phone' : null,
+            Schema::hasColumn('users', 'celular') ? 'celular' : null,
+        ]));
+
+        $rows = DB::table('users')
+            ->select(array_merge(['id'], $available))
+            ->whereIn('id', $userIds)
+            ->get();
+
+        $users = [];
+        foreach ($rows as $row) {
+            $users[(int) $row->id] = [
+                'nome' => $this->safeString($row->name ?? $row->nome ?? null),
+                'email' => $this->safeString($row->email ?? null),
+                'telefone' => $this->safeString($row->telefone ?? $row->phone ?? $row->celular ?? null),
+            ];
+        }
+
+        return $users;
+    }
+
+    private function formatTimestamp($value): ?string
+    {
+        if ($value instanceof \DateTimeInterface) {
+            return $value->format(DATE_ATOM);
+        }
+
+        $string = trim((string) ($value ?? ''));
+        if ($string === '') {
+            return null;
+        }
+
+        try {
+            return Carbon::parse($string)->toIso8601String();
+        } catch (\Throwable) {
+            return $this->safeString($string);
+        }
+    }
+
+    private function safeString($value, ?string $fallback = null): ?string
+    {
+        if ($value === null) {
+            return $fallback;
+        }
+
+        $string = trim((string) $value);
+        if ($string === '') {
+            return $fallback;
+        }
+
+        if (function_exists('mb_check_encoding') && !mb_check_encoding($string, 'UTF-8')) {
+            $string = @iconv('UTF-8', 'UTF-8//IGNORE', $string) ?: $fallback ?: '';
+        }
+
+        return $string !== '' ? $string : $fallback;
     }
 
     private function resolveOwnedEmpresa(User $user): ?Empresa
