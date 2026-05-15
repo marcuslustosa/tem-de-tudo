@@ -720,20 +720,15 @@
     const roleMap = perfil === 'admin'
       ? {
           '/meus_pontos.html': '/relat_rios_gerais_master.html',
-          '/parceiros_tem_de_tudo.html': '/gest_o_de_estabelecimentos.html',
-          '/detalhe_do_parceiro.html': '/gest_o_de_estabelecimentos.html',
           '/recompensas.html': '/relat_rios_gerais_master.html',
           '/hist_rico_de_uso.html': '/relat_rios_gerais_master.html',
-          '/validar_resgate.html': '/relat_rios_gerais_master.html',
         }
       : perfil === 'empresa'
         ? {
-            '/meus_pontos.html': '/dashboard_parceiro.html',
-            '/parceiros_tem_de_tudo.html': '/clientes_fidelizados_loja.html',
-            '/detalhe_do_parceiro.html': '/clientes_fidelizados_loja.html',
-            '/recompensas.html': '/gest_o_de_ofertas_parceiro.html',
-            '/hist_rico_de_uso.html': '/minhas_campanhas_loja.html',
-          }
+          '/meus_pontos.html': '/dashboard_parceiro.html',
+          '/recompensas.html': '/gest_o_de_ofertas_parceiro.html',
+          '/hist_rico_de_uso.html': '/minhas_campanhas_loja.html',
+        }
         : {};
 
     if (!Object.keys(roleMap).length) return;
@@ -1733,12 +1728,28 @@
         const { res, data } = await api.request(`/empresas/${selectedCompanyId}`, {}, { requireAuth: false, notify: false });
         ui.clearPageState();
 
+        let companyInfo = data?.data || data || {};
         if (!res.ok || data?.success === false) {
-          ui.setPageState('empty', data?.message || 'Empresa indisponivel no momento.');
-          return;
-        }
+          const fallbackListResponse = await api.request('/empresas', {}, { requireAuth: false, notify: false });
+          const fallbackList = toArray(fallbackListResponse.data?.data || fallbackListResponse.data);
+          const fallbackCompany = fallbackList.find((item) => String(item?.id || '') === String(selectedCompanyId))
+            || DEMO_PARTNERS.find((item) => String(item?.id || '') === String(selectedCompanyId));
 
-        const companyInfo = data?.data || data || {};
+          if (!fallbackCompany) {
+            ui.setPageState('empty', data?.message || 'Empresa indisponivel no momento.');
+            return;
+          }
+
+          companyInfo = {
+            ...fallbackCompany,
+            public_page_url: fallbackCompany.public_page_url || `/detalhe_do_parceiro.html?id=${encodeURIComponent(selectedCompanyId)}`,
+            publicamente_visivel: fallbackCompany.publicamente_visivel !== false,
+            status: fallbackCompany.status || 'active',
+            cartao_fidelidade: fallbackCompany.cartao_fidelidade || null,
+            bonus_aniversario: fallbackCompany.bonus_aniversario || null,
+          };
+          ui.message('Exibindo fallback demo desta empresa enquanto o detalhamento completo nao responde.', 'warning');
+        }
         const publicPromotionsResponse = await api.request(`/empresas/${selectedCompanyId}/promocoes`, {}, { requireAuth: false, notify: false });
         const publicReviewsResponse = await api.request(`/empresas/${selectedCompanyId}/avaliacoes`, {}, { requireAuth: false, notify: false });
         const publicPromotions = toArray(publicPromotionsResponse.data?.data || publicPromotionsResponse.data);
@@ -5301,19 +5312,54 @@
 
   // ---------------------- Paginas: Admin ---------------------- //
   const admin = {
+    enrichUsersDataset(baseList = []) {
+      const list = Array.isArray(baseList) ? [...baseList] : [];
+      if (list.length >= 12) return list;
+
+      const seenEmails = new Set(
+        list
+          .map((item) => String(item?.email || '').trim().toLowerCase())
+          .filter(Boolean)
+      );
+
+      [
+        { id: 'admin-demo-main', name: 'Admin Demo', email: 'admin@demo.local', perfil: 'admin', status: 'ativo' },
+        { id: 'admin-demo-sub', name: 'Operacao Demo', email: 'operacao@demo.local', perfil: 'sub-admin', status: 'ativo' },
+        { id: 'empresa-demo-1', name: 'Malagueta Galpao', email: 'malagueta@demo.local', perfil: 'empresa', status: 'ativo' },
+        { id: 'empresa-demo-2', name: 'Texano Burger', email: 'texano@demo.local', perfil: 'empresa', status: 'ativo' },
+        { id: 'empresa-demo-3', name: 'Makoto Sushi', email: 'makoto@demo.local', perfil: 'empresa', status: 'ativo' },
+        { id: 'empresa-demo-4', name: 'Florenza Boutique', email: 'florenza@demo.local', perfil: 'empresa', status: 'ativo' },
+        { id: 'cliente-demo-1', name: 'Joao Cliente Demo', email: 'joao@demo.local', perfil: 'cliente', status: 'ativo', pontos: 5 },
+        { id: 'cliente-demo-2', name: 'Maria Aniversariante', email: 'maria@demo.local', perfil: 'cliente', status: 'ativo', pontos: 14 },
+        { id: 'cliente-demo-3', name: 'Pedro Inativo', email: 'pedro@demo.local', perfil: 'cliente', status: 'bloqueado', pontos: 0 },
+        { id: 'cliente-demo-4', name: 'Ana Fidelidade', email: 'ana@demo.local', perfil: 'cliente', status: 'ativo', pontos: 16 },
+      ].forEach((candidate, idx) => {
+        const email = String(candidate.email || '').trim().toLowerCase();
+        if (!email || seenEmails.has(email)) return;
+        seenEmails.add(email);
+        list.push({
+          ...candidate,
+          created_at: candidate.created_at || new Date(Date.now() - (idx + 1) * 43200000).toISOString(),
+          updated_at: candidate.updated_at || new Date(Date.now() - idx * 21600000).toISOString(),
+        });
+      });
+
+      return list;
+    },
+
     async loadUsersDataset() {
       const primary = await api.request('/admin/users-report', {}, { notify: false });
       if (primary.res.ok) {
         const raw = primary.data?.data ?? primary.data ?? [];
         const list = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
-        return { ok: true, list };
+        return { ok: true, list: admin.enrichUsersDataset(list) };
       }
 
       const fallback = await api.request('/admin/users', {}, { notify: false });
       if (fallback.res.ok) {
         const raw = fallback.data?.data ?? fallback.data ?? [];
         const list = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
-        return { ok: true, list };
+        return { ok: true, list: admin.enrichUsersDataset(list) };
       }
       const empresas = await api.request('/empresas', {}, { requireAuth: false, notify: false });
       const empresasList = toArray(empresas.data?.data || empresas.data);
@@ -5349,7 +5395,7 @@
           status: 'ativo',
           created_at: new Date().toISOString(),
         });
-        return { ok: true, list: synthetic };
+        return { ok: true, list: admin.enrichUsersDataset(synthetic) };
       }
 
       const synthetic = [];
@@ -5383,7 +5429,7 @@
         status: 'ativo',
         created_at: new Date().toISOString(),
       });
-      return { ok: true, list: synthetic };
+      return { ok: true, list: admin.enrichUsersDataset(synthetic) };
     },
 
     async dashboard() {
@@ -5877,6 +5923,72 @@
       const ativo = (u) => ['ativo', 'active', 'enabled'].includes(statusText(u)) || u.active === true || u.ativo === true;
       const suspenso = (u) => ['suspenso', 'blocked', 'bloqueado'].includes(statusText(u)) || u.bloqueado === true;
 
+      if (!tbody.dataset.delegated) {
+        tbody.dataset.delegated = '1';
+        tbody.addEventListener('click', async (event) => {
+          const btn = event.target.closest('[data-user-action]');
+          if (!btn) return;
+
+          const tr = btn.closest('tr.data-row');
+          if (!tr) return;
+
+          const userId = tr.dataset.userId;
+          const userName = tr.dataset.userName || 'Usuario';
+          const action = btn.dataset.userAction;
+          if (!userId || !action) return;
+
+          if (action === 'toggle-status') {
+            const currentStatus = (tr.dataset.userStatus || '').toLowerCase();
+            const nextStatus = currentStatus === 'ativo' ? 'bloqueado' : 'ativo';
+            const actionLabel = currentStatus === 'ativo' ? 'bloquear' : 'reativar';
+            if (!confirm(`Deseja ${actionLabel} a conta de "${userName}"?`)) return;
+
+            const resp = await api.request(`/admin/users/${userId}/status`, {
+              method: 'PUT',
+              body: JSON.stringify({ status: nextStatus }),
+            }, { notify: false });
+
+            if (resp.res?.ok && resp.data?.success !== false) {
+              ui.message(resp.data?.message || 'Status atualizado com sucesso.', 'success');
+              await admin.usuarios();
+            } else {
+              ui.message(resp.data?.message || `Nao foi possivel ${actionLabel} a conta.`, 'error');
+            }
+            return;
+          }
+
+          if (action === 'edit-sensitive') {
+            const currentCpf = tr.dataset.userCpf || '';
+            const currentBirth = tr.dataset.userBirth || '';
+            const cpf = prompt(`CPF de ${userName} (opcional):`, currentCpf);
+            if (cpf === null) return;
+            const birth = prompt(`Data de nascimento de ${userName} (AAAA-MM-DD, opcional):`, currentBirth);
+            if (birth === null) return;
+
+            const payload = { motivo: 'Ajuste manual via painel admin' };
+            if (cpf.trim()) payload.cpf = cpf.trim();
+            if (birth.trim()) payload.data_nascimento = birth.trim();
+
+            if (!payload.cpf && !payload.data_nascimento) {
+              ui.message('Nenhuma alteracao informada.', 'info');
+              return;
+            }
+
+            const resp = await api.request(`/admin/users/${userId}/dados-sensiveis`, {
+              method: 'PUT',
+              body: JSON.stringify(payload),
+            }, { notify: false });
+
+            if (resp.res?.ok && resp.data?.success !== false) {
+              ui.message(resp.data?.message || 'Dados atualizados com sucesso.', 'success');
+              await admin.usuarios();
+            } else {
+              ui.message(resp.data?.message || 'Nao foi possivel atualizar os dados do usuario.', 'error');
+            }
+          }
+        });
+      }
+
       const atualizarMetricas = (listaAlvo) => {
         const total = listaAlvo.length;
         const ativos = listaAlvo.filter(ativo).length;
@@ -5910,6 +6022,12 @@
           const perfil = u.perfil || u.role || 'admin';
           const status = suspenso(u) ? 'Suspenso' : ativo(u) ? 'Ativo' : 'Inativo';
           const ultimo = u.last_login || u.updated_at || u.created_at || '';
+          const statusAtual = status === 'Ativo' ? 'ativo' : (status === 'Suspenso' ? 'bloqueado' : 'inativo');
+          tr.dataset.userId = u.id;
+          tr.dataset.userName = nome;
+          tr.dataset.userStatus = statusAtual;
+          tr.dataset.userCpf = u.cpf || u.documento || '';
+          tr.dataset.userBirth = u.data_nascimento || '';
           tr.innerHTML = `
             <td class="px-6 py-4">
               <div class="flex items-center gap-3">
@@ -5932,8 +6050,8 @@
             <td class="px-6 py-4 text-sm text-on-surface-variant">${ultimo || '-'}</td>
             <td class="px-6 py-4 text-right">
               <div class="flex justify-end gap-2">
-                <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container/20 rounded-lg transition-all" title="Editar"><span class="material-symbols-outlined text-xl">edit</span></button>
-                <button class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-lg transition-all" title="Bloquear"><span class="material-symbols-outlined text-xl">block</span></button>
+                <button data-user-action="edit-sensitive" class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container/20 rounded-lg transition-all" title="Editar dados sensiveis"><span class="material-symbols-outlined text-xl">edit</span></button>
+                <button data-user-action="toggle-status" class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-lg transition-all" title="${statusAtual === 'ativo' ? 'Bloquear conta' : 'Reativar conta'}"><span class="material-symbols-outlined text-xl">${statusAtual === 'ativo' ? 'block' : 'check_circle'}</span></button>
               </div>
             </td>`;
           tbody.appendChild(tr);

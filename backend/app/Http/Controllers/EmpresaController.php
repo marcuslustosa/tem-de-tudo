@@ -156,32 +156,102 @@ class EmpresaController extends Controller
     private function defaultDemoEmpresas(): array
     {
         $base = [
-            ['nome' => 'Restaurante Sabor & Arte', 'categoria' => 'restaurante', 'ramo' => 'restaurante'],
-            ['nome' => 'Academia Corpo Forte', 'categoria' => 'academia', 'ramo' => 'academia'],
-            ['nome' => 'Cafeteria Aroma Premium', 'categoria' => 'cafeteria', 'ramo' => 'cafeteria'],
-            ['nome' => 'Pet Shop Amigo Fiel', 'categoria' => 'pet_shop', 'ramo' => 'pet_shop'],
-            ['nome' => 'Salao Beleza Total', 'categoria' => 'beleza', 'ramo' => 'salao'],
-            ['nome' => 'Farmacia Saude Mais', 'categoria' => 'farmacia', 'ramo' => 'farmacia'],
-            ['nome' => 'Padaria Pao Quentinho', 'categoria' => 'padaria', 'ramo' => 'padaria'],
-            ['nome' => 'Mercado Bom Preco', 'categoria' => 'mercado', 'ramo' => 'mercado'],
-            ['nome' => 'Droga Raia Centro', 'categoria' => 'farmacia', 'ramo' => 'farmacia'],
-            ['nome' => 'Smart Fit Paulista', 'categoria' => 'academia', 'ramo' => 'academia'],
+            [
+                'nome' => 'Malagueta Galpao',
+                'descricao' => 'Galpao gastronomico com almoco executivo, happy hour e fidelizacao por QR Code.',
+                'categoria' => 'Restaurante',
+                'ramo' => 'restaurante',
+                'endereco' => 'Rua do Mercado, 128 - Centro, Sao Paulo - SP',
+                'telefone' => '(11) 4002-1101',
+                'whatsapp' => '(11) 98888-2101',
+                'instagram' => '@malaguetagalpao',
+                'facebook' => 'malaguetagalpao',
+                'email' => 'malagueta@demo.local',
+                'logo' => '/assets/images/company1.jpg',
+                'avaliacao_media' => 4.7,
+                'total_avaliacoes' => 3,
+            ],
+            [
+                'nome' => 'Texano Burger',
+                'descricao' => 'Hamburguer artesanal, combos semanais e recompensas presenciais no balcao.',
+                'categoria' => 'Hamburgueria',
+                'ramo' => 'hamburgueria',
+                'endereco' => 'Av. Paulista, 940 - Bela Vista, Sao Paulo - SP',
+                'telefone' => '(11) 4002-1102',
+                'whatsapp' => '(11) 98888-2102',
+                'instagram' => '@texanoburger',
+                'facebook' => 'texanoburger',
+                'email' => 'texano@demo.local',
+                'logo' => '/assets/images/company2.jpg',
+                'avaliacao_media' => 4.5,
+                'total_avaliacoes' => 2,
+            ],
+            [
+                'nome' => 'Makoto Sushi',
+                'descricao' => 'Sushi bar com promocoes ativas, fidelidade e bonus de aniversario do mes.',
+                'categoria' => 'Japonesa',
+                'ramo' => 'japonesa',
+                'endereco' => 'Rua Harmonia, 55 - Vila Madalena, Sao Paulo - SP',
+                'telefone' => '(11) 4002-1103',
+                'whatsapp' => '(11) 98888-2103',
+                'instagram' => '@makotosushi',
+                'facebook' => 'makotosushi',
+                'email' => 'makoto@demo.local',
+                'logo' => '/assets/images/company3.jpg',
+                'avaliacao_media' => 4.0,
+                'total_avaliacoes' => 1,
+            ],
+            [
+                'nome' => 'Florenza Boutique',
+                'descricao' => 'Boutique com beneficios recorrentes, mimo de aniversario e campanhas sazonais.',
+                'categoria' => 'Moda/Beleza',
+                'ramo' => 'moda',
+                'endereco' => 'Alameda das Flores, 210 - Jardins, Sao Paulo - SP',
+                'telefone' => '(11) 4002-1104',
+                'whatsapp' => '(11) 98888-2104',
+                'instagram' => '@florenzaboutique',
+                'facebook' => 'florenzaboutique',
+                'email' => 'florenza@demo.local',
+                'logo' => '/assets/images/company4.jpg',
+                'avaliacao_media' => 5.0,
+                'total_avaliacoes' => 3,
+            ],
+            ['nome' => 'Padaria Pao Quentinho', 'categoria' => 'Padaria', 'ramo' => 'padaria'],
+            ['nome' => 'Mercado Bom Preco', 'categoria' => 'Mercado', 'ramo' => 'mercado'],
+            ['nome' => 'Pet Shop Amigo Fiel', 'categoria' => 'Petshop', 'ramo' => 'pet_shop'],
+            ['nome' => 'Farmacia Saude Mais', 'categoria' => 'Farmacia', 'ramo' => 'farmacia'],
         ];
 
         return collect($base)->values()->map(function ($row, $idx) {
             return [
                 'id' => $idx + 1,
                 'nome' => $row['nome'],
-                'descricao' => 'Estabelecimento ativo no programa de fidelidade.',
+                'descricao' => $row['descricao'] ?? 'Estabelecimento ativo no programa de fidelidade.',
                 'categoria' => $row['categoria'],
                 'ramo' => $row['ramo'],
-                'endereco' => 'Rua Demo, ' . (200 + $idx) . ' - Sao Paulo, SP',
-                'telefone' => sprintf('(11) 9%04d-%04d', 5100 + $idx, 6100 + $idx),
-                'email' => 'contato' . ($idx + 1) . '@demo.com',
-                'logo' => '/assets/images/company' . (($idx % 4) + 1) . '.jpg',
+                'endereco' => $row['endereco'] ?? ('Rua Demo, ' . (200 + $idx) . ' - Sao Paulo, SP'),
+                'telefone' => $row['telefone'] ?? sprintf('(11) 9%04d-%04d', 5100 + $idx, 6100 + $idx),
+                'whatsapp' => $row['whatsapp'] ?? sprintf('(11) 9%04d-%04d', 7100 + $idx, 8100 + $idx),
+                'instagram' => $row['instagram'] ?? ('@empresa_demo_' . ($idx + 1)),
+                'facebook' => $row['facebook'] ?? ('empresa.demo.' . ($idx + 1)),
+                'email' => $row['email'] ?? ('contato' . ($idx + 1) . '@demo.com'),
+                'logo' => $row['logo'] ?? ('/assets/images/company' . (($idx % 4) + 1) . '.jpg'),
                 'points_multiplier' => 1 + (($idx % 3) * 0.25),
+                'avaliacao_media' => $row['avaliacao_media'] ?? 0,
+                'total_avaliacoes' => $row['total_avaliacoes'] ?? 0,
+                'public_page_url' => '/detalhe_do_parceiro.html?id=' . ($idx + 1),
+                'publicamente_visivel' => true,
+                'status' => Empresa::STATUS_ACTIVE,
+                'cartao_fidelidade' => null,
+                'bonus_aniversario' => null,
             ];
         })->toArray();
+    }
+
+    private function demoEmpresaById(int $id): ?array
+    {
+        return collect($this->demoEmpresasFromUsers())
+            ->first(fn (array $empresa) => (int) ($empresa['id'] ?? 0) === $id);
     }
 
     private function cleanUtf8($value)
@@ -387,7 +457,7 @@ class EmpresaController extends Controller
     {
         try {
             if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
-                $demo = collect($this->demoEmpresasFromUsers())->firstWhere('id', (int) $id);
+                $demo = $this->demoEmpresaById((int) $id);
                 if (!$demo) {
                     return response()->json([
                         'success' => false,
@@ -404,6 +474,14 @@ class EmpresaController extends Controller
             $this->applyEmpresaAtivoScope($empresaQuery);
             $empresa = $empresaQuery->find($id);
             if (!$empresa) {
+                $demo = $this->demoEmpresaById((int) $id);
+                if ($demo) {
+                    return response()->json([
+                        'success' => true,
+                        'data' => $demo,
+                    ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+                }
+
                 return response()->json([
                     'success' => false,
                     'message' => 'Estabelecimento nao encontrado.',
@@ -419,6 +497,19 @@ class EmpresaController extends Controller
                 'id' => $id,
                 'error' => $e->getMessage(),
             ]);
+
+            $demo = $this->demoEmpresaById((int) $id);
+            if ($demo) {
+                Log::warning('Retornando fallback demo para empresa publica', [
+                    'id' => $id,
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $demo,
+                    'warning' => 'Falha parcial ao carregar estabelecimento.',
+                ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            }
 
             return response()->json([
                 'success' => false,
