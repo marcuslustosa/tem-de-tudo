@@ -125,6 +125,190 @@
     },
   };
 
+  const DEMO_PARTNERS = [
+    {
+      id: 1,
+      nome: 'Malagueta Galpao',
+      categoria: 'Restaurante',
+      ramo: 'restaurante',
+      descricao: 'Galpao gastronomico com almoco executivo, happy hour e fidelizacao por QR Code.',
+      endereco: 'Rua do Mercado, 128 - Centro, Sao Paulo - SP',
+      telefone: '(11) 4002-1101',
+      whatsapp: '(11) 98888-2101',
+      instagram: '@malaguetagalpao',
+      facebook: 'malaguetagalpao',
+      email: 'malagueta@demo.local',
+      logo: '/assets/images/company1.jpg',
+      avaliacao_media: 4.7,
+      total_avaliacoes: 3,
+      points_multiplier: 1,
+      public_page_url: '/detalhe_do_parceiro.html?id=1',
+      publicamente_visivel: true,
+      status: 'active',
+      cartao_fidelidade: {
+        titulo: 'Cartao Fidelidade',
+        regra_ganho: 'Ganhe 1 ponto a cada visita',
+        pontos_por_visita: 1,
+        pontos_necessarios: 15,
+        recompensa_descricao: 'Ganhe uma porcao de fritas ou um lanche',
+        status: 'available',
+      },
+      bonus_aniversario: {
+        titulo: 'Parabens! Seu beneficio do mes esta liberado',
+        descricao: 'Cliente aniversariante valida o beneficio presencialmente mostrando o QR Code.',
+        imagem_url: '/assets/images/company1.jpg',
+        status: 'public',
+      },
+    },
+    {
+      id: 2,
+      nome: 'Texano Burger',
+      categoria: 'Hamburgueria',
+      ramo: 'hamburgueria',
+      descricao: 'Hamburguer artesanal, combos semanais e recompensas presenciais no balcao.',
+      endereco: 'Av. Paulista, 940 - Bela Vista, Sao Paulo - SP',
+      telefone: '(11) 4002-1102',
+      whatsapp: '(11) 98888-2102',
+      instagram: '@texanoburger',
+      facebook: 'texanoburger',
+      email: 'texano@demo.local',
+      logo: '/assets/images/company2.jpg',
+      avaliacao_media: 4.5,
+      total_avaliacoes: 2,
+      points_multiplier: 1.25,
+      public_page_url: '/detalhe_do_parceiro.html?id=2',
+      publicamente_visivel: true,
+      status: 'active',
+      cartao_fidelidade: {
+        titulo: 'Cartao Fidelidade',
+        regra_ganho: 'Ganhe 1 ponto a cada visita',
+        pontos_por_visita: 1,
+        pontos_necessarios: 15,
+        recompensa_descricao: 'Ganhe uma porcao de fritas ou um lanche',
+        status: 'available',
+      },
+      bonus_aniversario: {
+        titulo: 'Aniversariante ganha cortesia',
+        descricao: 'Apresente seu QR Code no caixa para validar presencialmente.',
+        imagem_url: '/assets/images/company2.jpg',
+        status: 'public',
+      },
+    },
+    {
+      id: 3,
+      nome: 'Makoto Sushi',
+      categoria: 'Japonesa',
+      ramo: 'japonesa',
+      descricao: 'Sushi bar com promocoes ativas, fidelidade e bonus de aniversario do mes.',
+      endereco: 'Rua Harmonia, 55 - Vila Madalena, Sao Paulo - SP',
+      telefone: '(11) 4002-1103',
+      whatsapp: '(11) 98888-2103',
+      instagram: '@makotosushi',
+      facebook: 'makotosushi',
+      email: 'makoto@demo.local',
+      logo: '/assets/images/company3.jpg',
+      avaliacao_media: 4,
+      total_avaliacoes: 1,
+      points_multiplier: 1.5,
+      public_page_url: '/detalhe_do_parceiro.html?id=3',
+      publicamente_visivel: true,
+      status: 'active',
+      cartao_fidelidade: {
+        titulo: 'Cartao Fidelidade',
+        regra_ganho: 'Ganhe 1 ponto a cada visita',
+        pontos_por_visita: 1,
+        pontos_necessarios: 15,
+        recompensa_descricao: 'Ganhe uma porcao de fritas ou um lanche',
+        status: 'available',
+      },
+      bonus_aniversario: {
+        titulo: 'Presente do aniversariante',
+        descricao: 'Liberado para clientes elegiveis no mes do aniversario.',
+        imagem_url: '/assets/images/company3.jpg',
+        status: 'public',
+      },
+    },
+    {
+      id: 4,
+      nome: 'Florenza Boutique',
+      categoria: 'Moda/Beleza',
+      ramo: 'moda',
+      descricao: 'Boutique com beneficios recorrentes, mimo de aniversario e campanhas sazonais.',
+      endereco: 'Alameda das Flores, 210 - Jardins, Sao Paulo - SP',
+      telefone: '(11) 4002-1104',
+      whatsapp: '(11) 98888-2104',
+      instagram: '@florenzaboutique',
+      facebook: 'florenzaboutique',
+      email: 'florenza@demo.local',
+      logo: '/assets/images/company4.jpg',
+      avaliacao_media: 5,
+      total_avaliacoes: 3,
+      points_multiplier: 1,
+      public_page_url: '/detalhe_do_parceiro.html?id=4',
+      publicamente_visivel: true,
+      status: 'active',
+      cartao_fidelidade: {
+        titulo: 'Cartao Fidelidade',
+        regra_ganho: 'Ganhe 1 ponto a cada visita',
+        pontos_por_visita: 1,
+        pontos_necessarios: 15,
+        recompensa_descricao: 'Ganhe uma porcao de fritas ou um lanche',
+        status: 'available',
+      },
+      bonus_aniversario: {
+        titulo: 'Mimo do mes de aniversario',
+        descricao: 'Valide seu presente diretamente com a equipe da loja.',
+        imagem_url: '/assets/images/company4.jpg',
+        status: 'public',
+      },
+    },
+  ];
+
+  const DEMO_ADMIN_COMPANIES = [
+    ...DEMO_PARTNERS.map((company, idx) => ({
+      ...company,
+      responsavel: ['Marina Rocha', 'Caio Torres', 'Hiro Tanaka', 'Livia Salles'][idx] || 'Equipe Demo',
+      status: 'active',
+      ativo: true,
+      publicamente_visivel: true,
+      qr_code_ready: true,
+    })),
+    {
+      id: 101,
+      nome: 'Empresa Pendente Demo',
+      categoria: 'Servicos',
+      ramo: 'servicos',
+      descricao: 'Cadastro aguardando aprovacao para entrar na vitrine publica.',
+      endereco: 'Rua do Cadastro, 88 - Campinas, SP',
+      telefone: '(19) 4002-8801',
+      whatsapp: '(19) 98888-8801',
+      email: 'pendente@demo.local',
+      responsavel: 'Felipe Cadastro',
+      logo: '/assets/images/company2.jpg',
+      status: 'pending',
+      ativo: false,
+      publicamente_visivel: false,
+      qr_code_ready: false,
+    },
+    {
+      id: 102,
+      nome: 'Empresa Suspensa Demo',
+      categoria: 'Varejo',
+      ramo: 'varejo',
+      descricao: 'Cadastro suspenso para demonstrar governanca e reativacao.',
+      endereco: 'Av. de Testes, 450 - Osasco, SP',
+      telefone: '(11) 4002-8802',
+      whatsapp: '(11) 98888-8802',
+      email: 'suspensa@demo.local',
+      responsavel: 'Carla Compliance',
+      logo: '/assets/images/company3.jpg',
+      status: 'suspended',
+      ativo: false,
+      publicamente_visivel: false,
+      qr_code_ready: true,
+    },
+  ];
+
   function safeImage(url, fallback = IMAGE_FALLBACKS.store) {
     if (!url || typeof url !== 'string') return fallback;
     const trimmed = url.trim();
@@ -1560,20 +1744,14 @@
 
 
     async parceiros() {
-      if (!(await auth.guard(['cliente']))) return;
-
+      const stored = auth.getStored();
+      const viewer = auth.normalizeUser(stored?.user);
+      const perfilViewer = auth.normalizePerfil(viewer?.perfil || viewer?.role || viewer?.tipo);
       const grid = document.getElementById('partners-grid');
       const searchInput = document.getElementById('parceiroBusca');
       const emptyMsg = document.getElementById('partners-empty');
       const loading = document.getElementById('partners-loading');
       const filterButtons = Array.from(document.querySelectorAll('.parceiro-filtro-btn'));
-
-      const DEMO_PARTNERS = [
-        { id: 1, nome: 'Malagueta Galpao', categoria: 'Restaurante', ramo: 'restaurante', logo: '/assets/images/company1.jpg', endereco: 'Rua do Mercado, 128 - Centro', avaliacao_media: 4.7, total_avaliacoes: 3 },
-        { id: 2, nome: 'Texano Burger', categoria: 'Hamburgueria', ramo: 'hamburgueria', logo: '/assets/images/company2.jpg', endereco: 'Av. Paulista, 940 - Bela Vista', avaliacao_media: 4.5, total_avaliacoes: 2 },
-        { id: 3, nome: 'Makoto Sushi', categoria: 'Japonesa', ramo: 'japonesa', logo: '/assets/images/company3.jpg', endereco: 'Rua Harmonia, 55 - Vila Madalena', avaliacao_media: 4.0, total_avaliacoes: 1 },
-        { id: 4, nome: 'Florenza Boutique', categoria: 'Moda/Beleza', ramo: 'moda', logo: '/assets/images/company4.jpg', endereco: 'Alameda das Flores, 210 - Jardins', avaliacao_media: 5.0, total_avaliacoes: 3 },
-      ];
 
       const matchesCategory = (item, categoryKey) => {
         if (!categoryKey || categoryKey === 'todos') return true;
@@ -1682,9 +1860,16 @@
         const params = new URLSearchParams();
         if (busca) params.set('busca', busca);
         const qs = params.toString() ? `?${params.toString()}` : '';
-        const { data } = await api.request(`/cliente/empresas${qs}`);
+        const prefersClientEndpoint = perfilViewer === 'cliente' && stored?.token;
+        const primaryPath = `${prefersClientEndpoint ? '/cliente/empresas' : '/empresas'}${qs}`;
+        const primaryResponse = await api.request(primaryPath, {}, { requireAuth: false, notify: false });
+        let lista = toArray(primaryResponse.data?.data || primaryResponse.data);
+
+        if ((!primaryResponse.res?.ok || !lista.length) && prefersClientEndpoint) {
+          const publicResponse = await api.request(`/empresas${qs}`, {}, { requireAuth: false, notify: false });
+          lista = toArray(publicResponse.data?.data || publicResponse.data);
+        }
         loading?.classList.add('hidden');
-        let lista = data?.data || data || [];
 
         if (!Array.isArray(lista) || lista.length === 0) {
           lista = DEMO_PARTNERS;
@@ -5347,6 +5532,45 @@
       return list;
     },
 
+    enrichCompaniesDataset(baseList = []) {
+      const list = Array.isArray(baseList) ? [...baseList] : [];
+      const seenIds = new Set(list.map((item) => String(item?.id || '')).filter(Boolean));
+      const seenNames = new Set(
+        list
+          .map((item) => safeText(item?.nome || item?.nome_fantasia || item?.name, '').toLowerCase())
+          .filter(Boolean)
+      );
+
+      DEMO_ADMIN_COMPANIES.forEach((candidate, idx) => {
+        const idKey = String(candidate?.id || '');
+        const nameKey = safeText(candidate?.nome || candidate?.name, '').toLowerCase();
+        if ((idKey && seenIds.has(idKey)) || (nameKey && seenNames.has(nameKey))) return;
+
+        if (idKey) seenIds.add(idKey);
+        if (nameKey) seenNames.add(nameKey);
+
+        list.push({
+          ...candidate,
+          created_at: candidate.created_at || new Date(Date.now() - (idx + 1) * 86400000).toISOString(),
+          updated_at: candidate.updated_at || new Date(Date.now() - idx * 43200000).toISOString(),
+        });
+      });
+
+      return list;
+    },
+
+    summarizeCompanies(list = []) {
+      const summary = { total: list.length, pending: 0, active: 0, suspended: 0, rejected: 0 };
+      list.forEach((item) => {
+        const status = safeText(item?.status, '').toLowerCase();
+        if (status === 'pending') summary.pending += 1;
+        else if (status === 'active' || status === 'ativo') summary.active += 1;
+        else if (status === 'suspended' || status === 'suspenso') summary.suspended += 1;
+        else if (status === 'rejected' || status === 'rejeitado') summary.rejected += 1;
+      });
+      return summary;
+    },
+
     async loadUsersDataset() {
       const primary = await api.request('/admin/users-report', {}, { notify: false });
       if (primary.res.ok) {
@@ -5399,7 +5623,7 @@
       }
 
       const synthetic = [];
-      DEMO.admin.empresas.forEach((e, idx) => {
+      DEMO_ADMIN_COMPANIES.forEach((e, idx) => {
         synthetic.push({
           id: `emp-fallback-${idx + 1}`,
           name: e.nome || `Estabelecimento ${idx + 1}`,
@@ -5450,7 +5674,7 @@
       const summaryCards = adminSummary?.cards || {};
       const totals = statsData?.totais || {};
       const empresasListApi = toArray(empresas.data?.data || empresas.data);
-      const empresasList = empresasListApi.length ? empresasListApi : DEMO.admin.empresas;
+      const empresasList = empresasListApi.length ? admin.enrichCompaniesDataset(empresasListApi) : DEMO_ADMIN_COMPANIES;
       const mergedTotals = {
         ...DEMO.admin.totals,
         ...totals,
@@ -5731,12 +5955,23 @@
         ui.setPageState('loading', 'Carregando estabelecimentos...');
         const { res, data } = await api.request(`/admin/empresas${params.toString() ? `?${params.toString()}` : ''}`, {}, { notify: false });
         if (!res.ok || data?.success === false) {
-          ui.setPageState('error', data?.message || 'Nao foi possivel carregar estabelecimentos.');
-          return null;
+          const fallbackCompanies = admin.enrichCompaniesDataset(DEMO_ADMIN_COMPANIES);
+          ui.clearPageState();
+          ui.message(data?.message || 'Exibindo estabelecimentos demo enquanto o endpoint admin nao responde.', 'warning');
+          return {
+            empresas: fallbackCompanies,
+            summary: admin.summarizeCompanies(fallbackCompanies),
+          };
         }
 
         ui.clearPageState();
-        return data?.data || { empresas: [], summary: null };
+        const payload = data?.data || { empresas: [], summary: null };
+        const enrichedCompanies = admin.enrichCompaniesDataset(toArray(payload?.empresas));
+        return {
+          ...payload,
+          empresas: enrichedCompanies,
+          summary: payload?.summary || admin.summarizeCompanies(enrichedCompanies),
+        };
       };
 
       const renderLista = async () => {
@@ -5786,6 +6021,10 @@
         vazioEl?.classList.add('hidden');
         lista.forEach((e) => {
           const meta = statusMeta[e.status] || statusMeta.pending;
+          const detailsHref = e.publicamente_visivel
+            ? `/detalhe_do_parceiro.html?id=${encodeURIComponent(e.id)}`
+            : `/gest_o_de_estabelecimentos.html?empresa=${encodeURIComponent(e.id)}`;
+          const detailsLabel = e.publicamente_visivel ? 'Ver perfil' : 'Ver cadastro';
           const card = document.createElement('div');
           card.className = 'bg-surface-container-lowest p-5 rounded-xl flex flex-col md:flex-row gap-6 items-start group hover:bg-surface-container-low transition-all border border-transparent hover:border-primary/10';
           card.innerHTML = /* html */ `
@@ -5816,8 +6055,8 @@
                 <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="chat">chat</span><span>${e.whatsapp || '-'}</span></div>
               </div>
               <div class="mt-4 flex flex-wrap gap-2">
-                <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(e.id)}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity">
-                  Ver perfil
+                <a href="${detailsHref}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity">
+                  ${detailsLabel}
                   <span class="material-symbols-outlined text-base" data-icon="chevron_right">chevron_right</span>
                 </a>
                 <button data-company-action="${meta.action}" data-company-id="${e.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${meta.actionClass} text-xs font-bold hover:opacity-90 transition-opacity">
@@ -6264,7 +6503,7 @@
       const usersList = usersDataset.ok ? usersDataset.list : [];
       const usersPayload = { total: usersList.length };
       const empresasListApi = toArray(empresasResp.data?.data || empresasResp.data);
-      const empresasList = empresasListApi.length ? empresasListApi : DEMO.admin.empresas;
+      const empresasList = empresasListApi.length ? admin.enrichCompaniesDataset(empresasListApi) : DEMO_ADMIN_COMPANIES;
       const checkData = checkins.data?.data || checkins.data || {};
       const fallbackUsers = usersList.length ? usersList.length : DEMO.admin.totals.usuarios;
 
