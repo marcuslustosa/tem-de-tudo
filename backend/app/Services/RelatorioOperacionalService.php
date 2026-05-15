@@ -276,7 +276,13 @@ class RelatorioOperacionalService
                 ->keyBy('user_id')
             : collect();
 
-        return compact('loyalty', 'promotions', 'bonus_adesao', 'bonus_aniversario', 'points');
+        return [
+            'loyalty' => $loyalty,
+            'promotions' => $promotions,
+            'bonus_adesao' => $bonusAdesao,
+            'bonus_aniversario' => $bonusAniversario,
+            'points' => $points,
+        ];
     }
 
     private function serializeLinkedCustomer(

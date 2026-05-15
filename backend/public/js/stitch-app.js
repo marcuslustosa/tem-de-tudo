@@ -159,6 +159,15 @@
     return parsed || fallback;
   }
 
+  function normalizeCategoryKey(value) {
+    return safeText(value)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  }
+
   function toNumber(...values) {
     for (const value of values) {
       if (value === null || value === undefined || value === '') continue;
@@ -1562,6 +1571,40 @@
       const searchInput = document.getElementById('parceiroBusca');
       const emptyMsg = document.getElementById('partners-empty');
       const loading = document.getElementById('partners-loading');
+      const filterButtons = Array.from(document.querySelectorAll('.parceiro-filtro-btn'));
+
+      const DEMO_PARTNERS = [
+        { id: 1, nome: 'Malagueta Galpao', categoria: 'Restaurante', ramo: 'restaurante', logo: '/assets/images/company1.jpg', endereco: 'Rua do Mercado, 128 - Centro', avaliacao_media: 4.7, total_avaliacoes: 3 },
+        { id: 2, nome: 'Texano Burger', categoria: 'Hamburgueria', ramo: 'hamburgueria', logo: '/assets/images/company2.jpg', endereco: 'Av. Paulista, 940 - Bela Vista', avaliacao_media: 4.5, total_avaliacoes: 2 },
+        { id: 3, nome: 'Makoto Sushi', categoria: 'Japonesa', ramo: 'japonesa', logo: '/assets/images/company3.jpg', endereco: 'Rua Harmonia, 55 - Vila Madalena', avaliacao_media: 4.0, total_avaliacoes: 1 },
+        { id: 4, nome: 'Florenza Boutique', categoria: 'Moda/Beleza', ramo: 'moda', logo: '/assets/images/company4.jpg', endereco: 'Alameda das Flores, 210 - Jardins', avaliacao_media: 5.0, total_avaliacoes: 3 },
+      ];
+
+      const matchesCategory = (item, categoryKey) => {
+        if (!categoryKey || categoryKey === 'todos') return true;
+        const labels = [
+          normalizeCategoryKey(item?.categoria),
+          normalizeCategoryKey(item?.ramo),
+          normalizeCategoryKey(item?.nome),
+        ].filter(Boolean).join(' ');
+
+        switch (categoryKey) {
+          case 'restaurantes':
+            return /(restaurante|hamburgueria|pizzaria|alimentacao|comida|burger)/.test(labels);
+          case 'sorveterias':
+            return /(sorvete|sorveteria|gelato|acai)/.test(labels);
+          case 'bares':
+            return /(bar|boteco|pub|chopp)/.test(labels);
+          case 'japonesa':
+            return /(japonesa|sushi|ramen|oriental)/.test(labels);
+          case 'petshops':
+            return /(pet|petshop|veterinaria)/.test(labels);
+          case 'beleza':
+            return /(beleza|moda|boutique|salao|barbearia|estetica)/.test(labels);
+          default:
+            return true;
+        }
+      };
 
       const renderCards = (lista = []) => {
         if (!grid) return;
@@ -1571,33 +1614,42 @@
           return;
         }
         emptyMsg?.classList.add('hidden');
-        const tpl = (e) => `
-          <article class="bg-surface-container-lowest rounded-xl p-4 flex flex-col gap-4 shadow-[0_8px_32px_rgba(11,31,58,0.06)] hover:bg-surface-container-high transition-colors cursor-pointer" data-parceiro-id="${e.id}">
-            <div class="flex gap-4">
-              <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container">
-                <img class="w-full h-full object-cover" src="${safeImage(e.logo, IMAGE_FALLBACKS.store)}" alt="${e.nome || 'Parceiro'}" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="flex justify-between items-start gap-2">
-                  <div>
-                    <p class="font-label text-label-sm text-tertiary font-bold tracking-wider mb-1 uppercase">${e.categoria || e.ramo || 'Parceiro'}</p>
-                    <h3 class="font-headline font-bold text-title-md text-on-surface truncate">${e.nome || ''}</h3>
+        const tpl = (e) => {
+          const rating = toNumber(e?.avaliacao_media, e?.rating, 0);
+          const reviews = toNumber(e?.total_avaliacoes, e?.reviews_count, 0);
+          const ratingLabel = rating > 0
+            ? `${rating.toFixed(1).replace('.', ',')} • ${reviews || 0} avaliacao(oes)`
+            : 'Novo parceiro';
+
+          return `
+            <article class="bg-surface-container-lowest rounded-[28px] p-4 flex flex-col gap-4 shadow-[0_12px_32px_rgba(11,31,58,0.06)] hover:bg-surface-container-high transition-colors cursor-pointer" data-parceiro-id="${e.id}">
+              <div class="flex gap-4">
+                <div class="w-20 h-20 rounded-[22px] overflow-hidden flex-shrink-0 bg-surface-container">
+                  <img class="w-full h-full object-cover" src="${safeImage(e.logo, IMAGE_FALLBACKS.store)}" alt="${safeText(e.nome, 'Parceiro')}" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-start gap-2">
+                    <div>
+                      <p class="font-label text-[11px] text-tertiary font-bold tracking-[0.18em] mb-1 uppercase">${safeText(e.categoria || e.ramo, 'Parceiro')}</p>
+                      <h3 class="font-headline font-bold text-lg text-on-surface leading-tight">${safeText(e.nome, 'Parceiro')}</h3>
+                    </div>
                   </div>
-                </div>
-                <div class="inline-flex items-center gap-1.5 mt-2 px-2 py-1 bg-secondary-container/30 rounded-lg border border-secondary-container/50">
-                  <span class="material-symbols-outlined text-secondary text-sm" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
-                  <span class="text-secondary font-bold text-xs">${e.points_multiplier ? `${e.points_multiplier}x pontos` : 'Parceiro'}</span>
+                  <div class="mt-2 flex items-center gap-2 text-xs text-slate-500">
+                    <span class="font-bold text-amber-400">${renderStars(rating)}</span>
+                    <span>${ratingLabel}</span>
+                  </div>
+                  <p class="mt-2 text-sm text-on-surface-variant line-clamp-2">${safeText(e.endereco, 'Endereco nao informado')}</p>
                 </div>
               </div>
-            </div>
-            <div class="flex items-center justify-between pt-2 border-t border-surface-container">
-              <div class="flex items-center gap-1 text-outline text-xs">
-                <span class="material-symbols-outlined text-xs" data-icon="location_on">location_on</span>
-                <span>${e.endereco || ""}</span>
+              <div class="flex items-center justify-between gap-3 pt-2 border-t border-surface-container">
+                <span class="inline-flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 text-[11px] font-semibold text-on-surface-variant">
+                  <span class="material-symbols-outlined text-sm text-[#E10098]" style="font-variation-settings: 'FILL' 1;">storefront</span>
+                  Empresa ativa
+                </span>
+                <a class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-semibold text-on-primary hover:opacity-90 transition-opacity" href="/detalhe_do_parceiro.html?id=${e.id}">Abrir empresa</a>
               </div>
-              <a class="bg-primary text-on-primary px-4 py-2 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity" href="/detalhe_do_parceiro.html?id=${e.id}">Ver parceiro</a>
-            </div>
-          </article>`;
+            </article>`;
+        };
         grid.innerHTML = lista.map(tpl).join('');
         grid.querySelectorAll('[data-parceiro-id]').forEach((card) => {
           const id = card.getAttribute('data-parceiro-id');
@@ -1610,38 +1662,44 @@
         });
       };
 
-      let activeRamo = '';
+      let activeCategory = 'todos';
 
-      const load = async (busca = '', ramo = '') => {
+      const setActiveFilter = (categoryKey) => {
+        activeCategory = categoryKey || 'todos';
+        filterButtons.forEach((button) => {
+          const isActive = (button.dataset.categoryKey || 'todos') === activeCategory;
+          button.classList.toggle('is-active', isActive);
+          if (button.classList.contains('parceiro-category-card')) {
+            button.classList.toggle('bg-primary', isActive);
+            button.classList.toggle('text-white', isActive);
+            button.classList.toggle('border-primary/10', !isActive);
+          } else {
+            button.classList.toggle('bg-primary', isActive);
+            button.classList.toggle('text-white', isActive);
+            button.classList.toggle('bg-surface-container', !isActive);
+            button.classList.toggle('text-on-surface-variant', !isActive);
+          }
+        });
+      };
+
+      const load = async (busca = '') => {
         loading?.classList.remove('hidden');
         const params = new URLSearchParams();
         if (busca) params.set('busca', busca);
-        if (ramo) params.set('ramo', ramo);
         const qs = params.toString() ? `?${params.toString()}` : '';
         const { data } = await api.request(`/cliente/empresas${qs}`);
         loading?.classList.add('hidden');
         let lista = data?.data || data || [];
-        
-        // Fallback: dados fictícios se API retornar vazio
+
         if (!Array.isArray(lista) || lista.length === 0) {
-          lista = [
-            { id: 1, nome: 'Academia Corpo Forte', categoria: 'Saúde e Bem-estar', ramo: 'academia', logo: '', endereco: 'Av. Principal, 123', points_multiplier: 1.5, meus_pontos: 0 },
-            { id: 2, nome: 'Pizzaria Bella Napoli', categoria: 'Alimentação', ramo: 'restaurante', logo: '', endereco: 'Rua das Pizzas, 456', points_multiplier: 2.0, meus_pontos: 0 },
-            { id: 3, nome: 'Farmácia Saúde Total', categoria: 'Saúde', ramo: 'farmacia', logo: '', endereco: 'Centro, 789', points_multiplier: 1.0, meus_pontos: 0 },
-            { id: 4, nome: 'Supermercado Silva', categoria: 'Varejo', ramo: 'mercado', logo: '', endereco: 'Vila Nova, 321', points_multiplier: 1.0, meus_pontos: 0 },
-            { id: 5, nome: 'Cafeteria Aroma & Sabor', categoria: 'Alimentação', ramo: 'restaurante', logo: '', endereco: 'Jardins, 654', points_multiplier: 1.5, meus_pontos: 0 },
-            { id: 6, nome: 'Pet Shop Amigo Fiel', categoria: 'Pet', ramo: 'pet', logo: '', endereco: 'Zona Sul, 987', points_multiplier: 1.0, meus_pontos: 0 },
-            { id: 7, nome: 'Academia FitLife', categoria: 'Saúde e Bem-estar', ramo: 'academia', logo: '', endereco: 'Shopping Center', points_multiplier: 1.5, meus_pontos: 0 },
-            { id: 8, nome: 'Restaurante Sabor & Arte', categoria: 'Alimentação', ramo: 'restaurante', logo: '', endereco: 'Centro Histórico, 111', points_multiplier: 2.0, meus_pontos: 0 },
-            { id: 9, nome: 'Livraria Cultura & Saber', categoria: 'Cultura', ramo: 'loja', logo: '', endereco: 'Av. Cultural, 222', points_multiplier: 1.0, meus_pontos: 0 },
-            { id: 10, nome: 'Salão de Beleza Glamour', categoria: 'Beleza', ramo: 'salao', logo: '', endereco: 'Rua Fashion, 333', points_multiplier: 1.5, meus_pontos: 0 },
-          ];
+          lista = DEMO_PARTNERS;
         }
-        
-        renderCards(Array.isArray(lista) ? lista : []);
+
+        const filtered = lista.filter((item) => matchesCategory(item, activeCategory));
+        renderCards(filtered);
       };
 
-      const triggerLoad = () => load(searchInput?.value || '', activeRamo);
+      const triggerLoad = () => load(searchInput?.value || '');
       searchInput?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -1649,27 +1707,16 @@
         }
       });
 
-      // Filtros de categoria (botões TODOS / SUPERMERCADOS / etc.)
-      const MAP_CATEGORIA = {
-        'TODOS': '',
-        'SUPERMERCADOS': 'mercado',
-        'LOJAS': 'loja',
-        'FARMÁCIAS': 'farmacia',
-        'FARM?CIAS': 'farmacia',
-        'GASTRONOMIA': 'restaurante',
-      };
-      document.querySelectorAll('.parceiro-filtro-btn, main button[class*="rounded-full"]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.parceiro-filtro-btn, main button[class*="rounded-full"]').forEach((b) => {
-            b.className = b.className.replace('bg-primary text-on-primary', 'bg-surface-container-high text-on-surface-variant');
-          });
-          btn.className = btn.className.replace('bg-surface-container-high text-on-surface-variant', 'bg-primary text-on-primary');
-          const label = (btn.textContent || '').trim().toUpperCase();
-          activeRamo = MAP_CATEGORIA[label] ?? label.toLowerCase();
+      filterButtons.forEach((button) => {
+        if (button.dataset.boundFilter === '1') return;
+        button.dataset.boundFilter = '1';
+        button.addEventListener('click', () => {
+          setActiveFilter(button.dataset.categoryKey || 'todos');
           triggerLoad();
         });
       });
 
+      setActiveFilter('todos');
       await load();
       return;
     },
@@ -2775,12 +2822,23 @@
       const user = await auth.ensure();
       let dados = {};
       let empresaData = null;
+      let dashboardData = {};
+      let linkedCompanies = [];
       const perfil = auth.normalizePerfil(user?.perfil || user?.role || user?.tipo);
 
       if (perfil === 'cliente') {
         try {
-          const resp = await api.request('/pontos/meus-dados', {}, { notify: false });
+          const [resp, dashboardResp] = await Promise.all([
+            api.request('/pontos/meus-dados', {}, { notify: false }),
+            api.request('/cliente/dashboard', {}, { notify: false }),
+          ]);
           dados = resp.data?.data || {};
+          dashboardData = dashboardResp.data?.data || {};
+          linkedCompanies = toArray(
+            dashboardData?.empresas_vinculadas
+            || dashboardData?.empresas
+            || dashboardData?.linked_companies
+          );
         } catch (_) {}
       } else if (perfil === 'empresa') {
         try {
@@ -2811,10 +2869,12 @@
       }
       ui.clearPageState();
 
+      const headerGreeting = document.getElementById('profileHeaderGreeting');
       const heroName = document.getElementById('hero-name');
       const heroLevel = document.getElementById('hero-level');
       const heroStatus = document.getElementById('hero-status');
       const heroPoints = document.getElementById('hero-points');
+      const heroMetricLabel = document.getElementById('heroMetricLabel');
       const heroProgressText = document.getElementById('hero-progress-text');
       const heroProgressBar = document.getElementById('hero-progress-bar');
 
@@ -2911,14 +2971,74 @@
         btn.addEventListener('click', go(target));
       });
 
-      if (heroName) heroName.textContent = user?.name || user?.nome || 'Usuario';
+      const safeProfileName = safeText(user?.name || user?.nome, 'Usuario');
+      if (headerGreeting) headerGreeting.textContent = `Ola, ${safeProfileName}`;
+      if (heroName) heroName.textContent = safeProfileName;
       if (heroLevel) heroLevel.textContent = perfil ? perfil.toUpperCase() : 'MEMBRO';
       if (heroStatus) heroStatus.textContent = user?.status || 'Ativo';
       if (heroPoints) heroPoints.textContent = pontos;
+      if (heroMetricLabel) heroMetricLabel.textContent = 'pontos';
       if (heroProgressText) heroProgressText.textContent = `Faltam ${nextTarget - pontos} para o proximo nivel`;
       if (heroProgressBar) heroProgressBar.style.width = `${perc}%`;
 
+      if (perfil === 'empresa') {
+        const totalClientes = Number(empresaData?.total_clientes || 0);
+        const promocoesAtivas = Number(empresaData?.promocoes_ativas || 0);
+        if (heroPoints) heroPoints.textContent = totalClientes;
+        if (heroMetricLabel) heroMetricLabel.textContent = 'clientes';
+        if (heroProgressText) heroProgressText.textContent = `${promocoesAtivas} promocao(oes) ativa(s)`;
+        if (heroProgressBar) heroProgressBar.style.width = `${Math.max(8, Math.min(100, promocoesAtivas * 25))}%`;
+      } else if (perfil === 'admin') {
+        if (heroMetricLabel) heroMetricLabel.textContent = 'acessos';
+        if (heroProgressText) heroProgressText.textContent = 'Painel administrativo e governanca';
+        if (heroProgressBar) heroProgressBar.style.width = '72%';
+      }
+
       const pf = (id) => document.getElementById(id);
+      Array.from(document.querySelectorAll('[data-profile-client-only="true"]')).forEach((block) => {
+        block.classList.toggle('hidden', perfil !== 'cliente');
+      });
+
+      const linkedSection = document.getElementById('profileLinkedCompaniesSection');
+      const linkedCount = document.getElementById('profileCompanyCount');
+      const linkedList = document.getElementById('profileLinkedCompaniesList');
+      const linkedEmpty = document.getElementById('profileLinkedCompaniesEmpty');
+      if (perfil === 'cliente' && linkedSection && linkedList && linkedEmpty) {
+        const renderLinkedCompanyCard = (company) => {
+          const companyId = Number(company?.id || company?.empresa_id || 0);
+          const logo = safeImage(company?.logo, IMAGE_FALLBACKS.store);
+          const category = safeText(company?.categoria || company?.ramo, 'Empresa');
+          const rating = Number(company?.avaliacao_media || 0);
+          const ratingLabel = rating > 0 ? `${rating.toFixed(1).replace('.', ',')} / 5` : 'Novo parceiro';
+          const linkedAt = formatDatePtBr(company?.data_vinculo || company?.data_inscricao, 'Vinculo recente');
+
+          return `
+            <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(companyId)}" class="profile-linked-company-card">
+              <img src="${logo}" alt="${safeText(company?.nome, 'Empresa')}" class="h-16 w-16 rounded-[22px] bg-slate-100 object-cover" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-[#B01774]">${category}</p>
+                    <h4 class="mt-1 text-base font-extrabold leading-tight text-[#111B3F]">${safeText(company?.nome, 'Empresa')}</h4>
+                  </div>
+                  <span class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">${ratingLabel}</span>
+                </div>
+                <p class="mt-3 text-sm text-slate-500">Vinculada em ${linkedAt}</p>
+              </div>
+            </a>
+          `;
+        };
+
+        if (linkedCount) {
+          linkedCount.textContent = linkedCompanies.length
+            ? `${linkedCompanies.length} empresa(s)`
+            : 'Nenhum vinculo';
+        }
+        linkedList.innerHTML = linkedCompanies.map(renderLinkedCompanyCard).join('');
+        linkedEmpty.classList.toggle('hidden', linkedCompanies.length > 0);
+      } else if (linkedSection) {
+        linkedSection.classList.add('hidden');
+      }
 
       // Preencher campos comuns
       if (pf('pfNome')) pf('pfNome').value = user?.name || user?.nome || '';
@@ -3027,39 +3147,49 @@
           const refResp = await api.request('/referral/meu-codigo', {}, { notify: false });
           if (refResp.res.ok && refResp.data?.data) {
             const rd = refResp.data.data;
-            const container = document.querySelector('main') || document.body;
+            const container = document.getElementById('profileReferralHost') || document.querySelector('main') || document.body;
             const refSection = document.createElement('div');
             refSection.id = 'referralSection';
-            refSection.className = 'w-full max-w-md mx-auto mb-6 mt-4 p-5 bg-surface-container-lowest rounded-2xl shadow-sm';
+            refSection.className = 'profile-surface-card profile-referral-card';
             refSection.innerHTML = `
-              <h3 class="font-headline font-bold text-on-surface mb-1 text-base flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary text-xl">group_add</span>
-                Indique e Ganhe
-              </h3>
-              <p class="text-xs text-on-surface-variant mb-3">Compartilhe seu código e ganhe <strong>50 pontos</strong> por cada amigo que se cadastrar.</p>
-              <div class="flex items-center gap-2 mb-3">
-                <span id="refCodeDisplay" class="flex-1 text-center text-lg font-bold font-mono tracking-widest bg-surface-container p-2 rounded-xl text-primary">${rd.referral_code}</span>
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Indicacao</p>
+                  <h3 class="mt-2 font-headline text-2xl font-extrabold text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-xl">group_add</span>
+                    Indique e ganhe
+                  </h3>
+                  <p class="mt-2 text-sm leading-6 text-on-surface-variant">Compartilhe seu codigo e ganhe <strong>50 pontos</strong> por cada amigo que se cadastrar.</p>
+                </div>
+                <span class="rounded-full bg-surface-container px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Demo</span>
+              </div>
+              <div class="mt-4 flex items-center gap-2">
+                <span id="refCodeDisplay" class="flex-1 rounded-[18px] bg-surface-container p-3 text-center text-lg font-bold tracking-widest text-primary">${rd.referral_code}</span>
                 <button id="copyRefCode" class="p-2 bg-primary text-white rounded-xl" title="Copiar código">
                   <span class="material-symbols-outlined text-base">content_copy</span>
                 </button>
               </div>
-              <div class="grid grid-cols-2 gap-2 mb-3">
-                <div class="bg-surface-container rounded-xl p-3 text-center">
+              <div class="mt-4 grid grid-cols-2 gap-2">
+                <div class="rounded-[18px] bg-surface-container p-3 text-center">
                   <p class="text-2xl font-bold text-primary">${rd.total_indicados || 0}</p>
                   <p class="text-xs text-on-surface-variant">Amigos indicados</p>
                 </div>
-                <div class="bg-surface-container rounded-xl p-3 text-center">
+                <div class="rounded-[18px] bg-surface-container p-3 text-center">
                   <p class="text-2xl font-bold text-tertiary">${rd.pontos_ganhos || 0}</p>
                   <p class="text-xs text-on-surface-variant">Pontos ganhos</p>
                 </div>
               </div>
-              <button id="shareRefLink" class="w-full py-2.5 bg-primary text-white rounded-xl font-semibold text-sm flex items-center justify-center gap-2">
+              <button id="shareRefLink" class="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary text-sm font-semibold text-white">
                 <span class="material-symbols-outlined text-base">share</span>
                 Compartilhar meu link
               </button>`;
-            // Insere antes do último card ou no final do main
-            const lastCard = container.querySelector('section:last-child') || container.lastElementChild;
-            container.insertBefore(refSection, lastCard);
+            if (container.id === 'profileReferralHost') {
+              container.innerHTML = '';
+              container.appendChild(refSection);
+            } else {
+              const lastCard = container.querySelector('section:last-child') || container.lastElementChild;
+              container.insertBefore(refSection, lastCard);
+            }
 
             document.getElementById('copyRefCode')?.addEventListener('click', () => {
               navigator.clipboard.writeText(rd.referral_code).then(() => {
@@ -3202,17 +3332,29 @@
 
       if (perfil === 'cliente') {
         const main = document.querySelector('main') || document.querySelector('.main-content') || document.body;
+        const qrHost = document.getElementById('clienteQRSectionHost');
         const myQrSection = document.createElement('div');
         myQrSection.id = 'clienteQRSection';
-        myQrSection.className = 'w-full max-w-md mx-auto mb-6 p-5 bg-surface-container-lowest rounded-2xl shadow-sm';
+        myQrSection.className = 'profile-surface-card profile-qr-card';
         myQrSection.innerHTML = `
-          <h3 class="font-headline font-bold text-on-surface mb-1 text-center text-base">Meu QR Code</h3>
-          <p class="text-[11px] text-on-surface-variant text-center mb-3">Mostre este QR para o parceiro escanear e validar seus beneficios.</p>
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Meu QR Code</p>
+              <h3 class="mt-2 font-headline text-2xl font-extrabold text-on-surface">Apresente no estabelecimento</h3>
+              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Mostre este QR para o parceiro escanear e validar bonus, fidelidade, promocao ou aniversario.</p>
+            </div>
+            <a href="/validar_resgate.html?modo=vinculo-empresa" class="inline-flex h-11 items-center justify-center rounded-full bg-surface-container px-4 text-xs font-bold uppercase tracking-[0.14em] text-on-surface">Ler QR da empresa</a>
+          </div>
           <div id="clienteQRContainer" class="flex flex-col items-center gap-2 min-h-[80px] justify-center">
             <p class="text-sm text-outline">Carregando...</p>
           </div>
         `;
-        main.prepend(myQrSection);
+        if (qrHost) {
+          qrHost.innerHTML = '';
+          qrHost.appendChild(myQrSection);
+        } else {
+          main.prepend(myQrSection);
+        }
 
         const qrContainer = document.getElementById('clienteQRContainer');
         const { res, data } = await api.request('/cliente/meu-qrcode', {}, { notify: false });
@@ -3293,6 +3435,7 @@
         bonusPanel.classList.remove('hidden');
         document.getElementById('bonusValidationClientName').textContent = cliente.nome || 'Cliente';
         document.getElementById('bonusValidationClientPhone').textContent = cliente.telefone || 'Nao informado';
+        document.getElementById('bonusValidationClientBirthdate').textContent = formatDatePtBr(cliente.data_nascimento, 'Nao informada');
         document.getElementById('bonusValidationCompany').textContent = latestCompanyLookup?.empresa?.nome || 'Nao identificada';
         document.getElementById('bonusValidationLinkStatus').textContent = vinculo.existe
           ? `Cliente vinculado desde ${formatDatePtBr(vinculo.data_inscricao, 'data nao informada')}`
@@ -3730,9 +3873,11 @@
     async dashboard() {
       if (!(await auth.guard(['empresa']))) return;
       ui.setPageState('loading', 'Carregando painel da empresa...');
-      const [promos, resumo] = await Promise.all([
+      const currentUser = await auth.ensure();
+      const [promos, resumo, qrcodes] = await Promise.all([
         api.request('/empresa/promocoes'),
         api.request('/empresa/relatorios/resumo', {}, { notify: false }),
+        api.request('/empresa/qrcodes', {}, { notify: false }),
       ]);
 
       const kpiVolume = document.getElementById('kpiVolume');
@@ -3750,15 +3895,70 @@
       const recentClientsEmpty = document.getElementById('empresaRecentClientsEmpty');
       const latestRedemptionsBox = document.getElementById('empresaLatestRedemptions');
       const latestRedemptionsEmpty = document.getElementById('empresaLatestRedemptionsEmpty');
+      const heroName = document.getElementById('empresaHeroName');
+      const heroSubtitle = document.getElementById('empresaHeroSubtitle');
+      const heroMeta = document.getElementById('empresaHeroMeta');
+      const heroLogo = document.getElementById('empresaHeroLogo');
+      const qrContainer = document.getElementById('empresaDashboardQrContainer');
+      const publicLinkBtn = document.getElementById('empresaDashboardPublicLinkBtn');
       ui.clearPageState();
 
       const resumoData = resumo.data?.data || {};
       const cards = resumoData.cards || {};
+      const qrList = toArray(qrcodes.data?.data || qrcodes.data);
+      const qrPayload = qrList[0] || {};
+      const empresaInfo = qrPayload.empresa || {};
       const totalClientes = Number(cards.total_clientes_vinculados || 0);
       const aniversariantes = Number(cards.clientes_aniversariantes_mes || 0);
       const totalAvaliacoes = Number(cards.total_avaliacoes || 0);
       const mediaAvaliacao = Number(cards.media_avaliacao || 0);
       const notificacoes = Number(cards.total_notificacoes_enviadas || 0);
+      const listaPromos = promos.data?.data || promos.data || [];
+
+      if (heroName) heroName.textContent = safeText(empresaInfo?.nome, safeText(currentUser?.name, 'Sua empresa'));
+      if (heroSubtitle) {
+        heroSubtitle.textContent = qrPayload?.public_page_url
+          ? 'Use o QR da empresa para divulgar a pagina publica e validar clientes presencialmente.'
+          : 'Gerencie clientes, campanhas e resgates sem sair deste painel.';
+      }
+      if (heroMeta) {
+        heroMeta.textContent = safeText(currentUser?.name)
+          ? `Responsavel: ${safeText(currentUser.name)}`
+          : 'Fluxo operacional completo para a equipe da loja';
+      }
+      if (heroLogo) {
+        const heroImage = safeImage(listaPromos[0]?.imagem_url || listaPromos[0]?.imagem || empresaInfo?.logo, IMAGE_FALLBACKS.store);
+        heroLogo.src = heroImage;
+        heroLogo.onerror = () => {
+          heroLogo.onerror = null;
+          heroLogo.src = IMAGE_FALLBACKS.store;
+        };
+      }
+      if (publicLinkBtn && qrPayload?.public_page_url) {
+        publicLinkBtn.href = qrPayload.public_page_url;
+      }
+      if (qrContainer) {
+        if (qrPayload?.code) {
+          qrContainer.innerHTML = `
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-center">
+              <div class="mx-auto flex h-40 w-40 items-center justify-center rounded-[22px] bg-white p-3 shadow-[0_10px_24px_rgba(0,0,0,0.14)] ring-1 ring-white/10">
+                ${qrPayload.qr_image?.startsWith('data:')
+                  ? `<img src="${qrPayload.qr_image}" alt="QR Code da empresa" class="h-full w-full object-contain" />`
+                  : `<img src="${safeImage(qrPayload.qr_url, IMAGE_FALLBACKS.store)}" alt="QR Code da empresa" class="h-full w-full object-contain" />`}
+              </div>
+              <div class="space-y-3 text-sm text-white/80">
+                <p>Apresente este QR no adesivo da loja para abrir o fluxo publico correto no app do cliente.</p>
+                <div class="rounded-[18px] bg-white/10 px-4 py-3 ring-1 ring-white/10">
+                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">Codigo da empresa</p>
+                  <p class="mt-2 break-all font-mono text-xs text-white">${safeText(qrPayload.code)}</p>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          qrContainer.textContent = 'Nenhum QR da empresa gerado ainda. Gere o QR e volte a esta tela.';
+        }
+      }
 
       if (kpiVolume) kpiVolume.textContent = Number(totalClientes).toLocaleString('pt-BR');
       if (kpiClientes) kpiClientes.textContent = Number(aniversariantes).toLocaleString('pt-BR');
@@ -3775,7 +3975,6 @@
         ? `Media de avaliacao atual: ${mediaAvaliacao.toFixed(1).replace('.', ',')}`
         : 'Sem avaliacoes registradas ate o momento.';
 
-      const listaPromos = promos.data?.data || promos.data || [];
       if (campanhasBox) {
         campanhasBox.innerHTML = '';
         if (!listaPromos.length) {

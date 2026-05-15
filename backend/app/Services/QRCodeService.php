@@ -11,6 +11,35 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode as QrCodeGenerator;
 
 class QRCodeService
 {
+    private function renderQrAsset(string $payload): array
+    {
+        try {
+            $png = QrCodeGenerator::format('png')
+                ->size(300)
+                ->errorCorrection('H')
+                ->margin(2)
+                ->generate($payload);
+
+            return [
+                'contents' => $png,
+                'extension' => 'png',
+                'mime' => 'image/png',
+            ];
+        } catch (\Throwable) {
+            $svg = QrCodeGenerator::format('svg')
+                ->size(300)
+                ->errorCorrection('H')
+                ->margin(2)
+                ->generate($payload);
+
+            return [
+                'contents' => $svg,
+                'extension' => 'svg',
+                'mime' => 'image/svg+xml',
+            ];
+        }
+    }
+
     public function getCompanyScanUrl(QRCode $qrCode): string
     {
         return url('/vincular_empresa.html') . '?code=' . rawurlencode((string) $qrCode->code);
@@ -106,18 +135,17 @@ class QRCodeService
 
         if ($qrCode->qr_path && Storage::disk('public')->exists($qrCode->qr_path)) {
             $imageData = Storage::disk('public')->get($qrCode->qr_path);
+            $mime = str_ends_with(strtolower((string) $qrCode->qr_path), '.svg')
+                ? 'image/svg+xml'
+                : 'image/png';
 
-            return 'data:image/png;base64,' . base64_encode($imageData);
+            return 'data:' . $mime . ';base64,' . base64_encode($imageData);
         }
 
         $payload = $this->getQrPayload($qrCode);
-        $qrImage = QrCodeGenerator::format('png')
-            ->size(300)
-            ->errorCorrection('H')
-            ->margin(2)
-            ->generate($payload);
+        $asset = $this->renderQrAsset($payload);
 
-        return 'data:image/png;base64,' . base64_encode($qrImage);
+        return 'data:' . $asset['mime'] . ';base64,' . base64_encode($asset['contents']);
     }
 
     public function regenerarQRCode(QRCode $qrCode)
@@ -150,17 +178,11 @@ class QRCodeService
         $folder = $qrCode->empresa_id ? 'qrcodes/empresas' : 'qrcodes/generic';
         $id = $qrCode->empresa_id ?? $qrCode->id;
         $payload = $this->getQrPayload($qrCode);
-
-        $qrImage = QrCodeGenerator::format('png')
-            ->size(300)
-            ->errorCorrection('H')
-            ->margin(2)
-            ->generate($payload);
-
-        $filename = "{$id}_{$qrCode->id}.png";
+        $asset = $this->renderQrAsset($payload);
+        $filename = "{$id}_{$qrCode->id}.{$asset['extension']}";
         $path = "{$folder}/{$filename}";
 
-        Storage::disk('public')->put($path, $qrImage);
+        Storage::disk('public')->put($path, $asset['contents']);
 
         $qrCode->update([
             'qr_path' => $path,
