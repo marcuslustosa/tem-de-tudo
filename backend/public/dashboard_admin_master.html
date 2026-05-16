@@ -92,19 +92,38 @@
       }
       .admin-search input { color: var(--admin-text); }
       .admin-search input::placeholder { color: var(--admin-text-muted); }
+      /* Admin dark shell — inline so não depende de cache do CSS externo */
+      body[data-page="dashboard_admin_master"] { background:#08091a!important; color:rgba(255,255,255,0.92)!important; }
+      .admin-nav-item { color:rgba(255,255,255,0.65)!important; border-radius:10px; transition:background .15s,color .15s; }
+      .admin-nav-item:hover { background:rgba(255,255,255,0.06)!important; color:#fff!important; }
+      .admin-nav-item.active { background:rgba(225,0,152,0.12)!important; color:#fff!important; border-left:3px solid #E10098!important; padding-left:13px!important; }
+      .admin-header { background:#12102e!important; border-bottom:1px solid rgba(225,0,152,0.14)!important; }
+      .admin-kpi-card { background:#1c1840!important; border:1px solid rgba(225,0,152,0.14)!important; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.35); transition:border-color .2s,transform .2s; }
+      .admin-kpi-card:hover { border-color:rgba(225,0,152,0.35)!important; transform:translateY(-2px); }
+      .admin-card { background:#12102e!important; border:1px solid rgba(225,0,152,0.14)!important; border-radius:16px; box-shadow:0 4px 24px rgba(0,0,0,.35); transition:border-color .2s; }
+      .admin-card:hover { border-color:rgba(225,0,152,0.35)!important; }
+      .admin-kpi-number { background:linear-gradient(135deg,#E10098 0%,#00BCD4 100%)!important; -webkit-background-clip:text!important; background-clip:text!important; -webkit-text-fill-color:transparent!important; }
+      .admin-icon-box { background:rgba(225,0,152,0.12)!important; border-radius:10px; padding:8px; display:inline-flex; color:#E10098!important; }
+      .admin-icon-box.teal { background:rgba(0,188,212,0.12)!important; color:#00BCD4!important; }
+      .admin-icon-box.purple { background:rgba(122,44,143,0.15)!important; color:#b06ed4!important; }
+      .admin-icon-box.green { background:rgba(0,168,120,0.12)!important; color:#00a878!important; }
+      .admin-section-title { font-size:1.5rem; font-weight:800; background:linear-gradient(90deg,#fff 40%,rgba(255,255,255,0.55) 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+      .admin-badge-live { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; background:rgba(0,168,120,0.12); border:1px solid rgba(0,168,120,0.25); color:#00c896; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
+      .admin-badge-live .dot { width:6px; height:6px; border-radius:50%; background:#00c896; animation:pulse-adm 1.8s ease-in-out infinite; }
+      @keyframes pulse-adm { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
     </style>
 </head>
 <body class="font-body antialiased min-h-screen" data-page="dashboard_admin_master">
 <!-- SideNavBar (Desktop Shell) -->
-<aside class="admin-sidebar fixed left-0 top-0 h-full overflow-y-auto w-64 hidden lg:flex flex-col z-50">
+<aside class="fixed left-0 top-0 h-full overflow-y-auto w-64 hidden lg:flex flex-col z-50" style="background:linear-gradient(180deg,#0d0f26 0%,#12102e 50%,#0a0c22 100%);border-right:1px solid rgba(225,0,152,0.14)">
 <!-- Logo -->
-<div class="px-6 pt-7 pb-6 flex items-center gap-3 border-b" style="border-color:var(--admin-border)">
+<div class="px-6 pt-7 pb-6 flex items-center gap-3 border-b" style="border-color:rgba(225,0,152,0.14)">
   <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#E10098 0%,#00BCD4 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
     <span class="material-symbols-outlined" style="color:#fff;font-size:20px;" data-icon="bolt">bolt</span>
   </div>
   <div>
     <div class="font-headline font-black text-sm" style="color:#fff;">Tem de Tudo</div>
-    <div class="font-label text-[10px] font-semibold uppercase tracking-widest" style="color:var(--admin-text-muted)">Admin Master</div>
+    <div class="font-label text-[10px] font-semibold uppercase tracking-widest" style="color:rgba(255,255,255,0.45)">Admin Master</div>
   </div>
 </div>
 <!-- Nav -->
@@ -139,7 +158,7 @@
 </a>
 </nav>
 <!-- Footer -->
-<div class="p-4 border-t" style="border-color:var(--admin-border)">
+<div class="p-4 border-t" style="border-color:rgba(225,0,152,0.14)">
 <a class="block w-full py-2.5 px-4 rounded-xl bg-vibrant-gradient text-white font-bold text-sm shadow-lg active:scale-95 transition-all text-center" href="/criar_conta.html?tipo=empresa&amp;origem=admin">
   + Novo Parceiro
 </a>
@@ -148,10 +167,10 @@
     <img alt="Admin" class="w-full h-full object-cover" src="/assets/images/company1.jpg"/>
   </div>
   <div class="min-w-0">
-    <div class="text-xs font-semibold truncate" style="color:var(--admin-text)">Administrador</div>
-    <div class="text-[10px]" style="color:var(--admin-text-muted)">Super Admin</div>
+    <div class="text-xs font-semibold truncate" style="color:#fff">Administrador</div>
+    <div class="text-[10px]" style="color:rgba(255,255,255,0.45)">Super Admin</div>
   </div>
-  <span class="material-symbols-outlined ml-auto shrink-0" style="font-size:16px;color:var(--admin-text-muted)">logout</span>
+  <span class="material-symbols-outlined ml-auto shrink-0" style="font-size:16px;color:rgba(255,255,255,0.45)">logout</span>
 </div>
 </div>
 </aside>

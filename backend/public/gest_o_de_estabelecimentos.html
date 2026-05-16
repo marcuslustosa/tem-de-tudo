@@ -76,50 +76,35 @@
       }
     </script>
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            display: inline-block;
-            line-height: 1;
-        }
-        h1, h2, h3, .brand-font { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .admin-section-title {
-            font-size: 1.5rem; font-weight: 800;
-            background: linear-gradient(90deg, #fff 40%, rgba(255,255,255,0.55) 100%);
-            -webkit-background-clip: text; background-clip: text;
-            -webkit-text-fill-color: transparent; color: transparent;
-        }
-        .admin-badge-live {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 4px 10px; border-radius: 999px;
-            background: rgba(0,168,120,0.12); border: 1px solid rgba(0,168,120,0.25);
-            color: #00c896; font-size: 10px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.08em;
-        }
-        .admin-badge-live .dot {
-            width: 6px; height: 6px; border-radius: 50%; background: #00c896;
-            animation: pulse-live 1.8s ease-in-out infinite;
-        }
-        @keyframes pulse-live {
-            0%,100% { opacity:1; transform:scale(1); }
-            50% { opacity:0.4; transform:scale(0.7); }
-        }
+        .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; display:inline-block; line-height:1; }
+        h1,h2,h3,.brand-font { font-family:'Plus Jakarta Sans',sans-serif; }
+        body[data-page="gest_o_de_estabelecimentos"] { background:#08091a!important; color:rgba(255,255,255,0.92)!important; }
+        .admin-nav-item { color:rgba(255,255,255,0.65)!important; border-radius:10px; transition:background .15s,color .15s; }
+        .admin-nav-item:hover { background:rgba(255,255,255,0.06)!important; color:#fff!important; }
+        .admin-nav-item.active { background:rgba(225,0,152,0.12)!important; color:#fff!important; border-left:3px solid #E10098!important; padding-left:13px!important; }
+        .admin-header { background:#12102e!important; border-bottom:1px solid rgba(225,0,152,0.14)!important; }
+        .admin-section-title { font-size:1.5rem; font-weight:800; background:linear-gradient(90deg,#fff 40%,rgba(255,255,255,0.55) 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+        .admin-badge-live { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; background:rgba(0,168,120,0.12); border:1px solid rgba(0,168,120,0.25); color:#00c896; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
+        .admin-badge-live .dot { width:6px; height:6px; border-radius:50%; background:#00c896; animation:pulse-adm 1.8s ease-in-out infinite; }
+        @keyframes pulse-adm { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+        .admin-kpi-number,.estabs-status-value { background:linear-gradient(135deg,#E10098 0%,#00BCD4 100%)!important; -webkit-background-clip:text!important; background-clip:text!important; -webkit-text-fill-color:transparent!important; }
     </style>
 </head>
-<body data-page="gest_o_de_estabelecimentos" class="antialiased" style="background:var(--admin-bg);color:var(--admin-text)">
+<body data-page="gest_o_de_estabelecimentos" class="antialiased">
 <!-- SideNavBar (Desktop) -->
-<aside class="admin-sidebar fixed left-0 top-0 h-full overflow-y-auto w-64 hidden lg:flex flex-col z-50">
-<div class="px-6 pt-7 pb-6 flex items-center gap-3 border-b" style="border-color:var(--admin-border)">
+<aside class="fixed left-0 top-0 h-full overflow-y-auto w-64 hidden lg:flex flex-col z-50" style="background:linear-gradient(180deg,#0d0f26 0%,#12102e 50%,#0a0c22 100%);border-right:1px solid rgba(225,0,152,0.14)">
+<div class="px-6 pt-7 pb-6 flex items-center gap-3 border-b" style="border-color:rgba(225,0,152,0.14)">
   <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#E10098 0%,#00BCD4 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
     <span class="material-symbols-outlined" style="color:#fff;font-size:20px;">bolt</span>
   </div>
   <div>
     <div class="font-headline font-black text-sm" style="color:#fff;">Tem de Tudo</div>
-    <div class="font-label text-[10px] font-semibold uppercase tracking-widest" style="color:var(--admin-text-muted)">Admin Master</div>
+    <div class="font-label text-[10px] font-semibold uppercase tracking-widest" style="color:rgba(255,255,255,0.45)">Admin Master</div>
   </div>
 </div>
 <nav class="flex-1 px-3 py-4 space-y-1">
 <a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/dashboard_admin_master.html">
-<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">dashboard</span>
+<span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.45)">dashboard</span>
 <span>Dashboard</span>
 </a>
 <a class="admin-nav-item active flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/gest_o_de_estabelecimentos.html">
@@ -127,27 +112,27 @@
 <span>Estabelecimentos</span>
 </a>
 <a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/relat_rios_gerais_master.html">
-<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">analytics</span>
+<span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.45)">analytics</span>
 <span>Relatorios</span>
 </a>
 <a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/gest_o_de_usu_rios_master.html">
-<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">group</span>
+<span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.45)">group</span>
 <span>Usuarios</span>
 </a>
 <a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/configuracoes_admin.html">
-<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">settings</span>
+<span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.45)">settings</span>
 <span>Configuracoes</span>
 </a>
 <a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/banners_e_categorias_master.html">
-<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">collections</span>
+<span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.45)">collections</span>
 <span>Conteudo</span>
 </a>
 <a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="mailto:contato@temdetudo.com">
-<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">help_center</span>
+<span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.45)">help_center</span>
 <span>Suporte</span>
 </a>
 </nav>
-<div class="p-4 border-t" style="border-color:var(--admin-border)">
+<div class="p-4 border-t" style="border-color:rgba(225,0,152,0.14)">
 <a class="block w-full py-2.5 px-4 rounded-xl font-bold text-sm text-white text-center active:scale-95 transition-all" style="background:linear-gradient(135deg,#00BCD4 0%,#7A2C8F 50%,#E10098 100%)" href="/criar_conta.html?tipo=empresa&amp;origem=admin">
   + Novo Parceiro
 </a>
@@ -156,10 +141,10 @@
     <img alt="Admin" class="w-full h-full object-cover" src="/assets/images/company1.jpg"/>
   </div>
   <div class="min-w-0">
-    <div class="text-xs font-semibold truncate" style="color:var(--admin-text)">Administrador</div>
-    <div class="text-[10px]" style="color:var(--admin-text-muted)">Super Admin</div>
+    <div class="text-xs font-semibold truncate" style="color:#fff">Administrador</div>
+    <div class="text-[10px]" style="color:rgba(255,255,255,0.45)">Super Admin</div>
   </div>
-  <span class="material-symbols-outlined ml-auto shrink-0" style="font-size:16px;color:var(--admin-text-muted)">logout</span>
+  <span class="material-symbols-outlined ml-auto shrink-0" style="font-size:16px;color:rgba(255,255,255,0.45)">logout</span>
 </div>
 </div>
 </aside>
@@ -168,21 +153,21 @@
 <!-- TopAppBar -->
 <header class="admin-header flex justify-between items-center px-6 py-3 w-full sticky top-0 z-40">
 <div class="flex items-center gap-3">
-  <span class="font-label text-xs font-semibold" style="color:var(--admin-text-muted)">Admin</span>
-  <span class="material-symbols-outlined" style="font-size:14px;color:var(--admin-text-muted)">chevron_right</span>
-  <span class="font-headline font-bold text-sm" style="color:var(--admin-text)">Estabelecimentos</span>
+  <span class="font-label text-xs font-semibold" style="color:rgba(255,255,255,0.45)">Admin</span>
+  <span class="material-symbols-outlined" style="font-size:14px;color:rgba(255,255,255,0.45)">chevron_right</span>
+  <span class="font-headline font-bold text-sm" style="color:rgba(255,255,255,0.92)">Estabelecimentos</span>
   <span class="admin-badge-live ml-2"><span class="dot"></span>LIVE</span>
 </div>
 <div class="flex items-center gap-3">
 <div class="hidden md:flex items-center gap-2 px-4 py-1.5 rounded-full border" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1)">
-<span class="material-symbols-outlined" style="font-size:18px;color:var(--admin-text-muted)">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm font-medium w-48 outline-none" id="estabBusca" placeholder="Buscar parceiro..." style="color:var(--admin-text)" type="text"/>
+<span class="material-symbols-outlined" style="font-size:18px;color:rgba(255,255,255,0.45)">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-medium w-48 outline-none" id="estabBusca" placeholder="Buscar parceiro..." style="color:rgba(255,255,255,0.92)" type="text"/>
 </div>
-<button id="btnEstabNotif" class="p-2 rounded-full transition-colors relative" style="color:var(--admin-text-muted)" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
+<button id="btnEstabNotif" class="p-2 rounded-full transition-colors relative" style="color:rgba(255,255,255,0.45)" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
 <span class="material-symbols-outlined">notifications</span>
 <span class="absolute top-2 right-2 w-2 h-2 rounded-full border-2" style="background:#E10098;border-color:var(--admin-surface)"></span>
 </button>
-<a class="p-2 rounded-full transition-colors inline-flex" style="color:var(--admin-text-muted)" href="/configuracoes_admin.html" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
+<a class="p-2 rounded-full transition-colors inline-flex" style="color:rgba(255,255,255,0.45)" href="/configuracoes_admin.html" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
 <span class="material-symbols-outlined">settings</span>
 </a>
 <div class="h-9 w-9 rounded-full overflow-hidden border-2" style="border-color:rgba(225,0,152,0.5)">
@@ -194,16 +179,16 @@
 <div class="p-6 md:p-8 space-y-8 flex-1 pb-24 lg:pb-8">
 <!-- Page Title -->
 <section class="mb-2">
-<p class="font-label text-xs font-semibold uppercase tracking-widest mb-2" style="color:var(--admin-text-muted)">Gerenciamento</p>
+<p class="font-label text-xs font-semibold uppercase tracking-widest mb-2" style="color:rgba(255,255,255,0.45)">Gerenciamento</p>
 <h1 class="admin-section-title font-headline">Estabelecimentos</h1>
-<p class="font-body text-sm mt-1" style="color:var(--admin-text-soft)">Gerencie parceiros, aprove cadastros e monitore o status da rede.</p>
+<p class="font-body text-sm mt-1" style="color:rgba(255,255,255,0.65)">Gerencie parceiros, aprove cadastros e monitore o status da rede.</p>
 </section>
 <!-- Filters & Stats Section -->
 <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
 <div class="col-span-1 md:col-span-3 flex flex-wrap gap-3 items-center">
 <div class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border" style="background:var(--admin-surface-2);border-color:var(--admin-border)">
-<span style="color:var(--admin-text-muted)">Categoria:</span>
-<select id="estabsCategoriaFilter" class="border-none focus:ring-0 py-0 font-bold cursor-pointer bg-transparent outline-none" style="color:var(--admin-accent)">
+<span style="color:rgba(255,255,255,0.45)">Categoria:</span>
+<select id="estabsCategoriaFilter" class="border-none focus:ring-0 py-0 font-bold cursor-pointer bg-transparent outline-none" style="color:#E10098">
 <option style="background:#12102e">Todas</option>
 <option style="background:#12102e">Gastronomia</option>
 <option style="background:#12102e">Saude</option>
@@ -212,8 +197,8 @@
 </select>
 </div>
 <div class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border" style="background:var(--admin-surface-2);border-color:var(--admin-border)">
-<span style="color:var(--admin-text-muted)">Status:</span>
-<select id="estabsStatusFilter" class="border-none focus:ring-0 py-0 font-bold cursor-pointer bg-transparent outline-none" style="color:var(--admin-accent)">
+<span style="color:rgba(255,255,255,0.45)">Status:</span>
+<select id="estabsStatusFilter" class="border-none focus:ring-0 py-0 font-bold cursor-pointer bg-transparent outline-none" style="color:#E10098">
 <option style="background:#12102e">Todos</option>
 <option style="background:#12102e">Pendente</option>
 <option style="background:#12102e">Ativa</option>
@@ -221,7 +206,7 @@
 <option style="background:#12102e">Rejeitada</option>
 </select>
 </div>
-<button class="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-colors border" style="background:var(--admin-surface-2);color:var(--admin-text-soft);border-color:var(--admin-border)" onmouseover="this.style.borderColor='var(--admin-border-hover)'" onmouseout="this.style.borderColor='var(--admin-border)'">
+<button class="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-colors border" style="background:var(--admin-surface-2);color:rgba(255,255,255,0.65);border-color:var(--admin-border)" onmouseover="this.style.borderColor='var(--admin-border-hover)'" onmouseout="this.style.borderColor='var(--admin-border)'">
 <span class="material-symbols-outlined" style="font-size:18px;">tune</span>
 Filtros Avancados
 </button>
@@ -229,7 +214,7 @@ Filtros Avancados
 <!-- Total Badge -->
 <div class="admin-kpi-card p-4 flex items-center justify-between" style="background:linear-gradient(135deg,rgba(225,0,152,0.15) 0%,rgba(0,188,212,0.1) 100%);border-color:rgba(225,0,152,0.25)">
 <div>
-<p class="text-[10px] uppercase font-bold tracking-widest" style="color:var(--admin-text-muted)">Total Parceiros</p>
+<p class="text-[10px] uppercase font-bold tracking-widest" style="color:rgba(255,255,255,0.45)">Total Parceiros</p>
 <h3 id="estabsTotalBadge" class="text-2xl font-black admin-kpi-number">--</h3>
 </div>
 <span class="material-symbols-outlined" style="font-size:36px;color:rgba(225,0,152,0.25)">store</span>
@@ -260,19 +245,19 @@ Filtros Avancados
 <!-- Table/Grid of Establishments -->
 <section class="space-y-4">
 <div class="flex justify-between items-center mb-2">
-<h2 class="font-headline font-extrabold text-base" style="color:var(--admin-text)">Listagem Geral</h2>
-<span id="estabsResumo" class="text-xs font-semibold" style="color:var(--admin-text-muted)">Carregando resultados...</span>
+<h2 class="font-headline font-extrabold text-base" style="color:rgba(255,255,255,0.92)">Listagem Geral</h2>
+<span id="estabsResumo" class="text-xs font-semibold" style="color:rgba(255,255,255,0.45)">Carregando resultados...</span>
 </div>
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
 <div id="estabsLista" class="space-y-4 xl:col-span-2"></div>
-<p id="estabsEmpty" class="hidden text-xs xl:col-span-2" style="color:var(--admin-text-muted)">Nenhum estabelecimento encontrado para os filtros atuais.</p>
+<p id="estabsEmpty" class="hidden text-xs xl:col-span-2" style="color:rgba(255,255,255,0.45)">Nenhum estabelecimento encontrado para os filtros atuais.</p>
 </div>
 </section>
 </div>
 </main>
 <!-- BottomNavBar (Mobile) -->
 <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-3 rounded-t-[1.5rem] lg:hidden border-t" style="background:var(--admin-surface);border-color:var(--admin-border)">
-<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/dashboard_admin_master.html">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:rgba(255,255,255,0.45)" href="/dashboard_admin_master.html">
 <span class="material-symbols-outlined">home</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Inicio</span>
 </a>
@@ -280,15 +265,15 @@ Filtros Avancados
 <span class="material-symbols-outlined">storefront</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Parceiros</span>
 </a>
-<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/banners_e_categorias_master.html">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:rgba(255,255,255,0.45)" href="/banners_e_categorias_master.html">
 <span class="material-symbols-outlined">collections</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Conteudo</span>
 </a>
-<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/relat_rios_gerais_master.html">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:rgba(255,255,255,0.45)" href="/relat_rios_gerais_master.html">
 <span class="material-symbols-outlined">bar_chart</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Metricas</span>
 </a>
-<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/meu_perfil.html">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:rgba(255,255,255,0.45)" href="/meu_perfil.html">
 <span class="material-symbols-outlined">person</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Perfil</span>
 </a>
