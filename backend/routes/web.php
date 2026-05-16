@@ -2,14 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    $indexPath = public_path('index.html');
-    if (file_exists($indexPath)) {
-        return response()->file($indexPath);
-    }
-
-    return response()->json(['error' => 'Index page not found'], 404);
-});
+Route::get('/', fn () => redirect('/index.html'));
 
 Route::get('/health', function () {
     return response()->json(['status' => 'OK']);
