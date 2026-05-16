@@ -22,22 +22,17 @@
   --i9-heading-font: "Plus Jakarta Sans", sans-serif;
   --i9-body-font: "Be Vietnam Pro", sans-serif;
 
-  /* Admin dark shell tokens */
-  --admin-bg: #08091a;
-  --admin-surface: #12102e;
-  --admin-surface-2: #1c1840;
-  --admin-sidebar-gradient: linear-gradient(180deg, #0d0f26 0%, #12102e 50%, #0a0c22 100%);
-  --admin-border: rgba(225, 0, 152, 0.14);
-  --admin-border-hover: rgba(225, 0, 152, 0.35);
-  --admin-border-active: #E10098;
-  --admin-text: rgba(255, 255, 255, 0.92);
-  --admin-text-muted: rgba(255, 255, 255, 0.45);
-  --admin-text-soft: rgba(255, 255, 255, 0.65);
-  --admin-accent: #E10098;
-  --admin-accent-2: #00BCD4;
-  --admin-accent-glow: 0 0 24px rgba(225, 0, 152, 0.25);
-  --admin-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
-  --admin-kpi-gradient: linear-gradient(135deg, #E10098 0%, #00BCD4 100%);
+  /* Admin light shell tokens */
+  --admin-bg: #f8f5fe;
+  --admin-surface: #ffffff;
+  --admin-border: #e9e7f1;
+  --admin-border-hover: rgba(176, 0, 118, 0.2);
+  --admin-border-active: #b00076;
+  --admin-text: #2e2e34;
+  --admin-text-muted: #5b5b62;
+  --admin-accent: #b00076;
+  --admin-accent-2: #00666e;
+  --admin-card-shadow: 0 2px 12px rgba(17, 27, 63, 0.06);
 }
 
 body[data-page] {
@@ -47,83 +42,71 @@ body[data-page] {
 }
 
 /* ============================================================
-   ADMIN DARK SHELL — shared across all admin pages
+   ADMIN LIGHT SHELL — shared across all admin pages
    ============================================================ */
-body[data-page="dashboard_admin_master"],
-body[data-page="gest_o_de_estabelecimentos"],
-body[data-page="relat_rios_gerais_master"] {
-  background: var(--admin-bg) !important;
-  color: var(--admin-text) !important;
-}
-
-.admin-sidebar {
-  background: var(--admin-sidebar-gradient);
-  border-right: 1px solid var(--admin-border);
-}
-
 .admin-nav-item {
-  color: var(--admin-text-soft);
+  color: #5b5b62;
   border-radius: 10px;
   transition: background 0.15s ease, color 0.15s ease;
 }
 .admin-nav-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--admin-text);
+  background: #f8f5fe;
+  color: #2e2e34;
 }
 .admin-nav-item.active {
-  background: rgba(225, 0, 152, 0.12);
-  color: #fff;
-  border-left: 3px solid var(--admin-accent);
-  padding-left: calc(1rem - 3px);
+  background: rgba(176, 0, 118, 0.1);
+  color: #b00076;
+  border-left: 2px solid #b00076;
+  padding-left: calc(1rem - 2px);
 }
 
 .admin-header {
-  background: var(--admin-surface);
-  border-bottom: 1px solid var(--admin-border);
+  background: #ffffff;
+  border-bottom: 1px solid #e9e7f1;
 }
 
 .admin-card {
-  background: var(--admin-surface);
-  border: 1px solid var(--admin-border);
+  background: #ffffff;
+  border: 1px solid #e9e7f1;
   border-radius: 16px;
-  box-shadow: var(--admin-card-shadow);
+  box-shadow: 0 2px 12px rgba(17, 27, 63, 0.06);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .admin-card:hover {
-  border-color: var(--admin-border-hover);
-  box-shadow: var(--admin-accent-glow), var(--admin-card-shadow);
+  border-color: rgba(176, 0, 118, 0.2);
+  box-shadow: 0 4px 20px rgba(17, 27, 63, 0.1);
 }
 
 .admin-kpi-card {
-  background: var(--admin-surface-2);
-  border: 1px solid var(--admin-border);
+  background: #ffffff;
+  border: 1px solid #e9e7f1;
   border-radius: 16px;
-  box-shadow: var(--admin-card-shadow);
+  box-shadow: 0 2px 12px rgba(17, 27, 63, 0.06);
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 .admin-kpi-card:hover {
-  border-color: var(--admin-border-hover);
+  border-color: rgba(176, 0, 118, 0.2);
   transform: translateY(-2px);
 }
 
 .admin-kpi-number {
-  background: var(--admin-kpi-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #b00076;
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 .admin-icon-box {
-  background: rgba(225, 0, 152, 0.12);
+  background: rgba(176, 0, 118, 0.1);
   border-radius: 10px;
   padding: 8px;
   display: inline-flex;
-  color: var(--admin-accent);
+  color: #b00076;
 }
-.admin-icon-box.teal { background: rgba(0, 188, 212, 0.12); color: var(--admin-accent-2); }
-.admin-icon-box.purple { background: rgba(122, 44, 143, 0.15); color: #b06ed4; }
-.admin-icon-box.green { background: rgba(0, 168, 120, 0.12); color: #00a878; }
+.admin-icon-box.teal { background: rgba(0, 102, 110, 0.1); color: #00666e; }
+.admin-icon-box.purple { background: rgba(135, 57, 156, 0.1); color: #87399c; }
+.admin-icon-box.green { background: rgba(0, 102, 110, 0.1); color: #00666e; }
 
 .admin-badge-live {
   display: inline-flex;
@@ -131,9 +114,9 @@ body[data-page="relat_rios_gerais_master"] {
   gap: 6px;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(0, 168, 120, 0.12);
-  border: 1px solid rgba(0, 168, 120, 0.25);
-  color: #00c896;
+  background: rgba(0, 102, 110, 0.1);
+  border: 1px solid rgba(0, 102, 110, 0.25);
+  color: #00666e;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -143,7 +126,7 @@ body[data-page="relat_rios_gerais_master"] {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #00c896;
+  background: #00666e;
   animation: admin-pulse-live 1.8s ease-in-out infinite;
 }
 @keyframes admin-pulse-live {
@@ -154,11 +137,8 @@ body[data-page="relat_rios_gerais_master"] {
 .admin-section-title {
   font-size: 1.5rem;
   font-weight: 800;
-  background: linear-gradient(90deg, #fff 40%, rgba(255, 255, 255, 0.55) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #2e2e34;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 .material-symbols-outlined {
@@ -465,9 +445,9 @@ body[data-page="oferta_especial"] .offer-card {
 body[data-page="vincular_empresa"] {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(0, 175, 168, 0.16), transparent 22%),
-    radial-gradient(circle at bottom right, rgba(176, 23, 116, 0.18), transparent 24%),
-    linear-gradient(135deg, #10172f 0%, #133f8c 38%, #00afa8 72%, #b01774 100%);
+    radial-gradient(circle at top left, rgba(0, 175, 168, 0.1), transparent 22%),
+    radial-gradient(circle at top right, rgba(176, 23, 116, 0.1), transparent 26%),
+    linear-gradient(180deg, #eef6ff 0%, #f7f7f7 40%, #ffffff 100%);
 }
 
 body[data-page="home_tem_de_tudo"] {
@@ -1521,15 +1501,15 @@ body[data-page="gest_o_de_ofertas_parceiro"] .offer-tool-card:hover {
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card {
   border-radius: 16px;
-  border: 1px solid var(--admin-border);
-  background: var(--admin-surface-2);
+  border: 1px solid #e9e7f1;
+  background: #ffffff;
   padding: 18px;
-  box-shadow: var(--admin-card-shadow);
+  box-shadow: 0 2px 12px rgba(17, 27, 63, 0.06);
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card:hover {
-  border-color: var(--admin-border-hover);
+  border-color: rgba(176, 0, 118, 0.2);
   transform: translateY(-2px);
 }
 
@@ -1538,7 +1518,7 @@ body[data-page="gest_o_de_estabelecimentos"] .estabs-status-label {
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--admin-text-muted);
+  color: #5b5b62;
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-value {
@@ -1546,37 +1526,34 @@ body[data-page="gest_o_de_estabelecimentos"] .estabs-status-value {
   font-size: 2rem;
   font-weight: 900;
   line-height: 1;
-  background: var(--admin-kpi-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  color: #b00076;
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-helper {
   margin-top: 8px;
   font-size: 0.75rem;
   line-height: 1.45;
-  color: var(--admin-text-muted);
+  color: #5b5b62;
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--pending {
-  background: linear-gradient(160deg, rgba(251,146,60,0.1) 0%, var(--admin-surface-2) 60%);
+  background: linear-gradient(160deg, rgba(251,146,60,0.06) 0%, #ffffff 60%);
   border-color: rgba(251,146,60,0.2);
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--active {
-  background: linear-gradient(160deg, rgba(0,200,150,0.1) 0%, var(--admin-surface-2) 60%);
-  border-color: rgba(0,200,150,0.2);
+  background: linear-gradient(160deg, rgba(0, 102, 110, 0.06) 0%, #ffffff 60%);
+  border-color: rgba(0, 102, 110, 0.2);
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--suspended {
-  background: linear-gradient(160deg, rgba(148,163,184,0.1) 0%, var(--admin-surface-2) 60%);
+  background: linear-gradient(160deg, rgba(148,163,184,0.06) 0%, #ffffff 60%);
   border-color: rgba(148,163,184,0.15);
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--rejected {
-  background: linear-gradient(160deg, rgba(248,75,109,0.1) 0%, var(--admin-surface-2) 60%);
+  background: linear-gradient(160deg, rgba(248,75,109,0.06) 0%, #ffffff 60%);
   border-color: rgba(248,75,109,0.2);
 }
 
