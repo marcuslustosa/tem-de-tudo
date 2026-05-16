@@ -1,157 +1,275 @@
 # Final i9Plus Parity Audit
 
-## Fonte obrigatoria
+## Fonte obrigatória
 
 - `docs/i9plus/I9PLUS_REFERENCE_SPEC.md`
+- `docs/i9plus/DEMO_GUIDE.md`
+- `backend/database/seeders/I9PlusDemoSeeder.php`
 
-## Escopo P0
+## Escopo P0 consolidado
 
-### 1. `backend/public/meus_pontos.html`
+### 1. `backend/public/index.html`
 
-- Referencia esperada:
-  - home cliente mobile-first com header em gradiente, logo a esquerda, saudacao do cliente, menu de tres pontos, botoes lado a lado para ler QR e mostrar QR, lista de empresas vinculadas, destaques e bottom nav app-like
-- Estado atual:
-  - shell mobile, lista de empresas, QR do cliente e destaques ja existiam
-- Gaps visuais:
-  - topo ainda sem acao visual secundaria clara
-  - secao de destaque pouco aderente ao tom de app
-  - bottom nav com rotulos menos proximos da referencia
-- Gaps funcionais:
-  - cards de empresa precisavam comunicar melhor busca/novidades e acesso ao perfil
-- Status antes:
-  - proximo
-- Correcao aplicada:
-  - hero da home passou a usar a camada `home-client-hero`
-  - inclusao do atalho visual de tres pontos para `/meu_perfil.html`
-  - refinamento dos rotulos de destaque e da bottom nav para `Buscar` e `Novidades`
+- Status atual:
+  - ruim
+- Decisão:
+  - reestruturar
+- Motivo:
+  - a entrada pública ainda vendia o Tem de Tudo antigo com cara de landing genérica e pouca clareza sobre QR Code, fidelidade, campanhas e validação presencial
+- O que já estava bom:
+  - brand Tem de Tudo e acesso para entrar/criar conta
+- O que estava errado:
+  - proposta de valor pouco aderente ao modelo i9Plus
+  - pouca ênfase em QR Code e fidelidade
+  - hierarquia visual distante de app mobile de aquisição
+- Ação aplicada:
+  - hero novo mobile-first com gradiente, QR Code como conceito central, CTAs `Entrar`, `Criar conta` e `Cadastrar estabelecimento`
+  - cards explicando os fluxos cliente/empresa/admin no vocabulário correto
 - Status depois:
   - igual
 
-### 2. `backend/public/parceiros_tem_de_tudo.html`
+### 2. `backend/public/criar_conta.html`
 
-- Referencia esperada:
-  - busca de novo comercio com input, botao magenta com lupa, aviso de no minimo 4 caracteres, grid 2 colunas com categorias ilustradas, resultados com logo, nome, categoria, estrelas e CTA de cadastro
-- Estado atual:
-  - busca e grid ja existiam, mas o fluxo estava mais utilitario que app-like
-- Gaps visuais:
-  - faltava botao de busca destacado
-  - faltava helper explicito de 4 caracteres
-  - categorias ainda nao tinham bloco visual mais forte
-- Gaps funcionais:
-  - CTA do card nao contextualizava cadastro quando o cliente ainda nao estava vinculado
-- Status antes:
+- Status atual:
   - parcial
-- Correcao aplicada:
-  - inclusao de `parceiroBuscaBtn`
-  - inclusao do helper `partnersSearchHint`
-  - categorias passaram a usar `parceiro-category-media`
-  - o CTA agora mostra `Me cadastrar` quando o viewer e cliente e ainda nao esta vinculado
+- Decisão:
+  - corrigir forte
+- Motivo:
+  - a tela precisava deixar mais claro o split entre cliente e estabelecimento e comunicar aprovação pendente da empresa
+- O que já estava bom:
+  - estrutura do formulário, alternância de perfil e campos de empresa
+- O que estava errado:
+  - microcopy fraca para o fluxo real de empresa
+  - mensagens e labels com acentuação inconsistente
+- Ação aplicada:
+  - texto reforçando `Tipo de conta`
+  - mensagem explícita para empresa pendente após pagamento
+  - revisão de labels, placeholders e instruções de nascimento/benefícios
 - Status depois:
   - igual
 
-### 3. `backend/public/detalhe_do_parceiro.html`
+### 3. `backend/public/entrar.html`
 
-- Referencia esperada:
-  - topo dark com botao fechar, estrela e nota, nome uppercase, secoes separadas para bonus, fidelidade, promocoes, aniversario, contatos e avaliacoes, fidelidade no padrao i9Plus
-- Estado atual:
-  - tela ja era boa visualmente, mas ainda distante do bloco de fidelidade e da iconografia de contatos da referencia
-- Gaps visuais:
-  - CTA superior ainda parecia mais pagina web que app
-  - fidelidade sem o bloco azul e sem a hierarquia textual da referencia
-  - contatos sem leitura iconografica
-- Gaps funcionais:
-  - faltava exibir o endereco tambem na coluna de contatos
-- Status antes:
-  - proximo
-- Correcao aplicada:
-  - `Voltar` virou `Fechar` no hero
-  - nome ficou uppercase e o hero dark ficou mais forte
-  - pill de nota e estrelas foi reforcado no topo
-  - bonus de adesao ficou mais promocional com destaque visual e instrucao presencial explicita
-  - fidelidade ganhou `Com X pontos`, bloco azul de progresso, validade em cinza e recompensa em destaque
-  - promocoes e aniversario receberam tratamento visual mais proximo de campanha/app
-  - contatos ganharam icones para telefone, WhatsApp, endereco, Instagram e Facebook
-  - avaliacoes ganharam leitura de app com destaque de nota, lista de usuarios e avatar inicial
-  - JS passou a preencher `partner-full-address`, o formato `0 / 15 pontos` e o estado visual de aniversario/avaliacoes
+- Status atual:
+  - próximo
+- Decisão:
+  - ajustar levemente
+- Motivo:
+  - layout já estava bom, mas o texto ainda não comunicava corretamente QR, campanhas e validação presencial
+- O que já estava bom:
+  - shell visual, campos, estados de erro e CTA principal
+- O que estava errado:
+  - mensagem de acesso genérica
+  - fallback de erro com linguagem menos comercial
+- Ação aplicada:
+  - subtítulo reescrito para QR, benefícios e campanhas presenciais
+  - fallback de login alinhado em português comercial
 - Status depois:
   - igual
 
-### 4. `backend/public/validar_resgate.html`
+### 4. `backend/public/meus_pontos.html`
 
-- Referencia esperada:
-  - leitor de QR operacional com instrucao clara, area de scanner, entrada manual, painel pos-scan e acoes elegiveis
-- Estado atual:
-  - scanner, entrada manual e paineis ja existiam
-- Gaps visuais:
-  - bottom nav ainda era composta por itens estaticos
-  - navegacao pouco coerente com a area da empresa
-- Gaps funcionais:
-  - atalhos da tela nao levavam para dashboard, ferramentas e clientes
-- Status antes:
-  - proximo
-- Correcao aplicada:
-  - bottom nav foi convertida para links reais
-  - a navegacao agora aponta para dashboard, ferramentas, clientes e perfil
-  - o item central `Validar` ganhou destaque pill no CSS
+- Status atual:
+  - igual
+- Decisão:
+  - manter
+- Motivo:
+  - a home cliente já tinha a estrutura principal correta e só precisava revisão fina de texto
+- O que já estava bom:
+  - header gradiente
+  - saudação
+  - ações `Ler QR Code` e `Meu QR Code`
+  - lista de empresas e bottom nav app-like
+- O que estava errado:
+  - alguns rótulos e estados vazios ainda estavam menos naturais
+- Ação aplicada:
+  - revisão leve de linguagem, estados vazios e nomenclatura de navegação
 - Status depois:
   - igual
 
-### 5. `backend/public/dashboard_parceiro.html`
+### 5. `backend/public/parceiros_tem_de_tudo.html`
 
-- Referencia esperada:
-  - dashboard simples da empresa com QR em destaque, botao para ler QR do cliente, ferramentas em cards, resumo, clientes e ultimos resgates
-- Estado atual:
-  - estrutura principal ja existia, mas a secao de ferramentas podia comunicar melhor seu papel
-- Gaps visuais:
-  - faltava uma faixa explicita de ferramentas
-  - CTA secundario da pagina publica estava pouco descritivo
-- Gaps funcionais:
-  - nenhum gap estrutural severo no fluxo principal
-- Status antes:
-  - proximo
-- Correcao aplicada:
-  - secao `Ferramentas da empresa` adicionada acima dos cards
-  - CTA secundario passou para `Ver pagina publica`
-  - mantidos QR em destaque, scanner, clientes recentes e ultimos resgates
+- Status atual:
+  - igual
+- Decisão:
+  - manter
+- Motivo:
+  - a tela já estava aderente ao modelo de busca/categorias e exigia só consistência textual
+- O que já estava bom:
+  - título de busca
+  - helper de 4 caracteres
+  - grid de categorias
+  - CTA de cadastro para cliente não vinculado
+- O que estava errado:
+  - pequenos rótulos e consistência geral do português
+- Ação aplicada:
+  - preservação do layout e revisão de copy operacional
 - Status depois:
   - igual
 
-### 6. `backend/public/gest_o_de_ofertas_parceiro.html`
+### 6. `backend/public/detalhe_do_parceiro.html`
 
-- Referencia esperada:
-  - gestao separada por cards de promocao, bonus de adesao, fidelidade, aniversario e lembrete, com preview claro para o cliente
-- Estado atual:
-  - as secoes ja existiam, mas a navegacao interna e a leitura superior ainda estavam densas
-- Gaps visuais:
-  - duplicidade de import de `Material Symbols`
-  - faltava leitura inicial de ferramentas
-- Gaps funcionais:
-  - navegacao entre as secoes exigia rolagem longa
-- Status antes:
+- Status atual:
+  - igual
+- Decisão:
+  - manter
+- Motivo:
+  - a tela crítica da empresa já havia sido alinhada com a especificação e só precisava permanecer íntegra
+- O que já estava bom:
+  - hero dark
+  - bônus de adesão promocional
+  - fidelidade no padrão i9Plus
+  - promoções, aniversário, contatos e avaliações
+- O que estava errado:
+  - apenas pequenos textos residuais e consistência de rótulos
+- Ação aplicada:
+  - preservação da estrutura
+  - revisão de textos e placeholders para manter leitura comercial consistente
+- Status depois:
+  - igual
+
+### 7. `backend/public/validar_resgate.html`
+
+- Status atual:
+  - igual
+- Decisão:
+  - ajustar levemente
+- Motivo:
+  - a estrutura operacional estava correta, mas havia rótulos e placeholders sem acento e pequenos detalhes de leitura
+- O que já estava bom:
+  - scanner
+  - modo manual
+  - painel pós-leitura com bônus, fidelidade, promoções e aniversário
+- O que estava errado:
+  - `Operação`, `Vínculo`, `Início` e helper inicial ainda inconsistentes
+- Ação aplicada:
+  - correção de microcopy da tela, mantendo IDs, regras e fluxo operacional
+- Status depois:
+  - igual
+
+### 8. `backend/public/dashboard_parceiro.html`
+
+- Status atual:
+  - próximo
+- Decisão:
+  - ajustar levemente
+- Motivo:
+  - a estrutura já estava boa, mas parte do texto ainda quebrava a percepção premium do painel
+- O que já estava bom:
+  - QR da empresa em destaque
+  - CTA para ler QR do cliente
+  - cards de ferramentas
+  - resumo, clientes e movimentação
+- O que estava errado:
+  - acentuação quebrada em pontos importantes
+  - labels de atalhos, métricas e CTA público menos polidos
+- Ação aplicada:
+  - correção de textos-chave, acentuação, CTA de página pública e rótulos de ferramentas/métricas
+- Status depois:
+  - igual
+
+### 9. `backend/public/gest_o_de_ofertas_parceiro.html`
+
+- Status atual:
   - parcial
-- Correcao aplicada:
-  - remocao do link CSS duplicado da fonte de icones
-  - inclusao de tool cards para promocao, bonus adesao, fidelidade, aniversario, lembrete e leitor de QR
-  - previews existentes foram preservados
+- Decisão:
+  - corrigir forte
+- Motivo:
+  - a página ainda tinha traços claros do legado Tem de Tudo antigo, inclusive encoding ruim e textos pobres em relação ao fluxo real
+- O que já estava bom:
+  - estrutura funcional dos formulários
+  - previews e seções principais
+- O que estava errado:
+  - vários textos sem acento
+  - leitura fraca de campanha/fidelidade/aniversário
+  - topo e tool cards menos polidos
+- Ação aplicada:
+  - revisão dos rótulos das ferramentas
+  - correção de promoções, bônus de adesão, fidelidade e aniversário
+  - ajuste de instruções de validação presencial e labels de preço/validade
 - Status depois:
   - igual
 
-### 7. `backend/public/gest_o_de_estabelecimentos.html`
+### 10. `backend/public/gest_o_de_estabelecimentos.html`
 
-- Referencia esperada:
-  - painel admin com cards de status pending, active e suspended, lista clara de empresas e acoes aprovar, rejeitar e suspender
-- Estado atual:
-  - listagem e acoes existiam, mas o resumo estava concentrado em texto e a navegacao mobile marcava a aba errada
-- Gaps visuais:
-  - ausencia de cards de status
-  - navecacao mobile com destaque incorreto
-- Gaps funcionais:
-  - resumo nao expunha claramente pendentes, ativas, suspensas e rejeitadas
-- Status antes:
-  - parcial
-- Correcao aplicada:
-  - criados cards de status para `pending`, `active`, `suspended` e `rejected`
-  - `stitch-app.js` passou a preencher os badges com o summary do endpoint admin
-  - bottom nav mobile agora destaca corretamente `Estabelecimentos`
+- Status atual:
+  - próximo
+- Decisão:
+  - ajustar levemente
+- Motivo:
+  - o painel admin já era funcional e visualmente bom, mas precisava consistência de navegação e linguagem
+- O que já estava bom:
+  - cards de status
+  - tabela/lista de empresas
+  - ações de aprovação/suspensão
+- O que estava errado:
+  - alguns labels e navegação ainda vinham do legado
+- Ação aplicada:
+  - manutenção da estrutura
+  - correção de labels, navegação mobile e textos dos status
 - Status depois:
   - igual
+
+### 11. `backend/public/dashboard_admin_master.html`
+
+- Status atual:
+  - próximo
+- Decisão:
+  - ajustar levemente
+- Motivo:
+  - o painel já estava bom como painel desktop, mas tinha rótulos e textos ainda pouco refinados
+- O que já estava bom:
+  - shell desktop
+  - KPIs
+  - visão geral da plataforma
+- O que estava errado:
+  - alguns textos operacionais, labels de navegação e linguagem da plataforma
+- Ação aplicada:
+  - revisão de rótulos de menu, métricas, cabeçalhos e CTA internos
+- Status depois:
+  - igual
+
+### 12. `backend/public/meu_perfil.html`
+
+- Status atual:
+  - próximo
+- Decisão:
+  - corrigir forte
+- Motivo:
+  - o perfil tinha boa estrutura, mas ainda carregava acentuação quebrada em textos importantes da jornada do cliente
+- O que já estava bom:
+  - hero app-like
+  - card de dados
+  - QR host
+  - empresas vinculadas
+  - ações e logout
+- O que estava errado:
+  - vários textos com mojibake
+  - labels de benefícios, configurações e relacionamento comprometiam a sensação de produto pronto
+- Ação aplicada:
+  - limpeza completa dos textos do hero, empresas vinculadas, dados e ações
+  - preservação integral dos IDs e do fluxo dinâmico
+- Status depois:
+  - igual
+
+## Resumo da rodada
+
+- P0 preservado:
+  - `meus_pontos.html`
+  - `parceiros_tem_de_tudo.html`
+  - `detalhe_do_parceiro.html`
+
+- P0 ajustado levemente:
+  - `entrar.html`
+  - `validar_resgate.html`
+  - `dashboard_parceiro.html`
+  - `gest_o_de_estabelecimentos.html`
+  - `dashboard_admin_master.html`
+
+- P0 corrigido forte:
+  - `criar_conta.html`
+  - `gest_o_de_ofertas_parceiro.html`
+  - `meu_perfil.html`
+
+- P0 reestruturado:
+  - `index.html`

@@ -57,7 +57,7 @@
         {
           id: 'demo-ticket-2',
           title: 'Divergencia de saldo de pontos',
-          message: 'Usuario reportou saldo diferente do extrato.',
+          message: 'Usuário reportou saldo diferente do extrato.',
           status: 'pendente',
           priority: 'media',
           category: 'pontos',
@@ -128,11 +128,11 @@
   const DEMO_PARTNERS = [
     {
       id: 1,
-      nome: 'Malagueta Galpao',
+      nome: 'Malagueta Galpão',
       categoria: 'Restaurante',
       ramo: 'restaurante',
-      descricao: 'Galpao gastronomico com almoco executivo, happy hour e fidelizacao por QR Code.',
-      endereco: 'Rua do Mercado, 128 - Centro, Sao Paulo - SP',
+      descricao: 'Galpão gastronômico com almoço executivo, happy hour e fidelização por QR Code.',
+      endereco: 'Rua do Mercado, 128 - Centro, São Paulo - SP',
       telefone: '(11) 4002-1101',
       whatsapp: '(11) 98888-2101',
       instagram: '@malaguetagalpao',
@@ -146,16 +146,16 @@
       publicamente_visivel: true,
       status: 'active',
       cartao_fidelidade: {
-        titulo: 'Cartao Fidelidade',
+        titulo: 'Cartão Fidelidade',
         regra_ganho: 'Ganhe 1 ponto a cada visita',
         pontos_por_visita: 1,
         pontos_necessarios: 15,
-        recompensa_descricao: 'Ganhe uma porcao de fritas ou um lanche',
+        recompensa_descricao: 'Ganhe uma porção de fritas ou um lanche',
         status: 'available',
       },
       bonus_aniversario: {
-        titulo: 'Parabens! Seu beneficio do mes esta liberado',
-        descricao: 'Cliente aniversariante valida o beneficio presencialmente mostrando o QR Code.',
+        titulo: 'Parabéns! Seu benefício do mês está liberado',
+        descricao: 'Cliente aniversariante valida o benefício presencialmente mostrando o QR Code.',
         imagem_url: '/assets/images/company1.jpg',
         status: 'public',
       },
@@ -165,8 +165,8 @@
       nome: 'Texano Burger',
       categoria: 'Hamburgueria',
       ramo: 'hamburgueria',
-      descricao: 'Hamburguer artesanal, combos semanais e recompensas presenciais no balcao.',
-      endereco: 'Av. Paulista, 940 - Bela Vista, Sao Paulo - SP',
+      descricao: 'Hambúrguer artesanal, combos semanais e recompensas presenciais no balcão.',
+      endereco: 'Av. Paulista, 940 - Bela Vista, São Paulo - SP',
       telefone: '(11) 4002-1102',
       whatsapp: '(11) 98888-2102',
       instagram: '@texanoburger',
@@ -180,11 +180,11 @@
       publicamente_visivel: true,
       status: 'active',
       cartao_fidelidade: {
-        titulo: 'Cartao Fidelidade',
+        titulo: 'Cartão Fidelidade',
         regra_ganho: 'Ganhe 1 ponto a cada visita',
         pontos_por_visita: 1,
         pontos_necessarios: 15,
-        recompensa_descricao: 'Ganhe uma porcao de fritas ou um lanche',
+        recompensa_descricao: 'Ganhe uma porção de fritas ou um lanche',
         status: 'available',
       },
       bonus_aniversario: {
@@ -199,8 +199,8 @@
       nome: 'Makoto Sushi',
       categoria: 'Japonesa',
       ramo: 'japonesa',
-      descricao: 'Sushi bar com promocoes ativas, fidelidade e bonus de aniversario do mes.',
-      endereco: 'Rua Harmonia, 55 - Vila Madalena, Sao Paulo - SP',
+      descricao: 'Sushi bar com promoções ativas, fidelidade e bônus de aniversário do mês.',
+      endereco: 'Rua Harmonia, 55 - Vila Madalena, São Paulo - SP',
       telefone: '(11) 4002-1103',
       whatsapp: '(11) 98888-2103',
       instagram: '@makotosushi',
@@ -214,16 +214,16 @@
       publicamente_visivel: true,
       status: 'active',
       cartao_fidelidade: {
-        titulo: 'Cartao Fidelidade',
+        titulo: 'Cartão Fidelidade',
         regra_ganho: 'Ganhe 1 ponto a cada visita',
         pontos_por_visita: 1,
         pontos_necessarios: 15,
-        recompensa_descricao: 'Ganhe uma porcao de fritas ou um lanche',
+        recompensa_descricao: 'Ganhe uma porção de fritas ou um lanche',
         status: 'available',
       },
       bonus_aniversario: {
         titulo: 'Presente do aniversariante',
-        descricao: 'Liberado para clientes elegiveis no mes do aniversario.',
+        descricao: 'Liberado para clientes elegíveis no mês do aniversário.',
         imagem_url: '/assets/images/company3.jpg',
         status: 'public',
       },
@@ -233,8 +233,8 @@
       nome: 'Florenza Boutique',
       categoria: 'Moda/Beleza',
       ramo: 'moda',
-      descricao: 'Boutique com beneficios recorrentes, mimo de aniversario e campanhas sazonais.',
-      endereco: 'Alameda das Flores, 210 - Jardins, Sao Paulo - SP',
+      descricao: 'Boutique com benefícios recorrentes, mimo de aniversário e campanhas sazonais.',
+      endereco: 'Alameda das Flores, 210 - Jardins, São Paulo - SP',
       telefone: '(11) 4002-1104',
       whatsapp: '(11) 98888-2104',
       instagram: '@florenzaboutique',
@@ -248,15 +248,15 @@
       publicamente_visivel: true,
       status: 'active',
       cartao_fidelidade: {
-        titulo: 'Cartao Fidelidade',
+        titulo: 'Cartão Fidelidade',
         regra_ganho: 'Ganhe 1 ponto a cada visita',
         pontos_por_visita: 1,
         pontos_necessarios: 15,
-        recompensa_descricao: 'Ganhe uma porcao de fritas ou um lanche',
+        recompensa_descricao: 'Ganhe uma porção de fritas ou um lanche',
         status: 'available',
       },
       bonus_aniversario: {
-        titulo: 'Mimo do mes de aniversario',
+        titulo: 'Mimo do mês de aniversário',
         descricao: 'Valide seu presente diretamente com a equipe da loja.',
         imagem_url: '/assets/images/company4.jpg',
         status: 'public',
@@ -278,7 +278,7 @@
       nome: 'Empresa Pendente Demo',
       categoria: 'Servicos',
       ramo: 'servicos',
-      descricao: 'Cadastro aguardando aprovacao para entrar na vitrine publica.',
+      descricao: 'Cadastro aguardando aprovação para entrar na vitrine pública.',
       endereco: 'Rua do Cadastro, 88 - Campinas, SP',
       telefone: '(19) 4002-8801',
       whatsapp: '(19) 98888-8801',
@@ -295,7 +295,7 @@
       nome: 'Empresa Suspensa Demo',
       categoria: 'Varejo',
       ramo: 'varejo',
-      descricao: 'Cadastro suspenso para demonstrar governanca e reativacao.',
+      descricao: 'Cadastro suspenso para demonstrar governança e reativação.',
       endereco: 'Av. de Testes, 450 - Osasco, SP',
       telefone: '(11) 4002-8802',
       whatsapp: '(11) 98888-8802',
@@ -402,18 +402,18 @@
     return Array.from({ length: total }, (_, index) => (index < Math.round(normalized) ? '★' : '☆')).join('');
   }
 
-  function formatDatePtBr(value, fallback = 'Nao informada') {
+  function formatDatePtBr(value, fallback = 'Não informada') {
     if (!value) return fallback;
     const parsed = new Date(value);
     if (Number.isNaN(parsed.getTime())) return fallback;
     return parsed.toLocaleDateString('pt-BR');
   }
 
-  function formatDateRangePtBr(start, end, fallback = 'Nao informada') {
+  function formatDateRangePtBr(start, end, fallback = 'Não informada') {
     if (!start && !end) return fallback;
     const startLabel = formatDatePtBr(start, '');
     const endLabel = formatDatePtBr(end, '');
-    if (startLabel && endLabel) return `${startLabel} ate ${endLabel}`;
+    if (startLabel && endLabel) return `${startLabel} até ${endLabel}`;
     return startLabel || endLabel || fallback;
   }
 
@@ -421,33 +421,33 @@
     switch (String(status || '').toLowerCase()) {
       case 'available':
         return {
-          label: 'Disponivel',
+          label: 'Disponível',
           badgeClass: 'bg-emerald-50 text-emerald-700',
           message: 'Apresente seu QR Code no estabelecimento para resgatar.',
         };
       case 'redeemed':
         return {
-          label: 'Ja utilizado',
+          label: 'Já utilizado',
           badgeClass: 'bg-slate-100 text-slate-600',
-          message: 'Este bonus de adesao ja foi utilizado.',
+          message: 'Este bônus de adesão já foi utilizado.',
         };
       case 'expired':
         return {
           label: 'Expirado',
           badgeClass: 'bg-amber-50 text-amber-700',
-          message: 'O bonus de adesao desta empresa expirou.',
+          message: 'O bônus de adesão desta empresa expirou.',
         };
       case 'not_linked':
         return {
-          label: 'Exige vinculo',
+          label: 'Exige vínculo',
           badgeClass: 'bg-blue-50 text-blue-700',
-          message: 'Leia o QR Code da empresa para liberar o bonus de adesao.',
+          message: 'Leia o QR Code da empresa para liberar o bônus de adesão.',
         };
       default:
         return {
-          label: 'Indisponivel',
+          label: 'Indisponível',
           badgeClass: 'bg-slate-100 text-slate-600',
-          message: 'Nenhum bonus de adesao ativo no momento.',
+          message: 'Nenhum bônus de adesão ativo no momento.',
         };
     }
   }
@@ -458,7 +458,7 @@
         return {
           label: 'Recompensa liberada',
           badgeClass: 'bg-emerald-50 text-emerald-700',
-          message: 'Cliente ja pode resgatar a recompensa no estabelecimento.',
+          message: 'Cliente já pode resgatar a recompensa no estabelecimento.',
         };
       case 'available':
         return {
@@ -468,7 +468,7 @@
         };
       case 'not_linked':
         return {
-          label: 'Exige vinculo',
+          label: 'Exige vínculo',
           badgeClass: 'bg-slate-100 text-slate-600',
           message: 'Leia o QR Code da empresa para liberar o progresso individual.',
         };
@@ -476,19 +476,19 @@
         return {
           label: 'Expirado',
           badgeClass: 'bg-amber-50 text-amber-700',
-          message: 'O cartao fidelidade desta empresa expirou.',
+          message: 'O cartão fidelidade desta empresa expirou.',
         };
       case 'inactive':
         return {
           label: 'Inativo',
           badgeClass: 'bg-slate-100 text-slate-600',
-          message: 'A empresa ainda nao esta operando este cartao no momento.',
+          message: 'A empresa ainda não está operando este cartão no momento.',
         };
       default:
         return {
-          label: 'Indisponivel',
+          label: 'Indisponível',
           badgeClass: 'bg-slate-100 text-slate-600',
-          message: 'Nenhum cartao fidelidade ativo no momento.',
+          message: 'Nenhum cartão fidelidade ativo no momento.',
         };
     }
   }
@@ -497,45 +497,45 @@
     switch (String(status || '').toLowerCase()) {
       case 'available':
         return {
-          label: 'Disponivel',
+          label: 'Disponível',
           badgeClass: 'bg-emerald-50 text-emerald-700',
           message: 'Apresente seu QR Code no estabelecimento para validar.',
         };
       case 'redeemed':
         return {
-          label: 'Ja utilizada',
+          label: 'Já utilizada',
           badgeClass: 'bg-slate-100 text-slate-600',
-          message: 'Esta promocao ja foi validada para este cliente.',
+          message: 'Esta promoção já foi validada para este cliente.',
         };
       case 'not_linked':
         return {
-          label: 'Exige vinculo',
+          label: 'Exige vínculo',
           badgeClass: 'bg-blue-50 text-blue-700',
-          message: 'Vincule-se a empresa para ficar elegivel a esta promocao.',
+          message: 'Vincule-se à empresa para ficar elegível a esta promoção.',
         };
       case 'expired':
         return {
           label: 'Expirada',
           badgeClass: 'bg-amber-50 text-amber-700',
-          message: 'A promocao expirou e nao pode mais ser validada.',
+          message: 'A promoção expirou e não pode mais ser validada.',
         };
       case 'inactive':
         return {
           label: 'Inativa',
           badgeClass: 'bg-slate-100 text-slate-600',
-          message: 'A empresa pausou esta promocao no momento.',
+          message: 'A empresa pausou esta promoção no momento.',
         };
       case 'public':
         return {
-          label: 'Publica',
+          label: 'Pública',
           badgeClass: 'bg-fuchsia-50 text-fuchsia-700',
           message: 'Entre como cliente e apresente seu QR Code no estabelecimento para validar.',
         };
       default:
         return {
-          label: 'Indisponivel',
+          label: 'Indisponível',
           badgeClass: 'bg-slate-100 text-slate-600',
-          message: 'Nenhuma promocao ativa no momento.',
+          message: 'Nenhuma promoção ativa no momento.',
         };
     }
   }
@@ -544,51 +544,51 @@
     switch (String(status || '').toLowerCase()) {
       case 'available':
         return {
-          label: 'Elegivel',
+          label: 'Elegível',
           badgeClass: 'bg-emerald-50 text-emerald-700',
-          message: 'Apresente seu QR Code no estabelecimento para resgatar o bonus aniversario.',
+          message: 'Apresente seu QR Code no estabelecimento para resgatar o bônus aniversário.',
         };
       case 'redeemed':
         return {
-          label: 'Ja utilizado',
+          label: 'Já utilizado',
           badgeClass: 'bg-slate-100 text-slate-600',
-          message: 'Este bonus aniversario ja foi utilizado neste ano.',
+          message: 'Este bônus aniversário já foi utilizado neste ano.',
         };
       case 'not_linked':
         return {
-          label: 'Exige vinculo',
+          label: 'Exige vínculo',
           badgeClass: 'bg-blue-50 text-blue-700',
-          message: 'Vincule-se a empresa para liberar o bonus aniversario.',
+          message: 'Vincule-se à empresa para liberar o bônus aniversário.',
         };
       case 'missing_birth_date':
         return {
           label: 'Atualize seu cadastro',
           badgeClass: 'bg-amber-50 text-amber-700',
-          message: 'Informe sua data de nascimento para a empresa liberar o bonus aniversario.',
+          message: 'Informe sua data de nascimento para a empresa liberar o bônus aniversário.',
         };
       case 'out_of_window':
         return {
           label: 'Fora da janela',
           badgeClass: 'bg-fuchsia-50 text-fuchsia-700',
-          message: 'Este bonus aparece apenas no mes do aniversario ou na janela configurada pela empresa.',
+          message: 'Este bônus aparece apenas no mês do aniversário ou na janela configurada pela empresa.',
         };
       case 'public':
         return {
           label: 'Consulte no app',
           badgeClass: 'bg-sky-50 text-sky-700',
-          message: 'Entre como cliente vinculado para verificar sua elegibilidade ao bonus aniversario.',
+          message: 'Entre como cliente vinculado para verificar sua elegibilidade ao bônus aniversário.',
         };
       case 'inactive':
         return {
           label: 'Inativo',
           badgeClass: 'bg-slate-100 text-slate-600',
-          message: 'A empresa nao esta operando bonus aniversario no momento.',
+          message: 'A empresa não está operando bônus aniversário no momento.',
         };
       default:
         return {
-          label: 'Indisponivel',
+          label: 'Indisponível',
           badgeClass: 'bg-slate-100 text-slate-600',
-          message: 'Nenhum bonus aniversario ativo no momento.',
+          message: 'Nenhum bônus aniversário ativo no momento.',
         };
     }
   }
@@ -992,7 +992,7 @@
           }
         } catch (err) {
           console.error('push_enable_fail', err);
-          ui.message('Nao foi possivel ativar push neste momento.', 'error');
+          ui.message('Não foi possível ativar push neste momento.', 'error');
         }
       });
     });
@@ -1121,7 +1121,7 @@
       const reg = await navigator.serviceWorker.register('/sw-push.js');
       const publicKey = await getPublicKey();
       if (!publicKey) {
-        ui.message('Chave publica de push nao configurada.', 'warning');
+        ui.message('Chave pública de push não configurada.', 'warning');
         return;
       }
       const sub = await reg.pushManager.subscribe({
@@ -1319,7 +1319,7 @@
         const welcomeEl = document.getElementById('header-welcome');
         if (welcomeEl) {
           const firstName = safeText(currentUser?.name || currentUser?.nome || 'Cliente').split(' ')[0];
-          welcomeEl.textContent = `Ola, ${firstName}`;
+          welcomeEl.textContent = `Olá, ${firstName}`;
         }
 
         const renderCompanyCard = (company) => {
@@ -1345,7 +1345,7 @@
                     <span class="font-bold text-amber-400">${renderStars(rating)}</span>
                     <span>${rating > 0 ? rating.toFixed(1).replace('.', ',') : 'Novo'}${reviews ? ` • ${reviews} avaliações` : ''}</span>
                   </div>
-                  <p class="mt-2 line-clamp-2 text-sm text-slate-500">${safeText(company.endereco, 'Endereco nao informado')}</p>
+                  <p class="mt-2 line-clamp-2 text-sm text-slate-500">${safeText(company.endereco, 'Endereço não informado')}</p>
                 </div>
               </div>
               <div class="mt-4 flex gap-3">
@@ -1412,19 +1412,19 @@
             qrContainer.innerHTML = `
               <div class="mx-auto flex h-64 w-64 items-center justify-center rounded-[28px] bg-white p-4 shadow-[0_18px_45px_rgba(8,10,18,0.12)] ring-1 ring-black/5">${myQr.qrcode_svg}</div>
               <div class="mt-4 rounded-[20px] bg-slate-50 px-4 py-3 text-center">
-                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Codigo seguro</p>
+                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Código seguro</p>
                 <p class="mt-2 break-all font-mono text-sm font-bold text-[#111B3F]">${safeText(myQr.codigo)}</p>
               </div>
               <div class="mt-3 flex flex-wrap items-center justify-center gap-3">
-                <button id="copyCustomerQrCode" class="inline-flex h-11 items-center justify-center rounded-full bg-[#111B3F] px-5 text-sm font-bold text-white" type="button">Copiar codigo</button>
+                <button id="copyCustomerQrCode" class="inline-flex h-11 items-center justify-center rounded-full bg-[#111B3F] px-5 text-sm font-bold text-white" type="button">Copiar código</button>
                 <p class="text-xs text-slate-500">Expira às ${expiresAt}</p>
               </div>
             `;
             document.getElementById('copyCustomerQrCode')?.addEventListener('click', () => {
-              navigator.clipboard.writeText(myQr.codigo).then(() => ui.message('Codigo do seu QR copiado.', 'success'));
+              navigator.clipboard.writeText(myQr.codigo).then(() => ui.message('Código do seu QR copiado.', 'success'));
             });
           } else {
-            qrContainer.innerHTML = '<p class="text-sm text-slate-500">Nao foi possivel carregar seu QR Code agora.</p>';
+            qrContainer.innerHTML = '<p class="text-sm text-slate-500">Não foi possível carregar seu QR Code agora.</p>';
           }
         }
 
@@ -1463,7 +1463,7 @@
       const totalGasto = Number(dashboard.usuario?.total_gasto ?? 0);
 
       const welcomeEl = document.getElementById('header-welcome') || document.querySelector('header h1') || document.querySelector('header span');
-      if (welcomeEl) welcomeEl.textContent = `Ola, ${user?.name || 'Cliente'}`;
+      if (welcomeEl) welcomeEl.textContent = `Olá, ${user?.name || 'Cliente'}`;
 
       const saldoEl = document.getElementById('hero-saldo') || document.querySelector('section.bg-brand-gradient h1');
       if (saldoEl) {
@@ -1498,7 +1498,7 @@
             { pontos: 150, tipo: 'checkin', empresa: { nome: 'Supermercado Silva' }, created_at: new Date(Date.now() - 2 * 3600000).toISOString(), descricao: 'Check-in realizado' },
             { pontos: 85, tipo: 'compra', empresa: { nome: 'Pizzaria Bella' }, created_at: new Date(Date.now() - 6 * 3600000).toISOString(), descricao: 'Compra qualificada' },
             { pontos: -500, tipo: 'resgate', empresa: { nome: 'Tem de Tudo' }, created_at: new Date(Date.now() - 24 * 3600000).toISOString(), descricao: 'Resgate de voucher' },
-            { pontos: 120, tipo: 'bonus', empresa: { nome: 'Farmacia PopularMed' }, created_at: new Date(Date.now() - 48 * 3600000).toISOString(), descricao: 'Bonus de fidelidade' },
+            { pontos: 120, tipo: 'bonus', empresa: { nome: 'Farmacia PopularMed' }, created_at: new Date(Date.now() - 48 * 3600000).toISOString(), descricao: 'Bônus de fidelidade' },
             { pontos: 200, tipo: 'checkin', empresa: { nome: 'Cafe Premium' }, created_at: new Date(Date.now() - 72 * 3600000).toISOString(), descricao: 'Check-in realizado' },
           ];
         }
@@ -1700,7 +1700,7 @@
             <div class="grid gap-2 text-sm text-on-surface-variant">
               <p><span class="font-semibold text-on-surface">Acumulo por compra:</span> ${pontosPorReal} ponto(s) por R$ 1,00, com multiplicador da empresa.</p>
               <p><span class="font-semibold text-on-surface">Acumulo por QR:</span> base de ${scanBase} ponto(s), ajustada por campanha/multiplicador.</p>
-              <p><span class="font-semibold text-on-surface">Resgate:</span> custo prioriza pontos_necessarios e limite por usuario/estoque da promocao.</p>
+              <p><span class="font-semibold text-on-surface">Resgate:</span> custo prioriza pontos_necessários e limite por usuário/estoque da promoção.</p>
             </div>
           </div>`;
         host.appendChild(sec);
@@ -1828,7 +1828,7 @@
                     <span class="font-bold text-amber-400">${renderStars(rating)}</span>
                     <span>${ratingLabel}</span>
                   </div>
-                  <p class="mt-2 text-sm text-on-surface-variant line-clamp-2">${safeText(e.endereco, 'Endereco nao informado')}</p>
+                  <p class="mt-2 text-sm text-on-surface-variant line-clamp-2">${safeText(e.endereco, 'Endereço não informado')}</p>
                 </div>
               </div>
               <div class="flex items-center justify-between gap-3 pt-2 border-t border-surface-container">
@@ -1949,7 +1949,7 @@
             || DEMO_PARTNERS.find((item) => String(item?.id || '') === String(selectedCompanyId));
 
           if (!fallbackCompany) {
-            ui.setPageState('empty', data?.message || 'Empresa indisponivel no momento.');
+            ui.setPageState('empty', data?.message || 'Empresa indisponível no momento.');
             return;
           }
 
@@ -1977,7 +1977,7 @@
               items: [],
             };
         const params = new URLSearchParams(window.location.search);
-        const setText = (id, value, fallback = 'Nao informado') => {
+        const setText = (id, value, fallback = 'Não informado') => {
           const el = document.getElementById(id);
           if (el) el.textContent = safeText(value, fallback);
         };
@@ -2002,7 +2002,7 @@
           const imageEl = document.getElementById('partnerBonusImage');
           const actionEl = document.getElementById('partnerBonusAction');
 
-          if (titleEl) titleEl.textContent = bonus?.titulo || 'Bonus de adesao';
+          if (titleEl) titleEl.textContent = bonus?.titulo || 'Bônus de adesão';
           if (statusEl) {
             statusEl.textContent = meta.label;
             statusEl.className = `inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] ${meta.badgeClass}`;
@@ -2011,7 +2011,7 @@
             descriptionEl.textContent = bonus?.descricao || meta.message;
           }
           if (expiryEl) {
-            expiryEl.textContent = formatDatePtBr(bonus?.data_expiracao, 'Nao informada');
+            expiryEl.textContent = formatDatePtBr(bonus?.data_expiracao, 'Não informada');
           }
           if (hintEl) {
             hintEl.textContent = meta.message;
@@ -2069,7 +2069,7 @@
           if (titleEl) {
             titleEl.textContent = status === 'available'
               ? 'FELIZ ANIVERSARIO!'
-              : (bonus?.titulo || 'Bonus aniversario');
+              : (bonus?.titulo || 'Bônus aniversário');
           }
           if (statusEl) {
             statusEl.textContent = meta.label;
@@ -2077,7 +2077,7 @@
           }
           if (descriptionEl) {
             descriptionEl.textContent = status === 'available'
-              ? (bonus?.descricao || 'Comemore seu aniversario conosco e ganhe uma cortesia especial.')
+              ? (bonus?.descricao || 'Comemore seu aniversário conosco e ganhe uma cortesia especial.')
               : (bonus?.descricao || meta.message);
           }
           if (validityEl) {
@@ -2168,7 +2168,7 @@
           const progressPercent = Math.max(0, Math.min(100, Number(progress?.percentage || 0)));
           const rewardAvailable = Boolean(progress?.reward_available);
 
-          if (titleEl) titleEl.textContent = loyalty?.titulo || 'Cartao fidelidade';
+          if (titleEl) titleEl.textContent = loyalty?.titulo || 'Cartão fidelidade';
           if (statusEl) {
             statusEl.textContent = meta.label;
             statusEl.className = `inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] ${meta.badgeClass}`;
@@ -2183,7 +2183,7 @@
             requiredLabelEl.textContent = `${requiredPoints || 0} pontos`;
           }
           if (rewardEl) {
-            rewardEl.textContent = loyalty?.recompensa_descricao || 'Ainda nao informada';
+            rewardEl.textContent = loyalty?.recompensa_descricao || 'Ainda não informada';
           }
           if (progressLabelEl) {
             progressLabelEl.textContent = `${currentPoints} / ${requiredPoints} pontos`;
@@ -2191,7 +2191,7 @@
           if (progressStatusEl) {
             progressStatusEl.textContent = rewardAvailable
               ? 'Recompensa pronta'
-              : (payload?.status === 'not_linked' ? 'Exige vinculo' : 'Em andamento');
+              : (payload?.status === 'not_linked' ? 'Exige vínculo' : 'Em andamento');
           }
           if (progressBarEl) {
             progressBarEl.style.width = `${progressPercent}%`;
@@ -2206,7 +2206,7 @@
             targetEl.textContent = `${requiredPoints} pontos`;
           }
           if (expiryEl) {
-            expiryEl.textContent = formatDatePtBr(loyalty?.data_expiracao, 'Nao informada');
+            expiryEl.textContent = formatDatePtBr(loyalty?.data_expiracao, 'Não informada');
           }
 
           if (!actionEl) return;
@@ -2296,7 +2296,7 @@
           statusEl.className = `inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] ${summaryMeta.badgeClass}`;
           messageEl.textContent = normalizedItems.length
             ? summaryMeta.message
-            : 'Nenhuma promocao ativa no momento.';
+            : 'Nenhuma promoção ativa no momento.';
 
           normalizedItems.forEach((promo) => {
             const meta = promotionStatusMeta(promo.viewer_status || promo.status);
@@ -2304,11 +2304,11 @@
             card.className = 'overflow-hidden rounded-[26px] bg-slate-50 shadow-sm ring-1 ring-black/5';
             card.innerHTML = `
               <div class="grid gap-0 md:grid-cols-[200px_minmax(0,1fr)]">
-                <img class="h-full min-h-[180px] w-full object-cover" src="${safeImage(promo.imagem_url || promo.imagem, IMAGE_FALLBACKS.promo)}" alt="${safeText(promo.titulo || 'Promocao')}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" />
+                <img class="h-full min-h-[180px] w-full object-cover" src="${safeImage(promo.imagem_url || promo.imagem, IMAGE_FALLBACKS.promo)}" alt="${safeText(promo.titulo || 'Promoção')}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" />
                 <div class="space-y-4 p-5">
                   <div class="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <h3 class="text-xl font-extrabold text-[#111B3F]">${safeText(promo.titulo, 'Promocao instantanea')}</h3>
+                      <h3 class="text-xl font-extrabold text-[#111B3F]">${safeText(promo.titulo, 'Promoção instantânea')}</h3>
                       <p class="mt-2 text-sm leading-7 text-slate-600">${safeText(promo.descricao, meta.message)}</p>
                     </div>
                     <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}">${meta.label}</span>
@@ -2316,7 +2316,7 @@
                   <div class="grid gap-3 sm:grid-cols-2">
                     <div class="rounded-[20px] bg-white p-4">
                       <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Validade</p>
-                      <p class="mt-2 text-sm font-semibold text-[#111B3F]">${formatDatePtBr(promo.data_expiracao || promo.validade, 'Nao informada')}</p>
+                      <p class="mt-2 text-sm font-semibold text-[#111B3F]">${formatDatePtBr(promo.data_expiracao || promo.validade, 'Não informada')}</p>
                     </div>
                     <div class="rounded-[20px] bg-white p-4">
                       <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Como validar</p>
@@ -2343,7 +2343,7 @@
                 actionBtn.textContent = 'Mostrar meu QR Code';
                 actionBtn.onclick = () => { window.location.href = '/meus_pontos.html?mostrar=meu-qrcode'; };
               } else if (promo.viewer_status === 'redeemed') {
-                actionBtn.textContent = 'Ja utilizada';
+                actionBtn.textContent = 'Já utilizada';
                 actionBtn.disabled = true;
                 actionBtn.classList.add('opacity-60', 'cursor-not-allowed');
               } else {
@@ -2561,13 +2561,13 @@
 
         setText('partner-category', String(companyInfo.categoria || companyInfo.ramo || 'Empresa').toUpperCase(), 'EMPRESA');
         setText('partner-name', companyInfo.nome, 'Empresa');
-        setText('partner-address', companyInfo.endereco, 'Endereco nao informado');
-        setText('partner-full-address', companyInfo.endereco, 'Nao informado');
-        setText('partner-about', companyInfo.descricao, 'Esta empresa ja esta pronta para receber clientes via QR Code e operar bonus ou fidelidade conforme configuracao ativa.');
-        setText('partner-phone', companyInfo.telefone, 'Nao informado');
-        setText('partner-whatsapp', companyInfo.whatsapp, 'Nao informado');
-        setText('partner-instagram', companyInfo.instagram, 'Nao informado');
-        setText('partner-facebook', companyInfo.facebook, 'Nao informado');
+        setText('partner-address', companyInfo.endereco, 'Endereço não informado');
+        setText('partner-full-address', companyInfo.endereco, 'Não informado');
+        setText('partner-about', companyInfo.descricao, 'Esta empresa já está pronta para receber clientes via QR Code e operar bônus ou fidelidade conforme configuração ativa.');
+        setText('partner-phone', companyInfo.telefone, 'Não informado');
+        setText('partner-whatsapp', companyInfo.whatsapp, 'Não informado');
+        setText('partner-instagram', companyInfo.instagram, 'Não informado');
+        setText('partner-facebook', companyInfo.facebook, 'Não informado');
 
         const rating = Number(companyInfo.avaliacao_media || 0);
         const totalReviews = Number(companyInfo.total_avaliacoes || 0);
@@ -2580,7 +2580,7 @@
         setLink('partnerFacebookLink', companyInfo.facebook, (value) => String(value).startsWith('http') ? value : `https://facebook.com/${String(value).replace(/^@/, '')}`);
 
         const statusBadge = document.getElementById('partner-status-badge');
-        if (statusBadge) statusBadge.textContent = companyInfo.publicamente_visivel ? 'Empresa ativa no app' : 'Empresa indisponivel';
+        if (statusBadge) statusBadge.textContent = companyInfo.publicamente_visivel ? 'Empresa ativa no app' : 'Empresa indisponível';
 
         const ctaBtn = document.getElementById('partnerPrimaryAction');
         if (ctaBtn) {
@@ -2609,8 +2609,8 @@
                 ? 'public'
                 : companyInfo.bonus_aniversario?.status,
               message: companyInfo.bonus_aniversario?.status === 'available'
-                ? 'Entre como cliente vinculado para consultar sua elegibilidade ao bonus aniversario.'
-                : 'A empresa nao esta operando bonus aniversario no momento.',
+                ? 'Entre como cliente vinculado para consultar sua elegibilidade ao bônus aniversário.'
+                : 'A empresa não está operando bônus aniversário no momento.',
               bonus: companyInfo.bonus_aniversario,
             }
           : null);
@@ -2631,7 +2631,7 @@
             if (params.get('linked') === '1') {
               ui.message(
                 bonusPayload.status === 'available'
-                  ? 'Empresa vinculada com sucesso. Bonus de adesao disponivel para apresentar no estabelecimento.'
+                  ? 'Empresa vinculada com sucesso. Bônus de adesão disponível para apresentar no estabelecimento.'
                   : 'Empresa vinculada com sucesso.',
                 'success'
               );
@@ -2700,8 +2700,8 @@
         const tpl = (p) => `
           <article class="bg-surface-container-lowest rounded-xl p-4 flex justify-between gap-3 shadow-[0_6px_20px_rgba(11,31,58,0.06)]">
             <div class="space-y-1">
-              <p class="font-label text-label-sm text-tertiary font-bold uppercase">Promocao</p>
-              <h4 class="font-headline font-bold text-title-sm">${p.titulo || p.nome || 'Promocao'}</h4>
+              <p class="font-label text-label-sm text-tertiary font-bold uppercase">Promoção</p>
+              <h4 class="font-headline font-bold text-title-sm">${p.titulo || p.nome || 'Promoção'}</h4>
               <p class="text-on-surface-variant text-sm">${p.descricao || ''}</p>
             </div>
             <div class="text-right min-w-[80px]">
@@ -2777,7 +2777,7 @@
             let msg = `Pontos acumulados com sucesso (+${ganhos}).`;
             if (streak?.streak_atual > 1) {
               msg += ` 🔥 Sequencia: ${streak.streak_atual} dias consecutivos!`;
-              if (streak.bonus_pontos > 0) msg += ` Bonus streak: +${streak.bonus_pontos} pts`;
+              if (streak.bonus_pontos > 0) msg += ` Bônus streak: +${streak.bonus_pontos} pts`;
               if (streak.novo_recorde) msg += ` 🏆 Novo recorde!`;
             }
             ui.message(msg, 'success');
@@ -2785,7 +2785,7 @@
               window.location.href = '/meus_pontos.html';
             }, 500);
           } else {
-            const errMsg = data?.message || 'Nao foi possivel acumular pontos agora.';
+            const errMsg = data?.message || 'Não foi possível acumular pontos agora.';
             ui.message(errMsg, 'error');
           }
         });
@@ -2830,13 +2830,13 @@
           const empresaUrl = p?.empresa?.public_page_url || (p?.empresa?.id ? `/detalhe_do_parceiro.html?id=${p.empresa.id}` : '#');
           const ctaLabel = p.viewer_status === 'available'
             ? 'Apresentar QR no estabelecimento'
-            : (p.viewer_status === 'redeemed' ? 'Ja utilizada' : 'Ver empresa');
+            : (p.viewer_status === 'redeemed' ? 'Já utilizada' : 'Ver empresa');
           const card = document.createElement('div');
           card.className = 'rounded-2xl bg-white/80 border border-surface-variant/30 shadow-sm p-4 flex flex-col gap-2';
           card.innerHTML = `
             <div class="flex items-start justify-between gap-2">
               <div>
-                <p class="font-bold text-on-surface">${p.titulo || p.nome || 'Promocao'}</p>
+                <p class="font-bold text-on-surface">${p.titulo || p.nome || 'Promoção'}</p>
                 <p class="text-xs text-on-surface-variant">${p?.empresa?.nome || p.empresa_nome || ''}</p>
               </div>
               <span class="text-xs font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${meta.badgeClass}">${meta.label}</span>
@@ -2860,7 +2860,7 @@
           const status = btn.dataset.promoStatus || 'public';
           const targetUrl = btn.dataset.promoUrl || '/parceiros_tem_de_tudo.html';
           if (status === 'available') {
-            ui.message('Apresente seu QR Code no estabelecimento para validar esta promocao.', 'success');
+            ui.message('Apresente seu QR Code no estabelecimento para validar esta promoção.', 'success');
             setTimeout(() => {
               window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
             }, 300);
@@ -2871,7 +2871,7 @@
       } else {
         const empty = document.createElement('p');
         empty.className = 'max-w-6xl mx-auto px-4 pt-4 text-center text-on-surface-variant';
-        empty.textContent = 'Nenhuma promocao disponivel no momento.';
+        empty.textContent = 'Nenhuma promoção disponível no momento.';
         host.appendChild(empty);
       }
 
@@ -3037,10 +3037,10 @@
           { pontos: 150, tipo: 'checkin', empresa: { nome: 'Supermercado Silva' }, created_at: new Date(Date.now() - 2 * 3600000).toISOString(), descricao: 'Check-in realizado', status: 'aprovado' },
           { pontos: 85, tipo: 'compra', empresa: { nome: 'Pizzaria Bella' }, created_at: new Date(Date.now() - 6 * 3600000).toISOString(), descricao: 'Compra qualificada', status: 'aprovado' },
           { pontos: -500, tipo: 'resgate', empresa: { nome: 'Tem de Tudo' }, created_at: new Date(Date.now() - 24 * 3600000).toISOString(), descricao: 'Resgate de voucher', status: 'concluido' },
-          { pontos: 120, tipo: 'bonus', empresa: { nome: 'Farmacia PopularMed' }, created_at: new Date(Date.now() - 48 * 3600000).toISOString(), descricao: 'Bonus de fidelidade', status: 'aprovado' },
+          { pontos: 120, tipo: 'bonus', empresa: { nome: 'Farmacia PopularMed' }, created_at: new Date(Date.now() - 48 * 3600000).toISOString(), descricao: 'Bônus de fidelidade', status: 'aprovado' },
           { pontos: 200, tipo: 'checkin', empresa: { nome: 'Cafe Premium' }, created_at: new Date(Date.now() - 72 * 3600000).toISOString(), descricao: 'Check-in realizado', status: 'aprovado' },
           { pontos: 65, tipo: 'cupom', empresa: { nome: 'Loja de Roupas Moda' }, created_at: new Date(Date.now() - 4 * 24 * 3600000).toISOString(), descricao: 'Cupom utilizado', status: 'aprovado' },
-          { pontos: 300, tipo: 'bonus', empresa: { nome: 'Academia Total Fit' }, created_at: new Date(Date.now() - 7 * 24 * 3600000).toISOString(), descricao: 'Bonus mensal', status: 'aprovado' },
+          { pontos: 300, tipo: 'bonus', empresa: { nome: 'Academia Total Fit' }, created_at: new Date(Date.now() - 7 * 24 * 3600000).toISOString(), descricao: 'Bônus mensal', status: 'aprovado' },
         ];
       }
       ui.clearPageState();
@@ -3150,8 +3150,8 @@
           const adminLabels = [
             ['dashboard_admin_master.html', 'Dashboard'],
             ['gest_o_de_estabelecimentos.html', 'Estabelecimentos'],
-            ['relat_rios_gerais_master.html', 'Relatorios'],
-            ['banners_e_categorias_master.html', 'Conteudo'],
+            ['relat_rios_gerais_master.html', 'Relatórios'],
+            ['banners_e_categorias_master.html', 'Conteúdo'],
             ['meu_perfil.html', 'Perfil'],
           ];
           adminLabels.forEach(([href, label], idx) => {
@@ -3211,8 +3211,8 @@
         btn.addEventListener('click', go(target));
       });
 
-      const safeProfileName = safeText(user?.name || user?.nome, 'Usuario');
-      if (headerGreeting) headerGreeting.textContent = `Ola, ${safeProfileName}`;
+      const safeProfileName = safeText(user?.name || user?.nome, 'Usuário');
+      if (headerGreeting) headerGreeting.textContent = `Olá, ${safeProfileName}`;
       if (heroName) heroName.textContent = safeProfileName;
       if (heroLevel) heroLevel.textContent = perfil ? perfil.toUpperCase() : 'MEMBRO';
       if (heroStatus) heroStatus.textContent = user?.status || 'Ativo';
@@ -3226,7 +3226,7 @@
         const promocoesAtivas = Number(empresaData?.promocoes_ativas || 0);
         if (heroPoints) heroPoints.textContent = totalClientes;
         if (heroMetricLabel) heroMetricLabel.textContent = 'clientes';
-        if (heroProgressText) heroProgressText.textContent = `${promocoesAtivas} promocao(oes) ativa(s)`;
+        if (heroProgressText) heroProgressText.textContent = `${promocoesAtivas} promoção(ões) ativa(s)`;
         if (heroProgressBar) heroProgressBar.style.width = `${Math.max(8, Math.min(100, promocoesAtivas * 25))}%`;
       } else if (perfil === 'admin') {
         if (heroMetricLabel) heroMetricLabel.textContent = 'acessos';
@@ -3250,7 +3250,7 @@
           const category = safeText(company?.categoria || company?.ramo, 'Empresa');
           const rating = Number(company?.avaliacao_media || 0);
           const ratingLabel = rating > 0 ? `${rating.toFixed(1).replace('.', ',')} / 5` : 'Novo parceiro';
-          const linkedAt = formatDatePtBr(company?.data_vinculo || company?.data_inscricao, 'Vinculo recente');
+          const linkedAt = formatDatePtBr(company?.data_vinculo || company?.data_inscricao, 'Vínculo recente');
 
           return `
             <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(companyId)}" class="profile-linked-company-card">
@@ -3272,7 +3272,7 @@
         if (linkedCount) {
           linkedCount.textContent = linkedCompanies.length
             ? `${linkedCompanies.length} empresa(s)`
-            : 'Nenhum vinculo';
+            : 'Nenhum vínculo';
         }
         linkedList.innerHTML = linkedCompanies.map(renderLinkedCompanyCard).join('');
         linkedEmpty.classList.toggle('hidden', linkedCompanies.length > 0);
@@ -3488,13 +3488,13 @@
 
       if (titleEl) {
         titleEl.textContent = perfil === 'empresa'
-          ? (companyBenefitMode ? 'Consultar cliente e validar beneficios' : 'Ler QR do Cliente')
+          ? (companyBenefitMode ? 'Consultar cliente e validar benefícios' : 'Ler QR do Cliente')
           : 'Ler QR da Empresa';
       }
       if (copyEl) {
         copyEl.textContent = perfil === 'empresa'
           ? (companyBenefitMode
-              ? 'Empresa: consulte o cliente pelo QR Code e valide bonus de adesao, bonus aniversario, pontos e resgates somente no estabelecimento.'
+              ? 'Empresa: consulte o cliente pelo QR Code e valide bônus de adesão, bônus aniversário, pontos e resgates somente no estabelecimento.'
               : 'Empresa: escaneie o QR do cliente para validar acoes futuras e registrar atendimento.')
           : 'Cliente: escaneie o QR do adesivo da empresa para se vincular no app.';
       }
@@ -3536,21 +3536,21 @@
           if (res.ok && qrList.length && qrList[0].code) {
             const qr = qrList[0];
             container.innerHTML = `
-              <p class="text-[11px] text-outline mb-1">Use este QR no adesivo fisico para abrir o fluxo publico de vinculo da empresa.</p>
+              <p class="text-[11px] text-outline mb-1">Use este QR no adesivo físico para abrir o fluxo público de vínculo da empresa.</p>
               <img src="${qr.qr_image || qr.qr_url}" alt="QR Code da loja" class="w-44 h-44 rounded-xl border border-outline-variant/40 bg-white p-2" loading="lazy" />
               <div class="bg-surface-container px-4 py-2 rounded-xl text-center">
                 <span class="text-xs font-mono text-on-surface break-all">${qr.code}</span>
               </div>
               <div class="flex flex-wrap items-center justify-center gap-2">
-                <button id="copiarQrLoja" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar codigo</button>
+                <button id="copiarQrLoja" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar código</button>
                 <button id="copiarLinkQrLoja" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar link</button>
               </div>
-              <p class="text-[10px] text-outline mt-1">Scans: ${qr.usage_count || 0} | Ativo: ${qr.active ? 'Sim' : 'Nao'}</p>`;
+              <p class="text-[10px] text-outline mt-1">Scans: ${qr.usage_count || 0} | Ativo: ${qr.active ? 'Sim' : 'Não'}</p>`;
             document.getElementById('copiarQrLoja')?.addEventListener('click', () => {
-              navigator.clipboard.writeText(qr.code).then(() => ui.message('Codigo da loja copiado.', 'success'));
+              navigator.clipboard.writeText(qr.code).then(() => ui.message('Código da loja copiado.', 'success'));
             });
             document.getElementById('copiarLinkQrLoja')?.addEventListener('click', () => {
-              navigator.clipboard.writeText(qr.scan_url || '').then(() => ui.message('Link publico do QR copiado.', 'success'));
+              navigator.clipboard.writeText(qr.scan_url || '').then(() => ui.message('Link público do QR copiado.', 'success'));
             });
           } else {
             container.innerHTML = '<p class="text-sm text-outline">Nenhum QR Code gerado ainda. Clique em "Gerar".</p>';
@@ -3581,7 +3581,7 @@
             <div>
               <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Meu QR Code</p>
               <h3 class="mt-2 font-headline text-2xl font-extrabold text-on-surface">Apresente no estabelecimento</h3>
-              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Mostre este QR para o parceiro escanear e validar bonus, fidelidade, promocao ou aniversario.</p>
+              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Mostre este QR para o parceiro escanear e validar bônus, fidelidade, promoção ou aniversário.</p>
             </div>
             <a href="/validar_resgate.html?modo=vinculo-empresa" class="inline-flex h-11 items-center justify-center rounded-full bg-surface-container px-4 text-xs font-bold uppercase tracking-[0.14em] text-on-surface">Ler QR da empresa</a>
           </div>
@@ -3608,14 +3608,14 @@
             <div class="bg-surface-container px-4 py-2 rounded-xl text-center w-full">
               <span class="text-xs font-mono text-on-surface break-all">${payload.codigo}</span>
             </div>
-            <button id="copiarMeuQr" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar codigo</button>
+            <button id="copiarMeuQr" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar código</button>
             <p class="text-[10px] text-outline mt-1">Expira as ${expiraEm}</p>
           `;
           document.getElementById('copiarMeuQr')?.addEventListener('click', () => {
-            navigator.clipboard.writeText(payload.codigo).then(() => ui.message('Codigo do seu QR copiado.', 'success'));
+            navigator.clipboard.writeText(payload.codigo).then(() => ui.message('Código do seu QR copiado.', 'success'));
           });
         } else {
-          qrContainer.innerHTML = '<p class="text-sm text-outline">Nao foi possivel carregar seu QR agora.</p>';
+          qrContainer.innerHTML = '<p class="text-sm text-outline">Não foi possível carregar seu QR agora.</p>';
         }
       }
 
@@ -3674,51 +3674,51 @@
 
         bonusPanel.classList.remove('hidden');
         document.getElementById('bonusValidationClientName').textContent = cliente.nome || 'Cliente';
-        document.getElementById('bonusValidationClientPhone').textContent = cliente.telefone || 'Nao informado';
-        document.getElementById('bonusValidationClientBirthdate').textContent = formatDatePtBr(cliente.data_nascimento, 'Nao informada');
-        document.getElementById('bonusValidationCompany').textContent = latestCompanyLookup?.empresa?.nome || 'Nao identificada';
+        document.getElementById('bonusValidationClientPhone').textContent = cliente.telefone || 'Não informado';
+        document.getElementById('bonusValidationClientBirthdate').textContent = formatDatePtBr(cliente.data_nascimento, 'Não informada');
+        document.getElementById('bonusValidationCompany').textContent = latestCompanyLookup?.empresa?.nome || 'Não identificada';
         document.getElementById('bonusValidationLinkStatus').textContent = vinculo.existe
-          ? `Cliente vinculado desde ${formatDatePtBr(vinculo.data_inscricao, 'data nao informada')}`
-          : 'Cliente ainda nao vinculado a esta empresa';
+          ? `Cliente vinculado desde ${formatDatePtBr(vinculo.data_inscricao, 'data não informada')}`
+          : 'Cliente ainda não vinculado a esta empresa';
         document.getElementById('bonusValidationBonusStatus').textContent = meta.label;
         document.getElementById('bonusValidationBonusStatus').className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}`;
-        document.getElementById('bonusValidationBonusTitle').textContent = bonusInfo.titulo || 'Bonus de adesao';
+        document.getElementById('bonusValidationBonusTitle').textContent = bonusInfo.titulo || 'Bônus de adesão';
         document.getElementById('bonusValidationBonusDescription').textContent = bonusInfo.descricao || meta.message;
-        document.getElementById('bonusValidationBonusExpiry').textContent = formatDatePtBr(bonusInfo.data_expiracao, 'Nao informada');
+        document.getElementById('bonusValidationBonusExpiry').textContent = formatDatePtBr(bonusInfo.data_expiracao, 'Não informada');
         document.getElementById('bonusValidationMessage').textContent = bonus.message || loyalty.message || meta.message;
 
         if (birthdayValidationSection && birthdayValidationStatus && birthdayValidationDescription) {
           birthdayValidationSection.classList.remove('hidden');
           if (birthdayValidationTitle) {
-            birthdayValidationTitle.textContent = birthdayInfo.titulo || 'Nenhum bonus aniversario configurado';
+            birthdayValidationTitle.textContent = birthdayInfo.titulo || 'Nenhum bônus aniversário configurado';
           }
           birthdayValidationStatus.textContent = birthdayMeta.label;
           birthdayValidationStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${birthdayMeta.badgeClass}`;
           birthdayValidationDescription.textContent = birthdayInfo.descricao || birthday.message || birthdayMeta.message;
           if (birthdayValidationWindow) {
             birthdayValidationWindow.textContent = birthdayInfo.validade_descricao
-              || formatDateRangePtBr(birthday?.valid_from, birthday?.valid_until, 'Validade nao informada');
+              || formatDateRangePtBr(birthday?.valid_from, birthday?.valid_until, 'Validade não informada');
           }
         }
 
-        document.getElementById('loyaltyValidationTitle').textContent = loyaltyCard.titulo || 'Nenhum cartao configurado';
+        document.getElementById('loyaltyValidationTitle').textContent = loyaltyCard.titulo || 'Nenhum cartão configurado';
         document.getElementById('loyaltyValidationStatus').textContent = loyaltyMeta.label;
         document.getElementById('loyaltyValidationStatus').className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${loyaltyMeta.badgeClass}`;
         document.getElementById('loyaltyValidationDescription').textContent = loyaltyCard.descricao || loyaltyMeta.message;
         document.getElementById('loyaltyValidationRule').textContent = loyaltyCard.regra_ganho || 'Ganhe pontos por visita.';
-        document.getElementById('loyaltyValidationReward').textContent = loyaltyCard.recompensa_descricao || 'Ainda nao informada';
+        document.getElementById('loyaltyValidationReward').textContent = loyaltyCard.recompensa_descricao || 'Ainda não informada';
         document.getElementById('loyaltyValidationPoints').textContent = String(loyaltyProgress.current_points || 0);
         document.getElementById('loyaltyValidationTarget').textContent = `${Number(loyaltyProgress.required_points || loyaltyCard.pontos_necessarios || 0)} pontos`;
         document.getElementById('loyaltyValidationProgressLabel').textContent = loyaltyProgress.progress_label || `0 de ${Number(loyaltyCard.pontos_necessarios || 0)} pontos`;
         document.getElementById('loyaltyValidationProgressState').textContent = loyaltyProgress.reward_available
           ? 'Recompensa liberada'
-          : (loyalty.status === 'not_linked' ? 'Exige vinculo' : 'Em andamento');
+          : (loyalty.status === 'not_linked' ? 'Exige vínculo' : 'Em andamento');
         document.getElementById('loyaltyValidationProgressBar').style.width = `${Math.max(0, Math.min(100, Number(loyaltyProgress.percentage || 0)))}%`;
 
         const historyHost = document.getElementById('loyaltyValidationHistory');
         if (historyHost) {
           if (!loyaltyHistory.length) {
-            historyHost.innerHTML = '<p>Nenhuma movimentacao registrada ainda.</p>';
+            historyHost.innerHTML = '<p>Nenhuma movimentação registrada ainda.</p>';
           } else {
             historyHost.innerHTML = loyaltyHistory.map((item) => `
               <div class="rounded-lg bg-white p-3 ring-1 ring-black/5">
@@ -3726,7 +3726,7 @@
                   <span class="text-xs font-bold uppercase tracking-[0.12em] ${item.tipo === 'redeemed' ? 'text-rose-600' : 'text-[#111B3F]'}">${item.tipo === 'redeemed' ? 'Resgate' : 'Ponto'}</span>
                   <span class="text-[11px] font-semibold text-on-surface-variant">${formatDatePtBr(item.created_at, 'Agora')}</span>
                 </div>
-                <p class="mt-1 text-sm font-semibold text-on-surface">${item.descricao || 'Movimentacao registrada.'}</p>
+                <p class="mt-1 text-sm font-semibold text-on-surface">${item.descricao || 'Movimentação registrada.'}</p>
               </div>
             `).join('');
           }
@@ -3745,15 +3745,15 @@
 
           if (promotionValidationTitle) {
             promotionValidationTitle.textContent = promotionItems.length
-              ? `${promotionItems.length} promocao(oes) consultada(s)`
-              : 'Nenhuma promocao elegivel';
+              ? `${promotionItems.length} promoção(ões) consultada(s)`
+              : 'Nenhuma promoção elegível';
           }
           promotionValidationStatus.textContent = promotionMeta.label;
           promotionValidationStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${promotionMeta.badgeClass}`;
           promotionValidationDescription.textContent = promotions?.message || promotionMeta.message;
 
           if (!promotionItems.length) {
-            promotionValidationList.innerHTML = '<p>Nenhuma promocao elegivel para este cliente no momento.</p>';
+            promotionValidationList.innerHTML = '<p>Nenhuma promoção elegível para este cliente no momento.</p>';
           } else {
             promotionValidationList.innerHTML = promotionItems.map((promo) => {
               const metaPromo = promotionStatusMeta(promo.viewer_status || promo.status);
@@ -3763,17 +3763,17 @@
                 <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
                   <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
-                      <p class="text-sm font-bold text-on-surface">${safeText(promo.titulo, 'Promocao instantanea')}</p>
+                      <p class="text-sm font-bold text-on-surface">${safeText(promo.titulo, 'Promoção instantânea')}</p>
                       <p class="mt-1 text-xs leading-5 text-on-surface-variant">${safeText(promo.descricao, metaPromo.message)}</p>
                     </div>
                     <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${metaPromo.badgeClass}">${metaPromo.label}</span>
                   </div>
                   <div class="mt-3 flex items-center justify-between gap-3">
-                    <p class="text-[11px] font-semibold text-on-surface-variant">Validade: ${formatDatePtBr(promo.data_expiracao || promo.validade, 'Nao informada')}</p>
+                    <p class="text-[11px] font-semibold text-on-surface-variant">Validade: ${formatDatePtBr(promo.data_expiracao || promo.validade, 'Não informada')}</p>
                     <button type="button" data-action="validar-promocao" data-promocao-id="${promo.id}"
                       class="rounded-[1rem] px-3 py-2 text-xs font-bold ${canValidatePromo ? 'bg-gradient-to-r from-[#00BCD4] via-[#7A2C8F] to-[#E10098] text-white shadow-sm' : 'bg-surface-container text-on-surface-variant'}"
                       ${canValidatePromo ? '' : 'disabled'}>
-                      ${canValidatePromo ? 'Validar promocao' : 'Sem acao'}
+                      ${canValidatePromo ? 'Validar promoção' : 'Sem ação'}
                     </button>
                   </div>
                 </div>
@@ -3795,7 +3795,7 @@
                 button.classList.remove('opacity-60');
 
                 if (res.ok && data?.success) {
-                  ui.message(data?.message || 'Promocao validada com sucesso.', 'success');
+                  ui.message(data?.message || 'Promoção validada com sucesso.', 'success');
                   renderBonusLookup({
                     ...(latestCompanyLookup || {}),
                     ...(data.data || {}),
@@ -3804,11 +3804,11 @@
                   const validatedPromotion = promotionItems.find((item) => Number(item?.id || 0) === promotionId);
                   pushItem({
                     cliente: cliente.nome || 'Cliente',
-                    beneficio: validatedPromotion?.titulo || 'Promocao instantanea',
+                    beneficio: validatedPromotion?.titulo || 'Promoção instantânea',
                     hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
                   });
                 } else {
-                  ui.message(data?.message || 'Nao foi possivel validar a promocao.', 'error');
+                  ui.message(data?.message || 'Não foi possível validar a promoção.', 'error');
                 }
               });
             });
@@ -3822,7 +3822,7 @@
             bonusActionBtn.onclick = null;
           } else {
             bonusActionBtn.classList.remove('hidden');
-            bonusActionBtn.textContent = 'Validar bonus';
+            bonusActionBtn.textContent = 'Validar bônus';
             bonusActionBtn.onclick = async () => {
               bonusActionBtn.disabled = true;
               bonusActionBtn.classList.add('opacity-60');
@@ -3838,11 +3838,11 @@
                 renderBonusLookup(data.data || {});
                 pushItem({
                   cliente: cliente.nome || 'Cliente',
-                  beneficio: bonusInfo.titulo || 'Bonus de adesao',
+                  beneficio: bonusInfo.titulo || 'Bônus de adesão',
                   hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
                 });
               } else {
-                ui.message(data?.message || 'Nao foi possivel validar o bonus.', 'error');
+                ui.message(data?.message || 'Não foi possível validar o bônus.', 'error');
               }
             };
           }
@@ -3855,7 +3855,7 @@
             birthdayValidationAction.onclick = null;
           } else {
             birthdayValidationAction.classList.remove('hidden');
-            birthdayValidationAction.textContent = 'Validar bonus aniversario';
+            birthdayValidationAction.textContent = 'Validar bônus aniversário';
             birthdayValidationAction.onclick = async () => {
               birthdayValidationAction.disabled = true;
               birthdayValidationAction.classList.add('opacity-60');
@@ -3867,18 +3867,18 @@
               birthdayValidationAction.classList.remove('opacity-60');
 
               if (res.ok && data?.success) {
-                ui.message(data?.message || 'Bonus aniversario validado com sucesso.', 'success');
+                ui.message(data?.message || 'Bônus aniversário validado com sucesso.', 'success');
                 renderBonusLookup({
                   ...(latestCompanyLookup || {}),
                   bonus_aniversario: data?.data?.bonus_aniversario || latestCompanyLookup?.bonus_aniversario,
                 });
                 pushItem({
                   cliente: cliente.nome || 'Cliente',
-                  beneficio: birthdayInfo.titulo || 'Bonus aniversario',
+                  beneficio: birthdayInfo.titulo || 'Bônus aniversário',
                   hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
                 });
               } else {
-                ui.message(data?.message || 'Nao foi possivel validar o bonus aniversario.', 'error');
+                ui.message(data?.message || 'Não foi possível validar o bônus aniversário.', 'error');
               }
             };
           }
@@ -3914,7 +3914,7 @@
                   hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
                 });
               } else {
-                ui.message(data?.message || 'Nao foi possivel adicionar ponto.', 'error');
+                ui.message(data?.message || 'Não foi possível adicionar ponto.', 'error');
               }
             };
           }
@@ -3950,7 +3950,7 @@
                   hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
                 });
               } else {
-                ui.message(data?.message || 'Nao foi possivel resgatar a recompensa.', 'error');
+                ui.message(data?.message || 'Não foi possível resgatar a recompensa.', 'error');
               }
             };
           }
@@ -4027,8 +4027,8 @@
         ui.message(
           data?.message || (
             perfil === 'empresa'
-              ? (companyBenefitMode ? 'Nao foi possivel consultar este cliente.' : 'Nao foi possivel usar o cupom.')
-              : 'Nao foi possivel vincular esta empresa.'
+              ? (companyBenefitMode ? 'Não foi possível consultar este cliente.' : 'Não foi possível usar o cupom.')
+              : 'Não foi possível vincular esta empresa.'
           ),
           'error'
         );
@@ -4041,7 +4041,7 @@
 
       const heroName = document.getElementById('cfg-nome');
       const heroEmail = document.getElementById('cfg-email');
-      if (heroName) heroName.textContent = user?.name || user?.nome || 'Usuario';
+      if (heroName) heroName.textContent = user?.name || user?.nome || 'Usuário';
       if (heroEmail) heroEmail.textContent = user?.email || '';
 
       // Salvar perfil
@@ -4158,7 +4158,7 @@
       if (heroName) heroName.textContent = safeText(empresaInfo?.nome, safeText(currentUser?.name, 'Sua empresa'));
       if (heroSubtitle) {
         heroSubtitle.textContent = qrPayload?.public_page_url
-          ? 'Use o QR da empresa para divulgar a pagina publica e validar clientes presencialmente.'
+          ? 'Use o QR da empresa para divulgar a página pública e validar clientes presencialmente.'
           : 'Gerencie clientes, campanhas e resgates sem sair deste painel.';
       }
       if (heroMeta) {
@@ -4189,7 +4189,7 @@
               <div class="space-y-3 text-sm text-white/80">
                 <p>Apresente este QR no adesivo da loja para abrir o fluxo publico correto no app do cliente.</p>
                 <div class="rounded-[18px] bg-white/10 px-4 py-3 ring-1 ring-white/10">
-                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">Codigo da empresa</p>
+                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">Código da empresa</p>
                   <p class="mt-2 break-all font-mono text-xs text-white">${safeText(qrPayload.code)}</p>
                 </div>
               </div>
@@ -4229,12 +4229,12 @@
             const status = statusAtivo ? 'Ativa' : 'Pausada';
             card.innerHTML = `
               <div class="w-24 h-24 flex-shrink-0">
-                <img alt="${p.nome || 'Promocao'}" class="w-full h-full object-cover" src="${img}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'"/>
+                <img alt="${p.nome || 'Promoção'}" class="w-full h-full object-cover" src="${img}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'"/>
               </div>
               <div class="p-4 flex flex-col justify-between flex-grow">
                 <div>
                   <div class="flex justify-between items-start">
-                    <h4 class="font-headline font-bold text-sm text-on-surface">${p.nome || 'Promocao'}</h4>
+                    <h4 class="font-headline font-bold text-sm text-on-surface">${p.nome || 'Promoção'}</h4>
                     <span class="glass-badge px-2 py-0.5 rounded-full text-[9px] font-bold text-primary uppercase">${status}</span>
                   </div>
                   <p class="text-xs text-on-surface-variant line-clamp-2">${p.descricao || ''}</p>
@@ -4267,7 +4267,7 @@
             <div class="flex items-center justify-between gap-3">
               <div>
                 <p class="text-sm font-bold text-on-surface">${safeText(cliente?.nome, 'Cliente')}</p>
-                <p class="mt-1 text-xs text-on-surface-variant">${safeText(cliente?.email, 'Sem email')} • ${formatDatePtBr(cliente?.data_vinculo, 'Vinculo recente')}</p>
+                <p class="mt-1 text-xs text-on-surface-variant">${safeText(cliente?.email, 'Sem e-mail')} • ${formatDatePtBr(cliente?.data_vinculo, 'Vínculo recente')}</p>
               </div>
               <span class="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-tertiary">${Number(cliente?.dias_inatividade || 0).toLocaleString('pt-BR')}d</span>
             </div>
@@ -4287,7 +4287,7 @@
             <div class="flex items-center justify-between gap-3">
               <div>
                 <p class="text-sm font-bold text-on-surface">${safeText(evento?.cliente_nome, 'Cliente')}</p>
-                <p class="mt-1 text-xs text-on-surface-variant">${safeText(evento?.titulo, 'Beneficio validado')} • ${safeText(evento?.tipo, 'resgate')}</p>
+                <p class="mt-1 text-xs text-on-surface-variant">${safeText(evento?.titulo, 'Benefício validado')} • ${safeText(evento?.tipo, 'resgate')}</p>
               </div>
               <span class="text-[10px] font-bold uppercase tracking-[0.14em] text-primary">${formatDatePtBr(evento?.data, 'Agora')}</span>
             </div>
@@ -4341,8 +4341,8 @@
           const pontos = Number(c.pontos_atuais || c.total_ganho || c.pontos || 0);
           const ultima = c.ultima_visita || c.updated_at;
           const inativo = c.status_inatividade === 'inactive';
-          const nascimento = formatDatePtBr(c.data_nascimento, 'Nao informado');
-          const vinculo = formatDatePtBr(c.data_vinculo, 'Nao informado');
+          const nascimento = formatDatePtBr(c.data_nascimento, 'Não informado');
+          const vinculo = formatDatePtBr(c.data_vinculo, 'Não informado');
           card.innerHTML = `
             <div class="flex items-start gap-4">
               <div class="relative">
@@ -4354,7 +4354,7 @@
                 <div class="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <h3 class="font-headline font-bold text-on-surface">${nome}</h3>
-                    <p class="mt-1 text-xs text-on-surface-variant">${safeText(c.email, 'Sem email')} • ${safeText(c.telefone, 'Sem telefone')}</p>
+                    <p class="mt-1 text-xs text-on-surface-variant">${safeText(c.email, 'Sem e-mail')} • ${safeText(c.telefone, 'Sem telefone')}</p>
                   </div>
                   <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${inativo ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}">${inativo ? 'Inativo' : 'Ativo'}</span>
                 </div>
@@ -4365,7 +4365,7 @@
                   </div>
                   <div class="rounded-xl bg-surface-container-low px-3 py-2">
                     <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Ultima visita</p>
-                    <p class="mt-1 text-sm font-semibold text-on-surface">${formatDatePtBr(ultima, 'Nao informada')}</p>
+                    <p class="mt-1 text-sm font-semibold text-on-surface">${formatDatePtBr(ultima, 'Não informada')}</p>
                   </div>
                   <div class="rounded-xl bg-surface-container-low px-3 py-2">
                     <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Nascimento</p>
@@ -4377,7 +4377,7 @@
                   </div>
                 </div>
                 <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-on-surface-variant">
-                  <span>${Number(c.total_promocoes_resgatadas || 0).toLocaleString('pt-BR')} promocao(oes)</span>
+                  <span>${Number(c.total_promocoes_resgatadas || 0).toLocaleString('pt-BR')} promoção(ões)</span>
                   <span>${Number(c.total_recompensas_resgatadas || 0).toLocaleString('pt-BR')} recompensa(s)</span>
                   <span>${Number(c.dias_inatividade || 0).toLocaleString('pt-BR')} dia(s) sem visita</span>
                 </div>
@@ -4480,8 +4480,8 @@
                   <button class="material-symbols-outlined text-on-surface-variant text-xl" data-action="editar" title="Editar">edit</button>
                 </div>
                 <p class="text-xs text-on-surface-variant line-clamp-2">${p.descricao || ''}</p>
-                <p class="mt-1 text-[11px] text-on-surface-variant">Validade: ${formatDatePtBr(p.data_expiracao || p.validade, 'Nao informada')}</p>
-                <p class="mt-1 text-[11px] text-on-surface-variant">Push: ${p.notification_title || p.titulo || 'Nao informado'}</p>
+                <p class="mt-1 text-[11px] text-on-surface-variant">Validade: ${formatDatePtBr(p.data_expiracao || p.validade, 'Não informada')}</p>
+                <p class="mt-1 text-[11px] text-on-surface-variant">Push: ${p.notification_title || p.titulo || 'Não informado'}</p>
               </div>
               <div class="flex items-center justify-between mt-2">
                 <div class="flex items-center gap-1.5">
@@ -4502,10 +4502,10 @@
               body: JSON.stringify({ ativo: !p.ativo }),
             });
             if (res.ok && resp?.success !== false) {
-              ui.message(resp?.message || 'Promocao atualizada.', 'success');
+              ui.message(resp?.message || 'Promoção atualizada.', 'success');
               location.reload();
             } else {
-              ui.message(resp?.message || 'Erro ao atualizar promocao.', 'error');
+              ui.message(resp?.message || 'Erro ao atualizar promoção.', 'error');
             }
           });
           card.querySelector('[data-action="enviar"]')?.addEventListener('click', async () => {
@@ -4514,7 +4514,7 @@
               ui.message(resp?.message || 'Push enviado com sucesso.', 'success');
               location.reload();
             } else {
-              ui.message(resp?.message || 'Nao foi possivel enviar a promocao.', 'error');
+              ui.message(resp?.message || 'Não foi possível enviar a promoção.', 'error');
             }
           });
           card.querySelector('[data-action=\"deletar\"]')?.addEventListener('click', () => empresa.deletarPromocao(p.id));
@@ -4584,8 +4584,8 @@
           notification_body: form.notificationBody?.value || null,
           ativo: form.ativa?.checked ?? true,
         };
-        if (!payload.titulo) return ui.message('Informe o titulo.', 'warning');
-        if (!payload.imagem_url) return ui.message('Informe a imagem obrigatoria da promocao.', 'warning');
+        if (!payload.titulo) return ui.message('Informe o título.', 'warning');
+        if (!payload.imagem_url) return ui.message('Informe a imagem obrigatória da promoção.', 'warning');
         const path = editingId ? `/empresa/promocoes/${editingId}` : '/empresa/promocoes';
         const method = editingId ? 'PUT' : 'POST';
         const { res, data: resp } = await api.request(path, { method, body: JSON.stringify(payload) }, { headers: { 'Content-Type': 'application/json' } });
@@ -4627,8 +4627,8 @@
 
         const updateBonusPreview = () => {
           const payload = {
-            titulo: bonusUi.titulo?.value?.trim() || 'Bonus de adesao',
-            descricao: bonusUi.descricao?.value?.trim() || 'Configure o beneficio exibido ao cliente vinculado.',
+            titulo: bonusUi.titulo?.value?.trim() || 'Bônus de adesão',
+            descricao: bonusUi.descricao?.value?.trim() || 'Configure o benefício exibido ao cliente vinculado.',
             data_expiracao: bonusUi.validade?.value || null,
             imagem_url: bonusUi.imagem?.value?.trim() || '',
             ativo: bonusUi.ativo?.checked ?? false,
@@ -4643,7 +4643,7 @@
           if (bonusUi.previewValidity) {
             bonusUi.previewValidity.textContent = payload.data_expiracao
               ? `Validade: ${formatDatePtBr(payload.data_expiracao)}`
-              : 'Validade nao informada';
+              : 'Validade não informada';
           }
           if (bonusUi.previewImage) {
             bonusUi.previewImage.src = safeImage(payload.imagem_url, IMAGE_FALLBACKS.promo);
@@ -4676,7 +4676,7 @@
           if (bonusUi.imagem) bonusUi.imagem.value = bonus.imagem_url || bonus.imagem || '';
           if (bonusUi.termos) bonusUi.termos.value = bonus.termos || '';
           if (bonusUi.ativo) bonusUi.ativo.checked = Boolean(bonus.ativo);
-          if (bonusUi.mensagem) bonusUi.mensagem.textContent = 'Editando bonus selecionado.';
+          if (bonusUi.mensagem) bonusUi.mensagem.textContent = 'Editando bônus selecionado.';
           updateBonusPreview();
         };
 
@@ -4692,9 +4692,9 @@
             card.innerHTML = `
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
-                  <p class="text-sm font-bold text-on-surface">${bonus.titulo || 'Bonus de adesao'}</p>
-                  <p class="mt-1 text-xs leading-5 text-on-surface-variant">${bonus.descricao || 'Sem descricao.'}</p>
-                  <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Validade: ${formatDatePtBr(bonus.data_expiracao, 'Nao informada')}</p>
+                  <p class="text-sm font-bold text-on-surface">${bonus.titulo || 'Bônus de adesão'}</p>
+                  <p class="mt-1 text-xs leading-5 text-on-surface-variant">${bonus.descricao || 'Sem descrição.'}</p>
+                  <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Validade: ${formatDatePtBr(bonus.data_expiracao, 'Não informada')}</p>
                 </div>
                 <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}">${meta.label}</span>
               </div>
@@ -4709,10 +4709,10 @@
                 body: JSON.stringify({ ativo: !bonus.ativo }),
               });
               if (res.ok && data?.success) {
-                ui.message(data?.message || 'Status do bonus atualizado.', 'success');
+                ui.message(data?.message || 'Status do bônus atualizado.', 'success');
                 await loadBonusList();
               } else {
-                ui.message(data?.message || 'Nao foi possivel atualizar o bonus.', 'error');
+                ui.message(data?.message || 'Não foi possível atualizar o bônus.', 'error');
               }
             });
             bonusUi.list?.appendChild(card);
@@ -4747,7 +4747,7 @@
           };
 
           if (!payload.titulo) {
-            return ui.message('Informe o titulo do bonus de adesao.', 'warning');
+            return ui.message('Informe o título do bônus de adesão.', 'warning');
           }
 
           const path = bonusEditingId ? `/empresa/bonus-adesao/${bonusEditingId}` : '/empresa/bonus-adesao';
@@ -4758,11 +4758,11 @@
           });
 
           if (res.ok && data?.success) {
-            ui.message(data?.message || 'Bonus de adesao salvo.', 'success');
+            ui.message(data?.message || 'Bônus de adesão salvo.', 'success');
             resetBonusForm();
             await loadBonusList();
           } else {
-            ui.message(data?.message || 'Nao foi possivel salvar o bonus de adesao.', 'error');
+            ui.message(data?.message || 'Não foi possível salvar o bônus de adesão.', 'error');
           }
         });
 
@@ -4800,12 +4800,12 @@
 
         const updateLoyaltyPreview = () => {
           const payload = {
-            titulo: loyaltyUi.titulo?.value?.trim() || 'Cartao fidelidade',
-            descricao: loyaltyUi.descricao?.value?.trim() || 'Configure a regra de pontos e a recompensa que o cliente vera na pagina publica.',
+            titulo: loyaltyUi.titulo?.value?.trim() || 'Cartão fidelidade',
+            descricao: loyaltyUi.descricao?.value?.trim() || 'Configure a regra de pontos e a recompensa que o cliente verá na página pública.',
             regra_ganho: loyaltyUi.regraGanho?.value?.trim() || 'Ganhe 1 ponto a cada visita.',
             pontos_por_visita: Number(loyaltyUi.pontosPorVisita?.value || 1),
             pontos_necessarios: Number(loyaltyUi.pontosNecessarios?.value || 0),
-            recompensa_descricao: loyaltyUi.recompensa?.value?.trim() || 'Ainda nao informada',
+            recompensa_descricao: loyaltyUi.recompensa?.value?.trim() || 'Ainda não informada',
             data_expiracao: loyaltyUi.validade?.value || null,
             ativo: loyaltyUi.ativo?.checked ?? false,
           };
@@ -4819,7 +4819,7 @@
             loyaltyUi.previewStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}`;
           }
           if (loyaltyUi.previewMeta) {
-            loyaltyUi.previewMeta.textContent = `Meta: ${payload.pontos_necessarios} pontos | ${payload.data_expiracao ? `Validade ${formatDatePtBr(payload.data_expiracao)}` : 'Validade nao informada'}`;
+            loyaltyUi.previewMeta.textContent = `Meta: ${payload.pontos_necessarios} pontos | ${payload.data_expiracao ? `Validade ${formatDatePtBr(payload.data_expiracao)}` : 'Validade não informada'}`;
           }
         };
 
@@ -4849,7 +4849,7 @@
           if (loyaltyUi.validade) loyaltyUi.validade.value = card.data_expiracao || '';
           if (loyaltyUi.recompensa) loyaltyUi.recompensa.value = card.recompensa_descricao || '';
           if (loyaltyUi.ativo) loyaltyUi.ativo.checked = Boolean(card.ativo);
-          if (loyaltyUi.mensagem) loyaltyUi.mensagem.textContent = 'Editando cartao selecionado.';
+          if (loyaltyUi.mensagem) loyaltyUi.mensagem.textContent = 'Editando cartão selecionado.';
           updateLoyaltyPreview();
         };
 
@@ -4865,9 +4865,9 @@
             item.innerHTML = `
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
-                  <p class="text-sm font-bold text-on-surface">${card.titulo || 'Cartao fidelidade'}</p>
+                  <p class="text-sm font-bold text-on-surface">${card.titulo || 'Cartão fidelidade'}</p>
                   <p class="mt-1 text-xs leading-5 text-on-surface-variant">${card.regra_ganho || 'Ganhe pontos por visita.'}</p>
-                  <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Meta: ${card.pontos_necessarios || 0} pontos | Recompensa: ${card.recompensa_descricao || 'Nao informada'}</p>
+                  <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Meta: ${card.pontos_necessarios || 0} pontos | Recompensa: ${card.recompensa_descricao || 'Não informada'}</p>
                 </div>
                 <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}">${meta.label}</span>
               </div>
@@ -4882,10 +4882,10 @@
                 body: JSON.stringify({ ativo: !card.ativo }),
               });
               if (res.ok && data?.success) {
-                ui.message(data?.message || 'Status do cartao atualizado.', 'success');
+                ui.message(data?.message || 'Status do cartão atualizado.', 'success');
                 await loadLoyaltyList();
               } else {
-                ui.message(data?.message || 'Nao foi possivel atualizar o cartao.', 'error');
+                ui.message(data?.message || 'Não foi possível atualizar o cartão.', 'error');
               }
             });
             loyaltyUi.list?.appendChild(item);
@@ -4921,9 +4921,9 @@
             ativo: loyaltyUi.ativo?.checked ?? true,
           };
 
-          if (!payload.titulo) return ui.message('Informe o titulo do cartao fidelidade.', 'warning');
+          if (!payload.titulo) return ui.message('Informe o título do cartão fidelidade.', 'warning');
           if (!payload.pontos_necessarios || payload.pontos_necessarios < 1) return ui.message('Informe a meta de pontos.', 'warning');
-          if (!payload.recompensa_descricao) return ui.message('Informe a recompensa do cartao fidelidade.', 'warning');
+          if (!payload.recompensa_descricao) return ui.message('Informe a recompensa do cartão fidelidade.', 'warning');
 
           const path = loyaltyEditingId ? `/empresa/cartao-fidelidade/${loyaltyEditingId}` : '/empresa/cartao-fidelidade';
           const method = loyaltyEditingId ? 'PUT' : 'POST';
@@ -4933,11 +4933,11 @@
           });
 
           if (res.ok && data?.success) {
-            ui.message(data?.message || 'Cartao fidelidade salvo.', 'success');
+            ui.message(data?.message || 'Cartão fidelidade salvo.', 'success');
             resetLoyaltyForm();
             await loadLoyaltyList();
           } else {
-            ui.message(data?.message || 'Nao foi possivel salvar o cartao fidelidade.', 'error');
+            ui.message(data?.message || 'Não foi possível salvar o cartão fidelidade.', 'error');
           }
         });
 
@@ -4975,8 +4975,8 @@
 
         const updateBirthdayPreview = () => {
           const payload = {
-            titulo: birthdayUi.titulo?.value?.trim() || 'Bonus aniversario',
-            descricao: birthdayUi.descricao?.value?.trim() || 'Configure o beneficio anual exibido para o cliente elegivel.',
+            titulo: birthdayUi.titulo?.value?.trim() || 'Bônus aniversário',
+            descricao: birthdayUi.descricao?.value?.trim() || 'Configure o benefício anual exibido para o cliente elegível.',
             dias_validade: Number(birthdayUi.diasValidade?.value || 0),
             imagem_url: birthdayUi.imagem?.value?.trim() || '',
             notification_title: birthdayUi.notificationTitle?.value?.trim() || '',
@@ -4992,11 +4992,11 @@
           }
           if (birthdayUi.previewValidity) {
             birthdayUi.previewValidity.textContent = payload.dias_validade > 0
-              ? `Valido por ${payload.dias_validade} dia(s) a partir do aniversario`
-              : 'Valido durante todo o mes do aniversario';
+              ? `Válido por ${payload.dias_validade} dia(s) a partir do aniversário`
+              : 'Válido durante todo o mês do aniversário';
           }
           if (birthdayUi.previewNotification) {
-            const title = payload.notification_title || 'Nao configurado';
+            const title = payload.notification_title || 'Não configurado';
             const body = payload.notification_body || 'Sem mensagem';
             birthdayUi.previewNotification.textContent = `Push: ${title} | ${body}`;
           }
@@ -5033,7 +5033,7 @@
           if (birthdayUi.notificationTitle) birthdayUi.notificationTitle.value = bonus.notification_title || bonus.titulo || '';
           if (birthdayUi.notificationBody) birthdayUi.notificationBody.value = bonus.notification_body || bonus.descricao || '';
           if (birthdayUi.ativo) birthdayUi.ativo.checked = Boolean(bonus.ativo);
-          if (birthdayUi.mensagem) birthdayUi.mensagem.textContent = 'Editando bonus aniversario selecionado.';
+          if (birthdayUi.mensagem) birthdayUi.mensagem.textContent = 'Editando bônus aniversário selecionado.';
           updateBirthdayPreview();
         };
 
@@ -5050,9 +5050,9 @@
             card.innerHTML = `
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
-                  <p class="text-sm font-bold text-on-surface">${bonus.titulo || 'Bonus aniversario'}</p>
-                  <p class="mt-1 text-xs leading-5 text-on-surface-variant">${bonus.descricao || 'Sem descricao.'}</p>
-                  <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">${safeText(bonus.validade_descricao, 'Validade nao informada')}</p>
+                  <p class="text-sm font-bold text-on-surface">${bonus.titulo || 'Bônus aniversário'}</p>
+                  <p class="mt-1 text-xs leading-5 text-on-surface-variant">${bonus.descricao || 'Sem descrição.'}</p>
+                  <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">${safeText(bonus.validade_descricao, 'Validade não informada')}</p>
                 </div>
                 <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}">${meta.label}</span>
               </div>
@@ -5068,10 +5068,10 @@
                 body: JSON.stringify({ ativo: !bonus.ativo }),
               });
               if (res.ok && data?.success) {
-                ui.message(data?.message || 'Status do bonus aniversario atualizado.', 'success');
+                ui.message(data?.message || 'Status do bônus aniversário atualizado.', 'success');
                 await loadBirthdayList();
               } else {
-                ui.message(data?.message || 'Nao foi possivel atualizar o bonus aniversario.', 'error');
+                ui.message(data?.message || 'Não foi possível atualizar o bônus aniversário.', 'error');
               }
             });
             card.querySelector('[data-action="send"]')?.addEventListener('click', async () => {
@@ -5082,7 +5082,7 @@
                 const sent = Number(data?.meta?.delivery?.total_sent || 0);
                 ui.message(data?.message || `Envio concluido para ${sent} cliente(s).`, 'success');
               } else {
-                ui.message(data?.message || 'Nao foi possivel enviar o bonus aniversario.', 'error');
+                ui.message(data?.message || 'Não foi possível enviar o bônus aniversário.', 'error');
               }
             });
             birthdayUi.list?.appendChild(card);
@@ -5117,8 +5117,8 @@
             ativo: birthdayUi.ativo?.checked ?? true,
           };
 
-          if (!payload.titulo) return ui.message('Informe o titulo do bonus aniversario.', 'warning');
-          if (!payload.descricao) return ui.message('Informe a descricao do bonus aniversario.', 'warning');
+          if (!payload.titulo) return ui.message('Informe o título do bônus aniversário.', 'warning');
+          if (!payload.descricao) return ui.message('Informe a descrição do bônus aniversário.', 'warning');
 
           const path = birthdayEditingId ? `/empresa/bonus-aniversario/${birthdayEditingId}` : '/empresa/bonus-aniversario';
           const method = birthdayEditingId ? 'PUT' : 'POST';
@@ -5128,18 +5128,18 @@
           });
 
           if (res.ok && data?.success) {
-            ui.message(data?.message || 'Bonus aniversario salvo.', 'success');
+            ui.message(data?.message || 'Bônus aniversário salvo.', 'success');
             resetBirthdayForm();
             await loadBirthdayList();
           } else {
-            ui.message(data?.message || 'Nao foi possivel salvar o bonus aniversario.', 'error');
+            ui.message(data?.message || 'Não foi possível salvar o bônus aniversário.', 'error');
           }
         });
 
         birthdayUi.enviar?.addEventListener('click', async () => {
           const target = birthdayItems.find((item) => item.ativo) || birthdayItems[0];
           if (!target?.id) {
-            ui.message('Cadastre um bonus aniversario antes de enviar.', 'warning');
+            ui.message('Cadastre um bônus aniversário antes de enviar.', 'warning');
             return;
           }
 
@@ -5150,7 +5150,7 @@
             const sent = Number(data?.meta?.delivery?.total_sent || 0);
             ui.message(data?.message || `Envio concluido para ${sent} cliente(s).`, 'success');
           } else {
-            ui.message(data?.message || 'Nao foi possivel enviar o bonus aniversario.', 'error');
+            ui.message(data?.message || 'Não foi possível enviar o bônus aniversário.', 'error');
           }
         });
 
@@ -5253,7 +5253,7 @@
                 ui.message(data?.message || 'Status do lembrete atualizado.', 'success');
                 await loadReminderList();
               } else {
-                ui.message(data?.message || 'Nao foi possivel atualizar o lembrete.', 'error');
+                ui.message(data?.message || 'Não foi possível atualizar o lembrete.', 'error');
               }
             });
             reminderUi.list?.appendChild(item);
@@ -5286,7 +5286,7 @@
           };
 
           if (!payload.dias_sem_visita || payload.dias_sem_visita < 1) return ui.message('Informe os dias sem visita.', 'warning');
-          if (!payload.titulo) return ui.message('Informe o titulo do lembrete.', 'warning');
+          if (!payload.titulo) return ui.message('Informe o título do lembrete.', 'warning');
           if (!payload.mensagem) return ui.message('Informe a mensagem do lembrete.', 'warning');
 
           const path = reminderEditingId ? `/empresa/lembrete-retorno/${reminderEditingId}` : '/empresa/lembrete-retorno';
@@ -5301,7 +5301,7 @@
             resetReminderForm();
             await loadReminderList();
           } else {
-            ui.message(data?.message || 'Nao foi possivel salvar o lembrete.', 'error');
+            ui.message(data?.message || 'Não foi possível salvar o lembrete.', 'error');
           }
         });
 
@@ -5320,7 +5320,7 @@
             const sent = Number(data?.meta?.delivery?.total_sent || 0);
             ui.message(data?.message || `Lembretes enviados para ${sent} cliente(s).`, 'success');
           } else {
-            ui.message(data?.message || 'Nao foi possivel enviar os lembretes.', 'error');
+            ui.message(data?.message || 'Não foi possível enviar os lembretes.', 'error');
           }
         });
 
@@ -5342,21 +5342,21 @@
       const endpoint = action === 'ativar' ? `/empresa/promocoes/${id}/ativar` : `/empresa/promocoes/${id}/pausar`;
       const { res, data } = await api.request(endpoint, { method: 'PATCH' });
       if (res.ok && data?.success !== false) {
-        ui.message('Promocao atualizada.', 'success');
+        ui.message('Promoção atualizada.', 'success');
         location.reload();
       } else {
-        ui.message(data?.message || 'Erro ao atualizar promocao.', 'error');
+        ui.message(data?.message || 'Erro ao atualizar promoção.', 'error');
       }
     },
 
     async deletarPromocao(id) {
-      if (!window.confirm('Deseja realmente excluir esta promocao?')) return;
+      if (!window.confirm('Deseja realmente excluir esta promoção?')) return;
       const { res, data } = await api.request(`/empresa/promocoes/${id}`, { method: 'DELETE' });
       if (res.ok && data?.success !== false) {
-        ui.message('Promocao removida.', 'success');
+        ui.message('Promoção removida.', 'success');
         location.reload();
       } else {
-        ui.message(data?.message || 'Erro ao remover promocao.', 'error');
+        ui.message(data?.message || 'Erro ao remover promoção.', 'error');
       }
     },
 
@@ -6030,7 +6030,7 @@
           ...item,
           nome: safeText(item?.nome || item?.nome_fantasia, 'Estabelecimento'),
           categoria: safeText(item?.categoria || item?.ramo || 'Sem categoria', 'Sem categoria'),
-          endereco: safeText(item?.endereco, 'Endereco nao informado'),
+          endereco: safeText(item?.endereco, 'Endereço não informado'),
           telefone: safeText(item?.telefone, '-'),
           whatsapp: safeText(item?.whatsapp, ''),
           email: safeText(item?.email, '-'),
@@ -6091,7 +6091,7 @@
                   <div class="flex flex-wrap items-center gap-2">
                     <h3 class="font-headline font-bold text-on-surface text-lg">${e.nome}</h3>
                     <span class="px-2 py-1 rounded-full text-[10px] uppercase font-black ${meta.badge}">${meta.label}</span>
-                    <span class="px-2 py-1 rounded-full text-[10px] uppercase font-black ${e.publicamente_visivel ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-700'}">${e.publicamente_visivel ? 'Publica' : 'Oculta'}</span>
+                    <span class="px-2 py-1 rounded-full text-[10px] uppercase font-black ${e.publicamente_visivel ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-700'}">${e.publicamente_visivel ? 'Pública' : 'Oculta'}</span>
                   </div>
                   <p class="text-sm text-outline mt-1">${e.categoria}</p>
                   <p class="text-xs text-on-surface-variant mt-2">Responsavel: <span class="font-bold">${e.responsavel}</span> · ${e.email}</p>
@@ -6184,9 +6184,9 @@
       const tbody = document.getElementById('adminUsersTable');
       if (!tbody) {
         ui.clearPageState();
-        if (!admins.length) return ui.message('Nenhum usuario retornado.', 'warning');
+        if (!admins.length) return ui.message('Nenhum usuário retornado.', 'warning');
         return render.section(
-          'Usuarios',
+          'Usuários',
           admins
             .map(
               (u) => `
@@ -6224,7 +6224,7 @@
           if (!tr) return;
 
           const userId = tr.dataset.userId;
-          const userName = tr.dataset.userName || 'Usuario';
+          const userName = tr.dataset.userName || 'Usuário';
           const action = btn.dataset.userAction;
           if (!userId || !action) return;
 
@@ -6243,7 +6243,7 @@
               ui.message(resp.data?.message || 'Status atualizado com sucesso.', 'success');
               await admin.usuarios();
             } else {
-              ui.message(resp.data?.message || `Nao foi possivel ${actionLabel} a conta.`, 'error');
+              ui.message(resp.data?.message || `Não foi possível ${actionLabel} a conta.`, 'error');
             }
             return;
           }
@@ -6261,7 +6261,7 @@
             if (birth.trim()) payload.data_nascimento = birth.trim();
 
             if (!payload.cpf && !payload.data_nascimento) {
-              ui.message('Nenhuma alteracao informada.', 'info');
+              ui.message('Nenhuma alteração informada.', 'info');
               return;
             }
 
@@ -6274,7 +6274,7 @@
               ui.message(resp.data?.message || 'Dados atualizados com sucesso.', 'success');
               await admin.usuarios();
             } else {
-              ui.message(resp.data?.message || 'Nao foi possivel atualizar os dados do usuario.', 'error');
+              ui.message(resp.data?.message || 'Não foi possível atualizar os dados do usuário.', 'error');
             }
           }
         });
@@ -6291,7 +6291,7 @@
         metric('adminUsersBloqueados', Number(bloqueados || 0).toLocaleString('pt-BR'));
         metric('adminUsersCrescimento', total ? `${total} registrados` : 'Sem registros');
         metric('adminUsersNovos', '');
-        metric('adminUsersReviso', bloqueados ? `${bloqueados} em reviso` : 'OK');
+        metric('adminUsersReviso', bloqueados ? `${bloqueados} em revisão` : 'OK');
         const resumoText = resumo?.querySelector('p');
         if (resumoText) resumoText.textContent = total ? `Listando ${total} administradores` : 'Nenhum administrador encontrado';
       };
@@ -6308,7 +6308,7 @@
         listaAlvo.forEach((u) => {
           const tr = document.createElement('tr');
           tr.className = 'data-row hover:bg-surface-container-low transition-colors group';
-          const nome = u.name || u.nome || u.email || 'Usuario';
+          const nome = u.name || u.nome || u.email || 'Usuário';
           const email = u.email || '';
           const perfil = u.perfil || u.role || 'admin';
           const status = suspenso(u) ? 'Suspenso' : ativo(u) ? 'Ativo' : 'Inativo';
@@ -6630,7 +6630,7 @@
         renderMetricRows(
           'relStatsList',
           [
-            { label: 'Usuarios', value: Number(totalUsuarios || 0).toLocaleString('pt-BR') },
+            { label: 'Usuários', value: Number(totalUsuarios || 0).toLocaleString('pt-BR') },
             { label: 'Clientes', value: Number(totalClientes || 0).toLocaleString('pt-BR') },
             { label: 'Empresas', value: Number(totalEmpresas || 0).toLocaleString('pt-BR') },
             { label: 'Vinculos cliente x empresa', value: Number(totalVinculos || 0).toLocaleString('pt-BR') },
@@ -6726,7 +6726,7 @@
             URL.revokeObjectURL(url);
             ui.message('Relatorio gerado com sucesso.', 'success');
           } else {
-            ui.message('Nao foi possivel gerar o relatorio agora.', 'error');
+            ui.message('Não foi possível gerar o relatório agora.', 'error');
           }
         } finally {
           const params = new URLSearchParams(window.location.search);
@@ -6742,7 +6742,7 @@
         const { data: cpData } = await api.request('/admin/pontos/checkins-pendentes', {}, { notify: false });
         const pendentes = toArray(cpData?.data || cpData);
         if (!pendentes.length) {
-          checkinsContainer.innerHTML = '<p class="text-sm text-on-surface-variant text-center py-4">Nenhum check-in pendente de aprovacao.</p>';
+          checkinsContainer.innerHTML = '<p class="text-sm text-on-surface-variant text-center py-4">Nenhum check-in pendente de aprovação.</p>';
         } else {
           checkinsContainer.innerHTML = pendentes.slice(0, 10).map((c) => {
             const nome = c.user?.name || c.usuario_nome || 'Cliente';
@@ -6785,12 +6785,12 @@
 
     async configuracoes() {
       if (!(await auth.guard(['admin']))) return;
-      ui.setPageState('loading', 'Carregando configuracoes...');
+      ui.setPageState('loading', 'Carregando configurações...');
       const { res, data } = await api.request('/admin/settings', {}, { notify: false });
       ui.clearPageState();
 
       if (!res.ok || data?.success === false || !data?.data) {
-        ui.message(data?.message || 'Nao foi possivel carregar configuracoes.', 'error');
+        ui.message(data?.message || 'Não foi possível carregar configurações.', 'error');
         return;
       }
 
@@ -6833,7 +6833,7 @@
           ui.message(resp.data?.message || 'Configuracoes salvas com sucesso.', 'success');
         } else {
           const errors = resp.data?.errors ? Object.values(resp.data.errors).flat().join(' ') : '';
-          ui.message(resp.data?.message || errors || 'Erro ao salvar configuracoes.', 'error');
+          ui.message(resp.data?.message || errors || 'Erro ao salvar configurações.', 'error');
         }
       });
     },
@@ -6870,7 +6870,7 @@
       } else {
         ui.clearPageState();
         console.error('LOGIN_SUBMIT_FAIL', JSON.stringify({ status: res.status, payload: data }, null, 2));
-        ui.message(data?.message || payload?.message || 'Nao foi possivel entrar.', 'error');
+        ui.message(data?.message || payload?.message || 'Não foi possível entrar.', 'error');
       }
     });
   }
@@ -6936,7 +6936,7 @@
 
       if (!res.ok || data?.success === false) {
         if (statusEl) statusEl.textContent = 'QR indisponivel';
-        if (messageEl) messageEl.textContent = data?.message || 'Nao foi possivel identificar esta empresa.';
+        if (messageEl) messageEl.textContent = data?.message || 'Não foi possível identificar esta empresa.';
         primaryBtn?.addEventListener('click', () => { window.location.href = '/entrar.html'; });
         return;
       }
@@ -6979,7 +6979,7 @@
         body: JSON.stringify({ code }),
       });
       if (!linkResponse.res.ok || linkResponse.data?.success === false) {
-        if (messageEl) messageEl.textContent = linkResponse.data?.message || 'Nao foi possivel concluir o vínculo.';
+        if (messageEl) messageEl.textContent = linkResponse.data?.message || 'Não foi possível concluir o vínculo.';
         primaryBtn?.addEventListener('click', () => { window.location.href = '/meus_pontos.html?ignore_pending_qr=1'; });
         return;
       }
@@ -7243,7 +7243,7 @@
             ui.message('Estabelecimento criado com sucesso!', 'success');
             setTimeout(() => (window.location.href = '/gest_o_de_estabelecimentos.html'), 800);
           } else if (perfil === 'empresa') {
-            ui.message(data?.message || 'Solicitacao enviada. Aguarde aprovacao do administrador.', 'success');
+            ui.message(data?.message || 'Solicitação enviada. Aguarde aprovação do administrador.', 'success');
             setTimeout(() => (window.location.href = '/entrar.html'), 1200);
           } else {
             ui.message('Conta criada. Faca login.', 'success');
@@ -7319,14 +7319,14 @@
         const { banners = [], categorias = [] } = payload;
         const isPartial = Boolean(payload?.partial);
         if (status) {
-          status.textContent = `Conteudo sincronizado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
+          status.textContent = `Conteúdo sincronizado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
         }
 
         if (bannersSection) {
           bannersSection.innerHTML = `
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-lg font-headline font-bold text-on-surface">Banners</h3>
-              <button id="novoBannerBtn" class="px-3 py-1.5 rounded-lg ${isPartial ? 'bg-outline text-white/80 cursor-not-allowed' : 'bg-primary text-white'} text-sm font-bold" ${isPartial ? 'disabled' : ''}>${isPartial ? 'Indisponivel' : 'Novo banner'}</button>
+              <button id="novoBannerBtn" class="px-3 py-1.5 rounded-lg ${isPartial ? 'bg-outline text-white/80 cursor-not-allowed' : 'bg-primary text-white'} text-sm font-bold" ${isPartial ? 'disabled' : ''}>${isPartial ? 'Indisponível' : 'Novo banner'}</button>
             </div>
             <div id="bannersList" class="space-y-3"></div>
           `;
@@ -7418,7 +7418,7 @@
           categoriasSection.innerHTML = `
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-lg font-headline font-bold text-on-surface">Categorias</h3>
-              <button id="novaCategoriaBtn" class="px-3 py-1.5 rounded-lg ${isPartial ? 'bg-outline text-white/80 cursor-not-allowed' : 'bg-primary text-white'} text-sm font-bold" ${isPartial ? 'disabled' : ''}>${isPartial ? 'Indisponivel' : 'Nova categoria'}</button>
+              <button id="novaCategoriaBtn" class="px-3 py-1.5 rounded-lg ${isPartial ? 'bg-outline text-white/80 cursor-not-allowed' : 'bg-primary text-white'} text-sm font-bold" ${isPartial ? 'disabled' : ''}>${isPartial ? 'Indisponível' : 'Nova categoria'}</button>
             </div>
             <div id="categoriasList" class="space-y-3"></div>
           `;
@@ -7511,7 +7511,7 @@
         console.error('admin_content_render_fail', err);
         const payload = fallbackContent();
         const { banners = [], categorias = [] } = payload;
-        if (status) status.textContent = `Conteudo sincronizado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
+        if (status) status.textContent = `Conteúdo sincronizado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
         if (bannersSection) {
           bannersSection.innerHTML = `
             <div class="flex items-center justify-between mb-4">
