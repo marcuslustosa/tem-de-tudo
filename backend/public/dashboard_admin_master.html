@@ -10,7 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <!-- Icons -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="/css/i9plus-phase8.css?v=20260516-consistency" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="/css/i9plus-phase8.css?v=20260514-phase8" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -81,271 +82,278 @@
       }
     </script>
 <style>
-      .material-symbols-outlined {
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+      .bg-vibrant-gradient { background: linear-gradient(135deg, #00BCD4 0%, #7A2C8F 50%, #E10098 100%); }
+      .glass-effect { background: rgba(225,0,152,0.12); backdrop-filter: blur(12px); }
+      .admin-search {
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 999px;
       }
-      .bg-vibrant-gradient {
-        background: linear-gradient(135deg, #00BCD4 0%, #7A2C8F 50%, #E10098 100%);
-      }
-      .glass-effect {
-        background: rgba(222, 219, 231, 0.6);
-        backdrop-filter: blur(12px);
-      }
+      .admin-search input { color: var(--admin-text); }
+      .admin-search input::placeholder { color: var(--admin-text-muted); }
     </style>
 </head>
-<body class="bg-background font-body text-on-background antialiased min-h-screen" data-page="dashboard_admin_master">
+<body class="font-body antialiased min-h-screen" data-page="dashboard_admin_master">
 <!-- SideNavBar (Desktop Shell) -->
-<aside class="fixed left-0 top-0 h-full overflow-y-auto w-64 hidden lg:flex flex-col bg-[#ffffff] dark:bg-slate-900 shadow-[0_8px_32px_rgba(11,31,58,0.08)] z-50">
-<div class="px-6 py-8 flex flex-col gap-1">
-<span class="font-black text-lg text-[#00BCD4] dark:text-white"><img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" /></span>
-<span class="font-['Plus_Jakarta_Sans'] text-xs font-semibold text-outline">Tem de Tudo</span>
+<aside class="admin-sidebar fixed left-0 top-0 h-full overflow-y-auto w-64 hidden lg:flex flex-col z-50">
+<!-- Logo -->
+<div class="px-6 pt-7 pb-6 flex items-center gap-3 border-b" style="border-color:var(--admin-border)">
+  <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#E10098 0%,#00BCD4 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+    <span class="material-symbols-outlined" style="color:#fff;font-size:20px;" data-icon="bolt">bolt</span>
+  </div>
+  <div>
+    <div class="font-headline font-black text-sm" style="color:#fff;">Tem de Tudo</div>
+    <div class="font-label text-[10px] font-semibold uppercase tracking-widest" style="color:var(--admin-text-muted)">Admin Master</div>
+  </div>
 </div>
-<nav class="flex-1 px-3 space-y-1">
-<!-- Active: Dashboard -->
-<a class="flex items-center gap-3 px-4 py-3 text-[#E10098] bg-[#f8f5fe] dark:bg-slate-800 border-r-4 border-[#E10098] font-['Plus_Jakarta_Sans'] text-sm font-semibold transition-all translate-x-1 duration-200" href="/dashboard_admin_master.html">
-<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<!-- Nav -->
+<nav class="flex-1 px-3 py-4 space-y-1">
+<a class="admin-nav-item active flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/dashboard_admin_master.html">
+<span class="material-symbols-outlined text-[#E10098]" data-icon="dashboard" style="font-size:20px;">dashboard</span>
 <span>Dashboard</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] dark:hover:bg-slate-800 font-['Plus_Jakarta_Sans'] text-sm font-semibold transition-all" href="/gest_o_de_estabelecimentos.html">
-<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/gest_o_de_estabelecimentos.html">
+<span class="material-symbols-outlined" data-icon="storefront" style="font-size:20px;color:var(--admin-text-muted)">storefront</span>
 <span>Estabelecimentos</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] dark:hover:bg-slate-800 font-['Plus_Jakarta_Sans'] text-sm font-semibold transition-all" href="/relat_rios_gerais_master.html">
-<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
-<span>Relatórios</span>
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/relat_rios_gerais_master.html">
+<span class="material-symbols-outlined" data-icon="analytics" style="font-size:20px;color:var(--admin-text-muted)">analytics</span>
+<span>Relatorios</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] dark:hover:bg-slate-800 font-['Plus_Jakarta_Sans'] text-sm font-semibold transition-all" href="/gest_o_de_usu_rios_master.html">
-<span class="material-symbols-outlined" data-icon="group">group</span>
-<span>Usuários</span>
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/gest_o_de_usu_rios_master.html">
+<span class="material-symbols-outlined" data-icon="group" style="font-size:20px;color:var(--admin-text-muted)">group</span>
+<span>Usuarios</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] dark:hover:bg-slate-800 font-['Plus_Jakarta_Sans'] text-sm font-semibold transition-all" href="/configuracoes_admin.html">
-<span class="material-symbols-outlined" data-icon="settings">settings</span>
-<span>Configurações</span>
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/configuracoes_admin.html">
+<span class="material-symbols-outlined" data-icon="settings" style="font-size:20px;color:var(--admin-text-muted)">settings</span>
+<span>Configuracoes</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] dark:hover:bg-slate-800 font-['Plus_Jakarta_Sans'] text-sm font-semibold transition-all" href="/banners_e_categorias_master.html">
-<span class="material-symbols-outlined" data-icon="collections">collections</span>
-<span>Conteúdo</span>
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/banners_e_categorias_master.html">
+<span class="material-symbols-outlined" data-icon="collections" style="font-size:20px;color:var(--admin-text-muted)">collections</span>
+<span>Conteudo</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] dark:hover:bg-slate-800 font-['Plus_Jakarta_Sans'] text-sm font-semibold transition-all" href="mailto:contato@temdetudo.com">
-<span class="material-symbols-outlined" data-icon="help_center">help_center</span>
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="mailto:contato@temdetudo.com">
+<span class="material-symbols-outlined" data-icon="help_center" style="font-size:20px;color:var(--admin-text-muted)">help_center</span>
 <span>Suporte</span>
 </a>
 </nav>
-<div class="p-6">
-<a class="block w-full py-3 px-4 rounded-xl bg-vibrant-gradient text-white font-bold text-sm shadow-lg active:scale-95 transition-all text-center" href="/criar_conta.html?tipo=empresa&amp;origem=admin">
-                Novo Parceiro
-            </a>
+<!-- Footer -->
+<div class="p-4 border-t" style="border-color:var(--admin-border)">
+<a class="block w-full py-2.5 px-4 rounded-xl bg-vibrant-gradient text-white font-bold text-sm shadow-lg active:scale-95 transition-all text-center" href="/criar_conta.html?tipo=empresa&amp;origem=admin">
+  + Novo Parceiro
+</a>
+<div class="mt-4 flex items-center gap-3 px-1">
+  <div class="h-8 w-8 rounded-full overflow-hidden border-2 shrink-0" style="border-color:rgba(225,0,152,0.4)">
+    <img alt="Admin" class="w-full h-full object-cover" src="/assets/images/company1.jpg"/>
+  </div>
+  <div class="min-w-0">
+    <div class="text-xs font-semibold truncate" style="color:var(--admin-text)">Administrador</div>
+    <div class="text-[10px]" style="color:var(--admin-text-muted)">Super Admin</div>
+  </div>
+  <span class="material-symbols-outlined ml-auto shrink-0" style="font-size:16px;color:var(--admin-text-muted)">logout</span>
+</div>
 </div>
 </aside>
 <!-- TopAppBar Shell -->
-<header class="flex justify-between items-center px-6 py-3 w-full sticky top-0 bg-[#f8f5fe] dark:bg-slate-950 z-40 lg:pl-72 transition-colors">
-<div class="flex items-center gap-4">
-<span class="text-xl font-black bg-gradient-to-r from-[#00BCD4] via-[#7A2C8F] to-[#E10098] bg-clip-text text-transparent"><img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" /></span>
+<header class="admin-header flex justify-between items-center px-6 py-3 w-full sticky top-0 z-40 lg:pl-72 transition-colors">
+<div class="flex items-center gap-3">
+  <span class="font-label text-xs font-semibold" style="color:var(--admin-text-muted)">Admin</span>
+  <span class="material-symbols-outlined" style="font-size:14px;color:var(--admin-text-muted)">chevron_right</span>
+  <span class="font-headline font-bold text-sm" style="color:var(--admin-text)">Dashboard</span>
+  <span class="admin-badge-live ml-2"><span class="dot"></span>LIVE</span>
 </div>
-<div class="flex items-center gap-4">
-<!-- Search on Right Command -->
-<div class="hidden md:flex items-center bg-surface-container-low px-4 py-1.5 rounded-full border-none outline-none">
-<span class="material-symbols-outlined text-outline text-lg" data-icon="search">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm font-body text-on-surface-variant w-48" placeholder="Buscar na plataforma..." type="text"/>
+<div class="flex items-center gap-3">
+<div class="admin-search hidden md:flex items-center px-4 py-1.5 gap-2">
+<span class="material-symbols-outlined text-lg" style="color:var(--admin-text-muted)" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-body w-44 outline-none" placeholder="Buscar na plataforma..." style="color:var(--admin-text);" type="text"/>
 </div>
-<div class="flex items-center gap-2">
-<button class="p-2 rounded-full hover:bg-[#dedbe7]/50 transition-colors text-on-surface-variant scale-95 active:opacity-80">
+<button class="p-2 rounded-full transition-colors" style="color:var(--admin-text-muted)" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
 <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
 </button>
-<a class="p-2 rounded-full hover:bg-[#dedbe7]/50 transition-colors text-on-surface-variant scale-95 active:opacity-80 inline-flex" href="/configuracoes_admin.html" aria-label="Abrir configurações">
+<a class="p-2 rounded-full transition-colors inline-flex" style="color:var(--admin-text-muted)" href="/configuracoes_admin.html" aria-label="Abrir configuracoes" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
 </a>
-<div class="h-9 w-9 rounded-full overflow-hidden border-2 border-primary-container ml-2">
-<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="professional headshot of a business administrator in a modern office setting with soft natural lighting" src="/assets/images/company1.jpg"/>
-</div>
+<div class="h-9 w-9 rounded-full overflow-hidden border-2 ml-1" style="border-color:rgba(225,0,152,0.5)">
+<img alt="User profile avatar" class="w-full h-full object-cover" src="/assets/images/company1.jpg"/>
 </div>
 </div>
 </header>
 <!-- Main Content Canvas -->
-<main class="lg:pl-64 pt-4 pb-24 lg:pb-8 px-6 max-w-[1600px] mx-auto">
+<main class="lg:pl-64 pt-6 pb-24 lg:pb-10 px-6 max-w-[1600px] mx-auto">
 <!-- Welcome Section -->
 <section class="mb-8">
 <div class="flex flex-col md:flex-row justify-between items-end gap-4">
 <div>
-<h1 class="text-on-surface font-headline font-extrabold text-3xl tracking-tight">Dashboard Geral</h1>
-<p class="text-on-surface-variant font-body mt-1">Bem-vindo de volta. Aqui está o pulso da plataforma.</p>
+<p class="font-label text-xs font-semibold uppercase tracking-widest mb-2" style="color:var(--admin-text-muted)">Visao Geral da Plataforma</p>
+<h1 class="admin-section-title font-headline">Dashboard Geral</h1>
+<p class="font-body mt-1 text-sm" style="color:var(--admin-text-soft)">Bem-vindo de volta. Aqui esta o pulso da plataforma.</p>
 </div>
-<div class="flex gap-2">
-<span class="px-3 py-1.5 rounded-full bg-surface-container font-label text-xs font-semibold text-tertiary uppercase tracking-wider flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-tertiary"></span> Sistema Online
-                    </span>
+<div class="flex gap-2 items-center shrink-0">
+<span class="admin-badge-live"><span class="dot"></span>Sistema Online</span>
 </div>
 </div>
 </section>
 <!-- KPI Bento Grid -->
 <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-<!-- Card 1: Total Users -->
-<div class="bg-vibrant-gradient p-5 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.12)] text-white relative overflow-hidden group">
+<!-- Card 1: Total Users — destaque com gradiente -->
+<div class="admin-kpi-card p-5 relative overflow-hidden group" style="background:linear-gradient(135deg,rgba(225,0,152,0.18) 0%,rgba(0,188,212,0.12) 100%);border-color:rgba(225,0,152,0.3)">
 <div class="relative z-10">
-<p class="font-label text-xs opacity-80 uppercase tracking-widest mb-1">Total de usuários</p>
-<h3 id="adminUsers" class="text-3xl font-headline font-black mb-1">--</h3>
-<div class="flex items-center gap-1 text-xs text-secondary-container font-semibold">
-<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<div class="admin-icon-box mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="group">group</span></div>
+<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:var(--admin-text-muted)">Total de Usuarios</p>
+<h3 id="adminUsers" class="text-3xl font-headline font-black mb-1 admin-kpi-number">--</h3>
+<div class="flex items-center gap-1 text-xs font-semibold" style="color:rgba(0,200,150,0.9)">
+<span class="material-symbols-outlined" style="font-size:14px;" data-icon="trending_up">trending_up</span>
 <span>Dados atuais</span>
 </div>
 </div>
-<span class="material-symbols-outlined absolute -right-4 -bottom-4 text-8xl opacity-10 group-hover:scale-110 transition-transform" data-icon="group">group</span>
+<span class="material-symbols-outlined absolute -right-3 -bottom-3 opacity-[0.06] group-hover:opacity-[0.12] transition-opacity" style="font-size:80px;color:#fff;" data-icon="group">group</span>
 </div>
 <!-- Card 2: Establishments -->
-<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border-none transition-all hover:bg-surface-container-high group">
-<div class="flex justify-between items-start mb-3">
-<div class="p-2 rounded-lg bg-surface-container-high text-primary">
-<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
-</div>
-</div>
-<p class="font-label text-xs text-on-surface-variant uppercase tracking-widest mb-1">Estabelecimentos</p>
-<h3 id="adminEmpresas" class="text-2xl font-headline font-bold text-on-surface mb-1">--</h3>
-<p class="text-[10px] text-outline font-medium">Dados sincronizados em tempo real</p>
+<div class="admin-kpi-card p-5 group">
+<div class="admin-icon-box mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="storefront">storefront</span></div>
+<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:var(--admin-text-muted)">Estabelecimentos</p>
+<h3 id="adminEmpresas" class="text-2xl font-headline font-bold mb-1 admin-kpi-number">--</h3>
+<p class="text-[10px] font-medium" style="color:var(--admin-text-muted)">Sincronizado em tempo real</p>
 </div>
 <!-- Card 3: Active Campaigns -->
-<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border-none transition-all hover:bg-surface-container-high group">
-<div class="flex justify-between items-start mb-3">
-<div class="p-2 rounded-lg bg-surface-container-high text-secondary">
-<span class="material-symbols-outlined" data-icon="campaign">campaign</span>
-</div>
-</div>
-<p class="font-label text-xs text-on-surface-variant uppercase tracking-widest mb-1">Campanhas Ativas</p>
-<h3 id="adminCampanhas" class="text-2xl font-headline font-bold text-on-surface mb-1">--</h3>
-<div class="h-1.5 w-full bg-surface-container-highest rounded-full mt-2">
-<div class="h-full bg-secondary w-3/4 rounded-full"></div>
+<div class="admin-kpi-card p-5 group">
+<div class="admin-icon-box purple mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="campaign">campaign</span></div>
+<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:var(--admin-text-muted)">Campanhas Ativas</p>
+<h3 id="adminCampanhas" class="text-2xl font-headline font-bold mb-1 admin-kpi-number">--</h3>
+<div class="h-1 w-full rounded-full mt-2" style="background:rgba(255,255,255,0.08)">
+<div class="h-full rounded-full w-3/4" style="background:linear-gradient(90deg,#7a2c8f,#E10098)"></div>
 </div>
 </div>
 <!-- Card 4: Redemptions -->
-<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border-none transition-all hover:bg-surface-container-high group">
-<div class="flex justify-between items-start mb-3">
-<div class="p-2 rounded-lg bg-surface-container-high text-tertiary">
-<span class="material-symbols-outlined" data-icon="confirmation_number">confirmation_number</span>
+<div class="admin-kpi-card p-5 group">
+<div class="admin-icon-box teal mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="confirmation_number">confirmation_number</span></div>
+<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:var(--admin-text-muted)">Resgates Realizados</p>
+<h3 id="adminResgates" class="text-2xl font-headline font-bold mb-1 admin-kpi-number">--</h3>
+<p class="text-[10px] font-bold" style="color:var(--admin-accent-2)">Resgates acumulados</p>
 </div>
-</div>
-<p class="font-label text-xs text-on-surface-variant uppercase tracking-widest mb-1">Resgates Realizados</p>
-<h3 id="adminResgates" class="text-2xl font-headline font-bold text-on-surface mb-1">--</h3>
-<p class="text-[10px] text-tertiary font-bold">Resgates acumulados</p>
-</div>
-<!-- Card 5: Revenue/Transactions -->
-<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sm border-none transition-all hover:bg-surface-container-high group">
-<div class="flex justify-between items-start mb-3">
-<div class="p-2 rounded-lg bg-surface-container-high text-error">
-<span class="material-symbols-outlined" data-icon="payments">payments</span>
-</div>
-</div>
-<p class="font-label text-xs text-on-surface-variant uppercase tracking-widest mb-1">Volume Transacionado</p>
-<h3 id="adminVolume" class="text-2xl font-headline font-bold text-on-surface mb-1">--</h3>
-<p class="text-[10px] text-outline font-medium">Transações via app</p>
+<!-- Card 5: Volume -->
+<div class="admin-kpi-card p-5 group">
+<div class="admin-icon-box green mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="payments">payments</span></div>
+<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:var(--admin-text-muted)">Volume Transacionado</p>
+<h3 id="adminVolume" class="text-2xl font-headline font-bold mb-1 admin-kpi-number">--</h3>
+<p class="text-[10px] font-medium" style="color:var(--admin-text-muted)">Transacoes via app</p>
 </div>
 </section>
 <!-- Charts & Activity Split -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-<!-- Growth Chart Placeholder -->
-<div class="lg:col-span-2 bg-surface-container-lowest p-6 rounded-xl shadow-sm">
+<!-- Growth Chart -->
+<div class="admin-card lg:col-span-2 p-6">
 <div class="flex justify-between items-center mb-6">
 <div>
-<h3 class="text-on-surface font-headline font-bold text-lg">Crescimento da Base</h3>
-<p class="text-on-surface-variant text-sm">Usuários vs. estabelecimentos (últimos 30 dias)</p>
+<h3 class="font-headline font-bold text-base" style="color:var(--admin-text)">Crescimento da Base</h3>
+<p class="text-xs mt-0.5" style="color:var(--admin-text-muted)">Usuarios vs Estabelecimentos — ultimos 30 dias</p>
 </div>
-<select class="bg-surface-container-low border-none rounded-lg text-xs font-semibold py-1 px-3 focus:ring-primary">
+<select class="rounded-lg text-xs font-semibold py-1.5 px-3 border outline-none" style="background:var(--admin-surface-2);color:var(--admin-text-soft);border-color:var(--admin-border)">
 <option>Mensal</option>
 <option>Semanal</option>
 </select>
 </div>
-<p id="adminCrescimentoMsg" class="text-sm text-on-surface-variant">Carregando serie historica...</p></div>
-<!-- Recent Activity List -->
-<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm">
-<div class="flex justify-between items-center mb-6">
-<h3 class="text-on-surface font-headline font-bold text-lg">Atividade Recente</h3>
-<button class="text-primary text-xs font-bold hover:underline">Ver todas</button>
+<p id="adminCrescimentoMsg" class="text-sm" style="color:var(--admin-text-muted)">Carregando serie historica...</p>
+</div>
+<!-- Recent Activity -->
+<div class="admin-card p-6">
+<div class="flex justify-between items-center mb-5">
+<h3 class="font-headline font-bold text-base" style="color:var(--admin-text)">Atividade Recente</h3>
+<button class="text-xs font-bold" style="color:var(--admin-accent)">Ver todas</button>
 </div>
 <div id="adminRecentList" class="space-y-4"></div>
-<p id="adminRecentEmpty" class="text-xs text-outline">Nenhuma atividade recente.</p>
+<p id="adminRecentEmpty" class="text-xs" style="color:var(--admin-text-muted)">Nenhuma atividade recente.</p>
 </div>
 </div>
+
 <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm">
+<div class="admin-card p-6">
 <div class="flex justify-between items-center mb-4">
-<h3 class="text-on-surface font-headline font-bold text-lg">Status das empresas</h3>
+<h3 class="font-headline font-bold text-base" style="color:var(--admin-text)">Status das empresas</h3>
 </div>
-<div id="adminCompanyStatusList" class="space-y-2 text-sm text-on-surface"></div>
+<div id="adminCompanyStatusList" class="space-y-2 text-sm" style="color:var(--admin-text)"></div>
 </div>
-<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm">
+<div class="admin-card p-6">
 <div class="flex justify-between items-center mb-4">
-<h3 class="text-on-surface font-headline font-bold text-lg">Top empresas por clientes</h3>
+<h3 class="font-headline font-bold text-base" style="color:var(--admin-text)">Top empresas por clientes</h3>
 </div>
-<div id="adminTopCompaniesList" class="space-y-2 text-sm text-on-surface"></div>
+<div id="adminTopCompaniesList" class="space-y-2 text-sm" style="color:var(--admin-text)"></div>
 </div>
 </section>
-<!-- Secondary Grid: Quick Actions & Status -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-<div class="lg:col-span-1 bg-vibrant-gradient rounded-xl p-6 text-white flex flex-col justify-between overflow-hidden relative min-h-[160px]">
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-6">
+<!-- CTA: Relatorios -->
+<div class="lg:col-span-1 bg-vibrant-gradient rounded-2xl p-6 text-white flex flex-col justify-between overflow-hidden relative min-h-[160px]">
 <div class="relative z-10">
-<h4 class="font-headline font-extrabold text-lg leading-tight">Gere relatórios customizados</h4>
-<p class="text-xs opacity-80 mt-2">Exporte dados em PDF ou CSV com filtros avancados.</p>
+<h4 class="font-headline font-extrabold text-base leading-tight">Gere relatorios customizados</h4>
+<p class="text-xs opacity-75 mt-1.5">Exporte dados em PDF ou CSV com filtros avancados.</p>
 </div>
-<a id="adminGenerateReportBtn" href="/relat_rios_gerais_master.html?gerar=1" class="relative z-10 inline-flex w-fit bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-xs font-bold transition-all">Começar agora</a>
-<div class="absolute right-[-20px] bottom-[-20px] glass-effect w-32 h-32 rounded-full opacity-20"></div>
+<a id="adminGenerateReportBtn" href="/relat_rios_gerais_master.html?gerar=1" class="relative z-10 inline-flex w-fit mt-4 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl text-xs font-bold transition-all">Comecar agora</a>
+<div class="glass-effect absolute right-[-20px] bottom-[-20px] w-28 h-28 rounded-full opacity-30"></div>
 </div>
-<!-- Management Card -->
-<div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm flex items-center gap-4 transition-all hover:translate-y-[-4px]">
-<div class="w-14 h-14 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0">
-<span class="material-symbols-outlined text-3xl" data-icon="security">security</span>
-</div>
-<div>
-<h4 class="font-bold text-on-surface text-sm">Controle de Acessos</h4>
-<p class="text-xs text-on-surface-variant mt-1">Gerencie permissoes de sub-admins.</p>
-</div>
-</div>
-<!-- Plataforma Card -->
-<div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm flex items-center gap-4 transition-all hover:translate-y-[-4px]">
-<div class="w-14 h-14 rounded-xl bg-surface-container flex items-center justify-center text-tertiary shrink-0">
-<span class="material-symbols-outlined text-3xl" data-icon="tune">tune</span>
+<!-- Controle de Acessos -->
+<div class="admin-card flex items-center gap-4 p-5 transition-all hover:translate-y-[-2px]">
+<div class="w-12 h-12 rounded-xl shrink-0 flex items-center justify-center admin-icon-box">
+<span class="material-symbols-outlined" style="font-size:22px;" data-icon="security">security</span>
 </div>
 <div>
-<h4 class="font-bold text-on-surface text-sm">Configurações da plataforma</h4>
-<a class="text-xs text-tertiary font-semibold mt-1 inline-flex items-center gap-1 hover:underline" href="/configuracoes_admin.html">
-<span class="material-symbols-outlined text-base" data-icon="settings">settings</span> Ajustar parametros
-                    </a>
+<h4 class="font-bold text-sm" style="color:var(--admin-text)">Controle de Acessos</h4>
+<p class="text-xs mt-1" style="color:var(--admin-text-muted)">Gerencie permissoes de sub-admins.</p>
 </div>
 </div>
-<!-- Support Hub -->
-<a class="bg-surface-container-lowest rounded-xl p-6 shadow-sm flex items-center gap-4 transition-all hover:translate-y-[-4px]" href="/tickets_admin_master.html">
-<div class="w-14 h-14 rounded-xl bg-surface-container flex items-center justify-center text-secondary shrink-0">
-<span class="material-symbols-outlined text-3xl" data-icon="support_agent">support_agent</span>
+<!-- Configuracoes -->
+<div class="admin-card flex items-center gap-4 p-5 transition-all hover:translate-y-[-2px]">
+<div class="w-12 h-12 rounded-xl shrink-0 flex items-center justify-center admin-icon-box teal">
+<span class="material-symbols-outlined" style="font-size:22px;" data-icon="tune">tune</span>
 </div>
 <div>
-<h4 class="font-bold text-on-surface text-sm">Tickets Pendentes</h4>
-<p class="text-xs text-error font-semibold mt-1" id="adminTicketsUrgentes">Carregando...</p>
-<p class="text-[10px] text-on-surface-variant mt-1" id="adminTicketsPendentes">Carregando pendencias...</p>
+<h4 class="font-bold text-sm" style="color:var(--admin-text)">Configuracoes da Plataforma</h4>
+<a class="text-xs font-semibold mt-1 inline-flex items-center gap-1 hover:underline" href="/configuracoes_admin.html" style="color:var(--admin-accent-2)">
+<span class="material-symbols-outlined" style="font-size:14px;" data-icon="settings">settings</span> Ajustar parametros
+</a>
+</div>
+</div>
+<!-- Tickets -->
+<a class="admin-card flex items-center gap-4 p-5 transition-all hover:translate-y-[-2px]" href="/tickets_admin_master.html">
+<div class="w-12 h-12 rounded-xl shrink-0 flex items-center justify-center admin-icon-box purple">
+<span class="material-symbols-outlined" style="font-size:22px;" data-icon="support_agent">support_agent</span>
+</div>
+<div>
+<h4 class="font-bold text-sm" style="color:var(--admin-text)">Tickets Pendentes</h4>
+<p class="text-xs font-semibold mt-1" id="adminTicketsUrgentes" style="color:#f87171">Carregando...</p>
+<p class="text-[10px] mt-0.5" id="adminTicketsPendentes" style="color:var(--admin-text-muted)">Carregando pendencias...</p>
 </div>
 </a>
 </div>
 </main>
 <!-- BottomNavBar (Mobile Shell) -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-3 bg-[#ffffff] dark:bg-slate-900 lg:hidden rounded-t-[1.5rem] shadow-[0_-4px_20px_rgba(11,31,58,0.06)] border-t border-[#00666e]/20">
-<a class="flex flex-col items-center justify-center text-[#E10098] after:content-[''] after:w-1 after:h-1 after:bg-[#E10098] after:rounded-full after:mt-1 scale-90 duration-150 ease-in-out" href="/dashboard_admin_master.html">
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-3 lg:hidden rounded-t-[1.5rem] border-t" style="background:var(--admin-surface);border-color:var(--admin-border)">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out after:content-[''] after:w-1 after:h-1 after:rounded-full after:mt-1 after:bg-[#E10098]" style="color:#E10098" href="/dashboard_admin_master.html">
 <span class="material-symbols-outlined" data-icon="home">home</span>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Início</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Inicio</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out" href="/gest_o_de_estabelecimentos.html">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/gest_o_de_estabelecimentos.html">
 <span class="material-symbols-outlined" data-icon="storefront">storefront</span>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Estabelecimentos</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Parceiros</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out" href="/banners_e_categorias_master.html">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/banners_e_categorias_master.html">
 <div class="p-3 bg-vibrant-gradient rounded-full -mt-10 shadow-lg text-white">
-<span class="material-symbols-outlined" data-icon="collections">collections</span>
+<span class="material-symbols-outlined" data-icon="qr_code_scanner">qr_code_scanner</span>
 </div>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Conteúdo</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider mt-1">Validar</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out" href="/relat_rios_gerais_master.html">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/relat_rios_gerais_master.html">
 <span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Métricas</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Metricas</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 scale-90 duration-150 ease-in-out" href="/meu_perfil.html">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/meu_perfil.html">
 <span class="material-symbols-outlined" data-icon="person">person</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Perfil</span>
 </a>
 </nav>
-<script src="/dist/stitch-app.min.js?v=20260515-phase10-4"></script>
+<script src="/dist/stitch-app.min.js?v=20260422-optimized"></script>
 </body></html>
+
+

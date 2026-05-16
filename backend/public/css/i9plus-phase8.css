@@ -21,12 +21,144 @@
   --i9-desktop-shell: 1180px;
   --i9-heading-font: "Plus Jakarta Sans", sans-serif;
   --i9-body-font: "Be Vietnam Pro", sans-serif;
+
+  /* Admin dark shell tokens */
+  --admin-bg: #08091a;
+  --admin-surface: #12102e;
+  --admin-surface-2: #1c1840;
+  --admin-sidebar-gradient: linear-gradient(180deg, #0d0f26 0%, #12102e 50%, #0a0c22 100%);
+  --admin-border: rgba(225, 0, 152, 0.14);
+  --admin-border-hover: rgba(225, 0, 152, 0.35);
+  --admin-border-active: #E10098;
+  --admin-text: rgba(255, 255, 255, 0.92);
+  --admin-text-muted: rgba(255, 255, 255, 0.45);
+  --admin-text-soft: rgba(255, 255, 255, 0.65);
+  --admin-accent: #E10098;
+  --admin-accent-2: #00BCD4;
+  --admin-accent-glow: 0 0 24px rgba(225, 0, 152, 0.25);
+  --admin-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+  --admin-kpi-gradient: linear-gradient(135deg, #E10098 0%, #00BCD4 100%);
 }
 
 body[data-page] {
   color: var(--i9-text);
   font-family: var(--i9-body-font) !important;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================================
+   ADMIN DARK SHELL — shared across all admin pages
+   ============================================================ */
+body[data-page="dashboard_admin_master"],
+body[data-page="gest_o_de_estabelecimentos"],
+body[data-page="relat_rios_gerais_master"] {
+  background: var(--admin-bg) !important;
+  color: var(--admin-text) !important;
+}
+
+.admin-sidebar {
+  background: var(--admin-sidebar-gradient);
+  border-right: 1px solid var(--admin-border);
+}
+
+.admin-nav-item {
+  color: var(--admin-text-soft);
+  border-radius: 10px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.admin-nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--admin-text);
+}
+.admin-nav-item.active {
+  background: rgba(225, 0, 152, 0.12);
+  color: #fff;
+  border-left: 3px solid var(--admin-accent);
+  padding-left: calc(1rem - 3px);
+}
+
+.admin-header {
+  background: var(--admin-surface);
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-card {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 16px;
+  box-shadow: var(--admin-card-shadow);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.admin-card:hover {
+  border-color: var(--admin-border-hover);
+  box-shadow: var(--admin-accent-glow), var(--admin-card-shadow);
+}
+
+.admin-kpi-card {
+  background: var(--admin-surface-2);
+  border: 1px solid var(--admin-border);
+  border-radius: 16px;
+  box-shadow: var(--admin-card-shadow);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.admin-kpi-card:hover {
+  border-color: var(--admin-border-hover);
+  transform: translateY(-2px);
+}
+
+.admin-kpi-number {
+  background: var(--admin-kpi-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.admin-icon-box {
+  background: rgba(225, 0, 152, 0.12);
+  border-radius: 10px;
+  padding: 8px;
+  display: inline-flex;
+  color: var(--admin-accent);
+}
+.admin-icon-box.teal { background: rgba(0, 188, 212, 0.12); color: var(--admin-accent-2); }
+.admin-icon-box.purple { background: rgba(122, 44, 143, 0.15); color: #b06ed4; }
+.admin-icon-box.green { background: rgba(0, 168, 120, 0.12); color: #00a878; }
+
+.admin-badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 168, 120, 0.12);
+  border: 1px solid rgba(0, 168, 120, 0.25);
+  color: #00c896;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.admin-badge-live .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00c896;
+  animation: admin-pulse-live 1.8s ease-in-out infinite;
+}
+@keyframes admin-pulse-live {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.admin-section-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #fff 40%, rgba(255, 255, 255, 0.55) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .material-symbols-outlined {
@@ -1388,19 +1520,25 @@ body[data-page="gest_o_de_ofertas_parceiro"] .offer-tool-card:hover {
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card {
-  border-radius: 24px;
-  border: 1px solid rgba(17, 27, 63, 0.06);
-  background: #fff;
+  border-radius: 16px;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-2);
   padding: 18px;
-  box-shadow: var(--i9-shadow-card);
+  box-shadow: var(--admin-card-shadow);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card:hover {
+  border-color: var(--admin-border-hover);
+  transform: translateY(-2px);
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-label {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #6b7280;
+  color: var(--admin-text-muted);
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-value {
@@ -1408,30 +1546,38 @@ body[data-page="gest_o_de_estabelecimentos"] .estabs-status-value {
   font-size: 2rem;
   font-weight: 900;
   line-height: 1;
-  color: var(--i9-navy);
+  background: var(--admin-kpi-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-helper {
-  margin-top: 10px;
-  font-size: 0.8rem;
+  margin-top: 8px;
+  font-size: 0.75rem;
   line-height: 1.45;
-  color: #6b7280;
+  color: var(--admin-text-muted);
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--pending {
-  background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+  background: linear-gradient(160deg, rgba(251,146,60,0.1) 0%, var(--admin-surface-2) 60%);
+  border-color: rgba(251,146,60,0.2);
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--active {
-  background: linear-gradient(180deg, #ecfdf5 0%, #ffffff 100%);
+  background: linear-gradient(160deg, rgba(0,200,150,0.1) 0%, var(--admin-surface-2) 60%);
+  border-color: rgba(0,200,150,0.2);
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--suspended {
-  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  background: linear-gradient(160deg, rgba(148,163,184,0.1) 0%, var(--admin-surface-2) 60%);
+  border-color: rgba(148,163,184,0.15);
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--rejected {
-  background: linear-gradient(180deg, #fff1f2 0%, #ffffff 100%);
+  background: linear-gradient(160deg, rgba(248,75,109,0.1) 0%, var(--admin-surface-2) 60%);
+  border-color: rgba(248,75,109,0.2);
 }
 
 @media (max-width: 1023px) {

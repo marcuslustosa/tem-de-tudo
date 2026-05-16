@@ -81,131 +81,158 @@
             display: inline-block;
             line-height: 1;
         }
-        .glass-card {
-            background: rgba(222, 219, 231, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+        h1, h2, h3, .brand-font { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .admin-section-title {
+            font-size: 1.5rem; font-weight: 800;
+            background: linear-gradient(90deg, #fff 40%, rgba(255,255,255,0.55) 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: transparent;
         }
-        body {
-            font-family: 'Be Vietnam Pro', sans-serif;
-            background-color: #f8f5fe;
+        .admin-badge-live {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 10px; border-radius: 999px;
+            background: rgba(0,168,120,0.12); border: 1px solid rgba(0,168,120,0.25);
+            color: #00c896; font-size: 10px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.08em;
         }
-        h1, h2, h3, .brand-font {
-            font-family: 'Plus Jakarta Sans', sans-serif;
+        .admin-badge-live .dot {
+            width: 6px; height: 6px; border-radius: 50%; background: #00c896;
+            animation: pulse-live 1.8s ease-in-out infinite;
+        }
+        @keyframes pulse-live {
+            0%,100% { opacity:1; transform:scale(1); }
+            50% { opacity:0.4; transform:scale(0.7); }
         }
     </style>
 </head>
-<body data-page="gest_o_de_estabelecimentos" class="bg-background text-on-surface antialiased">
+<body data-page="gest_o_de_estabelecimentos" class="antialiased" style="background:var(--admin-bg);color:var(--admin-text)">
 <!-- SideNavBar (Desktop) -->
-<aside class="fixed left-0 top-0 h-full overflow-y-auto bg-[#ffffff] dark:bg-slate-900 h-screen w-64 hidden lg:flex flex-col border-r-0 shadow-[0_8px_32px_rgba(11,31,58,0.08)] z-50">
-<div class="p-6 flex items-center gap-3">
-<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00BCD4] via-[#7A2C8F] to-[#E10098] flex items-center justify-center text-white font-black text-xl"><img src="/img/logo.png" alt="Tem de Tudo" class="h-6 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" /></div>
-<div>
-<h2 class="font-black text-lg text-[#00BCD4] dark:text-white leading-tight">Tem de Tudo</h2>
-<p class="text-[10px] font-semibold text-secondary uppercase tracking-widest">Tem de Tudo</p>
+<aside class="admin-sidebar fixed left-0 top-0 h-full overflow-y-auto w-64 hidden lg:flex flex-col z-50">
+<div class="px-6 pt-7 pb-6 flex items-center gap-3 border-b" style="border-color:var(--admin-border)">
+  <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#E10098 0%,#00BCD4 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+    <span class="material-symbols-outlined" style="color:#fff;font-size:20px;">bolt</span>
+  </div>
+  <div>
+    <div class="font-headline font-black text-sm" style="color:#fff;">Tem de Tudo</div>
+    <div class="font-label text-[10px] font-semibold uppercase tracking-widest" style="color:var(--admin-text-muted)">Admin Master</div>
+  </div>
 </div>
-</div>
-<nav class="flex-1 mt-4 px-4 space-y-2">
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] group" href="/dashboard_admin_master.html">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Dashboard</span>
+<nav class="flex-1 px-3 py-4 space-y-1">
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/dashboard_admin_master.html">
+<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">dashboard</span>
+<span>Dashboard</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-[#E10098] bg-[#f8f5fe] dark:bg-slate-800 border-r-4 border-[#E10098] group" href="/gest_o_de_estabelecimentos.html">
-<span class="material-symbols-outlined">storefront</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Estabelecimentos</span>
+<a class="admin-nav-item active flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/gest_o_de_estabelecimentos.html">
+<span class="material-symbols-outlined" style="font-size:20px;color:#E10098">storefront</span>
+<span>Estabelecimentos</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] group" href="/relat_rios_gerais_master.html">
-<span class="material-symbols-outlined">analytics</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Relatórios</span>
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/relat_rios_gerais_master.html">
+<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">analytics</span>
+<span>Relatorios</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] group" href="/gest_o_de_usu_rios_master.html">
-<span class="material-symbols-outlined">group</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Usuários</span>
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/gest_o_de_usu_rios_master.html">
+<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">group</span>
+<span>Usuarios</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] group" href="/configuracoes_admin.html">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Configurações</span>
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/configuracoes_admin.html">
+<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">settings</span>
+<span>Configuracoes</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] group" href="/banners_e_categorias_master.html">
-<span class="material-symbols-outlined">collections</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Conteúdo</span>
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/banners_e_categorias_master.html">
+<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">collections</span>
+<span>Conteudo</span>
 </a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-[#2e2e34] dark:text-slate-400 hover:text-[#7A2C8F] hover:bg-[#e9e7f1] group" href="mailto:contato@temdetudo.com">
-<span class="material-symbols-outlined">help_center</span>
-<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Suporte</span>
+<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="mailto:contato@temdetudo.com">
+<span class="material-symbols-outlined" style="font-size:20px;color:var(--admin-text-muted)">help_center</span>
+<span>Suporte</span>
 </a>
 </nav>
-<div class="p-4 mt-auto">
-<a class="w-full py-4 px-6 bg-gradient-to-r from-secondary to-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform flex items-center justify-center gap-2" href="/criar_conta.html?tipo=empresa&amp;origem=admin">
-<span class="material-symbols-outlined">add_circle</span>
-                Novo Parceiro
-            </a>
+<div class="p-4 border-t" style="border-color:var(--admin-border)">
+<a class="block w-full py-2.5 px-4 rounded-xl font-bold text-sm text-white text-center active:scale-95 transition-all" style="background:linear-gradient(135deg,#00BCD4 0%,#7A2C8F 50%,#E10098 100%)" href="/criar_conta.html?tipo=empresa&amp;origem=admin">
+  + Novo Parceiro
+</a>
+<div class="mt-4 flex items-center gap-3 px-1">
+  <div class="h-8 w-8 rounded-full overflow-hidden border-2 shrink-0" style="border-color:rgba(225,0,152,0.4)">
+    <img alt="Admin" class="w-full h-full object-cover" src="/assets/images/company1.jpg"/>
+  </div>
+  <div class="min-w-0">
+    <div class="text-xs font-semibold truncate" style="color:var(--admin-text)">Administrador</div>
+    <div class="text-[10px]" style="color:var(--admin-text-muted)">Super Admin</div>
+  </div>
+  <span class="material-symbols-outlined ml-auto shrink-0" style="font-size:16px;color:var(--admin-text-muted)">logout</span>
+</div>
 </div>
 </aside>
 <!-- Main Content Wrapper -->
 <main class="lg:ml-64 min-h-screen flex flex-col">
 <!-- TopAppBar -->
-<header class="bg-[#f8f5fe] dark:bg-slate-950 flex justify-between items-center px-6 py-3 w-full sticky top-0 docked full-width z-40 tonal-shift bg-[#e9e7f1] dark:bg-slate-900 flat no shadows">
-<div class="flex items-center gap-4">
-<h1 class="text-xl font-black bg-gradient-to-r from-[#00BCD4] via-[#7A2C8F] to-[#E10098] bg-clip-text text-transparent">Gestão de Estabelecimentos</h1>
-</div>
-<div class="flex items-center gap-6">
-<!-- Search on Right (from JSON) -->
-<div class="hidden md:flex items-center bg-surface-container-lowest px-4 py-2 rounded-full w-64 group focus-within:w-80 transition-all border border-outline-variant/10">
-<span class="material-symbols-outlined text-outline">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm font-medium w-full ml-2" id="estabBusca" placeholder="Buscar parceiro..." type="text"/>
+<header class="admin-header flex justify-between items-center px-6 py-3 w-full sticky top-0 z-40">
+<div class="flex items-center gap-3">
+  <span class="font-label text-xs font-semibold" style="color:var(--admin-text-muted)">Admin</span>
+  <span class="material-symbols-outlined" style="font-size:14px;color:var(--admin-text-muted)">chevron_right</span>
+  <span class="font-headline font-bold text-sm" style="color:var(--admin-text)">Estabelecimentos</span>
+  <span class="admin-badge-live ml-2"><span class="dot"></span>LIVE</span>
 </div>
 <div class="flex items-center gap-3">
-<button id="btnEstabNotif" class="p-2 rounded-full hover:bg-[#dedbe7]/50 transition-colors text-on-surface-variant relative">
+<div class="hidden md:flex items-center gap-2 px-4 py-1.5 rounded-full border" style="background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.1)">
+<span class="material-symbols-outlined" style="font-size:18px;color:var(--admin-text-muted)">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-medium w-48 outline-none" id="estabBusca" placeholder="Buscar parceiro..." style="color:var(--admin-text)" type="text"/>
+</div>
+<button id="btnEstabNotif" class="p-2 rounded-full transition-colors relative" style="color:var(--admin-text-muted)" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
 <span class="material-symbols-outlined">notifications</span>
-<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-surface"></span>
+<span class="absolute top-2 right-2 w-2 h-2 rounded-full border-2" style="background:#E10098;border-color:var(--admin-surface)"></span>
 </button>
-<a class="p-2 rounded-full hover:bg-[#dedbe7]/50 transition-colors text-on-surface-variant inline-flex" href="/configuracoes_admin.html" aria-label="Abrir configurações">
+<a class="p-2 rounded-full transition-colors inline-flex" style="color:var(--admin-text-muted)" href="/configuracoes_admin.html" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
 <span class="material-symbols-outlined">settings</span>
 </a>
-<div class="h-8 w-px bg-outline-variant/20 mx-1"></div>
-<img alt="User profile avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm" data-alt="professional portrait of a confident male executive in his 40s with a warm smile and sharp suit" src="/assets/images/company1.jpg"/>
+<div class="h-9 w-9 rounded-full overflow-hidden border-2" style="border-color:rgba(225,0,152,0.5)">
+<img alt="User profile avatar" class="w-full h-full object-cover" src="/assets/images/company1.jpg"/>
 </div>
 </div>
 </header>
 <!-- Canvas Area -->
 <div class="p-6 md:p-8 space-y-8 flex-1 pb-24 lg:pb-8">
+<!-- Page Title -->
+<section class="mb-2">
+<p class="font-label text-xs font-semibold uppercase tracking-widest mb-2" style="color:var(--admin-text-muted)">Gerenciamento</p>
+<h1 class="admin-section-title font-headline">Estabelecimentos</h1>
+<p class="font-body text-sm mt-1" style="color:var(--admin-text-soft)">Gerencie parceiros, aprove cadastros e monitore o status da rede.</p>
+</section>
 <!-- Filters & Stats Section -->
-<section class="grid grid-cols-1 md:grid-cols-4 gap-6">
-<div class="col-span-1 md:col-span-3 flex flex-wrap gap-4 items-center">
-<!-- Custom Filters -->
-<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-xl text-sm font-semibold border border-outline-variant/5">
-<span class="text-outline">Categoria:</span>
-<select id="estabsCategoriaFilter" class="bg-transparent border-none focus:ring-0 py-0 text-primary font-bold cursor-pointer">
-<option>Todas</option>
-<option>Gastronomia</option>
-<option>Saude</option>
-<option>Moda</option>
-<option>Educação</option>
+<section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="col-span-1 md:col-span-3 flex flex-wrap gap-3 items-center">
+<div class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border" style="background:var(--admin-surface-2);border-color:var(--admin-border)">
+<span style="color:var(--admin-text-muted)">Categoria:</span>
+<select id="estabsCategoriaFilter" class="border-none focus:ring-0 py-0 font-bold cursor-pointer bg-transparent outline-none" style="color:var(--admin-accent)">
+<option style="background:#12102e">Todas</option>
+<option style="background:#12102e">Gastronomia</option>
+<option style="background:#12102e">Saude</option>
+<option style="background:#12102e">Moda</option>
+<option style="background:#12102e">Educacao</option>
 </select>
 </div>
-<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-xl text-sm font-semibold border border-outline-variant/5">
-<span class="text-outline">Status:</span>
-<select id="estabsStatusFilter" class="bg-transparent border-none focus:ring-0 py-0 text-primary font-bold cursor-pointer">
-<option>Todos</option>
-<option>Pendente</option>
-<option>Ativa</option>
-<option>Suspensa</option>
-<option>Rejeitada</option>
+<div class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border" style="background:var(--admin-surface-2);border-color:var(--admin-border)">
+<span style="color:var(--admin-text-muted)">Status:</span>
+<select id="estabsStatusFilter" class="border-none focus:ring-0 py-0 font-bold cursor-pointer bg-transparent outline-none" style="color:var(--admin-accent)">
+<option style="background:#12102e">Todos</option>
+<option style="background:#12102e">Pendente</option>
+<option style="background:#12102e">Ativa</option>
+<option style="background:#12102e">Suspensa</option>
+<option style="background:#12102e">Rejeitada</option>
 </select>
 </div>
-<button class="flex items-center gap-2 px-6 py-2 bg-surface-container-highest rounded-xl text-sm font-bold text-on-surface-variant hover:bg-surface-variant transition-colors">
-<span class="material-symbols-outlined text-[20px]">tune</span>
-                        Filtros Avançados
-                    </button>
+<button class="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-colors border" style="background:var(--admin-surface-2);color:var(--admin-text-soft);border-color:var(--admin-border)" onmouseover="this.style.borderColor='var(--admin-border-hover)'" onmouseout="this.style.borderColor='var(--admin-border)'">
+<span class="material-symbols-outlined" style="font-size:18px;">tune</span>
+Filtros Avancados
+</button>
 </div>
-<!-- Quick Stats Badge -->
-<div class="bg-gradient-to-br from-tertiary to-tertiary-dim p-4 rounded-xl text-on-tertiary flex items-center justify-between shadow-lg shadow-tertiary/10">
+<!-- Total Badge -->
+<div class="admin-kpi-card p-4 flex items-center justify-between" style="background:linear-gradient(135deg,rgba(225,0,152,0.15) 0%,rgba(0,188,212,0.1) 100%);border-color:rgba(225,0,152,0.25)">
 <div>
-<p class="text-[10px] uppercase font-bold tracking-widest opacity-80">Total Parceiros</p>
-<h3 id="estabsTotalBadge" class="text-2xl font-black">--</h3>
+<p class="text-[10px] uppercase font-bold tracking-widest" style="color:var(--admin-text-muted)">Total Parceiros</p>
+<h3 id="estabsTotalBadge" class="text-2xl font-black admin-kpi-number">--</h3>
 </div>
-<span class="material-symbols-outlined text-4xl opacity-40">store</span>
+<span class="material-symbols-outlined" style="font-size:36px;color:rgba(225,0,152,0.25)">store</span>
 </div>
 </section>
 <section class="grid grid-cols-2 gap-4 xl:grid-cols-4">
@@ -232,37 +259,36 @@
 </section>
 <!-- Table/Grid of Establishments -->
 <section class="space-y-4">
-<div class="flex justify-between items-end mb-2">
-<h2 class="text-xl font-extrabold text-[#00BCD4]">Listagem Geral</h2>
-<span id="estabsResumo" class="text-xs font-semibold text-outline-variant">Carregando resultados...</span>
+<div class="flex justify-between items-center mb-2">
+<h2 class="font-headline font-extrabold text-base" style="color:var(--admin-text)">Listagem Geral</h2>
+<span id="estabsResumo" class="text-xs font-semibold" style="color:var(--admin-text-muted)">Carregando resultados...</span>
 </div>
-<!-- Establishments Bento-style Grid -->
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
 <div id="estabsLista" class="space-y-4 xl:col-span-2"></div>
-<p id="estabsEmpty" class="hidden text-xs text-outline xl:col-span-2">Nenhum estabelecimento encontrado para os filtros atuais.</p>
+<p id="estabsEmpty" class="hidden text-xs xl:col-span-2" style="color:var(--admin-text-muted)">Nenhum estabelecimento encontrado para os filtros atuais.</p>
 </div>
 </section>
 </div>
 </main>
 <!-- BottomNavBar (Mobile) -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-3 bg-[#ffffff] dark:bg-slate-900 docked full-width rounded-t-xl lg:hidden border-t border-[#00666e]/20 shadow-[0_-4px_20px_rgba(11,31,58,0.06)]">
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 active:bg-[#f8f5fe] transition-all scale-90 duration-150 ease-in-out" href="/dashboard_admin_master.html">
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-3 rounded-t-[1.5rem] lg:hidden border-t" style="background:var(--admin-surface);border-color:var(--admin-border)">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/dashboard_admin_master.html">
 <span class="material-symbols-outlined">home</span>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Início</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Inicio</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#E10098] after:content-[''] after:w-1 after:h-1 after:bg-[#E10098] after:rounded-full after:mt-1 active:bg-[#f8f5fe] transition-all scale-90 duration-150 ease-in-out" href="/gest_o_de_estabelecimentos.html">
+<a class="flex flex-col items-center justify-center after:content-[''] after:w-1 after:h-1 after:rounded-full after:mt-1 scale-90 duration-150 ease-in-out" style="color:#E10098" after-style="background:#E10098" href="/gest_o_de_estabelecimentos.html">
 <span class="material-symbols-outlined">storefront</span>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Estabelecimentos</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Parceiros</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 active:bg-[#f8f5fe] transition-all scale-90 duration-150 ease-in-out" href="/banners_e_categorias_master.html">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/banners_e_categorias_master.html">
 <span class="material-symbols-outlined">collections</span>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Conteúdo</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Conteudo</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 active:bg-[#f8f5fe] transition-all scale-90 duration-150 ease-in-out" href="/relat_rios_gerais_master.html">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/relat_rios_gerais_master.html">
 <span class="material-symbols-outlined">bar_chart</span>
-<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Métricas</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Metricas</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#aeacb4] dark:text-slate-500 active:bg-[#f8f5fe] transition-all scale-90 duration-150 ease-in-out" href="/meu_perfil.html">
+<a class="flex flex-col items-center justify-center scale-90 duration-150 ease-in-out" style="color:var(--admin-text-muted)" href="/meu_perfil.html">
 <span class="material-symbols-outlined">person</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Perfil</span>
 </a>
