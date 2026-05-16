@@ -7,10 +7,9 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <link href="/css/i9plus-phase8.css?v=20260515-phase10-4" rel="stylesheet" />
+  <link href="/css/i9plus-phase8.css?v=20260516-consistency" rel="stylesheet" />
   <style>
     body {
-      font-family: "Be Vietnam Pro", sans-serif;
       background-color: #f8f5fe;
       min-height: 100dvh;
     }
@@ -38,18 +37,23 @@
   <script src="/dist/stitch-app.min.js?v=20260515-phase10-4" defer></script>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 bg-white" data-page="criar_conta">
-  <main class="w-full max-w-xl space-y-8">
-    <div class="text-center space-y-5">
-      <div class="inline-flex items-center justify-center p-4 rounded-3xl bg-white shadow-[0_8px_32px_rgba(11,31,58,0.08)]">
+  <main class="app-auth-layout w-full space-y-6 lg:grid lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-start lg:gap-8 lg:space-y-0">
+    <div class="app-auth-hero text-center space-y-5 lg:text-left">
+      <div class="app-logo-badge inline-flex p-4">
         <img alt="Tem de Tudo" src="/img/logo.png" onerror="this.onerror=null;this.src='/img/logo.png.png';" class="h-12 w-auto" />
       </div>
       <div class="space-y-2">
-        <h1 class="text-2xl font-bold text-slate-900 font-headline leading-tight">Criar conta</h1>
-        <p class="text-slate-600 text-sm font-medium">Escolha como deseja entrar no app e conclua seu cadastro.</p>
+        <h1 class="text-3xl font-bold text-white font-headline leading-tight">Criar conta</h1>
+        <p class="text-sm font-medium">Escolha se você entra como cliente ou estabelecimento. O cliente escaneia o QR Code da empresa; o estabelecimento entra como pendente até a aprovação do admin.</p>
+      </div>
+      <div class="flex flex-wrap justify-center gap-2 lg:justify-start">
+        <span class="app-pill app-pill--ghost">Cliente</span>
+        <span class="app-pill app-pill--ghost">Estabelecimento</span>
+        <span class="app-pill app-pill--ghost">QR Code</span>
       </div>
     </div>
 
-    <section class="glass-card rounded-3xl p-8 shadow-[0_20px_50px_rgba(11,31,58,0.12)] space-y-5">
+    <section class="glass-card app-auth-card rounded-3xl p-8 shadow-[0_20px_50px_rgba(11,31,58,0.12)] space-y-5">
       <form id="signupForm" class="space-y-4">
         <div class="space-y-2" id="perfilContainer">
           <label class="block text-xs font-semibold text-slate-600 uppercase tracking-widest pl-1">Tipo de conta</label>
@@ -134,14 +138,14 @@
             placeholder="Ex: ABC12XYZ" />
         </div>
 
-        <button type="submit" class="w-full py-4 px-6 bg-gradient-to-r from-[#7A2C8F] to-[#E10098] text-white font-bold rounded-2xl shadow-lg shadow-[#7A2C8F]/20 hover:opacity-95 active:scale-[0.98] transition-all duration-200">
+        <button type="submit" class="app-primary-button w-full py-4 px-6 text-white font-bold shadow-lg shadow-[#7A2C8F]/20 hover:opacity-95 active:scale-[0.98] transition-all duration-200">
           Criar conta
         </button>
       </form>
 
       <p class="text-center text-slate-600 text-sm font-medium">
         Já tem conta?
-        <a class="text-[#7A2C8F] font-bold hover:underline underline-offset-4 ml-1" href="/entrar.html">Entrar</a>
+        <a class="app-auth-link font-bold hover:underline underline-offset-4 ml-1" href="/entrar.html">Entrar</a>
       </p>
     </section>
   </main>

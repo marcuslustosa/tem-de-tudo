@@ -273,3 +273,20 @@
 
 - P0 reestruturado:
   - `index.html`
+
+## Rodada de unificação visual global
+
+| Tela | Status atual | Decisão | Motivo | Ação aplicada |
+| --- | --- | --- | --- | --- |
+| `index.html` | igual | ajustar levemente | a copy já estava correta, mas a identidade ainda parecia mais landing do que app | unificação de fonte, botões, cards e hero com o mesmo design system do restante do produto |
+| `criar_conta.html` | igual | ajustar levemente | a jornada estava correta, mas precisava parecer a mesma família visual da home e do pós-login | hero de entrada, card de formulário, CTA e copy de fluxo cliente/empresa unificados |
+| `entrar.html` | igual | ajustar levemente | tela funcional, mas menos conectada à narrativa de QR Code e validação presencial | hero, CTA, font stack e microcopy alinhados ao shell do app |
+| `meus_pontos.html` | igual | manter | estrutura da home cliente já estava boa | preservação do layout, com consolidação de fonte e correção fina de texto |
+| `parceiros_tem_de_tudo.html` | igual | manter | já estava coerente com busca/categorias no modelo i9Plus | apenas herança do CSS unificado e versionamento consistente |
+| `detalhe_do_parceiro.html` | igual | manter | tela crítica já estava forte e aderente | limpeza residual de labels e alinhamento à mesma família visual |
+| `validar_resgate.html` | igual | manter | fluxo operacional já estava correto | manutenção da estrutura com limpeza de alertas, estados e acentuação |
+| `dashboard_parceiro.html` | igual | ajustar levemente | painel já bom, mas com rótulos menos polidos | alinhamento de copy e reforço da leitura de operação presencial |
+| `gest_o_de_ofertas_parceiro.html` | igual | manter | já estava consistente em seções e ferramentas | herança do design system central, sem refazer a tela |
+| `gest_o_de_estabelecimentos.html` | igual | ajustar levemente | painel admin bom, com labels legadas em ASCII | correção de acentos e preservação da estrutura |
+| `dashboard_admin_master.html` | igual | ajustar levemente | painel bom, mas ainda com CTA e rótulos antigos | padronização de linguagem e consistência visual |
+| `meu_perfil.html` | igual | ajustar levemente | estrutura boa, mas com textos ainda quebrados | correção de acentuação e reforço da mesma linguagem do app |
