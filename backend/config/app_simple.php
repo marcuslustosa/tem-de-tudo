@@ -4,7 +4,7 @@ return [
     'debug' => env('APP_DEBUG', false),
     'env' => env('APP_ENV', 'production'),
     'name' => env('APP_NAME', 'Tem de Tudo'),
-    'url' => env('APP_URL', 'https://app-tem-de-tudo.onrender.com'),
+    'url' => env('APP_URL', 'https://tem-de-tudo.up.railway.app'),
     'timezone' => env('APP_TIMEZONE', 'America/Sao_Paulo'),
     'locale' => env('APP_LOCALE', 'pt_BR'),
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'pt_BR'),
