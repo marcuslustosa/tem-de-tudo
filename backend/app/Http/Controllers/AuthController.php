@@ -720,6 +720,9 @@ class AuthController extends Controller
     private function prepareUserDataForPerfil(string $perfil, Request $request): array
     {
         $roleColumn = $this->resolveUsersRoleColumn();
+        $databaseDriver = DB::connection()->getDriverName();
+        $databaseTrue = $databaseDriver === 'pgsql' ? 'true' : true;
+
         $baseData = [
             'name' => $perfil === 'empresa'
                 ? $request->input('responsavel', $request->name)
@@ -731,6 +734,38 @@ class AuthController extends Controller
 
         if (Schema::hasColumn('users', 'status')) {
             $baseData['status'] = $this->isPublicCompanyRegistrationRequest($request) ? 'pendente' : 'ativo';
+        }
+        if (Schema::hasColumn('users', 'is_active')) {
+            $baseData['is_active'] = $perfil === 'empresa'
+                ? !$this->isPublicCompanyRegistrationRequest($request)
+                : $databaseTrue;
+        }
+        if (Schema::hasColumn('users', 'pontos')) {
+            $baseData['pontos'] = 0;
+        }
+        if (Schema::hasColumn('users', 'pontos_pendentes')) {
+            $baseData['pontos_pendentes'] = 0;
+        }
+        if (Schema::hasColumn('users', 'nivel')) {
+            $baseData['nivel'] = 'Bronze';
+        }
+        if (Schema::hasColumn('users', 'email_verified_at')) {
+            $baseData['email_verified_at'] = now();
+        }
+        if (Schema::hasColumn('users', 'pontos_lifetime')) {
+            $baseData['pontos_lifetime'] = 0;
+        }
+        if (Schema::hasColumn('users', 'valor_gasto_total')) {
+            $baseData['valor_gasto_total'] = 0;
+        }
+        if (Schema::hasColumn('users', 'dias_consecutivos')) {
+            $baseData['dias_consecutivos'] = 0;
+        }
+        if (Schema::hasColumn('users', 'empresas_visitadas')) {
+            $baseData['empresas_visitadas'] = 0;
+        }
+        if (Schema::hasColumn('users', 'multiplicador_pontos')) {
+            $baseData['multiplicador_pontos'] = 1.0;
         }
         if (Schema::hasColumn('users', 'terms_accepted_at')) {
             $baseData['terms_accepted_at'] = now();

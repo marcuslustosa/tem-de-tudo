@@ -7119,7 +7119,6 @@
       const busca = document.getElementById('adminClientesBusca') || document.getElementById('adminClientesBusca2');
       const pushUi = {
         email: document.getElementById('adminPushClientEmail'),
-        useDemo: document.getElementById('adminPushUseDemoBtn'),
         lookup: document.getElementById('adminPushLookupBtn'),
         send: document.getElementById('adminPushSendBtn'),
         title: document.getElementById('adminPushTitle'),
@@ -7172,20 +7171,31 @@
         return safeText(matchedClient?.email, normalized);
       };
 
+      const canSendAdminPushTest = () => {
+        const title = safeText(pushUi.title?.value, '').trim();
+        const body = safeText(pushUi.body?.value, '').trim();
+        const url = safeText(pushUi.url?.value, '').trim();
+
+        return Boolean(selectedPushClient?.id && title && body && url);
+      };
+
+      const syncAdminPushSendState = () => {
+        if (pushUi.send) {
+          pushUi.send.disabled = !canSendAdminPushTest();
+        }
+      };
+
       const resetPushTester = (message = 'Consulte um cliente e confirme se ha notificacoes ativas neste dispositivo.', tone = 'info') => {
         selectedPushClient = null;
-        if (pushUi.name) pushUi.name.textContent = 'Cliente Push iPhone';
-        if (pushUi.emailValue) pushUi.emailValue.textContent = pushUi.email?.value?.trim() || 'cliente.push@demo.local';
+        if (pushUi.name) pushUi.name.textContent = 'Nenhum cliente selecionado';
+        if (pushUi.emailValue) pushUi.emailValue.textContent = 'Busque um cliente para validar';
         if (pushUi.subscription) pushUi.subscription.textContent = 'Nao verificado';
         if (pushUi.devices) pushUi.devices.textContent = '0 dispositivo(s)';
         if (pushUi.lastSeen) pushUi.lastSeen.textContent = '--';
         if (pushUi.hint) pushUi.hint.textContent = 'Peca para o cliente abrir o app instalado, fazer login e tocar em Ativar notificacoes.';
         if (pushUi.summaryTitle) pushUi.summaryTitle.textContent = 'Nenhum envio realizado nesta sessao.';
         if (pushUi.summaryDetail) pushUi.summaryDetail.textContent = 'Confirme se existe ao menos uma subscription ativa antes de disparar o teste.';
-        if (pushUi.send) pushUi.send.disabled = true;
-        if (pushUi.title && !pushUi.title.value.trim()) pushUi.title.value = 'Teste de notificacao';
-        if (pushUi.body && !pushUi.body.value.trim()) pushUi.body.value = 'Se voce recebeu esta mensagem, o push esta funcionando.';
-        if (pushUi.url && !pushUi.url.value.trim()) pushUi.url.value = '/meus_pontos.html';
+        syncAdminPushSendState();
         setInlineFeedback(pushUi.feedback, message, tone);
       };
 
@@ -7218,7 +7228,7 @@
             ? 'Use Enviar para validar o recebimento neste dispositivo.'
             : 'Sem subscription real, o admin recebera um aviso amigavel e nenhum envio sera marcado como entregue.';
         }
-        if (pushUi.send) pushUi.send.disabled = !selectedPushClient?.id;
+        syncAdminPushSendState();
         setInlineFeedback(pushUi.feedback, 'Cliente localizado. O status exibido reflete a subscription real salva pelo navegador.', push?.has_active_subscription ? 'success' : 'warning');
       };
 
@@ -7253,12 +7263,18 @@
           return;
         }
 
+        const title = safeText(pushUi.title?.value, '').trim();
+        const body = safeText(pushUi.body?.value, '').trim();
+        const url = safeText(pushUi.url?.value, '').trim();
+
+        if (!title || !body || !url) {
+          syncAdminPushSendState();
+          setInlineFeedback(pushUi.feedback, 'Preencha titulo, mensagem e URL antes de enviar o push teste.', 'warning');
+          return;
+        }
+
         if (pushUi.send) pushUi.send.disabled = true;
         setInlineFeedback(pushUi.feedback, 'Enviando push teste para o cliente selecionado...', 'info');
-
-        const title = safeText(pushUi.title?.value, '').trim() || 'Teste de notificacao';
-        const body = safeText(pushUi.body?.value, '').trim() || 'Se voce recebeu esta mensagem, o push esta funcionando.';
-        const url = safeText(pushUi.url?.value, '').trim() || '/meus_pontos.html';
 
         const { res, data } = await api.request('/admin/push/test-client', {
           method: 'POST',
@@ -7302,18 +7318,16 @@
         });
       }
 
-      if (pushUi.useDemo && pushUi.useDemo.dataset.bound !== '1') {
-        pushUi.useDemo.dataset.bound = '1';
-        pushUi.useDemo.addEventListener('click', () => {
-          if (pushUi.email) pushUi.email.value = 'cliente.push@demo.local';
-          loadAdminPushClient('cliente.push@demo.local');
-        });
-      }
-
       if (pushUi.send && pushUi.send.dataset.bound !== '1') {
         pushUi.send.dataset.bound = '1';
         pushUi.send.addEventListener('click', () => sendAdminPushTest());
       }
+
+      [pushUi.title, pushUi.body, pushUi.url].filter(Boolean).forEach((field) => {
+        if (field.dataset.boundInput === '1') return;
+        field.dataset.boundInput = '1';
+        field.addEventListener('input', () => syncAdminPushSendState());
+      });
 
       // Event delegation para bloquear/reativar usuário
       if (!tbody.dataset.delegated) {
