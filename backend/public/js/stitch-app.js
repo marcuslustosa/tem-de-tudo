@@ -7168,7 +7168,28 @@
           return email === normalized || name.includes(normalized) || email.includes(normalized);
         });
 
-        return safeText(matchedClient?.email, normalized);
+        if (matchedClient?.email) {
+          return safeText(matchedClient.email, normalized);
+        }
+
+        const [typedLocalPart = '', typedDomain = ''] = normalized.split('@');
+        if (typedLocalPart) {
+          const sameLocalPart = clientes.filter((item) => {
+            const email = normalizePushLookupTerm(item?.email || '');
+            const [localPart = '', domain = ''] = email.split('@');
+
+            if (!localPart || localPart !== typedLocalPart) return false;
+            if (!typedDomain) return true;
+
+            return domain.includes(typedDomain) || typedDomain.includes(domain) || domain.replace(/^g/, '') === typedDomain.replace(/^g/, '');
+          });
+
+          if (sameLocalPart.length === 1) {
+            return safeText(sameLocalPart[0]?.email, normalized);
+          }
+        }
+
+        return normalized;
       };
 
       const canSendAdminPushTest = () => {
@@ -7233,28 +7254,57 @@
       };
 
       const loadAdminPushClient = async (emailOverride = null) => {
-        const email = resolvePushLookupEmail(emailOverride ?? pushUi.email?.value);
+        const lookupTerm = safeText(emailOverride ?? pushUi.email?.value, '').trim();
+        const email = resolvePushLookupEmail(lookupTerm);
         if (!email) {
           resetPushTester('Informe o email do cliente para consultar o status de push.', 'warning');
           return;
         }
 
-        if (pushUi.email) pushUi.email.value = email;
+        if (pushUi.email) pushUi.email.value = lookupTerm || email;
 
         if (pushUi.lookup) pushUi.lookup.disabled = true;
         if (pushUi.send) pushUi.send.disabled = true;
         setInlineFeedback(pushUi.feedback, 'Buscando status real da subscription do cliente...', 'info');
 
-        const { res, data } = await api.request(`/admin/push/client-status?email=${encodeURIComponent(email)}`, {}, { notify: false });
+        let resolvedEmail = email;
+        let result = await api.request(`/admin/push/client-status?email=${encodeURIComponent(resolvedEmail)}`, {}, { notify: false });
+
+        if (!result.res.ok && lookupTerm) {
+          const fallbackSearch = await api.request(`/admin/users?query=${encodeURIComponent(lookupTerm)}`, {}, { notify: false });
+          const fallbackList = toArray(fallbackSearch.data?.data?.data || fallbackSearch.data?.data || fallbackSearch.data || []);
+          const fallbackClients = fallbackList.filter((item) => {
+            const perfil = normalizePushLookupTerm(item?.perfil || item?.role || '');
+            return perfil.includes('cliente');
+          });
+
+          const normalizedLookup = normalizePushLookupTerm(lookupTerm);
+          const fuzzyMatch = fallbackClients.find((item) => {
+            const emailCandidate = normalizePushLookupTerm(item?.email || '');
+            const nameCandidate = normalizePushLookupTerm(item?.name || item?.nome || '');
+            const [lookupLocalPart = ''] = normalizedLookup.split('@');
+            const [candidateLocalPart = ''] = emailCandidate.split('@');
+
+            return emailCandidate.includes(normalizedLookup)
+              || nameCandidate.includes(normalizedLookup)
+              || (lookupLocalPart && candidateLocalPart === lookupLocalPart);
+          });
+
+          if (fuzzyMatch?.email) {
+            resolvedEmail = safeText(fuzzyMatch.email, resolvedEmail);
+            result = await api.request(`/admin/push/client-status?email=${encodeURIComponent(resolvedEmail)}`, {}, { notify: false });
+          }
+        }
 
         if (pushUi.lookup) pushUi.lookup.disabled = false;
+        if (pushUi.email) pushUi.email.value = resolvedEmail;
 
-        if (!res.ok || data?.success === false) {
-          resetPushTester(data?.message || 'Nao foi possivel localizar o cliente para teste de push.', res.status === 404 ? 'warning' : 'error');
+        if (!result.res.ok || result.data?.success === false) {
+          resetPushTester(result.data?.message || 'Nao foi possivel localizar o cliente para teste de push.', result.res.status === 404 ? 'warning' : 'error');
           return;
         }
 
-        paintPushTester(data?.data || {});
+        paintPushTester(result.data?.data || {});
       };
 
       const sendAdminPushTest = async () => {
