@@ -86,8 +86,8 @@
             backdrop-filter: blur(12px);
         }
     </style>
-<script src="/dist/stitch-app.min.js?v=20260520-admin-push" defer></script>
-  <link rel="stylesheet" href="/css/i9plus-phase8.css?v=20260516-light" />
+<script src="/dist/stitch-app.min.js?v=20260521-admin-unify" defer></script>
+  <link rel="stylesheet" href="/css/i9plus-phase8.css?v=20260521-admin-unify" />
 </head>
 <body class="bg-[#f7f7f7] bg-surface font-body text-on-surface" data-page="gest_o_de_clientes_master">
 <header class="admin-header sticky top-0 z-40 w-full">
@@ -231,11 +231,15 @@
 <section class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 p-6 mb-6">
 <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
 <div class="max-w-2xl">
-<span class="inline-flex rounded-full bg-primary/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Teste de push</span>
-<h2 class="mt-4 font-headline text-2xl font-black text-on-surface">Validacao individual no iPhone</h2>
-<p class="mt-2 text-sm leading-6 text-on-surface-variant">Use este bloco para localizar o cliente demo <strong>cliente.push@demo.local</strong>, verificar se ele ativou notificacoes neste dispositivo e enviar um push teste sem disparar campanha para toda a base.</p>
+<span class="inline-flex rounded-full bg-primary/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Validação</span>
+<h2 class="mt-4 font-headline text-2xl font-black text-on-surface">Push no cliente</h2>
+<p class="mt-2 text-sm leading-6 text-on-surface-variant">Consulte o status real de notificações do cliente, confirme os dispositivos ativos e dispare um teste individual sem abrir campanha para toda a base.</p>
 <div class="mt-4 flex flex-col gap-3 sm:flex-row">
 <input id="adminPushClientEmail" class="w-full rounded-xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" type="email" value="cliente.push@demo.local" placeholder="cliente.push@demo.local"/>
+<button id="adminPushUseDemoBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-surface-container px-4 py-3 text-sm font-bold text-on-surface border border-outline-variant/20 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">smartphone</span>
+Usar cliente demo
+</button>
 <button id="adminPushLookupBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-secondary border border-outline-variant/20 hover:bg-surface-container transition-colors">
 <span class="material-symbols-outlined text-[18px]">person_search</span>
 Buscar cliente
@@ -260,12 +264,12 @@ Enviar push teste
 <div class="rounded-2xl border border-outline-variant/10 bg-surface-container-low p-4">
 <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Ultima atividade push</p>
 <p class="mt-2 text-sm font-semibold text-on-surface" id="adminPushClientLastSeen">--</p>
-<p class="text-sm text-on-surface-variant" id="adminPushClientHint">Peca para o cliente abrir o app instalado, fazer login e clicar em Ativar notificacoes.</p>
+<p class="text-sm text-on-surface-variant" id="adminPushClientHint">Peça para o cliente abrir o app instalado, fazer login e tocar em Ativar notificações.</p>
 </div>
 <div class="rounded-2xl border border-outline-variant/10 bg-surface-container-low p-4">
 <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Resumo do envio</p>
-<p class="mt-2 text-sm font-semibold text-on-surface" id="adminPushSummaryTitle">Nenhum envio realizado nesta sessao.</p>
-<p class="mt-1 text-xs leading-5 text-on-surface-variant" id="adminPushSummaryDetail">Use o email do cliente e confirme se existe ao menos uma subscription ativa antes de disparar o teste.</p>
+<p class="mt-2 text-sm font-semibold text-on-surface" id="adminPushSummaryTitle">Nenhum envio realizado nesta sessão.</p>
+<p class="mt-1 text-xs leading-5 text-on-surface-variant" id="adminPushSummaryDetail">Confirme se existe ao menos uma subscription ativa antes de disparar o teste.</p>
 </div>
 </div>
 </div>

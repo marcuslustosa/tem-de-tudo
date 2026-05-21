@@ -6017,6 +6017,7 @@
         { id: 'cliente-demo-2', name: 'Maria Aniversariante', email: 'maria@demo.local', perfil: 'cliente', status: 'ativo', pontos: 14 },
         { id: 'cliente-demo-3', name: 'Pedro Inativo', email: 'pedro@demo.local', perfil: 'cliente', status: 'bloqueado', pontos: 0 },
         { id: 'cliente-demo-4', name: 'Ana Fidelidade', email: 'ana@demo.local', perfil: 'cliente', status: 'ativo', pontos: 16 },
+        { id: 'cliente-demo-push', name: 'Cliente Push iPhone', email: 'cliente.push@demo.local', perfil: 'cliente', status: 'ativo', pontos: 2 },
       ].forEach((candidate, idx) => {
         const email = String(candidate.email || '').trim().toLowerCase();
         if (!email || seenEmails.has(email)) return;
@@ -6158,22 +6159,26 @@
     async dashboard() {
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando dashboard admin...');
-      const [stats, recent, empresas, ticketsStatsResp, adminSummaryResp] = await Promise.all([
+      const [stats, recent, empresas, ticketsStatsResp, adminSummaryResp, usersDataset] = await Promise.all([
         api.request('/admin/dashboard-stats', {}, { notify: false }),
         api.request('/admin/recent-activity', {}, { notify: false }),
         api.request('/empresas', {}, { requireAuth: false, notify: false }),
         api.request('/admin/tickets/stats', {}, { notify: false }),
         api.request('/admin/relatorios/resumo', {}, { notify: false }),
+        admin.loadUsersDataset(),
       ]);
       ui.clearPageState();
 
       const ids = (id) => document.getElementById(id);
+      const growthSubtitle = document.querySelector('#adminGrowthChart')?.closest('.admin-card')?.querySelector('p.text-xs');
+      if (growthSubtitle) growthSubtitle.textContent = 'Usuarios vs estabelecimentos - ultimos 30 dias';
       const statsData = stats.data?.data || stats.data || {};
       const adminSummary = adminSummaryResp.data?.data || {};
       const summaryCards = adminSummary?.cards || {};
       const totals = statsData?.totais || {};
       const empresasListApi = toArray(empresas.data?.data || empresas.data);
       const empresasList = empresasListApi.length ? admin.enrichCompaniesDataset(empresasListApi) : DEMO_ADMIN_COMPANIES;
+      const usersList = usersDataset?.ok ? usersDataset.list : [];
       const mergedTotals = {
         ...DEMO.admin.totals,
         ...totals,
@@ -6232,6 +6237,128 @@
             </div>`;
           list?.appendChild(item);
         });
+      }
+
+      const renderMetricRows = (containerId, rows, accentClass, emptyText) => {
+        const container = ids(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        if (!rows.length) {
+          container.innerHTML = `<p class="text-sm text-on-surface-variant">${emptyText}</p>`;
+          return;
+        }
+
+        rows.forEach(({ label, value, subtitle = '' }) => {
+          const row = document.createElement('div');
+          row.className = 'admin-rank-row';
+          row.innerHTML = `
+            <div class="admin-rank-meta">
+              <p class="admin-rank-title">${safeText(label, 'Item')}</p>
+              ${subtitle ? `<p class="admin-rank-subtitle">${safeText(subtitle, '')}</p>` : ''}
+            </div>
+            <span class="admin-rank-value ${accentClass}">${safeText(value, '--')}</span>
+          `;
+          container.appendChild(row);
+        });
+      };
+
+      const dashboardSummary = {
+        pending: toNumber(summaryCards.empresas_pending, empresasList.filter((item) => safeText(item?.status, '').toLowerCase() === 'pending').length),
+        active: toNumber(summaryCards.empresas_active, empresasList.filter((item) => ['active', 'ativo'].includes(safeText(item?.status, '').toLowerCase())).length),
+        suspended: toNumber(summaryCards.empresas_suspended, empresasList.filter((item) => ['suspended', 'suspenso'].includes(safeText(item?.status, '').toLowerCase())).length),
+        rejected: toNumber(summaryCards.empresas_rejected, empresasList.filter((item) => ['rejected', 'rejeitado'].includes(safeText(item?.status, '').toLowerCase())).length),
+      };
+
+      renderMetricRows(
+        'adminCompanyStatusList',
+        [
+          { label: 'Empresas pendentes', value: Number(dashboardSummary.pending || 0).toLocaleString('pt-BR'), subtitle: 'Aguardando aprovacao comercial' },
+          { label: 'Empresas ativas', value: Number(dashboardSummary.active || 0).toLocaleString('pt-BR'), subtitle: 'Operando no app e no QR fisico' },
+          { label: 'Empresas suspensas', value: Number(dashboardSummary.suspended || 0).toLocaleString('pt-BR'), subtitle: 'Bloqueadas temporariamente' },
+          { label: 'Empresas rejeitadas', value: Number(dashboardSummary.rejected || 0).toLocaleString('pt-BR'), subtitle: 'Cadastros que nao entraram na vitrine' },
+        ],
+        'text-secondary',
+        'Resumo de status indisponivel.'
+      );
+
+      const topCompaniesByClients = toArray(adminSummary.empresas_com_mais_clientes).length
+        ? toArray(adminSummary.empresas_com_mais_clientes).map((item) => ({
+            label: safeText(item?.nome, 'Empresa'),
+            value: `${Number(item?.total_clientes || 0).toLocaleString('pt-BR')} cliente(s)`,
+            subtitle: 'Base vinculada',
+          }))
+        : [...empresasList]
+            .sort((left, right) => toNumber(right?.clientes, right?.total_clientes) - toNumber(left?.clientes, left?.total_clientes))
+            .slice(0, 5)
+            .map((item) => ({
+              label: safeText(item?.nome || item?.nome_fantasia, 'Empresa'),
+              value: `${Number(toNumber(item?.clientes, item?.total_clientes, 0)).toLocaleString('pt-BR')} cliente(s)`,
+              subtitle: safeText(item?.categoria || item?.ramo, 'Sem categoria'),
+            }));
+
+      renderMetricRows(
+        'adminTopCompaniesList',
+        topCompaniesByClients,
+        'text-primary',
+        'Nenhum ranking de empresas disponivel.'
+      );
+
+      const growthChart = ids('adminGrowthChart');
+      if (growthChart) {
+        const shell = growthChart.closest('.admin-graph-shell');
+        shell?.querySelector('.admin-graph-legend')?.remove();
+        const now = new Date();
+        const windows = Array.from({ length: 6 }, (_, index) => {
+          const start = new Date(now);
+          start.setDate(start.getDate() - (5 - index) * 7);
+          start.setHours(0, 0, 0, 0);
+          const end = new Date(start);
+          end.setDate(end.getDate() + 6);
+          end.setHours(23, 59, 59, 999);
+          return {
+            start,
+            end,
+            label: `${String(start.getDate()).padStart(2, '0')}/${String(start.getMonth() + 1).padStart(2, '0')}`,
+          };
+        });
+
+        const countByWindow = (items) => windows.map(({ start, end }) => {
+          return items.filter((item) => {
+            const raw = item?.created_at || item?.updated_at;
+            if (!raw) return false;
+            const parsed = new Date(raw);
+            if (Number.isNaN(parsed.getTime())) return false;
+            return parsed >= start && parsed <= end;
+          }).length;
+        });
+
+        const userSeries = countByWindow(usersList);
+        const companySeries = countByWindow(empresasList);
+        const maxValue = Math.max(1, ...userSeries, ...companySeries);
+
+        growthChart.innerHTML = windows.map((windowRef, index) => {
+          const usersValue = userSeries[index];
+          const companiesValue = companySeries[index];
+          const userHeight = Math.max(usersValue ? 18 : 8, Math.round((usersValue / maxValue) * 150));
+          const companyHeight = Math.max(companiesValue ? 18 : 8, Math.round((companiesValue / maxValue) * 150));
+          return `
+            <div class="admin-growth-column">
+              <div class="admin-growth-bars">
+                <div class="admin-growth-bar admin-growth-bar--users" style="height:${userHeight}px" title="${usersValue} usuario(s)"></div>
+                <div class="admin-growth-bar admin-growth-bar--companies" style="height:${companyHeight}px" title="${companiesValue} empresa(s)"></div>
+              </div>
+              <div class="admin-growth-label">${windowRef.label}</div>
+              <div class="admin-growth-subtitle">${usersValue} / ${companiesValue}</div>
+            </div>
+          `;
+        }).join('');
+
+        growthChart.insertAdjacentHTML('beforebegin', `
+          <div class="admin-graph-legend">
+            <span class="admin-graph-legend-item"><span class="admin-graph-dot" style="background:#133f8c"></span>Usuarios cadastrados</span>
+            <span class="admin-graph-legend-item"><span class="admin-graph-dot" style="background:#b01774"></span>Empresas cadastradas</span>
+          </div>
+        `);
       }
 
       document.getElementById('adminGenerateReportBtn')?.addEventListener('click', async (ev) => {
@@ -6896,6 +7023,7 @@
       const busca = document.getElementById('adminClientesBusca') || document.getElementById('adminClientesBusca2');
       const pushUi = {
         email: document.getElementById('adminPushClientEmail'),
+        useDemo: document.getElementById('adminPushUseDemoBtn'),
         lookup: document.getElementById('adminPushLookupBtn'),
         send: document.getElementById('adminPushSendBtn'),
         name: document.getElementById('adminPushClientName'),
@@ -6917,16 +7045,44 @@
         return parsed.toLocaleString('pt-BR');
       };
 
-      const resetPushTester = (message = 'A busca valida o status real da subscription. Nenhum dado de push e fakeado.', tone = 'info') => {
+      const normalizePushLookupTerm = (value) => safeText(value, '')
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9@._-]+/g, '');
+
+      const resolvePushLookupEmail = (rawValue) => {
+        const normalized = normalizePushLookupTerm(rawValue);
+        if (!normalized) return '';
+        if (
+          normalized.includes('cliente.push') ||
+          normalized.includes('iphone') ||
+          normalized.includes('locla') ||
+          normalized.includes('demo.locla')
+        ) {
+          return 'cliente.push@demo.local';
+        }
+
+        const matchedClient = clientes.find((item) => {
+          const name = normalizePushLookupTerm(item?.name || item?.nome || '');
+          const email = normalizePushLookupTerm(item?.email || '');
+          return email === normalized || name.includes(normalized) || email.includes(normalized);
+        });
+
+        return safeText(matchedClient?.email, normalized);
+      };
+
+      const resetPushTester = (message = 'Consulte um cliente e confirme se ha notificacoes ativas neste dispositivo.', tone = 'info') => {
         selectedPushClient = null;
         if (pushUi.name) pushUi.name.textContent = 'Cliente Push iPhone';
         if (pushUi.emailValue) pushUi.emailValue.textContent = pushUi.email?.value?.trim() || 'cliente.push@demo.local';
         if (pushUi.subscription) pushUi.subscription.textContent = 'Nao verificado';
         if (pushUi.devices) pushUi.devices.textContent = '0 dispositivo(s)';
         if (pushUi.lastSeen) pushUi.lastSeen.textContent = '--';
-        if (pushUi.hint) pushUi.hint.textContent = 'Peca para o cliente abrir o app instalado, fazer login e clicar em Ativar notificacoes.';
+        if (pushUi.hint) pushUi.hint.textContent = 'Peca para o cliente abrir o app instalado, fazer login e tocar em Ativar notificacoes.';
         if (pushUi.summaryTitle) pushUi.summaryTitle.textContent = 'Nenhum envio realizado nesta sessao.';
-        if (pushUi.summaryDetail) pushUi.summaryDetail.textContent = 'Use o email do cliente e confirme se existe ao menos uma subscription ativa antes de disparar o teste.';
+        if (pushUi.summaryDetail) pushUi.summaryDetail.textContent = 'Confirme se existe ao menos uma subscription ativa antes de disparar o teste.';
         if (pushUi.send) pushUi.send.disabled = true;
         setInlineFeedback(pushUi.feedback, message, tone);
       };
@@ -6965,11 +7121,13 @@
       };
 
       const loadAdminPushClient = async (emailOverride = null) => {
-        const email = safeText(emailOverride ?? pushUi.email?.value, '').trim().toLowerCase();
+        const email = resolvePushLookupEmail(emailOverride ?? pushUi.email?.value);
         if (!email) {
           resetPushTester('Informe o email do cliente para consultar o status de push.', 'warning');
           return;
         }
+
+        if (pushUi.email) pushUi.email.value = email;
 
         if (pushUi.lookup) pushUi.lookup.disabled = true;
         if (pushUi.send) pushUi.send.disabled = true;
@@ -7035,6 +7193,14 @@
             event.preventDefault();
             loadAdminPushClient();
           }
+        });
+      }
+
+      if (pushUi.useDemo && pushUi.useDemo.dataset.bound !== '1') {
+        pushUi.useDemo.dataset.bound = '1';
+        pushUi.useDemo.addEventListener('click', () => {
+          if (pushUi.email) pushUi.email.value = 'cliente.push@demo.local';
+          loadAdminPushClient('cliente.push@demo.local');
         });
       }
 
@@ -7880,6 +8046,15 @@
       const sections = document.querySelectorAll('main > section');
       const bannersSection = sections[1];
       const categoriasSection = sections[2];
+      const heroSection = sections[0];
+      const heroTexts = heroSection?.querySelectorAll('p, h1');
+      if (heroTexts?.length) {
+        if (heroTexts[0]) heroTexts[0].textContent = 'Conteudo & Banners';
+        if (heroTexts[1]) heroTexts[1].textContent = 'Gestao de Banners e Categorias';
+        if (heroTexts[2]) heroTexts[2].textContent = 'Edite banners e categorias em tempo real. O que voce salvar aqui sera refletido no aplicativo.';
+      }
+      const heroButton = document.getElementById('btnConteudoAviso');
+      if (heroButton) heroButton.textContent = 'Entendi';
 
       const escapeHtml = (value) =>
         String(value ?? '')
@@ -7922,56 +8097,147 @@
         const payload = await fetchContent();
         const { banners = [], categorias = [] } = payload;
         const isPartial = Boolean(payload?.partial);
+        const sourceLabel = payload?.source === 'fallback_file'
+          ? 'fallback local persistente'
+          : isPartial
+            ? 'modo somente leitura'
+            : 'API administrativa';
+
         if (status) {
-          status.textContent = `Conteúdo sincronizado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
+          status.innerHTML = `
+            <div class="space-y-2">
+              <p><strong>${Number(banners.length).toLocaleString('pt-BR')}</strong> banner(s) e <strong>${Number(categorias.length).toLocaleString('pt-BR')}</strong> categoria(s) carregados.</p>
+              <p>Origem atual: <strong>${sourceLabel}</strong>.</p>
+              <p>${isPartial ? 'A API de conteudo nao respondeu. Os dados exibidos sao de demonstracao e a edicao fica bloqueada.' : 'A operacao esta pronta para editar sem popups.'}</p>
+            </div>
+          `;
         }
+
+        const bannerFormMarkup = (item = null) => {
+          const isDraft = !item?.id;
+          return `
+            <article class="content-admin-item ${isDraft ? 'content-admin-item--draft' : ''}" data-banner-editor="${item?.id || 'draft'}">
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">${isDraft ? 'Novo banner' : 'Banner ativo'}</p>
+                  <h4 class="mt-2 text-lg font-headline font-extrabold text-on-surface">${escapeHtml(item?.title || 'Novo banner de campanha')}</h4>
+                </div>
+                <span class="inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] ${item?.active === false ? 'bg-slate-100 text-slate-500' : 'bg-emerald-100 text-emerald-700'}">${item?.active === false ? 'Inativo' : 'Ativo'}</span>
+              </div>
+              <div class="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+                <div class="space-y-4">
+                  <label class="block">
+                    <span class="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant">Titulo</span>
+                    <input data-banner-field="title" class="mt-2 w-full rounded-2xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" value="${escapeHtml(item?.title || '')}" placeholder="Ex.: Semana de pontos em dobro" />
+                  </label>
+                  <label class="block">
+                    <span class="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant">Link</span>
+                    <input data-banner-field="link" class="mt-2 w-full rounded-2xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" value="${escapeHtml(item?.link || '')}" placeholder="/parceiros_tem_de_tudo.html" />
+                  </label>
+                  <label class="block">
+                    <span class="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant">Imagem</span>
+                    <input data-banner-field="image_url" class="mt-2 w-full rounded-2xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" value="${escapeHtml(item?.image_url || '')}" placeholder="/assets/images/company1.jpg" />
+                  </label>
+                </div>
+                <div class="space-y-4">
+                  <div class="content-admin-preview">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Preview</p>
+                    <p class="mt-3 text-base font-headline font-extrabold text-on-surface">${escapeHtml(item?.title || 'Novo banner de campanha')}</p>
+                    <p class="mt-2 text-sm text-on-surface-variant">${escapeHtml(item?.link || 'Defina o link de destino do banner')}</p>
+                    <p class="mt-4 text-xs text-on-surface-variant">Imagem: ${escapeHtml(item?.image_url || 'placeholder interno')}</p>
+                  </div>
+                  <label class="inline-flex items-center gap-3 text-sm font-semibold text-on-surface">
+                    <input data-banner-field="active" type="checkbox" class="rounded border-outline-variant/30 text-primary focus:ring-primary" ${item?.active === false ? '' : 'checked'} />
+                    Banner ativo na vitrine
+                  </label>
+                </div>
+              </div>
+              <div class="mt-5 content-admin-actions">
+                <button data-banner-action="${isDraft ? 'create' : 'save'}" data-id="${item?.id || ''}" class="content-admin-button content-admin-button--primary">${isDraft ? 'Criar banner' : 'Salvar banner'}</button>
+                ${isDraft ? '<button data-banner-action="cancel-draft" class="content-admin-button content-admin-button--secondary">Cancelar</button>' : `<button data-banner-action="toggle" data-id="${item.id}" class="content-admin-button content-admin-button--secondary">${item?.active === false ? 'Ativar banner' : 'Pausar banner'}</button><button data-banner-action="delete" data-id="${item.id}" class="content-admin-button content-admin-button--danger">Excluir</button>`}
+              </div>
+            </article>
+          `;
+        };
+
+        const categoryFormMarkup = (item = null) => {
+          const isDraft = !item?.id;
+          return `
+            <article class="content-admin-item ${isDraft ? 'content-admin-item--draft' : ''}" data-category-editor="${item?.id || 'draft'}">
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">${isDraft ? 'Nova categoria' : 'Categoria ativa'}</p>
+                  <h4 class="mt-2 text-lg font-headline font-extrabold text-on-surface">${escapeHtml(item?.name || 'Nova categoria')}</h4>
+                </div>
+                <span class="inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] ${item?.active === false ? 'bg-slate-100 text-slate-500' : 'bg-emerald-100 text-emerald-700'}">${item?.active === false ? 'Inativa' : 'Ativa'}</span>
+              </div>
+              <div class="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+                <div class="space-y-4">
+                  <label class="block">
+                    <span class="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant">Nome</span>
+                    <input data-category-field="name" class="mt-2 w-full rounded-2xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" value="${escapeHtml(item?.name || '')}" placeholder="Ex.: Restaurantes" />
+                  </label>
+                  <label class="block">
+                    <span class="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant">Slug</span>
+                    <input data-category-field="slug" class="mt-2 w-full rounded-2xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" value="${escapeHtml(item?.slug || '')}" placeholder="restaurantes" />
+                  </label>
+                </div>
+                <div class="space-y-4">
+                  <div class="content-admin-preview">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Preview</p>
+                    <p class="mt-3 text-base font-headline font-extrabold text-on-surface">${escapeHtml(item?.name || 'Nova categoria')}</p>
+                    <p class="mt-2 text-sm text-on-surface-variant">Slug público: ${escapeHtml(item?.slug || 'defina um slug')}</p>
+                  </div>
+                  <label class="inline-flex items-center gap-3 text-sm font-semibold text-on-surface">
+                    <input data-category-field="active" type="checkbox" class="rounded border-outline-variant/30 text-primary focus:ring-primary" ${item?.active === false ? '' : 'checked'} />
+                    Categoria ativa na busca
+                  </label>
+                </div>
+              </div>
+              <div class="mt-5 content-admin-actions">
+                <button data-category-action="${isDraft ? 'create' : 'save'}" data-id="${item?.id || ''}" class="content-admin-button content-admin-button--primary">${isDraft ? 'Criar categoria' : 'Salvar categoria'}</button>
+                ${isDraft ? '<button data-category-action="cancel-draft" class="content-admin-button content-admin-button--secondary">Cancelar</button>' : `<button data-category-action="toggle" data-id="${item.id}" class="content-admin-button content-admin-button--secondary">${item?.active === false ? 'Ativar categoria' : 'Pausar categoria'}</button><button data-category-action="delete" data-id="${item.id}" class="content-admin-button content-admin-button--danger">Excluir</button>`}
+              </div>
+            </article>
+          `;
+        };
 
         if (bannersSection) {
           bannersSection.innerHTML = `
             <div class="flex items-center justify-between mb-4">
-              <h3 class="text-lg font-headline font-bold text-on-surface">Banners</h3>
-              <button id="novoBannerBtn" class="px-3 py-1.5 rounded-lg ${isPartial ? 'bg-outline text-white/80 cursor-not-allowed' : 'bg-primary text-white'} text-sm font-bold" ${isPartial ? 'disabled' : ''}>${isPartial ? 'Indisponível' : 'Novo banner'}</button>
+              <div>
+                <h3 class="text-lg font-headline font-bold text-on-surface">Banners</h3>
+                <p class="mt-1 text-sm text-on-surface-variant">Edite titulo, link, imagem e status sem abrir popup.</p>
+              </div>
+              <button id="novoBannerBtn" class="content-admin-button ${isPartial ? 'content-admin-button--secondary opacity-60 cursor-not-allowed' : 'content-admin-button--primary'}" ${isPartial ? 'disabled' : ''}>Novo banner</button>
             </div>
-            <div id="bannersList" class="space-y-3"></div>
+            <div id="bannersList" class="content-admin-grid"></div>
           `;
 
           const list = bannersSection.querySelector('#bannersList');
-          if (!banners.length) {
-            list.innerHTML = '<p class="text-sm text-on-surface-variant">Nenhum banner cadastrado.</p>';
-          } else {
-            list.innerHTML = banners.map((b) => `
-              <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-3">
-                <div class="min-w-0">
-                  <p class="font-bold text-sm text-on-surface truncate">${escapeHtml(b.title)}</p>
-                  <p class="text-xs text-on-surface-variant truncate">${escapeHtml(b.link || '-')}</p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-[10px] font-bold uppercase ${b.active ? 'text-tertiary' : 'text-outline'}">${b.active ? 'Ativo' : 'Inativo'}</span>
-                  <button data-b-action="toggle" data-id="${b.id}" class="px-2 py-1 rounded bg-amber-500 text-white text-xs">Ativar/Pausar</button>
-                  <button data-b-action="edit" data-id="${b.id}" class="px-2 py-1 rounded bg-slate-700 text-white text-xs">Editar</button>
-                  <button data-b-action="delete" data-id="${b.id}" class="px-2 py-1 rounded bg-rose-600 text-white text-xs">Excluir</button>
-                </div>
-              </div>
-            `).join('');
-          }
+          list.innerHTML = banners.length
+            ? banners.map((item) => bannerFormMarkup(item)).join('')
+            : '<p class="text-sm text-on-surface-variant">Nenhum banner cadastrado. Crie o primeiro banner da vitrine.</p>';
 
-          bannersSection.querySelector('#novoBannerBtn')?.addEventListener('click', async () => {
-            const title = window.prompt('Titulo do banner:');
-            if (!title) return;
-            const image_url = window.prompt('URL da imagem:') || '';
-            const link = window.prompt('Link do banner:') || '';
-            const { res, data } = await api.request('/admin/content/banners', { method: 'POST', body: JSON.stringify({ title, image_url, link, active: true }) });
-            if (res.ok && data?.success !== false) {
-              ui.message('Banner criado com sucesso.', 'success');
-              await renderContent();
-            } else {
-              ui.message(data?.message || 'Erro ao criar banner.', 'error');
-            }
+          bannersSection.querySelector('#novoBannerBtn')?.addEventListener('click', () => {
+            if (list.querySelector('[data-banner-editor="draft"]')) return;
+            list.insertAdjacentHTML('afterbegin', bannerFormMarkup());
           });
 
-          list?.querySelectorAll('[data-b-action="delete"]').forEach((btn) => {
-            btn.addEventListener('click', async () => {
-              const id = btn.getAttribute('data-id');
+          list?.addEventListener('click', async (event) => {
+            const trigger = event.target.closest('[data-banner-action]');
+            if (!trigger) return;
+            const action = trigger.getAttribute('data-banner-action');
+            const id = trigger.getAttribute('data-id');
+            const card = trigger.closest('[data-banner-editor]');
+            if (!card) return;
+
+            if (action === 'cancel-draft') {
+              card.remove();
+              return;
+            }
+
+            if (action === 'delete') {
               if (!window.confirm('Excluir banner?')) return;
               const { res, data } = await api.request(`/admin/content/banners/${id}`, { method: 'DELETE' });
               if (res.ok && data?.success !== false) {
@@ -7980,89 +8246,73 @@
               } else {
                 ui.message(data?.message || 'Erro ao remover banner.', 'error');
               }
-            });
-          });
+              return;
+            }
 
-          list?.querySelectorAll('[data-b-action="edit"]').forEach((btn) => {
-            btn.addEventListener('click', async () => {
-              const id = btn.getAttribute('data-id');
-              const item = banners.find((b) => String(b.id) === String(id));
-              if (!item) return;
-              const title = window.prompt('Titulo do banner:', item.title || '');
-              if (!title) return;
-              const image_url = window.prompt('URL da imagem:', item.image_url || '') || '';
-              const link = window.prompt('Link:', item.link || '') || '';
-              const { res, data } = await api.request(`/admin/content/banners/${id}`, { method: 'PUT', body: JSON.stringify({ title, image_url, link }) });
-              if (res.ok && data?.success !== false) {
-                ui.message('Banner atualizado.', 'success');
-                await renderContent();
-              } else {
-                ui.message(data?.message || 'Erro ao atualizar banner.', 'error');
-              }
-            });
-          });
+            const payloadData = {
+              title: safeText(card.querySelector('[data-banner-field="title"]')?.value, '').trim(),
+              link: safeText(card.querySelector('[data-banner-field="link"]')?.value, '').trim(),
+              image_url: safeText(card.querySelector('[data-banner-field="image_url"]')?.value, '').trim(),
+              active: Boolean(card.querySelector('[data-banner-field="active"]')?.checked),
+            };
 
-          list?.querySelectorAll('[data-b-action="toggle"]').forEach((btn) => {
-            btn.addEventListener('click', async () => {
-              const id = btn.getAttribute('data-id');
-              const item = banners.find((b) => String(b.id) === String(id));
-              if (!item) return;
-              const { res, data } = await api.request(`/admin/content/banners/${id}`, { method: 'PUT', body: JSON.stringify({ active: !item.active }) });
-              if (res.ok && data?.success !== false) {
-                ui.message('Status do banner atualizado.', 'success');
-                await renderContent();
-              } else {
-                ui.message(data?.message || 'Erro ao atualizar status.', 'error');
-              }
-            });
+            if (!payloadData.title) {
+              ui.message('Informe o titulo do banner.', 'warning');
+              return;
+            }
+
+            if (action === 'toggle') {
+              payloadData.active = !payloadData.active;
+            }
+
+            const targetPath = action === 'create' ? '/admin/content/banners' : `/admin/content/banners/${id}`;
+            const method = action === 'create' ? 'POST' : 'PUT';
+            const { res, data } = await api.request(targetPath, { method, body: JSON.stringify(payloadData) });
+            if (res.ok && data?.success !== false) {
+              ui.message(action === 'create' ? 'Banner criado com sucesso.' : 'Banner atualizado com sucesso.', 'success');
+              await renderContent();
+            } else {
+              ui.message(data?.message || 'Erro ao salvar banner.', 'error');
+            }
           });
         }
 
         if (categoriasSection) {
           categoriasSection.innerHTML = `
             <div class="flex items-center justify-between mb-4">
-              <h3 class="text-lg font-headline font-bold text-on-surface">Categorias</h3>
-              <button id="novaCategoriaBtn" class="px-3 py-1.5 rounded-lg ${isPartial ? 'bg-outline text-white/80 cursor-not-allowed' : 'bg-primary text-white'} text-sm font-bold" ${isPartial ? 'disabled' : ''}>${isPartial ? 'Indisponível' : 'Nova categoria'}</button>
+              <div>
+                <h3 class="text-lg font-headline font-bold text-on-surface">Categorias</h3>
+                <p class="mt-1 text-sm text-on-surface-variant">Ajuste nome, slug e status da navegação pública em linha.</p>
+              </div>
+              <button id="novaCategoriaBtn" class="content-admin-button ${isPartial ? 'content-admin-button--secondary opacity-60 cursor-not-allowed' : 'content-admin-button--primary'}" ${isPartial ? 'disabled' : ''}>Nova categoria</button>
             </div>
-            <div id="categoriasList" class="space-y-3"></div>
+            <div id="categoriasList" class="content-admin-grid"></div>
           `;
 
           const list = categoriasSection.querySelector('#categoriasList');
-          if (!categorias.length) {
-            list.innerHTML = '<p class="text-sm text-on-surface-variant">Nenhuma categoria cadastrada.</p>';
-          } else {
-            list.innerHTML = categorias.map((c) => `
-              <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-3">
-                <div class="min-w-0">
-                  <p class="font-bold text-sm text-on-surface truncate">${escapeHtml(c.name)}</p>
-                  <p class="text-xs text-on-surface-variant truncate">${escapeHtml(c.slug || '-')}</p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="text-[10px] font-bold uppercase ${c.active ? 'text-tertiary' : 'text-outline'}">${c.active ? 'Ativo' : 'Inativo'}</span>
-                  <button data-c-action="toggle" data-id="${c.id}" class="px-2 py-1 rounded bg-amber-500 text-white text-xs">Ativar/Pausar</button>
-                  <button data-c-action="edit" data-id="${c.id}" class="px-2 py-1 rounded bg-slate-700 text-white text-xs">Editar</button>
-                  <button data-c-action="delete" data-id="${c.id}" class="px-2 py-1 rounded bg-rose-600 text-white text-xs">Excluir</button>
-                </div>
-              </div>
-            `).join('');
-          }
+          list.innerHTML = categorias.length
+            ? categorias.map((item) => categoryFormMarkup(item)).join('')
+            : '<p class="text-sm text-on-surface-variant">Nenhuma categoria cadastrada. Crie a primeira categoria visível na busca.</p>';
 
-          categoriasSection.querySelector('#novaCategoriaBtn')?.addEventListener('click', async () => {
-            const name = window.prompt('Nome da categoria:');
-            if (!name) return;
-            const slug = (window.prompt('Slug (opcional):') || '').trim();
-            const { res, data } = await api.request('/admin/content/categorias', { method: 'POST', body: JSON.stringify({ name, slug: slug || undefined, active: true }) });
-            if (res.ok && data?.success !== false) {
-              ui.message('Categoria criada.', 'success');
-              await renderContent();
-            } else {
-              ui.message(data?.message || 'Erro ao criar categoria.', 'error');
-            }
+          categoriasSection.querySelector('#novaCategoriaBtn')?.addEventListener('click', () => {
+            if (list.querySelector('[data-category-editor="draft"]')) return;
+            list.insertAdjacentHTML('afterbegin', categoryFormMarkup());
           });
 
-          list?.querySelectorAll('[data-c-action="delete"]').forEach((btn) => {
-            btn.addEventListener('click', async () => {
-              const id = btn.getAttribute('data-id');
+          list?.addEventListener('click', async (event) => {
+            const trigger = event.target.closest('[data-category-action]');
+            if (!trigger) return;
+            const action = trigger.getAttribute('data-category-action');
+            const id = trigger.getAttribute('data-id');
+            const card = trigger.closest('[data-category-editor]');
+            if (!card) return;
+
+            if (action === 'cancel-draft') {
+              card.remove();
+              return;
+            }
+
+            if (action === 'delete') {
               if (!window.confirm('Excluir categoria?')) return;
               const { res, data } = await api.request(`/admin/content/categorias/${id}`, { method: 'DELETE' });
               if (res.ok && data?.success !== false) {
@@ -8071,40 +8321,33 @@
               } else {
                 ui.message(data?.message || 'Erro ao remover categoria.', 'error');
               }
-            });
-          });
+              return;
+            }
 
-          list?.querySelectorAll('[data-c-action="edit"]').forEach((btn) => {
-            btn.addEventListener('click', async () => {
-              const id = btn.getAttribute('data-id');
-              const item = categorias.find((c) => String(c.id) === String(id));
-              if (!item) return;
-              const name = window.prompt('Nome da categoria:', item.name || '');
-              if (!name) return;
-              const slug = window.prompt('Slug:', item.slug || '') || '';
-              const { res, data } = await api.request(`/admin/content/categorias/${id}`, { method: 'PUT', body: JSON.stringify({ name, slug }) });
-              if (res.ok && data?.success !== false) {
-                ui.message('Categoria atualizada.', 'success');
-                await renderContent();
-              } else {
-                ui.message(data?.message || 'Erro ao atualizar categoria.', 'error');
-              }
-            });
-          });
+            const payloadData = {
+              name: safeText(card.querySelector('[data-category-field="name"]')?.value, '').trim(),
+              slug: safeText(card.querySelector('[data-category-field="slug"]')?.value, '').trim() || undefined,
+              active: Boolean(card.querySelector('[data-category-field="active"]')?.checked),
+            };
 
-          list?.querySelectorAll('[data-c-action="toggle"]').forEach((btn) => {
-            btn.addEventListener('click', async () => {
-              const id = btn.getAttribute('data-id');
-              const item = categorias.find((c) => String(c.id) === String(id));
-              if (!item) return;
-              const { res, data } = await api.request(`/admin/content/categorias/${id}`, { method: 'PUT', body: JSON.stringify({ active: !item.active }) });
-              if (res.ok && data?.success !== false) {
-                ui.message('Status da categoria atualizado.', 'success');
-                await renderContent();
-              } else {
-                ui.message(data?.message || 'Erro ao atualizar status.', 'error');
-              }
-            });
+            if (!payloadData.name) {
+              ui.message('Informe o nome da categoria.', 'warning');
+              return;
+            }
+
+            if (action === 'toggle') {
+              payloadData.active = !payloadData.active;
+            }
+
+            const targetPath = action === 'create' ? '/admin/content/categorias' : `/admin/content/categorias/${id}`;
+            const method = action === 'create' ? 'POST' : 'PUT';
+            const { res, data } = await api.request(targetPath, { method, body: JSON.stringify(payloadData) });
+            if (res.ok && data?.success !== false) {
+              ui.message(action === 'create' ? 'Categoria criada.' : 'Categoria atualizada.', 'success');
+              await renderContent();
+            } else {
+              ui.message(data?.message || 'Erro ao salvar categoria.', 'error');
+            }
           });
         }
       };
