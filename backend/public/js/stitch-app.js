@@ -6170,6 +6170,11 @@
       ui.clearPageState();
 
       const ids = (id) => document.getElementById(id);
+      const dashboardSearchUi = {
+        input: ids('adminDashboardSearchInput'),
+        button: ids('adminDashboardSearchBtn'),
+        hint: ids('adminDashboardSearchHint'),
+      };
       const growthSubtitle = document.querySelector('#adminGrowthChart')?.closest('.admin-card')?.querySelector('p.text-xs');
       if (growthSubtitle) growthSubtitle.textContent = 'Usuarios vs estabelecimentos - ultimos 30 dias';
       const statsData = stats.data?.data || stats.data || {};
@@ -6359,6 +6364,97 @@
             <span class="admin-graph-legend-item"><span class="admin-graph-dot" style="background:#b01774"></span>Empresas cadastradas</span>
           </div>
         `);
+      }
+
+      const setDashboardSearchHint = (message, tone = 'muted') => {
+        if (!dashboardSearchUi.hint) return;
+        dashboardSearchUi.hint.textContent = message;
+        dashboardSearchUi.hint.style.color = (
+          tone === 'success' ? '#00afa8'
+            : tone === 'warning' ? '#b01774'
+              : '#5b5b62'
+        );
+      };
+
+      const resolveDashboardSearchTarget = (rawTerm) => {
+        const term = safeText(rawTerm, '')
+          .trim()
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '');
+
+        if (!term) return null;
+
+        const sectionMatches = [
+          { patterns: ['crescimento', 'base', 'grafico'], element: ids('adminGrowthChart'), label: 'Crescimento da Base' },
+          { patterns: ['atividade', 'recente'], element: ids('adminRecentList'), label: 'Atividade Recente' },
+          { patterns: ['status', 'pendente', 'suspensa', 'rejeitada'], element: ids('adminCompanyStatusList'), label: 'Status das empresas' },
+          { patterns: ['top', 'ranking', 'clientes empresa'], element: ids('adminTopCompaniesList'), label: 'Top empresas por clientes' },
+        ];
+
+        const sectionTarget = sectionMatches.find(({ patterns }) => patterns.some((pattern) => term.includes(pattern)));
+        if (sectionTarget?.element) {
+          return { type: 'section', element: sectionTarget.element, label: sectionTarget.label };
+        }
+
+        const routeMatches = [
+          { patterns: ['cliente', 'push', 'assinatura', 'subscription'], href: '/gest_o_de_clientes_master.html', label: 'Clientes' },
+          { patterns: ['empresa', 'parceiro', 'estabelecimento', 'aprovacao'], href: '/gest_o_de_estabelecimentos.html', label: 'Estabelecimentos' },
+          { patterns: ['relatorio', 'relatorio', 'metrica', 'volume'], href: '/relat_rios_gerais_master.html', label: 'Relatorios' },
+          { patterns: ['conteudo', 'banner', 'categoria'], href: '/banners_e_categorias_master.html', label: 'Conteudo' },
+          { patterns: ['usuario', 'acesso', 'perfil'], href: '/gest_o_de_usu_rios_master.html', label: 'Usuarios' },
+          { patterns: ['config', 'ajuste', 'parametro'], href: '/configuracoes_admin.html', label: 'Configuracoes' },
+          { patterns: ['ticket', 'suporte'], href: '/tickets_admin_master.html', label: 'Suporte' },
+        ];
+
+        const routeTarget = routeMatches.find(({ patterns }) => patterns.some((pattern) => term.includes(pattern)));
+        if (routeTarget?.href) {
+          return { type: 'route', href: routeTarget.href, label: routeTarget.label };
+        }
+
+        return null;
+      };
+
+      const runDashboardSearch = () => {
+        const term = dashboardSearchUi.input?.value || '';
+        const target = resolveDashboardSearchTarget(term);
+
+        if (!target) {
+          setDashboardSearchHint('Busque por clientes, parceiros, relatorios, conteudo, crescimento ou atividade.', 'warning');
+          dashboardSearchUi.input?.focus();
+          return;
+        }
+
+        if (target.type === 'section' && target.element) {
+          target.element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setDashboardSearchHint(`Mostrando ${target.label}.`, 'success');
+          return;
+        }
+
+        if (target.type === 'route' && target.href) {
+          setDashboardSearchHint(`Abrindo ${target.label}...`, 'success');
+          window.location.href = target.href;
+        }
+      };
+
+      if (dashboardSearchUi.input && dashboardSearchUi.input.dataset.bound !== '1') {
+        dashboardSearchUi.input.dataset.bound = '1';
+        dashboardSearchUi.input.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            runDashboardSearch();
+          }
+        });
+        dashboardSearchUi.input.addEventListener('input', () => {
+          if (!dashboardSearchUi.input?.value?.trim()) {
+            setDashboardSearchHint('Busque por clientes, parceiros, relatorios ou conteudo.');
+          }
+        });
+      }
+
+      if (dashboardSearchUi.button && dashboardSearchUi.button.dataset.bound !== '1') {
+        dashboardSearchUi.button.dataset.bound = '1';
+        dashboardSearchUi.button.addEventListener('click', runDashboardSearch);
       }
 
       document.getElementById('adminGenerateReportBtn')?.addEventListener('click', async (ev) => {
@@ -7026,6 +7122,9 @@
         useDemo: document.getElementById('adminPushUseDemoBtn'),
         lookup: document.getElementById('adminPushLookupBtn'),
         send: document.getElementById('adminPushSendBtn'),
+        title: document.getElementById('adminPushTitle'),
+        body: document.getElementById('adminPushBody'),
+        url: document.getElementById('adminPushUrl'),
         name: document.getElementById('adminPushClientName'),
         emailValue: document.getElementById('adminPushClientEmailValue'),
         subscription: document.getElementById('adminPushClientSubscription'),
@@ -7084,6 +7183,9 @@
         if (pushUi.summaryTitle) pushUi.summaryTitle.textContent = 'Nenhum envio realizado nesta sessao.';
         if (pushUi.summaryDetail) pushUi.summaryDetail.textContent = 'Confirme se existe ao menos uma subscription ativa antes de disparar o teste.';
         if (pushUi.send) pushUi.send.disabled = true;
+        if (pushUi.title && !pushUi.title.value.trim()) pushUi.title.value = 'Teste de notificacao';
+        if (pushUi.body && !pushUi.body.value.trim()) pushUi.body.value = 'Se voce recebeu esta mensagem, o push esta funcionando.';
+        if (pushUi.url && !pushUi.url.value.trim()) pushUi.url.value = '/meus_pontos.html';
         setInlineFeedback(pushUi.feedback, message, tone);
       };
 
@@ -7113,10 +7215,10 @@
         }
         if (pushUi.summaryDetail) {
           pushUi.summaryDetail.textContent = push?.has_active_subscription
-            ? 'Use Enviar push teste para validar o recebimento neste dispositivo.'
+            ? 'Use Enviar para validar o recebimento neste dispositivo.'
             : 'Sem subscription real, o admin recebera um aviso amigavel e nenhum envio sera marcado como entregue.';
         }
-        if (pushUi.send) pushUi.send.disabled = !push?.has_active_subscription || !selectedPushClient?.id;
+        if (pushUi.send) pushUi.send.disabled = !selectedPushClient?.id;
         setInlineFeedback(pushUi.feedback, 'Cliente localizado. O status exibido reflete a subscription real salva pelo navegador.', push?.has_active_subscription ? 'success' : 'warning');
       };
 
@@ -7154,13 +7256,17 @@
         if (pushUi.send) pushUi.send.disabled = true;
         setInlineFeedback(pushUi.feedback, 'Enviando push teste para o cliente selecionado...', 'info');
 
+        const title = safeText(pushUi.title?.value, '').trim() || 'Teste de notificacao';
+        const body = safeText(pushUi.body?.value, '').trim() || 'Se voce recebeu esta mensagem, o push esta funcionando.';
+        const url = safeText(pushUi.url?.value, '').trim() || '/meus_pontos.html';
+
         const { res, data } = await api.request('/admin/push/test-client', {
           method: 'POST',
           body: JSON.stringify({
             user_id: selectedPushClient.id,
-            title: 'Teste de notificacao',
-            body: 'Se voce recebeu esta mensagem, o push esta funcionando.',
-            url: '/meus_pontos.html',
+            title,
+            body,
+            url,
           }),
         }, { notify: false });
 
@@ -7303,7 +7409,6 @@
       bindBusca(clientes);
       renderLista(clientes);
       resetPushTester();
-      await loadAdminPushClient(pushUi.email?.value || 'cliente.push@demo.local');
     },
 
     async relatorios() {

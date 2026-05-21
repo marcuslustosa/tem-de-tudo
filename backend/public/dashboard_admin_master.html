@@ -89,6 +89,22 @@
         border: 1px solid #e9e7f1;
         border-radius: 999px;
       }
+      .admin-search-stack {
+        min-width: 320px;
+        max-width: 360px;
+      }
+      .admin-search-stack-label {
+        color: #5b5b62;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .admin-search-helper {
+        color: #5b5b62;
+        font-size: 11px;
+        line-height: 1.4;
+      }
       .admin-search input { color: #2e2e34; }
       .admin-search input::placeholder { color: #5b5b62; }
     </style>
@@ -171,9 +187,14 @@
   <span class="admin-badge-live ml-2"><span class="dot"></span>LIVE</span>
 </div>
 <div class="flex items-center gap-3">
-<div class="admin-search hidden md:flex items-center px-4 py-1.5 gap-2">
+<div class="admin-search-stack hidden md:flex flex-col items-start gap-1">
+<span class="admin-search-stack-label">Acesso rapido</span>
+<div class="admin-search w-full flex items-center px-4 py-1.5 gap-2">
 <span class="material-symbols-outlined text-lg text-[#5b5b62]" data-icon="search">search</span>
-<input class="bg-transparent border-none focus:ring-0 text-sm font-body w-44 outline-none text-[#2e2e34]" placeholder="Buscar na plataforma..." type="text"/>
+<input id="adminDashboardSearchInput" autocomplete="off" spellcheck="false" class="bg-transparent border-none focus:ring-0 text-sm font-body flex-1 outline-none text-[#2e2e34]" placeholder="Clientes, parceiros, relatorios..." type="text"/>
+<button id="adminDashboardSearchBtn" class="inline-flex items-center justify-center rounded-full bg-[#133f8c] px-3 py-1 text-[11px] font-bold text-white transition hover:opacity-95" type="button">Ir</button>
+</div>
+<p id="adminDashboardSearchHint" class="admin-search-helper">Busque por clientes, parceiros, push, relatorios ou conteudo.</p>
 </div>
 <button class="p-2 rounded-full transition-colors text-[#5b5b62] hover:bg-[#f0f0f0]">
 <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
@@ -363,5 +384,5 @@
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Perfil</span>
 </a>
 </nav>
-<script src="/dist/stitch-app.min.js?v=20260521-admin-unify"></script>
+<script src="/dist/stitch-app.min.js?v=20260521-admin-actions"></script>
 </body></html>
