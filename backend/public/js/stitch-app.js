@@ -1495,6 +1495,14 @@
       }
     }
 
+    async function openPrompt(reason = 'manual', presetState = null) {
+      const state = presetState || await getState();
+      promptState = state;
+      updatePromptModal(state, reason);
+      ensurePromptModal().classList.remove('hidden');
+      return state;
+    }
+
     async function refreshAllCards() {
       const cards = Array.from(document.querySelectorAll('[data-push-card]'));
       if (!cards.length) return;
@@ -1560,8 +1568,7 @@
       }
 
       if (enable) {
-        const canEnable = ['idle', 'unavailable'].includes(state.key);
-        enable.disabled = !canEnable;
+        enable.disabled = false;
         enable.classList.toggle('hidden', state.key === 'enabled');
       }
 
@@ -1673,11 +1680,19 @@
       enable?.addEventListener('click', async () => {
         enable.disabled = true;
         try {
+          const currentState = await getState();
+          if (!canTriggerPermissionPrompt(currentState)) {
+            await openPrompt('manual', currentState);
+            ui.message(currentState?.status || 'Verifique o status das notificacoes neste dispositivo.', currentState?.tone || 'info');
+            return;
+          }
+
           const result = await subscribe();
           paintCard(card, result.state);
           if (result.success) {
             ui.message(result.message || 'Notificacoes ativadas neste dispositivo.', 'success');
           } else {
+            await openPrompt('manual', result.state);
             ui.message(result.state?.status || 'Não foi possível ativar as notificações neste momento.', result.state?.tone || 'warning');
           }
         } catch (err) {
