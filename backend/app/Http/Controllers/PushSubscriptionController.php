@@ -10,8 +10,9 @@ use App\Models\User;
 use App\Services\WebPushDeliveryService;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 
 class PushSubscriptionController extends Controller
@@ -114,8 +115,9 @@ class PushSubscriptionController extends Controller
     public function adminClientStatus(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'nullable|integer|min:1|required_without:email',
-            'email' => 'nullable|email|required_without:user_id',
+            'user_id' => 'nullable|integer|min:1|required_without_all:email,q',
+            'email' => 'nullable|string|max:255|required_without_all:user_id,q',
+            'q' => 'nullable|string|max:255|required_without_all:user_id,email',
         ]);
 
         if ($validator->fails()) {
@@ -356,19 +358,105 @@ class PushSubscriptionController extends Controller
 
     private function resolveAdminClient(Request $request): ?User
     {
-        $query = User::query();
         if ($request->filled('user_id')) {
-            $query->whereKey((int) $request->integer('user_id'));
-        } else {
-            $query->where('email', trim((string) $request->input('email')));
+            $user = User::query()->find((int) $request->integer('user_id'));
+
+            return $user && $this->isCliente($user) ? $user : null;
         }
 
-        $user = $query->first();
-        if (!$user || !$this->isCliente($user)) {
+        $rawLookup = trim((string) ($request->input('q') ?: $request->input('email', '')));
+        if ($rawLookup === '') {
             return null;
         }
 
-        return $user;
+        $normalizedLookup = $this->normalizeLookupTerm($rawLookup);
+        $digitsLookup = $this->digitsOnly($rawLookup);
+
+        $query = User::query()->where(function ($builder) use ($rawLookup, $digitsLookup) {
+            $builder
+                ->where('email', 'like', '%' . $rawLookup . '%')
+                ->orWhere('name', 'like', '%' . $rawLookup . '%');
+
+            if ($digitsLookup !== '' && Schema::hasColumn('users', 'cpf')) {
+                $builder->orWhere('cpf', 'like', '%' . $digitsLookup . '%');
+            }
+
+            if ($digitsLookup !== '' && Schema::hasColumn('users', 'telefone')) {
+                $builder->orWhere('telefone', 'like', '%' . $digitsLookup . '%');
+            } elseif (Schema::hasColumn('users', 'telefone')) {
+                $builder->orWhere('telefone', 'like', '%' . $rawLookup . '%');
+            }
+        });
+
+        /** @var \Illuminate\Support\Collection<int, User> $candidates */
+        $candidates = $query
+            ->limit(50)
+            ->get()
+            ->filter(fn (User $user) => $this->isCliente($user));
+
+        if ($candidates->isEmpty()) {
+            return null;
+        }
+
+        return $candidates
+            ->sortByDesc(fn (User $user) => $this->scoreLookupMatch($user, $normalizedLookup, $digitsLookup))
+            ->first();
+    }
+
+    private function scoreLookupMatch(User $user, string $normalizedLookup, string $digitsLookup): int
+    {
+        $email = $this->normalizeLookupTerm((string) $user->email);
+        $name = $this->normalizeLookupTerm((string) $user->name);
+        $cpf = $this->digitsOnly((string) ($user->cpf ?? ''));
+        $telefone = $this->digitsOnly((string) ($user->telefone ?? ''));
+
+        $score = 0;
+
+        foreach ([$email, $name] as $value) {
+            if ($value === '') {
+                continue;
+            }
+
+            if ($value === $normalizedLookup) {
+                $score = max($score, 100);
+            } elseif (str_starts_with($value, $normalizedLookup)) {
+                $score = max($score, 85);
+            } elseif (str_contains($value, $normalizedLookup)) {
+                $score = max($score, 70);
+            }
+        }
+
+        if ($digitsLookup !== '') {
+            foreach ([$cpf, $telefone] as $value) {
+                if ($value === '') {
+                    continue;
+                }
+
+                if ($value === $digitsLookup) {
+                    $score = max($score, 95);
+                } elseif (str_starts_with($value, $digitsLookup)) {
+                    $score = max($score, 80);
+                } elseif (str_contains($value, $digitsLookup)) {
+                    $score = max($score, 68);
+                }
+            }
+        }
+
+        return $score;
+    }
+
+    private function normalizeLookupTerm(string $value): string
+    {
+        $normalized = mb_strtolower(trim($value));
+        $ascii = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $normalized);
+        $plain = $ascii !== false ? $ascii : $normalized;
+
+        return preg_replace('/[^a-z0-9@._-]+/', '', $plain) ?? '';
+    }
+
+    private function digitsOnly(string $value): string
+    {
+        return preg_replace('/\D+/', '', $value) ?? '';
     }
 
     private function isCliente(User $user): bool

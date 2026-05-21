@@ -1,16 +1,16 @@
 /* global self, clients */
 
 self.addEventListener('push', (event) => {
-  const data = event.data ? event.data.json() : {};
+  const data = event.data event.data.json() : {};
   const title = data.title || 'Tem de Tudo';
   const options = {
     body: data.body || 'Você recebeu uma nova notificação.',
     icon: data.icon || '/img/icon-192.png',
     badge: data.badge || '/img/icon-96.png',
     data: {
-      url: data.url || data.data?.url || '/index.html',
-      empresa_id: data.empresa_id || data.data?.empresa_id || null,
-      tipo: data.tipo || data.data?.tipo || 'push',
+      url: data.url || data.data.url || '/index.html',
+      empresa_id: data.empresa_id || data.data.empresa_id || null,
+      tipo: data.tipo || data.data.tipo || 'push',
     },
   };
 
@@ -19,7 +19,7 @@ self.addEventListener('push', (event) => {
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const targetUrl = event.notification.data?.url || '/index.html';
+  const targetUrl = event.notification.data.url || '/index.html';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {

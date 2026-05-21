@@ -6,11 +6,11 @@
   <title>Tem de Tudo - Entrar</title>
   <link rel="manifest" href="/manifest.json" />  <link rel="icon" type="image/png" href="/img/logo.png" />
   <link rel="shortcut icon" href="/img/logo.png" />
-  <link rel="apple-touch-icon" href="/img/icon-192.png" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <link href="/css/i9plus-phase8.css?v=20260521-admin-unify" rel="stylesheet" />
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+  <script src="https://cdn.tailwindcss.complugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link href="/css/i9plus-phase8.cssv=20260521-admin-unify" rel="stylesheet" />
   <style>
     body {
       background-color: #f8f5fe;
@@ -78,14 +78,14 @@
       </form>
     </div>
 
-    <p class="text-center text-on-surface-variant font-medium lg:col-span-2">Ainda não tem conta?<a class="app-auth-link font-bold hover:underline underline-offset-4 ml-1" href="/criar_conta.html">Criar conta</a></p>
+    <p class="text-center text-on-surface-variant font-medium lg:col-span-2">Ainda não tem conta<a class="app-auth-link font-bold hover:underline underline-offset-4 ml-1" href="/criar_conta.html">Criar conta</a></p>
   </main>
 
   <div class="fixed top-20 -left-12 w-64 h-64 bg-tertiary/10 rounded-full blur-3xl -z-10"></div>
   <div class="fixed bottom-20 -right-12 w-80 h-80 bg-primary/10 rounded-full blur-3xl -z-10"></div>
 
   <script>window.__inlineLoginManaged = true;</script>
-  <script src="/dist/stitch-app.min.js?v=20260521-push-entry-2"></script>
+  <script src="/dist/stitch-app.min.jsv=20260521-push-entry-2"></script>
   <script>
 
     (function () {
@@ -95,8 +95,8 @@
       if (passInput && toggleBtn && toggleIcon) {
         toggleBtn.addEventListener('click', () => {
           const isHidden = passInput.type === 'password';
-          passInput.type = isHidden ? 'text' : 'password';
-          toggleIcon.textContent = isHidden ? 'visibility_off' : 'visibility';
+          passInput.type = isHidden 'text' : 'password';
+          toggleIcon.textContent = isHidden 'visibility_off' : 'visibility';
         });
       }
     })();
@@ -116,7 +116,7 @@
       function resolvePostLoginTarget(perfil) {
         const pendingCode = (localStorage.getItem(pendingCompanyQrKey) || '').trim();
         if (perfil === 'cliente' && pendingCode) {
-          return `/vincular_empresa.html?code=${encodeURIComponent(pendingCode)}`;
+          return `/vincular_empresa.htmlcode=${encodeURIComponent(pendingCode)}`;
         }
 
         const nextParam = new URLSearchParams(window.location.search).get('next');
@@ -161,8 +161,8 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         showMsg('', 'info');
-        const email = emailInput?.value?.trim() || '';
-        const password = passInput?.value || '';
+        const email = emailInput.value.trim() || '';
+        const password = passInput.value || '';
 
         if (!email || !password) {
           showMsg('Informe email/CPF e senha.', 'error');
@@ -180,12 +180,12 @@
           });
 
           const data = await res.json().catch(() => ({}));
-          const token = data?.token || data?.access_token || data?.data?.token;
-          const userRaw = data?.user || data?.data?.user || data?.usuario;
+          const token = data.token || data.access_token || data.data.token;
+          const userRaw = data.user || data.data.user || data.usuario;
 
           if (!res.ok || !token || !userRaw) {
             console.error('LOGIN_INLINE_FAIL', { status: res.status, payload: data });
-            showMsg(data?.message || 'Não foi possível entrar.', 'error');
+            showMsg(data.message || 'Não foi possível entrar.', 'error');
             return;
           }
 

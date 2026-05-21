@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Stitch Integration Layer (Tem de Tudo)
  * Objetivo: manter comportamento atual, com codigo mais organizado e claro.
  * Modulos internos: api, auth, ui, render, pages (cliente/empresa/admin/shared).
@@ -7373,48 +7373,6 @@
         .replace(/[\u0300-\u036f]/g, '')
         .replace(/[^a-z0-9@._-]+/g, '');
 
-      const resolvePushLookupEmail = (rawValue) => {
-        const normalized = normalizePushLookupTerm(rawValue);
-        if (!normalized) return '';
-        if (
-          normalized.includes('cliente.push') ||
-          normalized.includes('iphone') ||
-          normalized.includes('locla') ||
-          normalized.includes('demo.locla')
-        ) {
-          return 'cliente.push@demo.local';
-        }
-
-        const matchedClient = clientes.find((item) => {
-          const name = normalizePushLookupTerm(item?.name || item?.nome || '');
-          const email = normalizePushLookupTerm(item?.email || '');
-          return email === normalized || name.includes(normalized) || email.includes(normalized);
-        });
-
-        if (matchedClient?.email) {
-          return safeText(matchedClient.email, normalized);
-        }
-
-        const [typedLocalPart = '', typedDomain = ''] = normalized.split('@');
-        if (typedLocalPart) {
-          const sameLocalPart = clientes.filter((item) => {
-            const email = normalizePushLookupTerm(item?.email || '');
-            const [localPart = '', domain = ''] = email.split('@');
-
-            if (!localPart || localPart !== typedLocalPart) return false;
-            if (!typedDomain) return true;
-
-            return domain.includes(typedDomain) || typedDomain.includes(domain) || domain.replace(/^g/, '') === typedDomain.replace(/^g/, '');
-          });
-
-          if (sameLocalPart.length === 1) {
-            return safeText(sameLocalPart[0]?.email, normalized);
-          }
-        }
-
-        return normalized;
-      };
-
       const canSendAdminPushTest = () => {
         const title = safeText(pushUi.title?.value, '').trim();
         const body = safeText(pushUi.body?.value, '').trim();
@@ -7432,7 +7390,7 @@
       const resetPushTester = (message = 'Consulte um cliente e confirme se ha notificacoes ativas neste dispositivo.', tone = 'info') => {
         selectedPushClient = null;
         if (pushUi.name) pushUi.name.textContent = 'Nenhum cliente selecionado';
-        if (pushUi.emailValue) pushUi.emailValue.textContent = 'Busque um cliente para validar';
+        if (pushUi.emailValue) pushUi.emailValue.textContent = 'Busque por nome, e-mail, CPF ou telefone';
         if (pushUi.subscription) pushUi.subscription.textContent = 'Nao verificado';
         if (pushUi.devices) pushUi.devices.textContent = '0 dispositivo(s)';
         if (pushUi.lastSeen) pushUi.lastSeen.textContent = '--';
@@ -7476,51 +7434,22 @@
         setInlineFeedback(pushUi.feedback, 'Cliente localizado. O status exibido reflete a subscription real salva pelo navegador.', push?.has_active_subscription ? 'success' : 'warning');
       };
 
-      const loadAdminPushClient = async (emailOverride = null) => {
-        const lookupTerm = safeText(emailOverride ?? pushUi.email?.value, '').trim();
-        const email = resolvePushLookupEmail(lookupTerm);
-        if (!email) {
-          resetPushTester('Informe o email do cliente para consultar o status de push.', 'warning');
+      const loadAdminPushClient = async (queryOverride = null) => {
+        const lookupTerm = safeText(queryOverride ?? pushUi.email?.value, '').trim();
+        if (!lookupTerm) {
+          resetPushTester('Informe nome, e-mail, CPF ou telefone para consultar o status de push.', 'warning');
           return;
         }
 
-        if (pushUi.email) pushUi.email.value = lookupTerm || email;
+        if (pushUi.email) pushUi.email.value = lookupTerm;
 
         if (pushUi.lookup) pushUi.lookup.disabled = true;
         if (pushUi.send) pushUi.send.disabled = true;
         setInlineFeedback(pushUi.feedback, 'Buscando status real da subscription do cliente...', 'info');
 
-        let resolvedEmail = email;
-        let result = await api.request(`/admin/push/client-status?email=${encodeURIComponent(resolvedEmail)}`, {}, { notify: false });
-
-        if (!result.res.ok && lookupTerm) {
-          const fallbackSearch = await api.request(`/admin/users?query=${encodeURIComponent(lookupTerm)}`, {}, { notify: false });
-          const fallbackList = toArray(fallbackSearch.data?.data?.data || fallbackSearch.data?.data || fallbackSearch.data || []);
-          const fallbackClients = fallbackList.filter((item) => {
-            const perfil = normalizePushLookupTerm(item?.perfil || item?.role || '');
-            return perfil.includes('cliente');
-          });
-
-          const normalizedLookup = normalizePushLookupTerm(lookupTerm);
-          const fuzzyMatch = fallbackClients.find((item) => {
-            const emailCandidate = normalizePushLookupTerm(item?.email || '');
-            const nameCandidate = normalizePushLookupTerm(item?.name || item?.nome || '');
-            const [lookupLocalPart = ''] = normalizedLookup.split('@');
-            const [candidateLocalPart = ''] = emailCandidate.split('@');
-
-            return emailCandidate.includes(normalizedLookup)
-              || nameCandidate.includes(normalizedLookup)
-              || (lookupLocalPart && candidateLocalPart === lookupLocalPart);
-          });
-
-          if (fuzzyMatch?.email) {
-            resolvedEmail = safeText(fuzzyMatch.email, resolvedEmail);
-            result = await api.request(`/admin/push/client-status?email=${encodeURIComponent(resolvedEmail)}`, {}, { notify: false });
-          }
-        }
+        const result = await api.request(`/admin/push/client-status?q=${encodeURIComponent(lookupTerm)}`, {}, { notify: false });
 
         if (pushUi.lookup) pushUi.lookup.disabled = false;
-        if (pushUi.email) pushUi.email.value = resolvedEmail;
 
         if (!result.res.ok || result.data?.success === false) {
           resetPushTester(result.data?.message || 'Nao foi possivel localizar o cliente para teste de push.', result.res.status === 404 ? 'warning' : 'error');
