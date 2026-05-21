@@ -31,14 +31,14 @@
         <img alt="Tem de Tudo" src="/img/logo.png" onerror="this.onerror=null;this.src='/img/logo.png.png';" class="h-12 w-auto" />
       </div>
       <div class="space-y-2">
-        <span class="app-pill app-pill--ghost">Tem de Tudo Â· QR Code</span>
-        <h1 class="text-3xl font-bold text-white font-headline leading-tight">Entre para acompanhar benefÃ­cios e validar campanhas</h1>
-        <p class="text-sm font-medium">Clientes acessam o QR Code pessoal e acompanham recompensas. Empresas entram para validar benefÃ­cios presencialmente no estabelecimento.</p>
+        <span class="app-pill app-pill--ghost">Tem de Tudo · QR Code</span>
+        <h1 class="text-3xl font-bold text-white font-headline leading-tight">Entre para acompanhar beneficios e validar campanhas</h1>
+        <p class="text-sm font-medium">Clientes acessam o QR Code pessoal e acompanham recompensas. Empresas entram para validar beneficios presencialmente no estabelecimento.</p>
       </div>
       <div class="flex flex-wrap justify-center gap-2 lg:justify-start">
         <span class="app-pill app-pill--ghost">Cliente</span>
         <span class="app-pill app-pill--ghost">Empresa</span>
-        <span class="app-pill app-pill--ghost">ValidaÃ§Ã£o no balcÃ£o</span>
+        <span class="app-pill app-pill--ghost">Validacao no balcao</span>
       </div>
     </div>
 
@@ -76,14 +76,14 @@
       </form>
     </div>
 
-    <p class="text-center text-on-surface-variant font-medium lg:col-span-2">Ainda nÃ£o tem conta?<a class="app-auth-link font-bold hover:underline underline-offset-4 ml-1" href="/criar_conta.html">Criar conta</a></p>
+    <p class="text-center text-on-surface-variant font-medium lg:col-span-2">Ainda nao tem conta?<a class="app-auth-link font-bold hover:underline underline-offset-4 ml-1" href="/criar_conta.html">Criar conta</a></p>
   </main>
 
   <div class="fixed top-20 -left-12 w-64 h-64 bg-tertiary/10 rounded-full blur-3xl -z-10"></div>
   <div class="fixed bottom-20 -right-12 w-80 h-80 bg-primary/10 rounded-full blur-3xl -z-10"></div>
 
   <script>window.__inlineLoginManaged = true;</script>
-  <script src="/dist/stitch-app.min.js?v=20260521-admin-mobile"></script>
+  <script src="/dist/stitch-app.min.js?v=20260521-push-entry"></script>
   <script>
 
     (function () {
@@ -183,7 +183,7 @@
 
           if (!res.ok || !token || !userRaw) {
             console.error('LOGIN_INLINE_FAIL', { status: res.status, payload: data });
-            showMsg(data?.message || 'NÃ£o foi possÃ­vel entrar.', 'error');
+            showMsg(data?.message || 'Nao foi possivel entrar.', 'error');
             return;
           }
 
@@ -193,6 +193,11 @@
 
           localStorage.setItem('tem_de_tudo_token', token);
           localStorage.setItem('tem_de_tudo_user', JSON.stringify(user));
+          if (perfil === 'cliente') {
+            try {
+              sessionStorage.setItem('tem_de_tudo_push_prompt', 'login');
+            } catch (_) {}
+          }
 
           console.log('LOGIN_INLINE_OK', { status: res.status, perfil, redirect: target, payload: data });
           showMsg('Login realizado, redirecionando...', 'success');

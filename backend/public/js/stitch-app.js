@@ -11,6 +11,7 @@
     user: 'tem_de_tudo_user',
     pendingCompanyQr: 'tem_de_tudo_pending_company_qr',
     accessNotice: 'tem_de_tudo_access_notice',
+    pushPrompt: 'tem_de_tudo_push_prompt',
   };
   const redirectMap = {
     cliente: '/meus_pontos.html',
@@ -430,6 +431,31 @@
     } catch (err) {
       sessionStorage.removeItem(STORAGE.accessNotice);
       console.warn('Nao foi possivel consumir aviso temporario de acesso.', err?.message || err);
+    }
+  }
+
+  function savePushPrompt(reason = 'login') {
+    try {
+      sessionStorage.setItem(STORAGE.pushPrompt, safeText(reason, 'login') || 'login');
+    } catch (err) {
+      console.warn('Nao foi possivel registrar o prompt de push.', err?.message || err);
+    }
+  }
+
+  function getPushPrompt() {
+    try {
+      return safeText(sessionStorage.getItem(STORAGE.pushPrompt) || '', '');
+    } catch (err) {
+      console.warn('Nao foi possivel ler o prompt de push.', err?.message || err);
+      return '';
+    }
+  }
+
+  function clearPushPrompt() {
+    try {
+      sessionStorage.removeItem(STORAGE.pushPrompt);
+    } catch (err) {
+      console.warn('Nao foi possivel limpar o prompt de push.', err?.message || err);
     }
   }
 
@@ -1177,6 +1203,9 @@
   // ---------------------- Push ---------------------- //
   const push = (() => {
     let configCache = null;
+    let promptModal = null;
+    let promptState = null;
+    const promptPages = new Set(['meus_pontos', 'meu_perfil', 'detalhe_do_parceiro', 'parceiros_tem_de_tudo']);
 
     function urlBase64ToUint8Array(base64String) {
       const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -1317,6 +1346,183 @@
         helper: 'Ative as notificações para receber novidades das empresas onde você se cadastrou: promoções, bônus de aniversário e lembretes de retorno.',
         subscription: null,
       };
+    }
+
+    function canAutoPromptOnCurrentPage() {
+      return promptPages.has(page);
+    }
+
+    function canTriggerPermissionPrompt(state) {
+      return ['idle', 'unavailable'].includes(state?.key);
+    }
+
+    function getPromptReasonCopy(reason) {
+      if (reason === 'register') {
+        return {
+          kicker: 'Cadastro concluido',
+          title: 'Ative as notificacoes neste dispositivo',
+          body: 'Receba promocoes, bonus e lembretes das empresas onde voce se cadastrou sem depender de SMS ou e-mail.',
+        };
+      }
+
+      return {
+        kicker: 'Bem-vindo de volta',
+        title: 'Ative as notificacoes neste dispositivo',
+        body: 'Receba campanhas e beneficios das empresas vinculadas a sua conta assim que fizer login no app.',
+      };
+    }
+
+    function ensurePromptModal() {
+      if (promptModal) return promptModal;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'fixed inset-0 z-50 hidden items-end justify-center bg-slate-950/45 p-4 sm:items-center';
+      wrapper.setAttribute('data-push-prompt-modal', 'true');
+      wrapper.innerHTML = `
+        <div class="w-full max-w-xl overflow-hidden rounded-[30px] bg-white shadow-[0_30px_90px_rgba(11,31,58,0.28)] ring-1 ring-black/5">
+          <div class="bg-[linear-gradient(135deg,#133F8C_0%,#00AFA8_55%,#B01774_100%)] px-6 py-6 text-white">
+            <div class="flex items-start justify-between gap-4">
+              <div class="space-y-2">
+                <span class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em]" data-push-prompt-kicker>Bem-vindo</span>
+                <h2 class="text-2xl font-extrabold leading-tight" data-push-prompt-title>Ative as notificacoes neste dispositivo</h2>
+                <p class="max-w-lg text-sm leading-6 text-white/82" data-push-prompt-body>Receba promocoes e beneficios das empresas vinculadas a sua conta.</p>
+              </div>
+              <button type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/15" data-push-prompt-close aria-label="Fechar">
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+          </div>
+          <div class="space-y-4 px-6 py-6">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">Status deste dispositivo</p>
+                <p class="mt-2 text-base font-bold text-[#111B3F]" data-push-prompt-status>Verificando suporte e permissao...</p>
+              </div>
+              <span class="inline-flex rounded-full bg-slate-100 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500" data-push-prompt-badge>Verificando</span>
+            </div>
+            <p class="text-sm leading-6 text-slate-500" data-push-prompt-helper>Toque no botao abaixo para concluir a ativacao real das notificacoes neste aparelho.</p>
+            <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <button type="button" class="app-secondary-button justify-center" data-push-prompt-secondary>Agora nao</button>
+              <button type="button" class="app-primary-button justify-center" data-push-prompt-primary>Ativar notificacoes</button>
+            </div>
+          </div>
+        </div>`;
+
+      wrapper.addEventListener('click', (event) => {
+        if (event.target === wrapper) {
+          wrapper.classList.add('hidden');
+        }
+      });
+
+      wrapper.querySelector('[data-push-prompt-close]')?.addEventListener('click', () => {
+        wrapper.classList.add('hidden');
+      });
+
+      wrapper.querySelector('[data-push-prompt-secondary]')?.addEventListener('click', () => {
+        wrapper.classList.add('hidden');
+      });
+
+      wrapper.querySelector('[data-push-prompt-primary]')?.addEventListener('click', async () => {
+        const primary = wrapper.querySelector('[data-push-prompt-primary]');
+        const reason = wrapper.dataset.pushPromptReason || 'login';
+
+        if (!canTriggerPermissionPrompt(promptState)) {
+          wrapper.classList.add('hidden');
+          return;
+        }
+
+        primary.disabled = true;
+        try {
+          const result = await subscribe();
+          const state = result?.state || await getState();
+          promptState = state;
+          updatePromptModal(state, reason);
+          await refreshAllCards();
+
+          if (result?.success) {
+            ui.message(result.message || 'Notificacoes ativadas neste dispositivo.', 'success');
+            wrapper.classList.add('hidden');
+          } else {
+            ui.message(state?.status || 'Nao foi possivel ativar as notificacoes neste momento.', state?.tone || 'warning');
+          }
+        } catch (err) {
+          console.error('push_prompt_subscribe_fail', err);
+          const state = await getState();
+          promptState = state;
+          updatePromptModal(state, reason);
+          await refreshAllCards();
+          ui.message(err?.message || 'Nao foi possivel ativar as notificacoes neste momento.', 'error');
+        } finally {
+          primary.disabled = false;
+        }
+      });
+
+      document.body.appendChild(wrapper);
+      promptModal = wrapper;
+      return promptModal;
+    }
+
+    function updatePromptModal(state, reason = 'login') {
+      const modal = ensurePromptModal();
+      if (!modal) return;
+
+      const copy = getPromptReasonCopy(reason);
+      promptState = state;
+      modal.dataset.pushPromptReason = reason;
+
+      const kicker = modal.querySelector('[data-push-prompt-kicker]');
+      const title = modal.querySelector('[data-push-prompt-title]');
+      const body = modal.querySelector('[data-push-prompt-body]');
+      const badge = modal.querySelector('[data-push-prompt-badge]');
+      const status = modal.querySelector('[data-push-prompt-status]');
+      const helper = modal.querySelector('[data-push-prompt-helper]');
+      const primary = modal.querySelector('[data-push-prompt-primary]');
+      const secondary = modal.querySelector('[data-push-prompt-secondary]');
+
+      if (kicker) kicker.textContent = copy.kicker;
+      if (title) title.textContent = copy.title;
+      if (body) body.textContent = copy.body;
+      if (badge) badge.textContent = state?.badge || 'Verificando';
+      if (status) status.textContent = state?.status || 'Verificando suporte e permissao...';
+      if (helper) helper.textContent = state?.helper || 'Toque no botao abaixo para concluir a ativacao real das notificacoes neste aparelho.';
+
+      const actionable = canTriggerPermissionPrompt(state);
+      if (primary) {
+        primary.textContent = actionable ? 'Ativar notificacoes' : 'Entendi';
+      }
+      if (secondary) {
+        secondary.classList.toggle('hidden', !actionable);
+      }
+    }
+
+    async function refreshAllCards() {
+      const cards = Array.from(document.querySelectorAll('[data-push-card]'));
+      if (!cards.length) return;
+      await Promise.all(cards.map((card) => refreshCard(card).catch((err) => {
+        console.error('push_card_refresh_fail', err);
+      })));
+    }
+
+    async function maybePromptAfterAuth() {
+      const reason = getPushPrompt();
+      if (!reason || !canAutoPromptOnCurrentPage()) return;
+
+      const viewer = auth.normalizeUser(auth.getStored()?.user);
+      const perfil = auth.normalizePerfil(viewer?.perfil || viewer?.role || viewer?.tipo);
+      if (perfil !== 'cliente') {
+        clearPushPrompt();
+        return;
+      }
+
+      const state = await getState();
+      if (state.key === 'enabled') {
+        clearPushPrompt();
+        return;
+      }
+
+      clearPushPrompt();
+      updatePromptModal(state, reason);
+      ensurePromptModal().classList.remove('hidden');
     }
 
     function paintCard(card, state) {
@@ -1501,12 +1707,14 @@
 
     function mountCards() {
       const cards = Array.from(document.querySelectorAll('[data-push-card]'));
-      if (!cards.length) return;
       cards.forEach((card) => {
         bindCard(card);
         refreshCard(card).catch((err) => {
           console.error('push_card_refresh_fail', err);
         });
+      });
+      maybePromptAfterAuth().catch((err) => {
+        console.error('push_prompt_mount_fail', err);
       });
     }
 
@@ -7804,6 +8012,7 @@
       console.log('LOGIN_SUBMIT_OK', JSON.stringify({ status: res.status, payload, perfil, redirect: target }, null, 2));
       if (res.ok && token && user) {
         auth.save(token, user);
+        if (perfil === 'cliente') savePushPrompt('login');
         ui.clearPageState();
         ui.message('Login realizado, redirecionando...', 'success');
         setTimeout(() => (window.location.href = target), 300);
@@ -7852,6 +8061,7 @@
         }
         auth.save(token, user);
         const perfil = auth.normalizePerfil(user?.perfil || user?.role || user?.tipo);
+        if (perfil === 'cliente') savePushPrompt('login');
         window.location.href = resolvePostLoginTarget(perfil);
       });
     },
@@ -8176,6 +8386,8 @@
           method: 'POST',
           body: JSON.stringify(requestPayload),
         }, requestConfig);
+        const createdToken = data?.token || data?.access_token || data?.data?.token || null;
+        const createdUser = auth.normalizeUser(data?.user || data?.data?.user || data?.usuario || null);
         ui.clearPageState();
         if (res.ok && data?.success !== false) {
           if (perfil === 'empresa' && isAdminCompanyFlow) {
@@ -8185,8 +8397,18 @@
             ui.message(data?.message || 'Solicitação enviada. Aguarde aprovação do administrador.', 'success');
             setTimeout(() => (window.location.href = '/entrar.html'), 1200);
           } else {
-            ui.message('Conta criada. Faca login.', 'success');
-            setTimeout(() => (window.location.href = '/entrar.html'), 800);
+            if (createdToken && createdUser) {
+              auth.save(createdToken, createdUser);
+              savePushPrompt('register');
+              const target = resolveCompanyQrRedirect('cliente') || resolvePostLoginTarget('cliente');
+              ui.message('Conta criada. Vamos ativar as notificacoes no proximo passo.', 'success');
+              setTimeout(() => (window.location.href = target), 500);
+            } else {
+              savePushPrompt('register');
+              saveAccessNotice('Conta criada. Faca login para continuar.', 'success');
+              ui.message('Conta criada. Faca login.', 'success');
+              setTimeout(() => (window.location.href = '/entrar.html'), 800);
+            }
           }
         } else {
           const errs = data?.errors ? Object.values(data.errors).flat().join(' ') : '';
