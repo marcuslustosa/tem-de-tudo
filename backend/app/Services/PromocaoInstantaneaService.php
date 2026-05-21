@@ -463,9 +463,10 @@ class PromocaoInstantaneaService
             $stats['status'] = 'config_missing';
         } elseif (($stats['total_com_subscription'] ?? 0) === 0) {
             $stats['status'] = 'no_subscription';
-            $stats['message'] = 'Nenhum cliente elegivel ativou notificacoes push.';
+            $stats['message'] = 'A promocao esta pronta, mas nenhum cliente vinculado ativou notificacoes neste dispositivo ainda. Peca para o cliente clicar em Ativar notificacoes no app.';
         } else {
             $stats['status'] = 'failed';
+            $stats['message'] = 'Nao foi possivel entregar a promocao para os clientes com notificacoes ativas.';
         }
 
         return [

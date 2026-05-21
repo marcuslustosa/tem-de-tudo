@@ -258,9 +258,10 @@ class LembreteRetornoService
             $stats['status'] = 'config_missing';
         } elseif (($stats['total_com_subscription'] ?? 0) === 0) {
             $stats['status'] = 'no_subscription';
-            $stats['message'] = 'Nenhum cliente inativo elegivel ativou notificacoes push.';
+            $stats['message'] = 'O lembrete esta configurado, mas nenhum cliente inativo elegivel ativou notificacoes neste dispositivo ainda.';
         } else {
             $stats['status'] = 'failed';
+            $stats['message'] = 'Nao foi possivel entregar o lembrete para os clientes com notificacoes ativas.';
         }
 
         return [

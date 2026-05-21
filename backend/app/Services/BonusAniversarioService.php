@@ -434,9 +434,10 @@ class BonusAniversarioService
             $stats['status'] = 'config_missing';
         } elseif (($stats['total_com_subscription'] ?? 0) === 0) {
             $stats['status'] = 'no_subscription';
-            $stats['message'] = 'Nenhum aniversariante elegivel ativou notificacoes push.';
+            $stats['message'] = 'O bonus aniversario esta ativo, mas nenhum aniversariante elegivel ativou notificacoes neste dispositivo ainda.';
         } else {
             $stats['status'] = 'failed';
+            $stats['message'] = 'Nao foi possivel entregar o bonus aniversario para os aniversariantes com notificacoes ativas.';
         }
 
         return [

@@ -160,11 +160,25 @@ class LembreteRetornoController extends Controller
             ], 409);
         }
 
-        if (($result['delivery']['status'] ?? null) === 'config_missing') {
+        $deliveryStatus = $result['delivery']['status'] ?? null;
+
+        if ($deliveryStatus === 'config_missing') {
             return response()->json([
                 'success' => false,
                 'error' => 'config_missing',
-                'message' => $result['delivery']['message'] ?? 'Configuração de push pendente no servidor.',
+                'message' => $result['delivery']['message'] ?? 'Configuracao de push pendente no servidor.',
+                'data' => $result['lembrete'],
+                'meta' => [
+                    'delivery' => $result['delivery'],
+                ],
+            ], 422);
+        }
+
+        if ($deliveryStatus === 'failed') {
+            return response()->json([
+                'success' => false,
+                'error' => 'delivery_failed',
+                'message' => $result['delivery']['message'] ?? 'Nao foi possivel entregar o lembrete agora.',
                 'data' => $result['lembrete'],
                 'meta' => [
                     'delivery' => $result['delivery'],
@@ -174,7 +188,9 @@ class LembreteRetornoController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Lembretes de retorno processados para clientes vinculados elegiveis.',
+            'message' => $deliveryStatus === 'no_subscription'
+                ? ($result['delivery']['message'] ?? 'O lembrete esta configurado, mas nenhum cliente inativo elegivel ativou notificacoes neste dispositivo ainda.')
+                : 'Lembretes de retorno processados para clientes vinculados elegiveis.',
             'data' => $result['lembrete'],
             'meta' => [
                 'delivery' => $result['delivery'],

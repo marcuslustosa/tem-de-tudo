@@ -6,7 +6,12 @@
 (function () {
   // ---------------------- Constantes ---------------------- //
   const API_BASE = `${window.location.origin}/api`;
-  const STORAGE = { token: 'tem_de_tudo_token', user: 'tem_de_tudo_user', pendingCompanyQr: 'tem_de_tudo_pending_company_qr' };
+  const STORAGE = {
+    token: 'tem_de_tudo_token',
+    user: 'tem_de_tudo_user',
+    pendingCompanyQr: 'tem_de_tudo_pending_company_qr',
+    accessNotice: 'tem_de_tudo_access_notice',
+  };
   const redirectMap = {
     cliente: '/meus_pontos.html',
     empresa: '/dashboard_parceiro.html',
@@ -390,10 +395,115 @@
     return `/entrar.html?next=${encodeURIComponent(next)}`;
   }
 
+  function currentRelativeUrl() {
+    const value = `${window.location.pathname || '/'}${window.location.search || ''}${window.location.hash || ''}`;
+
+    return value.startsWith('/') ? value : `/${value}`;
+  }
+
+  function buildLoginRedirect(next = currentRelativeUrl()) {
+    const safeNext = typeof next === 'string' && next.startsWith('/') && !next.startsWith('//')
+      ? next
+      : '/meus_pontos.html';
+
+    return `/entrar.html?next=${encodeURIComponent(safeNext)}`;
+  }
+
+  function saveAccessNotice(message, tone = 'warning') {
+    if (!message) return;
+    try {
+      sessionStorage.setItem(STORAGE.accessNotice, JSON.stringify({ message, tone }));
+    } catch (err) {
+      console.warn('Nao foi possivel salvar aviso temporario de acesso.', err?.message || err);
+    }
+  }
+
+  function consumeAccessNotice() {
+    try {
+      const raw = sessionStorage.getItem(STORAGE.accessNotice);
+      if (!raw) return;
+      sessionStorage.removeItem(STORAGE.accessNotice);
+      const payload = JSON.parse(raw);
+      if (payload?.message) {
+        ui.message(payload.message, payload.tone || 'warning');
+      }
+    } catch (err) {
+      sessionStorage.removeItem(STORAGE.accessNotice);
+      console.warn('Nao foi possivel consumir aviso temporario de acesso.', err?.message || err);
+    }
+  }
+
+  function redirectToLogin(message = 'Faça login para continuar.', next = currentRelativeUrl()) {
+    saveAccessNotice(message, 'warning');
+    window.location.href = buildLoginRedirect(next);
+  }
+
+  function resolvePostLoginTarget(perfil) {
+    const next = new URLSearchParams(window.location.search).get('next');
+    if (next && next.startsWith('/') && !next.startsWith('//')) {
+      return next;
+    }
+
+    return redirectMap[perfil] || '/meus_pontos.html';
+  }
+
+  function restrictedAreaMessage(perfis = []) {
+    if (perfis.includes('empresa')) return 'Acesso restrito a estabelecimentos.';
+    if (perfis.includes('admin')) return 'Acesso restrito ao painel administrativo.';
+    if (perfis.includes('cliente')) return 'Acesso restrito a clientes autenticados.';
+
+    return 'Acesso restrito a este perfil.';
+  }
+
   function resolveCompanyQrRedirect(perfil) {
     const pendingCode = getPendingCompanyQr();
     if (!pendingCode || perfil !== 'cliente') return null;
     return buildCompanyLinkPageUrl(pendingCode);
+  }
+
+  function isCompanyAccessError(res, data) {
+    if (!res || ![403, 404].includes(Number(res.status || 0))) return false;
+    const error = String(data?.error || '').trim();
+    const message = String(data?.message || '').trim();
+
+    return (
+      ['company_not_linked', 'company_not_found', 'company_status_blocked', 'subscription_blocked'].includes(error)
+      || (res.status === 404 && /empresa nao encontrada/i.test(message))
+    );
+  }
+
+  function companyAccessMessage(data, fallback = 'Acesso operacional indisponível para esta empresa.') {
+    const error = String(data?.error || '').trim();
+    if (error === 'company_not_linked') {
+      return 'Sua conta de empresa ainda nao esta vinculada a um estabelecimento ativo.';
+    }
+    if (error === 'company_not_found') {
+      return 'Nao encontramos um estabelecimento ativo vinculado a este login.';
+    }
+    if (error === 'company_status_blocked') {
+      return data?.message || 'Esta empresa ainda nao pode operar nesta etapa.';
+    }
+    if (error === 'subscription_blocked') {
+      return data?.message || 'A operacao desta empresa esta temporariamente bloqueada.';
+    }
+    if (typeof data?.message === 'string' && data.message.trim()) {
+      return data.message.trim();
+    }
+
+    return fallback;
+  }
+
+  function handleCompanyAccessFailure(res, data, fallbackMessage, feedbackEl = null) {
+    if (!isCompanyAccessError(res, data)) return false;
+
+    const message = companyAccessMessage(data, fallbackMessage);
+    const stateType = String(data?.error || '').trim() === 'subscription_blocked' ? 'error' : 'empty';
+    ui.setPageState(stateType, message);
+    if (feedbackEl) {
+      setInlineFeedback(feedbackEl, message, stateType === 'error' ? 'error' : 'warning');
+    }
+
+    return true;
   }
 
   function renderStars(rating = 0) {
@@ -692,6 +802,7 @@
 
     const logout = () => {
       clear();
+      saveAccessNotice('Sessao encerrada.', 'info');
       window.location.href = '/entrar.html';
     };
 
@@ -701,7 +812,7 @@
       const storedUser = normalizeUser(stored.user);
       if (!token) {
         clear();
-        window.location.href = '/entrar.html';
+        redirectToLogin('Faça login para continuar.');
         return null;
       }
 
@@ -715,9 +826,9 @@
         return apiUser;
       }
 
-      if (res.status === 401 || res.status === 403) {
+      if (res.status === 401) {
         clear();
-        window.location.href = '/entrar.html';
+        redirectToLogin('Sessao expirada. Faça login novamente.');
         return null;
       }
       if (storedUser && storedUser.perfil) {
@@ -727,7 +838,7 @@
       }
       console.warn('Sessao nao validada por /auth/me; sem dados de usuario no storage.');
       clear();
-      window.location.href = '/entrar.html';
+      redirectToLogin('Faça login para continuar.');
       return null;
     };
 
@@ -736,7 +847,8 @@
       if (!user) return false;
       const perfil = normalizePerfil(user.perfil || user.role || user.tipo);
       if (perfis.length && !perfis.includes(perfil)) {
-        window.location.href = redirectMap[perfil] || '/entrar.html';
+        saveAccessNotice(restrictedAreaMessage(perfis), 'warning');
+        window.location.href = redirectMap[perfil] || buildLoginRedirect();
         return false;
       }
       return true;
@@ -1430,8 +1542,8 @@
         // So forca logout/redirecionamento quando a validacao central de sesso falha.
         if (path === '/auth/me') {
           auth.clear();
-          ui.message('Sessao expirada. Faca login novamente.', 'warning');
-          setTimeout(() => (window.location.href = '/entrar.html'), 300);
+          saveAccessNotice('Sessao expirada. Faça login novamente.', 'warning');
+          setTimeout(() => (window.location.href = buildLoginRedirect()), 300);
         } else {
           console.warn('401 em recurso protegido (sem logout forcado):', path);
         }
@@ -1522,7 +1634,9 @@
     if (normalized.status === 'config_missing') {
       short = normalized.message || 'Configuração de push pendente no servidor.';
     } else if (normalized.status === 'no_subscription') {
-      short = normalized.message || `Nenhum ${subject} elegivel ativou notificacoes push.`;
+      short = normalized.message || `Nenhum ${subject} elegivel ativou notificacoes neste dispositivo ainda.`;
+    } else if (normalized.status === 'failed') {
+      short = normalized.message || `Nao foi possivel entregar a notificacao para ${subject}.`;
     }
 
     return {
@@ -3825,6 +3939,10 @@
           const container = document.getElementById('empresaQRContainer');
           if (!container) return;
           const { res, data } = await api.request('/empresa/qrcodes');
+          if (handleCompanyAccessFailure(res, data, 'Nao foi possivel carregar o QR Code operacional desta empresa.')) {
+            container.innerHTML = '<p class="text-sm text-outline">QR Code indisponivel enquanto o acesso operacional da empresa nao for liberado.</p>';
+            return;
+          }
           const qrList = data?.data || [];
           if (res.ok && qrList.length && qrList[0].code) {
             const qr = qrList[0];
@@ -4412,6 +4530,13 @@
         api.request('/empresa/relatorios/resumo', {}, { notify: false }),
         api.request('/empresa/qrcodes', {}, { notify: false }),
       ]);
+      if (
+        handleCompanyAccessFailure(promos.res, promos.data, 'Nao foi possivel carregar as ofertas desta empresa.')
+        || handleCompanyAccessFailure(resumo.res, resumo.data, 'Nao foi possivel carregar o resumo operacional desta empresa.')
+        || handleCompanyAccessFailure(qrcodes.res, qrcodes.data, 'Nao foi possivel carregar o QR Code da empresa.')
+      ) {
+        return;
+      }
 
       const kpiVolume = document.getElementById('kpiVolume');
       const kpiClientes = document.getElementById('kpiClientes');
@@ -4609,7 +4734,10 @@
       const load = async (term = '') => {
         ui.setPageState('loading', 'Carregando clientes...');
         const qs = term ? `?busca=${encodeURIComponent(term)}` : '';
-        const { data } = await api.request(`/empresa/clientes${qs}`);
+        const { res, data } = await api.request(`/empresa/clientes${qs}`);
+        if (handleCompanyAccessFailure(res, data, 'Nao foi possivel carregar os clientes fidelizados.')) {
+          return;
+        }
         const payload = data?.data || {};
         const lista = payload?.data || data?.data || data || [];
         const ativos = lista.filter((item) => item?.status_inatividade !== 'inactive').length;
@@ -4689,7 +4817,11 @@
     async promocoes() {
       if (!(await auth.guard(['empresa']))) return;
       ui.setPageState('loading', 'Carregando promocoes...');
-      const { data } = await api.request('/empresa/promocoes');
+      const { res, data } = await api.request('/empresa/promocoes');
+      const formMessageEl = document.getElementById('ofertaMsg');
+      if (handleCompanyAccessFailure(res, data, 'Nao foi possivel carregar a gestao de ofertas desta empresa.', formMessageEl)) {
+        return;
+      }
       const lista = data?.data || data || [];
       const weeklyStatus = data?.meta?.weekly_limit || { limit: 2, used: 0, remaining: 2 };
       ui.clearPageState();
@@ -4789,7 +4921,7 @@
                 </div>
                 <div class="flex items-center gap-2 text-[10px] text-outline">
                   <button class="px-3 py-1 rounded-lg ${p.ativo ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'} text-xs" data-action="toggle">${p.ativo ? 'Pausar' : 'Ativar'}</button>
-                  <button class="px-3 py-1 rounded-lg ${canSend ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'} text-xs" data-action="enviar" ${canSend ? '' : 'disabled'}>${p.enviada_em ? 'Push enviado' : 'Enviar push'}</button>
+                  <button class="px-3 py-1 rounded-lg ${canSend ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'} text-xs" data-action="enviar" ${canSend ? '' : 'disabled'}>${p.enviada_em ? 'Push enviado' : 'Enviar promoção'}</button>
                   <button class="px-3 py-1 rounded-lg bg-rose-600 text-white text-xs" data-action="deletar">Excluir</button>
                 </div>
               </div>
@@ -4813,7 +4945,10 @@
               const preview = formatPushDeliverySummary(resp?.meta?.delivery || {}, 'clientes vinculados');
               const tone = preview.normalized.enviados > 0 ? 'success' : 'warning';
               const summary = updatePromotionDeliveryFeedback(resp, tone);
-              ui.message(resp?.message || summary.short, summary.normalized.enviados > 0 ? 'success' : 'warning');
+              const outboundMessage = summary.normalized.enviados > 0
+                ? (resp?.message || summary.short)
+                : (summary.short || resp?.message || 'A promoção está pronta, mas nenhum cliente vinculado ativou notificações ainda.');
+              ui.message(outboundMessage, summary.normalized.enviados > 0 ? 'success' : 'warning');
               if (summary.normalized.enviados > 0) {
                 p.data_envio = new Date().toISOString();
                 p.enviada_em = p.data_envio;
@@ -4822,7 +4957,7 @@
               setCounts(lista);
             } else {
               const summary = updatePromotionDeliveryFeedback(resp, resp?.error === 'config_missing' ? 'warning' : 'error');
-              ui.message(resp?.message || summary.short || 'Não foi possível enviar a promoção.', resp?.error === 'config_missing' ? 'warning' : 'error');
+              ui.message(summary.short || resp?.message || 'Não foi possível enviar a promoção.', resp?.error === 'config_missing' ? 'warning' : 'error');
             }
           });
           card.querySelector('[data-action=\"deletar\"]')?.addEventListener('click', () => empresa.deletarPromocao(p.id));
@@ -5462,11 +5597,11 @@
             const summary = formatPushDeliverySummary(data?.meta?.delivery || {}, 'aniversariantes elegiveis');
             const tone = summary.normalized.enviados > 0 ? 'success' : 'warning';
             setInlineFeedback(birthdayUi.mensagem, summary.detail, tone);
-            ui.message(data?.message || summary.short, tone);
+            ui.message(summary.normalized.enviados > 0 ? (data?.message || summary.short) : (summary.short || data?.message), tone);
           } else {
             const summary = formatPushDeliverySummary(data?.meta?.delivery || {}, 'aniversariantes elegiveis');
             setInlineFeedback(birthdayUi.mensagem, summary.detail || (data?.message || ''), data?.error === 'config_missing' ? 'warning' : 'error');
-            ui.message(data?.message || summary.short || 'Não foi possível enviar o bônus aniversário.', data?.error === 'config_missing' ? 'warning' : 'error');
+            ui.message(summary.short || data?.message || 'Não foi possível enviar o bônus aniversário.', data?.error === 'config_missing' ? 'warning' : 'error');
           }
         });
 
@@ -5636,11 +5771,11 @@
             const summary = formatPushDeliverySummary(data?.meta?.delivery || {}, 'clientes inativos');
             const tone = summary.normalized.enviados > 0 ? 'success' : 'warning';
             setInlineFeedback(reminderUi.feedback, summary.detail, tone);
-            ui.message(data?.message || summary.short, tone);
+            ui.message(summary.normalized.enviados > 0 ? (data?.message || summary.short) : (summary.short || data?.message), tone);
           } else {
             const summary = formatPushDeliverySummary(data?.meta?.delivery || {}, 'clientes inativos');
             setInlineFeedback(reminderUi.feedback, summary.detail || (data?.message || ''), data?.error === 'config_missing' ? 'warning' : 'error');
-            ui.message(data?.message || summary.short || 'Não foi possível enviar os lembretes.', data?.error === 'config_missing' ? 'warning' : 'error');
+            ui.message(summary.short || data?.message || 'Não foi possível enviar os lembretes.', data?.error === 'config_missing' ? 'warning' : 'error');
           }
         });
 
@@ -7180,7 +7315,7 @@
       const token = payload?.token || payload?.access_token || payload?.data?.token || null;
       const user = auth.normalizeUser(payload?.user || payload?.data?.user || payload?.usuario || null);
       const perfil = user?.perfil || user?.role || user?.tipo || null;
-      const target = redirectMap[perfil] || '/';
+      const target = resolvePostLoginTarget(perfil);
       console.log('LOGIN_SUBMIT_OK', JSON.stringify({ status: res.status, payload, perfil, redirect: target }, null, 2));
       if (res.ok && token && user) {
         auth.save(token, user);
@@ -7232,8 +7367,7 @@
         }
         auth.save(token, user);
         const perfil = auth.normalizePerfil(user?.perfil || user?.role || user?.tipo);
-        const destinos = { admin: '/dashboard_admin_master.html', empresa: '/dashboard_parceiro.html', cliente: '/meus_pontos.html' };
-        window.location.href = destinos[perfil] || '/meus_pontos.html';
+        window.location.href = resolvePostLoginTarget(perfil);
       });
     },
     vincular_empresa: async () => {
@@ -7915,6 +8049,7 @@
     wireFallbackButtons();
     wireSettingsShortcuts();
     wirePushButtons();
+    consumeAccessNotice();
     const handler = handlers[page];
     if (handler) {
       try {

@@ -60,7 +60,7 @@ class BonusAniversarioController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Bônus aniversário salvo com sucesso.',
+            'message' => 'BÃ´nus aniversÃ¡rio salvo com sucesso.',
             'data' => $this->bonusService->serializeBonus($bonus),
         ], 201);
     }
@@ -73,7 +73,7 @@ class BonusAniversarioController extends Controller
         }
 
         if (!$this->canAccessBonus(Auth::user(), $bonus)) {
-            return $this->forbidden('Você não pode visualizar este bônus aniversário.');
+            return $this->forbidden('VocÃª nÃ£o pode visualizar este bÃ´nus aniversÃ¡rio.');
         }
 
         return response()->json([
@@ -90,7 +90,7 @@ class BonusAniversarioController extends Controller
         }
 
         if (!$this->canAccessBonus(Auth::user(), $bonus)) {
-            return $this->forbidden('Você não pode alterar este bônus aniversário.');
+            return $this->forbidden('VocÃª nÃ£o pode alterar este bÃ´nus aniversÃ¡rio.');
         }
 
         $validated = $request->validate([
@@ -110,7 +110,7 @@ class BonusAniversarioController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Bônus aniversário atualizado com sucesso.',
+            'message' => 'BÃ´nus aniversÃ¡rio atualizado com sucesso.',
             'data' => $this->bonusService->serializeBonus($updated),
         ]);
     }
@@ -123,7 +123,7 @@ class BonusAniversarioController extends Controller
         }
 
         if (!$this->canAccessBonus(Auth::user(), $bonus)) {
-            return $this->forbidden('Você não pode alterar este bônus aniversário.');
+            return $this->forbidden('VocÃª nÃ£o pode alterar este bÃ´nus aniversÃ¡rio.');
         }
 
         $validated = $request->validate([
@@ -139,8 +139,8 @@ class BonusAniversarioController extends Controller
         return response()->json([
             'success' => true,
             'message' => $updated->ativo
-                ? 'Bônus aniversário ativado com sucesso.'
-                : 'Bônus aniversário desativado com sucesso.',
+                ? 'BÃ´nus aniversÃ¡rio ativado com sucesso.'
+                : 'BÃ´nus aniversÃ¡rio desativado com sucesso.',
             'data' => $this->bonusService->serializeBonus($updated),
         ]);
     }
@@ -172,7 +172,7 @@ class BonusAniversarioController extends Controller
         if ($this->normalizePerfil($customer->perfil ?? $customer->role ?? $customer->tipo ?? null) !== 'cliente') {
             return response()->json([
                 'success' => false,
-                'message' => 'O bônus aniversário só pode ser validado para clientes.',
+                'message' => 'O bÃ´nus aniversÃ¡rio sÃ³ pode ser validado para clientes.',
             ], 422);
         }
 
@@ -187,7 +187,7 @@ class BonusAniversarioController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Bônus aniversário validado com sucesso.',
+            'message' => 'BÃ´nus aniversÃ¡rio validado com sucesso.',
             'data' => [
                 'bonus_aniversario' => $snapshot,
             ],
@@ -215,11 +215,25 @@ class BonusAniversarioController extends Controller
             ], 409);
         }
 
-        if (($result['delivery']['status'] ?? null) === 'config_missing') {
+        $deliveryStatus = $result['delivery']['status'] ?? null;
+
+        if ($deliveryStatus === 'config_missing') {
             return response()->json([
                 'success' => false,
                 'error' => 'config_missing',
-                'message' => $result['delivery']['message'] ?? 'Configuração de push pendente no servidor.',
+                'message' => $result['delivery']['message'] ?? 'Configuracao de push pendente no servidor.',
+                'data' => $result['bonus'],
+                'meta' => [
+                    'delivery' => $result['delivery'],
+                ],
+            ], 422);
+        }
+
+        if ($deliveryStatus === 'failed') {
+            return response()->json([
+                'success' => false,
+                'error' => 'delivery_failed',
+                'message' => $result['delivery']['message'] ?? 'Nao foi possivel entregar o bonus aniversario agora.',
                 'data' => $result['bonus'],
                 'meta' => [
                     'delivery' => $result['delivery'],
@@ -229,7 +243,9 @@ class BonusAniversarioController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Envio de aniversário processado para clientes vinculados elegíveis.',
+            'message' => $deliveryStatus === 'no_subscription'
+                ? ($result['delivery']['message'] ?? 'O bonus aniversario esta ativo, mas nenhum aniversariante elegivel ativou notificacoes neste dispositivo ainda.')
+                : 'Envio de aniversario processado para clientes vinculados elegiveis.',
             'data' => $result['bonus'],
             'meta' => [
                 'delivery' => $result['delivery'],
@@ -241,7 +257,7 @@ class BonusAniversarioController extends Controller
     {
         $user = Auth::user();
         if ($this->normalizePerfil($user->perfil ?? $user->role ?? $user->tipo ?? null) !== 'cliente') {
-            return $this->forbidden('Apenas clientes podem consultar bônus aniversário.');
+            return $this->forbidden('Apenas clientes podem consultar bÃ´nus aniversÃ¡rio.');
         }
 
         $validated = $request->validate([
@@ -389,7 +405,7 @@ class BonusAniversarioController extends Controller
     {
         return response()->json([
             'success' => false,
-            'message' => 'Bônus aniversário não encontrado.',
+            'message' => 'BÃ´nus aniversÃ¡rio nÃ£o encontrado.',
         ], 404);
     }
 }

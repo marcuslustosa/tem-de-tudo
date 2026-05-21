@@ -269,6 +269,7 @@ class I9PlusDemoSeeder extends Seeder
         $this->syncInscricao($clients['joao'], $companies['malagueta'], $today->copy()->subDays(42), $today->copy()->subDays(4), true);
         $this->syncInscricao($clients['ana'], $companies['malagueta'], $today->copy()->subDays(5), $today->copy()->subDay(), false);
         $this->syncInscricao($clients['maria'], $companies['malagueta'], $today->copy()->subDays(12), $today->copy()->subDays(7), false);
+        $this->syncInscricao($clients['pedro'], $companies['malagueta'], $today->copy()->subDays(64), $today->copy()->subDays(46), false);
         $this->syncInscricao($clients['pedro'], $companies['texano'], $today->copy()->subDays(64), $today->copy()->subDays(46), false);
         $this->syncInscricao($clients['joao'], $companies['texano'], $today->copy()->subDays(20), $today->copy()->subDays(10), false);
         $this->syncInscricao($clients['maria'], $companies['makoto'], $today->copy()->subDays(3), $today->copy()->subDays(2), false);
@@ -292,6 +293,20 @@ class I9PlusDemoSeeder extends Seeder
             ]);
         }
 
+        $bonusMap['malagueta'] = $this->syncBonusAdesao($companies['malagueta'], [
+            'titulo' => 'Bem-vindo ao programa de fidelidade',
+            'descricao' => 'Apresente seu QR Code e valide 10% de desconto na primeira compra.',
+            'tipo_desconto' => 'porcentagem',
+            'valor_desconto' => 10,
+            'imagem' => $companies['malagueta']->logo ?: '/img/icon-192.png',
+            'ativo' => true,
+            'data_expiracao' => $today->copy()->addMonths(6),
+            'limite_por_cliente' => 1,
+            'tipo' => BonusAdesao::TYPE_ADHESION_BONUS,
+            'ordem' => 1,
+            'termos' => 'Valido uma unica vez e somente com validacao presencial da equipe da loja.',
+        ]);
+
         $this->syncBonusAdesaoResgate(
             $bonusMap['malagueta'],
             $companies['malagueta'],
@@ -302,14 +317,14 @@ class I9PlusDemoSeeder extends Seeder
 
         $cards = [
             'malagueta' => $this->syncCartaoFidelidade($companies['malagueta'], [
-                'titulo' => 'Cartão Fidelidade',
-                'descricao' => 'Ganhe 1 ponto a cada visita e troque por uma porção ou lanche.',
+                'titulo' => 'Cartao Fidelidade',
+                'descricao' => 'Ganhe 1 ponto a cada visita e troque por combo ou desconto especial.',
                 'regra_ganho' => 'Ganhe 1 ponto a cada visita',
                 'pontos_por_visita' => 1,
                 'pontos_necessarios' => 15,
                 'meta_pontos' => 15,
-                'recompensa' => 'Ganhe uma porção de fritas ou um lanche',
-                'recompensa_descricao' => 'Ganhe uma porção de fritas ou um lanche',
+                'recompensa' => 'Combo ou desconto especial',
+                'recompensa_descricao' => 'Combo ou desconto especial',
                 'ativo' => true,
             ]),
             'texano' => $this->syncCartaoFidelidade($companies['texano'], [
@@ -348,38 +363,64 @@ class I9PlusDemoSeeder extends Seeder
         ];
 
         $this->syncCartaoProgresso($clients['maria'], $cards['makoto'], 0, $today->copy()->subDays(2));
-        $this->syncCartaoProgresso($clients['joao'], $cards['malagueta'], 5, $today->copy()->subDays(4));
+        $this->syncCartaoProgresso($clients['joao'], $cards['malagueta'], 3, $today->copy()->subDays(4));
+        $this->syncCartaoProgresso($clients['ana'], $cards['malagueta'], 14, $today->copy()->subDay());
+        $this->syncCartaoProgresso($clients['pedro'], $cards['malagueta'], 1, $today->copy()->subDays(46));
         $this->syncCartaoProgresso($clients['pedro'], $cards['texano'], 14, $today->copy()->subDays(46));
         $this->syncCartaoProgresso($clients['ana'], $cards['florenza'], 16, $today->copy()->subDays(6));
 
-        $this->syncCartaoMovimento($cards['malagueta'], $companies['malagueta'], $clients['joao'], 5, CartaoFidelidadeMovimento::TYPE_EARNED, '[DEMO] Visitas acumuladas no mês', $owners['malagueta']);
-        $this->syncCartaoMovimento($cards['malagueta'], $companies['malagueta'], $clients['joao'], 15, CartaoFidelidadeMovimento::TYPE_REDEEMED, '[DEMO] Recompensa validada presencialmente', $owners['malagueta']);
+        $this->syncCartaoMovimento($cards['malagueta'], $companies['malagueta'], $clients['joao'], 3, CartaoFidelidadeMovimento::TYPE_EARNED, '[DEMO] Cliente iniciando o cartao fidelidade', $owners['malagueta']);
+        $this->syncCartaoMovimento($cards['malagueta'], $companies['malagueta'], $clients['ana'], 14, CartaoFidelidadeMovimento::TYPE_EARNED, '[DEMO] Cliente proxima da recompensa', $owners['malagueta']);
+        $this->syncCartaoMovimento($cards['malagueta'], $companies['malagueta'], $clients['pedro'], 15, CartaoFidelidadeMovimento::TYPE_REDEEMED, '[DEMO] Recompensa validada presencialmente', $owners['malagueta']);
         $this->syncCartaoMovimento($cards['texano'], $companies['texano'], $clients['pedro'], 14, CartaoFidelidadeMovimento::TYPE_EARNED, '[DEMO] Cliente próximo do resgate', $owners['texano']);
         $this->syncCartaoMovimento($cards['florenza'], $companies['florenza'], $clients['ana'], 16, CartaoFidelidadeMovimento::TYPE_EARNED, '[DEMO] Cliente com recompensa disponível', $owners['florenza']);
 
         $promotions = [
-            'malagueta_today' => $this->syncPromocao($companies['malagueta'], [
-                'titulo' => 'SOMENTE HOJE: 10% DE DESCONTO',
-                'descricao' => 'Mostre seu QR Code no caixa e valide 10% OFF na compra do dia.',
+            'malagueta_ready' => $this->syncPromocao($companies['malagueta'], [
+                'titulo' => 'Combo especial de hoje',
+                'descricao' => 'Apresente seu QR Code e aproveite uma condicao exclusiva.',
                 'imagem' => '/assets/images/company1.jpg',
-                'notification_title' => 'Oferta do dia no Malagueta',
-                'notification_body' => '10% OFF validando presencialmente pelo QR Code do cliente.',
-                'desconto' => 10,
-                'desconto_percentual' => 10,
+                'notification_title' => 'Combo especial de hoje',
+                'notification_body' => 'Apresente seu QR Code e aproveite uma condicao exclusiva.',
+                'desconto' => 12,
+                'desconto_percentual' => 12,
                 'pontos_necessarios' => 0,
-                'data_inicio' => $today->copy()->subDay(),
+                'data_inicio' => $today->copy()->subHours(2),
                 'data_fim' => $today->copy()->addDays(7),
                 'validade' => $today->copy()->addDays(7),
                 'status' => Promocao::STATUS_ACTIVE,
                 'ativo' => true,
-                'data_envio' => $today->copy()->subHours(20),
-                'total_envios' => 18,
-                'visualizacoes' => 42,
-                'resgates' => 6,
-                'usos' => 4,
+                'data_envio' => null,
+                'total_envios' => 0,
+                'visualizacoes' => 0,
+                'resgates' => 0,
+                'usos' => 0,
                 'quantidade_disponivel' => 50,
                 'qtd_disponivel' => 50,
-                'qtd_resgatada' => 4,
+                'qtd_resgatada' => 0,
+                'limite_por_usuario' => 1,
+            ]),
+            'malagueta_history' => $this->syncPromocao($companies['malagueta'], [
+                'titulo' => 'Rodada anterior: sobremesa cortesia',
+                'descricao' => 'Campanha usada na semana passada para demonstrar historico da empresa.',
+                'imagem' => '/assets/images/company1.jpg',
+                'notification_title' => 'Sobremesa cortesia no Malagueta',
+                'notification_body' => 'Mostre seu QR Code no balcao para validar a sobremesa cortesia.',
+                'desconto' => 0,
+                'pontos_necessarios' => 0,
+                'data_inicio' => $today->copy()->subDays(16),
+                'data_fim' => $today->copy()->subDays(8),
+                'validade' => $today->copy()->subDays(8),
+                'status' => Promocao::STATUS_PAUSED,
+                'ativo' => false,
+                'data_envio' => $today->copy()->subDays(12),
+                'total_envios' => 14,
+                'visualizacoes' => 32,
+                'resgates' => 5,
+                'usos' => 3,
+                'quantidade_disponivel' => 30,
+                'qtd_disponivel' => 30,
+                'qtd_resgatada' => 3,
                 'limite_por_usuario' => 1,
             ]),
             'texano_combo' => $this->syncPromocao($companies['texano'], [
@@ -454,7 +495,7 @@ class I9PlusDemoSeeder extends Seeder
             ]),
         ];
 
-        $this->syncPromocaoResgate($promotions['malagueta_today'], $companies['malagueta'], $clients['joao'], $owners['malagueta'], $today->copy()->subDays(2));
+        $this->syncPromocaoResgate($promotions['malagueta_history'], $companies['malagueta'], $clients['joao'], $owners['malagueta'], $today->copy()->subDays(12));
         $this->syncPromocaoResgate($promotions['texano_combo'], $companies['texano'], $clients['pedro'], $owners['texano'], $today->copy()->subDays(12));
 
         $birthdayBonuses = [];
@@ -471,6 +512,18 @@ class I9PlusDemoSeeder extends Seeder
             ]);
         }
 
+
+        $birthdayBonuses['malagueta'] = $this->syncBonusAniversario($companies['malagueta'], [
+            'titulo' => 'FELIZ ANIVERSARIO!',
+            'descricao' => 'Comemore seu aniversario conosco e ganhe uma cortesia validada presencialmente.',
+            'presente' => 'Sobremesa cortesia ou drink sem alcool',
+            'imagem' => $companies['malagueta']->logo ?: '/img/icon-192.png',
+            'dias_validade' => 30,
+            'notification_title' => 'FELIZ ANIVERSARIO!',
+            'notification_body' => 'Comemore seu aniversario conosco e ganhe uma cortesia.',
+            'ativo' => true,
+        ]);
+
         $reminders = [];
         foreach ($activeCompanyKeys as $companyKey) {
             $reminders[$companyKey] = $this->syncLembrete($companies[$companyKey], [
@@ -482,6 +535,14 @@ class I9PlusDemoSeeder extends Seeder
             ]);
         }
 
+
+        $reminders['malagueta'] = $this->syncLembrete($companies['malagueta'], [
+            'dias_ausencia' => 30,
+            'dias_sem_visita' => 30,
+            'titulo' => 'Sentimos sua falta!',
+            'mensagem' => 'Sentimos sua falta! Volte ao Malagueta e aproveite uma condicao especial.',
+            'ativo' => true,
+        ]);
         $this->syncLembreteEnvio(
             $reminders['texano'],
             $companies['texano'],
@@ -503,14 +564,14 @@ class I9PlusDemoSeeder extends Seeder
         }
 
         $this->syncNotificacao($clients['joao'], $companies['malagueta'], [
-            'promocao_id' => $promotions['malagueta_today']->id,
+            'promocao_id' => $promotions['malagueta_history']->id,
             'tipo' => 'promocao',
-            'titulo' => $promotions['malagueta_today']->notificationTitle(),
-            'mensagem' => $promotions['malagueta_today']->notificationBody(),
-            'imagem' => $promotions['malagueta_today']->imagem,
+            'titulo' => $promotions['malagueta_history']->notificationTitle(),
+            'mensagem' => $promotions['malagueta_history']->notificationBody(),
+            'imagem' => $promotions['malagueta_history']->imagem,
             'status' => 'sent',
             'enviado' => true,
-            'data_envio' => $today->copy()->subHours(20),
+            'data_envio' => $today->copy()->subDays(12),
         ]);
 
         $this->syncNotificacao($clients['maria'], $companies['makoto'], [

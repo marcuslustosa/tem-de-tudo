@@ -239,11 +239,13 @@ class PromocaoController extends Controller
             ], 409);
         }
 
-        if (($result['delivery']['status'] ?? null) === 'config_missing') {
+        $deliveryStatus = $result['delivery']['status'] ?? null;
+
+        if ($deliveryStatus === 'config_missing') {
             return response()->json([
                 'success' => false,
                 'error' => 'config_missing',
-                'message' => $result['delivery']['message'] ?? 'Configuração de push pendente no servidor.',
+                'message' => $result['delivery']['message'] ?? 'Configuracao de push pendente no servidor.',
                 'data' => $result['promocao'],
                 'meta' => [
                     'weekly_limit' => $result['weekly_limit'],
@@ -252,9 +254,26 @@ class PromocaoController extends Controller
             ], 422);
         }
 
+        if ($deliveryStatus === 'failed') {
+            return response()->json([
+                'success' => false,
+                'error' => 'delivery_failed',
+                'message' => $result['delivery']['message'] ?? 'Nao foi possivel entregar a promocao agora.',
+                'data' => $result['promocao'],
+                'meta' => [
+                    'weekly_limit' => $result['weekly_limit'],
+                    'delivery' => $result['delivery'],
+                ],
+            ], 422);
+        }
+
+        $message = $deliveryStatus === 'no_subscription'
+            ? ($result['delivery']['message'] ?? 'A promocao esta pronta, mas nenhum cliente vinculado ativou notificacoes neste dispositivo ainda.')
+            : 'Promocao enviada para clientes vinculados com processamento individual por subscription.';
+
         return response()->json([
             'success' => true,
-            'message' => 'Promocao enviada para clientes vinculados com processamento individual por subscription.',
+            'message' => $message,
             'data' => $result['promocao'],
             'meta' => [
                 'weekly_limit' => $result['weekly_limit'],
