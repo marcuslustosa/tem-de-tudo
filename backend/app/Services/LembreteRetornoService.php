@@ -106,17 +106,24 @@ class LembreteRetornoService
         }
 
         $auth = $this->pushDeliveryService->auth();
-        if ($auth === null) {
-            throw new DomainException('Push web nao esta configurado neste ambiente.');
-        }
 
         $subscriptionsByUser = PushSubscription::query()
+            ->active()
             ->whereIn('user_id', $targets->pluck('customer.id')->unique()->all())
             ->get()
             ->groupBy('user_id');
 
         $sentAt = now();
         $stats = [
+            'status' => $auth === null ? 'config_missing' : 'pending',
+            'config_missing' => $auth === null,
+            'message' => $auth === null ? 'Configuração de push pendente no servidor.' : null,
+            'total_elegiveis' => $targets->count(),
+            'total_com_subscription' => 0,
+            'enviados' => 0,
+            'falhas' => 0,
+            'ignorados_sem_subscription' => 0,
+            'ignorados_sem_vinculo' => 0,
             'total_targeted' => $targets->count(),
             'total_with_subscription' => 0,
             'total_sent' => 0,
@@ -180,6 +187,7 @@ class LembreteRetornoService
 
             $subscriptions = $subscriptionsByUser->get($customer->id, collect());
             if ($subscriptions->isEmpty()) {
+                $stats['ignorados_sem_subscription']++;
                 $stats['total_without_subscription']++;
                 $envio->update([
                     'status' => LembreteEnvio::STATUS_NO_SUBSCRIPTION,
@@ -193,21 +201,30 @@ class LembreteRetornoService
                 continue;
             }
 
+            $stats['total_com_subscription']++;
             $stats['total_with_subscription']++;
-            $result = $this->pushDeliveryService->deliverToSubscriptions(
-                $subscriptions,
-                trim((string) $reminder->titulo),
-                trim((string) $reminder->mensagem),
-                [
-                    'type' => 'lembrete',
-                    'empresa_id' => $empresa->id,
-                    'lembrete_id' => $reminder->id,
-                    'url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
-                ],
-                $auth
-            );
+            $result = $auth === null
+                ? [
+                    'sent' => false,
+                    'error' => 'Configuração de push pendente no servidor.',
+                    'status' => 'config_missing',
+                    'config_missing' => true,
+                ]
+                : $this->pushDeliveryService->deliverToSubscriptions(
+                    $subscriptions,
+                    trim((string) $reminder->titulo),
+                    trim((string) $reminder->mensagem),
+                    [
+                        'type' => 'lembrete',
+                        'empresa_id' => $empresa->id,
+                        'lembrete_id' => $reminder->id,
+                        'url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
+                    ],
+                    $auth
+                );
 
             if ($result['sent']) {
+                $stats['enviados']++;
                 $stats['total_sent']++;
                 $envio->update([
                     'status' => LembreteEnvio::STATUS_SENT,
@@ -220,6 +237,7 @@ class LembreteRetornoService
                     'data_envio' => $sentAt,
                 ]);
             } else {
+                $stats['falhas']++;
                 $stats['total_failed']++;
                 $envio->update([
                     'status' => LembreteEnvio::STATUS_FAILED,
@@ -231,6 +249,18 @@ class LembreteRetornoService
                     'data_envio' => $sentAt,
                 ]);
             }
+        }
+
+        if (($stats['enviados'] ?? 0) > 0) {
+            $stats['status'] = 'sent';
+            $stats['config_missing'] = false;
+        } elseif (($stats['config_missing'] ?? false) === true) {
+            $stats['status'] = 'config_missing';
+        } elseif (($stats['total_com_subscription'] ?? 0) === 0) {
+            $stats['status'] = 'no_subscription';
+            $stats['message'] = 'Nenhum cliente inativo elegivel ativou notificacoes push.';
+        } else {
+            $stats['status'] = 'failed';
         }
 
         return [

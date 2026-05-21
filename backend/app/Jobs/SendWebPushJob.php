@@ -3,13 +3,12 @@
 namespace App\Jobs;
 
 use App\Models\PushSubscription;
+use App\Services\WebPushDeliveryService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Minishlink\WebPush\Subscription;
-use Minishlink\WebPush\WebPush;
 use Illuminate\Support\Facades\Log;
 
 class SendWebPushJob implements ShouldQueue
@@ -24,48 +23,38 @@ class SendWebPushJob implements ShouldQueue
     ) {
     }
 
-    public function handle(): void
+    public function handle(WebPushDeliveryService $pushDeliveryService): void
     {
-        $auth = [
-            'VAPID' => [
-                'subject' => config('app.url') ?? 'mailto:admin@example.com',
-                'publicKey' => config('services.webpush.public_key') ?? env('VAPID_PUBLIC_KEY'),
-                'privateKey' => config('services.webpush.private_key') ?? env('VAPID_PRIVATE_KEY'),
-            ],
-        ];
-
-        $webPush = new WebPush($auth);
-        $query = PushSubscription::query();
+        $query = PushSubscription::query()->active();
         if ($this->userIds) {
             $query->whereIn('user_id', $this->userIds);
         }
-        $subs = $query->get();
 
-        foreach ($subs as $sub) {
-            $subscription = Subscription::create([
-                'endpoint' => $sub->endpoint,
-                'keys' => [
-                    'p256dh' => $sub->p256dh,
-                    'auth' => $sub->auth,
-                ],
-            ]);
-
-            $payload = json_encode([
-                'title' => $this->title,
-                'body' => $this->body,
-                'data' => $this->data,
-            ]);
-
-            $webPush->queueNotification($subscription, $payload);
+        $subscriptions = $query->get();
+        if ($subscriptions->isEmpty()) {
+            return;
         }
 
-        foreach ($webPush->flush() as $report) {
-            if (!$report->isSuccess()) {
-                Log::warning('Push failure', [
-                    'endpoint' => $report->getRequest()->getUri()->__toString(),
-                    'reason' => $report->getReason(),
-                ]);
-            }
+        $result = $pushDeliveryService->deliverToSubscriptions(
+            $subscriptions,
+            $this->title,
+            $this->body,
+            $this->data
+        );
+
+        if (($result['status'] ?? null) === 'config_missing') {
+            Log::warning('SendWebPushJob ignorado por configuracao VAPID ausente.', [
+                'subscriptions_total' => $subscriptions->count(),
+            ]);
+
+            return;
+        }
+
+        if (!($result['sent'] ?? false)) {
+            Log::warning('SendWebPushJob concluiu sem entregas bem-sucedidas.', [
+                'subscriptions_total' => $subscriptions->count(),
+                'error' => $result['error'] ?? null,
+            ]);
         }
     }
 }

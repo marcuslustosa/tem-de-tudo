@@ -108,11 +108,13 @@ if (app()->environment(['local', 'testing'])) {
 
 // Push Notifications
 Route::get('/push/public-key', [PushSubscriptionController::class, 'publicKey']);
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'role.permission:cliente'])->group(function () {
     Route::post('/push/subscribe', [PushSubscriptionController::class, 'subscribe']);
     Route::delete('/push/unsubscribe', [PushSubscriptionController::class, 'unsubscribe']);
     Route::post('/push/test', [PushSubscriptionController::class, 'test']);
+});
 
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
     Route::delete('/auth/delete-account', [AuthController::class, 'deletarConta']);
 

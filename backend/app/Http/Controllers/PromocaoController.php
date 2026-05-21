@@ -239,6 +239,19 @@ class PromocaoController extends Controller
             ], 409);
         }
 
+        if (($result['delivery']['status'] ?? null) === 'config_missing') {
+            return response()->json([
+                'success' => false,
+                'error' => 'config_missing',
+                'message' => $result['delivery']['message'] ?? 'Configuração de push pendente no servidor.',
+                'data' => $result['promocao'],
+                'meta' => [
+                    'weekly_limit' => $result['weekly_limit'],
+                    'delivery' => $result['delivery'],
+                ],
+            ], 422);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Promocao enviada para clientes vinculados com processamento individual por subscription.',

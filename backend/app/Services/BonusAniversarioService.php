@@ -133,7 +133,7 @@ class BonusAniversarioService
         if (!$activeBonus) {
             return [
                 'status' => BonusAniversarioResgate::STATUS_INACTIVE,
-                'message' => 'Nenhum bonus aniversario ativo no momento.',
+                'message' => 'Nenhum bônus aniversário ativo no momento.',
                 'bonus' => $latestBonus ? $this->serializeBonus($latestBonus) : null,
                 'can_present_qr' => false,
                 'can_validate' => false,
@@ -154,7 +154,7 @@ class BonusAniversarioService
         if (($window['status'] ?? null) === BonusAniversarioResgate::STATUS_MISSING_BIRTH_DATE) {
             return [
                 'status' => BonusAniversarioResgate::STATUS_MISSING_BIRTH_DATE,
-                'message' => 'Cliente precisa informar a data de nascimento para liberar o bonus aniversario.',
+                'message' => 'Cliente precisa informar a data de nascimento para liberar o bônus aniversário.',
                 'bonus' => $serialized,
                 'can_present_qr' => false,
                 'can_validate' => false,
@@ -168,7 +168,7 @@ class BonusAniversarioService
         if (!($window['eligible'] ?? false)) {
             return [
                 'status' => BonusAniversarioResgate::STATUS_OUT_OF_WINDOW,
-                'message' => $window['message'] ?? 'Cliente fora do periodo elegivel do bonus aniversario.',
+                'message' => $window['message'] ?? 'Cliente fora do período elegível do bônus aniversário.',
                 'bonus' => $serialized,
                 'can_present_qr' => false,
                 'can_validate' => false,
@@ -183,7 +183,7 @@ class BonusAniversarioService
         if ($redemption) {
             return [
                 'status' => BonusAniversarioResgate::STATUS_REDEEMED,
-                'message' => 'Bonus aniversario ja utilizado neste ano para esta empresa.',
+                'message' => 'Bônus aniversário já utilizado neste ano para esta empresa.',
                 'bonus' => $serialized,
                 'can_present_qr' => false,
                 'can_validate' => false,
@@ -197,7 +197,7 @@ class BonusAniversarioService
 
         return [
             'status' => BonusAniversarioResgate::STATUS_AVAILABLE,
-            'message' => 'Cliente elegivel ao bonus aniversario. A validacao deve acontecer no estabelecimento.',
+            'message' => 'Cliente elegível ao bônus aniversário. A validação deve acontecer no estabelecimento.',
             'bonus' => $serialized,
             'can_present_qr' => true,
             'can_validate' => true,
@@ -244,7 +244,7 @@ class BonusAniversarioService
         $this->guardBonusOwnership($empresa, $bonus);
 
         if (!$bonus->isOperationallyAvailable()) {
-            throw new DomainException('Bonus aniversario inativo.');
+            throw new DomainException('Bônus aniversário inativo.');
         }
 
         $inscricao = $this->findInscricao($empresa, $customer);
@@ -258,12 +258,12 @@ class BonusAniversarioService
         }
 
         if (!($window['eligible'] ?? false)) {
-            throw new DomainException('Cliente nao esta no periodo elegivel do bonus aniversario.');
+            throw new DomainException('Cliente não está no período elegível do bônus aniversário.');
         }
 
         $year = (int) ($window['year'] ?? now()->year);
         if ($this->findYearlyRedemption($empresa, $customer, $year)) {
-            throw new DomainException('Bonus aniversario ja utilizado neste ano para esta empresa.');
+            throw new DomainException('Bônus aniversário já utilizado neste ano para esta empresa.');
         }
 
         $timestamp = now();
@@ -278,7 +278,7 @@ class BonusAniversarioService
                     ->exists();
 
                 if ($duplicate) {
-                    throw new DomainException('Bonus aniversario ja utilizado neste ano para esta empresa.');
+                    throw new DomainException('Bônus aniversário já utilizado neste ano para esta empresa.');
                 }
 
                 BonusAniversarioResgate::query()->create([
@@ -297,7 +297,7 @@ class BonusAniversarioService
             });
         } catch (QueryException $e) {
             if ($this->isDuplicateRedemptionConstraint($e)) {
-                throw new DomainException('Bonus aniversario ja utilizado neste ano para esta empresa.', 0, $e);
+                throw new DomainException('Bônus aniversário já utilizado neste ano para esta empresa.', 0, $e);
             }
 
             throw $e;
@@ -311,7 +311,7 @@ class BonusAniversarioService
         $this->guardBonusOwnership($empresa, $bonus);
 
         if (!$bonus->isOperationallyAvailable()) {
-            throw new DomainException('Bonus aniversario inativo.');
+            throw new DomainException('Bônus aniversário inativo.');
         }
 
         $eligibleTargets = InscricaoEmpresa::query()
@@ -326,15 +326,13 @@ class BonusAniversarioService
             ->values();
 
         if ($eligibleTargets->isEmpty()) {
-            throw new DomainException('Nenhum cliente vinculado e elegivel para receber o bonus aniversario agora.');
+            throw new DomainException('Nenhum cliente vinculado e elegível para receber o bônus aniversário agora.');
         }
 
         $auth = $this->pushDeliveryService->auth();
-        if ($auth === null) {
-            throw new DomainException('Push web nao esta configurado neste ambiente.');
-        }
 
         $subscriptionsByUser = PushSubscription::query()
+            ->active()
             ->whereIn('user_id', $eligibleTargets->pluck('user_id')->unique()->all())
             ->get()
             ->groupBy('user_id');
@@ -350,6 +348,15 @@ class BonusAniversarioService
         ];
 
         $stats = [
+            'status' => $auth === null ? 'config_missing' : 'pending',
+            'config_missing' => $auth === null,
+            'message' => $auth === null ? 'Configuração de push pendente no servidor.' : null,
+            'total_elegiveis' => $eligibleTargets->count(),
+            'total_com_subscription' => 0,
+            'enviados' => 0,
+            'falhas' => 0,
+            'ignorados_sem_subscription' => 0,
+            'ignorados_sem_vinculo' => 0,
             'total_targeted' => $eligibleTargets->count(),
             'total_with_subscription' => 0,
             'total_sent' => 0,
@@ -379,6 +386,7 @@ class BonusAniversarioService
 
             $subscriptions = $subscriptionsByUser->get($customer->id, collect());
             if ($subscriptions->isEmpty()) {
+                $stats['ignorados_sem_subscription']++;
                 $stats['total_without_subscription']++;
                 $log->update([
                     'status' => self::LOG_STATUS_NO_SUBSCRIPTION,
@@ -388,10 +396,19 @@ class BonusAniversarioService
                 continue;
             }
 
+            $stats['total_com_subscription']++;
             $stats['total_with_subscription']++;
-            $result = $this->pushDeliveryService->deliverToSubscriptions($subscriptions, $title, $body, $payload, $auth);
+            $result = $auth === null
+                ? [
+                    'sent' => false,
+                    'error' => 'Configuração de push pendente no servidor.',
+                    'status' => 'config_missing',
+                    'config_missing' => true,
+                ]
+                : $this->pushDeliveryService->deliverToSubscriptions($subscriptions, $title, $body, $payload, $auth);
 
             if ($result['sent']) {
+                $stats['enviados']++;
                 $stats['total_sent']++;
                 $log->update([
                     'status' => self::LOG_STATUS_SENT,
@@ -400,6 +417,7 @@ class BonusAniversarioService
                     'data_envio' => $sentAt,
                 ]);
             } else {
+                $stats['falhas']++;
                 $stats['total_failed']++;
                 $log->update([
                     'status' => self::LOG_STATUS_FAILED,
@@ -407,6 +425,18 @@ class BonusAniversarioService
                     'data_envio' => $sentAt,
                 ]);
             }
+        }
+
+        if (($stats['enviados'] ?? 0) > 0) {
+            $stats['status'] = 'sent';
+            $stats['config_missing'] = false;
+        } elseif (($stats['config_missing'] ?? false) === true) {
+            $stats['status'] = 'config_missing';
+        } elseif (($stats['total_com_subscription'] ?? 0) === 0) {
+            $stats['status'] = 'no_subscription';
+            $stats['message'] = 'Nenhum aniversariante elegivel ativou notificacoes push.';
+        } else {
+            $stats['status'] = 'failed';
         }
 
         return [
@@ -427,8 +457,8 @@ class BonusAniversarioService
             'dias_validade' => $bonus->daysValidity(),
             'validade_tipo' => $bonus->daysValidity() ? 'days_after_birthday' : 'birthday_month',
             'validade_descricao' => $bonus->daysValidity()
-                ? sprintf('Valido por %d dia(s) a partir da data de aniversario.', $bonus->daysValidity())
-                : 'Valido durante todo o mes do aniversario.',
+                ? sprintf('Válido por %d dia(s) a partir da data de aniversário.', $bonus->daysValidity())
+                : 'Válido durante todo o mês do aniversário.',
             'notification_title' => $bonus->notificationTitle(),
             'notification_body' => $bonus->notificationBody(),
             'ativo' => (bool) $bonus->ativo,
@@ -480,8 +510,8 @@ class BonusAniversarioService
                 'status' => $eligible ? BonusAniversarioResgate::STATUS_AVAILABLE : BonusAniversarioResgate::STATUS_OUT_OF_WINDOW,
                 'eligible' => $eligible,
                 'message' => $eligible
-                    ? 'Cliente esta dentro da janela configurada para o bonus aniversario.'
-                    : sprintf('Disponivel apenas por %d dia(s) a partir da data de aniversario.', $daysValidity),
+                    ? 'Cliente está dentro da janela configurada para o bônus aniversário.'
+                    : sprintf('Disponível apenas por %d dia(s) a partir da data de aniversário.', $daysValidity),
                 'starts_at' => $startsAt,
                 'ends_at' => $endsAt,
                 'year' => $year,
@@ -496,8 +526,8 @@ class BonusAniversarioService
             'status' => $eligible ? BonusAniversarioResgate::STATUS_AVAILABLE : BonusAniversarioResgate::STATUS_OUT_OF_WINDOW,
             'eligible' => $eligible,
             'message' => $eligible
-                ? 'Cliente esta no mes do aniversario.'
-                : 'Disponivel apenas durante o mes do aniversario.',
+                ? 'Cliente está no mês do aniversário.'
+                : 'Disponível apenas durante o mês do aniversário.',
             'starts_at' => $startsAt,
             'ends_at' => $endsAt,
             'year' => $year,
@@ -526,7 +556,7 @@ class BonusAniversarioService
     private function guardBonusOwnership(Empresa $empresa, BonusAniversario $bonus): void
     {
         if ($bonus->empresa_id !== $empresa->id) {
-            throw new DomainException('Empresa nao pode operar bonus aniversario de outra empresa.');
+            throw new DomainException('Empresa não pode operar bônus aniversário de outra empresa.');
         }
     }
 

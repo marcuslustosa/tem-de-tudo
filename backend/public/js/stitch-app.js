@@ -964,38 +964,7 @@
   }
 
   function wirePushButtons() {
-    const pageScope = getScopeForCurrentPage();
-    if (!['admin', 'empresa', 'cliente'].includes(pageScope)) return;
-
-    const nodes = document.querySelectorAll('button, a');
-    nodes.forEach((node) => {
-      if (node.dataset.pushBound === '1') return;
-      const iconEl = node.querySelector('[data-icon], .material-symbols-outlined');
-      const icon = (iconEl?.getAttribute('data-icon') || iconEl?.textContent || '').toString().toLowerCase().trim();
-      if (!icon.includes('notification')) return;
-      node.dataset.pushBound = '1';
-      node.addEventListener('click', async (ev) => {
-        if (node.tagName === 'A') ev.preventDefault();
-        const stored = auth.getStored();
-        if (!stored?.token) {
-          ui.message('Faca login para ativar notificacoes push.', 'warning');
-          return;
-        }
-
-        try {
-          await push.register();
-          const { res, data } = await api.request('/push/test', { method: 'POST' }, { notify: false });
-          if (res.ok && data?.success !== false) {
-            ui.message('Push ativado e teste enviado.', 'success');
-          } else {
-            ui.message(data?.message || 'Push ativado, mas o teste nao foi concluido.', 'warning');
-          }
-        } catch (err) {
-          console.error('push_enable_fail', err);
-          ui.message('Não foi possível ativar push neste momento.', 'error');
-        }
-      });
-    });
+    push.mountCards();
   }
 
   function wireAvatarFallbacks() {
@@ -1095,57 +1064,7 @@
 
   // ---------------------- Push ---------------------- //
   const push = (() => {
-    async function getPublicKey() {
-      const cached = localStorage.getItem(VAPID_CACHE_KEY);
-      if (cached) return cached;
-      const res = await fetch(`${API_BASE}/push/public-key`);
-      const data = await res.json();
-      if (data?.vapidPublicKey) {
-        localStorage.setItem(VAPID_CACHE_KEY, data.vapidPublicKey);
-        return data.vapidPublicKey;
-      }
-      return null;
-    }
-
-    async function register() {
-      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-        ui.message('Seu navegador nao suporta notificacoes push.', 'warning');
-        return;
-      }
-      const permission = await Notification.requestPermission();
-      if (permission !== 'granted') {
-        // Nao bloqueia a tela nem polui o fluxo quando o usuario nega push.
-        console.info('Push permission not granted:', permission);
-        return;
-      }
-      const reg = await navigator.serviceWorker.register('/sw-push.js');
-      const publicKey = await getPublicKey();
-      if (!publicKey) {
-        ui.message('Chave pública de push não configurada.', 'warning');
-        return;
-      }
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicKey),
-      });
-      await api.request(
-        '/push/subscribe',
-        { method: 'POST', body: JSON.stringify(sub) }
-      );
-    }
-
-    async function unregister() {
-      if (!('serviceWorker' in navigator)) return;
-      const reg = await navigator.serviceWorker.getRegistration('/sw-push.js');
-      const sub = await reg?.pushManager.getSubscription();
-      if (sub) {
-        await api.request('/push/unsubscribe', {
-          method: 'DELETE',
-          body: JSON.stringify({ endpoint: sub.endpoint }),
-        });
-        await sub.unsubscribe();
-      }
-    }
+    let configCache = null;
 
     function urlBase64ToUint8Array(base64String) {
       const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -1156,7 +1075,330 @@
       return outputArray;
     }
 
-    return { register, unregister };
+    function isIOS() {
+      const ua = window.navigator.userAgent || '';
+      const platform = window.navigator.platform || '';
+      return /iPad|iPhone|iPod/i.test(ua)
+        || (platform === 'MacIntel' && Number(window.navigator.maxTouchPoints || 0) > 1);
+    }
+
+    function isStandalone() {
+      return window.matchMedia?.('(display-mode: standalone)')?.matches || window.navigator.standalone === true;
+    }
+
+    function isSupported() {
+      return typeof window !== 'undefined'
+        && 'Notification' in window
+        && 'serviceWorker' in navigator
+        && 'PushManager' in window;
+    }
+
+    async function getConfig(force = false) {
+      if (configCache && !force) return configCache;
+
+      const cachedKey = localStorage.getItem(VAPID_CACHE_KEY);
+      const { res, data } = await api.request('/push/public-key', {}, {
+        requireAuth: false,
+        notify: false,
+      });
+
+      if (res.ok && data) {
+        const publicKey = safeText(data?.vapidPublicKey || cachedKey || '', '');
+        if (publicKey) localStorage.setItem(VAPID_CACHE_KEY, publicKey);
+
+        configCache = {
+          configured: Boolean(data?.configured && publicKey),
+          publicKey: publicKey || null,
+          serviceWorker: data?.serviceWorker || '/sw-push.js',
+          message: data?.message || (publicKey
+            ? 'Push configurado para este ambiente.'
+            : 'Configuração de push pendente no servidor.'),
+          loadFailed: false,
+        };
+
+        return configCache;
+      }
+
+      configCache = {
+        configured: false,
+        publicKey: cachedKey || null,
+        serviceWorker: '/sw-push.js',
+        message: 'Não foi possível verificar a configuração de push neste momento.',
+        loadFailed: true,
+      };
+
+      return configCache;
+    }
+
+    async function getRegistration(serviceWorkerPath = '/sw-push.js') {
+      await navigator.serviceWorker.register(serviceWorkerPath);
+
+      return navigator.serviceWorker.ready;
+    }
+
+    async function getCurrentSubscription() {
+      if (!isSupported()) return null;
+      const registration = await navigator.serviceWorker.getRegistration();
+
+      return registration?.pushManager?.getSubscription?.() || null;
+    }
+
+    async function getState() {
+      if (isIOS() && !isStandalone()) {
+        return {
+          key: 'ios_install_required',
+          tone: 'warning',
+          badge: 'iPhone',
+          status: 'No iPhone, adicione o Tem de Tudo à Tela de Início e abra pelo ícone para ativar notificações.',
+          helper: 'Abra no Safari, toque em Compartilhar e escolha Adicionar à Tela de Início.',
+        };
+      }
+
+      if (!isSupported()) {
+        return {
+          key: 'unsupported',
+          tone: 'warning',
+          badge: 'Indisponível',
+          status: 'Seu navegador não suporta notificações push.',
+          helper: 'Use Chrome, Edge ou Safari em um dispositivo compatível com PWA e notificações.',
+        };
+      }
+
+      const config = await getConfig();
+      if (!config.configured || !config.publicKey) {
+        return {
+          key: config.loadFailed ? 'unavailable' : 'config_missing',
+          tone: 'warning',
+          badge: 'Pendente',
+          status: config.message || 'Configuração de push pendente no servidor.',
+          helper: 'O servidor precisa expor VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY e VAPID_SUBJECT para habilitar o envio real.',
+        };
+      }
+
+      if (Notification.permission === 'denied') {
+        return {
+          key: 'denied',
+          tone: 'error',
+          badge: 'Bloqueado',
+          status: 'Permissão negada. Ative nas configurações do navegador para receber notificações.',
+          helper: 'Depois de liberar a permissão, volte a este card e toque novamente em Ativar notificações.',
+        };
+      }
+
+      const subscription = await getCurrentSubscription();
+      if (Notification.permission === 'granted' && subscription) {
+        return {
+          key: 'enabled',
+          tone: 'success',
+          badge: 'Ativado',
+          status: 'Notificações ativadas neste dispositivo.',
+          helper: 'Você receberá promoções, bônus aniversário e lembretes apenas das empresas vinculadas à sua conta.',
+          subscription,
+        };
+      }
+
+      return {
+        key: 'idle',
+        tone: 'info',
+        badge: 'Disponível',
+        status: 'Receba promoções e benefícios',
+        helper: 'Ative as notificações para receber novidades das empresas onde você se cadastrou: promoções, bônus de aniversário e lembretes de retorno.',
+        subscription: null,
+      };
+    }
+
+    function paintCard(card, state) {
+      if (!card || !state) return;
+
+      const badge = card.querySelector('[data-push-badge]');
+      const status = card.querySelector('[data-push-status]');
+      const helper = card.querySelector('[data-push-helper]');
+      const enable = card.querySelector('[data-push-enable]');
+      const disable = card.querySelector('[data-push-disable]');
+
+      const badgeClasses = {
+        success: 'bg-emerald-100 text-emerald-700',
+        warning: 'bg-amber-100 text-amber-700',
+        error: 'bg-rose-100 text-rose-700',
+        info: 'bg-slate-100 text-slate-500',
+      };
+      const statusClasses = {
+        success: 'text-emerald-700',
+        warning: 'text-amber-700',
+        error: 'text-rose-700',
+        info: 'text-[#111B3F]',
+      };
+
+      if (badge) {
+        badge.textContent = state.badge;
+        badge.className = `inline-flex rounded-full px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] ${badgeClasses[state.tone] || badgeClasses.info}`;
+      }
+      if (status) {
+        status.textContent = state.status;
+        status.className = `mt-4 text-sm font-semibold ${statusClasses[state.tone] || statusClasses.info}`;
+      }
+      if (helper) {
+        helper.textContent = state.helper;
+      }
+
+      if (enable) {
+        const canEnable = ['idle', 'unavailable'].includes(state.key);
+        enable.disabled = !canEnable;
+        enable.classList.toggle('hidden', state.key === 'enabled');
+      }
+
+      if (disable) {
+        disable.disabled = state.key !== 'enabled';
+        disable.classList.toggle('hidden', state.key !== 'enabled');
+      }
+    }
+
+    async function refreshCard(card) {
+      paintCard(card, await getState());
+    }
+
+    async function subscribe() {
+      if (isIOS() && !isStandalone()) {
+        return { success: false, state: await getState() };
+      }
+
+      if (!isSupported()) {
+        return { success: false, state: await getState() };
+      }
+
+      const config = await getConfig(true);
+      if (!config.configured || !config.publicKey) {
+        return { success: false, state: await getState() };
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        return { success: false, state: await getState() };
+      }
+
+      const registration = await getRegistration(config.serviceWorker || '/sw-push.js');
+      let subscription = await registration.pushManager.getSubscription();
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(config.publicKey),
+        });
+      }
+
+      const payload = subscription.toJSON ? subscription.toJSON() : JSON.parse(JSON.stringify(subscription));
+      const { res, data } = await api.request('/push/subscribe', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      }, {
+        notify: false,
+      });
+
+      if (!res.ok || data?.success === false) {
+        throw new Error(data?.message || 'Não foi possível salvar a subscription push deste dispositivo.');
+      }
+
+      return {
+        success: true,
+        state: await getState(),
+        message: data?.message || 'Notificacoes ativadas neste dispositivo.',
+      };
+    }
+
+    async function unregister() {
+      if (!('serviceWorker' in navigator)) {
+        return {
+          success: true,
+          state: await getState(),
+        };
+      }
+
+      const registration = await navigator.serviceWorker.getRegistration();
+      const subscription = await registration?.pushManager?.getSubscription?.();
+
+      if (!subscription?.endpoint) {
+        return {
+          success: true,
+          state: await getState(),
+          message: 'Nenhuma subscription ativa encontrada neste dispositivo.',
+        };
+      }
+
+      const { res, data } = await api.request('/push/unsubscribe', {
+        method: 'DELETE',
+        body: JSON.stringify({ endpoint: subscription.endpoint }),
+      }, {
+        notify: false,
+      });
+
+      if (subscription) {
+        await subscription.unsubscribe().catch(() => {});
+      }
+
+      if (!res.ok || data?.success === false) {
+        throw new Error(data?.message || 'Não foi possível desativar as notificações neste dispositivo.');
+      }
+
+      return {
+        success: true,
+        state: await getState(),
+        message: data?.message || 'Notificacoes desativadas neste dispositivo.',
+      };
+    }
+
+    function bindCard(card) {
+      if (!card || card.dataset.pushCardBound === '1') return;
+      card.dataset.pushCardBound = '1';
+
+      const enable = card.querySelector('[data-push-enable]');
+      const disable = card.querySelector('[data-push-disable]');
+
+      enable?.addEventListener('click', async () => {
+        enable.disabled = true;
+        try {
+          const result = await subscribe();
+          paintCard(card, result.state);
+          if (result.success) {
+            ui.message(result.message || 'Notificacoes ativadas neste dispositivo.', 'success');
+          } else {
+            ui.message(result.state?.status || 'Não foi possível ativar as notificações neste momento.', result.state?.tone || 'warning');
+          }
+        } catch (err) {
+          console.error('push_subscribe_fail', err);
+          await refreshCard(card);
+          ui.message(err?.message || 'Não foi possível ativar as notificações neste momento.', 'error');
+        } finally {
+          enable.disabled = false;
+        }
+      });
+
+      disable?.addEventListener('click', async () => {
+        disable.disabled = true;
+        try {
+          const result = await unregister();
+          paintCard(card, result.state);
+          ui.message(result.message || 'Notificacoes desativadas neste dispositivo.', 'info');
+        } catch (err) {
+          console.error('push_unsubscribe_fail', err);
+          await refreshCard(card);
+          ui.message(err?.message || 'Não foi possível desativar as notificações neste momento.', 'error');
+        } finally {
+          disable.disabled = false;
+        }
+      });
+    }
+
+    function mountCards() {
+      const cards = Array.from(document.querySelectorAll('[data-push-card]'));
+      if (!cards.length) return;
+      cards.forEach((card) => {
+        bindCard(card);
+        refreshCard(card).catch((err) => {
+          console.error('push_card_refresh_fail', err);
+        });
+      });
+    }
+
+    return { mountCards, getState, subscribe, unregister, getConfig };
   })();
 
   // ---------------------- API ---------------------- //
@@ -1250,6 +1492,57 @@
 
     return { summary, section };
   })();
+
+  function normalizePushDeliveryMetrics(metrics = {}) {
+    return {
+      status: String(metrics?.status || ''),
+      configMissing: Boolean(metrics?.config_missing),
+      totalElegiveis: Number(metrics?.total_elegiveis ?? metrics?.total_targeted ?? 0),
+      totalComSubscription: Number(metrics?.total_com_subscription ?? metrics?.total_with_subscription ?? 0),
+      enviados: Number(metrics?.enviados ?? metrics?.total_sent ?? 0),
+      falhas: Number(metrics?.falhas ?? metrics?.total_failed ?? 0),
+      ignoradosSemSubscription: Number(metrics?.ignorados_sem_subscription ?? metrics?.total_without_subscription ?? 0),
+      ignoradosSemVinculo: Number(metrics?.ignorados_sem_vinculo ?? 0),
+      message: safeText(metrics?.message || ''),
+    };
+  }
+
+  function formatPushDeliverySummary(metrics = {}, subject = 'clientes') {
+    const normalized = normalizePushDeliveryMetrics(metrics);
+    const detail = [
+      `Elegiveis: ${normalized.totalElegiveis}`,
+      `Com notificacoes ativas: ${normalized.totalComSubscription}`,
+      `Enviados: ${normalized.enviados}`,
+      `Falhas: ${normalized.falhas}`,
+      `Sem subscription: ${normalized.ignoradosSemSubscription}`,
+      `Sem vínculo: ${normalized.ignoradosSemVinculo}`,
+    ].join(' | ');
+
+    let short = `Resumo do envio para ${subject}: ${detail}`;
+    if (normalized.status === 'config_missing') {
+      short = normalized.message || 'Configuração de push pendente no servidor.';
+    } else if (normalized.status === 'no_subscription') {
+      short = normalized.message || `Nenhum ${subject} elegivel ativou notificacoes push.`;
+    }
+
+    return {
+      normalized,
+      short,
+      detail,
+    };
+  }
+
+  function setInlineFeedback(el, text, tone = 'info') {
+    if (!el) return;
+    const toneMap = {
+      success: 'text-emerald-600',
+      warning: 'text-amber-600',
+      error: 'text-rose-600',
+      info: 'text-slate-500',
+    };
+    el.textContent = text;
+    el.className = `text-xs leading-5 ${toneMap[tone] || toneMap.info}`;
+  }
 
   // ---------------------- Notificacoes internas ---------------------- //
   const notifications = (() => {
@@ -2068,7 +2361,7 @@
 
           if (titleEl) {
             titleEl.textContent = status === 'available'
-              ? 'FELIZ ANIVERSARIO!'
+              ? 'FELIZ ANIVERSÁRIO!'
               : (bonus?.titulo || 'Bônus aniversário');
           }
           if (statusEl) {
@@ -4433,6 +4726,12 @@
       };
       let editingId = null;
       let filtroAtual = 'todas';
+      const updatePromotionDeliveryFeedback = (payload, tone = 'info') => {
+        const summary = formatPushDeliverySummary(payload?.meta?.delivery || {}, 'clientes vinculados');
+        setInlineFeedback(form.msg, summary.detail, tone);
+
+        return summary;
+      };
 
       if (form.weeklyInfo) {
         form.weeklyInfo.textContent = `Limite semanal: ${weeklyStatus.used}/${weeklyStatus.limit} envios utilizados | Restantes: ${weeklyStatus.remaining}`;
@@ -4511,10 +4810,19 @@
           card.querySelector('[data-action="enviar"]')?.addEventListener('click', async () => {
             const { res, data: resp } = await api.request(`/empresa/promocoes/${p.id}/enviar`, { method: 'POST' });
             if (res.ok && resp?.success) {
-              ui.message(resp?.message || 'Push enviado com sucesso.', 'success');
-              location.reload();
+              const preview = formatPushDeliverySummary(resp?.meta?.delivery || {}, 'clientes vinculados');
+              const tone = preview.normalized.enviados > 0 ? 'success' : 'warning';
+              const summary = updatePromotionDeliveryFeedback(resp, tone);
+              ui.message(resp?.message || summary.short, summary.normalized.enviados > 0 ? 'success' : 'warning');
+              if (summary.normalized.enviados > 0) {
+                p.data_envio = new Date().toISOString();
+                p.enviada_em = p.data_envio;
+              }
+              renderCards(lista);
+              setCounts(lista);
             } else {
-              ui.message(resp?.message || 'Não foi possível enviar a promoção.', 'error');
+              const summary = updatePromotionDeliveryFeedback(resp, resp?.error === 'config_missing' ? 'warning' : 'error');
+              ui.message(resp?.message || summary.short || 'Não foi possível enviar a promoção.', resp?.error === 'config_missing' ? 'warning' : 'error');
             }
           });
           card.querySelector('[data-action=\"deletar\"]')?.addEventListener('click', () => empresa.deletarPromocao(p.id));
@@ -5079,10 +5387,14 @@
                 method: 'POST',
               });
               if (res.ok && data?.success) {
-                const sent = Number(data?.meta?.delivery?.total_sent || 0);
-                ui.message(data?.message || `Envio concluido para ${sent} cliente(s).`, 'success');
+                const summary = formatPushDeliverySummary(data?.meta?.delivery || {}, 'aniversariantes elegiveis');
+                const tone = summary.normalized.enviados > 0 ? 'success' : 'warning';
+                setInlineFeedback(birthdayUi.mensagem, summary.detail, tone);
+                ui.message(data?.message || summary.short, tone);
               } else {
-                ui.message(data?.message || 'Não foi possível enviar o bônus aniversário.', 'error');
+                const summary = formatPushDeliverySummary(data?.meta?.delivery || {}, 'aniversariantes elegiveis');
+                setInlineFeedback(birthdayUi.mensagem, summary.detail || (data?.message || ''), data?.error === 'config_missing' ? 'warning' : 'error');
+                ui.message(data?.message || summary.short || 'Não foi possível enviar o bônus aniversário.', data?.error === 'config_missing' ? 'warning' : 'error');
               }
             });
             birthdayUi.list?.appendChild(card);
@@ -5147,10 +5459,14 @@
             method: 'POST',
           });
           if (res.ok && data?.success) {
-            const sent = Number(data?.meta?.delivery?.total_sent || 0);
-            ui.message(data?.message || `Envio concluido para ${sent} cliente(s).`, 'success');
+            const summary = formatPushDeliverySummary(data?.meta?.delivery || {}, 'aniversariantes elegiveis');
+            const tone = summary.normalized.enviados > 0 ? 'success' : 'warning';
+            setInlineFeedback(birthdayUi.mensagem, summary.detail, tone);
+            ui.message(data?.message || summary.short, tone);
           } else {
-            ui.message(data?.message || 'Não foi possível enviar o bônus aniversário.', 'error');
+            const summary = formatPushDeliverySummary(data?.meta?.delivery || {}, 'aniversariantes elegiveis');
+            setInlineFeedback(birthdayUi.mensagem, summary.detail || (data?.message || ''), data?.error === 'config_missing' ? 'warning' : 'error');
+            ui.message(data?.message || summary.short || 'Não foi possível enviar o bônus aniversário.', data?.error === 'config_missing' ? 'warning' : 'error');
           }
         });
 
@@ -5317,10 +5633,14 @@
             body: JSON.stringify({ lembrete_id: target.id }),
           });
           if (res.ok && data?.success) {
-            const sent = Number(data?.meta?.delivery?.total_sent || 0);
-            ui.message(data?.message || `Lembretes enviados para ${sent} cliente(s).`, 'success');
+            const summary = formatPushDeliverySummary(data?.meta?.delivery || {}, 'clientes inativos');
+            const tone = summary.normalized.enviados > 0 ? 'success' : 'warning';
+            setInlineFeedback(reminderUi.feedback, summary.detail, tone);
+            ui.message(data?.message || summary.short, tone);
           } else {
-            ui.message(data?.message || 'Não foi possível enviar os lembretes.', 'error');
+            const summary = formatPushDeliverySummary(data?.meta?.delivery || {}, 'clientes inativos');
+            setInlineFeedback(reminderUi.feedback, summary.detail || (data?.message || ''), data?.error === 'config_missing' ? 'warning' : 'error');
+            ui.message(data?.message || summary.short || 'Não foi possível enviar os lembretes.', data?.error === 'config_missing' ? 'warning' : 'error');
           }
         });
 

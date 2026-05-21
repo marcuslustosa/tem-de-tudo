@@ -1,21 +1,43 @@
 /* global self, clients */
-// Service Worker para Push Notifications (Stitch)
 
-self.addEventListener('push', function (event) {
-  if (!event.data) return;
-  const payload = event.data.json();
-  const title = payload.title || 'Notificação';
+self.addEventListener('push', (event) => {
+  const data = event.data ? event.data.json() : {};
+  const title = data.title || 'Tem de Tudo';
   const options = {
-    body: payload.body || '',
-    data: payload.data || {},
-    icon: '/img/icon-192.png',
-    badge: '/img/icon-96.png',
+    body: data.body || 'Você recebeu uma nova notificação.',
+    icon: data.icon || '/img/icon-192.png',
+    badge: data.badge || '/img/icon-96.png',
+    data: {
+      url: data.url || data.data?.url || '/index.html',
+      empresa_id: data.empresa_id || data.data?.empresa_id || null,
+      tipo: data.tipo || data.data?.tipo || 'push',
+    },
   };
+
   event.waitUntil(self.registration.showNotification(title, options));
 });
 
-self.addEventListener('notificationclick', function (event) {
+self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const target = event.notification.data?.url || '/';
-  event.waitUntil(clients.openWindow(target));
+  const targetUrl = event.notification.data?.url || '/index.html';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if ('focus' in client) {
+          client.focus();
+          if ('navigate' in client) {
+            return client.navigate(targetUrl);
+          }
+          return undefined;
+        }
+      }
+
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
+
+      return undefined;
+    })
+  );
 });

@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Services\ClienteQrCodeService;
 use App\Services\WebPushDeliveryService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class BonusAniversarioPhase6FlowTest extends TestCase
@@ -93,12 +94,13 @@ class BonusAniversarioPhase6FlowTest extends TestCase
 
     public function test_customer_can_view_birthday_bonus_and_company_can_validate_once_per_year(): void
     {
-        [$companyUser, $empresa, $companyToken] = $this->makeActiveCompany();
-        [, , $wrongCompanyToken] = $this->makeActiveCompany('phase6-company-b');
+        [$companyUser, $empresa] = $this->makeActiveCompany();
+        [$wrongCompanyUser] = $this->makeActiveCompany('phase6-company-b');
 
         $bonus = BonusAniversario::query()->create([
             'empresa_id' => $empresa->id,
             'titulo' => 'Bolo do aniversariante',
+            'presente' => 'Bolo do aniversariante',
             'descricao' => 'Valido somente no estabelecimento, lendo o QR do cliente.',
             'imagem' => 'https://example.com/bolo.jpg',
             'notification_title' => 'Seu presente de aniversario',
@@ -110,10 +112,8 @@ class BonusAniversarioPhase6FlowTest extends TestCase
             'perfil' => 'cliente',
             'status' => 'ativo',
             'telefone' => '(11) 98888-2000',
-            'data_nascimento' => now()->subYears(28)->day(10)->toDateString(),
+            'data_nascimento' => now()->subYears(28)->month(now()->month)->day(now()->day)->toDateString(),
         ]);
-        $customerToken = $customer->createToken('phase6-customer')->plainTextToken;
-
         InscricaoEmpresa::query()->create([
             'user_id' => $customer->id,
             'empresa_id' => $empresa->id,
@@ -122,7 +122,9 @@ class BonusAniversarioPhase6FlowTest extends TestCase
             'bonus_adesao_resgatado' => false,
         ]);
 
-        $available = $this->withHeaders($this->authHeaders($customerToken))
+        Sanctum::actingAs($customer);
+
+        $available = $this
             ->getJson("/api/cliente/bonus-aniversario/disponiveis?empresa_id={$empresa->id}");
 
         $available
@@ -133,7 +135,9 @@ class BonusAniversarioPhase6FlowTest extends TestCase
 
         $customerQr = app(ClienteQrCodeService::class)->gerar($customer);
 
-        $lookup = $this->withHeaders($this->authHeaders($companyToken))
+        Sanctum::actingAs($companyUser);
+
+        $lookup = $this
             ->postJson('/api/empresa/clientes/qrcode/consultar', [
                 'qrcode' => $customerQr['code'],
             ]);
@@ -145,7 +149,9 @@ class BonusAniversarioPhase6FlowTest extends TestCase
             ->assertJsonPath('data.bonus_aniversario.status', BonusAniversarioResgate::STATUS_AVAILABLE)
             ->assertJsonPath('data.bonus_aniversario.bonus.id', $bonus->id);
 
-        $wrongCompany = $this->withHeaders($this->authHeaders($wrongCompanyToken))
+        Sanctum::actingAs($wrongCompanyUser);
+
+        $wrongCompany = $this
             ->postJson("/api/empresa/bonus-aniversario/{$bonus->id}/validar", [
                 'cliente_id' => $customer->id,
             ]);
@@ -154,7 +160,9 @@ class BonusAniversarioPhase6FlowTest extends TestCase
             ->assertStatus(409)
             ->assertJsonPath('success', false);
 
-        $validate = $this->withHeaders($this->authHeaders($companyToken))
+        Sanctum::actingAs($companyUser);
+
+        $validate = $this
             ->postJson("/api/empresa/bonus-aniversario/{$bonus->id}/validar", [
                 'cliente_id' => $customer->id,
             ]);
@@ -164,7 +172,9 @@ class BonusAniversarioPhase6FlowTest extends TestCase
             ->assertJsonPath('success', true)
             ->assertJsonPath('data.bonus_aniversario.status', BonusAniversarioResgate::STATUS_REDEEMED);
 
-        $duplicate = $this->withHeaders($this->authHeaders($companyToken))
+        Sanctum::actingAs($companyUser);
+
+        $duplicate = $this
             ->postJson("/api/empresa/bonus-aniversario/{$bonus->id}/validar", [
                 'cliente_id' => $customer->id,
             ]);
@@ -190,6 +200,7 @@ class BonusAniversarioPhase6FlowTest extends TestCase
         $bonus = BonusAniversario::query()->create([
             'empresa_id' => $empresa->id,
             'titulo' => 'Presente do aniversariante',
+            'presente' => 'Presente do aniversariante',
             'descricao' => 'Passe na loja para validar presencialmente.',
             'notification_title' => 'Seu presente chegou',
             'notification_body' => 'Mostre seu QR Code para resgatar.',

@@ -17,8 +17,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Minishlink\WebPush\Subscription;
-use Minishlink\WebPush\WebPush;
 
 class PromocaoInstantaneaService
 {
@@ -28,6 +26,11 @@ class PromocaoInstantaneaService
     public const LOG_STATUS_SENT = 'sent';
     public const LOG_STATUS_FAILED = 'failed';
     public const LOG_STATUS_NO_SUBSCRIPTION = 'no_subscription';
+
+    public function __construct(
+        private readonly WebPushDeliveryService $pushDeliveryService
+    ) {
+    }
 
     public function companyPromotions(Empresa $empresa)
     {
@@ -338,13 +341,11 @@ class PromocaoInstantaneaService
             throw new DomainException('Nenhum cliente vinculado a empresa para receber esta promocao.');
         }
 
-        $vapidAuth = $this->webPushAuth();
-        if ($vapidAuth === null) {
-            throw new DomainException('Push web nao esta configurado neste ambiente.');
-        }
+        $auth = $this->pushDeliveryService->auth();
 
         $targetUserIds = $inscricoes->pluck('user_id')->unique()->values();
         $subscriptionsByUser = PushSubscription::query()
+            ->active()
             ->whereIn('user_id', $targetUserIds->all())
             ->get()
             ->groupBy('user_id');
@@ -360,18 +361,21 @@ class PromocaoInstantaneaService
         ];
 
         $stats = [
+            'status' => $auth === null ? 'config_missing' : 'pending',
+            'config_missing' => $auth === null,
+            'message' => $auth === null ? 'Configuração de push pendente no servidor.' : null,
+            'total_elegiveis' => $inscricoes->count(),
+            'total_com_subscription' => 0,
+            'enviados' => 0,
+            'falhas' => 0,
+            'ignorados_sem_subscription' => 0,
+            'ignorados_sem_vinculo' => 0,
             'total_targeted' => $inscricoes->count(),
             'total_with_subscription' => 0,
             'total_sent' => 0,
             'total_failed' => 0,
             'total_without_subscription' => 0,
         ];
-
-        DB::transaction(function () use ($promocao, $sentAt): void {
-            $promocao->update([
-                'data_envio' => $sentAt,
-            ]);
-        });
 
         foreach ($inscricoes as $inscricao) {
             $customer = $inscricao->user;
@@ -395,6 +399,7 @@ class PromocaoInstantaneaService
 
             $subscriptions = $subscriptionsByUser->get($customer->id, collect());
             if ($subscriptions->isEmpty()) {
+                $stats['ignorados_sem_subscription']++;
                 $stats['total_without_subscription']++;
                 $log->update([
                     'status' => self::LOG_STATUS_NO_SUBSCRIPTION,
@@ -404,9 +409,20 @@ class PromocaoInstantaneaService
                 continue;
             }
 
+            $stats['total_com_subscription']++;
             $stats['total_with_subscription']++;
-            $result = $this->deliverPushToUser($vapidAuth, $subscriptions, $title, $body, $payload);
+
+            $result = $auth === null
+                ? [
+                    'sent' => false,
+                    'error' => 'Configuração de push pendente no servidor.',
+                    'status' => 'config_missing',
+                    'config_missing' => true,
+                ]
+                : $this->pushDeliveryService->deliverToSubscriptions($subscriptions, $title, $body, $payload, $auth);
+
             if ($result['sent']) {
+                $stats['enviados']++;
                 $stats['total_sent']++;
                 $log->update([
                     'status' => self::LOG_STATUS_SENT,
@@ -415,6 +431,7 @@ class PromocaoInstantaneaService
                     'data_envio' => $sentAt,
                 ]);
             } else {
+                $stats['falhas']++;
                 $stats['total_failed']++;
                 $log->update([
                     'status' => self::LOG_STATUS_FAILED,
@@ -424,11 +441,31 @@ class PromocaoInstantaneaService
             }
         }
 
-        $promocao->refresh();
-        if (Schema::hasColumn('promocoes', 'total_envios')) {
-            $promocao->update([
-                'total_envios' => (int) ($promocao->total_envios ?? 0) + $stats['total_sent'],
-            ]);
+        if (($stats['enviados'] ?? 0) > 0) {
+            DB::transaction(function () use ($promocao, $sentAt): void {
+                $promocao->update([
+                    'data_envio' => $sentAt,
+                ]);
+            });
+
+            $promocao->refresh();
+            if (Schema::hasColumn('promocoes', 'total_envios')) {
+                $promocao->update([
+                    'total_envios' => (int) ($promocao->total_envios ?? 0) + $stats['total_sent'],
+                ]);
+            }
+        }
+
+        if (($stats['enviados'] ?? 0) > 0) {
+            $stats['status'] = 'sent';
+            $stats['config_missing'] = false;
+        } elseif (($stats['config_missing'] ?? false) === true) {
+            $stats['status'] = 'config_missing';
+        } elseif (($stats['total_com_subscription'] ?? 0) === 0) {
+            $stats['status'] = 'no_subscription';
+            $stats['message'] = 'Nenhum cliente elegivel ativou notificacoes push.';
+        } else {
+            $stats['status'] = 'failed';
         }
 
         return [
@@ -534,50 +571,6 @@ class PromocaoInstantaneaService
         return 'Nenhuma promocao elegivel para este cliente no momento.';
     }
 
-    private function deliverPushToUser(array $vapidAuth, Collection $subscriptions, string $title, string $body, array $data): array
-    {
-        try {
-            $webPush = new WebPush($vapidAuth);
-            foreach ($subscriptions as $subscriptionModel) {
-                $webPush->queueNotification(
-                    Subscription::create([
-                        'endpoint' => $subscriptionModel->endpoint,
-                        'keys' => [
-                            'p256dh' => $subscriptionModel->p256dh,
-                            'auth' => $subscriptionModel->auth,
-                        ],
-                    ]),
-                    json_encode([
-                        'title' => $title,
-                        'body' => $body,
-                        'data' => $data,
-                    ])
-                );
-            }
-
-            $success = false;
-            $errors = [];
-            foreach ($webPush->flush() as $report) {
-                if ($report->isSuccess()) {
-                    $success = true;
-                    continue;
-                }
-
-                $errors[] = (string) $report->getReason();
-            }
-
-            return [
-                'sent' => $success,
-                'error' => $errors !== [] ? implode(' | ', array_unique($errors)) : null,
-            ];
-        } catch (\Throwable $e) {
-            return [
-                'sent' => false,
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-
     private function guardCompanyPromotionOwnership(Empresa $empresa, Promocao $promocao): void
     {
         if ($promocao->empresa_id !== $empresa->id) {
@@ -645,20 +638,4 @@ class PromocaoInstantaneaService
         return str_contains(Str::lower($e->getMessage()), 'promocao_resgates_promocao_user_unique');
     }
 
-    private function webPushAuth(): ?array
-    {
-        $publicKey = config('services.webpush.public_key') ?? env('VAPID_PUBLIC_KEY');
-        $privateKey = config('services.webpush.private_key') ?? env('VAPID_PRIVATE_KEY');
-        if (!$publicKey || !$privateKey) {
-            return null;
-        }
-
-        return [
-            'VAPID' => [
-                'subject' => env('VAPID_SUBJECT', config('app.url') ?: 'mailto:admin@example.com'),
-                'publicKey' => $publicKey,
-                'privateKey' => $privateKey,
-            ],
-        ];
-    }
 }
