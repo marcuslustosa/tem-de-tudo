@@ -12,6 +12,7 @@
 - `backend/public/detalhe_do_parceiro.html`
 - `backend/public/dashboard_parceiro.html`
 - `backend/public/gest_o_de_ofertas_parceiro.html`
+- `backend/public/gest_o_de_clientes_master.html`
 
 ### Backend
 - `backend/routes/api.php`
@@ -25,6 +26,7 @@
 - `backend/app/Http/Controllers/PromocaoController.php`
 - `backend/app/Http/Controllers/BonusAniversarioController.php`
 - `backend/app/Http/Controllers/LembreteRetornoController.php`
+- `backend/app/Http/Controllers/PushSubscriptionController.php`
 - migrations relacionadas a `push_subscriptions` e `notificacoes_push`
 
 ## O que já existia
@@ -57,6 +59,7 @@
   - iPhone fora da Tela de Início
   - VAPID ausente no servidor
 - o fluxo não estava focado em “empresas vinculadas”, que é a regra correta do produto.
+- faltava um fluxo simples para o admin validar push real em um cliente especifico de demo.
 
 ### Backend
 - `PushSubscription` ainda não tratava formalmente:
@@ -81,6 +84,11 @@
   - usa ícones reais do projeto
 - `meus_pontos.html` ganhou card explícito para ativar notificações.
 - `meu_perfil.html` ganhou card explícito para ativar notificações.
+- `gest_o_de_clientes_master.html` ganhou um card de **Teste de push** para o admin:
+  - localizar cliente por email
+  - ver se existe subscription ativa
+  - ver quantos dispositivos estao ativos
+  - disparar um push teste individual
 - o request de permissão passou a acontecer apenas por clique do usuário.
 - `stitch-app.js` passou a:
   - buscar `VAPID_PUBLIC_KEY` no backend
@@ -105,6 +113,8 @@
   - salva subscription real do dispositivo
   - revoga o endpoint atual
   - responde `config_missing` ou `no_subscription` sem `500`
+  - expõe status individual de push para o admin
+  - envia push teste individual para um cliente especifico
 - `WebPushDeliveryService` agora:
   - valida VAPID sem derrubar a aplicação
   - retorna métricas reais
@@ -128,6 +138,10 @@
 - `POST /api/empresa/promocoes/{id}/enviar`
 - `POST /api/empresa/bonus-aniversario/{id}/enviar-elegiveis`
 - `POST /api/empresa/lembrete-retorno/enviar-elegiveis`
+
+### Admin autenticado
+- `GET /api/admin/push/client-status`
+- `POST /api/admin/push/test-client`
 
 ## Tabelas / models relevantes
 
@@ -212,3 +226,4 @@ Preencher no serviço web:
   - exige iOS / iPadOS 16.4+
 - se o usuário bloquear a permissão, precisa reativar nas configurações do navegador
 - sem subscription ativa não existe entrega real
+- o teste individual do admin depende de o cliente ter criado uma subscription real no proprio dispositivo

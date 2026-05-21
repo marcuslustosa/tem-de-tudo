@@ -257,6 +257,18 @@ class I9PlusDemoSeeder extends Seeder
                 'nivel' => 'Ouro',
                 'email_verified_at' => $today,
             ]),
+            'push_iphone' => $this->syncUser('cliente.push@demo.local', [
+                'name' => 'Cliente Push iPhone',
+                'password' => Hash::make(self::DEMO_PASSWORD),
+                'perfil' => 'cliente',
+                'status' => 'ativo',
+                'telefone' => '(11) 97777-3005',
+                'data_nascimento' => Carbon::create(1993, 5, 12, 0, 0, 0),
+                'pontos' => 90,
+                'pontos_lifetime' => 180,
+                'nivel' => 'Bronze',
+                'email_verified_at' => $today,
+            ]),
         ];
 
         $activeCompanyKeys = ['malagueta', 'texano', 'makoto', 'florenza'];
@@ -275,6 +287,7 @@ class I9PlusDemoSeeder extends Seeder
         $this->syncInscricao($clients['maria'], $companies['makoto'], $today->copy()->subDays(3), $today->copy()->subDays(2), false);
         $this->syncInscricao($clients['ana'], $companies['florenza'], $today->copy()->subDays(18), $today->copy()->subDays(6), false);
         $this->syncInscricao($clients['maria'], $companies['florenza'], $today->copy()->subDays(28), $today->copy()->subDays(8), false);
+        $this->syncInscricao($clients['push_iphone'], $companies['malagueta'], $today->copy()->subDays(9), $today->copy()->subDays(2), false);
 
         $bonusMap = [];
         foreach ($activeCompanyKeys as $companyKey) {
@@ -421,6 +434,30 @@ class I9PlusDemoSeeder extends Seeder
                 'quantidade_disponivel' => 30,
                 'qtd_disponivel' => 30,
                 'qtd_resgatada' => 3,
+                'limite_por_usuario' => 1,
+            ]),
+            'malagueta_push_test' => $this->syncPromocao($companies['malagueta'], [
+                'titulo' => 'Teste de Push',
+                'descricao' => 'Promocao criada para validar notificacao no celular.',
+                'imagem' => '/assets/images/company1.jpg',
+                'notification_title' => 'Teste de notificacao',
+                'notification_body' => 'Se voce recebeu esta mensagem, o push esta funcionando.',
+                'desconto' => 0,
+                'desconto_percentual' => 0,
+                'pontos_necessarios' => 0,
+                'data_inicio' => $today->copy()->subMinutes(30),
+                'data_fim' => $today->copy()->addDays(14),
+                'validade' => $today->copy()->addDays(14),
+                'status' => Promocao::STATUS_ACTIVE,
+                'ativo' => true,
+                'data_envio' => null,
+                'total_envios' => 0,
+                'visualizacoes' => 0,
+                'resgates' => 0,
+                'usos' => 0,
+                'quantidade_disponivel' => 99,
+                'qtd_disponivel' => 99,
+                'qtd_resgatada' => 0,
                 'limite_por_usuario' => 1,
             ]),
             'texano_combo' => $this->syncPromocao($companies['texano'], [

@@ -281,6 +281,8 @@ Route::prefix('admin')->group(function () {
             Route::put('/users/{id}/status', [AuthController::class, 'updateUserStatus']);
             // CPF e data_nascimento: apenas admin pode alterar (anti-fraude)
             Route::put('/users/{id}/dados-sensiveis', [AuthController::class, 'updateDadosSensiveis']);
+            Route::get('/push/client-status', [PushSubscriptionController::class, 'adminClientStatus']);
+            Route::post('/push/test-client', [PushSubscriptionController::class, 'adminTestClient']);
             Route::get('/empresas', [EmpresaController::class, 'adminIndex']);
             Route::get('/empresas/{id}/qrcode', [EmpresaController::class, 'adminQrCode']);
             Route::post('/empresas/{id}/approve', [EmpresaController::class, 'approve']);

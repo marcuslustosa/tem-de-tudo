@@ -52,6 +52,26 @@ Se o ambiente local não conseguir gerar a chave EC via OpenSSL, usar um gerador
 7. Clique em **Ativar notificações**
 8. Aceite a permissão
 
+### iPhone / Safari com cliente de teste dedicado
+1. Abra `https://tem-de-tudo.up.railway.app` no Safari
+2. Toque em **Compartilhar**
+3. Toque em **Adicionar à Tela de Início**
+4. Abra o app pelo ícone instalado
+5. Faça login com:
+   - `cliente.push@demo.local / password`
+6. Vá para:
+   - `meus_pontos.html`
+   - ou `meu_perfil.html`
+7. Clique em **Ativar notificações**
+8. Aceite a permissão do iPhone
+9. Avise o admin que o dispositivo já ativou o push
+10. O admin deve entrar com:
+   - `admin@demo.local / password`
+11. Abrir `gest_o_de_clientes_master.html`
+12. Confirmar o cliente `cliente.push@demo.local`
+13. Clicar em **Enviar push teste**
+14. O iPhone deve receber a notificação com abertura para `/meus_pontos.html`
+
 ### Desktop / Chrome ou Edge
 1. Abra `https://tem-de-tudo.up.railway.app`
 2. Faça login como cliente
@@ -71,6 +91,26 @@ Se o ambiente local não conseguir gerar a chave EC via OpenSSL, usar um gerador
 6. Verifique:
    - resumo com elegíveis / com notificações ativas / enviados / falhas
    - notificação no dispositivo do cliente
+
+## Como testar push individual pelo admin
+
+1. No dispositivo do cliente, ative notificações com:
+   - `cliente.push@demo.local / password`
+2. Em outro navegador/dispositivo, entre como admin:
+   - `admin@demo.local / password`
+3. Abra `gest_o_de_clientes_master.html`
+4. No card **Teste de push**, confirme o email:
+   - `cliente.push@demo.local`
+5. Clique em **Buscar cliente**
+6. Verifique:
+   - nome
+   - email
+   - push ativo: sim/nao
+   - quantidade de dispositivos
+7. Clique em **Enviar push teste**
+8. Verifique:
+   - resumo operacional no painel
+   - notificação recebida no iPhone
 
 ## Como testar bônus aniversário
 
@@ -128,6 +168,7 @@ Se o ambiente local não conseguir gerar a chave EC via OpenSSL, usar um gerador
 - se o iPhone não estiver instalado na Tela de Início, push pode não funcionar
 - sem `VAPID_*`, não existe envio real
 - se o usuário nunca ativou notificações, não existe subscription para enviar
+- o card admin nao cria subscription fake; ele apenas consulta o status real salvo pelo navegador do cliente
 - o clique na notificação depende do navegador permitir foco/navegação da janela
 
 ## Railway Variables

@@ -6894,6 +6894,154 @@
       const empty = document.getElementById('adminClientesEmpty');
       const resumo = document.getElementById('adminClientesResumo');
       const busca = document.getElementById('adminClientesBusca') || document.getElementById('adminClientesBusca2');
+      const pushUi = {
+        email: document.getElementById('adminPushClientEmail'),
+        lookup: document.getElementById('adminPushLookupBtn'),
+        send: document.getElementById('adminPushSendBtn'),
+        name: document.getElementById('adminPushClientName'),
+        emailValue: document.getElementById('adminPushClientEmailValue'),
+        subscription: document.getElementById('adminPushClientSubscription'),
+        devices: document.getElementById('adminPushClientDevices'),
+        lastSeen: document.getElementById('adminPushClientLastSeen'),
+        hint: document.getElementById('adminPushClientHint'),
+        summaryTitle: document.getElementById('adminPushSummaryTitle'),
+        summaryDetail: document.getElementById('adminPushSummaryDetail'),
+        feedback: document.getElementById('adminPushTestFeedback'),
+      };
+      let selectedPushClient = null;
+
+      const formatPushDateTime = (value) => {
+        if (!value) return '--';
+        const parsed = new Date(value);
+        if (Number.isNaN(parsed.getTime())) return '--';
+        return parsed.toLocaleString('pt-BR');
+      };
+
+      const resetPushTester = (message = 'A busca valida o status real da subscription. Nenhum dado de push e fakeado.', tone = 'info') => {
+        selectedPushClient = null;
+        if (pushUi.name) pushUi.name.textContent = 'Cliente Push iPhone';
+        if (pushUi.emailValue) pushUi.emailValue.textContent = pushUi.email?.value?.trim() || 'cliente.push@demo.local';
+        if (pushUi.subscription) pushUi.subscription.textContent = 'Nao verificado';
+        if (pushUi.devices) pushUi.devices.textContent = '0 dispositivo(s)';
+        if (pushUi.lastSeen) pushUi.lastSeen.textContent = '--';
+        if (pushUi.hint) pushUi.hint.textContent = 'Peca para o cliente abrir o app instalado, fazer login e clicar em Ativar notificacoes.';
+        if (pushUi.summaryTitle) pushUi.summaryTitle.textContent = 'Nenhum envio realizado nesta sessao.';
+        if (pushUi.summaryDetail) pushUi.summaryDetail.textContent = 'Use o email do cliente e confirme se existe ao menos uma subscription ativa antes de disparar o teste.';
+        if (pushUi.send) pushUi.send.disabled = true;
+        setInlineFeedback(pushUi.feedback, message, tone);
+      };
+
+      const paintPushTester = (payload) => {
+        const user = payload?.user || {};
+        const push = payload?.push || {};
+        const total = Number(push?.total_subscriptions ?? push?.active_subscriptions ?? 0);
+        selectedPushClient = user?.id ? user : null;
+
+        if (pushUi.name) pushUi.name.textContent = safeText(user?.name, 'Cliente');
+        if (pushUi.emailValue) pushUi.emailValue.textContent = safeText(user?.email, pushUi.email?.value || 'cliente.push@demo.local');
+        if (pushUi.subscription) pushUi.subscription.textContent = push?.has_active_subscription ? 'Sim' : 'Nao';
+        if (pushUi.devices) {
+          const deviceLabels = Array.isArray(push?.devices) && push.devices.length ? ` (${push.devices.join(', ')})` : '';
+          pushUi.devices.textContent = `${total} dispositivo(s)${deviceLabels}`;
+        }
+        if (pushUi.lastSeen) pushUi.lastSeen.textContent = formatPushDateTime(push?.last_seen_at);
+        if (pushUi.hint) {
+          pushUi.hint.textContent = push?.has_active_subscription
+            ? 'Cliente apto para receber push neste(s) dispositivo(s).'
+            : 'Cliente ainda nao ativou notificacoes. Peça para abrir o app no iPhone instalado e tocar em Ativar notificacoes.';
+        }
+        if (pushUi.summaryTitle) {
+          pushUi.summaryTitle.textContent = push?.has_active_subscription
+            ? 'Cliente pronto para teste individual.'
+            : 'Cliente localizado, mas sem subscription ativa.';
+        }
+        if (pushUi.summaryDetail) {
+          pushUi.summaryDetail.textContent = push?.has_active_subscription
+            ? 'Use Enviar push teste para validar o recebimento neste dispositivo.'
+            : 'Sem subscription real, o admin recebera um aviso amigavel e nenhum envio sera marcado como entregue.';
+        }
+        if (pushUi.send) pushUi.send.disabled = !push?.has_active_subscription || !selectedPushClient?.id;
+        setInlineFeedback(pushUi.feedback, 'Cliente localizado. O status exibido reflete a subscription real salva pelo navegador.', push?.has_active_subscription ? 'success' : 'warning');
+      };
+
+      const loadAdminPushClient = async (emailOverride = null) => {
+        const email = safeText(emailOverride ?? pushUi.email?.value, '').trim().toLowerCase();
+        if (!email) {
+          resetPushTester('Informe o email do cliente para consultar o status de push.', 'warning');
+          return;
+        }
+
+        if (pushUi.lookup) pushUi.lookup.disabled = true;
+        if (pushUi.send) pushUi.send.disabled = true;
+        setInlineFeedback(pushUi.feedback, 'Buscando status real da subscription do cliente...', 'info');
+
+        const { res, data } = await api.request(`/admin/push/client-status?email=${encodeURIComponent(email)}`, {}, { notify: false });
+
+        if (pushUi.lookup) pushUi.lookup.disabled = false;
+
+        if (!res.ok || data?.success === false) {
+          resetPushTester(data?.message || 'Nao foi possivel localizar o cliente para teste de push.', res.status === 404 ? 'warning' : 'error');
+          return;
+        }
+
+        paintPushTester(data?.data || {});
+      };
+
+      const sendAdminPushTest = async () => {
+        if (!selectedPushClient?.id) {
+          setInlineFeedback(pushUi.feedback, 'Localize primeiro o cliente que recebera o push teste.', 'warning');
+          return;
+        }
+
+        if (pushUi.send) pushUi.send.disabled = true;
+        setInlineFeedback(pushUi.feedback, 'Enviando push teste para o cliente selecionado...', 'info');
+
+        const { res, data } = await api.request('/admin/push/test-client', {
+          method: 'POST',
+          body: JSON.stringify({
+            user_id: selectedPushClient.id,
+            title: 'Teste de notificacao',
+            body: 'Se voce recebeu esta mensagem, o push esta funcionando.',
+            url: '/meus_pontos.html',
+          }),
+        }, { notify: false });
+
+        const summary = formatPushDeliverySummary(data?.meta?.delivery || {}, 'cliente selecionado');
+        if (pushUi.summaryTitle) pushUi.summaryTitle.textContent = summary.short || (data?.message || 'Resumo do envio indisponivel.');
+        if (pushUi.summaryDetail) pushUi.summaryDetail.textContent = summary.detail || '';
+
+        if (res.ok && data?.success !== false) {
+          setInlineFeedback(pushUi.feedback, data?.message || 'Push teste enviado com sucesso.', 'success');
+          ui.message(data?.message || 'Push teste enviado com sucesso.', 'success');
+        } else {
+          const tone = data?.error === 'no_subscription' || data?.error === 'config_missing' ? 'warning' : 'error';
+          const message = data?.message || 'Nao foi possivel enviar o push teste para este cliente.';
+          setInlineFeedback(pushUi.feedback, message, tone);
+          ui.message(message, tone);
+        }
+
+        await loadAdminPushClient(selectedPushClient.email || pushUi.email?.value || '');
+      };
+
+      if (pushUi.lookup && pushUi.lookup.dataset.bound !== '1') {
+        pushUi.lookup.dataset.bound = '1';
+        pushUi.lookup.addEventListener('click', () => loadAdminPushClient());
+      }
+
+      if (pushUi.email && pushUi.email.dataset.bound !== '1') {
+        pushUi.email.dataset.bound = '1';
+        pushUi.email.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            loadAdminPushClient();
+          }
+        });
+      }
+
+      if (pushUi.send && pushUi.send.dataset.bound !== '1') {
+        pushUi.send.dataset.bound = '1';
+        pushUi.send.addEventListener('click', () => sendAdminPushTest());
+      }
 
       // Event delegation para bloquear/reativar usuário
       if (!tbody.dataset.delegated) {
@@ -6988,6 +7136,8 @@
 
       bindBusca(clientes);
       renderLista(clientes);
+      resetPushTester();
+      await loadAdminPushClient(pushUi.email?.value || 'cliente.push@demo.local');
     },
 
     async relatorios() {

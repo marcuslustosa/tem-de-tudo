@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="light" lang="pt-BR">
 <head>
@@ -86,7 +86,7 @@
             backdrop-filter: blur(12px);
         }
     </style>
-<script src="/dist/stitch-app.min.js?v=20260516-light" defer></script>
+<script src="/dist/stitch-app.min.js?v=20260520-admin-push" defer></script>
   <link rel="stylesheet" href="/css/i9plus-phase8.css?v=20260516-light" />
 </head>
 <body class="bg-[#f7f7f7] bg-surface font-body text-on-surface" data-page="gest_o_de_clientes_master">
@@ -228,6 +228,49 @@
                     Filtros Avancados
                 </button>
 </div>
+<section class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 p-6 mb-6">
+<div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+<div class="max-w-2xl">
+<span class="inline-flex rounded-full bg-primary/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Teste de push</span>
+<h2 class="mt-4 font-headline text-2xl font-black text-on-surface">Validacao individual no iPhone</h2>
+<p class="mt-2 text-sm leading-6 text-on-surface-variant">Use este bloco para localizar o cliente demo <strong>cliente.push@demo.local</strong>, verificar se ele ativou notificacoes neste dispositivo e enviar um push teste sem disparar campanha para toda a base.</p>
+<div class="mt-4 flex flex-col gap-3 sm:flex-row">
+<input id="adminPushClientEmail" class="w-full rounded-xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" type="email" value="cliente.push@demo.local" placeholder="cliente.push@demo.local"/>
+<button id="adminPushLookupBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-secondary border border-outline-variant/20 hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">person_search</span>
+Buscar cliente
+</button>
+<button id="adminPushSendBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white hover:opacity-95 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+<span class="material-symbols-outlined text-[18px]">send</span>
+Enviar push teste
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0 lg:min-w-[360px]">
+<div class="rounded-2xl border border-outline-variant/10 bg-surface-container-low p-4">
+<p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Cliente</p>
+<p class="mt-2 text-base font-bold text-on-surface" id="adminPushClientName">Cliente Push iPhone</p>
+<p class="text-sm text-on-surface-variant" id="adminPushClientEmailValue">cliente.push@demo.local</p>
+</div>
+<div class="rounded-2xl border border-outline-variant/10 bg-surface-container-low p-4">
+<p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Push ativo</p>
+<p class="mt-2 text-base font-bold text-on-surface" id="adminPushClientSubscription">Verificando...</p>
+<p class="text-sm text-on-surface-variant" id="adminPushClientDevices">0 dispositivo(s)</p>
+</div>
+<div class="rounded-2xl border border-outline-variant/10 bg-surface-container-low p-4">
+<p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Ultima atividade push</p>
+<p class="mt-2 text-sm font-semibold text-on-surface" id="adminPushClientLastSeen">--</p>
+<p class="text-sm text-on-surface-variant" id="adminPushClientHint">Peca para o cliente abrir o app instalado, fazer login e clicar em Ativar notificacoes.</p>
+</div>
+<div class="rounded-2xl border border-outline-variant/10 bg-surface-container-low p-4">
+<p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Resumo do envio</p>
+<p class="mt-2 text-sm font-semibold text-on-surface" id="adminPushSummaryTitle">Nenhum envio realizado nesta sessao.</p>
+<p class="mt-1 text-xs leading-5 text-on-surface-variant" id="adminPushSummaryDetail">Use o email do cliente e confirme se existe ao menos uma subscription ativa antes de disparar o teste.</p>
+</div>
+</div>
+</div>
+<p class="mt-4 text-xs leading-5 text-on-surface-variant" id="adminPushTestFeedback">A busca valida o status real da subscription. Nenhum dado de push e fakeado.</p>
+</section>
 <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/5">
 <div class="overflow-x-auto">
 <table class="w-full text-left border-collapse">
@@ -266,7 +309,7 @@
 <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-6 lg:hidden bg-white dark:bg-slate-950 rounded-t-[1.5rem] border-t border-[#00afa8]/10 shadow-[0_-4px_20px_rgba(11,31,58,0.06)]">
 <a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 tap-highlight-transparent active:scale-95 transition-all" href="/dashboard_admin_master.html">
 <span class="material-symbols-outlined">home</span>
-<span class="font-headline text-[10px] font-bold uppercase tracking-wider">Início</span>
+<span class="font-headline text-[10px] font-bold uppercase tracking-wider">InÃ­cio</span>
 </a>
 <a class="flex flex-col items-center justify-center text-[#133f8c] relative after:content-[''] after:w-1 after:h-1 after:bg-[#b01774] after:rounded-full after:mt-1 tap-highlight-transparent active:scale-95 transition-all" href="/gest_o_de_clientes_master.html">
 <span class="material-symbols-outlined">group</span>
@@ -286,5 +329,3 @@
 </a>
 </nav>
 </body></html>
-
-
