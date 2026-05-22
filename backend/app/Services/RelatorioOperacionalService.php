@@ -144,6 +144,9 @@ class RelatorioOperacionalService
             }
         }
 
+        $companiesWithCampaigns = $this->companyIdsWithCommercialTools();
+        $companiesWithLinkedClients = $this->companyIdsWithLinkedCustomers();
+
         $topCompaniesByClients = $this->hasTable('inscricoes_empresa')
             ? DB::table('inscricoes_empresa')
                 ->join('empresas', 'inscricoes_empresa.empresa_id', '=', 'empresas.id')
@@ -187,6 +190,10 @@ class RelatorioOperacionalService
                 'total_vinculos_cliente_empresa' => $this->hasTable('inscricoes_empresa')
                     ? (int) DB::table('inscricoes_empresa')->count()
                     : 0,
+                'empresas_com_campanhas' => count($companiesWithCampaigns),
+                'empresas_sem_campanhas' => max(0, $statusSummary['total_empresas'] - count($companiesWithCampaigns)),
+                'empresas_com_clientes_vinculados' => count($companiesWithLinkedClients),
+                'empresas_sem_clientes_vinculados' => max(0, $statusSummary['total_empresas'] - count($companiesWithLinkedClients)),
                 'total_promocoes' => $this->hasTable('promocoes')
                     ? (int) DB::table('promocoes')->count()
                     : 0,
@@ -215,6 +222,55 @@ class RelatorioOperacionalService
                 ->values()
                 ->all(),
         ];
+    }
+
+    private function companyIdsWithCommercialTools(): array
+    {
+        $tables = [
+            'promocoes',
+            'bonus_adesao',
+            'cartoes_fidelidade',
+            'bonus_aniversario',
+            'lembretes_ausencia',
+        ];
+
+        $ids = collect();
+
+        foreach ($tables as $table) {
+            if (!$this->hasTable($table) || !$this->hasColumn($table, 'empresa_id')) {
+                continue;
+            }
+
+            $ids = $ids->merge(
+                DB::table($table)
+                    ->whereNotNull('empresa_id')
+                    ->distinct()
+                    ->pluck('empresa_id')
+                    ->map(fn ($id) => (int) $id)
+            );
+        }
+
+        return $ids
+            ->filter(fn ($id) => $id > 0)
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    private function companyIdsWithLinkedCustomers(): array
+    {
+        if (!$this->hasTable('inscricoes_empresa') || !$this->hasColumn('inscricoes_empresa', 'empresa_id')) {
+            return [];
+        }
+
+        return DB::table('inscricoes_empresa')
+            ->whereNotNull('empresa_id')
+            ->distinct()
+            ->pluck('empresa_id')
+            ->map(fn ($id) => (int) $id)
+            ->filter(fn ($id) => $id > 0)
+            ->values()
+            ->all();
     }
 
     private function customerAggregateMaps(int $empresaId, array $customerIds): array

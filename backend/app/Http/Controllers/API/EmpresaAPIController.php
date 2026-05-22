@@ -49,6 +49,9 @@ class EmpresaAPIController extends Controller
                     'cnpj'      => $empresa->cnpj ?? '',
                     'endereco'  => $empresa->endereco ?? '',
                     'telefone'  => $empresa->telefone ?? $user->telefone ?? '',
+                    'whatsapp'  => $empresa->whatsapp ?? '',
+                    'instagram' => $empresa->instagram ?? '',
+                    'facebook'  => $empresa->facebook ?? '',
                     'logo'      => $empresa->logo ?? '',
                     'descricao' => $empresa->descricao ?? '',
                     'points_multiplier' => $empresa->points_multiplier ?? 1.0,
@@ -77,11 +80,15 @@ class EmpresaAPIController extends Controller
             'email'    => 'sometimes|email|unique:users,email,' . $user->id,
             'telefone' => 'sometimes|string|max:20',
             // empresa fields
-            'empresa_nome'     => 'sometimes|string|max:255',
-            'empresa_ramo'     => 'sometimes|string|max:100',
-            'empresa_cnpj'     => 'sometimes|string|max:18',
-            'empresa_endereco' => 'sometimes|string|max:500',
-            'empresa_logo'     => 'sometimes|nullable|url|max:500',
+            'empresa_nome'      => 'sometimes|string|max:255',
+            'empresa_ramo'      => 'sometimes|string|max:100',
+            'empresa_cnpj'      => 'sometimes|string|max:18',
+            'empresa_endereco'  => 'sometimes|string|max:500',
+            'empresa_descricao' => 'sometimes|nullable|string|max:1200',
+            'empresa_whatsapp'  => 'sometimes|nullable|string|max:30',
+            'empresa_instagram' => 'sometimes|nullable|string|max:120',
+            'empresa_facebook'  => 'sometimes|nullable|string|max:120',
+            'empresa_logo'      => 'sometimes|nullable|url|max:500',
         ]);
 
         // Atualizar users
@@ -96,11 +103,15 @@ class EmpresaAPIController extends Controller
 
         // Atualizar empresas
         $empresaFields = array_filter([
-            'nome'      => $validated['empresa_nome'] ?? null,
-            'ramo'      => $validated['empresa_ramo'] ?? null,
-            'cnpj'      => $validated['empresa_cnpj'] ?? null,
-            'endereco'  => $validated['empresa_endereco'] ?? null,
-            'logo'      => $validated['empresa_logo'] ?? null,
+            'nome'       => $validated['empresa_nome'] ?? null,
+            'ramo'       => $validated['empresa_ramo'] ?? null,
+            'cnpj'       => $validated['empresa_cnpj'] ?? null,
+            'endereco'   => $validated['empresa_endereco'] ?? null,
+            'descricao'  => $validated['empresa_descricao'] ?? null,
+            'whatsapp'   => $validated['empresa_whatsapp'] ?? null,
+            'instagram'  => $validated['empresa_instagram'] ?? null,
+            'facebook'   => $validated['empresa_facebook'] ?? null,
+            'logo'       => $validated['empresa_logo'] ?? null,
             'updated_at' => now(),
         ], fn($v) => $v !== null);
         if ($empresaFields) {

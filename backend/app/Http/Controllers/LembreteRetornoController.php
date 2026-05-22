@@ -46,6 +46,9 @@ class LembreteRetornoController extends Controller
             'dias_sem_visita' => 'required|integer|min:1|max:365',
             'titulo' => 'required|string|max:80',
             'mensagem' => 'required|string|max:300',
+            'imagem_url' => 'nullable|string|max:2048',
+            'notification_title' => 'nullable|string|max:80',
+            'notification_body' => 'nullable|string|max:120',
             'ativo' => 'sometimes|boolean',
         ]);
 
@@ -90,6 +93,9 @@ class LembreteRetornoController extends Controller
             'dias_sem_visita' => 'sometimes|integer|min:1|max:365',
             'titulo' => 'sometimes|filled|string|max:80',
             'mensagem' => 'sometimes|filled|string|max:300',
+            'imagem_url' => 'nullable|string|max:2048',
+            'notification_title' => 'nullable|string|max:80',
+            'notification_body' => 'nullable|string|max:120',
             'ativo' => 'sometimes|boolean',
         ]);
 

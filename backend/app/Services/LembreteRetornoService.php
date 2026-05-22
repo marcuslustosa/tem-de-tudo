@@ -61,9 +61,19 @@ class LembreteRetornoService
             ? $this->normalizeNullableString($payload['mensagem'])
             : $reminder?->mensagem;
 
+        $imagemUrl = array_key_exists('imagem_url', $payload)
+            ? $this->normalizeNullableString($payload['imagem_url'])
+            : $reminder?->imagem_url;
+
         $ativo = array_key_exists('ativo', $payload)
             ? (bool) $payload['ativo']
             : (bool) ($reminder?->ativo ?? true);
+
+        $notificationTitle = $this->normalizeNullableString($payload['notification_title'] ?? $reminder?->notification_title ?? null)
+            ?: $titulo;
+
+        $notificationBody = $this->normalizeNullableString($payload['notification_body'] ?? $reminder?->notification_body ?? null)
+            ?: Str::limit((string) $mensagem, 120, '');
 
         $data = [
             'empresa_id' => $empresa->id,
@@ -71,6 +81,9 @@ class LembreteRetornoService
             'dias_sem_visita' => $diasSemVisita,
             'titulo' => $titulo,
             'mensagem' => $mensagem,
+            'imagem_url' => $imagemUrl,
+            'notification_title' => Str::limit($notificationTitle, 80, ''),
+            'notification_body' => Str::limit($notificationBody, 120, ''),
             'ativo' => $ativo,
         ];
 
@@ -176,9 +189,9 @@ class LembreteRetornoService
                 'empresa_id' => $empresa->id,
                 'lembrete_id' => $reminder->id,
                 'tipo' => 'lembrete',
-                'titulo' => trim((string) $reminder->titulo),
-                'mensagem' => trim((string) $reminder->mensagem),
-                'imagem' => null,
+                'titulo' => trim((string) ($reminder->notification_title ?: $reminder->titulo)),
+                'mensagem' => trim((string) ($reminder->notification_body ?: $reminder->mensagem)),
+                'imagem' => $reminder->imagem_url ?: null,
                 'status' => LembreteEnvio::STATUS_PENDING,
                 'erro' => null,
                 'enviado' => false,
@@ -212,8 +225,8 @@ class LembreteRetornoService
                 ]
                 : $this->pushDeliveryService->deliverToSubscriptions(
                     $subscriptions,
-                    trim((string) $reminder->titulo),
-                    trim((string) $reminder->mensagem),
+                    trim((string) ($reminder->notification_title ?: $reminder->titulo)),
+                    trim((string) ($reminder->notification_body ?: $reminder->mensagem)),
                     [
                         'type' => 'lembrete',
                         'empresa_id' => $empresa->id,
@@ -279,6 +292,9 @@ class LembreteRetornoService
             'dias_ausencia' => $reminder->daysWithoutVisit(),
             'titulo' => $reminder->titulo,
             'mensagem' => $reminder->mensagem,
+            'imagem_url' => $reminder->imagem_url,
+            'notification_title' => $reminder->notification_title ?: $reminder->titulo,
+            'notification_body' => $reminder->notification_body ?: Str::limit((string) $reminder->mensagem, 120, ''),
             'ativo' => (bool) $reminder->ativo,
             'status' => $reminder->isOperationallyAvailable()
                 ? LembreteAusencia::STATUS_AVAILABLE

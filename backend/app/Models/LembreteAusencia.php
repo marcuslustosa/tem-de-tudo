@@ -21,6 +21,9 @@ class LembreteAusencia extends Model
         'dias_sem_visita',
         'titulo',
         'mensagem',
+        'imagem_url',
+        'notification_title',
+        'notification_body',
         'ativo',
     ];
 

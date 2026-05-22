@@ -11,8 +11,10 @@ use App\Models\Empresa;
 use App\Models\CheckIn;
 use App\Models\QRCode;
 use App\Models\User;
+use App\Services\BonusAdesaoService;
 use App\Services\BonusAniversarioService;
 use App\Services\CartaoFidelidadeService;
+use App\Services\LembreteRetornoService;
 
 class EmpresaController extends Controller
 {
@@ -266,7 +268,9 @@ class EmpresaController extends Controller
     private function serializePublicEmpresa(
         Empresa $empresa,
         bool $includeLoyaltyCard = false,
-        bool $includeBirthdayBonus = false
+        bool $includeBirthdayBonus = false,
+        bool $includeAdhesionBonus = false,
+        bool $includeReturnReminder = false
     ): array
     {
         $payload = [
@@ -323,6 +327,42 @@ class EmpresaController extends Controller
                     'error' => $e->getMessage(),
                 ]);
                 $payload['bonus_aniversario'] = null;
+            }
+        }
+
+        if ($includeAdhesionBonus) {
+            try {
+                $bonusAdesaoService = app(BonusAdesaoService::class);
+                $adhesionBonus = $bonusAdesaoService->activeCompanyBonus($empresa)
+                    ?? $bonusAdesaoService->latestCompanyBonus($empresa);
+
+                $payload['bonus_adesao'] = $adhesionBonus
+                    ? $bonusAdesaoService->serializeBonus($adhesionBonus)
+                    : null;
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao serializar bonus adesao publico da empresa', [
+                    'empresa_id' => $empresa->id,
+                    'error' => $e->getMessage(),
+                ]);
+                $payload['bonus_adesao'] = null;
+            }
+        }
+
+        if ($includeReturnReminder) {
+            try {
+                $reminderService = app(LembreteRetornoService::class);
+                $reminder = $reminderService->activeCompanyReminder($empresa)
+                    ?? $reminderService->latestCompanyReminder($empresa);
+
+                $payload['lembrete_retorno'] = $reminder
+                    ? $reminderService->serializeReminder($reminder)
+                    : null;
+            } catch (\Throwable $e) {
+                Log::warning('Falha ao serializar lembrete de retorno publico da empresa', [
+                    'empresa_id' => $empresa->id,
+                    'error' => $e->getMessage(),
+                ]);
+                $payload['lembrete_retorno'] = null;
             }
         }
 
@@ -490,7 +530,7 @@ class EmpresaController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $this->serializePublicEmpresa($empresa, true, true),
+                'data' => $this->serializePublicEmpresa($empresa, true, true, true, true),
             ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         } catch (\Throwable $e) {
             Log::error('Erro ao carregar empresa por id', [
@@ -540,7 +580,7 @@ class EmpresaController extends Controller
                     'code' => $qrCode->code,
                     'scan_url' => app(\App\Services\QRCodeService::class)->getCompanyScanUrl($qrCode),
                     'link_page_url' => '/vincular_empresa.html?code=' . rawurlencode($qrCode->code),
-                    'empresa' => $this->serializePublicEmpresa($qrCode->empresa, true, true),
+                    'empresa' => $this->serializePublicEmpresa($qrCode->empresa, true, true, true, true),
                 ],
             ]);
         } catch (\Throwable $e) {
