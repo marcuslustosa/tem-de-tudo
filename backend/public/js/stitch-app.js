@@ -2870,6 +2870,44 @@
             window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
           };
         };
+        const renderReminderCard = (payload) => {
+          const card = document.querySelector('#partnerBirthdayCard .grid > div:nth-child(2)');
+          if (!card) return;
+
+          const reminder = payload || null;
+          const active = Boolean(reminder?.ativo);
+          const title = safeText(reminder?.titulo, 'Lembrete de retorno');
+          const message = safeText(
+            reminder?.mensagem,
+            'A empresa pode reenviar clientes vinculados que ficaram um periodo sem visitar o estabelecimento.'
+          );
+          const intervalDays = Number(reminder?.dias_sem_visita || reminder?.dias_ausencia || 0);
+          const notificationTitle = safeText(reminder?.notification_title, title);
+          const notificationBody = safeText(
+            reminder?.notification_body,
+            'Ative as notificacoes para receber o convite de retorno no seu dispositivo.'
+          );
+
+          card.className = 'overflow-hidden rounded-[24px] bg-slate-50';
+          card.innerHTML = `
+            <img class="h-44 w-full object-cover" src="${safeImage(reminder?.imagem_url, IMAGE_FALLBACKS.promo)}" alt="${title}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" />
+            <div class="space-y-3 p-5">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-sm font-bold text-[#111B3F]">Lembrete de retorno</p>
+                  <h3 class="mt-2 text-xl font-extrabold text-[#111B3F]">${title}</h3>
+                </div>
+                <span class="inline-flex rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] ${active ? 'bg-emerald-50 text-emerald-700' : 'bg-white text-slate-500'}">${active ? 'Ativo' : 'Inativo'}</span>
+              </div>
+              <p class="text-sm leading-6 text-slate-600">${message}</p>
+              <div class="rounded-[18px] bg-white p-4">
+                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Push configurado</p>
+                <p class="mt-2 text-sm leading-6 text-slate-600">${notificationTitle} - ${notificationBody}</p>
+              </div>
+              <p class="text-sm font-semibold text-slate-500">${intervalDays > 0 ? `Disparo apos ${intervalDays} dia(s) sem visita.` : 'Intervalo de retorno nao configurado.'}</p>
+            </div>
+          `;
+        };
         const renderPromotionCards = (publicItems, viewerItems = []) => {
           const section = document.getElementById('partnerPromotionsCard');
           const listEl = document.getElementById('partnerPromotionsList');
@@ -3245,6 +3283,7 @@
             }
           : null);
         renderLoyaltyCard(null);
+        renderReminderCard(companyInfo?.lembrete_retorno || null);
         let viewerPromotions = [];
 
         if (perfilViewer === 'cliente' && stored?.token) {
@@ -3318,6 +3357,17 @@
       }
         if (heroBadge) heroBadge.textContent = info.points_multiplier ? `${info.points_multiplier}x pontos` : 'Parceiro';
         if (heroDist) heroDist.textContent = info.endereco || '';
+        setText('partner-address', info.endereco, 'Endereco nao informado');
+        setText('partner-about', info.descricao, 'Esta empresa opera beneficios e atendimento presencial por QR Code.');
+        setText('partner-phone', info.telefone, 'Nao informado');
+        setText('partner-whatsapp', info.whatsapp, 'Nao informado');
+        setText('partner-instagram', info.instagram, 'Nao informado');
+        setText('partner-facebook', info.facebook, 'Nao informado');
+        setText('partner-full-address', info.endereco, 'Nao informado');
+        setLink('partnerWhatsappLink', info.whatsapp, (value) => `https://wa.me/${String(value).replace(/\D/g, '')}`);
+        setLink('partnerInstagramLink', info.instagram, (value) => String(value).startsWith('http') ? value : `https://instagram.com/${String(value).replace(/^@/, '')}`);
+        setLink('partnerFacebookLink', info.facebook, (value) => String(value).startsWith('http') ? value : `https://facebook.com/${String(value).replace(/^@/, '')}`);
+        renderReminderCard(info.lembrete_retorno || null);
       }
 
       const promoList = promos.data?.data || promos.data || [];
@@ -3937,6 +3987,10 @@
         if (pf('pfEmpresaCnpj')) pf('pfEmpresaCnpj').value = emp.cnpj || '';
         if (pf('pfEmpresaEndereco')) pf('pfEmpresaEndereco').value = emp.endereco || '';
         if (pf('pfEmpresaLogo')) pf('pfEmpresaLogo').value = emp.logo || '';
+        if (pf('pfEmpresaWhatsapp')) pf('pfEmpresaWhatsapp').value = emp.whatsapp || '';
+        if (pf('pfEmpresaInstagram')) pf('pfEmpresaInstagram').value = emp.instagram || '';
+        if (pf('pfEmpresaFacebook')) pf('pfEmpresaFacebook').value = emp.facebook || '';
+        if (pf('pfEmpresaDescricao')) pf('pfEmpresaDescricao').value = emp.descricao || '';
         // Atualizar hero com nome da empresa em vez do user
         if (heroName && emp.nome) heroName.textContent = emp.nome;
       }
@@ -3952,6 +4006,10 @@
             empresa_ramo:     pf('pfEmpresaRamo')?.value,
             empresa_cnpj:     pf('pfEmpresaCnpj')?.value,
             empresa_endereco: pf('pfEmpresaEndereco')?.value,
+            empresa_whatsapp: pf('pfEmpresaWhatsapp')?.value || null,
+            empresa_instagram: pf('pfEmpresaInstagram')?.value || null,
+            empresa_facebook: pf('pfEmpresaFacebook')?.value || null,
+            empresa_descricao: pf('pfEmpresaDescricao')?.value || null,
             empresa_logo:     pf('pfEmpresaLogo')?.value || undefined,
           };
           const { res, data } = await api.request('/empresa/perfil', { method: 'PUT', body: JSON.stringify(payload) });
@@ -5838,6 +5896,9 @@
         titulo: document.getElementById('returnReminderTitle'),
         mensagem: document.getElementById('returnReminderMessageInput'),
         ativo: document.getElementById('returnReminderActive'),
+        imagem: document.getElementById('returnReminderImage'),
+        notificationTitle: document.getElementById('returnReminderNotificationTitle'),
+        notificationBody: document.getElementById('returnReminderNotificationBody'),
         salvar: document.getElementById('returnReminderSave'),
         enviar: document.getElementById('returnReminderSend'),
         cancelar: document.getElementById('returnReminderCancel'),
@@ -5849,6 +5910,8 @@
         previewMessage: document.getElementById('returnReminderPreviewMessage'),
         previewStatus: document.getElementById('returnReminderPreviewStatus'),
         previewMeta: document.getElementById('returnReminderPreviewMeta'),
+        previewImage: document.getElementById('returnReminderPreviewImage'),
+        previewNotification: document.getElementById('returnReminderPreviewNotification'),
       };
 
       if (reminderUi.salvar && reminderUi.list) {
@@ -5860,6 +5923,9 @@
             dias_sem_visita: Number(reminderUi.dias?.value || 30),
             titulo: reminderUi.titulo?.value?.trim() || 'Lembrete de retorno',
             mensagem: reminderUi.mensagem?.value?.trim() || 'Sentimos sua falta. Volte para aproveitar as novidades da loja.',
+            imagem_url: reminderUi.imagem?.value?.trim() || '',
+            notification_title: reminderUi.notificationTitle?.value?.trim() || 'Sentimos sua falta!',
+            notification_body: reminderUi.notificationBody?.value?.trim() || 'Volte para aproveitar as novidades da loja.',
             ativo: reminderUi.ativo?.checked ?? false,
           };
           if (reminderUi.previewTitle) reminderUi.previewTitle.textContent = payload.titulo;
@@ -5871,6 +5937,16 @@
           if (reminderUi.previewMeta) {
             reminderUi.previewMeta.textContent = `Disparo apos ${payload.dias_sem_visita} dia(s) sem visita`;
           }
+          if (reminderUi.previewImage) {
+            reminderUi.previewImage.src = safeImage(payload.imagem_url, IMAGE_FALLBACKS.promo);
+            reminderUi.previewImage.onerror = () => {
+              reminderUi.previewImage.onerror = null;
+              reminderUi.previewImage.src = IMAGE_FALLBACKS.promo;
+            };
+          }
+          if (reminderUi.previewNotification) {
+            reminderUi.previewNotification.textContent = `${payload.notification_title} - ${payload.notification_body}`;
+          }
         };
 
         const resetReminderForm = () => {
@@ -5879,6 +5955,9 @@
           if (reminderUi.dias) reminderUi.dias.value = 30;
           if (reminderUi.titulo) reminderUi.titulo.value = '';
           if (reminderUi.mensagem) reminderUi.mensagem.value = '';
+          if (reminderUi.imagem) reminderUi.imagem.value = '';
+          if (reminderUi.notificationTitle) reminderUi.notificationTitle.value = '';
+          if (reminderUi.notificationBody) reminderUi.notificationBody.value = '';
           if (reminderUi.ativo) reminderUi.ativo.checked = true;
           if (reminderUi.feedback) reminderUi.feedback.textContent = '';
           updateReminderPreview();
@@ -5890,6 +5969,9 @@
           if (reminderUi.dias) reminderUi.dias.value = reminder.dias_sem_visita || reminder.dias_ausencia || 30;
           if (reminderUi.titulo) reminderUi.titulo.value = reminder.titulo || '';
           if (reminderUi.mensagem) reminderUi.mensagem.value = reminder.mensagem || '';
+          if (reminderUi.imagem) reminderUi.imagem.value = reminder.imagem_url || '';
+          if (reminderUi.notificationTitle) reminderUi.notificationTitle.value = reminder.notification_title || reminder.titulo || '';
+          if (reminderUi.notificationBody) reminderUi.notificationBody.value = reminder.notification_body || reminder.mensagem || '';
           if (reminderUi.ativo) reminderUi.ativo.checked = Boolean(reminder.ativo);
           if (reminderUi.feedback) reminderUi.feedback.textContent = 'Editando lembrete selecionado.';
           updateReminderPreview();
@@ -5906,10 +5988,14 @@
             item.className = 'rounded-[18px] bg-white p-3 shadow-sm ring-1 ring-black/5';
             item.innerHTML = `
               <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0">
-                  <p class="text-sm font-bold text-on-surface">${reminder.titulo || 'Lembrete de retorno'}</p>
-                  <p class="mt-1 text-xs leading-5 text-on-surface-variant">${reminder.mensagem || 'Sem mensagem.'}</p>
-                  <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Disparo apos ${reminder.dias_sem_visita || reminder.dias_ausencia || 0} dia(s) sem visita</p>
+                <div class="flex min-w-0 gap-3">
+                  <img class="h-14 w-14 rounded-2xl object-cover shadow-sm" src="${safeImage(reminder.imagem_url, IMAGE_FALLBACKS.promo)}" alt="${safeText(reminder.titulo || 'Lembrete')}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" />
+                  <div class="min-w-0">
+                    <p class="text-sm font-bold text-on-surface">${reminder.titulo || 'Lembrete de retorno'}</p>
+                    <p class="mt-1 text-xs leading-5 text-on-surface-variant">${reminder.mensagem || 'Sem mensagem.'}</p>
+                    <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Disparo apos ${reminder.dias_sem_visita || reminder.dias_ausencia || 0} dia(s) sem visita</p>
+                    <p class="mt-1 text-[11px] text-on-surface-variant">Push: ${reminder.notification_title || reminder.titulo || 'Nao informado'}</p>
+                  </div>
                 </div>
                 <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${active ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}">${active ? 'Ativo' : 'Inativo'}</span>
               </div>
@@ -5940,7 +6026,7 @@
           renderReminderList();
         };
 
-        [reminderUi.dias, reminderUi.titulo, reminderUi.mensagem, reminderUi.ativo]
+        [reminderUi.dias, reminderUi.titulo, reminderUi.mensagem, reminderUi.ativo, reminderUi.imagem, reminderUi.notificationTitle, reminderUi.notificationBody]
           .filter(Boolean)
           .forEach((field) => {
             field.addEventListener('input', updateReminderPreview);
@@ -5956,6 +6042,9 @@
             dias_sem_visita: Number(reminderUi.dias?.value || 0),
             titulo: reminderUi.titulo?.value?.trim() || '',
             mensagem: reminderUi.mensagem?.value?.trim() || '',
+            imagem_url: reminderUi.imagem?.value?.trim() || null,
+            notification_title: reminderUi.notificationTitle?.value?.trim() || null,
+            notification_body: reminderUi.notificationBody?.value?.trim() || null,
             ativo: reminderUi.ativo?.checked ?? true,
           };
 

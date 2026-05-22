@@ -6,10 +6,10 @@
 <title>Tem de Tudo - Gestão de Ofertas</title>  <link rel="icon" type="image/png" href="/img/logo.png" />
   <link rel="shortcut icon" href="/img/logo.png" />
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
-<script src="https://cdn.tailwindcss.complugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="/css/i9plus-phase8.cssv=20260521-admin-unify" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="/css/i9plus-phase8.css?v=20260521-admin-unify" rel="stylesheet"/>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -490,6 +490,18 @@ Tamanho máximo: <strong>3MB</strong> | Formatos: JPG, PNG, WEBP
 <button id="returnReminderCancel" type="button" class="rounded-xl border border-outline text-on-surface text-sm">Cancelar</button>
 </div>
 <p id="returnReminderFeedback" class="text-xs text-outline"></p>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Imagem (URL)</label>
+<input id="returnReminderImage" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" maxlength="2048" placeholder="https://..." />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Titulo do push</label>
+<input id="returnReminderNotificationTitle" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" maxlength="80" placeholder="Ex: Sentimos sua falta" />
+</div>
+<div class="space-y-2">
+<label class="text-xs font-semibold uppercase text-on-surface-variant">Mensagem do push</label>
+<textarea id="returnReminderNotificationBody" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" rows="2" maxlength="120" placeholder="Ex: Volte ao estabelecimento e aproveite uma condicao especial."></textarea>
+</div>
 </form>
 <div class="space-y-3">
 <div class="rounded-[24px] bg-[#111B3F] p-4 text-white">
@@ -510,6 +522,15 @@ Tamanho máximo: <strong>3MB</strong> | Formatos: JPG, PNG, WEBP
 </div>
 <div id="returnReminderList" class="mt-3 space-y-3"></div>
 <p id="returnReminderEmpty" class="mt-2 text-xs text-outline">Nenhum lembrete de retorno configurado ainda.</p>
+</div>
+<div class="rounded-[24px] bg-surface-container-low p-4">
+<div class="flex items-start gap-3">
+<img id="returnReminderPreviewImage" class="h-16 w-16 rounded-2xl object-cover shadow-sm" src="/assets/images/company1.jpg" alt="Preview do lembrete" />
+<div class="min-w-0 space-y-1">
+<p class="text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Push do cliente</p>
+<p id="returnReminderPreviewNotification" class="text-sm font-semibold text-on-surface">Sentimos sua falta! Volte para aproveitar as novidades.</p>
+</div>
+</div>
 </div>
 </div>
 </div>

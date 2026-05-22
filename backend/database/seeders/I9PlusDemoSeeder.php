@@ -580,6 +580,24 @@ class I9PlusDemoSeeder extends Seeder
             'mensagem' => 'Sentimos sua falta! Volte ao Malagueta e aproveite uma condicao especial.',
             'ativo' => true,
         ]);
+        foreach ($reminders as $companyKey => $reminder) {
+            if (!$reminder) {
+                continue;
+            }
+
+            $company = $companies[$companyKey] ?? null;
+            $brandName = $company?->nome ?: 'Tem de Tudo';
+
+            $reminder->forceFill([
+                'imagem_url' => $company?->logo ?: '/img/icon-192.png',
+                'notification_title' => $companyKey === 'malagueta'
+                    ? 'Sentimos sua falta no Malagueta'
+                    : "Volte para {$brandName}",
+                'notification_body' => $companyKey === 'malagueta'
+                    ? 'Volte ao Malagueta e aproveite uma condicao especial no seu proximo atendimento.'
+                    : "Passe novamente em {$brandName} e aproveite a condicao especial para clientes vinculados.",
+            ])->save();
+        }
         $this->syncLembreteEnvio(
             $reminders['texano'],
             $companies['texano'],
