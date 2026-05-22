@@ -545,6 +545,19 @@
     return parsed.toLocaleDateString('pt-BR');
   }
 
+  function toDateInputValue(value) {
+    if (!value) return '';
+    const raw = String(value).trim();
+    const isoDate = raw.match(/^\d{4}-\d{2}-\d{2}/);
+    if (isoDate) return isoDate[0];
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) return '';
+    const year = parsed.getFullYear();
+    const month = String(parsed.getMonth() + 1).padStart(2, '0');
+    const day = String(parsed.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   function formatDateRangePtBr(start, end, fallback = 'Não informada') {
     if (!start && !end) return fallback;
     const startLabel = formatDatePtBr(start, '');
@@ -1135,6 +1148,113 @@
         ev.preventDefault();
         window.location.href = target;
       });
+    });
+  }
+
+  function wireUtilityButtons() {
+    const bindOnce = (btn, key, handler) => {
+      if (btn.dataset[key] === '1') return false;
+      btn.dataset[key] = '1';
+      btn.addEventListener('click', handler);
+      return true;
+    };
+
+    document.querySelectorAll('button').forEach((btn) => {
+      if (btn.closest('form')) return;
+      if ((btn.getAttribute('type') || '').toLowerCase() === 'submit') return;
+
+      const iconEl = btn.querySelector('[data-icon], .material-symbols-outlined');
+      const icon = (iconEl?.getAttribute('data-icon') || iconEl?.textContent || '').toString().toLowerCase().trim();
+      const text = (btn.textContent || '').toLowerCase().trim();
+
+      if (btn.id === 'logoutBtn' || btn.id === 'cfgLogoutBtn' || icon === 'logout' || text === 'sair') {
+        bindOnce(btn, 'logoutBound', (ev) => {
+          ev.preventDefault();
+          auth.logout();
+        });
+        return;
+      }
+
+      if (btn.hasAttribute('data-push-toggle')) {
+        bindOnce(btn, 'pushToggleBound', async (ev) => {
+          ev.preventDefault();
+          const previousDisabled = btn.disabled;
+          btn.disabled = true;
+          try {
+            const result = await push.subscribe();
+            ui.message(result.message || 'Notificacoes ativadas neste dispositivo.', 'success');
+          } catch (err) {
+            console.error('push_toggle_fail', err);
+            ui.message(err?.message || 'Nao foi possivel ativar as notificacoes neste momento.', 'error');
+          } finally {
+            btn.disabled = previousDisabled;
+          }
+        });
+        return;
+      }
+
+      if (btn.hasAttribute('data-email-toggle')) {
+        bindOnce(btn, 'emailToggleBound', (ev) => {
+          ev.preventDefault();
+          btn.setAttribute('aria-pressed', btn.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+          ui.message('Preferencia de e-mail atualizada nesta sessao.', 'info');
+        });
+        return;
+      }
+
+      if (icon === 'notifications' || btn.id === 'btnEstabNotif' || btn.id === 'adminClientesNotif') {
+        bindOnce(btn, 'notificationsBound', async (ev) => {
+          ev.preventDefault();
+          const previousDisabled = btn.disabled;
+          btn.disabled = true;
+          ui.message('Carregando notificacoes...', 'info');
+          try {
+            await notifications.load('Notificacoes');
+            await notifications.markAllRead().catch(() => null);
+          } catch (err) {
+            console.error('notifications_button_fail', err);
+            ui.message('Nao foi possivel carregar notificacoes agora.', 'error');
+          } finally {
+            btn.disabled = previousDisabled;
+          }
+        });
+        return;
+      }
+
+      if (btn.hasAttribute('data-filters-help') || text.includes('filtros')) {
+        bindOnce(btn, 'filtersHelpBound', (ev) => {
+          ev.preventDefault();
+          const target = document.querySelector(
+            'main select, main input[type="search"], main input[id*="Busca"], main input[placeholder*="Buscar"]'
+          );
+          target?.focus?.();
+          ui.message('Use os filtros visiveis para refinar a lista.', 'info');
+        });
+        return;
+      }
+
+      if (/Prev$|Next$/.test(btn.id || '')) {
+        bindOnce(btn, 'paginationBound', (ev) => {
+          ev.preventDefault();
+          ui.message('Nenhuma outra pagina disponivel no momento.', 'info');
+        });
+        return;
+      }
+
+      if (btn.getAttribute('aria-current') === 'page') {
+        bindOnce(btn, 'currentPageBound', (ev) => {
+          ev.preventDefault();
+          ui.message('Voce ja esta nesta pagina.', 'info');
+        });
+        return;
+      }
+
+      if (btn.hasAttribute('data-nav-fallback')) {
+        bindOnce(btn, 'navFallbackInfoBound', (ev) => {
+          ev.preventDefault();
+          ui.message('Acao disponivel pela navegacao principal.', 'info');
+        });
+      }
     });
   }
 
@@ -2616,6 +2736,7 @@
           if (!el) return;
           if (!value) {
             el.classList.add('hidden');
+            el.removeAttribute('href');
             return;
           }
           el.classList.remove('hidden');
@@ -3968,7 +4089,7 @@
       // Campos de cliente
       if (perfil === 'cliente') {
         if (pf('pfCpf')) pf('pfCpf').value = user?.cpf || '';
-        if (pf('pfNascimento')) pf('pfNascimento').value = user?.data_nascimento || '';
+        if (pf('pfNascimento')) pf('pfNascimento').value = toDateInputValue(user?.data_nascimento);
       } else {
         // Esconder campos exclusivos de cliente para empresa/admin
         const fieldsCpf = document.getElementById('fieldsCpf');
@@ -8865,6 +8986,7 @@
     wireFallbackLinks();
     wireFallbackButtons();
     wireSettingsShortcuts();
+    wireUtilityButtons();
     wirePushButtons();
     consumeAccessNotice();
     const handler = handlers[page];

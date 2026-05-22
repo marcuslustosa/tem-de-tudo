@@ -1,7 +1,7 @@
 /* global self, clients */
 
 self.addEventListener('push', (event) => {
-  const data = event.data event.data.json() : {};
+  const data = event.data ? event.data.json() : {};
   const title = data.title || 'Tem de Tudo';
   const options = {
     body: data.body || 'Você recebeu uma nova notificação.',

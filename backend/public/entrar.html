@@ -95,8 +95,8 @@
       if (passInput && toggleBtn && toggleIcon) {
         toggleBtn.addEventListener('click', () => {
           const isHidden = passInput.type === 'password';
-          passInput.type = isHidden 'text' : 'password';
-          toggleIcon.textContent = isHidden 'visibility_off' : 'visibility';
+          passInput.type = isHidden ? 'text' : 'password';
+          toggleIcon.textContent = isHidden ? 'visibility_off' : 'visibility';
         });
       }
     })();
@@ -116,7 +116,7 @@
       function resolvePostLoginTarget(perfil) {
         const pendingCode = (localStorage.getItem(pendingCompanyQrKey) || '').trim();
         if (perfil === 'cliente' && pendingCode) {
-          return `/vincular_empresa.htmlcode=${encodeURIComponent(pendingCode)}`;
+          return `/vincular_empresa.html?code=${encodeURIComponent(pendingCode)}`;
         }
 
         const nextParam = new URLSearchParams(window.location.search).get('next');

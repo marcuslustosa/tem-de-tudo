@@ -103,10 +103,10 @@
 <input id="adminClientesBusca" class="pl-10 pr-4 py-2 bg-surface-container rounded-full border-none focus:ring-2 focus:ring-primary w-80 text-sm" placeholder="Buscar clientes por CPF ou Nome..." type="text"/>
 </div>
 <div class="flex items-center gap-3">
-<button class="p-2 rounded-full hover:bg-[#e9e7f1] transition-colors scale-95 active:scale-90" id="adminClientesNotif">
+<button class="p-2 rounded-full hover:bg-[#e9e7f1] transition-colors scale-95 active:scale-90" id="adminClientesNotif" type="button">
 <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
 </button>
-<button class="p-2 rounded-full hover:bg-[#e9e7f1] transition-colors scale-95 active:scale-90">
+<button class="p-2 rounded-full hover:bg-[#e9e7f1] transition-colors scale-95 active:scale-90" type="button">
 <span class="material-symbols-outlined text-on-surface-variant">settings</span>
 </button>
 <div class="h-8 w-8 rounded-full overflow-hidden border-2 border-primary">
@@ -166,7 +166,7 @@
 </a>
 </nav>
 <div class="p-4 border-t border-[#e9e7f1]">
-<a class="block w-full py-2.5 px-4 rounded-xl font-bold text-sm text-white text-center active:scale-95 transition-all" style="background:linear-gradient(135deg,#133f8c 0%,#00afa8 50%,#b01774 100%)" href="/criar_conta.htmltipo=empresa&amp;origem=admin">
+<a class="block w-full py-2.5 px-4 rounded-xl font-bold text-sm text-white text-center active:scale-95 transition-all" style="background:linear-gradient(135deg,#133f8c 0%,#00afa8 50%,#b01774 100%)" href="/criar_conta.html?tipo=empresa&amp;origem=admin">
   + Novo Parceiro
 </a>
 <div class="mt-4 flex items-center gap-3 px-1">
@@ -177,7 +177,7 @@
     <div class="text-xs font-semibold truncate text-[#2e2e34]">Administrador</div>
     <div class="text-[10px] text-[#5b5b62]">Super Admin</div>
   </div>
-  <button id="logoutBtn" title="Sair" class="ml-auto p-1.5 rounded-lg hover:bg-[#f0f2f8] transition cursor-pointer text-[#5b5b62] hover:text-[#b41340] flex-shrink-0"><span class="material-symbols-outlined" style="font-size:18px">logout</span></button>
+  <button id="logoutBtn" title="Sair" class="ml-auto p-1.5 rounded-lg hover:bg-[#f0f2f8] transition cursor-pointer text-[#5b5b62] hover:text-[#b41340] flex-shrink-0" type="button"><span class="material-symbols-outlined" style="font-size:18px">logout</span></button>
 </div>
 </div>
 </aside>
@@ -225,7 +225,7 @@
 <option value="1000-5000">1.000 - 5.000 pts</option>
 <option value="5000+">5.000+ pts</option>
 </select>
-<button id="adminClientesFiltros" class="bg-white border border-outline-variant/30 px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-surface-container transition-colors">
+<button id="adminClientesFiltros" class="bg-white border border-outline-variant/30 px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-surface-container transition-colors" type="button" data-filters-help>
 <span class="material-symbols-outlined text-sm">filter_list</span>
                     Filtros Avancados
                 </button>
@@ -239,7 +239,7 @@
 </div>
 <div class="flex flex-col gap-3 sm:flex-row">
 <input id="adminPushClientEmail" autocomplete="off" spellcheck="false" class="w-full rounded-xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" type="text" placeholder="Nome, e-mail, CPF ou telefone do cliente"/>
-<button id="adminPushLookupBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-secondary border border-outline-variant/20 hover:bg-surface-container transition-colors">
+<button id="adminPushLookupBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-secondary border border-outline-variant/20 hover:bg-surface-container transition-colors" type="button">
 <span class="material-symbols-outlined text-[18px]">person_search</span>
 Buscar cliente
 </button>
@@ -271,7 +271,7 @@ Buscar cliente
 <input id="adminPushUrl" class="w-full rounded-xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" type="text" maxlength="255" placeholder="URL de destino"/>
 <textarea id="adminPushBody" class="min-h-[108px] w-full rounded-2xl border border-outline-variant/20 bg-white px-4 py-3 text-sm leading-6 focus:ring-2 focus:ring-primary" maxlength="160" placeholder="Mensagem da notificacao"></textarea>
 <p class="text-xs leading-5 text-on-surface-variant">Envios em massa de promocoes, aniversario e lembretes continuam na area da empresa parceira. Este bloco serve apenas para validacao individual do dispositivo.</p>
-<button id="adminPushSendBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white hover:opacity-95 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+<button id="adminPushSendBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white hover:opacity-95 transition disabled:opacity-50 disabled:cursor-not-allowed" type="button" disabled>
 <span class="material-symbols-outlined text-[18px]">send</span>
 Enviar
 </button>
@@ -302,11 +302,11 @@ Enviar
 <div class="px-6 py-4 bg-surface-container/30 border-t border-outline-variant/10 flex items-center justify-between" id="adminClientesResumo">
 <p class="text-xs text-on-surface-variant font-medium">Carregando...</p>
 <div class="flex items-center gap-2">
-<button class="p-1 rounded-lg hover:bg-surface-container text-on-surface-variant" id="adminClientesPrev">
+<button class="p-1 rounded-lg hover:bg-surface-container text-on-surface-variant" id="adminClientesPrev" type="button">
 <span class="material-symbols-outlined">chevron_left</span>
 </button>
-<button class="w-8 h-8 rounded-lg bg-primary text-white text-xs font-bold">1</button>
-<button class="p-1 rounded-lg hover:bg-surface-container text-on-surface-variant" id="adminClientesNext">
+<button class="w-8 h-8 rounded-lg bg-primary text-white text-xs font-bold" type="button" aria-current="page">1</button>
+<button class="p-1 rounded-lg hover:bg-surface-container text-on-surface-variant" id="adminClientesNext" type="button">
 <span class="material-symbols-outlined">chevron_right</span>
 </button>
 </div>

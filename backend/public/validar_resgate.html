@@ -108,7 +108,7 @@
 <nav class="flex justify-between items-center px-6 py-3 w-full sticky top-0 bg-[#f7f7f7] dark:bg-slate-950 z-40 bg-[#e9e7f1] dark:bg-slate-900 transition-all">
 <div class="font-headline font-black text-xl "><img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" /></div>
 <div class="flex items-center gap-4">
-<button class="p-2 rounded-full hover:bg-[#dedbe7]/50 transition-colors active:opacity-80 scale-95">
+<button class="p-2 rounded-full hover:bg-[#dedbe7]/50 transition-colors active:opacity-80 scale-95" type="button">
 <span class="material-symbols-outlined text-[#2e2e34]">notifications</span>
 </button>
 <div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest">
@@ -133,7 +133,7 @@
 <div id="scanSuccess" class="hidden absolute inset-0 bg-primary/20 flex items-center justify-center">
 <span class="material-symbols-outlined text-primary text-8xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
 </div>
-<button id="closeQRScanner" class="absolute top-4 right-4 w-10 h-10 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/80 transition-colors z-30 shadow-lg" title="Fechar scanner">
+<button id="closeQRScanner" class="absolute top-4 right-4 w-10 h-10 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/80 transition-colors z-30 shadow-lg" title="Fechar scanner" type="button">
 <span class="material-symbols-outlined text-lg">close</span>
 </button>
 <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-lg"></div>
@@ -145,11 +145,11 @@
 <span class="text-xs font-bold uppercase tracking-wider text-on-surface" id="scanStatus">Aguardando QR Code...</span>
 </div>
 <div class="absolute bottom-6 flex items-center gap-3 z-20">
-<button id="toggleFlash" class="px-4 py-2 bg-surface-container-lowest/80 backdrop-blur rounded-full shadow-sm flex items-center gap-2">
+<button id="toggleFlash" class="px-4 py-2 bg-surface-container-lowest/80 backdrop-blur rounded-full shadow-sm flex items-center gap-2" type="button">
 <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">flashlight_on</span>
 <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface">Lanterna</span>
 </button>
-<button id="switchCamera" class="px-4 py-2 bg-surface-container-lowest/80 backdrop-blur rounded-full shadow-sm flex items-center gap-2">
+<button id="switchCamera" class="px-4 py-2 bg-surface-container-lowest/80 backdrop-blur rounded-full shadow-sm flex items-center gap-2" type="button">
 <span class="material-symbols-outlined text-primary text-sm">flip_camera_android</span>
               <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface">Trocar câmera</span>
 </button>
@@ -167,7 +167,7 @@
 <span class="material-symbols-outlined absolute right-4 top-4 text-outline-variant group-focus-within:text-primary transition-colors">keyboard</span>
 </div>
 </div>
-<button id="usarCupomBtn" class="w-full h-16 bg-gradient-to-r from-[#133f8c] to-[#E10098] text-white rounded-[1.5rem] font-headline font-extrabold text-lg flex items-center justify-center gap-3 shadow-[0_8px_32px_rgba(176,0,118,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all">
+<button id="usarCupomBtn" class="w-full h-16 bg-gradient-to-r from-[#133f8c] to-[#E10098] text-white rounded-[1.5rem] font-headline font-extrabold text-lg flex items-center justify-center gap-3 shadow-[0_8px_32px_rgba(176,0,118,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all" type="button">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified</span>
                 Validar Agora
             </button>
@@ -305,7 +305,7 @@
 <span class="material-symbols-outlined">widgets</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Ferramentas</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#E10098] after:content-[''] after:w-1 after:h-1 after:bg-[#E10098] after:rounded-full after:mt-1 scale-90 duration-150 ease-in-out" href="/validar_resgate.htmlmodo=beneficios">
+<a class="flex flex-col items-center justify-center text-[#E10098] after:content-[''] after:w-1 after:h-1 after:bg-[#E10098] after:rounded-full after:mt-1 scale-90 duration-150 ease-in-out" href="/validar_resgate.html?modo=beneficios">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">qr_code_scanner</span>
 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-semibold uppercase tracking-wider">Validar</span>
 </a>
@@ -341,15 +341,15 @@
   const perfil = (storedUser.perfil || storedUser.role || '').toLowerCase();
   const isEmpresa = ['empresa', 'estabelecimento', 'parceiro'].includes(perfil);
   const params = new URLSearchParams(window.location.search);
-  const mode = params.get('modo') || (isEmpresa 'validacao-cliente' : 'vinculo-empresa');
+  const mode = params.get('modo') || (isEmpresa ? 'validacao-cliente' : 'vinculo-empresa');
   const isBenefitMode = isEmpresa && ['bonus-adesao', 'fidelidade', 'aniversario', 'beneficios'].includes(mode);
   const isBonusMode = isEmpresa && mode === 'bonus-adesao';
   const instructionEl = document.getElementById('scanInstructions');
 
   if (instructionEl) {
     instructionEl.textContent = isEmpresa
-      (isBenefitMode
-              'Empresa: escaneie o QR dinâmico do cliente para consultar e validar bônus de adesão, bônus aniversário, pontos e resgates.'
+      ? (isBenefitMode
+              ? 'Empresa: escaneie o QR dinâmico do cliente para consultar e validar bônus de adesão, bônus aniversário, pontos e resgates.'
               : 'Empresa: escaneie o QR dinâmico mostrado no app do cliente para validar atendimentos.')
       : 'Cliente: escaneie o QR da empresa para se vincular no app.';
   }
@@ -358,7 +358,7 @@
     successIndicator.classList.add('hidden');
     placeholder.classList.remove('hidden');
     statusText.classList.remove('text-error', 'text-primary', 'text-tertiary');
-    statusText.textContent = isEmpresa 'Escaneie o QR do cliente...' : 'Escaneie o QR da empresa...';
+    statusText.textContent = isEmpresa ? 'Escaneie o QR do cliente...' : 'Escaneie o QR da empresa...';
   };
 
   async function startCamera() {
@@ -379,7 +379,7 @@
       video.srcObject = stream;
       placeholder.classList.add('hidden');
       statusText.textContent = isBenefitMode
-        'Camera ativa - escaneie o QR do cliente'
+        ? 'Camera ativa - escaneie o QR do cliente'
         : 'Camera ativa - escaneie o QR Code';
 
       requestAnimationFrame(scanQRCode);
@@ -433,9 +433,10 @@
 
     const token = localStorage.getItem('tem_de_tudo_token');
     const endpoint = isEmpresa
-      (isBenefitMode '/api/empresa/clientes/qrcode/consultar' : '/api/empresa/escanear-cliente')
+      ?
+      (isBenefitMode ? '/api/empresa/clientes/qrcode/consultar' : '/api/empresa/escanear-cliente')
       : '/api/cliente/vincular-empresa-qrcode';
-    const payload = isEmpresa { qrcode: qrData } : { code: qrData };
+    const payload = isEmpresa ? { qrcode: qrData } : { code: qrData };
 
     try {
       const response = await fetch(endpoint, {
@@ -474,8 +475,8 @@
 
         if (isEmpresa && data.data.cliente) {
           const cliente = data.data.cliente;
-          const pts = data.data.pontos_ganhos 0;
-          const restantes = data.data.scans_restantes 0;
+          const pts = data.data.pontos_ganhos ?? 0;
+          const restantes = data.data.scans_restantes ?? 0;
           statusText.textContent = `Check-in de ${cliente.nome} (+${pts} pts). Restam ${restantes} check-in(s) hoje.`;
         } else {
           statusText.textContent = data.message || 'Empresa vinculada com sucesso!';
@@ -488,7 +489,7 @@
           if (!isEmpresa) {
             localStorage.removeItem('tem_de_tudo_pending_company_qr');
             const publicPageUrl = data.data.public_page_url || '/meus_pontos.html';
-            window.location.href = publicPageUrl.includes('') `${publicPageUrl}&linked=1` : `${publicPageUrl}linked=1`;
+            window.location.href = publicPageUrl.includes('?') ? `${publicPageUrl}&linked=1` : `${publicPageUrl}?linked=1`;
             return;
           }
 
@@ -545,7 +546,7 @@
   });
 
   switchCameraBtn.addEventListener('click', () => {
-    facingMode = facingMode === 'environment' 'user' : 'environment';
+    facingMode = facingMode === 'environment' ? 'user' : 'environment';
     startCamera();
   });
 
@@ -554,7 +555,7 @@
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
     }
-    window.location.href = isEmpresa '/dashboard_parceiro.html' : '/meus_pontos.html';
+    window.location.href = isEmpresa ? '/dashboard_parceiro.html' : '/meus_pontos.html';
   });
 
   if (video) {
