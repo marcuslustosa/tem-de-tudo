@@ -12,6 +12,7 @@ use App\Models\LembreteAusencia;
 use App\Models\NotificacaoPush;
 use App\Models\Promocao;
 use App\Models\PromocaoResgate;
+use App\Models\PushSubscription;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -25,9 +26,15 @@ class RelatorioOperacionalService
     public function companySummary(Empresa $empresa): array
     {
         $linkedQuery = InscricaoEmpresa::query()->where('empresa_id', $empresa->id);
-        $linkedCustomerIds = $linkedQuery->pluck('user_id');
+        $linkedCustomerIds = $linkedQuery->pluck('user_id')
+            ->map(fn ($id) => (int) $id)
+            ->filter(fn ($id) => $id > 0)
+            ->unique()
+            ->values();
         $thresholdDays = $this->activeReminderThreshold($empresa);
         $inactiveCount = $this->countInactiveLinkedCustomers($empresa, $linkedCustomerIds, $thresholdDays);
+        $customersWithPush = $this->countLinkedCustomersWithPush($linkedCustomerIds);
+        $lastNotificationAt = $this->latestNotificationSentAt($empresa->id);
 
         $recentClients = InscricaoEmpresa::query()
             ->with('user:id,name,email,telefone,data_nascimento')
@@ -51,6 +58,7 @@ class RelatorioOperacionalService
             ],
             'cards' => [
                 'total_clientes_vinculados' => (int) $linkedCustomerIds->count(),
+                'clientes_com_push_ativo' => $customersWithPush,
                 'novos_clientes_mes' => (int) InscricaoEmpresa::query()
                     ->where('empresa_id', $empresa->id)
                     ->whereBetween('data_inscricao', [now()->startOfMonth(), now()->endOfMonth()])
@@ -63,8 +71,16 @@ class RelatorioOperacionalService
                 'total_promocoes_criadas' => $this->countPromotions($empresa->id),
                 'total_promocoes_resgatadas' => $this->countPromotionRedemptions($empresa->id),
                 'total_notificacoes_enviadas' => $this->countSentNotifications($empresa->id),
+                'ultimo_envio_notificacao' => $lastNotificationAt,
                 'total_avaliacoes' => $this->countReviews($empresa->id),
                 'media_avaliacao' => $this->averageReviews($empresa->id),
+            ],
+            'push' => [
+                'clientes_vinculados' => (int) $linkedCustomerIds->count(),
+                'clientes_com_push_ativo' => $customersWithPush,
+                'clientes_sem_push_ativo' => max(0, (int) $linkedCustomerIds->count() - $customersWithPush),
+                'total_notificacoes_enviadas' => $this->countSentNotifications($empresa->id),
+                'ultimo_envio_notificacao' => $lastNotificationAt,
             ],
             'config' => [
                 'lembrete_dias_sem_visita' => $thresholdDays,
@@ -662,6 +678,59 @@ class RelatorioOperacionalService
         }
 
         return (int) $query->count();
+    }
+
+    private function countLinkedCustomersWithPush(Collection $linkedCustomerIds): int
+    {
+        if ($linkedCustomerIds->isEmpty() || !$this->hasTable('push_subscriptions')) {
+            return 0;
+        }
+
+        $query = PushSubscription::query()
+            ->whereIn('user_id', $linkedCustomerIds->all());
+
+        if ($this->hasColumn('push_subscriptions', 'revoked_at')) {
+            $query->whereNull('revoked_at');
+        }
+
+        return (int) $query
+            ->distinct()
+            ->count('user_id');
+    }
+
+    private function latestNotificationSentAt(int $empresaId): ?string
+    {
+        if (!$this->hasTable('notificacoes_push')) {
+            return null;
+        }
+
+        $dateColumn = $this->hasColumn('notificacoes_push', 'data_envio')
+            ? 'data_envio'
+            : ($this->hasColumn('notificacoes_push', 'created_at') ? 'created_at' : null);
+
+        if ($dateColumn === null) {
+            return null;
+        }
+
+        $query = NotificacaoPush::query()->where('empresa_id', $empresaId);
+
+        $hasStatus = $this->hasColumn('notificacoes_push', 'status');
+        $hasEnviado = $this->hasColumn('notificacoes_push', 'enviado');
+
+        if ($hasStatus && $hasEnviado) {
+            $query->where(function ($builder) {
+                $builder->where('status', 'sent')
+                    ->orWhere('enviado', true);
+            });
+        } elseif ($hasStatus) {
+            $query->where('status', 'sent');
+        } elseif ($hasEnviado) {
+            $query->where('enviado', true);
+        }
+
+        $sentAt = $query->max($dateColumn);
+
+        return $sentAt ? Carbon::parse((string) $sentAt)->toIso8601String() : null;
     }
 
     private function countReviews(int $empresaId): int

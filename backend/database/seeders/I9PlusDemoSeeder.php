@@ -107,6 +107,14 @@ class I9PlusDemoSeeder extends Seeder
                 'telefone' => '(11) 98888-1106',
                 'email_verified_at' => $today,
             ]),
+            'rejected' => $this->syncUser('rejeitada@demo.local', [
+                'name' => 'Empresa Rejeitada Demo',
+                'password' => Hash::make(self::DEMO_PASSWORD),
+                'perfil' => 'empresa',
+                'status' => 'bloqueado',
+                'telefone' => '(11) 98888-1107',
+                'email_verified_at' => $today,
+            ]),
         ];
 
         $companies = [
@@ -205,6 +213,22 @@ class I9PlusDemoSeeder extends Seeder
                 'points_multiplier' => 1.0,
                 'ativo' => false,
                 'status' => Empresa::STATUS_SUSPENDED,
+            ]),
+            'rejected' => $this->syncEmpresa('Empresa Rejeitada Demo', [
+                'owner_id' => $owners['rejected']->id,
+                'categoria' => 'Servicos',
+                'ramo' => 'servicos',
+                'descricao' => 'Empresa rejeitada para demonstrar decisao comercial no painel admin.',
+                'telefone' => '(11) 4002-1107',
+                'whatsapp' => '(11) 98888-2107',
+                'instagram' => '@rejeitadademo',
+                'facebook' => 'rejeitadademo',
+                'endereco' => 'Rua de Teste, 107 - Sao Paulo - SP',
+                'cnpj' => '11.111.111/0001-77',
+                'logo' => '/assets/images/company3.jpg',
+                'points_multiplier' => 1.0,
+                'ativo' => false,
+                'status' => Empresa::STATUS_REJECTED,
             ]),
         ];
 

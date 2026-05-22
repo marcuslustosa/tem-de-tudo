@@ -4927,10 +4927,11 @@
       if (!(await auth.guard(['empresa']))) return;
       ui.setPageState('loading', 'Carregando painel da empresa...');
       const currentUser = await auth.ensure();
-      const [promos, resumo, qrcodes] = await Promise.all([
+      const [promos, resumo, qrcodes, pushConfigResponse] = await Promise.all([
         api.request('/empresa/promocoes'),
         api.request('/empresa/relatorios/resumo', {}, { notify: false }),
         api.request('/empresa/qrcodes', {}, { notify: false }),
+        api.request('/push/public-key', {}, { requireAuth: false, notify: false }),
       ]);
       if (
         handleCompanyAccessFailure(promos.res, promos.data, 'Nao foi possivel carregar as ofertas desta empresa.')
@@ -4961,10 +4962,87 @@
       const heroLogo = document.getElementById('empresaHeroLogo');
       const qrContainer = document.getElementById('empresaDashboardQrContainer');
       const publicLinkBtn = document.getElementById('empresaDashboardPublicLinkBtn');
+      const renderCompanyPushCampaignsBlock = (payload) => {
+        const main = document.querySelector('main');
+        if (!main) return;
+
+        const cards = payload?.cards || {};
+        const pushSummary = payload?.push || {};
+        const pushConfig = payload?.pushConfig || {};
+        const promotions = toArray(payload?.promotions);
+        const linkedCustomers = Number(pushSummary.clientes_vinculados ?? cards.total_clientes_vinculados ?? 0);
+        const activePushCustomers = Number(pushSummary.clientes_com_push_ativo ?? cards.clientes_com_push_ativo ?? 0);
+        const activePromotions = promotions.filter((item) => item?.ativo !== false && item?.status !== 'pausada').length;
+        const lastSent = pushSummary.ultimo_envio_notificacao || cards.ultimo_envio_notificacao || null;
+        const serverReady = Boolean(pushConfig?.configured);
+
+        let section = document.getElementById('empresaPushCampaignsSummary');
+        if (!section) {
+          section = document.createElement('section');
+          section.id = 'empresaPushCampaignsSummary';
+          const anchor = kpiVolume?.closest('section') || campanhasBox?.closest('section');
+          if (anchor?.parentNode) {
+            anchor.insertAdjacentElement('afterend', section);
+          } else {
+            main.appendChild(section);
+          }
+        }
+
+        section.className = 'space-y-4 rounded-2xl bg-surface-container-lowest p-5 shadow-sm';
+        section.innerHTML = `
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Notifica&ccedil;&otilde;es e campanhas</p>
+              <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Push para clientes vinculados</h2>
+              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Envios continuam na Gestao de Ofertas e usam somente clientes vinculados a esta empresa.</p>
+            </div>
+            <span class="rounded-full ${serverReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'} px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">
+              Push servidor: ${serverReady ? 'configurado' : 'pendente'}
+            </span>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-xl bg-surface-container-low p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Clientes vinculados</p>
+              <p class="mt-2 text-2xl font-extrabold text-[#133f8c]">${linkedCustomers.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="rounded-xl bg-surface-container-low p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Com push ativo</p>
+              <p class="mt-2 text-2xl font-extrabold text-[#00AFA8]">${activePushCustomers.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="rounded-xl bg-surface-container-low p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Promocoes ativas</p>
+              <p class="mt-2 text-2xl font-extrabold text-[#B01774]">${activePromotions.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="rounded-xl bg-surface-container-low p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Ultimo envio</p>
+              <p class="mt-2 text-sm font-bold text-on-surface">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
+            </div>
+          </div>
+          <div class="grid gap-2 sm:grid-cols-2">
+            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html">
+              <span class="material-symbols-outlined">campaign</span>
+              <span>Gestao de Ofertas</span>
+            </a>
+            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#formOferta">
+              <span class="material-symbols-outlined">add_circle</span>
+              <span>Criar Promocao Instantanea</span>
+            </a>
+            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#returnReminderSection">
+              <span class="material-symbols-outlined">notifications_active</span>
+              <span>Lembrete de Retorno</span>
+            </a>
+            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#birthdayBonusSection">
+              <span class="material-symbols-outlined">cake</span>
+              <span>Bonus Aniversario</span>
+            </a>
+          </div>
+        `;
+      };
       ui.clearPageState();
 
       const resumoData = resumo.data?.data || {};
       const cards = resumoData.cards || {};
+      const pushConfig = pushConfigResponse.data || {};
       const qrList = toArray(qrcodes.data?.data || qrcodes.data);
       const qrPayload = qrList[0] || {};
       const empresaInfo = qrPayload.empresa || {};
@@ -4974,6 +5052,12 @@
       const mediaAvaliacao = Number(cards.media_avaliacao || 0);
       const notificacoes = Number(cards.total_notificacoes_enviadas || 0);
       const listaPromos = promos.data?.data || promos.data || [];
+      renderCompanyPushCampaignsBlock({
+        cards,
+        push: resumoData.push,
+        pushConfig,
+        promotions: listaPromos,
+      });
 
       if (heroName) heroName.textContent = safeText(empresaInfo?.nome, safeText(currentUser?.name, 'Sua empresa'));
       if (heroSubtitle) {
