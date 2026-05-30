@@ -351,13 +351,14 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     Route::get('/empresas', [ClienteAPIController::class, 'listarEmpresas']);
     Route::get('/empresas/{id}', [ClienteAPIController::class, 'empresaDetalhes']);
     
-    // QR Code
+    // QR e vinculo do cliente
+    // O fluxo canonico de vinculo e `POST /api/cliente/vincular-empresa-qrcode`.
+    // `escanear-qrcode` permanece apenas por compatibilidade com trilhas antigas.
     Route::post('/escanear-qrcode', [ClienteAPIController::class, 'escanearQRCode'])->middleware('rate.limit:20:1');
     Route::post('/vincular-empresa-qrcode', [ClienteAPIController::class, 'vincularEmpresaViaQr'])->middleware('rate.limit:20:1');
     
     // PromoÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
     Route::get('/promocoes', [ClienteAPIController::class, 'listarPromocoes']);
-    Route::post('/resgatar-promocao/{id}', [ClienteAPIController::class, 'resgatarPromocao'])->middleware('rate.limit:5:1');
     Route::post('/promocoes/{id}/resgatar', [ClienteAPIController::class, 'resgatarPromocao'])->middleware('rate.limit:5:1');
     
     // AvaliaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
@@ -370,8 +371,6 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     Route::get('/bonus-aniversario/disponiveis', [BonusAniversarioController::class, 'disponiveis']);
     // Ranking de pontos
     Route::get('/ranking-pontos', [ClienteAPIController::class, 'rankingPontos']);    
-    // Legacy route (manter compatibilidade)
-    Route::get('/dashboard-data', [AuthController::class, 'clienteDashboard']);
 });
 
 Route::middleware(['auth:sanctum', 'role.permission:cliente'])->group(function () {
@@ -458,8 +457,8 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa', 'subscription.chec
     Route::put('/campanhas/{id}', [CampanhaMultiplicadorController::class, 'update']);
     Route::delete('/campanhas/{id}', [CampanhaMultiplicadorController::class, 'destroy']);
 
-    // Legacy routes (manter compatibilidade) - COM CACHE
-    // Preferir `/empresa/relatorios/resumo` e endpoints canonicos da Fase 7/8.
+    // Endpoints legados ainda usados por painis antigos.
+    // Para novas telas, preferir `/empresa/relatorios/resumo` e os endpoints canonicos da empresa.
     Route::get('/dashboard-stats', [EmpresaController::class, 'dashboardStats'])
         ->middleware('cache.response:300'); // 5 min
     Route::get('/recent-checkins', [EmpresaController::class, 'recentCheckins'])
@@ -470,7 +469,8 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa', 'subscription.chec
 
 Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->group(function () {
     // Rotas exclusivas para administradores
-    // `dashboard-stats` segue legado para clientes antigos; o resumo canonico e `/admin/relatorios/resumo`.
+    // `dashboard-stats` permanece por compatibilidade com clientes antigos.
+    // O endpoint canonico do painel master e `/admin/relatorios/resumo`.
     Route::get('/dashboard-stats', [AdminReportController::class, 'dashboardStats']);
     Route::get('/relatorios/resumo', [AdminReportController::class, 'summary']);
     Route::get('/recent-activity', [AdminReportController::class, 'recentActivity']);
@@ -487,11 +487,8 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->g
     Route::get('/settings', [AdminSettingsController::class, 'index']);
     Route::put('/settings', [AdminSettingsController::class, 'update']);
 
-    // Campanhas: visÃ£o geral admin
-    Route::get('/campanhas', [CampanhaMultiplicadorController::class, 'adminIndex']);
-    Route::get('/empresas/{companyId}/fidelidade/config', [LoyaltyPolicyController::class, 'adminCompanyConfig']);
-    Route::put('/empresas/{companyId}/fidelidade/config', [LoyaltyPolicyController::class, 'adminUpdateCompanyConfig']);
-    Route::get('/empresas/{companyId}/fidelidade/onboarding', [LoyaltyPolicyController::class, 'adminCompanyOnboardingStatus']);
+    // O painel master acompanha status e metricas da plataforma.
+    // A configuracao operacional de campanhas e fidelidade permanece no painel da empresa.
 
     // Tickets de suporte (painel admin)
     Route::get('/tickets', [NotificationController::class, 'listTickets']);
@@ -650,7 +647,7 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/ajus
 });
 
 // ============================================================
-// CAMPANHAS DE MULTIPLICADOR (empresa/admin)
+// CAMPANHAS DE MULTIPLICADOR (empresa)
 // ============================================================
 Route::middleware('auth:sanctum')->prefix('campanhas')->group(function () {
     // Consultar multiplicador ativo (qualquer autenticado)
@@ -663,12 +660,6 @@ Route::middleware('auth:sanctum')->prefix('campanhas')->group(function () {
         Route::post('/', [CampanhaController::class, 'store'])->middleware('rate.limit:10:1');
         Route::put('/{id}', [CampanhaController::class, 'update'])->middleware('rate.limit:10:1');
         Route::delete('/{id}', [CampanhaController::class, 'destroy'])->middleware('rate.limit:5:1');
-    });
-    
-    // Admin: gerenciar campanhas de todas as empresas
-    Route::middleware('role.permission:admin')->prefix('admin')->group(function () {
-        Route::get('/todas', [CampanhaController::class, 'index']);
-        Route::post('/criar', [CampanhaController::class, 'store']);
     });
 });
 

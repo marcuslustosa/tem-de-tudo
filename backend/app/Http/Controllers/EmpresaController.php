@@ -497,31 +497,17 @@ class EmpresaController extends Controller
     {
         try {
             if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
-                $demo = $this->demoEmpresaById((int) $id);
-                if (!$demo) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Estabelecimento nao encontrado.',
-                    ], 404);
-                }
                 return response()->json([
-                    'success' => true,
-                    'data' => $demo,
-                ]);
+                    'success' => false,
+                    'message' => 'Catalogo de empresas indisponivel.',
+                ], 503);
             }
 
-            $empresaQuery = Empresa::query();
-            $this->applyEmpresaAtivoScope($empresaQuery);
-            $empresa = $empresaQuery->find($id);
-            if (!$empresa) {
-                $demo = $this->demoEmpresaById((int) $id);
-                if ($demo) {
-                    return response()->json([
-                        'success' => true,
-                        'data' => $demo,
-                    ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
-                }
+            $empresa = Empresa::query()
+                ->publiclyVisible()
+                ->find((int) $id);
 
+            if (!$empresa) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Estabelecimento nao encontrado.',
@@ -537,19 +523,6 @@ class EmpresaController extends Controller
                 'id' => $id,
                 'error' => $e->getMessage(),
             ]);
-
-            $demo = $this->demoEmpresaById((int) $id);
-            if ($demo) {
-                Log::warning('Retornando fallback demo para empresa publica', [
-                    'id' => $id,
-                ]);
-
-                return response()->json([
-                    'success' => true,
-                    'data' => $demo,
-                    'warning' => 'Falha parcial ao carregar estabelecimento.',
-                ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
-            }
 
             return response()->json([
                 'success' => false,
@@ -621,59 +594,17 @@ class EmpresaController extends Controller
                 'success' => true,
                 'data' => $promocoes,
             ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
-
-            $query = DB::table('promocoes')->where('empresa_id', $id);
-            if (Schema::hasColumn('promocoes', 'ativo')) {
-                if ($this->isBooleanColumn('promocoes', 'ativo')) {
-                    $query->where('ativo', true);
-                } else {
-                    $query->whereIn('ativo', [1, '1', true, 'true', 'ativo']);
-                }
-            } elseif (Schema::hasColumn('promocoes', 'status')) {
-                $query->whereIn(DB::raw('LOWER(status)'), ['ativa', 'ativo', 'active', '1', 'true']);
-            }
-
-            $columns = ['id', 'empresa_id'];
-            foreach (['nome', 'titulo', 'descricao', 'desconto', 'imagem', 'imagem_url', 'status', 'ativo', 'created_at', 'updated_at'] as $column) {
-                if (Schema::hasColumn('promocoes', $column)) {
-                    $columns[] = $column;
-                }
-            }
-
-            $promocoes = $query
-                ->select($columns)
-                ->orderByDesc(Schema::hasColumn('promocoes', 'created_at') ? 'created_at' : 'id')
-                ->limit(30)
-                ->get()
-                ->map(function ($item) {
-                    return [
-                        'id' => $item->id,
-                        'empresa_id' => $item->empresa_id,
-                        'titulo' => $this->cleanUtf8($item->titulo ?? $item->nome ?? 'Promocao'),
-                        'nome' => $this->cleanUtf8($item->nome ?? $item->titulo ?? 'Promocao'),
-                        'descricao' => $this->cleanUtf8($item->descricao ?? ''),
-                        'desconto' => $item->desconto ?? null,
-                        'imagem' => $this->cleanUtf8($item->imagem ?? $item->imagem_url ?? '/assets/images/company2.jpg'),
-                        'status' => $this->cleanUtf8($item->status ?? (($item->ativo ?? true) ? 'ativa' : 'inativa')),
-                        'ativo' => (bool) ($item->ativo ?? true),
-                    ];
-                })->values();
-
-            return response()->json([
-                'success' => true,
-                'data' => $promocoes,
-            ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         } catch (\Throwable $e) {
-            Log::error('Erro ao carregar promocoes da empresa', [
+            Log::error('Erro ao carregar promocoes publicas da empresa', [
                 'empresa_id' => $id,
                 'error' => $e->getMessage(),
             ]);
 
             return response()->json([
-                'success' => true,
+                'success' => false,
+                'message' => 'Nao foi possivel carregar as promocoes desta empresa.',
                 'data' => [],
-                'warning' => 'Falha parcial ao carregar promocoes.',
-            ], 200);
+            ], 500, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         }
     }
 

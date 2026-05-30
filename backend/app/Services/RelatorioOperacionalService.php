@@ -121,9 +121,13 @@ class RelatorioOperacionalService
         $thresholdDays = $this->activeReminderThreshold($empresa);
 
         $aggregates = $this->customerAggregateMaps($empresa->id, $customerIds);
+        $aggregates['push'] = $this->linkedCustomerPushMap($customerIds);
         $items = $inscricoes->map(function (InscricaoEmpresa $inscricao) use ($aggregates, $thresholdDays) {
             return $this->serializeLinkedCustomer($inscricao, $aggregates, $thresholdDays);
         })->values()->all();
+
+        $linkedCount = (int) $allCustomerIds->count();
+        $customersWithPush = $this->countLinkedCustomersWithPush(collect($allCustomerIds));
 
         return [
             'data' => $items,
@@ -134,6 +138,8 @@ class RelatorioOperacionalService
             'summary' => [
                 'threshold_days' => $thresholdDays,
                 'clientes_inativos' => $this->countInactiveLinkedCustomers($empresa, $allCustomerIds, $thresholdDays),
+                'clientes_com_push_ativo' => $customersWithPush,
+                'clientes_sem_push_ativo' => max(0, $linkedCount - $customersWithPush),
             ],
         ];
     }
@@ -368,6 +374,7 @@ class RelatorioOperacionalService
             'bonus_adesao' => [],
             'bonus_aniversario' => [],
             'points' => [],
+            'push' => [],
         ], $aggregates);
 
         /** @var User|null $customer */
@@ -378,6 +385,11 @@ class RelatorioOperacionalService
         $bonusAdesao = $aggregates['bonus_adesao'][$customerId] ?? null;
         $bonusAniversario = $aggregates['bonus_aniversario'][$customerId] ?? null;
         $points = $aggregates['points'][$customerId] ?? null;
+        $push = $aggregates['push'][$customerId] ?? [
+            'has_active_subscription' => false,
+            'total_subscriptions' => 0,
+            'last_seen_at' => null,
+        ];
 
         $lastVisit = $this->resolveLastVisit(
             $inscricao->ultima_visita,
@@ -407,6 +419,9 @@ class RelatorioOperacionalService
             'total_promocoes_resgatadas' => (int) ($promotions->total_promocoes_resgatadas ?? 0),
             'total_bonus_adesao_resgatados' => (int) ($bonusAdesao->total_bonus_adesao_resgatados ?? 0),
             'total_bonus_aniversario_resgatados' => (int) ($bonusAniversario->total_bonus_aniversario_resgatados ?? 0),
+            'push_ativo' => (bool) ($push['has_active_subscription'] ?? false),
+            'push_total_dispositivos' => (int) ($push['total_subscriptions'] ?? 0),
+            'push_ultima_atividade' => $push['last_seen_at'] ?? null,
         ];
     }
 
@@ -696,6 +711,49 @@ class RelatorioOperacionalService
         return (int) $query
             ->distinct()
             ->count('user_id');
+    }
+
+    private function linkedCustomerPushMap(iterable $customerIds): array
+    {
+        $ids = collect($customerIds)
+            ->map(fn ($id) => (int) $id)
+            ->filter(fn ($id) => $id > 0)
+            ->unique()
+            ->values();
+
+        if ($ids->isEmpty() || !$this->hasTable('push_subscriptions')) {
+            return [];
+        }
+
+        $updatedAtColumn = $this->hasColumn('push_subscriptions', 'updated_at')
+            ? 'updated_at'
+            : ($this->hasColumn('push_subscriptions', 'created_at') ? 'created_at' : null);
+
+        $query = PushSubscription::query()
+            ->whereIn('user_id', $ids->all());
+
+        if ($this->hasColumn('push_subscriptions', 'revoked_at')) {
+            $query->whereNull('revoked_at');
+        }
+
+        return $query
+            ->select('user_id')
+            ->selectRaw('COUNT(*) as total_subscriptions')
+            ->when($updatedAtColumn, fn ($builder) => $builder->selectRaw("MAX({$updatedAtColumn}) as last_seen_at"))
+            ->groupBy('user_id')
+            ->get()
+            ->mapWithKeys(function ($row) {
+                return [
+                    (int) $row->user_id => [
+                        'has_active_subscription' => (int) ($row->total_subscriptions ?? 0) > 0,
+                        'total_subscriptions' => (int) ($row->total_subscriptions ?? 0),
+                        'last_seen_at' => !empty($row->last_seen_at)
+                            ? Carbon::parse((string) $row->last_seen_at)->toIso8601String()
+                            : null,
+                    ],
+                ];
+            })
+            ->all();
     }
 
     private function latestNotificationSentAt(int $empresaId): ?string

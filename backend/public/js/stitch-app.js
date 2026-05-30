@@ -1032,6 +1032,176 @@
     });
   }
 
+  function normalizePageEncodingArtifacts(root = document.body) {
+    if (!root) return;
+
+    const hasMarkers = (value) => /Ã|Â|â|�|├/.test(String(value || ''));
+    const decodeIfNeeded = (value) => {
+      if (!value || !hasMarkers(value)) return value;
+      const decoded = decodeMojibake(value);
+      return decoded && decoded !== value ? decoded : value;
+    };
+
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let currentNode = walker.nextNode();
+    while (currentNode) {
+      const raw = currentNode.nodeValue || '';
+      const next = decodeIfNeeded(raw);
+      if (next !== raw) {
+        currentNode.nodeValue = next;
+      }
+      currentNode = walker.nextNode();
+    }
+
+    root.querySelectorAll('[placeholder],[title],[aria-label],[alt]').forEach((el) => {
+      ['placeholder', 'title', 'aria-label', 'alt'].forEach((attr) => {
+        const raw = el.getAttribute(attr);
+        const next = decodeIfNeeded(raw);
+        if (raw && next !== raw) {
+          el.setAttribute(attr, next);
+        }
+      });
+    });
+  }
+
+  function ensureAdjacentSection(sectionId, anchor, placement = 'afterend', className = '') {
+    if (!anchor) return null;
+
+    let section = document.getElementById(sectionId);
+    if (!section) {
+      section = document.createElement('section');
+      section.id = sectionId;
+      if (className) section.className = className;
+
+      if (placement === 'beforebegin') {
+        anchor.insertAdjacentElement('beforebegin', section);
+      } else if (placement === 'afterbegin') {
+        anchor.insertAdjacentElement('afterbegin', section);
+      } else if (placement === 'beforeend') {
+        anchor.insertAdjacentElement('beforeend', section);
+      } else {
+        anchor.insertAdjacentElement('afterend', section);
+      }
+    }
+
+    if (className) section.className = className;
+    return section;
+  }
+
+  function mountAdminPlatformBanner() {
+    if (page !== 'dashboard_admin_master') return;
+    const main = document.querySelector('main');
+    const anchor = main?.firstElementChild || main;
+    const section = ensureAdjacentSection(
+      'adminPlatformRoleBanner',
+      anchor,
+      'beforebegin',
+      'mb-6 rounded-2xl bg-surface-container-lowest p-5 shadow-sm'
+    );
+    if (!section) return;
+
+    section.innerHTML = `
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Painel master</p>
+          <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Controle da plataforma</h2>
+          <p class="mt-2 max-w-3xl text-sm leading-6 text-on-surface-variant">Aprovacao, status comercial, base, crescimento, suporte e push teste individual ficam aqui. A operacao comercial diaria continua na area da empresa.</p>
+        </div>
+        <div class="grid gap-2 sm:grid-cols-3">
+          <a class="empresa-shortcut-card" href="/gest_o_de_estabelecimentos.html">
+            <span class="material-symbols-outlined">storefront</span>
+            <span>Empresas</span>
+          </a>
+          <a class="empresa-shortcut-card" href="/gest_o_de_clientes_master.html">
+            <span class="material-symbols-outlined">groups</span>
+            <span>Clientes</span>
+          </a>
+          <a class="empresa-shortcut-card" href="/tickets_admin_master.html">
+            <span class="material-symbols-outlined">support_agent</span>
+            <span>Suporte</span>
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  function mountClientHomeSummary({ linkedCompanies = [], featuredCompanies = [] } = {}) {
+    if (page !== 'meus_pontos') return;
+    const anchor = document.getElementById('linkedCompaniesList')?.closest('section');
+    const section = ensureAdjacentSection(
+      'clientRelationshipOverview',
+      anchor,
+      'beforebegin',
+      'mt-8 rounded-[28px] bg-white p-5 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5 lg:p-6'
+    );
+    if (!section) return;
+
+    section.innerHTML = `
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Resumo do app</p>
+          <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Seus vinculos e beneficios</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">Voce recebe campanhas somente das empresas vinculadas a sua conta. Use o QR da empresa para criar o vinculo e seu QR pessoal para validar beneficios no balcao.</p>
+        </div>
+        <div class="grid gap-2 sm:grid-cols-2">
+          <a href="/parceiros_tem_de_tudo.html" class="app-secondary-button justify-center">Explorar empresas</a>
+          <a href="/meus_pontos.html?mostrar=meu-qrcode" class="app-primary-button justify-center">Mostrar meu QR</a>
+        </div>
+      </div>
+      <div class="mt-5 grid gap-3 sm:grid-cols-3">
+        <div class="rounded-[22px] bg-slate-50 p-4">
+          <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Empresas vinculadas</p>
+          <p class="mt-2 text-2xl font-extrabold text-[#133F8C]">${linkedCompanies.length.toLocaleString('pt-BR')}</p>
+        </div>
+        <div class="rounded-[22px] bg-slate-50 p-4">
+          <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Empresas para explorar</p>
+          <p class="mt-2 text-2xl font-extrabold text-[#00AFA8]">${featuredCompanies.length.toLocaleString('pt-BR')}</p>
+        </div>
+        <div class="rounded-[22px] bg-slate-50 p-4">
+          <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Regra de push</p>
+          <p class="mt-2 text-sm font-bold text-[#111B3F]">Somente empresas vinculadas</p>
+        </div>
+      </div>
+    `;
+  }
+
+  function mountCompanyClientsPushSummary({ total = 0, pushActive = 0, pushInactive = 0 } = {}) {
+    if (page !== 'clientes_fidelizados_loja') return;
+    const anchor = document.getElementById('clientesLista')?.closest('section');
+    const section = ensureAdjacentSection(
+      'clientesPushSummary',
+      anchor,
+      'beforebegin',
+      'mb-6 rounded-2xl bg-surface-container-lowest p-4 shadow-sm'
+    );
+    if (!section) return;
+
+    section.innerHTML = `
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Push dos clientes</p>
+          <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Base pronta para campanha</h2>
+          <p class="mt-2 text-sm leading-6 text-on-surface-variant">Promocoes, aniversario e lembretes saem somente para clientes vinculados com notificacoes ativas no dispositivo.</p>
+        </div>
+        <a href="/gest_o_de_ofertas_parceiro.html" class="app-secondary-button justify-center">Abrir campanhas</a>
+      </div>
+      <div class="mt-4 grid gap-3 sm:grid-cols-3">
+        <div class="rounded-xl bg-surface-container-low p-4">
+          <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Clientes vinculados</p>
+          <p class="mt-2 text-2xl font-extrabold text-[#133f8c]">${Number(total || 0).toLocaleString('pt-BR')}</p>
+        </div>
+        <div class="rounded-xl bg-surface-container-low p-4">
+          <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Com push ativo</p>
+          <p class="mt-2 text-2xl font-extrabold text-[#00AFA8]">${Number(pushActive || 0).toLocaleString('pt-BR')}</p>
+        </div>
+        <div class="rounded-xl bg-surface-container-low p-4">
+          <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Sem push ativo</p>
+          <p class="mt-2 text-2xl font-extrabold text-[#B01774]">${Number(pushInactive || 0).toLocaleString('pt-BR')}</p>
+        </div>
+      </div>
+    `;
+  }
+
   // ---------------------- Push ---------------------- //
   const push = (() => {
     let configCache = null;
@@ -1777,6 +1947,11 @@
         const quickActions = payload.acoes_rapidas || {};
         const myQr = myQrResp?.data || {};
         const params = new URLSearchParams(window.location.search);
+
+        mountClientHomeSummary({
+          linkedCompanies,
+          featuredCompanies,
+        });
 
         const welcomeEl = document.getElementById('header-welcome');
         if (welcomeEl) {
@@ -4614,11 +4789,12 @@
       if (!(await auth.guard(['empresa']))) return;
       ui.setPageState('loading', 'Carregando painel da empresa...');
       const currentUser = await auth.ensure();
-      const [promos, resumo, qrcodes, pushConfigResponse] = await Promise.all([
+      const [promos, resumo, qrcodes, pushConfigResponse, perfilResponse] = await Promise.all([
         api.request('/empresa/promocoes'),
         api.request('/empresa/relatorios/resumo', {}, { notify: false }),
         api.request('/empresa/qrcodes', {}, { notify: false }),
         api.request('/push/public-key', {}, { requireAuth: false, notify: false }),
+        api.request('/empresa/perfil', {}, { notify: false }),
       ]);
       if (
         handleCompanyAccessFailure(promos.res, promos.data, 'Nao foi possivel carregar as ofertas desta empresa.')
@@ -4649,6 +4825,62 @@
       const heroLogo = document.getElementById('empresaHeroLogo');
       const qrContainer = document.getElementById('empresaDashboardQrContainer');
       const publicLinkBtn = document.getElementById('empresaDashboardPublicLinkBtn');
+      const renderCompanyStorefrontBlock = (payload) => {
+        const main = document.querySelector('main');
+        if (!main) return;
+
+        const info = payload?.info || {};
+        const publicUrl = safeText(payload?.publicUrl, '/parceiros_tem_de_tudo.html');
+        const anchor = document.getElementById('empresaPushCampaignsSummary')
+          || kpiVolume?.closest('section')
+          || campanhasBox?.closest('section')
+          || main.lastElementChild;
+        const section = ensureAdjacentSection(
+          'empresaStorefrontSummary',
+          anchor,
+          'afterend',
+          'space-y-4 rounded-2xl bg-surface-container-lowest p-5 shadow-sm'
+        );
+        if (!section) return;
+
+        section.innerHTML = `
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Minha vitrine</p>
+              <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Dados publicos da empresa</h2>
+              <p class="mt-2 text-sm leading-6 text-on-surface-variant">${safeText(info?.descricao, 'Atualize o perfil da empresa para mostrar descricao, contatos e proposta comercial da vitrine.')}</p>
+            </div>
+            <div class="grid gap-2 sm:grid-cols-2">
+              <a class="empresa-shortcut-card" href="/meu_perfil.html">
+                <span class="material-symbols-outlined">edit_square</span>
+                <span>Editar vitrine</span>
+              </a>
+              <a class="empresa-shortcut-card" href="${publicUrl}">
+                <span class="material-symbols-outlined">open_in_new</span>
+                <span>Ver pagina publica</span>
+              </a>
+            </div>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div class="rounded-xl bg-surface-container-low p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">WhatsApp</p>
+              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.whatsapp, 'Nao informado')}</p>
+            </div>
+            <div class="rounded-xl bg-surface-container-low p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Instagram</p>
+              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.instagram, 'Nao informado')}</p>
+            </div>
+            <div class="rounded-xl bg-surface-container-low p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Facebook</p>
+              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.facebook, 'Nao informado')}</p>
+            </div>
+            <div class="rounded-xl bg-surface-container-low p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Endereco</p>
+              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.endereco, 'Endereco nao informado')}</p>
+            </div>
+          </div>
+        `;
+      };
       const renderCompanyPushCampaignsBlock = (payload) => {
         const main = document.querySelector('main');
         if (!main) return;
@@ -4659,6 +4891,7 @@
         const promotions = toArray(payload?.promotions);
         const linkedCustomers = Number(pushSummary.clientes_vinculados ?? cards.total_clientes_vinculados ?? 0);
         const activePushCustomers = Number(pushSummary.clientes_com_push_ativo ?? cards.clientes_com_push_ativo ?? 0);
+        const inactivePushCustomers = Math.max(0, Number(pushSummary.clientes_sem_push_ativo ?? (linkedCustomers - activePushCustomers)));
         const activePromotions = promotions.filter((item) => item?.ativo !== false && item?.status !== 'pausada').length;
         const lastSent = pushSummary.ultimo_envio_notificacao || cards.ultimo_envio_notificacao || null;
         const serverReady = Boolean(pushConfig?.configured);
@@ -4697,15 +4930,23 @@
               <p class="mt-2 text-2xl font-extrabold text-[#00AFA8]">${activePushCustomers.toLocaleString('pt-BR')}</p>
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Promocoes ativas</p>
-              <p class="mt-2 text-2xl font-extrabold text-[#B01774]">${activePromotions.toLocaleString('pt-BR')}</p>
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Sem notificacoes</p>
+              <p class="mt-2 text-2xl font-extrabold text-[#B01774]">${inactivePushCustomers.toLocaleString('pt-BR')}</p>
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Ultimo envio</p>
               <p class="mt-2 text-sm font-bold text-on-surface">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
             </div>
+            <div class="rounded-xl bg-surface-container-low p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Campanhas ativas</p>
+              <p class="mt-2 text-2xl font-extrabold text-[#133f8c]">${activePromotions.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="rounded-xl bg-surface-container-low p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Status do servidor</p>
+              <p class="mt-2 text-sm font-bold ${serverReady ? 'text-emerald-700' : 'text-amber-700'}">${serverReady ? 'Pronto para envio real' : 'Configuracao pendente'}</p>
+            </div>
           </div>
-          <div class="grid gap-2 sm:grid-cols-2">
+          <div class="grid gap-2 sm:grid-cols-3">
             <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html">
               <span class="material-symbols-outlined">campaign</span>
               <span>Gestao de Ofertas</span>
@@ -4722,6 +4963,18 @@
               <span class="material-symbols-outlined">cake</span>
               <span>Bonus Aniversario</span>
             </a>
+            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#cartaoFidelidadeSection">
+              <span class="material-symbols-outlined">loyalty</span>
+              <span>Fidelidade</span>
+            </a>
+            <a class="empresa-shortcut-card" href="/clientes_fidelizados_loja.html">
+              <span class="material-symbols-outlined">groups</span>
+              <span>Clientes vinculados</span>
+            </a>
+            <a class="empresa-shortcut-card" href="/validar_resgate.html?modo=beneficios">
+              <span class="material-symbols-outlined">qr_code_scanner</span>
+              <span>Validar QR</span>
+            </a>
           </div>
         `;
       };
@@ -4733,6 +4986,19 @@
       const qrList = toArray(qrcodes.data?.data || qrcodes.data);
       const qrPayload = qrList[0] || {};
       const empresaInfo = qrPayload.empresa || {};
+      const perfilData = perfilResponse.res.ok && perfilResponse.data?.success !== false
+        ? (perfilResponse.data?.data || {})
+        : {};
+      const storefrontInfo = {
+        ...empresaInfo,
+        nome: safeText(perfilData?.nome || empresaInfo?.nome, safeText(currentUser?.name, 'Sua empresa')),
+        descricao: safeText(perfilData?.descricao || empresaInfo?.descricao, ''),
+        endereco: safeText(perfilData?.endereco || empresaInfo?.endereco, ''),
+        whatsapp: safeText(perfilData?.whatsapp || empresaInfo?.whatsapp, ''),
+        instagram: safeText(perfilData?.instagram || empresaInfo?.instagram, ''),
+        facebook: safeText(perfilData?.facebook || empresaInfo?.facebook, ''),
+        logo: safeImage(perfilData?.logo || empresaInfo?.logo, IMAGE_FALLBACKS.store),
+      };
       const totalClientes = Number(cards.total_clientes_vinculados || 0);
       const aniversariantes = Number(cards.clientes_aniversariantes_mes || 0);
       const totalAvaliacoes = Number(cards.total_avaliacoes || 0);
@@ -4745,8 +5011,12 @@
         pushConfig,
         promotions: listaPromos,
       });
+      renderCompanyStorefrontBlock({
+        info: storefrontInfo,
+        publicUrl: qrPayload?.public_page_url || '/parceiros_tem_de_tudo.html',
+      });
 
-      if (heroName) heroName.textContent = safeText(empresaInfo?.nome, safeText(currentUser?.name, 'Sua empresa'));
+      if (heroName) heroName.textContent = safeText(storefrontInfo?.nome, safeText(currentUser?.name, 'Sua empresa'));
       if (heroSubtitle) {
         heroSubtitle.textContent = qrPayload?.public_page_url
           ? 'Use o QR da empresa para divulgar a página pública e validar clientes presencialmente.'
@@ -4758,7 +5028,7 @@
           : 'Fluxo operacional completo para a equipe da loja';
       }
       if (heroLogo) {
-        const heroImage = safeImage(listaPromos[0]?.imagem_url || listaPromos[0]?.imagem || empresaInfo?.logo, IMAGE_FALLBACKS.store);
+        const heroImage = safeImage(listaPromos[0]?.imagem_url || listaPromos[0]?.imagem || storefrontInfo?.logo, IMAGE_FALLBACKS.store);
         heroLogo.src = heroImage;
         heroLogo.onerror = () => {
           heroLogo.onerror = null;
@@ -4913,6 +5183,11 @@
         }
         const payload = data?.data || {};
         const lista = payload?.data || data?.data || data || [];
+        mountCompanyClientsPushSummary({
+          total: Number(payload?.total || lista.length || 0),
+          pushActive: Number(payload?.summary?.clientes_com_push_ativo || 0),
+          pushInactive: Number(payload?.summary?.clientes_sem_push_ativo || 0),
+        });
         const ativos = lista.filter((item) => item?.status_inatividade !== 'inactive').length;
         const inativos = lista.filter((item) => item?.status_inatividade === 'inactive').length;
         if (statTotal) statTotal.textContent = Number(payload?.total || lista.length || 0).toLocaleString('pt-BR');
@@ -8588,6 +8863,8 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     normalizeBrandingVisuals();
+    normalizePageEncodingArtifacts();
+    mountAdminPlatformBanner();
     wireAvatarFallbacks();
     remapNavigationForPerfil();
     harmonizeLinksByStoredPerfil();
@@ -8601,6 +8878,7 @@
     if (handler) {
       try {
         await handler();
+        normalizePageEncodingArtifacts();
       } catch (err) {
         console.error(err);
         ui.message('Erro ao carregar pagina.', 'error');
