@@ -26,294 +26,6 @@
     promo: '/assets/images/company2.jpg',
     hero: '/assets/images/company3.jpg',
   };
-  const DEMO = {
-    admin: {
-      totals: {
-        usuarios: 1284,
-        empresas: 142,
-        campanhas: 97,
-        resgates: 312,
-        volume: 184320.5,
-      },
-      reportStats: {
-        checkins_hoje: 184,
-        checkins_ontem: 167,
-        checkins_pendentes: 9,
-        pontos_distribuidos_mes: 42180,
-        cupons_resgatados_mes: 612,
-        usuarios_ativos_mes: 928,
-      },
-      ticketStats: {
-        total: 21,
-        pendentes: 12,
-        resolvidos: 9,
-        urgentes: 3,
-      },
-      tickets: [
-        {
-          id: 'demo-ticket-1',
-          title: 'Falha de resgate no caixa',
-          message: 'Cliente nao conseguiu aplicar cupom no POS.',
-          status: 'pendente',
-          priority: 'alta',
-          category: 'resgate',
-          created_at: new Date().toISOString(),
-          user: { name: 'Loja Centro', email: 'centro@parceiro.demo' },
-        },
-        {
-          id: 'demo-ticket-2',
-          title: 'Divergencia de saldo de pontos',
-          message: 'Usuário reportou saldo diferente do extrato.',
-          status: 'pendente',
-          priority: 'media',
-          category: 'pontos',
-          created_at: new Date(Date.now() - 3600e3).toISOString(),
-          user: { name: 'Suporte Interno', email: 'suporte@temdetudo.com' },
-        },
-        {
-          id: 'demo-ticket-3',
-          title: 'Push nao recebido em Android',
-          message: 'Cliente autorizou notificacoes, mas nao recebeu transacao.',
-          status: 'resolvido',
-          priority: 'baixa',
-          category: 'push',
-          created_at: new Date(Date.now() - 7200e3).toISOString(),
-          read_at: new Date(Date.now() - 5400e3).toISOString(),
-          user: { name: 'Cliente Demo', email: 'cliente.demo@exemplo.com' },
-        },
-      ],
-      recentActivity: [
-        { titulo: 'Novo parceiro aprovado', detalhe: 'Padaria Centro', created_at: new Date().toISOString() },
-        { titulo: 'Campanha ativada', detalhe: 'Cashback especial', created_at: new Date(Date.now() - 3600e3).toISOString() },
-        { titulo: 'Resgate confirmado', detalhe: 'Cupom CUPOM-SEED-001', created_at: new Date(Date.now() - 7200e3).toISOString() },
-      ],
-      empresas: [
-        {
-          id: 1,
-          nome: 'Restaurante Sabor & Arte',
-          categoria: 'restaurante',
-          ramo: 'restaurante',
-          endereco: 'Av. Paulista, 1000 - Sao Paulo, SP',
-          telefone: '(11) 4000-1000',
-          email: 'contato@saborearte.com',
-          pontos: 12450,
-          clientes: 412,
-          status: 'ativo',
-          logo: '/assets/images/company1.jpg',
-        },
-        {
-          id: 2,
-          nome: 'Academia Corpo Forte',
-          categoria: 'academia',
-          ramo: 'academia',
-          endereco: 'Rua Augusta, 210 - Sao Paulo, SP',
-          telefone: '(11) 4000-2000',
-          email: 'contato@corpoforte.com',
-          pontos: 8730,
-          clientes: 278,
-          status: 'ativo',
-          logo: '/assets/images/company2.jpg',
-        },
-        {
-          id: 3,
-          nome: 'Farmacia Saude Mais',
-          categoria: 'farmacia',
-          ramo: 'farmacia',
-          endereco: 'Rua da Consolacao, 345 - Sao Paulo, SP',
-          telefone: '(11) 4000-3000',
-          email: 'contato@saudemais.com',
-          pontos: 6390,
-          clientes: 192,
-          status: 'ativo',
-          logo: '/assets/images/company3.jpg',
-        },
-      ],
-    },
-  };
-
-  const DEMO_PARTNERS = [
-    {
-      id: 1,
-      nome: 'Malagueta Galpão',
-      categoria: 'Restaurante',
-      ramo: 'restaurante',
-      descricao: 'Galpão gastronômico com almoço executivo, happy hour e fidelização por QR Code.',
-      endereco: 'Rua do Mercado, 128 - Centro, São Paulo - SP',
-      telefone: '(11) 4002-1101',
-      whatsapp: '(11) 98888-2101',
-      instagram: '@malaguetagalpao',
-      facebook: 'malaguetagalpao',
-      email: 'malagueta@demo.local',
-      logo: '/assets/images/company1.jpg',
-      avaliacao_media: 4.7,
-      total_avaliacoes: 3,
-      points_multiplier: 1,
-      public_page_url: '/detalhe_do_parceiro.html?id=1',
-      publicamente_visivel: true,
-      status: 'active',
-      cartao_fidelidade: {
-        titulo: 'Cartão Fidelidade',
-        regra_ganho: 'Ganhe 1 ponto a cada visita',
-        pontos_por_visita: 1,
-        pontos_necessarios: 15,
-        recompensa_descricao: 'Ganhe uma porção de fritas ou um lanche',
-        status: 'available',
-      },
-      bonus_aniversario: {
-        titulo: 'Parabéns! Seu benefício do mês está liberado',
-        descricao: 'Cliente aniversariante valida o benefício presencialmente mostrando o QR Code.',
-        imagem_url: '/assets/images/company1.jpg',
-        status: 'public',
-      },
-    },
-    {
-      id: 2,
-      nome: 'Texano Burger',
-      categoria: 'Hamburgueria',
-      ramo: 'hamburgueria',
-      descricao: 'Hambúrguer artesanal, combos semanais e recompensas presenciais no balcão.',
-      endereco: 'Av. Paulista, 940 - Bela Vista, São Paulo - SP',
-      telefone: '(11) 4002-1102',
-      whatsapp: '(11) 98888-2102',
-      instagram: '@texanoburger',
-      facebook: 'texanoburger',
-      email: 'texano@demo.local',
-      logo: '/assets/images/company2.jpg',
-      avaliacao_media: 4.5,
-      total_avaliacoes: 2,
-      points_multiplier: 1.25,
-      public_page_url: '/detalhe_do_parceiro.html?id=2',
-      publicamente_visivel: true,
-      status: 'active',
-      cartao_fidelidade: {
-        titulo: 'Cartão Fidelidade',
-        regra_ganho: 'Ganhe 1 ponto a cada visita',
-        pontos_por_visita: 1,
-        pontos_necessarios: 15,
-        recompensa_descricao: 'Ganhe uma porção de fritas ou um lanche',
-        status: 'available',
-      },
-      bonus_aniversario: {
-        titulo: 'Aniversariante ganha cortesia',
-        descricao: 'Apresente seu QR Code no caixa para validar presencialmente.',
-        imagem_url: '/assets/images/company2.jpg',
-        status: 'public',
-      },
-    },
-    {
-      id: 3,
-      nome: 'Makoto Sushi',
-      categoria: 'Japonesa',
-      ramo: 'japonesa',
-      descricao: 'Sushi bar com promoções ativas, fidelidade e bônus de aniversário do mês.',
-      endereco: 'Rua Harmonia, 55 - Vila Madalena, São Paulo - SP',
-      telefone: '(11) 4002-1103',
-      whatsapp: '(11) 98888-2103',
-      instagram: '@makotosushi',
-      facebook: 'makotosushi',
-      email: 'makoto@demo.local',
-      logo: '/assets/images/company3.jpg',
-      avaliacao_media: 4,
-      total_avaliacoes: 1,
-      points_multiplier: 1.5,
-      public_page_url: '/detalhe_do_parceiro.html?id=3',
-      publicamente_visivel: true,
-      status: 'active',
-      cartao_fidelidade: {
-        titulo: 'Cartão Fidelidade',
-        regra_ganho: 'Ganhe 1 ponto a cada visita',
-        pontos_por_visita: 1,
-        pontos_necessarios: 15,
-        recompensa_descricao: 'Ganhe uma porção de fritas ou um lanche',
-        status: 'available',
-      },
-      bonus_aniversario: {
-        titulo: 'Presente do aniversariante',
-        descricao: 'Liberado para clientes elegíveis no mês do aniversário.',
-        imagem_url: '/assets/images/company3.jpg',
-        status: 'public',
-      },
-    },
-    {
-      id: 4,
-      nome: 'Florenza Boutique',
-      categoria: 'Moda/Beleza',
-      ramo: 'moda',
-      descricao: 'Boutique com benefícios recorrentes, mimo de aniversário e campanhas sazonais.',
-      endereco: 'Alameda das Flores, 210 - Jardins, São Paulo - SP',
-      telefone: '(11) 4002-1104',
-      whatsapp: '(11) 98888-2104',
-      instagram: '@florenzaboutique',
-      facebook: 'florenzaboutique',
-      email: 'florenza@demo.local',
-      logo: '/assets/images/company4.jpg',
-      avaliacao_media: 5,
-      total_avaliacoes: 3,
-      points_multiplier: 1,
-      public_page_url: '/detalhe_do_parceiro.html?id=4',
-      publicamente_visivel: true,
-      status: 'active',
-      cartao_fidelidade: {
-        titulo: 'Cartão Fidelidade',
-        regra_ganho: 'Ganhe 1 ponto a cada visita',
-        pontos_por_visita: 1,
-        pontos_necessarios: 15,
-        recompensa_descricao: 'Ganhe uma porção de fritas ou um lanche',
-        status: 'available',
-      },
-      bonus_aniversario: {
-        titulo: 'Mimo do mês de aniversário',
-        descricao: 'Valide seu presente diretamente com a equipe da loja.',
-        imagem_url: '/assets/images/company4.jpg',
-        status: 'public',
-      },
-    },
-  ];
-
-  const DEMO_ADMIN_COMPANIES = [
-    ...DEMO_PARTNERS.map((company, idx) => ({
-      ...company,
-      responsavel: ['Marina Rocha', 'Caio Torres', 'Hiro Tanaka', 'Livia Salles'][idx] || 'Equipe Demo',
-      status: 'active',
-      ativo: true,
-      publicamente_visivel: true,
-      qr_code_ready: true,
-    })),
-    {
-      id: 101,
-      nome: 'Empresa Pendente Demo',
-      categoria: 'Servicos',
-      ramo: 'servicos',
-      descricao: 'Cadastro aguardando aprovação para entrar na vitrine pública.',
-      endereco: 'Rua do Cadastro, 88 - Campinas, SP',
-      telefone: '(19) 4002-8801',
-      whatsapp: '(19) 98888-8801',
-      email: 'pendente@demo.local',
-      responsavel: 'Felipe Cadastro',
-      logo: '/assets/images/company2.jpg',
-      status: 'pending',
-      ativo: false,
-      publicamente_visivel: false,
-      qr_code_ready: false,
-    },
-    {
-      id: 102,
-      nome: 'Empresa Suspensa Demo',
-      categoria: 'Varejo',
-      ramo: 'varejo',
-      descricao: 'Cadastro suspenso para demonstrar governança e reativação.',
-      endereco: 'Av. de Testes, 450 - Osasco, SP',
-      telefone: '(11) 4002-8802',
-      whatsapp: '(11) 98888-8802',
-      email: 'suspensa@demo.local',
-      responsavel: 'Carla Compliance',
-      logo: '/assets/images/company3.jpg',
-      status: 'suspended',
-      ativo: false,
-      publicamente_visivel: false,
-      qr_code_ready: true,
-    },
-  ];
 
   function safeImage(url, fallback = IMAGE_FALLBACKS.store) {
     if (!url || typeof url !== 'string') return fallback;
@@ -324,7 +36,7 @@
   function decodeMojibake(value) {
     if (value == null) return '';
     let text = String(value);
-    const markerRegex = /(?:Ã.|Â.|â€™|â€œ|â€|�)/g;
+    const markerRegex = /(?:\u00C3.|\u00C2.|\u00E2[\u0080-\u00BF].|\uFFFD)/g;
     if (!markerRegex.test(text)) return text;
     markerRegex.lastIndex = 0;
 
@@ -2241,22 +1953,10 @@
 
       const historicoContainer = document.getElementById('historicoContainer');
       if (historicoContainer) {
-        // Fallback: dados de demonstração se API não retornar histórico
-        let historicoFinal = historico;
         if (!historico.length) {
-          historicoFinal = [
-            { pontos: 150, tipo: 'checkin', empresa: { nome: 'Supermercado Silva' }, created_at: new Date(Date.now() - 2 * 3600000).toISOString(), descricao: 'Check-in realizado' },
-            { pontos: 85, tipo: 'compra', empresa: { nome: 'Pizzaria Bella' }, created_at: new Date(Date.now() - 6 * 3600000).toISOString(), descricao: 'Compra qualificada' },
-            { pontos: -500, tipo: 'resgate', empresa: { nome: 'Tem de Tudo' }, created_at: new Date(Date.now() - 24 * 3600000).toISOString(), descricao: 'Resgate de voucher' },
-            { pontos: 120, tipo: 'bonus', empresa: { nome: 'Farmacia PopularMed' }, created_at: new Date(Date.now() - 48 * 3600000).toISOString(), descricao: 'Bônus de fidelidade' },
-            { pontos: 200, tipo: 'checkin', empresa: { nome: 'Cafe Premium' }, created_at: new Date(Date.now() - 72 * 3600000).toISOString(), descricao: 'Check-in realizado' },
-          ];
-        }
-        
-        if (!historicoFinal.length) {
           historicoContainer.innerHTML = '<p class="text-sm text-on-surface-variant text-center py-8">Sem historico de pontos.</p>';
         } else {
-          historicoContainer.innerHTML = historicoFinal.slice(0, 5).map((item) => {
+          historicoContainer.innerHTML = historico.slice(0, 5).map((item) => {
             const pontos = Number(item.pontos || 0);
             const tipo = (item.tipo || '').toLowerCase();
             const positivo = pontos >= 0 && !tipo.includes('resgate');
@@ -2640,8 +2340,8 @@
         }
         loading?.classList.add('hidden');
 
-        if (!Array.isArray(lista) || lista.length === 0) {
-          lista = DEMO_PARTNERS;
+        if (!Array.isArray(lista)) {
+          lista = [];
         }
 
         const filtered = lista.filter((item) => matchesCategory(item, activeCategory));
@@ -2695,8 +2395,7 @@
         if (!res.ok || data?.success === false) {
           const fallbackListResponse = await api.request('/empresas', {}, { requireAuth: false, notify: false });
           const fallbackList = toArray(fallbackListResponse.data?.data || fallbackListResponse.data);
-          const fallbackCompany = fallbackList.find((item) => String(item?.id || '') === String(selectedCompanyId))
-            || DEMO_PARTNERS.find((item) => String(item?.id || '') === String(selectedCompanyId));
+          const fallbackCompany = fallbackList.find((item) => String(item?.id || '') === String(selectedCompanyId));
 
           if (!fallbackCompany) {
             ui.setPageState('empty', data?.message || 'Empresa indisponível no momento.');
@@ -2711,7 +2410,7 @@
             cartao_fidelidade: fallbackCompany.cartao_fidelidade || null,
             bonus_aniversario: fallbackCompany.bonus_aniversario || null,
           };
-          ui.message('Exibindo fallback demo desta empresa enquanto o detalhamento completo nao responde.', 'warning');
+          ui.message('Exibindo dados publicos desta empresa ate o detalhamento completo responder.', 'warning');
         }
         const publicPromotionsResponse = await api.request(`/empresas/${selectedCompanyId}/promocoes`, {}, { requireAuth: false, notify: false });
         const publicReviewsResponse = await api.request(`/empresas/${selectedCompanyId}/avaliacoes`, {}, { requireAuth: false, notify: false });
@@ -3832,18 +3531,6 @@
       const { data } = await api.request('/pontos/historico');
       loading?.classList.add('hidden');
       let itens = data?.data?.data || data?.data || [];
-      if (!itens.length) {
-        // Fallback: dados de demonstração se API retornar vazio ou erro
-        itens = [
-          { pontos: 150, tipo: 'checkin', empresa: { nome: 'Supermercado Silva' }, created_at: new Date(Date.now() - 2 * 3600000).toISOString(), descricao: 'Check-in realizado', status: 'aprovado' },
-          { pontos: 85, tipo: 'compra', empresa: { nome: 'Pizzaria Bella' }, created_at: new Date(Date.now() - 6 * 3600000).toISOString(), descricao: 'Compra qualificada', status: 'aprovado' },
-          { pontos: -500, tipo: 'resgate', empresa: { nome: 'Tem de Tudo' }, created_at: new Date(Date.now() - 24 * 3600000).toISOString(), descricao: 'Resgate de voucher', status: 'concluido' },
-          { pontos: 120, tipo: 'bonus', empresa: { nome: 'Farmacia PopularMed' }, created_at: new Date(Date.now() - 48 * 3600000).toISOString(), descricao: 'Bônus de fidelidade', status: 'aprovado' },
-          { pontos: 200, tipo: 'checkin', empresa: { nome: 'Cafe Premium' }, created_at: new Date(Date.now() - 72 * 3600000).toISOString(), descricao: 'Check-in realizado', status: 'aprovado' },
-          { pontos: 65, tipo: 'cupom', empresa: { nome: 'Loja de Roupas Moda' }, created_at: new Date(Date.now() - 4 * 24 * 3600000).toISOString(), descricao: 'Cupom utilizado', status: 'aprovado' },
-          { pontos: 300, tipo: 'bonus', empresa: { nome: 'Academia Total Fit' }, created_at: new Date(Date.now() - 7 * 24 * 3600000).toISOString(), descricao: 'Bônus mensal', status: 'aprovado' },
-        ];
-      }
       ui.clearPageState();
       if (summaryText) summaryText.textContent = `Voce tem ${itens.length} atividades registradas.`;
       render(itens, 'todas');
@@ -4904,7 +4591,7 @@
       document.getElementById('cfgExcluirContaBtn')?.addEventListener('click', async () => {
         const senha = prompt('Para confirmar a exclusão, digite sua senha atual:');
         if (!senha) return;
-        if (!confirm('ATENÇÃO: Esta ação é IRREVERSÍVEL.\nTodos os seus dados pessoais serão removidos permanentemente.\n\nDeseja continuar?')) return;
+        if (!confirm('ATENCAO: Esta acao e IRREVERSIVEL.\nTodos os seus dados pessoais serao removidos permanentemente.\n\nDeseja continuar?')) return;
         ui.setPageState('loading', 'Excluindo conta...');
         const { res, data } = await api.request('/auth/delete-account', {
           method: 'DELETE',
@@ -6514,66 +6201,11 @@
   // ---------------------- Paginas: Admin ---------------------- //
   const admin = {
     enrichUsersDataset(baseList = []) {
-      const list = Array.isArray(baseList) ? [...baseList] : [];
-      if (list.length >= 12) return list;
-
-      const seenEmails = new Set(
-        list
-          .map((item) => String(item?.email || '').trim().toLowerCase())
-          .filter(Boolean)
-      );
-
-      [
-        { id: 'admin-demo-main', name: 'Admin Demo', email: 'admin@demo.local', perfil: 'admin', status: 'ativo' },
-        { id: 'admin-demo-sub', name: 'Operacao Demo', email: 'operacao@demo.local', perfil: 'sub-admin', status: 'ativo' },
-        { id: 'empresa-demo-1', name: 'Malagueta Galpao', email: 'malagueta@demo.local', perfil: 'empresa', status: 'ativo' },
-        { id: 'empresa-demo-2', name: 'Texano Burger', email: 'texano@demo.local', perfil: 'empresa', status: 'ativo' },
-        { id: 'empresa-demo-3', name: 'Makoto Sushi', email: 'makoto@demo.local', perfil: 'empresa', status: 'ativo' },
-        { id: 'empresa-demo-4', name: 'Florenza Boutique', email: 'florenza@demo.local', perfil: 'empresa', status: 'ativo' },
-        { id: 'cliente-demo-1', name: 'Joao Cliente Demo', email: 'joao@demo.local', perfil: 'cliente', status: 'ativo', pontos: 5 },
-        { id: 'cliente-demo-2', name: 'Maria Aniversariante', email: 'maria@demo.local', perfil: 'cliente', status: 'ativo', pontos: 14 },
-        { id: 'cliente-demo-3', name: 'Pedro Inativo', email: 'pedro@demo.local', perfil: 'cliente', status: 'bloqueado', pontos: 0 },
-        { id: 'cliente-demo-4', name: 'Ana Fidelidade', email: 'ana@demo.local', perfil: 'cliente', status: 'ativo', pontos: 16 },
-        { id: 'cliente-demo-push', name: 'Cliente Push iPhone', email: 'cliente.push@demo.local', perfil: 'cliente', status: 'ativo', pontos: 2 },
-      ].forEach((candidate, idx) => {
-        const email = String(candidate.email || '').trim().toLowerCase();
-        if (!email || seenEmails.has(email)) return;
-        seenEmails.add(email);
-        list.push({
-          ...candidate,
-          created_at: candidate.created_at || new Date(Date.now() - (idx + 1) * 43200000).toISOString(),
-          updated_at: candidate.updated_at || new Date(Date.now() - idx * 21600000).toISOString(),
-        });
-      });
-
-      return list;
+      return Array.isArray(baseList) ? [...baseList] : [];
     },
 
     enrichCompaniesDataset(baseList = []) {
-      const list = Array.isArray(baseList) ? [...baseList] : [];
-      const seenIds = new Set(list.map((item) => String(item?.id || '')).filter(Boolean));
-      const seenNames = new Set(
-        list
-          .map((item) => safeText(item?.nome || item?.nome_fantasia || item?.name, '').toLowerCase())
-          .filter(Boolean)
-      );
-
-      DEMO_ADMIN_COMPANIES.forEach((candidate, idx) => {
-        const idKey = String(candidate?.id || '');
-        const nameKey = safeText(candidate?.nome || candidate?.name, '').toLowerCase();
-        if ((idKey && seenIds.has(idKey)) || (nameKey && seenNames.has(nameKey))) return;
-
-        if (idKey) seenIds.add(idKey);
-        if (nameKey) seenNames.add(nameKey);
-
-        list.push({
-          ...candidate,
-          created_at: candidate.created_at || new Date(Date.now() - (idx + 1) * 86400000).toISOString(),
-          updated_at: candidate.updated_at || new Date(Date.now() - idx * 43200000).toISOString(),
-        });
-      });
-
-      return list;
+      return Array.isArray(baseList) ? [...baseList] : [];
     },
 
     summarizeCompanies(list = []) {
@@ -6602,75 +6234,12 @@
         const list = Array.isArray(raw) ? raw : Array.isArray(raw?.data) ? raw.data : [];
         return { ok: true, list: admin.enrichUsersDataset(list) };
       }
-      const empresas = await api.request('/empresas', {}, { requireAuth: false, notify: false });
-      const empresasList = toArray(empresas.data?.data || empresas.data);
-      if (empresasList.length) {
-        const synthetic = [];
-        empresasList.slice(0, 12).forEach((e, idx) => {
-          synthetic.push({
-            id: `emp-${e.id || idx + 1}`,
-            name: e.nome || `Estabelecimento ${idx + 1}`,
-            email: e.email || `empresa${idx + 1}@demo.com`,
-            perfil: 'empresa',
-            status: 'ativo',
-            pontos: toNumber(e.pontos, e.pontos_totais),
-            created_at: new Date(Date.now() - idx * 86400000).toISOString(),
-          });
-        });
-        for (let i = 1; i <= 15; i += 1) {
-          synthetic.push({
-            id: `cli-${i}`,
-            name: `Cliente Demo ${i}`,
-            email: `cliente.demo.${i}@demo.com`,
-            perfil: 'cliente',
-            status: i % 7 === 0 ? 'inativo' : 'ativo',
-            pontos: 120 + i * 35,
-            created_at: new Date(Date.now() - i * 43200000).toISOString(),
-          });
-        }
-        synthetic.push({
-          id: 'adm-1',
-          name: 'Administrador Master',
-          email: 'admin@temdetudo.com',
-          perfil: 'admin',
-          status: 'ativo',
-          created_at: new Date().toISOString(),
-        });
-        return { ok: true, list: admin.enrichUsersDataset(synthetic) };
-      }
 
-      const synthetic = [];
-      DEMO_ADMIN_COMPANIES.forEach((e, idx) => {
-        synthetic.push({
-          id: `emp-fallback-${idx + 1}`,
-          name: e.nome || `Estabelecimento ${idx + 1}`,
-          email: `empresa${idx + 1}@demo.com`,
-          perfil: 'empresa',
-          status: 'ativo',
-          pontos: toNumber(e.pontos, e.pontos_totais, 0),
-          created_at: new Date(Date.now() - idx * 86400000).toISOString(),
-        });
-      });
-      for (let i = 1; i <= 10; i += 1) {
-        synthetic.push({
-          id: `cli-fallback-${i}`,
-          name: `Cliente Demo ${i}`,
-          email: `cliente${i}@demo.com`,
-          perfil: 'cliente',
-          status: 'ativo',
-          pontos: 100 + i * 30,
-          created_at: new Date(Date.now() - i * 43200000).toISOString(),
-        });
-      }
-      synthetic.push({
-        id: 'admin-fallback-1',
-        name: 'Administrador Master',
-        email: 'admin@temdetudo.com',
-        perfil: 'admin',
-        status: 'ativo',
-        created_at: new Date().toISOString(),
-      });
-      return { ok: true, list: admin.enrichUsersDataset(synthetic) };
+      return {
+        ok: false,
+        list: [],
+        message: fallback.data?.message || primary.data?.message || 'Nao foi possivel carregar a base de usuarios.',
+      };
     },
 
     async dashboard() {
@@ -6685,6 +6254,9 @@
         admin.loadUsersDataset(),
       ]);
       ui.clearPageState();
+      if (!stats.res.ok || !recent.res.ok || !ticketsStatsResp.res.ok || !adminSummaryResp.res.ok || !usersDataset.ok) {
+        ui.message('Parte dos indicadores administrativos nao respondeu. A tela esta exibindo apenas dados reais disponiveis agora.', 'warning');
+      }
 
       const ids = (id) => document.getElementById(id);
       const dashboardSearchUi = {
@@ -6699,10 +6271,9 @@
       const summaryCards = adminSummary?.cards || {};
       const totals = statsData?.totais || {};
       const empresasListApi = toArray(empresas.data?.data || empresas.data);
-      const empresasList = empresasListApi.length ? admin.enrichCompaniesDataset(empresasListApi) : DEMO_ADMIN_COMPANIES;
+      const empresasList = admin.enrichCompaniesDataset(empresasListApi);
       const usersList = usersDataset?.ok ? usersDataset.list : [];
       const mergedTotals = {
-        ...DEMO.admin.totals,
         ...totals,
       };
 
@@ -6713,9 +6284,9 @@
       const totalVolume = toNumber(mergedTotals.volume, statsData.volume);
       const ticketStatsData = ticketsStatsResp.data?.data || {};
       const hasTicketData = toNumber(ticketStatsData.total, ticketStatsData.pendentes, ticketStatsData.resolvidos) > 0;
-      const ticketStats = hasTicketData ? ticketStatsData : DEMO.admin.ticketStats;
-      const totalTicketsPendentes = toNumber(ticketStats.pendentes, DEMO.admin.ticketStats.pendentes);
-      const totalTicketsUrgentes = toNumber(ticketStats.urgentes, Math.min(totalTicketsPendentes, DEMO.admin.ticketStats.urgentes));
+      const ticketStats = hasTicketData ? ticketStatsData : {};
+      const totalTicketsPendentes = toNumber(ticketStats.pendentes, 0);
+      const totalTicketsUrgentes = toNumber(ticketStats.urgentes, 0);
 
       if (ids('adminUsers')) ids('adminUsers').textContent = Number(totalUsuarios || 0).toLocaleString('pt-BR');
       if (ids('adminEmpresas')) ids('adminEmpresas').textContent = Number(totalEmpresas || 0).toLocaleString('pt-BR');
@@ -6734,7 +6305,7 @@
         : 'Sem urgencias no momento';
 
       const atividadesApi = toArray(recent.data?.data || recent.data);
-      const atividades = atividadesApi.length ? atividadesApi : DEMO.admin.recentActivity;
+      const atividades = atividadesApi;
       const list = ids('adminRecentList');
       const empty = ids('adminRecentEmpty');
       if (list) list.innerHTML = '';
@@ -7012,7 +6583,7 @@
         }
       });
 
-      // Sem banner de erro global aqui: usamos fallback de dados para manter o painel operacional.
+      // Sem banner de erro global aqui para evitar ruido visual duplicado.
     },
 
     async tickets() {
@@ -7047,8 +6618,11 @@
         const statsData = statsResp.data?.data || {};
         const hasApiTickets = apiTickets.length > 0;
         const hasStatsData = toNumber(statsData.total, statsData.pendentes, statsData.resolvidos) > 0;
-        const tickets = hasApiTickets ? apiTickets : DEMO.admin.tickets;
-        const stats = hasStatsData || hasApiTickets ? statsData : DEMO.admin.ticketStats;
+        const tickets = apiTickets;
+        const stats = hasStatsData ? statsData : {};
+        if (!ticketsResp.res.ok && !statsResp.res.ok) {
+          ui.message('Nao foi possivel carregar os tickets agora.', 'warning');
+        }
 
         badge('ticketTotal', Number(toNumber(stats.total, tickets.length)).toLocaleString('pt-BR'));
         badge('ticketPendentes', Number(toNumber(stats.pendentes, tickets.filter((t) => (t.status || '').toLowerCase() === 'pendente').length)).toLocaleString('pt-BR'));
@@ -7103,11 +6677,6 @@
         list.querySelectorAll('.ticket-resolver').forEach((btn) => {
           btn.addEventListener('click', async () => {
             const id = btn.dataset.id;
-            if (`${id}`.startsWith('demo-ticket-')) {
-              btn.closest('[data-ticket-id]')?.remove();
-              ui.message('Ticket demo marcado como resolvido.', 'success');
-              return;
-            }
             const { res, data } = await api.request(`/admin/tickets/${id}/resolve`, { method: 'POST' }, { notify: true });
             if (res.ok && data?.success !== false) {
               ui.message('Ticket resolvido com sucesso.', 'success');
@@ -7119,11 +6688,6 @@
         list.querySelectorAll('.ticket-reabrir').forEach((btn) => {
           btn.addEventListener('click', async () => {
             const id = btn.dataset.id;
-            if (`${id}`.startsWith('demo-ticket-')) {
-              ui.message('Ticket demo reaberto.', 'info');
-              await loadTickets();
-              return;
-            }
             const { res, data } = await api.request(`/admin/tickets/${id}/reopen`, { method: 'POST' }, { notify: true });
             if (res.ok && data?.success !== false) {
               ui.message('Ticket reaberto com sucesso.', 'success');
@@ -7135,11 +6699,6 @@
         list.querySelectorAll('.ticket-fechar').forEach((btn) => {
           btn.addEventListener('click', async () => {
             const id = btn.dataset.id;
-            if (`${id}`.startsWith('demo-ticket-')) {
-              btn.closest('[data-ticket-id]')?.remove();
-              ui.message('Ticket demo removido.', 'info');
-              return;
-            }
             const { res, data } = await api.request(`/admin/tickets/${id}`, { method: 'DELETE' }, { notify: true });
             if (res.ok && data?.success !== false) {
               btn.closest('[data-ticket-id]')?.remove();
@@ -7198,12 +6757,11 @@
         ui.setPageState('loading', 'Carregando estabelecimentos...');
         const { res, data } = await api.request(`/admin/empresas${params.toString() ? `?${params.toString()}` : ''}`, {}, { notify: false });
         if (!res.ok || data?.success === false) {
-          const fallbackCompanies = admin.enrichCompaniesDataset(DEMO_ADMIN_COMPANIES);
           ui.clearPageState();
-          ui.message(data?.message || 'Exibindo estabelecimentos demo enquanto o endpoint admin nao responde.', 'warning');
+          ui.message(data?.message || 'Nao foi possivel carregar os estabelecimentos agora.', 'warning');
           return {
-            empresas: fallbackCompanies,
-            summary: admin.summarizeCompanies(fallbackCompanies),
+            empresas: [],
+            summary: admin.summarizeCompanies([]),
           };
         }
 
@@ -7605,23 +7163,14 @@
       if (!(await auth.guard(['admin']))) return;
       ui.setPageState('loading', 'Carregando clientes...');
       const usersDataset = await admin.loadUsersDataset();
+      if (!usersDataset.ok) {
+        ui.message(usersDataset.message || 'Nao foi possivel carregar os clientes agora.', 'warning');
+      }
       
       let clientes = [];
       if (usersDataset.ok && usersDataset.list.length) {
         const lista = usersDataset.list;
         clientes = lista.filter((u) => (u.perfil || u.role || '').toString().toLowerCase().includes('cliente'));
-      }
-      
-      // Fallback: dados de demonstração se não houver clientes
-      if (!clientes.length) {
-        clientes = [
-          { id: 1, name: 'João Silva', email: 'joao.silva@email.com', cpf: '123.456.789-00', pontos: 1250, saldo: 1250, status: 'ativo', created_at: new Date(Date.now() - 30 * 24 * 3600000).toISOString(), last_login: new Date(Date.now() - 2 * 3600000).toISOString() },
-          { id: 2, name: 'Maria Santos', email: 'maria.santos@email.com', cpf: '987.654.321-00', pontos: 850, saldo: 850, status: 'ativo', created_at: new Date(Date.now() - 45 * 24 * 3600000).toISOString(), last_login: new Date(Date.now() - 5 * 3600000).toISOString() },
-          { id: 3, name: 'Pedro Oliveira', email: 'pedro.oli@email.com', cpf: '456.789.123-00', pontos: 2100, saldo: 2100, status: 'ativo', created_at: new Date(Date.now() - 60 * 24 * 3600000).toISOString(), last_login: new Date(Date.now() - 24 * 3600000).toISOString() },
-          { id: 4, name: 'Ana Costa', email: 'ana.costa@email.com', cpf: '321.654.987-00', pontos: 450, saldo: 450, status: 'ativo', created_at: new Date(Date.now() - 15 * 24 * 3600000).toISOString(), last_login: new Date(Date.now() - 48 * 3600000).toISOString() },
-          { id: 5, name: 'Carlos Lima', email: 'carlos.lima@email.com', cpf: '789.123.456-00', pontos: 3200, saldo: 3200, status: 'ativo', created_at: new Date(Date.now() - 90 * 24 * 3600000).toISOString(), last_login: new Date(Date.now() - 1 * 3600000).toISOString() },
-          { id: 6, name: 'Juliana Pereira', email: 'ju.pereira@email.com', cpf: '654.321.987-00', pontos: 180, saldo: 180, status: 'inativo', created_at: new Date(Date.now() - 120 * 24 * 3600000).toISOString(), last_login: new Date(Date.now() - 15 * 24 * 3600000).toISOString() },
-        ];
       }
 
       const tbody = document.getElementById('adminClientesTable');
@@ -7702,7 +7251,7 @@
         selectedPushClient = user?.id ? user : null;
 
         if (pushUi.name) pushUi.name.textContent = safeText(user?.name, 'Cliente');
-        if (pushUi.emailValue) pushUi.emailValue.textContent = safeText(user?.email, pushUi.email?.value || 'cliente.push@demo.local');
+        if (pushUi.emailValue) pushUi.emailValue.textContent = safeText(user?.email, pushUi.email?.value || '--');
         if (pushUi.subscription) pushUi.subscription.textContent = push?.has_active_subscription ? 'Sim' : 'Nao';
         if (pushUi.devices) {
           const deviceLabels = Array.isArray(push?.devices) && push.devices.length ? ` (${push.devices.join(', ')})` : '';
@@ -7933,6 +7482,9 @@
         api.request('/admin/relatorios/resumo', {}, { notify: false }),
       ]);
       ui.clearPageState();
+      if (!stats.res.ok || !checkins.res.ok || !adminSummaryResp.res.ok || !usersDataset.ok) {
+        ui.message('Parte dos dados de relatorios nao respondeu. Apenas informacoes reais disponiveis estao sendo exibidas.', 'warning');
+      }
 
       const statsData = stats.data?.data || stats.data || {};
       const adminSummary = adminSummaryResp.data?.data || {};
@@ -7941,9 +7493,9 @@
       const usersList = usersDataset.ok ? usersDataset.list : [];
       const usersPayload = { total: usersList.length };
       const empresasListApi = toArray(empresasResp.data?.data || empresasResp.data);
-      const empresasList = empresasListApi.length ? admin.enrichCompaniesDataset(empresasListApi) : DEMO_ADMIN_COMPANIES;
+      const empresasList = admin.enrichCompaniesDataset(empresasListApi);
       const checkData = checkins.data?.data || checkins.data || {};
-      const fallbackUsers = usersList.length ? usersList.length : DEMO.admin.totals.usuarios;
+      const fallbackUsers = usersList.length;
 
       const totalEmpresas = toNumber(summaryCards.total_empresas, totals.empresas, statsData.empresas, statsData.total_empresas, empresasList.length);
       const totalUsuarios = toNumber(totals.usuarios, statsData.usuarios, statsData.total_users, usersPayload.total, usersList.length, fallbackUsers);
@@ -7953,12 +7505,12 @@
         usersList.filter((u) => (u?.perfil || u?.role || '').toString().toLowerCase().includes('cliente')).length,
         Math.round(totalUsuarios * 0.76)
       );
-      const totalPromocoes = toNumber(summaryCards.total_promocoes, totals.campanhas, statsData.promocoes, statsData.campanhas, DEMO.admin.totals.campanhas);
-      const totalResgates = toNumber(summaryCards.total_resgates, totals.resgates, statsData.resgates, DEMO.admin.totals.resgates);
+      const totalPromocoes = toNumber(summaryCards.total_promocoes, totals.campanhas, statsData.promocoes, statsData.campanhas, 0);
+      const totalResgates = toNumber(summaryCards.total_resgates, totals.resgates, statsData.resgates, 0);
       const totalVinculos = toNumber(summaryCards.total_vinculos_cliente_empresa);
       const totalNotificacoes = toNumber(summaryCards.total_notificacoes);
       const mediaGeralAvaliacoes = Number(toNumber(summaryCards.media_geral_avaliacoes, 0)).toFixed(1);
-      const totalVolume = toNumber(totals.volume, statsData.volume, DEMO.admin.totals.volume);
+      const totalVolume = toNumber(totals.volume, statsData.volume, 0);
 
       const setText = (id, val) => {
         const el = document.getElementById(id);
@@ -8067,16 +7619,7 @@
       if (relCheckinsList) {
         relCheckinsList.innerHTML = '';
         const entries = Object.entries(checkData || {}).filter(([, value]) => Number.isFinite(Number(value)));
-        const usingFallbackStats = !entries.length;
-        const statsEntries = usingFallbackStats
-          ? Object.entries(DEMO.admin.reportStats)
-          : entries;
-        if (usingFallbackStats) {
-          const note = document.createElement('p');
-          note.className = 'text-xs text-on-surface-variant mb-2';
-          note.textContent = 'Exibindo dados consolidados ficticios para demonstracao.';
-          relCheckinsList.appendChild(note);
-        }
+        const statsEntries = entries;
         if (!statsEntries.length) {
           relCheckinsList.innerHTML = '<p class="text-sm text-on-surface-variant">Sem estatisticas de pontos disponiveis.</p>';
         } else {
@@ -8166,7 +7709,7 @@
         }
       }
 
-      // Sem banner de erro global aqui: fallback evita ruido visual.
+      // Sem banner de erro global aqui para evitar ruido visual duplicado.
     },
 
     async configuracoes() {
@@ -8693,41 +8236,30 @@
           .replace(/\"/g, '&quot;')
           .replace(/'/g, '&#39;');
 
-      const fallbackContent = () => ({
-        partial: true,
-        banners: [
-          {
-            id: 'fallback-1',
-            title: 'Semana de Pontos em Dobro',
-            link: '/recompensas.html',
-            active: true,
-          },
-          {
-            id: 'fallback-2',
-            title: 'Novos Parceiros na Plataforma',
-            link: '/parceiros_tem_de_tudo.html',
-            active: true,
-          },
-        ],
-        categorias: [
-          { id: 'fallback-cat-1', name: 'Restaurantes', slug: 'restaurantes', active: true },
-          { id: 'fallback-cat-2', name: 'Beleza', slug: 'beleza', active: true },
-          { id: 'fallback-cat-3', name: 'Saude', slug: 'saude', active: true },
-        ],
-      });
-
       const fetchContent = async () => {
         const { res, data } = await api.request('/admin/content', {}, { notify: false });
-        if (res.ok && data?.success !== false) return data?.data || { banners: [], categorias: [] };
-        return fallbackContent();
+        if (res.ok && data?.success !== false) {
+          return {
+            ...(data?.data || { banners: [], categorias: [] }),
+            unavailable: false,
+          };
+        }
+        return {
+          banners: [],
+          categorias: [],
+          unavailable: true,
+          message: data?.message || 'Nao foi possivel carregar o conteudo administrativo agora.',
+        };
       };
 
       const renderContent = async () => {
         const payload = await fetchContent();
         const { banners = [], categorias = [] } = payload;
         const isPartial = Boolean(payload?.partial);
-        const sourceLabel = payload?.source === 'fallback_file'
-          ? 'fallback local persistente'
+        const isUnavailable = Boolean(payload?.unavailable);
+        const isReadOnly = isPartial || isUnavailable;
+        const sourceLabel = isUnavailable
+          ? 'indisponivel'
           : isPartial
             ? 'modo somente leitura'
             : 'API administrativa';
@@ -8737,7 +8269,7 @@
             <div class="space-y-2">
               <p><strong>${Number(banners.length).toLocaleString('pt-BR')}</strong> banner(s) e <strong>${Number(categorias.length).toLocaleString('pt-BR')}</strong> categoria(s) carregados.</p>
               <p>Origem atual: <strong>${sourceLabel}</strong>.</p>
-              <p>${isPartial ? 'A API de conteudo nao respondeu. Os dados exibidos sao de demonstracao e a edicao fica bloqueada.' : 'A operacao esta pronta para editar sem popups.'}</p>
+              <p>${isUnavailable ? (payload?.message || 'A API de conteudo nao respondeu. Tente novamente mais tarde.') : isPartial ? 'A API de conteudo respondeu em modo somente leitura.' : 'A operacao esta pronta para editar sem popups.'}</p>
             </div>
           `;
         }
@@ -8838,7 +8370,7 @@
                 <h3 class="text-lg font-headline font-bold text-on-surface">Banners</h3>
                 <p class="mt-1 text-sm text-on-surface-variant">Edite titulo, link, imagem e status sem abrir popup.</p>
               </div>
-              <button id="novoBannerBtn" class="content-admin-button ${isPartial ? 'content-admin-button--secondary opacity-60 cursor-not-allowed' : 'content-admin-button--primary'}" ${isPartial ? 'disabled' : ''}>Novo banner</button>
+              <button id="novoBannerBtn" class="content-admin-button ${isReadOnly ? 'content-admin-button--secondary opacity-60 cursor-not-allowed' : 'content-admin-button--primary'}" ${isReadOnly ? 'disabled' : ''}>Novo banner</button>
             </div>
             <div id="bannersList" class="content-admin-grid"></div>
           `;
@@ -8849,11 +8381,19 @@
             : '<p class="text-sm text-on-surface-variant">Nenhum banner cadastrado. Crie o primeiro banner da vitrine.</p>';
 
           bannersSection.querySelector('#novoBannerBtn')?.addEventListener('click', () => {
+            if (isReadOnly) {
+              ui.message(payload?.message || 'Conteudo em modo somente leitura no momento.', 'warning');
+              return;
+            }
             if (list.querySelector('[data-banner-editor="draft"]')) return;
             list.insertAdjacentHTML('afterbegin', bannerFormMarkup());
           });
 
           list?.addEventListener('click', async (event) => {
+            if (isReadOnly) {
+              ui.message(payload?.message || 'Conteudo em modo somente leitura no momento.', 'warning');
+              return;
+            }
             const trigger = event.target.closest('[data-banner-action]');
             if (!trigger) return;
             const action = trigger.getAttribute('data-banner-action');
@@ -8913,7 +8453,7 @@
                 <h3 class="text-lg font-headline font-bold text-on-surface">Categorias</h3>
                 <p class="mt-1 text-sm text-on-surface-variant">Ajuste nome, slug e status da navegação pública em linha.</p>
               </div>
-              <button id="novaCategoriaBtn" class="content-admin-button ${isPartial ? 'content-admin-button--secondary opacity-60 cursor-not-allowed' : 'content-admin-button--primary'}" ${isPartial ? 'disabled' : ''}>Nova categoria</button>
+              <button id="novaCategoriaBtn" class="content-admin-button ${isReadOnly ? 'content-admin-button--secondary opacity-60 cursor-not-allowed' : 'content-admin-button--primary'}" ${isReadOnly ? 'disabled' : ''}>Nova categoria</button>
             </div>
             <div id="categoriasList" class="content-admin-grid"></div>
           `;
@@ -8924,11 +8464,19 @@
             : '<p class="text-sm text-on-surface-variant">Nenhuma categoria cadastrada. Crie a primeira categoria visível na busca.</p>';
 
           categoriasSection.querySelector('#novaCategoriaBtn')?.addEventListener('click', () => {
+            if (isReadOnly) {
+              ui.message(payload?.message || 'Conteudo em modo somente leitura no momento.', 'warning');
+              return;
+            }
             if (list.querySelector('[data-category-editor="draft"]')) return;
             list.insertAdjacentHTML('afterbegin', categoryFormMarkup());
           });
 
           list?.addEventListener('click', async (event) => {
+            if (isReadOnly) {
+              ui.message(payload?.message || 'Conteudo em modo somente leitura no momento.', 'warning');
+              return;
+            }
             const trigger = event.target.closest('[data-category-action]');
             if (!trigger) return;
             const action = trigger.getAttribute('data-category-action');
@@ -8985,36 +8533,12 @@
         await renderContent();
       } catch (err) {
         console.error('admin_content_render_fail', err);
-        const payload = fallbackContent();
-        const { banners = [], categorias = [] } = payload;
-        if (status) status.textContent = `Conteúdo sincronizado: ${banners.length} banner(s), ${categorias.length} categoria(s).`;
+        if (status) status.textContent = 'Conteudo administrativo indisponivel no momento.';
         if (bannersSection) {
-          bannersSection.innerHTML = `
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-lg font-headline font-bold text-on-surface">Banners</h3>
-            </div>
-            <div class="space-y-3">${banners.map((b) => `
-              <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-3">
-                <div class="min-w-0">
-                  <p class="font-bold text-sm text-on-surface truncate">${escapeHtml(b.title)}</p>
-                  <p class="text-xs text-on-surface-variant truncate">${escapeHtml(b.link || '-')}</p>
-                </div>
-                <span class="text-[10px] font-bold uppercase ${b.active ? 'text-tertiary' : 'text-outline'}">${b.active ? 'Ativo' : 'Inativo'}</span>
-              </div>`).join('')}</div>`;
+          bannersSection.innerHTML = '<p class="text-sm text-on-surface-variant">Nao foi possivel carregar os banners agora.</p>';
         }
         if (categoriasSection) {
-          categoriasSection.innerHTML = `
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-lg font-headline font-bold text-on-surface">Categorias</h3>
-            </div>
-            <div class="space-y-3">${categorias.map((c) => `
-              <div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between gap-3">
-                <div class="min-w-0">
-                  <p class="font-bold text-sm text-on-surface truncate">${escapeHtml(c.name)}</p>
-                  <p class="text-xs text-on-surface-variant truncate">${escapeHtml(c.slug || '-')}</p>
-                </div>
-                <span class="text-[10px] font-bold uppercase ${c.active ? 'text-tertiary' : 'text-outline'}">${c.active ? 'Ativo' : 'Inativo'}</span>
-              </div>`).join('')}</div>`;
+          categoriasSection.innerHTML = '<p class="text-sm text-on-surface-variant">Nao foi possivel carregar as categorias agora.</p>';
         }
       }
     },

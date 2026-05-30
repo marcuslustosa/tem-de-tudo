@@ -6,10 +6,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AdminReportController;
-use App\Http\Controllers\OpenAIController;
 // Legacy-only controller kept for backward compatibility. New QR flows must remain on
 // ClienteQrCodeService + QRCodeService and must not expand this controller again.
-use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\BonusAdesaoController;
 use App\Http\Controllers\BonusAniversarioController;
 use App\Http\Controllers\CartaoFidelidadeController;
@@ -308,7 +306,6 @@ Route::prefix('admin')->group(function () {
 
         // NotificaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes administrativas
         Route::middleware(['admin.permission:manage_users'])->group(function () {
-            Route::post('/notifications/broadcast', [NotificationController::class, 'sendBroadcast']);
             Route::post('/notifications/test', [NotificationController::class, 'testNotification']);
             Route::get('/notifications/stats', [NotificationController::class, 'getStats']);
             Route::post('/notifications/process-queue', [NotificationController::class, 'processQueue']);
@@ -555,32 +552,6 @@ Route::middleware(['auth:sanctum'])->prefix('admin/pontos')->group(function () {
 
 // Rotas legadas do sistema QR Code.
 // Mantidas somente por compatibilidade com clientes antigos; nao reutilizar em novos fluxos.
-Route::prefix('qrcode')->group(function () {
-    // Escanear QR Code (pÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âºblico - usuÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡rios logados)
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/scan', [QRCodeController::class, 'scanQR']);
-        Route::post('/checkin', [QRCodeController::class, 'checkinViaQR']);
-    });
-    
-    // Rotas administrativas de QR Code
-    Route::middleware(['auth:sanctum'])->group(function () {
-        // Gerar QR Code para estabelecimento
-        Route::post('/generate', [QRCodeController::class, 'generateQR'])
-            ->middleware(['admin.permission:manage_qrcodes']);
-        
-        // Atualizar ofertas do QR Code
-        Route::put('/{qrcode}/offers', [QRCodeController::class, 'updateOffers'])
-            ->middleware(['admin.permission:manage_qrcodes']);
-        
-        // EstatÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â­sticas de uso do QR Code
-        Route::get('/{qrcode}/stats', [QRCodeController::class, 'getQRStats'])
-            ->middleware(['admin.permission:view_reports']);
-        
-        // Listar QR Codes do estabelecimento
-        Route::get('/list', [QRCodeController::class, 'listQRCodes'])
-            ->middleware(['admin.permission:view_qrcodes']);
-    });
-});
 
 // Rotas do sistema de descontos
 Route::prefix('discounts')->group(function () {
@@ -601,16 +572,6 @@ Route::prefix('discounts')->group(function () {
 });
 
 // Rotas OpenAI (admin apenas) - separadas do prefix discounts
-Route::prefix('openai')->middleware(['auth:sanctum'])->group(function () {
-    Route::get('/status', [OpenAIController::class, 'status']);
-    Route::get('/test', [OpenAIController::class, 'test'])
-        ->middleware(['admin.permission:manage_system']);
-    Route::post('/chat', [OpenAIController::class, 'chat'])
-        ->middleware(['admin.permission:manage_system']);
-    Route::post('/suggest', [OpenAIController::class, 'suggest'])
-        ->middleware(['admin.permission:manage_system']);
-});
-
 // Programa de IndicaÃ§Ã£o (referral) - cliente autenticado
 Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('referral')->group(function () {
     Route::get('/meu-codigo', [ReferralController::class, 'meuCodigo']);
@@ -624,14 +585,6 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente/
 });
 
 // Bonus de Adesao (admin) - gerenciar configuracoes
-Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin/bonus-adesao')->group(function () {
-    Route::get('/', [BonusAdesaoController::class, 'index']);
-    Route::post('/', [BonusAdesaoController::class, 'store']);
-    Route::get('/{id}', [BonusAdesaoController::class, 'show']);
-    Route::put('/{id}', [BonusAdesaoController::class, 'update']);
-    Route::delete('/{id}', [BonusAdesaoController::class, 'destroy']);
-    Route::patch('/{id}/toggle', [BonusAdesaoController::class, 'toggle']);
-});
 
 // ============================================================
 // NOVOS ENDPOINTS  GAPS 1-10 IMPLEMENTADOS
