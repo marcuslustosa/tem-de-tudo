@@ -623,7 +623,7 @@ class RelatorioOperacionalService
         if ($this->hasColumn($table, 'status')) {
             $query->where('bar.status', 'redeemed');
         } elseif ($this->hasColumn($table, 'resgatado')) {
-            $query->where('bar.resgatado', true);
+            $this->applyTruthyFilter($query, $table, 'bar.resgatado', 'resgatado');
         }
 
         return $query->get()->map(function ($row) {
@@ -699,7 +699,7 @@ class RelatorioOperacionalService
         if ($this->hasColumn($table, 'status')) {
             $query->where('status', 'redeemed');
         } elseif ($this->hasColumn($table, 'resgatado')) {
-            $query->where('resgatado', true);
+            $this->applyTruthyFilter($query, $table, 'resgatado', 'resgatado');
         }
 
         return (int) $query->count();
@@ -761,12 +761,14 @@ class RelatorioOperacionalService
         if ($hasStatus && $hasEnviado) {
             $query->where(function ($builder) {
                 $builder->where('status', 'sent')
-                    ->orWhere('enviado', true);
+                    ->orWhere(function ($statusless) {
+                        $this->applyTruthyFilter($statusless, 'notificacoes_push', 'enviado', 'enviado');
+                    });
             });
         } elseif ($hasStatus) {
             $query->where('status', 'sent');
         } elseif ($hasEnviado) {
-            $query->where('enviado', true);
+            $this->applyTruthyFilter($query, 'notificacoes_push', 'enviado', 'enviado');
         }
 
         return (int) $query->count();
@@ -855,12 +857,14 @@ class RelatorioOperacionalService
         if ($hasStatus && $hasEnviado) {
             $query->where(function ($builder) {
                 $builder->where('status', 'sent')
-                    ->orWhere('enviado', true);
+                    ->orWhere(function ($statusless) {
+                        $this->applyTruthyFilter($statusless, 'notificacoes_push', 'enviado', 'enviado');
+                    });
             });
         } elseif ($hasStatus) {
             $query->where('status', 'sent');
         } elseif ($hasEnviado) {
-            $query->where('enviado', true);
+            $this->applyTruthyFilter($query, 'notificacoes_push', 'enviado', 'enviado');
         }
 
         $sentAt = $query->max($dateColumn);
@@ -905,7 +909,7 @@ class RelatorioOperacionalService
             if ($this->hasColumn($table, 'status')) {
                 $query->where('status', 'redeemed');
             } elseif ($this->hasColumn($table, 'resgatado')) {
-                $query->where('resgatado', true);
+                $this->applyTruthyFilter($query, $table, 'resgatado', 'resgatado');
             }
             foreach ($query->get() as $row) {
                 $totals[(int) $row->empresa_id] = ($totals[(int) $row->empresa_id] ?? 0) + (int) $row->total;
@@ -952,7 +956,7 @@ class RelatorioOperacionalService
         if ($this->hasColumn($table, 'status')) {
             $query->where('status', 'redeemed');
         } elseif ($this->hasColumn($table, 'resgatado')) {
-            $query->where('resgatado', true);
+            $this->applyTruthyFilter($query, $table, 'resgatado', 'resgatado');
         }
 
         return $query->get()->keyBy('user_id');
@@ -1038,5 +1042,35 @@ class RelatorioOperacionalService
         } catch (\Throwable) {
             return false;
         }
+    }
+
+    private function isBooleanColumn(string $table, string $column): bool
+    {
+        if (!$this->hasColumn($table, $column)) {
+            return false;
+        }
+
+        try {
+            $type = strtolower((string) Schema::getColumnType($table, $column));
+
+            return in_array($type, ['bool', 'boolean'], true);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    private function applyTruthyFilter($query, string $table, string $qualifiedColumn, string $plainColumn = 'ativo'): void
+    {
+        if ($this->isBooleanColumn($table, $plainColumn)) {
+            if (DB::connection()->getDriverName() === 'pgsql') {
+                $query->whereRaw($qualifiedColumn . ' = true');
+            } else {
+                $query->where($qualifiedColumn, true);
+            }
+
+            return;
+        }
+
+        $query->whereIn($qualifiedColumn, [1, '1', true, 'true', 'ativo', 'ativa', 'active']);
     }
 }

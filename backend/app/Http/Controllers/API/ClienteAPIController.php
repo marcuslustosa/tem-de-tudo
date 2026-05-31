@@ -165,7 +165,7 @@ class ClienteAPIController extends Controller
                 }
 
                 if ($this->hasColumn('promocoes', 'ativo')) {
-                    $query->where('promocoes.ativo', true);
+                    $this->applyTruthyFilter($query, 'promocoes', 'promocoes.ativo', 'ativo');
                 }
                 if ($this->hasColumn('promocoes', 'status')) {
                     $query->where('promocoes.status', 'ativa');
@@ -215,14 +215,7 @@ class ClienteAPIController extends Controller
      */
     public function listarEmpresas(Request $request)
     {
-        $query = Empresa::query()->select('empresas.*');
-
-        if ($this->hasColumn('empresas', 'ativo')) {
-            $query->where('ativo', true);
-        }
-        if ($this->hasColumn('empresas', 'status')) {
-            Empresa::applyOperationalStatusFilter($query, Empresa::STATUS_ACTIVE, 'empresas.status');
-        }
+        $query = Empresa::query()->publiclyVisible()->select('empresas.*');
         
         // Filtro por ramo
         if ($request->has('ramo')) {
@@ -274,14 +267,9 @@ class ClienteAPIController extends Controller
      */
     public function empresaDetalhes($id)
     {
-        $empresaQuery = Empresa::query()->where('id', $id);
-
-        if ($this->hasColumn('empresas', 'ativo')) {
-            $empresaQuery->where('ativo', true);
-        }
-        if ($this->hasColumn('empresas', 'status')) {
-            Empresa::applyOperationalStatusFilter($empresaQuery, Empresa::STATUS_ACTIVE, 'empresas.status');
-        }
+        $empresaQuery = Empresa::query()
+            ->publiclyVisible()
+            ->where('id', $id);
 
         $empresa = $empresaQuery->first();
         
@@ -315,7 +303,7 @@ class ClienteAPIController extends Controller
                 ->where('empresa_id', $id);
 
             if ($this->hasColumn('promocoes', 'ativo')) {
-                $promoQuery->where('ativo', true);
+                $this->applyTruthyFilter($promoQuery, 'promocoes', 'ativo');
             }
             if ($this->hasColumn('promocoes', 'status')) {
                 $promoQuery->whereIn('status', ['ativa', 'active', 'Ativa', 'ACTIVE']);
@@ -1133,12 +1121,7 @@ class ClienteAPIController extends Controller
     {
         $query = Empresa::query()->select('empresas.*');
 
-        if ($this->hasColumn('empresas', 'ativo')) {
-            $query->where('ativo', true);
-        }
-        if ($this->hasColumn('empresas', 'status')) {
-            Empresa::applyOperationalStatusFilter($query, Empresa::STATUS_ACTIVE, 'empresas.status');
-        }
+        $query->publiclyVisible();
         if ($excludeIds !== []) {
             $query->whereNotIn('id', array_map('intval', $excludeIds));
         }
@@ -1215,5 +1198,35 @@ class ClienteAPIController extends Controller
         } catch (\Throwable) {
             return false;
         }
+    }
+
+    private function isBooleanColumn(string $table, string $column): bool
+    {
+        if (!$this->hasColumn($table, $column)) {
+            return false;
+        }
+
+        try {
+            $type = strtolower((string) Schema::getColumnType($table, $column));
+
+            return in_array($type, ['bool', 'boolean'], true);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    private function applyTruthyFilter($query, string $table, string $qualifiedColumn, string $plainColumn = 'ativo'): void
+    {
+        if ($this->isBooleanColumn($table, $plainColumn)) {
+            if (DB::connection()->getDriverName() === 'pgsql') {
+                $query->whereRaw($qualifiedColumn . ' = true');
+            } else {
+                $query->where($qualifiedColumn, true);
+            }
+
+            return;
+        }
+
+        $query->whereIn($qualifiedColumn, [1, '1', true, 'true', 'ativo', 'ativa', 'active']);
     }
 }

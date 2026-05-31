@@ -256,7 +256,7 @@ class EmpresaAPIController extends Controller
             try {
                 $query = DB::table('promocoes')->where('empresa_id', $empresa->id);
                 if ($this->hasColumn('promocoes', 'ativo')) {
-                    $query->where('ativo', true);
+                    $this->applyTruthyFilter($query, 'promocoes', 'ativo');
                 }
                 $promocoesAtivas = (int) $query->count();
             } catch (\Throwable $e) {
@@ -1126,6 +1126,36 @@ class EmpresaAPIController extends Controller
         } catch (\Throwable) {
             return false;
         }
+    }
+
+    private function isBooleanColumn(string $table, string $column): bool
+    {
+        if (!$this->hasColumn($table, $column)) {
+            return false;
+        }
+
+        try {
+            $type = strtolower((string) Schema::getColumnType($table, $column));
+
+            return in_array($type, ['bool', 'boolean'], true);
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    private function applyTruthyFilter($query, string $table, string $qualifiedColumn, string $plainColumn = 'ativo'): void
+    {
+        if ($this->isBooleanColumn($table, $plainColumn)) {
+            if (DB::connection()->getDriverName() === 'pgsql') {
+                $query->whereRaw($qualifiedColumn . ' = true');
+            } else {
+                $query->where($qualifiedColumn, true);
+            }
+
+            return;
+        }
+
+        $query->whereIn($qualifiedColumn, [1, '1', true, 'true', 'ativo', 'ativa', 'active']);
     }
 
     private function resolveEmpresaForUser(int $userId): ?object
