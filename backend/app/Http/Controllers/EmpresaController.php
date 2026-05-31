@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Empresa;
 use App\Models\CheckIn;
@@ -21,17 +20,20 @@ class EmpresaController extends Controller
     // Cache estrutura do banco por 1 hora (3600s) - evita overhead em produção
     private function hasEmpresasTable(): bool
     {
-        return Cache::remember('schema:empresas_table_exists', 3600, function () {
+        try {
             return Schema::hasTable('empresas');
-        });
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     private function hasColumn(string $table, string $column): bool
     {
-        $cacheKey = "schema:{$table}:{$column}_exists";
-        return Cache::remember($cacheKey, 3600, function () use ($table, $column) {
+        try {
             return Schema::hasTable($table) && Schema::hasColumn($table, $column);
-        });
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     private function isBooleanColumn(string $table, string $column): bool
@@ -40,27 +42,23 @@ class EmpresaController extends Controller
             return false;
         }
 
-        $cacheKey = "schema:{$table}:{$column}_is_boolean";
-        return Cache::remember($cacheKey, 3600, function () use ($table, $column) {
-            try {
-                $type = strtolower((string) Schema::getColumnType($table, $column));
-                return in_array($type, ['bool', 'boolean'], true);
-            } catch (\Throwable) {
-                return false;
-            }
-        });
+        try {
+            $type = strtolower((string) Schema::getColumnType($table, $column));
+            return in_array($type, ['bool', 'boolean'], true);
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     private function resolveUserPerfilColumn(): ?string
     {
-        return Cache::remember('schema:users_perfil_column', 3600, function () {
-            foreach (['perfil', 'role', 'tipo'] as $column) {
-                if ($this->hasColumn('users', $column)) {
-                    return $column;
-                }
+        foreach (['perfil', 'role', 'tipo'] as $column) {
+            if ($this->hasColumn('users', $column)) {
+                return $column;
             }
-            return null;
-        });
+        }
+
+        return null;
     }
 
     private function applyEmpresaAtivoScope($query)
