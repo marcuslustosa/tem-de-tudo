@@ -221,10 +221,7 @@ class ClienteAPIController extends Controller
             $query->where('ativo', true);
         }
         if ($this->hasColumn('empresas', 'status')) {
-            $query->whereIn(
-                DB::raw('LOWER(status)'),
-                Empresa::normalizedStatusAliases(Empresa::STATUS_ACTIVE)
-            );
+            Empresa::applyOperationalStatusFilter($query, Empresa::STATUS_ACTIVE, 'empresas.status');
         }
         
         // Filtro por ramo
@@ -252,11 +249,11 @@ class ClienteAPIController extends Controller
         $items = [];
         foreach ($empresas as $empresa) {
             $pontos = 0;
-            if ($this->hasTable('pontos')) {
+            if ($this->hasTable('pontos') && $this->hasColumn('pontos', 'empresa_id')) {
                 $pontos = DB::table('pontos')
                     ->where('user_id', $user->id)
                     ->where('empresa_id', $empresa->id)
-                    ->whereNotIn('tipo', ['resgate', 'redeem'])
+                    ->when($this->hasColumn('pontos', 'tipo'), fn ($builder) => $builder->whereNotIn('tipo', ['resgate', 'redeem']))
                     ->sum('pontos');
             }
             
@@ -283,10 +280,7 @@ class ClienteAPIController extends Controller
             $empresaQuery->where('ativo', true);
         }
         if ($this->hasColumn('empresas', 'status')) {
-            $empresaQuery->whereIn(
-                DB::raw('LOWER(status)'),
-                Empresa::normalizedStatusAliases(Empresa::STATUS_ACTIVE)
-            );
+            Empresa::applyOperationalStatusFilter($empresaQuery, Empresa::STATUS_ACTIVE, 'empresas.status');
         }
 
         $empresa = $empresaQuery->first();
@@ -301,33 +295,68 @@ class ClienteAPIController extends Controller
         $user = Auth::user();
         
         // Meus pontos nesta empresa
-        $meusPontos = DB::table('pontos')
-            ->where('user_id', $user->id)
-            ->where('empresa_id', $id)
-            ->whereNotIn('tipo', ['resgate', 'redeem'])
-            ->sum('pontos');
+        $meusPontos = 0;
+        if ($user && $this->hasTable('pontos') && $this->hasColumn('pontos', 'empresa_id')) {
+            $pointsQuery = DB::table('pontos')
+                ->where('user_id', $user->id)
+                ->where('empresa_id', $id);
+
+            if ($this->hasColumn('pontos', 'tipo')) {
+                $pointsQuery->whereNotIn('tipo', ['resgate', 'redeem']);
+            }
+
+            $meusPontos = (int) $pointsQuery->sum('pontos');
+        }
         
         // PromoÃ§Ãµes ativas
-        $promocoes = DB::table('promocoes')
-            ->where('empresa_id', $id)
-            ->where('ativo', true)
-            ->where('status', 'ativa')
-            ->get();
+        $promocoes = collect();
+        if ($this->hasTable('promocoes') && $this->hasColumn('promocoes', 'empresa_id')) {
+            $promoQuery = DB::table('promocoes')
+                ->where('empresa_id', $id);
+
+            if ($this->hasColumn('promocoes', 'ativo')) {
+                $promoQuery->where('ativo', true);
+            }
+            if ($this->hasColumn('promocoes', 'status')) {
+                $promoQuery->whereIn('status', ['ativa', 'active', 'Ativa', 'ACTIVE']);
+            }
+            if ($this->hasColumn('promocoes', 'created_at')) {
+                $promoQuery->orderByDesc('created_at');
+            } else {
+                $promoQuery->orderByDesc('id');
+            }
+
+            $promocoes = $promoQuery->get();
+        }
         
         // AvaliaÃ§Ãµes
-        $avaliacoes = DB::table('avaliacoes')
-            ->join('users', 'avaliacoes.user_id', '=', 'users.id')
-            ->select('avaliacoes.*', 'users.name as cliente_nome')
-            ->where('avaliacoes.empresa_id', $id)
-            ->orderByDesc('avaliacoes.created_at')
-            ->limit(10)
-            ->get();
+        $avaliacoes = collect();
+        if ($this->hasTable('avaliacoes')) {
+            $reviewsQuery = DB::table('avaliacoes')
+                ->where('avaliacoes.empresa_id', $id);
+
+            if ($this->hasTable('users')) {
+                $reviewsQuery->leftJoin('users', 'avaliacoes.user_id', '=', 'users.id')
+                    ->select('avaliacoes.*', 'users.name as cliente_nome');
+            } else {
+                $reviewsQuery->select('avaliacoes.*');
+            }
+
+            if ($this->hasColumn('avaliacoes', 'created_at')) {
+                $reviewsQuery->orderByDesc('avaliacoes.created_at');
+            }
+
+            $avaliacoes = $reviewsQuery->limit(10)->get();
+        }
         
         // Minha avaliaÃ§Ã£o
-        $minhaAvaliacao = DB::table('avaliacoes')
-            ->where('empresa_id', $id)
-            ->where('user_id', $user->id)
-            ->first();
+        $minhaAvaliacao = null;
+        if ($user && $this->hasTable('avaliacoes')) {
+            $minhaAvaliacao = DB::table('avaliacoes')
+                ->where('empresa_id', $id)
+                ->where('user_id', $user->id)
+                ->first();
+        }
         
         return response()->json([
             'success' => true,
@@ -1108,10 +1137,7 @@ class ClienteAPIController extends Controller
             $query->where('ativo', true);
         }
         if ($this->hasColumn('empresas', 'status')) {
-            $query->whereIn(
-                DB::raw('LOWER(status)'),
-                Empresa::normalizedStatusAliases(Empresa::STATUS_ACTIVE)
-            );
+            Empresa::applyOperationalStatusFilter($query, Empresa::STATUS_ACTIVE, 'empresas.status');
         }
         if ($excludeIds !== []) {
             $query->whereNotIn('id', array_map('intval', $excludeIds));

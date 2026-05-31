@@ -34,10 +34,20 @@ class PromocaoInstantaneaService
 
     public function companyPromotions(Empresa $empresa)
     {
-        return Promocao::query()
-            ->where('empresa_id', $empresa->id)
-            ->orderByDesc('ativo')
-            ->orderByDesc('created_at');
+        $query = Promocao::query()
+            ->where('empresa_id', $empresa->id);
+
+        if (Schema::hasColumn('promocoes', 'ativo')) {
+            $query->orderByDesc('ativo');
+        }
+
+        if (Schema::hasColumn('promocoes', 'created_at')) {
+            $query->orderByDesc('created_at');
+        } else {
+            $query->orderByDesc('id');
+        }
+
+        return $query;
     }
 
     public function latestCompanyPromotion(Empresa $empresa): ?Promocao

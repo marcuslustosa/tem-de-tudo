@@ -17,6 +17,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 class RelatorioOperacionalService
@@ -36,16 +37,7 @@ class RelatorioOperacionalService
         $customersWithPush = $this->countLinkedCustomersWithPush($linkedCustomerIds);
         $lastNotificationAt = $this->latestNotificationSentAt($empresa->id);
 
-        $recentClients = InscricaoEmpresa::query()
-            ->with('user:id,name,email,telefone,data_nascimento')
-            ->where('empresa_id', $empresa->id)
-            ->orderByDesc('data_inscricao')
-            ->limit(5)
-            ->get()
-            ->map(fn (InscricaoEmpresa $inscricao) => $this->serializeLinkedCustomer($inscricao, []))
-            ->values()
-            ->all();
-
+        $recentClients = $this->safeRecentClients($empresa, 5);
         $latestLoyaltyMovements = $this->latestLoyaltyMovements($empresa, 10);
         $latestRedemptions = $this->latestRedemptions($empresa, 10);
 
@@ -94,7 +86,7 @@ class RelatorioOperacionalService
     public function companyClients(Empresa $empresa, ?string $search = null, int $perPage = 20): array
     {
         $query = InscricaoEmpresa::query()
-            ->with('user:id,name,email,telefone,data_nascimento')
+            ->with('user:' . implode(',', $this->companyClientUserColumns()))
             ->where('empresa_id', $empresa->id)
             ->orderByDesc('data_inscricao');
 
@@ -431,87 +423,137 @@ class RelatorioOperacionalService
             return [];
         }
 
-        return CartaoFidelidadeMovimento::query()
-            ->with(['cliente:id,name', 'cartao:id,titulo'])
-            ->where('empresa_id', $empresa->id)
-            ->orderByDesc('created_at')
-            ->limit($limit)
-            ->get()
-            ->map(function (CartaoFidelidadeMovimento $movimento) {
-                return [
-                    'id' => (int) $movimento->id,
-                    'cliente_id' => (int) $movimento->user_id,
-                    'cliente_nome' => $movimento->cliente?->name,
-                    'cartao_id' => (int) $movimento->cartao_fidelidade_id,
-                    'cartao_titulo' => $movimento->cartao?->titulo,
-                    'tipo' => $movimento->tipo,
-                    'pontos' => (int) $movimento->pontos,
-                    'descricao' => $movimento->descricao,
-                    'created_at' => optional($movimento->created_at)->toIso8601String(),
-                ];
-            })
-            ->values()
-            ->all();
+        try {
+            $query = CartaoFidelidadeMovimento::query()
+                ->with(['cliente:id,name', 'cartao:id,titulo'])
+                ->where('empresa_id', $empresa->id);
+
+            if ($this->hasColumn('cartoes_fidelidade_movimentos', 'created_at')) {
+                $query->orderByDesc('created_at');
+            } else {
+                $query->orderByDesc('id');
+            }
+
+            return $query
+                ->limit($limit)
+                ->get()
+                ->map(function (CartaoFidelidadeMovimento $movimento) {
+                    return [
+                        'id' => (int) $movimento->id,
+                        'cliente_id' => (int) $movimento->user_id,
+                        'cliente_nome' => $movimento->cliente?->name,
+                        'cartao_id' => (int) $movimento->cartao_fidelidade_id,
+                        'cartao_titulo' => $movimento->cartao?->titulo,
+                        'tipo' => $movimento->tipo,
+                        'pontos' => (int) $movimento->pontos,
+                        'descricao' => $movimento->descricao,
+                        'created_at' => optional($movimento->created_at)->toIso8601String(),
+                    ];
+                })
+                ->values()
+                ->all();
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao carregar ultimos movimentos de fidelidade', [
+                'empresa_id' => $empresa->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [];
+        }
     }
 
     private function latestRedemptions(Empresa $empresa, int $limit): array
     {
         $items = [];
 
-        if ($this->hasTable('promocao_resgates')) {
-            $items = array_merge($items, PromocaoResgate::query()
-                ->with(['user:id,name', 'promocao:id,titulo'])
-                ->where('empresa_id', $empresa->id)
-                ->orderByDesc('redeemed_at')
-                ->limit($limit)
-                ->get()
-                ->map(fn (PromocaoResgate $row) => [
-                    'tipo' => 'promocao',
-                    'cliente_nome' => $row->user?->name,
-                    'titulo' => $row->promocao?->titulo,
-                    'status' => $row->status,
-                    'data' => optional($row->redeemed_at ?: $row->created_at)->toIso8601String(),
-                ])
-                ->all());
-        }
+        try {
+            if ($this->hasTable('promocao_resgates')) {
+                $promotionRedemptions = PromocaoResgate::query()
+                    ->with(['user:id,name', 'promocao:id,titulo'])
+                    ->where('empresa_id', $empresa->id);
 
-        if ($this->hasTable('bonus_aniversario_resgates')) {
-            $items = array_merge($items, BonusAniversarioResgate::query()
-                ->with(['user:id,name', 'bonus:id,titulo'])
-                ->where('empresa_id', $empresa->id)
-                ->orderByDesc('redeemed_at')
-                ->limit($limit)
-                ->get()
-                ->map(fn (BonusAniversarioResgate $row) => [
-                    'tipo' => 'bonus_aniversario',
-                    'cliente_nome' => $row->user?->name,
-                    'titulo' => $row->bonus?->titulo,
-                    'status' => $row->status,
-                    'data' => optional($row->redeemed_at ?: $row->created_at)->toIso8601String(),
-                ])
-                ->all());
-        }
+                if ($this->hasColumn('promocao_resgates', 'redeemed_at')) {
+                    $promotionRedemptions->orderByDesc('redeemed_at');
+                } elseif ($this->hasColumn('promocao_resgates', 'created_at')) {
+                    $promotionRedemptions->orderByDesc('created_at');
+                } else {
+                    $promotionRedemptions->orderByDesc('id');
+                }
 
-        if ($this->hasTable('cartoes_fidelidade_movimentos')) {
-            $items = array_merge($items, CartaoFidelidadeMovimento::query()
-                ->with(['cliente:id,name', 'cartao:id,titulo'])
-                ->where('empresa_id', $empresa->id)
-                ->where('tipo', CartaoFidelidadeMovimento::TYPE_REDEEMED)
-                ->orderByDesc('created_at')
-                ->limit($limit)
-                ->get()
-                ->map(fn (CartaoFidelidadeMovimento $row) => [
-                    'tipo' => 'fidelidade',
-                    'cliente_nome' => $row->cliente?->name,
-                    'titulo' => $row->cartao?->titulo,
-                    'status' => $row->tipo,
-                    'data' => optional($row->created_at)->toIso8601String(),
-                ])
-                ->all());
-        }
+                $items = array_merge($items, $promotionRedemptions
+                    ->limit($limit)
+                    ->get()
+                    ->map(fn (PromocaoResgate $row) => [
+                        'tipo' => 'promocao',
+                        'cliente_nome' => $row->user?->name,
+                        'titulo' => $row->promocao?->titulo,
+                        'status' => $row->status,
+                        'data' => optional($row->redeemed_at ?: $row->created_at)->toIso8601String(),
+                    ])
+                    ->all());
+            }
 
-        foreach ($this->bonusAdesaoRedemptions($empresa->id, $limit) as $row) {
-            $items[] = $row;
+            if ($this->hasTable('bonus_aniversario_resgates')) {
+                $birthdayRedemptions = BonusAniversarioResgate::query()
+                    ->with(['user:id,name', 'bonus:id,titulo'])
+                    ->where('empresa_id', $empresa->id);
+
+                if ($this->hasColumn('bonus_aniversario_resgates', 'redeemed_at')) {
+                    $birthdayRedemptions->orderByDesc('redeemed_at');
+                } elseif ($this->hasColumn('bonus_aniversario_resgates', 'created_at')) {
+                    $birthdayRedemptions->orderByDesc('created_at');
+                } else {
+                    $birthdayRedemptions->orderByDesc('id');
+                }
+
+                $items = array_merge($items, $birthdayRedemptions
+                    ->limit($limit)
+                    ->get()
+                    ->map(fn (BonusAniversarioResgate $row) => [
+                        'tipo' => 'bonus_aniversario',
+                        'cliente_nome' => $row->user?->name,
+                        'titulo' => $row->bonus?->titulo,
+                        'status' => $row->status,
+                        'data' => optional($row->redeemed_at ?: $row->created_at)->toIso8601String(),
+                    ])
+                    ->all());
+            }
+
+            if ($this->hasTable('cartoes_fidelidade_movimentos')) {
+                $loyaltyRedemptions = CartaoFidelidadeMovimento::query()
+                    ->with(['cliente:id,name', 'cartao:id,titulo'])
+                    ->where('empresa_id', $empresa->id)
+                    ->where('tipo', CartaoFidelidadeMovimento::TYPE_REDEEMED);
+
+                if ($this->hasColumn('cartoes_fidelidade_movimentos', 'created_at')) {
+                    $loyaltyRedemptions->orderByDesc('created_at');
+                } else {
+                    $loyaltyRedemptions->orderByDesc('id');
+                }
+
+                $items = array_merge($items, $loyaltyRedemptions
+                    ->limit($limit)
+                    ->get()
+                    ->map(fn (CartaoFidelidadeMovimento $row) => [
+                        'tipo' => 'fidelidade',
+                        'cliente_nome' => $row->cliente?->name,
+                        'titulo' => $row->cartao?->titulo,
+                        'status' => $row->tipo,
+                        'data' => optional($row->created_at)->toIso8601String(),
+                    ])
+                    ->all());
+            }
+
+            foreach ($this->bonusAdesaoRedemptions($empresa->id, $limit) as $row) {
+                $items[] = $row;
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao carregar ultimos resgates operacionais', [
+                'empresa_id' => $empresa->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [];
         }
 
         usort($items, function (array $left, array $right) {
@@ -519,6 +561,41 @@ class RelatorioOperacionalService
         });
 
         return array_slice($items, 0, $limit);
+    }
+
+    private function safeRecentClients(Empresa $empresa, int $limit): array
+    {
+        try {
+            return InscricaoEmpresa::query()
+                ->with('user:' . implode(',', $this->companyClientUserColumns()))
+                ->where('empresa_id', $empresa->id)
+                ->orderByDesc('data_inscricao')
+                ->limit($limit)
+                ->get()
+                ->map(fn (InscricaoEmpresa $inscricao) => $this->serializeLinkedCustomer($inscricao, []))
+                ->values()
+                ->all();
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao carregar clientes recentes do painel da empresa', [
+                'empresa_id' => $empresa->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [];
+        }
+    }
+
+    private function companyClientUserColumns(): array
+    {
+        $columns = ['id', 'name', 'email'];
+
+        foreach (['telefone', 'data_nascimento'] as $column) {
+            if ($this->hasColumn('users', $column)) {
+                $columns[] = $column;
+            }
+        }
+
+        return $columns;
     }
 
     private function bonusAdesaoRedemptions(int $empresaId, int $limit): array

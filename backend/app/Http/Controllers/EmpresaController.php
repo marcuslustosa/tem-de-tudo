@@ -78,10 +78,7 @@ class EmpresaController extends Controller
         }
 
         if ($this->hasColumn('empresas', 'status')) {
-            $query->whereIn(
-                DB::raw('LOWER(status)'),
-                Empresa::normalizedStatusAliases(Empresa::STATUS_ACTIVE)
-            );
+            Empresa::applyOperationalStatusFilter($query, Empresa::STATUS_ACTIVE, 'empresas.status');
         }
 
         return $query;
@@ -959,11 +956,8 @@ class EmpresaController extends Controller
                 ->withCount('qrCodes');
 
             if ($status !== '' && !in_array($status, ['todos', 'all'], true)) {
-                $query->whereIn(
-                    DB::raw('LOWER(status)'),
-                    Empresa::normalizedStatusAliases($status)
-                );
-            }
+                    Empresa::applyOperationalStatusFilter($query, $status, 'empresas.status');
+                }
 
             if ($categoria !== '' && !in_array($categoria, ['todas', 'todos', 'all'], true)) {
                 if ($this->hasColumn('empresas', 'categoria')) {

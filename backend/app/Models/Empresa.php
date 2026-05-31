@@ -155,14 +155,28 @@ class Empresa extends Model
             $query->where('ativo', true);
         }
 
-        if (Schema::hasColumn($this->getTable(), 'status')) {
-            $query->whereIn(
-                DB::raw('LOWER(status)'),
-                self::normalizedStatusAliases(self::STATUS_ACTIVE)
-            );
-        }
+        self::applyOperationalStatusFilter($query, self::STATUS_ACTIVE, $this->qualifyColumn('status'));
 
         return $query;
+    }
+
+    public static function applyOperationalStatusFilter(Builder $query, string $status, string $column = 'status'): Builder
+    {
+        if (!Schema::hasColumn((new static())->getTable(), 'status')) {
+            return $query;
+        }
+
+        try {
+            $type = strtolower((string) Schema::getColumnType((new static())->getTable(), 'status'));
+        } catch (\Throwable) {
+            return $query;
+        }
+
+        if (!in_array($type, ['string', 'text', 'varchar', 'char'], true)) {
+            return $query;
+        }
+
+        return $query->whereIn($column, self::normalizedStatusVariants($status));
     }
 
     public static function normalizeOperationalStatus($status, $ativo = null): string
@@ -187,6 +201,22 @@ class Empresa extends Model
             self::STATUS_REJECTED => [self::STATUS_REJECTED, 'rejeitado', 'rejeitada'],
             default => [self::STATUS_ACTIVE],
         };
+    }
+
+    public static function normalizedStatusVariants(string $status): array
+    {
+        return collect(self::normalizedStatusAliases($status))
+            ->flatMap(function (string $value) {
+                return array_values(array_unique([
+                    $value,
+                    strtolower($value),
+                    strtoupper($value),
+                    ucfirst(strtolower($value)),
+                ]));
+            })
+            ->unique()
+            ->values()
+            ->all();
     }
 
     /**
