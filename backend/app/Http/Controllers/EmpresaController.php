@@ -68,11 +68,7 @@ class EmpresaController extends Controller
         }
 
         if ($this->hasColumn('empresas', 'ativo')) {
-            if ($this->isBooleanColumn('empresas', 'ativo')) {
-                $query->where('ativo', true);
-            } else {
-                $query->whereIn('ativo', [1, '1', true, 'true', 'ativo']);
-            }
+            $this->applyAtivoColumnFilter($query, 'empresas', 'ativo', 'ativo', [1, '1', true, 'true', 'ativo']);
         }
 
         if ($this->hasColumn('empresas', 'status')) {
@@ -448,16 +444,29 @@ class EmpresaController extends Controller
         return in_array($normalized, ['1', 'true', 'ativo', 'ativa', 'active', 'yes', 'sim'], true);
     }
 
+    private function applyAtivoColumnFilter($query, string $table, string $qualifiedColumn, string $plainColumn = 'ativo', array $legacyTruthy = []): void
+    {
+        $truthyValues = $legacyTruthy !== [] ? $legacyTruthy : [1, '1', true, 'true', 'ativo', 'ativa', 'active'];
+
+        if ($this->isBooleanColumn($table, $plainColumn)) {
+            if (DB::connection()->getDriverName() === 'pgsql') {
+                $query->whereRaw($qualifiedColumn . ' = true');
+            } else {
+                $query->where($qualifiedColumn, true);
+            }
+
+            return;
+        }
+
+        $query->whereIn($qualifiedColumn, $truthyValues);
+    }
+
     private function fallbackPublicEmpresaBaseQuery()
     {
         $query = DB::table('empresas');
 
         if ($this->hasColumn('empresas', 'ativo')) {
-            if ($this->isBooleanColumn('empresas', 'ativo')) {
-                $query->where('ativo', true);
-            } else {
-                $query->whereIn('ativo', [1, '1', true, 'true', 'ativo', 'ativa', 'active']);
-            }
+            $this->applyAtivoColumnFilter($query, 'empresas', 'ativo');
         }
 
         if ($this->hasColumn('empresas', 'status')) {
@@ -557,11 +566,7 @@ class EmpresaController extends Controller
             ->where('empresa_id', $empresaId);
 
         if (Schema::hasColumn('promocoes', 'ativo')) {
-            if ($this->isBooleanColumn('promocoes', 'ativo')) {
-                $query->where('ativo', true);
-            } else {
-                $query->whereIn('ativo', [1, '1', true, 'true', 'ativo', 'ativa', 'active']);
-            }
+            $this->applyAtivoColumnFilter($query, 'promocoes', 'ativo');
         }
 
         if (Schema::hasColumn('promocoes', 'status')) {

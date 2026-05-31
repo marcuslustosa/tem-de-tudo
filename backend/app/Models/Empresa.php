@@ -159,7 +159,11 @@ class Empresa extends Model
             }
 
             if (in_array($type, ['bool', 'boolean'], true)) {
-                $query->where('ativo', true);
+                if (DB::connection()->getDriverName() === 'pgsql') {
+                    $query->whereRaw($this->qualifyColumn('ativo') . ' = true');
+                } else {
+                    $query->where('ativo', true);
+                }
             } else {
                 $query->whereIn('ativo', [1, '1', true, 'true', 'ativo', 'ativa', 'active']);
             }
