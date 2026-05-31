@@ -281,100 +281,322 @@ class EmpresaController extends Controller
         bool $includeReturnReminder = false
     ): array
     {
+        try {
+            $payload = [
+                'id' => $empresa->id,
+                'nome' => $this->cleanUtf8($empresa->nome),
+                'descricao' => $this->cleanUtf8($empresa->descricao ?? ''),
+                'categoria' => $this->cleanUtf8($empresa->categoria ?? $empresa->ramo ?? ''),
+                'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? ''),
+                'endereco' => $this->cleanUtf8($empresa->endereco ?? ''),
+                'telefone' => $this->cleanUtf8($empresa->telefone ?? ''),
+                'email' => $this->cleanUtf8($empresa->email ?? ''),
+                'whatsapp' => $this->cleanUtf8($empresa->whatsapp ?? ''),
+                'instagram' => $this->cleanUtf8($empresa->instagram ?? ''),
+                'facebook' => $this->cleanUtf8($empresa->facebook ?? ''),
+                'logo' => $this->cleanUtf8($empresa->logo ?? '/assets/images/company1.jpg'),
+                'points_multiplier' => $empresa->points_multiplier ?? 1,
+                'avaliacao_media' => (float) ($empresa->avaliacao_media ?? 0),
+                'total_avaliacoes' => (int) ($empresa->total_avaliacoes ?? 0),
+                'public_page_url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
+                'publicamente_visivel' => $empresa->isPubliclyVisible(),
+                'status' => $empresa->operationalStatus(),
+            ];
+
+            if ($includeLoyaltyCard) {
+                try {
+                    $loyaltyService = app(CartaoFidelidadeService::class);
+                    $card = $loyaltyService->activeCompanyCard($empresa)
+                        ?? $loyaltyService->latestCompanyCard($empresa);
+
+                    $payload['cartao_fidelidade'] = $card
+                        ? $loyaltyService->serializeCard($card)
+                        : null;
+                } catch (\Throwable $e) {
+                    Log::warning('Falha ao serializar cartao fidelidade publico da empresa', [
+                        'empresa_id' => $empresa->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                    $payload['cartao_fidelidade'] = null;
+                }
+            }
+
+            if ($includeBirthdayBonus) {
+                try {
+                    $bonusService = app(BonusAniversarioService::class);
+                    $birthdayBonus = $bonusService->activeCompanyBonus($empresa)
+                        ?? $bonusService->latestCompanyBonus($empresa);
+
+                    $payload['bonus_aniversario'] = $birthdayBonus
+                        ? $bonusService->serializeBonus($birthdayBonus)
+                        : null;
+                } catch (\Throwable $e) {
+                    Log::warning('Falha ao serializar bonus aniversario publico da empresa', [
+                        'empresa_id' => $empresa->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                    $payload['bonus_aniversario'] = null;
+                }
+            }
+
+            if ($includeAdhesionBonus) {
+                try {
+                    $bonusAdesaoService = app(BonusAdesaoService::class);
+                    $adhesionBonus = $bonusAdesaoService->activeCompanyBonus($empresa)
+                        ?? $bonusAdesaoService->latestCompanyBonus($empresa);
+
+                    $payload['bonus_adesao'] = $adhesionBonus
+                        ? $bonusAdesaoService->serializeBonus($adhesionBonus)
+                        : null;
+                } catch (\Throwable $e) {
+                    Log::warning('Falha ao serializar bonus adesao publico da empresa', [
+                        'empresa_id' => $empresa->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                    $payload['bonus_adesao'] = null;
+                }
+            }
+
+            if ($includeReturnReminder) {
+                try {
+                    $reminderService = app(LembreteRetornoService::class);
+                    $reminder = $reminderService->activeCompanyReminder($empresa)
+                        ?? $reminderService->latestCompanyReminder($empresa);
+
+                    $payload['lembrete_retorno'] = $reminder
+                        ? $reminderService->serializeReminder($reminder)
+                        : null;
+                } catch (\Throwable $e) {
+                    Log::warning('Falha ao serializar lembrete de retorno publico da empresa', [
+                        'empresa_id' => $empresa->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                    $payload['lembrete_retorno'] = null;
+                }
+            }
+
+            return $payload;
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao montar payload publico completo da empresa', [
+                'empresa_id' => $empresa->id ?? null,
+                'error' => $e->getMessage(),
+            ]);
+
+            return $this->fallbackPublicEmpresaPayload((array) $empresa, $includeLoyaltyCard, $includeBirthdayBonus, $includeAdhesionBonus, $includeReturnReminder);
+        }
+    }
+
+    private function fallbackPublicEmpresaPayload(
+        array $empresa,
+        bool $includeLoyaltyCard = false,
+        bool $includeBirthdayBonus = false,
+        bool $includeAdhesionBonus = false,
+        bool $includeReturnReminder = false
+    ): array {
+        $status = Empresa::normalizeOperationalStatus($empresa['status'] ?? null, $empresa['ativo'] ?? null);
+        $visible = $this->normalizeAtivoFlag($empresa['ativo'] ?? true) && $status === Empresa::STATUS_ACTIVE;
+
         $payload = [
-            'id' => $empresa->id,
-            'nome' => $this->cleanUtf8($empresa->nome),
-            'descricao' => $this->cleanUtf8($empresa->descricao ?? ''),
-            'categoria' => $this->cleanUtf8($empresa->categoria ?? $empresa->ramo ?? ''),
-            'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? ''),
-            'endereco' => $this->cleanUtf8($empresa->endereco ?? ''),
-            'telefone' => $this->cleanUtf8($empresa->telefone ?? ''),
-            'email' => $this->cleanUtf8($empresa->email ?? ''),
-            'whatsapp' => $this->cleanUtf8($empresa->whatsapp ?? ''),
-            'instagram' => $this->cleanUtf8($empresa->instagram ?? ''),
-            'facebook' => $this->cleanUtf8($empresa->facebook ?? ''),
-            'logo' => $this->cleanUtf8($empresa->logo ?? '/assets/images/company1.jpg'),
-            'points_multiplier' => $empresa->points_multiplier ?? 1,
-            'avaliacao_media' => (float) ($empresa->avaliacao_media ?? 0),
-            'total_avaliacoes' => (int) ($empresa->total_avaliacoes ?? 0),
-            'public_page_url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
-            'publicamente_visivel' => $empresa->isPubliclyVisible(),
-            'status' => $empresa->operationalStatus(),
+            'id' => (int) ($empresa['id'] ?? 0),
+            'nome' => $this->cleanUtf8($empresa['nome'] ?? 'Empresa'),
+            'descricao' => $this->cleanUtf8($empresa['descricao'] ?? ''),
+            'categoria' => $this->cleanUtf8($empresa['categoria'] ?? ($empresa['ramo'] ?? '')),
+            'ramo' => $this->cleanUtf8($empresa['ramo'] ?? ($empresa['categoria'] ?? '')),
+            'endereco' => $this->cleanUtf8($empresa['endereco'] ?? ''),
+            'telefone' => $this->cleanUtf8($empresa['telefone'] ?? ''),
+            'email' => $this->cleanUtf8($empresa['email'] ?? ''),
+            'whatsapp' => $this->cleanUtf8($empresa['whatsapp'] ?? ''),
+            'instagram' => $this->cleanUtf8($empresa['instagram'] ?? ''),
+            'facebook' => $this->cleanUtf8($empresa['facebook'] ?? ''),
+            'logo' => $this->cleanUtf8($empresa['logo'] ?? '/assets/images/company1.jpg'),
+            'points_multiplier' => (int) ($empresa['points_multiplier'] ?? 1),
+            'avaliacao_media' => (float) ($empresa['avaliacao_media'] ?? 0),
+            'total_avaliacoes' => (int) ($empresa['total_avaliacoes'] ?? 0),
+            'public_page_url' => '/detalhe_do_parceiro.html?id=' . (int) ($empresa['id'] ?? 0),
+            'publicamente_visivel' => $visible,
+            'status' => $status,
         ];
 
         if ($includeLoyaltyCard) {
-            try {
-                $loyaltyService = app(CartaoFidelidadeService::class);
-                $card = $loyaltyService->activeCompanyCard($empresa)
-                    ?? $loyaltyService->latestCompanyCard($empresa);
-
-                $payload['cartao_fidelidade'] = $card
-                    ? $loyaltyService->serializeCard($card)
-                    : null;
-            } catch (\Throwable $e) {
-                Log::warning('Falha ao serializar cartao fidelidade publico da empresa', [
-                    'empresa_id' => $empresa->id,
-                    'error' => $e->getMessage(),
-                ]);
-                $payload['cartao_fidelidade'] = null;
-            }
+            $payload['cartao_fidelidade'] = null;
         }
-
         if ($includeBirthdayBonus) {
-            try {
-                $bonusService = app(BonusAniversarioService::class);
-                $birthdayBonus = $bonusService->activeCompanyBonus($empresa)
-                    ?? $bonusService->latestCompanyBonus($empresa);
-
-                $payload['bonus_aniversario'] = $birthdayBonus
-                    ? $bonusService->serializeBonus($birthdayBonus)
-                    : null;
-            } catch (\Throwable $e) {
-                Log::warning('Falha ao serializar bonus aniversario publico da empresa', [
-                    'empresa_id' => $empresa->id,
-                    'error' => $e->getMessage(),
-                ]);
-                $payload['bonus_aniversario'] = null;
-            }
+            $payload['bonus_aniversario'] = null;
         }
-
         if ($includeAdhesionBonus) {
-            try {
-                $bonusAdesaoService = app(BonusAdesaoService::class);
-                $adhesionBonus = $bonusAdesaoService->activeCompanyBonus($empresa)
-                    ?? $bonusAdesaoService->latestCompanyBonus($empresa);
-
-                $payload['bonus_adesao'] = $adhesionBonus
-                    ? $bonusAdesaoService->serializeBonus($adhesionBonus)
-                    : null;
-            } catch (\Throwable $e) {
-                Log::warning('Falha ao serializar bonus adesao publico da empresa', [
-                    'empresa_id' => $empresa->id,
-                    'error' => $e->getMessage(),
-                ]);
-                $payload['bonus_adesao'] = null;
-            }
+            $payload['bonus_adesao'] = null;
         }
-
         if ($includeReturnReminder) {
-            try {
-                $reminderService = app(LembreteRetornoService::class);
-                $reminder = $reminderService->activeCompanyReminder($empresa)
-                    ?? $reminderService->latestCompanyReminder($empresa);
-
-                $payload['lembrete_retorno'] = $reminder
-                    ? $reminderService->serializeReminder($reminder)
-                    : null;
-            } catch (\Throwable $e) {
-                Log::warning('Falha ao serializar lembrete de retorno publico da empresa', [
-                    'empresa_id' => $empresa->id,
-                    'error' => $e->getMessage(),
-                ]);
-                $payload['lembrete_retorno'] = null;
-            }
+            $payload['lembrete_retorno'] = null;
         }
 
         return $payload;
+    }
+
+    private function normalizeAtivoFlag($value): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if (is_numeric($value)) {
+            return (int) $value === 1;
+        }
+
+        $normalized = strtolower(trim((string) $value));
+
+        return in_array($normalized, ['1', 'true', 'ativo', 'ativa', 'active', 'yes', 'sim'], true);
+    }
+
+    private function fallbackPublicEmpresaBaseQuery()
+    {
+        $query = DB::table('empresas');
+
+        if ($this->hasColumn('empresas', 'ativo')) {
+            if ($this->isBooleanColumn('empresas', 'ativo')) {
+                $query->where('ativo', true);
+            } else {
+                $query->whereIn('ativo', [1, '1', true, 'true', 'ativo', 'ativa', 'active']);
+            }
+        }
+
+        if ($this->hasColumn('empresas', 'status')) {
+            $query->whereIn('status', Empresa::normalizedStatusVariants(Empresa::STATUS_ACTIVE));
+        }
+
+        return $query;
+    }
+
+    private function fallbackPublicEmpresaSelectColumns(): array
+    {
+        $columns = ['id', 'nome'];
+
+        foreach ([
+            'descricao',
+            'categoria',
+            'ramo',
+            'endereco',
+            'telefone',
+            'email',
+            'whatsapp',
+            'instagram',
+            'facebook',
+            'logo',
+            'points_multiplier',
+            'avaliacao_media',
+            'total_avaliacoes',
+            'ativo',
+            'status',
+        ] as $column) {
+            if ($this->hasColumn('empresas', $column)) {
+                $columns[] = $column;
+            }
+        }
+
+        return $columns;
+    }
+
+    private function fallbackPublicEmpresaRow(int $id): ?array
+    {
+        if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
+            return null;
+        }
+
+        $row = $this->fallbackPublicEmpresaBaseQuery()
+            ->select($this->fallbackPublicEmpresaSelectColumns())
+            ->where('id', $id)
+            ->first();
+
+        return $row ? (array) $row : null;
+    }
+
+    private function fallbackPublicEmpresasList(Request $request): ?array
+    {
+        if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
+            return null;
+        }
+
+        $query = $this->fallbackPublicEmpresaBaseQuery();
+        $hasCategoria = $this->hasColumn('empresas', 'categoria');
+        $hasRamo = $this->hasColumn('empresas', 'ramo');
+
+        if ($request->has('categoria') && $request->categoria !== 'todos') {
+            if ($hasCategoria) {
+                $query->where('categoria', $request->categoria);
+            } elseif ($hasRamo) {
+                $query->where('ramo', $request->categoria);
+            }
+        }
+
+        if ($request->has('busca')) {
+            $busca = $request->busca;
+            $query->where(function ($q) use ($busca) {
+                $q->where('nome', 'LIKE', "%{$busca}%");
+                if ($this->hasColumn('empresas', 'descricao')) {
+                    $q->orWhere('descricao', 'LIKE', "%{$busca}%");
+                }
+            });
+        }
+
+        return $query
+            ->select($this->fallbackPublicEmpresaSelectColumns())
+            ->orderBy('nome')
+            ->get()
+            ->map(fn ($empresa) => $this->fallbackPublicEmpresaPayload((array) $empresa))
+            ->values()
+            ->all();
+    }
+
+    private function fallbackPublicPromotions(int $empresaId): ?array
+    {
+        if (!Schema::hasTable('promocoes') || !Schema::hasColumn('promocoes', 'empresa_id')) {
+            return [];
+        }
+
+        $query = DB::table('promocoes')
+            ->where('empresa_id', $empresaId);
+
+        if (Schema::hasColumn('promocoes', 'ativo')) {
+            if ($this->isBooleanColumn('promocoes', 'ativo')) {
+                $query->where('ativo', true);
+            } else {
+                $query->whereIn('ativo', [1, '1', true, 'true', 'ativo', 'ativa', 'active']);
+            }
+        }
+
+        if (Schema::hasColumn('promocoes', 'status')) {
+            $query->whereIn('status', ['ativa', 'Ativa', 'active', 'ACTIVE']);
+        }
+
+        $select = ['id', 'empresa_id'];
+        foreach (['titulo', 'descricao', 'imagem_url', 'validade', 'status', 'ativo', 'created_at'] as $column) {
+            if (Schema::hasColumn('promocoes', $column)) {
+                $select[] = $column;
+            }
+        }
+
+        if (Schema::hasColumn('promocoes', 'created_at')) {
+            $query->orderByDesc('created_at');
+        } else {
+            $query->orderByDesc('id');
+        }
+
+        return $query->select($select)->get()->map(function ($row) {
+            return [
+                'id' => (int) ($row->id ?? 0),
+                'empresa_id' => (int) ($row->empresa_id ?? 0),
+                'titulo' => $this->cleanUtf8($row->titulo ?? ''),
+                'descricao' => $this->cleanUtf8($row->descricao ?? ''),
+                'imagem_url' => $this->cleanUtf8($row->imagem_url ?? ''),
+                'validade' => $row->validade ?? null,
+                'status' => $row->status ?? null,
+                'ativo' => $this->normalizeAtivoFlag($row->ativo ?? true),
+                'viewer_status' => 'available',
+                'can_self_redeem' => false,
+                'can_present_qr' => false,
+                'redeemed_at' => null,
+            ];
+        })->values()->all();
     }
 
     public function index()
@@ -502,6 +724,14 @@ class EmpresaController extends Controller
         } catch (\Exception $e) {
             Log::error('Erro ao listar empresas: ' . $e->getMessage());
 
+            $fallback = $this->fallbackPublicEmpresasList($request);
+            if ($fallback !== null) {
+                return response()->json([
+                    'success' => true,
+                    'data' => $fallback,
+                ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => 'Nao foi possivel carregar empresas agora.',
@@ -540,6 +770,14 @@ class EmpresaController extends Controller
                 'id' => $id,
                 'error' => $e->getMessage(),
             ]);
+
+            $fallback = $this->fallbackPublicEmpresaRow((int) $id);
+            if ($fallback !== null) {
+                return response()->json([
+                    'success' => true,
+                    'data' => $this->fallbackPublicEmpresaPayload($fallback, true, true, true, true),
+                ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            }
 
             return response()->json([
                 'success' => false,
@@ -616,6 +854,14 @@ class EmpresaController extends Controller
                 'empresa_id' => $id,
                 'error' => $e->getMessage(),
             ]);
+
+            $fallback = $this->fallbackPublicPromotions((int) $id);
+            if ($fallback !== null) {
+                return response()->json([
+                    'success' => true,
+                    'data' => $fallback,
+                ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            }
 
             return response()->json([
                 'success' => false,
