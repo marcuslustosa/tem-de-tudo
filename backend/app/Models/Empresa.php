@@ -152,7 +152,17 @@ class Empresa extends Model
     public function scopePubliclyVisible(Builder $query): Builder
     {
         if (Schema::hasColumn($this->getTable(), 'ativo')) {
-            $query->where('ativo', true);
+            try {
+                $type = strtolower((string) Schema::getColumnType($this->getTable(), 'ativo'));
+            } catch (\Throwable) {
+                $type = 'boolean';
+            }
+
+            if (in_array($type, ['bool', 'boolean'], true)) {
+                $query->where('ativo', true);
+            } else {
+                $query->whereIn('ativo', [1, '1', true, 'true', 'ativo', 'ativa', 'active']);
+            }
         }
 
         self::applyOperationalStatusFilter($query, self::STATUS_ACTIVE, $this->qualifyColumn('status'));

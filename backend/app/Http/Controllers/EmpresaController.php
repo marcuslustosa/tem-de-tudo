@@ -425,16 +425,13 @@ class EmpresaController extends Controller
     {
         try {
             // Cache key baseado nos parâmetros da busca
-            $cacheKey = 'empresas.list.' . md5(json_encode($request->all()));
-            
-            return Cache::remember($cacheKey, 300, function () use ($request) {
-                if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Catalogo de empresas indisponivel.',
-                        'data' => [],
-                    ], 503, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
-                }
+            if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Catalogo de empresas indisponivel.',
+                    'data' => [],
+                ], 503, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            }
 
             $query = Empresa::query();
             $this->applyEmpresaAtivoScope($query);
@@ -503,7 +500,6 @@ class EmpresaController extends Controller
                 'success' => true,
                 'data' => $mapped
             ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
-            }); // Fecha Cache::remember
             
         } catch (\Exception $e) {
             Log::error('Erro ao listar empresas: ' . $e->getMessage());
