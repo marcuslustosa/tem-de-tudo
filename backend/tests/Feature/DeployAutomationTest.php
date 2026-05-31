@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Empresa;
 use App\Models\User;
+use Database\Seeders\I9PlusDemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -51,6 +53,29 @@ class DeployAutomationTest extends TestCase
         $this->assertNotNull(
             DB::table('empresas')->where('owner_id', $empresaUserId)->value('id')
         );
+    }
+
+    public function test_ensure_demo_access_command_is_idempotent_after_i9plus_demo_seed(): void
+    {
+        putenv('DEMO_ACCESS_ENABLED=true');
+        putenv('DEMO_FORCE_PASSWORD_RESET=true');
+        putenv('DEMO_EMPRESA_EMAIL=malagueta@demo.local');
+        putenv('DEMO_EMPRESA_RAZAO=Malagueta Galpao');
+        putenv('DEMO_EMPRESA_CNPJ=11.111.111/0001-11');
+
+        $this->seed(I9PlusDemoSeeder::class);
+
+        $exitCode = Artisan::call('app:ensure-demo-access', [
+            '--sync-passwords' => true,
+        ]);
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame(1, Empresa::query()->where('cnpj', '11.111.111/0001-11')->count());
+        $this->assertDatabaseHas('users', [
+            'email' => 'cliente.push@demo.local',
+            'perfil' => 'cliente',
+            'status' => 'ativo',
+        ]);
     }
 
     public function test_verify_frontend_assets_command_succeeds_with_fix_flag(): void

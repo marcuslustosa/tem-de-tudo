@@ -8,6 +8,8 @@ use App\Models\Empresa;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class CampanhaMultiplicadorController extends Controller
 {
@@ -16,17 +18,46 @@ class CampanhaMultiplicadorController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $empresaId = Auth::user()->empresa_id;
+        $empresaId = $this->resolveEmpresaId();
 
-        $campanhas = CampanhaMultiplicador::where('empresa_id', $empresaId)
-            ->orderByDesc('created_at')
-            ->get();
+        if (!$empresaId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa nao encontrada para este login.',
+            ], 404);
+        }
 
-        return response()->json([
-            'success' => true,
-            'data'    => $campanhas,
-            'total'   => $campanhas->count(),
-        ]);
+        if (!Schema::hasTable('campanhas_multiplicador')) {
+            return response()->json([
+                'success' => true,
+                'data' => [],
+                'total' => 0,
+                'message' => 'Campanhas temporarias nao estao disponiveis neste ambiente.',
+                'legacy_disabled' => true,
+            ]);
+        }
+
+        try {
+            $campanhas = CampanhaMultiplicador::where('empresa_id', $empresaId)
+                ->orderByDesc('created_at')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data'    => $campanhas,
+                'total'   => $campanhas->count(),
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao listar campanhas de multiplicador da empresa.', [
+                'empresa_id' => $empresaId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao foi possivel carregar campanhas temporarias agora.',
+            ], 500);
+        }
     }
 
     /**
@@ -34,6 +65,14 @@ class CampanhaMultiplicadorController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        if (!Schema::hasTable('campanhas_multiplicador')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Use a Gestao de Ofertas para operar campanhas desta empresa.',
+                'error' => 'legacy_disabled',
+            ], 422);
+        }
+
         $data = $request->validate([
             'nome'         => 'required|string|max:120',
             'descricao'    => 'nullable|string|max:500',
@@ -43,7 +82,15 @@ class CampanhaMultiplicadorController extends Controller
             'ativo'        => 'boolean',
         ]);
 
-        $data['empresa_id'] = Auth::user()->empresa_id;
+        $empresaId = $this->resolveEmpresaId();
+        if (!$empresaId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa nao encontrada para este login.',
+            ], 404);
+        }
+
+        $data['empresa_id'] = $empresaId;
         $data['ativo'] = $data['ativo'] ?? true;
 
         $campanha = CampanhaMultiplicador::create($data);
@@ -60,8 +107,24 @@ class CampanhaMultiplicadorController extends Controller
      */
     public function update(Request $request, int $id): JsonResponse
     {
+        if (!Schema::hasTable('campanhas_multiplicador')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Use a Gestao de Ofertas para operar campanhas desta empresa.',
+                'error' => 'legacy_disabled',
+            ], 422);
+        }
+
+        $empresaId = $this->resolveEmpresaId();
+        if (!$empresaId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa nao encontrada para este login.',
+            ], 404);
+        }
+
         $campanha = CampanhaMultiplicador::where('id', $id)
-            ->where('empresa_id', Auth::user()->empresa_id)
+            ->where('empresa_id', $empresaId)
             ->firstOrFail();
 
         $data = $request->validate([
@@ -87,8 +150,24 @@ class CampanhaMultiplicadorController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
+        if (!Schema::hasTable('campanhas_multiplicador')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Use a Gestao de Ofertas para operar campanhas desta empresa.',
+                'error' => 'legacy_disabled',
+            ], 422);
+        }
+
+        $empresaId = $this->resolveEmpresaId();
+        if (!$empresaId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa nao encontrada para este login.',
+            ], 404);
+        }
+
         $campanha = CampanhaMultiplicador::where('id', $id)
-            ->where('empresa_id', Auth::user()->empresa_id)
+            ->where('empresa_id', $empresaId)
             ->firstOrFail();
 
         $campanha->delete();
@@ -104,6 +183,17 @@ class CampanhaMultiplicadorController extends Controller
      */
     public function adminIndex(Request $request): JsonResponse
     {
+        if (!Schema::hasTable('campanhas_multiplicador')) {
+            return response()->json([
+                'success' => true,
+                'data' => [],
+                'total' => 0,
+                'current_page' => 1,
+                'last_page' => 1,
+                'legacy_disabled' => true,
+            ]);
+        }
+
         $query = CampanhaMultiplicador::with('empresa:id,nome')
             ->orderByDesc('created_at');
 
@@ -120,5 +210,37 @@ class CampanhaMultiplicadorController extends Controller
             'current_page' => $campanhas->currentPage(),
             'last_page'    => $campanhas->lastPage(),
         ]);
+    }
+
+    private function resolveEmpresaId(): ?int
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return null;
+        }
+
+        if (isset($user->empresa_id) && is_numeric($user->empresa_id) && (int) $user->empresa_id > 0) {
+            return (int) $user->empresa_id;
+        }
+
+        $query = Empresa::query();
+
+        if (Schema::hasColumn('empresas', 'owner_id')) {
+            $empresa = (clone $query)->where('owner_id', $user->id)->first();
+            if ($empresa) {
+                return (int) $empresa->id;
+            }
+        }
+
+        if (Schema::hasColumn('empresas', 'user_id')) {
+            $empresa = (clone $query)->where('user_id', $user->id)->first();
+            if ($empresa) {
+                return (int) $empresa->id;
+            }
+        }
+
+        $empresa = (clone $query)->find($user->id);
+
+        return $empresa ? (int) $empresa->id : null;
     }
 }

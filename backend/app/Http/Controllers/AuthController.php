@@ -689,7 +689,7 @@ class AuthController extends Controller
             case 'cliente':
                 return array_merge($baseRules, [
                     'telefone' => 'nullable|string|max:20',
-                    'data_nascimento' => 'required|date|before:today',
+                    'data_nascimento' => 'nullable|date|before:today',
                 ]);
 
             case 'empresa':

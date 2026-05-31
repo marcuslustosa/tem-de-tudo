@@ -90,7 +90,8 @@ chmod -R 775 storage bootstrap/cache
 if [ "${RUN_MIGRATIONS_ON_START:-true}" = "true" ]; then
   php artisan migrate --force --no-interaction
   if [ "${SEED_ON_START:-false}" = "true" ]; then
-    php artisan db:seed --force --no-interaction
+    DEMO_SEEDER_CLASS="${DEMO_SEEDER_CLASS:-Database\\Seeders\\I9PlusDemoSeeder}"
+    php artisan db:seed --class="${DEMO_SEEDER_CLASS}" --force --no-interaction
   fi
 else
   echo "RUN_MIGRATIONS_ON_START=false: migrations no start desativadas."

@@ -95,15 +95,41 @@ class ClienteAPIController extends Controller
 
         if ($this->hasTable('pontos') && $this->hasTable('empresas') && $this->hasColumn('pontos', 'empresa_id')) {
             try {
+                $favoriteColumns = [
+                    'empresas.id',
+                    'empresas.nome',
+                ];
+                $favoriteGroupBy = [
+                    'empresas.id',
+                    'empresas.nome',
+                ];
+
+                foreach (['categoria', 'ramo', 'logo', 'endereco', 'telefone', 'whatsapp', 'instagram', 'facebook', 'avaliacao_media', 'total_avaliacoes'] as $column) {
+                    if ($this->hasColumn('empresas', $column)) {
+                        $favoriteColumns[] = 'empresas.' . $column;
+                        $favoriteGroupBy[] = 'empresas.' . $column;
+                    }
+                }
+
                 $empresasFavoritas = DB::table('pontos')
                     ->join('empresas', 'pontos.empresa_id', '=', 'empresas.id')
-                    ->select('empresas.*', DB::raw('SUM(pontos.pontos) as total_pontos'))
+                    ->select(array_merge($favoriteColumns, [DB::raw('SUM(pontos.pontos) as total_pontos')]))
                     ->where('pontos.user_id', $user->id)
                     ->whereNotIn('pontos.tipo', ['resgate', 'redeem'])
-                    ->groupBy('empresas.id')
+                    ->groupBy(...$favoriteGroupBy)
                     ->orderByDesc('total_pontos')
                     ->limit(3)
-                    ->get();
+                    ->get()
+                    ->map(function ($empresa) {
+                        $card = new Empresa((array) $empresa);
+                        $card->exists = true;
+
+                        return $this->serializeCompanyCard($card, [
+                            'total_pontos' => (int) ($empresa->total_pontos ?? 0),
+                            'vinculada' => true,
+                        ]);
+                    })
+                    ->values();
             } catch (\Throwable $e) {
                 Log::warning('Falha ao carregar empresas favoritas no dashboard do cliente', [
                     'user_id' => $user->id,
@@ -165,8 +191,8 @@ class ClienteAPIController extends Controller
             'success' => true,
             'data' => [
                 'usuario' => [
-                    'nome' => $user->name,
-                    'email' => $user->email,
+                    'nome' => $this->cleanText($user->name),
+                    'email' => $this->cleanText($user->email),
                     'saldo_pontos' => $saldoPontos,
                     'total_ganho' => $pontosTotais,
                     'total_gasto' => $pontosGastos
@@ -181,7 +207,7 @@ class ClienteAPIController extends Controller
                 'ultimas_transacoes' => $ultimasTransacoes,
                 'promocoes_disponiveis' => $promocoes
             ]
-        ]);
+        ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
     }
 
     /**
@@ -223,6 +249,7 @@ class ClienteAPIController extends Controller
                 ->map(fn ($id) => (int) $id)
                 ->all()
             : [];
+        $items = [];
         foreach ($empresas as $empresa) {
             $pontos = 0;
             if ($this->hasTable('pontos')) {
@@ -233,16 +260,16 @@ class ClienteAPIController extends Controller
                     ->sum('pontos');
             }
             
-            $empresa->meus_pontos = $pontos;
-            $empresa->vinculada = in_array((int) $empresa->id, $linkedCompanyIds, true);
-            $empresa->avaliacao_media = (float) ($empresa->avaliacao_media ?? 0);
-            $empresa->total_avaliacoes = (int) ($empresa->total_avaliacoes ?? 0);
+            $items[] = $this->serializeCompanyCard($empresa, [
+                'meus_pontos' => $pontos,
+                'vinculada' => in_array((int) $empresa->id, $linkedCompanyIds, true),
+            ]);
         }
         
         return response()->json([
             'success' => true,
-            'data' => $empresas
-        ]);
+            'data' => $items
+        ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
     }
     
     /**
@@ -1107,20 +1134,43 @@ class ClienteAPIController extends Controller
     {
         return array_merge([
             'id' => $empresa->id,
-            'nome' => $empresa->nome,
-            'categoria' => $empresa->categoria ?? $empresa->ramo ?? '',
-            'ramo' => $empresa->ramo ?? $empresa->categoria ?? '',
-            'logo' => $empresa->logo ?: '/assets/images/company1.jpg',
-            'endereco' => $empresa->endereco ?? '',
-            'telefone' => $empresa->telefone ?? '',
-            'whatsapp' => $empresa->whatsapp ?? '',
-            'instagram' => $empresa->instagram ?? '',
-            'facebook' => $empresa->facebook ?? '',
+            'nome' => $this->cleanText($empresa->nome),
+            'categoria' => $this->cleanText($empresa->categoria ?? $empresa->ramo ?? ''),
+            'ramo' => $this->cleanText($empresa->ramo ?? $empresa->categoria ?? ''),
+            'logo' => $this->cleanText($empresa->logo ?: '/assets/images/company1.jpg'),
+            'endereco' => $this->cleanText($empresa->endereco ?? ''),
+            'telefone' => $this->cleanText($empresa->telefone ?? ''),
+            'whatsapp' => $this->cleanText($empresa->whatsapp ?? ''),
+            'instagram' => $this->cleanText($empresa->instagram ?? ''),
+            'facebook' => $this->cleanText($empresa->facebook ?? ''),
             'avaliacao_media' => (float) ($empresa->avaliacao_media ?? 0),
             'total_avaliacoes' => (int) ($empresa->total_avaliacoes ?? 0),
             'public_page_url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
             'status' => $empresa->operationalStatus(),
         ], $extra);
+    }
+
+    private function cleanText($value)
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+
+        $clean = @iconv('UTF-8', 'UTF-8//IGNORE', $value);
+        $clean = is_string($clean) ? $clean : $value;
+
+        if (!preg_match('/[\x{00C3}\x{00E2}\x{FFFD}\x{251C}]/u', $clean)) {
+            return $clean;
+        }
+
+        foreach (['Windows-1252', 'ISO-8859-1'] as $sourceEncoding) {
+            $converted = @mb_convert_encoding($clean, 'UTF-8', $sourceEncoding);
+            if (is_string($converted) && $converted !== '' && !preg_match('/[\x{00C3}\x{00E2}\x{FFFD}\x{251C}]/u', $converted)) {
+                return $converted;
+            }
+        }
+
+        return $clean;
     }
 
     private function hasTable(string $table): bool

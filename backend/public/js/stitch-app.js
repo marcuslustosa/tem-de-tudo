@@ -609,12 +609,24 @@
   })();
 
   // ---------------------- Navegacao de fallback ---------------------- //
+  function getStoredScope() {
+    const storedUser = auth.normalizeUser(auth.getStored()?.user);
+    const perfil = auth.normalizePerfil(storedUser?.perfil || storedUser?.role || storedUser?.tipo);
+    if (perfil === 'admin') return 'admin';
+    if (perfil === 'empresa') return 'empresa';
+    return 'cliente';
+  }
+
   function getScopeForCurrentPage() {
     const pageGroups = {
       admin: ['dashboard_admin_master', 'gest_o_de_estabelecimentos', 'gest_o_de_usu_rios_master', 'gest_o_de_clientes_master', 'relat_rios_gerais_master', 'tickets_admin_master', 'banners_e_categorias_master', 'configuracoes_admin'],
       empresa: ['dashboard_parceiro', 'gest_o_de_ofertas_parceiro', 'minhas_campanhas_loja', 'clientes_fidelizados_loja'],
       cliente: ['meus_pontos', 'parceiros_tem_de_tudo', 'detalhe_do_parceiro', 'recompensas', 'hist_rico_de_uso', 'meu_perfil', 'validar_resgate', 'configuracoes_cliente'],
     };
+
+    if (page === 'meu_perfil' || page === 'validar_resgate') {
+      return getStoredScope();
+    }
 
     let scope = 'cliente';
     if (pageGroups.admin.includes(page)) scope = 'admin';
@@ -657,7 +669,7 @@
         inventory_2: '/validar_resgate.html',
         qr_code_scanner: '/validar_resgate.html',
         person: commonProfile,
-        settings: '/configuracoes_cliente.html',
+        settings: commonProfile,
       },
       cliente: {
         dashboard: '/meus_pontos.html',
@@ -700,7 +712,7 @@
     if (text.includes('venda')) return scope === 'admin' ? '/relat_rios_gerais_master.html' : '/gest_o_de_ofertas_parceiro.html';
     if (text.includes('campanha') || text.includes('oferta')) return scope === 'empresa' ? '/gest_o_de_ofertas_parceiro.html' : null;
     if (text.includes('conteudo') || text.includes('banner') || text.includes('categoria')) return scope === 'admin' ? '/banners_e_categorias_master.html' : null;
-    if (text.includes('configur')) return scope === 'admin' ? '/configuracoes_admin.html' : '/configuracoes_cliente.html';
+    if (text.includes('configur')) return scope === 'admin' ? '/configuracoes_admin.html' : '/meu_perfil.html';
     if (text.includes('comecar agora') || text.includes('gerar relatorio')) return scope === 'admin' ? '/relat_rios_gerais_master.html?gerar=1' : null;
     if (text.includes('perfil') || text.includes('conta')) return '/meu_perfil.html';
     if (text.includes('suporte')) return '__support__';
@@ -843,7 +855,7 @@
 
   function wireSettingsShortcuts() {
     const scope = getScopeForCurrentPage();
-    const target = scope === 'admin' ? '/configuracoes_admin.html' : '/configuracoes_cliente.html';
+    const target = scope === 'admin' ? '/configuracoes_admin.html' : (scope === 'empresa' ? '/meu_perfil.html' : '/configuracoes_cliente.html');
 
     document.querySelectorAll('button').forEach((btn) => {
       if (btn.dataset.settingsBound === '1') return;
@@ -861,6 +873,58 @@
         window.location.href = target;
       });
     });
+  }
+
+  function mountPageBackButton() {
+    const scope = getScopeForCurrentPage();
+    const fallbackByPage = {
+      detalhe_do_parceiro: '/parceiros_tem_de_tudo.html',
+      gest_o_de_ofertas_parceiro: '/dashboard_parceiro.html',
+      minhas_campanhas_loja: '/dashboard_parceiro.html',
+      clientes_fidelizados_loja: '/dashboard_parceiro.html',
+      validar_resgate: scope === 'empresa' ? '/dashboard_parceiro.html' : '/meus_pontos.html',
+      meu_perfil: scope === 'empresa'
+        ? '/dashboard_parceiro.html'
+        : (scope === 'admin' ? '/dashboard_admin_master.html' : '/meus_pontos.html'),
+    };
+
+    const fallback = fallbackByPage[page];
+    if (!fallback) return;
+
+    const header = document.querySelector('header');
+    if (!header || header.querySelector('[data-page-back]')) return;
+
+    const container = header.firstElementChild && header.firstElementChild.tagName === 'DIV'
+      ? header.firstElementChild
+      : header;
+    const brandContainer = container.firstElementChild;
+    const backButton = document.createElement('button');
+    backButton.type = 'button';
+    backButton.setAttribute('data-page-back', '1');
+    backButton.className = 'inline-flex h-10 items-center gap-2 rounded-full bg-white/90 px-3 text-sm font-bold text-[#111B3F] shadow-sm';
+    backButton.innerHTML = '<span class="material-symbols-outlined">arrow_back</span><span>Voltar</span>';
+    backButton.addEventListener('click', () => {
+      const sameOriginReferrer = document.referrer && (() => {
+        try {
+          return new URL(document.referrer).origin === window.location.origin;
+        } catch {
+          return false;
+        }
+      })();
+
+      if (window.history.length > 1 && sameOriginReferrer) {
+        window.history.back();
+        return;
+      }
+
+      window.location.href = fallback;
+    });
+
+    if (brandContainer) {
+      container.insertBefore(backButton, brandContainer);
+    } else {
+      container.prepend(backButton);
+    }
   }
 
   function wireUtilityButtons() {
@@ -914,7 +978,7 @@
         return;
       }
 
-      if (icon === 'notifications' || btn.id === 'btnEstabNotif' || btn.id === 'adminClientesNotif') {
+      if ((icon === 'notifications' || btn.id === 'btnEstabNotif' || btn.id === 'adminClientesNotif') && btn.id !== 'empresaNotifBtn') {
         bindOnce(btn, 'notificationsBound', async (ev) => {
           ev.preventDefault();
           const previousDisabled = btn.disabled;
@@ -1183,7 +1247,7 @@
           <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Base pronta para campanha</h2>
           <p class="mt-2 text-sm leading-6 text-on-surface-variant">Promocoes, aniversario e lembretes saem somente para clientes vinculados com notificacoes ativas no dispositivo.</p>
         </div>
-        <a href="/gest_o_de_ofertas_parceiro.html" class="app-secondary-button justify-center">Abrir campanhas</a>
+        <a href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary" class="app-secondary-button justify-center">Abrir push e campanhas</a>
       </div>
       <div class="mt-4 grid gap-3 sm:grid-cols-3">
         <div class="rounded-xl bg-surface-container-low p-4">
@@ -2568,24 +2632,8 @@
 
         let companyInfo = data?.data || data || {};
         if (!res.ok || data?.success === false) {
-          const fallbackListResponse = await api.request('/empresas', {}, { requireAuth: false, notify: false });
-          const fallbackList = toArray(fallbackListResponse.data?.data || fallbackListResponse.data);
-          const fallbackCompany = fallbackList.find((item) => String(item?.id || '') === String(selectedCompanyId));
-
-          if (!fallbackCompany) {
-            ui.setPageState('empty', data?.message || 'Empresa indisponível no momento.');
-            return;
-          }
-
-          companyInfo = {
-            ...fallbackCompany,
-            public_page_url: fallbackCompany.public_page_url || `/detalhe_do_parceiro.html?id=${encodeURIComponent(selectedCompanyId)}`,
-            publicamente_visivel: fallbackCompany.publicamente_visivel !== false,
-            status: fallbackCompany.status || 'active',
-            cartao_fidelidade: fallbackCompany.cartao_fidelidade || null,
-            bonus_aniversario: fallbackCompany.bonus_aniversario || null,
-          };
-          ui.message('Exibindo dados publicos desta empresa ate o detalhamento completo responder.', 'warning');
+          ui.setPageState('empty', data?.message || 'Empresa indisponivel no momento.');
+          return;
         }
         const publicPromotionsResponse = await api.request(`/empresas/${selectedCompanyId}/promocoes`, {}, { requireAuth: false, notify: false });
         const publicReviewsResponse = await api.request(`/empresas/${selectedCompanyId}/avaliacoes`, {}, { requireAuth: false, notify: false });
@@ -3749,24 +3797,27 @@
           empresaData = resp.data?.data || null;
         } catch (_) {}
 
-        // Fallback: dados fictícios se API não retornar dados da empresa
         if (!empresaData || !empresaData.empresa) {
           empresaData = {
             empresa: {
-              id: 1,
-              nome: 'Empresa Demonstração',
-              ramo: 'varejo',
-              categoria: 'Comércio',
-              cnpj: '00.000.000/0001-00',
-              endereco: 'Rua Exemplo, 123 - Centro',
-              telefone: '(11) 98765-4321',
+              id: null,
+              nome: '',
+              ramo: '',
+              categoria: '',
+              cnpj: '',
+              endereco: '',
+              telefone: '',
               logo: '',
-              points_multiplier: 1.5,
-              ativo: true
+              whatsapp: '',
+              instagram: '',
+              facebook: '',
+              descricao: '',
+              points_multiplier: 1,
+              ativo: false
             },
-            total_clientes: 245,
-            pontos_distribuidos: 15800,
-            promocoes_ativas: 3
+            total_clientes: 0,
+            pontos_distribuidos: 0,
+            promocoes_ativas: 0
           };
         }
       }
@@ -3864,7 +3915,7 @@
             ? '/relat_rios_gerais_master.html'
             : (perfil === 'empresa' ? '/minhas_campanhas_loja.html' : '/hist_rico_de_uso.html');
         } else if (text.includes('configur')) {
-          target = perfil === 'admin' ? '/configuracoes_admin.html' : '/configuracoes_cliente.html';
+          target = perfil === 'admin' ? '/configuracoes_admin.html' : (perfil === 'empresa' ? '/meu_perfil.html' : '/configuracoes_cliente.html');
         } else if (text.includes('ajuda') || text.includes('suporte')) {
           target = 'mailto:contato@temdetudo.com';
         }
@@ -4159,13 +4210,13 @@
 
       if (titleEl) {
         titleEl.textContent = perfil === 'empresa'
-          ? (companyBenefitMode ? 'Consultar cliente e validar benefícios' : 'Ler QR do Cliente')
+          ? (companyBenefitMode ? 'Consultar cliente e validar beneficios' : 'Ler QR do cliente')
           : 'Ler QR da Empresa';
       }
       if (copyEl) {
         copyEl.textContent = perfil === 'empresa'
           ? (companyBenefitMode
-              ? 'Empresa: consulte o cliente pelo QR Code e valide bônus de adesão, bônus aniversário, pontos e resgates somente no estabelecimento.'
+              ? 'Empresa: consulte o cliente pelo QR Code e valide bonus de adesao, bonus aniversario, pontos e resgates somente no estabelecimento.'
               : 'Empresa: escaneie o QR do cliente para validar acoes futuras e registrar atendimento.')
           : 'Cliente: escaneie o QR do adesivo da empresa para se vincular no app.';
       }
@@ -4211,21 +4262,21 @@
           if (res.ok && qrList.length && qrList[0].code) {
             const qr = qrList[0];
             container.innerHTML = `
-              <p class="text-[11px] text-outline mb-1">Use este QR no adesivo físico para abrir o fluxo público de vínculo da empresa.</p>
+              <p class="text-[11px] text-outline mb-1">Use este QR no adesivo da loja para abrir a pagina publica correta e concluir o vinculo do cliente.</p>
               <img src="${qr.qr_image || qr.qr_url}" alt="QR Code da loja" class="w-44 h-44 rounded-xl border border-outline-variant/40 bg-white p-2" loading="lazy" />
               <div class="bg-surface-container px-4 py-2 rounded-xl text-center">
                 <span class="text-xs font-mono text-on-surface break-all">${qr.code}</span>
               </div>
               <div class="flex flex-wrap items-center justify-center gap-2">
-                <button id="copiarQrLoja" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar código</button>
+                <button id="copiarQrLoja" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar codigo</button>
                 <button id="copiarLinkQrLoja" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar link</button>
               </div>
-              <p class="text-[10px] text-outline mt-1">Scans: ${qr.usage_count || 0} | Ativo: ${qr.active ? 'Sim' : 'Não'}</p>`;
+              <p class="text-[10px] text-outline mt-1">Scans: ${qr.usage_count || 0} | Ativo: ${qr.active ? 'Sim' : 'Nao'}</p>`;
             document.getElementById('copiarQrLoja')?.addEventListener('click', () => {
-              navigator.clipboard.writeText(qr.code).then(() => ui.message('Código da loja copiado.', 'success'));
+              navigator.clipboard.writeText(qr.code).then(() => ui.message('Codigo da loja copiado.', 'success'));
             });
             document.getElementById('copiarLinkQrLoja')?.addEventListener('click', () => {
-              navigator.clipboard.writeText(qr.scan_url || '').then(() => ui.message('Link público do QR copiado.', 'success'));
+              navigator.clipboard.writeText(qr.scan_url || '').then(() => ui.message('Link publico do QR copiado.', 'success'));
             });
           } else {
             container.innerHTML = '<p class="text-sm text-outline">Nenhum QR Code gerado ainda. Clique em "Gerar".</p>';
@@ -4256,7 +4307,7 @@
             <div>
               <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Meu QR Code</p>
               <h3 class="mt-2 font-headline text-2xl font-extrabold text-on-surface">Apresente no estabelecimento</h3>
-              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Mostre este QR para o parceiro escanear e validar bônus, fidelidade, promoção ou aniversário.</p>
+              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Mostre este QR para o parceiro escanear e validar bonus, fidelidade, promocao ou aniversario.</p>
             </div>
             <a href="/validar_resgate.html?modo=vinculo-empresa" class="inline-flex h-11 items-center justify-center rounded-full bg-surface-container px-4 text-xs font-bold uppercase tracking-[0.14em] text-on-surface">Ler QR da empresa</a>
           </div>
@@ -4283,14 +4334,14 @@
             <div class="bg-surface-container px-4 py-2 rounded-xl text-center w-full">
               <span class="text-xs font-mono text-on-surface break-all">${payload.codigo}</span>
             </div>
-            <button id="copiarMeuQr" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar código</button>
+            <button id="copiarMeuQr" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar codigo</button>
             <p class="text-[10px] text-outline mt-1">Expira as ${expiraEm}</p>
           `;
           document.getElementById('copiarMeuQr')?.addEventListener('click', () => {
-            navigator.clipboard.writeText(payload.codigo).then(() => ui.message('Código do seu QR copiado.', 'success'));
+            navigator.clipboard.writeText(payload.codigo).then(() => ui.message('Codigo do seu QR copiado.', 'success'));
           });
         } else {
-          qrContainer.innerHTML = '<p class="text-sm text-outline">Não foi possível carregar seu QR agora.</p>';
+          qrContainer.innerHTML = '<p class="text-sm text-outline">Nao foi possivel carregar seu QR agora.</p>';
         }
       }
 
@@ -4847,7 +4898,7 @@
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Minha vitrine</p>
-              <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Dados publicos da empresa</h2>
+              <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Dados publicos da vitrine</h2>
               <p class="mt-2 text-sm leading-6 text-on-surface-variant">${safeText(info?.descricao, 'Atualize o perfil da empresa para mostrar descricao, contatos e proposta comercial da vitrine.')}</p>
             </div>
             <div class="grid gap-2 sm:grid-cols-2">
@@ -4914,7 +4965,8 @@
             <div>
               <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Notifica&ccedil;&otilde;es e campanhas</p>
               <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Push para clientes vinculados</h2>
-              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Envios continuam na Gestao de Ofertas e usam somente clientes vinculados a esta empresa.</p>
+              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Promocao, aniversario e lembrete saem pela Gestao de Ofertas e usam somente clientes vinculados a esta empresa.</p>
+              <p class="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Fluxo real: cliente ativa notificacoes, empresa cria campanha, empresa envia push</p>
             </div>
             <span class="rounded-full ${serverReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'} px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">
               Push servidor: ${serverReady ? 'configurado' : 'pendente'}
@@ -4950,6 +5002,10 @@
             <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html">
               <span class="material-symbols-outlined">campaign</span>
               <span>Gestao de Ofertas</span>
+            </a>
+            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary">
+              <span class="material-symbols-outlined">send</span>
+              <span>Operar campanhas</span>
             </a>
             <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#formOferta">
               <span class="material-symbols-outlined">add_circle</span>
@@ -5019,8 +5075,8 @@
       if (heroName) heroName.textContent = safeText(storefrontInfo?.nome, safeText(currentUser?.name, 'Sua empresa'));
       if (heroSubtitle) {
         heroSubtitle.textContent = qrPayload?.public_page_url
-          ? 'Use o QR da empresa para divulgar a página pública e validar clientes presencialmente.'
-          : 'Gerencie clientes, campanhas e resgates sem sair deste painel.';
+          ? 'O cliente escaneia o QR da empresa para abrir a vitrine e concluir o vinculo. A equipe usa o QR do cliente no balcao para validar beneficios.'
+          : 'Gerencie clientes, campanhas e validacoes sem sair deste painel.';
       }
       if (heroMeta) {
         heroMeta.textContent = safeText(currentUser?.name)
@@ -5048,16 +5104,16 @@
                   : `<img src="${safeImage(qrPayload.qr_url, IMAGE_FALLBACKS.store)}" alt="QR Code da empresa" class="h-full w-full object-contain" />`}
               </div>
               <div class="space-y-3 text-sm text-white/80">
-                <p>Apresente este QR no adesivo da loja para abrir o fluxo publico correto no app do cliente.</p>
+                <p>O cliente deve escanear este QR no adesivo da loja para abrir a pagina publica correta e concluir o vinculo.</p>
                 <div class="rounded-[18px] bg-white/10 px-4 py-3 ring-1 ring-white/10">
-                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">Código da empresa</p>
+                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">Codigo da empresa</p>
                   <p class="mt-2 break-all font-mono text-xs text-white">${safeText(qrPayload.code)}</p>
                 </div>
               </div>
             </div>
           `;
         } else {
-          qrContainer.textContent = 'Nenhum QR da empresa gerado ainda. Gere o QR e volte a esta tela.';
+          qrContainer.textContent = 'Nenhum QR da empresa gerado ainda. Gere o QR da loja e divulgue o adesivo para os clientes.';
         }
       }
 
@@ -5158,7 +5214,7 @@
       }
 
       document.getElementById('empresaNotifBtn')?.addEventListener('click', () => {
-        ui.message('Notificacoes da empresa serao exibidas aqui em breve.', 'info');
+        window.location.href = '/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary';
       });
     },
 
@@ -5193,7 +5249,7 @@
         if (statTotal) statTotal.textContent = Number(payload?.total || lista.length || 0).toLocaleString('pt-BR');
         if (statAtivos) statAtivos.textContent = Number(ativos || 0).toLocaleString('pt-BR');
         if (statNovos) statNovos.textContent = Number(inativos || 0).toLocaleString('pt-BR');
-        if (resumoEl) resumoEl.textContent = `Exibindo ${lista.length} cliente(s) • ${inativos} inativo(s) no filtro atual`;
+        if (resumoEl) resumoEl.textContent = `Exibindo ${lista.length} cliente(s) | ${inativos} inativo(s) no filtro atual`;
         if (!lista.length) {
           ui.setPageState('empty', 'Nenhum cliente fidelizado ainda.');
           if (vazioEl) vazioEl.classList.remove('hidden');
@@ -5210,6 +5266,9 @@
           const pontos = Number(c.pontos_atuais || c.total_ganho || c.pontos || 0);
           const ultima = c.ultima_visita || c.updated_at;
           const inativo = c.status_inatividade === 'inactive';
+          const pushAtivo = Boolean(c.push_ativo);
+          const pushDispositivos = Number(c.push_total_dispositivos || 0);
+          const pushUltimaAtividade = c.push_ultima_atividade || c.push_updated_at || null;
           const nascimento = formatDatePtBr(c.data_nascimento, 'Não informado');
           const vinculo = formatDatePtBr(c.data_vinculo, 'Não informado');
           card.innerHTML = `
@@ -5223,9 +5282,12 @@
                 <div class="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <h3 class="font-headline font-bold text-on-surface">${nome}</h3>
-                    <p class="mt-1 text-xs text-on-surface-variant">${safeText(c.email, 'Sem e-mail')} • ${safeText(c.telefone, 'Sem telefone')}</p>
+                    <p class="mt-1 text-xs text-on-surface-variant">${safeText(c.email, 'Sem e-mail')} | ${safeText(c.telefone, 'Sem telefone')}</p>
                   </div>
-                  <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${inativo ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}">${inativo ? 'Inativo' : 'Ativo'}</span>
+                  <div class="flex flex-wrap items-center justify-end gap-2">
+                    <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${inativo ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}">${inativo ? 'Inativo' : 'Ativo'}</span>
+                    <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${pushAtivo ? 'bg-sky-100 text-sky-700' : 'bg-slate-100 text-slate-600'}">${pushAtivo ? 'Push ativo' : 'Sem push'}</span>
+                  </div>
                 </div>
                 <div class="mt-3 grid gap-2 sm:grid-cols-2">
                   <div class="rounded-xl bg-surface-container-low px-3 py-2">
@@ -5243,6 +5305,14 @@
                   <div class="rounded-xl bg-surface-container-low px-3 py-2">
                     <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Vinculo</p>
                     <p class="mt-1 text-sm font-semibold text-on-surface">${vinculo}</p>
+                  </div>
+                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Dispositivos push</p>
+                    <p class="mt-1 text-sm font-semibold text-on-surface">${pushDispositivos.toLocaleString('pt-BR')}</p>
+                  </div>
+                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Ultima atividade push</p>
+                    <p class="mt-1 text-sm font-semibold text-on-surface">${formatDatePtBr(pushUltimaAtividade, 'Nao registrada')}</p>
                   </div>
                 </div>
                 <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-on-surface-variant">
@@ -5265,13 +5335,24 @@
     async promocoes() {
       if (!(await auth.guard(['empresa']))) return;
       ui.setPageState('loading', 'Carregando promocoes...');
-      const { res, data } = await api.request('/empresa/promocoes');
+      const [promotionsResponse, summaryResponse, pushConfigResponse] = await Promise.all([
+        api.request('/empresa/promocoes'),
+        api.request('/empresa/relatorios/resumo', {}, { notify: false }),
+        api.request('/push/public-key', {}, { requireAuth: false, notify: false }),
+      ]);
+      const { res, data } = promotionsResponse;
       const formMessageEl = document.getElementById('ofertaMsg');
       if (handleCompanyAccessFailure(res, data, 'Nao foi possivel carregar a gestao de ofertas desta empresa.', formMessageEl)) {
         return;
       }
       const lista = data?.data || data || [];
       const weeklyStatus = data?.meta?.weekly_limit || { limit: 2, used: 0, remaining: 2 };
+      const summaryPayload = summaryResponse.res.ok && summaryResponse.data?.success !== false
+        ? (summaryResponse.data?.data || {})
+        : {};
+      const summaryCards = summaryPayload.cards || {};
+      const summaryPush = summaryPayload.push || {};
+      const pushConfig = pushConfigResponse.data || {};
       ui.clearPageState();
 
       const btnNova = document.getElementById('novaOfertaBtn');
@@ -5288,6 +5369,62 @@
         ativas: document.getElementById('filterAtivas'),
         programadas: document.getElementById('filterProgramadas'),
         inativas: document.getElementById('filterInativas'),
+      };
+      const renderOffersPushSummary = () => {
+        const anchor = document.getElementById('promoWeeklyInfo')?.closest('div')
+          || document.getElementById('ofertasLista')
+          || document.querySelector('main');
+        const section = ensureAdjacentSection(
+          'empresaOffersPushSummary',
+          anchor,
+          'afterend',
+          'mb-8 rounded-[28px] bg-surface-container-lowest p-5 shadow-sm ring-1 ring-black/5'
+        );
+        if (!section) return;
+
+        const linkedCustomers = Number(summaryPush.clientes_vinculados ?? summaryCards.total_clientes_vinculados ?? 0);
+        const activePushCustomers = Number(summaryPush.clientes_com_push_ativo ?? summaryCards.clientes_com_push_ativo ?? 0);
+        const inactivePushCustomers = Math.max(0, Number(summaryPush.clientes_sem_push_ativo ?? (linkedCustomers - activePushCustomers)));
+        const lastSent = summaryPush.ultimo_envio_notificacao || summaryCards.ultimo_envio_notificacao || null;
+        const serverReady = Boolean(pushConfig?.configured);
+
+        section.innerHTML = `
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="max-w-[620px]">
+              <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Operacao de push</p>
+              <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Campanhas saem desta tela</h2>
+              <p class="mt-3 text-sm leading-6 text-slate-500">Promocao instantanea, bonus aniversario e lembrete de retorno enviam push somente para clientes vinculados com notificacoes ativas.</p>
+              <p class="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Fluxo real: cliente vinculado, notificacoes ativas e campanha enviada pela empresa</p>
+            </div>
+            <span class="inline-flex rounded-full ${serverReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'} px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em]">
+              Push servidor: ${serverReady ? 'configurado' : 'pendente'}
+            </span>
+          </div>
+          <div class="mt-5 grid gap-3 sm:grid-cols-4">
+            <div class="rounded-[22px] bg-slate-50 p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Clientes vinculados</p>
+              <p class="mt-2 text-2xl font-extrabold text-[#133F8C]">${linkedCustomers.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="rounded-[22px] bg-slate-50 p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Com push ativo</p>
+              <p class="mt-2 text-2xl font-extrabold text-[#00AFA8]">${activePushCustomers.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="rounded-[22px] bg-slate-50 p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Sem push</p>
+              <p class="mt-2 text-2xl font-extrabold text-[#B01774]">${inactivePushCustomers.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="rounded-[22px] bg-slate-50 p-4">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Ultimo envio</p>
+              <p class="mt-2 text-sm font-bold text-[#111B3F]">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
+            </div>
+          </div>
+          <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <a href="#formOferta" class="app-primary-button justify-center">Criar promocao</a>
+            <a href="#birthdayBonusSection" class="app-secondary-button justify-center">Bonus aniversario</a>
+            <a href="#returnReminderSection" class="app-secondary-button justify-center">Lembrete de retorno</a>
+            <a href="/validar_resgate.html?modo=beneficios" class="app-secondary-button justify-center">Ler QR do cliente</a>
+          </div>
+        `;
       };
       const form = {
         titulo: document.getElementById('ofertaTitulo'),
@@ -5306,6 +5443,7 @@
       };
       let editingId = null;
       let filtroAtual = 'todas';
+      renderOffersPushSummary();
       const updatePromotionDeliveryFeedback = (payload, tone = 'info') => {
         const summary = formatPushDeliverySummary(payload?.meta?.delivery || {}, 'clientes vinculados');
         setInlineFeedback(form.msg, summary.detail, tone);
@@ -5369,7 +5507,7 @@
                 </div>
                 <div class="flex items-center gap-2 text-[10px] text-outline">
                   <button class="px-3 py-1 rounded-lg ${p.ativo ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'} text-xs" data-action="toggle">${p.ativo ? 'Pausar' : 'Ativar'}</button>
-                  <button class="px-3 py-1 rounded-lg ${canSend ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'} text-xs" data-action="enviar" ${canSend ? '' : 'disabled'}>${p.enviada_em ? 'Push enviado' : 'Enviar promoção'}</button>
+                  <button class="px-3 py-1 rounded-lg ${canSend ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'} text-xs" data-action="enviar" ${canSend ? '' : 'disabled'}>${p.enviada_em ? 'Push enviado' : 'Enviar push'}</button>
                   <button class="px-3 py-1 rounded-lg bg-rose-600 text-white text-xs" data-action="deletar">Excluir</button>
                 </div>
               </div>
@@ -6297,179 +6435,198 @@
     // ----- Campanhas de multiplicador temporário -----
     async campanhas() {
       if (!(await auth.guard(['empresa']))) return;
-      ui.setPageState('loading', 'Carregando campanhas...');
-      const { res, data } = await api.request('/empresa/campanhas');
-      ui.clearPageState();
-      const lista = data?.data || [];
+      ui.setPageState('loading', 'Carregando relatorio operacional...');
+
+      const [summaryResponse, promotionsResponse, customersResponse, pushConfigResponse] = await Promise.all([
+        api.request('/empresa/relatorios/resumo', {}, { notify: false }),
+        api.request('/empresa/promocoes', {}, { notify: false }),
+        api.request('/empresa/clientes', {}, { notify: false }),
+        api.request('/push/public-key', {}, { requireAuth: false, notify: false }),
+      ]);
+
+      if (
+        handleCompanyAccessFailure(summaryResponse.res, summaryResponse.data, 'Nao foi possivel carregar o resumo operacional desta empresa.')
+        || handleCompanyAccessFailure(promotionsResponse.res, promotionsResponse.data, 'Nao foi possivel carregar as promocoes desta empresa.')
+        || handleCompanyAccessFailure(customersResponse.res, customersResponse.data, 'Nao foi possivel carregar a base de clientes desta empresa.')
+      ) {
+        return;
+      }
+
+      const summaryPayload = summaryResponse.res.ok && summaryResponse.data?.success !== false
+        ? (summaryResponse.data?.data || {})
+        : {};
+      const summaryCards = summaryPayload.cards || {};
+      const summaryPush = summaryPayload.push || {};
+      const promotions = toArray(promotionsResponse.data?.data || promotionsResponse.data);
+      const customersPayload = customersResponse.data?.data || {};
+      const customers = toArray(customersPayload?.data || customersResponse.data?.data || customersResponse.data);
+      const pushReady = Boolean(pushConfigResponse.data?.configured);
+
+      const linkedCustomers = Number(summaryPush.clientes_vinculados ?? summaryCards.total_clientes_vinculados ?? customersPayload?.total ?? customers.length ?? 0);
+      const activePushCustomers = Number(summaryPush.clientes_com_push_ativo ?? customersPayload?.summary?.clientes_com_push_ativo ?? 0);
+      const inactivePushCustomers = Math.max(0, Number(summaryPush.clientes_sem_push_ativo ?? customersPayload?.summary?.clientes_sem_push_ativo ?? (linkedCustomers - activePushCustomers)));
+      const activePromotions = promotions.filter((item) => item?.ativo !== false && String(item?.status || '').toLowerCase() !== 'pausada').length;
+      const lastSent = summaryPush.ultimo_envio_notificacao || summaryCards.ultimo_envio_notificacao || null;
+      const recentClients = toArray(summaryPayload.clientes_recentes).slice(0, 5);
+      const recentRedemptions = toArray(summaryPayload.ultimos_resgates).slice(0, 5);
+      const customersWithPush = customers.filter((item) => item?.push_ativo).slice(0, 5);
 
       const host = document.querySelector('main') || document.getElementById('content') || document.body;
-      host.innerHTML = '';
-
-      // ---- Campanha ativa em destaque ----
-      const now = Date.now();
-      const ativa = lista.find((c) => c.ativo && new Date(c.data_inicio) <= now && new Date(c.data_fim) >= now);
-
-      // ---- Cabeçalho ----
-      const header = document.createElement('div');
-      header.className = 'max-w-2xl mx-auto px-4 pt-6 pb-2';
-      header.innerHTML = `
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-headline font-bold text-on-surface">Campanhas de Pontos</h2>
-          <button id="novaCampanhaBtn" class="flex items-center gap-1 bg-primary text-on-primary px-4 py-2 rounded-xl text-sm font-semibold shadow">
-            <span class="material-symbols-outlined text-base">add</span> Nova campanha
-          </button>
-        </div>
-        ${ativa ? `
-        <div class="rounded-2xl bg-gradient-to-r from-primary to-tertiary text-on-primary p-4 mb-4 flex items-center gap-3">
-          <span class="material-symbols-outlined text-3xl">rocket_launch</span>
-          <div>
-            <p class="font-bold text-base">${ativa.nome} — <span class="text-yellow-200">${ativa.multiplicador}×</span></p>
-            <p class="text-sm opacity-90">Ativa até ${new Date(ativa.data_fim).toLocaleDateString('pt-BR')}</p>
-          </div>
-        </div>` : ''}`;
-      host.appendChild(header);
-
-      // ---- Formulário ----
-      const formWrap = document.createElement('div');
-      formWrap.id = 'campanha-form-wrap';
-      formWrap.className = 'max-w-2xl mx-auto px-4 pb-4 hidden';
-      formWrap.innerHTML = `
-        <div class="rounded-2xl border border-surface-variant/30 bg-surface-container-low p-5">
-          <h3 id="campanha-form-title" class="font-semibold text-base text-on-surface mb-3">Nova campanha</h3>
-          <input id="camp-nome" type="text" placeholder="Nome da campanha" class="w-full border border-surface-variant rounded-lg px-3 py-2 mb-3 text-sm bg-surface text-on-surface" />
-          <textarea id="camp-desc" rows="2" placeholder="Descrição (opcional)" class="w-full border border-surface-variant rounded-lg px-3 py-2 mb-3 text-sm bg-surface text-on-surface"></textarea>
-          <div class="grid grid-cols-2 gap-3 mb-3">
-            <div>
-              <label class="text-xs text-on-surface-variant mb-1 block">Multiplicador</label>
-              <input id="camp-mult" type="number" step="0.1" min="1.1" max="20" value="2" class="w-full border border-surface-variant rounded-lg px-3 py-2 text-sm bg-surface text-on-surface" />
-            </div>
-            <div class="flex items-end gap-2">
-              <label class="flex items-center gap-2 text-sm text-on-surface cursor-pointer">
-                <input id="camp-ativo" type="checkbox" checked class="accent-primary w-4 h-4" /> Ativa
-              </label>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-3 mb-4">
-            <div>
-              <label class="text-xs text-on-surface-variant mb-1 block">Início</label>
-              <input id="camp-inicio" type="datetime-local" class="w-full border border-surface-variant rounded-lg px-3 py-2 text-sm bg-surface text-on-surface" />
-            </div>
-            <div>
-              <label class="text-xs text-on-surface-variant mb-1 block">Fim</label>
-              <input id="camp-fim" type="datetime-local" class="w-full border border-surface-variant rounded-lg px-3 py-2 text-sm bg-surface text-on-surface" />
-            </div>
-          </div>
-          <div class="flex gap-3">
-            <button id="camp-salvar" class="flex-1 bg-primary text-on-primary rounded-xl py-2 font-semibold text-sm">Salvar</button>
-            <button id="camp-cancelar" class="flex-1 border border-surface-variant text-on-surface rounded-xl py-2 text-sm">Cancelar</button>
-          </div>
-          <p id="camp-msg" class="text-xs mt-2 text-center text-on-surface-variant"></p>
-        </div>`;
-      host.appendChild(formWrap);
-
-      // ---- Lista ----
-      const listaWrap = document.createElement('div');
-      listaWrap.className = 'max-w-2xl mx-auto px-4 pb-6 space-y-3';
-      if (!lista.length) {
-        listaWrap.innerHTML = '<p class="text-sm text-on-surface-variant text-center py-8">Nenhuma campanha cadastrada. Crie uma para multiplicar os pontos dos seus clientes!</p>';
-      } else {
-        lista.forEach((c) => {
-          const isAtiva = c.ativo && new Date(c.data_inicio) <= now && new Date(c.data_fim) >= now;
-          const card = document.createElement('div');
-          card.className = 'rounded-xl border border-surface-variant/30 bg-surface-container-lowest p-4 flex justify-between items-start';
-          card.innerHTML = `
-            <div class="flex-1 min-w-0 pr-3">
-              <div class="flex items-center gap-2 mb-1">
-                <span class="font-bold text-on-surface text-sm">${c.nome}</span>
-                <span class="text-xs px-2 py-0.5 rounded-full font-bold ${isAtiva ? 'bg-tertiary/20 text-tertiary' : 'bg-outline/10 text-outline'}">${isAtiva ? 'ATIVA' : (c.ativo ? 'AGENDADA' : 'INATIVA')}</span>
+      host.innerHTML = `
+        <section class="space-y-6">
+          <div class="rounded-[28px] bg-gradient-to-r from-[#133F8C] via-[#00AFA8] to-[#B01774] p-6 text-white shadow-[0_18px_45px_rgba(17,27,63,0.18)]">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+              <div class="max-w-[680px]">
+                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-white/65">Relatorio operacional</p>
+                <h1 class="mt-3 text-3xl font-extrabold leading-tight">Campanhas reais da empresa</h1>
+                <p class="mt-3 text-sm leading-6 text-white/82">Esta tela mostra resultados reais da sua operacao. Criacao de promocao, aniversario, fidelidade e lembrete continua na Gestao de Ofertas.</p>
+                <p class="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-white/70">Fluxo real: cliente se vincula, ativa notificacoes e recebe o envio da empresa.</p>
               </div>
-              ${c.descricao ? `<p class="text-xs text-on-surface-variant mb-1 line-clamp-1">${c.descricao}</p>` : ''}
-              <p class="text-xs text-on-surface-variant">
-                <span class="font-bold text-primary">${c.multiplicador}×</span> pontos &nbsp;·&nbsp;
-                ${new Date(c.data_inicio).toLocaleDateString('pt-BR')} → ${new Date(c.data_fim).toLocaleDateString('pt-BR')}
-              </p>
+              <div class="grid gap-3 sm:grid-cols-2">
+                <a href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary" class="inline-flex h-12 items-center justify-center rounded-full bg-white px-5 text-sm font-extrabold text-[#111B3F] shadow-sm">Abrir gestao de ofertas</a>
+                <a href="/validar_resgate.html?modo=beneficios" class="inline-flex h-12 items-center justify-center rounded-full border border-white/18 bg-white/10 px-5 text-sm font-bold text-white">Ler QR do cliente</a>
+                <a href="/clientes_fidelizados_loja.html" class="inline-flex h-12 items-center justify-center rounded-full border border-white/18 bg-white/10 px-5 text-sm font-bold text-white">Ver clientes</a>
+                <a href="/dashboard_parceiro.html" class="inline-flex h-12 items-center justify-center rounded-full border border-white/18 bg-white/10 px-5 text-sm font-bold text-white">Voltar ao dashboard</a>
+              </div>
             </div>
-            <div class="flex gap-2 shrink-0">
-              <button data-action="editar" data-id="${c.id}" class="material-symbols-outlined text-on-surface-variant text-xl" title="Editar">edit</button>
-              <button data-action="deletar" data-id="${c.id}" class="material-symbols-outlined text-error text-xl" title="Excluir">delete</button>
-            </div>`;
-          card.querySelector('[data-action="editar"]').addEventListener('click', () => fillForm(c));
-          card.querySelector('[data-action="deletar"]').addEventListener('click', () => deletar(c.id));
-          listaWrap.appendChild(card);
-        });
-      }
-      host.appendChild(listaWrap);
+          </div>
 
-      // ---- Lógica do formulário ----
-      let editingId = null;
+          <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Clientes vinculados</p>
+              <p class="mt-2 text-3xl font-extrabold text-[#133F8C]">${linkedCustomers.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Com push ativo</p>
+              <p class="mt-2 text-3xl font-extrabold text-[#00AFA8]">${activePushCustomers.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Sem push</p>
+              <p class="mt-2 text-3xl font-extrabold text-[#B01774]">${inactivePushCustomers.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Promocoes ativas</p>
+              <p class="mt-2 text-3xl font-extrabold text-[#111B3F]">${activePromotions.toLocaleString('pt-BR')}</p>
+            </div>
+          </section>
 
-      const fillForm = (c) => {
-        editingId = c.id;
-        document.getElementById('campanha-form-title').textContent = 'Editar campanha';
-        document.getElementById('camp-nome').value = c.nome || '';
-        document.getElementById('camp-desc').value = c.descricao || '';
-        document.getElementById('camp-mult').value = c.multiplicador || 2;
-        document.getElementById('camp-ativo').checked = !!c.ativo;
-        document.getElementById('camp-inicio').value = c.data_inicio ? c.data_inicio.replace(' ', 'T').slice(0, 16) : '';
-        document.getElementById('camp-fim').value = c.data_fim ? c.data_fim.replace(' ', 'T').slice(0, 16) : '';
-        formWrap.classList.remove('hidden');
-        formWrap.scrollIntoView({ behavior: 'smooth' });
-      };
+          <section class="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+            <article class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Push da empresa</p>
+                  <h2 class="mt-2 text-xl font-extrabold text-on-surface">Situacao do envio</h2>
+                </div>
+                <span class="rounded-full ${pushReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'} px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">
+                  Push servidor: ${pushReady ? 'configurado' : 'pendente'}
+                </span>
+              </div>
+              <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                <div class="rounded-xl bg-surface-container-low p-4">
+                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Ultimo envio</p>
+                  <p class="mt-2 text-sm font-bold text-on-surface">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
+                </div>
+                <div class="rounded-xl bg-surface-container-low p-4">
+                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Promocoes resgatadas</p>
+                  <p class="mt-2 text-2xl font-extrabold text-[#133F8C]">${Number(summaryCards.total_promocoes_resgatadas || 0).toLocaleString('pt-BR')}</p>
+                </div>
+                <div class="rounded-xl bg-surface-container-low p-4">
+                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Clientes inativos</p>
+                  <p class="mt-2 text-2xl font-extrabold text-[#B01774]">${Number(summaryCards.clientes_inativos || 0).toLocaleString('pt-BR')}</p>
+                </div>
+                <div class="rounded-xl bg-surface-container-low p-4">
+                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Media de avaliacao</p>
+                  <p class="mt-2 text-2xl font-extrabold text-[#111B3F]">${Number(summaryCards.media_avaliacao || 0).toFixed(1).replace('.', ',')}</p>
+                </div>
+              </div>
+              <div class="mt-4 grid gap-2 sm:grid-cols-2">
+                <a href="/gest_o_de_ofertas_parceiro.html#formOferta" class="app-primary-button justify-center">Criar promocao</a>
+                <a href="/gest_o_de_ofertas_parceiro.html#returnReminderSection" class="app-secondary-button justify-center">Configurar lembrete</a>
+                <a href="/gest_o_de_ofertas_parceiro.html#birthdayBonusSection" class="app-secondary-button justify-center">Bonus aniversario</a>
+                <a href="/gest_o_de_ofertas_parceiro.html#cartaoFidelidadeSection" class="app-secondary-button justify-center">Cartao fidelidade</a>
+              </div>
+            </article>
 
-      const deletar = async (id) => {
-        if (!window.confirm('Excluir esta campanha?')) return;
-        const { res } = await api.request(`/empresa/campanhas/${id}`, { method: 'DELETE' });
-        if (res.ok) { ui.message('Campanha removida.', 'success'); location.reload(); }
-        else { ui.message('Erro ao remover campanha.', 'error'); }
-      };
+            <article class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+              <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Clientes prontos para push</p>
+              <h2 class="mt-2 text-xl font-extrabold text-on-surface">Base com notificacoes ativas</h2>
+              <div class="mt-4 space-y-3">
+                ${customersWithPush.length ? customersWithPush.map((customer) => `
+                  <div class="rounded-xl bg-surface-container-low p-4">
+                    <div class="flex items-center justify-between gap-3">
+                      <div>
+                        <p class="text-sm font-bold text-on-surface">${safeText(customer?.nome || customer?.name, 'Cliente')}</p>
+                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(customer?.email, 'Sem e-mail')}</p>
+                      </div>
+                      <span class="rounded-full bg-sky-100 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-sky-700">${Number(customer?.push_total_dispositivos || 0).toLocaleString('pt-BR')} dispositivo(s)</span>
+                    </div>
+                  </div>
+                `).join('') : '<p class="text-sm text-on-surface-variant">Nenhum cliente vinculado ativou notificacoes ainda. Oriente o cliente a instalar o app e tocar em Ativar notificacoes.</p>'}
+              </div>
+            </article>
+          </section>
 
-      document.getElementById('novaCampanhaBtn').addEventListener('click', () => {
-        editingId = null;
-        document.getElementById('campanha-form-title').textContent = 'Nova campanha';
-        document.getElementById('camp-nome').value = '';
-        document.getElementById('camp-desc').value = '';
-        document.getElementById('camp-mult').value = 2;
-        document.getElementById('camp-ativo').checked = true;
-        document.getElementById('camp-inicio').value = '';
-        document.getElementById('camp-fim').value = '';
-        document.getElementById('camp-msg').textContent = '';
-        formWrap.classList.remove('hidden');
-        formWrap.scrollIntoView({ behavior: 'smooth' });
-      });
+          <section class="grid gap-4 lg:grid-cols-2">
+            <article class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Promocoes da vitrine</p>
+                  <h2 class="mt-2 text-xl font-extrabold text-on-surface">Campanhas publicadas</h2>
+                </div>
+                <a href="/gest_o_de_ofertas_parceiro.html" class="text-sm font-bold text-primary">Gerenciar</a>
+              </div>
+              <div class="mt-4 space-y-3">
+                ${promotions.length ? promotions.slice(0, 6).map((promo) => `
+                  <div class="rounded-xl bg-surface-container-low p-4">
+                    <div class="flex items-start justify-between gap-3">
+                      <div>
+                        <p class="text-sm font-bold text-on-surface">${safeText(promo?.nome || promo?.titulo, 'Promocao')}</p>
+                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(promo?.descricao, 'Sem descricao')}</p>
+                      </div>
+                      <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${promo?.ativo !== false && String(promo?.status || '').toLowerCase() !== 'pausada' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}">${promo?.ativo !== false && String(promo?.status || '').toLowerCase() !== 'pausada' ? 'Ativa' : 'Pausada'}</span>
+                    </div>
+                    <div class="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-on-surface-variant">
+                      <span>Validade: ${formatDatePtBr(promo?.data_expiracao || promo?.validade, 'Nao informada')}</span>
+                      <span>Push: ${safeText(promo?.notification_title || promo?.titulo, 'Nao informado')}</span>
+                    </div>
+                  </div>
+                `).join('') : '<p class="text-sm text-on-surface-variant">Nenhuma promocao ativa. Abra a Gestao de Ofertas para publicar a primeira campanha.</p>'}
+              </div>
+            </article>
 
-      document.getElementById('camp-cancelar').addEventListener('click', () => {
-        editingId = null;
-        formWrap.classList.add('hidden');
-      });
-
-      document.getElementById('camp-salvar').addEventListener('click', async () => {
-        const nome = document.getElementById('camp-nome').value.trim();
-        const multiplicador = parseFloat(document.getElementById('camp-mult').value);
-        const data_inicio = document.getElementById('camp-inicio').value;
-        const data_fim = document.getElementById('camp-fim').value;
-        const msg = document.getElementById('camp-msg');
-        if (!nome) { msg.textContent = 'Informe o nome.'; return; }
-        if (!data_inicio || !data_fim) { msg.textContent = 'Informe início e fim.'; return; }
-        if (multiplicador < 1.1) { msg.textContent = 'Multiplicador mínimo: 1.1×'; return; }
-        msg.textContent = '';
-        const payload = {
-          nome,
-          descricao: document.getElementById('camp-desc').value.trim() || null,
-          multiplicador,
-          data_inicio,
-          data_fim,
-          ativo: document.getElementById('camp-ativo').checked,
-        };
-        const path = editingId ? `/empresa/campanhas/${editingId}` : '/empresa/campanhas';
-        const method = editingId ? 'PUT' : 'POST';
-        const { res, data: resp } = await api.request(path, { method, body: JSON.stringify(payload) }, { headers: { 'Content-Type': 'application/json' } });
-        if (res.ok && resp?.success !== false) {
-          ui.message('Campanha salva!', 'success');
-          location.reload();
-        } else {
-          msg.textContent = resp?.message || 'Erro ao salvar campanha.';
-        }
-      });
+            <article class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+              <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Movimento recente</p>
+              <h2 class="mt-2 text-xl font-extrabold text-on-surface">Clientes e validacoes</h2>
+              <div class="mt-4 space-y-4">
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Clientes recentes</p>
+                  <div class="mt-3 space-y-3">
+                    ${recentClients.length ? recentClients.map((customer) => `
+                      <div class="rounded-xl bg-surface-container-low p-4">
+                        <p class="text-sm font-bold text-on-surface">${safeText(customer?.nome, 'Cliente')}</p>
+                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(customer?.email, 'Sem e-mail')} | Vinculo ${formatDatePtBr(customer?.data_vinculo, 'recente')}</p>
+                      </div>
+                    `).join('') : '<p class="text-sm text-on-surface-variant">Nenhum cliente recente para mostrar.</p>'}
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Ultimas validacoes</p>
+                  <div class="mt-3 space-y-3">
+                    ${recentRedemptions.length ? recentRedemptions.map((event) => `
+                      <div class="rounded-xl bg-surface-container-low p-4">
+                        <p class="text-sm font-bold text-on-surface">${safeText(event?.cliente_nome, 'Cliente')}</p>
+                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(event?.titulo, 'Beneficio validado')} | ${formatDatePtBr(event?.data, 'agora')}</p>
+                      </div>
+                    `).join('') : '<p class="text-sm text-on-surface-variant">Nenhuma validacao recente.</p>'}
+                  </div>
+                </div>
+              </div>
+            </article>
+          </section>
+        </section>
+      `;
+      ui.clearPageState();
+      return;
     },
   };
 
@@ -8871,6 +9028,7 @@
     wireFallbackLinks();
     wireFallbackButtons();
     wireSettingsShortcuts();
+    mountPageBackButton();
     wireUtilityButtons();
     wirePushButtons();
     consumeAccessNotice();

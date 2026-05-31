@@ -262,7 +262,20 @@ class EmpresaController extends Controller
             return $value;
         }
         $clean = @iconv('UTF-8', 'UTF-8//IGNORE', $value);
-        return $clean === false ? '' : $clean;
+        $clean = $clean === false ? '' : $clean;
+
+        if ($clean === '' || !preg_match('/[\x{00C3}\x{00E2}\x{FFFD}\x{251C}]/u', $clean)) {
+            return $clean;
+        }
+
+        foreach (['Windows-1252', 'ISO-8859-1'] as $sourceEncoding) {
+            $converted = @mb_convert_encoding($clean, 'UTF-8', $sourceEncoding);
+            if (is_string($converted) && $converted !== '' && !preg_match('/[\x{00C3}\x{00E2}\x{FFFD}\x{251C}]/u', $converted)) {
+                return $converted;
+            }
+        }
+
+        return $clean;
     }
 
     private function serializePublicEmpresa(
@@ -373,7 +386,11 @@ class EmpresaController extends Controller
     {
         try {
             if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
-                return response()->json($this->demoEmpresasFromUsers(), 200, ['Content-Type' => 'application/json; charset=UTF-8']);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Catalogo de empresas indisponivel.',
+                    'data' => [],
+                ], 503, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
             }
 
             $query = Empresa::query();
@@ -390,10 +407,17 @@ class EmpresaController extends Controller
                 ->orderBy('nome')
                 ->get();
 
-            return response()->json($empresas, 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            return response()->json([
+                'success' => true,
+                'data' => $empresas,
+            ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         } catch (\Exception $e) {
             Log::error('Erro ao listar empresas: ' . $e->getMessage());
-            return response()->json($this->demoEmpresasFromUsers(), 200, ['Content-Type' => 'application/json; charset=UTF-8']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao foi possivel carregar o catalogo de empresas agora.',
+                'data' => [],
+            ], 500, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         }
     }
 
@@ -409,9 +433,10 @@ class EmpresaController extends Controller
             return Cache::remember($cacheKey, 300, function () use ($request) {
                 if (!$this->hasEmpresasTable() || !$this->hasColumn('empresas', 'nome')) {
                     return response()->json([
-                        'success' => true,
-                        'data' => $this->demoEmpresasFromUsers(),
-                    ]);
+                        'success' => false,
+                        'message' => 'Catalogo de empresas indisponivel.',
+                        'data' => [],
+                    ], 503, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
                 }
 
             $query = Empresa::query();
@@ -487,9 +512,10 @@ class EmpresaController extends Controller
             Log::error('Erro ao listar empresas: ' . $e->getMessage());
 
             return response()->json([
-                'success' => true,
-                'data' => $this->demoEmpresasFromUsers(),
-            ], 200);
+                'success' => false,
+                'message' => 'Nao foi possivel carregar empresas agora.',
+                'data' => [],
+            ], 500, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
         }
     }
 

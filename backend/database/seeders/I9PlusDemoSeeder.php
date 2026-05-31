@@ -725,8 +725,9 @@ class I9PlusDemoSeeder extends Seeder
 
     private function syncUser(string $email, array $attributes): User
     {
-        $user = User::firstOrNew(['email' => $email]);
-        $this->fillModel($user, array_merge(['email' => $email], $attributes));
+        $normalizedEmail = strtolower(trim($email));
+        $user = User::firstOrNew(['email' => $normalizedEmail]);
+        $this->fillModel($user, array_merge(['email' => $normalizedEmail], $attributes));
         $user->save();
 
         return $user->refresh();
@@ -734,7 +735,22 @@ class I9PlusDemoSeeder extends Seeder
 
     private function syncEmpresa(string $nome, array $attributes): Empresa
     {
-        $empresa = Empresa::firstOrNew(['nome' => $nome]);
+        $empresa = null;
+        $cnpj = trim((string) ($attributes['cnpj'] ?? ''));
+        $ownerId = (int) ($attributes['owner_id'] ?? 0);
+
+        if ($cnpj !== '' && Schema::hasColumn('empresas', 'cnpj')) {
+            $empresa = Empresa::query()->where('cnpj', $cnpj)->first();
+        }
+
+        if (!$empresa && $ownerId > 0 && Schema::hasColumn('empresas', 'owner_id')) {
+            $empresa = Empresa::query()->where('owner_id', $ownerId)->first();
+        }
+
+        if (!$empresa) {
+            $empresa = Empresa::firstOrNew(['nome' => $nome]);
+        }
+
         $this->fillModel($empresa, array_merge(['nome' => $nome], $attributes));
         $empresa->save();
 
@@ -999,7 +1015,39 @@ class I9PlusDemoSeeder extends Seeder
 
     private function fillModel(Model $model, array $attributes): void
     {
-        $model->forceFill($this->filterColumns($model->getTable(), $attributes));
+        $model->forceFill($this->filterColumns($model->getTable(), $this->normalizeSeedData($attributes)));
+    }
+
+    private function normalizeSeedData(array $attributes): array
+    {
+        foreach ($attributes as $key => $value) {
+            if (is_array($value)) {
+                $attributes[$key] = $this->normalizeSeedData($value);
+                continue;
+            }
+
+            if (is_string($value)) {
+                $attributes[$key] = $this->normalizeSeedString($value);
+            }
+        }
+
+        return $attributes;
+    }
+
+    private function normalizeSeedString(string $value): string
+    {
+        if ($value === '' || !preg_match('/[\x{00C3}\x{00E2}\x{FFFD}\x{251C}]/u', $value)) {
+            return $value;
+        }
+
+        foreach (['Windows-1252', 'ISO-8859-1'] as $sourceEncoding) {
+            $converted = @mb_convert_encoding($value, 'UTF-8', $sourceEncoding);
+            if (is_string($converted) && $converted !== '' && !preg_match('/[\x{00C3}\x{00E2}\x{FFFD}\x{251C}]/u', $converted)) {
+                return $converted;
+            }
+        }
+
+        return $value;
     }
 
     private function filterColumns(string $table, array $data): array

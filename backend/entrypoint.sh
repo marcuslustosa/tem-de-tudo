@@ -84,7 +84,8 @@ fi
 
 if [ "${SEED_ON_START:-false}" = "true" ]; then
   echo "Executando seeders..."
-  php artisan db:seed --force --no-interaction
+  DEMO_SEEDER_CLASS="${DEMO_SEEDER_CLASS:-Database\\Seeders\\I9PlusDemoSeeder}"
+  php artisan db:seed --class="${DEMO_SEEDER_CLASS}" --force --no-interaction
 else
   echo "Seed no start desativado (SEED_ON_START=false)."
 fi
@@ -178,4 +179,3 @@ if [ "$#" -gt 0 ]; then
 fi
 
 exec apache2-foreground
-

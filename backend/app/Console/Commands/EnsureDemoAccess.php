@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Empresa;
+use App\Models\InscricaoEmpresa;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -51,12 +52,14 @@ class EnsureDemoAccess extends Command
         );
 
         $empresaId = $this->ensureEmpresaForOwner($empresaUser);
+        $pushClient = $this->ensurePushTestCustomer($empresaId);
 
         $this->line('');
         $this->info('Acessos de demo garantidos com sucesso:');
         $this->line("- Admin:   {$admin->email}");
         $this->line("- Empresa: {$empresaUser->email}");
         $this->line("- Cliente: {$cliente->email}");
+        $this->line("- Push:    {$pushClient->email}");
         if ($empresaId !== null) {
             $this->line("- Empresa vinculada ID: {$empresaId}");
         }
@@ -199,8 +202,22 @@ class EnsureDemoAccess extends Command
         ];
 
         $empresa = Empresa::query()->where('owner_id', $owner->id)->first();
+        if (!$empresa && Schema::hasColumn('empresas', 'cnpj')) {
+            $empresa = Empresa::query()
+                ->where('cnpj', $defaults['cnpj'])
+                ->first();
+        }
+        if (!$empresa && Schema::hasColumn('empresas', 'nome')) {
+            $empresa = Empresa::query()
+                ->whereRaw('LOWER(nome) = ?', [mb_strtolower((string) $defaults['nome'], 'UTF-8')])
+                ->first();
+        }
+
         if ($empresa) {
             $empresa->fill($defaults);
+            if ((int) ($empresa->owner_id ?? 0) === 0 || (int) $empresa->owner_id === (int) $owner->id) {
+                $empresa->owner_id = $owner->id;
+            }
             $empresa->save();
             return (int) $empresa->id;
         }
@@ -211,6 +228,34 @@ class EnsureDemoAccess extends Command
         $empresa->save();
 
         return (int) $empresa->id;
+    }
+
+    private function ensurePushTestCustomer(?int $empresaId): User
+    {
+        $customer = $this->upsertUser(
+            email: 'cliente.push@demo.local',
+            name: 'Cliente Push iPhone',
+            perfil: 'cliente',
+            password: 'password',
+            telefone: '(11) 99999-1004',
+            syncPassword: true
+        );
+
+        if ($empresaId !== null && Schema::hasTable('inscricoes_empresa')) {
+            InscricaoEmpresa::query()->firstOrCreate(
+                [
+                    'user_id' => $customer->id,
+                    'empresa_id' => $empresaId,
+                ],
+                [
+                    'data_inscricao' => now(),
+                    'ultima_visita' => null,
+                    'bonus_adesao_resgatado' => false,
+                ]
+            );
+        }
+
+        return $customer;
     }
 
     /**
