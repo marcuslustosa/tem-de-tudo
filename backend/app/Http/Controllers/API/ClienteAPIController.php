@@ -184,8 +184,12 @@ class ClienteAPIController extends Controller
         }
 
         $saldoPontos = max(0, $pontosTotais - $pontosGastos);
-        $empresasVinculadas = $this->linkedCompaniesForUser((int) $user->id);
-        $empresasDestaque = $this->featuredCompaniesForUser((int) $user->id, 4, $empresasVinculadas->pluck('id')->all());
+        $empresasVinculadas = rescue(fn () => $this->linkedCompaniesForUser((int) $user->id), collect(), false);
+        $empresasDestaque = rescue(
+            fn () => $this->featuredCompaniesForUser((int) $user->id, 4, $empresasVinculadas->pluck('id')->all()),
+            collect(),
+            false
+        );
 
         return response()->json([
             'success' => true,
@@ -215,6 +219,7 @@ class ClienteAPIController extends Controller
      */
     public function listarEmpresas(Request $request)
     {
+        try {
         $query = Empresa::query()->publiclyVisible()->select('empresas.*');
         
         // Filtro por ramo
@@ -260,6 +265,17 @@ class ClienteAPIController extends Controller
             'success' => true,
             'data' => $items
         ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao listar empresas para cliente autenticado', [
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => [],
+            ], 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+        }
     }
     
     /**

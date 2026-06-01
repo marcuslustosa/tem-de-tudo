@@ -26,20 +26,24 @@ class RelatorioOperacionalService
 
     public function companySummary(Empresa $empresa): array
     {
-        $linkedQuery = InscricaoEmpresa::query()->where('empresa_id', $empresa->id);
-        $linkedCustomerIds = $linkedQuery->pluck('user_id')
-            ->map(fn ($id) => (int) $id)
-            ->filter(fn ($id) => $id > 0)
-            ->unique()
-            ->values();
-        $thresholdDays = $this->activeReminderThreshold($empresa);
-        $inactiveCount = $this->countInactiveLinkedCustomers($empresa, $linkedCustomerIds, $thresholdDays);
-        $customersWithPush = $this->countLinkedCustomersWithPush($linkedCustomerIds);
-        $lastNotificationAt = $this->latestNotificationSentAt($empresa->id);
+        $linkedCustomerIds = rescue(function () use ($empresa) {
+            return InscricaoEmpresa::query()
+                ->where('empresa_id', $empresa->id)
+                ->pluck('user_id')
+                ->map(fn ($id) => (int) $id)
+                ->filter(fn ($id) => $id > 0)
+                ->unique()
+                ->values();
+        }, collect(), false);
 
-        $recentClients = $this->safeRecentClients($empresa, 5);
-        $latestLoyaltyMovements = $this->latestLoyaltyMovements($empresa, 10);
-        $latestRedemptions = $this->latestRedemptions($empresa, 10);
+        $thresholdDays = (int) rescue(fn () => $this->activeReminderThreshold($empresa), self::DEFAULT_INACTIVITY_DAYS, false);
+        $inactiveCount = (int) rescue(fn () => $this->countInactiveLinkedCustomers($empresa, $linkedCustomerIds, $thresholdDays), 0, false);
+        $customersWithPush = (int) rescue(fn () => $this->countLinkedCustomersWithPush($linkedCustomerIds), 0, false);
+        $lastNotificationAt = rescue(fn () => $this->latestNotificationSentAt($empresa->id), null, false);
+
+        $recentClients = rescue(fn () => $this->safeRecentClients($empresa, 5), [], false);
+        $latestLoyaltyMovements = rescue(fn () => $this->latestLoyaltyMovements($empresa, 10), [], false);
+        $latestRedemptions = rescue(fn () => $this->latestRedemptions($empresa, 10), [], false);
 
         return [
             'empresa' => [
@@ -51,27 +55,29 @@ class RelatorioOperacionalService
             'cards' => [
                 'total_clientes_vinculados' => (int) $linkedCustomerIds->count(),
                 'clientes_com_push_ativo' => $customersWithPush,
-                'novos_clientes_mes' => (int) InscricaoEmpresa::query()
-                    ->where('empresa_id', $empresa->id)
-                    ->whereBetween('data_inscricao', [now()->startOfMonth(), now()->endOfMonth()])
-                    ->count(),
-                'clientes_aniversariantes_mes' => $this->countBirthdayCustomersForMonth($linkedCustomerIds),
+                'novos_clientes_mes' => (int) rescue(function () use ($empresa) {
+                    return InscricaoEmpresa::query()
+                        ->where('empresa_id', $empresa->id)
+                        ->whereBetween('data_inscricao', [now()->startOfMonth(), now()->endOfMonth()])
+                        ->count();
+                }, 0, false),
+                'clientes_aniversariantes_mes' => (int) rescue(fn () => $this->countBirthdayCustomersForMonth($linkedCustomerIds), 0, false),
                 'clientes_inativos' => $inactiveCount,
-                'total_bonus_adesao_resgatados' => $this->countBonusAdesaoResgates($empresa->id),
-                'total_pontos_distribuidos' => $this->sumLoyaltyPoints($empresa->id, CartaoFidelidadeMovimento::TYPE_EARNED),
-                'total_recompensas_resgatadas' => $this->countLoyaltyRedemptions($empresa->id),
-                'total_promocoes_criadas' => $this->countPromotions($empresa->id),
-                'total_promocoes_resgatadas' => $this->countPromotionRedemptions($empresa->id),
-                'total_notificacoes_enviadas' => $this->countSentNotifications($empresa->id),
+                'total_bonus_adesao_resgatados' => (int) rescue(fn () => $this->countBonusAdesaoResgates($empresa->id), 0, false),
+                'total_pontos_distribuidos' => (int) rescue(fn () => $this->sumLoyaltyPoints($empresa->id, CartaoFidelidadeMovimento::TYPE_EARNED), 0, false),
+                'total_recompensas_resgatadas' => (int) rescue(fn () => $this->countLoyaltyRedemptions($empresa->id), 0, false),
+                'total_promocoes_criadas' => (int) rescue(fn () => $this->countPromotions($empresa->id), 0, false),
+                'total_promocoes_resgatadas' => (int) rescue(fn () => $this->countPromotionRedemptions($empresa->id), 0, false),
+                'total_notificacoes_enviadas' => (int) rescue(fn () => $this->countSentNotifications($empresa->id), 0, false),
                 'ultimo_envio_notificacao' => $lastNotificationAt,
-                'total_avaliacoes' => $this->countReviews($empresa->id),
-                'media_avaliacao' => $this->averageReviews($empresa->id),
+                'total_avaliacoes' => (int) rescue(fn () => $this->countReviews($empresa->id), 0, false),
+                'media_avaliacao' => (float) rescue(fn () => $this->averageReviews($empresa->id), 0.0, false),
             ],
             'push' => [
                 'clientes_vinculados' => (int) $linkedCustomerIds->count(),
                 'clientes_com_push_ativo' => $customersWithPush,
                 'clientes_sem_push_ativo' => max(0, (int) $linkedCustomerIds->count() - $customersWithPush),
-                'total_notificacoes_enviadas' => $this->countSentNotifications($empresa->id),
+                'total_notificacoes_enviadas' => (int) rescue(fn () => $this->countSentNotifications($empresa->id), 0, false),
                 'ultimo_envio_notificacao' => $lastNotificationAt,
             ],
             'config' => [
