@@ -343,8 +343,9 @@
   const params = new URLSearchParams(window.location.search);
   const mode = params.get('modo') || (isEmpresa ? 'validacao-cliente' : 'vinculo-empresa');
   const isBenefitMode = isEmpresa && ['bonus-adesao', 'fidelidade', 'aniversario', 'beneficios'].includes(mode);
-  const isBonusMode = isEmpresa && mode === 'bonus-adesao';
   const instructionEl = document.getElementById('scanInstructions');
+  let appReady = Boolean(window.__tdtAppReady);
+  let scanPending = false;
 
   if (instructionEl) {
     instructionEl.textContent = isEmpresa
@@ -360,6 +361,61 @@
     statusText.classList.remove('text-error', 'text-primary', 'text-tertiary');
     statusText.textContent = isEmpresa ? 'Escaneie o QR do cliente...' : 'Escaneie o QR da empresa...';
   };
+
+  const resumeScanning = (delay = 0) => {
+    setTimeout(() => {
+      scanPending = false;
+      resetScannerUi();
+      scanning = true;
+      requestAnimationFrame(scanQRCode);
+    }, delay);
+  };
+
+  window.addEventListener('tdt-app-ready', () => {
+    appReady = true;
+  });
+
+  window.addEventListener('tdt-qr-validation-result', (event) => {
+    const result = event?.detail || {};
+    if (result.source !== 'camera') return;
+
+    const payload = result.data || {};
+    const cliente = payload?.cliente || {};
+    successIndicator.classList.toggle('hidden', !result.ok);
+
+    if (result.ok) {
+      statusText.classList.remove('text-error');
+      statusText.classList.add('text-tertiary');
+
+      if (isBenefitMode && cliente.nome) {
+        statusText.textContent = `Cliente identificado: ${cliente.nome}`;
+        resumeScanning(1800);
+        return;
+      }
+
+      if (isEmpresa && cliente.nome) {
+        const pts = Number(payload?.pontos_ganhos || 0);
+        const restantes = Number(payload?.scans_restantes || 0);
+        statusText.textContent = `Cliente validado: ${cliente.nome} (+${pts} pts). Restam ${restantes} validacao(oes) hoje.`;
+        resumeScanning(2200);
+        return;
+      }
+
+      statusText.textContent = result.message || 'QR validado com sucesso.';
+      if (!isEmpresa) {
+        return;
+      }
+
+      resumeScanning(2200);
+      return;
+    }
+
+    successIndicator.classList.add('hidden');
+    statusText.classList.remove('text-primary', 'text-tertiary');
+    statusText.classList.add('text-error');
+    statusText.textContent = result.message || 'Nao foi possivel validar este QR.';
+    resumeScanning(2600);
+  });
 
   async function startCamera() {
     try {
@@ -430,6 +486,30 @@
     if (navigator.vibrate) {
       navigator.vibrate(200);
     }
+
+    if (!appReady) {
+      statusText.textContent = 'Preparando validacao...';
+      statusText.classList.remove('text-error');
+      statusText.classList.add('text-tertiary');
+      resumeScanning(900);
+      return;
+    }
+
+    if (scanPending) {
+      return;
+    }
+
+    scanPending = true;
+    scanning = false;
+    const manualInput = document.getElementById('cupomId');
+    if (manualInput) manualInput.value = qrData;
+    window.dispatchEvent(new CustomEvent('tdt-qr-scanned', {
+      detail: {
+        codigo: qrData,
+        source: 'camera',
+      },
+    }));
+    return;
 
     const token = localStorage.getItem('tem_de_tudo_token');
     const endpoint = isEmpresa
@@ -552,14 +632,31 @@
 
   document.getElementById('closeQRScanner').addEventListener('click', () => {
     scanning = false;
+    scanPending = false;
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
     }
-    window.location.href = isEmpresa ? '/dashboard_parceiro.html' : '/meus_pontos.html';
+    const fallback = isEmpresa ? '/dashboard_parceiro.html' : '/meus_pontos.html';
+    const sameOriginReferrer = document.referrer && (() => {
+      try {
+        return new URL(document.referrer).origin === window.location.origin;
+      } catch {
+        return false;
+      }
+    })();
+    if (window.history.length > 1 && sameOriginReferrer) {
+      window.history.back();
+      return;
+    }
+    window.location.href = fallback;
   });
 
   if (video) {
-    startCamera();
+    if (appReady) {
+      startCamera();
+    } else {
+      window.addEventListener('tdt-app-ready', () => startCamera(), { once: true });
+    }
   }
 
   window.addEventListener('beforeunload', () => {
