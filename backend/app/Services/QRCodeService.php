@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Empresa;
 use App\Models\QRCode;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode as QrCodeGenerator;
@@ -59,13 +60,14 @@ class QRCodeService
      */
     public function gerarQRCodeEmpresa(Empresa $empresa)
     {
+        $activeValue = $this->databaseBooleanValue(true);
         $qrCodeExistente = QRCode::where('empresa_id', $empresa->id)->first();
 
         if ($qrCodeExistente) {
             if (!$qrCodeExistente->code) {
                 $qrCodeExistente->update([
                     'code' => QRCode::gerarCodigoUnico($empresa->id),
-                    'active' => true,
+                    'active' => $activeValue,
                 ]);
             }
 
@@ -78,7 +80,7 @@ class QRCodeService
             'code' => QRCode::gerarCodigoUnico($empresa->id),
             'name' => 'QR Code Principal',
             'empresa_id' => $empresa->id,
-            'active' => true,
+            'active' => $activeValue,
         ]);
 
         $this->salvarQRCodeNoStorage($qrCode);
@@ -104,9 +106,17 @@ class QRCodeService
         $query = QRCode::where('code', $code);
 
         if (Schema::hasColumn('qr_codes', 'active')) {
-            $query->where('active', true);
+            if ($this->isBooleanColumn('qr_codes', 'active') && DB::connection()->getDriverName() === 'pgsql') {
+                $query->whereRaw('active = true');
+            } else {
+                $query->where('active', $this->databaseBooleanValue(true));
+            }
         } elseif (Schema::hasColumn('qr_codes', 'ativo')) {
-            $query->where('ativo', true);
+            if ($this->isBooleanColumn('qr_codes', 'ativo') && DB::connection()->getDriverName() === 'pgsql') {
+                $query->whereRaw('ativo = true');
+            } else {
+                $query->where('ativo', $this->databaseBooleanValue(true));
+            }
         }
 
         $qrCode = $query->first();
@@ -161,14 +171,14 @@ class QRCodeService
 
     public function desativarQRCode(QRCode $qrCode)
     {
-        $qrCode->update(['active' => false]);
+        $qrCode->update(['active' => $this->databaseBooleanValue(false)]);
 
         return $qrCode;
     }
 
     public function reativarQRCode(QRCode $qrCode)
     {
-        $qrCode->update(['active' => true]);
+        $qrCode->update(['active' => $this->databaseBooleanValue(true)]);
 
         return $qrCode;
     }
@@ -248,5 +258,29 @@ class QRCodeService
             'migrados' => $migrados,
             'erros' => $erros,
         ];
+    }
+
+    private function databaseBooleanValue(bool $value): bool|string
+    {
+        if (DB::connection()->getDriverName() === 'pgsql') {
+            return $value ? 'true' : 'false';
+        }
+
+        return $value;
+    }
+
+    private function isBooleanColumn(string $table, string $column): bool
+    {
+        if (!Schema::hasTable($table) || !Schema::hasColumn($table, $column)) {
+            return false;
+        }
+
+        try {
+            $type = strtolower((string) Schema::getColumnType($table, $column));
+
+            return in_array($type, ['bool', 'boolean'], true);
+        } catch (\Throwable) {
+            return false;
+        }
     }
 }

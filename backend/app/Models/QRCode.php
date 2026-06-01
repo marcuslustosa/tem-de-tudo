@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class QRCode extends Model
@@ -55,6 +56,10 @@ class QRCode extends Model
      */
     public function scopeAtivos($query)
     {
+        if (DB::connection()->getDriverName() === 'pgsql') {
+            return $query->whereRaw($this->qualifyColumn('active') . ' = true');
+        }
+
         return $query->where('active', true);
     }
 
