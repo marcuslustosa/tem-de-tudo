@@ -4796,77 +4796,12 @@
       btn.addEventListener('click', async () => {
         await submitQrCode(input.value, { source: 'manual' });
         return;
-        const codigo = input.value.trim();
-        if (!codigo) {
-          return ui.message(
-            perfil === 'empresa'
-              ? (companyBenefitMode ? 'Informe o QR do cliente.' : 'Informe o codigo do cupom.')
-              : 'Informe o codigo do QR da empresa.',
-            'warning'
-          );
-        }
+      });
 
-        btn.disabled = true;
-        btn.classList.add('opacity-60');
-
-        let response;
-        if (perfil === 'empresa' && companyBenefitMode) {
-          response = await api.request('/empresa/clientes/qrcode/consultar', {
-            method: 'POST',
-            body: JSON.stringify({ qrcode: codigo }),
-          });
-        } else if (perfil === 'empresa') {
-          response = await api.request('/empresa/escanear-cliente', {
-            method: 'POST',
-            body: JSON.stringify({ qrcode: codigo }),
-          });
-        } else {
-          response = await api.request('/cliente/vincular-empresa-qrcode', {
-            method: 'POST',
-            body: JSON.stringify({ code: codigo }),
-          });
-        }
-
-        const { res, data } = response;
-        btn.disabled = false;
-        btn.classList.remove('opacity-60');
-
-        if (res.ok && data?.success) {
-          if (perfil === 'empresa' && companyBenefitMode) {
-            renderBonusLookup(data.data || {});
-            ui.message(data?.message || 'Cliente consultado com sucesso.', 'success');
-            return;
-          }
-
-          if (perfil === 'empresa') {
-            ui.message(data?.message || 'Cliente validado com sucesso.', 'success');
-            const info = data.data || {};
-            pushItem({
-              cliente: info.cliente?.nome || info.cliente_nome || info.cliente || 'Cliente',
-              beneficio: info.empresa || info.promocao || info.recompensa || 'Check-in presencial',
-              codigo,
-              hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-            });
-            return;
-          }
-
-          clearPendingCompanyQr();
-          ui.message(data?.message || 'Empresa vinculada com sucesso.', 'success');
-          const target = `${data?.data?.public_page_url || `/detalhe_do_parceiro.html?id=${encodeURIComponent(data?.data?.empresa?.id || '')}`}&linked=1`.replace('?&', '?');
-          setTimeout(() => {
-            window.location.href = target.includes('?') ? target : `${target}?linked=1`;
-          }, 500);
-          return;
-        }
-
-        ui.message(
-          data?.message || (
-            perfil === 'empresa'
-              ? (companyBenefitMode ? 'Não foi possível consultar este cliente.' : 'Não foi possível usar o cupom.')
-              : 'Não foi possível vincular esta empresa.'
-          ),
-          'error'
-        );
+      input.addEventListener('keydown', async (event) => {
+        if (event.key !== 'Enter') return;
+        event.preventDefault();
+        await submitQrCode(input.value, { source: 'manual' });
       });
 
       window.addEventListener('tdt-qr-scanned', async (event) => {
