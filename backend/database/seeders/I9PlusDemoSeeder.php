@@ -21,6 +21,7 @@ use App\Services\QRCodeService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
@@ -1098,18 +1099,20 @@ class I9PlusDemoSeeder extends Seeder
         return $this->columnTypesCache[$table][$column];
     }
 
-    private function normalizeBooleanValue(mixed $value): bool
+    private function normalizeBooleanValue(mixed $value): bool|string
     {
         if (is_bool($value)) {
-            return $value;
+            $normalized = $value;
+        } elseif (is_numeric($value)) {
+            $normalized = (int) $value === 1;
+        } else {
+            $normalized = in_array(strtolower(trim((string) $value)), ['1', 'true', 'ativo', 'ativa', 'active', 'yes', 'sim'], true);
         }
 
-        if (is_numeric($value)) {
-            return (int) $value === 1;
+        if (DB::connection()->getDriverName() === 'pgsql') {
+            return $normalized ? 'true' : 'false';
         }
 
-        $normalized = strtolower(trim((string) $value));
-
-        return in_array($normalized, ['1', 'true', 'ativo', 'ativa', 'active', 'yes', 'sim'], true);
+        return $normalized;
     }
 }
