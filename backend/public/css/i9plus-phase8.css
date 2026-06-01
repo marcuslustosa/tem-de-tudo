@@ -1044,6 +1044,15 @@ body[data-page="dashboard_parceiro"] main {
   padding-top: 24px;
 }
 
+body[data-page="dashboard_parceiro"] > header {
+  width: min(1180px, calc(100% - 24px));
+  max-width: 1180px;
+  margin: 12px auto 0;
+  border: 1px solid rgba(17, 27, 63, 0.06);
+  border-radius: 28px;
+  box-shadow: 0 18px 38px rgba(17, 27, 63, 0.08);
+}
+
 body[data-page="dashboard_parceiro"] .empresa-shortcut-card {
   display: flex;
   min-height: 112px;
@@ -1090,6 +1099,29 @@ body[data-page="dashboard_parceiro"] #empresaLatestRedemptions > * {
 
 body[data-page="dashboard_parceiro"] > header h1 {
   color: var(--i9-navy) !important;
+}
+
+body[data-page="dashboard_parceiro"] #empresaPushCampaignsSummary,
+body[data-page="dashboard_parceiro"] #empresaStorefrontSummary,
+body[data-page="clientes_fidelizados_loja"] #clientesPushSummary,
+body[data-page="meus_pontos"] #clientRelationshipOverview {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(17, 27, 63, 0.07);
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  box-shadow: 0 16px 38px rgba(17, 27, 63, 0.08);
+}
+
+body[data-page="dashboard_parceiro"] #empresaPushCampaignsSummary::before,
+body[data-page="dashboard_parceiro"] #empresaStorefrontSummary::before,
+body[data-page="clientes_fidelizados_loja"] #clientesPushSummary::before,
+body[data-page="meus_pontos"] #clientRelationshipOverview::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #00afa8 0%, #133f8c 46%, #b01774 100%);
 }
 
 body[data-page="clientes_fidelizados_loja"],
@@ -1531,6 +1563,36 @@ body[data-page="meus_pontos"] .home-client-hero {
   box-shadow: 0 24px 58px rgba(11, 31, 58, 0.2);
 }
 
+body[data-page="meus_pontos"] #homeMyQrCard {
+  border: 1px solid rgba(17, 27, 63, 0.06);
+}
+
+body[data-page="meus_pontos"] #linkedCompaniesList > article,
+body[data-page="meus_pontos"] #featuredCompaniesList > article,
+body[data-page="clientes_fidelizados_loja"] #clientesLista > div {
+  border: 1px solid rgba(17, 27, 63, 0.07);
+  border-radius: 26px;
+  box-shadow: 0 16px 38px rgba(17, 27, 63, 0.08);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+body[data-page="meus_pontos"] #linkedCompaniesList > article:hover,
+body[data-page="meus_pontos"] #featuredCompaniesList > article:hover,
+body[data-page="clientes_fidelizados_loja"] #clientesLista > div:hover {
+  transform: translateY(-2px);
+  border-color: rgba(176, 23, 116, 0.16);
+  box-shadow: 0 20px 42px rgba(17, 27, 63, 0.12);
+}
+
+body[data-page="meus_pontos"] > nav:last-of-type {
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(var(--i9-mobile-shell), calc(100% - 16px));
+  border: 1px solid rgba(17, 27, 63, 0.08);
+  border-bottom: 0;
+  box-shadow: 0 -10px 28px rgba(17, 27, 63, 0.12);
+}
+
 body[data-page="meus_pontos"] [data-push-card],
 body[data-page="meu_perfil"] [data-push-card] {
   position: relative;
@@ -1713,6 +1775,55 @@ body[data-page="gest_o_de_ofertas_parceiro"] .offer-tool-card:hover {
   transform: translateY(-2px);
   border-color: rgba(176, 23, 116, 0.14);
   box-shadow: var(--i9-shadow-strong);
+}
+
+body[data-page="gest_o_de_ofertas_parceiro"] #promoWeeklyInfo {
+  border: 1px solid rgba(17, 27, 63, 0.06);
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+}
+
+body[data-page="gest_o_de_ofertas_parceiro"] #formOferta,
+body[data-page="gest_o_de_ofertas_parceiro"] #bonusAdesaoSection,
+body[data-page="gest_o_de_ofertas_parceiro"] #cartaoFidelidadeSection,
+body[data-page="gest_o_de_ofertas_parceiro"] #birthdayBonusSection,
+body[data-page="gest_o_de_ofertas_parceiro"] #returnReminderSection {
+  position: relative;
+  overflow: hidden;
+}
+
+body[data-page="gest_o_de_ofertas_parceiro"] #formOferta::before,
+body[data-page="gest_o_de_ofertas_parceiro"] #bonusAdesaoSection::before,
+body[data-page="gest_o_de_ofertas_parceiro"] #cartaoFidelidadeSection::before,
+body[data-page="gest_o_de_ofertas_parceiro"] #birthdayBonusSection::before,
+body[data-page="gest_o_de_ofertas_parceiro"] #returnReminderSection::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #133f8c 0%, #00afa8 50%, #b01774 100%);
+}
+
+body[data-page="gest_o_de_ofertas_parceiro"] #novaOfertaBtn {
+  min-height: 48px;
+}
+
+@media (max-width: 767px) {
+  body[data-page="dashboard_parceiro"] > header {
+    width: 100%;
+    margin: 0 auto;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-page="gest_o_de_ofertas_parceiro"] #novaOfertaBtn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card {

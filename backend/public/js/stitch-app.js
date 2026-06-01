@@ -1204,8 +1204,8 @@
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Resumo do app</p>
-          <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Seus vinculos e beneficios</h2>
-          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">Voce recebe campanhas somente das empresas vinculadas a sua conta. Use o QR da empresa para criar o vinculo e seu QR pessoal para validar beneficios no balcao.</p>
+          <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Seus vínculos e benefícios</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">Você recebe campanhas somente das empresas vinculadas à sua conta. Use o QR da empresa para criar o vínculo e seu QR pessoal para validar benefícios no balcão.</p>
         </div>
         <div class="grid gap-2 sm:grid-cols-2">
           <a href="/parceiros_tem_de_tudo.html" class="app-secondary-button justify-center">Explorar empresas</a>
@@ -1245,7 +1245,7 @@
         <div>
           <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Push dos clientes</p>
           <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Base pronta para campanha</h2>
-          <p class="mt-2 text-sm leading-6 text-on-surface-variant">Promocoes, aniversario e lembretes saem somente para clientes vinculados com notificacoes ativas no dispositivo.</p>
+          <p class="mt-2 text-sm leading-6 text-on-surface-variant">Promoções, aniversário e lembretes saem somente para clientes vinculados com notificações ativas no dispositivo.</p>
         </div>
         <a href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary" class="app-secondary-button justify-center">Abrir push e campanhas</a>
       </div>
@@ -1960,7 +1960,7 @@
 
     function renderList(items, title = 'Notificacoes') {
       if (!items.length) {
-        ui.setPageState('empty', 'Sem notificacoes.');
+        ui.setPageState('empty', 'Sem notificações.');
         return;
       }
       const inner = items
@@ -3400,13 +3400,13 @@
       }
         if (heroBadge) heroBadge.textContent = info.points_multiplier ? `${info.points_multiplier}x pontos` : 'Parceiro';
         if (heroDist) heroDist.textContent = info.endereco || '';
-        setText('partner-address', info.endereco, 'Endereco nao informado');
+        setText('partner-address', info.endereco, 'Endereço não informado');
         setText('partner-about', info.descricao, 'Esta empresa opera beneficios e atendimento presencial por QR Code.');
-        setText('partner-phone', info.telefone, 'Nao informado');
-        setText('partner-whatsapp', info.whatsapp, 'Nao informado');
-        setText('partner-instagram', info.instagram, 'Nao informado');
-        setText('partner-facebook', info.facebook, 'Nao informado');
-        setText('partner-full-address', info.endereco, 'Nao informado');
+        setText('partner-phone', info.telefone, 'Não informado');
+        setText('partner-whatsapp', info.whatsapp, 'Não informado');
+        setText('partner-instagram', info.instagram, 'Não informado');
+        setText('partner-facebook', info.facebook, 'Não informado');
+        setText('partner-full-address', info.endereco, 'Não informado');
         setLink('partnerWhatsappLink', info.whatsapp, (value) => `https://wa.me/${String(value).replace(/\D/g, '')}`);
         setLink('partnerInstagramLink', info.instagram, (value) => String(value).startsWith('http') ? value : `https://instagram.com/${String(value).replace(/^@/, '')}`);
         setLink('partnerFacebookLink', info.facebook, (value) => String(value).startsWith('http') ? value : `https://facebook.com/${String(value).replace(/^@/, '')}`);
@@ -4949,8 +4949,8 @@
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Minha vitrine</p>
-              <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Dados publicos da vitrine</h2>
-              <p class="mt-2 text-sm leading-6 text-on-surface-variant">${safeText(info?.descricao, 'Atualize o perfil da empresa para mostrar descricao, contatos e proposta comercial da vitrine.')}</p>
+              <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Dados públicos da vitrine</h2>
+              <p class="mt-2 text-sm leading-6 text-on-surface-variant">${safeText(info?.descricao, 'Atualize o perfil da empresa para mostrar descrição, contatos e proposta comercial da vitrine.')}</p>
             </div>
             <div class="grid gap-2 sm:grid-cols-2">
               <a class="empresa-shortcut-card" href="/meu_perfil.html">
@@ -4959,26 +4959,26 @@
               </a>
               <a class="empresa-shortcut-card" href="${publicUrl}">
                 <span class="material-symbols-outlined">open_in_new</span>
-                <span>Ver pagina publica</span>
+                <span>Ver página pública</span>
               </a>
             </div>
           </div>
           <div class="grid gap-3 sm:grid-cols-2">
             <div class="rounded-xl bg-surface-container-low p-4">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">WhatsApp</p>
-              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.whatsapp, 'Nao informado')}</p>
+              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.whatsapp, 'Não informado')}</p>
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Instagram</p>
-              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.instagram, 'Nao informado')}</p>
+              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.instagram, 'Não informado')}</p>
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Facebook</p>
-              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.facebook, 'Nao informado')}</p>
+              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.facebook, 'Não informado')}</p>
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Endereco</p>
-              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.endereco, 'Endereco nao informado')}</p>
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Endereço</p>
+              <p class="mt-2 text-sm font-bold text-on-surface">${safeText(info?.endereco, 'Endereço não informado')}</p>
             </div>
           </div>
         `;
@@ -5016,8 +5016,8 @@
             <div>
               <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Notifica&ccedil;&otilde;es e campanhas</p>
               <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Push para clientes vinculados</h2>
-              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Promocao, aniversario e lembrete saem pela Gestao de Ofertas e usam somente clientes vinculados a esta empresa.</p>
-              <p class="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Fluxo real: cliente ativa notificacoes, empresa cria campanha, empresa envia push</p>
+              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Promoção, aniversário e lembrete saem pela Gestão de Ofertas e usam somente clientes vinculados a esta empresa.</p>
+              <p class="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Fluxo real: cliente ativa notificações, empresa cria campanha, empresa envia push</p>
             </div>
             <span class="rounded-full ${serverReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'} px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">
               Push servidor: ${serverReady ? 'configurado' : 'pendente'}
@@ -5033,11 +5033,11 @@
               <p class="mt-2 text-2xl font-extrabold text-[#00AFA8]">${activePushCustomers.toLocaleString('pt-BR')}</p>
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Sem notificacoes</p>
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Sem notificações</p>
               <p class="mt-2 text-2xl font-extrabold text-[#B01774]">${inactivePushCustomers.toLocaleString('pt-BR')}</p>
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Ultimo envio</p>
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Último envio</p>
               <p class="mt-2 text-sm font-bold text-on-surface">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
@@ -5046,13 +5046,13 @@
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Status do servidor</p>
-              <p class="mt-2 text-sm font-bold ${serverReady ? 'text-emerald-700' : 'text-amber-700'}">${serverReady ? 'Pronto para envio real' : 'Configuracao pendente'}</p>
+              <p class="mt-2 text-sm font-bold ${serverReady ? 'text-emerald-700' : 'text-amber-700'}">${serverReady ? 'Pronto para envio real' : 'Configuração pendente'}</p>
             </div>
           </div>
           <div class="grid gap-2 sm:grid-cols-3">
             <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html">
               <span class="material-symbols-outlined">campaign</span>
-              <span>Gestao de Ofertas</span>
+              <span>Gestão de Ofertas</span>
             </a>
             <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary">
               <span class="material-symbols-outlined">send</span>
@@ -5060,15 +5060,15 @@
             </a>
             <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#formOferta">
               <span class="material-symbols-outlined">add_circle</span>
-              <span>Criar Promocao Instantanea</span>
+              <span>Criar promoção instantânea</span>
             </a>
             <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#returnReminderSection">
               <span class="material-symbols-outlined">notifications_active</span>
-              <span>Lembrete de Retorno</span>
+              <span>Lembrete de retorno</span>
             </a>
             <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#birthdayBonusSection">
               <span class="material-symbols-outlined">cake</span>
-              <span>Bonus Aniversario</span>
+              <span>Bônus aniversário</span>
             </a>
             <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#cartaoFidelidadeSection">
               <span class="material-symbols-outlined">loyalty</span>
@@ -5346,7 +5346,7 @@
                     <p class="mt-1 text-sm font-bold text-primary">${pontos.toLocaleString('pt-BR')} pts</p>
                   </div>
                   <div class="rounded-xl bg-surface-container-low px-3 py-2">
-                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Ultima visita</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Última visita</p>
                     <p class="mt-1 text-sm font-semibold text-on-surface">${formatDatePtBr(ultima, 'Não informada')}</p>
                   </div>
                   <div class="rounded-xl bg-surface-container-low px-3 py-2">
@@ -5354,7 +5354,7 @@
                     <p class="mt-1 text-sm font-semibold text-on-surface">${nascimento}</p>
                   </div>
                   <div class="rounded-xl bg-surface-container-low px-3 py-2">
-                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Vinculo</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Vínculo</p>
                     <p class="mt-1 text-sm font-semibold text-on-surface">${vinculo}</p>
                   </div>
                   <div class="rounded-xl bg-surface-container-low px-3 py-2">
@@ -5362,8 +5362,8 @@
                     <p class="mt-1 text-sm font-semibold text-on-surface">${pushDispositivos.toLocaleString('pt-BR')}</p>
                   </div>
                   <div class="rounded-xl bg-surface-container-low px-3 py-2">
-                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Ultima atividade push</p>
-                    <p class="mt-1 text-sm font-semibold text-on-surface">${formatDatePtBr(pushUltimaAtividade, 'Nao registrada')}</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Última atividade push</p>
+                    <p class="mt-1 text-sm font-semibold text-on-surface">${formatDatePtBr(pushUltimaAtividade, 'Não registrada')}</p>
                   </div>
                 </div>
                 <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-on-surface-variant">
@@ -5385,7 +5385,7 @@
 
     async promocoes() {
       if (!(await auth.guard(['empresa']))) return;
-      ui.setPageState('loading', 'Carregando promocoes...');
+      ui.setPageState('loading', 'Carregando promoções...');
       const [promotionsResponse, summaryResponse, pushConfigResponse] = await Promise.all([
         api.request('/empresa/promocoes'),
         api.request('/empresa/relatorios/resumo', {}, { notify: false }),
@@ -5465,7 +5465,7 @@
               <p class="mt-2 text-2xl font-extrabold text-[#B01774]">${inactivePushCustomers.toLocaleString('pt-BR')}</p>
             </div>
             <div class="rounded-[22px] bg-slate-50 p-4">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Ultimo envio</p>
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Último envio</p>
               <p class="mt-2 text-sm font-bold text-[#111B3F]">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
             </div>
           </div>
@@ -6350,7 +6350,7 @@
                     <p class="text-sm font-bold text-on-surface">${reminder.titulo || 'Lembrete de retorno'}</p>
                     <p class="mt-1 text-xs leading-5 text-on-surface-variant">${reminder.mensagem || 'Sem mensagem.'}</p>
                     <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Disparo apos ${reminder.dias_sem_visita || reminder.dias_ausencia || 0} dia(s) sem visita</p>
-                    <p class="mt-1 text-[11px] text-on-surface-variant">Push: ${reminder.notification_title || reminder.titulo || 'Nao informado'}</p>
+                    <p class="mt-1 text-[11px] text-on-surface-variant">Push: ${reminder.notification_title || reminder.titulo || 'Não informado'}</p>
                   </div>
                 </div>
                 <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${active ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}">${active ? 'Ativo' : 'Inativo'}</span>
@@ -6530,7 +6530,7 @@
               <div class="max-w-[680px]">
                 <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-white/65">Relatorio operacional</p>
                 <h1 class="mt-3 text-3xl font-extrabold leading-tight">Campanhas reais da empresa</h1>
-                <p class="mt-3 text-sm leading-6 text-white/82">Esta tela mostra resultados reais da sua operacao. Criacao de promocao, aniversario, fidelidade e lembrete continua na Gestao de Ofertas.</p>
+                <p class="mt-3 text-sm leading-6 text-white/82">Esta tela mostra resultados reais da sua operacao. Criacao de promocao, aniversario, fidelidade e lembrete continua na Gestão de Ofertas.</p>
                 <p class="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-white/70">Fluxo real: cliente se vincula, ativa notificacoes e recebe o envio da empresa.</p>
               </div>
               <div class="grid gap-3 sm:grid-cols-2">
@@ -6574,7 +6574,7 @@
               </div>
               <div class="mt-4 grid gap-3 sm:grid-cols-2">
                 <div class="rounded-xl bg-surface-container-low p-4">
-                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Ultimo envio</p>
+                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Último envio</p>
                   <p class="mt-2 text-sm font-bold text-on-surface">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
                 </div>
                 <div class="rounded-xl bg-surface-container-low p-4">
@@ -6638,10 +6638,10 @@
                     </div>
                     <div class="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-on-surface-variant">
                       <span>Validade: ${formatDatePtBr(promo?.data_expiracao || promo?.validade, 'Nao informada')}</span>
-                      <span>Push: ${safeText(promo?.notification_title || promo?.titulo, 'Nao informado')}</span>
+                      <span>Push: ${safeText(promo?.notification_title || promo?.titulo, 'Não informado')}</span>
                     </div>
                   </div>
-                `).join('') : '<p class="text-sm text-on-surface-variant">Nenhuma promocao ativa. Abra a Gestao de Ofertas para publicar a primeira campanha.</p>'}
+                `).join('') : '<p class="text-sm text-on-surface-variant">Nenhuma promocao ativa. Abra a Gestão de Ofertas para publicar a primeira campanha.</p>'}
               </div>
             </article>
 
@@ -6655,7 +6655,7 @@
                     ${recentClients.length ? recentClients.map((customer) => `
                       <div class="rounded-xl bg-surface-container-low p-4">
                         <p class="text-sm font-bold text-on-surface">${safeText(customer?.nome, 'Cliente')}</p>
-                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(customer?.email, 'Sem e-mail')} | Vinculo ${formatDatePtBr(customer?.data_vinculo, 'recente')}</p>
+                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(customer?.email, 'Sem e-mail')} | Vínculo ${formatDatePtBr(customer?.data_vinculo, 'recente')}</p>
                       </div>
                     `).join('') : '<p class="text-sm text-on-surface-variant">Nenhum cliente recente para mostrar.</p>'}
                   </div>
@@ -7990,7 +7990,7 @@
       );
       const totalPromocoes = toNumber(summaryCards.total_promocoes, totals.campanhas, statsData.promocoes, statsData.campanhas, 0);
       const totalResgates = toNumber(summaryCards.total_resgates, totals.resgates, statsData.resgates, 0);
-      const totalVinculos = toNumber(summaryCards.total_vinculos_cliente_empresa);
+      const totalVínculos = toNumber(summaryCards.total_vinculos_cliente_empresa);
       const totalNotificacoes = toNumber(summaryCards.total_notificacoes);
       const mediaGeralAvaliacoes = Number(toNumber(summaryCards.media_geral_avaliacoes, 0)).toFixed(1);
       const totalVolume = toNumber(totals.volume, statsData.volume, 0);
@@ -8054,7 +8054,7 @@
             { label: 'Usuários', value: Number(totalUsuarios || 0).toLocaleString('pt-BR') },
             { label: 'Clientes', value: Number(totalClientes || 0).toLocaleString('pt-BR') },
             { label: 'Empresas', value: Number(totalEmpresas || 0).toLocaleString('pt-BR') },
-            { label: 'Vinculos cliente x empresa', value: Number(totalVinculos || 0).toLocaleString('pt-BR') },
+            { label: 'Vínculos cliente x empresa', value: Number(totalVínculos || 0).toLocaleString('pt-BR') },
             { label: 'Promocoes', value: Number(totalPromocoes || 0).toLocaleString('pt-BR') },
             { label: 'Resgates', value: Number(totalResgates || 0).toLocaleString('pt-BR') },
             { label: 'Notificacoes', value: Number(totalNotificacoes || 0).toLocaleString('pt-BR') },
