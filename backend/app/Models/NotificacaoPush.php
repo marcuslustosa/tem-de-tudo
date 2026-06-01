@@ -32,6 +32,11 @@ class NotificacaoPush extends Model
         'data_envio' => 'datetime',
     ];
 
+    public function setEnviadoAttribute($value): void
+    {
+        $this->attributes['enviado'] = $this->databaseBooleanValue((bool) $value);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -66,11 +71,26 @@ class NotificacaoPush extends Model
 
     public function scopePendentes($query)
     {
+        if ($this->getConnection()->getDriverName() === 'pgsql') {
+            return $query->whereRaw($this->qualifyColumn('enviado') . ' = false');
+        }
+
         return $query->where('enviado', false);
     }
 
     public function scopeEnviadas($query)
     {
+        if ($this->getConnection()->getDriverName() === 'pgsql') {
+            return $query->whereRaw($this->qualifyColumn('enviado') . ' = true');
+        }
+
         return $query->where('enviado', true);
+    }
+
+    private function databaseBooleanValue(bool $value): bool|string
+    {
+        return $this->getConnection()->getDriverName() === 'pgsql'
+            ? ($value ? 'true' : 'false')
+            : $value;
     }
 }

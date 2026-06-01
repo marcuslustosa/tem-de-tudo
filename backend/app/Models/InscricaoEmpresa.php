@@ -25,6 +25,11 @@ class InscricaoEmpresa extends Model
         'bonus_adesao_resgatado' => 'boolean',
     ];
 
+    public function setBonusAdesaoResgatadoAttribute($value): void
+    {
+        $this->attributes['bonus_adesao_resgatado'] = $this->databaseBooleanValue((bool) $value);
+    }
+
     /**
      * Relacionamento com User (Cliente)
      */
@@ -58,5 +63,12 @@ class InscricaoEmpresa extends Model
             return $this->data_inscricao->diffInDays(now());
         }
         return $this->ultima_visita->diffInDays(now());
+    }
+
+    private function databaseBooleanValue(bool $value): bool|string
+    {
+        return $this->getConnection()->getDriverName() === 'pgsql'
+            ? ($value ? 'true' : 'false')
+            : $value;
     }
 }
