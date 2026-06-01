@@ -37,6 +37,11 @@ class BonusAdesaoResgate extends Model
         'pontos' => 'integer',
     ];
 
+    public function setResgatadoAttribute($value): void
+    {
+        $this->attributes['resgatado'] = $this->databaseBooleanValue((bool) $value);
+    }
+
     public function getTable()
     {
         if (static::$resolvedTable !== null) {
@@ -72,5 +77,12 @@ class BonusAdesaoResgate extends Model
     public function validator()
     {
         return $this->belongsTo(User::class, 'validated_by');
+    }
+
+    private function databaseBooleanValue(bool $value): bool|string
+    {
+        return $this->getConnection()->getDriverName() === 'pgsql'
+            ? ($value ? 'true' : 'false')
+            : $value;
     }
 }

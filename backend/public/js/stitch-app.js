@@ -4710,7 +4710,10 @@
             body: JSON.stringify({ qrcode: codigo }),
           });
         } else if (perfil === 'empresa') {
-          response = await api.request(`/pontos/usar-cupom/${encodeURIComponent(codigo)}`, { method: 'POST' });
+          response = await api.request('/empresa/escanear-cliente', {
+            method: 'POST',
+            body: JSON.stringify({ qrcode: codigo }),
+          });
         } else {
           response = await api.request('/cliente/vincular-empresa-qrcode', {
             method: 'POST',
@@ -4730,11 +4733,11 @@
           }
 
           if (perfil === 'empresa') {
-            ui.message('Cupom validado/uso registrado.', 'success');
+            ui.message(data?.message || 'Cliente validado com sucesso.', 'success');
             const info = data.data || {};
             pushItem({
-              cliente: info.cliente_nome || info.cliente || 'Cliente',
-              beneficio: info.promocao || info.recompensa || info.cupom || 'Cupom',
+              cliente: info.cliente?.nome || info.cliente_nome || info.cliente || 'Cliente',
+              beneficio: info.empresa || info.promocao || info.recompensa || 'Check-in presencial',
               codigo,
               hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
             });
