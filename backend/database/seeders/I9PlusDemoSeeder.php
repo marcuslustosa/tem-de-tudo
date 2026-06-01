@@ -31,6 +31,9 @@ class I9PlusDemoSeeder extends Seeder
     /** @var array<string, array<string, bool>> */
     private array $columnsCache = [];
 
+    /** @var array<string, array<string, string>> */
+    private array $columnTypesCache = [];
+
     public function run(): void
     {
         if (!$this->requiredTablesAvailable()) {
@@ -1015,19 +1018,25 @@ class I9PlusDemoSeeder extends Seeder
 
     private function fillModel(Model $model, array $attributes): void
     {
-        $model->forceFill($this->filterColumns($model->getTable(), $this->normalizeSeedData($attributes)));
+        $table = $model->getTable();
+        $model->forceFill($this->filterColumns($table, $this->normalizeSeedDataForTable($table, $attributes)));
     }
 
-    private function normalizeSeedData(array $attributes): array
+    private function normalizeSeedDataForTable(string $table, array $attributes): array
     {
         foreach ($attributes as $key => $value) {
             if (is_array($value)) {
-                $attributes[$key] = $this->normalizeSeedData($value);
+                $attributes[$key] = $this->normalizeSeedDataForTable($table, $value);
                 continue;
             }
 
             if (is_string($value)) {
                 $attributes[$key] = $this->normalizeSeedString($value);
+                $value = $attributes[$key];
+            }
+
+            if ($this->isBooleanColumn($table, $key)) {
+                $attributes[$key] = $this->normalizeBooleanValue($value);
             }
         }
 
@@ -1069,5 +1078,38 @@ class I9PlusDemoSeeder extends Seeder
         }
 
         return $this->columnsCache[$table];
+    }
+
+    private function isBooleanColumn(string $table, string $column): bool
+    {
+        return in_array($this->columnType($table, $column), ['bool', 'boolean'], true);
+    }
+
+    private function columnType(string $table, string $column): ?string
+    {
+        if (!Schema::hasTable($table) || !Schema::hasColumn($table, $column)) {
+            return null;
+        }
+
+        if (!isset($this->columnTypesCache[$table][$column])) {
+            $this->columnTypesCache[$table][$column] = strtolower((string) Schema::getColumnType($table, $column));
+        }
+
+        return $this->columnTypesCache[$table][$column];
+    }
+
+    private function normalizeBooleanValue(mixed $value): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if (is_numeric($value)) {
+            return (int) $value === 1;
+        }
+
+        $normalized = strtolower(trim((string) $value));
+
+        return in_array($normalized, ['1', 'true', 'ativo', 'ativa', 'active', 'yes', 'sim'], true);
     }
 }
