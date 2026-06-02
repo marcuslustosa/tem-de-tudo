@@ -279,13 +279,23 @@ class PromocaoInstantaneaService
                 : (int) ($promocao?->limite_por_usuario ?? 1);
         }
 
-        if ($promocao) {
-            $promocao->update($data);
+        $pgsqlBooleanAttributes = $this->extractPgsqlBooleanAttributes('promocoes', $data, ['ativo']);
 
-            return $promocao->refresh();
+        if ($promocao) {
+            return DB::transaction(function () use ($promocao, $data, $pgsqlBooleanAttributes): Promocao {
+                $promocao->update($data);
+                $this->applyPgsqlBooleanAttributes('promocoes', (int) $promocao->getKey(), $pgsqlBooleanAttributes);
+
+                return $promocao->refresh();
+            });
         }
 
-        return Promocao::query()->create($data);
+        return DB::transaction(function () use ($data, $pgsqlBooleanAttributes): Promocao {
+            $created = Promocao::query()->create($data);
+            $this->applyPgsqlBooleanAttributes('promocoes', (int) $created->getKey(), $pgsqlBooleanAttributes);
+
+            return $created->refresh();
+        });
     }
 
     public function deletePromotion(Promocao $promocao): void
@@ -697,6 +707,54 @@ class PromocaoInstantaneaService
         }
 
         Storage::disk('public')->delete($path);
+    }
+
+    private function extractPgsqlBooleanAttributes(string $table, array &$data, array $columns): array
+    {
+        if (DB::connection()->getDriverName() !== 'pgsql') {
+            return [];
+        }
+
+        $values = [];
+        foreach ($columns as $column) {
+            if (!array_key_exists($column, $data) || !$this->isBooleanColumn($table, $column)) {
+                continue;
+            }
+
+            $values[$column] = (bool) $data[$column];
+            unset($data[$column]);
+        }
+
+        return $values;
+    }
+
+    private function applyPgsqlBooleanAttributes(string $table, int $id, array $values): void
+    {
+        if ($values === []) {
+            return;
+        }
+
+        $payload = [];
+        foreach ($values as $column => $value) {
+            $payload[$column] = DB::raw($value ? 'true' : 'false');
+        }
+
+        DB::table($table)->where('id', $id)->update($payload);
+    }
+
+    private function isBooleanColumn(string $table, string $column): bool
+    {
+        if (!Schema::hasTable($table) || !Schema::hasColumn($table, $column)) {
+            return false;
+        }
+
+        try {
+            $type = strtolower((string) Schema::getColumnType($table, $column));
+
+            return in_array($type, ['bool', 'boolean'], true);
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     private function isDuplicateRedemptionConstraint(QueryException $e): bool
