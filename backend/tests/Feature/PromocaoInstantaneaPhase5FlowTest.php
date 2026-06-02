@@ -48,6 +48,13 @@ class PromocaoInstantaneaPhase5FlowTest extends TestCase
             'empresa_id' => $empresa->id,
             'titulo' => 'Combo da tarde',
             'ativo' => true,
+            'pontos_necessarios' => 0,
+            'visualizacoes' => 0,
+            'resgates' => 0,
+            'usos' => 0,
+            'total_envios' => 0,
+            'qtd_resgatada' => 0,
+            'limite_por_usuario' => 1,
         ]);
 
         $update = $this->withHeaders($this->authHeaders($token))

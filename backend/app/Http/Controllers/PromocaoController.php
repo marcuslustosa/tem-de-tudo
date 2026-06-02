@@ -75,6 +75,13 @@ class PromocaoController extends Controller
                 'success' => false,
                 'message' => $e->getMessage(),
             ], 422);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao foi possivel salvar a promocao agora.',
+            ], 500);
         }
 
         return response()->json([
@@ -137,6 +144,13 @@ class PromocaoController extends Controller
                 'success' => false,
                 'message' => $e->getMessage(),
             ], 422);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao foi possivel atualizar a promocao agora.',
+            ], 500);
         }
 
         if (($payload['imagem'] ?? null) && $oldImage && $oldImage !== $updated->imagem) {
@@ -197,6 +211,13 @@ class PromocaoController extends Controller
                 'success' => false,
                 'message' => $e->getMessage(),
             ], 422);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao foi possivel alterar a promocao agora.',
+            ], 500);
         }
 
         return response()->json([

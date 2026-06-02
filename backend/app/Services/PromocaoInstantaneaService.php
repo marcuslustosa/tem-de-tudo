@@ -217,11 +217,66 @@ class PromocaoInstantaneaService
         if (Schema::hasColumn('promocoes', 'desconto')) {
             $data['desconto'] = $desconto;
         }
+        if (Schema::hasColumn('promocoes', 'pontos_necessarios')) {
+            $data['pontos_necessarios'] = array_key_exists('pontos_necessarios', $payload)
+                ? (int) $payload['pontos_necessarios']
+                : (int) ($promocao?->pontos_necessarios ?? 0);
+        }
+        if (Schema::hasColumn('promocoes', 'desconto_percentual')) {
+            $data['desconto_percentual'] = array_key_exists('desconto_percentual', $payload)
+                ? (float) $payload['desconto_percentual']
+                : (float) ($promocao?->desconto_percentual ?? 0);
+        }
+        if (Schema::hasColumn('promocoes', 'desconto_valor')) {
+            $data['desconto_valor'] = array_key_exists('desconto_valor', $payload)
+                ? (float) $payload['desconto_valor']
+                : (float) ($promocao?->desconto_valor ?? 0);
+        }
         if (Schema::hasColumn('promocoes', 'tipo_recompensa')) {
             $data['tipo_recompensa'] = $tipoRecompensa;
         }
+        if (Schema::hasColumn('promocoes', 'quantidade_disponivel') && array_key_exists('quantidade_disponivel', $payload)) {
+            $data['quantidade_disponivel'] = $payload['quantidade_disponivel'] !== null
+                ? (int) $payload['quantidade_disponivel']
+                : null;
+        }
+        if (Schema::hasColumn('promocoes', 'qtd_disponivel') && array_key_exists('qtd_disponivel', $payload)) {
+            $data['qtd_disponivel'] = $payload['qtd_disponivel'] !== null
+                ? (int) $payload['qtd_disponivel']
+                : null;
+        }
+        if (Schema::hasColumn('promocoes', 'termos_condicoes') && array_key_exists('termos_condicoes', $payload)) {
+            $data['termos_condicoes'] = $this->normalizeNullableString($payload['termos_condicoes']);
+        }
+        if (Schema::hasColumn('promocoes', 'visualizacoes')) {
+            $data['visualizacoes'] = array_key_exists('visualizacoes', $payload)
+                ? (int) $payload['visualizacoes']
+                : (int) ($promocao?->visualizacoes ?? 0);
+        }
+        if (Schema::hasColumn('promocoes', 'resgates')) {
+            $data['resgates'] = array_key_exists('resgates', $payload)
+                ? (int) $payload['resgates']
+                : (int) ($promocao?->resgates ?? 0);
+        }
+        if (Schema::hasColumn('promocoes', 'usos')) {
+            $data['usos'] = array_key_exists('usos', $payload)
+                ? (int) $payload['usos']
+                : (int) ($promocao?->usos ?? 0);
+        }
+        if (Schema::hasColumn('promocoes', 'total_envios')) {
+            $data['total_envios'] = array_key_exists('total_envios', $payload)
+                ? (int) $payload['total_envios']
+                : (int) ($promocao?->total_envios ?? 0);
+        }
+        if (Schema::hasColumn('promocoes', 'qtd_resgatada')) {
+            $data['qtd_resgatada'] = array_key_exists('qtd_resgatada', $payload)
+                ? (int) $payload['qtd_resgatada']
+                : (int) ($promocao?->qtd_resgatada ?? 0);
+        }
         if (Schema::hasColumn('promocoes', 'limite_por_usuario')) {
-            $data['limite_por_usuario'] = 1;
+            $data['limite_por_usuario'] = array_key_exists('limite_por_usuario', $payload)
+                ? max(1, (int) $payload['limite_por_usuario'])
+                : (int) ($promocao?->limite_por_usuario ?? 1);
         }
 
         if ($promocao) {
