@@ -344,9 +344,224 @@ body[data-page] .font-headline,
   padding: 16px 18px;
 }
 
+.app-mobile-dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  padding: 10px 12px calc(env(safe-area-inset-bottom, 0px) + 10px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.96) 35%, rgba(255, 255, 255, 0.98) 100%);
+  backdrop-filter: blur(18px);
+  border-top: 1px solid rgba(17, 27, 63, 0.08);
+  box-shadow: 0 -12px 30px rgba(17, 27, 63, 0.08);
+}
+
+.app-mobile-dock__inner {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+}
+
+.app-mobile-dock__item {
+  display: inline-flex;
+  min-height: 54px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 18px;
+  color: #7a7f8d;
+  text-decoration: none;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.app-mobile-dock__item:active {
+  transform: scale(0.97);
+}
+
+.app-mobile-dock__item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: transparent;
+}
+
+.app-mobile-dock__item-label {
+  font-family: var(--i9-heading-font);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.app-mobile-dock__item--active {
+  color: var(--i9-blue);
+  background: rgba(19, 63, 140, 0.08);
+}
+
+.app-mobile-dock__item--active .app-mobile-dock__item-icon {
+  background: linear-gradient(135deg, rgba(19, 63, 140, 0.12) 0%, rgba(0, 175, 168, 0.1) 100%);
+  color: var(--i9-magenta);
+}
+
+.app-mobile-dock__item--accent .app-mobile-dock__item-icon {
+  background: var(--i9-gradient);
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(17, 27, 63, 0.18);
+}
+
+.app-mobile-dock__item--accent .app-mobile-dock__item-label {
+  color: var(--i9-navy);
+}
+
+.app-mobile-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(9, 13, 24, 0.42);
+  backdrop-filter: blur(8px);
+  display: none;
+}
+
+.app-mobile-sheet-backdrop.is-open {
+  display: block;
+}
+
+.app-mobile-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 18px 16px calc(env(safe-area-inset-bottom, 0px) + 18px);
+  border-radius: 28px 28px 0 0;
+  background: #ffffff;
+  box-shadow: 0 -18px 42px rgba(17, 27, 63, 0.14);
+}
+
+.app-mobile-sheet__grabber {
+  width: 54px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(17, 27, 63, 0.14);
+  margin: 0 auto 16px;
+}
+
+.app-mobile-sheet__grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.app-mobile-sheet__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  border-radius: 18px;
+  border: 1px solid rgba(17, 27, 63, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0 16px;
+  color: var(--i9-navy);
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: var(--i9-shadow-soft);
+}
+
+.app-mobile-sheet__link .material-symbols-outlined {
+  color: var(--i9-magenta);
+}
+
 @media (min-width: 640px) {
   .app-status-strip {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1023px) {
+  body[data-page="dashboard_parceiro"],
+  body[data-page="meus_pontos"],
+  body[data-page="gest_o_de_ofertas_parceiro"],
+  body[data-page="clientes_fidelizados_loja"],
+  body[data-page="minhas_campanhas_loja"],
+  body[data-page="dashboard_admin_master"],
+  body[data-page="gest_o_de_estabelecimentos"],
+  body[data-page="gest_o_de_clientes_master"],
+  body[data-page="relat_rios_gerais_master"] {
+    padding-bottom: 104px !important;
+  }
+
+  body[data-page="dashboard_parceiro"] > header,
+  body[data-page="meus_pontos"] > header {
+    width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+    padding-inline: 16px !important;
+  }
+
+  body[data-page="dashboard_parceiro"] > main,
+  body[data-page="meus_pontos"] > main,
+  body[data-page="gest_o_de_ofertas_parceiro"] > main,
+  body[data-page="clientes_fidelizados_loja"] > main,
+  body[data-page="minhas_campanhas_loja"] > main,
+  body[data-page="dashboard_admin_master"] > main,
+  body[data-page="gest_o_de_estabelecimentos"] > main,
+  body[data-page="gest_o_de_clientes_master"] > main,
+  body[data-page="relat_rios_gerais_master"] > main {
+    width: 100% !important;
+    max-width: none !important;
+    margin-inline: 0 !important;
+    padding-inline: 16px !important;
+  }
+
+  body[data-page="meus_pontos"] > main > div {
+    max-width: none !important;
+    width: 100% !important;
+    margin-inline: 0 !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  body[data-page="dashboard_parceiro"] > header {
+    width: min(1280px, calc(100% - 64px)) !important;
+    max-width: 1280px !important;
+    margin-inline: auto !important;
+    padding-inline: 32px !important;
+  }
+
+  body[data-page="dashboard_parceiro"] > main,
+  body[data-page="gest_o_de_ofertas_parceiro"] > main,
+  body[data-page="clientes_fidelizados_loja"] > main,
+  body[data-page="minhas_campanhas_loja"] > main {
+    width: min(1280px, calc(100% - 64px)) !important;
+    max-width: 1280px !important;
+    margin-inline: auto !important;
+    padding-inline: 32px !important;
+  }
+
+  body[data-page="meus_pontos"] > main {
+    width: min(1320px, calc(100% - 64px)) !important;
+    max-width: 1320px !important;
+  }
+
+  body[data-page="dashboard_admin_master"] > main,
+  body[data-page="gest_o_de_estabelecimentos"] > main,
+  body[data-page="gest_o_de_clientes_master"] > main,
+  body[data-page="relat_rios_gerais_master"] > main {
+    width: min(1500px, calc(100% - 64px)) !important;
+    max-width: 1500px !important;
+    padding-inline: 32px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-mobile-dock,
+  .app-mobile-sheet-backdrop {
+    display: none !important;
   }
 }
 

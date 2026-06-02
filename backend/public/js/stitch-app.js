@@ -1280,6 +1280,135 @@
     `;
   }
 
+  function mountUnifiedMobileDock() {
+    const scope = getScopeForCurrentPage();
+    const oldDockList = Array.from(document.querySelectorAll('nav.fixed.bottom-0'));
+    oldDockList.forEach((dock) => dock.remove());
+    document.querySelectorAll('a.fixed.bottom-24, button.fixed.bottom-24').forEach((el) => el.remove());
+
+    const pageKey = `${scope}:${page}`;
+    const configs = {
+      admin: {
+        items: [
+          { label: 'Dashboard', icon: 'home', href: '/dashboard_admin_master.html', active: ['dashboard_admin_master'] },
+          { label: 'Empresas', icon: 'storefront', href: '/gest_o_de_estabelecimentos.html', active: ['gest_o_de_estabelecimentos'] },
+          { label: 'Clientes', icon: 'groups', href: '/gest_o_de_clientes_master.html', active: ['gest_o_de_clientes_master', 'gest_o_de_usu_rios_master'] },
+          { label: 'Relatorios', icon: 'analytics', href: '/relat_rios_gerais_master.html', active: ['relat_rios_gerais_master'] },
+        ],
+        more: [
+          { label: 'Conteudo', icon: 'collections', href: '/banners_e_categorias_master.html' },
+          { label: 'Usuarios', icon: 'group', href: '/gest_o_de_usu_rios_master.html' },
+          { label: 'Configuracoes', icon: 'settings', href: '/configuracoes_admin.html' },
+          { label: 'Suporte', icon: 'support_agent', href: '/tickets_admin_master.html' },
+        ],
+      },
+      empresa: {
+        items: [
+          { label: 'Inicio', icon: 'home', href: '/dashboard_parceiro.html', active: ['dashboard_parceiro'] },
+          { label: 'Clientes', icon: 'groups', href: '/clientes_fidelizados_loja.html', active: ['clientes_fidelizados_loja'] },
+          { label: 'Ofertas', icon: 'campaign', href: '/gest_o_de_ofertas_parceiro.html', active: ['gest_o_de_ofertas_parceiro', 'minhas_campanhas_loja'] },
+          { label: 'Validar', icon: 'qr_code_scanner', href: '/validar_resgate.html?modo=beneficios', active: pageKey === 'empresa:validar_resgate' ? ['validar_resgate'] : [] , accent: true },
+        ],
+        more: [
+          { label: 'Operacao', icon: 'insights', href: '/minhas_campanhas_loja.html' },
+          { label: 'Push', icon: 'send', href: '/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary' },
+          { label: 'Perfil', icon: 'person', href: '/meu_perfil.html' },
+          { label: 'Aniversario', icon: 'cake', href: '/gest_o_de_ofertas_parceiro.html#birthdayBonusSection' },
+        ],
+      },
+      cliente: {
+        items: [
+          { label: 'Inicio', icon: 'home', href: '/meus_pontos.html', active: ['meus_pontos'] },
+          { label: 'Buscar', icon: 'storefront', href: '/parceiros_tem_de_tudo.html', active: ['parceiros_tem_de_tudo', 'detalhe_do_parceiro'] },
+          { label: 'QR', icon: 'qr_code_scanner', href: '/validar_resgate.html?modo=vinculo-empresa', active: pageKey === 'cliente:validar_resgate' ? ['validar_resgate'] : [], accent: true },
+          { label: 'Novidades', icon: 'notifications', href: '/recompensas.html', active: ['recompensas'] },
+        ],
+        more: [
+          { label: 'Meu QR', icon: 'qr_code_2', href: '/meus_pontos.html?mostrar=meu-qrcode' },
+          { label: 'Historico', icon: 'history', href: '/hist_rico_de_uso.html' },
+          { label: 'Perfil', icon: 'person', href: '/meu_perfil.html' },
+          { label: 'Notificacoes', icon: 'campaign', href: '/recompensas.html' },
+        ],
+      },
+    };
+
+    const config = configs[scope];
+    if (!config) return;
+
+    const isActive = (item) => Array.isArray(item.active) && item.active.includes(page);
+    const itemMarkup = (item) => {
+      const active = isActive(item);
+      const classes = [
+        'app-mobile-dock__item',
+        active ? 'app-mobile-dock__item--active' : '',
+        item.accent ? 'app-mobile-dock__item--accent' : '',
+      ].filter(Boolean).join(' ');
+      return `
+        <a href="${item.href}" class="${classes}" data-mobile-dock-link="1">
+          <span class="app-mobile-dock__item-icon">
+            <span class="material-symbols-outlined">${item.icon}</span>
+          </span>
+          <span class="app-mobile-dock__item-label">${item.label}</span>
+        </a>
+      `;
+    };
+
+    const dock = document.createElement('nav');
+    dock.className = 'app-mobile-dock lg:hidden';
+    dock.setAttribute('data-unified-mobile-dock', scope);
+    dock.innerHTML = `
+      <div class="app-mobile-dock__inner">
+        ${config.items.map((item) => itemMarkup(item)).join('')}
+        <button type="button" class="app-mobile-dock__item ${page === 'meu_perfil' ? 'app-mobile-dock__item--active' : ''}" data-mobile-dock-more>
+          <span class="app-mobile-dock__item-icon">
+            <span class="material-symbols-outlined">more_horiz</span>
+          </span>
+          <span class="app-mobile-dock__item-label">Mais</span>
+        </button>
+      </div>
+    `;
+
+    const sheet = document.createElement('div');
+    sheet.className = 'app-mobile-sheet-backdrop lg:hidden';
+    sheet.setAttribute('data-mobile-sheet', scope);
+    sheet.innerHTML = `
+      <div class="app-mobile-sheet" role="dialog" aria-modal="true" aria-label="Atalhos">
+        <div class="app-mobile-sheet__grabber"></div>
+        <div class="flex items-start justify-between gap-3 mb-4">
+          <div>
+            <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Atalhos</p>
+            <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Mais opcoes deste perfil</h2>
+          </div>
+          <button type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-outline-variant/30 text-on-surface" data-mobile-sheet-close>
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="app-mobile-sheet__grid">
+          ${config.more.map((item) => `
+            <a href="${item.href}" class="app-mobile-sheet__link" data-mobile-sheet-link="1">
+              <span class="material-symbols-outlined">${item.icon}</span>
+              <span>${item.label}</span>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    const openSheet = () => sheet.classList.add('is-open');
+    const closeSheet = () => sheet.classList.remove('is-open');
+    dock.querySelector('[data-mobile-dock-more]')?.addEventListener('click', openSheet);
+    sheet.querySelector('[data-mobile-sheet-close]')?.addEventListener('click', closeSheet);
+    sheet.addEventListener('click', (event) => {
+      if (event.target === sheet) closeSheet();
+    });
+    sheet.querySelectorAll('[data-mobile-sheet-link]').forEach((link) => {
+      link.addEventListener('click', closeSheet);
+    });
+
+    document.body.appendChild(dock);
+    document.body.appendChild(sheet);
+  }
+
   // ---------------------- Push ---------------------- //
   const push = (() => {
     let configCache = null;
@@ -9144,6 +9273,7 @@
     remapNavigationForPerfil();
     harmonizeLinksByStoredPerfil();
     wireFallbackLinks();
+    mountUnifiedMobileDock();
     wireFallbackButtons();
     wireSettingsShortcuts();
     mountPageBackButton();
