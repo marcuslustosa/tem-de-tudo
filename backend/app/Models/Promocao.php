@@ -81,6 +81,11 @@ class Promocao extends Model
         return $this->hasMany(PromocaoResgate::class, 'promocao_id');
     }
 
+    public function setAtivoAttribute($value): void
+    {
+        $this->attributes['ativo'] = $this->databaseBooleanValue((bool) $value);
+    }
+
     public function foiEnviada(): bool
     {
         return $this->data_envio !== null;
@@ -147,5 +152,12 @@ class Promocao extends Model
         }
 
         return Storage::url($path);
+    }
+
+    private function databaseBooleanValue(bool $value): bool|string
+    {
+        return $this->getConnection()->getDriverName() === 'pgsql'
+            ? ($value ? 'true' : 'false')
+            : $value;
     }
 }
