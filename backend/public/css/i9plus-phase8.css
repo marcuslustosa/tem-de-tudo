@@ -548,6 +548,46 @@ body[data-page] .font-headline,
     max-width: 1320px !important;
   }
 
+  body[data-page="meus_pontos"] main > div {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  body[data-page="meus_pontos"] #linkedCompaniesList,
+  body[data-page="meus_pontos"] #featuredCompaniesList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body[data-page="parceiros_tem_de_tudo"] > header,
+  body[data-page="parceiros_tem_de_tudo"] > main,
+  body[data-page="recompensas"] > header,
+  body[data-page="recompensas"] > main,
+  body[data-page="hist_rico_de_uso"] > header,
+  body[data-page="hist_rico_de_uso"] > main {
+    width: min(1220px, calc(100% - 64px)) !important;
+    max-width: 1220px !important;
+    margin-inline: auto !important;
+  }
+
+  body[data-page="parceiros_tem_de_tudo"] > main,
+  body[data-page="recompensas"] > main,
+  body[data-page="hist_rico_de_uso"] > main {
+    padding-inline: 24px !important;
+  }
+
+  body[data-page="parceiros_tem_de_tudo"] #partners-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body[data-page="parceiros_tem_de_tudo"] #partnerCategoryGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  body[data-page="recompensas"] > nav:last-of-type,
+  body[data-page="hist_rico_de_uso"] > nav:last-of-type {
+    width: min(1220px, calc(100% - 64px));
+  }
+
   body[data-page="dashboard_admin_master"] > main,
   body[data-page="gest_o_de_estabelecimentos"] > main,
   body[data-page="gest_o_de_clientes_master"] > main,
@@ -1121,6 +1161,20 @@ body[data-page="meus_pontos"] main > div {
   width: min(var(--i9-mobile-shell), 100%);
 }
 
+body[data-page="gest_o_de_ofertas_parceiro"] .offer-tool-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+body[data-page="gest_o_de_ofertas_parceiro"] #formOferta,
+body[data-page="gest_o_de_ofertas_parceiro"] #bonusAdesaoSection,
+body[data-page="gest_o_de_ofertas_parceiro"] #cartaoFidelidadeSection,
+body[data-page="gest_o_de_ofertas_parceiro"] #birthdayBonusSection,
+body[data-page="gest_o_de_ofertas_parceiro"] #returnReminderSection {
+  scroll-margin-top: 132px;
+}
+
 body[data-page="meus_pontos"] #linkedCompaniesList > *,
 body[data-page="meus_pontos"] #featuredCompaniesList > * {
   border-radius: 28px;
@@ -1344,6 +1398,45 @@ body[data-page="dashboard_parceiro"] .empresa-shortcut-card .material-symbols-ou
 body[data-page="dashboard_parceiro"] .empresa-shortcut-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--i9-shadow-strong);
+}
+
+@media (min-width: 1024px) {
+  body[data-page="dashboard_parceiro"] main {
+    max-width: 1280px;
+  }
+
+  body[data-page="dashboard_parceiro"] > main > section:nth-of-type(2) > div:last-child {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  body[data-page="dashboard_parceiro"] > main > section:nth-of-type(3) {
+    grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 0.82fr));
+  }
+
+  body[data-page="dashboard_parceiro"] > main > section:nth-of-type(6) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  body[data-page="clientes_fidelizados_loja"] main {
+    max-width: 1200px;
+  }
+
+  body[data-page="clientes_fidelizados_loja"] #clientesLista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body[data-page="minhas_campanhas_loja"] > main {
+    max-width: 1280px;
+  }
+
+  body[data-page="minhas_campanhas_loja"] > main > section:nth-of-type(1) {
+    grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.78fr);
+  }
+
+  body[data-page="minhas_campanhas_loja"] #ofertasLista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 body[data-page="dashboard_parceiro"] section > div[id="campanhasAtivas"] > *,
@@ -2113,6 +2206,67 @@ body[data-page="gest_o_de_ofertas_parceiro"] #novaOfertaBtn {
 
   body[data-page="parceiros_tem_de_tudo"] nav {
     width: calc(100% - 12px) !important;
+  }
+
+  body[data-page="gest_o_de_ofertas_parceiro"] .offer-tool-strip {
+    position: sticky;
+    top: 84px;
+    z-index: 18;
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    padding: 2px 2px 8px;
+    margin-inline: -2px;
+    scroll-snap-type: x proximity;
+  }
+
+  body[data-page="gest_o_de_ofertas_parceiro"] .offer-tool-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  body[data-page="gest_o_de_ofertas_parceiro"] .offer-tool-card {
+    min-width: 148px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  body[data-page="dashboard_admin_master"] > main > section:nth-of-type(2) {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    padding-inline: 2px;
+    padding-bottom: 4px;
+    margin-inline: -2px;
+    scroll-snap-type: x proximity;
+  }
+
+  body[data-page="dashboard_admin_master"] > main > section:nth-of-type(2) > * {
+    min-width: 240px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  body[data-page="dashboard_admin_master"] > main > section:nth-of-type(2)::-webkit-scrollbar {
+    display: none;
+  }
+
+  body[data-page="clientes_fidelizados_loja"] > main > section:nth-of-type(2) {
+    position: sticky;
+    top: 86px;
+    z-index: 18;
+    margin-top: -2px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: linear-gradient(180deg, rgba(247, 247, 247, 0.96) 0%, rgba(247, 247, 247, 0.88) 100%);
+    backdrop-filter: blur(10px);
+  }
+
+  body[data-page="minhas_campanhas_loja"] > main > section:nth-of-type(1) .mt-8.flex.gap-4 {
+    flex-direction: column;
+  }
+
+  body[data-page="minhas_campanhas_loja"] > main > section:nth-of-type(1) .mt-8.flex.gap-4 > a {
+    width: 100%;
   }
 }
 
