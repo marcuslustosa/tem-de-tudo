@@ -205,54 +205,50 @@ class PromocaoInstantaneaPhase5FlowTest extends TestCase
         ]);
     }
 
-    public function test_company_weekly_send_limit_blocks_third_promotion(): void
+    public function test_company_weekly_send_limit_blocks_next_promotion_after_limit(): void
     {
         [, $empresa, $token] = $this->makeActiveCompany();
 
-        Promocao::query()->create([
-            'empresa_id' => $empresa->id,
-            'titulo' => 'Push 1',
-            'descricao' => 'Primeira campanha enviada.',
-            'imagem' => 'https://example.com/p1.jpg',
-            'notification_title' => 'Push 1',
-            'notification_body' => 'Primeira campanha.',
-            'validade' => now()->addDays(3)->toDateString(),
-            'ativo' => true,
-            'status' => Promocao::STATUS_ACTIVE,
-            'data_envio' => now()->subDay(),
-        ]);
+        for ($index = 1; $index <= PromocaoInstantaneaService::WEEKLY_SEND_LIMIT; $index++) {
+            Promocao::query()->create([
+                'empresa_id' => $empresa->id,
+                'titulo' => "Push {$index}",
+                'descricao' => "Campanha {$index} enviada.",
+                'imagem' => "https://example.com/p{$index}.jpg",
+                'notification_title' => "Push {$index}",
+                'notification_body' => "Campanha {$index}.",
+                'validade' => now()->addDays(3)->toDateString(),
+                'ativo' => true,
+                'status' => Promocao::STATUS_ACTIVE,
+                'data_envio' => now()->subHours($index),
+            ]);
+        }
 
-        Promocao::query()->create([
+        $blockedPromotion = Promocao::query()->create([
             'empresa_id' => $empresa->id,
-            'titulo' => 'Push 2',
-            'descricao' => 'Segunda campanha enviada.',
-            'imagem' => 'https://example.com/p2.jpg',
-            'notification_title' => 'Push 2',
-            'notification_body' => 'Segunda campanha.',
-            'validade' => now()->addDays(3)->toDateString(),
-            'ativo' => true,
-            'status' => Promocao::STATUS_ACTIVE,
-            'data_envio' => now()->subHours(12),
-        ]);
-
-        $third = Promocao::query()->create([
-            'empresa_id' => $empresa->id,
-            'titulo' => 'Push 3',
-            'descricao' => 'Terceira campanha deve ser bloqueada.',
-            'imagem' => 'https://example.com/p3.jpg',
-            'notification_title' => 'Push 3',
-            'notification_body' => 'Terceira campanha.',
+            'titulo' => 'Push extra',
+            'descricao' => 'Campanha extra deve ser bloqueada.',
+            'imagem' => 'https://example.com/p-extra.jpg',
+            'notification_title' => 'Push extra',
+            'notification_body' => 'Campanha extra.',
             'validade' => now()->addDays(3)->toDateString(),
             'ativo' => true,
             'status' => Promocao::STATUS_ACTIVE,
         ]);
 
         $blocked = $this->withHeaders($this->authHeaders($token))
-            ->postJson("/api/empresa/promocoes/{$third->id}/enviar");
+            ->postJson("/api/empresa/promocoes/{$blockedPromotion->id}/enviar");
 
         $blocked
             ->assertStatus(409)
-            ->assertJsonPath('success', false);
+            ->assertJsonPath('success', false)
+            ->assertJsonFragment([
+                'message' => sprintf(
+                    'Limite de envio atingido. Cada empresa pode enviar no maximo %d promocoes instantaneas a cada %d dias.',
+                    PromocaoInstantaneaService::WEEKLY_SEND_LIMIT,
+                    PromocaoInstantaneaService::WEEKLY_SEND_WINDOW_DAYS
+                ),
+            ]);
     }
 
     public function test_company_sends_promotion_only_to_linked_customers_with_active_subscription(): void

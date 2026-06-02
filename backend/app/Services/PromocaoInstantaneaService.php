@@ -20,7 +20,8 @@ use Illuminate\Support\Str;
 
 class PromocaoInstantaneaService
 {
-    public const WEEKLY_SEND_LIMIT = 2;
+    public const WEEKLY_SEND_LIMIT = 5;
+    public const WEEKLY_SEND_WINDOW_DAYS = 7;
 
     public const LOG_STATUS_PENDING = 'pending';
     public const LOG_STATUS_SENT = 'sent';
@@ -373,16 +374,19 @@ class PromocaoInstantaneaService
 
     public function weeklySendStatus(Empresa $empresa): array
     {
+        $limit = $this->weeklySendLimit();
+        $windowDays = $this->weeklySendWindowDays();
         $used = Promocao::query()
             ->where('empresa_id', $empresa->id)
             ->whereNotNull('data_envio')
-            ->where('data_envio', '>=', now()->subDays(7))
+            ->where('data_envio', '>=', now()->subDays($windowDays))
             ->count();
 
         return [
-            'limit' => self::WEEKLY_SEND_LIMIT,
+            'limit' => $limit,
+            'window_days' => $windowDays,
             'used' => $used,
-            'remaining' => max(0, self::WEEKLY_SEND_LIMIT - $used),
+            'remaining' => max(0, $limit - $used),
         ];
     }
 
@@ -402,7 +406,11 @@ class PromocaoInstantaneaService
 
         $weeklyStatus = $this->weeklySendStatus($empresa);
         if ($weeklyStatus['remaining'] <= 0) {
-            throw new DomainException('Limite semanal atingido. Cada empresa pode enviar no maximo 2 promocoes instantaneas por semana.');
+            throw new DomainException(sprintf(
+                'Limite de envio atingido. Cada empresa pode enviar no maximo %d promocoes instantaneas a cada %d dias.',
+                $weeklyStatus['limit'],
+                $weeklyStatus['window_days']
+            ));
         }
 
         $inscricoes = InscricaoEmpresa::query()
@@ -549,6 +557,16 @@ class PromocaoInstantaneaService
             'weekly_limit' => $this->weeklySendStatus($empresa),
             'delivery' => $stats,
         ];
+    }
+
+    private function weeklySendLimit(): int
+    {
+        return max(1, (int) env('PROMOTION_WEEKLY_SEND_LIMIT', self::WEEKLY_SEND_LIMIT));
+    }
+
+    private function weeklySendWindowDays(): int
+    {
+        return max(1, (int) env('PROMOTION_WEEKLY_SEND_WINDOW_DAYS', self::WEEKLY_SEND_WINDOW_DAYS));
     }
 
     public function serializePromotion(Promocao $promocao, array $extra = []): array

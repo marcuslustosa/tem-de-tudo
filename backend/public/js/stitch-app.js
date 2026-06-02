@@ -1226,6 +1226,20 @@
           <p class="mt-2 text-sm font-bold text-[#111B3F]">Somente empresas vinculadas</p>
         </div>
       </div>
+      <div class="app-status-strip mt-5">
+        <div class="app-status-chip">
+          <span class="app-status-chip__label">Vinculo real</span>
+          <span class="app-status-chip__value">Leia o QR da empresa para entrar na base certa.</span>
+        </div>
+        <div class="app-status-chip">
+          <span class="app-status-chip__label">Push real</span>
+          <span class="app-status-chip__value">Notificacoes chegam mesmo deslogado se este aparelho continuar com permissao ativa.</span>
+        </div>
+        <div class="app-status-chip">
+          <span class="app-status-chip__label">Validacao presencial</span>
+          <span class="app-status-chip__value">Seu QR pessoal continua sendo o codigo de balcao para bonus, fidelidade e promocoes.</span>
+        </div>
+      </div>
     `;
   }
 
@@ -1932,6 +1946,25 @@
       normalized,
       short,
       detail,
+    };
+  }
+
+  function normalizeWeeklyLimitStatus(status = {}) {
+    const limit = Math.max(1, Number(status?.limit ?? 5) || 5);
+    const used = Math.max(0, Number(status?.used ?? 0) || 0);
+    const remaining = Math.max(0, Number(status?.remaining ?? Math.max(0, limit - used)) || 0);
+    const windowDays = Math.max(1, Number(status?.window_days ?? 7) || 7);
+    const tone = remaining <= 0 ? 'error' : (remaining <= Math.ceil(limit / 3) ? 'warning' : 'success');
+
+    return {
+      limit,
+      used,
+      remaining,
+      windowDays,
+      tone,
+      title: `Janela de ${windowDays} dias`,
+      detail: `${used}/${limit} envios usados`,
+      helper: `Restam ${remaining} envio(s) comercial(is) nesta janela.`,
     };
   }
 
@@ -4997,6 +5030,7 @@
         const activePromotions = promotions.filter((item) => item?.ativo !== false && item?.status !== 'pausada').length;
         const lastSent = pushSummary.ultimo_envio_notificacao || cards.ultimo_envio_notificacao || null;
         const serverReady = Boolean(pushConfig?.configured);
+        const weeklyLimit = normalizeWeeklyLimitStatus(payload?.weeklyLimit || {});
 
         let section = document.getElementById('empresaPushCampaignsSummary');
         if (!section) {
@@ -5047,6 +5081,20 @@
             <div class="rounded-xl bg-surface-container-low p-4">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Status do servidor</p>
               <p class="mt-2 text-sm font-bold ${serverReady ? 'text-emerald-700' : 'text-amber-700'}">${serverReady ? 'Pronto para envio real' : 'Configuração pendente'}</p>
+            </div>
+          </div>
+          <div class="app-status-strip mt-5">
+            <div class="app-status-chip">
+              <span class="app-status-chip__label">Janela de envio</span>
+              <span class="app-status-chip__value">${weeklyLimit.title}</span>
+            </div>
+            <div class="app-status-chip">
+              <span class="app-status-chip__label">Limite promocional</span>
+              <span class="app-status-chip__value">${weeklyLimit.detail}</span>
+            </div>
+            <div class="app-status-chip">
+              <span class="app-status-chip__label">Disponibilidade</span>
+              <span class="app-status-chip__value">${weeklyLimit.helper}</span>
             </div>
           </div>
           <div class="grid gap-2 sm:grid-cols-3">
@@ -5117,6 +5165,7 @@
         push: resumoData.push,
         pushConfig,
         promotions: listaPromos,
+        weeklyLimit: promos.data?.meta?.weekly_limit || null,
       });
       renderCompanyStorefrontBlock({
         info: storefrontInfo,
@@ -5397,7 +5446,7 @@
         return;
       }
       const lista = data?.data || data || [];
-      const weeklyStatus = data?.meta?.weekly_limit || { limit: 2, used: 0, remaining: 2 };
+      const weeklyStatus = normalizeWeeklyLimitStatus(data?.meta?.weekly_limit || { limit: 5, used: 0, remaining: 5, window_days: 7 });
       const summaryPayload = summaryResponse.res.ok && summaryResponse.data?.success !== false
         ? (summaryResponse.data?.data || {})
         : {};
@@ -5469,6 +5518,20 @@
               <p class="mt-2 text-sm font-bold text-[#111B3F]">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
             </div>
           </div>
+          <div class="app-status-strip mt-5">
+            <div class="app-status-chip">
+              <span class="app-status-chip__label">Janela de envio</span>
+              <span class="app-status-chip__value">${weeklyStatus.title}</span>
+            </div>
+            <div class="app-status-chip">
+              <span class="app-status-chip__label">Limite promocional</span>
+              <span class="app-status-chip__value">${weeklyStatus.detail}</span>
+            </div>
+            <div class="app-status-chip">
+              <span class="app-status-chip__label">Restante nesta janela</span>
+              <span class="app-status-chip__value">${weeklyStatus.helper}</span>
+            </div>
+          </div>
           <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <a href="#formOferta" class="app-primary-button justify-center">Criar promocao</a>
             <a href="#birthdayBonusSection" class="app-secondary-button justify-center">Bonus aniversario</a>
@@ -5503,7 +5566,11 @@
       };
 
       if (form.weeklyInfo) {
-        form.weeklyInfo.textContent = `Limite semanal: ${weeklyStatus.used}/${weeklyStatus.limit} envios utilizados | Restantes: ${weeklyStatus.remaining}`;
+        const weeklyToneClass = weeklyStatus.tone === 'error'
+          ? 'bg-rose-50 text-rose-700'
+          : (weeklyStatus.tone === 'warning' ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700');
+        form.weeklyInfo.className = `mt-3 inline-flex rounded-full px-4 py-2 text-xs font-semibold ${weeklyToneClass}`;
+        form.weeklyInfo.textContent = `${weeklyStatus.title}: ${weeklyStatus.detail} | Restantes ${weeklyStatus.remaining}`;
       }
 
       const setCounts = (arr) => {
