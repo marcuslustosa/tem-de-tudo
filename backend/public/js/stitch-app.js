@@ -2732,7 +2732,7 @@
         const qs = params.toString() ? `?${params.toString()}` : '';
         const prefersClientEndpoint = perfilViewer === 'cliente' && stored?.token;
         const primaryPath = `${prefersClientEndpoint ? '/cliente/empresas' : '/empresas'}${qs}`;
-        const primaryResponse = await api.request(primaryPath, {}, { requireAuth: false, notify: false });
+        const primaryResponse = await api.request(primaryPath, {}, { requireAuth: prefersClientEndpoint, notify: false });
         let lista = toArray(primaryResponse.data?.data || primaryResponse.data);
 
         if ((!primaryResponse.res?.ok || !lista.length) && prefersClientEndpoint) {
@@ -5504,7 +5504,7 @@
             <div class="flex items-start gap-4">
               <div class="relative">
                 <div class="w-14 h-14 rounded-full overflow-hidden bg-surface-container">
-                  <img alt="${nome}" class="w-full h-full object-cover" src="${c.avatar || '/img/placeholder-user.png'}"/>
+                  <img alt="${nome}" class="w-full h-full object-cover" src="${safeImage(c.avatar, '/img/avatar-admin.png')}" onerror="this.onerror=null;this.src='/img/avatar-admin.png';"/>
                 </div>
               </div>
               <div class="flex-1">

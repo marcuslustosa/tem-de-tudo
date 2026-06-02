@@ -7,7 +7,7 @@
 <link href="/img/apple-touch-icon.png" rel="apple-touch-icon"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="/css/i9plus-phase8.css?v=20260601-shell-dock" rel="stylesheet"/>
+<link href="/css/i9plus-phase8.css?v=20260601-final-audit" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
@@ -440,8 +440,17 @@
 
       requestAnimationFrame(scanQRCode);
     } catch (error) {
-      console.error('Erro ao acessar câmera:', error);
-      statusText.textContent = 'Erro: permita acesso à câmera';
+      const unsupportedCamera = ['NotSupportedError', 'NotFoundError', 'OverconstrainedError'].includes(error?.name || '');
+      if (unsupportedCamera) {
+        console.warn('camera_unavailable', error?.name || error);
+        statusText.textContent = 'Camera indisponivel neste dispositivo ou navegador';
+      } else if ((error?.name || '') === 'NotAllowedError') {
+        console.warn('camera_permission_denied');
+        statusText.textContent = 'Permita o acesso a camera para continuar';
+      } else {
+        console.warn('camera_start_failed', error?.name || error);
+        statusText.textContent = 'Nao foi possivel iniciar a camera agora';
+      }
       statusText.classList.add('text-error');
     }
   }
@@ -574,6 +583,6 @@
 })();
 </script>
 
-<script src="/dist/stitch-app.min.js?v=20260601-shell-dock"></script>
+<script src="/dist/stitch-app.min.js?v=20260601-final-audit"></script>
 </body>
 </html>
