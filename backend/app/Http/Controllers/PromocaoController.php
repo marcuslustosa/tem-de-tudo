@@ -12,6 +12,7 @@ use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
@@ -76,7 +77,10 @@ class PromocaoController extends Controller
                 'message' => $e->getMessage(),
             ], 422);
         } catch (\Throwable $e) {
-            report($e);
+            $this->logPromotionFailure('store', $e, [
+                'empresa_id' => $empresa->id,
+                'payload_keys' => array_keys($payload),
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -145,7 +149,11 @@ class PromocaoController extends Controller
                 'message' => $e->getMessage(),
             ], 422);
         } catch (\Throwable $e) {
-            report($e);
+            $this->logPromotionFailure('update', $e, [
+                'empresa_id' => $promocao->empresa_id,
+                'promocao_id' => $promocao->id,
+                'payload_keys' => array_keys($payload),
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -212,7 +220,11 @@ class PromocaoController extends Controller
                 'message' => $e->getMessage(),
             ], 422);
         } catch (\Throwable $e) {
-            report($e);
+            $this->logPromotionFailure('toggle', $e, [
+                'empresa_id' => $promocao->empresa_id,
+                'promocao_id' => $promocao->id,
+                'target_active' => $active,
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -515,6 +527,23 @@ class PromocaoController extends Controller
         }
 
         return $value;
+    }
+
+    private function logPromotionFailure(string $action, \Throwable $e, array $context = []): void
+    {
+        $payload = array_merge($context, [
+            'action' => $action,
+            'exception' => get_class($e),
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ]);
+
+        try {
+            Log::error('promotion.persistence_failed', $payload);
+        } catch (\Throwable) {
+            error_log('promotion.persistence_failed ' . json_encode($payload));
+        }
     }
 
     private function forbidden(string $message): JsonResponse
