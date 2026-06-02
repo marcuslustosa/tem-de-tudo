@@ -572,13 +572,27 @@ class RelatorioOperacionalService
     private function safeRecentClients(Empresa $empresa, int $limit): array
     {
         try {
-            return InscricaoEmpresa::query()
+            $inscricoes = InscricaoEmpresa::query()
                 ->with('user:' . implode(',', $this->companyClientUserColumns()))
                 ->where('empresa_id', $empresa->id)
                 ->orderByDesc('data_inscricao')
                 ->limit($limit)
                 ->get()
-                ->map(fn (InscricaoEmpresa $inscricao) => $this->serializeLinkedCustomer($inscricao, []))
+                ->values();
+
+            $customerIds = $inscricoes
+                ->pluck('user_id')
+                ->map(fn ($id) => (int) $id)
+                ->filter(fn ($id) => $id > 0)
+                ->values()
+                ->all();
+
+            $aggregates = $this->customerAggregateMaps($empresa->id, $customerIds);
+            $aggregates['push'] = $this->linkedCustomerPushMap($customerIds);
+            $thresholdDays = $this->activeReminderThreshold($empresa);
+
+            return $inscricoes
+                ->map(fn (InscricaoEmpresa $inscricao) => $this->serializeLinkedCustomer($inscricao, $aggregates, $thresholdDays))
                 ->values()
                 ->all();
         } catch (\Throwable $e) {
