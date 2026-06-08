@@ -321,10 +321,11 @@ class DiscountController extends Controller
             $empresaId = $request->input('empresa_id');
 
             // Buscar usuário por telefone, email ou nome
-            $user = User::where(function($query) use ($search) {
-                $query->where('telefone', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%")
-                      ->orWhere('name', 'like', "%{$search}%");
+            $searchLike = '%' . mb_strtolower(trim((string) $search)) . '%';
+            $user = User::where(function($query) use ($searchLike) {
+                $query->whereRaw('LOWER(telefone) LIKE ?', [$searchLike])
+                      ->orWhereRaw('LOWER(email) LIKE ?', [$searchLike])
+                      ->orWhereRaw('LOWER(name) LIKE ?', [$searchLike]);
             })->first();
 
             if (!$user) {

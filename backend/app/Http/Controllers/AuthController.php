@@ -1473,13 +1473,13 @@ class AuthController extends Controller
         }
 
         if ($request->filled('search')) {
-            $term = '%' . $request->input('search') . '%';
+            $term = '%' . mb_strtolower(trim((string) $request->input('search'))) . '%';
             $query->where(function ($q) use ($term) {
-                $q->where('name', 'like', $term)
-                    ->orWhere('email', 'like', $term);
+                $q->whereRaw('LOWER(name) LIKE ?', [$term])
+                    ->orWhereRaw('LOWER(email) LIKE ?', [$term]);
 
                 if (Schema::hasColumn('users', 'telefone')) {
-                    $q->orWhere('telefone', 'like', $term);
+                    $q->orWhereRaw('LOWER(telefone) LIKE ?', [$term]);
                 }
             });
         }

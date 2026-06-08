@@ -374,8 +374,8 @@ class PushSubscriptionController extends Controller
 
         $query = User::query()->where(function ($builder) use ($rawLookup, $digitsLookup) {
             $builder
-                ->where('email', 'like', '%' . $rawLookup . '%')
-                ->orWhere('name', 'like', '%' . $rawLookup . '%');
+                ->whereRaw('LOWER(email) LIKE ?', ['%' . mb_strtolower($rawLookup) . '%'])
+                ->orWhereRaw('LOWER(name) LIKE ?', ['%' . mb_strtolower($rawLookup) . '%']);
 
             if ($digitsLookup !== '' && Schema::hasColumn('users', 'cpf')) {
                 $builder->orWhere('cpf', 'like', '%' . $digitsLookup . '%');

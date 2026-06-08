@@ -538,11 +538,11 @@ class EmpresaController extends Controller
         }
 
         if ($request->has('busca')) {
-            $busca = $request->busca;
+            $busca = '%' . mb_strtolower(trim((string) $request->busca)) . '%';
             $query->where(function ($q) use ($busca) {
-                $q->where('nome', 'LIKE', "%{$busca}%");
+                $q->whereRaw('LOWER(nome) LIKE ?', [$busca]);
                 if ($this->hasColumn('empresas', 'descricao')) {
-                    $q->orWhere('descricao', 'LIKE', "%{$busca}%");
+                    $q->orWhereRaw('LOWER(descricao) LIKE ?', [$busca]);
                 }
             });
         }
@@ -677,13 +677,13 @@ class EmpresaController extends Controller
                 }
             }
 
-            // Busca por nome ou descrição
+            // Busca por nome ou descrição (case-insensitive e portável: pg LIKE é case-sensitive)
             if ($request->has('busca')) {
-                $busca = $request->busca;
+                $busca = '%' . mb_strtolower(trim((string) $request->busca)) . '%';
                 $query->where(function($q) use ($busca) {
-                    $q->where('nome', 'LIKE', "%{$busca}%");
+                    $q->whereRaw('LOWER(nome) LIKE ?', [$busca]);
                     if (Schema::hasColumn('empresas', 'descricao')) {
-                        $q->orWhere('descricao', 'LIKE', "%{$busca}%");
+                        $q->orWhereRaw('LOWER(descricao) LIKE ?', [$busca]);
                     }
                 });
             }

@@ -62,7 +62,7 @@ class ProdutoController extends Controller
             }
 
             if ($request->filled('search') && Schema::hasColumn('produtos', 'nome')) {
-                $query->where('nome', 'LIKE', '%' . $request->input('search') . '%');
+                $query->whereRaw('LOWER(nome) LIKE ?', ['%' . mb_strtolower(trim((string) $request->input('search'))) . '%']);
             }
 
             if (Schema::hasColumn('produtos', 'nome')) {
