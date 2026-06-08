@@ -722,6 +722,7 @@ class AuthController extends Controller
         $roleColumn = $this->resolveUsersRoleColumn();
         $databaseDriver = DB::connection()->getDriverName();
         $databaseTrue = $databaseDriver === 'pgsql' ? 'true' : true;
+        $pgBool = fn ($value) => $databaseDriver === 'pgsql' ? ($value ? 'true' : 'false') : (bool) $value;
 
         $baseData = [
             'name' => $perfil === 'empresa'
@@ -737,7 +738,7 @@ class AuthController extends Controller
         }
         if (Schema::hasColumn('users', 'is_active')) {
             $baseData['is_active'] = $perfil === 'empresa'
-                ? !$this->isPublicCompanyRegistrationRequest($request)
+                ? $pgBool(!$this->isPublicCompanyRegistrationRequest($request))
                 : $databaseTrue;
         }
         if (Schema::hasColumn('users', 'pontos')) {
@@ -777,7 +778,7 @@ class AuthController extends Controller
             $baseData['data_processing_consent_at'] = $request->boolean('terms', true) ? now() : null;
         }
         if (Schema::hasColumn('users', 'marketing_consent')) {
-            $baseData['marketing_consent'] = $request->boolean('marketing_consent', false);
+            $baseData['marketing_consent'] = $pgBool($request->boolean('marketing_consent', false));
         }
         if (Schema::hasColumn('users', 'consent_version')) {
             $baseData['consent_version'] = $request->input('consent_version', config('privacy.default_consent_version', 'v1'));
@@ -799,7 +800,7 @@ class AuthController extends Controller
                     $finalData['telefone'] = $request->input('whatsapp', $request->telefone);
                 }
                 if (Schema::hasColumn('users', 'is_active')) {
-                    $finalData['is_active'] = !$this->isPublicCompanyRegistrationRequest($request);
+                    $finalData['is_active'] = $pgBool(!$this->isPublicCompanyRegistrationRequest($request));
                 }
                 break;
 
