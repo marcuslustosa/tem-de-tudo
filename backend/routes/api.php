@@ -58,6 +58,30 @@ Route::get('/metrics', [HealthController::class, 'metrics'])->middleware('thrott
 Route::get('/docs/openapi', [ApiDocsController::class, 'index'])->middleware('cache.response:600');
 Route::get('/docs/openapi/{version}', [ApiDocsController::class, 'show'])->middleware('cache.response:600');
 
+// DIAGNOSTICO TEMPORARIO - remover apos sincronizar schema de producao
+Route::get('/_diag/schema', function (\Illuminate\Http\Request $request) {
+    if ((string) $request->query('token') !== (string) env('SETUP_TOKEN')) {
+        return response()->json(['success' => false, 'message' => 'unauthorized'], 403);
+    }
+    $expected = ['admins','ajustes_pontos','audit_logs','avaliacoes','badges','banners','billing_events','billing_notifications','bonus_adesao','bonus_adesao_resgates','bonus_aniversario','bonus_aniversario_resgates','bonus_aniversarios','cache','cache_locks','campanhas_multiplicador','cartao_fidelidades','cartoes_fidelidade','cartoes_fidelidade_movimentos','cartoes_fidelidade_progresso','categorias','check_ins','company_loyalty_configs','coupons','data_privacy_requests','desafio_progresso','desafios','device_fingerprints','discount_levels','empresas','failed_jobs','fraud_alerts','fraud_blacklist','fraud_rules','historicos','inscricoes_empresa','invoices','jobs','ledger','lembrete_envios','lembretes_ausencia','migrations','notificacoes_push','notifications','nps_respostas','pagamentos','password_reset_tokens','personal_access_tokens','ponto_transacoes','pontos','produtos','promocao_resgates','promocoes','push_notifications','push_subscriptions','qr_codes','redemption_intents','segmento_usuarios','segmentos','sessions','subscription_plans','subscriptions','user_badges','users','webhook_logs','webhooks_saida'];
+    $missing = [];
+    $present = [];
+    foreach ($expected as $t) {
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable($t)) { $present[] = $t; } else { $missing[] = $t; }
+        } catch (\Throwable $e) {
+            $missing[] = $t . ' (erro: ' . $e->getMessage() . ')';
+        }
+    }
+    return response()->json([
+        'success' => true,
+        'driver' => \Illuminate\Support\Facades\DB::connection()->getDriverName(),
+        'present_count' => count($present),
+        'missing_count' => count($missing),
+        'missing_tables' => $missing,
+    ]);
+});
+
 if (app()->environment(['local', 'testing'])) {
     // Debug route (somente ambiente local/teste)
     Route::get('/debug', function () {
