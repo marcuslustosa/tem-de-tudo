@@ -48,8 +48,18 @@ class AdminContentController extends Controller
             ],
             'categorias' => [
                 ['id' => 1, 'name' => 'Restaurantes', 'slug' => 'restaurantes', 'active' => true, 'position' => 1, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
-                ['id' => 2, 'name' => 'Beleza', 'slug' => 'beleza', 'active' => true, 'position' => 2, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
-                ['id' => 3, 'name' => 'Saude', 'slug' => 'saude', 'active' => true, 'position' => 3, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 2, 'name' => 'Lanchonetes', 'slug' => 'lanchonetes', 'active' => true, 'position' => 2, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 3, 'name' => 'Cafeterias', 'slug' => 'cafeterias', 'active' => true, 'position' => 3, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 4, 'name' => 'Padarias', 'slug' => 'padarias', 'active' => true, 'position' => 4, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 5, 'name' => 'Docerias', 'slug' => 'docerias', 'active' => true, 'position' => 5, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 6, 'name' => 'Mercados', 'slug' => 'mercados', 'active' => true, 'position' => 6, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 7, 'name' => 'Farmácias', 'slug' => 'farmacias', 'active' => true, 'position' => 7, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 8, 'name' => 'Beleza', 'slug' => 'beleza', 'active' => true, 'position' => 8, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 9, 'name' => 'Saúde', 'slug' => 'saude', 'active' => true, 'position' => 9, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 10, 'name' => 'Academias', 'slug' => 'academias', 'active' => true, 'position' => 10, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 11, 'name' => 'Pet Shops', 'slug' => 'pet-shops', 'active' => true, 'position' => 11, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 12, 'name' => 'Moda', 'slug' => 'moda', 'active' => true, 'position' => 12, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
+                ['id' => 13, 'name' => 'Serviços', 'slug' => 'servicos', 'active' => true, 'position' => 13, 'created_at' => now()->toISOString(), 'updated_at' => now()->toISOString()],
             ],
         ];
     }
