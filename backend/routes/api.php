@@ -85,6 +85,38 @@ Route::get('/_diag/schema', function (\Illuminate\Http\Request $request) {
             $missingColumns[$t] = ['__erro__' => $e->getMessage()];
         }
     }
+    $probes = [];
+    try {
+        $c = \App\Models\Categoria::where('active', true)->orderBy('position')->orderByDesc('id')->get();
+        $probes['categorias_query'] = 'ok count=' . $c->count();
+    } catch (\Throwable $e) {
+        $probes['categorias_query'] = 'ERRO: ' . $e->getMessage();
+    }
+    try {
+        $probes['categorias_raw_count'] = (int) \Illuminate\Support\Facades\DB::table('categorias')->count();
+    } catch (\Throwable $e) {
+        $probes['categorias_raw_count'] = 'ERRO: ' . $e->getMessage();
+    }
+    try {
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        $ud = [
+            'name' => 'Diag Probe',
+            'email' => 'diag-probe-' . uniqid() . '@example.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('diagprobe123'),
+        ];
+        $roleCol = \Illuminate\Support\Facades\Schema::hasColumn('users', 'perfil') ? 'perfil' : 'role';
+        $ud[$roleCol] = 'cliente';
+        foreach (['status' => 'ativo', 'is_active' => true, 'pontos' => 0, 'pontos_pendentes' => 0, 'nivel' => 'Bronze', 'email_verified_at' => now(), 'pontos_lifetime' => 0, 'multiplicador_pontos' => 1.0] as $k => $v) {
+            if (\Illuminate\Support\Facades\Schema::hasColumn('users', $k)) { $ud[$k] = $v; }
+        }
+        $u = \App\Models\User::create($ud);
+        $tok = $u->createToken('diag')->plainTextToken;
+        $probes['register_sim'] = 'ok user_id=' . $u->id . ' token=' . (strlen((string) $tok) > 0 ? 'sim' : 'nao');
+        \Illuminate\Support\Facades\DB::rollBack();
+    } catch (\Throwable $e) {
+        try { \Illuminate\Support\Facades\DB::rollBack(); } catch (\Throwable $e2) {}
+        $probes['register_sim'] = 'ERRO: ' . $e->getMessage();
+    }
     return response()->json([
         'success' => true,
         'driver' => \Illuminate\Support\Facades\DB::connection()->getDriverName(),
@@ -92,6 +124,7 @@ Route::get('/_diag/schema', function (\Illuminate\Http\Request $request) {
         'missing_count' => count($missing),
         'missing_tables' => $missing,
         'missing_columns' => $missingColumns,
+        'probes' => $probes,
     ]);
 });
 
