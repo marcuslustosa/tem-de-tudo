@@ -12,9 +12,10 @@ class NotificationController extends Controller
 {
     public function index(Request $request)
     {
+        $perPage = max(1, min((int) $request->input('per_page', 50), 200));
         $notifications = Notification::where('user_id', Auth::id())
             ->orderByDesc('created_at')
-            ->paginate(20);
+            ->paginate($perPage);
 
         return response()->json([
             'success' => true,

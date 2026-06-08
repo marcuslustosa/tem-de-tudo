@@ -222,7 +222,7 @@
       return data?.message || 'Esta empresa ainda nao pode operar nesta etapa.';
     }
     if (error === 'subscription_blocked') {
-      return data?.message || 'A operacao desta empresa esta temporariamente bloqueada.';
+      return data?.message || 'A operação desta empresa está temporariamente bloqueada.';
     }
     if (typeof data?.message === 'string' && data.message.trim()) {
       return data.message.trim();
@@ -1012,7 +1012,7 @@
       if (/Prev$|Next$/.test(btn.id || '')) {
         bindOnce(btn, 'paginationBound', (ev) => {
           ev.preventDefault();
-          ui.message('Nenhuma outra pagina disponivel no momento.', 'info');
+          ui.message('Nenhuma outra página disponível no momento.', 'info');
         });
         return;
       }
@@ -1020,7 +1020,7 @@
       if (btn.getAttribute('aria-current') === 'page') {
         bindOnce(btn, 'currentPageBound', (ev) => {
           ev.preventDefault();
-          ui.message('Voce ja esta nesta pagina.', 'info');
+          ui.message('Você já está nesta página.', 'info');
         });
         return;
       }
@@ -1028,7 +1028,7 @@
       if (btn.hasAttribute('data-nav-fallback')) {
         bindOnce(btn, 'navFallbackInfoBound', (ev) => {
           ev.preventDefault();
-          ui.message('Acao disponivel pela navegacao principal.', 'info');
+          ui.message('Ação disponível pela navegação principal.', 'info');
         });
       }
     });
@@ -1568,16 +1568,16 @@
     function getPromptReasonCopy(reason) {
       if (reason === 'register') {
         return {
-          kicker: 'Cadastro concluido',
-          title: 'Ative as notificacoes neste dispositivo',
-          body: 'Receba promocoes, bonus e lembretes das empresas onde voce se cadastrou sem depender de SMS ou e-mail.',
+          kicker: 'Cadastro concluído',
+          title: 'Ative as notificações neste dispositivo',
+          body: 'Receba promoções, bônus e lembretes das empresas onde você se cadastrou sem depender de SMS ou e-mail.',
         };
       }
 
       return {
         kicker: 'Bem-vindo de volta',
-        title: 'Ative as notificacoes neste dispositivo',
-        body: 'Receba campanhas e beneficios das empresas vinculadas a sua conta assim que fizer login no app.',
+        title: 'Ative as notificações neste dispositivo',
+        body: 'Receba campanhas e benefícios das empresas vinculadas à sua conta assim que fizer login no app.',
       };
     }
 
@@ -1981,7 +1981,7 @@
         }
       }
       if (notify && res.status === 403) ui.message('Acesso negado para este perfil.', 'warning');
-      if (notify && res.status === 404) ui.message('Recurso nao encontrado.', 'warning');
+      if (notify && res.status === 404) ui.message('Recurso não encontrado.', 'warning');
       const isPushEndpoint = path.startsWith('/push/');
       if (notify && res.status >= 500 && !isPushEndpoint) ui.message('Erro no servidor. Tente novamente em instantes.', 'error');
       return { res, data };
@@ -2212,7 +2212,7 @@
                 </div>
               </div>
               <div class="mt-4 flex gap-3">
-                <a class="inline-flex h-11 flex-1 items-center justify-center rounded-full bg-[linear-gradient(90deg,#00AFA8_0%,#133F8C_45%,#B01774_100%)] px-4 text-sm font-extrabold text-white" href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}">Abrir empresa</a>
+                <a class="inline-flex h-11 flex-1 items-center justify-center rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#00afa8_48%,#b01774_100%)] px-4 text-sm font-extrabold text-white" href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}">Abrir empresa</a>
                 <button class="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 px-4 text-sm font-bold text-slate-600" type="button" data-company-open="${encodeURIComponent(company.id)}">Ver</button>
               </div>
             </article>
@@ -2684,7 +2684,7 @@
               </div>
               <div class="flex items-center justify-between gap-3 pt-2 border-t border-surface-container">
                 <span class="inline-flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 text-[11px] font-semibold text-on-surface-variant">
-                  <span class="material-symbols-outlined text-sm text-[#E10098]" style="font-variation-settings: 'FILL' 1;">storefront</span>
+                  <span class="material-symbols-outlined text-sm text-[#b01774]" style="font-variation-settings: 'FILL' 1;">storefront</span>
                   Empresa ativa
                 </span>
                 <a class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-semibold text-on-primary hover:opacity-90 transition-opacity" href="/detalhe_do_parceiro.html?id=${e.id}">${actionLabel}</a>
@@ -3197,7 +3197,7 @@
                     </div>
                   </div>
                   <div class="flex flex-wrap items-center gap-3">
-                    <button type="button" class="partner-promo-action inline-flex h-11 items-center justify-center rounded-full bg-[linear-gradient(90deg,#00AFA8_0%,#133F8C_45%,#B01774_100%)] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(0,0,0,0.12)]">Continuar</button>
+                    <button type="button" class="partner-promo-action inline-flex h-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#00afa8_48%,#b01774_100%)] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(0,0,0,0.12)]">Continuar</button>
                     <span class="text-sm text-slate-500">${safeText(promo.message, meta.message)}</span>
                   </div>
                 </div>
@@ -3311,7 +3311,7 @@
               row.innerHTML = `
                 <span class="w-10 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">${entry.star}★</span>
                 <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
-                  <div class="h-full rounded-full bg-[linear-gradient(90deg,#00AFA8_0%,#133F8C_45%,#B01774_100%)]" style="width:${percent}%"></div>
+                  <div class="h-full rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#00afa8_48%,#b01774_100%)]" style="width:${percent}%"></div>
                 </div>
                 <span class="w-14 text-right text-xs font-semibold text-slate-500">${entryTotal}</span>
               `;
@@ -3563,7 +3563,7 @@
         if (heroBadge) heroBadge.textContent = info.points_multiplier ? `${info.points_multiplier}x pontos` : 'Parceiro';
         if (heroDist) heroDist.textContent = info.endereco || '';
         setText('partner-address', info.endereco, 'Endereço não informado');
-        setText('partner-about', info.descricao, 'Esta empresa opera beneficios e atendimento presencial por QR Code.');
+        setText('partner-about', info.descricao, 'Esta empresa opera benefícios e atendimento presencial por QR Code.');
         setText('partner-phone', info.telefone, 'Não informado');
         setText('partner-whatsapp', info.whatsapp, 'Não informado');
         setText('partner-instagram', info.instagram, 'Não informado');
@@ -4372,14 +4372,14 @@
 
       if (titleEl) {
         titleEl.textContent = perfil === 'empresa'
-          ? (companyBenefitMode ? 'Consultar cliente e validar beneficios' : 'Ler QR do cliente')
+          ? (companyBenefitMode ? 'Consultar cliente e validar benefícios' : 'Ler QR do cliente')
           : 'Ler QR da Empresa';
       }
       if (copyEl) {
         copyEl.textContent = perfil === 'empresa'
           ? (companyBenefitMode
-              ? 'Empresa: consulte o cliente pelo QR Code e valide bonus de adesao, bonus aniversario, pontos e resgates somente no estabelecimento.'
-              : 'Empresa: escaneie o QR do cliente para validar acoes futuras e registrar atendimento.')
+              ? 'Empresa: consulte o cliente pelo QR Code e valide bônus de adesão, bônus aniversário, pontos e resgates somente no estabelecimento.'
+              : 'Empresa: escaneie o QR do cliente para validar ações futuras e registrar atendimento.')
           : 'Cliente: escaneie o QR do adesivo da empresa para se vincular no app.';
       }
       if (buttonLabel) {
@@ -4390,10 +4390,10 @@
           : '<span class="material-symbols-outlined" style="font-variation-settings: \'FILL\' 1;">link</span> Vincular Agora';
       }
       if (manualInput && customerCompanyLinkMode) {
-        manualInput.placeholder = 'Cole o codigo do QR da empresa...';
+        manualInput.placeholder = 'Cole o código do QR da empresa...';
       }
       if (manualInput && companyBenefitMode) {
-        manualInput.placeholder = 'Cole o QR dinamico do cliente...';
+        manualInput.placeholder = 'Cole o QR dinâmico do cliente...';
       }
       if (bonusPanel && !companyBenefitMode) {
         bonusPanel.classList.add('hidden');
@@ -4659,7 +4659,7 @@
                   <div class="mt-3 flex items-center justify-between gap-3">
                     <p class="text-[11px] font-semibold text-on-surface-variant">Validade: ${formatDatePtBr(promo.data_expiracao || promo.validade, 'Não informada')}</p>
                     <button type="button" data-action="validar-promocao" data-promocao-id="${promo.id}"
-                      class="rounded-[1rem] px-3 py-2 text-xs font-bold ${canValidatePromo ? 'bg-gradient-to-r from-[#00BCD4] via-[#7A2C8F] to-[#E10098] text-white shadow-sm' : 'bg-surface-container text-on-surface-variant'}"
+                      class="rounded-[1rem] px-3 py-2 text-xs font-bold ${canValidatePromo ? 'bg-gradient-to-r from-[#00afa8] via-[#133f8c] to-[#b01774] text-white shadow-sm' : 'bg-surface-container text-on-surface-variant'}"
                       ${canValidatePromo ? '' : 'disabled'}>
                       ${canValidatePromo ? 'Validar promoção' : 'Sem ação'}
                     </button>
@@ -4866,8 +4866,8 @@
         const codigo = String(rawCode || '').trim();
         if (!codigo) {
           const message = perfil === 'empresa'
-            ? (companyBenefitMode ? 'Informe o QR do cliente.' : 'Informe o codigo do cupom.')
-            : 'Informe o codigo do QR da empresa.';
+            ? (companyBenefitMode ? 'Informe o QR do cliente.' : 'Informe o código do cupom.')
+            : 'Informe o código do QR da empresa.';
           ui.message(message, 'warning');
           emitQrValidationResult({
             ok: false,
@@ -4932,9 +4932,12 @@
 
           clearPendingCompanyQr();
           ui.message(data?.message || 'Empresa vinculada com sucesso.', 'success');
-          const target = `${data?.data?.public_page_url || `/detalhe_do_parceiro.html?id=${encodeURIComponent(data?.data?.empresa?.id || '')}`}&linked=1`.replace('?&', '?');
+          const empresaId = data?.data?.empresa?.id || '';
+          const publicUrl = data?.data?.public_page_url
+            || (empresaId ? `/detalhe_do_parceiro.html?id=${encodeURIComponent(empresaId)}` : '/parceiros_tem_de_tudo.html');
+          const target = publicUrl.includes('?') ? `${publicUrl}&linked=1` : `${publicUrl}?linked=1`;
           setTimeout(() => {
-            window.location.href = target.includes('?') ? target : `${target}?linked=1`;
+            window.location.href = target;
           }, 500);
           return true;
         }
@@ -5304,8 +5307,8 @@
       if (heroName) heroName.textContent = safeText(storefrontInfo?.nome, safeText(currentUser?.name, 'Sua empresa'));
       if (heroSubtitle) {
         heroSubtitle.textContent = qrPayload?.public_page_url
-          ? 'O cliente escaneia o QR da empresa para abrir a vitrine e concluir o vinculo. A equipe usa o QR do cliente no balcao para validar beneficios.'
-          : 'Gerencie clientes, campanhas e validacoes sem sair deste painel.';
+          ? 'O cliente escaneia o QR da empresa para abrir a vitrine e concluir o vínculo. A equipe usa o QR do cliente no balcão para validar benefícios.'
+          : 'Gerencie clientes, campanhas e validações sem sair deste painel.';
       }
       if (heroMeta) {
         heroMeta.textContent = safeText(currentUser?.name)
@@ -5557,6 +5560,12 @@
       };
 
       btn?.addEventListener('click', () => load(input?.value || ''));
+      input?.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') {
+          ev.preventDefault();
+          load(input.value || '');
+        }
+      });
 
       await load();
     },
@@ -6692,9 +6701,9 @@
       ]);
 
       if (
-        handleCompanyAccessFailure(summaryResponse.res, summaryResponse.data, 'Nao foi possivel carregar o resumo operacional desta empresa.')
-        || handleCompanyAccessFailure(promotionsResponse.res, promotionsResponse.data, 'Nao foi possivel carregar as promocoes desta empresa.')
-        || handleCompanyAccessFailure(customersResponse.res, customersResponse.data, 'Nao foi possivel carregar a base de clientes desta empresa.')
+        handleCompanyAccessFailure(summaryResponse.res, summaryResponse.data, 'Não foi possível carregar o resumo operacional desta empresa.')
+        || handleCompanyAccessFailure(promotionsResponse.res, promotionsResponse.data, 'Não foi possível carregar as promoções desta empresa.')
+        || handleCompanyAccessFailure(customersResponse.res, customersResponse.data, 'Não foi possível carregar a base de clientes desta empresa.')
       ) {
         return;
       }
@@ -6862,9 +6871,9 @@
                     ${recentRedemptions.length ? recentRedemptions.map((event) => `
                       <div class="rounded-xl bg-surface-container-low p-4">
                         <p class="text-sm font-bold text-on-surface">${safeText(event?.cliente_nome, 'Cliente')}</p>
-                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(event?.titulo, 'Beneficio validado')} | ${formatDatePtBr(event?.data, 'agora')}</p>
+                        <p class="mt-1 text-xs text-on-surface-variant">${safeText(event?.titulo, 'Benefício validado')} | ${formatDatePtBr(event?.data, 'agora')}</p>
                       </div>
-                    `).join('') : '<p class="text-sm text-on-surface-variant">Nenhuma validacao recente.</p>'}
+                    `).join('') : '<p class="text-sm text-on-surface-variant">Nenhuma validação recente.</p>'}
                   </div>
                 </div>
               </div>
@@ -7072,7 +7081,7 @@
         'adminTopCompaniesList',
         topCompaniesByClients,
         'text-primary',
-        'Nenhum ranking de empresas disponivel.'
+        'Nenhum ranking de empresas disponível.'
       );
 
       const growthChart = ids('adminGrowthChart');
@@ -8281,7 +8290,7 @@
           value: `${Number(item?.total_clientes || 0).toLocaleString('pt-BR')} cliente(s)`,
         })),
         'text-secondary',
-        'Nenhum ranking de clientes disponivel.'
+        'Nenhum ranking de clientes disponível.'
       );
 
       renderMetricRows(
@@ -8291,7 +8300,7 @@
           value: `${Number(item?.total_resgates || 0).toLocaleString('pt-BR')} resgate(s)`,
         })),
         'text-tertiary',
-        'Nenhum ranking de resgates disponivel.'
+        'Nenhum ranking de resgates disponível.'
       );
 
       const relCheckinsList = document.getElementById('relCheckinsList');
@@ -8900,9 +8909,9 @@
       const heroSection = sections[0];
       const heroTexts = heroSection?.querySelectorAll('p, h1');
       if (heroTexts?.length) {
-        if (heroTexts[0]) heroTexts[0].textContent = 'Conteudo & Banners';
-        if (heroTexts[1]) heroTexts[1].textContent = 'Gestao de Banners e Categorias';
-        if (heroTexts[2]) heroTexts[2].textContent = 'Edite banners e categorias em tempo real. O que voce salvar aqui sera refletido no aplicativo.';
+        if (heroTexts[0]) heroTexts[0].textContent = 'Conteúdo & Banners';
+        if (heroTexts[1]) heroTexts[1].textContent = 'Gestão de Banners e Categorias';
+        if (heroTexts[2]) heroTexts[2].textContent = 'Edite banners e categorias em tempo real. O que você salvar aqui será refletido no aplicativo.';
       }
       const heroButton = document.getElementById('btnConteudoAviso');
       if (heroButton) heroButton.textContent = 'Entendi';
@@ -8927,7 +8936,7 @@
           banners: [],
           categorias: [],
           unavailable: true,
-          message: data?.message || 'Nao foi possivel carregar o conteudo administrativo agora.',
+          message: data?.message || 'Não foi possível carregar o conteúdo administrativo agora.',
         };
       };
 
@@ -8938,7 +8947,7 @@
         const isUnavailable = Boolean(payload?.unavailable);
         const isReadOnly = isPartial || isUnavailable;
         const sourceLabel = isUnavailable
-          ? 'indisponivel'
+          ? 'indisponível'
           : isPartial
             ? 'modo somente leitura'
             : 'API administrativa';
@@ -8948,7 +8957,7 @@
             <div class="space-y-2">
               <p><strong>${Number(banners.length).toLocaleString('pt-BR')}</strong> banner(s) e <strong>${Number(categorias.length).toLocaleString('pt-BR')}</strong> categoria(s) carregados.</p>
               <p>Origem atual: <strong>${sourceLabel}</strong>.</p>
-              <p>${isUnavailable ? (payload?.message || 'A API de conteudo nao respondeu. Tente novamente mais tarde.') : isPartial ? 'A API de conteudo respondeu em modo somente leitura.' : 'A operacao esta pronta para editar sem popups.'}</p>
+              <p>${isUnavailable ? (payload?.message || 'A API de conteúdo não respondeu. Tente novamente mais tarde.') : isPartial ? 'A API de conteúdo respondeu em modo somente leitura.' : 'A operação está pronta para editar sem popups.'}</p>
             </div>
           `;
         }
