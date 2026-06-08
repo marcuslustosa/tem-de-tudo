@@ -73,12 +73,21 @@ Route::get('/_diag/schema', function (\Illuminate\Http\Request $request) {
             $missing[] = $t . ' (erro: ' . $e->getMessage() . ')';
         }
     }
+    $columns = [];
+    foreach ($present as $t) {
+        try {
+            $columns[$t] = \Illuminate\Support\Facades\Schema::getColumnListing($t);
+        } catch (\Throwable $e) {
+            $columns[$t] = ['__erro__' => $e->getMessage()];
+        }
+    }
     return response()->json([
         'success' => true,
         'driver' => \Illuminate\Support\Facades\DB::connection()->getDriverName(),
         'present_count' => count($present),
         'missing_count' => count($missing),
         'missing_tables' => $missing,
+        'columns' => $columns,
     ]);
 });
 
