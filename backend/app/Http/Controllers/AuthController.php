@@ -357,7 +357,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Erro no banco de dados. Tente novamente em alguns instantes.',
+                'message' => 'DEBUG DB: ' . $e->getMessage(),
             ], 500);
 
         } catch (\Exception $e) {
@@ -373,7 +373,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Erro ao criar conta. Tente novamente.',
+                'message' => 'DEBUG ERR: ' . $e->getMessage(),
             ], 500);
         }
     }
