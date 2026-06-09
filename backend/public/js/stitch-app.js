@@ -3453,7 +3453,7 @@
         setLink('partnerFacebookLink', companyInfo.facebook, (value) => String(value).startsWith('http') ? value : `https://facebook.com/${String(value).replace(/^@/, '')}`);
 
         const statusBadge = document.getElementById('partner-status-badge');
-        if (statusBadge) statusBadge.textContent = companyInfo.publicamente_visivel ? 'Empresa ativa no app' : 'Empresa indisponível';
+        if (statusBadge) statusBadge.textContent = companyInfo.publicamente_visivel ? 'Disponível no app' : 'Indisponível no momento';
 
         const ctaBtn = document.getElementById('partnerPrimaryAction');
         if (ctaBtn) {
