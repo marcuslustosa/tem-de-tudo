@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ponto extends Model
 {
+    use PgSafeBooleans;
     use HasFactory;
 
     protected $fillable = [

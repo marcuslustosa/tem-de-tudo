@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CheckIn extends Model
 {
+    use PgSafeBooleans;
     use HasFactory;
 
     protected $table = 'check_ins';

@@ -111,6 +111,12 @@ class NotificationController extends Controller
             return response()->json(['success' => false, 'message' => 'Usuario nao autenticado.'], 401);
         }
 
+        // pg-safe: colunas boolean no PostgreSQL nao aceitam inteiro.
+        $isPg = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql';
+        foreach ($validated as $key => $value) {
+            $validated[$key] = $isPg ? ((bool) $value ? 'true' : 'false') : (bool) $value;
+        }
+
         $user->fill($validated);
         $user->save();
 

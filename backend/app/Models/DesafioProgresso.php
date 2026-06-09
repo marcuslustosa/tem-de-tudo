@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DesafioProgresso extends Model
 {
+    use PgSafeBooleans;
     protected $table = 'desafio_progresso';
 
     protected $fillable = [

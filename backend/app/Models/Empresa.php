@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Schema;
 
 class Empresa extends Model
 {
+    use PgSafeBooleans;
     use HasFactory;
 
     public const STATUS_PENDING = 'pending';

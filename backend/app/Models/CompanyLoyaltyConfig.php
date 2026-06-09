@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CompanyLoyaltyConfig extends Model
 {
+    use PgSafeBooleans;
     protected $fillable = [
         'company_id',
         'points_per_real',

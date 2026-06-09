@@ -438,7 +438,7 @@ class EmpresaAPIController extends Controller
             'imagem' => $imagePath,
             'data_inicio' => $request->input('data_inicio', now()),
             'validade' => $request->input('validade'),
-            'ativo' => $request->boolean('ativo', true),
+            'ativo' => DB::raw($request->boolean('ativo', true) ? 'true' : 'false'),
             'status' => $request->boolean('ativo', true) ? 'ativa' : 'pausada',
             'visualizacoes' => 0,
             'resgates' => 0,
@@ -551,7 +551,7 @@ class EmpresaAPIController extends Controller
         DB::table('promocoes')
             ->where('id', $id)
             ->update([
-                'ativo' => false,
+                'ativo' => DB::raw('false'),
                 'status' => 'pausada',
                 'updated_at' => now()
             ]);
@@ -582,7 +582,7 @@ class EmpresaAPIController extends Controller
         DB::table('promocoes')
             ->where('id', $id)
             ->update([
-                'ativo' => true,
+                'ativo' => DB::raw('true'),
                 'status' => 'ativa',
                 'updated_at' => now()
             ]);
