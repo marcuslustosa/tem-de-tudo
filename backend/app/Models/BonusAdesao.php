@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\PgSafeBooleans;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 class BonusAdesao extends Model
 {
-    use HasFactory;
+    use HasFactory, PgSafeBooleans;
 
     public const TYPE_ADHESION_BONUS = 'adhesion_bonus';
 

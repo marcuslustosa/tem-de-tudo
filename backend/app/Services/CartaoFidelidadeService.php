@@ -88,7 +88,7 @@ class CartaoFidelidadeService
                 CartaoFidelidade::query()
                     ->where('empresa_id', $empresa->id)
                     ->when($card?->id, fn ($query) => $query->where('id', '!=', $card->id))
-                    ->update(['ativo' => false]);
+                    ->update(['ativo' => \Illuminate\Support\Facades\DB::raw('false')]);
             }
 
             if ($card) {

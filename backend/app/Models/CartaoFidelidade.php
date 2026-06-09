@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\PgSafeBooleans;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CartaoFidelidade extends Model
 {
-    use HasFactory;
+    use HasFactory, PgSafeBooleans;
 
     protected $table = 'cartoes_fidelidade';
 

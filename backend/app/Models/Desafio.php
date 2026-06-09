@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\PgSafeBooleans;
 use Illuminate\Database\Eloquent\Model;
 
 class Desafio extends Model
 {
+    use PgSafeBooleans;
+
     protected $fillable = [
         'empresa_id', 'nome', 'descricao', 'tipo', 'meta',
         'recompensa_pontos', 'recompensa_descricao',

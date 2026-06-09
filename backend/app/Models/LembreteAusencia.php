@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\PgSafeBooleans;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class LembreteAusencia extends Model
 {
-    use HasFactory;
+    use HasFactory, PgSafeBooleans;
 
     public const STATUS_AVAILABLE = 'available';
     public const STATUS_INACTIVE = 'inactive';

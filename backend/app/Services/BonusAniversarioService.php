@@ -96,7 +96,7 @@ class BonusAniversarioService
                 BonusAniversario::query()
                     ->where('empresa_id', $empresa->id)
                     ->when($bonus?->id, fn ($query) => $query->where('id', '!=', $bonus->id))
-                    ->update(['ativo' => false]);
+                    ->update(['ativo' => \Illuminate\Support\Facades\DB::raw('false')]);
             }
 
             if ($bonus) {

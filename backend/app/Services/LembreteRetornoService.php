@@ -92,7 +92,7 @@ class LembreteRetornoService
                 LembreteAusencia::query()
                     ->where('empresa_id', $empresa->id)
                     ->when($reminder?->id, fn ($query) => $query->where('id', '!=', $reminder->id))
-                    ->update(['ativo' => false]);
+                    ->update(['ativo' => \Illuminate\Support\Facades\DB::raw('false')]);
             }
 
             if ($reminder) {

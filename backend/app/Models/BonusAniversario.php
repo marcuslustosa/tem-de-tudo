@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\PgSafeBooleans;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -9,7 +10,7 @@ use Illuminate\Support\Str;
 
 class BonusAniversario extends Model
 {
-    use HasFactory;
+    use HasFactory, PgSafeBooleans;
 
     protected $table = 'bonus_aniversario';
 

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\PgSafeBooleans;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CampanhaMultiplicador extends Model
 {
+    use PgSafeBooleans;
+
     protected $table = 'campanhas_multiplicador';
 
     protected $fillable = [
