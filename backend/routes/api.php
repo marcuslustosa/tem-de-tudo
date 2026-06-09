@@ -286,6 +286,7 @@ Route::prefix('admin')->group(function () {
             Route::post('/empresas/{id}/approve', [EmpresaController::class, 'approve']);
             Route::post('/empresas/{id}/reject', [EmpresaController::class, 'reject']);
             Route::post('/empresas/{id}/suspend', [EmpresaController::class, 'suspend']);
+            Route::post('/empresas/{id}/pagamento', [EmpresaController::class, 'togglePagamento']);
             // Legacy compatibility route preserved for older admin clients.
             // Prefer the explicit approve/reject/suspend transitions above.
             Route::patch('/empresas/{id}/toggle-status', [EmpresaController::class, 'toggleStatus']);

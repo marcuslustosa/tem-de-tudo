@@ -7428,6 +7428,7 @@
       const actionEndpoint = (id, action) => {
         if (action === 'suspend') return `/admin/empresas/${id}/suspend`;
         if (action === 'reject') return `/admin/empresas/${id}/reject`;
+        if (action === 'pagamento') return `/admin/empresas/${id}/pagamento`;
         return `/admin/empresas/${id}/approve`;
       };
 
@@ -7540,6 +7541,7 @@
                 <div class="flex flex-wrap gap-2 text-[10px] uppercase font-bold">
                   <span class="px-2 py-1 rounded-full bg-primary/10 text-primary">QR ${e.qr_code_ready ? 'Pronto' : 'Pendente'}</span>
                   <span class="px-2 py-1 rounded-full bg-surface-container-high text-on-surface-variant">${e.ativo ? 'Ativo' : 'Inativo'}</span>
+                  <span class="px-2 py-1 rounded-full ${e.pagamento_confirmado ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${e.pagamento_confirmado ? 'Pago' : 'Aguardando pagamento'}</span>
                 </div>
               </div>
               <div class="flex flex-wrap gap-4 mt-3 text-sm text-on-surface-variant">
@@ -7556,6 +7558,7 @@
                   ${meta.actionLabel}
                 </button>
                 ${meta.secondaryAction ? `<button data-company-action="${meta.secondaryAction}" data-company-id="${e.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${meta.secondaryClass} text-xs font-bold hover:opacity-90 transition-opacity">${meta.secondaryLabel}</button>` : ''}
+                <button data-company-action="pagamento" data-company-id="${e.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${e.pagamento_confirmado ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'} text-xs font-bold hover:opacity-90 transition-opacity">${e.pagamento_confirmado ? 'Marcar não pago' : 'Confirmar pagamento'}</button>
               </div>
             </div>`;
 

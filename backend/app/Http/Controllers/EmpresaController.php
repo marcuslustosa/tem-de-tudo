@@ -1277,6 +1277,38 @@ class EmpresaController extends Controller
         return $this->transitionOperationalStatus($id, Empresa::STATUS_SUSPENDED, 'bloqueado');
     }
 
+    /**
+     * Opcao B: admin master alterna a confirmacao de pagamento da empresa.
+     * Escrita pg-safe (string 'true'/'false' no pgsql para coluna boolean).
+     */
+    public function togglePagamento(int $id)
+    {
+        if (!$this->hasColumn('empresas', 'pagamento_confirmado')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Controle de pagamento indisponivel neste ambiente.',
+            ], 503);
+        }
+
+        $empresa = Empresa::query()->findOrFail($id);
+        $novo = !((bool) $empresa->pagamento_confirmado);
+        $pg = DB::connection()->getDriverName() === 'pgsql';
+
+        DB::table('empresas')->where('id', $empresa->id)->update([
+            'pagamento_confirmado' => $pg ? ($novo ? 'true' : 'false') : $novo,
+            'pagamento_confirmado_em' => $novo ? now() : null,
+            'updated_at' => now(),
+        ]);
+
+        $empresa->refresh();
+
+        return response()->json([
+            'success' => true,
+            'message' => $novo ? 'Pagamento confirmado.' : 'Pagamento marcado como pendente.',
+            'data' => $this->serializeAdminEmpresa($empresa),
+        ]);
+    }
+
     public function adminQrCode(int $id)
     {
         $empresa = Empresa::query()->withCount('qrCodes')->findOrFail($id);
@@ -1384,6 +1416,8 @@ class EmpresaController extends Controller
             'ativo' => (bool) $empresa->ativo,
             'publicamente_visivel' => $empresa->isPubliclyVisible(),
             'qr_code_ready' => (int) ($empresa->qr_codes_count ?? 0) > 0,
+            'pagamento_confirmado' => (bool) ($empresa->pagamento_confirmado ?? false),
+            'pagamento_confirmado_em' => optional($empresa->pagamento_confirmado_em)->toISOString(),
             'created_at' => optional($empresa->created_at)->toISOString(),
             'updated_at' => optional($empresa->updated_at)->toISOString(),
         ];
