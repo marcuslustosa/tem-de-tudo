@@ -880,6 +880,10 @@ class AuthController extends Controller
         $categoria = trim((string) $request->input('categoria', $request->input('ramo', '')));
         $nomeFantasia = trim((string) $request->input('nome_fantasia', $request->input('name', '')));
 
+        // pg-safe: coluna boolean no PostgreSQL nao aceita inteiro (Laravel converte bool->int).
+        $isPg = DB::connection()->getDriverName() === 'pgsql';
+        $pgBool = fn ($value) => $isPg ? ($value ? 'true' : 'false') : (bool) $value;
+
         $payload = [
             'owner_id' => $user->id,
             'user_id' => $user->id,
@@ -891,7 +895,7 @@ class AuthController extends Controller
             'categoria' => $categoria !== '' ? $categoria : null,
             'cnpj' => $request->input('cnpj'),
             'logo' => $request->input('logo'),
-            'ativo' => !$isPendingRequest,
+            'ativo' => $pgBool(!$isPendingRequest),
             'status' => $isPendingRequest ? Empresa::STATUS_PENDING : Empresa::STATUS_ACTIVE,
             'points_multiplier' => 1.0,
             'created_at' => now(),
