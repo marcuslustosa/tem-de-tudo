@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Database\PgSafeBooleanConnection;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Http\Request;
@@ -16,7 +18,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Solucao de raiz para booleanos no PostgreSQL: usa uma conexao que envia
+        // bool como PARAM_BOOL (em vez de int). Aplica-se somente ao driver pgsql.
+        Connection::resolverFor('pgsql', function ($connection, $database, $prefix, $config) {
+            return new PgSafeBooleanConnection($connection, $database, $prefix, $config);
+        });
     }
 
     /**
