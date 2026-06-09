@@ -342,7 +342,7 @@ class User extends Authenticatable implements JWTSubject
     public function verificarBadges()
     {
         $badges_conquistados = [];
-        $badges_disponiveis = Badge::where('ativo', true)->get();
+        $badges_disponiveis = Badge::whereTrue('ativo')->get();
         
         foreach ($badges_disponiveis as $badge) {
             // Verifica se já tem o badge

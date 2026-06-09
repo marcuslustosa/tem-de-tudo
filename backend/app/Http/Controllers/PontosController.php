@@ -106,7 +106,7 @@ class PontosController extends Controller
 
             // Validar QR code pertence a empresa e esta ativo
             $qrCode = QRCode::where('id', $request->qr_code_id)
-                ->where('active', true)
+                ->whereTrue('active')
                 ->first();
 
             if (!$qrCode || $qrCode->empresa_id !== $empresa->id) {
@@ -692,7 +692,7 @@ class PontosController extends Controller
                 if (Schema::hasColumn($checkinsTable, 'status')) {
                     $pendingQuery->whereIn('status', ['pending', 'pendente']);
                 } elseif (Schema::hasColumn($checkinsTable, 'aprovado')) {
-                    $pendingQuery->where('aprovado', false);
+                    $pendingQuery->whereFalse('aprovado');
                 } elseif (Schema::hasColumn($checkinsTable, 'approved_at')) {
                     $pendingQuery->whereNull('approved_at');
                 } else {

@@ -35,7 +35,7 @@ class Desafio extends Model
 
     public function scopeAtivos($query)
     {
-        return $query->where('ativo', true)
+        return $query->whereTrue('ativo')
                      ->where('data_inicio', '<=', now())
                      ->where('data_fim', '>=', now());
     }

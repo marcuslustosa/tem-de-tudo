@@ -66,7 +66,7 @@ class Plan extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('active', true);
+        return $query->whereTrue('active');
     }
 
     /**

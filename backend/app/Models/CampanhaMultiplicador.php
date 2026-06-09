@@ -34,7 +34,7 @@ class CampanhaMultiplicador extends Model
     public function scopeAtiva($query)
     {
         return $query
-            ->where('ativo', true)
+            ->whereTrue('ativo')
             ->where('data_inicio', '<=', now())
             ->where('data_fim', '>=', now());
     }

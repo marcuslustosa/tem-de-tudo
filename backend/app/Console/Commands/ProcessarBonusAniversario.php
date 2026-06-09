@@ -53,13 +53,13 @@ class ProcessarBonusAniversario extends Command
                 
                 // Buscar empresas que o cliente está inscrito
                 $inscricoes = InscricaoEmpresa::where('user_id', $cliente->id)
-                    ->where('ativo', true)
+                    ->whereTrue('ativo')
                     ->get();
 
                 foreach ($inscricoes as $inscricao) {
                     // Verificar se a empresa tem bônus de aniversário configurado
                     $bonusConfig = BonusAniversario::where('empresa_id', $inscricao->empresa_id)
-                        ->where('ativo', true)
+                        ->whereTrue('ativo')
                         ->first();
 
                     if (!$bonusConfig) {

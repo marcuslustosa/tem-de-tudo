@@ -176,7 +176,7 @@ class DiscountController extends Controller
             // Verificar se o nível de desconto existe e pertence à empresa
             $discountLevel = DiscountLevel::where('id', $discountLevelId)
                                         ->where('empresa_id', $empresaId)
-                                        ->where('is_active', true)
+                                        ->whereTrue('is_active')
                                         ->first();
 
             if (!$discountLevel) {

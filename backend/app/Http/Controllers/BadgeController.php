@@ -13,7 +13,7 @@ class BadgeController extends Controller
      */
     public function index()
     {
-        $badges = Badge::where('ativo', true)
+        $badges = Badge::whereTrue('ativo')
                       ->orderBy('ordem')
                       ->get();
         
@@ -120,7 +120,7 @@ class BadgeController extends Controller
     public function progresso(Request $request)
     {
         $user = $request->user();
-        $badges_disponiveis = Badge::where('ativo', true)
+        $badges_disponiveis = Badge::whereTrue('ativo')
                                   ->orderBy('ordem')
                                   ->get();
         

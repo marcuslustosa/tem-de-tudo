@@ -18,7 +18,7 @@ class PromocaoController extends Controller
     public function index(Request $request)
     {
         $query = Promocao::with('empresa')
-            ->where('ativo', true)
+            ->whereTrue('ativo')
             ->where(function($q) {
                 $q->whereNull('data_fim')
                   ->orWhere('data_fim', '>=', now());

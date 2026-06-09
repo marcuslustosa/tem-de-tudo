@@ -391,7 +391,7 @@ class BillingService
     {
         $exists = BillingNotification::where('invoice_id', $invoice->id)
             ->where('type', $type)
-            ->where('sent', true)
+            ->whereTrue('sent')
             ->exists();
 
         if ($exists) {

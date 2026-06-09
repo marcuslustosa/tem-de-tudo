@@ -60,7 +60,7 @@ class QRCode extends Model
             return $query->whereRaw($this->qualifyColumn('active') . ' = true');
         }
 
-        return $query->where('active', true);
+        return $query->whereTrue('active');
     }
 
     /**

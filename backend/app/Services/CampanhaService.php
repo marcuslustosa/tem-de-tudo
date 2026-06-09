@@ -24,7 +24,7 @@ class CampanhaService
 
         return Cache::remember($cacheKey, 300, function () use ($empresaId) {
             $campanha = CampanhaMultiplicador::where('empresa_id', $empresaId)
-                ->where('ativo', true)
+                ->whereTrue('ativo')
                 ->where('data_inicio', '<=', now())
                 ->where('data_fim', '>=', now())
                 ->orderBy('multiplicador', 'desc') // maior multiplicador
@@ -93,7 +93,7 @@ class CampanhaService
     public function listarCampanhasAtivas(int $empresaId): \Illuminate\Database\Eloquent\Collection
     {
         return CampanhaMultiplicador::where('empresa_id', $empresaId)
-            ->where('ativo', true)
+            ->whereTrue('ativo')
             ->where('data_fim', '>=', now())
             ->orderBy('data_inicio', 'desc')
             ->get();
@@ -125,12 +125,12 @@ class CampanhaService
     {
         $total = CampanhaMultiplicador::where('empresa_id', $empresaId)->count();
         $ativas = CampanhaMultiplicador::where('empresa_id', $empresaId)
-            ->where('ativo', true)
+            ->whereTrue('ativo')
             ->where('data_inicio', '<=', now())
             ->where('data_fim', '>=', now())
             ->count();
         $agendadas = CampanhaMultiplicador::where('empresa_id', $empresaId)
-            ->where('ativo', true)
+            ->whereTrue('ativo')
             ->where('data_inicio', '>', now())
             ->count();
         $expiradas = CampanhaMultiplicador::where('empresa_id', $empresaId)

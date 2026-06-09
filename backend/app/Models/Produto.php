@@ -41,7 +41,7 @@ class Produto extends Model
      */
     public function scopeAtivos($query)
     {
-        return $query->where('ativo', true);
+        return $query->whereTrue('ativo');
     }
 
     /**

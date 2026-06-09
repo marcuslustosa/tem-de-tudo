@@ -226,7 +226,7 @@ class ClienteController extends Controller
 
             // Verificar se empresa oferece bônus de adesão
             $bonus = BonusAdesao::where('empresa_id', $empresaId)
-                ->where('ativo', true)
+                ->whereTrue('ativo')
                 ->first();
 
             if (!$bonus) {
@@ -314,7 +314,7 @@ class ClienteController extends Controller
     public function listarEmpresas(Request $request)
     {
         try {
-            $empresas = Empresa::where('ativo', true)
+            $empresas = Empresa::whereTrue('ativo')
                 ->select(
                     'id',
                     'nome',

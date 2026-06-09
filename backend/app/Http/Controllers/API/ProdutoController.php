@@ -54,7 +54,7 @@ class ProdutoController extends Controller
             $query = Produto::query()->where('empresa_id', $empresaId);
 
             if (Schema::hasColumn('produtos', 'ativo')) {
-                $query->where('ativo', true);
+                $query->whereTrue('ativo');
             }
 
             if ($request->filled('categoria') && Schema::hasColumn('produtos', 'categoria')) {
@@ -118,7 +118,7 @@ class ProdutoController extends Controller
                 ->with('empresa');
 
             if (Schema::hasColumn('produtos', 'ativo')) {
-                $query->where('ativo', true);
+                $query->whereTrue('ativo');
             }
 
             $produto = $query->firstOrFail();

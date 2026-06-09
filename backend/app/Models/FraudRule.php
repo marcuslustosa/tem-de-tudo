@@ -42,7 +42,7 @@ class FraudRule extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->whereTrue('is_active');
     }
 
     public function scopeByType($query, string $type)

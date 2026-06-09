@@ -235,7 +235,7 @@ class LeaderboardService
                 'total_pontos_circulacao' => User::sum('pontos'),
                 'total_pontos_emitidos' => User::sum('pontos_lifetime'),
                 'total_badges_distribuidos' => DB::table('user_badges')->count(),
-                'total_badges_unicos' => Badge::where('ativo', true)->count(),
+                'total_badges_unicos' => Badge::whereTrue('ativo')->count(),
                 'nivel_medio' => round(User::where('pontos_lifetime', '>', 0)->avg('nivel') ?? 0, 2),
                 'usuario_top' => User::orderBy('pontos_lifetime', 'desc')->first(['id', 'name', 'pontos_lifetime']),
             ];

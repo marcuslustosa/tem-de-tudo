@@ -75,7 +75,7 @@ class NotificacaoPush extends Model
             return $query->whereRaw($this->qualifyColumn('enviado') . ' = false');
         }
 
-        return $query->where('enviado', false);
+        return $query->whereFalse('enviado');
     }
 
     public function scopeEnviadas($query)
@@ -84,7 +84,7 @@ class NotificacaoPush extends Model
             return $query->whereRaw($this->qualifyColumn('enviado') . ' = true');
         }
 
-        return $query->where('enviado', true);
+        return $query->whereTrue('enviado');
     }
 
     private function databaseBooleanValue(bool $value): bool|string

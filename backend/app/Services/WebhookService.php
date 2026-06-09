@@ -18,7 +18,7 @@ class WebhookService
      */
     public function disparar(string $evento, array $payload, ?int $empresaId = null): void
     {
-        $query = WebhookSaida::where('ativo', true)
+        $query = WebhookSaida::whereTrue('ativo')
             ->whereJsonContains('eventos', $evento);
 
         if ($empresaId !== null) {

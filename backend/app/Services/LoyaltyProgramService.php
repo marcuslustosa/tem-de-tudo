@@ -459,9 +459,9 @@ class LoyaltyProgramService
         $query = DB::table('qr_codes')->where('empresa_id', $companyId);
 
         if (Schema::hasColumn('qr_codes', 'active')) {
-            $query->where('active', true);
+            $query->whereTrue('active');
         } elseif (Schema::hasColumn('qr_codes', 'ativo')) {
-            $query->where('ativo', true);
+            $query->whereTrue('ativo');
         }
 
         return $query->exists();
@@ -476,7 +476,7 @@ class LoyaltyProgramService
         $query = DB::table('promocoes')->where('empresa_id', $companyId);
 
         if (Schema::hasColumn('promocoes', 'ativo')) {
-            $query->where('ativo', true);
+            $query->whereTrue('ativo');
         }
 
         if (Schema::hasColumn('promocoes', 'status')) {

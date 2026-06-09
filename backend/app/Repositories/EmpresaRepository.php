@@ -12,7 +12,7 @@ class EmpresaRepository
      */
     public function getActive(?string $categoria = null, ?string $busca = null): Collection
     {
-        $query = Empresa::where('ativo', true);
+        $query = Empresa::whereTrue('ativo');
 
         if ($categoria) {
             $query->where('categoria', $categoria);

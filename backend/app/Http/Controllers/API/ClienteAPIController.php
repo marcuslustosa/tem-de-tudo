@@ -388,7 +388,7 @@ class ClienteAPIController extends Controller
         // Buscar QR Code
         $qrCode = DB::table('qr_codes')
             ->where('code', $request->code)
-            ->where('active', true)
+            ->whereTrue('active')
             ->first();
         
         if (!$qrCode) {
@@ -630,7 +630,7 @@ class ClienteAPIController extends Controller
         // Buscar promoÃ§Ã£o
         $promocao = DB::table('promocoes')
             ->where('id', $promocaoId)
-            ->where('ativo', true)
+            ->whereTrue('ativo')
             ->first();
         
         if (!$promocao) {

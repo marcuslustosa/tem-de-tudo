@@ -43,7 +43,7 @@ class DiscountLevel extends Model
      */
     public function scopeAtivos($query)
     {
-        return $query->where('active', true);
+        return $query->whereTrue('active');
     }
 
     /**

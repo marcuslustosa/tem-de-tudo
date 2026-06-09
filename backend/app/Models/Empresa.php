@@ -82,7 +82,7 @@ class Empresa extends Model
      */
     public function produtosAtivos()
     {
-        return $this->hasMany(Produto::class)->where('ativo', true);
+        return $this->hasMany(Produto::class)->whereTrue('ativo');
     }
 
     /**
@@ -109,7 +109,7 @@ class Empresa extends Model
         $base = (float) ($this->points_multiplier ?? 1.0);
 
         $campanha = \App\Models\CampanhaMultiplicador::where('empresa_id', $this->id)
-            ->where('ativo', true)
+            ->whereTrue('ativo')
             ->where('data_inicio', '<=', now())
             ->where('data_fim', '>=', now())
             ->orderByDesc('multiplicador')
@@ -162,7 +162,7 @@ class Empresa extends Model
                 if (DB::connection()->getDriverName() === 'pgsql') {
                     $query->whereRaw($this->qualifyColumn('ativo') . ' = true');
                 } else {
-                    $query->where('ativo', true);
+                    $query->whereTrue('ativo');
                 }
             } else {
                 $query->whereIn('ativo', [1, '1', true, 'true', 'ativo', 'ativa', 'active']);

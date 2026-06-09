@@ -77,7 +77,7 @@ class AdminReportController extends Controller
             }
 
             if ($this->hasColumn('empresas', 'ativo')) {
-                return Empresa::where('ativo', true)->count();
+                return Empresa::whereTrue('ativo')->count();
             }
 
             if ($this->hasColumn('empresas', 'status')) {
@@ -99,10 +99,10 @@ class AdminReportController extends Controller
         $days = (int) $request->get('days', 30);
 
         $userQuery = User::query();
-        $activeUsers = User::where('is_active', true)->count();
+        $activeUsers = User::whereTrue('is_active')->count();
 
         $adminsTotal = class_exists(Admin::class) ? Admin::count() : 0;
-        $adminsActive = class_exists(Admin::class) ? Admin::where('is_active', true)->count() : 0;
+        $adminsActive = class_exists(Admin::class) ? Admin::whereTrue('is_active')->count() : 0;
 
         $stats = [
             'users' => [
@@ -218,7 +218,7 @@ class AdminReportController extends Controller
 
         if ($request->boolean('active_only')) {
             if ($this->hasColumn('users', 'is_active')) {
-                $query->where('is_active', true);
+                $query->whereTrue('is_active');
             } elseif ($this->hasColumn('users', 'status')) {
                 $query->where('status', 'ativo');
             }

@@ -797,7 +797,7 @@ class EmpresaController extends Controller
             $qrCode = QRCode::query()
                 ->with('empresa')
                 ->where('code', $code)
-                ->when($this->hasColumn('qr_codes', 'active'), fn ($query) => $query->where('active', true))
+                ->when($this->hasColumn('qr_codes', 'active'), fn ($query) => $query->whereTrue('active'))
                 ->first();
 
             if (!$qrCode || !$qrCode->empresa || !$qrCode->empresa->isPubliclyVisible()) {
@@ -919,7 +919,7 @@ class EmpresaController extends Controller
 
             $qrcodesAtivos = QRCode::query()
                 ->where('empresa_id', $empresa->id)
-                ->where('active', true)
+                ->whereTrue('active')
                 ->count();
 
             $checkinsHoje = CheckIn::query()
@@ -1065,7 +1065,7 @@ class EmpresaController extends Controller
             if (Schema::hasColumn('users', 'status')) {
                 $query->where('status', 'ativo');
             } elseif (Schema::hasColumn('users', 'ativo')) {
-                $query->where('ativo', true);
+                $query->whereTrue('ativo');
             }
 
             $select = ['id', 'name as nome'];
