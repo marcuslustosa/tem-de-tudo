@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CampanhaMultiplicador extends Model
 {
-    use PgSafeBooleans;
+    use \App\Models\Concerns\PgSafeBooleans;
 
     protected $table = 'campanhas_multiplicador';
 

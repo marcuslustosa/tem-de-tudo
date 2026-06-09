@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BillingNotification extends Model
 {
-    use PgSafeBooleans;
+    use \App\Models\Concerns\PgSafeBooleans;
     use HasFactory;
 
     protected $fillable = [

@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class Subscription extends Model
 {
-    use PgSafeBooleans;
+    use \App\Models\Concerns\PgSafeBooleans;
     use HasFactory;
 
     protected $fillable = [

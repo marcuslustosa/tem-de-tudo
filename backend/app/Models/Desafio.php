@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Desafio extends Model
 {
-    use PgSafeBooleans;
+    use \App\Models\Concerns\PgSafeBooleans;
 
     protected $fillable = [
         'empresa_id', 'nome', 'descricao', 'tipo', 'meta',

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FraudRule extends Model
 {
-    use PgSafeBooleans;
+    use \App\Models\Concerns\PgSafeBooleans;
     protected $fillable = [
         'name',
         'description',

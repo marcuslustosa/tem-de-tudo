@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Categoria extends Model
 {
-    use PgSafeBooleans;
+    use \App\Models\Concerns\PgSafeBooleans;
     use HasFactory;
 
     protected $table = 'categorias';
