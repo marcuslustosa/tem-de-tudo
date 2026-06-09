@@ -440,7 +440,7 @@ class AdminContentController extends Controller
             if ($this->hasContentTables()) {
                 return response()->json([
                     'success' => true,
-                    'data' => Banner::where('active', true)->orderBy('position')->orderByDesc('id')->get(),
+                    'data' => Banner::whereTrue('active')->orderBy('position')->orderByDesc('id')->get(),
                 ]);
             }
 
@@ -460,7 +460,7 @@ class AdminContentController extends Controller
             if ($this->hasContentTables()) {
                 return response()->json([
                     'success' => true,
-                    'data' => Categoria::where('active', true)->orderBy('position')->orderByDesc('id')->get(),
+                    'data' => Categoria::whereTrue('active')->orderBy('position')->orderByDesc('id')->get(),
                 ]);
             }
 
