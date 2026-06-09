@@ -5118,7 +5118,7 @@
               <p class="mt-2 text-sm leading-6 text-on-surface-variant">${safeText(info?.descricao, 'Atualize o perfil da empresa para mostrar descrição, contatos e proposta comercial da vitrine.')}</p>
             </div>
             <div class="grid gap-2 sm:grid-cols-2">
-              <a class="empresa-shortcut-card" href="/meu_perfil.html">
+              <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html">
                 <span class="material-symbols-outlined">edit_square</span>
                 <span>Editar vitrine</span>
               </a>
