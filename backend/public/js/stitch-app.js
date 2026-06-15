@@ -2079,10 +2079,27 @@
   }
 
   function normalizeWeeklyLimitStatus(status = {}) {
-    const limit = Math.max(1, Number(status?.limit ?? 5) || 5);
+    const rawLimit = Number(status?.limit ?? 5);
+    const unlimited = Boolean(status?.unlimited) || rawLimit <= 0;
     const used = Math.max(0, Number(status?.used ?? 0) || 0);
-    const remaining = Math.max(0, Number(status?.remaining ?? Math.max(0, limit - used)) || 0);
     const windowDays = Math.max(1, Number(status?.window_days ?? 7) || 7);
+
+    if (unlimited) {
+      return {
+        limit: 0,
+        used,
+        remaining: Number.MAX_SAFE_INTEGER,
+        windowDays,
+        unlimited: true,
+        tone: 'success',
+        title: 'Envios de push',
+        detail: `${used} enviado(s) — ilimitado`,
+        helper: 'Você pode enviar push ilimitado.',
+      };
+    }
+
+    const limit = Math.max(1, rawLimit || 5);
+    const remaining = Math.max(0, Number(status?.remaining ?? Math.max(0, limit - used)) || 0);
     const tone = remaining <= 0 ? 'error' : (remaining <= Math.ceil(limit / 3) ? 'warning' : 'success');
 
     return {
@@ -2090,6 +2107,7 @@
       used,
       remaining,
       windowDays,
+      unlimited: false,
       tone,
       title: `Janela de ${windowDays} dias`,
       detail: `${used}/${limit} envios usados`,
@@ -5708,7 +5726,9 @@
           ? 'bg-rose-50 text-rose-700'
           : (weeklyStatus.tone === 'warning' ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700');
         form.weeklyInfo.className = `mt-3 inline-flex rounded-full px-4 py-2 text-xs font-semibold ${weeklyToneClass}`;
-        form.weeklyInfo.textContent = `${weeklyStatus.title}: ${weeklyStatus.detail} | Restantes ${weeklyStatus.remaining}`;
+        form.weeklyInfo.textContent = weeklyStatus.unlimited
+          ? `${weeklyStatus.title}: ${weeklyStatus.detail}`
+          : `${weeklyStatus.title}: ${weeklyStatus.detail} | Restantes ${weeklyStatus.remaining}`;
       }
 
       const setCounts = (arr) => {

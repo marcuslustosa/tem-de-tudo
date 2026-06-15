@@ -375,6 +375,7 @@ class PromocaoInstantaneaService
     public function weeklySendStatus(Empresa $empresa): array
     {
         $limit = $this->weeklySendLimit();
+        $unlimited = $limit <= 0;
         $windowDays = $this->weeklySendWindowDays();
         $used = Promocao::query()
             ->where('empresa_id', $empresa->id)
@@ -384,9 +385,10 @@ class PromocaoInstantaneaService
 
         return [
             'limit' => $limit,
+            'unlimited' => $unlimited,
             'window_days' => $windowDays,
             'used' => $used,
-            'remaining' => max(0, $limit - $used),
+            'remaining' => $unlimited ? PHP_INT_MAX : max(0, $limit - $used),
         ];
     }
 
@@ -405,7 +407,7 @@ class PromocaoInstantaneaService
         }
 
         $weeklyStatus = $this->weeklySendStatus($empresa);
-        if ($weeklyStatus['remaining'] <= 0) {
+        if (empty($weeklyStatus['unlimited']) && $weeklyStatus['remaining'] <= 0) {
             throw new DomainException(sprintf(
                 'Limite de envio atingido. Cada empresa pode enviar no maximo %d promocoes instantaneas a cada %d dias.',
                 $weeklyStatus['limit'],
@@ -561,7 +563,8 @@ class PromocaoInstantaneaService
 
     private function weeklySendLimit(): int
     {
-        return max(1, (int) env('PROMOTION_WEEKLY_SEND_LIMIT', self::WEEKLY_SEND_LIMIT));
+        // 0 (ou negativo) = ilimitado. Padrao agora e ilimitado; defina a env para limitar.
+        return max(0, (int) env('PROMOTION_WEEKLY_SEND_LIMIT', 0));
     }
 
     private function weeklySendWindowDays(): int
