@@ -7776,7 +7776,7 @@
           const email = u.email || '';
           const perfil = u.perfil || u.role || 'admin';
           const status = suspenso(u) ? 'Suspenso' : ativo(u) ? 'Ativo' : 'Inativo';
-          const ultimo = u.last_login || u.updated_at || u.created_at || '';
+          const ultimo = formatDatePtBr(u.last_login || u.updated_at || u.created_at, '-');
           const statusAtual = status === 'Ativo' ? 'ativo' : (status === 'Suspenso' ? 'bloqueado' : 'inativo');
           tr.dataset.userId = u.id;
           tr.dataset.userName = nome;
@@ -8147,7 +8147,7 @@
           const cpf = c.cpf || c.documento || '---';
           const pontos = Number(c.pontos || c.saldo || 0);
           const status = ativo(c) ? 'Ativo' : 'Inativo';
-          const ultima = c.last_login || c.updated_at || c.created_at || '-';
+          const ultima = formatDatePtBr(c.last_login || c.updated_at || c.created_at, '-');
           const tr = document.createElement('tr');
           tr.className = 'data-row hover:bg-surface transition-colors group';
           tr.dataset.userId = c.id;
