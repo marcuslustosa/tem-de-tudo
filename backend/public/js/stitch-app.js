@@ -1589,7 +1589,7 @@
       wrapper.setAttribute('data-push-prompt-modal', 'true');
       wrapper.innerHTML = `
         <div class="w-full max-w-xl overflow-hidden rounded-[30px] bg-white shadow-[0_30px_90px_rgba(11,31,58,0.28)] ring-1 ring-black/5">
-          <div class="bg-[linear-gradient(135deg,#133F8C_0%,#00AFA8_55%,#B01774_100%)] px-6 py-6 text-white">
+          <div class="bg-[linear-gradient(135deg,#133F8C_0%,#B01774_100%)] px-6 py-6 text-white">
             <div class="flex items-start justify-between gap-4">
               <div class="space-y-2">
                 <span class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em]" data-push-prompt-kicker>Bem-vindo</span>
@@ -2230,7 +2230,7 @@
                 </div>
               </div>
               <div class="mt-4 flex gap-3">
-                <a class="inline-flex h-11 flex-1 items-center justify-center rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#00afa8_48%,#b01774_100%)] px-4 text-sm font-extrabold text-white" href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}">Abrir empresa</a>
+                <a class="inline-flex h-11 flex-1 items-center justify-center rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#b01774_100%)] px-4 text-sm font-extrabold text-white" href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}">Abrir empresa</a>
                 <button class="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 px-4 text-sm font-bold text-slate-600" type="button" data-company-open="${encodeURIComponent(company.id)}">Ver</button>
               </div>
             </article>
@@ -3215,7 +3215,7 @@
                     </div>
                   </div>
                   <div class="flex flex-wrap items-center gap-3">
-                    <button type="button" class="partner-promo-action inline-flex h-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#00afa8_48%,#b01774_100%)] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(0,0,0,0.12)]">Continuar</button>
+                    <button type="button" class="partner-promo-action inline-flex h-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#b01774_100%)] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(0,0,0,0.12)]">Continuar</button>
                     <span class="text-sm text-slate-500">${safeText(promo.message, meta.message)}</span>
                   </div>
                 </div>
@@ -3329,7 +3329,7 @@
               row.innerHTML = `
                 <span class="w-10 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">${entry.star}★</span>
                 <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
-                  <div class="h-full rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#00afa8_48%,#b01774_100%)]" style="width:${percent}%"></div>
+                  <div class="h-full rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#b01774_100%)]" style="width:${percent}%"></div>
                 </div>
                 <span class="w-14 text-right text-xs font-semibold text-slate-500">${entryTotal}</span>
               `;
