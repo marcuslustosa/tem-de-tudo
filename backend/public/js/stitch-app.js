@@ -1203,6 +1203,116 @@
     push.mountCards();
   }
 
+  // ---- Instalar app (PWA): botao nativo no Android + guia no iPhone ----
+  function mountInstallPrompt() {
+    try {
+      const scope = getScopeForCurrentPage();
+      // Somente para o publico do cliente (nao poluir painel empresa/admin).
+      if (scope === 'admin' || scope === 'empresa') return;
+
+      const isStandalone = window.matchMedia?.('(display-mode: standalone)')?.matches
+        || window.navigator.standalone === true;
+      if (isStandalone) return; // ja instalado / aberto pelo icone
+
+      const ua = window.navigator.userAgent || '';
+      const isIOS = /iPad|iPhone|iPod/i.test(ua)
+        || (window.navigator.platform === 'MacIntel' && Number(window.navigator.maxTouchPoints || 0) > 1);
+
+      const DISMISS_KEY = 'tdt_install_dismissed_at';
+      const DISMISS_DAYS = 7;
+      const dismissedAt = Number(localStorage.getItem(DISMISS_KEY) || 0);
+      const recentlyDismissed = dismissedAt > 0 && (Date.now() - dismissedAt) < DISMISS_DAYS * 86400000;
+
+      let deferredPrompt = null;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tdt-install-fab';
+      btn.setAttribute('aria-label', 'Instalar o app Tem de Tudo');
+      btn.innerHTML = '<span class="material-symbols-outlined">install_mobile</span><span>Instalar app</span>';
+      btn.hidden = true;
+
+      const dismiss = document.createElement('button');
+      dismiss.type = 'button';
+      dismiss.className = 'tdt-install-fab__close';
+      dismiss.setAttribute('aria-label', 'Agora nao');
+      dismiss.innerHTML = '<span class="material-symbols-outlined">close</span>';
+      dismiss.hidden = true;
+
+      const show = () => { if (!recentlyDismissed) { btn.hidden = false; dismiss.hidden = false; } };
+      const hide = () => { btn.hidden = true; dismiss.hidden = true; };
+
+      dismiss.addEventListener('click', () => {
+        localStorage.setItem(DISMISS_KEY, String(Date.now()));
+        hide();
+      });
+
+      // Android/Chrome/Edge: porta oficial de instalacao.
+      window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        deferredPrompt = event;
+        show();
+      });
+
+      window.addEventListener('appinstalled', () => {
+        hide();
+        localStorage.setItem(DISMISS_KEY, String(Date.now()));
+        try { ui.message('App instalado! Abra pelo icone na tela de inicio para ativar as notificacoes.', 'success'); } catch (_) { /* silencioso */ }
+      });
+
+      let iosSheet = null;
+      const openIosGuide = () => {
+        if (iosSheet) { iosSheet.classList.add('is-open'); return; }
+        iosSheet = document.createElement('div');
+        iosSheet.className = 'tdt-install-sheet-overlay is-open';
+        iosSheet.innerHTML = `
+          <div class="tdt-install-sheet" role="dialog" aria-label="Como instalar o app">
+            <button type="button" class="tdt-install-sheet__close" data-close aria-label="Fechar">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="tdt-install-sheet__head">
+              <img src="/img/icon-192.png" alt="" class="tdt-install-sheet__icon" onerror="this.style.display='none'" />
+              <div>
+                <p class="tdt-install-sheet__title">Instalar o Tem de Tudo</p>
+                <p class="tdt-install-sheet__sub">Fica igual a um app, com atalho na tela de inicio.</p>
+              </div>
+            </div>
+            <ol class="tdt-install-sheet__steps">
+              <li><span class="tdt-install-sheet__num">1</span> Toque em <b>Compartilhar</b> <span class="material-symbols-outlined tdt-install-sheet__inline">ios_share</span> na barra do Safari.</li>
+              <li><span class="tdt-install-sheet__num">2</span> Role e toque em <b>Adicionar a Tela de Inicio</b> <span class="material-symbols-outlined tdt-install-sheet__inline">add_box</span>.</li>
+              <li><span class="tdt-install-sheet__num">3</span> Confirme em <b>Adicionar</b>.</li>
+            </ol>
+            <p class="tdt-install-sheet__foot">Depois <b>abra pelo icone</b> na tela de inicio para conseguir <b>ativar as notificacoes</b>.</p>
+            <button type="button" class="tdt-install-sheet__ok" data-close>Entendi</button>
+          </div>`;
+        document.body.appendChild(iosSheet);
+        const close = () => iosSheet.classList.remove('is-open');
+        iosSheet.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
+        iosSheet.addEventListener('click', (event) => { if (event.target === iosSheet) close(); });
+      };
+
+      btn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const choice = await deferredPrompt.userChoice.catch(() => null);
+          if (choice?.outcome === 'accepted') hide();
+          deferredPrompt = null;
+          return;
+        }
+        // iPhone e demais casos sem porta nativa: guia passo a passo.
+        openIosGuide();
+      });
+
+      document.body.appendChild(btn);
+      document.body.appendChild(dismiss);
+
+      // iPhone nao dispara beforeinstallprompt: mostramos o botao que abre o guia.
+      if (isIOS) show();
+    } catch (_) {
+      /* instalacao e melhoria progressiva: nunca deve quebrar a pagina */
+    }
+  }
+
   function wireAvatarFallbacks() {
     document.querySelectorAll('img[src="/img/avatar-admin.png"]').forEach((img) => {
       if (img.dataset.avatarFallbackBound === '1') return;
@@ -10167,6 +10277,7 @@
     mountPageBackButton();
     wireUtilityButtons();
     wirePushButtons();
+    mountInstallPrompt();
     consumeAccessNotice();
     const handler = handlers[page];
     if (handler) {

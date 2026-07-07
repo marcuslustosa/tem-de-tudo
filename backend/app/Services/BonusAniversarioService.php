@@ -345,6 +345,7 @@ class BonusAniversarioService
             'empresa_id' => $empresa->id,
             'bonus_aniversario_id' => $bonus->id,
             'url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
+            'image' => $bonus->imageUrl(),
         ];
 
         $stats = [

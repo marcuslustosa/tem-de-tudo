@@ -232,6 +232,7 @@ class LembreteRetornoService
                         'empresa_id' => $empresa->id,
                         'lembrete_id' => $reminder->id,
                         'url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
+                        'image' => $reminder->imagem_url ?: null,
                     ],
                     $auth
                 );

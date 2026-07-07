@@ -447,6 +447,7 @@ class PromocaoInstantaneaService
             'empresa_id' => $empresa->id,
             'promocao_id' => $promocao->id,
             'url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
+            'image' => $promocao->imageUrl(),
         ];
 
         $stats = [

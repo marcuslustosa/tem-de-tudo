@@ -223,12 +223,14 @@ class WebPushDeliveryService
     {
         $targetUrl = (string) ($data['url'] ?? '/index.html');
         $tipo = (string) ($data['tipo'] ?? $data['type'] ?? 'push');
+        $image = $this->normalizePushImage($data['image'] ?? $data['imagem'] ?? $data['imagem_url'] ?? null);
 
         return [
             'title' => trim($title) !== '' ? $title : 'Tem de Tudo',
             'body' => trim($body) !== '' ? $body : 'Voce recebeu uma nova notificacao.',
             'icon' => $data['icon'] ?? '/img/icon-192.png',
             'badge' => $data['badge'] ?? '/img/icon-96.png',
+            'image' => $image,
             'url' => $targetUrl,
             'empresa_id' => $data['empresa_id'] ?? null,
             'tipo' => $tipo,
@@ -236,7 +238,31 @@ class WebPushDeliveryService
                 'url' => $targetUrl,
                 'empresa_id' => $data['empresa_id'] ?? null,
                 'tipo' => $tipo,
+                'image' => $image,
             ]),
         ];
+    }
+
+    /**
+     * Normaliza a imagem do push: aceita URL absoluta ou caminho /storage
+     * e devolve uma URL absoluta para exibir na notificacao. Retorna null
+     * quando nao ha imagem, mantendo o comportamento atual (icon/badge).
+     */
+    private function normalizePushImage(?string $value): ?string
+    {
+        $path = is_string($value) ? trim($value) : '';
+        if ($path === '') {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (str_starts_with($path, '/')) {
+            return rtrim((string) (config('app.url') ?: ''), '/') . $path;
+        }
+
+        return $path;
     }
 }

@@ -3046,3 +3046,155 @@ body[data-page="recompensas"] .redemption-row:hover {
     animation: none;
   }
 }
+
+/* ---- Instalar app (PWA): botao flutuante + guia iPhone ---- */
+.tdt-install-fab {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.15rem;
+  border: none;
+  border-radius: 9999px;
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--i9-gradient, linear-gradient(135deg, #133F8C 0%, #b01774 100%));
+  box-shadow: 0 12px 30px rgba(176, 23, 116, 0.32);
+  cursor: pointer;
+  animation: tdtInstallIn 0.28s ease both;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.tdt-install-fab:hover { transform: translateX(-50%) translateY(-2px); box-shadow: 0 16px 36px rgba(176, 23, 116, 0.4); }
+.tdt-install-fab:active { transform: translateX(-50%) scale(0.97); }
+.tdt-install-fab .material-symbols-outlined { font-size: 1.25rem; }
+
+.tdt-install-fab__close {
+  position: fixed;
+  left: 50%;
+  transform: translateX(calc(-50% + 92px));
+  bottom: calc(108px + env(safe-area-inset-bottom, 0px));
+  z-index: 61;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 9999px;
+  color: #fff;
+  background: rgba(17, 27, 63, 0.72);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+.tdt-install-fab__close .material-symbols-outlined { font-size: 1rem; }
+
+@media (min-width: 1024px) {
+  .tdt-install-fab { left: auto; right: 24px; transform: none; bottom: 24px; }
+  .tdt-install-fab:hover { transform: translateY(-2px); }
+  .tdt-install-fab:active { transform: scale(0.97); }
+  .tdt-install-fab__close { left: auto; right: 20px; transform: none; bottom: 62px; }
+}
+
+.tdt-install-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(13, 14, 19, 0.55);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.tdt-install-sheet-overlay.is-open { opacity: 1; pointer-events: auto; }
+
+.tdt-install-sheet {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 1.5rem 1.35rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -12px 40px rgba(11, 31, 58, 0.22);
+  transform: translateY(24px);
+  transition: transform 0.24s ease;
+}
+.tdt-install-sheet-overlay.is-open .tdt-install-sheet { transform: translateY(0); }
+@media (min-width: 640px) {
+  .tdt-install-sheet-overlay { align-items: center; }
+  .tdt-install-sheet { border-radius: 24px; }
+}
+
+.tdt-install-sheet__close {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  display: inline-flex;
+  border: none;
+  background: transparent;
+  color: #5b5b62;
+  cursor: pointer;
+}
+.tdt-install-sheet__head { display: flex; align-items: center; gap: 0.85rem; padding-right: 1.5rem; }
+.tdt-install-sheet__icon { width: 48px; height: 48px; border-radius: 14px; box-shadow: 0 4px 12px rgba(11, 31, 58, 0.16); }
+.tdt-install-sheet__title { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-weight: 800; font-size: 1.1rem; color: #2e2e34; }
+.tdt-install-sheet__sub { margin-top: 2px; font-size: 0.82rem; color: #5b5b62; }
+
+.tdt-install-sheet__steps { list-style: none; margin: 1.15rem 0 0; padding: 0; display: grid; gap: 0.7rem; }
+.tdt-install-sheet__steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.92rem;
+  color: #2e2e34;
+  line-height: 1.4;
+}
+.tdt-install-sheet__num {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: #b01774;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.tdt-install-sheet__inline { font-size: 1.05rem; vertical-align: -4px; color: #133F8C; }
+.tdt-install-sheet__foot { margin-top: 1rem; font-size: 0.82rem; color: #5b5b62; background: #f2eff9; padding: 0.7rem 0.85rem; border-radius: 12px; }
+.tdt-install-sheet__ok {
+  margin-top: 1.15rem;
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--i9-gradient, linear-gradient(135deg, #133F8C 0%, #b01774 100%));
+  cursor: pointer;
+}
+
+@keyframes tdtInstallIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(14px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@media (min-width: 1024px) {
+  @keyframes tdtInstallIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tdt-install-fab,
+  .tdt-install-sheet { animation: none; transition: none; }
+}
