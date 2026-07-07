@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class LembreteRetornoController extends Controller
 {
@@ -46,12 +47,15 @@ class LembreteRetornoController extends Controller
             'dias_sem_visita' => 'required|integer|min:1|max:365',
             'titulo' => 'required|string|max:80',
             'mensagem' => 'required|string|max:300',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
             'imagem_url' => 'nullable|string|max:2048',
+            'remover_imagem' => 'sometimes|boolean',
             'notification_title' => 'nullable|string|max:80',
             'notification_body' => 'nullable|string|max:120',
             'ativo' => 'sometimes|boolean',
         ]);
 
+        $this->resolveReminderImage($request, $validated);
         $reminder = $this->lembreteService->saveReminder($empresa, $validated);
 
         return response()->json([
@@ -93,12 +97,15 @@ class LembreteRetornoController extends Controller
             'dias_sem_visita' => 'sometimes|integer|min:1|max:365',
             'titulo' => 'sometimes|filled|string|max:80',
             'mensagem' => 'sometimes|filled|string|max:300',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
             'imagem_url' => 'nullable|string|max:2048',
+            'remover_imagem' => 'sometimes|boolean',
             'notification_title' => 'nullable|string|max:80',
             'notification_body' => 'nullable|string|max:120',
             'ativo' => 'sometimes|boolean',
         ]);
 
+        $this->resolveReminderImage($request, $validated, $reminder);
         $updated = $this->lembreteService->saveReminder($reminder->empresa, $validated, $reminder);
 
         return response()->json([
@@ -202,6 +209,39 @@ class LembreteRetornoController extends Controller
                 'delivery' => $result['delivery'],
             ],
         ]);
+    }
+
+    /**
+     * Resolve a imagem do lembrete: arquivo enviado (upload) vira URL no disco public.
+     * Mantém compatibilidade com imagem_url e suporta remoção.
+     */
+    private function resolveReminderImage(Request $request, array &$validated, ?LembreteAusencia $reminder = null): void
+    {
+        if ($request->hasFile('imagem')) {
+            $this->deleteReminderImage($reminder?->imagem_url);
+            $validated['imagem_url'] = Storage::url($request->file('imagem')->store('lembrete_retorno', 'public'));
+        } elseif ($request->boolean('remover_imagem')) {
+            $this->deleteReminderImage($reminder?->imagem_url);
+            $validated['imagem_url'] = null;
+        }
+
+        unset($validated['imagem'], $validated['remover_imagem']);
+    }
+
+    private function deleteReminderImage(?string $value): void
+    {
+        if (!$value || !str_starts_with($value, '/storage/')) {
+            return;
+        }
+
+        try {
+            $relative = ltrim(substr($value, strlen('/storage/')), '/');
+            if ($relative !== '' && Storage::disk('public')->exists($relative)) {
+                Storage::disk('public')->delete($relative);
+            }
+        } catch (\Throwable $e) {
+            // limpeza best-effort
+        }
     }
 
     private function canAccessReminder($user, LembreteAusencia $reminder): bool

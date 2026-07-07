@@ -299,6 +299,138 @@
     });
   }
 
+  // Picker de imagem com crop 1:1 e Blob LOCAL (sem upload imediato).
+  // Usado nos formul\u00e1rios de b\u00f4nus, que enviam a imagem junto no submit (multipart).
+  function createLocalImagePicker(selector, { aspect = 1, outputWidth = 800, title = 'Ajustar imagem' } = {}) {
+    const root = typeof selector === 'string' ? document.querySelector(selector) : selector;
+    if (!root) return null;
+    const imgEl = root.querySelector('[data-uploader-image]');
+    const placeholder = root.querySelector('[data-uploader-placeholder]');
+    const pickBtn = root.querySelector('[data-uploader-pick]');
+    const pickLabel = root.querySelector('[data-uploader-picklabel]');
+    const removeBtn = root.querySelector('[data-uploader-remove]');
+    const input = root.querySelector('[data-uploader-input]');
+
+    let blob = null;
+    let removed = false;
+    let existingUrl = '';
+
+    const paint = (url) => {
+      if (url && imgEl) {
+        imgEl.src = url;
+        imgEl.classList.remove('hidden');
+        placeholder?.classList.add('hidden');
+        removeBtn?.classList.remove('hidden');
+        if (pickLabel) pickLabel.textContent = 'Alterar';
+      } else {
+        imgEl?.classList.add('hidden');
+        imgEl?.removeAttribute('src');
+        placeholder?.classList.remove('hidden');
+        removeBtn?.classList.add('hidden');
+        if (pickLabel) pickLabel.textContent = 'Enviar imagem';
+      }
+    };
+
+    pickBtn?.addEventListener('click', () => input?.click());
+    input?.addEventListener('change', async () => {
+      const file = input.files && input.files[0];
+      input.value = '';
+      if (!file) return;
+      if (!/^image\//.test(file.type)) { ui.message('Selecione uma imagem v\u00e1lida.', 'warning'); return; }
+      const out = await tdtImageCropper.open({ file, aspect, round: false, outputWidth, title });
+      if (!out) return;
+      blob = out;
+      removed = false;
+      paint(URL.createObjectURL(out));
+    });
+    removeBtn?.addEventListener('click', () => {
+      blob = null;
+      removed = true;
+      existingUrl = '';
+      paint('');
+    });
+
+    return {
+      get blob() { return blob; },
+      get removed() { return removed; },
+      get existingUrl() { return existingUrl; },
+      hasImage() { return Boolean(blob || (existingUrl && !removed)); },
+      setExisting(url) {
+        existingUrl = url || '';
+        blob = null;
+        removed = false;
+        paint(existingUrl ? safeImage(existingUrl, IMAGE_FALLBACKS.promo) : '');
+      },
+      reset() {
+        existingUrl = '';
+        blob = null;
+        removed = false;
+        paint('');
+      },
+      previewUrl() {
+        return blob ? URL.createObjectURL(blob) : (existingUrl && !removed ? safeImage(existingUrl, IMAGE_FALLBACKS.promo) : '');
+      },
+      appendTo(fd) {
+        if (blob) fd.append('imagem', blob, 'bonus.jpg');
+        else if (existingUrl && !removed) fd.append('imagem_url', existingUrl);
+        if (removed) fd.append('remover_imagem', '1');
+      },
+    };
+  }
+
+  // Modal automático do bônus de adesão (aparece ao entrar na empresa quando disponível).
+  // Suporta "não mostrar novamente" (localStorage) e resgate presencial via QR.
+  function tdtShowBonusModal({ empresaId, titulo, descricao, imagem, validade, corMarca } = {}) {
+    const brand = corMarca || '#133F8C';
+    const overlay = document.createElement('div');
+    overlay.className = 'tdt-modal-overlay';
+    overlay.innerHTML = `
+      <div class="tdt-modal-dialog text-center">
+        <div class="flex justify-end">
+          <button type="button" class="text-on-surface-variant" data-close aria-label="Fechar"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="mx-auto -mt-2 h-28 w-28 overflow-hidden rounded-full bg-slate-100 shadow-lg ring-4 ring-white">
+          <img src="${imagem}" class="h-full w-full object-cover" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" alt="" />
+        </div>
+        <p class="mt-3 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Bônus de adesão</p>
+        <h3 class="mt-1 text-2xl font-extrabold" style="color:${brand}">${safeText(titulo, 'Bônus de adesão')}</h3>
+        <p class="mt-2 text-sm leading-6 text-slate-600">${safeText(descricao, 'Você ganhou um benefício de boas-vindas!')}</p>
+        ${validade ? `<p class="mt-2 text-xs font-semibold text-slate-500">Válido até ${formatDatePtBr(validade, '—')}</p>` : ''}
+        <div class="mt-5 flex flex-col gap-2">
+          <button type="button" class="loyalty-redeem-btn" data-redeem style="background:linear-gradient(135deg,${brand} 0%,#b01774 100%)"><span class="material-symbols-outlined">redeem</span> Resgatar</button>
+          <button type="button" class="app-secondary-button justify-center" data-close2>Fechar</button>
+        </div>
+        <label class="mt-3 flex items-center justify-center gap-2 text-xs text-slate-500">
+          <input type="checkbox" data-hide class="rounded border-slate-300 text-primary focus:ring-primary" /> Não mostrar novamente
+        </label>
+      </div>`;
+    document.body.appendChild(overlay);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const hideChk = overlay.querySelector('[data-hide]');
+    const persistHide = () => {
+      if (hideChk?.checked && empresaId) {
+        try { localStorage.setItem(`tdt_bonus_adesao_hide_${empresaId}`, '1'); } catch (_) { /* ignore */ }
+      }
+    };
+    const close = () => {
+      persistHide();
+      overlay.remove();
+      document.body.style.overflow = prevOverflow;
+    };
+    overlay.querySelector('[data-close]')?.addEventListener('click', close);
+    overlay.querySelector('[data-close2]')?.addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    overlay.querySelector('[data-redeem]')?.addEventListener('click', () => {
+      if (!window.confirm('Confirmar o resgate deste bônus? Apresente seu QR Code no estabelecimento para validar.')) return;
+      persistHide();
+      overlay.remove();
+      document.body.style.overflow = prevOverflow;
+      ui.message('Apresente seu QR Code no estabelecimento para validar o bônus.', 'success');
+      setTimeout(() => { window.location.href = '/meus_pontos.html?mostrar=meu-qrcode'; }, 500);
+    });
+  }
+
   function toNumber(...values) {
     for (const value of values) {
       if (value === null || value === undefined || value === '') continue;
@@ -3972,6 +4104,22 @@
           if (bonusResponse.res.ok && bonusResponse.data?.success !== false) {
             const bonusPayload = bonusResponse.data?.data || {};
             renderBonusCard(bonusPayload);
+            // Bônus de adesão aparece automaticamente ao entrar na empresa (quando disponível),
+            // respeitando a preferência "não mostrar novamente".
+            if (bonusPayload?.status === 'available') {
+              let hiddenPref = false;
+              try { hiddenPref = localStorage.getItem(`tdt_bonus_adesao_hide_${selectedCompanyId}`) === '1'; } catch (_) { hiddenPref = false; }
+              if (!hiddenPref) {
+                const b = bonusPayload.bonus || {};
+                setTimeout(() => tdtShowBonusModal({
+                  empresaId: selectedCompanyId,
+                  titulo: b.titulo || 'Bônus de adesão',
+                  descricao: b.descricao || 'Você ganhou um benefício de boas-vindas!',
+                  imagem: safeImage(b.imagem_url || b.imagem, IMAGE_FALLBACKS.promo),
+                  validade: b.data_expiracao,
+                }), 400);
+              }
+            }
             if (params.get('linked') === '1') {
               ui.message(
                 bonusPayload.status === 'available'
@@ -6643,6 +6791,8 @@
           }
         };
 
+        const bonusAdesaoPicker = createLocalImagePicker('[data-uploader="bonusAdesao"]', { aspect: 1, title: 'Ajustar imagem do bônus (1:1)' });
+
         const resetBonusForm = () => {
           bonusEditingId = null;
           if (bonusUi.id) bonusUi.id.value = '';
@@ -6653,6 +6803,7 @@
           if (bonusUi.termos) bonusUi.termos.value = '';
           if (bonusUi.ativo) bonusUi.ativo.checked = true;
           if (bonusUi.mensagem) bonusUi.mensagem.textContent = '';
+          bonusAdesaoPicker?.reset();
           updateBonusPreview();
         };
 
@@ -6666,6 +6817,7 @@
           if (bonusUi.termos) bonusUi.termos.value = bonus.termos || '';
           if (bonusUi.ativo) bonusUi.ativo.checked = Boolean(bonus.ativo);
           if (bonusUi.mensagem) bonusUi.mensagem.textContent = 'Editando bônus selecionado.';
+          bonusAdesaoPicker?.setExisting(bonus.imagem_url || bonus.imagem || '');
           updateBonusPreview();
         };
 
@@ -6726,32 +6878,35 @@
         });
 
         bonusUi.salvar?.addEventListener('click', async () => {
-          const payload = {
-            titulo: bonusUi.titulo?.value?.trim() || '',
-            descricao: bonusUi.descricao?.value?.trim() || '',
-            data_expiracao: bonusUi.validade?.value || null,
-            imagem_url: bonusUi.imagem?.value?.trim() || null,
-            termos: bonusUi.termos?.value?.trim() || null,
-            ativo: bonusUi.ativo?.checked ?? true,
-          };
-
-          if (!payload.titulo) {
+          const titulo = bonusUi.titulo?.value?.trim() || '';
+          if (!titulo) {
             return ui.message('Informe o título do bônus de adesão.', 'warning');
           }
 
+          const fd = new FormData();
+          fd.append('titulo', titulo);
+          if (bonusUi.descricao?.value) fd.append('descricao', bonusUi.descricao.value.trim());
+          if (bonusUi.validade?.value) fd.append('data_expiracao', bonusUi.validade.value);
+          if (bonusUi.termos?.value) fd.append('termos', bonusUi.termos.value.trim());
+          fd.append('ativo', bonusUi.ativo?.checked ? '1' : '0');
+          bonusAdesaoPicker?.appendTo(fd);
+          if (bonusEditingId) fd.append('_method', 'PUT');
+
           const path = bonusEditingId ? `/empresa/bonus-adesao/${bonusEditingId}` : '/empresa/bonus-adesao';
-          const method = bonusEditingId ? 'PUT' : 'POST';
-          const { res, data } = await api.request(path, {
-            method,
-            body: JSON.stringify(payload),
-          });
+          const btn = bonusUi.salvar;
+          const original = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = 'Salvando...';
+          const { res, data } = await api.request(path, { method: 'POST', body: fd });
+          btn.disabled = false;
+          btn.textContent = original;
 
           if (res.ok && data?.success) {
             ui.message(data?.message || 'Bônus de adesão salvo.', 'success');
             resetBonusForm();
             await loadBonusList();
           } else {
-            ui.message(data?.message || 'Não foi possível salvar o bônus de adesão.', 'error');
+            ui.message(data?.message || 'Não foi possível salvar o bônus de adesão. Tente novamente.', 'error');
           }
         });
 
@@ -6998,6 +7153,8 @@
           }
         };
 
+        const birthdayPicker = createLocalImagePicker('[data-uploader="bonusAniversario"]', { aspect: 1, title: 'Ajustar imagem do bônus (1:1)' });
+
         const resetBirthdayForm = () => {
           birthdayEditingId = null;
           if (birthdayUi.id) birthdayUi.id.value = '';
@@ -7009,6 +7166,7 @@
           if (birthdayUi.notificationBody) birthdayUi.notificationBody.value = '';
           if (birthdayUi.ativo) birthdayUi.ativo.checked = true;
           if (birthdayUi.mensagem) birthdayUi.mensagem.textContent = '';
+          birthdayPicker?.reset();
           updateBirthdayPreview();
         };
 
@@ -7023,6 +7181,7 @@
           if (birthdayUi.notificationBody) birthdayUi.notificationBody.value = bonus.notification_body || bonus.descricao || '';
           if (birthdayUi.ativo) birthdayUi.ativo.checked = Boolean(bonus.ativo);
           if (birthdayUi.mensagem) birthdayUi.mensagem.textContent = 'Editando bônus aniversário selecionado.';
+          birthdayPicker?.setExisting(bonus.imagem_url || bonus.imagem || '');
           updateBirthdayPreview();
         };
 
@@ -7100,32 +7259,36 @@
         });
 
         birthdayUi.salvar?.addEventListener('click', async () => {
-          const payload = {
-            titulo: birthdayUi.titulo?.value?.trim() || '',
-            descricao: birthdayUi.descricao?.value?.trim() || '',
-            dias_validade: birthdayUi.diasValidade?.value ? Number(birthdayUi.diasValidade.value) : null,
-            imagem_url: birthdayUi.imagem?.value?.trim() || null,
-            notification_title: birthdayUi.notificationTitle?.value?.trim() || null,
-            notification_body: birthdayUi.notificationBody?.value?.trim() || null,
-            ativo: birthdayUi.ativo?.checked ?? true,
-          };
+          const titulo = birthdayUi.titulo?.value?.trim() || '';
+          const descricao = birthdayUi.descricao?.value?.trim() || '';
+          if (!titulo) return ui.message('Informe o título do bônus aniversário.', 'warning');
+          if (!descricao) return ui.message('Informe a descrição do bônus aniversário.', 'warning');
 
-          if (!payload.titulo) return ui.message('Informe o título do bônus aniversário.', 'warning');
-          if (!payload.descricao) return ui.message('Informe a descrição do bônus aniversário.', 'warning');
+          const fd = new FormData();
+          fd.append('titulo', titulo);
+          fd.append('descricao', descricao);
+          if (birthdayUi.diasValidade?.value) fd.append('dias_validade', String(Number(birthdayUi.diasValidade.value)));
+          if (birthdayUi.notificationTitle?.value) fd.append('notification_title', birthdayUi.notificationTitle.value.trim());
+          if (birthdayUi.notificationBody?.value) fd.append('notification_body', birthdayUi.notificationBody.value.trim());
+          fd.append('ativo', birthdayUi.ativo?.checked ? '1' : '0');
+          birthdayPicker?.appendTo(fd);
+          if (birthdayEditingId) fd.append('_method', 'PUT');
 
           const path = birthdayEditingId ? `/empresa/bonus-aniversario/${birthdayEditingId}` : '/empresa/bonus-aniversario';
-          const method = birthdayEditingId ? 'PUT' : 'POST';
-          const { res, data } = await api.request(path, {
-            method,
-            body: JSON.stringify(payload),
-          });
+          const btn = birthdayUi.salvar;
+          const original = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = 'Salvando...';
+          const { res, data } = await api.request(path, { method: 'POST', body: fd });
+          btn.disabled = false;
+          btn.textContent = original;
 
           if (res.ok && data?.success) {
             ui.message(data?.message || 'Bônus aniversário salvo.', 'success');
             resetBirthdayForm();
             await loadBirthdayList();
           } else {
-            ui.message(data?.message || 'Não foi possível salvar o bônus aniversário.', 'error');
+            ui.message(data?.message || 'Não foi possível salvar o bônus aniversário. Tente novamente.', 'error');
           }
         });
 
@@ -7214,6 +7377,8 @@
           }
         };
 
+        const reminderPicker = createLocalImagePicker('[data-uploader="bonusLembrete"]', { aspect: 1, title: 'Ajustar imagem do lembrete (1:1)' });
+
         const resetReminderForm = () => {
           reminderEditingId = null;
           if (reminderUi.id) reminderUi.id.value = '';
@@ -7225,6 +7390,7 @@
           if (reminderUi.notificationBody) reminderUi.notificationBody.value = '';
           if (reminderUi.ativo) reminderUi.ativo.checked = true;
           if (reminderUi.feedback) reminderUi.feedback.textContent = '';
+          reminderPicker?.reset();
           updateReminderPreview();
         };
 
@@ -7239,6 +7405,7 @@
           if (reminderUi.notificationBody) reminderUi.notificationBody.value = reminder.notification_body || reminder.mensagem || '';
           if (reminderUi.ativo) reminderUi.ativo.checked = Boolean(reminder.ativo);
           if (reminderUi.feedback) reminderUi.feedback.textContent = 'Editando lembrete selecionado.';
+          reminderPicker?.setExisting(reminder.imagem_url || '');
           updateReminderPreview();
         };
 
@@ -7303,33 +7470,38 @@
         });
 
         reminderUi.salvar?.addEventListener('click', async () => {
-          const payload = {
-            dias_sem_visita: Number(reminderUi.dias?.value || 0),
-            titulo: reminderUi.titulo?.value?.trim() || '',
-            mensagem: reminderUi.mensagem?.value?.trim() || '',
-            imagem_url: reminderUi.imagem?.value?.trim() || null,
-            notification_title: reminderUi.notificationTitle?.value?.trim() || null,
-            notification_body: reminderUi.notificationBody?.value?.trim() || null,
-            ativo: reminderUi.ativo?.checked ?? true,
-          };
+          const dias = Number(reminderUi.dias?.value || 0);
+          const titulo = reminderUi.titulo?.value?.trim() || '';
+          const mensagem = reminderUi.mensagem?.value?.trim() || '';
+          if (!dias || dias < 1) return ui.message('Informe os dias sem visita.', 'warning');
+          if (!titulo) return ui.message('Informe o título do lembrete.', 'warning');
+          if (!mensagem) return ui.message('Informe a mensagem do lembrete.', 'warning');
 
-          if (!payload.dias_sem_visita || payload.dias_sem_visita < 1) return ui.message('Informe os dias sem visita.', 'warning');
-          if (!payload.titulo) return ui.message('Informe o título do lembrete.', 'warning');
-          if (!payload.mensagem) return ui.message('Informe a mensagem do lembrete.', 'warning');
+          const fd = new FormData();
+          fd.append('dias_sem_visita', String(dias));
+          fd.append('titulo', titulo);
+          fd.append('mensagem', mensagem);
+          if (reminderUi.notificationTitle?.value) fd.append('notification_title', reminderUi.notificationTitle.value.trim());
+          if (reminderUi.notificationBody?.value) fd.append('notification_body', reminderUi.notificationBody.value.trim());
+          fd.append('ativo', reminderUi.ativo?.checked ? '1' : '0');
+          reminderPicker?.appendTo(fd);
+          if (reminderEditingId) fd.append('_method', 'PUT');
 
           const path = reminderEditingId ? `/empresa/lembrete-retorno/${reminderEditingId}` : '/empresa/lembrete-retorno';
-          const method = reminderEditingId ? 'PUT' : 'POST';
-          const { res, data } = await api.request(path, {
-            method,
-            body: JSON.stringify(payload),
-          });
+          const btn = reminderUi.salvar;
+          const original = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = 'Salvando...';
+          const { res, data } = await api.request(path, { method: 'POST', body: fd });
+          btn.disabled = false;
+          btn.textContent = original;
 
           if (res.ok && data?.success) {
             ui.message(data?.message || 'Lembrete de retorno salvo.', 'success');
             resetReminderForm();
             await loadReminderList();
           } else {
-            ui.message(data?.message || 'Não foi possível salvar o lembrete.', 'error');
+            ui.message(data?.message || 'Não foi possível salvar o lembrete. Tente novamente.', 'error');
           }
         });
 
