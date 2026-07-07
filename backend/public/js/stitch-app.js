@@ -9702,7 +9702,6 @@
       const user = auth.normalizeUser(payload?.user || payload?.data?.user || payload?.usuario || null);
       const perfil = user?.perfil || user?.role || user?.tipo || null;
       const target = resolvePostLoginTarget(perfil);
-      console.log('LOGIN_SUBMIT_OK', JSON.stringify({ status: res.status, payload, perfil, redirect: target }, null, 2));
       if (res.ok && token && user) {
         auth.save(token, user);
         if (perfil === 'cliente') savePushPrompt('login');
@@ -9711,7 +9710,6 @@
         setTimeout(() => (window.location.href = target), 300);
       } else {
         ui.clearPageState();
-        console.error('LOGIN_SUBMIT_FAIL', JSON.stringify({ status: res.status, payload: data }, null, 2));
         ui.message(data?.message || payload?.message || 'Não foi possível entrar.', 'error');
       }
     });
