@@ -2719,9 +2719,10 @@
                     </div>
                     ${linkedBadge}
                   </div>
-                  <div class="mt-2 flex items-center gap-2 text-xs text-slate-500">
+                  <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                     <span class="font-bold text-amber-400">${renderStars(rating)}</span>
                     <span>${rating > 0 ? rating.toFixed(1).replace('.', ',') : 'Novo'}${reviews ? ` • ${reviews} avaliações` : ''}</span>
+                    ${company.__distanceLabel ? `<span class="inline-flex items-center gap-1 font-bold text-[#133F8C]"><span class="material-symbols-outlined text-[14px]">near_me</span>${company.__distanceLabel}</span>` : ''}
                   </div>
                   <p class="mt-2 line-clamp-2 text-sm text-slate-500">${safeText(company.endereco, 'Endereço não informado')}</p>
                 </div>
@@ -2784,12 +2785,48 @@
           featuredSection.classList.toggle('hidden', featuredCompanies.length === 0);
         }
 
-        document.querySelectorAll('[data-company-open]').forEach((button) => {
-          button.addEventListener('click', () => {
-            const id = button.getAttribute('data-company-open');
-            if (id) window.location.href = `/detalhe_do_parceiro.html?id=${encodeURIComponent(id)}`;
+        const wireFeaturedOpen = () => {
+          document.querySelectorAll('[data-company-open]').forEach((button) => {
+            if (button.dataset.openBound === '1') return;
+            button.dataset.openBound = '1';
+            button.addEventListener('click', () => {
+              const id = button.getAttribute('data-company-open');
+              if (id) window.location.href = `/detalhe_do_parceiro.html?id=${encodeURIComponent(id)}`;
+            });
           });
-        });
+        };
+        wireFeaturedOpen();
+
+        // Empresas proximas: com geolocalizacao, ordena os destaques por
+        // distancia e mostra a distancia no card. Front-only (lat/lng ja vem
+        // no payload); sem geo, mantem a ordem original.
+        if (navigator.geolocation && featuredList && featuredCompanies.length) {
+          const haversineKm = (la1, lo1, la2, lo2) => {
+            const rad = (x) => (x * Math.PI) / 180;
+            const dLa = rad(la2 - la1);
+            const dLo = rad(lo2 - lo1);
+            const a = Math.sin(dLa / 2) ** 2 + Math.cos(rad(la1)) * Math.cos(rad(la2)) * Math.sin(dLo / 2) ** 2;
+            return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          };
+          const fmtDist = (km) => (km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1).replace('.', ',')} km`);
+          navigator.geolocation.getCurrentPosition((pos) => {
+            const { latitude, longitude } = pos.coords;
+            const ranked = featuredCompanies.map((c) => {
+              const lat = Number(c.latitude);
+              const lng = Number(c.longitude);
+              if (!Number.isFinite(lat) || !Number.isFinite(lng)) return { ...c, __distKm: null };
+              const km = haversineKm(latitude, longitude, lat, lng);
+              return { ...c, __distKm: km, __distanceLabel: fmtDist(km) };
+            }).sort((a, b) => {
+              if (a.__distKm == null && b.__distKm == null) return 0;
+              if (a.__distKm == null) return 1;
+              if (b.__distKm == null) return -1;
+              return a.__distKm - b.__distKm;
+            });
+            featuredList.innerHTML = ranked.map(renderCompanyCard).join('');
+            wireFeaturedOpen();
+          }, () => {}, { timeout: 6000, maximumAge: 300000 });
+        }
 
         const readQrUrl = quickActions.ler_qr_empresa_url || '/validar_resgate.html?modo=vinculo-empresa';
         document.getElementById('btnReadCompanyQr')?.addEventListener('click', () => {
