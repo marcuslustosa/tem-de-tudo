@@ -224,50 +224,52 @@
 </div>
 </div>
 </section>
-<!-- KPI Bento Grid -->
-<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-<!-- Card 1: Total Users — destaque com gradiente -->
-<div class="admin-kpi-card p-5 relative overflow-hidden group" style="background:linear-gradient(135deg,rgba(176,23,116,0.08) 0%,rgba(19,63,140,0.06) 100%);border-color:rgba(176,23,116,0.2)">
+<!-- KPI Bento Grid — foco em EMPRESAS (vencimento/cobranca) -->
+<section class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+<!-- Card 1: Empresas Ativas — destaque principal -->
+<div class="admin-kpi-card p-5 relative overflow-hidden group" style="background:linear-gradient(135deg,rgba(16,185,129,0.10) 0%,rgba(19,63,140,0.06) 100%);border-color:rgba(16,185,129,0.25)">
 <div class="relative z-10">
-<div class="admin-icon-box mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="group">group</span></div>
-<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:#5b5b62">Total de Usuarios</p>
-<h3 id="adminUsers" class="text-3xl font-headline font-black mb-1 admin-kpi-number">--</h3>
-<div class="flex items-center gap-1 text-xs font-semibold text-[#00afa8]">
-<span class="material-symbols-outlined" style="font-size:14px;" data-icon="trending_up">trending_up</span>
-<span>Dados atuais</span>
+<div class="admin-icon-box mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="verified">verified</span></div>
+<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:#5b5b62">Empresas Ativas</p>
+<h3 id="adminEmpresasAtivas" class="text-3xl font-headline font-black mb-1 admin-kpi-number">--</h3>
+<a href="/gest_o_de_estabelecimentos.html" class="flex items-center gap-1 text-xs font-semibold text-[#00afa8]"><span>Gerenciar empresas</span><span class="material-symbols-outlined" style="font-size:14px;" data-icon="chevron_right">chevron_right</span></a>
 </div>
+<span class="material-symbols-outlined absolute -right-3 -bottom-3 opacity-[0.08] group-hover:opacity-[0.14] transition-opacity" style="font-size:80px;color:#10b981;" data-icon="storefront">storefront</span>
 </div>
-<span class="material-symbols-outlined absolute -right-3 -bottom-3 opacity-[0.08] group-hover:opacity-[0.14] transition-opacity" style="font-size:80px;color:#b01774;" data-icon="group">group</span>
-</div>
-<!-- Card 2: Establishments -->
+<!-- Card 2: Empresas Vencidas -->
 <div class="admin-kpi-card p-5 group">
-<div class="admin-icon-box mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="storefront">storefront</span></div>
-<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:#5b5b62">Estabelecimentos</p>
-<h3 id="adminEmpresas" class="text-2xl font-headline font-bold mb-1 admin-kpi-number">--</h3>
-<p class="text-[10px] font-medium" style="color:#5b5b62">Sincronizado em tempo real</p>
+<div class="admin-icon-box mb-3" style="background:rgba(244,63,94,0.12)"><span class="material-symbols-outlined" style="font-size:18px;color:#f43f5e;" data-icon="event_busy">event_busy</span></div>
+<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:#5b5b62">Empresas Vencidas</p>
+<h3 id="adminEmpresasVencidas" class="text-2xl font-headline font-bold mb-1 admin-kpi-number" style="color:#e11d48">--</h3>
+<p class="text-[10px] font-bold" style="color:#e11d48">Precisam cobrança</p>
 </div>
-<!-- Card 3: Active Campaigns -->
+<!-- Card 3: Empresas Próximas do Vencimento -->
+<div class="admin-kpi-card p-5 group">
+<div class="admin-icon-box mb-3" style="background:rgba(245,158,11,0.14)"><span class="material-symbols-outlined" style="font-size:18px;color:#d97706;" data-icon="hourglass_bottom">hourglass_bottom</span></div>
+<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:#5b5b62">Vencem em breve</p>
+<h3 id="adminEmpresasProximas" class="text-2xl font-headline font-bold mb-1 admin-kpi-number" style="color:#b45309">--</h3>
+<p class="text-[10px] font-medium" style="color:#5b5b62">Até 15 dias</p>
+</div>
+<!-- Card 4: Campanhas Ativas -->
 <div class="admin-kpi-card p-5 group">
 <div class="admin-icon-box purple mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="campaign">campaign</span></div>
 <p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:#5b5b62">Campanhas Ativas</p>
 <h3 id="adminCampanhas" class="text-2xl font-headline font-bold mb-1 admin-kpi-number">--</h3>
-<div class="h-1 w-full rounded-full mt-2 bg-[#e9e7f1]">
-<div class="h-full rounded-full w-3/4" style="background:linear-gradient(90deg,#b01774,#133f8c)"></div>
+<p class="text-[10px] font-medium" style="color:#5b5b62">Na plataforma</p>
 </div>
-</div>
-<!-- Card 4: Redemptions -->
+<!-- Card 5: Resgates -->
 <div class="admin-kpi-card p-5 group">
 <div class="admin-icon-box teal mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="confirmation_number">confirmation_number</span></div>
-<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:#5b5b62">Resgates Realizados</p>
+<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:#5b5b62">Resgates</p>
 <h3 id="adminResgates" class="text-2xl font-headline font-bold mb-1 admin-kpi-number">--</h3>
-<p class="text-[10px] font-bold" style="color:#00afa8">Resgates acumulados</p>
+<p class="text-[10px] font-bold" style="color:#00afa8">Acumulados</p>
 </div>
-<!-- Card 5: Volume -->
+<!-- Card 6: Usuários (secundário) -->
 <div class="admin-kpi-card p-5 group">
-<div class="admin-icon-box green mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="payments">payments</span></div>
-<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:#5b5b62">Volume Transacionado</p>
-<h3 id="adminVolume" class="text-2xl font-headline font-bold mb-1 admin-kpi-number">--</h3>
-<p class="text-[10px] font-medium" style="color:#5b5b62">Transações via app</p>
+<div class="admin-icon-box mb-3"><span class="material-symbols-outlined" style="font-size:18px;" data-icon="group">group</span></div>
+<p class="font-label text-[10px] font-semibold uppercase tracking-widest mb-1" style="color:#5b5b62">Usuários</p>
+<h3 id="adminUsers" class="text-2xl font-headline font-bold mb-1 admin-kpi-number">--</h3>
+<p class="text-[10px] font-medium" style="color:#5b5b62">Total na base</p>
 </div>
 </section>
 <!-- Charts & Activity Split -->

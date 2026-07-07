@@ -282,6 +282,9 @@ Route::prefix('admin')->group(function () {
             Route::get('/push/client-status', [PushSubscriptionController::class, 'adminClientStatus']);
             Route::post('/push/test-client', [PushSubscriptionController::class, 'adminTestClient']);
             Route::get('/empresas', [EmpresaController::class, 'adminIndex']);
+            // Painel master: criar empresa e renovar assinatura (aditivo).
+            Route::post('/empresas', [EmpresaController::class, 'adminStore'])->middleware('rate.limit:20:1');
+            Route::post('/empresas/{id}/renovar', [EmpresaController::class, 'renovar'])->whereNumber('id');
             Route::get('/empresas/{id}/qrcode', [EmpresaController::class, 'adminQrCode']);
             Route::post('/empresas/{id}/approve', [EmpresaController::class, 'approve']);
             Route::post('/empresas/{id}/reject', [EmpresaController::class, 'reject']);

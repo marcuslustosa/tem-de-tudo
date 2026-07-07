@@ -95,36 +95,56 @@ class EmpresaAPIController extends Controller
             'empresa_logo'      => 'sometimes|nullable|string|max:500',
         ]);
 
-        // Atualizar users
-        $userFields = array_filter([
-            'name'     => $validated['name'] ?? null,
-            'email'    => $validated['email'] ?? null,
-            'telefone' => $validated['telefone'] ?? null,
-        ]);
+        // Atualizar users: persiste TODO campo enviado (inclusive limpeza),
+        // usando array_key_exists para diferenciar "nao enviado" de "vazio".
+        // (Correcao do bug relatado: antes o array_filter descartava vazios/nulos
+        //  e algumas alteracoes nao eram salvas.)
+        $userMap = ['name' => 'name', 'email' => 'email', 'telefone' => 'telefone'];
+        $userFields = [];
+        foreach ($userMap as $in => $col) {
+            if (array_key_exists($in, $validated)) {
+                $userFields[$col] = $validated[$in];
+            }
+        }
         if ($userFields) {
+            $userFields['updated_at'] = now();
             DB::table('users')->where('id', $user->id)->update($userFields);
         }
 
-        // Atualizar empresas
-        $empresaFields = array_filter([
-            'nome'       => $validated['empresa_nome'] ?? null,
-            'ramo'       => $validated['empresa_ramo'] ?? null,
-            'cnpj'       => $validated['empresa_cnpj'] ?? null,
-            'endereco'   => $validated['empresa_endereco'] ?? null,
-            'descricao'  => $validated['empresa_descricao'] ?? null,
-            'whatsapp'   => $validated['empresa_whatsapp'] ?? null,
-            'instagram'  => $validated['empresa_instagram'] ?? null,
-            'facebook'   => $validated['empresa_facebook'] ?? null,
-            'logo'       => $validated['empresa_logo'] ?? null,
-            'updated_at' => now(),
-        ], fn($v) => $v !== null);
+        // Atualizar empresas: mesmo criterio (grava exatamente o que foi enviado).
+        $empresaMap = [
+            'empresa_nome'      => 'nome',
+            'empresa_ramo'      => 'ramo',
+            'empresa_cnpj'      => 'cnpj',
+            'empresa_endereco'  => 'endereco',
+            'empresa_descricao' => 'descricao',
+            'empresa_whatsapp'  => 'whatsapp',
+            'empresa_instagram' => 'instagram',
+            'empresa_facebook'  => 'facebook',
+            'empresa_logo'      => 'logo',
+        ];
+        $empresaFields = [];
+        foreach ($empresaMap as $in => $col) {
+            if (array_key_exists($in, $validated)) {
+                $empresaFields[$col] = $validated[$in];
+            }
+        }
+        // Mantem categoria em sincronia com o ramo (o app publico exibe categoria ?? ramo),
+        // garantindo que a edicao do ramo reflita em todas as telas.
+        if (array_key_exists('empresa_ramo', $validated) && Schema::hasColumn('empresas', 'categoria')) {
+            $empresaFields['categoria'] = $validated['empresa_ramo'];
+        }
         if ($empresaFields) {
+            $empresaFields['updated_at'] = now();
             DB::table('empresas')->where('id', $empresa->id)->update($empresaFields);
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Perfil atualizado com sucesso!',
+            'data' => [
+                'empresa' => DB::table('empresas')->where('id', $empresa->id)->first(),
+            ],
         ]);
     }
 

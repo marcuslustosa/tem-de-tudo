@@ -4997,8 +4997,26 @@
         if (heroName && emp.nome) heroName.textContent = emp.nome;
       }
 
+      // Feedback de loading no botao (desabilita + troca texto, restaura ao fim).
+      const setButtonLoading = (btn, loadingText) => {
+        if (!btn) return () => {};
+        btn.dataset.saving = '1';
+        const original = btn.textContent;
+        btn.disabled = true;
+        btn.style.opacity = '0.7';
+        btn.textContent = loadingText;
+        return () => {
+          btn.dataset.saving = '';
+          btn.disabled = false;
+          btn.style.opacity = '';
+          btn.textContent = original;
+        };
+      };
+
       // Salvar dados
       pf('pfSalvar')?.addEventListener('click', async () => {
+        const saveBtn = pf('pfSalvar');
+        if (saveBtn?.dataset.saving === '1') return; // evita duplo clique
         if (perfil === 'empresa') {
           const payload = {
             name:             pf('pfNome')?.value,
@@ -5008,17 +5026,33 @@
             empresa_ramo:     pf('pfEmpresaRamo')?.value,
             empresa_cnpj:     pf('pfEmpresaCnpj')?.value,
             empresa_endereco: pf('pfEmpresaEndereco')?.value,
-            empresa_whatsapp: pf('pfEmpresaWhatsapp')?.value || null,
-            empresa_instagram: pf('pfEmpresaInstagram')?.value || null,
-            empresa_facebook: pf('pfEmpresaFacebook')?.value || null,
-            empresa_descricao: pf('pfEmpresaDescricao')?.value || null,
+            // Redes sociais: enviamos string vazia (nao null) para permitir limpar.
+            empresa_whatsapp: pf('pfEmpresaWhatsapp')?.value ?? '',
+            empresa_instagram: pf('pfEmpresaInstagram')?.value ?? '',
+            empresa_facebook: pf('pfEmpresaFacebook')?.value ?? '',
+            empresa_descricao: pf('pfEmpresaDescricao')?.value ?? '',
             // logo e banner são enviados pelos endpoints dedicados de upload
           };
+          const restoreBtn = saveBtn ? setButtonLoading(saveBtn, 'Salvando...') : null;
           const { res, data } = await api.request('/empresa/perfil', { method: 'PUT', body: JSON.stringify(payload) });
+          restoreBtn?.();
           if (res.ok && data?.success) {
             ui.message('Perfil atualizado.', 'success');
+            // Reflete o que foi persistido (garante que a alteracao "pegou").
+            const savedEmp = data?.data?.empresa;
+            if (savedEmp) {
+              if (pf('pfEmpresaNome')) pf('pfEmpresaNome').value = savedEmp.nome ?? '';
+              if (pf('pfEmpresaRamo')) pf('pfEmpresaRamo').value = savedEmp.ramo ?? '';
+              if (pf('pfEmpresaCnpj')) pf('pfEmpresaCnpj').value = savedEmp.cnpj ?? '';
+              if (pf('pfEmpresaEndereco')) pf('pfEmpresaEndereco').value = savedEmp.endereco ?? '';
+              if (pf('pfEmpresaWhatsapp')) pf('pfEmpresaWhatsapp').value = savedEmp.whatsapp ?? '';
+              if (pf('pfEmpresaInstagram')) pf('pfEmpresaInstagram').value = savedEmp.instagram ?? '';
+              if (pf('pfEmpresaFacebook')) pf('pfEmpresaFacebook').value = savedEmp.facebook ?? '';
+              if (heroName && savedEmp.nome) heroName.textContent = savedEmp.nome;
+            }
           } else {
-            ui.message(data?.message || 'Erro ao atualizar perfil.', 'error');
+            // Nao limpamos o formulario: os dados digitados permanecem.
+            ui.message(data?.message || 'Erro ao atualizar perfil. Seus dados foram mantidos.', 'error');
           }
         } else {
           const payload = {
@@ -5028,12 +5062,14 @@
             cpf:             pf('pfCpf')?.value,
             data_nascimento: pf('pfNascimento')?.value,
           };
+          const restoreBtn = saveBtn ? setButtonLoading(saveBtn, 'Salvando...') : null;
           const { res, data } = await api.request('/perfil', { method: 'PUT', body: JSON.stringify(payload) });
+          restoreBtn?.();
           if (res.ok && data?.success) {
             ui.message('Perfil atualizado.', 'success');
             auth.save(auth.getStored().token, data.data);
           } else {
-            ui.message(data?.message || 'Erro ao atualizar perfil.', 'error');
+            ui.message(data?.message || 'Erro ao atualizar perfil. Seus dados foram mantidos.', 'error');
           }
         }
       });
@@ -7922,7 +7958,7 @@
       const [stats, recent, empresas, ticketsStatsResp, adminSummaryResp, usersDataset] = await Promise.all([
         api.request('/admin/dashboard-stats', {}, { notify: false }),
         api.request('/admin/recent-activity', {}, { notify: false }),
-        api.request('/empresas', {}, { requireAuth: false, notify: false }),
+        api.request('/admin/empresas', {}, { notify: false }),
         api.request('/admin/tickets/stats', {}, { notify: false }),
         api.request('/admin/relatorios/resumo', {}, { notify: false }),
         admin.loadUsersDataset(),
@@ -7944,8 +7980,12 @@
       const adminSummary = adminSummaryResp.data?.data || {};
       const summaryCards = adminSummary?.cards || {};
       const totals = statsData?.totais || {};
-      const empresasListApi = toArray(empresas.data?.data || empresas.data);
+      const empresasListApi = toArray(empresas.data?.data?.empresas || empresas.data?.data || empresas.data);
       const empresasList = admin.enrichCompaniesDataset(empresasListApi);
+      // Foco do painel master: vencimento das empresas (cobranca).
+      const empresasAtivas = empresasList.filter((item) => ['active', 'ativo'].includes(safeText(item?.status, '').toLowerCase())).length;
+      const empresasVencidas = empresasList.filter((item) => item?.dias_restantes != null && item.dias_restantes < 0).length;
+      const empresasProximas = empresasList.filter((item) => item?.dias_restantes != null && item.dias_restantes >= 0 && item.dias_restantes <= 15).length;
       const usersList = usersDataset?.ok ? usersDataset.list : [];
       const mergedTotals = {
         ...totals,
@@ -7964,6 +8004,9 @@
 
       if (ids('adminUsers')) ids('adminUsers').textContent = Number(totalUsuarios || 0).toLocaleString('pt-BR');
       if (ids('adminEmpresas')) ids('adminEmpresas').textContent = Number(totalEmpresas || 0).toLocaleString('pt-BR');
+      if (ids('adminEmpresasAtivas')) ids('adminEmpresasAtivas').textContent = Number(empresasAtivas || 0).toLocaleString('pt-BR');
+      if (ids('adminEmpresasVencidas')) ids('adminEmpresasVencidas').textContent = Number(empresasVencidas || 0).toLocaleString('pt-BR');
+      if (ids('adminEmpresasProximas')) ids('adminEmpresasProximas').textContent = Number(empresasProximas || 0).toLocaleString('pt-BR');
       if (ids('adminCampanhas')) ids('adminCampanhas').textContent = Number(totalCampanhas || 0).toLocaleString('pt-BR');
       if (ids('adminResgates')) ids('adminResgates').textContent = Number(totalResgates || 0).toLocaleString('pt-BR');
       if (ids('adminVolume')) ids('adminVolume').textContent = `R$ ${Number(totalVolume || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -8450,9 +8493,164 @@
         };
       };
 
+      // ---- (Painel Master) Vencimento, tipo de conta, planos e modais ----
+      let planosCache = [];
+
+      // Cores de vencimento: verde > 30d | amarelo 1-30d | vermelho vencido.
+      const vencInfo = (e) => {
+        const dias = e?.dias_restantes;
+        if (e?.vencimento == null || dias == null) {
+          return { label: 'Sem vencimento', cls: 'bg-slate-100 text-slate-600', dot: 'bg-slate-400', dias: null };
+        }
+        if (dias < 0) return { label: `Vencido há ${Math.abs(dias)}d`, cls: 'bg-rose-100 text-rose-700', dot: 'bg-rose-500', dias };
+        if (dias <= 15) return { label: `Vence em ${dias}d`, cls: 'bg-amber-100 text-amber-700', dot: 'bg-amber-500', dias };
+        if (dias <= 30) return { label: `Vence em ${dias}d`, cls: 'bg-yellow-100 text-yellow-800', dot: 'bg-yellow-500', dias };
+        return { label: `${dias}d restantes`, cls: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-500', dias };
+      };
+
+      const accountBadge = (tipo) => {
+        const t = safeText(tipo, 'oficial').toLowerCase();
+        if (t === 'demo') return '<span class="px-2 py-1 rounded-full text-[10px] uppercase font-black bg-violet-100 text-violet-700">Demo</span>';
+        if (t === 'teste') return '<span class="px-2 py-1 rounded-full text-[10px] uppercase font-black bg-sky-100 text-sky-700">Teste</span>';
+        return '<span class="px-2 py-1 rounded-full text-[10px] uppercase font-black bg-emerald-600 text-white">Oficial</span>';
+      };
+
+      const planoOptions = (selectedId = '') => planosCache
+        .map((p) => `<option value="${p.id}" ${String(p.id) === String(selectedId) ? 'selected' : ''}>${safeText(p.nome, 'Plano')}</option>`)
+        .join('');
+
+      // Modal generico com fade (reaproveita .tdt-modal-overlay do CSS).
+      const openModal = (innerHtml) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'tdt-modal-overlay';
+        overlay.innerHTML = `<div class="tdt-modal-dialog">${innerHtml}</div>`;
+        document.body.appendChild(overlay);
+        const close = () => overlay.remove();
+        overlay.addEventListener('click', (ev) => { if (ev.target === overlay) close(); });
+        overlay.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
+        return { overlay, close };
+      };
+
+      const openRenewModal = (e) => {
+        const { overlay, close } = openModal(`
+          <div class="flex items-center justify-between mb-4">
+            <p class="font-headline font-extrabold text-on-surface">Renovar assinatura</p>
+            <button type="button" class="text-on-surface-variant" data-close><span class="material-symbols-outlined">close</span></button>
+          </div>
+          <p class="text-sm text-on-surface-variant mb-1">${safeText(e.nome, 'Empresa')}</p>
+          <p class="text-xs text-on-surface-variant mb-4">Vencimento atual: <b>${e.vencimento ? formatDatePtBr(e.vencimento) : 'sem assinatura'}</b></p>
+          ${planosCache.length ? `<label class="text-xs font-semibold uppercase text-on-surface-variant">Plano</label>
+          <select data-renew-plano class="w-full mb-4 rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm">${planoOptions(e.plano_id)}</select>` : ''}
+          <label class="text-xs font-semibold uppercase text-on-surface-variant">Adicionar período</label>
+          <div class="grid grid-cols-3 gap-2 mt-2 mb-4">
+            ${[30, 60, 90, 180, 365].map((d) => `<button type="button" data-renew-dias="${d}" class="rounded-xl border border-primary/30 py-2 text-sm font-bold text-primary hover:bg-primary hover:text-white transition-colors">${d} dias</button>`).join('')}
+          </div>
+          <p data-renew-msg class="text-xs text-on-surface-variant"></p>
+        `);
+        const msg = overlay.querySelector('[data-renew-msg]');
+        overlay.querySelectorAll('[data-renew-dias]').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const dias = Number(btn.dataset.renewDias);
+            const planoId = overlay.querySelector('[data-renew-plano]')?.value || undefined;
+            overlay.querySelectorAll('button').forEach((b) => (b.disabled = true));
+            if (msg) { msg.textContent = 'Renovando...'; msg.className = 'text-xs text-on-surface-variant'; }
+            const body = JSON.stringify(planoId ? { dias, plano_id: Number(planoId) } : { dias });
+            const { res, data } = await api.request(`/admin/empresas/${e.id}/renovar`, { method: 'POST', body }, { notify: false });
+            if (res.ok && data?.success !== false) {
+              ui.message(data?.message || 'Assinatura renovada.', 'success');
+              close();
+              await renderLista();
+            } else {
+              if (msg) { msg.textContent = data?.message || 'Não foi possível renovar agora.'; msg.className = 'text-xs text-rose-600'; }
+              overlay.querySelectorAll('button').forEach((b) => (b.disabled = false));
+            }
+          });
+        });
+      };
+
+      const openProfileModal = (e) => {
+        const venc = vencInfo(e);
+        openModal(`
+          <div class="flex items-center justify-between mb-4">
+            <p class="font-headline font-extrabold text-on-surface">Perfil da empresa</p>
+            <button type="button" class="text-on-surface-variant" data-close><span class="material-symbols-outlined">close</span></button>
+          </div>
+          <div class="flex items-center gap-3 mb-4">
+            <img src="${safeImage(e.logo, IMAGE_FALLBACKS.store)}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" alt="" class="w-16 h-16 rounded-2xl object-cover shadow-inner"/>
+            <div>
+              <p class="font-headline font-extrabold text-on-surface">${safeText(e.nome, 'Empresa')}</p>
+              <div class="flex flex-wrap gap-1 mt-1">${accountBadge(e.tipo_conta)}<span class="px-2 py-1 rounded-full text-[10px] uppercase font-black ${(statusMeta[e.status] || statusMeta.pending).badge}">${(statusMeta[e.status] || statusMeta.pending).label}</span></div>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 text-sm">
+            <div><p class="text-[10px] uppercase font-bold text-on-surface-variant">Responsável</p><p class="font-semibold text-on-surface">${safeText(e.responsavel, '-')}</p></div>
+            <div><p class="text-[10px] uppercase font-bold text-on-surface-variant">Contato</p><p class="font-semibold text-on-surface">${safeText(e.email, '-')}</p></div>
+            <div><p class="text-[10px] uppercase font-bold text-on-surface-variant">Telefone</p><p class="font-semibold text-on-surface">${safeText(e.telefone, '-')}</p></div>
+            <div><p class="text-[10px] uppercase font-bold text-on-surface-variant">Plano</p><p class="font-semibold text-on-surface">${safeText(e.plano, 'Sem plano')}</p></div>
+            <div><p class="text-[10px] uppercase font-bold text-on-surface-variant">Criação</p><p class="font-semibold text-on-surface">${e.created_at ? formatDatePtBr(e.created_at) : '-'}</p></div>
+            <div><p class="text-[10px] uppercase font-bold text-on-surface-variant">Vencimento</p><p class="font-semibold text-on-surface">${e.vencimento ? formatDatePtBr(e.vencimento) : '-'}</p></div>
+          </div>
+          <div class="mt-3"><span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold ${venc.cls}"><span class="w-2 h-2 rounded-full ${venc.dot}"></span>${venc.label}</span></div>
+          <div class="grid grid-cols-3 gap-2 mt-4 text-center">
+            <div class="rounded-xl bg-surface-container-low p-3"><p class="text-lg font-extrabold text-[#133F8C]">${Number(toNumber(e.total_promocoes, e.campanhas, 0)).toLocaleString('pt-BR')}</p><p class="text-[10px] uppercase font-bold text-on-surface-variant">Campanhas</p></div>
+            <div class="rounded-xl bg-surface-container-low p-3"><p class="text-lg font-extrabold text-[#00AFA8]">${Number(toNumber(e.total_clientes, e.clientes, 0)).toLocaleString('pt-BR')}</p><p class="text-[10px] uppercase font-bold text-on-surface-variant">Clientes</p></div>
+            <div class="rounded-xl bg-surface-container-low p-3"><p class="text-lg font-extrabold text-[#B01774]">${Number(toNumber(e.total_resgates, e.resgates, 0)).toLocaleString('pt-BR')}</p><p class="text-[10px] uppercase font-bold text-on-surface-variant">Resgates</p></div>
+          </div>
+        `);
+      };
+
+      const openCreateModal = () => {
+        const { overlay, close } = openModal(`
+          <div class="flex items-center justify-between mb-4">
+            <p class="font-headline font-extrabold text-on-surface">Nova empresa</p>
+            <button type="button" class="text-on-surface-variant" data-close><span class="material-symbols-outlined">close</span></button>
+          </div>
+          <div class="space-y-3">
+            <div><label class="text-xs font-semibold uppercase text-on-surface-variant">Nome</label><input data-new-nome class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" placeholder="Nome da empresa"/></div>
+            <div><label class="text-xs font-semibold uppercase text-on-surface-variant">Usuário (e-mail)</label><input data-new-email type="email" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" placeholder="empresa@exemplo.com"/></div>
+            <div><label class="text-xs font-semibold uppercase text-on-surface-variant">Senha</label><input data-new-senha type="password" class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" placeholder="Mínimo 6 caracteres"/></div>
+            <div><label class="text-xs font-semibold uppercase text-on-surface-variant">Telefone</label><input data-new-telefone class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm" placeholder="(00) 00000-0000"/></div>
+            <div class="grid grid-cols-2 gap-2">
+              ${planosCache.length ? `<div><label class="text-xs font-semibold uppercase text-on-surface-variant">Plano</label><select data-new-plano class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm">${planoOptions()}</select></div>` : ''}
+              <div><label class="text-xs font-semibold uppercase text-on-surface-variant">Validade</label><select data-new-dias class="w-full rounded-xl border border-surface-variant/60 bg-white px-3 py-2 text-sm">${[30, 60, 90, 180, 365].map((d) => `<option value="${d}">${d} dias</option>`).join('')}</select></div>
+            </div>
+          </div>
+          <button type="button" data-new-save class="mt-4 w-full bg-primary text-white rounded-xl py-3 font-semibold">Salvar empresa</button>
+          <p data-new-msg class="mt-2 text-xs text-on-surface-variant"></p>
+        `);
+        const msg = overlay.querySelector('[data-new-msg]');
+        overlay.querySelector('[data-new-save]')?.addEventListener('click', async (ev) => {
+          const btn = ev.currentTarget;
+          const nome = overlay.querySelector('[data-new-nome]')?.value.trim();
+          const email = overlay.querySelector('[data-new-email]')?.value.trim();
+          const senha = overlay.querySelector('[data-new-senha]')?.value;
+          const telefone = overlay.querySelector('[data-new-telefone]')?.value.trim();
+          const planoId = overlay.querySelector('[data-new-plano]')?.value || undefined;
+          const dias = Number(overlay.querySelector('[data-new-dias]')?.value || 30);
+          if (!nome || !email || !senha || senha.length < 6) {
+            if (msg) { msg.textContent = 'Preencha nome, e-mail e senha (mín. 6 caracteres).'; msg.className = 'mt-2 text-xs text-rose-600'; }
+            return;
+          }
+          btn.disabled = true;
+          if (msg) { msg.textContent = 'Criando empresa...'; msg.className = 'mt-2 text-xs text-on-surface-variant'; }
+          const payload = { nome, email, senha, telefone, dias };
+          if (planoId) payload.plano_id = Number(planoId);
+          const { res, data } = await api.request('/admin/empresas', { method: 'POST', body: JSON.stringify(payload) }, { notify: false });
+          if (res.ok && data?.success !== false) {
+            ui.message(data?.message || 'Empresa criada.', 'success');
+            close();
+            await renderLista();
+          } else {
+            if (msg) { msg.textContent = data?.message || 'Não foi possível criar a empresa.'; msg.className = 'mt-2 text-xs text-rose-600'; }
+            btn.disabled = false;
+          }
+        });
+      };
+
       const renderLista = async () => {
         const payload = await fetchCompanies();
         if (!payload) return;
+        planosCache = toArray(payload?.planos);
 
         const lista = toArray(payload?.empresas).map((item) => ({
           ...item,
@@ -8505,11 +8703,12 @@
             ? `/detalhe_do_parceiro.html?id=${encodeURIComponent(e.id)}`
             : `/gest_o_de_estabelecimentos.html?empresa=${encodeURIComponent(e.id)}`;
           const detailsLabel = e.publicamente_visivel ? 'Ver perfil' : 'Ver cadastro';
+          const venc = vencInfo(e);
           const card = document.createElement('div');
           card.className = 'bg-surface-container-lowest p-5 rounded-xl flex flex-col md:flex-row gap-6 items-start group hover:bg-surface-container-low transition-all border border-transparent hover:border-primary/10';
           card.innerHTML = /* html */ `
             <div class="relative">
-              <div class="w-20 h-20 rounded-full overflow-hidden bg-surface-container shadow-inner">
+              <div class="w-20 h-20 rounded-2xl overflow-hidden bg-surface-container shadow-inner">
                 <img alt="${e.nome}" class="w-full h-full object-cover" src="${e.logo}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'"/>
               </div>
             </div>
@@ -8518,40 +8717,37 @@
                 <div>
                   <div class="flex flex-wrap items-center gap-2">
                     <h3 class="font-headline font-bold text-on-surface text-lg">${e.nome}</h3>
+                    ${accountBadge(e.tipo_conta)}
                     <span class="px-2 py-1 rounded-full text-[10px] uppercase font-black ${meta.badge}">${meta.label}</span>
-                    <span class="px-2 py-1 rounded-full text-[10px] uppercase font-black ${e.publicamente_visivel ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-700'}">${e.publicamente_visivel ? 'Pública' : 'Oculta'}</span>
                   </div>
-                  <p class="text-sm text-outline mt-1">${e.categoria}</p>
-                  <p class="text-xs text-on-surface-variant mt-2">Responsavel: <span class="font-bold">${e.responsavel}</span> · ${e.email}</p>
+                  <p class="text-xs text-on-surface-variant mt-2">Usuário: <span class="font-bold">${e.responsavel}</span> · ${e.email}</p>
+                  <p class="text-xs text-on-surface-variant mt-1">Plano: <span class="font-bold">${safeText(e.plano, 'Sem plano')}</span> · Criada em ${e.created_at ? formatDatePtBr(e.created_at) : '-'}</p>
                 </div>
-                <div class="flex flex-wrap gap-2 text-[10px] uppercase font-bold">
-                  <span class="px-2 py-1 rounded-full bg-primary/10 text-primary">QR ${e.qr_code_ready ? 'Pronto' : 'Pendente'}</span>
-                  <span class="px-2 py-1 rounded-full bg-surface-container-high text-on-surface-variant">${e.ativo ? 'Ativo' : 'Inativo'}</span>
-                  <span class="px-2 py-1 rounded-full ${e.pagamento_confirmado ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${e.pagamento_confirmado ? 'Pago' : 'Aguardando pagamento'}</span>
+                <div class="flex flex-col items-start md:items-end gap-2">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${venc.cls}"><span class="w-2 h-2 rounded-full ${venc.dot}"></span>${venc.label}</span>
+                  ${e.vencimento ? `<span class="text-[10px] text-on-surface-variant">Vence em ${formatDatePtBr(e.vencimento)}</span>` : ''}
                 </div>
               </div>
               <div class="flex flex-wrap gap-4 mt-3 text-sm text-on-surface-variant">
-                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="location_on">location_on</span><span>${e.endereco}</span></div>
-                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="call">call</span><span>${e.telefone}</span></div>
-                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="chat">chat</span><span>${e.whatsapp || '-'}</span></div>
+                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="call">call</span><span class="font-semibold text-on-surface">${e.telefone}</span></div>
+                <div class="flex items-center gap-1"><span class="material-symbols-outlined text-primary" data-icon="storefront">storefront</span><span>${e.qr_code_ready ? 'QR pronto' : 'QR pendente'}</span></div>
+                <div class="flex items-center gap-1"><span class="material-symbols-outlined ${e.pagamento_confirmado ? 'text-emerald-600' : 'text-amber-600'}" data-icon="payments">payments</span><span>${e.pagamento_confirmado ? 'Pago' : 'Aguardando pagamento'}</span></div>
               </div>
               <div class="mt-4 flex flex-wrap gap-2">
-                <a href="${detailsHref}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity">
-                  ${detailsLabel}
-                  <span class="material-symbols-outlined text-base" data-icon="chevron_right">chevron_right</span>
-                </a>
-                <button data-company-action="${meta.action}" data-company-id="${e.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${meta.actionClass} text-xs font-bold hover:opacity-90 transition-opacity">
-                  ${meta.actionLabel}
-                </button>
-                ${meta.secondaryAction ? `<button data-company-action="${meta.secondaryAction}" data-company-id="${e.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${meta.secondaryClass} text-xs font-bold hover:opacity-90 transition-opacity">${meta.secondaryLabel}</button>` : ''}
-                <button data-company-action="pagamento" data-company-id="${e.id}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${e.pagamento_confirmado ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'} text-xs font-bold hover:opacity-90 transition-opacity">${e.pagamento_confirmado ? 'Marcar não pago' : 'Confirmar pagamento'}</button>
+                <button data-company-view class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-secondary/10 text-secondary text-xs font-bold hover:opacity-90 transition-opacity"><span class="material-symbols-outlined text-base">visibility</span>Visualizar</button>
+                <button data-company-renew class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-primary text-on-primary text-xs font-bold hover:opacity-90 transition-opacity"><span class="material-symbols-outlined text-base">event_repeat</span>Renovar</button>
+                <button data-company-action="${meta.action}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${meta.actionClass} text-xs font-bold hover:opacity-90 transition-opacity">${meta.actionLabel}</button>
+                ${meta.secondaryAction ? `<button data-company-action="${meta.secondaryAction}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${meta.secondaryClass} text-xs font-bold hover:opacity-90 transition-opacity">${meta.secondaryLabel}</button>` : ''}
+                <a href="${detailsHref}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-outline/40 text-on-surface-variant text-xs font-bold hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-base">edit</span>Editar</a>
               </div>
             </div>`;
 
-          card.querySelectorAll('a,button').forEach((el) => {
+          card.querySelector('[data-company-view]')?.addEventListener('click', (ev) => { ev.stopPropagation(); openProfileModal(e); });
+          card.querySelector('[data-company-renew]')?.addEventListener('click', (ev) => { ev.stopPropagation(); openRenewModal(e); });
+
+          card.querySelectorAll('button[data-company-action]').forEach((el) => {
             el.addEventListener('click', async (ev) => {
               ev.stopPropagation();
-              if (el.tagName.toLowerCase() !== 'button') return;
               el.disabled = true;
               const action = el.dataset.companyAction;
               const endpoint = actionEndpoint(e.id, action);
@@ -8594,9 +8790,7 @@
         fab.title = 'Cadastrar novo estabelecimento';
         fab.className = 'fixed bottom-24 right-4 w-14 h-14 bg-primary text-white rounded-full shadow-xl flex items-center justify-center z-50';
         fab.innerHTML = '<span class="material-symbols-outlined text-2xl">add_business</span>';
-        fab.addEventListener('click', () => {
-          window.location.href = '/criar_conta.html?tipo=empresa&origem=admin';
-        });
+        fab.addEventListener('click', () => openCreateModal());
         document.body.appendChild(fab);
       }
     },

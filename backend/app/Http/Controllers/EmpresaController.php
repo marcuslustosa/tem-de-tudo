@@ -10,6 +10,9 @@ use App\Models\Empresa;
 use App\Models\CheckIn;
 use App\Models\QRCode;
 use App\Models\User;
+use App\Models\CompanySubscription;
+use App\Models\SubscriptionPlan;
+use Illuminate\Support\Facades\Hash;
 use App\Services\BonusAdesaoService;
 use App\Services\BonusAniversarioService;
 use App\Services\CartaoFidelidadeService;
@@ -1202,7 +1205,7 @@ class EmpresaController extends Controller
             $search = strtolower(trim((string) $request->input('search', $request->input('busca', ''))));
 
             $query = Empresa::query()
-                ->with(['owner:id,name,email,telefone,status'])
+                ->with(['owner:id,name,email,telefone,status', 'subscription.plan'])
                 ->withCount('qrCodes');
 
             if ($status !== '' && !in_array($status, ['todos', 'all'], true)) {
@@ -1252,6 +1255,13 @@ class EmpresaController extends Controller
                 'data' => [
                     'empresas' => $empresas->map(fn (Empresa $empresa) => $this->serializeAdminEmpresa($empresa))->all(),
                     'summary' => $this->buildAdminCompanySummary(),
+                    'planos' => SubscriptionPlan::query()
+                        ->when(Schema::hasColumn('subscription_plans', 'is_active'), fn ($q) => $q->orderBy('id'))
+                        ->get()
+                        ->map(fn (SubscriptionPlan $plan) => [
+                            'id' => $plan->id,
+                            'nome' => $this->cleanUtf8($plan->display_name ?? $plan->name ?? ('Plano ' . $plan->id)),
+                        ])->all(),
                 ],
             ]);
         } catch (\Throwable $e) {
@@ -1312,6 +1322,178 @@ class EmpresaController extends Controller
             'message' => $novo ? 'Pagamento confirmado.' : 'Pagamento marcado como pendente.',
             'data' => $this->serializeAdminEmpresa($empresa),
         ]);
+    }
+
+    /**
+     * Painel master: renova a assinatura da empresa somando N dias ao
+     * vencimento atual (ou a partir de hoje se ja vencida). Endpoint minimo
+     * e aditivo: apenas estende o periodo e reativa a empresa. A logica de
+     * cobranca do sistema de billing NAO e alterada.
+     */
+    public function renovar(Request $request, int $id)
+    {
+        $validated = $request->validate([
+            'dias' => 'required|integer|in:30,60,90,180,365',
+            'plano_id' => 'nullable|integer|exists:subscription_plans,id',
+        ]);
+
+        try {
+            $empresa = Empresa::query()->findOrFail($id);
+            $dias = (int) $validated['dias'];
+
+            $subscription = CompanySubscription::query()->where('company_id', $empresa->id)->latest('id')->first();
+
+            $planId = $validated['plano_id']
+                ?? $subscription?->subscription_plan_id
+                ?? optional(SubscriptionPlan::query()->orderBy('id')->first())->id;
+
+            $agora = now();
+            // Base: se ainda tem vencimento futuro, soma em cima; senao, a partir de hoje.
+            $base = $subscription && $subscription->current_period_end && $subscription->current_period_end->isFuture()
+                ? $subscription->current_period_end->copy()
+                : $agora->copy();
+            $novoVencimento = $base->addDays($dias);
+
+            if ($subscription) {
+                $subscription->update([
+                    'status' => CompanySubscription::STATUS_ACTIVE,
+                    'subscription_plan_id' => $planId ?? $subscription->subscription_plan_id,
+                    'current_period_start' => $subscription->current_period_start ?? $agora,
+                    'current_period_end' => $novoVencimento,
+                    'canceled_at' => null,
+                ]);
+            } else {
+                $subscription = CompanySubscription::query()->create([
+                    'company_id' => $empresa->id,
+                    'subscription_plan_id' => $planId,
+                    'status' => CompanySubscription::STATUS_ACTIVE,
+                    'started_at' => $agora,
+                    'current_period_start' => $agora,
+                    'current_period_end' => $novoVencimento,
+                ]);
+            }
+
+            // Reativa a empresa se estiver suspensa/vencida (aproveita fluxo existente).
+            if ($empresa->operationalStatus() !== Empresa::STATUS_ACTIVE) {
+                $this->transitionOperationalStatus($empresa->id, Empresa::STATUS_ACTIVE, 'ativo');
+                $empresa->refresh();
+            }
+
+            $empresa->setRelation('subscription', $subscription->load('plan'));
+
+            return response()->json([
+                'success' => true,
+                'message' => "Assinatura renovada por {$dias} dias. Novo vencimento em " . $novoVencimento->format('d/m/Y') . '.',
+                'data' => $this->serializeAdminEmpresa($empresa),
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Erro ao renovar assinatura da empresa', ['empresa_id' => $id, 'error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao foi possivel renovar a assinatura agora.',
+            ], 500);
+        }
+    }
+
+    /**
+     * Painel master: cria uma empresa (com usuario dono e assinatura inicial).
+     * O master cria APENAS empresas. Mantem o padrao de auth existente
+     * (Hash::make, perfil empresa, escrita pg-safe) sem tocar no login.
+     */
+    public function adminStore(Request $request)
+    {
+        $validated = $request->validate([
+            'nome' => 'required|string|max:150',
+            'email' => 'required|email|max:190',
+            'senha' => 'required|string|min:6|max:100',
+            'telefone' => 'nullable|string|max:40',
+            'plano_id' => 'nullable|integer|exists:subscription_plans,id',
+            'dias' => 'nullable|integer|in:30,60,90,180,365',
+        ]);
+
+        $email = strtolower(trim($validated['email']));
+        if (User::whereRaw('LOWER(email) = ?', [$email])->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Este email ja esta cadastrado.',
+            ], 422);
+        }
+
+        try {
+            $empresa = DB::transaction(function () use ($validated, $email, $request) {
+                $driver = DB::connection()->getDriverName();
+                $pgBool = fn ($value) => $driver === 'pgsql' ? ($value ? 'true' : 'false') : (bool) $value;
+
+                $userData = [
+                    'name' => trim($validated['nome']),
+                    'email' => $email,
+                    'password' => Hash::make($validated['senha']),
+                ];
+                if (Schema::hasColumn('users', 'perfil')) $userData['perfil'] = 'empresa';
+                if (Schema::hasColumn('users', 'role')) $userData['role'] = 'empresa';
+                if (Schema::hasColumn('users', 'telefone')) $userData['telefone'] = $validated['telefone'] ?? null;
+                if (Schema::hasColumn('users', 'status')) $userData['status'] = 'ativo';
+                if (Schema::hasColumn('users', 'is_active')) $userData['is_active'] = $pgBool(true);
+
+                $user = User::create($userData);
+
+                $empresaData = [
+                    'nome' => trim($validated['nome']),
+                    'ramo' => 'geral',
+                    'endereco' => 'Nao informado',
+                    'telefone' => $validated['telefone'] ?? '-',
+                    'cnpj' => '',
+                    'owner_id' => $user->id,
+                    'status' => Empresa::STATUS_ACTIVE,
+                    'ativo' => $pgBool(true),
+                    'points_multiplier' => 1.0,
+                ];
+                if (Schema::hasColumn('empresas', 'user_id')) $empresaData['user_id'] = $user->id;
+                $empresa = Empresa::create($empresaData);
+
+                $planId = $validated['plano_id'] ?? optional(SubscriptionPlan::query()->orderBy('id')->first())->id;
+                $dias = (int) ($validated['dias'] ?? 30);
+                $agora = now();
+                CompanySubscription::create([
+                    'company_id' => $empresa->id,
+                    'subscription_plan_id' => $planId,
+                    'status' => CompanySubscription::STATUS_ACTIVE,
+                    'started_at' => $agora,
+                    'current_period_start' => $agora,
+                    'current_period_end' => $agora->copy()->addDays($dias),
+                ]);
+
+                return $empresa->load(['owner', 'subscription.plan']);
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Empresa criada com sucesso.',
+                'data' => $this->serializeAdminEmpresa($empresa),
+            ], 201);
+        } catch (\Throwable $e) {
+            Log::error('Erro ao criar empresa no painel admin', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Nao foi possivel criar a empresa agora.',
+            ], 500);
+        }
+    }
+
+    /**
+     * Classifica a conta como demo/teste/oficial a partir do email do dono.
+     * Usado apenas para exibir badge no painel master (sem efeito operacional).
+     */
+    private function resolveAccountType(?string $email, ?string $nome = null): string
+    {
+        $haystack = strtolower(trim((string) $email) . ' ' . (string) $nome);
+        if ($haystack === '') return 'oficial';
+        if (str_contains($haystack, 'demo')) return 'demo';
+        if (str_contains($haystack, 'teste') || str_contains($haystack, 'test') || str_contains($haystack, 'example')) return 'teste';
+
+        return 'oficial';
     }
 
     public function adminQrCode(int $id)
@@ -1403,10 +1585,25 @@ class EmpresaController extends Controller
     private function serializeAdminEmpresa(Empresa $empresa): array
     {
         $owner = $empresa->owner;
+        $subscription = $empresa->relationLoaded('subscription') ? $empresa->subscription : $empresa->subscription()->with('plan')->first();
+
+        $vencimento = optional($subscription?->current_period_end);
+        $vencimentoIso = $subscription?->current_period_end ? $vencimento->toDateString() : null;
+        $diasRestantes = null;
+        if ($subscription?->current_period_end) {
+            // Inteiro assinado: negativo quando ja venceu.
+            $diasRestantes = (int) round(now()->startOfDay()->diffInDays($subscription->current_period_end->copy()->startOfDay(), false));
+        }
+        $planName = $subscription?->plan?->display_name ?? $subscription?->plan?->name ?? null;
 
         return [
             'id' => $empresa->id,
             'nome' => $this->cleanUtf8($empresa->nome),
+            'plano' => $planName ? $this->cleanUtf8($planName) : null,
+            'assinatura_status' => $subscription?->status,
+            'vencimento' => $vencimentoIso,
+            'dias_restantes' => $diasRestantes,
+            'tipo_conta' => $this->resolveAccountType($owner?->email, $empresa->nome),
             'categoria' => $this->cleanUtf8($empresa->categoria ?? $empresa->ramo ?? 'Sem categoria'),
             'ramo' => $this->cleanUtf8($empresa->ramo ?? $empresa->categoria ?? 'Sem categoria'),
             'endereco' => $this->cleanUtf8($empresa->endereco ?? 'Endereco nao informado'),

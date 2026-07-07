@@ -56,6 +56,16 @@ class Empresa extends Model
     }
 
     /**
+     * Assinatura da empresa (tabela subscriptions). Usada pelo painel master
+     * apenas para leitura de vencimento/plano. A logica de cobranca permanece
+     * no sistema de billing existente.
+     */
+    public function subscription()
+    {
+        return $this->hasOne(CompanySubscription::class, 'company_id')->latestOfMany();
+    }
+
+    /**
      * Relacionamento com check-ins
      */
     public function checkIns()
