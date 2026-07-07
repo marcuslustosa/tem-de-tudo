@@ -2776,6 +2776,17 @@
           window.location.href = readQrUrl;
         });
 
+        // Busca em destaque na Home: leva o termo para a tela de exploracao.
+        const homeSearchForm = document.getElementById('homeSearchForm');
+        const homeSearchInput = document.getElementById('homeSearchInput');
+        homeSearchForm?.addEventListener('submit', (ev) => {
+          ev.preventDefault();
+          const term = (homeSearchInput?.value || '').trim();
+          window.location.href = term
+            ? `/parceiros_tem_de_tudo.html?busca=${encodeURIComponent(term)}`
+            : '/parceiros_tem_de_tudo.html';
+        });
+
         const qrCard = document.getElementById('homeMyQrCard');
         const qrContainer = document.getElementById('homeMyQrContainer');
         const toggleQrBtn = document.getElementById('btnShowMyQr');
@@ -3403,6 +3414,13 @@
       });
 
       // --- init --------------------------------------------------------------
+      // Termo vindo da busca da Home (?busca= ou ?q=) pre-preenche a pesquisa.
+      const initialParams = new URLSearchParams(window.location.search);
+      const initialTerm = (initialParams.get('busca') || initialParams.get('q') || '').trim();
+      if (initialTerm && searchInput) {
+        searchInput.value = initialTerm;
+        state.term = initialTerm;
+      }
       setActiveFilter('todos');
       await loadCatalog();
 
