@@ -832,7 +832,12 @@
         pageStateEl.className = 'max-w-4xl mx-auto mt-6 px-4';
         (document.querySelector('main') || document.body).prepend(pageStateEl);
       }
-      pageStateEl.innerHTML = `<div class="border ${palette[type] || palette.info} rounded-xl px-4 py-3 shadow-sm text-sm">${type === 'loading' ? '... ' : ''}${message}</div>`;
+      const spinner = type === 'loading'
+        ? '<span class="ui-spinner" style="width:18px;height:18px;border-width:2px;"></span>'
+        : '';
+      pageStateEl.innerHTML = `<div class="border ${palette[type] || palette.info} rounded-xl px-4 py-3 shadow-sm text-sm flex items-center gap-2">${spinner}<span></span></div>`;
+      const label = pageStateEl.querySelector('span:last-child');
+      if (label) label.textContent = message;
     }
 
     function clearPageState() {
@@ -840,18 +845,36 @@
       pageStateEl = null;
     }
 
+    // Toast padronizado do design system: posicao fixa, icone por variante,
+    // fade+slide. Uma unica fonte para todos os avisos do sistema.
     function message(text, variant = 'info') {
-      const mPalette = {
-        info: 'bg-blue-50 text-blue-800 border-blue-100',
-        success: 'bg-emerald-50 text-emerald-800 border-emerald-100',
-        warning: 'bg-amber-50 text-amber-800 border-amber-100',
-        error: 'bg-rose-50 text-rose-800 border-rose-100',
+      const icons = { success: 'check_circle', error: 'error', warning: 'warning', info: 'info' };
+      const v = icons[variant] ? variant : 'info';
+      let container = document.getElementById('ui-toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'ui-toast-container';
+        container.className = 'ui-toast-container';
+        container.setAttribute('aria-live', 'polite');
+        document.body.appendChild(container);
+      }
+      const toast = document.createElement('div');
+      toast.className = `ui-toast ui-toast--${v}`;
+      toast.setAttribute('role', v === 'error' ? 'alert' : 'status');
+      const icon = document.createElement('span');
+      icon.className = 'material-symbols-outlined ui-toast__icon';
+      icon.textContent = icons[v];
+      const span = document.createElement('span');
+      span.className = 'ui-toast__text';
+      span.textContent = text;
+      toast.append(icon, span);
+      container.appendChild(toast);
+      const remove = () => {
+        toast.classList.add('is-leaving');
+        setTimeout(() => toast.remove(), 200);
       };
-      const box = document.createElement('div');
-      box.className = `max-w-4xl mx-auto mt-4 px-4 py-3 rounded-xl border ${mPalette[variant] || mPalette.info} shadow-sm text-sm`;
-      box.textContent = text;
-      (document.querySelector('main') || document.body).prepend(box);
-      setTimeout(() => box.remove(), 6000);
+      const timer = setTimeout(remove, 5000);
+      toast.addEventListener('click', () => { clearTimeout(timer); remove(); });
     }
 
     return { setPageState, clearPageState, message };
