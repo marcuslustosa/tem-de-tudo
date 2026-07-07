@@ -227,10 +227,17 @@ class ClienteAPIController extends Controller
             $query->where('ramo', $request->ramo);
         }
         
-        // Busca por nome
+        // Busca por nome, categoria, ramo ou descrição (pg LIKE é case-sensitive → LOWER)
         if ($request->has('busca')) {
-            $busca = strtolower($request->busca);
-            $query->whereRaw('LOWER(nome) LIKE ?', ['%' . $busca . '%']);
+            $busca = '%' . mb_strtolower(trim((string) $request->busca)) . '%';
+            $query->where(function ($q) use ($busca) {
+                $q->whereRaw('LOWER(nome) LIKE ?', [$busca]);
+                foreach (['categoria', 'ramo', 'descricao'] as $col) {
+                    if ($this->hasColumn('empresas', $col)) {
+                        $q->orWhereRaw("LOWER($col) LIKE ?", [$busca]);
+                    }
+                }
+            });
         }
         
         $empresas = $query->orderBy('nome')->get();
@@ -1123,9 +1130,23 @@ class ClienteAPIController extends Controller
                 return $inscricao->empresa instanceof Empresa
                     && $inscricao->empresa->isPubliclyVisible();
             })
-            ->map(function (InscricaoEmpresa $inscricao) {
+            ->map(function (InscricaoEmpresa $inscricao) use ($userId) {
+                $pontos = 0;
+                if ($this->hasTable('pontos') && $this->hasColumn('pontos', 'empresa_id')) {
+                    try {
+                        $pontos = (int) DB::table('pontos')
+                            ->where('user_id', $userId)
+                            ->where('empresa_id', $inscricao->empresa->id)
+                            ->when($this->hasColumn('pontos', 'tipo'), fn ($builder) => $builder->whereNotIn('tipo', ['resgate', 'redeem']))
+                            ->sum('pontos');
+                    } catch (\Throwable $e) {
+                        $pontos = 0;
+                    }
+                }
+
                 return $this->serializeCompanyCard($inscricao->empresa, [
                     'vinculada' => true,
+                    'meus_pontos' => $pontos,
                     'data_inscricao' => optional($inscricao->data_inscricao)->toIso8601String(),
                     'ultima_visita' => optional($inscricao->ultima_visita)->toIso8601String(),
                 ]);
@@ -1170,6 +1191,8 @@ class ClienteAPIController extends Controller
             'facebook' => $this->cleanText($empresa->facebook ?? ''),
             'avaliacao_media' => (float) ($empresa->avaliacao_media ?? 0),
             'total_avaliacoes' => (int) ($empresa->total_avaliacoes ?? 0),
+            'latitude' => isset($empresa->latitude) ? (float) $empresa->latitude : null,
+            'longitude' => isset($empresa->longitude) ? (float) $empresa->longitude : null,
             'public_page_url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
             'status' => $empresa->operationalStatus(),
         ], $extra);

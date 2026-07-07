@@ -172,6 +172,7 @@ class PromocaoInstantaneaService
     {
         $titulo = trim((string) ($payload['titulo'] ?? $promocao?->titulo ?? ''));
         $descricao = $this->normalizeNullableString($payload['descricao'] ?? $promocao?->descricao ?? null);
+        $brinde = $this->normalizeNullableString($payload['brinde'] ?? $promocao?->brinde ?? null);
         $imagem = $this->normalizeNullableString($payload['imagem'] ?? $promocao?->imagem ?? null);
         $notificationTitle = $this->normalizeNullableString($payload['notification_title'] ?? $promocao?->notification_title ?? null)
             ?: $titulo;
@@ -200,6 +201,9 @@ class PromocaoInstantaneaService
             'status' => $status,
         ];
 
+        if (Schema::hasColumn('promocoes', 'brinde')) {
+            $data['brinde'] = $brinde;
+        }
         if (Schema::hasColumn('promocoes', 'notification_title')) {
             $data['notification_title'] = Str::limit($notificationTitle, 80, '');
         }
@@ -583,8 +587,14 @@ class PromocaoInstantaneaService
             'empresa_id' => $promocao->empresa_id,
             'titulo' => $promocao->titulo,
             'descricao' => $promocao->descricao,
+            'brinde' => $promocao->brinde,
             'imagem' => $promocao->imagem,
             'imagem_url' => $promocao->imageUrl(),
+            'desconto' => $promocao->desconto,
+            'preco' => $promocao->desconto,
+            'tipo' => $promocao->tipo_recompensa,
+            'tipo_recompensa' => $promocao->tipo_recompensa,
+            'data_inicio' => optional($promocao->data_inicio)->toDateString(),
             'validade' => optional($promocao->expirationDate())->toDateString(),
             'data_expiracao' => optional($promocao->expirationDate())->toDateString(),
             'notification_title' => $promocao->notificationTitle(),

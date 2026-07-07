@@ -29,50 +29,49 @@
 <body class="pb-28 text-[#2e2e34]" data-page="meus_pontos">
   <main class="mx-auto w-full max-w-[1180px] px-4 pb-10 pt-5 sm:px-6 lg:px-8">
     <div class="mx-auto max-w-[430px] lg:max-w-none">
-      <header class="home-client-hero rounded-[32px] px-5 py-6 text-white shadow-[0_18px_50px_rgba(8,10,18,0.26)] lg:flex lg:items-end lg:justify-between lg:px-8 lg:py-8">
-        <div class="w-full">
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex items-center gap-3">
-              <div class="inline-flex rounded-[20px] bg-white/10 px-4 py-3 ring-1 ring-white/10">
-                <img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
-              </div>
-              <div>
-                <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-white/60">App de fidelidade</p>
-                <span class="mt-2 inline-flex rounded-full bg-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-white/72">Cliente</span>
-              </div>
+      <header class="home-client-hero rounded-[32px] px-5 py-6 text-white shadow-[0_18px_50px_rgba(8,10,18,0.26)] lg:px-8 lg:py-7">
+        <div class="flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="inline-flex rounded-[20px] bg-white/10 px-4 py-3 ring-1 ring-white/10">
+              <img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
             </div>
-            <a id="clientHomeMenuBtn" href="/meu_perfil.html" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/14 bg-white/8 text-white shadow-[0_10px_24px_rgba(0,0,0,0.16)]" aria-label="Abrir atalhos do perfil">
-              <span class="material-symbols-outlined">more_horiz</span>
-            </a>
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-white/60">Bem-vindo(a)</p>
+              <h1 id="header-welcome" class="mt-1 text-[24px] font-extrabold leading-tight">Olá, Cliente</h1>
+            </div>
           </div>
-          <p class="mt-5 text-[11px] font-bold uppercase tracking-[0.24em] text-white/60">Carteira de fidelidade</p>
-          <h1 id="header-welcome" class="mt-3 text-[28px] font-extrabold leading-tight">Olá, Cliente</h1>
-          <p class="mt-3 max-w-xl text-sm leading-6 text-white/78">Leia o QR Code do estabelecimento, acompanhe os parceiros vinculados e mantenha seu QR pessoal pronto para apresentar no balcão.</p>
-        </div>
-        <div class="mt-6 rounded-[28px] bg-white/10 p-5 text-center ring-1 ring-white/10 lg:mt-0 lg:w-[320px]">
-          <p class="font-label text-[11px] font-bold uppercase tracking-[0.2em] text-white/55">Ação central</p>
-          <p class="mt-2 font-headline text-xl font-extrabold">QR Code em destaque</p>
-          <p class="mt-3 text-sm leading-6 text-white/75">Use “Ler QR Code” para se vincular a uma empresa e exiba “Meu QR Code” para validar benefícios no caixa.</p>
+          <a id="clientHomeMenuBtn" href="/meu_perfil.html" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/14 bg-white/8 text-white shadow-[0_10px_24px_rgba(0,0,0,0.16)]" aria-label="Abrir meu perfil">
+            <span class="material-symbols-outlined">person</span>
+          </a>
         </div>
       </header>
 
-      <section class="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-        <div class="rounded-[30px] bg-[linear-gradient(140deg,#111B3F_0%,#1B3A7A_100%)] p-5 text-white shadow-[0_18px_45px_rgba(19,63,140,0.24)] lg:p-6">
-          <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-white/70">Comece aqui</p>
-          <h2 class="mt-3 text-2xl font-extrabold">Conecte-se a uma loja</h2>
-          <p class="mt-3 text-sm leading-6 text-white/80">Escaneie o QR Code da loja para se conectar a ela e começar a acumular pontos, bônus e promoções.</p>
-          <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <button id="btnReadCompanyQr" class="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-5 text-sm font-extrabold text-[#111B3F] shadow-[0_6px_14px_rgba(0,0,0,0.12)]" type="button">
-              <span class="material-symbols-outlined">qr_code_scanner</span>
-              Ler QR Code
-            </button>
-            <button id="btnShowMyQr" class="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-5 text-sm font-extrabold text-white" type="button">
-              <span class="material-symbols-outlined">qr_code_2</span>
-              Meu QR Code
-            </button>
-          </div>
+      <section class="mt-6">
+        <div class="home-actions-grid">
+          <button id="btnReadCompanyQr" class="home-action" type="button">
+            <span class="home-action__icon"><span class="material-symbols-outlined">qr_code_scanner</span></span>
+            <span class="home-action__title">Ler QR Code</span>
+            <span class="home-action__desc">Escaneie o QR Code de um estabelecimento para participar do programa de fidelidade.</span>
+          </button>
+          <button id="btnShowMyQr" class="home-action" type="button">
+            <span class="home-action__icon"><span class="material-symbols-outlined">qr_code_2</span></span>
+            <span class="home-action__title">Meu QR Code</span>
+            <span class="home-action__desc">Mostre seu QR Code ao estabelecimento durante resgates e validações.</span>
+          </button>
+          <a href="/parceiros_tem_de_tudo.html" class="home-action">
+            <span class="home-action__icon"><span class="material-symbols-outlined">search</span></span>
+            <span class="home-action__title">Pesquisar Empresas</span>
+            <span class="home-action__desc">Encontre lojas por nome, categoria ou perto de você.</span>
+          </a>
+          <a href="#linkedCompaniesSection" id="btnGoLinkedCompanies" class="home-action">
+            <span class="home-action__icon"><span class="material-symbols-outlined">storefront</span></span>
+            <span class="home-action__title">Minhas Empresas</span>
+            <span class="home-action__desc">Acompanhe as empresas onde você já pontua.</span>
+          </a>
         </div>
+      </section>
 
+      <section class="mt-5">
         <div id="homeMyQrCard" class="hidden rounded-[30px] bg-white p-5 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5 lg:p-6">
           <div class="flex items-start justify-between gap-3">
             <div>
@@ -106,7 +105,7 @@
         </article>
       </section>
 
-      <section class="mt-8">
+      <section id="linkedCompaniesSection" class="mt-8 scroll-mt-24">
         <div class="flex items-end justify-between gap-3">
           <div>
             <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Empresas vinculadas</p>
@@ -114,7 +113,11 @@
           </div>
           <p id="linkedCompaniesCount" class="text-sm font-semibold text-slate-500">Carregando...</p>
         </div>
-        <p id="linkedCompaniesEmpty" class="mt-4 rounded-[24px] bg-white px-5 py-6 text-sm text-slate-500 shadow-[0_12px_32px_rgba(8,10,18,0.06)] ring-1 ring-black/5">Você ainda não está vinculado a nenhuma empresa ativa. Use o botão "Ler QR Code" para começar.</p>
+        <p id="linkedCompaniesEmpty" class="mt-4 hidden rounded-[24px] bg-white px-5 py-6 text-sm text-slate-500 shadow-[0_12px_32px_rgba(8,10,18,0.06)] ring-1 ring-black/5">Você ainda não está vinculado a nenhuma empresa ativa. Use o botão "Ler QR Code" para começar.</p>
+        <div id="linkedCompaniesSkeleton" class="mt-4 grid gap-4 lg:grid-cols-2">
+          <div class="tdt-skeleton-card"><div class="flex gap-4"><div class="tdt-skeleton h-16 w-16 rounded-2xl"></div><div class="flex-1 space-y-2"><div class="tdt-skeleton h-3 w-1/3"></div><div class="tdt-skeleton h-4 w-2/3"></div><div class="tdt-skeleton h-3 w-1/2"></div></div></div></div>
+          <div class="tdt-skeleton-card"><div class="flex gap-4"><div class="tdt-skeleton h-16 w-16 rounded-2xl"></div><div class="flex-1 space-y-2"><div class="tdt-skeleton h-3 w-1/3"></div><div class="tdt-skeleton h-4 w-2/3"></div><div class="tdt-skeleton h-3 w-1/2"></div></div></div></div>
+        </div>
         <div id="linkedCompaniesList" class="mt-4 grid gap-4 lg:grid-cols-2"></div>
       </section>
 

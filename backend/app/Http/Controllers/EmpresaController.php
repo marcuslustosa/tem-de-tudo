@@ -291,9 +291,12 @@ class EmpresaController extends Controller
                 'instagram' => $this->cleanUtf8($empresa->instagram ?? ''),
                 'facebook' => $this->cleanUtf8($empresa->facebook ?? ''),
                 'logo' => $this->cleanUtf8($empresa->logo ?? '/assets/images/company1.jpg'),
+                'banner' => $this->cleanUtf8($empresa->banner ?? ''),
                 'points_multiplier' => $empresa->points_multiplier ?? 1,
                 'avaliacao_media' => (float) ($empresa->avaliacao_media ?? 0),
                 'total_avaliacoes' => (int) ($empresa->total_avaliacoes ?? 0),
+                'latitude' => isset($empresa->latitude) ? (float) $empresa->latitude : null,
+                'longitude' => isset($empresa->longitude) ? (float) $empresa->longitude : null,
                 'public_page_url' => '/detalhe_do_parceiro.html?id=' . $empresa->id,
                 'publicamente_visivel' => $empresa->isPubliclyVisible(),
                 'status' => $empresa->operationalStatus(),
@@ -677,13 +680,15 @@ class EmpresaController extends Controller
                 }
             }
 
-            // Busca por nome ou descrição (case-insensitive e portável: pg LIKE é case-sensitive)
+            // Busca por nome, descrição, categoria ou ramo (case-insensitive e portável: pg LIKE é case-sensitive)
             if ($request->has('busca')) {
                 $busca = '%' . mb_strtolower(trim((string) $request->busca)) . '%';
                 $query->where(function($q) use ($busca) {
                     $q->whereRaw('LOWER(nome) LIKE ?', [$busca]);
-                    if (Schema::hasColumn('empresas', 'descricao')) {
-                        $q->orWhereRaw('LOWER(descricao) LIKE ?', [$busca]);
+                    foreach (['descricao', 'categoria', 'ramo'] as $col) {
+                        if (Schema::hasColumn('empresas', $col)) {
+                            $q->orWhereRaw("LOWER($col) LIKE ?", [$busca]);
+                        }
                     }
                 });
             }
@@ -704,7 +709,7 @@ class EmpresaController extends Controller
             if ($hasMultiplier) {
                 $select[] = 'points_multiplier';
             }
-            foreach (['whatsapp', 'instagram', 'facebook', 'avaliacao_media', 'total_avaliacoes'] as $column) {
+            foreach (['whatsapp', 'instagram', 'facebook', 'avaliacao_media', 'total_avaliacoes', 'latitude', 'longitude'] as $column) {
                 if (Schema::hasColumn('empresas', $column)) {
                     $select[] = $column;
                 }

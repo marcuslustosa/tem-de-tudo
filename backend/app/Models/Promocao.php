@@ -22,6 +22,7 @@ class Promocao extends Model
         'empresa_id',
         'titulo',
         'descricao',
+        'brinde',
         'imagem',
         'notification_title',
         'notification_body',

@@ -26,6 +26,7 @@ class Empresa extends Model
         'logo',
         'descricao',
         'categoria',
+        'banner',
         'points_multiplier',
         'ativo',
         'status',

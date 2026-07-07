@@ -390,6 +390,11 @@ Route::middleware(['auth:sanctum', 'role.permission:empresa', 'subscription.chec
     // Perfil da empresa
     Route::get('/perfil', [EmpresaAPIController::class, 'meuPerfil']);
     Route::put('/perfil', [EmpresaAPIController::class, 'atualizarPerfil']);
+    // Upload/remoção de imagens da empresa (logo e banner) — arquivo enviado do dispositivo
+    Route::post('/perfil/logo', [EmpresaAPIController::class, 'uploadLogo'])->middleware('rate.limit:20:1');
+    Route::post('/perfil/banner', [EmpresaAPIController::class, 'uploadBanner'])->middleware('rate.limit:20:1');
+    Route::delete('/perfil/logo', [EmpresaAPIController::class, 'removeLogo']);
+    Route::delete('/perfil/banner', [EmpresaAPIController::class, 'removeBanner']);
     Route::get('/fidelidade/config', [LoyaltyPolicyController::class, 'companyConfig']);
     Route::put('/fidelidade/config', [LoyaltyPolicyController::class, 'companyUpdateConfig']);
     Route::get('/fidelidade/onboarding', [LoyaltyPolicyController::class, 'companyOnboardingStatus']);

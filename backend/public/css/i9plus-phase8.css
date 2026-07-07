@@ -2362,3 +2362,687 @@ body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--rejected {
     grid-column: 1 / -1;
   }
 }
+
+/* ============================================================
+   Skeleton loading reutilizável (Prompt 01 — App do Cliente)
+   ============================================================ */
+.tdt-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgba(17, 27, 63, 0.06);
+  border-radius: 16px;
+}
+
+.tdt-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 100%
+  );
+  animation: tdt-shimmer 1.25s ease-in-out infinite;
+}
+
+@keyframes tdt-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tdt-skeleton::after {
+    animation: none;
+  }
+}
+
+.tdt-skeleton-card {
+  border-radius: 26px;
+  border: 1px solid rgba(17, 27, 63, 0.06);
+  background: #fff;
+  box-shadow: var(--i9-shadow-card);
+  padding: 16px;
+}
+
+/* ============================================================
+   Home do cliente — grid das 4 ações principais
+   ============================================================ */
+body[data-page="meus_pontos"] .home-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+body[data-page="meus_pontos"] .home-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 132px;
+  border-radius: 24px;
+  border: 1px solid rgba(17, 27, 63, 0.06);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  padding: 18px;
+  text-align: left;
+  color: var(--i9-navy);
+  box-shadow: var(--i9-shadow-card);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  cursor: pointer;
+}
+
+body[data-page="meus_pontos"] .home-action:hover,
+body[data-page="meus_pontos"] .home-action:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(176, 23, 116, 0.16);
+  box-shadow: var(--i9-shadow-strong);
+  outline: none;
+}
+
+body[data-page="meus_pontos"] .home-action__icon {
+  display: inline-flex;
+  height: 48px;
+  width: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: var(--i9-gradient);
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(176, 23, 116, 0.22);
+}
+
+body[data-page="meus_pontos"] .home-action__icon .material-symbols-outlined {
+  font-size: 26px;
+}
+
+body[data-page="meus_pontos"] .home-action__title {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+body[data-page="meus_pontos"] .home-action__desc {
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--i9-text-muted);
+}
+
+@media (min-width: 1024px) {
+  body[data-page="meus_pontos"] .home-actions-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ============================================================
+   Busca de empresas — pílula de distância/cidade e estado de erro
+   ============================================================ */
+body[data-page="parceiros_tem_de_tudo"] .partner-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  background: rgba(19, 63, 140, 0.08);
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--i9-blue);
+}
+
+body[data-page="parceiros_tem_de_tudo"] .partner-meta-pill .material-symbols-outlined {
+  font-size: 15px;
+}
+
+body[data-page="parceiros_tem_de_tudo"] .partner-meta-pill--near {
+  background: rgba(0, 175, 168, 0.12);
+  color: #00666e;
+}
+
+/* ============================================================
+   Prompt 02 — Página pública da empresa: banner de capa + logo
+   ============================================================ */
+body[data-page="detalhe_do_parceiro"] .partner-cover {
+  position: relative;
+  border-radius: 30px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, #10172f 0%, #133f8c 45%, #b01774 100%);
+  box-shadow: 0 22px 55px rgba(11, 31, 58, 0.2);
+  animation: tdt-fade-in 0.45s ease both;
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-cover__image {
+  aspect-ratio: 16 / 6;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  body[data-page="detalhe_do_parceiro"] .partner-cover__image {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-cover__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 10, 18, 0) 40%, rgba(8, 10, 18, 0.42) 100%);
+  pointer-events: none;
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-cover__top {
+  position: absolute;
+  inset: 16px 16px auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-identity {
+  margin-top: -52px;
+  padding: 0 20px;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-logo-ring {
+  height: 104px;
+  width: 104px;
+  border-radius: 999px;
+  background: #fff;
+  padding: 5px;
+  box-shadow: 0 16px 34px rgba(11, 31, 58, 0.22);
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-logo-ring:hover {
+  transform: scale(1.03);
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-logo-ring img {
+  height: 100%;
+  width: 100%;
+  border-radius: 999px;
+  object-fit: cover;
+  background: #f2f5f9;
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-social-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-social-btn {
+  display: inline-flex;
+  height: 42px;
+  width: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--i9-navy);
+  border: 1px solid rgba(17, 27, 63, 0.08);
+  box-shadow: var(--i9-shadow-soft);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-social-btn:hover {
+  transform: translateY(-2px);
+  color: var(--i9-magenta);
+  box-shadow: var(--i9-shadow-strong);
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-actions-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  body[data-page="detalhe_do_parceiro"] .partner-actions-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-action-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 84px;
+  border-radius: 22px;
+  border: 1px solid rgba(17, 27, 63, 0.06);
+  background: #fff;
+  color: var(--i9-navy);
+  font-weight: 800;
+  font-size: 0.82rem;
+  box-shadow: var(--i9-shadow-card);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-action-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(176, 23, 116, 0.16);
+  box-shadow: var(--i9-shadow-strong);
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-action-btn--primary {
+  background: var(--i9-gradient);
+  color: #fff;
+  border-color: transparent;
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-action-btn .material-symbols-outlined {
+  font-size: 26px;
+}
+
+body[data-page="detalhe_do_parceiro"] .partner-action-btn[hidden] {
+  display: none;
+}
+
+/* Cardápio — apenas o espaço visual preparado (não implementado nesta etapa) */
+body[data-page="detalhe_do_parceiro"] .partner-menu-placeholder {
+  border: 1px dashed rgba(17, 27, 63, 0.16);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+}
+
+/* ============================================================
+   Uploader de imagem (logo/banner) — usado no editor da empresa
+   ============================================================ */
+.tdt-uploader {
+  border: 1px solid rgba(17, 27, 63, 0.1);
+  border-radius: 20px;
+  background: #fff;
+  padding: 14px;
+}
+
+.tdt-uploader__preview {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(19, 63, 140, 0.06), rgba(0, 175, 168, 0.08));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--i9-text-muted);
+}
+
+.tdt-uploader__preview--banner {
+  aspect-ratio: 16 / 6;
+  border-radius: 16px;
+}
+
+.tdt-uploader__preview--logo {
+  height: 120px;
+  width: 120px;
+  border-radius: 999px;
+  margin: 0 auto;
+}
+
+.tdt-uploader__preview--square {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 240px;
+  border-radius: 18px;
+  margin: 0 auto;
+}
+
+.tdt-uploader__preview img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.tdt-uploader__actions {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tdt-uploader__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+}
+
+.tdt-uploader__btn--primary {
+  background: var(--i9-gradient);
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(176, 23, 116, 0.2);
+}
+
+.tdt-uploader__btn--ghost {
+  background: #fff;
+  color: var(--i9-navy);
+  border: 1px solid rgba(17, 27, 63, 0.1);
+}
+
+.tdt-uploader__btn:hover {
+  transform: translateY(-1px);
+}
+
+.tdt-uploader__btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.tdt-uploader__hint {
+  margin-top: 8px;
+  font-size: 0.74rem;
+  color: var(--i9-text-muted);
+}
+
+/* ============================================================
+   Modal de corte (crop) — canvas próprio, sem dependência externa
+   ============================================================ */
+.tdt-crop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(8, 10, 18, 0.62);
+  backdrop-filter: blur(4px);
+  animation: tdt-fade-in 0.2s ease both;
+}
+
+.tdt-crop-dialog {
+  width: min(460px, 100%);
+  background: #fff;
+  border-radius: 26px;
+  box-shadow: 0 30px 70px rgba(8, 10, 18, 0.4);
+  padding: 20px;
+  animation: tdt-pop-in 0.22s ease both;
+}
+
+.tdt-crop-title {
+  font-family: var(--i9-heading-font);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--i9-navy);
+}
+
+.tdt-crop-stage {
+  position: relative;
+  margin-top: 14px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #0d1017;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.tdt-crop-stage:active {
+  cursor: grabbing;
+}
+
+.tdt-crop-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tdt-crop-mask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: 0 0 0 100vmax rgba(8, 10, 18, 0.45);
+}
+
+.tdt-crop-mask--round {
+  border-radius: 999px;
+}
+
+.tdt-crop-controls {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tdt-crop-controls input[type="range"] {
+  flex: 1;
+  accent-color: var(--i9-magenta);
+}
+
+.tdt-crop-footer {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@keyframes tdt-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes tdt-pop-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tdt-crop-overlay,
+  .tdt-crop-dialog,
+  body[data-page="detalhe_do_parceiro"] .partner-cover {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   Prompt 03 — Programa de Fidelidade (tela do cliente)
+   ============================================================ */
+body[data-page="recompensas"] .loyalty-points-hero {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 30%),
+    linear-gradient(135deg, #10172f 0%, #133f8c 42%, #b01774 100%);
+  animation: tdt-fade-in 0.4s ease both;
+}
+
+body[data-page="recompensas"] .loyalty-card {
+  border: 1px solid rgba(17, 27, 63, 0.07);
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: var(--i9-shadow-card);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  animation: tdt-fade-in 0.4s ease both;
+}
+
+body[data-page="recompensas"] .loyalty-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(176, 23, 116, 0.16);
+  box-shadow: var(--i9-shadow-strong);
+}
+
+body[data-page="recompensas"] .loyalty-card--ready {
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 18px 42px rgba(16, 185, 129, 0.16);
+}
+
+body[data-page="recompensas"] .loyalty-logo {
+  height: 56px;
+  width: 56px;
+  border-radius: 18px;
+  object-fit: cover;
+  background: #f2f5f9;
+  flex-shrink: 0;
+}
+
+body[data-page="recompensas"] .loyalty-progress-track {
+  height: 12px;
+  width: 100%;
+  border-radius: 999px;
+  background: rgba(17, 27, 63, 0.08);
+  overflow: hidden;
+}
+
+body[data-page="recompensas"] .loyalty-progress-bar {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #133f8c 0%, #b01774 100%);
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body[data-page="recompensas"] .loyalty-reward-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 18px;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, rgba(19, 63, 140, 0.06), rgba(176, 23, 116, 0.08));
+  border: 1px dashed rgba(176, 23, 116, 0.24);
+}
+
+body[data-page="recompensas"] .loyalty-status-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+body[data-page="recompensas"] .loyalty-redeem-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 46px;
+  width: 100%;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #fff;
+  box-shadow: 0 12px 26px rgba(16, 185, 129, 0.28);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+}
+
+body[data-page="recompensas"] .loyalty-redeem-btn:hover {
+  transform: translateY(-1px);
+}
+
+body[data-page="recompensas"] .loyalty-presential-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--i9-text-muted);
+}
+
+body[data-page="recompensas"] .redemption-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid rgba(17, 27, 63, 0.06);
+  padding: 12px 14px;
+  transition: background 0.16s ease;
+}
+
+body[data-page="recompensas"] .redemption-row:hover {
+  background: #f8fbff;
+}
+
+/* ============================================================
+   Prompt 04 — Promoções: contador de caracteres, char-counter,
+   badges de status e modal de preview (como o cliente vê)
+   ============================================================ */
+.tdt-char-counter {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--i9-text-muted);
+  text-align: right;
+}
+
+.tdt-char-counter.is-limit {
+  color: var(--i9-magenta);
+}
+
+.tdt-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.tdt-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(8, 10, 18, 0.62);
+  backdrop-filter: blur(4px);
+  animation: tdt-fade-in 0.2s ease both;
+}
+
+.tdt-modal-dialog {
+  width: min(420px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 26px;
+  box-shadow: 0 30px 70px rgba(8, 10, 18, 0.4);
+  padding: 18px;
+  animation: tdt-pop-in 0.22s ease both;
+}
+
+/* Card de preview idêntico ao que o cliente enxerga */
+.tdt-promo-preview {
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(17, 27, 63, 0.08);
+  background: #fff;
+  box-shadow: var(--i9-shadow-card);
+}
+
+.tdt-promo-preview__media {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  object-fit: cover;
+  background: #f2f5f9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tdt-modal-overlay,
+  .tdt-modal-dialog {
+    animation: none;
+  }
+}

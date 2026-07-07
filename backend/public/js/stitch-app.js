@@ -70,6 +70,235 @@
       .trim();
   }
 
+  // ---------------------------------------------------------------------------
+  // Cropper de imagem pr\u00f3prio (canvas) \u2014 sem depend\u00eancia externa/CDN.
+  // Abre um modal com reposicionamento (arrastar) + zoom e devolve um Blob
+  // j\u00e1 cortado e comprimido, pronto para upload. (Prompt 02 \u2014 padr\u00e3o de imagens)
+  // ---------------------------------------------------------------------------
+  const tdtImageCropper = (() => {
+    function open(opts = {}) {
+      const {
+        file,
+        aspect = 1,
+        round = false,
+        title = 'Ajustar imagem',
+        outputWidth = 800,
+        mime = 'image/jpeg',
+        quality = 0.85,
+      } = opts;
+
+      return new Promise((resolve) => {
+        if (!file) { resolve(null); return; }
+
+        const reader = new FileReader();
+        reader.onerror = () => resolve(null);
+        reader.onload = () => {
+          const img = new Image();
+          img.onerror = () => resolve(null);
+          img.onload = () => build(img);
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+
+        function build(img) {
+          const stageW = Math.min(400, Math.max(240, window.innerWidth - 80));
+          const stageH = Math.round(stageW / aspect);
+
+          const overlay = document.createElement('div');
+          overlay.className = 'tdt-crop-overlay';
+          overlay.innerHTML = `
+            <div class="tdt-crop-dialog" role="dialog" aria-modal="true" aria-label="${title}">
+              <p class="tdt-crop-title">${title}</p>
+              <div class="tdt-crop-stage" style="height:${stageH}px">
+                <canvas width="${stageW}" height="${stageH}"></canvas>
+                <div class="tdt-crop-mask ${round ? 'tdt-crop-mask--round' : ''}"></div>
+              </div>
+              <div class="tdt-crop-controls">
+                <span class="material-symbols-outlined" style="color:var(--i9-text-muted)">zoom_out</span>
+                <input type="range" min="1" max="3" step="0.01" value="1" aria-label="Zoom" />
+                <span class="material-symbols-outlined" style="color:var(--i9-text-muted)">zoom_in</span>
+              </div>
+              <div class="tdt-crop-footer">
+                <button type="button" class="tdt-uploader__btn tdt-uploader__btn--ghost" data-crop-cancel>Cancelar</button>
+                <button type="button" class="tdt-uploader__btn tdt-uploader__btn--primary" data-crop-save>Salvar</button>
+              </div>
+            </div>`;
+          document.body.appendChild(overlay);
+          const prevOverflow = document.body.style.overflow;
+          document.body.style.overflow = 'hidden';
+
+          const canvas = overlay.querySelector('canvas');
+          const ctx = canvas.getContext('2d');
+          const range = overlay.querySelector('input[type=range]');
+          const stage = overlay.querySelector('.tdt-crop-stage');
+
+          const baseScale = Math.max(stageW / img.width, stageH / img.height);
+          let zoom = 1;
+          const offset = { x: 0, y: 0 };
+
+          const clamp = () => {
+            const scale = baseScale * zoom;
+            const maxX = Math.max(0, (img.width * scale - stageW) / 2);
+            const maxY = Math.max(0, (img.height * scale - stageH) / 2);
+            offset.x = Math.min(maxX, Math.max(-maxX, offset.x));
+            offset.y = Math.min(maxY, Math.max(-maxY, offset.y));
+          };
+          const geometry = () => {
+            const scale = baseScale * zoom;
+            const dispW = img.width * scale;
+            const dispH = img.height * scale;
+            return { dispW, dispH, dx: (stageW - dispW) / 2 + offset.x, dy: (stageH - dispH) / 2 + offset.y };
+          };
+          const draw = () => {
+            clamp();
+            const g = geometry();
+            ctx.clearRect(0, 0, stageW, stageH);
+            ctx.drawImage(img, g.dx, g.dy, g.dispW, g.dispH);
+          };
+          draw();
+
+          range.addEventListener('input', () => { zoom = Number(range.value) || 1; draw(); });
+
+          let dragging = false;
+          let last = null;
+          const onStart = (x, y) => { dragging = true; last = { x, y }; };
+          const onMove = (x, y) => {
+            if (!dragging) return;
+            offset.x += x - last.x;
+            offset.y += y - last.y;
+            last = { x, y };
+            draw();
+          };
+          const onEnd = () => { dragging = false; };
+          const mDown = (e) => onStart(e.clientX, e.clientY);
+          const mMove = (e) => onMove(e.clientX, e.clientY);
+          const tStart = (e) => { const t = e.touches[0]; if (t) onStart(t.clientX, t.clientY); };
+          const tMove = (e) => { const t = e.touches[0]; if (t) onMove(t.clientX, t.clientY); };
+          stage.addEventListener('mousedown', mDown);
+          window.addEventListener('mousemove', mMove);
+          window.addEventListener('mouseup', onEnd);
+          stage.addEventListener('touchstart', tStart, { passive: true });
+          stage.addEventListener('touchmove', tMove, { passive: true });
+          stage.addEventListener('touchend', onEnd);
+
+          let settled = false;
+          const cleanup = (result) => {
+            if (settled) return;
+            settled = true;
+            window.removeEventListener('mousemove', mMove);
+            window.removeEventListener('mouseup', onEnd);
+            overlay.remove();
+            document.body.style.overflow = prevOverflow;
+            resolve(result);
+          };
+
+          overlay.querySelector('[data-crop-cancel]').addEventListener('click', () => cleanup(null));
+          overlay.addEventListener('mousedown', (e) => { if (e.target === overlay) cleanup(null); });
+          overlay.querySelector('[data-crop-save]').addEventListener('click', () => {
+            const outW = Math.round(outputWidth);
+            const outH = Math.round(outputWidth / aspect);
+            const out = document.createElement('canvas');
+            out.width = outW;
+            out.height = outH;
+            const octx = out.getContext('2d');
+            octx.fillStyle = '#ffffff';
+            octx.fillRect(0, 0, outW, outH);
+            const g = geometry();
+            const k = outW / stageW;
+            octx.drawImage(img, g.dx * k, g.dy * k, g.dispW * k, g.dispH * k);
+            out.toBlob((blob) => cleanup(blob), mime, quality);
+          });
+        }
+      });
+    }
+
+    return { open };
+  })();
+
+  // Liga um widget de upload de imagem da empresa (logo/banner) aos endpoints.
+  // Reutiliza o cropper acima; envia o arquivo j\u00e1 otimizado via multipart.
+  function bindEmpresaImageUploader(kind, currentUrl) {
+    const root = document.querySelector(`[data-uploader="${kind}"]`);
+    if (!root || root.dataset.bound === '1') return;
+    root.dataset.bound = '1';
+
+    const input = root.querySelector('[data-uploader-input]');
+    const pickBtn = root.querySelector('[data-uploader-pick]');
+    const pickLabel = root.querySelector('[data-uploader-picklabel]');
+    const removeBtn = root.querySelector('[data-uploader-remove]');
+    const imgEl = root.querySelector('[data-uploader-image]');
+    const placeholder = root.querySelector('[data-uploader-placeholder]');
+
+    const cfg = kind === 'logo'
+      ? { aspect: 1, round: true, outputWidth: 512, title: 'Ajustar logo (1:1)', endpoint: '/empresa/perfil/logo' }
+      : { aspect: 16 / 6, round: false, outputWidth: 1280, title: 'Ajustar banner (capa)', endpoint: '/empresa/perfil/banner' };
+
+    const showImage = (url) => {
+      if (url && imgEl) {
+        imgEl.src = url;
+        imgEl.classList.remove('hidden');
+        placeholder?.classList.add('hidden');
+        removeBtn?.classList.remove('hidden');
+        if (pickLabel) pickLabel.textContent = 'Alterar';
+      } else {
+        imgEl?.removeAttribute('src');
+        imgEl?.classList.add('hidden');
+        placeholder?.classList.remove('hidden');
+        removeBtn?.classList.add('hidden');
+        if (pickLabel) pickLabel.textContent = kind === 'logo' ? 'Enviar logo' : 'Enviar banner';
+      }
+    };
+    const setBusy = (busy) => {
+      if (pickBtn) pickBtn.disabled = busy;
+      if (removeBtn) removeBtn.disabled = busy;
+    };
+
+    showImage(currentUrl);
+
+    pickBtn?.addEventListener('click', () => input?.click());
+    input?.addEventListener('change', async () => {
+      const file = input.files && input.files[0];
+      input.value = '';
+      if (!file) return;
+      if (!/^image\//.test(file.type)) {
+        ui.message('Selecione um arquivo de imagem v\u00e1lido.', 'warning');
+        return;
+      }
+      const blob = await tdtImageCropper.open({
+        file,
+        aspect: cfg.aspect,
+        round: cfg.round,
+        outputWidth: cfg.outputWidth,
+        title: cfg.title,
+      });
+      if (!blob) return;
+      const fd = new FormData();
+      fd.append('image', blob, `${kind}.jpg`);
+      setBusy(true);
+      const { res, data } = await api.request(cfg.endpoint, { method: 'POST', body: fd });
+      setBusy(false);
+      if (res.ok && data?.success) {
+        const url = data.data?.url ? `${data.data.url}?t=${Date.now()}` : currentUrl;
+        showImage(url);
+        ui.message('Imagem atualizada com sucesso.', 'success');
+      } else {
+        ui.message(data?.message || 'N\u00e3o foi poss\u00edvel enviar a imagem.', 'error');
+      }
+    });
+
+    removeBtn?.addEventListener('click', async () => {
+      setBusy(true);
+      const { res, data } = await api.request(cfg.endpoint, { method: 'DELETE' });
+      setBusy(false);
+      if (res.ok && data?.success) {
+        showImage(null);
+        ui.message('Imagem removida.', 'info');
+      } else {
+        ui.message(data?.message || 'N\u00e3o foi poss\u00edvel remover a imagem.', 'error');
+      }
+    });
+  }
+
   function toNumber(...values) {
     for (const value of values) {
       if (value === null || value === undefined || value === '') continue;
@@ -1191,6 +1420,9 @@
 
   function mountClientHomeSummary({ linkedCompanies = [], featuredCompanies = [] } = {}) {
     if (page !== 'meus_pontos') return;
+    // Prompt 01 (App do Cliente): home enxuta, sem bloco de estatísticas/"resumo".
+    // As ações principais e o consentimento de push já cobrem essas informações.
+    return;
     const anchor = document.getElementById('linkedCompaniesList')?.closest('section');
     const section = ensureAdjacentSection(
       'clientRelationshipOverview',
@@ -2237,11 +2469,43 @@
           `;
         };
 
+        const formatLastInteraction = (iso) => {
+          if (!iso) return 'Sem visitas registradas';
+          const parsed = new Date(iso);
+          if (Number.isNaN(parsed.getTime())) return 'Sem visitas registradas';
+          return `Última interação em ${parsed.toLocaleDateString('pt-BR')}`;
+        };
+
+        const renderLinkedCompanyCard = (company) => {
+          const pontos = Number(company.meus_pontos ?? company.total_pontos ?? 0);
+          const lastIso = company.ultima_visita || company.data_inscricao || null;
+          return `
+            <article class="rounded-[24px] bg-white p-4 shadow-[0_12px_32px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
+              <div class="flex items-start gap-4">
+                <img loading="lazy" class="h-16 w-16 rounded-2xl bg-slate-50 object-cover" src="${safeImage(company.logo, IMAGE_FALLBACKS.store)}" alt="${safeText(company.nome, 'Empresa')}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#B01774]">${safeText(company.categoria || company.ramo, 'Empresa')}</p>
+                  <h3 class="mt-1 truncate text-lg font-extrabold leading-tight text-[#111B3F]">${safeText(company.nome, 'Empresa')}</h3>
+                  <div class="mt-2 flex flex-wrap items-center gap-2">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-[#b01774]/10 px-3 py-1 text-xs font-bold text-[#b01774]"><span class="material-symbols-outlined text-[15px]" style="font-variation-settings:'FILL' 1;">stars</span>${pontos.toLocaleString('pt-BR')} pts</span>
+                  </div>
+                  <p class="mt-2 text-xs text-slate-500">${formatLastInteraction(lastIso)}</p>
+                </div>
+              </div>
+              <div class="mt-4">
+                <a class="inline-flex h-11 w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#b01774_100%)] px-4 text-sm font-extrabold text-white" href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}">Abrir</a>
+              </div>
+            </article>
+          `;
+        };
+
         const linkedList = document.getElementById('linkedCompaniesList');
         const linkedEmpty = document.getElementById('linkedCompaniesEmpty');
         const linkedCount = document.getElementById('linkedCompaniesCount');
+        const linkedSkeleton = document.getElementById('linkedCompaniesSkeleton');
+        linkedSkeleton?.classList.add('hidden');
         if (linkedList) {
-          linkedList.innerHTML = linkedCompanies.map(renderCompanyCard).join('');
+          linkedList.innerHTML = linkedCompanies.map(renderLinkedCompanyCard).join('');
         }
         if (linkedEmpty) linkedEmpty.classList.toggle('hidden', linkedCompanies.length > 0);
         if (linkedCount) linkedCount.textContent = linkedCompanies.length ? `${linkedCompanies.length} empresa(s)` : 'Nenhuma empresa vinculada ainda';
@@ -2276,15 +2540,13 @@
         const revealMyQr = () => {
           qrCard?.classList.remove('hidden');
           qrCard?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          if (toggleQrBtn) {
-            toggleQrBtn.textContent = 'Ocultar Meu QR Code';
-          }
+          toggleQrBtn?.classList.add('is-active');
+          toggleQrBtn?.setAttribute('aria-expanded', 'true');
         };
         const hideMyQr = () => {
           qrCard?.classList.add('hidden');
-          if (toggleQrBtn) {
-            toggleQrBtn.textContent = 'Meu QR Code';
-          }
+          toggleQrBtn?.classList.remove('is-active');
+          toggleQrBtn?.setAttribute('aria-expanded', 'false');
         };
 
         if (qrContainer) {
@@ -2621,14 +2883,37 @@
       const searchBtn = document.getElementById('parceiroBuscaBtn');
       const searchHint = document.getElementById('partnersSearchHint');
       const emptyMsg = document.getElementById('partners-empty');
-      const loading = document.getElementById('partners-loading');
+      const emptyTitle = emptyMsg?.querySelector('[data-empty-title]');
+      const emptySub = emptyMsg?.querySelector('[data-empty-subtitle]');
+      const errorBox = document.getElementById('partners-error');
+      const retryBtn = document.getElementById('partners-retry');
+      const skeleton = document.getElementById('partners-skeleton');
+      const loadMoreBtn = document.getElementById('partners-load-more');
       const filterButtons = Array.from(document.querySelectorAll('.parceiro-filtro-btn'));
 
-      const syncSearchHint = (value = '') => {
-        if (!searchHint) return;
-        const term = String(value || '').trim();
-        const shouldWarn = term.length > 0 && term.length < 4;
-        searchHint.classList.toggle('hidden', !shouldWarn);
+      const BATCH_SIZE = 8;
+      const state = { all: [], term: '', activeCategory: 'todos', coords: null, rendered: 0, view: [] };
+
+      // --- helpers de texto / distância -------------------------------------
+      const debounceLocal = (fn, wait = 220) => {
+        let timer = null;
+        return (...args) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => fn(...args), wait);
+        };
+      };
+
+      const normalizeText = (value) => String(value || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '');
+
+      const matchesTerm = (item, term) => {
+        const query = normalizeText(term).trim();
+        if (!query) return true;
+        const haystack = normalizeText([item?.nome, item?.categoria, item?.ramo, item?.descricao, item?.endereco]
+          .filter(Boolean).join(' '));
+        return query.split(/\s+/).every((word) => haystack.includes(word));
       };
 
       const matchesCategory = (item, categoryKey) => {
@@ -2657,76 +2942,146 @@
         }
       };
 
-      const renderCards = (lista = []) => {
-        if (!grid) return;
-        grid.innerHTML = '';
-        if (!lista.length) {
-          emptyMsg?.classList.remove('hidden');
-          return;
-        }
-        emptyMsg?.classList.add('hidden');
-        const tpl = (e) => {
-          const rating = toNumber(e?.avaliacao_media, e?.rating, 0);
-          const reviews = toNumber(e?.total_avaliacoes, e?.reviews_count, 0);
-          const ratingLabel = rating > 0
-            ? `${rating.toFixed(1).replace('.', ',')} • ${reviews || 0} avaliacao(oes)`
-            : 'Novo parceiro';
-
-          const linked = Boolean(
-            e?.vinculada
-            || e?.inscrito
-            || e?.ja_vinculado
-            || e?.is_linked
-            || e?.cliente_vinculado
-          );
-          const actionLabel = perfilViewer === 'cliente' && !linked ? 'Me cadastrar' : 'Abrir empresa';
-          return `
-            <article class="bg-surface-container-lowest rounded-[28px] p-4 flex flex-col gap-4 shadow-[0_12px_32px_rgba(11,31,58,0.06)] hover:bg-surface-container-high transition-colors cursor-pointer" data-parceiro-id="${e.id}">
-              <div class="flex gap-4">
-                <div class="w-20 h-20 rounded-[22px] overflow-hidden flex-shrink-0 bg-surface-container">
-                  <img class="w-full h-full object-cover" src="${safeImage(e.logo, IMAGE_FALLBACKS.store)}" alt="${safeText(e.nome, 'Parceiro')}" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
-                </div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex justify-between items-start gap-2">
-                    <div>
-                      <p class="font-label text-[11px] text-tertiary font-bold tracking-[0.18em] mb-1 uppercase">${safeText(e.categoria || e.ramo, 'Parceiro')}</p>
-                      <h3 class="font-headline font-bold text-lg text-on-surface leading-tight">${safeText(e.nome, 'Parceiro')}</h3>
-                    </div>
-                  </div>
-                  <div class="mt-2 flex items-center gap-2 text-xs text-slate-500">
-                    <span class="font-bold text-amber-400">${renderStars(rating)}</span>
-                    <span>${ratingLabel}</span>
-                  </div>
-                  <p class="mt-2 text-sm text-on-surface-variant line-clamp-2">${safeText(e.endereco, 'Endereço não informado')}</p>
-                </div>
-              </div>
-              <div class="flex items-center justify-between gap-3 pt-2 border-t border-surface-container">
-                <span class="inline-flex items-center gap-1 rounded-full bg-surface-container px-3 py-1 text-[11px] font-semibold text-on-surface-variant">
-                  <span class="material-symbols-outlined text-sm text-[#b01774]" style="font-variation-settings: 'FILL' 1;">storefront</span>
-                  Empresa ativa
-                </span>
-                <a class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-sm font-semibold text-on-primary hover:opacity-90 transition-opacity" href="/detalhe_do_parceiro.html?id=${e.id}">${actionLabel}</a>
-              </div>
-            </article>`;
-        };
-        grid.innerHTML = lista.map(tpl).join('');
-        grid.querySelectorAll('[data-parceiro-id]').forEach((card) => {
-          const id = card.getAttribute('data-parceiro-id');
-          card.addEventListener('click', () => {
-            window.location.href = `/detalhe_do_parceiro.html?id=${encodeURIComponent(id)}`;
-          });
-          card.querySelectorAll('a,button').forEach((el) => {
-            el.addEventListener('click', (ev) => ev.stopPropagation());
-          });
-        });
+      const haversineKm = (lat1, lon1, lat2, lon2) => {
+        const toRad = (x) => (x * Math.PI) / 180;
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+        const a = Math.sin(dLat / 2) ** 2
+          + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+        return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       };
 
-      let activeCategory = 'todos';
+      const formatDistance = (km) => (km < 1
+        ? `${Math.round(km * 1000)} m`
+        : `${km.toFixed(1).replace('.', ',')} km`);
 
+      const requestLocation = () => new Promise((resolve) => {
+        if (!navigator.geolocation) return resolve(null);
+        navigator.geolocation.getCurrentPosition(
+          (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+          () => resolve(null),
+          { timeout: 6000, maximumAge: 300000 },
+        );
+      });
+
+      // --- estados visuais ---------------------------------------------------
+      const hideAllStates = () => {
+        skeleton?.classList.add('hidden');
+        emptyMsg?.classList.add('hidden');
+        errorBox?.classList.add('hidden');
+      };
+      const showSkeleton = () => {
+        hideAllStates();
+        skeleton?.classList.remove('hidden');
+        if (grid) grid.innerHTML = '';
+        loadMoreBtn?.classList.add('hidden');
+      };
+      const showError = () => {
+        hideAllStates();
+        if (grid) grid.innerHTML = '';
+        loadMoreBtn?.classList.add('hidden');
+        errorBox?.classList.remove('hidden');
+      };
+      const showEmpty = () => {
+        hideAllStates();
+        if (grid) grid.innerHTML = '';
+        loadMoreBtn?.classList.add('hidden');
+        const hasQuery = state.term.trim() !== '' || state.activeCategory !== 'todos';
+        if (emptyTitle) emptyTitle.textContent = hasQuery ? 'Nenhuma empresa encontrada.' : 'Nenhuma empresa disponível.';
+        if (emptySub) emptySub.textContent = hasQuery ? 'Tente pesquisar outro nome ou categoria.' : 'Volte em breve para ver novos parceiros.';
+        emptyMsg?.classList.remove('hidden');
+      };
+
+      // --- card --------------------------------------------------------------
+      const tpl = (e) => {
+        const rating = toNumber(e?.avaliacao_media, e?.rating, 0);
+        const reviews = toNumber(e?.total_avaliacoes, e?.reviews_count, 0);
+        const ratingLabel = rating > 0
+          ? `${rating.toFixed(1).replace('.', ',')} • ${reviews || 0} avaliação(ões)`
+          : 'Novo parceiro';
+
+        const linked = Boolean(
+          e?.vinculada || e?.inscrito || e?.ja_vinculado || e?.is_linked || e?.cliente_vinculado,
+        );
+        const actionLabel = perfilViewer === 'cliente' && !linked ? 'Me cadastrar' : 'Abrir empresa';
+
+        const local = safeText(e.endereco, '');
+        const localPill = local
+          ? `<span class="partner-meta-pill"><span class="material-symbols-outlined">location_on</span>${local}</span>`
+          : '';
+        const distancePill = (e._distanceKm != null)
+          ? `<span class="partner-meta-pill partner-meta-pill--near"><span class="material-symbols-outlined">near_me</span>${formatDistance(e._distanceKm)}</span>`
+          : '';
+        const metaRow = (localPill || distancePill)
+          ? `<div class="mt-2 flex flex-wrap items-center gap-2">${distancePill}${localPill}</div>`
+          : '';
+
+        return `
+          <article class="bg-surface-container-lowest rounded-[28px] p-4 flex flex-col gap-4 shadow-[0_12px_32px_rgba(11,31,58,0.06)] hover:bg-surface-container-high transition-colors cursor-pointer" data-parceiro-id="${e.id}">
+            <div class="flex gap-4">
+              <div class="w-20 h-20 rounded-[22px] overflow-hidden flex-shrink-0 bg-surface-container">
+                <img class="w-full h-full object-cover" src="${safeImage(e.logo, IMAGE_FALLBACKS.store)}" alt="${safeText(e.nome, 'Parceiro')}" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-label text-[11px] text-tertiary font-bold tracking-[0.18em] mb-1 uppercase">${safeText(e.categoria || e.ramo, 'Parceiro')}</p>
+                <h3 class="font-headline font-bold text-lg text-on-surface leading-tight truncate">${safeText(e.nome, 'Parceiro')}</h3>
+                <div class="mt-2 flex items-center gap-2 text-xs text-slate-500">
+                  <span class="font-bold text-amber-400">${renderStars(rating)}</span>
+                  <span>${ratingLabel}</span>
+                </div>
+                ${metaRow}
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-3 pt-2 border-t border-surface-container">
+              <a class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-semibold text-on-primary hover:opacity-90 transition-opacity" href="/detalhe_do_parceiro.html?id=${e.id}">${actionLabel}</a>
+            </div>
+          </article>`;
+      };
+
+      const renderNextBatch = () => {
+        if (!grid) return;
+        const slice = state.view.slice(state.rendered, state.rendered + BATCH_SIZE);
+        grid.insertAdjacentHTML('beforeend', slice.map(tpl).join(''));
+        state.rendered += slice.length;
+        loadMoreBtn?.classList.toggle('hidden', state.rendered >= state.view.length);
+      };
+
+      const applyView = () => {
+        let list = state.all.filter((item) => matchesCategory(item, state.activeCategory) && matchesTerm(item, state.term));
+
+        if (state.coords) {
+          list = list
+            .map((item) => {
+              const lat = Number(item.latitude);
+              const lng = Number(item.longitude);
+              const hasGeo = Number.isFinite(lat) && Number.isFinite(lng) && (lat !== 0 || lng !== 0);
+              return { ...item, _distanceKm: hasGeo ? haversineKm(state.coords.lat, state.coords.lng, lat, lng) : null };
+            })
+            .sort((a, b) => {
+              if (a._distanceKm == null && b._distanceKm == null) return 0;
+              if (a._distanceKm == null) return 1;
+              if (b._distanceKm == null) return -1;
+              return a._distanceKm - b._distanceKm;
+            });
+        }
+
+        state.view = list;
+        state.rendered = 0;
+        if (grid) grid.innerHTML = '';
+
+        if (!list.length) {
+          showEmpty();
+          return;
+        }
+        hideAllStates();
+        renderNextBatch();
+      };
+
+      // --- filtros de categoria ---------------------------------------------
       const setActiveFilter = (categoryKey) => {
-        activeCategory = categoryKey || 'todos';
+        state.activeCategory = categoryKey || 'todos';
         filterButtons.forEach((button) => {
-          const isActive = (button.dataset.categoryKey || 'todos') === activeCategory;
+          const isActive = (button.dataset.categoryKey || 'todos') === state.activeCategory;
           button.classList.toggle('is-active', isActive);
           if (button.classList.contains('parceiro-category-card')) {
             button.classList.toggle('bg-primary', isActive);
@@ -2741,60 +3096,81 @@
         });
       };
 
-      const load = async (busca = '') => {
-        const term = String(busca || '').trim();
-        syncSearchHint(term);
-        loading?.classList.remove('hidden');
-        const params = new URLSearchParams();
-        if (term && term.length >= 4) params.set('busca', term);
-        const qs = params.toString() ? `?${params.toString()}` : '';
+      // --- carregamento de dados --------------------------------------------
+      const fetchCompanies = async () => {
         const prefersClientEndpoint = perfilViewer === 'cliente' && stored?.token;
-        const primaryPath = `${prefersClientEndpoint ? '/cliente/empresas' : '/empresas'}${qs}`;
+        const primaryPath = prefersClientEndpoint ? '/cliente/empresas' : '/empresas';
         const primaryResponse = await api.request(primaryPath, {}, { requireAuth: prefersClientEndpoint, notify: false });
+        let anyOk = Boolean(primaryResponse.res?.ok);
         let lista = toArray(primaryResponse.data?.data || primaryResponse.data);
 
-        if ((!primaryResponse.res?.ok || !lista.length) && prefersClientEndpoint) {
-          const publicResponse = await api.request(`/empresas${qs}`, {}, { requireAuth: false, notify: false });
+        if ((!anyOk || !lista.length) && prefersClientEndpoint) {
+          const publicResponse = await api.request('/empresas', {}, { requireAuth: false, notify: false });
+          anyOk = anyOk || Boolean(publicResponse.res?.ok);
           lista = toArray(publicResponse.data?.data || publicResponse.data);
         }
-        loading?.classList.add('hidden');
 
-        if (!Array.isArray(lista)) {
-          lista = [];
+        if (!anyOk) throw new Error('Falha ao carregar empresas');
+        return Array.isArray(lista) ? lista : [];
+      };
+
+      const loadCatalog = async () => {
+        showSkeleton();
+        try {
+          state.all = await fetchCompanies();
+        } catch (err) {
+          showError();
+          return;
         }
-
-        const filtered = lista.filter((item) => matchesCategory(item, activeCategory));
-        renderCards(filtered);
+        skeleton?.classList.add('hidden');
+        applyView();
       };
 
-      const triggerLoad = () => {
-        const term = String(searchInput?.value || '').trim();
-        syncSearchHint(term);
-        return load(term);
+      // --- listeners ---------------------------------------------------------
+      searchHint?.classList.add('hidden');
+      const applySearch = () => {
+        state.term = String(searchInput?.value || '');
+        applyView();
       };
+      searchInput?.addEventListener('input', debounceLocal(applySearch, 220));
       searchInput?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
-          triggerLoad();
+          applySearch();
         }
       });
-      searchInput?.addEventListener('input', () => {
-        syncSearchHint(searchInput.value || '');
+      searchBtn?.addEventListener('click', applySearch);
+      loadMoreBtn?.addEventListener('click', renderNextBatch);
+      retryBtn?.addEventListener('click', () => loadCatalog());
+
+      grid?.addEventListener('click', (ev) => {
+        if (ev.target.closest('a, button')) return;
+        const card = ev.target.closest('[data-parceiro-id]');
+        if (!card) return;
+        const id = card.getAttribute('data-parceiro-id');
+        if (id) window.location.href = `/detalhe_do_parceiro.html?id=${encodeURIComponent(id)}`;
       });
-      searchBtn?.addEventListener('click', triggerLoad);
 
       filterButtons.forEach((button) => {
         if (button.dataset.boundFilter === '1') return;
         button.dataset.boundFilter = '1';
         button.addEventListener('click', () => {
           setActiveFilter(button.dataset.categoryKey || 'todos');
-          triggerLoad();
+          applyView();
         });
       });
 
+      // --- init --------------------------------------------------------------
       setActiveFilter('todos');
-      syncSearchHint(searchInput?.value || '');
-      await load();
+      await loadCatalog();
+
+      // Prioriza empresas próximas quando a geolocalização estiver disponível.
+      requestLocation().then((coords) => {
+        if (coords && state.all.length) {
+          state.coords = coords;
+          applyView();
+        }
+      });
       return;
     },
 
@@ -3493,6 +3869,82 @@
           }
         }
 
+        // ----- Banner de capa -----
+        const bannerImg = document.getElementById('partner-banner');
+        const bannerFallback = document.getElementById('partner-banner-fallback');
+        const bannerUrl = safeText(companyInfo.banner, '');
+        if (bannerImg && bannerUrl) {
+          bannerImg.src = bannerUrl;
+          bannerImg.style.display = 'block';
+          bannerImg.onload = () => { if (bannerFallback) bannerFallback.style.display = 'none'; };
+          bannerImg.onerror = () => {
+            bannerImg.style.display = 'none';
+            if (bannerFallback) bannerFallback.style.display = 'block';
+          };
+        }
+
+        // ----- Redes sociais (apenas ícones, abrem direto) -----
+        const bindSocial = (id, value, hrefBuilder) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const raw = safeText(value, '');
+          if (raw) {
+            el.href = hrefBuilder(raw);
+            el.classList.remove('hidden');
+          } else {
+            el.classList.add('hidden');
+          }
+        };
+        bindSocial('partnerSocialWhatsapp', companyInfo.whatsapp, (v) => `https://wa.me/${String(v).replace(/\D/g, '')}`);
+        bindSocial('partnerSocialInstagram', companyInfo.instagram, (v) => String(v).startsWith('http') ? v : `https://instagram.com/${String(v).replace(/^@/, '')}`);
+        bindSocial('partnerSocialFacebook', companyInfo.facebook, (v) => String(v).startsWith('http') ? v : `https://facebook.com/${String(v).replace(/^@/, '')}`);
+
+        // ----- Botões principais -----
+        const goQr = () => {
+          if (perfilViewer === 'cliente') {
+            window.location.href = '/validar_resgate.html?modo=vinculo-empresa';
+          } else if (!perfilViewer) {
+            window.location.href = '/entrar.html';
+          } else {
+            window.location.href = redirectMap[perfilViewer] || '/meus_pontos.html';
+          }
+        };
+        document.getElementById('partnerActionQr')?.addEventListener('click', goQr);
+
+        const endereco = safeText(companyInfo.endereco, '');
+        const mapsBtn = document.getElementById('partnerActionMaps');
+        if (mapsBtn && endereco) {
+          mapsBtn.hidden = false;
+          mapsBtn.addEventListener('click', () => {
+            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco)}`, '_blank', 'noopener');
+          });
+        }
+
+        const telefone = safeText(companyInfo.telefone || companyInfo.whatsapp, '');
+        const callBtn = document.getElementById('partnerActionCall');
+        if (callBtn && telefone.replace(/\D/g, '')) {
+          callBtn.hidden = false;
+          callBtn.addEventListener('click', () => {
+            window.location.href = `tel:${telefone.replace(/[^\d+]/g, '')}`;
+          });
+        }
+
+        document.getElementById('partnerActionShare')?.addEventListener('click', async () => {
+          const shareData = {
+            title: safeText(companyInfo.nome, 'Empresa'),
+            text: `Confira ${safeText(companyInfo.nome, 'esta empresa')} no Tem de Tudo`,
+            url: window.location.href,
+          };
+          try {
+            if (navigator.share) {
+              await navigator.share(shareData);
+            } else if (navigator.clipboard) {
+              await navigator.clipboard.writeText(shareData.url);
+              ui.message('Link copiado para compartilhar.', 'success');
+            }
+          } catch (_) { /* usuário cancelou o compartilhamento */ }
+        });
+
         renderBonusCard(null);
         renderBirthdayCard(companyInfo?.bonus_aniversario
           ? {
@@ -3699,22 +4151,151 @@
 
     async recompensas() {
       if (!(await auth.guard(['cliente']))) return;
-      ui.setPageState('loading', 'Carregando recompensas...');
-
-      const [{ data: pontosResp }, { data: promosResp }, { data: cuponsResp }] = await Promise.all([
+      const [{ data: pontosResp }, { data: dashboardResp }, { data: historicoResp }, { data: promosResp }, { data: cuponsResp }] = await Promise.all([
         api.request('/pontos/meus-dados', {}, { notify: false }),
+        api.request('/cliente/dashboard', {}, { notify: false }),
+        api.request('/pontos/historico', {}, { notify: false }),
         api.request('/cliente/promocoes', {}, { notify: false }),
         api.request('/pontos/meus-cupons', {}, { notify: false }),
       ]);
-      ui.clearPageState();
 
       const saldoAtual = pontosResp?.data?.pontos_total ?? pontosResp?.data?.saldo ?? 0;
+      const currentUser = await auth.ensure();
 
-      render.summary('Recompensas', [
-        { label: 'Seus pontos', value: `${Number(saldoAtual).toLocaleString('pt-BR')} pts` },
-        { label: 'Promos disponíveis', value: promosResp?.data?.length ?? promosResp?.total ?? 0 },
-        { label: 'Cupons ativos', value: (cuponsResp?.data || []).filter((c) => c.status === 'active' || c.status === 'ativo').length },
-      ]);
+      // Saudação
+      const greetingEl = document.getElementById('recompensasGreeting');
+      if (greetingEl) {
+        const firstName = safeText(currentUser?.name || currentUser?.nome || '').split(' ')[0];
+        greetingEl.textContent = firstName ? `Olá, ${firstName}` : 'Suas recompensas';
+      }
+
+      // 2. Pontuação atual
+      const totalPointsEl = document.getElementById('loyaltyTotalPoints');
+      if (totalPointsEl) totalPointsEl.textContent = Number(saldoAtual).toLocaleString('pt-BR');
+
+      // 1 + 3 + 4 + 5. Cartões fidelidade por estabelecimento vinculado
+      const dashboardData = dashboardResp?.data || {};
+      const linkedCompanies = toArray(dashboardData.empresas_vinculadas);
+      const loyaltySkeleton = document.getElementById('loyaltySkeleton');
+      const loyaltyList = document.getElementById('loyaltyList');
+      const loyaltyEmpty = document.getElementById('loyaltyEmpty');
+      const loyaltyCount = document.getElementById('loyaltyCount');
+
+      const snapshots = await Promise.all(linkedCompanies.map(async (company) => {
+        const { res, data } = await api.request(
+          `/cliente/cartao-fidelidade/progresso/${encodeURIComponent(company.id)}`,
+          {},
+          { notify: false },
+        );
+        if (!res.ok || data?.success === false) return null;
+        return { company, snapshot: data?.data || {} };
+      }));
+
+      // Só mantém empresas com cartão configurado; ordena recompensa liberada primeiro, depois maior progresso
+      const loyaltyItems = snapshots
+        .filter((item) => item && item.snapshot && item.snapshot.status && item.snapshot.status !== 'unavailable')
+        .map((item) => {
+          const loyalty = item.snapshot.card || {};
+          const progress = item.snapshot.progress || {};
+          const required = Math.max(0, Number(loyalty.pontos_necessarios || progress.required_points || 0));
+          const current = Math.max(0, Number(progress.current_points || 0));
+          const pct = Math.max(0, Math.min(100, Number(progress.percentage || (required ? (current / required) * 100 : 0))));
+          const rewardAvailable = Boolean(progress.reward_available) || item.snapshot.status === 'reward_available';
+          return { ...item, loyalty, progress, required, current, pct, rewardAvailable };
+        })
+        .sort((a, b) => (Number(b.rewardAvailable) - Number(a.rewardAvailable)) || (b.pct - a.pct));
+
+      const renderLoyaltyProgramCard = (item) => {
+        const c = item.company;
+        const meta = loyaltyStatusMeta(item.snapshot.status);
+        const reward = safeText(item.loyalty.recompensa_descricao, 'Recompensa a definir pelo estabelecimento');
+        const ppv = Math.max(1, Number(item.loyalty.pontos_por_visita || item.progress.points_per_visit || 1));
+        const remaining = Math.max(0, item.required - item.current);
+        const remainingVisits = Math.ceil(remaining / ppv);
+        const progressMsg = item.rewardAvailable
+          ? 'Recompensa liberada! 🎉'
+          : (remaining > 0
+              ? `Faltam ${remaining} ponto(s)${remainingVisits ? ` • ~${remainingVisits} visita(s)` : ''}`
+              : 'Quase lá!');
+        return `
+          <article class="loyalty-card ${item.rewardAvailable ? 'loyalty-card--ready' : ''} p-5">
+            <div class="flex items-center gap-4">
+              <img class="loyalty-logo" src="${safeImage(c.logo, IMAGE_FALLBACKS.store)}" alt="${safeText(c.nome, 'Empresa')}" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+              <div class="min-w-0 flex-1">
+                <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-[#B01774]">Cartão fidelidade</p>
+                <h4 class="truncate font-headline font-extrabold text-on-surface">${safeText(c.nome, 'Empresa')}</h4>
+              </div>
+              <span class="loyalty-status-badge ${meta.badgeClass}">${meta.label}</span>
+            </div>
+
+            <div class="mt-5">
+              <div class="flex items-end justify-between gap-2">
+                <p class="text-sm font-semibold text-on-surface-variant"><span class="text-2xl font-extrabold text-[#111B3F]">${item.current}</span> / ${item.required} pontos</p>
+                <p class="text-xs font-bold ${item.rewardAvailable ? 'text-emerald-600' : 'text-on-surface-variant'}">${progressMsg}</p>
+              </div>
+              <div class="loyalty-progress-track mt-2"><div class="loyalty-progress-bar" data-target="${item.pct}"></div></div>
+            </div>
+
+            <div class="loyalty-reward-chip mt-4">
+              <span class="material-symbols-outlined text-[#B01774]" style="font-variation-settings:'FILL' 1;">redeem</span>
+              <div class="min-w-0">
+                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Próxima recompensa</p>
+                <p class="truncate text-sm font-extrabold text-on-surface">${reward}</p>
+              </div>
+            </div>
+
+            ${item.rewardAvailable
+              ? `<button class="loyalty-redeem-btn mt-4" type="button" data-loyalty-redeem="${c.id}"><span class="material-symbols-outlined">redeem</span> Resgatar benefício</button>`
+              : ''}
+            <p class="loyalty-presential-note mt-3"><span class="material-symbols-outlined text-sm">storefront</span> Este benefício deverá ser validado pelo estabelecimento.</p>
+          </article>`;
+      };
+
+      loyaltySkeleton?.classList.add('hidden');
+      if (loyaltyList) {
+        loyaltyList.innerHTML = loyaltyItems.map(renderLoyaltyProgramCard).join('');
+        // Preenchimento suave da barra de progresso
+        requestAnimationFrame(() => {
+          loyaltyList.querySelectorAll('.loyalty-progress-bar').forEach((bar) => {
+            bar.style.width = `${Number(bar.dataset.target || 0)}%`;
+          });
+        });
+        // Resgate → validação presencial (o app apenas consulta; quem credita/valida é a empresa)
+        loyaltyList.querySelectorAll('[data-loyalty-redeem]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            ui.message('Apresente seu QR Code no estabelecimento para validar o resgate.', 'success');
+            setTimeout(() => { window.location.href = '/meus_pontos.html?mostrar=meu-qrcode'; }, 400);
+          });
+        });
+      }
+      if (loyaltyEmpty) loyaltyEmpty.classList.toggle('hidden', loyaltyItems.length > 0);
+      if (loyaltyCount) loyaltyCount.textContent = loyaltyItems.length ? `${loyaltyItems.length} cartão(ões)` : '';
+
+      // 6. Histórico de resgates (usa o histórico existente; não cria histórico novo)
+      const historico = toArray(historicoResp?.data?.data || historicoResp?.data);
+      const resgates = historico.filter((i) => {
+        const tipo = String(i.tipo || '').toLowerCase();
+        return tipo.includes('resg') || tipo.includes('redeem') || Number(i.pontos || 0) < 0;
+      }).slice(0, 6);
+      const redemptionSection = document.getElementById('redemptionSection');
+      const redemptionList = document.getElementById('redemptionList');
+      if (redemptionList && resgates.length) {
+        redemptionList.innerHTML = resgates.map((i) => {
+          const nome = safeText(i.empresa?.nome || i.empresa_nome, 'Empresa');
+          const desc = safeText(i.descricao, 'Resgate de benefício');
+          const data = i.created_at ? new Date(i.created_at).toLocaleDateString('pt-BR') : '--';
+          return `
+            <div class="redemption-row">
+              <span class="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#b01774]/10 text-[#b01774]"><span class="material-symbols-outlined text-[20px]">redeem</span></span>
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-bold text-on-surface">${desc}</p>
+                <p class="truncate text-xs text-on-surface-variant">${nome} • ${data}</p>
+              </div>
+              <span class="loyalty-status-badge bg-emerald-50 text-emerald-700">Resgatado</span>
+            </div>`;
+        }).join('');
+        redemptionSection?.classList.remove('hidden');
+      }
 
       const promos = toArray(promosResp?.data || promosResp);
       const host = document.querySelector('main') || document.body;
@@ -3794,60 +4375,6 @@
         );
       }
 
-      // ---- ISSUE #11: Botões "Trocar pontos" (Gift Cards/Vouchers) ----
-      // Adiciona event listeners aos botões de trocar pontos presentes no HTML
-      setTimeout(() => {
-        const trocarButtons = Array.from(document.querySelectorAll('button')).filter((btn) =>
-          btn.textContent.trim().toLowerCase() === 'trocar'
-        );
-
-        trocarButtons.forEach((btn) => {
-          btn.addEventListener('click', async () => {
-            // Extrair informações do card pai
-            const card = btn.closest('.bg-surface-container-lowest');
-            if (!card) return;
-
-            const titulo = card.querySelector('h4')?.textContent || 'Voucher';
-            const pontosText = card.querySelector('.text-primary')?.textContent;
-            const pontos = pontosText ? parseInt(pontosText.replace(/\D/g, '')) : 0;
-
-            // Verificar se tem pontos suficientes
-            if (pontos > Number(saldoAtual)) {
-              ui.message(`Pontos insuficientes! Você tem ${Number(saldoAtual).toLocaleString('pt-BR')} pts, precisa de ${pontos} pts.`, 'error');
-              return;
-            }
-
-            // Confirmar troca
-            if (!confirm(`Trocar ${pontos} pontos por "${titulo}"?\n\nSeu saldo atual: ${Number(saldoAtual).toLocaleString('pt-BR')} pts\nNovo saldo: ${(Number(saldoAtual) - pontos).toLocaleString('pt-BR')} pts`)) return;
-
-            btn.disabled = true;
-            const textoOriginal = btn.textContent;
-            btn.textContent = 'Processando...';
-
-            // API de troca de pontos por voucher
-            const { res, data } = await api.request('/pontos/trocar-voucher', {
-              method: 'POST',
-              body: JSON.stringify({
-                descricao: titulo,
-                pontos_necessarios: pontos,
-                tipo: 'voucher'
-              })
-            });
-
-            if (res.ok && data?.success) {
-              const codigo = data?.data?.codigo || data?.codigo || 'VCH' + Math.random().toString(36).substr(2, 9).toUpperCase();
-              ui.message(`✅ Voucher resgatado com sucesso!\n\nCódigo: ${codigo}\n\nGuarde este código para utilizar.`, 'success');
-              setTimeout(() => {
-                window.location.href = '/meus_pontos.html';
-              }, 3000);
-            } else {
-              ui.message(data?.message || 'Erro ao trocar pontos. Tente novamente.', 'error');
-              btn.disabled = false;
-              btn.textContent = textoOriginal;
-            }
-          });
-        });
-      }, 500); // Timeout para garantir que o DOM está pronto
     },
 
         async historico() {
@@ -4205,6 +4732,9 @@
         if (pf('pfEmpresaInstagram')) pf('pfEmpresaInstagram').value = emp.instagram || '';
         if (pf('pfEmpresaFacebook')) pf('pfEmpresaFacebook').value = emp.facebook || '';
         if (pf('pfEmpresaDescricao')) pf('pfEmpresaDescricao').value = emp.descricao || '';
+        // Upload de imagens via dispositivo + crop (substitui campo de URL)
+        bindEmpresaImageUploader('logo', emp.logo || '');
+        bindEmpresaImageUploader('banner', emp.banner || '');
         // Atualizar hero com nome da empresa em vez do user
         if (heroName && emp.nome) heroName.textContent = emp.nome;
       }
@@ -4224,7 +4754,7 @@
             empresa_instagram: pf('pfEmpresaInstagram')?.value || null,
             empresa_facebook: pf('pfEmpresaFacebook')?.value || null,
             empresa_descricao: pf('pfEmpresaDescricao')?.value || null,
-            empresa_logo:     pf('pfEmpresaLogo')?.value || undefined,
+            // logo e banner são enviados pelos endpoints dedicados de upload
           };
           const { res, data } = await api.request('/empresa/perfil', { method: 'PUT', body: JSON.stringify(payload) });
           if (res.ok && data?.success) {
@@ -5699,6 +6229,7 @@
       const form = {
         titulo: document.getElementById('ofertaTitulo'),
         descricao: document.getElementById('ofertaDescricao'),
+        brinde: document.getElementById('ofertaBrinde'),
         validade: document.getElementById('ofertaValidade'),
         preco: document.getElementById('ofertaPreco'),
         tipo: document.getElementById('ofertaTipo'),
@@ -5707,6 +6238,7 @@
         notificationBody: document.getElementById('ofertaNotificationBody'),
         ativa: document.getElementById('ofertaAtiva'),
         salvar: document.getElementById('ofertaSalvar'),
+        preview: document.getElementById('ofertaPreview'),
         cancelar: document.getElementById('ofertaCancelar'),
         msg: document.getElementById('ofertaMsg'),
         weeklyInfo: document.getElementById('promoWeeklyInfo'),
@@ -5714,6 +6246,128 @@
       let editingId = null;
       let filtroAtual = 'todas';
       renderOffersPushSummary();
+
+      // ---- (Prompt 04) Upload+crop 1:1, contadores, badges e preview ----
+      let croppedBlob = null;
+      let imageRemoved = false;
+      const promoUploader = document.querySelector('[data-uploader="promo"]');
+      const promoImgEl = promoUploader?.querySelector('[data-uploader-image]');
+      const promoPlaceholder = promoUploader?.querySelector('[data-uploader-placeholder]');
+      const promoPickBtn = promoUploader?.querySelector('[data-uploader-pick]');
+      const promoPickLabel = promoUploader?.querySelector('[data-uploader-picklabel]');
+      const promoRemoveBtn = promoUploader?.querySelector('[data-uploader-remove]');
+      const promoInput = promoUploader?.querySelector('[data-uploader-input]');
+
+      const showPromoPreviewImage = (url) => {
+        if (url && promoImgEl) {
+          promoImgEl.src = url;
+          promoImgEl.classList.remove('hidden');
+          promoPlaceholder?.classList.add('hidden');
+          promoRemoveBtn?.classList.remove('hidden');
+          if (promoPickLabel) promoPickLabel.textContent = 'Alterar';
+        } else {
+          promoImgEl?.classList.add('hidden');
+          promoImgEl?.removeAttribute('src');
+          promoPlaceholder?.classList.remove('hidden');
+          promoRemoveBtn?.classList.add('hidden');
+          if (promoPickLabel) promoPickLabel.textContent = 'Enviar imagem';
+        }
+      };
+      const resetPromoImage = () => {
+        croppedBlob = null;
+        imageRemoved = false;
+        if (form.imagem) form.imagem.value = '';
+        showPromoPreviewImage('');
+      };
+      promoPickBtn?.addEventListener('click', () => promoInput?.click());
+      promoInput?.addEventListener('change', async () => {
+        const file = promoInput.files && promoInput.files[0];
+        promoInput.value = '';
+        if (!file) return;
+        if (!/^image\//.test(file.type)) { ui.message('Selecione uma imagem válida.', 'warning'); return; }
+        const blob = await tdtImageCropper.open({ file, aspect: 1, round: false, outputWidth: 800, title: 'Ajustar imagem (1:1)' });
+        if (!blob) return;
+        croppedBlob = blob;
+        imageRemoved = false;
+        showPromoPreviewImage(URL.createObjectURL(blob));
+      });
+      promoRemoveBtn?.addEventListener('click', () => {
+        croppedBlob = null;
+        imageRemoved = true;
+        if (form.imagem) form.imagem.value = '';
+        showPromoPreviewImage('');
+      });
+
+      const bindCounter = (id) => {
+        const el = document.getElementById(id);
+        const counter = document.querySelector(`[data-counter-for="${id}"]`);
+        if (!el || !counter) return;
+        const max = Number(el.getAttribute('maxlength') || 0);
+        const upd = () => {
+          const len = (el.value || '').length;
+          counter.textContent = `${len}/${max}`;
+          counter.classList.toggle('is-limit', max > 0 && len >= max);
+        };
+        el.addEventListener('input', upd);
+        upd();
+      };
+      bindCounter('ofertaTitulo');
+      bindCounter('ofertaDescricao');
+      const refreshCounters = () => document.querySelectorAll('[data-counter-for]').forEach((c) => {
+        document.getElementById(c.getAttribute('data-counter-for'))?.dispatchEvent(new Event('input'));
+      });
+
+      // Badge de status no painel da empresa
+      const empresaPromoBadge = (p) => {
+        if (p.status === 'expired') return { label: 'Expirada', cls: 'bg-amber-50 text-amber-700' };
+        if (!p.ativo || p.status === 'inactive' || p.status === 'pausada') return { label: 'Pausada', cls: 'bg-slate-100 text-slate-600' };
+        if (p.data_inicio && new Date(p.data_inicio) > new Date()) return { label: 'Agendada', cls: 'bg-blue-50 text-blue-700' };
+        return { label: 'Ativa', cls: 'bg-emerald-50 text-emerald-700' };
+      };
+
+      // Preview: exatamente como o cliente enxerga
+      const renderPromoPreviewModal = (dataPreview) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'tdt-modal-overlay';
+        const precoLine = dataPreview.preco
+          ? `<p class="mt-1 text-sm font-extrabold text-[#B01774]">R$ ${Number(dataPreview.preco).toFixed(2).replace('.', ',')}</p>`
+          : '';
+        const brindeLine = dataPreview.brinde
+          ? `<p class="mt-1 text-xs text-on-surface-variant">🎁 Brinde: ${safeText(dataPreview.brinde)}</p>`
+          : '';
+        overlay.innerHTML = `
+          <div class="tdt-modal-dialog">
+            <div class="flex items-center justify-between mb-3">
+              <p class="font-headline font-extrabold text-on-surface">Prévia da promoção</p>
+              <button type="button" class="text-on-surface-variant" data-close><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <p class="text-[11px] text-on-surface-variant mb-3">Assim a promoção aparece para o cliente:</p>
+            <article class="tdt-promo-preview">
+              <img class="tdt-promo-preview__media" src="${dataPreview.imagem}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" alt="" />
+              <div class="p-4">
+                <span class="tdt-status-badge bg-emerald-50 text-emerald-700">Disponível</span>
+                <h3 class="mt-2 font-headline font-extrabold text-on-surface">${safeText(dataPreview.titulo, 'Oferta')}</h3>
+                <p class="mt-1 text-sm text-on-surface-variant">${safeText(dataPreview.descricao, '')}</p>
+                ${precoLine}${brindeLine}
+                <p class="mt-2 text-[11px] text-on-surface-variant">Validade: ${formatDatePtBr(dataPreview.validade, 'Não informada')}</p>
+                <p class="mt-3 text-[11px] font-semibold text-[#133F8C]">Apresente seu QR Code no estabelecimento para validar.</p>
+              </div>
+            </article>
+          </div>`;
+        document.body.appendChild(overlay);
+        const close = () => overlay.remove();
+        overlay.querySelector('[data-close]')?.addEventListener('click', close);
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+      };
+      const previewFromForm = () => renderPromoPreviewModal({
+        imagem: croppedBlob ? URL.createObjectURL(croppedBlob) : (form.imagem?.value || IMAGE_FALLBACKS.promo),
+        titulo: form.titulo?.value,
+        descricao: form.descricao?.value,
+        preco: form.preco?.value,
+        brinde: form.brinde?.value,
+        validade: form.validade?.value,
+      });
+      form.preview?.addEventListener('click', previewFromForm);
       const updatePromotionDeliveryFeedback = (payload, tone = 'info') => {
         const summary = formatPushDeliverySummary(payload?.meta?.delivery || {}, 'clientes vinculados');
         setInlineFeedback(form.msg, summary.detail, tone);
@@ -5760,34 +6414,45 @@
           const card = document.createElement('div');
           card.className = 'bg-surface-container-lowest rounded-xl p-4 flex gap-4 transition-all hover:bg-surface-container-high border border-surface-variant/30';
           const img = safeImage(p.imagem_url || p.imagem, IMAGE_FALLBACKS.promo);
-          const meta = promotionStatusMeta(p.status);
+          const meta = empresaPromoBadge(p);
           const canSend = Boolean(p.ativo && p.status === 'available' && !p.enviada_em && weeklyStatus.remaining > 0);
+          const precoTxt = (p.preco || p.desconto)
+            ? `<span class="inline-flex items-center rounded-full bg-[#b01774]/10 px-2 py-0.5 text-[10px] font-bold text-[#b01774]">R$ ${Number(p.preco || p.desconto).toFixed(2).replace('.', ',')}</span>`
+            : '';
+          const tipoTxt = (p.tipo || p.tipo_recompensa)
+            ? `<span class="inline-flex items-center rounded-full bg-surface-container px-2 py-0.5 text-[10px] font-bold text-on-surface-variant uppercase">${safeText(p.tipo || p.tipo_recompensa)}</span>`
+            : '';
+          const metaRow = (precoTxt || tipoTxt) ? `<div class="mt-1 flex flex-wrap items-center gap-1.5">${tipoTxt}${precoTxt}</div>` : '';
           card.innerHTML = `
-            <div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
-              <img alt="${p.nome || p.titulo || 'Oferta'}" class="w-full h-full object-cover" src="${img}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" />
+            <div class="w-24 h-24 rounded-lg overflow-hidden shrink-0 bg-surface-container">
+              <img alt="${p.nome || p.titulo || 'Oferta'}" class="w-full h-full object-cover" src="${img}" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" />
             </div>
-            <div class="flex flex-col justify-between flex-grow">
+            <div class="flex flex-col justify-between flex-grow min-w-0">
               <div>
-                <div class="flex justify-between items-start">
+                <div class="flex justify-between items-start gap-2">
                   <h3 class="font-headline font-bold text-on-surface text-base leading-tight">${p.nome || p.titulo || 'Oferta'}</h3>
-                  <button class="material-symbols-outlined text-on-surface-variant text-xl" data-action="editar" title="Editar">edit</button>
+                  <span class="tdt-status-badge ${meta.cls} shrink-0">${meta.label}</span>
                 </div>
                 <p class="text-xs text-on-surface-variant line-clamp-2">${p.descricao || ''}</p>
+                ${metaRow}
                 <p class="mt-1 text-[11px] text-on-surface-variant">Validade: ${formatDatePtBr(p.data_expiracao || p.validade, 'Não informada')}</p>
-                <p class="mt-1 text-[11px] text-on-surface-variant">Push: ${p.notification_title || p.titulo || 'Não informado'}</p>
               </div>
-              <div class="flex items-center justify-between mt-2">
-                <div class="flex items-center gap-1.5">
-                  <span class="w-2 h-2 rounded-full ${p.status === 'available' ? 'bg-[#00C2D1]' : 'bg-outline'}"></span>
-                  <span class="text-[10px] font-label font-bold uppercase ${meta.badgeClass} px-2 py-1 rounded-full">${meta.label}</span>
-                </div>
-                <div class="flex items-center gap-2 text-[10px] text-outline">
-                  <button class="px-3 py-1 rounded-lg ${p.ativo ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'} text-xs" data-action="toggle">${p.ativo ? 'Pausar' : 'Ativar'}</button>
-                  <button class="px-3 py-1 rounded-lg ${canSend ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'} text-xs" data-action="enviar" ${canSend ? '' : 'disabled'}>${p.enviada_em ? 'Push enviado' : 'Enviar push'}</button>
-                  <button class="px-3 py-1 rounded-lg bg-rose-600 text-white text-xs" data-action="deletar">Excluir</button>
-                </div>
+              <div class="flex items-center justify-end gap-2 mt-2 text-[10px] text-outline flex-wrap">
+                <button class="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-surface-container text-on-surface text-xs" data-action="preview"><span class="material-symbols-outlined text-sm">visibility</span>Visualizar</button>
+                <button class="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-surface-container text-on-surface text-xs" data-action="editar"><span class="material-symbols-outlined text-sm">edit</span>Editar</button>
+                <button class="px-3 py-1 rounded-lg ${p.ativo ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white'} text-xs" data-action="toggle">${p.ativo ? 'Pausar' : 'Ativar'}</button>
+                <button class="px-3 py-1 rounded-lg ${canSend ? 'bg-primary text-white' : 'bg-surface-container text-on-surface-variant'} text-xs" data-action="enviar" ${canSend ? '' : 'disabled'}>${p.enviada_em ? 'Push enviado' : 'Enviar push'}</button>
+                <button class="px-3 py-1 rounded-lg bg-rose-600 text-white text-xs" data-action="deletar">Excluir</button>
               </div>
             </div>`;
+          card.querySelector('[data-action="preview"]')?.addEventListener('click', () => renderPromoPreviewModal({
+            imagem: safeImage(p.imagem_url || p.imagem, IMAGE_FALLBACKS.promo),
+            titulo: p.titulo || p.nome,
+            descricao: p.descricao,
+            preco: p.preco || p.desconto,
+            brinde: p.brinde,
+            validade: p.data_expiracao || p.validade,
+          }));
           card.querySelector('[data-action="editar"]')?.addEventListener('click', () => fillForm(p));
           card.querySelector('[data-action="toggle"]')?.addEventListener('click', async () => {
             const { res, data: resp } = await api.request(`/empresa/promocoes/${p.id}/toggle`, {
@@ -5831,14 +6496,21 @@
         editingId = p.id;
         if (form.titulo) form.titulo.value = p.titulo || p.nome || '';
         if (form.descricao) form.descricao.value = p.descricao || '';
+        if (form.brinde) form.brinde.value = p.brinde || '';
         if (form.validade) form.validade.value = (p.data_expiracao || p.validade || '').slice(0, 10);
-        if (form.preco) form.preco.value = p.desconto || p.preco || p.valor || '';
-        if (form.tipo) form.tipo.value = p.tipo || 'desconto';
-        if (form.imagem) form.imagem.value = p.imagem_url || p.imagem || '';
+        if (form.preco) form.preco.value = p.preco || p.desconto || p.valor || '';
+        if (form.tipo) form.tipo.value = p.tipo || p.tipo_recompensa || 'desconto';
+        const existingUrl = p.imagem_url || p.imagem || '';
+        if (form.imagem) form.imagem.value = existingUrl;
+        croppedBlob = null;
+        imageRemoved = false;
+        showPromoPreviewImage(existingUrl ? safeImage(existingUrl, IMAGE_FALLBACKS.promo) : '');
         if (form.notificationTitle) form.notificationTitle.value = p.notification_title || p.titulo || '';
         if (form.notificationBody) form.notificationBody.value = p.notification_body || p.descricao || '';
         if (form.ativa) form.ativa.checked = !(p.status === 'pausada' || p.ativo === false);
+        refreshCounters();
         if (form.msg) form.msg.textContent = 'Editando oferta';
+        document.getElementById('formOferta')?.scrollIntoView({ behavior: 'smooth' });
       };
 
       Object.values(filtros).forEach((btn) => btn?.addEventListener('click', () => {
@@ -5848,57 +6520,69 @@
         renderCards(lista);
       }));
 
-      btnNova?.addEventListener('click', () => {
+      const resetForm = () => {
         editingId = null;
         if (form.titulo) form.titulo.value = '';
         if (form.descricao) form.descricao.value = '';
+        if (form.brinde) form.brinde.value = '';
         if (form.validade) form.validade.value = '';
         if (form.preco) form.preco.value = '';
-        if (form.imagem) form.imagem.value = '';
+        if (form.tipo) form.tipo.value = 'desconto';
         if (form.notificationTitle) form.notificationTitle.value = '';
         if (form.notificationBody) form.notificationBody.value = '';
         if (form.ativa) form.ativa.checked = true;
         if (form.msg) form.msg.textContent = '';
+        resetPromoImage();
+        refreshCounters();
+      };
+
+      btnNova?.addEventListener('click', () => {
+        resetForm();
         document.getElementById('formOferta')?.scrollIntoView({ behavior: 'smooth' });
       });
 
-      form.cancelar?.addEventListener('click', () => {
-        editingId = null;
-        if (form.msg) form.msg.textContent = '';
-        if (form.titulo) form.titulo.value = '';
-        if (form.descricao) form.descricao.value = '';
-        if (form.validade) form.validade.value = '';
-        if (form.preco) form.preco.value = '';
-        if (form.imagem) form.imagem.value = '';
-        if (form.notificationTitle) form.notificationTitle.value = '';
-        if (form.notificationBody) form.notificationBody.value = '';
-        if (form.ativa) form.ativa.checked = true;
-      });
+      form.cancelar?.addEventListener('click', resetForm);
 
       form.salvar?.addEventListener('click', async () => {
-        const payload = {
-          titulo: form.titulo?.value,
-          nome: form.titulo?.value,
-          descricao: form.descricao?.value,
-          validade: form.validade?.value || null,
-          desconto: Number(form.preco?.value || 0),
-          preco: Number(form.preco?.value || 0),
-          tipo: form.tipo?.value,
-          imagem_url: form.imagem?.value,
-          notification_title: form.notificationTitle?.value || null,
-          notification_body: form.notificationBody?.value || null,
-          ativo: form.ativa?.checked ?? true,
-        };
-        if (!payload.titulo) return ui.message('Informe o título.', 'warning');
-        if (!payload.imagem_url) return ui.message('Informe a imagem obrigatória da promoção.', 'warning');
+        const titulo = (form.titulo?.value || '').trim();
+        if (!titulo) return ui.message('Informe o nome da oferta.', 'warning');
+        if (!(form.descricao?.value || '').trim()) return ui.message('Informe a descrição.', 'warning');
+        if (!form.validade?.value) return ui.message('Informe a validade (data final).', 'warning');
+        const hasExistingImage = Boolean(form.imagem?.value);
+        if (!croppedBlob && !hasExistingImage) return ui.message('Envie a imagem da oferta.', 'warning');
+
+        const fd = new FormData();
+        fd.append('titulo', titulo);
+        fd.append('nome', titulo);
+        fd.append('descricao', (form.descricao?.value || '').trim());
+        if (form.brinde?.value) fd.append('brinde', form.brinde.value.trim());
+        if (form.validade?.value) fd.append('validade', form.validade.value);
+        if (form.preco?.value) fd.append('desconto', String(Number(form.preco.value) || 0));
+        if (form.tipo?.value) {
+          fd.append('tipo', form.tipo.value);
+          fd.append('tipo_recompensa', form.tipo.value);
+        }
+        if (form.notificationTitle?.value) fd.append('notification_title', form.notificationTitle.value);
+        if (form.notificationBody?.value) fd.append('notification_body', form.notificationBody.value);
+        fd.append('ativo', form.ativa?.checked ? '1' : '0');
+        if (croppedBlob) fd.append('imagem', croppedBlob, 'promocao.jpg');
+        else if (hasExistingImage) fd.append('imagem_url', form.imagem.value);
+        if (imageRemoved) fd.append('remover_imagem', '1');
+        if (editingId) fd.append('_method', 'PUT');
+
         const path = editingId ? `/empresa/promocoes/${editingId}` : '/empresa/promocoes';
-        const method = editingId ? 'PUT' : 'POST';
-        const { res, data: resp } = await api.request(path, { method, body: JSON.stringify(payload) }, { headers: { 'Content-Type': 'application/json' } });
+        const btn = form.salvar;
+        const original = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Salvando...';
+        const { res, data: resp } = await api.request(path, { method: 'POST', body: fd });
+        btn.disabled = false;
+        btn.textContent = original;
         if (res.ok && resp?.success !== false) {
-          ui.message('Oferta salva.', 'success');
+          ui.message('Promoção salva com sucesso.', 'success');
           window.location.reload();
         } else {
-          ui.message(resp?.message || 'Erro ao salvar oferta.', 'error');
+          ui.message(resp?.message || 'Não foi possível salvar. Tente novamente.', 'error');
         }
       });
 

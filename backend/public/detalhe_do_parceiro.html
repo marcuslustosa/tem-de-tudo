@@ -24,36 +24,63 @@
 </head>
 <body class="pb-28 text-[#2e2e34] bg-[#f7f7f7]" data-page="detalhe_do_parceiro">
   <main class="mx-auto w-full max-w-[1180px] px-4 pb-10 pt-5 sm:px-6 lg:px-8">
-    <section class="partner-hero-card overflow-hidden rounded-[34px] px-5 pb-7 pt-6 text-white shadow-[0_20px_60px_rgba(8,10,18,0.22)] lg:px-8 lg:pb-8" style="background:linear-gradient(135deg,#10172f 0%,#133f8c 38%,#b01774 100%)">
-      <div class="flex items-center justify-between gap-3">
-        <a class="partner-hero-close inline-flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/6 px-4 text-sm font-bold text-white" href="/parceiros_tem_de_tudo.html">
-          <span class="material-symbols-outlined text-base">close</span>
-          Fechar
+    <section class="partner-cover">
+      <img id="partner-banner" class="partner-cover__image" src="" alt="Banner da empresa" style="display:none" />
+      <div class="partner-cover__image" id="partner-banner-fallback" style="aspect-ratio:16/6;background:linear-gradient(135deg,#10172f 0%,#133f8c 45%,#b01774 100%)"></div>
+      <div class="partner-cover__overlay"></div>
+      <div class="partner-cover__top">
+        <a class="partner-hero-close inline-flex h-10 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 text-sm font-bold text-white backdrop-blur" href="/parceiros_tem_de_tudo.html">
+          <span class="material-symbols-outlined text-base">arrow_back</span>
+          Voltar
         </a>
-        <span class="inline-flex rounded-full bg-white/8 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/68">Validação presencial</span>
+        <span id="partner-status-badge" class="inline-flex rounded-full bg-white/15 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white backdrop-blur">Ativa</span>
       </div>
+    </section>
 
-      <div class="mt-6 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-        <div class="partner-hero-identity flex items-start gap-4">
-          <img id="partner-logo" class="h-24 w-24 rounded-[28px] bg-white object-cover p-2 shadow-[0_12px_24px_rgba(0,0,0,0.22)]" src="/assets/images/company1.jpg" alt="Logo da empresa" />
-          <div>
-            <p id="partner-category" class="text-[11px] font-bold uppercase tracking-[0.24em] text-white/55">Empresa</p>
-            <h1 id="partner-name" class="mt-2 text-3xl font-extrabold leading-tight">Carregando empresa...</h1>
-            <p id="partner-address" class="mt-3 max-w-2xl text-sm leading-6 text-white/72">Aguarde enquanto carregamos os dados públicos da empresa.</p>
-            <div class="mt-4 flex flex-wrap gap-2">
-              <span class="inline-flex rounded-full bg-white/10 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-white/76">Mostre seu QR na loja</span>
-              <span class="inline-flex rounded-full bg-white/10 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-white/76">Resgate na loja</span>
-            </div>
-          </div>
+    <section class="partner-identity">
+      <div class="partner-logo-ring">
+        <img id="partner-logo" src="/assets/images/company1.jpg" alt="Logo da empresa" />
+      </div>
+      <div class="min-w-0 flex-1 pb-1">
+        <p id="partner-category" class="text-[11px] font-bold uppercase tracking-[0.22em] text-[#B01774]">Empresa</p>
+        <h1 id="partner-name" class="mt-1 truncate text-2xl font-extrabold leading-tight text-[#111B3F] lg:text-3xl">Carregando empresa...</h1>
+      </div>
+    </section>
+
+    <div class="mt-3 px-1">
+      <p id="partner-address" class="flex items-start gap-1.5 text-sm leading-6 text-slate-500">Aguarde enquanto carregamos os dados públicos da empresa.</p>
+      <div class="mt-3 flex flex-wrap items-center gap-3">
+        <div class="partner-rating-pill inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-[#111B3F] shadow-sm ring-1 ring-black/5">
+          <span id="partner-rating-stars" class="text-[#B01774]">★★★★★</span>
+          <span id="partner-rating">Novo</span>
         </div>
-        <div class="partner-hero-rating flex flex-wrap items-center gap-3">
-          <span id="partner-status-badge" class="inline-flex rounded-full bg-white/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/80">Ativa</span>
-          <div class="partner-rating-pill rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/90">
-            <span id="partner-rating-stars">★★★★★</span>
-            <span class="ml-2" id="partner-rating">Novo</span>
-          </div>
-          <span id="partner-review-count" class="text-sm text-white/70">Sem avaliações ainda</span>
+        <span id="partner-review-count" class="text-sm text-slate-500">Sem avaliações ainda</span>
+        <div class="partner-social-row ml-auto">
+          <a id="partnerSocialWhatsapp" class="partner-social-btn hidden" target="_blank" rel="noreferrer" aria-label="WhatsApp"><span class="material-symbols-outlined">chat</span></a>
+          <a id="partnerSocialInstagram" class="partner-social-btn hidden" target="_blank" rel="noreferrer" aria-label="Instagram"><span class="material-symbols-outlined">photo_camera</span></a>
+          <a id="partnerSocialFacebook" class="partner-social-btn hidden" target="_blank" rel="noreferrer" aria-label="Facebook"><span class="material-symbols-outlined">thumb_up</span></a>
         </div>
+      </div>
+    </div>
+
+    <section class="mt-5">
+      <div class="partner-actions-row">
+        <button id="partnerActionQr" type="button" class="partner-action-btn partner-action-btn--primary">
+          <span class="material-symbols-outlined">qr_code_2</span>
+          Mostrar QR Code
+        </button>
+        <button id="partnerActionMaps" type="button" class="partner-action-btn" hidden>
+          <span class="material-symbols-outlined">directions</span>
+          Como chegar
+        </button>
+        <button id="partnerActionCall" type="button" class="partner-action-btn" hidden>
+          <span class="material-symbols-outlined">call</span>
+          Ligar
+        </button>
+        <button id="partnerActionShare" type="button" class="partner-action-btn">
+          <span class="material-symbols-outlined">share</span>
+          Compartilhar
+        </button>
       </div>
     </section>
 
@@ -196,6 +223,19 @@
                 <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Como funciona</p>
                 <p class="mt-2 text-sm leading-6 text-slate-600">Mantenha as notificações do navegador ativas. Quando a empresa identificar um período de inatividade, o convite de retorno chega direto na sua central de notificações.</p>
               </div>
+            </div>
+          </div>
+        </article>
+
+        <article id="partnerMenuCard" class="partner-surface-card partner-menu-placeholder rounded-[30px] p-6">
+          <div class="flex items-center gap-4">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,rgba(19,63,140,0.1),rgba(176,23,116,0.12))] text-[#B01774]">
+              <span class="material-symbols-outlined">restaurant_menu</span>
+            </span>
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Cardápio</p>
+              <h2 class="mt-1 text-lg font-extrabold text-[#111B3F]">Em breve</h2>
+              <p class="mt-1 text-sm text-slate-500">Este estabelecimento poderá disponibilizar o cardápio digital aqui.</p>
             </div>
           </div>
         </article>

@@ -56,6 +56,8 @@ class PromocaoController extends Controller
         $validated = $request->validate([
             'titulo' => 'required|string|max:80',
             'descricao' => 'required|string|max:240',
+            'brinde' => 'nullable|string|max:80',
+            'data_inicio' => 'nullable|date',
             'validade' => 'nullable|date',
             'notification_title' => 'nullable|string|max:80',
             'notification_body' => 'nullable|string|max:120',
@@ -126,6 +128,8 @@ class PromocaoController extends Controller
         $validated = $request->validate([
             'titulo' => 'sometimes|string|max:80',
             'descricao' => 'sometimes|string|max:240',
+            'brinde' => 'nullable|string|max:80',
+            'data_inicio' => 'nullable|date',
             'validade' => 'nullable|date',
             'notification_title' => 'nullable|string|max:80',
             'notification_body' => 'nullable|string|max:120',

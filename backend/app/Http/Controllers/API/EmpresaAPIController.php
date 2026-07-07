@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class EmpresaAPIController extends Controller
 {
@@ -53,6 +54,7 @@ class EmpresaAPIController extends Controller
                     'instagram' => $empresa->instagram ?? '',
                     'facebook'  => $empresa->facebook ?? '',
                     'logo'      => $empresa->logo ?? '',
+                    'banner'    => $empresa->banner ?? '',
                     'descricao' => $empresa->descricao ?? '',
                     'points_multiplier' => $empresa->points_multiplier ?? 1.0,
                     'ativo'     => $empresa->ativo ?? true,
@@ -88,7 +90,9 @@ class EmpresaAPIController extends Controller
             'empresa_whatsapp'  => 'sometimes|nullable|string|max:30',
             'empresa_instagram' => 'sometimes|nullable|string|max:120',
             'empresa_facebook'  => 'sometimes|nullable|string|max:120',
-            'empresa_logo'      => 'sometimes|nullable|url|max:500',
+            // logo/banner agora chegam por upload de arquivo (endpoints dedicados);
+            // mantido tolerante a caminho local ou URL para compatibilidade.
+            'empresa_logo'      => 'sometimes|nullable|string|max:500',
         ]);
 
         // Atualizar users
@@ -122,6 +126,140 @@ class EmpresaAPIController extends Controller
             'success' => true,
             'message' => 'Perfil atualizado com sucesso!',
         ]);
+    }
+
+    /**
+     * Recebe o upload (já cortado/otimizado no cliente) do logo da empresa.
+     */
+    public function uploadLogo(Request $request)
+    {
+        return $this->handleImageUpload($request, 'logo', 'empresas/logos');
+    }
+
+    /**
+     * Recebe o upload (já cortado/otimizado no cliente) do banner/capa da empresa.
+     */
+    public function uploadBanner(Request $request)
+    {
+        return $this->handleImageUpload($request, 'banner', 'empresas/banners');
+    }
+
+    /**
+     * Remove o logo da empresa.
+     */
+    public function removeLogo(Request $request)
+    {
+        return $this->handleImageRemoval('logo');
+    }
+
+    /**
+     * Remove o banner/capa da empresa.
+     */
+    public function removeBanner(Request $request)
+    {
+        return $this->handleImageRemoval('banner');
+    }
+
+    /**
+     * Fluxo compartilhado de upload de imagem da empresa (logo/banner).
+     * Reutiliza o padrão do projeto: disco `public` do Laravel + Storage::url().
+     */
+    private function handleImageUpload(Request $request, string $column, string $folder)
+    {
+        $user = Auth::user();
+        $empresa = $this->resolveEmpresaForUser((int) $user->id);
+
+        if (!$empresa) {
+            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+        }
+
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,jpg,png,webp|max:5120',
+        ]);
+
+        if (!Schema::hasColumn('empresas', $column)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Recurso indisponível no momento.',
+            ], 503);
+        }
+
+        try {
+            // Remove o arquivo anterior (se estiver no nosso storage) para não acumular lixo.
+            $this->deleteStoredImage($empresa->{$column} ?? null);
+
+            $path = $request->file('image')->store($folder, 'public');
+            $url = Storage::url($path);
+
+            DB::table('empresas')
+                ->where('id', $empresa->id)
+                ->update([$column => $url, 'updated_at' => now()]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Imagem atualizada com sucesso!',
+                'data' => ['url' => $url, 'campo' => $column],
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Falha no upload de imagem da empresa', [
+                'empresa_id' => $empresa->id,
+                'campo' => $column,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Não foi possível enviar a imagem. Tente novamente.',
+            ], 500);
+        }
+    }
+
+    private function handleImageRemoval(string $column)
+    {
+        $user = Auth::user();
+        $empresa = $this->resolveEmpresaForUser((int) $user->id);
+
+        if (!$empresa) {
+            return response()->json(['success' => false, 'message' => 'Empresa não encontrada'], 404);
+        }
+
+        if (!Schema::hasColumn('empresas', $column)) {
+            return response()->json(['success' => true, 'message' => 'Imagem removida.']);
+        }
+
+        try {
+            $this->deleteStoredImage($empresa->{$column} ?? null);
+            DB::table('empresas')
+                ->where('id', $empresa->id)
+                ->update([$column => null, 'updated_at' => now()]);
+        } catch (\Throwable $e) {
+            Log::warning('Falha ao remover imagem da empresa', [
+                'empresa_id' => $empresa->id,
+                'campo' => $column,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Imagem removida.']);
+    }
+
+    /**
+     * Remove do disco `public` um arquivo previamente salvo por nós (ignora URLs externas).
+     */
+    private function deleteStoredImage(?string $value): void
+    {
+        if (!$value || !str_starts_with($value, '/storage/')) {
+            return;
+        }
+
+        try {
+            $relative = ltrim(substr($value, strlen('/storage/')), '/');
+            if ($relative !== '' && Storage::disk('public')->exists($relative)) {
+                Storage::disk('public')->delete($relative);
+            }
+        } catch (\Throwable $e) {
+            // silencioso: limpeza best-effort
+        }
     }
 
     /**
