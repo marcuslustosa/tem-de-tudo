@@ -3519,3 +3519,25 @@ body[data-page] .material-symbols-outlined { vertical-align: middle; }
   .ui-spinner { animation-duration: 1.4s; }
   .ui-toast { animation: none; }
 }
+
+/* ============================================================
+   MOBILE POLISH (aditivo) — legibilidade e toque em telas pequenas.
+   So afeta <= 600px; desktop/tablet permanecem exatamente iguais.
+   ============================================================ */
+@media (max-width: 600px) {
+  /* Rede de protecao tipografica: reduz titulos gigantes no celular,
+     mantendo a hierarquia. Nao toca em nenhum HTML. */
+  body[data-page] .text-5xl { font-size: 1.9rem !important; line-height: 1.15 !important; }
+  body[data-page] .text-4xl { font-size: 1.7rem !important; line-height: 1.18 !important; }
+  body[data-page] .text-3xl { font-size: 1.45rem !important; line-height: 1.2 !important; }
+  body[data-page] .text-2xl { font-size: 1.25rem !important; line-height: 1.25 !important; }
+  body[data-page] .headline-sm { font-size: 1.35rem !important; }
+
+  /* Areas de toque confortaveis: icones-botao com alvo minimo de 44px. */
+  body[data-page] button .material-symbols-outlined,
+  body[data-page] a .material-symbols-outlined { min-width: 24px; }
+
+  /* Botao flutuante de instalar app: menor e menos intrusivo no celular. */
+  .tdt-install-fab { font-size: 0.82rem; padding: 0.55rem 0.9rem; bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
+  .tdt-install-fab__close { bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+}
