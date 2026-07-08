@@ -3541,3 +3541,48 @@ body[data-page] .material-symbols-outlined { vertical-align: middle; }
   .tdt-install-fab { font-size: 0.82rem; padding: 0.55rem 0.9rem; bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
   .tdt-install-fab__close { bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
 }
+
+/* ============================================================
+   ADMIN MOBILE (aditivo) — telas do painel eram desktop-first.
+   So <=640px e so nas paginas admin; desktop 100% inalterado.
+   Corrige grids de 3-4 colunas espremidos e o excesso de padding.
+   ============================================================ */
+@media (max-width: 640px) {
+  /* Alvo: todas as telas do painel master/admin */
+  body[data-page*="master"] main,
+  body[data-page="gestao_pontos"] main,
+  body[data-page="configuracoes_admin"] main,
+  body[data-page="gest_o_de_estabelecimentos"] main {
+    padding-left: 0.9rem !important;
+    padding-right: 0.9rem !important;
+  }
+
+  /* Grids nao-responsivos (grid-cols-3/4 fixos) -> 2 colunas no celular */
+  body[data-page*="master"] .grid.grid-cols-3,
+  body[data-page*="master"] .grid.grid-cols-4,
+  body[data-page="gestao_pontos"] .grid.grid-cols-3,
+  body[data-page="gestao_pontos"] .grid.grid-cols-4,
+  body[data-page="configuracoes_admin"] .grid.grid-cols-3,
+  body[data-page="configuracoes_admin"] .grid.grid-cols-4,
+  body[data-page="gest_o_de_estabelecimentos"] .grid.grid-cols-3,
+  body[data-page="gest_o_de_estabelecimentos"] .grid.grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.6rem !important;
+  }
+
+  /* Cards do admin: menos padding no celular para caber melhor */
+  body[data-page*="master"] .admin-card,
+  body[data-page*="master"] .admin-kpi-card,
+  body[data-page="gestao_pontos"] .admin-card,
+  body[data-page="gestao_pontos"] .admin-kpi-card { padding: 1rem !important; }
+
+  /* Numeros grandes dos KPIs cabem melhor */
+  body[data-page*="master"] .admin-kpi-number { font-size: 1.5rem !important; }
+
+  /* Tabelas largas rolam DENTRO do bloco, sem empurrar a pagina */
+  body[data-page*="master"] .overflow-x-auto,
+  body[data-page="gestao_pontos"] .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+  }
+}
