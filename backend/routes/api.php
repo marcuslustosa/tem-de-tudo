@@ -521,6 +521,13 @@ Route::middleware(['auth:sanctum', 'role.permission:admin'])->prefix('admin')->g
     Route::post('/banners/reorder', [BannerController::class, 'reorder']);
 });
 
+// Area da propria revenda (submaster): saldo + criar estabelecimentos debitando o saldo.
+Route::middleware(['auth:sanctum', 'role.permission:revenda'])->prefix('revenda')->group(function () {
+    Route::get('/me', [\App\Http\Controllers\RevendaController::class, 'meuSaldo']);
+    Route::get('/empresas', [\App\Http\Controllers\RevendaController::class, 'minhasEmpresas']);
+    Route::post('/empresas', [\App\Http\Controllers\RevendaController::class, 'criarEmpresa'])->middleware('rate.limit:20:1');
+});
+
 // Rotas do sistema de pontos (protegidas por Sanctum)
 Route::middleware('auth:sanctum')->prefix('pontos')->group(function () {
     // Check-in do usuÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡rio

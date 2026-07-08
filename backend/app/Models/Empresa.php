@@ -31,6 +31,7 @@ class Empresa extends Model
         'ativo',
         'status',
         'owner_id',
+        'created_by',
         'ramo',
         'whatsapp',
         'instagram',

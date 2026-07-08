@@ -18,6 +18,7 @@
     empresa: '/dashboard_parceiro.html',
     admin: '/dashboard_admin_master.html',
     administrador: '/dashboard_admin_master.html',
+    revenda: '/revenda_painel.html',
   };
   const page = document.body?.dataset?.page || location.pathname.replace(/\//g, '').replace('.html', '');
   const VAPID_CACHE_KEY = 'vapid_public_key';
@@ -1778,6 +1779,8 @@
   }
 
   function mountUnifiedMobileDock() {
+    // Painel da revenda tem navegacao propria (nao usa o dock de cliente).
+    if (page === 'revenda_painel') return;
     const scope = getScopeForCurrentPage();
     const oldDockList = Array.from(document.querySelectorAll('nav.fixed.bottom-0'));
     oldDockList.forEach((dock) => dock.remove());
@@ -9875,6 +9878,87 @@
     });
   }
 
+  // ---------------------- Paginas: Revenda ---------------------- //
+  const revenda = {
+    async painel() {
+      if (!(await auth.guard(['revenda']))) return;
+      const brl = (v) => `R$ ${Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      const saldoEl = document.getElementById('revSaldo');
+      const vencEl = document.getElementById('revVencimento');
+      const listEl = document.getElementById('revEmpresasList');
+      const skelEl = document.getElementById('revEmpresasSkeleton');
+      const emptyEl = document.getElementById('revEmpresasEmpty');
+      let saldoAtual = 0;
+
+      document.getElementById('revLogout')?.addEventListener('click', () => auth.logout());
+
+      const loadSaldo = async () => {
+        const { res, data } = await api.request('/revenda/me', {}, { notify: false });
+        if (res.ok && data?.success !== false) {
+          saldoAtual = Number(data?.data?.creditos || 0);
+          if (saldoEl) saldoEl.textContent = brl(saldoAtual);
+          if (vencEl) vencEl.textContent = `Vencimento: ${data?.data?.vencimento ? formatDatePtBr(data.data.vencimento) : 'sem vencimento'}`;
+        }
+      };
+
+      const loadEmpresas = async () => {
+        const { res, data } = await api.request('/revenda/empresas', {}, { notify: false });
+        const lista = (res.ok && data?.success !== false) ? toArray(data?.data) : [];
+        skelEl?.classList.add('hidden');
+        emptyEl?.classList.toggle('hidden', lista.length > 0);
+        if (!listEl) return;
+        listEl.innerHTML = lista.map((e) => `
+          <article class="ui-card ui-card--hover !p-4 flex items-center justify-between gap-3">
+            <div>
+              <p class="font-bold text-[#111B3F]">${safeText(e.nome, 'Estabelecimento')}</p>
+              <p class="text-xs text-slate-500">${safeText(e.plano, 'Sem plano')} · ${safeText(e.telefone, 'sem telefone')}</p>
+            </div>
+            <div class="text-right">
+              <span class="ui-badge ${e.status === 'active' ? 'ui-badge--success' : 'ui-badge--neutral'}">${e.status === 'active' ? 'Ativo' : safeText(e.status, '-')}</span>
+              <p class="text-[11px] text-slate-500 mt-1">${e.vencimento ? 'Vence ' + formatDatePtBr(e.vencimento) : ''}</p>
+            </div>
+          </article>`).join('');
+      };
+
+      const openCreate = async () => {
+        // busca planos para o seletor (reusa /admin? nao: revenda nao tem. usa lista fixa dos planos via /revenda/me? )
+        const overlay = document.createElement('div');
+        overlay.className = 'tdt-modal-overlay';
+        overlay.innerHTML = `
+          <div class="tdt-modal-dialog">
+            <div class="flex items-center justify-between mb-4"><p class="font-headline font-extrabold text-on-surface">Novo estabelecimento</p><button type="button" data-close class="text-on-surface-variant"><span class="material-symbols-outlined">close</span></button></div>
+            <p class="text-xs text-on-surface-variant mb-3">Saldo: <b>${brl(saldoAtual)}</b>. O valor do plano é descontado ao criar.</p>
+            <div class="space-y-3">
+              <div><label class="ui-label">Nome</label><input data-f="nome" class="ui-input" placeholder="Nome do estabelecimento" /></div>
+              <div><label class="ui-label">Usuário (e-mail)</label><input data-f="email" type="email" class="ui-input" placeholder="empresa@exemplo.com" /></div>
+              <div><label class="ui-label">Senha</label><input data-f="senha" type="password" class="ui-input" placeholder="Mínimo 6 caracteres" /></div>
+              <div><label class="ui-label">Telefone</label><input data-f="telefone" class="ui-input" placeholder="(00) 00000-0000" /></div>
+              <div><label class="ui-label">Validade</label><select data-f="dias" class="ui-select">${[['30 dias', 30], ['3 meses', 90], ['6 meses', 180], ['12 meses', 365]].map(([l, d]) => `<option value="${d}">${l}</option>`).join('')}</select></div>
+            </div>
+            <button type="button" data-save class="ui-btn ui-btn--primary ui-btn--block mt-4">Criar estabelecimento</button>
+            <p data-msg class="text-xs text-on-surface-variant mt-2"></p>`;
+        document.body.appendChild(overlay);
+        const close = () => overlay.remove();
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+        overlay.querySelector('[data-close]')?.addEventListener('click', close);
+        const g = (f) => overlay.querySelector(`[data-f="${f}"]`)?.value;
+        const msg = overlay.querySelector('[data-msg]');
+        overlay.querySelector('[data-save]')?.addEventListener('click', async (ev) => {
+          const nome = g('nome')?.trim(); const email = g('email')?.trim(); const senha = g('senha');
+          if (!nome || !email || !senha || senha.length < 6) { if (msg) { msg.textContent = 'Preencha nome, e-mail e senha (mín. 6).'; msg.className = 'text-xs text-rose-600 mt-2'; } return; }
+          ev.currentTarget.disabled = true; if (msg) { msg.textContent = 'Criando...'; msg.className = 'text-xs text-on-surface-variant mt-2'; }
+          const body = { nome, email, senha, telefone: g('telefone')?.trim(), dias: Number(g('dias') || 30) };
+          const { res, data } = await api.request('/revenda/empresas', { method: 'POST', body: JSON.stringify(body) }, { notify: false });
+          if (res.ok && data?.success !== false) { ui.message(data?.message || 'Estabelecimento criado.', 'success'); close(); await Promise.all([loadSaldo(), loadEmpresas()]); }
+          else { if (msg) { msg.textContent = data?.message || 'Não foi possível criar.'; msg.className = 'text-xs text-rose-600 mt-2'; } ev.currentTarget.disabled = false; }
+        });
+      };
+
+      document.getElementById('btnRevNovaEmpresa')?.addEventListener('click', openCreate);
+      await Promise.all([loadSaldo(), loadEmpresas()]);
+    },
+  };
+
   // ---------------------- Dispatcher ---------------------- //
   const handlers = {
     // Publico / shared
@@ -10094,6 +10178,7 @@
 
     // Cliente
     meus_pontos: cliente.dashboard,
+    revenda_painel: revenda.painel,
     parceiros_tem_de_tudo: cliente.parceiros,
     detalhe_do_parceiro: cliente.detalheParceiro,
     recompensas: cliente.recompensas,
