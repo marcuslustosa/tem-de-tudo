@@ -83,12 +83,12 @@ class QRCode extends Model
             $type = strtolower($typeOrEmpresaId);
         }
 
-        $prefix = $type === 'cliente'
-            ? self::LEGACY_CLIENT_CODE_PREFIX
-            : self::COMPANY_CODE_PREFIX;
+        // Codigos curtos e faceis de digitar (o prefixo antigo nao e usado
+        // em validacao; codigos antigos continuam validos por busca exata).
+        $prefix = $type === 'cliente' ? 'CLI' : 'EMP';
 
         do {
-            $code = $prefix . Str::upper(Str::random(40));
+            $code = $prefix . Str::upper(Str::random(6));
         } while (self::query()->where('code', $code)->exists());
 
         return $code;
