@@ -9140,7 +9140,8 @@
           const email = u.email || '';
           const perfil = u.perfil || u.role || 'admin';
           const status = suspenso(u) ? 'Suspenso' : ativo(u) ? 'Ativo' : 'Inativo';
-          const ultimo = formatDatePtBr(u.last_login || u.updated_at || u.created_at, '-');
+          const inicio = formatDatePtBr(u.created_at, '-');
+          const telefone = safeText(u.telefone, '-');
           const statusAtual = status === 'Ativo' ? 'ativo' : (status === 'Suspenso' ? 'bloqueado' : 'inativo');
           tr.dataset.userId = u.id;
           tr.dataset.userName = nome;
@@ -9166,7 +9167,8 @@
                 <span class="text-xs font-bold uppercase">${status}</span>
               </div>
             </td>
-            <td class="px-6 py-4 text-sm text-on-surface-variant">${ultimo || '-'}</td>
+            <td class="px-6 py-4 text-sm text-on-surface-variant whitespace-nowrap">${inicio}</td>
+            <td class="px-6 py-4 text-sm text-on-surface-variant whitespace-nowrap">${telefone}</td>
             <td class="px-6 py-4 text-right">
               <div class="flex justify-end gap-2">
                 <button data-user-action="edit-sensitive" class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container/20 rounded-lg transition-all" title="Editar dados sensiveis"><span class="material-symbols-outlined text-xl">edit</span></button>
