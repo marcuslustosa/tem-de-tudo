@@ -8871,6 +8871,11 @@
         fab.addEventListener('click', () => openCreateModal());
         document.body.appendChild(fab);
       }
+
+      // "Criar conta" no admin abre direto o cadastro de estabelecimento.
+      if (new URLSearchParams(window.location.search).get('novo') === '1') {
+        openCreateModal();
+      }
     },
     async usuarios() {
       if (!(await auth.guard(['admin']))) return;
