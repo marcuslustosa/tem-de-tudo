@@ -364,6 +364,8 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     // `escanear-qrcode` permanece apenas por compatibilidade com trilhas antigas.
     Route::post('/escanear-qrcode', [ClienteAPIController::class, 'escanearQRCode'])->middleware('rate.limit:20:1');
     Route::post('/vincular-empresa-qrcode', [ClienteAPIController::class, 'vincularEmpresaViaQr'])->middleware('rate.limit:20:1');
+    // Vinculo pela pagina da empresa (sem QR, para quem tem problema de camera).
+    Route::post('/empresas/{id}/vincular', [ClienteAPIController::class, 'vincularEmpresaPorId'])->whereNumber('id')->middleware('rate.limit:20:1');
     
     // PromoÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
     Route::get('/promocoes', [ClienteAPIController::class, 'listarPromocoes']);

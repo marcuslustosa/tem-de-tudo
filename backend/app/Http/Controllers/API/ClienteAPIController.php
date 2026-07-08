@@ -531,6 +531,39 @@ class ClienteAPIController extends Controller
     /**
      * Resgatar promoÃ§Ã£o
      */
+    /**
+     * Vincula o cliente autenticado a uma empresa pelo ID (sem QR Code).
+     * Serve para quem esta na pagina da empresa e nao consegue usar a camera.
+     */
+    public function vincularEmpresaPorId(int $id)
+    {
+        $user = Auth::user();
+        $empresa = Empresa::query()->find($id);
+
+        if (!$empresa || $empresa->operationalStatus() !== Empresa::STATUS_ACTIVE) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa indisponivel para vinculacao.',
+            ], 404);
+        }
+
+        $inscricao = InscricaoEmpresa::query()->firstOrCreate(
+            ['user_id' => $user->id, 'empresa_id' => $empresa->id],
+            ['data_inscricao' => now(), 'ultima_visita' => null, 'bonus_adesao_resgatado' => false]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => $inscricao->wasRecentlyCreated
+                ? 'Voce se vinculou a esta empresa!'
+                : 'Voce ja estava vinculado a esta empresa.',
+            'data' => [
+                'empresa' => $this->serializeCompanyCard($empresa, ['vinculada' => true]),
+                'ja_vinculado' => !$inscricao->wasRecentlyCreated,
+            ],
+        ]);
+    }
+
     public function vincularEmpresaViaQr(Request $request)
     {
         $request->validate([

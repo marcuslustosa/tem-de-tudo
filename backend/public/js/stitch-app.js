@@ -4218,6 +4218,25 @@
         };
         document.getElementById('partnerActionQr')?.addEventListener('click', goQr);
 
+        // Botao "Cadastrar-me": vincula o cliente sem QR (util quando a camera falha).
+        const vincularBtn = document.getElementById('partnerActionVincular');
+        const empresaVincId = companyInfo.id || new URLSearchParams(location.search).get('id');
+        const jaVinculado = Boolean(companyInfo.vinculada || companyInfo.inscrito || companyInfo.ja_vinculado || companyInfo.cliente_vinculado);
+        if (vincularBtn && perfilViewer === 'cliente' && empresaVincId && !jaVinculado) {
+          vincularBtn.hidden = false;
+          vincularBtn.addEventListener('click', async () => {
+            vincularBtn.disabled = true;
+            const { res, data: d } = await api.request(`/cliente/empresas/${empresaVincId}/vincular`, { method: 'POST' }, { notify: false });
+            if (res.ok && d?.success !== false) {
+              ui.message(d?.message || 'Você se vinculou a esta empresa!', 'success');
+              setTimeout(() => window.location.reload(), 900);
+            } else {
+              vincularBtn.disabled = false;
+              ui.message(d?.message || 'Não foi possível vincular agora.', 'error');
+            }
+          });
+        }
+
         const endereco = safeText(companyInfo.endereco, '');
         const mapsBtn = document.getElementById('partnerActionMaps');
         if (mapsBtn && endereco) {
