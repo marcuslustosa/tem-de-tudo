@@ -396,37 +396,31 @@
         <p class="mt-3 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Bônus de adesão</p>
         <h3 class="mt-1 text-2xl font-extrabold" style="color:${brand}">${safeText(titulo, 'Bônus de adesão')}</h3>
         <p class="mt-2 text-sm leading-6 text-slate-600">${safeText(descricao, 'Você ganhou um benefício de boas-vindas!')}</p>
-        ${validade ? `<p class="mt-2 text-xs font-semibold text-slate-500">Válido até ${formatDatePtBr(validade, '—')}</p>` : ''}
         <div class="mt-5 flex flex-col gap-2">
-          <button type="button" class="loyalty-redeem-btn" data-redeem style="background:linear-gradient(135deg,${brand} 0%,#b01774 100%)"><span class="material-symbols-outlined">redeem</span> Resgatar</button>
-          <button type="button" class="app-secondary-button justify-center" data-close2>Fechar</button>
+          <button type="button" class="loyalty-redeem-btn" data-redeem style="background:linear-gradient(135deg,${brand} 0%,#b01774 100%)"><span class="material-symbols-outlined">check_circle</span> OK, resgatar</button>
+          <button type="button" class="app-secondary-button justify-center" data-nevermore>Não ver mais</button>
         </div>
-        <label class="mt-3 flex items-center justify-center gap-2 text-xs text-slate-500">
-          <input type="checkbox" data-hide class="rounded border-slate-300 text-primary focus:ring-primary" /> Não mostrar novamente
-        </label>
       </div>`;
     document.body.appendChild(overlay);
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    const hideChk = overlay.querySelector('[data-hide]');
-    const persistHide = () => {
-      if (hideChk?.checked && empresaId) {
+    const dismiss = () => {
+      overlay.remove();
+      document.body.style.overflow = prevOverflow;
+    };
+    // "Nao ver mais": nunca mais mostra o popup desta empresa.
+    const nevermore = () => {
+      if (empresaId) {
         try { localStorage.setItem(`tdt_bonus_adesao_hide_${empresaId}`, '1'); } catch (_) { /* ignore */ }
       }
+      dismiss();
     };
-    const close = () => {
-      persistHide();
-      overlay.remove();
-      document.body.style.overflow = prevOverflow;
-    };
-    overlay.querySelector('[data-close]')?.addEventListener('click', close);
-    overlay.querySelector('[data-close2]')?.addEventListener('click', close);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    overlay.querySelector('[data-close]')?.addEventListener('click', dismiss);
+    overlay.querySelector('[data-nevermore]')?.addEventListener('click', nevermore);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) dismiss(); });
+    // "OK, resgatar": resgata e leva ao QR do cliente.
     overlay.querySelector('[data-redeem]')?.addEventListener('click', () => {
-      if (!window.confirm('Confirmar o resgate deste bônus? Apresente seu QR Code no estabelecimento para validar.')) return;
-      persistHide();
-      overlay.remove();
-      document.body.style.overflow = prevOverflow;
+      dismiss();
       ui.message('Apresente seu QR Code no estabelecimento para validar o bônus.', 'success');
       setTimeout(() => { window.location.href = '/meus_pontos.html?mostrar=meu-qrcode'; }, 500);
     });
