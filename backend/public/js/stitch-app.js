@@ -2860,22 +2860,12 @@
         };
 
         if (qrContainer) {
-          if (myQr.codigo && myQr.qrcode_svg) {
-            const expiresAt = myQr.expira_em ? new Date(myQr.expira_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '--';
+          if (myQr.qrcode_svg) {
+            // Simples e objetivo: logo + QR, sem textos.
             qrContainer.innerHTML = `
+              <img src="/img/logo.png" alt="Tem de Tudo" class="mx-auto mb-4 h-10 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
               <div class="mx-auto flex h-64 w-64 items-center justify-center rounded-[28px] bg-white p-4 shadow-[0_18px_45px_rgba(8,10,18,0.12)] ring-1 ring-black/5">${myQr.qrcode_svg}</div>
-              <div class="mt-4 rounded-[20px] bg-slate-50 px-4 py-3 text-center">
-                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Código seguro</p>
-                <p class="mt-2 break-all font-mono text-sm font-bold text-[#111B3F]">${safeText(myQr.codigo)}</p>
-              </div>
-              <div class="mt-3 flex flex-wrap items-center justify-center gap-3">
-                <button id="copyCustomerQrCode" class="inline-flex h-11 items-center justify-center rounded-full bg-[#111B3F] px-5 text-sm font-bold text-white" type="button">Copiar código</button>
-                <p class="text-xs text-slate-500">Expira às ${expiresAt}</p>
-              </div>
             `;
-            document.getElementById('copyCustomerQrCode')?.addEventListener('click', () => {
-              navigator.clipboard.writeText(myQr.codigo).then(() => ui.message('Código do seu QR copiado.', 'success'));
-            });
           } else {
             qrContainer.innerHTML = '<p class="text-sm text-slate-500">Não foi possível carregar seu QR Code agora.</p>';
           }

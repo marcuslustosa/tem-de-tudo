@@ -32,11 +32,12 @@ class ClienteAPIController extends Controller
         $qrData = app(ClienteQrCodeService::class)->gerar($user);
         $codigo = $qrData['code'];
         
-        // Gerar QR Code em SVG
-        $qrCodeSvg = QrCode::size(300)
+        // Gerar QR Code em SVG. Cast para string: generate() retorna HtmlString,
+        // que serializa como {} no JSON e causava o bug "[object Object]".
+        $qrCodeSvg = (string) QrCode::size(300)
             ->format('svg')
             ->generate($codigo);
-        
+
         return response()->json([
             'success' => true,
             'data' => [
