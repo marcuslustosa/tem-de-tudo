@@ -8068,6 +8068,12 @@
       const empresasVencidas = empresasList.filter((item) => item?.dias_restantes != null && item.dias_restantes < 0).length;
       const empresasProximas = empresasList.filter((item) => item?.dias_restantes != null && item.dias_restantes >= 0 && item.dias_restantes <= 15).length;
       const usersList = usersDataset?.ok ? usersDataset.list : [];
+      // Novos usuarios nos ultimos 7 dias (pedido do master).
+      const seteDiasAtras = Date.now() - 7 * 86400000;
+      const novos7d = usersList.filter((u) => {
+        const t = new Date(u?.created_at || 0).getTime();
+        return Number.isFinite(t) && t >= seteDiasAtras;
+      }).length;
       const mergedTotals = {
         ...totals,
       };
@@ -8088,6 +8094,7 @@
       if (ids('adminEmpresasAtivas')) ids('adminEmpresasAtivas').textContent = Number(empresasAtivas || 0).toLocaleString('pt-BR');
       if (ids('adminEmpresasVencidas')) ids('adminEmpresasVencidas').textContent = Number(empresasVencidas || 0).toLocaleString('pt-BR');
       if (ids('adminEmpresasProximas')) ids('adminEmpresasProximas').textContent = Number(empresasProximas || 0).toLocaleString('pt-BR');
+      if (ids('adminNovos7d')) ids('adminNovos7d').textContent = Number(novos7d || 0).toLocaleString('pt-BR');
       if (ids('adminCampanhas')) ids('adminCampanhas').textContent = Number(totalCampanhas || 0).toLocaleString('pt-BR');
       if (ids('adminResgates')) ids('adminResgates').textContent = Number(totalResgates || 0).toLocaleString('pt-BR');
       if (ids('adminVolume')) ids('adminVolume').textContent = `R$ ${Number(totalVolume || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
