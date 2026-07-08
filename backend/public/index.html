@@ -4,208 +4,44 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#133F8C" />
-  <title>Tem de Tudo - Fidelidade, descontos e benefícios</title>
-  <link rel="manifest" href="/manifest.json" />  <link rel="icon" type="image/png" href="/img/logo.png" />
-  <link rel="shortcut icon" href="/img/logo.png" />
+  <title>Tem de Tudo</title>
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/png" href="/img/logo.png" />
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <link href="/css/i9plus-phase8.css?v=20260521-admin-unify" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <style>
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-  </style>
+  <link rel="stylesheet" href="/css/i9plus-phase8.css?v=20260708-index" />
+  <script>
+    // Sem pagina de marketing: vai direto pro app.
+    // Logado -> painel do perfil; deslogado -> login.
+    (function () {
+      try {
+        var token = localStorage.getItem('tem_de_tudo_token');
+        var raw = localStorage.getItem('tem_de_tudo_user');
+        var perfil = null;
+        if (raw) {
+          try { var u = JSON.parse(raw); perfil = String(u.perfil || u.role || u.tipo || '').toLowerCase(); } catch (e) {}
+        }
+        var map = {
+          cliente: '/meus_pontos.html',
+          empresa: '/dashboard_parceiro.html',
+          admin: '/dashboard_admin_master.html',
+          administrador: '/dashboard_admin_master.html',
+          master: '/dashboard_admin_master.html',
+          revenda: '/revenda_painel.html'
+        };
+        var dest = (token && map[perfil]) ? map[perfil] : '/entrar.html';
+        window.location.replace(dest);
+      } catch (e) {
+        window.location.replace('/entrar.html');
+      }
+    })();
+  </script>
 </head>
-<body class="bg-gray-50" data-page="home_tem_de_tudo">
-  <header class="bg-white shadow-sm sticky top-0 z-50 i9-home-header">
-    <div class="app-shell px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16 gap-4">
-        <a href="/index.html" class="flex items-center" aria-label="Tem de Tudo - início">
-          <img src="/img/logo.png" alt="Tem de Tudo" class="h-12 w-auto" />
-        </a>
-        <div class="flex items-center gap-2 sm:gap-3">
-          <a href="/entrar.html" class="inline-flex px-3 py-2 text-sm font-semibold text-gray-700 hover:text-gray-900 sm:px-4">Entrar</a>
-          <a href="/criar_conta.html" class="app-primary-button inline-flex px-4 py-2 text-sm font-semibold text-white rounded-lg transition i9-home-primary">Criar conta</a>
-        </div>
-      </div>
+<body data-page="redirect_bridge">
+  <main class="redirect-card">
+    <div class="redirect-logo">
+      <img src="/img/logo.png" alt="Tem de Tudo" class="h-12 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
     </div>
-  </header>
-
-  <section class="app-header-gradient app-hero text-white">
-    <div class="app-shell px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
-      <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)] gap-12 items-center">
-        <div class="space-y-7">
-          <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium i9-home-badge">
-            <span class="material-symbols-outlined text-base">qr_code_scanner</span>
-            Fidelidade sem cartão físico
-          </div>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08]">
-            Seus benefícios favoritos, num QR Code só
-          </h1>
-          <p class="text-lg sm:text-xl text-white/90 max-w-xl leading-relaxed">
-            Escaneie o QR da loja, junte pontos e aproveite bônus, promoções e presente de aniversário — tudo no app, validado na hora.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-3 pt-1">
-            <a href="/criar_conta.html" class="app-secondary-button inline-flex items-center justify-center px-7 py-3.5 text-base font-bold text-[#111B3F] bg-white hover:bg-gray-50 rounded-xl transition i9-home-hero-primary">
-              Criar conta grátis
-            </a>
-            <a href="/criar_conta.html?tipo=empresa" class="app-secondary-button inline-flex items-center justify-center px-7 py-3.5 text-base font-bold text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl transition i9-home-ghost">
-              Sou um estabelecimento
-            </a>
-          </div>
-          <div class="flex flex-wrap items-center gap-x-6 gap-y-2 pt-3 text-sm text-white/80">
-            <span class="inline-flex items-center gap-2"><span class="material-symbols-outlined text-base text-white">check_circle</span>Grátis para clientes</span>
-            <span class="inline-flex items-center gap-2"><span class="material-symbols-outlined text-base text-white">check_circle</span>Sem app na loja</span>
-            <span class="inline-flex items-center gap-2"><span class="material-symbols-outlined text-base text-white">check_circle</span>Já tem <a href="/entrar.html" class="font-bold underline underline-offset-2 hover:text-white">conta? Entrar</a></span>
-          </div>
-        </div>
-
-        <div class="flex justify-center lg:justify-end">
-          <div class="w-full max-w-[340px] rounded-[36px] bg-white p-6 shadow-[0_28px_70px_rgba(11,31,58,0.35)] ring-1 ring-white/30">
-            <div class="flex items-center gap-3">
-              <div class="h-11 w-11 rounded-full bg-gradient-to-br from-[#133f8c] to-[#b01774] flex items-center justify-center text-white">
-                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">person</span>
-              </div>
-              <div class="leading-tight">
-                <p class="text-xs text-gray-400 font-semibold">Olá,</p>
-                <p class="font-bold text-gray-900">Maria Silva</p>
-              </div>
-              <span class="ml-auto inline-flex items-center gap-1 rounded-full bg-[#b01774]/10 px-3 py-1 text-xs font-bold text-[#b01774]">
-                <span class="material-symbols-outlined text-sm" style="font-variation-settings:'FILL' 1;">stars</span>2.480 pts
-              </span>
-            </div>
-
-            <div class="mt-5 rounded-[28px] border border-gray-100 bg-gray-50 p-5 text-center">
-              <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Mostre na loja</p>
-              <div class="mt-3 inline-flex items-center justify-center rounded-3xl bg-white p-3 shadow-inner ring-1 ring-gray-100">
-                <span class="material-symbols-outlined text-[#10172f]" style="font-size:128px;line-height:1;">qr_code_2</span>
-              </div>
-              <p class="mt-3 text-sm font-semibold text-gray-700">Seu QR de fidelidade</p>
-            </div>
-
-            <div class="mt-4 grid grid-cols-3 gap-2 text-center">
-              <div class="rounded-2xl bg-cyan-50 py-3">
-                <span class="material-symbols-outlined text-cyan-700">redeem</span>
-                <p class="mt-1 text-[11px] font-semibold text-gray-600">Bônus</p>
-              </div>
-              <div class="rounded-2xl bg-fuchsia-50 py-3">
-                <span class="material-symbols-outlined text-fuchsia-700">local_offer</span>
-                <p class="mt-1 text-[11px] font-semibold text-gray-600">Promoções</p>
-              </div>
-              <div class="rounded-2xl bg-amber-50 py-3">
-                <span class="material-symbols-outlined text-amber-600">cake</span>
-                <p class="mt-1 text-[11px] font-semibold text-gray-600">Aniversário</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-16 sm:py-20 bg-white">
-    <div class="app-shell px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Como funciona no dia a dia</h2>
-        <p class="text-lg text-gray-600 max-w-3xl mx-auto">Você acompanha tudo pelo app. A validação final é na loja, pela leitura do QR Code.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <article class="i9-home-card app-benefit-card i9-home-feature text-left">
-          <div class="w-14 h-14 bg-cyan-100 rounded-2xl flex items-center justify-center">
-            <span class="material-symbols-outlined text-cyan-700" style="font-size: 30px;">apartment</span>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mt-4">A loja entra no app</h3>
-          <p class="text-gray-600 mt-3 text-sm leading-6">A loja se cadastra e passa a aparecer no app, com suas ofertas, após a aprovação.</p>
-        </article>
-        <article class="i9-home-card app-benefit-card i9-home-feature text-left">
-          <div class="w-14 h-14 bg-fuchsia-100 rounded-2xl flex items-center justify-center">
-            <span class="material-symbols-outlined text-fuchsia-700" style="font-size: 30px;">qr_code_scanner</span>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mt-4">Você lê o QR</h3>
-          <p class="text-gray-600 mt-3 text-sm leading-6">Ao escanear o QR Code da loja, sua conta é criada e você fica conectado a ela.</p>
-        </article>
-        <article class="i9-home-card app-benefit-card i9-home-feature text-left">
-          <div class="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center">
-            <span class="material-symbols-outlined text-emerald-700" style="font-size: 30px;">loyalty</span>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mt-4">Benefícios aparecem no app</h3>
-          <p class="text-gray-600 mt-3 text-sm leading-6">Bônus, fidelidade, promoções, aniversário e lembretes da loja aparecem no seu app.</p>
-        </article>
-        <article class="i9-home-card app-benefit-card i9-home-feature text-left">
-          <div class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center">
-            <span class="material-symbols-outlined text-indigo-700" style="font-size: 30px;">verified</span>
-          </div>
-          <h3 class="text-xl font-bold text-gray-900 mt-4">A loja valida na hora</h3>
-          <p class="text-gray-600 mt-3 text-sm leading-6">Você mostra seu QR Code e a loja confirma pontos, resgates, promoções e brindes na hora.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-16 sm:py-20 bg-gray-50">
-    <div class="app-shell px-4 sm:px-6 lg:px-8">
-      <div class="grid gap-6 lg:grid-cols-2">
-        <article class="i9-home-card app-card bg-white p-8">
-          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Cliente</p>
-          <h2 class="mt-3 text-3xl font-bold text-gray-900">Tudo em uma jornada simples</h2>
-          <ul class="mt-6 space-y-3 text-sm leading-6 text-gray-600">
-            <li class="flex gap-3"><span class="material-symbols-outlined text-[#b01774]">done</span><span>Escaneie o QR Code da loja e desbloqueie benefícios.</span></li>
-            <li class="flex gap-3"><span class="material-symbols-outlined text-[#b01774]">done</span><span>Acompanhe pontos, promoções exclusivas e recompensas por empresa parceira.</span></li>
-            <li class="flex gap-3"><span class="material-symbols-outlined text-[#b01774]">done</span><span>Mostre seu QR Code na loja para validar bônus, promoções e resgates.</span></li>
-          </ul>
-        </article>
-        <article class="i9-home-card app-card bg-white p-8">
-          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Empresa parceira</p>
-          <h2 class="mt-3 text-3xl font-bold text-gray-900">Operação clara para vender mais</h2>
-          <ul class="mt-6 space-y-3 text-sm leading-6 text-gray-600">
-            <li class="flex gap-3"><span class="material-symbols-outlined text-[#00AFA8]">done</span><span>Crie campanhas, bônus de adesão, fidelidade, aniversário e lembretes no mesmo painel.</span></li>
-            <li class="flex gap-3"><span class="material-symbols-outlined text-[#00AFA8]">done</span><span>Use o QR físico da empresa para captar clientes e o leitor do cliente para validar presencialmente.</span></li>
-            <li class="flex gap-3"><span class="material-symbols-outlined text-[#00AFA8]">done</span><span>Visualize base vinculada, resgates recentes e comportamento dos clientes cadastrados.</span></li>
-          </ul>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-16 sm:py-20 bg-white">
-    <div class="app-shell px-4 sm:px-6 lg:px-8 text-center space-y-6">
-      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">Pronto para começar</h2>
-      <p class="text-lg text-gray-600">Cadastre-se, escaneie o QR Code do estabelecimento e use o app para acompanhar benefícios reais em empresas parceiras.</p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-        <a href="/criar_conta.html" class="app-primary-button inline-flex items-center justify-center px-8 py-3 text-base font-semibold text-white rounded-lg transition i9-home-primary">
-          Criar conta grátis
-        </a>
-        <a href="/criar_conta.html?tipo=empresa" class="app-secondary-button inline-flex items-center justify-center px-8 py-3 text-base font-semibold text-gray-700 rounded-lg transition i9-home-secondary">
-          Cadastrar estabelecimento
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <footer class="bg-gray-900 text-gray-300 py-12">
-    <div class="app-shell px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-        <div>
-          <h3 class="text-white font-bold mb-4">Tem de Tudo</h3>
-          <p class="text-sm">Fidelidade, descontos e benefícios com validação presencial por QR Code.</p>
-        </div>
-        <div>
-          <h4 class="text-white font-semibold mb-4">Acesso rápido</h4>
-          <ul class="space-y-2 text-sm">
-            <li><a href="/parceiros_tem_de_tudo.html" class="hover:text-white">Buscar lojas</a></li>
-            <li><a href="/entrar.html" class="hover:text-white">Entrar</a></li>
-            <li><a href="/criar_conta.html" class="hover:text-white">Criar conta</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-white font-semibold mb-4">Fluxo da empresa</h4>
-          <p class="text-sm">Cadastro, aprovação administrativa, QR físico, campanhas e validação no estabelecimento.</p>
-        </div>
-      </div>
-      <div class="border-t border-gray-800 pt-8 text-center text-sm">
-        <p>&copy; 2026 Tem de Tudo. Todos os direitos reservados.</p>
-      </div>
-    </div>
-  </footer>
+    <p class="mt-4 text-sm text-white/84">Abrindo o app… se não abrir, <a href="/entrar.html">clique aqui</a>.</p>
+  </main>
 </body>
 </html>
