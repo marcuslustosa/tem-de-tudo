@@ -1773,8 +1773,8 @@
   }
 
   function mountUnifiedMobileDock() {
-    // Painel da revenda tem navegacao propria (nao usa o dock de cliente).
-    if (page === 'revenda_painel') return;
+    // Paginas sem navegacao de app (login/cadastro/painel revenda) nao usam o dock.
+    if (['revenda_painel', 'entrar', 'criar_conta', 'escolher-tipo', 'forgot_password', 'redirect_bridge', 'home_tem_de_tudo'].includes(page)) return;
     const scope = getScopeForCurrentPage();
     const oldDockList = Array.from(document.querySelectorAll('nav.fixed.bottom-0'));
     oldDockList.forEach((dock) => dock.remove());
