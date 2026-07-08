@@ -1664,7 +1664,7 @@
         <div>
           <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Painel master</p>
           <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Controle da plataforma</h2>
-          <p class="mt-2 max-w-3xl text-sm leading-6 text-on-surface-variant">Aprovacao, status comercial, base, crescimento, suporte e push teste individual ficam aqui. A operacao comercial diaria continua na area da empresa.</p>
+          <p class="mt-2 max-w-3xl text-sm leading-6 text-on-surface-variant">Empresas, vencimentos, cobranca, campanhas e crescimento ficam aqui. A operacao com clientes e os pontos continuam na area da empresa.</p>
         </div>
         <div class="grid gap-2 sm:grid-cols-3">
           <a class="empresa-shortcut-card" href="/gest_o_de_estabelecimentos.html">
