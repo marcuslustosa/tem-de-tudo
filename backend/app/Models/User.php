@@ -54,6 +54,9 @@ class User extends Authenticatable implements JWTSubject
         'data_processing_consent_at',
         'marketing_consent',
         'consent_version',
+        'creditos',
+        'whatsapp',
+        'expires_at',
     ];
 
     protected static function boot(): void
@@ -101,6 +104,8 @@ class User extends Authenticatable implements JWTSubject
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'data_nascimento' => 'date',
+            'creditos' => 'decimal:2',
+            'expires_at' => 'datetime',
             'pontos' => 'integer',
             'pontos_pendentes' => 'integer',
             'ultimo_login' => 'datetime',

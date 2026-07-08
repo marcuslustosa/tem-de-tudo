@@ -8888,6 +8888,124 @@
       const isCliente = (u) => (u.perfil || u.role || '').toString().toLowerCase().includes('cliente');
       const admins = lista.filter((u) => !isCliente(u));
 
+      // ---- (Revenda) Gestao de submasters: tabela + cadastrar + renovar/creditos ----
+      const mountRevendas = async () => {
+        const host = document.querySelector('main');
+        if (!host) return;
+        let section = document.getElementById('revendasSection');
+        if (!section) {
+          section = document.createElement('section');
+          section.id = 'revendasSection';
+          section.className = 'admin-card p-5 mb-6';
+          section.innerHTML = `
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <div>
+                <p class="text-[11px] font-bold uppercase tracking-widest text-slate-400">Submaster</p>
+                <h2 class="text-xl font-extrabold text-[#111B3F]">Revendas</h2>
+              </div>
+              <button id="btnNovaRevenda" type="button" class="ui-btn ui-btn--primary ui-btn--sm"><span class="material-symbols-outlined text-base">add</span>Cadastrar revenda</button>
+            </div>
+            <div id="revendasList" class="overflow-x-auto"></div>
+            <p id="revendasEmpty" class="text-sm text-slate-500 hidden">Nenhuma revenda cadastrada ainda.</p>`;
+          host.prepend(section);
+        }
+        const listEl = section.querySelector('#revendasList');
+        const emptyEl = section.querySelector('#revendasEmpty');
+        const brl = (v) => `R$ ${Number(v || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        const vencChip = (r) => {
+          const d = r.dias_restantes;
+          if (r.vencimento == null || d == null) return '<span class="ui-badge ui-badge--neutral">Sem vencimento</span>';
+          if (d < 0) return `<span class="ui-badge ui-badge--error">Vencido ${Math.abs(d)}d</span>`;
+          if (d <= 15) return `<span class="ui-badge ui-badge--warning">${d}d</span>`;
+          return `<span class="ui-badge ui-badge--success">${d}d</span>`;
+        };
+        const openModal = (inner) => {
+          const ov = document.createElement('div');
+          ov.className = 'tdt-modal-overlay';
+          ov.innerHTML = `<div class="tdt-modal-dialog">${inner}</div>`;
+          document.body.appendChild(ov);
+          const close = () => ov.remove();
+          ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+          ov.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
+          return { ov, close };
+        };
+        const load = async () => {
+          const { res, data } = await api.request('/admin/revendas', {}, { notify: false });
+          const revendas = (res.ok && data?.success !== false) ? toArray(data?.data) : [];
+          emptyEl?.classList.toggle('hidden', revendas.length > 0);
+          if (!listEl) return;
+          if (!revendas.length) { listEl.innerHTML = ''; return; }
+          listEl.innerHTML = `
+            <table class="w-full text-sm min-w-[640px]">
+              <thead><tr class="text-left text-[11px] uppercase tracking-wide text-slate-400 border-b border-slate-200">
+                <th class="py-2 pr-3">Usuário</th><th class="py-2 pr-3">Status</th><th class="py-2 pr-3">Início</th><th class="py-2 pr-3">Vencimento</th><th class="py-2 pr-3">Telefone</th><th class="py-2 pr-3">Créditos</th><th class="py-2 pr-3"></th>
+              </tr></thead>
+              <tbody>${revendas.map((r) => `
+                <tr class="border-b border-slate-100">
+                  <td class="py-2 pr-3"><p class="font-semibold text-[#111B3F]">${safeText(r.nome, 'Revenda')}</p><p class="text-xs text-slate-500">${safeText(r.email, '')}</p></td>
+                  <td class="py-2 pr-3"><span class="ui-badge ${String(r.status).toLowerCase() === 'ativo' ? 'ui-badge--success' : 'ui-badge--neutral'}">${safeText(r.status, '-')}</span></td>
+                  <td class="py-2 pr-3 whitespace-nowrap">${r.inicio ? formatDatePtBr(r.inicio) : '-'}</td>
+                  <td class="py-2 pr-3 whitespace-nowrap">${vencChip(r)}</td>
+                  <td class="py-2 pr-3 whitespace-nowrap">${safeText(r.telefone, '-')}</td>
+                  <td class="py-2 pr-3 whitespace-nowrap font-bold text-[#133F8C]">${brl(r.creditos)}</td>
+                  <td class="py-2 pr-3"><button type="button" data-renew="${r.id}" class="ui-btn ui-btn--outline ui-btn--sm">Renovar / Créditos</button></td>
+                </tr>`).join('')}</tbody>
+            </table>`;
+          listEl.querySelectorAll('[data-renew]').forEach((btn) => btn.addEventListener('click', () => openRenew(revendas.find((x) => String(x.id) === btn.dataset.renew))));
+        };
+        const openRenew = (r) => {
+          if (!r) return;
+          const { ov, close } = openModal(`
+            <div class="flex items-center justify-between mb-4"><p class="font-headline font-extrabold text-on-surface">${safeText(r.nome, 'Revenda')}</p><button type="button" data-close class="text-on-surface-variant"><span class="material-symbols-outlined">close</span></button></div>
+            <p class="text-xs text-on-surface-variant mb-3">Saldo atual: <b>${brl(r.creditos)}</b> · Vence: <b>${r.vencimento ? formatDatePtBr(r.vencimento) : 'sem vencimento'}</b></p>
+            <label class="ui-label">Renovar acesso</label>
+            <div class="grid grid-cols-4 gap-2 mb-4">${[['30d', 30], ['3m', 90], ['6m', 180], ['12m', 365]].map(([l, d]) => `<button type="button" data-dias="${d}" class="ui-btn ui-btn--outline ui-btn--sm">${l}</button>`).join('')}</div>
+            <label class="ui-label">Adicionar créditos (R$)</label>
+            <div class="flex gap-2">
+              <input type="number" step="0.01" min="0" data-cred class="ui-input" placeholder="Ex: 100.00" />
+              <button type="button" data-add-cred class="ui-btn ui-btn--primary">Adicionar</button>
+            </div>
+            <p data-msg class="text-xs text-on-surface-variant mt-2"></p>`);
+          const msg = ov.querySelector('[data-msg]');
+          const doRenew = async (body, okText) => {
+            ov.querySelectorAll('button').forEach((b) => (b.disabled = true));
+            if (msg) { msg.textContent = 'Salvando...'; msg.className = 'text-xs text-on-surface-variant mt-2'; }
+            const { res, data } = await api.request(`/admin/revendas/${r.id}/renovar`, { method: 'POST', body: JSON.stringify(body) }, { notify: false });
+            if (res.ok && data?.success !== false) { ui.message(okText, 'success'); close(); await load(); }
+            else { if (msg) { msg.textContent = data?.message || 'Erro ao salvar.'; msg.className = 'text-xs text-rose-600 mt-2'; } ov.querySelectorAll('button').forEach((b) => (b.disabled = false)); }
+          };
+          ov.querySelectorAll('[data-dias]').forEach((b) => b.addEventListener('click', () => doRenew({ dias: Number(b.dataset.dias) }, 'Acesso renovado.')));
+          ov.querySelector('[data-add-cred]')?.addEventListener('click', () => { const v = Number(ov.querySelector('[data-cred]')?.value); if (!(v > 0)) { if (msg) { msg.textContent = 'Informe um valor válido.'; msg.className = 'text-xs text-rose-600 mt-2'; } return; } doRenew({ creditos: v }, 'Créditos adicionados.'); });
+        };
+        const openCreate = () => {
+          const { ov, close } = openModal(`
+            <div class="flex items-center justify-between mb-4"><p class="font-headline font-extrabold text-on-surface">Cadastrar revenda</p><button type="button" data-close class="text-on-surface-variant"><span class="material-symbols-outlined">close</span></button></div>
+            <div class="space-y-3">
+              <div><label class="ui-label">Nome</label><input data-f="nome" class="ui-input" placeholder="Nome da revenda" /></div>
+              <div><label class="ui-label">Usuário (e-mail)</label><input data-f="email" type="email" class="ui-input" placeholder="revenda@exemplo.com" /></div>
+              <div><label class="ui-label">Senha</label><input data-f="senha" type="password" class="ui-input" placeholder="Mínimo 6 caracteres" /></div>
+              <div class="grid grid-cols-2 gap-2"><div><label class="ui-label">Telefone</label><input data-f="telefone" class="ui-input" placeholder="(00) 0000-0000" /></div><div><label class="ui-label">WhatsApp</label><input data-f="whatsapp" class="ui-input" placeholder="(00) 00000-0000" /></div></div>
+              <div class="grid grid-cols-2 gap-2"><div><label class="ui-label">Créditos (R$)</label><input data-f="creditos" type="number" step="0.01" min="0" class="ui-input" placeholder="0.00" /></div><div><label class="ui-label">Validade</label><select data-f="dias" class="ui-select">${[['30 dias', 30], ['3 meses', 90], ['6 meses', 180], ['12 meses', 365]].map(([l, d]) => `<option value="${d}">${l}</option>`).join('')}</select></div></div>
+            </div>
+            <button type="button" data-save class="ui-btn ui-btn--primary ui-btn--block mt-4">Salvar revenda</button>
+            <p data-msg class="text-xs text-on-surface-variant mt-2"></p>`);
+          const g = (f) => ov.querySelector(`[data-f="${f}"]`)?.value;
+          const msg = ov.querySelector('[data-msg]');
+          ov.querySelector('[data-save]')?.addEventListener('click', async (e) => {
+            const nome = g('nome')?.trim(); const email = g('email')?.trim(); const senha = g('senha');
+            if (!nome || !email || !senha || senha.length < 6) { if (msg) { msg.textContent = 'Preencha nome, e-mail e senha (mín. 6).'; msg.className = 'text-xs text-rose-600 mt-2'; } return; }
+            e.currentTarget.disabled = true; if (msg) { msg.textContent = 'Criando...'; msg.className = 'text-xs text-on-surface-variant mt-2'; }
+            const body = { nome, email, senha, telefone: g('telefone')?.trim(), whatsapp: g('whatsapp')?.trim(), creditos: Number(g('creditos') || 0), dias: Number(g('dias') || 30) };
+            const { res, data } = await api.request('/admin/revendas', { method: 'POST', body: JSON.stringify(body) }, { notify: false });
+            if (res.ok && data?.success !== false) { ui.message(data?.message || 'Revenda criada.', 'success'); close(); await load(); }
+            else { if (msg) { msg.textContent = data?.message || 'Erro ao criar revenda.'; msg.className = 'text-xs text-rose-600 mt-2'; } e.currentTarget.disabled = false; }
+          });
+        };
+        section.querySelector('#btnNovaRevenda')?.addEventListener('click', openCreate);
+        await load();
+      };
+      mountRevendas();
+
       const tbody = document.getElementById('adminUsersTable');
       if (!tbody) {
         ui.clearPageState();
@@ -9106,7 +9224,7 @@
         ui.message('Criacao de admin via painel: use /admin/create-user com permissoes adequadas.', 'info')
       );
       document.getElementById('btnCreateCompany')?.addEventListener('click', () => {
-        window.location.href = '/criar_conta.html?tipo=empresa&origem=admin';
+        window.location.href = '/gest_o_de_estabelecimentos.html?novo=1';
       });
 
       bindBusca(admins);

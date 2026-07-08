@@ -282,6 +282,10 @@ Route::prefix('admin')->group(function () {
             Route::get('/push/client-status', [PushSubscriptionController::class, 'adminClientStatus']);
             Route::post('/push/test-client', [PushSubscriptionController::class, 'adminTestClient']);
             Route::get('/empresas', [EmpresaController::class, 'adminIndex']);
+            // Painel master: gestao de revendas (submaster com saldo em R$).
+            Route::get('/revendas', [\App\Http\Controllers\RevendaController::class, 'index']);
+            Route::post('/revendas', [\App\Http\Controllers\RevendaController::class, 'store'])->middleware('rate.limit:20:1');
+            Route::post('/revendas/{id}/renovar', [\App\Http\Controllers\RevendaController::class, 'renovar'])->whereNumber('id');
             // Painel master: criar empresa e renovar assinatura (aditivo).
             Route::post('/empresas', [EmpresaController::class, 'adminStore'])->middleware('rate.limit:20:1');
             Route::post('/empresas/{id}/renovar', [EmpresaController::class, 'renovar'])->whereNumber('id');
