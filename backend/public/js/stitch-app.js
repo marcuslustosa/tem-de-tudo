@@ -1273,12 +1273,8 @@
         iosSheet.addEventListener('click', (event) => { if (event.target === iosSheet) close(); });
       };
 
-      // Acionada quando a pessoa CLICA em "Instalar app" no menu.
+      // Acionada quando a pessoa CLICA no botao "Adicionar a Tela de Inicio".
       window.tdtInstallApp = async () => {
-        if (isStandalone) {
-          try { ui.message('O app ja esta instalado.', 'info'); } catch (_) { /* silencioso */ }
-          return;
-        }
         if (deferredPrompt) {
           // Android: abre a caixa nativa "Adicionar a tela inicial".
           deferredPrompt.prompt();
@@ -1289,6 +1285,21 @@
         // iPhone (e navegadores sem porta nativa): guia passo a passo.
         openIosGuide();
       };
+
+      // Botao VISIVEL e fixo no topo do dashboard de cada perfil (nao flutua,
+      // nao pisca). So aparece se o app ainda NAO estiver instalado.
+      const dashboards = ['meus_pontos', 'dashboard_parceiro', 'dashboard_admin_master', 'revenda_painel'];
+      if (!isStandalone && dashboards.includes(page)) {
+        const header = document.querySelector('header');
+        if (header && !document.getElementById('tdtInstallBar')) {
+          const bar = document.createElement('div');
+          bar.id = 'tdtInstallBar';
+          bar.className = 'tdt-install-bar';
+          bar.innerHTML = '<button type="button" class="tdt-install-bar__btn"><span class="material-symbols-outlined">install_mobile</span>Adicionar à Tela de Início</button>';
+          header.insertAdjacentElement('afterend', bar);
+          bar.querySelector('button')?.addEventListener('click', () => window.tdtInstallApp());
+        }
+      }
     } catch (_) {
       /* instalacao e melhoria progressiva: nunca deve quebrar a pagina */
     }
@@ -1847,10 +1858,6 @@
               <span>${item.label}</span>
             </a>
           `).join('')}
-          <button type="button" class="app-mobile-sheet__link" data-install-app>
-            <span class="material-symbols-outlined">install_mobile</span>
-            <span>Instalar app</span>
-          </button>
         </div>
       </div>
     `;
@@ -1864,10 +1871,6 @@
     });
     sheet.querySelectorAll('[data-mobile-sheet-link]').forEach((link) => {
       link.addEventListener('click', closeSheet);
-    });
-    sheet.querySelector('[data-install-app]')?.addEventListener('click', () => {
-      closeSheet();
-      if (typeof window.tdtInstallApp === 'function') window.tdtInstallApp();
     });
 
     document.body.appendChild(dock);
