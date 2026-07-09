@@ -421,7 +421,7 @@
     // "OK, resgatar": resgata e leva ao QR do cliente.
     overlay.querySelector('[data-redeem]')?.addEventListener('click', () => {
       dismiss();
-      ui.message('Apresente seu QR Code no estabelecimento para validar o bônus.', 'success');
+      ui.message('Apresente seu QR Code para validar o bônus.', 'success');
       setTimeout(() => { window.location.href = '/meus_pontos.html?mostrar=meu-qrcode'; }, 500);
     });
   }
@@ -640,7 +640,7 @@
         return {
           label: 'Disponível',
           badgeClass: 'bg-emerald-50 text-emerald-700',
-          message: 'Apresente seu QR Code no estabelecimento para resgatar.',
+          message: 'Apresente seu QR Code para resgatar.',
         };
       case 'redeemed':
         return {
@@ -681,7 +681,7 @@
         return {
           label: 'Acumulando',
           badgeClass: 'bg-blue-50 text-blue-700',
-          message: 'Apresente seu QR Code no estabelecimento para acumular pontos ou resgatar.',
+          message: 'Apresente seu QR Code para acumular pontos ou resgatar.',
         };
       case 'not_linked':
         return {
@@ -716,7 +716,7 @@
         return {
           label: 'Disponível',
           badgeClass: 'bg-emerald-50 text-emerald-700',
-          message: 'Apresente seu QR Code no estabelecimento para validar.',
+          message: 'Apresente seu QR Code para validar.',
         };
       case 'redeemed':
         return {
@@ -746,7 +746,7 @@
         return {
           label: 'Pública',
           badgeClass: 'bg-fuchsia-50 text-fuchsia-700',
-          message: 'Entre como cliente e apresente seu QR Code no estabelecimento para validar.',
+          message: 'Entre como cliente e apresente seu QR Code para validar.',
         };
       default:
         return {
@@ -763,7 +763,7 @@
         return {
           label: 'Elegível',
           badgeClass: 'bg-emerald-50 text-emerald-700',
-          message: 'Apresente seu QR Code no estabelecimento para resgatar o bônus aniversário.',
+          message: 'Apresente seu QR Code para resgatar o bônus aniversário.',
         };
       case 'redeemed':
         return {
@@ -3894,7 +3894,7 @@
                     </div>
                     <div class="rounded-[20px] bg-white p-4">
                       <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Como validar</p>
-                      <p class="mt-2 text-sm font-semibold text-[#111B3F]">Apresente seu QR Code no estabelecimento para validar.</p>
+                      <p class="mt-2 text-sm font-semibold text-[#111B3F]">Apresente seu QR Code para validar.</p>
                     </div>
                   </div>
                   <div class="flex flex-wrap items-center gap-3">
@@ -4317,7 +4317,7 @@
             if (params.get('linked') === '1') {
               ui.message(
                 bonusPayload.status === 'available'
-                  ? 'Empresa vinculada com sucesso. Bônus de adesão disponível para apresentar no estabelecimento.'
+                  ? 'Empresa vinculada com sucesso. Bônus de adesão disponível para resgatar.'
                   : 'Empresa vinculada com sucesso.',
                 'success'
               );
@@ -4605,7 +4605,7 @@
         // Resgate → validação presencial (o app apenas consulta; quem credita/valida é a empresa)
         loyaltyList.querySelectorAll('[data-loyalty-redeem]').forEach((btn) => {
           btn.addEventListener('click', () => {
-            ui.message('Apresente seu QR Code no estabelecimento para validar o resgate.', 'success');
+            ui.message('Apresente seu QR Code para validar o resgate.', 'success');
             setTimeout(() => { window.location.href = '/meus_pontos.html?mostrar=meu-qrcode'; }, 400);
           });
         });
@@ -4655,7 +4655,7 @@
           const meta = promotionStatusMeta(p.viewer_status || p.status);
           const empresaUrl = p?.empresa?.public_page_url || (p?.empresa?.id ? `/detalhe_do_parceiro.html?id=${p.empresa.id}` : '#');
           const ctaLabel = p.viewer_status === 'available'
-            ? 'Apresentar QR no estabelecimento'
+            ? 'Apresentar QR Code'
             : (p.viewer_status === 'redeemed' ? 'Já utilizada' : 'Ver empresa');
           const card = document.createElement('div');
           card.className = 'rounded-2xl bg-white/80 border border-surface-variant/30 shadow-sm p-4 flex flex-col gap-2';
@@ -4686,7 +4686,7 @@
           const status = btn.dataset.promoStatus || 'public';
           const targetUrl = btn.dataset.promoUrl || '/parceiros_tem_de_tudo.html';
           if (status === 'available') {
-            ui.message('Apresente seu QR Code no estabelecimento para validar esta promoção.', 'success');
+            ui.message('Apresente seu QR Code para validar esta promoção.', 'success');
             setTimeout(() => {
               window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
             }, 300);
@@ -5394,7 +5394,7 @@
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Meu QR Code</p>
-              <h3 class="mt-2 font-headline text-2xl font-extrabold text-on-surface">Apresente no estabelecimento</h3>
+              <h3 class="mt-2 font-headline text-2xl font-extrabold text-on-surface">Apresente seu QR Code</h3>
               <p class="mt-2 text-sm leading-6 text-on-surface-variant">Mostre este QR para o parceiro escanear e validar bonus, fidelidade, promocao ou aniversario.</p>
             </div>
             <a href="/validar_resgate.html?modo=vinculo-empresa" class="inline-flex h-11 items-center justify-center rounded-full bg-surface-container px-4 text-xs font-bold uppercase tracking-[0.14em] text-on-surface">Ler QR da empresa</a>
@@ -6726,7 +6726,7 @@
                 <p class="mt-1 text-sm text-on-surface-variant">${safeText(dataPreview.descricao, '')}</p>
                 ${precoLine}${brindeLine}
                 <p class="mt-2 text-[11px] text-on-surface-variant">Validade: ${formatDatePtBr(dataPreview.validade, 'Não informada')}</p>
-                <p class="mt-3 text-[11px] font-semibold text-[#133F8C]">Apresente seu QR Code no estabelecimento para validar.</p>
+                <p class="mt-3 text-[11px] font-semibold text-[#133F8C]">Apresente seu QR Code para validar.</p>
               </div>
             </article>
           </div>`;
