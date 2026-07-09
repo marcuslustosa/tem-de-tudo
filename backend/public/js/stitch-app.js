@@ -381,7 +381,7 @@
 
   // Modal automático do bônus de adesão (aparece ao entrar na empresa quando disponível).
   // Suporta "não mostrar novamente" (localStorage) e resgate presencial via QR.
-  function tdtShowBonusModal({ empresaId, titulo, descricao, imagem, validade, corMarca } = {}) {
+  function tdtShowBonusModal({ empresaId, bonusId, titulo, descricao, imagem, validade, corMarca } = {}) {
     const brand = corMarca || '#133F8C';
     const overlay = document.createElement('div');
     overlay.className = 'tdt-modal-overlay';
@@ -418,11 +418,30 @@
     overlay.querySelector('[data-close]')?.addEventListener('click', dismiss);
     overlay.querySelector('[data-nevermore]')?.addEventListener('click', nevermore);
     overlay.addEventListener('click', (e) => { if (e.target === overlay) dismiss(); });
-    // "OK, resgatar": resgata e leva ao QR do cliente.
-    overlay.querySelector('[data-redeem]')?.addEventListener('click', () => {
-      dismiss();
-      ui.message('Apresente seu QR Code para validar o bônus.', 'success');
-      setTimeout(() => { window.location.href = '/meus_pontos.html?mostrar=meu-qrcode'; }, 500);
+    // "OK, resgatar": resgata o bonus na hora (cliente escaneou/entrou na empresa).
+    overlay.querySelector('[data-redeem]')?.addEventListener('click', async (ev) => {
+      const btn = ev.currentTarget;
+      if (!bonusId) { dismiss(); return; }
+      if (btn.dataset.loading === '1') return;
+      btn.dataset.loading = '1';
+      btn.disabled = true;
+      const prev = btn.innerHTML;
+      btn.textContent = 'Resgatando...';
+      try {
+        const { res, data } = await api.request(`/cliente/bonus-adesao/${bonusId}/resgatar`, { method: 'POST' }, { notify: false });
+        if (res.ok && data?.success !== false) {
+          dismiss();
+          ui.message('Bônus de adesão resgatado com sucesso!', 'success');
+          setTimeout(() => window.location.reload(), 900);
+          return;
+        }
+        ui.message(data?.message || 'Não foi possível resgatar o bônus agora.', 'error');
+      } catch (_) {
+        ui.message('Falha de conexão ao resgatar. Tente novamente.', 'error');
+      }
+      btn.disabled = false;
+      btn.innerHTML = prev;
+      btn.dataset.loading = '0';
     });
   }
 
@@ -3501,6 +3520,31 @@
           el.classList.remove('hidden');
           el.href = formatter ? formatter(value) : value;
         };
+        // Resgate iniciado pelo cliente: apos escanear/entrar na empresa, ele
+        // seleciona o beneficio e resgata aqui mesmo (sem a empresa escanear ninguem).
+        const redeemBenefit = async (endpoint, actionEl, successMsg) => {
+          if (!actionEl || actionEl.dataset.loading === '1') return;
+          actionEl.dataset.loading = '1';
+          const prevText = actionEl.textContent;
+          actionEl.textContent = 'Processando...';
+          actionEl.disabled = true;
+          actionEl.classList.add('opacity-60', 'cursor-not-allowed');
+          try {
+            const { res, data } = await api.request(endpoint, { method: 'POST' }, { notify: false });
+            if (res.ok && data?.success !== false) {
+              ui.message(successMsg || data?.message || 'Benefício resgatado!', 'success');
+              setTimeout(() => window.location.reload(), 900);
+              return;
+            }
+            ui.message(data?.message || 'Não foi possível resgatar agora.', 'error');
+          } catch (_) {
+            ui.message('Falha de conexão ao resgatar. Tente novamente.', 'error');
+          }
+          actionEl.textContent = prevText;
+          actionEl.disabled = false;
+          actionEl.classList.remove('opacity-60', 'cursor-not-allowed');
+          actionEl.dataset.loading = '0';
+        };
         const renderBonusCard = (payload) => {
           const bonus = payload?.bonus || null;
           const meta = bonusStatusMeta(payload?.status);
@@ -3551,11 +3595,20 @@
             return;
           }
 
-          if (payload?.status === 'available' || payload?.status === 'redeemed') {
-            actionEl.textContent = 'Mostrar meu QR Code';
-            actionEl.onclick = () => {
-              window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
-            };
+          actionEl.disabled = false;
+          actionEl.classList.remove('opacity-60', 'cursor-not-allowed');
+
+          if (payload?.status === 'redeemed') {
+            actionEl.textContent = 'Bônus já resgatado';
+            actionEl.disabled = true;
+            actionEl.classList.add('opacity-60', 'cursor-not-allowed');
+            actionEl.onclick = null;
+            return;
+          }
+
+          if (payload?.status === 'available' && bonus?.id) {
+            actionEl.textContent = 'Resgatar bônus';
+            actionEl.onclick = () => redeemBenefit(`/cliente/bonus-adesao/${bonus.id}/resgatar`, actionEl, 'Bônus de adesão resgatado!');
             return;
           }
 
@@ -3641,11 +3694,17 @@
             return;
           }
 
-          if (status === 'available' || status === 'redeemed') {
-            actionEl.textContent = 'Mostrar meu QR Code';
-            actionEl.onclick = () => {
-              window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
-            };
+          if (status === 'redeemed') {
+            actionEl.textContent = 'Bônus já resgatado';
+            actionEl.disabled = true;
+            actionEl.classList.add('opacity-60', 'cursor-not-allowed');
+            actionEl.onclick = null;
+            return;
+          }
+
+          if (status === 'available' && bonus?.id) {
+            actionEl.textContent = 'Resgatar bônus';
+            actionEl.onclick = () => redeemBenefit(`/cliente/bonus-aniversario/${bonus.id}/resgatar`, actionEl, 'Bônus aniversário resgatado!');
             return;
           }
 
@@ -3745,9 +3804,25 @@
             return;
           }
 
-          actionEl.textContent = rewardAvailable ? 'Mostrar meu QR para resgatar' : 'Mostrar meu QR Code';
+          actionEl.disabled = false;
+          actionEl.classList.remove('opacity-60', 'cursor-not-allowed');
+
+          if (rewardAvailable && loyalty?.id) {
+            actionEl.textContent = 'Resgatar recompensa';
+            actionEl.onclick = () => redeemBenefit(`/cliente/cartao-fidelidade/${loyalty.id}/resgatar`, actionEl, 'Recompensa resgatada!');
+            return;
+          }
+
+          if (loyalty?.id) {
+            const perVisit = Number(loyalty?.pontos_por_visita || progress?.points_per_visit || 1);
+            actionEl.textContent = `Registrar visita (+${perVisit})`;
+            actionEl.onclick = () => redeemBenefit(`/cliente/cartao-fidelidade/${loyalty.id}/visita`, actionEl, 'Visita registrada! Ponto adicionado.');
+            return;
+          }
+
+          actionEl.textContent = 'Ler QR da empresa';
           actionEl.onclick = () => {
-            window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
+            window.location.href = '/validar_resgate.html?modo=vinculo-empresa';
           };
         };
         const renderReminderCard = (payload) => {
@@ -4281,6 +4356,7 @@
                 const b = bonusPayload.bonus || {};
                 setTimeout(() => tdtShowBonusModal({
                   empresaId: selectedCompanyId,
+                  bonusId: b.id,
                   titulo: b.titulo || 'Bônus de adesão',
                   descricao: b.descricao || 'Você ganhou um benefício de boas-vindas!',
                   imagem: safeImage(b.imagem_url || b.imagem, IMAGE_FALLBACKS.promo),

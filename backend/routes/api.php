@@ -18,6 +18,7 @@ use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmpresaPromocaoController;
 use App\Http\Controllers\API\ClienteAPIController;
+use App\Http\Controllers\API\ClienteBeneficioController;
 use App\Http\Controllers\API\EmpresaAPIController;
 use App\Http\Controllers\SetupController;
 
@@ -370,7 +371,14 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     // PromoÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
     Route::get('/promocoes', [ClienteAPIController::class, 'listarPromocoes']);
     Route::post('/promocoes/{id}/resgatar', [ClienteAPIController::class, 'resgatarPromocao'])->middleware('rate.limit:5:1');
-    
+
+    // Resgate de beneficios iniciado pelo cliente (apos escanear o QR da empresa).
+    // O cliente seleciona o beneficio; a validacao reaproveita os services do fluxo antigo.
+    Route::post('/bonus-adesao/{id}/resgatar', [ClienteBeneficioController::class, 'resgatarBonusAdesao'])->whereNumber('id')->middleware('rate.limit:10:1');
+    Route::post('/bonus-aniversario/{id}/resgatar', [ClienteBeneficioController::class, 'resgatarBonusAniversario'])->whereNumber('id')->middleware('rate.limit:10:1');
+    Route::post('/cartao-fidelidade/{id}/visita', [ClienteBeneficioController::class, 'registrarVisitaFidelidade'])->whereNumber('id')->middleware('rate.limit:10:1');
+    Route::post('/cartao-fidelidade/{id}/resgatar', [ClienteBeneficioController::class, 'resgatarRecompensaFidelidade'])->whereNumber('id')->middleware('rate.limit:10:1');
+
     // AvaliaÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
     Route::post('/avaliar', [AvaliacaoController::class, 'store']);
     Route::get('/avaliacoes', [AvaliacaoController::class, 'minhasAvaliacoes']);
