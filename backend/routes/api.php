@@ -370,7 +370,7 @@ Route::middleware(['auth:sanctum', 'role.permission:cliente'])->prefix('cliente'
     
     // PromoÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â§ÃƒÆ'Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ'Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âµes
     Route::get('/promocoes', [ClienteAPIController::class, 'listarPromocoes']);
-    Route::post('/promocoes/{id}/resgatar', [ClienteAPIController::class, 'resgatarPromocao'])->middleware('rate.limit:5:1');
+    Route::post('/promocoes/{id}/resgatar', [ClienteBeneficioController::class, 'resgatarPromocao'])->whereNumber('id')->middleware('rate.limit:10:1');
 
     // Resgate de beneficios iniciado pelo cliente (apos escanear o QR da empresa).
     // O cliente seleciona o beneficio; a validacao reaproveita os services do fluxo antigo.

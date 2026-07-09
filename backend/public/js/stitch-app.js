@@ -3943,7 +3943,7 @@
                     </div>
                     <div class="rounded-[20px] bg-white p-4">
                       <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Como validar</p>
-                      <p class="mt-2 text-sm font-semibold text-[#111B3F]">Apresente seu QR Code para validar.</p>
+                      <p class="mt-2 text-sm font-semibold text-[#111B3F]">Resgate aqui no app e mostre no balcão.</p>
                     </div>
                   </div>
                   <div class="flex flex-wrap items-center gap-3">
@@ -3963,8 +3963,8 @@
                 actionBtn.textContent = 'Voltar ao painel';
                 actionBtn.onclick = () => { window.location.href = redirectMap[perfilViewer] || '/meus_pontos.html'; };
               } else if (promo.viewer_status === 'available') {
-                actionBtn.textContent = 'Mostrar meu QR Code';
-                actionBtn.onclick = () => { window.location.href = '/meus_pontos.html?mostrar=meu-qrcode'; };
+                actionBtn.textContent = 'Resgatar promoção';
+                actionBtn.onclick = () => redeemBenefit(`/cliente/promocoes/${promo.id}/resgatar`, actionBtn, 'Promoção resgatada!');
               } else if (promo.viewer_status === 'redeemed') {
                 actionBtn.textContent = 'Já utilizada';
                 actionBtn.disabled = true;

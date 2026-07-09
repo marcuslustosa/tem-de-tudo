@@ -8,9 +8,11 @@ use App\Models\BonusAniversario;
 use App\Models\CartaoFidelidade;
 use App\Models\CartaoFidelidadeMovimento;
 use App\Models\Empresa;
+use App\Models\Promocao;
 use App\Services\BonusAdesaoService;
 use App\Services\BonusAniversarioService;
 use App\Services\CartaoFidelidadeService;
+use App\Services\PromocaoInstantaneaService;
 use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +32,35 @@ class ClienteBeneficioController extends Controller
         private readonly BonusAdesaoService $bonusAdesaoService,
         private readonly BonusAniversarioService $bonusAniversarioService,
         private readonly CartaoFidelidadeService $cartaoService,
+        private readonly PromocaoInstantaneaService $promocaoService,
     ) {
+    }
+
+    public function resgatarPromocao(int $id): JsonResponse
+    {
+        $user = Auth::user();
+
+        $promocao = Promocao::query()->find($id);
+        if (!$promocao) {
+            return $this->naoEncontrado('Promocao nao encontrada.');
+        }
+
+        $empresa = $this->empresaVisivel((int) $promocao->empresa_id);
+        if (!$empresa) {
+            return $this->empresaIndisponivel();
+        }
+
+        try {
+            $snapshot = $this->promocaoService->validatePromotion($empresa, $promocao, $user, $user);
+        } catch (DomainException $e) {
+            return $this->conflito($e->getMessage());
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Promocao resgatada com sucesso.',
+            'data' => $snapshot,
+        ]);
     }
 
     public function resgatarBonusAdesao(int $id): JsonResponse
