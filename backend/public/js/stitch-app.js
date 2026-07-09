@@ -6525,10 +6525,8 @@
         section.innerHTML = `
           <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="max-w-[620px]">
-              <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Operacao de push</p>
-              <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Campanhas saem desta tela</h2>
-              <p class="mt-3 text-sm leading-6 text-slate-500">Promocao instantanea, bonus aniversario e lembrete de retorno enviam push somente para clientes vinculados com notificacoes ativas.</p>
-              <p class="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-slate-400">Fluxo real: cliente vinculado, notificacoes ativas e campanha enviada pela empresa</p>
+              <h2 class="text-2xl font-extrabold text-[#111B3F]">Campanhas e push</h2>
+              <p class="mt-1 text-sm text-slate-500">Enviadas só para clientes vinculados.</p>
             </div>
             <span class="inline-flex rounded-full ${serverReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'} px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em]">
               Push servidor: ${serverReady ? 'configurado' : 'pendente'}
@@ -7809,10 +7807,7 @@
           <div class="rounded-[28px] bg-gradient-to-r from-[#133F8C] via-[#00AFA8] to-[#B01774] p-6 text-white shadow-[0_18px_45px_rgba(17,27,63,0.18)]">
             <div class="flex flex-wrap items-start justify-between gap-4">
               <div class="max-w-[680px]">
-                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-white/65">Relatorio operacional</p>
-                <h1 class="mt-3 text-3xl font-extrabold leading-tight">Campanhas reais da empresa</h1>
-                <p class="mt-3 text-sm leading-6 text-white/82">Esta tela mostra resultados reais da sua operacao. Criacao de promocao, aniversario, fidelidade e lembrete continua na Gestão de Ofertas.</p>
-                <p class="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-white/70">Fluxo real: cliente se vincula, ativa notificacoes e recebe o envio da empresa.</p>
+                <h1 class="text-2xl font-extrabold leading-tight">Resultados da sua operação</h1>
               </div>
               <div class="grid gap-3 sm:grid-cols-2">
                 <a href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary" class="inline-flex h-12 items-center justify-center rounded-full bg-white px-5 text-sm font-extrabold text-[#111B3F] shadow-sm">Abrir gestao de ofertas</a>
