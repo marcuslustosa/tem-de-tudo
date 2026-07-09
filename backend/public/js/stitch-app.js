@@ -1224,58 +1224,22 @@
   // ---- Instalar app (PWA): botao nativo no Android + guia no iPhone ----
   function mountInstallPrompt() {
     try {
-      const scope = getScopeForCurrentPage();
-      // Somente para o publico do cliente (nao poluir painel empresa/admin).
-      if (scope === 'admin' || scope === 'empresa') return;
-
       const isStandalone = window.matchMedia?.('(display-mode: standalone)')?.matches
         || window.navigator.standalone === true;
-      if (isStandalone) return; // ja instalado / aberto pelo icone
-
-      const ua = window.navigator.userAgent || '';
-      const isIOS = /iPad|iPhone|iPod/i.test(ua)
-        || (window.navigator.platform === 'MacIntel' && Number(window.navigator.maxTouchPoints || 0) > 1);
-
-      const DISMISS_KEY = 'tdt_install_dismissed_at';
-      const DISMISS_DAYS = 7;
-      const dismissedAt = Number(localStorage.getItem(DISMISS_KEY) || 0);
-      const recentlyDismissed = dismissedAt > 0 && (Date.now() - dismissedAt) < DISMISS_DAYS * 86400000;
 
       let deferredPrompt = null;
 
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'tdt-install-fab';
-      btn.setAttribute('aria-label', 'Instalar o app Tem de Tudo');
-      btn.innerHTML = '<span class="material-symbols-outlined">install_mobile</span><span>Instalar app</span>';
-      btn.hidden = true;
-
-      const dismiss = document.createElement('button');
-      dismiss.type = 'button';
-      dismiss.className = 'tdt-install-fab__close';
-      dismiss.setAttribute('aria-label', 'Agora nao');
-      dismiss.innerHTML = '<span class="material-symbols-outlined">close</span>';
-      dismiss.hidden = true;
-
-      const show = () => { if (!recentlyDismissed) { btn.hidden = false; dismiss.hidden = false; } };
-      const hide = () => { btn.hidden = true; dismiss.hidden = true; };
-
-      dismiss.addEventListener('click', () => {
-        localStorage.setItem(DISMISS_KEY, String(Date.now()));
-        hide();
-      });
-
-      // Android/Chrome/Edge: porta oficial de instalacao.
+      // Android/Chrome/Edge: captura a porta oficial de instalacao SEM mostrar
+      // nada na tela (nada de botao flutuante que fica piscando). O usuario
+      // aciona clicando em "Instalar app" no menu "Mais".
       window.addEventListener('beforeinstallprompt', (event) => {
         event.preventDefault();
         deferredPrompt = event;
-        show();
       });
 
       window.addEventListener('appinstalled', () => {
-        hide();
-        localStorage.setItem(DISMISS_KEY, String(Date.now()));
-        try { ui.message('App instalado! Abra pelo icone na tela de inicio para ativar as notificacoes.', 'success'); } catch (_) { /* silencioso */ }
+        deferredPrompt = null;
+        try { ui.message('App instalado! Abra pelo icone na tela de inicio.', 'success'); } catch (_) { /* silencioso */ }
       });
 
       let iosSheet = null;
@@ -1309,23 +1273,22 @@
         iosSheet.addEventListener('click', (event) => { if (event.target === iosSheet) close(); });
       };
 
-      btn.addEventListener('click', async () => {
+      // Acionada quando a pessoa CLICA em "Instalar app" no menu.
+      window.tdtInstallApp = async () => {
+        if (isStandalone) {
+          try { ui.message('O app ja esta instalado.', 'info'); } catch (_) { /* silencioso */ }
+          return;
+        }
         if (deferredPrompt) {
+          // Android: abre a caixa nativa "Adicionar a tela inicial".
           deferredPrompt.prompt();
-          const choice = await deferredPrompt.userChoice.catch(() => null);
-          if (choice?.outcome === 'accepted') hide();
+          await deferredPrompt.userChoice.catch(() => null);
           deferredPrompt = null;
           return;
         }
-        // iPhone e demais casos sem porta nativa: guia passo a passo.
+        // iPhone (e navegadores sem porta nativa): guia passo a passo.
         openIosGuide();
-      });
-
-      document.body.appendChild(btn);
-      document.body.appendChild(dismiss);
-
-      // iPhone nao dispara beforeinstallprompt: mostramos o botao que abre o guia.
-      if (isIOS) show();
+      };
     } catch (_) {
       /* instalacao e melhoria progressiva: nunca deve quebrar a pagina */
     }
@@ -1884,6 +1847,10 @@
               <span>${item.label}</span>
             </a>
           `).join('')}
+          <button type="button" class="app-mobile-sheet__link" data-install-app>
+            <span class="material-symbols-outlined">install_mobile</span>
+            <span>Instalar app</span>
+          </button>
         </div>
       </div>
     `;
@@ -1897,6 +1864,10 @@
     });
     sheet.querySelectorAll('[data-mobile-sheet-link]').forEach((link) => {
       link.addEventListener('click', closeSheet);
+    });
+    sheet.querySelector('[data-install-app]')?.addEventListener('click', () => {
+      closeSheet();
+      if (typeof window.tdtInstallApp === 'function') window.tdtInstallApp();
     });
 
     document.body.appendChild(dock);
