@@ -5357,54 +5357,9 @@
         await renderQR();
       }
 
-      if (perfil === 'cliente') {
-        const main = document.querySelector('main') || document.querySelector('.main-content') || document.body;
-        const qrHost = document.getElementById('clienteQRSectionHost');
-        const myQrSection = document.createElement('div');
-        myQrSection.id = 'clienteQRSection';
-        myQrSection.className = 'profile-surface-card profile-qr-card';
-        myQrSection.innerHTML = `
-          <div class="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Meu QR Code</p>
-              <h3 class="mt-2 font-headline text-2xl font-extrabold text-on-surface">Apresente seu QR Code</h3>
-              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Mostre este QR para o parceiro escanear e validar bonus, fidelidade, promocao ou aniversario.</p>
-            </div>
-            <a href="/validar_resgate.html?modo=vinculo-empresa" class="inline-flex h-11 items-center justify-center rounded-full bg-surface-container px-4 text-xs font-bold uppercase tracking-[0.14em] text-on-surface">Ler QR da empresa</a>
-          </div>
-          <div id="clienteQRContainer" class="flex flex-col items-center gap-2 min-h-[80px] justify-center">
-            <p class="text-sm text-outline">Carregando...</p>
-          </div>
-        `;
-        if (qrHost) {
-          qrHost.innerHTML = '';
-          qrHost.appendChild(myQrSection);
-        } else {
-          main.prepend(myQrSection);
-        }
-
-        const qrContainer = document.getElementById('clienteQRContainer');
-        const { res, data } = await api.request('/cliente/meu-qrcode', {}, { notify: false });
-        const payload = data?.data || {};
-        if (res.ok && payload?.codigo && payload?.qrcode_svg) {
-          const expiraEm = payload.expira_em ? new Date(payload.expira_em).toLocaleTimeString('pt-BR') : '--';
-          qrContainer.innerHTML = `
-            <div class="w-44 h-44 bg-white rounded-xl border border-outline-variant/40 p-2 flex items-center justify-center overflow-hidden">
-              ${payload.qrcode_svg}
-            </div>
-            <div class="bg-surface-container px-4 py-2 rounded-xl text-center w-full">
-              <span class="text-xs font-mono text-on-surface break-all">${payload.codigo}</span>
-            </div>
-            <button id="copiarMeuQr" class="px-3 py-1.5 rounded-lg bg-surface-container text-xs font-semibold text-on-surface">Copiar codigo</button>
-            <p class="text-[10px] text-outline mt-1">Expira as ${expiraEm}</p>
-          `;
-          document.getElementById('copiarMeuQr')?.addEventListener('click', () => {
-            navigator.clipboard.writeText(payload.codigo).then(() => ui.message('Codigo do seu QR copiado.', 'success'));
-          });
-        } else {
-          qrContainer.innerHTML = '<p class="text-sm text-outline">Nao foi possivel carregar seu QR agora.</p>';
-        }
-      }
+      // Cliente: esta pagina e apenas o scanner (ler o QR do adesivo da empresa).
+      // O QR proprio do cliente fica no atalho "Meu QR Code" da home, nao aqui
+      // (nao faz sentido apresentar o proprio QR numa tela que serve para escanear outro).
 
       const renderItem = (item) => {
         const div = document.createElement('div');
