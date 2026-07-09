@@ -25,7 +25,8 @@ class CompanyQrCodeServiceTest extends TestCase
         $qrCode = $service->gerarQRCodeEmpresa($empresa);
 
         $this->assertNotNull($qrCode->id);
-        $this->assertStringStartsWith('COMPANY_V1_', $qrCode->code);
+        // Codigo curto e opaco (formato novo: EMP + aleatorio). Nao revela o id.
+        $this->assertMatchesRegularExpression('/^EMP[A-Z0-9]+$/', $qrCode->code);
         $this->assertDoesNotMatchRegularExpression('/^QR-\\d+-/i', $qrCode->code);
         $this->assertNotEmpty($qrCode->qr_path);
 
