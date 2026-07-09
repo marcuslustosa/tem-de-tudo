@@ -65,7 +65,7 @@ class PromocaoController extends Controller
             'desconto' => 'nullable|numeric|min:0|max:100',
             'tipo_recompensa' => 'nullable|string|max:60',
             'tipo' => 'nullable|string|max:60',
-            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'imagem_url' => 'required_without:imagem|string|max:2048',
         ]);
 
@@ -137,7 +137,7 @@ class PromocaoController extends Controller
             'desconto' => 'nullable|numeric|min:0|max:100',
             'tipo_recompensa' => 'nullable|string|max:60',
             'tipo' => 'nullable|string|max:60',
-            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'imagem_url' => 'nullable|string|max:2048',
             'remover_imagem' => 'sometimes|boolean',
         ]);

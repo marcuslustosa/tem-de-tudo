@@ -5350,7 +5350,7 @@
           if (res.ok && qrList.length && qrList[0].code) {
             const qr = qrList[0];
             container.innerHTML = `
-              <p class="text-[11px] text-outline mb-1">Use este QR no adesivo da loja para abrir a pagina publica correta e concluir o vinculo do cliente.</p>
+              <p class="text-[11px] text-outline mb-1">Coloque este QR no adesivo da loja.</p>
               <img src="${qr.qr_image || qr.qr_url}" alt="QR Code da loja" class="w-44 h-44 rounded-xl border border-outline-variant/40 bg-white p-2" loading="lazy" />
               <div class="bg-surface-container px-4 py-2 rounded-xl text-center">
                 <span class="text-xs font-mono text-on-surface break-all">${qr.code}</span>
@@ -6106,10 +6106,8 @@
         section.innerHTML = `
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p class="text-xs font-bold uppercase tracking-[0.14em] text-on-surface-variant">Notifica&ccedil;&otilde;es e campanhas</p>
-              <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Push para clientes vinculados</h2>
-              <p class="mt-2 text-sm leading-6 text-on-surface-variant">Promoção, aniversário e lembrete saem pela Gestão de Ofertas e usam somente clientes vinculados a esta empresa.</p>
-              <p class="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-on-surface-variant">Fluxo real: cliente ativa notificações, empresa cria campanha, empresa envia push</p>
+              <h2 class="font-headline text-xl font-extrabold text-on-surface">Push para clientes</h2>
+              <p class="mt-1 text-sm text-on-surface-variant">Só para clientes vinculados a esta empresa.</p>
             </div>
             <span class="rounded-full ${serverReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'} px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">
               Push servidor: ${serverReady ? 'configurado' : 'pendente'}
@@ -6233,7 +6231,7 @@
       if (heroName) heroName.textContent = safeText(storefrontInfo?.nome, safeText(currentUser?.name, 'Sua empresa'));
       if (heroSubtitle) {
         heroSubtitle.textContent = qrPayload?.public_page_url
-          ? 'O cliente escaneia o QR da empresa para abrir a vitrine e concluir o vínculo. A equipe usa o QR do cliente no balcão para validar benefícios.'
+          ? 'Leia o QR do cliente no balcão para validar benefícios.'
           : 'Gerencie clientes, campanhas e validações sem sair deste painel.';
       }
       if (heroMeta) {
@@ -6262,7 +6260,7 @@
                   : `<img src="${safeImage(qrPayload.qr_url, IMAGE_FALLBACKS.store)}" alt="QR Code da empresa" class="h-full w-full object-contain" />`}
               </div>
               <div class="space-y-3 text-sm text-white/80">
-                <p>O cliente deve escanear este QR no adesivo da loja para abrir a pagina publica correta e concluir o vinculo.</p>
+                <p>O cliente escaneia este QR para se vincular.</p>
                 <div class="rounded-[18px] bg-white/10 px-4 py-3 ring-1 ring-white/10">
                   <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">Codigo da empresa</p>
                   <p class="mt-2 break-all font-mono text-xs text-white">${safeText(qrPayload.code)}</p>

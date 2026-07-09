@@ -194,7 +194,7 @@ class EmpresaAPIController extends Controller
         }
 
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,jpg,png,webp|max:5120',
+            'image' => 'required|image|mimes:jpeg,jpg,png,webp|max:4096',
         ]);
 
         if (!Schema::hasColumn('empresas', $column)) {

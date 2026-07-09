@@ -51,7 +51,7 @@ class BonusAniversarioController extends Controller
             'notification_title' => 'nullable|string|max:80',
             'notification_body' => 'nullable|string|max:120',
             'ativo' => 'sometimes|boolean',
-            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'imagem_url' => 'nullable|string|max:2048',
         ]);
 
@@ -100,7 +100,7 @@ class BonusAniversarioController extends Controller
             'notification_title' => 'nullable|string|max:80',
             'notification_body' => 'nullable|string|max:120',
             'ativo' => 'sometimes|boolean',
-            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:3072',
+            'imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'imagem_url' => 'nullable|string|max:2048',
             'remover_imagem' => 'sometimes|boolean',
         ]);
