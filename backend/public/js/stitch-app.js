@@ -659,7 +659,7 @@
         return {
           label: 'Disponível',
           badgeClass: 'bg-emerald-50 text-emerald-700',
-          message: 'Apresente seu QR Code para resgatar.',
+          message: 'Toque em resgatar para usar o benefício.',
         };
       case 'redeemed':
         return {
@@ -700,7 +700,7 @@
         return {
           label: 'Acumulando',
           badgeClass: 'bg-blue-50 text-blue-700',
-          message: 'Apresente seu QR Code para acumular pontos ou resgatar.',
+          message: 'Registre a visita para somar pontos de fidelidade.',
         };
       case 'not_linked':
         return {
@@ -735,7 +735,7 @@
         return {
           label: 'Disponível',
           badgeClass: 'bg-emerald-50 text-emerald-700',
-          message: 'Apresente seu QR Code para validar.',
+          message: 'Toque em resgatar para usar.',
         };
       case 'redeemed':
         return {
@@ -782,7 +782,7 @@
         return {
           label: 'Elegível',
           badgeClass: 'bg-emerald-50 text-emerald-700',
-          message: 'Apresente seu QR Code para resgatar o bônus aniversário.',
+          message: 'Toque em resgatar para usar o bônus de aniversário.',
         };
       case 'redeemed':
         return {
@@ -1690,11 +1690,11 @@
         <div>
           <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Resumo do app</p>
           <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Seus vínculos e benefícios</h2>
-          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">Você recebe campanhas somente das empresas vinculadas à sua conta. Use o QR da empresa para criar o vínculo e seu QR pessoal para validar benefícios no balcão.</p>
+          <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-500">Você recebe campanhas somente das empresas vinculadas à sua conta. Escaneie o QR da empresa para se vincular e resgatar os benefícios direto na página dela.</p>
         </div>
         <div class="grid gap-2 sm:grid-cols-2">
           <a href="/parceiros_tem_de_tudo.html" class="app-secondary-button justify-center">Explorar empresas</a>
-          <a href="/meus_pontos.html?mostrar=meu-qrcode" class="app-primary-button justify-center">Mostrar meu QR</a>
+          <a href="/validar_resgate.html?modo=vinculo-empresa" class="app-primary-button justify-center">Ler QR da empresa</a>
         </div>
       </div>
       <div class="mt-5 grid gap-3 sm:grid-cols-3">
@@ -1794,7 +1794,7 @@
           { label: 'Inicio', icon: 'home', href: '/dashboard_parceiro.html', active: ['dashboard_parceiro'] },
           { label: 'Clientes', icon: 'groups', href: '/clientes_fidelizados_loja.html', active: ['clientes_fidelizados_loja'] },
           { label: 'Ofertas', icon: 'campaign', href: '/gest_o_de_ofertas_parceiro.html', active: ['gest_o_de_ofertas_parceiro', 'minhas_campanhas_loja'] },
-          { label: 'Validar', icon: 'qr_code_scanner', href: '/validar_resgate.html?modo=beneficios', active: pageKey === 'empresa:validar_resgate' ? ['validar_resgate'] : [] , accent: true },
+          { label: 'Meu QR', icon: 'qr_code_2', href: '/validar_resgate.html?modo=beneficios', active: pageKey === 'empresa:validar_resgate' ? ['validar_resgate'] : [] , accent: true },
         ],
         more: [
           { label: 'Operacao', icon: 'insights', href: '/minhas_campanhas_loja.html' },
@@ -1811,7 +1811,6 @@
           { label: 'Novidades', icon: 'notifications', href: '/recompensas.html', active: ['recompensas'] },
         ],
         more: [
-          { label: 'Meu QR', icon: 'qr_code_2', href: '/meus_pontos.html?mostrar=meu-qrcode' },
           { label: 'Historico', icon: 'history', href: '/hist_rico_de_uso.html' },
           { label: 'Perfil', icon: 'person', href: '/meu_perfil.html' },
           { label: 'Notificacoes', icon: 'campaign', href: '/recompensas.html' },
@@ -2836,47 +2835,6 @@
             ? `/parceiros_tem_de_tudo.html?busca=${encodeURIComponent(term)}`
             : '/parceiros_tem_de_tudo.html';
         });
-
-        const qrCard = document.getElementById('homeMyQrCard');
-        const qrContainer = document.getElementById('homeMyQrContainer');
-        const toggleQrBtn = document.getElementById('btnShowMyQr');
-        const revealMyQr = () => {
-          qrCard?.classList.remove('hidden');
-          qrCard?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          toggleQrBtn?.classList.add('is-active');
-          toggleQrBtn?.setAttribute('aria-expanded', 'true');
-        };
-        const hideMyQr = () => {
-          qrCard?.classList.add('hidden');
-          toggleQrBtn?.classList.remove('is-active');
-          toggleQrBtn?.setAttribute('aria-expanded', 'false');
-        };
-
-        if (qrContainer) {
-          if (myQr.qrcode_svg) {
-            // Simples e objetivo: logo + QR, sem textos.
-            qrContainer.innerHTML = `
-              <img src="/img/logo.png" alt="Tem de Tudo" class="mx-auto mb-4 h-10 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
-              <div class="mx-auto flex h-64 w-64 items-center justify-center rounded-[28px] bg-white p-4 shadow-[0_18px_45px_rgba(8,10,18,0.12)] ring-1 ring-black/5">${myQr.qrcode_svg}</div>
-            `;
-          } else {
-            qrContainer.innerHTML = '<p class="text-sm text-slate-500">Não foi possível carregar seu QR Code agora.</p>';
-          }
-        }
-
-        toggleQrBtn?.addEventListener('click', () => {
-          if (qrCard?.classList.contains('hidden')) {
-            revealMyQr();
-          } else {
-            hideMyQr();
-          }
-        });
-
-        if (params.get('mostrar') === 'meu-qrcode') {
-          revealMyQr();
-        } else {
-          hideMyQr();
-        }
 
         return;
       }
@@ -4026,12 +3984,14 @@
 
         if (reviewShowQrEl && reviewShowQrEl.dataset.bound !== '1') {
           reviewShowQrEl.dataset.bound = '1';
+          // O cliente nao apresenta mais QR proprio; para cliente o botao e desnecessario.
+          if (perfilViewer === 'cliente') {
+            reviewShowQrEl.classList.add('hidden');
+          }
           reviewShowQrEl.addEventListener('click', () => {
-            if (perfilViewer === 'cliente') {
-              window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
-            } else if (!perfilViewer) {
+            if (!perfilViewer) {
               window.location.href = '/entrar.html';
-            } else {
+            } else if (perfilViewer !== 'cliente') {
               window.location.href = redirectMap[perfilViewer] || '/meus_pontos.html';
             }
           });
@@ -4639,7 +4599,7 @@
             ${item.rewardAvailable
               ? `<button class="loyalty-redeem-btn mt-4" type="button" data-loyalty-redeem="${c.id}"><span class="material-symbols-outlined">redeem</span> Resgatar benefício</button>`
               : ''}
-            <p class="loyalty-presential-note mt-3"><span class="material-symbols-outlined text-sm">storefront</span> Este benefício deverá ser validado pelo estabelecimento.</p>
+            <p class="loyalty-presential-note mt-3"><span class="material-symbols-outlined text-sm">storefront</span> Resgate direto na página da empresa.</p>
           </article>`;
       };
 
@@ -4652,11 +4612,11 @@
             bar.style.width = `${Number(bar.dataset.target || 0)}%`;
           });
         });
-        // Resgate → validação presencial (o app apenas consulta; quem credita/valida é a empresa)
+        // Resgate acontece na página da empresa (o cliente escaneou o QR e resgata lá).
         loyaltyList.querySelectorAll('[data-loyalty-redeem]').forEach((btn) => {
           btn.addEventListener('click', () => {
-            ui.message('Apresente seu QR Code para validar o resgate.', 'success');
-            setTimeout(() => { window.location.href = '/meus_pontos.html?mostrar=meu-qrcode'; }, 400);
+            const empresaId = btn.getAttribute('data-loyalty-redeem');
+            window.location.href = `/detalhe_do_parceiro.html?id=${encodeURIComponent(empresaId)}`;
           });
         });
       }
@@ -4705,7 +4665,7 @@
           const meta = promotionStatusMeta(p.viewer_status || p.status);
           const empresaUrl = p?.empresa?.public_page_url || (p?.empresa?.id ? `/detalhe_do_parceiro.html?id=${p.empresa.id}` : '#');
           const ctaLabel = p.viewer_status === 'available'
-            ? 'Apresentar QR Code'
+            ? 'Resgatar'
             : (p.viewer_status === 'redeemed' ? 'Já utilizada' : 'Ver empresa');
           const card = document.createElement('div');
           card.className = 'rounded-2xl bg-white/80 border border-surface-variant/30 shadow-sm p-4 flex flex-col gap-2';
@@ -4733,16 +4693,9 @@
         grid.addEventListener('click', async (e) => {
           const btn = e.target.closest('.btn-promo-info');
           if (!btn || btn.disabled) return;
-          const status = btn.dataset.promoStatus || 'public';
           const targetUrl = btn.dataset.promoUrl || '/parceiros_tem_de_tudo.html';
-          if (status === 'available') {
-            ui.message('Apresente seu QR Code para validar esta promoção.', 'success');
-            setTimeout(() => {
-              window.location.href = '/meus_pontos.html?mostrar=meu-qrcode';
-            }, 300);
-          } else {
-            window.location.href = targetUrl;
-          }
+          // O resgate acontece na página da empresa (cliente escaneou e resgata lá).
+          window.location.href = targetUrl;
         });
       } else {
         const empty = document.createElement('p');
@@ -5348,14 +5301,12 @@
 
       if (titleEl) {
         titleEl.textContent = perfil === 'empresa'
-          ? (companyBenefitMode ? 'Consultar cliente e validar benefícios' : 'Ler QR do cliente')
+          ? 'Meu QR da loja'
           : 'Ler QR da Empresa';
       }
       if (copyEl) {
         copyEl.textContent = perfil === 'empresa'
-          ? (companyBenefitMode
-              ? 'Empresa: consulte o cliente pelo QR Code e valide bônus de adesão, bônus aniversário, pontos e resgates somente no estabelecimento.'
-              : 'Empresa: escaneie o QR do cliente para validar ações futuras e registrar atendimento.')
+          ? 'Mostre este QR para o cliente escanear. Ele mesmo resgata os benefícios (bônus, fidelidade e promoções) na página da sua empresa.'
           : 'Cliente: escaneie o QR do adesivo da empresa para se vincular no app.';
       }
       if (buttonLabel) {
@@ -6187,8 +6138,8 @@
               <span>Clientes vinculados</span>
             </a>
             <a class="empresa-shortcut-card" href="/validar_resgate.html?modo=beneficios">
-              <span class="material-symbols-outlined">qr_code_scanner</span>
-              <span>Validar QR</span>
+              <span class="material-symbols-outlined">qr_code_2</span>
+              <span>Meu QR</span>
             </a>
           </div>
         `;
@@ -6599,7 +6550,7 @@
             <a href="#formOferta" class="app-primary-button justify-center">Criar promocao</a>
             <a href="#birthdayBonusSection" class="app-secondary-button justify-center">Bonus aniversario</a>
             <a href="#returnReminderSection" class="app-secondary-button justify-center">Lembrete de retorno</a>
-            <a href="/validar_resgate.html?modo=beneficios" class="app-secondary-button justify-center">Ler QR do cliente</a>
+            <a href="/validar_resgate.html?modo=beneficios" class="app-secondary-button justify-center">Meu QR da loja</a>
           </div>
         `;
       };
@@ -6727,7 +6678,7 @@
                 <p class="mt-1 text-sm text-on-surface-variant">${safeText(dataPreview.descricao, '')}</p>
                 ${precoLine}${brindeLine}
                 <p class="mt-2 text-[11px] text-on-surface-variant">Validade: ${formatDatePtBr(dataPreview.validade, 'Não informada')}</p>
-                <p class="mt-3 text-[11px] font-semibold text-[#133F8C]">Apresente seu QR Code para validar.</p>
+                <p class="mt-3 text-[11px] font-semibold text-[#133F8C]">O cliente resgata direto pelo app.</p>
               </div>
             </article>
           </div>`;
@@ -7842,7 +7793,7 @@
               </div>
               <div class="grid gap-3 sm:grid-cols-2">
                 <a href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary" class="inline-flex h-12 items-center justify-center rounded-full bg-white px-5 text-sm font-extrabold text-[#111B3F] shadow-sm">Abrir gestao de ofertas</a>
-                <a href="/validar_resgate.html?modo=beneficios" class="inline-flex h-12 items-center justify-center rounded-full border border-white/18 bg-white/10 px-5 text-sm font-bold text-white">Ler QR do cliente</a>
+                <a href="/validar_resgate.html?modo=beneficios" class="inline-flex h-12 items-center justify-center rounded-full border border-white/18 bg-white/10 px-5 text-sm font-bold text-white">Meu QR da loja</a>
                 <a href="/clientes_fidelizados_loja.html" class="inline-flex h-12 items-center justify-center rounded-full border border-white/18 bg-white/10 px-5 text-sm font-bold text-white">Ver clientes</a>
                 <a href="/dashboard_parceiro.html" class="inline-flex h-12 items-center justify-center rounded-full border border-white/18 bg-white/10 px-5 text-sm font-bold text-white">Voltar ao dashboard</a>
               </div>

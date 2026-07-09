@@ -121,11 +121,11 @@
 <header class="w-full mb-8">
       <p class="inline-flex rounded-full bg-surface-container px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">Operação presencial</p>
 <h1 class="font-headline text-2xl font-bold text-on-surface mb-2 mt-4">Ler QR Code</h1>
-      <p class="text-on-surface-variant text-sm leading-relaxed">Aponte a câmera para o QR Code.</p>
+      <p id="scanCameraHint" class="text-on-surface-variant text-sm leading-relaxed">Aponte a câmera para o QR Code.</p>
       <p class="text-xs text-on-surface-variant mt-2" id="scanInstructions"></p>
 </header>
 
-<div class="w-full max-w-md aspect-square bg-surface-container rounded-[1.5rem] relative overflow-hidden flex items-center justify-center mb-8 border-4 border-surface-container-low">
+<div id="qrScannerCamera" class="w-full max-w-md aspect-square bg-surface-container rounded-[1.5rem] relative overflow-hidden flex items-center justify-center mb-8 border-4 border-surface-container-low">
 <video id="qrVideo" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
 <div class="relative w-64 h-64 border-2 border-primary/30 rounded-xl overflow-hidden flex flex-col items-center justify-center z-10" id="scanFrame">
 <div class="qr-scanner-overlay"></div>
@@ -156,7 +156,7 @@
 </div>
 </div>
 
-<div class="w-full max-w-md space-y-6">
+<div id="qrManualSection" class="w-full max-w-md space-y-6">
 <div class="relative">
 <div class="flex items-center justify-between mb-2">
             <label class="font-label text-[10px] font-semibold uppercase tracking-wider text-on-surface-variant">Ou digite o código</label>
@@ -565,7 +565,24 @@
     window.location.href = fallback;
   });
 
-  if (video) {
+  // A empresa NAO escaneia mais o cliente: o cliente e quem le o QR da empresa.
+  // Nesta pagina, para a empresa, mostramos apenas o QR da loja (injetado pelo
+  // bundle) e escondemos a camera/validacao. O scanner segue ativo para o cliente.
+  const viewerIsEmpresa = (() => {
+    try {
+      const raw = localStorage.getItem('tem_de_tudo_user');
+      if (!raw) return false;
+      const u = JSON.parse(raw) || {};
+      const perfil = String(u.perfil || u.role || u.tipo || '').toLowerCase();
+      return perfil === 'empresa';
+    } catch { return false; }
+  })();
+
+  if (viewerIsEmpresa) {
+    document.getElementById('qrScannerCamera')?.classList.add('hidden');
+    document.getElementById('qrManualSection')?.classList.add('hidden');
+    document.getElementById('scanCameraHint')?.classList.add('hidden');
+  } else if (video) {
     if (appReady) {
       startCamera();
     } else {
