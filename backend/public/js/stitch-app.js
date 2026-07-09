@@ -5324,7 +5324,6 @@
           if (res.ok && qrList.length && qrList[0].code) {
             const qr = qrList[0];
             container.innerHTML = `
-              <p class="text-[11px] text-outline mb-1">Coloque este QR no adesivo da loja.</p>
               <img src="${qr.qr_image || qr.qr_url}" alt="QR Code da loja" class="w-44 h-44 rounded-xl border border-outline-variant/40 bg-white p-2" loading="lazy" />
               <div class="bg-surface-container px-4 py-2 rounded-xl text-center">
                 <span class="text-xs font-mono text-on-surface break-all">${qr.code}</span>
@@ -6234,7 +6233,6 @@
                   : `<img src="${safeImage(qrPayload.qr_url, IMAGE_FALLBACKS.store)}" alt="QR Code da empresa" class="h-full w-full object-contain" />`}
               </div>
               <div class="space-y-3 text-sm text-white/80">
-                <p>O cliente escaneia este QR para se vincular.</p>
                 <div class="rounded-[18px] bg-white/10 px-4 py-3 ring-1 ring-white/10">
                   <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">Codigo da empresa</p>
                   <p class="mt-2 break-all font-mono text-xs text-white">${safeText(qrPayload.code)}</p>
