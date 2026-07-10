@@ -3660,3 +3660,29 @@ body[data-page] .material-symbols-outlined { vertical-align: middle; }
 .tdt-install-bar__btn:active { transform: scale(0.98); }
 .tdt-install-bar__btn .material-symbols-outlined { font-size: 1.2rem; }
 @media (prefers-reduced-motion: reduce) { .tdt-install-bar__btn { transition: none; } }
+
+/* ==========================================================================
+   Refino mobile (2026-07-09): trava zoom por gesto e evita textos esticando
+   horizontalmente. Conteudos quebram linha e ficam dentro da tela.
+   ========================================================================== */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  touch-action: pan-x pan-y; /* permite rolar, bloqueia pinch/double-tap zoom */
+}
+body {
+  overflow-x: hidden;              /* nada vaza na horizontal */
+  overscroll-behavior-y: contain;  /* evita "puxar" a tela alem do conteudo */
+}
+/* Textos longos quebram a linha em vez de esticar o container.
+   Usamos apenas overflow-wrap (quebra so quando a palavra nao cabe);
+   word-break agressivo picava palavras curtas letra a letra em flex. */
+h1, h2, h3, h4, h5, p, a, li, label, small, strong, em, td, th {
+  overflow-wrap: break-word;
+}
+/* Filhos de flex encolhem sem empurrar a largura da tela */
+main, section, header, nav, article { min-width: 0; }
+/* Midias e campos nunca ultrapassam a largura disponivel */
+img, svg, video, canvas, iframe, input, textarea, select {
+  max-width: 100%;
+}

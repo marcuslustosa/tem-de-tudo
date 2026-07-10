@@ -1671,6 +1671,29 @@
     `;
   }
 
+  // Logout visivel no mobile para o admin: a saida antes so existia na sidebar
+  // (escondida no celular). Injeta um botao "Sair" no cabecalho das telas admin.
+  function mountAdminMobileLogout() {
+    const adminPages = ['dashboard_admin_master', 'gest_o_de_estabelecimentos', 'gest_o_de_usu_rios_master', 'gest_o_de_clientes_master', 'relat_rios_gerais_master', 'tickets_admin_master', 'gestao_pontos', 'configuracoes_admin'];
+    if (!adminPages.includes(page)) return;
+    const header = document.querySelector('header.admin-header') || document.querySelector('header');
+    if (!header) return;
+    const hasLogout = header.querySelector('[data-admin-logout]')
+      || Array.from(header.querySelectorAll('.material-symbols-outlined'))
+        .some((s) => (s.getAttribute('data-icon') || s.textContent || '').trim().toLowerCase() === 'logout');
+    if (hasLogout) return;
+    const right = header.children.length > 1 ? header.lastElementChild : header;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.setAttribute('data-admin-logout', '1');
+    btn.title = 'Sair';
+    btn.setAttribute('aria-label', 'Sair');
+    btn.className = 'inline-flex h-9 w-9 items-center justify-center rounded-full text-[#b41340] hover:bg-[#f0f0f0] transition-colors';
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px">logout</span>';
+    btn.addEventListener('click', (ev) => { ev.preventDefault(); auth.logout(); });
+    right.appendChild(btn);
+  }
+
   function mountClientHomeSummary({ linkedCompanies = [], featuredCompanies = [] } = {}) {
     if (page !== 'meus_pontos') return;
     // Prompt 01 (App do Cliente): home enxuta, sem bloco de estatísticas/"resumo".
@@ -7786,7 +7809,7 @@
       const host = document.querySelector('main') || document.getElementById('content') || document.body;
       host.innerHTML = `
         <section class="space-y-6">
-          <div class="rounded-[28px] bg-gradient-to-r from-[#133F8C] via-[#00AFA8] to-[#B01774] p-6 text-white shadow-[0_18px_45px_rgba(17,27,63,0.18)]">
+          <div class="rounded-[28px] bg-[linear-gradient(135deg,#111B3F_0%,#133F8C_45%,#B01774_100%)] p-6 text-white shadow-[0_18px_45px_rgba(17,27,63,0.18)]">
             <div class="flex flex-wrap items-start justify-between gap-4">
               <div class="max-w-[680px]">
                 <h1 class="text-2xl font-extrabold leading-tight">Resultados da sua operação</h1>
@@ -10704,6 +10727,7 @@
     normalizeBrandingVisuals();
     normalizePageEncodingArtifacts();
     mountAdminPlatformBanner();
+    mountAdminMobileLogout();
     wireAvatarFallbacks();
     remapNavigationForPerfil();
     harmonizeLinksByStoredPerfil();

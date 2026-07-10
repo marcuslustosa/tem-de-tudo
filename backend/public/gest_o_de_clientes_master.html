@@ -3,7 +3,7 @@
 <html class="light" lang="pt-BR">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>Gestão de Clientes - Tem de Tudo</title>  <link rel="icon" type="image/png" href="/img/logo.png" />
   <link rel="shortcut icon" href="/img/logo.png" />
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
@@ -88,8 +88,8 @@
             backdrop-filter: blur(12px);
         }
     </style>
-<script src="/dist/stitch-app.min.js?v=20260601-final-audit" defer></script>
-  <link rel="stylesheet" href="/css/i9plus-phase8.css?v=20260601-final-audit" />
+<script src="/dist/stitch-app.min.js?v=20260709-refino" defer></script>
+  <link rel="stylesheet" href="/css/i9plus-phase8.css?v=20260709-refino" />
 </head>
 <body class="bg-[#f7f7f7] bg-surface font-body text-on-surface" data-page="gest_o_de_clientes_master">
 <header class="admin-header sticky top-0 z-40 w-full">
@@ -151,10 +151,6 @@
 <a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/configuracoes_admin.html">
 <span class="material-symbols-outlined" style="font-size:20px;color:#5b5b62">settings</span>
 <span>Configurações</span>
-</a>
-<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/banners_e_categorias_master.html">
-<span class="material-symbols-outlined" style="font-size:20px;color:#5b5b62">collections</span>
-<span>Conteudo</span>
 </a>
 <a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="mailto:contato@temdetudo.com">
 <span class="material-symbols-outlined" style="font-size:20px;color:#5b5b62">help_center</span>
@@ -226,55 +222,6 @@
                     Filtros Avancados
                 </button>
 </div>
-<section class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/10 p-6 mb-6">
-<div class="space-y-5">
-<div class="max-w-3xl">
-<span class="inline-flex rounded-full bg-primary/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Validacao</span>
-<h2 class="mt-4 font-headline text-2xl font-black text-on-surface">Push no cliente</h2>
-<p class="mt-2 text-sm leading-6 text-on-surface-variant">Consulte o status real de notificacoes do cliente, confirme os dispositivos ativos e faca uma validacao individual sem abrir campanha para toda a base.</p>
-</div>
-<div class="flex flex-col gap-3 sm:flex-row">
-<input id="adminPushClientEmail" autocomplete="off" spellcheck="false" class="w-full rounded-xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" type="text" placeholder="Nome, e-mail, CPF ou telefone do cliente"/>
-<button id="adminPushLookupBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-secondary border border-outline-variant/20 hover:bg-surface-container transition-colors" type="button">
-<span class="material-symbols-outlined text-[18px]">person_search</span>
-Buscar cliente
-</button>
-</div>
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-<div class="rounded-2xl border border-outline-variant/10 bg-surface-container-low p-4">
-<p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Cliente</p>
-<p class="mt-2 text-base font-bold text-on-surface" id="adminPushClientName">Nenhum cliente selecionado</p>
-<p class="text-sm text-on-surface-variant" id="adminPushClientEmailValue">Busque por nome, e-mail, CPF ou telefone</p>
-</div>
-<div class="rounded-2xl border border-outline-variant/10 bg-surface-container-low p-4">
-<p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Push ativo</p>
-<p class="mt-2 text-base font-bold text-on-surface" id="adminPushClientSubscription">Nao verificado</p>
-<p class="text-sm text-on-surface-variant" id="adminPushClientDevices">0 dispositivo(s)</p>
-</div>
-<div class="rounded-2xl border border-outline-variant/10 bg-surface-container-low p-4">
-<p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Ultima atividade push</p>
-<p class="mt-2 text-sm font-semibold text-on-surface" id="adminPushClientLastSeen">--</p>
-<p class="text-sm text-on-surface-variant" id="adminPushClientHint">Peca para o cliente abrir o app instalado, fazer login e tocar em Ativar notificacoes.</p>
-</div>
-<div class="rounded-2xl border border-outline-variant/10 bg-surface-container-low p-4">
-<p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Resumo do envio</p>
-<p class="mt-2 text-sm font-semibold text-on-surface" id="adminPushSummaryTitle">Nenhum envio realizado nesta sessao.</p>
-<p class="mt-1 text-xs leading-5 text-on-surface-variant" id="adminPushSummaryDetail">Confirme se existe ao menos uma subscription ativa antes de disparar o teste.</p>
-</div>
-</div>
-<div class="space-y-3">
-<input id="adminPushTitle" class="w-full rounded-xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" type="text" maxlength="80" placeholder="Titulo da notificacao"/>
-<input id="adminPushUrl" class="w-full rounded-xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" type="text" maxlength="255" placeholder="URL de destino"/>
-<textarea id="adminPushBody" class="min-h-[108px] w-full rounded-2xl border border-outline-variant/20 bg-white px-4 py-3 text-sm leading-6 focus:ring-2 focus:ring-primary" maxlength="160" placeholder="Mensagem da notificação"></textarea>
-<p class="text-xs leading-5 text-on-surface-variant">Envios em massa de promoções, aniversário e lembretes continuam na área da empresa parceira. Este bloco serve apenas para validação individual do dispositivo.</p>
-<button id="adminPushSendBtn" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white hover:opacity-95 transition disabled:opacity-50 disabled:cursor-not-allowed" type="button" disabled>
-<span class="material-symbols-outlined text-[18px]">send</span>
-Enviar
-</button>
-</div>
-<p class="mt-4 text-xs leading-5 text-on-surface-variant" id="adminPushTestFeedback">A busca valida o status real da subscription por nome, e-mail, CPF ou telefone. Nenhum dado de push e fakeado.</p>
-</div>
-</section>
 <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/5">
 <div class="overflow-x-auto">
 <table class="w-full text-left border-collapse">

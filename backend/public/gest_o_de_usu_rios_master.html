@@ -3,7 +3,7 @@
 <html class="light" lang="pt-BR">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>Gestão de Usuários | Tem de Tudo</title>  <link rel="icon" type="image/png" href="/img/logo.png" />
   <link rel="shortcut icon" href="/img/logo.png" />
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
@@ -90,8 +90,8 @@
             backdrop-filter: blur(12px);
         }
     </style>
-<script src="/dist/stitch-app.min.js?v=20260521-admin-mobile" defer></script>
-  <link rel="stylesheet" href="/css/i9plus-phase8.css?v=20260521-admin-unify" />
+<script src="/dist/stitch-app.min.js?v=20260709-refino" defer></script>
+  <link rel="stylesheet" href="/css/i9plus-phase8.css?v=20260709-refino" />
 </head>
 <body class="bg-[#f7f7f7] bg-surface text-on-surface" data-page="gest_o_de_usu_rios_master">
 <aside class="fixed left-0 top-0 h-full overflow-y-auto w-64 hidden lg:flex flex-col z-50 bg-white border-r border-[#e9e7f1]">
@@ -128,10 +128,6 @@
 <a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/configuracoes_admin.html">
 <span class="material-symbols-outlined" style="font-size:20px;color:#5b5b62">settings</span>
 <span>Configurações</span>
-</a>
-<a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="/banners_e_categorias_master.html">
-<span class="material-symbols-outlined" style="font-size:20px;color:#5b5b62">collections</span>
-<span>Conteudo</span>
 </a>
 <a class="admin-nav-item flex items-center gap-3 px-4 py-2.5 font-['Plus_Jakarta_Sans'] text-sm font-semibold" href="mailto:contato@temdetudo.com">
 <span class="material-symbols-outlined" style="font-size:20px;color:#5b5b62">help_center</span>
@@ -179,38 +175,38 @@
 </header>
 <main class="lg:ml-64 min-h-screen p-6 pt-4 pb-24 lg:pb-6 bg-[#f7f7f7]">
 <div class="max-w-7xl mx-auto space-y-8">
-<section class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
-<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-[#133f8c]">
-<div class="flex justify-between items-start mb-4">
+<section class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-[#133f8c]">
+<div class="flex justify-between items-start mb-2">
 <span class="material-symbols-outlined text-secondary bg-secondary-container p-2 rounded-lg">group</span>
 <span class="text-xs font-bold text-tertiary" id="adminUsersCrescimento">&nbsp;</span>
 </div>
 <p class="text-on-surface-variant text-sm font-medium">Total de Usuários</p>
-<h3 class="text-2xl font-black text-on-surface" id="adminUsersTotal">--</h3>
+<h3 class="text-xl font-black text-on-surface" id="adminUsersTotal">--</h3>
 </div>
-<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-[#00C2D1]">
-<div class="flex justify-between items-start mb-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-[#00C2D1]">
+<div class="flex justify-between items-start mb-2">
 <span class="material-symbols-outlined text-tertiary bg-tertiary-container p-2 rounded-lg">verified_user</span>
 <span class="text-xs font-bold text-tertiary" id="adminUsersAtivosPct">&nbsp;</span>
 </div>
 <p class="text-on-surface-variant text-sm font-medium">Administradores</p>
-<h3 class="text-2xl font-black text-on-surface" id="adminUsersAdmins">--</h3>
+<h3 class="text-xl font-black text-on-surface" id="adminUsersAdmins">--</h3>
 </div>
-<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-[#b01774]">
-<div class="flex justify-between items-start mb-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-[#b01774]">
+<div class="flex justify-between items-start mb-2">
 <span class="material-symbols-outlined text-primary bg-primary-container p-2 rounded-lg">security</span>
 <span class="text-xs font-bold text-on-surface-variant" id="adminUsersNovos">&nbsp;</span>
 </div>
 <p class="text-on-surface-variant text-sm font-medium">Sub-Admins</p>
-<h3 class="text-2xl font-black text-on-surface" id="adminUsersSubs">--</h3>
+<h3 class="text-xl font-black text-on-surface" id="adminUsersSubs">--</h3>
 </div>
-<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-error">
-<div class="flex justify-between items-start mb-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.04)] border-b-4 border-error">
+<div class="flex justify-between items-start mb-2">
 <span class="material-symbols-outlined text-error bg-error-container p-2 rounded-lg">block</span>
 <span class="text-xs font-bold text-error" id="adminUsersReviso">&nbsp;</span>
 </div>
 <p class="text-on-surface-variant text-sm font-medium">Contas Bloqueadas</p>
-<h3 class="text-2xl font-black text-on-surface" id="adminUsersBloqueados">--</h3>
+<h3 class="text-xl font-black text-on-surface" id="adminUsersBloqueados">--</h3>
 </div>
 </section>
 <div class="bg-surface-container-lowest rounded-xl shadow-[0_8px_32px_rgba(11,31,58,0.06)] overflow-hidden">
