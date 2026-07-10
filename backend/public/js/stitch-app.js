@@ -1686,10 +1686,11 @@
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.setAttribute('data-admin-logout', '1');
-    btn.title = 'Sair';
-    btn.setAttribute('aria-label', 'Sair');
-    btn.className = 'inline-flex h-9 w-9 items-center justify-center rounded-full text-[#b41340] hover:bg-[#f0f0f0] transition-colors';
-    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px">logout</span>';
+    btn.title = 'Sair da conta';
+    btn.setAttribute('aria-label', 'Sair da conta');
+    // Pilula rotulada (nao um icone solto) para leitura clara de "Sair".
+    btn.className = 'inline-flex h-9 items-center gap-1.5 rounded-full bg-[#b41340]/10 pl-2.5 pr-3.5 text-[12px] font-bold text-[#b41340] hover:bg-[#b41340]/16 transition-colors whitespace-nowrap';
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">logout</span>Sair';
     btn.addEventListener('click', (ev) => { ev.preventDefault(); auth.logout(); });
     right.appendChild(btn);
   }
@@ -10001,9 +10002,22 @@
       ui.clearPageState();
 
       if (!res.ok || data?.success === false) {
+        // QR invalido/expirado: NUNCA prender o cliente num loop de vinculo->login.
+        // Limpa o codigo pendente para a home nao redirecionar de novo.
+        clearPendingCompanyQr();
         if (statusEl) statusEl.textContent = 'QR indisponivel';
-        if (messageEl) messageEl.textContent = data?.message || 'Não foi possível identificar esta empresa.';
-        primaryBtn?.addEventListener('click', () => { window.location.href = '/entrar.html'; });
+        if (messageEl) messageEl.textContent = data?.message || 'Não foi possível identificar esta empresa. Verifique o QR e tente de novo.';
+        const storedNow = auth.getStored();
+        const perfilNow = auth.normalizePerfil(auth.normalizeUser(storedNow?.user)?.perfil || storedNow?.user?.perfil || storedNow?.user?.role);
+        if (storedNow?.token) {
+          const home = redirectMap[perfilNow] || '/meus_pontos.html';
+          const back = home.includes('?') ? `${home}&ignore_pending_qr=1` : `${home}?ignore_pending_qr=1`;
+          if (primaryBtn) { primaryBtn.textContent = 'Voltar ao início'; primaryBtn.addEventListener('click', () => { window.location.href = back; }); }
+          setTimeout(() => { window.location.href = back; }, 1400);
+        } else if (primaryBtn) {
+          primaryBtn.textContent = 'Entrar';
+          primaryBtn.addEventListener('click', () => { window.location.href = '/entrar.html'; });
+        }
         return;
       }
 
@@ -10045,8 +10059,10 @@
         body: JSON.stringify({ code }),
       });
       if (!linkResponse.res.ok || linkResponse.data?.success === false) {
+        // Falha no vinculo: limpa o pendente para nao repetir o loop na home.
+        clearPendingCompanyQr();
         if (messageEl) messageEl.textContent = linkResponse.data?.message || 'Não foi possível concluir o vínculo.';
-        primaryBtn?.addEventListener('click', () => { window.location.href = '/meus_pontos.html?ignore_pending_qr=1'; });
+        if (primaryBtn) { primaryBtn.textContent = 'Voltar ao início'; primaryBtn.addEventListener('click', () => { window.location.href = '/meus_pontos.html?ignore_pending_qr=1'; }); }
         return;
       }
 
@@ -10726,7 +10742,6 @@
   document.addEventListener('DOMContentLoaded', async () => {
     normalizeBrandingVisuals();
     normalizePageEncodingArtifacts();
-    mountAdminPlatformBanner();
     mountAdminMobileLogout();
     wireAvatarFallbacks();
     remapNavigationForPerfil();
