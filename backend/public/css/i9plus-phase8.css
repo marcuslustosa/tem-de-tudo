@@ -297,9 +297,9 @@ body[data-page] .font-headline,
 }
 
 .app-primary-button {
-  background: var(--i9-gradient);
+  background: var(--i9-primary);
   color: #fff;
-  box-shadow: 0 16px 34px rgba(19, 63, 140, 0.24);
+  box-shadow: 0 10px 24px rgba(176, 23, 116, 0.25);
 }
 
 .app-secondary-button {
@@ -2525,9 +2525,8 @@ body[data-page="meus_pontos"] .home-action__icon {
   align-items: center;
   justify-content: center;
   border-radius: 14px;
-  background: var(--i9-gradient);
-  color: #fff;
-  box-shadow: 0 12px 24px rgba(176, 23, 116, 0.22);
+  background: rgba(176, 23, 116, 0.1);
+  color: var(--i9-primary);
 }
 
 body[data-page="meus_pontos"] .home-action__icon .material-symbols-outlined {
@@ -3322,7 +3321,7 @@ body[data-page="recompensas"] .redemption-row:hover {
   font-size: 0.9rem;
   font-weight: 800;
   color: #fff;
-  background: linear-gradient(135deg, #133f8c 0%, #b01774 100%);
+  background: var(--i9-primary);
   cursor: pointer;
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
@@ -3631,34 +3630,46 @@ body[data-page] .material-symbols-outlined { vertical-align: middle; }
   }
 }
 
-/* ---- Botao fixo "Adicionar a Tela de Inicio" (topo do dashboard) ---- */
+/* ---- Card "Instalar o aplicativo" (topo do dashboard) ---- */
 .tdt-install-bar {
   display: flex;
   justify-content: center;
   padding: 10px 16px 0;
 }
 .tdt-install-bar__btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 460px;
+  padding: 12px 14px;
+  border: 1px solid rgba(17, 27, 63, 0.08);
+  border-radius: 18px;
+  font-family: "Be Vietnam Pro", system-ui, sans-serif;
+  text-align: left;
+  color: var(--i9-text);
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(17, 27, 63, 0.06);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.tdt-install-bar__btn:active { transform: scale(0.985); }
+.tdt-install-bar__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  max-width: 460px;
-  padding: 0.7rem 1rem;
-  border: none;
-  border-radius: 9999px;
-  font-family: "Be Vietnam Pro", system-ui, sans-serif;
-  font-size: 0.9rem;
-  font-weight: 700;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border-radius: 12px;
   color: #fff;
-  background: linear-gradient(135deg, #133f8c 0%, #b01774 100%);
-  box-shadow: 0 8px 20px rgba(176, 23, 116, 0.22);
-  cursor: pointer;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  background: var(--i9-primary);
 }
-.tdt-install-bar__btn:hover { opacity: 0.96; }
-.tdt-install-bar__btn:active { transform: scale(0.98); }
-.tdt-install-bar__btn .material-symbols-outlined { font-size: 1.2rem; }
+.tdt-install-bar__icon .material-symbols-outlined { font-size: 1.3rem; }
+.tdt-install-bar__text { flex: 1; min-width: 0; display: block; }
+.tdt-install-bar__text b { display: block; font-size: 0.9rem; font-weight: 800; }
+.tdt-install-bar__text small { display: block; margin-top: 1px; font-size: 0.74rem; color: var(--i9-text-muted); }
+.tdt-install-bar__chevron { color: #c3c9d6; }
 @media (prefers-reduced-motion: reduce) { .tdt-install-bar__btn { transition: none; } }
 
 /* ==========================================================================

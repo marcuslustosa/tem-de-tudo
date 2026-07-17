@@ -22,10 +22,11 @@
   };
   const page = document.body?.dataset?.page || location.pathname.replace(/\//g, '').replace('.html', '');
   const VAPID_CACHE_KEY = 'vapid_public_key';
+  // Placeholders neutros da marca — nunca foto de banco de imagem.
   const IMAGE_FALLBACKS = {
-    store: '/assets/images/company1.jpg',
-    promo: '/assets/images/company2.jpg',
-    hero: '/assets/images/company3.jpg',
+    store: '/img/placeholder-store.svg',
+    promo: '/img/placeholder-promo.svg',
+    hero: '/img/placeholder-store.svg',
   };
 
   function safeImage(url, fallback = IMAGE_FALLBACKS.store) {
@@ -462,6 +463,12 @@
     if (Array.isArray(value?.data)) return value.data;
     if (Array.isArray(value?.items)) return value.items;
     return [];
+  }
+
+  // "2 empresas", "1 cartão" — nunca "2 empresa(s)".
+  function plural(count, singular, pluralWord) {
+    const n = Number(count) || 0;
+    return `${n.toLocaleString('pt-BR')} ${n === 1 ? singular : (pluralWord || `${singular}s`)}`;
   }
 
   function setPendingCompanyQr(code) {
@@ -1264,24 +1271,13 @@
         try { ui.message('App instalado! Abra pelo icone na tela de inicio.', 'success'); } catch (_) { /* silencioso */ }
       });
 
-      let iosSheet = null;
-      const openIosGuide = () => {
-        if (iosSheet) { iosSheet.classList.add('is-open'); return; }
-        iosSheet = document.createElement('div');
-        iosSheet.className = 'tdt-install-sheet-overlay is-open';
-        iosSheet.innerHTML = `
-          <div class="tdt-install-sheet" role="dialog" aria-label="Como instalar o app">
-            <button type="button" class="tdt-install-sheet__close" data-close aria-label="Fechar">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-            <div class="tdt-install-sheet__head">
-              <img src="/img/icon-192.png" alt="" class="tdt-install-sheet__icon" onerror="this.style.display='none'" />
-              <div>
-                <p class="tdt-install-sheet__title">Instalar o Tem de Tudo</p>
-                <p class="tdt-install-sheet__sub">Fica igual a um app, com atalho na tela de início.</p>
-              </div>
-            </div>
-            <ol class="tdt-install-sheet__steps tdt-install-sheet__steps--visual">
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+      // Passos ilustrados por plataforma. No iPhone o navegador não permite
+      // instalar com 1 toque (limitação da Apple); no Android sem prompt
+      // nativo, mostramos o caminho do menu do Chrome.
+      const iosSteps = `
               <li>
                 <span class="tdt-install-sheet__num">1</span>
                 <div class="tdt-install-step">
@@ -1313,31 +1309,81 @@
                     <span class="tdt-install-step__confirm">Adicionar</span>
                   </div>
                 </div>
+              </li>`;
+      const androidSteps = `
+              <li>
+                <span class="tdt-install-sheet__num">1</span>
+                <div class="tdt-install-step">
+                  <p>Toque no menu <b>⋮</b> no canto superior do Chrome.</p>
+                  <div class="tdt-install-step__mock tdt-install-step__mock--bar" aria-hidden="true">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                    <span class="tdt-install-step__url">temdetudo.app</span>
+                    <span class="tdt-install-step__target"><span class="material-symbols-outlined">more_vert</span></span>
+                  </div>
+                </div>
               </li>
-            </ol>
+              <li>
+                <span class="tdt-install-sheet__num">2</span>
+                <div class="tdt-install-step">
+                  <p>Toque em <b>Adicionar à tela inicial</b> (ou <b>Instalar app</b>).</p>
+                  <div class="tdt-install-step__mock tdt-install-step__mock--menu" aria-hidden="true">
+                    <span class="tdt-install-step__menu-row"><span>Nova guia</span><span class="material-symbols-outlined">add</span></span>
+                    <span class="tdt-install-step__menu-row tdt-install-step__menu-row--hot"><span>Adicionar à tela inicial</span><span class="material-symbols-outlined">install_mobile</span></span>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <span class="tdt-install-sheet__num">3</span>
+                <div class="tdt-install-step">
+                  <p>Confirme em <b>Instalar</b>.</p>
+                  <div class="tdt-install-step__mock tdt-install-step__mock--confirm" aria-hidden="true">
+                    <span>Cancelar</span>
+                    <span class="tdt-install-step__confirm">Instalar</span>
+                  </div>
+                </div>
+              </li>`;
+
+      let installSheet = null;
+      const openInstallGuide = () => {
+        if (installSheet) { installSheet.classList.add('is-open'); return; }
+        installSheet = document.createElement('div');
+        installSheet.className = 'tdt-install-sheet-overlay is-open';
+        installSheet.innerHTML = `
+          <div class="tdt-install-sheet" role="dialog" aria-label="Como instalar o app">
+            <button type="button" class="tdt-install-sheet__close" data-close aria-label="Fechar">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="tdt-install-sheet__head">
+              <img src="/img/icon-192.png" alt="" class="tdt-install-sheet__icon" onerror="this.style.display='none'" />
+              <div>
+                <p class="tdt-install-sheet__title">Instalar o Tem de Tudo</p>
+                <p class="tdt-install-sheet__sub">Fica igual a um app, com atalho na tela de início.</p>
+              </div>
+            </div>
+            <ol class="tdt-install-sheet__steps tdt-install-sheet__steps--visual">${isIOS ? iosSteps : androidSteps}</ol>
             <p class="tdt-install-sheet__foot">Depois <b>abra pelo ícone</b> na tela de início para conseguir <b>ativar as notificações</b>.</p>
             <button type="button" class="tdt-install-sheet__ok" data-close>Entendi</button>
           </div>`;
-        document.body.appendChild(iosSheet);
-        const close = () => iosSheet.classList.remove('is-open');
-        iosSheet.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
-        iosSheet.addEventListener('click', (event) => { if (event.target === iosSheet) close(); });
+        document.body.appendChild(installSheet);
+        const close = () => installSheet.classList.remove('is-open');
+        installSheet.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
+        installSheet.addEventListener('click', (event) => { if (event.target === installSheet) close(); });
       };
 
-      // Acionada quando a pessoa CLICA no botao "Adicionar a Tela de Inicio".
+      // Acionada quando a pessoa CLICA no botao "Instalar o aplicativo".
       window.tdtInstallApp = async () => {
         if (deferredPrompt) {
-          // Android: abre a caixa nativa "Adicionar a tela inicial".
+          // Android: 1 toque — abre a caixa nativa de instalacao.
           deferredPrompt.prompt();
           await deferredPrompt.userChoice.catch(() => null);
           deferredPrompt = null;
           return;
         }
-        // iPhone (e navegadores sem porta nativa): guia passo a passo.
-        openIosGuide();
+        // Sem porta nativa: guia ilustrado da plataforma.
+        openInstallGuide();
       };
 
-      // Botao VISIVEL e fixo no topo do dashboard de cada perfil (nao flutua,
+      // Card VISIVEL e fixo no topo do dashboard de cada perfil (nao flutua,
       // nao pisca). So aparece se o app ainda NAO estiver instalado.
       const dashboards = ['meus_pontos', 'dashboard_parceiro', 'dashboard_admin_master', 'revenda_painel'];
       if (!isStandalone && dashboards.includes(page)) {
@@ -1346,7 +1392,12 @@
           const bar = document.createElement('div');
           bar.id = 'tdtInstallBar';
           bar.className = 'tdt-install-bar';
-          bar.innerHTML = '<button type="button" class="tdt-install-bar__btn"><span class="material-symbols-outlined">install_mobile</span>Adicionar à Tela de Início</button>';
+          bar.innerHTML = `
+            <button type="button" class="tdt-install-bar__btn">
+              <span class="tdt-install-bar__icon"><span class="material-symbols-outlined">install_mobile</span></span>
+              <span class="tdt-install-bar__text"><b>Instalar o aplicativo</b><small>Atalho na tela de início e notificações</small></span>
+              <span class="material-symbols-outlined tdt-install-bar__chevron">chevron_right</span>
+            </button>`;
           header.insertAdjacentElement('afterend', bar);
           bar.querySelector('button')?.addEventListener('click', () => window.tdtInstallApp());
         }
@@ -2116,6 +2167,14 @@
         };
       }
 
+      if (reason === 'nudge') {
+        return {
+          kicker: 'Notificações',
+          title: 'Ative as notificações',
+          body: 'É por elas que promoções, bônus e lembretes das suas empresas chegam até você.',
+        };
+      }
+
       return {
         kicker: 'Bem-vindo de volta',
         title: 'Ative as notificações neste dispositivo',
@@ -2263,8 +2322,7 @@
     }
 
     async function maybePromptAfterAuth() {
-      const reason = getPushPrompt();
-      if (!reason || !canAutoPromptOnCurrentPage()) return;
+      if (!canAutoPromptOnCurrentPage()) return;
 
       // Cadastro/vínculo via QR recém-concluído: a celebração do bônus tem
       // prioridade nesta carga. Não consome o motivo — o convite de push
@@ -2279,6 +2337,13 @@
         return;
       }
 
+      // Igual à localização: enquanto o push não estiver ativo, o convite
+      // aparece 1x por sessão, mesmo sem login/cadastro recém-feito.
+      const reason = getPushPrompt();
+      let alreadyAskedThisSession = false;
+      try { alreadyAskedThisSession = sessionStorage.getItem('tdt_push_nudged') === '1'; } catch (_) { /* ignore */ }
+      if (!reason && alreadyAskedThisSession) return;
+
       const state = await getState();
       if (state.key === 'enabled') {
         clearPushPrompt();
@@ -2286,7 +2351,8 @@
       }
 
       clearPushPrompt();
-      updatePromptModal(state, reason);
+      try { sessionStorage.setItem('tdt_push_nudged', '1'); } catch (_) { /* ignore */ }
+      updatePromptModal(state, reason || 'nudge');
       ensurePromptModal().classList.remove('hidden');
     }
 
@@ -2641,7 +2707,7 @@
         unlimited: true,
         tone: 'success',
         title: 'Envios de push',
-        detail: `${used} enviado(s) — ilimitado`,
+        detail: `${plural(used, 'envio feito', 'envios feitos')} — sem limite`,
         helper: 'Você pode enviar push ilimitado.',
       };
     }
@@ -2659,7 +2725,7 @@
       tone,
       title: `Janela de ${windowDays} dias`,
       detail: `${used}/${limit} envios usados`,
-      helper: `Restam ${remaining} envio(s) comercial(is) nesta janela.`,
+      helper: `Restam ${plural(remaining, 'envio', 'envios')} nesta janela.`,
     };
   }
 
@@ -2755,30 +2821,23 @@
             : '';
 
           return `
-            <article class="rounded-[24px] bg-white p-4 shadow-[0_12px_32px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
-              <div class="flex items-start gap-4">
-                <img class="h-16 w-16 rounded-2xl bg-slate-50 object-cover" src="${safeImage(company.logo, IMAGE_FALLBACKS.store)}" alt="${safeText(company.nome, 'Empresa')}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
-                <div class="min-w-0 flex-1">
-                  <div class="flex items-start justify-between gap-2">
-                    <div>
-                      <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#B01774]">${safeText(company.categoria || company.ramo, 'Empresa')}</p>
-                      <h3 class="mt-1 text-lg font-extrabold leading-tight text-[#111B3F]">${safeText(company.nome, 'Empresa')}</h3>
-                    </div>
-                    ${linkedBadge}
-                  </div>
-                  <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                    <span class="font-bold text-amber-400">${renderStars(rating)}</span>
-                    <span>${rating > 0 ? rating.toFixed(1).replace('.', ',') : 'Novo'}${reviews ? ` • ${reviews} avaliações` : ''}</span>
-                    ${company.__distanceLabel ? `<span class="inline-flex items-center gap-1 font-bold text-[#133F8C]"><span class="material-symbols-outlined text-[14px]">near_me</span>${company.__distanceLabel}</span>` : ''}
-                  </div>
-                  <p class="mt-2 line-clamp-2 text-sm text-slate-500">${safeText(company.endereco, 'Endereço não informado')}</p>
+            <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}" class="flex items-center gap-4 rounded-[22px] bg-white p-4 shadow-[0_6px_18px_rgba(8,10,18,0.06)] ring-1 ring-black/5 transition-transform active:scale-[0.99]">
+              <img class="h-14 w-14 shrink-0 rounded-2xl bg-slate-50 object-cover" src="${safeImage(company.logo, IMAGE_FALLBACKS.store)}" alt="" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
+                  <h3 class="truncate text-base font-extrabold leading-tight text-[#111B3F]">${safeText(company.nome, 'Empresa')}</h3>
+                  ${linkedBadge}
                 </div>
+                <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500">
+                  <span>${safeText(company.categoria || company.ramo, 'Empresa')}</span>
+                  <span class="font-bold text-amber-400">★</span>
+                  <span>${rating > 0 ? rating.toFixed(1).replace('.', ',') : 'Novo'}${reviews ? ` (${reviews})` : ''}</span>
+                  ${company.__distanceLabel ? `<span class="inline-flex items-center gap-0.5 font-bold text-[#133F8C]"><span class="material-symbols-outlined text-[13px]">near_me</span>${company.__distanceLabel}</span>` : ''}
+                </div>
+                <p class="mt-1 truncate text-xs text-slate-400">${safeText(company.endereco, '')}</p>
               </div>
-              <div class="mt-4 flex gap-3">
-                <a class="inline-flex h-11 flex-1 items-center justify-center rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#b01774_100%)] px-4 text-sm font-extrabold text-white" href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}">Abrir empresa</a>
-                <button class="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 px-4 text-sm font-bold text-slate-600" type="button" data-company-open="${encodeURIComponent(company.id)}">Ver</button>
-              </div>
-            </article>
+              <span class="material-symbols-outlined shrink-0 text-slate-300">chevron_right</span>
+            </a>
           `;
         };
 
@@ -2793,22 +2852,15 @@
           const pontos = Number(company.meus_pontos ?? company.total_pontos ?? 0);
           const lastIso = company.ultima_visita || company.data_inscricao || null;
           return `
-            <article class="rounded-[24px] bg-white p-4 shadow-[0_12px_32px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
-              <div class="flex items-start gap-4">
-                <img loading="lazy" class="h-16 w-16 rounded-2xl bg-slate-50 object-cover" src="${safeImage(company.logo, IMAGE_FALLBACKS.store)}" alt="${safeText(company.nome, 'Empresa')}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
-                <div class="min-w-0 flex-1">
-                  <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#B01774]">${safeText(company.categoria || company.ramo, 'Empresa')}</p>
-                  <h3 class="mt-1 truncate text-lg font-extrabold leading-tight text-[#111B3F]">${safeText(company.nome, 'Empresa')}</h3>
-                  <div class="mt-2 flex flex-wrap items-center gap-2">
-                    <span class="inline-flex items-center gap-1 rounded-full bg-[#b01774]/10 px-3 py-1 text-xs font-bold text-[#b01774]"><span class="material-symbols-outlined text-[15px]" style="font-variation-settings:'FILL' 1;">stars</span>${pontos.toLocaleString('pt-BR')} pts</span>
-                  </div>
-                  <p class="mt-2 text-xs text-slate-500">${formatLastInteraction(lastIso)}</p>
-                </div>
+            <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}" class="flex items-center gap-4 rounded-[22px] bg-white p-4 shadow-[0_6px_18px_rgba(8,10,18,0.06)] ring-1 ring-black/5 transition-transform active:scale-[0.99]">
+              <img loading="lazy" class="h-14 w-14 shrink-0 rounded-2xl bg-slate-50 object-cover" src="${safeImage(company.logo, IMAGE_FALLBACKS.store)}" alt="" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+              <div class="min-w-0 flex-1">
+                <h3 class="truncate text-base font-extrabold leading-tight text-[#111B3F]">${safeText(company.nome, 'Empresa')}</h3>
+                <p class="mt-0.5 text-xs text-slate-500">${safeText(company.categoria || company.ramo, 'Empresa')} • ${formatLastInteraction(lastIso)}</p>
+                <span class="mt-2 inline-flex items-center gap-1 rounded-full bg-[#b01774]/10 px-3 py-1 text-xs font-bold text-[#b01774]"><span class="material-symbols-outlined text-[15px]" style="font-variation-settings:'FILL' 1;">stars</span>${pontos.toLocaleString('pt-BR')} pts</span>
               </div>
-              <div class="mt-4">
-                <a class="inline-flex h-11 w-full items-center justify-center rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#b01774_100%)] px-4 text-sm font-extrabold text-white" href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}">Abrir</a>
-              </div>
-            </article>
+              <span class="material-symbols-outlined shrink-0 text-slate-300">chevron_right</span>
+            </a>
           `;
         };
 
@@ -2821,7 +2873,7 @@
           linkedList.innerHTML = linkedCompanies.map(renderLinkedCompanyCard).join('');
         }
         if (linkedEmpty) linkedEmpty.classList.toggle('hidden', linkedCompanies.length > 0);
-        if (linkedCount) linkedCount.textContent = linkedCompanies.length ? `${linkedCompanies.length} empresa(s)` : 'Nenhuma empresa vinculada ainda';
+        if (linkedCount) linkedCount.textContent = linkedCompanies.length ? plural(linkedCompanies.length, 'empresa') : 'Nenhuma empresa vinculada ainda';
 
         const featuredList = document.getElementById('featuredCompaniesList');
         const featuredSection = document.getElementById('featuredCompaniesSection');
@@ -3132,14 +3184,14 @@
         const sec = document.createElement('section');
         sec.id = 'programaFidelidadeSection';
         sec.className = 'max-w-6xl mx-auto px-4 pt-4';
-        const pontosPorReal = Number(programa?.acumulo?.pontos_por_real || 1).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-        const scanBase = Number(programa?.acumulo?.pontos_base_scan || 100).toLocaleString('pt-BR');
+        const pontosPorReal = Number(programa?.acumulo?.pontos_por_real || 1);
+        const scanBase = Number(programa?.acumulo?.pontos_base_scan || 100);
         sec.innerHTML = `
           <div class="rounded-2xl border border-surface-variant/30 bg-white/80 shadow-sm p-4">
             <h3 class="text-base font-semibold text-on-surface mb-2">Como funciona sua fidelidade</h3>
             <div class="grid gap-2 text-sm text-on-surface-variant">
-              <p><span class="font-semibold text-on-surface">Acumulo por compra:</span> ${pontosPorReal} ponto(s) por R$ 1,00, com multiplicador da empresa.</p>
-              <p><span class="font-semibold text-on-surface">Acumulo por QR:</span> base de ${scanBase} ponto(s), ajustada por campanha/multiplicador.</p>
+              <p><span class="font-semibold text-on-surface">Acumulo por compra:</span> ${plural(pontosPorReal, 'ponto')} por R$ 1,00, com multiplicador da empresa.</p>
+              <p><span class="font-semibold text-on-surface">Acumulo por QR:</span> base de ${plural(scanBase, 'ponto')}, ajustada por campanha/multiplicador.</p>
               <p><span class="font-semibold text-on-surface">Resgate:</span> custo prioriza pontos_necessários e limite por usuário/estoque da promoção.</p>
             </div>
           </div>`;
@@ -3875,7 +3927,7 @@
                 <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Push configurado</p>
                 <p class="mt-2 text-sm leading-6 text-slate-600">${notificationTitle} - ${notificationBody}</p>
               </div>
-              <p class="text-sm font-semibold text-slate-500">${intervalDays > 0 ? `Disparo apos ${intervalDays} dia(s) sem visita.` : 'Intervalo de retorno nao configurado.'}</p>
+              <p class="text-sm font-semibold text-slate-500">${intervalDays > 0 ? `Envio automático após ${plural(intervalDays, 'dia')} sem visita.` : 'Intervalo de retorno nao configurado.'}</p>
             </div>
           `;
         };
@@ -3963,7 +4015,7 @@
                     </div>
                   </div>
                   <div class="flex flex-wrap items-center gap-3">
-                    <button type="button" class="partner-promo-action inline-flex h-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#b01774_100%)] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(0,0,0,0.12)]">Continuar</button>
+                    <button type="button" class="partner-promo-action inline-flex h-11 items-center justify-center rounded-full bg-[#b01774] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(176,23,116,0.22)]">Continuar</button>
                     <span class="text-sm text-slate-500">${safeText(promo.message, meta.message)}</span>
                   </div>
                 </div>
@@ -4223,25 +4275,6 @@
         const statusBadge = document.getElementById('partner-status-badge');
         if (statusBadge) statusBadge.textContent = companyInfo.publicamente_visivel ? 'Disponível no app' : 'Indisponível no momento';
 
-        const ctaBtn = document.getElementById('partnerPrimaryAction');
-        if (ctaBtn) {
-          if (perfilViewer === 'cliente') {
-            ctaBtn.textContent = 'Ler QR Code da Empresa';
-            ctaBtn.addEventListener('click', () => {
-              window.location.href = '/validar_resgate.html?modo=vinculo-empresa';
-            });
-          } else if (!perfilViewer) {
-            ctaBtn.textContent = 'Entrar para continuar';
-            ctaBtn.addEventListener('click', () => {
-              window.location.href = '/entrar.html';
-            });
-          } else {
-            ctaBtn.textContent = 'Voltar ao painel';
-            ctaBtn.addEventListener('click', () => {
-              window.location.href = redirectMap[perfilViewer] || '/meus_pontos.html';
-            });
-          }
-        }
 
         // ----- Banner de capa -----
         const bannerImg = document.getElementById('partner-banner');
@@ -4628,15 +4661,15 @@
         const progressMsg = item.rewardAvailable
           ? 'Recompensa liberada! 🎉'
           : (remaining > 0
-              ? `Faltam ${remaining} ponto(s)${remainingVisits ? ` • ~${remainingVisits} visita(s)` : ''}`
+              ? `Faltam ${plural(remaining, 'ponto')}${remainingVisits ? ` • ~${plural(remainingVisits, 'visita')}` : ''}`
               : 'Quase lá!');
         return `
           <article class="loyalty-card ${item.rewardAvailable ? 'loyalty-card--ready' : ''} p-5">
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
               <img class="loyalty-logo" src="${safeImage(c.logo, IMAGE_FALLBACKS.store)}" alt="${safeText(c.nome, 'Empresa')}" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
               <div class="min-w-0 flex-1">
-                <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-[#B01774]">Cartão fidelidade</p>
-                <h4 class="truncate font-headline font-extrabold text-on-surface">${safeText(c.nome, 'Empresa')}</h4>
+                <h4 class="truncate font-headline text-lg font-extrabold text-on-surface">${safeText(c.nome, 'Empresa')}</h4>
+                <p class="text-xs font-medium text-on-surface-variant">Cartão fidelidade</p>
               </div>
               <span class="loyalty-status-badge ${meta.badgeClass}">${meta.label}</span>
             </div>
@@ -4660,7 +4693,6 @@
             ${item.rewardAvailable
               ? `<button class="loyalty-redeem-btn mt-4" type="button" data-loyalty-redeem="${c.id}"><span class="material-symbols-outlined">redeem</span> Resgatar benefício</button>`
               : ''}
-            <p class="loyalty-presential-note mt-3"><span class="material-symbols-outlined text-sm">storefront</span> Resgate direto na página da empresa.</p>
           </article>`;
       };
 
@@ -4682,7 +4714,7 @@
         });
       }
       if (loyaltyEmpty) loyaltyEmpty.classList.toggle('hidden', loyaltyItems.length > 0);
-      if (loyaltyCount) loyaltyCount.textContent = loyaltyItems.length ? `${loyaltyItems.length} cartão(ões)` : '';
+      if (loyaltyCount) loyaltyCount.textContent = loyaltyItems.length ? plural(loyaltyItems.length, 'cartão', 'cartões') : '';
 
       // 6. Histórico de resgates (usa o histórico existente; não cria histórico novo)
       const historico = toArray(historicoResp?.data?.data || historicoResp?.data);
@@ -5053,7 +5085,7 @@
         const promocoesAtivas = Number(empresaData?.promocoes_ativas || 0);
         if (heroPoints) heroPoints.textContent = totalClientes;
         if (heroMetricLabel) heroMetricLabel.textContent = 'clientes';
-        if (heroProgressText) heroProgressText.textContent = `${promocoesAtivas} promoção(ões) ativa(s)`;
+        if (heroProgressText) heroProgressText.textContent = plural(promocoesAtivas, 'promoção ativa', 'promoções ativas');
         if (heroProgressBar) heroProgressBar.style.width = `${Math.max(8, Math.min(100, promocoesAtivas * 25))}%`;
       } else if (perfil === 'admin') {
         if (heroMetricLabel) heroMetricLabel.textContent = 'acessos';
@@ -5098,7 +5130,7 @@
 
         if (linkedCount) {
           linkedCount.textContent = linkedCompanies.length
-            ? `${linkedCompanies.length} empresa(s)`
+            ? plural(linkedCompanies.length, 'empresa')
             : 'Nenhum vínculo';
         }
         linkedList.innerHTML = linkedCompanies.map(renderLinkedCompanyCard).join('');
@@ -5710,11 +5742,7 @@
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h2 class="font-headline text-xl font-extrabold text-on-surface">Push para clientes</h2>
-              <p class="mt-1 text-sm text-on-surface-variant">Só para clientes vinculados a esta empresa.</p>
             </div>
-            <span class="rounded-full ${serverReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'} px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">
-              Push servidor: ${serverReady ? 'configurado' : 'pendente'}
-            </span>
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div class="rounded-xl bg-surface-container-low p-4">
@@ -5726,34 +5754,12 @@
               <p class="mt-2 text-2xl font-extrabold text-[#00AFA8]">${activePushCustomers.toLocaleString('pt-BR')}</p>
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Sem notificações</p>
-              <p class="mt-2 text-2xl font-extrabold text-[#B01774]">${inactivePushCustomers.toLocaleString('pt-BR')}</p>
-            </div>
-            <div class="rounded-xl bg-surface-container-low p-4">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Último envio</p>
-              <p class="mt-2 text-sm font-bold text-on-surface">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
-            </div>
-            <div class="rounded-xl bg-surface-container-low p-4">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Campanhas ativas</p>
               <p class="mt-2 text-2xl font-extrabold text-[#133f8c]">${activePromotions.toLocaleString('pt-BR')}</p>
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
-              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Status do servidor</p>
-              <p class="mt-2 text-sm font-bold ${serverReady ? 'text-emerald-700' : 'text-amber-700'}">${serverReady ? 'Pronto para envio real' : 'Configuração pendente'}</p>
-            </div>
-          </div>
-          <div class="app-status-strip mt-5">
-            <div class="app-status-chip">
-              <span class="app-status-chip__label">Janela de envio</span>
-              <span class="app-status-chip__value">${weeklyLimit.title}</span>
-            </div>
-            <div class="app-status-chip">
-              <span class="app-status-chip__label">Limite promocional</span>
-              <span class="app-status-chip__value">${weeklyLimit.detail}</span>
-            </div>
-            <div class="app-status-chip">
-              <span class="app-status-chip__label">Disponibilidade</span>
-              <span class="app-status-chip__value">${weeklyLimit.helper}</span>
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Último envio</p>
+              <p class="mt-2 text-sm font-bold text-on-surface">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
             </div>
           </div>
           <div class="grid gap-2 sm:grid-cols-3">
@@ -5878,9 +5884,9 @@
       if (kpiVolume) kpiVolume.textContent = Number(totalClientes).toLocaleString('pt-BR');
       if (kpiClientes) kpiClientes.textContent = Number(aniversariantes).toLocaleString('pt-BR');
       if (kpiResgates) kpiResgates.textContent = Number(totalAvaliacoes).toLocaleString('pt-BR');
-      if (kpiVolumeDesc) kpiVolumeDesc.textContent = `${Number(cards.novos_clientes_mes || 0).toLocaleString('pt-BR')} novo(s) cliente(s) no mes atual`;
+      if (kpiVolumeDesc) kpiVolumeDesc.textContent = `${plural(cards.novos_clientes_mes, 'cliente novo', 'clientes novos')} no mês atual`;
       if (kpiVolumeTrend) kpiVolumeTrend.textContent = notificacoes > 0
-        ? `${notificacoes.toLocaleString('pt-BR')} notificacao(oes) ja enviadas para clientes vinculados`
+        ? `${plural(notificacoes, 'notificação enviada', 'notificações enviadas')} para clientes vinculados`
         : 'Nenhuma notificacao enviada ainda';
 
       if (movDistribuido) movDistribuido.textContent = Number(cards.total_pontos_distribuidos || 0).toLocaleString('pt-BR');
@@ -6074,9 +6080,9 @@
                   </div>
                 </div>
                 <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-on-surface-variant">
-                  <span>${Number(c.total_promocoes_resgatadas || 0).toLocaleString('pt-BR')} promoção(ões)</span>
+                  <span>${plural(c.total_promocoes_resgatadas, 'promoção', 'promoções')}</span>
                   <span>${Number(c.total_recompensas_resgatadas || 0).toLocaleString('pt-BR')} recompensa(s)</span>
-                  <span>${Number(c.dias_inatividade || 0).toLocaleString('pt-BR')} dia(s) sem visita</span>
+                  <span>${plural(c.dias_inatividade, 'dia')} sem visita</span>
                 </div>
               </div>
             </div>
@@ -6156,11 +6162,7 @@
           <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="max-w-[620px]">
               <h2 class="text-2xl font-extrabold text-[#111B3F]">Campanhas e push</h2>
-              <p class="mt-1 text-sm text-slate-500">Enviadas só para clientes vinculados.</p>
             </div>
-            <span class="inline-flex rounded-full ${serverReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'} px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em]">
-              Push servidor: ${serverReady ? 'configurado' : 'pendente'}
-            </span>
           </div>
           <div class="mt-5 grid gap-3 sm:grid-cols-4">
             <div class="rounded-[22px] bg-slate-50 p-4">
@@ -6178,20 +6180,6 @@
             <div class="rounded-[22px] bg-slate-50 p-4">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Último envio</p>
               <p class="mt-2 text-sm font-bold text-[#111B3F]">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
-            </div>
-          </div>
-          <div class="app-status-strip mt-5">
-            <div class="app-status-chip">
-              <span class="app-status-chip__label">Janela de envio</span>
-              <span class="app-status-chip__value">${weeklyStatus.title}</span>
-            </div>
-            <div class="app-status-chip">
-              <span class="app-status-chip__label">Limite promocional</span>
-              <span class="app-status-chip__value">${weeklyStatus.detail}</span>
-            </div>
-            <div class="app-status-chip">
-              <span class="app-status-chip__label">Restante nesta janela</span>
-              <span class="app-status-chip__value">${weeklyStatus.helper}</span>
             </div>
           </div>
           <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -6964,7 +6952,7 @@
           }
           if (birthdayUi.previewValidity) {
             birthdayUi.previewValidity.textContent = payload.dias_validade > 0
-              ? `Válido por ${payload.dias_validade} dia(s) a partir do aniversário`
+              ? `Válido por ${plural(payload.dias_validade, 'dia')} a partir do aniversário`
               : 'Válido durante todo o mês do aniversário';
           }
           if (birthdayUi.previewNotification) {
@@ -7191,7 +7179,7 @@
             reminderUi.previewStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${payload.ativo ? 'bg-emerald-500/20 text-white' : 'bg-white/10 text-white/80'}`;
           }
           if (reminderUi.previewMeta) {
-            reminderUi.previewMeta.textContent = `Disparo apos ${payload.dias_sem_visita} dia(s) sem visita`;
+            reminderUi.previewMeta.textContent = `Envio automático após ${plural(payload.dias_sem_visita, 'dia')} sem visita`;
           }
           if (reminderUi.previewImage) {
             reminderUi.previewImage.src = safeImage(payload.imagem_url, IMAGE_FALLBACKS.promo);
@@ -7253,7 +7241,7 @@
                   <div class="min-w-0">
                     <p class="text-sm font-bold text-on-surface">${reminder.titulo || 'Lembrete de retorno'}</p>
                     <p class="mt-1 text-xs leading-5 text-on-surface-variant">${reminder.mensagem || 'Sem mensagem.'}</p>
-                    <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Disparo apos ${reminder.dias_sem_visita || reminder.dias_ausencia || 0} dia(s) sem visita</p>
+                    <p class="mt-2 text-[11px] font-semibold text-on-surface-variant">Envio automático após ${plural(reminder.dias_sem_visita || reminder.dias_ausencia, 'dia')} sem visita</p>
                     <p class="mt-1 text-[11px] text-on-surface-variant">Push: ${reminder.notification_title || reminder.titulo || 'Não informado'}</p>
                   </div>
                 </div>
@@ -7474,9 +7462,6 @@
                   <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">Push da empresa</p>
                   <h2 class="mt-2 text-xl font-extrabold text-on-surface">Situacao do envio</h2>
                 </div>
-                <span class="rounded-full ${pushReady ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'} px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em]">
-                  Push servidor: ${pushReady ? 'configurado' : 'pendente'}
-                </span>
               </div>
               <div class="mt-4 grid gap-3 sm:grid-cols-2">
                 <div class="rounded-xl bg-surface-container-low p-4">
@@ -7699,7 +7684,7 @@
       if (ids('adminCrescimentoMsg')) ids('adminCrescimentoMsg').textContent = safeText(
         statsData.crescimento_texto,
         summaryCards.total_notificacoes !== undefined
-          ? `Resumo consolidado: ${Number(summaryCards.total_notificacoes || 0).toLocaleString('pt-BR')} notificacao(oes) enviadas na base.`
+          ? `${plural(summaryCards.total_notificacoes, 'notificação enviada', 'notificações enviadas')} na base.`
           : 'Dados consolidados dos ultimos 30 dias'
       );
       if (ids('adminTicketsPendentes')) ids('adminTicketsPendentes').textContent = `${Number(totalTicketsPendentes || 0).toLocaleString('pt-BR')} ticket(s) pendente(s)`;
@@ -7841,7 +7826,7 @@
             <div class="admin-growth-column">
               <div class="admin-growth-bars">
                 <div class="admin-growth-bar admin-growth-bar--users" style="height:${userHeight}px" title="${usersValue} usuario(s)"></div>
-                <div class="admin-growth-bar admin-growth-bar--companies" style="height:${companyHeight}px" title="${companiesValue} empresa(s)"></div>
+                <div class="admin-growth-bar admin-growth-bar--companies" style="height:${companyHeight}px" title="${plural(companiesValue, 'empresa')}"></div>
               </div>
               <div class="admin-growth-label">${windowRef.label}</div>
               <div class="admin-growth-subtitle">${usersValue} / ${companiesValue}</div>
@@ -10137,7 +10122,7 @@
                   </label>
                   <label class="block">
                     <span class="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant">Imagem</span>
-                    <input data-banner-field="image_url" class="mt-2 w-full rounded-2xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" value="${escapeHtml(item?.image_url || '')}" placeholder="/assets/images/company1.jpg" />
+                    <input data-banner-field="image_url" class="mt-2 w-full rounded-2xl border border-outline-variant/20 bg-white px-4 py-3 text-sm focus:ring-2 focus:ring-primary" value="${escapeHtml(item?.image_url || '')}" placeholder="/img/placeholder-store.svg" />
                   </label>
                 </div>
                 <div class="space-y-4">
