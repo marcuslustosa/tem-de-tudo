@@ -3686,3 +3686,508 @@ main, section, header, nav, article { min-width: 0; }
 img, svg, video, canvas, iframe, input, textarea, select {
   max-width: 100%;
 }
+
+/* ==========================================================================
+   Celebração do bônus de adesão (modal) — 2026-07-16
+   ========================================================================== */
+.tdt-bonus-modal {
+  position: relative;
+  padding: 28px 22px 22px;
+  overflow: hidden;
+}
+
+.tdt-bonus-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(17, 27, 63, 0.06);
+  color: #5b5b62;
+  cursor: pointer;
+}
+
+.tdt-bonus-modal__badge {
+  position: relative;
+  z-index: 1;
+  margin: 4px auto 0;
+  width: 116px;
+  height: 116px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #f2f5f9;
+  box-shadow: 0 14px 34px rgba(17, 27, 63, 0.18);
+  outline: 4px solid #fff;
+  animation: tdt-bonus-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both 0.05s;
+}
+.tdt-bonus-modal__badge img { width: 100%; height: 100%; object-fit: cover; }
+
+.tdt-bonus-modal__kicker {
+  margin-top: 16px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--i9-primary);
+}
+
+.tdt-bonus-modal__title {
+  margin-top: 4px;
+  font-family: var(--i9-heading-font);
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--i9-navy);
+}
+
+.tdt-bonus-modal__desc {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--i9-text-muted);
+}
+
+/* Confetes discretos atrás do badge (CSS puro, sem lib) */
+.tdt-bonus-modal__burst {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 220px;
+  height: 150px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.tdt-bonus-modal__burst span {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: tdt-confetti 0.9s ease-out both 0.15s;
+}
+.tdt-bonus-modal__burst span:nth-child(1) { left: 12%; top: 46%; background: #b01774; --tx: -26px; --ty: -34px; --rz: 130deg; }
+.tdt-bonus-modal__burst span:nth-child(2) { left: 26%; top: 30%; background: #133f8c; --tx: -14px; --ty: -46px; --rz: -100deg; animation-delay: 0.22s; }
+.tdt-bonus-modal__burst span:nth-child(3) { left: 50%; top: 18%; background: #00afa8; --tx: 4px; --ty: -40px; --rz: 80deg; animation-delay: 0.12s; }
+.tdt-bonus-modal__burst span:nth-child(4) { left: 68%; top: 28%; background: #e91e85; --tx: 20px; --ty: -44px; --rz: -140deg; animation-delay: 0.26s; }
+.tdt-bonus-modal__burst span:nth-child(5) { left: 84%; top: 44%; background: #133f8c; --tx: 30px; --ty: -30px; --rz: 110deg; animation-delay: 0.18s; }
+.tdt-bonus-modal__burst span:nth-child(6) { left: 40%; top: 40%; background: #f0b429; --tx: -6px; --ty: -52px; --rz: -70deg; animation-delay: 0.3s; }
+
+@keyframes tdt-confetti {
+  0% { opacity: 0; transform: translate(0, 6px) rotate(0); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--tx, 0), var(--ty, -40px)) rotate(var(--rz, 90deg)); }
+}
+@keyframes tdt-bonus-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tdt-bonus-modal__badge, .tdt-bonus-modal__burst span { animation: none; opacity: 1; }
+  .tdt-bonus-modal__burst { display: none; }
+}
+
+/* ==========================================================================
+   Comprovante do bônus resgatado (bonus_resgatado.html) — 2026-07-16
+   ========================================================================== */
+.tdt-receipt-body {
+  min-height: 100vh;
+  background:
+    radial-gradient(1000px 460px at 50% -180px, rgba(19, 63, 140, 0.16), transparent 62%),
+    radial-gradient(700px 380px at 110% 110%, rgba(176, 23, 116, 0.1), transparent 60%),
+    #f7f7f9;
+}
+
+.tdt-receipt-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 16px calc(24px + env(safe-area-inset-bottom, 0px));
+}
+
+.tdt-receipt-card {
+  width: min(420px, 100%);
+  border-radius: 30px;
+  background: #fff;
+  border: 1px solid var(--i9-border);
+  box-shadow: var(--i9-shadow-strong);
+  overflow: hidden;
+  animation: tdt-pop-in 0.28s ease both;
+}
+
+.tdt-receipt-hero {
+  position: relative;
+  padding: 36px 24px 68px;
+  text-align: center;
+  color: #fff;
+  background: var(--i9-gradient);
+  overflow: hidden;
+}
+.tdt-receipt-hero::after {
+  /* recorte arredondado entre hero e corpo, estilo "ticket" */
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: 130%;
+  height: 34px;
+  transform: translateX(-50%);
+  border-radius: 100% 100% 0 0;
+  background: #fff;
+}
+
+.tdt-receipt-hero__badge {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+  width: 108px;
+  height: 108px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
+  outline: 4px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 18px 40px rgba(8, 10, 18, 0.3);
+  animation: tdt-bonus-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both 0.08s;
+}
+.tdt-receipt-hero__badge img { width: 100%; height: 100%; object-fit: cover; }
+
+.tdt-receipt-hero__kicker {
+  position: relative;
+  z-index: 1;
+  margin-top: 16px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.tdt-receipt-hero__title {
+  position: relative;
+  z-index: 1;
+  margin-top: 4px;
+  font-family: var(--i9-heading-font);
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.tdt-receipt-hero__burst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.tdt-receipt-hero__burst span {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.85);
+  opacity: 0;
+  animation: tdt-confetti 1.1s ease-out both 0.2s;
+}
+.tdt-receipt-hero__burst span:nth-child(1) { left: 12%; top: 52%; --tx: -30px; --ty: -44px; --rz: 120deg; }
+.tdt-receipt-hero__burst span:nth-child(2) { left: 22%; top: 30%; --tx: -18px; --ty: -52px; --rz: -90deg; animation-delay: 0.34s; }
+.tdt-receipt-hero__burst span:nth-child(3) { left: 48%; top: 16%; --tx: 6px; --ty: -44px; --rz: 70deg; animation-delay: 0.16s; }
+.tdt-receipt-hero__burst span:nth-child(4) { left: 70%; top: 26%; --tx: 24px; --ty: -50px; --rz: -130deg; animation-delay: 0.4s; }
+.tdt-receipt-hero__burst span:nth-child(5) { left: 86%; top: 50%; --tx: 34px; --ty: -36px; --rz: 100deg; animation-delay: 0.26s; }
+.tdt-receipt-hero__burst span:nth-child(6) { left: 36%; top: 44%; --tx: -8px; --ty: -58px; --rz: -60deg; animation-delay: 0.48s; }
+
+.tdt-receipt-info {
+  position: relative;
+  padding: 6px 24px 20px;
+  text-align: center;
+}
+
+.tdt-receipt-info__company {
+  font-family: var(--i9-heading-font);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--i9-navy);
+}
+
+.tdt-receipt-info__desc {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--i9-text-muted);
+}
+
+.tdt-receipt-divider {
+  position: relative;
+  margin: 18px -24px;
+  border-top: 2px dashed rgba(17, 27, 63, 0.12);
+}
+.tdt-receipt-divider::before,
+.tdt-receipt-divider::after {
+  /* furos laterais do ticket */
+  content: "";
+  position: absolute;
+  top: -11px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #f7f7f9;
+  box-shadow: inset 0 1px 2px rgba(17, 27, 63, 0.08);
+}
+.tdt-receipt-divider::before { left: -10px; }
+.tdt-receipt-divider::after { right: -10px; }
+
+.tdt-receipt-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 0;
+}
+.tdt-receipt-meta dt {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--i9-text-muted);
+}
+.tdt-receipt-meta dd {
+  margin: 4px 0 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--i9-text);
+}
+
+.tdt-receipt-hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: var(--i9-radius-md);
+  background: var(--i9-surface-soft);
+  text-align: left;
+}
+.tdt-receipt-hint .material-symbols-outlined { color: var(--i9-primary); font-size: 22px; }
+.tdt-receipt-hint p { margin: 0; font-size: 0.82rem; line-height: 1.45; color: var(--i9-text); }
+
+.tdt-receipt-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 24px 24px;
+}
+.tdt-receipt-actions__primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  border-radius: var(--i9-radius-pill);
+  background: var(--i9-gradient);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 12px 28px rgba(176, 23, 116, 0.28);
+  transition: transform var(--i9-transition), box-shadow var(--i9-transition);
+}
+.tdt-receipt-actions__primary:active { transform: scale(0.98); }
+.tdt-receipt-actions__secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  border-radius: var(--i9-radius-pill);
+  border: 1px solid var(--i9-border);
+  background: #fff;
+  color: var(--i9-text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.tdt-receipt-actions__secondary:active { transform: scale(0.98); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tdt-receipt-card, .tdt-receipt-hero__badge { animation: none; }
+  .tdt-receipt-hero__burst { display: none; }
+}
+
+/* ==========================================================================
+   Guia visual de instalação no iPhone (mocks ilustrados) — 2026-07-16
+   ========================================================================== */
+.tdt-install-sheet__steps--visual li { align-items: flex-start; }
+.tdt-install-step { flex: 1; min-width: 0; }
+.tdt-install-step > p { margin: 0 0 8px; }
+
+.tdt-install-step__mock {
+  border-radius: 14px;
+  border: 1px solid rgba(17, 27, 63, 0.1);
+  background: #f7f8fb;
+  font-family: var(--i9-body-font);
+}
+
+/* Passo 1: barra do navegador com o botão Compartilhar em destaque */
+.tdt-install-step__mock--bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  color: #8a8f9c;
+}
+.tdt-install-step__mock--bar .material-symbols-outlined { font-size: 18px; }
+.tdt-install-step__url {
+  flex: 1;
+  text-align: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(17, 27, 63, 0.08);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #2e2e34;
+}
+.tdt-install-step__target {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--i9-gradient);
+  box-shadow: 0 0 0 4px rgba(176, 23, 116, 0.18);
+  animation: tdt-install-pulse 1.6s ease-in-out infinite;
+}
+.tdt-install-step__target .material-symbols-outlined { font-size: 18px; }
+
+/* Passo 2: linhas do menu de compartilhar, com a opção certa acesa */
+.tdt-install-step__mock--menu { overflow: hidden; }
+.tdt-install-step__menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: #8a8f9c;
+}
+.tdt-install-step__menu-row + .tdt-install-step__menu-row { border-top: 1px solid rgba(17, 27, 63, 0.07); }
+.tdt-install-step__menu-row .material-symbols-outlined { font-size: 18px; }
+.tdt-install-step__menu-row--hot {
+  color: var(--i9-navy);
+  font-weight: 700;
+  background: #fff;
+  box-shadow: inset 3px 0 0 var(--i9-primary);
+}
+.tdt-install-step__menu-row--hot .material-symbols-outlined { color: var(--i9-primary); }
+
+/* Passo 3: cabeçalho do diálogo com o "Adicionar" azul do iOS */
+.tdt-install-step__mock--confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: #8a8f9c;
+}
+.tdt-install-step__confirm {
+  font-weight: 800;
+  color: #0a84ff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 132, 255, 0.1);
+  animation: tdt-install-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes tdt-install-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tdt-install-step__target, .tdt-install-step__confirm { animation: none; }
+}
+
+/* ==========================================================================
+   Camada "cara de app" (2026-07-17): interações de toque, foco e entrada.
+   ========================================================================== */
+
+/* Em telas de toque, hover-lift não existe em app nativo: o feedback certo
+   é a compressão ao pressionar. Remove o "flutuar" e mantém o apertar. */
+@media (hover: none) {
+  .app-primary-button:hover,
+  .app-secondary-button:hover,
+  .app-company-card:hover,
+  .app-campaign-card:hover,
+  .app-dashboard-card:hover,
+  .home-search__btn:hover,
+  .tdt-install-fab:hover {
+    transform: none;
+    box-shadow: var(--i9-shadow-soft);
+  }
+}
+
+.app-primary-button:active,
+.app-secondary-button:active,
+.home-action:active,
+.loyalty-redeem-btn:active,
+.tdt-receipt-actions__primary:active,
+.admin-card[role="button"]:active {
+  transform: scale(0.97);
+  transition-duration: 0.08s;
+}
+
+/* Botões e itens de navegação não são texto: sem seleção nem callout. */
+button,
+.app-mobile-dock__item,
+.home-action,
+.app-primary-button,
+.app-secondary-button {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Um único anel de foco para o app inteiro (teclado apenas). */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--i9-focus-ring);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Entrada suave do conteúdo: o app "chega", não "carrega". */
+body[data-page] main {
+  animation: tdt-page-in 0.3s ease both;
+}
+@keyframes tdt-page-in {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-page] main { animation: none; }
+}
+
+/* Ícones Material sempre com o mesmo peso óptico. */
+body[data-page] .material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+body[data-page] .material-symbols-outlined.is-filled {
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Títulos com kerning mais apertado: leitura de app, não de documento. */
+body[data-page] h1,
+body[data-page] h2 {
+  letter-spacing: -0.02em;
+}
+
+/* Números tabulares em pontuações e contadores (não "dançam" ao mudar). */
+.app-status-chip__value,
+.tdt-receipt-meta dd {
+  font-variant-numeric: tabular-nums;
+}

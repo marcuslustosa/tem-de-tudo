@@ -381,24 +381,26 @@
 
   // Modal automático do bônus de adesão (aparece ao entrar na empresa quando disponível).
   // Suporta "não mostrar novamente" (localStorage) e resgate presencial via QR.
-  function tdtShowBonusModal({ empresaId, bonusId, titulo, descricao, imagem, validade, corMarca } = {}) {
+  // `celebrar`: cadastro/vínculo recém-concluído — tom de "você acabou de ganhar".
+  function tdtShowBonusModal({ empresaId, bonusId, titulo, descricao, imagem, validade, corMarca, celebrar } = {}) {
     const brand = corMarca || '#133F8C';
     const overlay = document.createElement('div');
     overlay.className = 'tdt-modal-overlay';
     overlay.innerHTML = `
-      <div class="tdt-modal-dialog text-center">
-        <div class="flex justify-end">
-          <button type="button" class="text-on-surface-variant" data-close aria-label="Fechar"><span class="material-symbols-outlined">close</span></button>
+      <div class="tdt-modal-dialog tdt-bonus-modal text-center">
+        <button type="button" class="tdt-bonus-modal__close" data-close aria-label="Fechar"><span class="material-symbols-outlined">close</span></button>
+        <div class="tdt-bonus-modal__burst" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
         </div>
-        <div class="mx-auto -mt-2 h-28 w-28 overflow-hidden rounded-full bg-slate-100 shadow-lg ring-4 ring-white">
-          <img src="${imagem}" class="h-full w-full object-cover" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" alt="" />
+        <div class="tdt-bonus-modal__badge">
+          <img src="${imagem}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" alt="" />
         </div>
-        <p class="mt-3 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Bônus de adesão</p>
-        <h3 class="mt-1 text-2xl font-extrabold" style="color:${brand}">${safeText(titulo, 'Bônus de adesão')}</h3>
-        <p class="mt-2 text-sm leading-6 text-slate-600">${safeText(descricao, 'Você ganhou um benefício de boas-vindas!')}</p>
-        <div class="mt-5 flex flex-col gap-2">
-          <button type="button" class="loyalty-redeem-btn" data-redeem style="background:linear-gradient(135deg,${brand} 0%,#b01774 100%)"><span class="material-symbols-outlined">check_circle</span> OK, resgatar</button>
-          <button type="button" class="app-secondary-button justify-center" data-nevermore>Não ver mais</button>
+        <p class="tdt-bonus-modal__kicker">${celebrar ? 'Você acabou de ganhar!' : 'Bônus de adesão'}</p>
+        <h3 class="tdt-bonus-modal__title">${safeText(titulo, 'Bônus de adesão')}</h3>
+        <p class="tdt-bonus-modal__desc">${safeText(descricao, 'Você ganhou um benefício de boas-vindas!')}</p>
+        <div class="mt-6 flex flex-col gap-2">
+          <button type="button" class="loyalty-redeem-btn" data-redeem style="background:linear-gradient(135deg,${brand} 0%,#b01774 100%)"><span class="material-symbols-outlined">redeem</span> Resgatar agora</button>
+          <button type="button" class="app-secondary-button justify-center" data-nevermore>${celebrar ? 'Deixar para depois' : 'Não ver mais'}</button>
         </div>
       </div>`;
     document.body.appendChild(overlay);
@@ -409,8 +411,9 @@
       document.body.style.overflow = prevOverflow;
     };
     // "Nao ver mais": nunca mais mostra o popup desta empresa.
+    // Em celebracao de cadastro novo, apenas fecha (sem silenciar para sempre).
     const nevermore = () => {
-      if (empresaId) {
+      if (empresaId && !celebrar) {
         try { localStorage.setItem(`tdt_bonus_adesao_hide_${empresaId}`, '1'); } catch (_) { /* ignore */ }
       }
       dismiss();
@@ -431,8 +434,8 @@
         const { res, data } = await api.request(`/cliente/bonus-adesao/${bonusId}/resgatar`, { method: 'POST' }, { notify: false });
         if (res.ok && data?.success !== false) {
           dismiss();
-          ui.message('Bônus de adesão resgatado com sucesso!', 'success');
-          setTimeout(() => window.location.reload(), 900);
+          // Sai da página da empresa: comprovante em tela cheia para mostrar no balcão.
+          window.location.href = `/bonus_resgatado.html?empresa=${encodeURIComponent(empresaId || '')}&bonus=${encodeURIComponent(bonusId || '')}`;
           return;
         }
         ui.message(data?.message || 'Não foi possível resgatar o bônus agora.', 'error');
@@ -765,7 +768,7 @@
         return {
           label: 'Pública',
           badgeClass: 'bg-fuchsia-50 text-fuchsia-700',
-          message: 'Entre como cliente e apresente seu QR Code para validar.',
+          message: 'Entre como cliente e leia o QR da empresa para resgatar.',
         };
       default:
         return {
@@ -1275,15 +1278,44 @@
               <img src="/img/icon-192.png" alt="" class="tdt-install-sheet__icon" onerror="this.style.display='none'" />
               <div>
                 <p class="tdt-install-sheet__title">Instalar o Tem de Tudo</p>
-                <p class="tdt-install-sheet__sub">Fica igual a um app, com atalho na tela de inicio.</p>
+                <p class="tdt-install-sheet__sub">Fica igual a um app, com atalho na tela de início.</p>
               </div>
             </div>
-            <ol class="tdt-install-sheet__steps">
-              <li><span class="tdt-install-sheet__num">1</span> Toque em <b>Compartilhar</b> <span class="material-symbols-outlined tdt-install-sheet__inline">ios_share</span> na barra do Safari.</li>
-              <li><span class="tdt-install-sheet__num">2</span> Role e toque em <b>Adicionar a Tela de Inicio</b> <span class="material-symbols-outlined tdt-install-sheet__inline">add_box</span>.</li>
-              <li><span class="tdt-install-sheet__num">3</span> Confirme em <b>Adicionar</b>.</li>
+            <ol class="tdt-install-sheet__steps tdt-install-sheet__steps--visual">
+              <li>
+                <span class="tdt-install-sheet__num">1</span>
+                <div class="tdt-install-step">
+                  <p>Toque em <b>Compartilhar</b> na barra do navegador.</p>
+                  <div class="tdt-install-step__mock tdt-install-step__mock--bar" aria-hidden="true">
+                    <span class="material-symbols-outlined">arrow_back_ios_new</span>
+                    <span class="tdt-install-step__url">temdetudo.app</span>
+                    <span class="tdt-install-step__target"><span class="material-symbols-outlined">ios_share</span></span>
+                    <span class="material-symbols-outlined">content_copy</span>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <span class="tdt-install-sheet__num">2</span>
+                <div class="tdt-install-step">
+                  <p>Role o menu e toque em <b>Adicionar à Tela de Início</b>.</p>
+                  <div class="tdt-install-step__mock tdt-install-step__mock--menu" aria-hidden="true">
+                    <span class="tdt-install-step__menu-row"><span>Copiar</span><span class="material-symbols-outlined">content_copy</span></span>
+                    <span class="tdt-install-step__menu-row tdt-install-step__menu-row--hot"><span>Adicionar à Tela de Início</span><span class="material-symbols-outlined">add_box</span></span>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <span class="tdt-install-sheet__num">3</span>
+                <div class="tdt-install-step">
+                  <p>Confirme tocando em <b>Adicionar</b> no canto superior.</p>
+                  <div class="tdt-install-step__mock tdt-install-step__mock--confirm" aria-hidden="true">
+                    <span>Cancelar</span>
+                    <span class="tdt-install-step__confirm">Adicionar</span>
+                  </div>
+                </div>
+              </li>
             </ol>
-            <p class="tdt-install-sheet__foot">Depois <b>abra pelo icone</b> na tela de inicio para conseguir <b>ativar as notificacoes</b>.</p>
+            <p class="tdt-install-sheet__foot">Depois <b>abra pelo ícone</b> na tela de início para conseguir <b>ativar as notificações</b>.</p>
             <button type="button" class="tdt-install-sheet__ok" data-close>Entendi</button>
           </div>`;
         document.body.appendChild(iosSheet);
@@ -1746,7 +1778,7 @@
         </div>
         <div class="app-status-chip">
           <span class="app-status-chip__label">Validacao presencial</span>
-          <span class="app-status-chip__value">Seu QR pessoal continua sendo o codigo de balcao para bonus, fidelidade e promocoes.</span>
+          <span class="app-status-chip__value">Leia o QR da empresa no balcao para resgatar bonus, fidelidade e promocoes.</span>
         </div>
       </div>
     `;
@@ -1790,8 +1822,8 @@
   }
 
   function mountUnifiedMobileDock() {
-    // Paginas sem navegacao de app (login/cadastro/painel revenda) nao usam o dock.
-    if (['revenda_painel', 'entrar', 'criar_conta', 'escolher-tipo', 'forgot_password', 'redirect_bridge', 'home_tem_de_tudo'].includes(page)) return;
+    // Paginas sem navegacao de app (login/cadastro/painel revenda/comprovante) nao usam o dock.
+    if (['revenda_painel', 'entrar', 'criar_conta', 'escolher-tipo', 'forgot_password', 'redirect_bridge', 'home_tem_de_tudo', 'bonus_resgatado'].includes(page)) return;
     const scope = getScopeForCurrentPage();
     const oldDockList = Array.from(document.querySelectorAll('nav.fixed.bottom-0'));
     oldDockList.forEach((dock) => dock.remove());
@@ -2233,6 +2265,12 @@
     async function maybePromptAfterAuth() {
       const reason = getPushPrompt();
       if (!reason || !canAutoPromptOnCurrentPage()) return;
+
+      // Cadastro/vínculo via QR recém-concluído: a celebração do bônus tem
+      // prioridade nesta carga. Não consome o motivo — o convite de push
+      // aparece na próxima página elegível.
+      if (page === 'detalhe_do_parceiro'
+        && new URLSearchParams(window.location.search).get('linked') === '1') return;
 
       const viewer = auth.normalizeUser(auth.getStored()?.user);
       const perfil = auth.normalizePerfil(viewer?.perfil || viewer?.role || viewer?.tipo);
@@ -2688,10 +2726,7 @@
         }
 
         ui.setPageState('loading', 'Carregando sua home...');
-        const [{ data: dashboardResp }, { data: myQrResp }] = await Promise.all([
-          api.request('/cliente/dashboard', {}, { notify: false }),
-          api.request('/cliente/meu-qrcode', {}, { notify: false }),
-        ]);
+        const { data: dashboardResp } = await api.request('/cliente/dashboard', {}, { notify: false });
         ui.clearPageState();
 
         const payload = dashboardResp?.data || {};
@@ -2699,7 +2734,6 @@
         const linkedCompanies = toArray(payload.empresas_vinculadas);
         const featuredCompanies = toArray(payload.empresas_destaque);
         const quickActions = payload.acoes_rapidas || {};
-        const myQr = myQrResp?.data || {};
         const params = new URLSearchParams(window.location.search);
 
         mountClientHomeSummary({
@@ -4332,11 +4366,13 @@
             const bonusPayload = bonusResponse.data?.data || {};
             renderBonusCard(bonusPayload);
             // Bônus de adesão aparece automaticamente ao entrar na empresa (quando disponível),
-            // respeitando a preferência "não mostrar novamente".
+            // respeitando a preferência "não mostrar novamente" — EXCETO no cadastro/vínculo
+            // recém-concluído (linked=1), quando a celebração é obrigatória.
             if (bonusPayload?.status === 'available') {
+              const justLinked = params.get('linked') === '1';
               let hiddenPref = false;
               try { hiddenPref = localStorage.getItem(`tdt_bonus_adesao_hide_${selectedCompanyId}`) === '1'; } catch (_) { hiddenPref = false; }
-              if (!hiddenPref) {
+              if (!hiddenPref || justLinked) {
                 const b = bonusPayload.bonus || {};
                 setTimeout(() => tdtShowBonusModal({
                   empresaId: selectedCompanyId,
@@ -4345,6 +4381,7 @@
                   descricao: b.descricao || 'Você ganhou um benefício de boas-vindas!',
                   imagem: safeImage(b.imagem_url || b.imagem, IMAGE_FALLBACKS.promo),
                   validade: b.data_expiracao,
+                  celebrar: justLinked,
                 }), 400);
               }
             }
@@ -5292,34 +5329,15 @@
       if (!(await auth.guard(['cliente', 'empresa', 'admin']))) return;
       const user = await auth.ensure();
       const perfil = auth.normalizePerfil(user?.perfil || user?.role);
-      const mode = new URLSearchParams(window.location.search).get('modo') || (perfil === 'empresa' ? 'validacao-cliente' : 'vinculo-empresa');
-      const customerCompanyLinkMode = perfil === 'cliente' && mode === 'vinculo-empresa';
-      const companyBenefitMode = perfil === 'empresa' && ['bonus-adesao', 'fidelidade', 'aniversario', 'beneficios'].includes(mode);
-      const companyBonusMode = perfil === 'empresa' && mode === 'bonus-adesao';
+      // Fluxo único: o cliente lê o QR da empresa. A empresa apenas exibe o
+      // QR da loja nesta página (nunca escaneia ninguém).
+      const mode = new URLSearchParams(window.location.search).get('modo') || (perfil === 'empresa' ? 'beneficios' : 'vinculo-empresa');
 
       const titleEl = document.querySelector('main header h1');
       const copyEl = document.getElementById('scanInstructions');
       const buttonLabel = document.getElementById('usarCupomBtn');
-      const manualInput = document.getElementById('cupomId');
       const input = document.getElementById('cupomId');
       const btn = document.getElementById('usarCupomBtn');
-      const list = document.getElementById('validacoesRecentes');
-      const empty = document.getElementById('validacoesEmpty');
-      const bonusPanel = document.getElementById('bonusValidationPanel');
-      const bonusActionBtn = document.getElementById('bonusValidationAction');
-      const birthdayValidationSection = document.getElementById('birthdayValidationSection');
-      const birthdayValidationTitle = document.getElementById('birthdayValidationTitle');
-      const birthdayValidationStatus = document.getElementById('birthdayValidationStatus');
-      const birthdayValidationDescription = document.getElementById('birthdayValidationDescription');
-      const birthdayValidationWindow = document.getElementById('birthdayValidationWindow');
-      const birthdayValidationAction = document.getElementById('birthdayValidationAction');
-      const loyaltyAddPointBtn = document.getElementById('loyaltyValidationAddPoint');
-      const loyaltyRedeemBtn = document.getElementById('loyaltyValidationRedeem');
-      const promotionValidationSection = document.getElementById('promotionValidationSection');
-      const promotionValidationTitle = document.getElementById('promotionValidationTitle');
-      const promotionValidationStatus = document.getElementById('promotionValidationStatus');
-      const promotionValidationDescription = document.getElementById('promotionValidationDescription');
-      const promotionValidationList = document.getElementById('promotionValidationList');
 
       if (!input || !btn) return;
 
@@ -5331,23 +5349,13 @@
       if (copyEl) {
         copyEl.textContent = perfil === 'empresa'
           ? 'Mostre este QR para o cliente escanear. Ele mesmo resgata os benefícios (bônus, fidelidade e promoções) na página da sua empresa.'
-          : 'Cliente: escaneie o QR do adesivo da empresa para se vincular no app.';
+          : 'Escaneie o QR do adesivo da empresa para se vincular no app.';
       }
-      if (buttonLabel) {
-        buttonLabel.innerHTML = perfil === 'empresa'
-          ? (companyBenefitMode
-              ? '<span class="material-symbols-outlined" style="font-variation-settings: \'FILL\' 1;">qr_code_scanner</span> Consultar Cliente'
-              : '<span class="material-symbols-outlined" style="font-variation-settings: \'FILL\' 1;">verified</span> Validar Agora')
-          : '<span class="material-symbols-outlined" style="font-variation-settings: \'FILL\' 1;">link</span> Vincular Agora';
+      if (buttonLabel && perfil !== 'empresa') {
+        buttonLabel.innerHTML = '<span class="material-symbols-outlined" style="font-variation-settings: \'FILL\' 1;">link</span> Vincular Agora';
       }
-      if (manualInput && customerCompanyLinkMode) {
-        manualInput.placeholder = 'Cole o código do QR da empresa...';
-      }
-      if (manualInput && companyBenefitMode) {
-        manualInput.placeholder = 'Cole o QR dinâmico do cliente...';
-      }
-      if (bonusPanel && !companyBenefitMode) {
-        bonusPanel.classList.add('hidden');
+      if (perfil === 'cliente' && mode === 'vinculo-empresa') {
+        input.placeholder = 'Cole o código do QR da empresa...';
       }
 
       if (perfil === 'empresa') {
@@ -5409,370 +5417,23 @@
       }
 
       // Cliente: esta pagina e apenas o scanner (ler o QR do adesivo da empresa).
-      // O QR proprio do cliente fica no atalho "Meu QR Code" da home, nao aqui
-      // (nao faz sentido apresentar o proprio QR numa tela que serve para escanear outro).
-
-      const renderItem = (item) => {
-        const div = document.createElement('div');
-        div.className = 'flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-[0_2px_8px_rgba(11,31,58,0.04)]';
-        div.innerHTML = `
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
-              <span class="material-symbols-outlined">check_circle</span>
-            </div>
-            <div>
-              <p class="text-sm font-bold text-on-surface">${item.cliente || 'Cliente'}</p>
-              <p class="text-[10px] text-on-surface-variant uppercase">Resgate: ${item.beneficio || item.codigo}</p>
-            </div>
-          </div>
-          <p class="text-[10px] font-semibold text-outline">${item.hora}</p>`;
-        return div;
-      };
-
-      const pushItem = (item) => {
-        if (empty) empty.classList.add('hidden');
-        list?.prepend(renderItem(item));
-      };
-      let latestCompanyLookup = null;
-
-      const renderBonusLookup = (lookup) => {
-        if (!bonusPanel || !companyBenefitMode) return;
-        latestCompanyLookup = {
-          ...(latestCompanyLookup || {}),
-          ...(lookup || {}),
-          cliente: lookup?.cliente || latestCompanyLookup?.cliente || {},
-          empresa: lookup?.empresa || latestCompanyLookup?.empresa || {},
-          vinculo: lookup?.vinculo || latestCompanyLookup?.vinculo || {},
-          bonus_adesao: lookup?.bonus_adesao || latestCompanyLookup?.bonus_adesao || {},
-          bonus_aniversario: lookup?.bonus_aniversario || latestCompanyLookup?.bonus_aniversario || {},
-          cartao_fidelidade: lookup?.cartao_fidelidade || latestCompanyLookup?.cartao_fidelidade || {},
-          promocoes: lookup?.promocoes || latestCompanyLookup?.promocoes || {},
-        };
-
-        const cliente = latestCompanyLookup?.cliente || {};
-        const vinculo = latestCompanyLookup?.vinculo || {};
-        const bonus = latestCompanyLookup?.bonus_adesao || {};
-        const bonusInfo = bonus?.bonus || {};
-        const meta = bonusStatusMeta(bonus.status);
-        const birthday = latestCompanyLookup?.bonus_aniversario || {};
-        const birthdayInfo = birthday?.bonus || {};
-        const birthdayMeta = birthdayBonusStatusMeta(birthday?.status);
-        const loyalty = latestCompanyLookup?.cartao_fidelidade || {};
-        const loyaltyCard = loyalty?.card || {};
-        const loyaltyProgress = loyalty?.progress || {};
-        const loyaltyMeta = loyaltyStatusMeta(loyalty?.status);
-        const loyaltyHistory = Array.isArray(loyalty?.history_summary) ? loyalty.history_summary : [];
-        const promotions = latestCompanyLookup?.promocoes || {};
-        const promotionItems = Array.isArray(promotions?.items) ? promotions.items : [];
-
-        bonusPanel.classList.remove('hidden');
-        document.getElementById('bonusValidationClientName').textContent = cliente.nome || 'Cliente';
-        document.getElementById('bonusValidationClientPhone').textContent = cliente.telefone || 'Não informado';
-        document.getElementById('bonusValidationClientBirthdate').textContent = formatDatePtBr(cliente.data_nascimento, 'Não informada');
-        document.getElementById('bonusValidationCompany').textContent = latestCompanyLookup?.empresa?.nome || 'Não identificada';
-        document.getElementById('bonusValidationLinkStatus').textContent = vinculo.existe
-          ? `Cliente vinculado desde ${formatDatePtBr(vinculo.data_inscricao, 'data não informada')}`
-          : 'Cliente ainda não vinculado a esta empresa';
-        document.getElementById('bonusValidationBonusStatus').textContent = meta.label;
-        document.getElementById('bonusValidationBonusStatus').className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}`;
-        document.getElementById('bonusValidationBonusTitle').textContent = bonusInfo.titulo || 'Bônus de adesão';
-        document.getElementById('bonusValidationBonusDescription').textContent = bonusInfo.descricao || meta.message;
-        document.getElementById('bonusValidationBonusExpiry').textContent = formatDatePtBr(bonusInfo.data_expiracao, 'Não informada');
-        document.getElementById('bonusValidationMessage').textContent = bonus.message || loyalty.message || meta.message;
-
-        if (birthdayValidationSection && birthdayValidationStatus && birthdayValidationDescription) {
-          birthdayValidationSection.classList.remove('hidden');
-          if (birthdayValidationTitle) {
-            birthdayValidationTitle.textContent = birthdayInfo.titulo || 'Nenhum bônus aniversário configurado';
-          }
-          birthdayValidationStatus.textContent = birthdayMeta.label;
-          birthdayValidationStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${birthdayMeta.badgeClass}`;
-          birthdayValidationDescription.textContent = birthdayInfo.descricao || birthday.message || birthdayMeta.message;
-          if (birthdayValidationWindow) {
-            birthdayValidationWindow.textContent = birthdayInfo.validade_descricao
-              || formatDateRangePtBr(birthday?.valid_from, birthday?.valid_until, 'Validade não informada');
-          }
-        }
-
-        document.getElementById('loyaltyValidationTitle').textContent = loyaltyCard.titulo || 'Nenhum cartão configurado';
-        document.getElementById('loyaltyValidationStatus').textContent = loyaltyMeta.label;
-        document.getElementById('loyaltyValidationStatus').className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${loyaltyMeta.badgeClass}`;
-        document.getElementById('loyaltyValidationDescription').textContent = loyaltyCard.descricao || loyaltyMeta.message;
-        document.getElementById('loyaltyValidationRule').textContent = loyaltyCard.regra_ganho || 'Ganhe pontos por visita.';
-        document.getElementById('loyaltyValidationReward').textContent = loyaltyCard.recompensa_descricao || 'Ainda não informada';
-        document.getElementById('loyaltyValidationPoints').textContent = String(loyaltyProgress.current_points || 0);
-        document.getElementById('loyaltyValidationTarget').textContent = `${Number(loyaltyProgress.required_points || loyaltyCard.pontos_necessarios || 0)} pontos`;
-        document.getElementById('loyaltyValidationProgressLabel').textContent = loyaltyProgress.progress_label || `0 de ${Number(loyaltyCard.pontos_necessarios || 0)} pontos`;
-        document.getElementById('loyaltyValidationProgressState').textContent = loyaltyProgress.reward_available
-          ? 'Recompensa liberada'
-          : (loyalty.status === 'not_linked' ? 'Exige vínculo' : 'Em andamento');
-        document.getElementById('loyaltyValidationProgressBar').style.width = `${Math.max(0, Math.min(100, Number(loyaltyProgress.percentage || 0)))}%`;
-
-        const historyHost = document.getElementById('loyaltyValidationHistory');
-        if (historyHost) {
-          if (!loyaltyHistory.length) {
-            historyHost.innerHTML = '<p>Nenhuma movimentação registrada ainda.</p>';
-          } else {
-            historyHost.innerHTML = loyaltyHistory.map((item) => `
-              <div class="rounded-lg bg-white p-3 ring-1 ring-black/5">
-                <div class="flex items-center justify-between gap-3">
-                  <span class="text-xs font-bold uppercase tracking-[0.12em] ${item.tipo === 'redeemed' ? 'text-rose-600' : 'text-[#111B3F]'}">${item.tipo === 'redeemed' ? 'Resgate' : 'Ponto'}</span>
-                  <span class="text-[11px] font-semibold text-on-surface-variant">${formatDatePtBr(item.created_at, 'Agora')}</span>
-                </div>
-                <p class="mt-1 text-sm font-semibold text-on-surface">${item.descricao || 'Movimentação registrada.'}</p>
-              </div>
-            `).join('');
-          }
-        }
-
-        if (promotionValidationSection && promotionValidationStatus && promotionValidationDescription && promotionValidationList) {
-          promotionValidationSection.classList.remove('hidden');
-          const promotionSummaryStatus = promotionItems.some((item) => item.viewer_status === 'available')
-            ? 'available'
-            : promotionItems.some((item) => item.viewer_status === 'redeemed')
-              ? 'redeemed'
-              : promotionItems.some((item) => item.viewer_status === 'not_linked')
-                ? 'not_linked'
-                : (promotions?.status || 'inactive');
-          const promotionMeta = promotionStatusMeta(promotionSummaryStatus);
-
-          if (promotionValidationTitle) {
-            promotionValidationTitle.textContent = promotionItems.length
-              ? `${promotionItems.length} promoção(ões) consultada(s)`
-              : 'Nenhuma promoção elegível';
-          }
-          promotionValidationStatus.textContent = promotionMeta.label;
-          promotionValidationStatus.className = `rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${promotionMeta.badgeClass}`;
-          promotionValidationDescription.textContent = promotions?.message || promotionMeta.message;
-
-          if (!promotionItems.length) {
-            promotionValidationList.innerHTML = '<p>Nenhuma promoção elegível para este cliente no momento.</p>';
-          } else {
-            promotionValidationList.innerHTML = promotionItems.map((promo) => {
-              const metaPromo = promotionStatusMeta(promo.viewer_status || promo.status);
-              const canValidatePromo = Boolean(promo.viewer_status === 'available' && promo.id && cliente.id);
-
-              return `
-                <div class="rounded-xl bg-white p-4 ring-1 ring-black/5">
-                  <div class="flex items-start justify-between gap-3">
-                    <div class="min-w-0">
-                      <p class="text-sm font-bold text-on-surface">${safeText(promo.titulo, 'Promoção instantânea')}</p>
-                      <p class="mt-1 text-xs leading-5 text-on-surface-variant">${safeText(promo.descricao, metaPromo.message)}</p>
-                    </div>
-                    <span class="shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${metaPromo.badgeClass}">${metaPromo.label}</span>
-                  </div>
-                  <div class="mt-3 flex items-center justify-between gap-3">
-                    <p class="text-[11px] font-semibold text-on-surface-variant">Validade: ${formatDatePtBr(promo.data_expiracao || promo.validade, 'Não informada')}</p>
-                    <button type="button" data-action="validar-promocao" data-promocao-id="${promo.id}"
-                      class="rounded-[1rem] px-3 py-2 text-xs font-bold ${canValidatePromo ? 'bg-gradient-to-r from-[#00afa8] via-[#133f8c] to-[#b01774] text-white shadow-sm' : 'bg-surface-container text-on-surface-variant'}"
-                      ${canValidatePromo ? '' : 'disabled'}>
-                      ${canValidatePromo ? 'Validar promoção' : 'Sem ação'}
-                    </button>
-                  </div>
-                </div>
-              `;
-            }).join('');
-
-            promotionValidationList.querySelectorAll('[data-action="validar-promocao"]').forEach((button) => {
-              button.addEventListener('click', async () => {
-                const promotionId = Number(button.getAttribute('data-promocao-id') || 0);
-                if (!promotionId || !cliente.id) return;
-
-                button.disabled = true;
-                button.classList.add('opacity-60');
-                const { res, data } = await api.request(`/empresa/promocoes/${promotionId}/validar`, {
-                  method: 'POST',
-                  body: JSON.stringify({ cliente_id: cliente.id }),
-                });
-                button.disabled = false;
-                button.classList.remove('opacity-60');
-
-                if (res.ok && data?.success) {
-                  ui.message(data?.message || 'Promoção validada com sucesso.', 'success');
-                  renderBonusLookup({
-                    ...(latestCompanyLookup || {}),
-                    ...(data.data || {}),
-                    promocoes: data?.data?.promocoes || latestCompanyLookup?.promocoes,
-                  });
-                  const validatedPromotion = promotionItems.find((item) => Number(item?.id || 0) === promotionId);
-                  pushItem({
-                    cliente: cliente.nome || 'Cliente',
-                    beneficio: validatedPromotion?.titulo || 'Promoção instantânea',
-                    hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-                  });
-                } else {
-                  ui.message(data?.message || 'Não foi possível validar a promoção.', 'error');
-                }
-              });
-            });
-          }
-        }
-
-        if (bonusActionBtn) {
-          const canValidate = Boolean(bonus.can_validate && bonusInfo.id && cliente.id);
-          if (!canValidate) {
-            bonusActionBtn.classList.add('hidden');
-            bonusActionBtn.onclick = null;
-          } else {
-            bonusActionBtn.classList.remove('hidden');
-            bonusActionBtn.textContent = 'Validar bônus';
-            bonusActionBtn.onclick = async () => {
-              bonusActionBtn.disabled = true;
-              bonusActionBtn.classList.add('opacity-60');
-              const { res, data } = await api.request(`/empresa/bonus-adesao/${bonusInfo.id}/validar`, {
-                method: 'POST',
-                body: JSON.stringify({ cliente_id: cliente.id }),
-              });
-              bonusActionBtn.disabled = false;
-              bonusActionBtn.classList.remove('opacity-60');
-
-              if (res.ok && data?.success) {
-                ui.message(data?.message || 'Bonus validado com sucesso.', 'success');
-                renderBonusLookup(data.data || {});
-                pushItem({
-                  cliente: cliente.nome || 'Cliente',
-                  beneficio: bonusInfo.titulo || 'Bônus de adesão',
-                  hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-                });
-              } else {
-                ui.message(data?.message || 'Não foi possível validar o bônus.', 'error');
-              }
-            };
-          }
-        }
-
-        if (birthdayValidationAction) {
-          const canValidateBirthday = Boolean(birthday.can_validate && birthdayInfo.id && cliente.id);
-          if (!canValidateBirthday) {
-            birthdayValidationAction.classList.add('hidden');
-            birthdayValidationAction.onclick = null;
-          } else {
-            birthdayValidationAction.classList.remove('hidden');
-            birthdayValidationAction.textContent = 'Validar bônus aniversário';
-            birthdayValidationAction.onclick = async () => {
-              birthdayValidationAction.disabled = true;
-              birthdayValidationAction.classList.add('opacity-60');
-              const { res, data } = await api.request(`/empresa/bonus-aniversario/${birthdayInfo.id}/validar`, {
-                method: 'POST',
-                body: JSON.stringify({ cliente_id: cliente.id }),
-              });
-              birthdayValidationAction.disabled = false;
-              birthdayValidationAction.classList.remove('opacity-60');
-
-              if (res.ok && data?.success) {
-                ui.message(data?.message || 'Bônus aniversário validado com sucesso.', 'success');
-                renderBonusLookup({
-                  ...(latestCompanyLookup || {}),
-                  bonus_aniversario: data?.data?.bonus_aniversario || latestCompanyLookup?.bonus_aniversario,
-                });
-                pushItem({
-                  cliente: cliente.nome || 'Cliente',
-                  beneficio: birthdayInfo.titulo || 'Bônus aniversário',
-                  hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-                });
-              } else {
-                ui.message(data?.message || 'Não foi possível validar o bônus aniversário.', 'error');
-              }
-            };
-          }
-        }
-
-        if (loyaltyAddPointBtn) {
-          const canAddPoint = Boolean(loyalty.can_add_point && loyaltyCard.id && cliente.id);
-          if (!canAddPoint) {
-            loyaltyAddPointBtn.classList.add('hidden');
-            loyaltyAddPointBtn.onclick = null;
-          } else {
-            loyaltyAddPointBtn.classList.remove('hidden');
-            loyaltyAddPointBtn.onclick = async () => {
-              loyaltyAddPointBtn.disabled = true;
-              loyaltyAddPointBtn.classList.add('opacity-60');
-              const { res, data } = await api.request(`/empresa/cartao-fidelidade/${loyaltyCard.id}/clientes/${cliente.id}/adicionar-ponto`, {
-                method: 'POST',
-                body: JSON.stringify({}),
-              });
-              loyaltyAddPointBtn.disabled = false;
-              loyaltyAddPointBtn.classList.remove('opacity-60');
-
-              if (res.ok && data?.success) {
-                ui.message(data?.message || 'Ponto registrado com sucesso.', 'success');
-                renderBonusLookup({
-                  ...(latestCompanyLookup || {}),
-                  ...(data.data || {}),
-                  cartao_fidelidade: data?.data?.cartao_fidelidade || latestCompanyLookup?.cartao_fidelidade,
-                });
-                pushItem({
-                  cliente: cliente.nome || 'Cliente',
-                  beneficio: `+${loyaltyCard.pontos_por_visita || loyaltyProgress.points_per_visit || 1} ponto(s)`,
-                  hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-                });
-              } else {
-                ui.message(data?.message || 'Não foi possível adicionar ponto.', 'error');
-              }
-            };
-          }
-        }
-
-        if (loyaltyRedeemBtn) {
-          const canRedeem = Boolean(loyalty.can_redeem && loyaltyCard.id && cliente.id);
-          if (!canRedeem) {
-            loyaltyRedeemBtn.classList.add('hidden');
-            loyaltyRedeemBtn.onclick = null;
-          } else {
-            loyaltyRedeemBtn.classList.remove('hidden');
-            loyaltyRedeemBtn.onclick = async () => {
-              loyaltyRedeemBtn.disabled = true;
-              loyaltyRedeemBtn.classList.add('opacity-60');
-              const { res, data } = await api.request(`/empresa/cartao-fidelidade/${loyaltyCard.id}/clientes/${cliente.id}/resgatar`, {
-                method: 'POST',
-                body: JSON.stringify({}),
-              });
-              loyaltyRedeemBtn.disabled = false;
-              loyaltyRedeemBtn.classList.remove('opacity-60');
-
-              if (res.ok && data?.success) {
-                ui.message(data?.message || 'Recompensa validada com sucesso.', 'success');
-                renderBonusLookup({
-                  ...(latestCompanyLookup || {}),
-                  ...(data.data || {}),
-                  cartao_fidelidade: data?.data?.cartao_fidelidade || latestCompanyLookup?.cartao_fidelidade,
-                });
-                pushItem({
-                  cliente: cliente.nome || 'Cliente',
-                  beneficio: loyaltyCard.recompensa_descricao || 'Recompensa fidelidade',
-                  hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-                });
-              } else {
-                ui.message(data?.message || 'Não foi possível resgatar a recompensa.', 'error');
-              }
-            };
-          }
-        }
-      };
-
-      if (companyBenefitMode) {
-        window.addEventListener('empresa-bonus-lookup', (event) => {
-          renderBonusLookup(event.detail || {});
-        });
-      }
 
       const emitQrValidationResult = (detail = {}) => {
         window.dispatchEvent(new CustomEvent('tdt-qr-validation-result', {
           detail: {
             perfil,
             mode,
-            companyBenefitMode,
             ...detail,
           },
         }));
       };
 
+      // Apenas o cliente envia códigos: lê o QR da empresa para se vincular.
       const submitQrCode = async (rawCode, options = {}) => {
+        if (perfil === 'empresa') return false;
         const codigo = String(rawCode || '').trim();
         if (!codigo) {
-          const message = perfil === 'empresa'
-            ? (companyBenefitMode ? 'Informe o QR do cliente.' : 'Informe o código do cupom.')
-            : 'Informe o código do QR da empresa.';
+          const message = 'Informe o código do QR da empresa.';
           ui.message(message, 'warning');
           emitQrValidationResult({
             ok: false,
@@ -5786,25 +5447,10 @@
         btn.disabled = true;
         btn.classList.add('opacity-60');
 
-        let response;
-        if (perfil === 'empresa' && companyBenefitMode) {
-          response = await api.request('/empresa/clientes/qrcode/consultar', {
-            method: 'POST',
-            body: JSON.stringify({ qrcode: codigo }),
-          });
-        } else if (perfil === 'empresa') {
-          response = await api.request('/empresa/escanear-cliente', {
-            method: 'POST',
-            body: JSON.stringify({ qrcode: codigo }),
-          });
-        } else {
-          response = await api.request('/cliente/vincular-empresa-qrcode', {
-            method: 'POST',
-            body: JSON.stringify({ code: codigo }),
-          });
-        }
-
-        const { res, data } = response;
+        const { res, data } = await api.request('/cliente/vincular-empresa-qrcode', {
+          method: 'POST',
+          body: JSON.stringify({ code: codigo }),
+        });
         btn.disabled = false;
         btn.classList.remove('opacity-60');
 
@@ -5816,24 +5462,6 @@
             message: data?.message || null,
             data: data?.data || {},
           });
-
-          if (perfil === 'empresa' && companyBenefitMode) {
-            renderBonusLookup(data.data || {});
-            ui.message(data?.message || 'Cliente consultado com sucesso.', 'success');
-            return true;
-          }
-
-          if (perfil === 'empresa') {
-            ui.message(data?.message || 'Cliente validado com sucesso.', 'success');
-            const info = data.data || {};
-            pushItem({
-              cliente: info.cliente?.nome || info.cliente_nome || info.cliente || 'Cliente',
-              beneficio: info.empresa || info.promocao || info.recompensa || 'Check-in presencial',
-              codigo,
-              hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-            });
-            return true;
-          }
 
           clearPendingCompanyQr();
           ui.message(data?.message || 'Empresa vinculada com sucesso.', 'success');
@@ -5847,11 +5475,7 @@
           return true;
         }
 
-        const message = data?.message || (
-          perfil === 'empresa'
-            ? (companyBenefitMode ? 'Nao foi possivel consultar este cliente.' : 'Nao foi possivel usar o cupom.')
-            : 'Nao foi possivel vincular esta empresa.'
-        );
+        const message = data?.message || 'Nao foi possivel vincular esta empresa.';
         emitQrValidationResult({
           ok: false,
           codigo,
@@ -9991,8 +9615,11 @@
       const messageEl = document.getElementById('companyLinkMessage');
       const primaryBtn = document.getElementById('companyLinkPrimary');
       const secondaryBtn = document.getElementById('companyLinkSecondary');
+      const spinnerEl = document.getElementById('companyLinkSpinner');
+      const stopSpinner = () => spinnerEl?.classList.add('hidden');
 
       if (!code) {
+        stopSpinner();
         if (messageEl) messageEl.textContent = 'QR Code da empresa nao informado.';
         return;
       }
@@ -10002,6 +9629,7 @@
       ui.clearPageState();
 
       if (!res.ok || data?.success === false) {
+        stopSpinner();
         // QR invalido/expirado: NUNCA prender o cliente num loop de vinculo->login.
         // Limpa o codigo pendente para a home nao redirecionar de novo.
         clearPendingCompanyQr();
@@ -10045,6 +9673,7 @@
       }
 
       if (perfil !== 'cliente') {
+        stopSpinner();
         if (messageEl) messageEl.textContent = 'Apenas clientes podem se vincular a empresas por este fluxo.';
         primaryBtn?.addEventListener('click', () => {
           window.location.href = redirectMap[perfil] || '/meus_pontos.html';
@@ -10061,6 +9690,7 @@
       if (!linkResponse.res.ok || linkResponse.data?.success === false) {
         // Falha no vinculo: limpa o pendente para nao repetir o loop na home.
         clearPendingCompanyQr();
+        stopSpinner();
         if (messageEl) messageEl.textContent = linkResponse.data?.message || 'Não foi possível concluir o vínculo.';
         if (primaryBtn) { primaryBtn.textContent = 'Voltar ao início'; primaryBtn.addEventListener('click', () => { window.location.href = '/meus_pontos.html?ignore_pending_qr=1'; }); }
         return;
@@ -10072,6 +9702,63 @@
       setTimeout(() => {
         window.location.href = target.includes('?') ? `${target}&linked=1` : `${target}?linked=1`;
       }, 350);
+    },
+    // Comprovante do bônus de adesão: tela cheia pós-resgate, fora da página da empresa.
+    bonus_resgatado: async () => {
+      if (!(await auth.guard(['cliente']))) return;
+      const params = new URLSearchParams(window.location.search);
+      const empresaId = (params.get('empresa') || '').trim();
+      const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
+
+      const backLink = document.getElementById('receiptBackToCompany');
+      if (empresaId && backLink) {
+        backLink.href = `/detalhe_do_parceiro.html?id=${encodeURIComponent(empresaId)}`;
+        backLink.classList.remove('hidden');
+      }
+
+      if (!empresaId) {
+        setText('receiptDescription', 'Não encontramos os dados deste resgate. Confira seu histórico.');
+        return;
+      }
+
+      const { res, data } = await api.request(`/cliente/bonus-adesao/disponivel/${encodeURIComponent(empresaId)}`, {}, { notify: false });
+      if (!res.ok || data?.success === false) {
+        setText('receiptDescription', data?.message || 'Não foi possível confirmar o resgate agora. Confira seu histórico.');
+        return;
+      }
+
+      const payload = data?.data || {};
+      const bonus = payload.bonus || {};
+      const empresa = payload.empresa || {};
+
+      setText('receiptCompany', safeText(empresa.nome, 'Estabelecimento'));
+      setText('receiptTitle', safeText(bonus.titulo, 'Você ganhou!'));
+      setText('receiptDescription', safeText(bonus.descricao, 'Benefício de boas-vindas resgatado com sucesso.'));
+
+      const img = document.getElementById('receiptImage');
+      if (img) {
+        img.src = safeImage(bonus.imagem_url || bonus.imagem, IMAGE_FALLBACKS.promo);
+        img.onerror = () => { img.onerror = null; img.src = IMAGE_FALLBACKS.promo; };
+      }
+
+      const redeemedAt = payload.redeemed_at ? new Date(payload.redeemed_at) : new Date();
+      setText('receiptDate', redeemedAt.toLocaleString('pt-BR', {
+        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
+      }));
+
+      const bonusRef = (params.get('bonus') || bonus.id || '0').toString().replace(/\D/g, '') || '0';
+      setText('receiptCode', `AD-${empresaId}-${bonusRef}`);
+
+      // Confirmação de verdade vem da API: se ainda não consta como resgatado,
+      // rebaixa o tom (sem celebrar um resgate que não aconteceu).
+      if (payload.status !== 'redeemed') {
+        setText('receiptKicker', 'Bônus de adesão');
+        setText('receiptTitle', safeText(bonus.titulo, 'Bônus de adesão'));
+        setText('receiptDescription', safeText(payload.message, 'Este bônus ainda não consta como resgatado.'));
+      }
     },
     home_tem_de_tudo: async () => {
       const cards = document.querySelectorAll('main section.space-y-4 .grid > div');
