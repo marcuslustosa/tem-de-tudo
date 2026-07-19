@@ -384,7 +384,6 @@
   // Suporta "não mostrar novamente" (localStorage) e resgate presencial via QR.
   // `celebrar`: cadastro/vínculo recém-concluído — tom de "você acabou de ganhar".
   function tdtShowBonusModal({ empresaId, bonusId, titulo, descricao, imagem, validade, corMarca, celebrar } = {}) {
-    const brand = corMarca || '#133F8C';
     const overlay = document.createElement('div');
     overlay.className = 'tdt-modal-overlay';
     overlay.innerHTML = `
@@ -400,7 +399,7 @@
         <h3 class="tdt-bonus-modal__title">${safeText(titulo, 'Bônus de adesão')}</h3>
         <p class="tdt-bonus-modal__desc">${safeText(descricao, 'Você ganhou um benefício de boas-vindas!')}</p>
         <div class="mt-6 flex flex-col gap-2">
-          <button type="button" class="loyalty-redeem-btn" data-redeem style="background:linear-gradient(135deg,${brand} 0%,#b01774 100%)"><span class="material-symbols-outlined">redeem</span> Resgatar agora</button>
+          <button type="button" class="loyalty-redeem-btn" data-redeem><span class="material-symbols-outlined">redeem</span> Resgatar agora</button>
           <button type="button" class="app-secondary-button justify-center" data-nevermore>${celebrar ? 'Deixar para depois' : 'Não ver mais'}</button>
         </div>
       </div>`;
