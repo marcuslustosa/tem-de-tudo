@@ -8636,7 +8636,7 @@
           const btn = event.target.closest('[data-user-action]');
           if (!btn) return;
 
-          const tr = btn.closest('tr.data-row');
+          const tr = btn.closest('.data-row');
           if (!tr) return;
 
           const userId = tr.dataset.userId;
@@ -8713,7 +8713,7 @@
       };
 
       const renderLista = (listaAlvo) => {
-        tbody.querySelectorAll('tr.data-row')?.forEach((tr) => tr.remove());
+        tbody.querySelectorAll('.data-row')?.forEach((tr) => tr.remove());
         if (!listaAlvo.length) {
           if (empty) empty.classList.remove('hidden');
           atualizarMetricas(listaAlvo);
@@ -8722,8 +8722,6 @@
         }
         if (empty) empty.classList.add('hidden');
         listaAlvo.forEach((u) => {
-          const tr = document.createElement('tr');
-          tr.className = 'data-row hover:bg-surface-container-low transition-colors group';
           const nome = u.name || u.nome || u.email || 'Usuário';
           const email = u.email || '';
           const perfil = u.perfil || u.role || 'admin';
@@ -8731,38 +8729,28 @@
           const inicio = formatDatePtBr(u.created_at, '-');
           const telefone = safeText(u.telefone, '-');
           const statusAtual = status === 'Ativo' ? 'ativo' : (status === 'Suspenso' ? 'bloqueado' : 'inativo');
+          const chipClass = status === 'Ativo' ? 'tdt-cchip--ok' : (status === 'Suspenso' ? 'tdt-cchip--danger' : 'tdt-cchip--warn');
+          const tr = document.createElement('div');
+          tr.className = 'tdt-client-card data-row';
           tr.dataset.userId = u.id;
           tr.dataset.userName = nome;
           tr.dataset.userStatus = statusAtual;
           tr.dataset.userCpf = u.cpf || u.documento || '';
           tr.dataset.userBirth = u.data_nascimento || '';
           tr.innerHTML = `
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary font-bold uppercase">${nome.substring(0, 1)}</div>
-                <div>
-                  <p class="font-bold text-on-surface">${nome}</p>
-                  <p class="text-xs text-on-surface-variant">${email}</p>
-                </div>
+            <span class="tdt-client-card__avatar tdt-client-card__avatar--initial">${nome.substring(0,1).toUpperCase()}</span>
+            <div class="tdt-client-card__body">
+              <div class="tdt-client-card__top">
+                <h3 class="tdt-client-card__name">${nome}</h3>
+                <span class="tdt-cchip ${chipClass}">${status}</span>
               </div>
-            </td>
-            <td class="px-6 py-4">
-              <span class="px-3 py-1 bg-secondary-container text-on-secondary-container text-[11px] font-bold rounded-full">${perfil}</span>
-            </td>
-            <td class="px-6 py-4">
-              <div class="flex items-center gap-1.5 ${status === 'Ativo' ? 'text-tertiary' : status === 'Suspenso' ? 'text-error' : 'text-on-surface-variant'}">
-                <span class="w-2 h-2 rounded-full ${status === 'Ativo' ? 'bg-tertiary' : status === 'Suspenso' ? 'bg-error' : 'bg-outline'}"></span>
-                <span class="text-xs font-bold uppercase">${status}</span>
-              </div>
-            </td>
-            <td class="px-6 py-4 text-sm text-on-surface-variant whitespace-nowrap">${inicio}</td>
-            <td class="px-6 py-4 text-sm text-on-surface-variant whitespace-nowrap">${telefone}</td>
-            <td class="px-6 py-4 text-right">
-              <div class="flex justify-end gap-2">
-                <button data-user-action="edit-sensitive" class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container/20 rounded-lg transition-all" title="Editar dados sensiveis"><span class="material-symbols-outlined text-xl">edit</span></button>
-                <button data-user-action="toggle-status" class="p-2 text-on-surface-variant hover:text-error hover:bg-error-container/20 rounded-lg transition-all" title="${statusAtual === 'ativo' ? 'Bloquear conta' : 'Reativar conta'}"><span class="material-symbols-outlined text-xl">${statusAtual === 'ativo' ? 'block' : 'check_circle'}</span></button>
-              </div>
-            </td>`;
+              <p class="tdt-client-card__contact">${email} · ${perfil}</p>
+              <div class="tdt-client-card__meta"><span>Desde ${inicio}</span>${telefone !== '-' ? `<span class="dot"></span><span>${telefone}</span>` : ''}</div>
+            </div>
+            <div class="tdt-client-card__actions">
+              <button data-user-action="edit-sensitive" class="tdt-client-card__action" title="Editar dados sensíveis"><span class="material-symbols-outlined">edit</span></button>
+              <button data-user-action="toggle-status" class="tdt-client-card__action" title="${statusAtual === 'ativo' ? 'Bloquear conta' : 'Reativar conta'}"><span class="material-symbols-outlined">${statusAtual === 'ativo' ? 'block' : 'check_circle'}</span></button>
+            </div>`;
           tbody.appendChild(tr);
         });
         atualizarMetricas(listaAlvo);
@@ -9045,7 +9033,7 @@
         tbody.addEventListener('click', async (e) => {
           const btn = e.target.closest('.btn-suspender');
           if (!btn) return;
-          const tr = btn.closest('tr.data-row');
+          const tr = btn.closest('.data-row');
           if (!tr) return;
           const userId = tr.dataset.userId;
           const userName = tr.dataset.userName;
@@ -9087,7 +9075,7 @@
       };
 
       const renderLista = (lst) => {
-        tbody.querySelectorAll('tr.data-row')?.forEach((tr) => tr.remove());
+        tbody.querySelectorAll('.data-row')?.forEach((tr) => tr.remove());
         if (!lst.length) {
           empty?.classList.remove('hidden');
           atualizarMetricas(lst);
@@ -9102,12 +9090,26 @@
           const pontos = Number(c.pontos || c.saldo || 0);
           const status = ativo(c) ? 'Ativo' : 'Inativo';
           const ultima = formatDatePtBr(c.last_login || c.updated_at || c.created_at, '-');
-          const tr = document.createElement('tr');
-          tr.className = 'data-row hover:bg-surface transition-colors group';
+          const statusAtual = ativo(c) ? 'ativo' : 'inativo';
+          const cpfTxt = (cpf && cpf !== '---') ? ` · ${cpf}` : '';
+          const tr = document.createElement('div');
+          tr.className = 'tdt-client-card data-row';
           tr.dataset.userId = c.id;
           tr.dataset.userName = nome;
-          const statusAtual = ativo(c) ? 'ativo' : 'inativo';
-          tr.innerHTML = `\n<td class=\"px-6 py-4\">\n  <div class=\"flex items-center gap-3\">\n    <div class=\"w-10 h-10 rounded-full overflow-hidden bg-surface-container flex items-center justify-center text-primary font-bold uppercase\">${nome.substring(0,1)}</div>\n    <div>\n      <p class=\"font-bold text-sm text-on-surface\">${nome}</p>\n      <p class=\"text-xs text-on-surface-variant\">${email}</p>\n    </div>\n  </div>\n</td>\n<td class=\"px-6 py-4 text-sm text-on-surface-variant\">${cpf}</td>\n<td class=\"px-6 py-4\"><span class=\"text-sm font-bold text-primary\">${pontos.toLocaleString('pt-BR')} pts</span></td>\n<td class=\"px-6 py-4\"><span class=\"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${status === 'Ativo' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}\">${status}</span></td>\n<td class=\"px-6 py-4 text-sm text-on-surface-variant\">${ultima}</td>\n<td class=\"px-6 py-4 text-right space-x-1\">\n  <button class=\"p-2 text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-lg transition-all btn-suspender\" title=\"${statusAtual === 'ativo' ? 'Suspender conta' : 'Reativar conta'}\"><span class=\"material-symbols-outlined text-[20px]\">${statusAtual === 'ativo' ? 'block' : 'check_circle'}</span></button>\n</td>\n`;
+          tr.innerHTML = `
+            <span class="tdt-client-card__avatar tdt-client-card__avatar--initial">${nome.substring(0,1).toUpperCase()}</span>
+            <div class="tdt-client-card__body">
+              <div class="tdt-client-card__top">
+                <h3 class="tdt-client-card__name">${nome}</h3>
+                <span class="tdt-cchip ${status === 'Ativo' ? 'tdt-cchip--ok' : 'tdt-cchip--warn'}">${status}</span>
+              </div>
+              <p class="tdt-client-card__contact">${email}${cpfTxt}</p>
+              <div class="tdt-client-card__meta">
+                <span class="tdt-client-card__pts"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>${pontos.toLocaleString('pt-BR')} pts</span>
+                <span class="dot"></span><span>Última: ${ultima}</span>
+              </div>
+            </div>
+            <button class="tdt-client-card__action btn-suspender" title="${statusAtual === 'ativo' ? 'Suspender conta' : 'Reativar conta'}"><span class="material-symbols-outlined">${statusAtual === 'ativo' ? 'block' : 'check_circle'}</span></button>`;
           tbody.appendChild(tr);
         });
         atualizarMetricas(lst);

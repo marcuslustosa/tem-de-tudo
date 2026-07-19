@@ -5133,3 +5133,28 @@ body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--rejected {
   body[data-page="gest_o_de_clientes_master"] .admin-header > div,
   body[data-page="gest_o_de_usu_rios_master"] .admin-header > div { flex: 1 1 auto; width: auto !important; }
 }
+
+/* Lista de cards padronizada (admin clientes/usuários) */
+.tdt-cards-list { display: flex; flex-direction: column; gap: 8px; }
+@media (min-width: 1024px) {
+  .tdt-cards-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; }
+}
+.tdt-cards-list .tdt-client-card + .tdt-client-card { margin-top: 0; }
+.tdt-client-card__avatar--initial {
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(176, 23, 116, 0.1); color: var(--i9-magenta); font-weight: 800; font-size: 18px;
+}
+.tdt-client-card__action {
+  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 10px; border: none; cursor: pointer;
+  background: var(--i9-surface-soft); color: var(--i9-text-muted);
+  display: inline-flex; align-items: center; justify-content: center; transition: background 0.15s ease, color 0.15s ease;
+}
+.tdt-client-card__action:hover { background: rgba(176,23,116,0.1); color: var(--i9-magenta); }
+.tdt-client-card__action .material-symbols-outlined { font-size: 20px; }
+
+/* Chip de status danger + ações do card padronizado. */
+.tdt-cchip--danger { background: #fee2e2; color: #b91c1c; }
+.tdt-client-card__actions { display: flex; gap: 6px; flex: 0 0 auto; }
+/* Ícone teal da marca na sidebar admin → sólido (sem degradê). */
+[style*="linear-gradient(135deg,#133f8c 0%,#00afa8"],
+[style*="linear-gradient(135deg, #133f8c 0%, #00afa8"] { background: var(--i9-navy) !important; }
