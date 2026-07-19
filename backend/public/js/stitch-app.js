@@ -2242,7 +2242,7 @@
       wrapper.setAttribute('data-push-prompt-modal', 'true');
       wrapper.innerHTML = `
         <div class="w-full max-w-xl overflow-hidden rounded-[30px] bg-white shadow-[0_30px_90px_rgba(11,31,58,0.28)] ring-1 ring-black/5">
-          <div class="bg-[linear-gradient(135deg,#133F8C_0%,#B01774_100%)] px-6 py-6 text-white">
+          <div class="bg-[#111B3F] px-6 py-6 text-white">
             <div class="flex items-start justify-between gap-4">
               <div class="space-y-2">
                 <span class="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em]" data-push-prompt-kicker>Bem-vindo</span>
@@ -4129,7 +4129,7 @@
               row.innerHTML = `
                 <span class="w-10 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">${entry.star}★</span>
                 <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
-                  <div class="h-full rounded-full bg-[linear-gradient(135deg,#133f8c_0%,#b01774_100%)]" style="width:${percent}%"></div>
+                  <div class="h-full rounded-full bg-[#b01774]" style="width:${percent}%"></div>
                 </div>
                 <span class="w-14 text-right text-xs font-semibold text-slate-500">${entryTotal}</span>
               `;
@@ -4333,7 +4333,7 @@
           if (qrBtn) {
             qrBtn.classList.remove('btn--neutral');
             qrBtn.classList.add('btn--primary');
-            qrBtn.innerHTML = '<span class="material-symbols-outlined">qr_code_scanner</span>Ler QR da empresa';
+            qrBtn.innerHTML = '<span class="material-symbols-outlined">qr_code_scanner</span>Ler QR Code';
           }
         };
 
@@ -4356,7 +4356,7 @@
               } else {
                 vinculando = false;
                 vincularBtn.disabled = false;
-                vincularBtn.innerHTML = '<span class="material-symbols-outlined">add</span>Vincular';
+                vincularBtn.innerHTML = '<span class="material-symbols-outlined">link</span>Vincular';
                 ui.message(d?.message || 'Não foi possível vincular agora.', 'error');
               }
             });
@@ -4364,7 +4364,7 @@
           if (qrBtn) {
             qrBtn.classList.remove('btn--primary');
             qrBtn.classList.add('btn--neutral');
-            qrBtn.innerHTML = '<span class="material-symbols-outlined">qr_code_scanner</span>Ler QR no balcão';
+            qrBtn.innerHTML = '<span class="material-symbols-outlined">qr_code_scanner</span>Ler QR Code';
           }
           if (ctaHint) {
             ctaHint.textContent = 'Vincule-se para liberar bônus, fidelidade e promoções desta empresa.';
@@ -4432,6 +4432,13 @@
             api.request(`/cliente/promocoes?empresa_id=${encodeURIComponent(selectedCompanyId)}`, {}, { notify: false }),
             api.request(`/cliente/avaliacoes?empresa_id=${encodeURIComponent(selectedCompanyId)}`, {}, { notify: false }),
           ]);
+
+          // O endpoint público da empresa nem sempre sabe se ESTE cliente está
+          // vinculado. Os dados do cliente sabem: status != 'not_linked' = vinculado.
+          const bonusStatusVal = String(bonusResponse.data?.data?.status || '').toLowerCase();
+          const loyaltyStatusVal = String(loyaltyResponse.data?.data?.status || '').toLowerCase();
+          const clienteVinculado = [bonusStatusVal, loyaltyStatusVal].some((s) => s && s !== 'not_linked');
+          if (clienteVinculado) showLinkedState();
           if (bonusResponse.res.ok && bonusResponse.data?.success !== false) {
             const bonusPayload = bonusResponse.data?.data || {};
             renderBonusCard(bonusPayload);
@@ -7422,7 +7429,7 @@
       const host = document.querySelector('main') || document.getElementById('content') || document.body;
       host.innerHTML = `
         <section class="space-y-6">
-          <div class="rounded-[28px] bg-[linear-gradient(135deg,#111B3F_0%,#133F8C_45%,#B01774_100%)] p-6 text-white shadow-[0_18px_45px_rgba(17,27,63,0.18)]">
+          <div class="rounded-[28px] bg-[#111B3F] p-6 text-white shadow-[0_18px_45px_rgba(17,27,63,0.18)]">
             <div class="flex flex-wrap items-start justify-between gap-4">
               <div class="max-w-[680px]">
                 <h1 class="text-2xl font-extrabold leading-tight">Resultados da sua operação</h1>
