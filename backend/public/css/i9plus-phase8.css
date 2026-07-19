@@ -4614,3 +4614,144 @@ body[data-page="validar_resgate"] #scanStatus { text-transform: none !important;
 /* Garante dock central 100% sólido (sem qualquer degradê herdado). */
 .app-mobile-dock__item--accent .app-mobile-dock__item-icon,
 nav button#btnBottomScan { background: var(--i9-magenta) !important; }
+
+/* ==========================================================================
+   Botões "liquid glass" (2026-07-18) — a cor sólida continua dominante,
+   com um reflexo de vidro no topo + brilho colorido. Sem degradê de 2 cores.
+   ========================================================================== */
+.btn { position: relative; isolation: isolate; }
+
+.btn--primary {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.04) 40%, rgba(255,255,255,0) 62%),
+    var(--i9-magenta);
+  border: 1px solid rgba(255,255,255,0.20);
+  box-shadow:
+    0 10px 22px rgba(176,23,116,0.32),
+    inset 0 1px 0 rgba(255,255,255,0.45),
+    inset 0 -3px 8px rgba(74,0,47,0.18);
+}
+.btn--primary:hover { filter: brightness(1.06); }
+
+.btn--confirm {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0) 62%),
+    var(--i9-teal);
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow:
+    0 10px 22px rgba(0,175,168,0.30),
+    inset 0 1px 0 rgba(255,255,255,0.5),
+    inset 0 -3px 8px rgba(0,60,58,0.18);
+}
+.btn--confirm:hover { filter: brightness(1.05); }
+
+.btn--dark {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.03) 42%, rgba(255,255,255,0) 60%),
+    var(--i9-navy);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow:
+    0 10px 22px rgba(17,27,63,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.28);
+}
+
+.btn--neutral {
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
+  border: 1px solid rgba(17,27,63,0.12);
+  box-shadow: 0 2px 6px rgba(17,27,63,0.05), inset 0 1px 0 rgba(255,255,255,0.9);
+  color: var(--i9-navy);
+}
+.btn--neutral:hover { background: var(--i9-surface-soft); }
+
+/* Aplica o mesmo vidro aos botões legados sólidos e ao CTA/dock. */
+.app-primary-button,
+.tdt-receipt-actions__primary,
+.home-search__btn {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.04) 40%, rgba(255,255,255,0) 62%),
+    var(--i9-magenta) !important;
+  border: 1px solid rgba(255,255,255,0.20) !important;
+  box-shadow:
+    0 10px 22px rgba(176,23,116,0.30),
+    inset 0 1px 0 rgba(255,255,255,0.45),
+    inset 0 -3px 8px rgba(74,0,47,0.18) !important;
+}
+
+.loyalty-redeem-btn {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0) 62%),
+    var(--i9-teal) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  box-shadow:
+    0 10px 22px rgba(0,175,168,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.5),
+    inset 0 -3px 8px rgba(0,60,58,0.18) !important;
+}
+
+.tdt-qr-cta {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.04) 38%, rgba(255,255,255,0) 60%),
+    var(--i9-magenta) !important;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow:
+    0 12px 26px rgba(176,23,116,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    inset 0 -3px 10px rgba(74,0,47,0.16) !important;
+}
+
+.app-mobile-dock__item--accent .app-mobile-dock__item-icon,
+nav button#btnBottomScan {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.06) 45%, rgba(255,255,255,0) 65%),
+    var(--i9-magenta) !important;
+  border: 1px solid rgba(255,255,255,0.24) !important;
+  box-shadow:
+    0 10px 22px rgba(176,23,116,0.36),
+    inset 0 1px 0 rgba(255,255,255,0.5) !important;
+}
+
+/* ==========================================================================
+   Sidebar de DESKTOP (>=1024px) — cara de sistema. Mobile continua app.
+   ========================================================================== */
+.tdt-sidebar { display: none; }
+@media (min-width: 1024px) {
+  .tdt-sidebar {
+    display: flex; flex-direction: column; gap: 6px;
+    position: fixed; top: 0; left: 0; bottom: 0; width: 248px; z-index: 45;
+    background: #fff; border-right: 1px solid var(--i9-border);
+    padding: 20px 14px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+  .tdt-sidebar__brand {
+    display: flex; align-items: center; gap: 10px; padding: 6px 10px 16px;
+    text-decoration: none; color: var(--i9-navy); font-weight: 800; font-size: 15px;
+  }
+  .tdt-sidebar__brand img { width: 30px; height: 30px; border-radius: 8px; object-fit: contain; }
+  .tdt-sidebar__nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .tdt-sidebar__link {
+    display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 12px;
+    border-radius: 12px; text-decoration: none; color: #4b5061; font-size: 14.5px; font-weight: 600;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .tdt-sidebar__link .material-symbols-outlined { font-size: 22px; }
+  .tdt-sidebar__link:hover { background: var(--i9-surface-soft); color: var(--i9-navy); }
+  .tdt-sidebar__link.is-active { background: rgba(176, 23, 116, 0.08); color: var(--i9-magenta); }
+  .tdt-sidebar__link.is-active .material-symbols-outlined { color: var(--i9-magenta); }
+  .tdt-sidebar__cta {
+    display: flex; align-items: center; justify-content: center; gap: 8px; height: 46px; margin-top: 8px;
+    border-radius: 12px; text-decoration: none; font-size: 14.5px; font-weight: 700; color: #fff;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0) 60%),
+      var(--i9-magenta);
+    box-shadow: 0 8px 18px rgba(176, 23, 116, 0.26), inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+  .tdt-sidebar__cta .material-symbols-outlined { font-size: 20px; }
+
+  /* Conteúdo desloca para a direita da sidebar. */
+  body.tdt-has-sidebar { padding-left: 248px; }
+  /* Some com o dock inferior no desktop (a sidebar assume). */
+  body.tdt-has-sidebar .app-mobile-dock,
+  body.tdt-has-sidebar .app-mobile-sheet-backdrop { display: none !important; }
+  /* A app bar da home não fica presa à largura mobile no desktop. */
+  body.tdt-has-sidebar .tdt-appbar__inner,
+  body.tdt-has-sidebar .tdt-home { max-width: 1100px; }
+}

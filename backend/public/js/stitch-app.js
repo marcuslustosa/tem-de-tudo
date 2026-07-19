@@ -1872,17 +1872,12 @@
     `;
   }
 
-  function mountUnifiedMobileDock() {
-    // Paginas sem navegacao de app (login/cadastro/painel revenda/comprovante) nao usam o dock.
-    if (['revenda_painel', 'entrar', 'criar_conta', 'escolher-tipo', 'forgot_password', 'redirect_bridge', 'home_tem_de_tudo', 'bonus_resgatado'].includes(page)) return;
-    const scope = getScopeForCurrentPage();
-    const oldDockList = Array.from(document.querySelectorAll('nav.fixed.bottom-0'));
-    oldDockList.forEach((dock) => dock.remove());
-    document.querySelectorAll('a.fixed.bottom-24, button.fixed.bottom-24').forEach((el) => el.remove());
+  const NAV_EXCLUDED_PAGES = ['revenda_painel', 'entrar', 'criar_conta', 'escolher-tipo', 'forgot_password', 'redirect_bridge', 'home_tem_de_tudo', 'bonus_resgatado'];
 
-    const pageKey = `${scope}:${page}`;
-    const configs = {
+  function buildNavConfigs(pageKey) {
+    return {
       admin: {
+        title: 'Administrador',
         items: [
           { label: 'Dashboard', icon: 'home', href: '/dashboard_admin_master.html', active: ['dashboard_admin_master'] },
           { label: 'Empresas', icon: 'storefront', href: '/gest_o_de_estabelecimentos.html', active: ['gest_o_de_estabelecimentos'] },
@@ -1897,6 +1892,7 @@
         ],
       },
       empresa: {
+        title: 'Painel da empresa',
         items: [
           { label: 'Inicio', icon: 'home', href: '/dashboard_parceiro.html', active: ['dashboard_parceiro'] },
           { label: 'Clientes', icon: 'groups', href: '/clientes_fidelizados_loja.html', active: ['clientes_fidelizados_loja'] },
@@ -1911,6 +1907,7 @@
         ],
       },
       cliente: {
+        title: 'Tem de Tudo',
         items: [
           { label: 'Inicio', icon: 'home', href: '/meus_pontos.html', active: ['meus_pontos'] },
           { label: 'Buscar', icon: 'storefront', href: '/parceiros_tem_de_tudo.html', active: ['parceiros_tem_de_tudo', 'detalhe_do_parceiro'] },
@@ -1924,6 +1921,59 @@
         ],
       },
     };
+  }
+
+  // Sidebar de DESKTOP (>=1024px): dá cara de "sistema" a empresa/admin/cliente.
+  // No mobile fica escondida (o dock inferior assume). Reaproveita a mesma nav.
+  function mountDesktopSidebar() {
+    if (NAV_EXCLUDED_PAGES.includes(page)) return;
+    if (document.getElementById('tdtSidebar')) return;
+    const scope = getScopeForCurrentPage();
+    // Admin já possui shell/sidebar próprio de desktop — não duplicar.
+    if (scope === 'admin') return;
+    // Se a página já traz uma sidebar de desktop embutida, não injeta outra.
+    if (document.querySelector('.admin-sidebar, aside.sidebar, [data-desktop-sidebar]')) return;
+    const pageKey = `${scope}:${page}`;
+    const config = buildNavConfigs(pageKey)[scope];
+    if (!config) return;
+
+    const allItems = [...config.items.filter((i) => !i.accent), ...config.more]
+      .filter((item, idx, arr) => arr.findIndex((x) => x.href === item.href) === idx);
+    const isActive = (item) => Array.isArray(item.active) && item.active.includes(page);
+
+    const nav = document.createElement('aside');
+    nav.id = 'tdtSidebar';
+    nav.className = 'tdt-sidebar';
+    nav.innerHTML = `
+      <a href="${config.items[0]?.href || '#'}" class="tdt-sidebar__brand">
+        <img src="/img/logo.png" alt="" onerror="this.style.display='none'" />
+        <span>${config.title}</span>
+      </a>
+      <nav class="tdt-sidebar__nav">
+        ${allItems.map((item) => `
+          <a href="${item.href}" class="tdt-sidebar__link ${isActive(item) ? 'is-active' : ''}">
+            <span class="material-symbols-outlined">${item.icon}</span>
+            <span>${item.label}</span>
+          </a>
+        `).join('')}
+      </nav>
+      <a href="${scope === 'cliente' ? '/validar_resgate.html?modo=vinculo-empresa' : '/validar_resgate.html?modo=beneficios'}" class="tdt-sidebar__cta">
+        <span class="material-symbols-outlined">qr_code_scanner</span>${scope === 'cliente' ? 'Ler QR' : 'Meu QR'}
+      </a>`;
+    document.body.appendChild(nav);
+    document.body.classList.add('tdt-has-sidebar');
+  }
+
+  function mountUnifiedMobileDock() {
+    // Paginas sem navegacao de app (login/cadastro/painel revenda/comprovante) nao usam o dock.
+    if (NAV_EXCLUDED_PAGES.includes(page)) return;
+    const scope = getScopeForCurrentPage();
+    const oldDockList = Array.from(document.querySelectorAll('nav.fixed.bottom-0'));
+    oldDockList.forEach((dock) => dock.remove());
+    document.querySelectorAll('a.fixed.bottom-24, button.fixed.bottom-24').forEach((el) => el.remove());
+
+    const pageKey = `${scope}:${page}`;
+    const configs = buildNavConfigs(pageKey);
 
     const config = configs[scope];
     if (!config) return;
@@ -5833,9 +5883,7 @@
 
       if (heroName) heroName.textContent = safeText(storefrontInfo?.nome, safeText(currentUser?.name, 'Sua empresa'));
       if (heroSubtitle) {
-        heroSubtitle.textContent = qrPayload?.public_page_url
-          ? 'Leia o QR do cliente no balcão para validar benefícios.'
-          : 'Gerencie clientes, campanhas e validações sem sair deste painel.';
+        heroSubtitle.textContent = 'Gerencie clientes, campanhas e benefícios em um só lugar.';
       }
       if (heroMeta) {
         heroMeta.textContent = safeText(currentUser?.name)
@@ -10414,6 +10462,7 @@
     harmonizeLinksByStoredPerfil();
     wireFallbackLinks();
     mountUnifiedMobileDock();
+    mountDesktopSidebar();
     wireFallbackButtons();
     wireSettingsShortcuts();
     mountPageBackButton();
