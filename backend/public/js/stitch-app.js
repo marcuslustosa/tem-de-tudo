@@ -685,7 +685,7 @@
         };
       case 'not_linked':
         return {
-          label: 'Exige vínculo',
+          label: 'Vincule-se',
           badgeClass: 'bg-blue-50 text-blue-700',
           message: 'Leia o QR Code da empresa para liberar o bônus de adesão.',
         };
@@ -714,7 +714,7 @@
         };
       case 'not_linked':
         return {
-          label: 'Exige vínculo',
+          label: 'Vincule-se',
           badgeClass: 'bg-slate-100 text-slate-600',
           message: 'Leia o QR Code da empresa para liberar o progresso individual.',
         };
@@ -755,7 +755,7 @@
         };
       case 'not_linked':
         return {
-          label: 'Exige vínculo',
+          label: 'Vincule-se',
           badgeClass: 'bg-blue-50 text-blue-700',
           message: 'Vincule-se à empresa para ficar elegível a esta promoção.',
         };
@@ -802,7 +802,7 @@
         };
       case 'not_linked':
         return {
-          label: 'Exige vínculo',
+          label: 'Vincule-se',
           badgeClass: 'bg-blue-50 text-blue-700',
           message: 'Vincule-se à empresa para liberar o bônus aniversário.',
         };
@@ -2414,14 +2414,21 @@
         return { success: false, state: await getState() };
       }
 
-      const config = await getConfig(true);
-      if (!config.configured || !config.publicKey) {
-        return { success: false, state: await getState() };
-      }
-
+      // SEMPRE pergunta a permissão ao usuário primeiro (é o que ele espera ao
+      // tocar em "Ativar notificações"). Só depois lidamos com o servidor push.
       const permission = await Notification.requestPermission();
       if (permission !== 'granted') {
         return { success: false, state: await getState() };
+      }
+
+      const config = await getConfig(true);
+      if (!config.configured || !config.publicKey) {
+        // Permissão concedida, mas o push do servidor ainda não está configurado.
+        return {
+          success: false,
+          state: await getState(),
+          message: 'Permissão concedida. O envio de notificações será ativado em breve.',
+        };
       }
 
       const registration = await getRegistration(config.serviceWorker || '/sw-push.js');
@@ -2817,26 +2824,25 @@
           const rating = Number(company.avaliacao_media || 0);
           const reviews = Number(company.total_avaliacoes || 0);
           const linkedBadge = company.vinculada
-            ? '<span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald-700">Vinculada</span>'
+            ? '<span class="tdt-tag tdt-tag--new">Vinculada</span>'
             : '';
 
+          const distTag = company.__distanceLabel
+            ? `<span class="dot"></span><span class="inline-flex items-center gap-0.5"><span class="material-symbols-outlined" style="font-size:14px">near_me</span>${company.__distanceLabel}</span>`
+            : '';
           return `
-            <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}" class="flex items-center gap-4 rounded-[22px] bg-white p-4 shadow-[0_6px_18px_rgba(8,10,18,0.06)] ring-1 ring-black/5 transition-transform active:scale-[0.99]">
-              <img class="h-14 w-14 shrink-0 rounded-2xl bg-slate-50 object-cover" src="${safeImage(company.logo, IMAGE_FALLBACKS.store)}" alt="" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2">
-                  <h3 class="truncate text-base font-extrabold leading-tight text-[#111B3F]">${safeText(company.nome, 'Empresa')}</h3>
-                  ${linkedBadge}
+            <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}" class="tdt-row">
+              <img class="tdt-row__img" src="${safeImage(company.logo, IMAGE_FALLBACKS.store)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+              <div class="tdt-row__body">
+                <div class="tdt-row__name">${safeText(company.nome, 'Empresa')}</div>
+                <div class="tdt-row__meta">
+                  <span class="tdt-row__star"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>${rating > 0 ? rating.toFixed(1).replace('.', ',') : 'Novo'}</span>
+                  <span class="dot"></span><span>${safeText(company.categoria || company.ramo, 'Empresa')}</span>
+                  ${distTag}
                 </div>
-                <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500">
-                  <span>${safeText(company.categoria || company.ramo, 'Empresa')}</span>
-                  <span class="font-bold text-amber-400">★</span>
-                  <span>${rating > 0 ? rating.toFixed(1).replace('.', ',') : 'Novo'}${reviews ? ` (${reviews})` : ''}</span>
-                  ${company.__distanceLabel ? `<span class="inline-flex items-center gap-0.5 font-bold text-[#133F8C]"><span class="material-symbols-outlined text-[13px]">near_me</span>${company.__distanceLabel}</span>` : ''}
-                </div>
-                <p class="mt-1 truncate text-xs text-slate-400">${safeText(company.endereco, '')}</p>
+                ${linkedBadge ? `<div class="tdt-row__tags">${linkedBadge}</div>` : ''}
               </div>
-              <span class="material-symbols-outlined shrink-0 text-slate-300">chevron_right</span>
+              <span class="material-symbols-outlined tdt-row__chevron">chevron_right</span>
             </a>
           `;
         };
@@ -2850,16 +2856,19 @@
 
         const renderLinkedCompanyCard = (company) => {
           const pontos = Number(company.meus_pontos ?? company.total_pontos ?? 0);
-          const lastIso = company.ultima_visita || company.data_inscricao || null;
+          const cat = safeText(company.categoria || company.ramo, 'Empresa');
+          const pointsTag = pontos > 0
+            ? `<span class="tdt-tag tdt-tag--points"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>${pontos.toLocaleString('pt-BR')} pts</span>`
+            : '';
           return `
-            <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}" class="flex items-center gap-4 rounded-[22px] bg-white p-4 shadow-[0_6px_18px_rgba(8,10,18,0.06)] ring-1 ring-black/5 transition-transform active:scale-[0.99]">
-              <img loading="lazy" class="h-14 w-14 shrink-0 rounded-2xl bg-slate-50 object-cover" src="${safeImage(company.logo, IMAGE_FALLBACKS.store)}" alt="" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
-              <div class="min-w-0 flex-1">
-                <h3 class="truncate text-base font-extrabold leading-tight text-[#111B3F]">${safeText(company.nome, 'Empresa')}</h3>
-                <p class="mt-0.5 text-xs text-slate-500">${safeText(company.categoria || company.ramo, 'Empresa')} • ${formatLastInteraction(lastIso)}</p>
-                <span class="mt-2 inline-flex items-center gap-1 rounded-full bg-[#b01774]/10 px-3 py-1 text-xs font-bold text-[#b01774]"><span class="material-symbols-outlined text-[15px]" style="font-variation-settings:'FILL' 1;">stars</span>${pontos.toLocaleString('pt-BR')} pts</span>
+            <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}" class="tdt-row">
+              <img class="tdt-row__img" src="${safeImage(company.logo, IMAGE_FALLBACKS.store)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+              <div class="tdt-row__body">
+                <div class="tdt-row__name">${safeText(company.nome, 'Empresa')}</div>
+                <div class="tdt-row__meta"><span>${cat}</span></div>
+                ${pointsTag ? `<div class="tdt-row__tags">${pointsTag}</div>` : ''}
               </div>
-              <span class="material-symbols-outlined shrink-0 text-slate-300">chevron_right</span>
+              <span class="material-symbols-outlined tdt-row__chevron">chevron_right</span>
             </a>
           `;
         };
@@ -3828,7 +3837,7 @@
           if (progressStatusEl) {
             progressStatusEl.textContent = rewardAvailable
               ? 'Recompensa pronta'
-              : (payload?.status === 'not_linked' ? 'Exige vínculo' : 'Em andamento');
+              : (payload?.status === 'not_linked' ? 'Vincule-se' : 'Em andamento');
           }
           if (progressBarEl) {
             progressBarEl.style.width = `${progressPercent}%`;
@@ -3991,34 +4000,19 @@
 
           normalizedItems.forEach((promo) => {
             const meta = promotionStatusMeta(promo.viewer_status || promo.status);
+            const validade = formatDatePtBr(promo.data_expiracao || promo.validade, '');
             const card = document.createElement('article');
-            card.className = 'overflow-hidden rounded-[26px] bg-slate-50 shadow-sm ring-1 ring-black/5';
+            card.className = 'tdt-benefit';
             card.innerHTML = `
-              <div class="grid gap-0 md:grid-cols-[200px_minmax(0,1fr)]">
-                <img class="h-full min-h-[180px] w-full object-cover" src="${safeImage(promo.imagem_url || promo.imagem, IMAGE_FALLBACKS.promo)}" alt="${safeText(promo.titulo || 'Promoção')}" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" />
-                <div class="space-y-4 p-5">
-                  <div class="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <h3 class="text-xl font-extrabold text-[#111B3F]">${safeText(promo.titulo, 'Promoção instantânea')}</h3>
-                      <p class="mt-2 text-sm leading-7 text-slate-600">${safeText(promo.descricao, meta.message)}</p>
-                    </div>
-                    <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${meta.badgeClass}">${meta.label}</span>
-                  </div>
-                  <div class="grid gap-3 sm:grid-cols-2">
-                    <div class="rounded-[20px] bg-white p-4">
-                      <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Validade</p>
-                      <p class="mt-2 text-sm font-semibold text-[#111B3F]">${formatDatePtBr(promo.data_expiracao || promo.validade, 'Não informada')}</p>
-                    </div>
-                    <div class="rounded-[20px] bg-white p-4">
-                      <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Como validar</p>
-                      <p class="mt-2 text-sm font-semibold text-[#111B3F]">Resgate aqui no app e mostre no balcão.</p>
-                    </div>
-                  </div>
-                  <div class="flex flex-wrap items-center gap-3">
-                    <button type="button" class="partner-promo-action inline-flex h-11 items-center justify-center rounded-full bg-[#b01774] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(176,23,116,0.22)]">Continuar</button>
-                    <span class="text-sm text-slate-500">${safeText(promo.message, meta.message)}</span>
-                  </div>
+              <img class="tdt-benefit__img" style="height:140px" src="${safeImage(promo.imagem_url || promo.imagem, IMAGE_FALLBACKS.promo)}" alt="" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.promo}'" />
+              <div class="tdt-benefit__body">
+                <div class="tdt-benefit__head">
+                  <h3 class="tdt-benefit__title">${safeText(promo.titulo, 'Promoção')}</h3>
+                  <span class="tdt-chip-status">${meta.label}</span>
                 </div>
+                <p class="tdt-benefit__desc">${safeText(promo.descricao, '')}</p>
+                ${validade ? `<p class="tdt-benefit__hint">Válido até ${validade}</p>` : ''}
+                <div class="mt-3"><button type="button" class="partner-promo-action btn btn--primary">Resgatar</button></div>
               </div>
             `;
 

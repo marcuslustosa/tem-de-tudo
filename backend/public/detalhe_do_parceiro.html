@@ -7,334 +7,196 @@
   <link rel="shortcut icon" href="/img/logo.png" />
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <link href="/css/i9plus-phase8.css?v=20260717-app" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link href="/css/i9plus-phase8.css?v=20260718-app3" rel="stylesheet" />
   <style>
-    body {
-      font-family: 'Be Vietnam Pro', Arial, sans-serif;
-      min-height: 100vh;
-    }
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
-    }
-    h1, h2, h3, .font-headline {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
+    body { min-height: 100vh; background: #ffffff; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
   </style>
 </head>
-<body class="pb-28 text-[#2e2e34] bg-[#f7f7f7]" data-page="detalhe_do_parceiro">
-  <main class="mx-auto w-full max-w-[1180px] px-4 pb-10 pt-5 sm:px-6 lg:px-8">
-    <section class="partner-cover">
-      <img id="partner-banner" class="partner-cover__image" src="" alt="Banner da empresa" style="display:none" />
-      <div class="partner-cover__image" id="partner-banner-fallback" style="aspect-ratio:16/6;background:linear-gradient(135deg,#10172f 0%,#133f8c 45%,#b01774 100%)"></div>
-      <div class="partner-cover__overlay"></div>
-      <div class="partner-cover__top">
-        <a class="partner-hero-close inline-flex h-10 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 text-sm font-bold text-white backdrop-blur" href="/parceiros_tem_de_tudo.html">
-          <span class="material-symbols-outlined text-base">arrow_back</span>
-          Voltar
-        </a>
-        <span id="partner-status-badge" class="inline-flex rounded-full bg-white/15 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white backdrop-blur">Ativa</span>
-      </div>
-    </section>
+<body class="text-[#17171c]" data-page="detalhe_do_parceiro">
+  <!-- Capa -->
+  <div class="tdt-cover">
+    <img id="partner-banner" class="tdt-cover__img" src="" alt="" style="display:none" />
+    <div id="partner-banner-fallback" class="tdt-cover__img" style="background:linear-gradient(135deg,#10172f 0%,#133f8c 45%,#b01774 100%)"></div>
+    <div class="tdt-cover__top">
+      <a class="tdt-cover__back" href="/parceiros_tem_de_tudo.html" aria-label="Voltar"><span class="material-symbols-outlined">arrow_back</span></a>
+      <span id="partner-status-badge" class="hidden"></span>
+    </div>
+  </div>
 
-    <section class="partner-identity">
-      <div class="partner-logo-ring">
-        <img id="partner-logo" src="/img/placeholder-store.svg" alt="Logo da empresa" />
-      </div>
-      <div class="min-w-0 flex-1 pb-1">
-        <p id="partner-category" class="text-[11px] font-bold uppercase tracking-[0.22em] text-[#B01774]">Empresa</p>
-        <h1 id="partner-name" class="mt-1 truncate text-2xl font-extrabold leading-tight text-[#111B3F] lg:text-3xl">Carregando empresa...</h1>
-      </div>
-    </section>
-
-    <div class="mt-3 px-1">
-      <p id="partner-address" class="flex items-start gap-1.5 text-sm leading-6 text-slate-500">Aguarde enquanto carregamos os dados públicos da empresa.</p>
-      <div class="mt-3 flex flex-wrap items-center gap-3">
-        <div class="partner-rating-pill inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-[#111B3F] shadow-sm ring-1 ring-black/5">
-          <span id="partner-rating-stars" class="text-[#B01774]">★★★★★</span>
-          <span id="partner-rating">Novo</span>
-        </div>
-        <span id="partner-review-count" class="text-sm text-slate-500">Sem avaliações ainda</span>
-        <div class="partner-social-row ml-auto">
-          <a id="partnerSocialWhatsapp" class="partner-social-btn hidden" target="_blank" rel="noreferrer" aria-label="WhatsApp"><span class="material-symbols-outlined">chat</span></a>
-          <a id="partnerSocialInstagram" class="partner-social-btn hidden" target="_blank" rel="noreferrer" aria-label="Instagram"><span class="material-symbols-outlined">photo_camera</span></a>
-          <a id="partnerSocialFacebook" class="partner-social-btn hidden" target="_blank" rel="noreferrer" aria-label="Facebook"><span class="material-symbols-outlined">thumb_up</span></a>
-        </div>
+  <main class="tdt-detail">
+    <!-- Identidade -->
+    <div class="tdt-detail-head">
+      <img id="partner-logo" class="tdt-detail-logo" src="/img/placeholder-store.svg" alt="" />
+      <div class="min-w-0 flex-1">
+        <p id="partner-category" class="tdt-detail-cat">Empresa</p>
+        <h1 id="partner-name" class="tdt-detail-name">Carregando…</h1>
       </div>
     </div>
 
-    <section class="mt-5">
-      <div class="partner-actions-row">
-        <button id="partnerActionVincular" type="button" class="partner-action-btn partner-action-btn--primary" hidden>
-          <span class="material-symbols-outlined">person_add</span>
-          Cadastrar-me
-        </button>
-        <button id="partnerActionQr" type="button" class="partner-action-btn partner-action-btn--primary">
-          <span class="material-symbols-outlined">qr_code_scanner</span>
-          Ler QR da empresa
-        </button>
-        <button id="partnerActionMaps" type="button" class="partner-action-btn" hidden>
-          <span class="material-symbols-outlined">directions</span>
-          Como chegar
-        </button>
-        <button id="partnerActionCall" type="button" class="partner-action-btn" hidden>
-          <span class="material-symbols-outlined">call</span>
-          Ligar
-        </button>
-        <button id="partnerActionShare" type="button" class="partner-action-btn">
-          <span class="material-symbols-outlined">share</span>
-          Compartilhar
-        </button>
+    <div class="tdt-detail-meta">
+      <span class="tdt-rating-pill"><span id="partner-rating-stars" class="star">★</span><span id="partner-rating">Novo</span></span>
+      <span id="partner-review-count" class="tdt-detail-reviews">Sem avaliações ainda</span>
+    </div>
+    <p id="partner-address" class="tdt-detail-addr">Carregando endereço…</p>
+
+    <!-- Ação principal -->
+    <div class="tdt-detail-cta">
+      <button id="partnerActionVincular" type="button" class="btn btn--neutral" hidden><span class="material-symbols-outlined">person_add</span>Cadastrar-me</button>
+      <button id="partnerActionQr" type="button" class="btn btn--primary btn--block"><span class="material-symbols-outlined">qr_code_scanner</span>Ler QR da empresa</button>
+    </div>
+    <div class="tdt-detail-icons">
+      <button id="partnerActionMaps" type="button" class="tdt-icon-action" hidden><span class="material-symbols-outlined">directions</span>Como chegar</button>
+      <button id="partnerActionCall" type="button" class="tdt-icon-action" hidden><span class="material-symbols-outlined">call</span>Ligar</button>
+      <button id="partnerActionShare" type="button" class="tdt-icon-action"><span class="material-symbols-outlined">share</span>Compartilhar</button>
+    </div>
+    <div class="tdt-social">
+      <a id="partnerSocialWhatsapp" class="hidden" target="_blank" rel="noreferrer" aria-label="WhatsApp"><span class="material-symbols-outlined">chat</span></a>
+      <a id="partnerSocialInstagram" class="hidden" target="_blank" rel="noreferrer" aria-label="Instagram"><span class="material-symbols-outlined">photo_camera</span></a>
+      <a id="partnerSocialFacebook" class="hidden" target="_blank" rel="noreferrer" aria-label="Facebook"><span class="material-symbols-outlined">thumb_up</span></a>
+    </div>
+
+    <!-- Sobre -->
+    <section class="tdt-block">
+      <h2 class="tdt-block__title">Sobre</h2>
+      <p id="partner-about" class="tdt-block__text">Descrição não informada.</p>
+    </section>
+
+    <!-- Benefícios -->
+    <section class="tdt-block">
+      <h2 class="tdt-block__title">Benefícios</h2>
+
+      <article id="partnerBonusCard" class="tdt-benefit">
+        <img id="partnerBonusImage" class="tdt-benefit__img" src="/img/placeholder-promo.svg" alt="" />
+        <div class="tdt-benefit__body">
+          <div class="tdt-benefit__head">
+            <h3 id="partnerBonusTitle" class="tdt-benefit__title">Bônus de adesão</h3>
+            <span id="partnerBonusStatus" class="tdt-chip-status">Aguardando</span>
+          </div>
+          <p id="partnerBonusDescription" class="tdt-benefit__desc">Leia o QR da empresa para se vincular e verificar o bônus de adesão.</p>
+          <p id="partnerBonusHint" class="tdt-benefit__hint"></p>
+          <button id="partnerBonusAction" type="button">Ver</button>
+        </div>
+      </article>
+
+      <article id="partnerLoyaltyCard" class="tdt-benefit tdt-benefit--pad">
+        <div class="tdt-benefit__head">
+          <h3 id="partnerLoyaltyTitle" class="tdt-benefit__title">Cartão fidelidade</h3>
+          <span id="partnerLoyaltyStatus" class="tdt-chip-status">Aguardando</span>
+        </div>
+        <p id="partnerLoyaltyDescription" class="tdt-benefit__desc"></p>
+        <div class="tdt-loyalty-meta">
+          <div><span>Como pontuar</span><p id="partnerLoyaltyRule">1 ponto por visita</p></div>
+          <div><span>Com <span id="partnerLoyaltyRequiredLabel">15 pontos</span></span><p id="partnerLoyaltyReward">Recompensa da loja</p></div>
+        </div>
+        <div id="partnerLoyaltyProgressCard" class="tdt-progress">
+          <div class="tdt-progress__row">
+            <div><span class="k">Você já acumulou</span><p id="partnerLoyaltyProgressLabel">0 / 15 pontos</p></div>
+            <span id="partnerLoyaltyProgressStatus" class="tdt-chip-status">Sem vínculo</span>
+          </div>
+          <div class="tdt-progress__track"><div id="partnerLoyaltyProgressBar" class="tdt-progress__bar"></div></div>
+          <p id="partnerLoyaltyHint" class="tdt-benefit__hint"></p>
+        </div>
+        <button id="partnerLoyaltyAction" type="button">Registrar visita</button>
+      </article>
+
+      <article id="partnerPromotionsCard" class="tdt-benefit tdt-benefit--pad">
+        <div class="tdt-benefit__head">
+          <h3 class="tdt-benefit__title">Promoções</h3>
+          <span id="partnerPromotionsStatus" class="tdt-chip-status">Aguardando</span>
+        </div>
+        <p id="partnerPromotionsMessage" class="tdt-benefit__desc"></p>
+        <div id="partnerPromotionsList" class="mt-3 space-y-3"></div>
+        <p id="partnerPromotionsEmpty" class="tdt-benefit__hint">Nenhuma promoção ativa no momento.</p>
+      </article>
+
+      <article id="partnerBirthdayCard" class="tdt-benefit">
+        <img id="partnerBirthdayImage" class="tdt-benefit__img" src="/img/placeholder-promo.svg" alt="" />
+        <div class="tdt-benefit__body">
+          <div class="tdt-benefit__head">
+            <h3 id="partnerBirthdayTitle" class="tdt-benefit__title">Bônus aniversário</h3>
+            <span id="partnerBirthdayStatus" class="tdt-chip-status">Indisponível</span>
+          </div>
+          <p id="partnerBirthdayDescription" class="tdt-benefit__desc">Se a empresa oferece um mimo de aniversário, ele aparece aqui para você.</p>
+          <p id="partnerBirthdayHint" class="tdt-benefit__hint"></p>
+          <p id="partnerBirthdayValidity" class="hidden"></p>
+          <button id="partnerBirthdayAction" type="button">Ver regra</button>
+        </div>
+      </article>
+    </section>
+
+    <!-- Avaliações -->
+    <section class="tdt-block">
+      <h2 class="tdt-block__title">Avaliações</h2>
+      <div class="tdt-reviews-top">
+        <div class="tdt-reviews-score">
+          <p id="partnerReviewsAverage" class="tdt-reviews-score__n">0,0</p>
+          <p id="partnerReviewsStarsLarge" class="tdt-reviews-score__s">★★★★★</p>
+          <p id="partnerReviewsTotal" class="tdt-reviews-score__t">Sem avaliações</p>
+        </div>
+        <div class="min-w-0 flex-1">
+          <p id="partnerReviewsSubtitle" class="tdt-benefit__desc">Clientes vinculados podem avaliar e editar a própria nota.</p>
+          <div id="partnerReviewsDistribution" class="mt-3 space-y-1.5"></div>
+        </div>
+      </div>
+
+      <div id="partnerReviewsList" class="mt-5 space-y-3"></div>
+      <p id="partnerReviewsEmpty" class="tdt-benefit__hint">Nenhuma avaliação publicada até agora.</p>
+
+      <div class="mt-5 rounded-2xl border border-[color:var(--i9-border)] p-4">
+        <p class="text-sm font-bold text-[#111B3F]">Minha avaliação</p>
+        <p id="partnerMyReviewHint" class="tdt-benefit__hint mt-1">Entre como cliente vinculado para dar sua nota.</p>
+        <form id="partnerReviewForm" class="mt-4 space-y-3">
+          <div class="flex gap-2" id="partnerReviewStars">
+            <button type="button" data-rating="1" class="tdt-review-star">1</button>
+            <button type="button" data-rating="2" class="tdt-review-star">2</button>
+            <button type="button" data-rating="3" class="tdt-review-star">3</button>
+            <button type="button" data-rating="4" class="tdt-review-star">4</button>
+            <button type="button" data-rating="5" class="tdt-review-star">5</button>
+          </div>
+          <textarea id="partnerReviewComment" rows="3" maxlength="500" class="block w-full rounded-xl border border-[color:var(--i9-border)] bg-white px-3 py-2.5 text-sm text-[#3f4453] focus:ring-2 focus:ring-[#b01774]/20 outline-none" placeholder="Comentário (opcional)"></textarea>
+          <div class="flex gap-2">
+            <button id="partnerReviewSubmit" type="submit" class="btn btn--primary">Salvar avaliação</button>
+            <button id="partnerReviewShowQr" type="button" class="btn btn--neutral hidden">Meu QR</button>
+          </div>
+          <p id="partnerReviewStatus" class="tdt-benefit__hint"></p>
+        </form>
       </div>
     </section>
 
-    <section class="partner-page-layout mt-6 grid gap-5 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.92fr)]">
-      <div class="space-y-5">
-        <article class="partner-surface-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
-          <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Sobre a empresa</p>
-          <p id="partner-about" class="mt-4 text-sm leading-7 text-slate-600">Descrição não informada.</p>
-        </article>
-
-        <article id="partnerBonusCard" class="partner-surface-card partner-benefit-card partner-bonus-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
-          <div class="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Bônus de adesão</p>
-              <h2 id="partnerBonusTitle" class="mt-2 text-2xl font-extrabold text-[#111B3F]">Disponibilidade em verificação</h2>
-            </div>
-            <span id="partnerBonusStatus" class="inline-flex rounded-full bg-[#F1F1F1] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Aguardando</span>
-          </div>
-          <div class="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_200px]">
-            <div class="space-y-4">
-              <p id="partnerBonusDescription" class="text-sm leading-6 text-slate-600">Entre com uma conta de cliente e leia o QR Code da empresa para se vincular e verificar se há bônus de adesão liberado.</p>
-              <div class="flex items-center rounded-[22px] bg-slate-50 p-4">
-                <p id="partnerBonusHint" class="text-sm font-semibold text-[#111B3F]">Vinculado à empresa? O bônus é resgatado aqui mesmo, nesta página.</p>
-              </div>
-              <button id="partnerBonusAction" class="inline-flex h-12 items-center justify-center rounded-full bg-[#b01774] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(176,23,116,0.22)]" type="button">Ver como liberar</button>
-            </div>
-            <div class="overflow-hidden rounded-[26px] bg-[#F1F1F1]">
-              <img id="partnerBonusImage" class="h-full min-h-[190px] w-full object-cover" src="/img/placeholder-promo.svg" alt="Bonus de adesao" />
-            </div>
-          </div>
-        </article>
-
-        <article id="partnerLoyaltyCard" class="partner-surface-card partner-benefit-card partner-loyalty-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
-          <div class="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Cartão fidelidade</p>
-              <h2 id="partnerLoyaltyTitle" class="mt-2 text-2xl font-extrabold text-[#111B3F]">Configuração em verificação</h2>
-            </div>
-            <span id="partnerLoyaltyStatus" class="inline-flex rounded-full bg-[#F1F1F1] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Aguardando</span>
-          </div>
-          <div class="mt-5 space-y-4">
-            <p id="partnerLoyaltyDescription" class="text-sm leading-6 text-slate-600"></p>
-            <div class="grid gap-3 sm:grid-cols-2">
-              <div class="rounded-[22px] bg-slate-50 p-4">
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Como pontuar</p>
-                <p id="partnerLoyaltyRule" class="mt-2 text-sm font-semibold text-[#111B3F]">1 ponto por visita</p>
-              </div>
-              <div class="rounded-[22px] bg-slate-50 p-4">
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Com <span id="partnerLoyaltyRequiredLabel">15 pontos</span>:</p>
-                <p id="partnerLoyaltyReward" class="mt-2 text-sm font-semibold text-[#111B3F]">Recompensa da loja</p>
-              </div>
-            </div>
-            <div id="partnerLoyaltyProgressCard" class="rounded-[24px] bg-slate-50 p-4">
-              <div class="flex items-center justify-between gap-3">
-                <div>
-                  <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Você já acumulou</p>
-                  <p id="partnerLoyaltyProgressLabel" class="mt-2 text-lg font-extrabold text-[#111B3F]">0 / 15 pontos</p>
-                </div>
-                <span id="partnerLoyaltyProgressStatus" class="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Sem vínculo</span>
-              </div>
-              <div class="mt-4 h-3 overflow-hidden rounded-full bg-white">
-                <div id="partnerLoyaltyProgressBar" class="h-full w-0 rounded-full bg-[#b01774]"></div>
-              </div>
-              <p id="partnerLoyaltyHint" class="mt-3 text-sm leading-6 text-slate-500"></p>
-            </div>
-            <button id="partnerLoyaltyAction" class="inline-flex h-12 items-center justify-center rounded-full bg-[#b01774] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(176,23,116,0.25)]" type="button">Registrar visita</button>
-          </div>
-        </article>
-
-        <article id="partnerPromotionsCard" class="partner-surface-card partner-benefit-card partner-promotions-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
-          <div class="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Promoções instantâneas</p>
-              <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Campanhas disponíveis</h2>
-            </div>
-            <span id="partnerPromotionsStatus" class="inline-flex rounded-full bg-[#F1F1F1] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">Aguardando</span>
-          </div>
-          <p id="partnerPromotionsMessage" class="mt-4 text-sm leading-7 text-slate-600"></p>
-          <div id="partnerPromotionsList" class="mt-5 space-y-4"></div>
-          <p id="partnerPromotionsEmpty" class="mt-4 text-sm text-slate-500">Nenhuma promoção ativa no momento.</p>
-        </article>
-
-        <article id="partnerBirthdayCard" class="partner-surface-card partner-benefit-card partner-birthday-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
-          <div class="flex items-center justify-between gap-3">
-            <div>
-              <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Bônus aniversário</p>
-              <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Benefícios sazonais e reengajamento</h2>
-            </div>
-          </div>
-          <div class="mt-5 grid gap-4 md:grid-cols-2">
-            <div class="overflow-hidden rounded-[24px] bg-slate-50">
-              <img id="partnerBirthdayImage" class="h-44 w-full object-cover" src="/img/placeholder-promo.svg" alt="Bônus aniversário" />
-              <div class="space-y-3 p-5">
-                <div class="flex items-start justify-between gap-3">
-                  <div>
-                    <p class="text-sm font-bold text-[#111B3F]">Bônus aniversário</p>
-                    <h3 id="partnerBirthdayTitle" class="mt-2 text-xl font-extrabold text-[#111B3F]">Benefício de aniversário</h3>
-                  </div>
-                  <span id="partnerBirthdayStatus" class="inline-flex rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Indisponível</span>
-                </div>
-                <p id="partnerBirthdayDescription" class="text-sm leading-6 text-slate-600">Clientes vinculados podem consultar aqui se o bônus aniversário da empresa está liberado.</p>
-                <div class="rounded-[18px] bg-white p-4">
-                  <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Validade</p>
-                  <p id="partnerBirthdayValidity" class="mt-2 text-sm font-semibold text-[#111B3F]">Consulte a regra da empresa</p>
-                </div>
-                <p id="partnerBirthdayHint" class="text-sm font-semibold text-slate-500">Clientes vinculados resgatam aqui na página.</p>
-                <button id="partnerBirthdayAction" type="button" class="inline-flex h-11 items-center justify-center rounded-full bg-[#111B3F] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(0,0,0,0.12)]">Ver regra</button>
-              </div>
-            </div>
-            <div class="rounded-[24px] bg-slate-50 p-5">
-              <p class="text-sm font-bold text-[#111B3F]">Lembrete de retorno</p>
-              <p class="mt-2 text-sm leading-6 text-slate-500">Ficou um tempo sem visitar? A empresa pode te convidar a voltar por notificação.</p>
-            </div>
-          </div>
-        </article>
-
-        <article id="partnerReviewsCard" class="partner-surface-card partner-reviews-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
-          <div class="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Avaliações</p>
-              <h2 class="mt-2 text-2xl font-extrabold text-[#111B3F]">Reputação da empresa</h2>
-              <p id="partnerReviewsSubtitle" class="mt-3 text-sm leading-6 text-slate-500">Clientes vinculados podem avaliar a experiência e editar a própria nota depois.</p>
-            </div>
-            <div class="rounded-[24px] bg-slate-50 px-5 py-4 text-right">
-              <p id="partnerReviewsAverage" class="text-3xl font-extrabold text-[#111B3F]">0,0</p>
-              <p id="partnerReviewsStarsLarge" class="mt-2 text-lg font-bold text-[#B01774]">★★★★★</p>
-              <p id="partnerReviewsTotal" class="mt-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-400">Sem avaliações</p>
-            </div>
-          </div>
-          <div class="mt-6 grid gap-5 lg:grid-cols-[minmax(0,1.15fr)_minmax(290px,0.85fr)]">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between gap-3">
-                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Avaliações dos usuários</p>
-                <span class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Mais recentes</span>
-              </div>
-              <div id="partnerReviewsDistribution" class="space-y-2"></div>
-              <div id="partnerReviewsList" class="space-y-3"></div>
-              <p id="partnerReviewsEmpty" class="text-sm text-slate-500">Nenhuma avaliação publicada até agora.</p>
-            </div>
-            <div class="rounded-[26px] bg-slate-50 p-5">
-              <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Minha avaliação</p>
-              <p id="partnerMyReviewHint" class="mt-3 text-sm leading-6 text-slate-500">Entre com uma conta de cliente vinculada para registrar sua nota de 1 a 5.</p>
-              <form id="partnerReviewForm" class="mt-5 space-y-4">
-                <div class="flex flex-wrap gap-2" id="partnerReviewStars">
-                  <button type="button" data-rating="1" class="partner-review-star inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-lg font-extrabold text-slate-400 shadow-sm">1</button>
-                  <button type="button" data-rating="2" class="partner-review-star inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-lg font-extrabold text-slate-400 shadow-sm">2</button>
-                  <button type="button" data-rating="3" class="partner-review-star inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-lg font-extrabold text-slate-400 shadow-sm">3</button>
-                  <button type="button" data-rating="4" class="partner-review-star inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-lg font-extrabold text-slate-400 shadow-sm">4</button>
-                  <button type="button" data-rating="5" class="partner-review-star inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-lg font-extrabold text-slate-400 shadow-sm">5</button>
-                </div>
-                <textarea id="partnerReviewComment" rows="4" maxlength="500" class="block w-full rounded-[22px] border-none bg-white px-4 py-3 text-sm text-slate-700 focus:ring-2 focus:ring-[#133F8C]/20" placeholder="Comentário opcional sobre seu atendimento, produto ou experiência."></textarea>
-                <div class="flex flex-wrap gap-3">
-                  <button id="partnerReviewSubmit" type="submit" class="inline-flex h-11 items-center justify-center rounded-full bg-[#b01774] px-5 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(176,23,116,0.22)]">Salvar avaliação</button>
-                  <button id="partnerReviewShowQr" type="button" class="inline-flex h-11 items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-[#111B3F] shadow-sm">Abrir meu QR Code</button>
-                </div>
-                <p id="partnerReviewStatus" class="text-sm text-slate-500"></p>
-              </form>
-            </div>
-          </div>
-        </article>
+    <!-- Contato -->
+    <section class="tdt-block">
+      <h2 class="tdt-block__title">Contato</h2>
+      <div class="tdt-contact">
+        <div class="tdt-contact__row">
+          <span class="tdt-contact__icon"><span class="material-symbols-outlined">call</span></span>
+          <div class="min-w-0"><p class="tdt-contact__k">Telefone</p><p id="partner-phone" class="tdt-contact__v">Não informado</p></div>
+        </div>
+        <div class="tdt-contact__row">
+          <span class="tdt-contact__icon"><span class="material-symbols-outlined">chat</span></span>
+          <div class="min-w-0 flex-1"><p class="tdt-contact__k">WhatsApp</p><p id="partner-whatsapp" class="tdt-contact__v">Não informado</p></div>
+          <a id="partnerWhatsappLink" class="tdt-contact__link hidden" target="_blank" rel="noreferrer">Abrir</a>
+        </div>
+        <div class="tdt-contact__row">
+          <span class="tdt-contact__icon"><span class="material-symbols-outlined">location_on</span></span>
+          <div class="min-w-0"><p class="tdt-contact__k">Endereço</p><p id="partner-full-address" class="tdt-contact__v">Não informado</p></div>
+        </div>
+        <div class="tdt-contact__row">
+          <span class="tdt-contact__icon"><span class="material-symbols-outlined">photo_camera</span></span>
+          <div class="min-w-0 flex-1"><p class="tdt-contact__k">Instagram</p><p id="partner-instagram" class="tdt-contact__v">Não informado</p></div>
+          <a id="partnerInstagramLink" class="tdt-contact__link hidden" target="_blank" rel="noreferrer">Abrir</a>
+        </div>
+        <div class="tdt-contact__row">
+          <span class="tdt-contact__icon"><span class="material-symbols-outlined">thumb_up</span></span>
+          <div class="min-w-0 flex-1"><p class="tdt-contact__k">Facebook</p><p id="partner-facebook" class="tdt-contact__v">Não informado</p></div>
+          <a id="partnerFacebookLink" class="tdt-contact__link hidden" target="_blank" rel="noreferrer">Abrir</a>
+        </div>
       </div>
-
-      <aside class="partner-side-stack space-y-5">
-        <article class="partner-surface-card rounded-[30px] bg-white p-6 shadow-[0_18px_45px_rgba(8,10,18,0.08)] ring-1 ring-black/5">
-          <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Contato</p>
-          <div class="mt-5 space-y-4">
-            <div class="partner-contact-row rounded-[22px] bg-slate-50 p-4">
-              <div class="partner-contact-icon">
-                <span class="material-symbols-outlined">call</span>
-              </div>
-              <div>
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Telefone</p>
-                <p id="partner-phone" class="mt-2 text-sm font-semibold text-[#111B3F]">Não informado</p>
-              </div>
-            </div>
-            <div class="partner-contact-row rounded-[22px] bg-slate-50 p-4">
-              <div class="partner-contact-icon">
-                <span class="material-symbols-outlined">chat</span>
-              </div>
-              <div class="flex flex-1 items-center justify-between gap-3">
-                <div>
-                  <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">WhatsApp</p>
-                  <p id="partner-whatsapp" class="mt-2 text-sm font-semibold text-[#111B3F]">Não informado</p>
-                </div>
-                <a id="partnerWhatsappLink" class="hidden rounded-full bg-[#111B3F] px-4 py-2 text-xs font-bold text-white" target="_blank" rel="noreferrer">Abrir</a>
-              </div>
-            </div>
-            <div class="partner-contact-row rounded-[22px] bg-slate-50 p-4">
-              <div class="partner-contact-icon">
-                <span class="material-symbols-outlined">location_on</span>
-              </div>
-              <div>
-                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Endereço</p>
-                <p id="partner-full-address" class="mt-2 text-sm font-semibold text-[#111B3F]">Não informado</p>
-              </div>
-            </div>
-            <div class="partner-contact-row rounded-[22px] bg-slate-50 p-4">
-              <div class="partner-contact-icon">
-                <span class="material-symbols-outlined">photo_camera</span>
-              </div>
-              <div class="flex flex-1 items-center justify-between gap-3">
-                <div>
-                  <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Instagram</p>
-                  <p id="partner-instagram" class="mt-2 text-sm font-semibold text-[#111B3F]">Não informado</p>
-                </div>
-                <a id="partnerInstagramLink" class="hidden rounded-full bg-[#111B3F] px-4 py-2 text-xs font-bold text-white" target="_blank" rel="noreferrer">Abrir</a>
-              </div>
-            </div>
-            <div class="partner-contact-row rounded-[22px] bg-slate-50 p-4">
-              <div class="partner-contact-icon">
-                <span class="material-symbols-outlined">thumb_up</span>
-              </div>
-              <div class="flex flex-1 items-center justify-between gap-3">
-                <div>
-                  <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Facebook</p>
-                  <p id="partner-facebook" class="mt-2 text-sm font-semibold text-[#111B3F]">Não informado</p>
-                </div>
-                <a id="partnerFacebookLink" class="hidden rounded-full bg-[#111B3F] px-4 py-2 text-xs font-bold text-white" target="_blank" rel="noreferrer">Abrir</a>
-              </div>
-            </div>
-          </div>
-        </article>
-
-      </aside>
     </section>
   </main>
 
-  <nav class="fixed bottom-0 left-1/2 z-50 grid h-[68px] w-full max-w-[430px] -translate-x-1/2 grid-cols-5 border-t border-slate-200 bg-white/96 px-2 backdrop-blur">
-    <a class="flex flex-col items-center justify-center text-slate-400" href="/meus_pontos.html">
-      <span class="material-symbols-outlined">home</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Início</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#E91E85]" href="/parceiros_tem_de_tudo.html">
-      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storefront</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Empresa</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-slate-400" href="/validar_resgate.html?modo=vinculo-empresa">
-      <span class="material-symbols-outlined">qr_code_scanner</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">QR</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-slate-400" href="/recompensas.html">
-      <span class="material-symbols-outlined">redeem</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Prêmios</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-slate-400" href="/meu_perfil.html">
-      <span class="material-symbols-outlined">person</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Perfil</span>
-    </a>
-  </nav>
-
-  <script src="/dist/stitch-app.min.js?v=20260717-app"></script>
+  <script src="/dist/stitch-app.min.js?v=20260718-app3"></script>
 </body>
 </html>

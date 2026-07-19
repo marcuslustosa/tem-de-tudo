@@ -3,117 +3,105 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Home do Cliente - Tem de Tudo</title>
-  <meta name="theme-color" content="#133F8C" />
+  <title>Início - Tem de Tudo</title>
+  <meta name="theme-color" content="#ffffff" />
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <link rel="manifest" href="/manifest.json" />  <link rel="icon" type="image/png" href="/img/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" type="image/png" href="/img/logo.png" />
   <link rel="shortcut icon" href="/img/logo.png" />
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
-  <link href="/css/i9plus-phase8.css?v=20260717-app" rel="stylesheet" />
+  <link href="/css/i9plus-phase8.css?v=20260718-app3" rel="stylesheet" />
   <style>
-    body {
-      font-family: 'Be Vietnam Pro', Arial, sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(0, 175, 168, 0.1), transparent 22%),
-        radial-gradient(circle at top right, rgba(176, 23, 116, 0.1), transparent 26%),
-        linear-gradient(180deg, #eef6ff 0%, #f7f7f7 40%, #ffffff 100%);
-      min-height: 100vh;
-    }
-    h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
-    }
+    body { background: #ffffff; min-height: 100vh; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
   </style>
 </head>
-<body class="pb-28 text-[#2e2e34]" data-page="meus_pontos">
-  <main class="mx-auto w-full max-w-[1180px] px-4 pb-10 pt-5 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-[430px] lg:max-w-none">
-      <header class="home-client-hero rounded-[32px] px-5 py-6 text-white shadow-[0_18px_50px_rgba(8,10,18,0.26)] lg:px-8 lg:py-7">
-        <div class="flex items-center justify-between gap-4">
-          <div class="flex items-center gap-3">
-            <div class="inline-flex rounded-[20px] bg-white/10 px-4 py-3 ring-1 ring-white/10">
-              <img src="/img/logo.png" alt="Tem de Tudo" class="h-8 w-auto" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
-            </div>
-            <div>
-              <h1 id="header-welcome" class="text-[24px] font-extrabold leading-tight">Olá, Cliente</h1>
-              <p class="mt-0.5 text-[13px] font-medium text-white/70">Seus benefícios em um só lugar</p>
-            </div>
-          </div>
-          <a id="clientHomeMenuBtn" href="/meu_perfil.html" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/14 bg-white/8 text-white shadow-[0_10px_24px_rgba(0,0,0,0.16)]" aria-label="Abrir meu perfil">
-            <span class="material-symbols-outlined">person</span>
-          </a>
-        </div>
-      </header>
+<body class="text-[#17171c]" data-page="meus_pontos">
 
-      <section class="mt-4">
-        <div class="home-actions-grid">
-          <button id="btnReadCompanyQr" class="home-action" type="button">
-            <span class="home-action__icon"><span class="material-symbols-outlined">qr_code_scanner</span></span>
-            <span class="home-action__title">Ler QR Code</span>
-          </button>
-          <a href="#linkedCompaniesSection" id="btnGoLinkedCompanies" class="home-action">
-            <span class="home-action__icon"><span class="material-symbols-outlined">storefront</span></span>
-            <span class="home-action__title">Minhas Empresas</span>
-          </a>
-        </div>
-      </section>
-
-      <section id="linkedCompaniesSection" class="mt-8 scroll-mt-24">
-        <div class="flex items-end justify-between gap-3">
-          <h2 class="text-2xl font-extrabold text-[#111B3F]">Minhas empresas</h2>
-          <p id="linkedCompaniesCount" class="text-sm font-semibold text-slate-500">Carregando...</p>
-        </div>
-        <p id="linkedCompaniesEmpty" class="mt-4 hidden rounded-[24px] bg-white px-5 py-6 text-sm text-slate-500 shadow-[0_12px_32px_rgba(8,10,18,0.06)] ring-1 ring-black/5">Você ainda não está vinculado a nenhuma empresa ativa. Use o botão "Ler QR Code" para começar.</p>
-        <div id="linkedCompaniesSkeleton" class="mt-4 grid gap-4 lg:grid-cols-2">
-          <div class="tdt-skeleton-card"><div class="flex gap-4"><div class="tdt-skeleton h-16 w-16 rounded-2xl"></div><div class="flex-1 space-y-2"><div class="tdt-skeleton h-3 w-1/3"></div><div class="tdt-skeleton h-4 w-2/3"></div><div class="tdt-skeleton h-3 w-1/2"></div></div></div></div>
-          <div class="tdt-skeleton-card"><div class="flex gap-4"><div class="tdt-skeleton h-16 w-16 rounded-2xl"></div><div class="flex-1 space-y-2"><div class="tdt-skeleton h-3 w-1/3"></div><div class="tdt-skeleton h-4 w-2/3"></div><div class="tdt-skeleton h-3 w-1/2"></div></div></div></div>
-        </div>
-        <div id="linkedCompaniesList" class="mt-4 grid gap-4 lg:grid-cols-2"></div>
-      </section>
-
-      <!-- Busca (abaixo das empresas) -->
-      <section class="mt-8">
-        <form id="homeSearchForm" class="home-search" role="search">
-          <span class="material-symbols-outlined home-search__icon" aria-hidden="true">search</span>
-          <input id="homeSearchInput" type="search" class="home-search__input" placeholder="Buscar empresa ou categoria..." autocomplete="off" enterkeyhint="search" aria-label="Buscar empresas" />
-          <button type="submit" class="home-search__btn" aria-label="Buscar">Buscar</button>
-        </form>
-      </section>
-
-      <section id="featuredCompaniesSection" class="mt-6 hidden">
-        <div class="flex items-center justify-between gap-3">
-          <h2 class="text-2xl font-extrabold text-[#111B3F]">Explorar empresas</h2>
-          <a href="/parceiros_tem_de_tudo.html" class="text-sm font-bold text-primary">Ver todas</a>
-        </div>
-        <div id="featuredCompaniesList" class="mt-4 grid gap-4 lg:grid-cols-2"></div>
-      </section>
+  <header class="tdt-appbar" id="homeAppbar">
+    <div class="tdt-appbar__inner">
+      <div class="tdt-appbar__greet">
+        <span class="tdt-appbar__hello" id="header-welcome">Olá</span>
+        <span class="tdt-appbar__sub">Seus benefícios em um só lugar</span>
+      </div>
+      <div class="tdt-appbar__actions">
+        <a href="/recompensas.html" class="tdt-icon-btn" aria-label="Novidades">
+          <span class="material-symbols-outlined">notifications</span>
+        </a>
+        <a id="clientHomeMenuBtn" href="/meu_perfil.html" class="tdt-avatar-btn" aria-label="Meu perfil">
+          <span class="material-symbols-outlined">person</span>
+        </a>
+      </div>
     </div>
+  </header>
+
+  <main class="tdt-home">
+    <!-- Busca -->
+    <form id="homeSearchForm" class="tdt-searchbar" role="search">
+      <span class="material-symbols-outlined tdt-searchbar__icon" aria-hidden="true">search</span>
+      <input id="homeSearchInput" type="search" placeholder="Buscar empresa ou categoria" autocomplete="off" enterkeyhint="search" aria-label="Buscar empresas" />
+    </form>
+
+    <!-- Categorias (scroll horizontal) -->
+    <nav class="tdt-chips" aria-label="Categorias">
+      <a href="/parceiros_tem_de_tudo.html" class="tdt-chip is-active"><span class="material-symbols-outlined">grid_view</span>Tudo</a>
+      <a href="/parceiros_tem_de_tudo.html?categoria=restaurante" class="tdt-chip"><span class="material-symbols-outlined">restaurant</span>Restaurantes</a>
+      <a href="/parceiros_tem_de_tudo.html?categoria=beleza" class="tdt-chip"><span class="material-symbols-outlined">content_cut</span>Beleza</a>
+      <a href="/parceiros_tem_de_tudo.html?categoria=mercado" class="tdt-chip"><span class="material-symbols-outlined">shopping_cart</span>Mercados</a>
+      <a href="/parceiros_tem_de_tudo.html?categoria=farmacia" class="tdt-chip"><span class="material-symbols-outlined">medication</span>Farmácias</a>
+      <a href="/parceiros_tem_de_tudo.html?categoria=pet" class="tdt-chip"><span class="material-symbols-outlined">pets</span>Pets</a>
+      <a href="/parceiros_tem_de_tudo.html?categoria=bar" class="tdt-chip"><span class="material-symbols-outlined">local_bar</span>Bares</a>
+    </nav>
+
+    <!-- Ação central: ler QR -->
+    <a href="/validar_resgate.html?modo=vinculo-empresa" class="tdt-qr-cta" id="btnReadCompanyQr">
+      <span class="tdt-qr-cta__icon"><span class="material-symbols-outlined">qr_code_scanner</span></span>
+      <span class="tdt-qr-cta__text">
+        <b>Ler QR da empresa</b>
+        <small>Vincule-se e resgate seus benefícios</small>
+      </span>
+      <span class="material-symbols-outlined tdt-qr-cta__chevron">arrow_forward</span>
+    </a>
+
+    <!-- Minhas empresas -->
+    <section class="tdt-section" id="linkedCompaniesSection">
+      <div class="tdt-section__head">
+        <h2 class="tdt-section__title">Minhas empresas</h2>
+        <span id="linkedCompaniesCount" class="tdt-section__count">Carregando…</span>
+      </div>
+      <div id="linkedCompaniesSkeleton" class="tdt-list">
+        <div class="tdt-skel-row"><div class="tdt-skel-box" style="width:60px;height:60px"></div><div style="flex:1"><div class="tdt-skel-box" style="width:55%;height:14px"></div><div class="tdt-skel-box" style="width:35%;height:11px;margin-top:8px"></div></div></div>
+        <div class="tdt-skel-row"><div class="tdt-skel-box" style="width:60px;height:60px"></div><div style="flex:1"><div class="tdt-skel-box" style="width:45%;height:14px"></div><div class="tdt-skel-box" style="width:40%;height:11px;margin-top:8px"></div></div></div>
+      </div>
+      <div id="linkedCompaniesEmpty" class="tdt-empty hidden">
+        <div class="tdt-empty__icon"><span class="material-symbols-outlined">qr_code_scanner</span></div>
+        <p>Você ainda não está em nenhuma empresa.<br>Toque em <b>Ler QR da empresa</b> para começar.</p>
+      </div>
+      <div id="linkedCompaniesList" class="tdt-list"></div>
+    </section>
+
+    <!-- Explorar -->
+    <section class="tdt-section hidden" id="featuredCompaniesSection">
+      <div class="tdt-section__head">
+        <h2 class="tdt-section__title">Descubra empresas</h2>
+        <a href="/parceiros_tem_de_tudo.html" class="tdt-section__link">Ver todas</a>
+      </div>
+      <div id="featuredCompaniesList" class="tdt-list"></div>
+    </section>
   </main>
 
-  <nav class="fixed bottom-0 left-1/2 z-50 grid h-[68px] w-full max-w-[430px] -translate-x-1/2 grid-cols-5 border-t border-slate-200 bg-white/96 px-2 backdrop-blur">
-    <a class="flex flex-col items-center justify-center text-[#b01774]" href="/meus_pontos.html">
-      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Início</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-slate-400" href="/parceiros_tem_de_tudo.html">
-      <span class="material-symbols-outlined">storefront</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Buscar</span>
-    </a>
-    <button id="btnBottomScan" class="flex flex-col items-center justify-center text-slate-400" type="button">
-      <span class="material-symbols-outlined">qr_code_scanner</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">QR</span>
-    </button>
-    <a class="flex flex-col items-center justify-center text-slate-400" href="/recompensas.html">
-      <span class="material-symbols-outlined">notifications</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Novidades</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-slate-400" href="/meu_perfil.html">
-      <span class="material-symbols-outlined">person</span>
-      <span class="mt-1 text-[10px] font-bold uppercase tracking-[0.14em]">Perfil</span>
-    </a>
-  </nav>
-
-  <script src="/dist/stitch-app.min.js?v=20260717-app"></script>
+  <script src="/dist/stitch-app.min.js?v=20260718-app3"></script>
+  <script>
+    // App bar ganha borda/sombra ao rolar (sensação de app nativo).
+    (function () {
+      var bar = document.getElementById('homeAppbar');
+      if (!bar) return;
+      var onScroll = function () { bar.classList.toggle('is-stuck', window.scrollY > 4); };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
 </body>
 </html>

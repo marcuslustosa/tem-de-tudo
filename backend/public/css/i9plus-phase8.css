@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 :root {
   --i9-navy: #111b3f;
   --i9-blue: #133f8c;
@@ -6,10 +8,10 @@
   --i9-pink: #e91e85;
   --i9-bg: #ffffff;
   --i9-surface: #ffffff;
-  --i9-surface-soft: #f2f5f9;
+  --i9-surface-soft: #f5f6f8;
   --i9-border: rgba(17, 27, 63, 0.08);
-  --i9-text: #1e1e1e;
-  --i9-text-muted: #667085;
+  --i9-text: #17171c;
+  --i9-text-muted: #6b7280;
   --i9-gradient: linear-gradient(135deg, #133f8c 0%, #b01774 100%);
   --i9-gradient-soft: linear-gradient(180deg, rgba(19, 63, 140, 0.06) 0%, rgba(0, 175, 168, 0.03) 55%, rgba(176, 23, 116, 0.06) 100%);
   --i9-shadow-card: 0 18px 45px rgba(8, 10, 18, 0.08);
@@ -19,8 +21,8 @@
   --i9-radius-pill: 999px;
   --i9-mobile-shell: 430px;
   --i9-desktop-shell: 1180px;
-  --i9-heading-font: "Plus Jakarta Sans", sans-serif;
-  --i9-body-font: "Be Vietnam Pro", sans-serif;
+  --i9-heading-font: "Inter", system-ui, -apple-system, sans-serif;
+  --i9-body-font: "Inter", system-ui, -apple-system, sans-serif;
 
   /* Admin light shell tokens */
   --admin-bg: #ffffff;
@@ -4202,3 +4204,413 @@ body[data-page] h2 {
 .tdt-receipt-meta dd {
   font-variant-numeric: tabular-nums;
 }
+
+/* ==========================================================================
+   APP DESIGN SYSTEM v3 (2026-07-18) — branco, minimalista, cara de app.
+   Referências de padrão: iFood (listagens), Mercado Livre (categorias).
+   Cores/fontes: identidade i9. Esta camada vem por último e vence o legado.
+   ========================================================================== */
+
+/* Fonte Inter em todo o app + fundo branco de verdade. */
+body[data-page] {
+  font-family: "Inter", system-ui, -apple-system, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body[data-page] h1,
+body[data-page] h2,
+body[data-page] h3,
+body[data-page] h4,
+body[data-page] .font-headline {
+  font-family: "Inter", system-ui, -apple-system, sans-serif !important;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Home do cliente (app-like) ---------- */
+body[data-page="meus_pontos"] {
+  background: #ffffff !important;
+  color: var(--i9-text);
+}
+.tdt-home {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px calc(96px + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 1024px) {
+  .tdt-home { max-width: 1180px; padding-left: 24px; padding-right: 24px; }
+}
+
+/* App bar: fixa, branca, discreta */
+.tdt-appbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.tdt-appbar.is-stuck { border-color: rgba(17, 27, 63, 0.07); box-shadow: 0 2px 14px rgba(17, 27, 63, 0.04); }
+.tdt-appbar__inner {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+}
+@media (min-width: 1024px) { .tdt-appbar__inner { max-width: 1180px; padding: 16px 24px; } }
+.tdt-appbar__greet { display: flex; flex-direction: column; min-width: 0; }
+.tdt-appbar__hello { font-size: 20px; font-weight: 800; line-height: 1.1; color: var(--i9-navy); }
+.tdt-appbar__sub { margin-top: 2px; font-size: 12.5px; color: var(--i9-text-muted); }
+.tdt-appbar__actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.tdt-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px; border-radius: 14px;
+  background: var(--i9-surface-soft); color: var(--i9-navy);
+  border: none; cursor: pointer; text-decoration: none;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.tdt-icon-btn:active { transform: scale(0.94); }
+.tdt-icon-btn .material-symbols-outlined { font-size: 22px; }
+.tdt-avatar-btn {
+  width: 42px; height: 42px; border-radius: 999px; overflow: hidden;
+  border: 2px solid var(--i9-magenta); background: var(--i9-surface-soft);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--i9-magenta); text-decoration: none; flex: 0 0 auto;
+}
+
+/* Barra de busca (topo, estilo iFood) */
+.tdt-searchbar {
+  display: flex; align-items: center; gap: 10px;
+  height: 50px; padding: 0 14px; margin-top: 6px;
+  border-radius: 14px; background: var(--i9-surface-soft);
+  border: 1px solid transparent;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.tdt-searchbar:focus-within { background: #fff; border-color: rgba(176, 23, 116, 0.35); }
+.tdt-searchbar__icon { color: var(--i9-magenta); font-size: 22px; flex: 0 0 auto; }
+.tdt-searchbar input {
+  flex: 1; min-width: 0; height: 100%; border: none; outline: none; background: transparent;
+  font-size: 15px; color: var(--i9-text); font-family: inherit;
+}
+.tdt-searchbar input::placeholder { color: #9aa1ad; }
+.tdt-searchbar input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+/* Chips de categoria (scroll horizontal, Mercado Livre / iFood) */
+.tdt-chips {
+  display: flex; gap: 8px; margin: 16px -16px 0; padding: 0 16px 2px;
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.tdt-chips::-webkit-scrollbar { display: none; }
+.tdt-chip {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px;
+  height: 38px; padding: 0 15px; border-radius: 999px;
+  background: var(--i9-surface-soft); color: var(--i9-navy);
+  font-size: 13.5px; font-weight: 600; white-space: nowrap;
+  border: 1px solid transparent; text-decoration: none;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.tdt-chip .material-symbols-outlined { font-size: 18px; }
+.tdt-chip:active { transform: scale(0.96); }
+.tdt-chip.is-active { background: var(--i9-navy); color: #fff; }
+
+/* CTA de QR (ação central) — cor sólida, sem degradê. */
+.tdt-qr-cta {
+  display: flex; align-items: center; gap: 14px; margin-top: 18px;
+  padding: 16px; border-radius: 18px; text-decoration: none;
+  color: #fff; background: var(--i9-magenta);
+  box-shadow: 0 10px 22px rgba(176, 23, 116, 0.22);
+  transition: transform 0.12s ease;
+}
+.tdt-qr-cta:active { transform: scale(0.99); }
+.tdt-qr-cta__icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px; flex: 0 0 auto; border-radius: 14px;
+  background: rgba(255, 255, 255, 0.18);
+}
+.tdt-qr-cta__icon .material-symbols-outlined { font-size: 26px; }
+.tdt-qr-cta__text { flex: 1; min-width: 0; }
+.tdt-qr-cta__text b { display: block; font-size: 15.5px; font-weight: 800; }
+.tdt-qr-cta__text small { display: block; margin-top: 2px; font-size: 12.5px; color: rgba(255, 255, 255, 0.85); }
+.tdt-qr-cta__chevron { color: rgba(255, 255, 255, 0.9); flex: 0 0 auto; }
+
+/* Cabeçalho de seção */
+.tdt-section { margin-top: 26px; }
+.tdt-section__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.tdt-section__title { font-size: 18px; font-weight: 800; color: var(--i9-navy); letter-spacing: -0.02em; }
+.tdt-section__count { font-size: 13px; color: var(--i9-text-muted); font-weight: 500; }
+.tdt-section__link { font-size: 13.5px; font-weight: 700; color: var(--i9-magenta); text-decoration: none; }
+
+/* Lista estilo iFood: linhas limpas separadas por divisória sutil */
+.tdt-list { display: flex; flex-direction: column; }
+@media (min-width: 1024px) {
+  .tdt-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 24px; }
+}
+.tdt-row {
+  display: flex; align-items: center; gap: 14px; padding: 12px 0;
+  text-decoration: none; color: inherit; position: relative;
+  transition: opacity 0.12s ease;
+}
+.tdt-row + .tdt-row { border-top: 1px solid rgba(17, 27, 63, 0.06); }
+.tdt-row:active { opacity: 0.6; }
+.tdt-row__img {
+  width: 60px; height: 60px; flex: 0 0 auto; border-radius: 16px;
+  object-fit: cover; background: var(--i9-surface-soft);
+}
+.tdt-row__body { flex: 1; min-width: 0; }
+.tdt-row__name { font-size: 15.5px; font-weight: 700; color: var(--i9-navy); line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tdt-row__meta { margin-top: 3px; display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--i9-text-muted); overflow: hidden; }
+.tdt-row__meta .dot { width: 3px; height: 3px; border-radius: 999px; background: currentColor; opacity: 0.5; flex: 0 0 auto; }
+.tdt-row__star { color: #f0a500; font-weight: 700; display: inline-flex; align-items: center; gap: 2px; flex: 0 0 auto; }
+.tdt-row__star .material-symbols-outlined { font-size: 15px; }
+.tdt-row__tags { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
+.tdt-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700;
+}
+.tdt-tag--points { background: rgba(176, 23, 116, 0.09); color: var(--i9-magenta); }
+.tdt-tag--points .material-symbols-outlined { font-size: 14px; }
+.tdt-tag--new { background: rgba(0, 175, 168, 0.12); color: #067d78; }
+.tdt-row__chevron { color: #c9cdd6; flex: 0 0 auto; }
+
+/* Estado vazio elegante */
+.tdt-empty {
+  margin-top: 8px; padding: 28px 20px; border-radius: 18px;
+  background: var(--i9-surface-soft); text-align: center;
+}
+.tdt-empty__icon {
+  width: 52px; height: 52px; margin: 0 auto 12px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  background: #fff; color: var(--i9-magenta); box-shadow: var(--i9-shadow-soft);
+}
+.tdt-empty p { font-size: 13.5px; color: var(--i9-text-muted); line-height: 1.5; }
+
+/* Skeleton row */
+.tdt-skel-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; }
+.tdt-skel-row + .tdt-skel-row { border-top: 1px solid rgba(17, 27, 63, 0.06); }
+.tdt-skel-box { border-radius: 12px; background: linear-gradient(90deg, #eef0f4 25%, #f6f7f9 37%, #eef0f4 63%); background-size: 400% 100%; animation: tdt-shimmer 1.3s ease infinite; }
+@keyframes tdt-shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .tdt-skel-box { animation: none; } }
+
+/* ==========================================================================
+   SISTEMA DE BOTÕES (2026-07-18) — cores sólidas, NUNCA degradê.
+   Cada tipo de botão tem uma cor. Superfície branca, texto/ícone com contraste.
+   - primary  (ação principal)      => magenta sólido, texto branco
+   - confirm  (validar/resgatar)    => teal sólido, texto branco
+   - neutral  (secundário)          => branco + borda, texto escuro
+   - dark     (sobre fundo escuro)   => navy sólido
+   ========================================================================== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 50px; padding: 0 22px; border: 1px solid transparent;
+  border-radius: 14px; font-family: "Inter", system-ui, sans-serif;
+  font-size: 15px; font-weight: 700; line-height: 1; cursor: pointer;
+  text-decoration: none; transition: filter 0.15s ease, transform 0.1s ease, background 0.15s ease;
+}
+.btn:active { transform: scale(0.98); }
+.btn .material-symbols-outlined { font-size: 20px; }
+.btn--primary { background: var(--i9-magenta); color: #fff; }
+.btn--primary:hover { filter: brightness(1.05); }
+.btn--confirm { background: var(--i9-teal); color: #fff; }
+.btn--confirm:hover { filter: brightness(1.04); }
+.btn--neutral { background: #fff; color: var(--i9-navy); border-color: rgba(17, 27, 63, 0.14); }
+.btn--neutral:hover { background: var(--i9-surface-soft); }
+.btn--dark { background: var(--i9-navy); color: #fff; }
+.btn--block { width: 100%; }
+
+/* --- Overrides: aposenta os degradês herdados (botões viram cor sólida) --- */
+.app-primary-button { background: var(--i9-magenta) !important; box-shadow: 0 8px 18px rgba(176, 23, 116, 0.2) !important; }
+.home-search__btn { background: var(--i9-magenta) !important; }
+.loyalty-redeem-btn { background: var(--i9-teal) !important; }
+.tdt-receipt-actions__primary { background: var(--i9-magenta) !important; box-shadow: 0 8px 18px rgba(176, 23, 116, 0.2) !important; }
+.tdt-install-bar__icon { background: var(--i9-magenta) !important; }
+
+/* Heros/cabeçalhos de celebração: cor sólida no lugar de degradê. */
+.tdt-receipt-hero { background: var(--i9-magenta) !important; }
+.tdt-bonus-modal .loyalty-redeem-btn { background: var(--i9-teal) !important; }
+
+/* Bottom dock: item central de QR em cor sólida (sem degradê). */
+.app-mobile-dock__item--accent .app-mobile-dock__item-icon {
+  background: var(--i9-magenta) !important;
+  box-shadow: 0 8px 18px rgba(176, 23, 116, 0.3) !important;
+}
+
+/* Home: linhas limpas (iFood) — anula cartão/sombra/borda legados nas listas. */
+body[data-page="meus_pontos"] #linkedCompaniesList,
+body[data-page="meus_pontos"] #featuredCompaniesList {
+  display: flex; flex-direction: column; gap: 0; grid-template-columns: none;
+}
+body[data-page="meus_pontos"] #linkedCompaniesList > .tdt-row,
+body[data-page="meus_pontos"] #featuredCompaniesList > .tdt-row {
+  box-shadow: none; border: 0; border-radius: 0; background: transparent; padding: 12px 0;
+}
+body[data-page="meus_pontos"] #linkedCompaniesList > .tdt-row + .tdt-row,
+body[data-page="meus_pontos"] #featuredCompaniesList > .tdt-row + .tdt-row {
+  border-top: 1px solid rgba(17, 27, 63, 0.06);
+}
+@media (min-width: 1024px) {
+  body[data-page="meus_pontos"] #linkedCompaniesList,
+  body[data-page="meus_pontos"] #featuredCompaniesList {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px;
+  }
+  /* No grid desktop, a divisória entre o par superior fica estranha: usa borda leve por linha. */
+  body[data-page="meus_pontos"] #linkedCompaniesList > .tdt-row + .tdt-row,
+  body[data-page="meus_pontos"] #featuredCompaniesList > .tdt-row + .tdt-row { border-top: 0; }
+  body[data-page="meus_pontos"] #linkedCompaniesList > .tdt-row,
+  body[data-page="meus_pontos"] #featuredCompaniesList > .tdt-row { border-top: 1px solid rgba(17, 27, 63, 0.06); }
+}
+
+/* "Instalar na tela de início" é conceito mobile: esconde no desktop. */
+@media (min-width: 1024px) { .tdt-install-bar { display: none; } }
+
+/* ==========================================================================
+   Página da empresa (detalhe_do_parceiro) v3 — limpa, app-like, branca.
+   ========================================================================== */
+body[data-page="detalhe_do_parceiro"] { background: #fff !important; }
+.tdt-detail { width: 100%; max-width: 720px; margin: 0 auto; padding: 0 16px calc(40px + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 1024px) { .tdt-detail { max-width: 900px; } }
+
+/* Capa */
+.tdt-cover { position: relative; margin: 0 -16px; }
+.tdt-cover__img { width: 100%; aspect-ratio: 16 / 9; max-height: 240px; object-fit: cover; display: block; }
+.tdt-cover__top {
+  position: absolute; inset: 0 0 auto 0; display: flex; align-items: center; justify-content: space-between;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 12px;
+}
+.tdt-cover__back {
+  display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+  border-radius: 999px; background: rgba(255, 255, 255, 0.92); color: var(--i9-navy);
+  text-decoration: none; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
+}
+
+/* Identidade (logo sobreposta) */
+.tdt-detail-head { display: flex; align-items: flex-end; gap: 14px; margin-top: -34px; position: relative; z-index: 1; }
+.tdt-detail-logo {
+  width: 78px; height: 78px; flex: 0 0 auto; border-radius: 20px; object-fit: cover;
+  background: #fff; border: 3px solid #fff; box-shadow: 0 8px 24px rgba(8, 10, 18, 0.14);
+}
+.tdt-detail-cat { font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--i9-magenta); }
+.tdt-detail-name { margin-top: 3px; font-size: 22px; font-weight: 800; color: var(--i9-navy); line-height: 1.1; }
+.tdt-detail-meta { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.tdt-rating-pill {
+  display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px;
+  background: var(--i9-surface-soft); font-size: 13.5px; font-weight: 700; color: var(--i9-navy);
+}
+.tdt-rating-pill .star { color: #f0a500; }
+.tdt-detail-reviews { font-size: 13px; color: var(--i9-text-muted); }
+.tdt-detail-addr { margin-top: 10px; font-size: 13.5px; line-height: 1.5; color: var(--i9-text-muted); }
+
+/* Ações */
+.tdt-detail-cta { display: flex; gap: 10px; margin-top: 16px; }
+.tdt-detail-cta .btn { flex: 1; }
+.tdt-detail-icons { display: flex; gap: 8px; margin-top: 10px; }
+.tdt-icon-action {
+  display: inline-flex; align-items: center; gap: 7px; height: 40px; padding: 0 14px;
+  border-radius: 12px; background: var(--i9-surface-soft); color: var(--i9-navy);
+  border: none; cursor: pointer; font-size: 13.5px; font-weight: 600; text-decoration: none;
+}
+.tdt-icon-action .material-symbols-outlined { font-size: 19px; color: var(--i9-magenta); }
+.tdt-social { display: flex; gap: 8px; margin-top: 10px; }
+.tdt-social a {
+  display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+  border-radius: 12px; background: var(--i9-surface-soft); color: var(--i9-navy); text-decoration: none;
+}
+.tdt-social a .material-symbols-outlined { font-size: 20px; }
+
+/* Blocos de conteúdo */
+.tdt-block { margin-top: 26px; }
+.tdt-block__title { font-size: 17px; font-weight: 800; color: var(--i9-navy); margin-bottom: 12px; }
+.tdt-block__text { font-size: 14px; line-height: 1.65; color: #3f4453; }
+
+/* Card de benefício */
+.tdt-benefit {
+  border: 1px solid var(--i9-border); border-radius: 18px; background: #fff; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(17, 27, 63, 0.05);
+}
+.tdt-benefit + .tdt-benefit { margin-top: 14px; }
+.tdt-benefit__img { width: 100%; height: 150px; object-fit: cover; background: var(--i9-surface-soft); display: block; }
+.tdt-benefit__body { padding: 16px; }
+.tdt-benefit--pad { padding: 16px; }
+.tdt-benefit__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.tdt-benefit__title { font-size: 16px; font-weight: 800; color: var(--i9-navy); line-height: 1.2; }
+.tdt-benefit__desc { margin-top: 6px; font-size: 13.5px; line-height: 1.55; color: #4b5061; }
+.tdt-benefit__hint { margin-top: 8px; font-size: 12.5px; color: var(--i9-text-muted); }
+.tdt-chip-status {
+  flex: 0 0 auto; display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px;
+  background: var(--i9-surface-soft); font-size: 10.5px; font-weight: 800; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--i9-text-muted);
+}
+.tdt-loyalty-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.tdt-loyalty-meta > div { background: var(--i9-surface-soft); border-radius: 12px; padding: 12px; }
+.tdt-loyalty-meta span { font-size: 11px; font-weight: 700; color: var(--i9-text-muted); }
+.tdt-loyalty-meta p { margin-top: 4px; font-size: 13.5px; font-weight: 700; color: var(--i9-navy); }
+.tdt-progress { margin-top: 14px; background: var(--i9-surface-soft); border-radius: 14px; padding: 14px; }
+.tdt-progress__row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.tdt-progress__row span.k { font-size: 11px; font-weight: 700; color: var(--i9-text-muted); }
+.tdt-progress__row p { margin-top: 3px; font-size: 16px; font-weight: 800; color: var(--i9-navy); }
+.tdt-progress__track { margin-top: 12px; height: 10px; border-radius: 999px; background: #fff; overflow: hidden; }
+.tdt-progress__bar { height: 100%; width: 0; border-radius: 999px; background: var(--i9-magenta); transition: width 0.6s ease; }
+
+/* Contato */
+.tdt-contact { display: flex; flex-direction: column; }
+.tdt-contact__row { display: flex; align-items: center; gap: 12px; padding: 12px 0; }
+.tdt-contact__row + .tdt-contact__row { border-top: 1px solid var(--i9-border); }
+.tdt-contact__icon {
+  display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; flex: 0 0 auto;
+  border-radius: 11px; background: rgba(176, 23, 116, 0.08); color: var(--i9-magenta);
+}
+.tdt-contact__icon .material-symbols-outlined { font-size: 20px; }
+.tdt-contact__k { font-size: 11px; font-weight: 700; color: var(--i9-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.tdt-contact__v { margin-top: 2px; font-size: 14px; font-weight: 600; color: var(--i9-navy); }
+.tdt-contact__link {
+  margin-left: auto; flex: 0 0 auto; display: inline-flex; align-items: center; height: 34px; padding: 0 14px;
+  border-radius: 999px; background: var(--i9-navy); color: #fff; font-size: 12.5px; font-weight: 700; text-decoration: none;
+}
+
+/* Avaliações */
+.tdt-reviews-top { display: flex; align-items: center; gap: 16px; }
+.tdt-reviews-score { text-align: center; }
+.tdt-reviews-score__n { font-size: 34px; font-weight: 900; color: var(--i9-navy); line-height: 1; }
+.tdt-reviews-score__s { margin-top: 4px; color: #f0a500; font-size: 15px; }
+.tdt-reviews-score__t { margin-top: 4px; font-size: 11.5px; color: var(--i9-text-muted); }
+.tdt-review-star {
+  display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px;
+  border-radius: 999px; background: var(--i9-surface-soft); color: var(--i9-text-muted); font-weight: 800; border: none; cursor: pointer;
+}
+.tdt-review-star.is-on { background: var(--i9-magenta); color: #fff; }
+
+/* Página da empresa: some com os "Ler QR" repetidos dos cards (há 1 CTA principal). */
+body[data-page="detalhe_do_parceiro"] #partnerBonusAction,
+body[data-page="detalhe_do_parceiro"] #partnerBirthdayAction,
+body[data-page="detalhe_do_parceiro"] #partnerLoyaltyAction { display: none !important; }
+
+/* Recompensas v3: hero e cards sem degradê, mais limpos. */
+body[data-page="recompensas"] { background: #fff !important; }
+body[data-page="recompensas"] .loyalty-points-hero {
+  background: var(--i9-navy) !important;
+  border-radius: 20px;
+}
+body[data-page="recompensas"] .loyalty-card {
+  border: 1px solid var(--i9-border);
+  border-radius: 18px;
+  box-shadow: 0 1px 3px rgba(17, 27, 63, 0.05);
+}
+body[data-page="recompensas"] .loyalty-card:hover { transform: none; box-shadow: 0 1px 3px rgba(17, 27, 63, 0.05); border-color: var(--i9-border); }
+body[data-page="recompensas"] .loyalty-progress-bar { background: var(--i9-magenta); }
+body[data-page="recompensas"] .loyalty-reward-chip {
+  background: rgba(176, 23, 116, 0.06);
+  border: 1px solid rgba(176, 23, 116, 0.14);
+}
+
+/* Scanner (validar_resgate): fundo branco, moldura suave. */
+body[data-page="validar_resgate"] { background: #fff !important; }
+body[data-page="validar_resgate"] #qrScannerCamera { background: var(--i9-surface-soft) !important; border-color: var(--i9-surface-soft) !important; }
+body[data-page="validar_resgate"] #scanStatus { text-transform: none !important; letter-spacing: 0 !important; font-weight: 600 !important; }
+
+/* Garante dock central 100% sólido (sem qualquer degradê herdado). */
+.app-mobile-dock__item--accent .app-mobile-dock__item-icon,
+nav button#btnBottomScan { background: var(--i9-magenta) !important; }
