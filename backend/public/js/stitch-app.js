@@ -4322,18 +4322,39 @@
         const empresaVincId = companyInfo.id || new URLSearchParams(location.search).get('id');
         const jaVinculado = Boolean(companyInfo.vinculada || companyInfo.inscrito || companyInfo.ja_vinculado || companyInfo.cliente_vinculado);
 
+        // Mostra o estado "vinculado": esconde o botão Vincular, mostra o selo,
+        // e devolve "Ler QR" como ação primária.
+        const showLinkedState = () => {
+          if (vincularBtn) vincularBtn.hidden = true;
+          if (ctaHint) ctaHint.classList.add('hidden');
+          if (linkedBadge) linkedBadge.classList.remove('hidden');
+          if (qrBtn) {
+            qrBtn.classList.remove('btn--neutral');
+            qrBtn.classList.add('btn--primary');
+            qrBtn.innerHTML = '<span class="material-symbols-outlined">qr_code_scanner</span>Ler QR da empresa';
+          }
+        };
+
         if (perfilViewer === 'cliente' && empresaVincId && !jaVinculado) {
-          // Não vinculado: "Vincular-me" é o primário; "Ler QR" vira alternativa.
+          // Não vinculado: "Vincular" é o primário; "Ler QR" vira alternativa.
+          let vinculando = false;
           if (vincularBtn) {
             vincularBtn.hidden = false;
             vincularBtn.addEventListener('click', async () => {
+              if (vinculando) return;               // evita cliques repetidos
+              vinculando = true;
               vincularBtn.disabled = true;
+              vincularBtn.innerHTML = '<span class="material-symbols-outlined">hourglass_top</span>Vinculando...';
               const { res, data: d } = await api.request(`/cliente/empresas/${empresaVincId}/vincular`, { method: 'POST' }, { notify: false });
               if (res.ok && d?.success !== false) {
-                ui.message(d?.message || 'Pronto! Você se vinculou a esta empresa.', 'success');
-                setTimeout(() => window.location.reload(), 900);
+                showLinkedState();               // vira "Vinculado" na hora
+                ui.message(d?.message || 'Pronto! Você está vinculado a esta empresa.', 'success');
+                // Recarrega para trazer bônus/fidelidade já liberados.
+                setTimeout(() => window.location.reload(), 1100);
               } else {
+                vinculando = false;
                 vincularBtn.disabled = false;
+                vincularBtn.innerHTML = '<span class="material-symbols-outlined">add</span>Vincular';
                 ui.message(d?.message || 'Não foi possível vincular agora.', 'error');
               }
             });
@@ -4348,8 +4369,7 @@
             ctaHint.classList.remove('hidden');
           }
         } else if (perfilViewer === 'cliente' && jaVinculado) {
-          // Já vinculado: mostra selo e mantém "Ler QR" para pontuar/resgatar.
-          if (linkedBadge) linkedBadge.classList.remove('hidden');
+          showLinkedState();
         }
 
         const endereco = safeText(companyInfo.endereco, '');
@@ -6038,65 +6058,28 @@
         if (listaEl) listaEl.innerHTML = '';
         lista.forEach((c) => {
           const card = document.createElement('div');
-          card.className = 'bg-surface-container-lowest rounded-xl p-4 transition-transform active:scale-[0.98] tap-highlight-transparent border border-surface-variant/30';
+          card.className = 'tdt-client-card';
           const nome = c.name || c.nome || 'Cliente';
           const pontos = Number(c.pontos_atuais || c.total_ganho || c.pontos || 0);
           const ultima = c.ultima_visita || c.updated_at;
           const inativo = c.status_inatividade === 'inactive';
           const pushAtivo = Boolean(c.push_ativo);
-          const pushDispositivos = Number(c.push_total_dispositivos || 0);
-          const pushUltimaAtividade = c.push_ultima_atividade || c.push_updated_at || null;
-          const nascimento = formatDatePtBr(c.data_nascimento, 'Não informado');
-          const vinculo = formatDatePtBr(c.data_vinculo, 'Não informado');
+          const diasInativo = Number(c.dias_inatividade || 0);
           card.innerHTML = `
-            <div class="flex items-start gap-4">
-              <div class="relative">
-                <div class="w-14 h-14 rounded-full overflow-hidden bg-surface-container">
-                  <img alt="${nome}" class="w-full h-full object-cover" src="${safeImage(c.avatar, '/img/avatar-admin.png')}" onerror="this.onerror=null;this.src='/img/avatar-admin.png';"/>
+            <img alt="" class="tdt-client-card__avatar" src="${safeImage(c.avatar, '/img/avatar-admin.png')}" onerror="this.onerror=null;this.src='/img/avatar-admin.png';"/>
+            <div class="tdt-client-card__body">
+              <div class="tdt-client-card__top">
+                <h3 class="tdt-client-card__name">${nome}</h3>
+                <div class="tdt-client-card__chips">
+                  <span class="tdt-cchip ${inativo ? 'tdt-cchip--warn' : 'tdt-cchip--ok'}">${inativo ? 'Inativo' : 'Ativo'}</span>
+                  ${pushAtivo ? '<span class="tdt-cchip tdt-cchip--info">Push</span>' : ''}
                 </div>
               </div>
-              <div class="flex-1">
-                <div class="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <h3 class="font-headline font-bold text-on-surface">${nome}</h3>
-                    <p class="mt-1 text-xs text-on-surface-variant">${safeText(c.email, 'Sem e-mail')} | ${safeText(c.telefone, 'Sem telefone')}</p>
-                  </div>
-                  <div class="flex flex-wrap items-center justify-end gap-2">
-                    <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${inativo ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}">${inativo ? 'Inativo' : 'Ativo'}</span>
-                    <span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] ${pushAtivo ? 'bg-sky-100 text-sky-700' : 'bg-slate-100 text-slate-600'}">${pushAtivo ? 'Push ativo' : 'Sem push'}</span>
-                  </div>
-                </div>
-                <div class="mt-3 grid gap-2 sm:grid-cols-2">
-                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
-                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Pontos atuais</p>
-                    <p class="mt-1 text-sm font-bold text-primary">${pontos.toLocaleString('pt-BR')} pts</p>
-                  </div>
-                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
-                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Última visita</p>
-                    <p class="mt-1 text-sm font-semibold text-on-surface">${formatDatePtBr(ultima, 'Não informada')}</p>
-                  </div>
-                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
-                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Nascimento</p>
-                    <p class="mt-1 text-sm font-semibold text-on-surface">${nascimento}</p>
-                  </div>
-                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
-                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Vínculo</p>
-                    <p class="mt-1 text-sm font-semibold text-on-surface">${vinculo}</p>
-                  </div>
-                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
-                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Dispositivos push</p>
-                    <p class="mt-1 text-sm font-semibold text-on-surface">${pushDispositivos.toLocaleString('pt-BR')}</p>
-                  </div>
-                  <div class="rounded-xl bg-surface-container-low px-3 py-2">
-                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">Última atividade push</p>
-                    <p class="mt-1 text-sm font-semibold text-on-surface">${formatDatePtBr(pushUltimaAtividade, 'Não registrada')}</p>
-                  </div>
-                </div>
-                <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-on-surface-variant">
-                  <span>${plural(c.total_promocoes_resgatadas, 'promoção', 'promoções')}</span>
-                  <span>${Number(c.total_recompensas_resgatadas || 0).toLocaleString('pt-BR')} recompensa(s)</span>
-                  <span>${plural(c.dias_inatividade, 'dia')} sem visita</span>
-                </div>
+              <p class="tdt-client-card__contact">${safeText(c.email, 'Sem e-mail')} · ${safeText(c.telefone, 'Sem telefone')}</p>
+              <div class="tdt-client-card__meta">
+                <span class="tdt-client-card__pts"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>${pontos.toLocaleString('pt-BR')} pts</span>
+                <span class="dot"></span><span>Última visita: ${formatDatePtBr(ultima, '—')}</span>
+                ${diasInativo > 0 ? `<span class="dot"></span><span>${plural(diasInativo, 'dia')} sem visita</span>` : ''}
               </div>
             </div>
           `;
