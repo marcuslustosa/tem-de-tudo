@@ -4905,3 +4905,108 @@ body[data-page="configuracoes_admin"] .uppercase {
 a[href*="gest_o_de_estabelecimentos.html?novo=1"] {
   background: var(--i9-navy) !important;
 }
+
+/* ==========================================================================
+   REFINAMENTO v4 (2026-07-19) — ZERO degradê. Botões flat, cards premium.
+   Sistema de cor: navy = ação primária; magenta = QR/scan + acentos;
+   teal = confirmar; branco+borda = secundário. Vence tudo (vem por último).
+   ========================================================================== */
+
+/* ---- Botões: flat, sólido, sombra sutil ---- */
+.btn { border-radius: 12px; font-weight: 650; box-shadow: none; transition: filter .15s ease, transform .08s ease; }
+.btn:active { transform: scale(0.985); }
+.btn--primary { background: var(--i9-navy) !important; color: #fff !important; border: 0 !important; box-shadow: 0 2px 8px rgba(17,27,63,0.16) !important; }
+.btn--primary:hover { filter: brightness(1.12); }
+.btn--confirm { background: var(--i9-teal) !important; color: #fff !important; border: 0 !important; box-shadow: 0 2px 8px rgba(0,175,168,0.18) !important; }
+.btn--dark { background: var(--i9-navy) !important; color: #fff !important; border: 0 !important; box-shadow: 0 2px 8px rgba(17,27,63,0.16) !important; }
+.btn--neutral { background: #fff !important; color: var(--i9-navy) !important; border: 1px solid rgba(17,27,63,0.14) !important; box-shadow: none !important; }
+.btn--neutral:hover { background: var(--i9-surface-soft) !important; }
+
+/* Botões legados → navy flat (ação primária) */
+.app-primary-button, .tdt-receipt-actions__primary, .home-search__btn {
+  background: var(--i9-navy) !important; border: 0 !important;
+  box-shadow: 0 2px 8px rgba(17,27,63,0.16) !important;
+}
+/* Resgatar/validar (positivo) → teal flat */
+.loyalty-redeem-btn { background: var(--i9-teal) !important; border: 0 !important; box-shadow: 0 2px 8px rgba(0,175,168,0.18) !important; }
+
+/* QR/scan = identidade magenta, FLAT (card de ação central) */
+.tdt-qr-cta {
+  background: var(--i9-magenta) !important; border: 0 !important;
+  box-shadow: 0 6px 16px rgba(176,23,116,0.20) !important;
+}
+.app-mobile-dock__item--accent .app-mobile-dock__item-icon,
+nav button#btnBottomScan {
+  background: var(--i9-magenta) !important; border: 0 !important;
+  box-shadow: 0 4px 12px rgba(176,23,116,0.28) !important;
+}
+.tdt-sidebar__cta { background: var(--i9-magenta) !important; box-shadow: 0 4px 12px rgba(176,23,116,0.22) !important; }
+.tdt-install-bar__icon { background: var(--i9-magenta) !important; }
+
+/* ---- Heros/superfícies: qualquer degradê vira sólido ---- */
+.tdt-receipt-hero { background: var(--i9-magenta) !important; }
+.loyalty-points-hero { background: var(--i9-navy) !important; }
+.app-auth-hero { background: var(--i9-navy) !important; }
+.partner-cover__image[style*="gradient"], #partner-banner-fallback { background: var(--i9-navy) !important; }
+.home-client-hero { background: var(--i9-navy) !important; }
+
+/* Neutraliza os degradês inline mais comuns (headers/avatars/acentos) */
+[style*="linear-gradient(135deg,#133f8c"],
+[style*="linear-gradient(135deg, #133f8c"],
+[style*="linear-gradient(135deg,#133F8C"],
+[style*="linear-gradient(135deg,#10172f"],
+[style*="linear-gradient(135deg,#111B3F"],
+[style*="linear-gradient(90deg,#133f8c"] {
+  background: var(--i9-navy) !important;
+}
+
+/* ---- Cards: hairline + sombra sutil, raio moderado (menos "bolha de IA") ---- */
+.tdt-benefit, .tdt-panel, .tdt-stat-card, .tdt-client-card, .loyalty-card, .admin-card {
+  box-shadow: 0 1px 2px rgba(17,27,63,0.05), 0 1px 3px rgba(17,27,63,0.04) !important;
+}
+
+/* ==========================================================================
+   Perfil (meu_perfil) v4 — hero compacto navy, suporte a capa, branco.
+   ========================================================================== */
+body[data-page="meu_perfil"] { background: #fff !important; }
+body[data-page="meu_perfil"] .uppercase { text-transform: none !important; letter-spacing: normal !important; }
+
+#profileHeroShell { background: var(--i9-navy) !important; box-shadow: 0 8px 24px rgba(17,27,63,0.18); }
+/* Quando há foto de capa, o shade escurece para o texto ficar legível. */
+.profile-hero-shade { background: rgba(17, 27, 63, 0.42); }
+#profileHeroShell:not(.has-cover) .profile-hero-shade { background: transparent; }
+#profileHeroCover { z-index: 0; }
+
+/* Cards do perfil: hairline + sombra sutil, raio moderado. */
+body[data-page="meu_perfil"] .profile-surface-card {
+  background: #fff !important; border: 1px solid var(--i9-border) !important;
+  border-radius: 16px !important; box-shadow: 0 1px 3px rgba(17,27,63,0.05) !important;
+}
+
+/* ==========================================================================
+   Admin v4 — achata tints de degradê e melhora o topo no mobile.
+   ========================================================================== */
+body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--pending,
+body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--active,
+body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--suspended,
+body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--rejected {
+  background: #fff !important;
+}
+/* Badge "Total Parceiros" e qualquer kpi com degradê inline → branco sólido. */
+.admin-kpi-card[style*="gradient"] { background: #fff !important; border-color: var(--i9-border) !important; }
+
+@media (max-width: 767px) {
+  /* Topo do admin mais app: menos "migalha de pão" de desktop, mais respiro. */
+  .admin-header { padding: 12px 16px !important; }
+  .admin-badge-live { display: none !important; }
+  .admin-header .font-label { display: none !important; }      /* esconde "Admin >" */
+  .admin-header .material-symbols-outlined[style*="14px"] { display: none !important; } /* chevron */
+  body[data-page="gest_o_de_estabelecimentos"] .p-6,
+  body[data-page="gest_o_de_clientes_master"] .p-6,
+  body[data-page="gest_o_de_usu_rios_master"] .p-6,
+  body[data-page="relat_rios_gerais_master"] .p-6 { padding: 16px !important; }
+  /* Filtros ocupam largura total e ficam confortáveis ao toque. */
+  body[data-page="gest_o_de_estabelecimentos"] #estabsCategoriaFilter,
+  body[data-page="gest_o_de_estabelecimentos"] #estabsStatusFilter { min-height: 20px; }
+  .estabs-status-card { padding: 12px !important; }
+}

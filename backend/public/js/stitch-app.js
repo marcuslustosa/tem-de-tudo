@@ -2138,12 +2138,14 @@
 
     async function getState() {
       if (isIOS() && !isStandalone()) {
+        // No iPhone/Safari o push web não está disponível — mensagem simples,
+        // sem misturar com "adicionar à tela de início".
         return {
           key: 'ios_install_required',
-          tone: 'warning',
-          badge: 'iPhone',
-          status: 'No iPhone, adicione o Tem de Tudo à Tela de Início e abra pelo ícone para ativar notificações.',
-          helper: 'Abra no Safari, toque em Compartilhar e escolha Adicionar à Tela de Início.',
+          tone: 'info',
+          badge: 'Indisponível',
+          status: 'As notificações não estão disponíveis neste navegador.',
+          helper: '',
         };
       }
 
