@@ -5010,3 +5010,126 @@ body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--rejected {
   body[data-page="gest_o_de_estabelecimentos"] #estabsStatusFilter { min-height: 20px; }
   .estabs-status-card { padding: 12px !important; }
 }
+
+/* ==========================================================================
+   ADMIN MOBILE a fundo (2026-07-19) — cara de app no celular (<1024px).
+   ========================================================================== */
+@media (max-width: 1023px) {
+  /* De-maiusculiza TUDO no admin (sem rótulos gritados). */
+  body[data-page="dashboard_admin_master"] *,
+  body[data-page="gest_o_de_estabelecimentos"] *,
+  body[data-page="gest_o_de_clientes_master"] *,
+  body[data-page="gest_o_de_usu_rios_master"] *,
+  body[data-page="relat_rios_gerais_master"] *,
+  body[data-page="banners_e_categorias_master"] *,
+  body[data-page="tickets_admin_master"] *,
+  body[data-page="configuracoes_admin"] * {
+    text-transform: none !important;
+    letter-spacing: normal !important;
+  }
+
+  /* App bar mobile limpa e fixa. */
+  .admin-header {
+    padding: 12px 16px !important;
+    background: rgba(255,255,255,0.94) !important;
+    backdrop-filter: saturate(1.4) blur(12px);
+    border-bottom: 1px solid var(--i9-border) !important;
+  }
+  .admin-header .admin-badge-live,
+  .admin-header .font-label,
+  .admin-header .material-symbols-outlined[style*="14px"] { display: none !important; }
+  /* Título da seção no header maior/limpo. */
+  .admin-header .font-headline { font-size: 1.05rem !important; }
+
+  /* Canvas sem overflow horizontal + respiro. */
+  main.lg\:ml-64 { overflow-x: hidden; }
+  body[data-page="dashboard_admin_master"] .p-6,
+  body[data-page="gest_o_de_estabelecimentos"] .p-6,
+  body[data-page="gest_o_de_clientes_master"] .p-6,
+  body[data-page="gest_o_de_usu_rios_master"] .p-6,
+  body[data-page="relat_rios_gerais_master"] .p-6 { padding: 16px !important; }
+
+  /* Título da página menor no mobile (estava enorme). */
+  .admin-section-title { font-size: 1.6rem !important; }
+
+  /* Filtros: viram uma linha de chips com rolagem horizontal (compacto). */
+  body[data-page="gest_o_de_estabelecimentos"] section > .flex.flex-wrap {
+    flex-wrap: nowrap; overflow-x: auto; gap: 8px; padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  body[data-page="gest_o_de_estabelecimentos"] section > .flex.flex-wrap::-webkit-scrollbar { display: none; }
+  body[data-page="gest_o_de_estabelecimentos"] section > .flex.flex-wrap > * {
+    flex: 0 0 auto; white-space: nowrap; padding: 8px 12px !important; border-radius: 999px !important;
+    font-size: 13px !important;
+  }
+
+  /* KPIs/stat cards: 2 colunas que cabem, sem overflow. */
+  body[data-page="dashboard_admin_master"] .admin-kpi-card,
+  body[data-page="gest_o_de_estabelecimentos"] .admin-kpi-card { padding: 14px !important; min-width: 0 !important; }
+  body[data-page="dashboard_admin_master"] .admin-kpi-card .admin-kpi-number { font-size: 1.5rem !important; }
+  /* Esconde a marca d'água decorativa que empurra o layout. */
+  .admin-kpi-card .absolute[style*="watermark"], .admin-kpi-card > .pointer-events-none { display: none !important; }
+
+  /* Total badge / kpi com degradê inline → branco sólido. */
+  .admin-kpi-card[style*="gradient"] { background: #fff !important; border-color: var(--i9-border) !important; }
+
+  /* Listas: uma coluna confortável. */
+  body[data-page="gest_o_de_estabelecimentos"] #estabsLista,
+  body[data-page="gest_o_de_clientes_master"] [id*="Lista"],
+  body[data-page="gest_o_de_usu_rios_master"] [id*="Lista"] { grid-template-columns: 1fr !important; }
+
+  /* FAB flutuante um pouco acima do dock. */
+  .admin-fab, [class*="fixed"][class*="bottom-"][class*="right-"] { bottom: calc(84px + env(safe-area-inset-bottom,0px)) !important; }
+}
+
+@media (max-width: 1023px) {
+  /* Dashboard admin: KPIs em grid 2-col que cabe (sem scroll horizontal).
+     (Uma regra legada forçava display:flex — aqui garantimos grid.) */
+  body[data-page="dashboard_admin_master"] section.grid-cols-2 {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    overflow: visible !important;
+  }
+  body[data-page="dashboard_admin_master"] .admin-kpi-card { overflow: hidden !important; }
+  /* Marca d'água decorativa dentro dos KPIs não empurra layout. */
+  body[data-page="dashboard_admin_master"] .admin-kpi-card .absolute { max-width: 100%; }
+
+  /* App bar admin enxuta: mantém título + sino + sair; esconde busca/config/avatar. */
+  .admin-header { overflow: hidden !important; }
+  .admin-header a[href*="configuracoes_admin"],
+  .admin-header .rounded-full.border-2,
+  .admin-header [class*="border-[#b01774]"] { display: none !important; }
+  .admin-header > div:last-child { gap: 4px !important; flex-shrink: 0; }
+}
+
+@media (max-width: 1023px) {
+  /* Header admin: uma linha só; mantém título/logo + sino + Sair. */
+  .admin-header { flex-wrap: nowrap !important; gap: 6px !important; }
+  .admin-header a[href*="configuracoes"],
+  .admin-header [data-icon="settings"],
+  .admin-header button[aria-label="Sair"],
+  .admin-header .rounded-full.overflow-hidden.border-2 { display: none !important; }
+  /* Containers de filtro/tint lavanda no admin → branco/transparente limpo. */
+  body[data-page="gest_o_de_clientes_master"] .bg-surface-container-low,
+  body[data-page="gest_o_de_clientes_master"] .bg-surface-container,
+  body[data-page="gest_o_de_usu_rios_master"] .bg-surface-container-low,
+  body[data-page="gest_o_de_estabelecimentos"] .bg-surface-container-low {
+    background: transparent !important; padding-left: 0 !important; padding-right: 0 !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  /* Clientes/Usuários admin: header só com logo + sino (esconde engrenagem/avatar). */
+  body[data-page="gest_o_de_clientes_master"] .admin-header .flex.items-center.gap-3 > *:nth-child(n+2),
+  body[data-page="gest_o_de_usu_rios_master"] .admin-header .flex.items-center.gap-3 > *:nth-child(n+2) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  /* Header clientes/usuários: tudo em uma linha (Sair injetado fica inline). */
+  body[data-page="gest_o_de_clientes_master"] .admin-header,
+  body[data-page="gest_o_de_usu_rios_master"] .admin-header { display: flex !important; align-items: center !important; }
+  body[data-page="gest_o_de_clientes_master"] .admin-header > div,
+  body[data-page="gest_o_de_usu_rios_master"] .admin-header > div { flex: 1 1 auto; width: auto !important; }
+}
