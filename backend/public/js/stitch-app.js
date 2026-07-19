@@ -5041,7 +5041,9 @@
           link.setAttribute('href', map[href]);
         });
 
-        const mobileNavLinks = Array.from(document.querySelectorAll('nav a'));
+        // IMPORTANTE: não tocar na dock injetada (data-mobile-dock-link) — ela já
+        // vem com ícones/rótulos corretos por perfil. Só ajusta nav inline legada.
+        const mobileNavLinks = Array.from(document.querySelectorAll('nav a:not([data-mobile-dock-link])'));
         if (mobileNavLinks.length >= 5 && perfilAtual === 'admin') {
           const adminLabels = [
             ['dashboard_admin_master.html', 'Dashboard'],
