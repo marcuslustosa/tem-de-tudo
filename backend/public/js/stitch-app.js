@@ -2955,36 +2955,8 @@
         };
         wireFeaturedOpen();
 
-        // Empresas proximas: com geolocalizacao, ordena os destaques por
-        // distancia e mostra a distancia no card. Front-only (lat/lng ja vem
-        // no payload); sem geo, mantem a ordem original.
-        if (navigator.geolocation && featuredList && featuredCompanies.length) {
-          const haversineKm = (la1, lo1, la2, lo2) => {
-            const rad = (x) => (x * Math.PI) / 180;
-            const dLa = rad(la2 - la1);
-            const dLo = rad(lo2 - lo1);
-            const a = Math.sin(dLa / 2) ** 2 + Math.cos(rad(la1)) * Math.cos(rad(la2)) * Math.sin(dLo / 2) ** 2;
-            return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          };
-          const fmtDist = (km) => (km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1).replace('.', ',')} km`);
-          navigator.geolocation.getCurrentPosition((pos) => {
-            const { latitude, longitude } = pos.coords;
-            const ranked = featuredCompanies.map((c) => {
-              const lat = Number(c.latitude);
-              const lng = Number(c.longitude);
-              if (!Number.isFinite(lat) || !Number.isFinite(lng)) return { ...c, __distKm: null };
-              const km = haversineKm(latitude, longitude, lat, lng);
-              return { ...c, __distKm: km, __distanceLabel: fmtDist(km) };
-            }).sort((a, b) => {
-              if (a.__distKm == null && b.__distKm == null) return 0;
-              if (a.__distKm == null) return 1;
-              if (b.__distKm == null) return -1;
-              return a.__distKm - b.__distKm;
-            });
-            featuredList.innerHTML = ranked.map(renderCompanyCard).join('');
-            wireFeaturedOpen();
-          }, () => {}, { timeout: 6000, maximumAge: 300000 });
-        }
+        // Nota: não pedimos geolocalização automaticamente (evita ficar
+        // perguntando a localização toda vez que a home carrega).
 
         const readQrUrl = quickActions.ler_qr_empresa_url || '/validar_resgate.html?modo=vinculo-empresa';
         document.getElementById('btnReadCompanyQr')?.addEventListener('click', () => {
@@ -3423,39 +3395,23 @@
         const linked = Boolean(
           e?.vinculada || e?.inscrito || e?.ja_vinculado || e?.is_linked || e?.cliente_vinculado,
         );
-        const actionLabel = perfilViewer === 'cliente' && !linked ? 'Me cadastrar' : 'Abrir empresa';
-
-        const local = safeText(e.endereco, '');
-        const localPill = local
-          ? `<span class="partner-meta-pill"><span class="material-symbols-outlined">location_on</span>${local}</span>`
-          : '';
-        const distancePill = (e._distanceKm != null)
-          ? `<span class="partner-meta-pill partner-meta-pill--near"><span class="material-symbols-outlined">near_me</span>${formatDistance(e._distanceKm)}</span>`
-          : '';
-        const metaRow = (localPill || distancePill)
-          ? `<div class="mt-2 flex flex-wrap items-center gap-2">${distancePill}${localPill}</div>`
-          : '';
+        const linkedTag = linked ? '<span class="tdt-tag tdt-tag--new">Vinculada</span>' : '';
+        const ratingStar = rating > 0
+          ? `<span class="tdt-row__star"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>${rating.toFixed(1).replace('.', ',')}</span>`
+          : `<span class="tdt-row__star"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>Novo</span>`;
 
         return `
-          <article class="bg-surface-container-lowest rounded-[28px] p-4 flex flex-col gap-4 shadow-[0_12px_32px_rgba(11,31,58,0.06)] hover:bg-surface-container-high transition-colors cursor-pointer" data-parceiro-id="${e.id}">
-            <div class="flex gap-4">
-              <div class="w-20 h-20 rounded-[22px] overflow-hidden flex-shrink-0 bg-surface-container">
-                <img class="w-full h-full object-cover" src="${safeImage(e.logo, IMAGE_FALLBACKS.store)}" alt="${safeText(e.nome, 'Parceiro')}" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+          <a href="/detalhe_do_parceiro.html?id=${e.id}" class="tdt-row" data-parceiro-id="${e.id}">
+            <img class="tdt-row__img" src="${safeImage(e.logo, IMAGE_FALLBACKS.store)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+            <div class="tdt-row__body">
+              <div class="tdt-row__name">${safeText(e.nome, 'Parceiro')}</div>
+              <div class="tdt-row__meta">
+                ${ratingStar}<span class="dot"></span><span>${safeText(e.categoria || e.ramo, 'Empresa')}</span>
               </div>
-              <div class="flex-1 min-w-0">
-                <p class="font-label text-[11px] text-tertiary font-bold tracking-[0.18em] mb-1 uppercase">${safeText(e.categoria || e.ramo, 'Parceiro')}</p>
-                <h3 class="font-headline font-bold text-lg text-on-surface leading-tight truncate">${safeText(e.nome, 'Parceiro')}</h3>
-                <div class="mt-2 flex items-center gap-2 text-xs text-slate-500">
-                  <span class="font-bold text-amber-400">${renderStars(rating)}</span>
-                  <span>${ratingLabel}</span>
-                </div>
-                ${metaRow}
-              </div>
+              ${linkedTag ? `<div class="tdt-row__tags">${linkedTag}</div>` : ''}
             </div>
-            <div class="flex items-center justify-end gap-3 pt-2 border-t border-surface-container">
-              <a class="inline-flex h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-semibold text-on-primary hover:opacity-90 transition-opacity" href="/detalhe_do_parceiro.html?id=${e.id}">${actionLabel}</a>
-            </div>
-          </article>`;
+            <span class="material-symbols-outlined tdt-row__chevron">chevron_right</span>
+          </a>`;
       };
 
       const renderNextBatch = () => {
@@ -3588,16 +3544,12 @@
         searchInput.value = initialTerm;
         state.term = initialTerm;
       }
-      setActiveFilter('todos');
+      // Categoria vinda dos chips da Home (?categoria=<chave>) já entra filtrada.
+      const knownCats = ['restaurantes', 'sorveterias', 'bares', 'japonesa', 'petshops', 'beleza'];
+      const initialCat = (initialParams.get('categoria') || '').trim().toLowerCase();
+      setActiveFilter(knownCats.includes(initialCat) ? initialCat : 'todos');
       await loadCatalog();
-
-      // Prioriza empresas próximas quando a geolocalização estiver disponível.
-      requestLocation().then((coords) => {
-        if (coords && state.all.length) {
-          state.coords = coords;
-          applyView();
-        }
-      });
+      // Não pedimos geolocalização automaticamente (sem prompt a cada carga).
       return;
     },
 
@@ -4360,25 +4312,44 @@
             window.location.href = redirectMap[perfilViewer] || '/meus_pontos.html';
           }
         };
-        document.getElementById('partnerActionQr')?.addEventListener('click', goQr);
+        const qrBtn = document.getElementById('partnerActionQr');
+        qrBtn?.addEventListener('click', goQr);
 
-        // Botao "Cadastrar-me": vincula o cliente sem QR (util quando a camera falha).
+        // Vínculo do cliente à empresa: ação principal, clara e visível.
         const vincularBtn = document.getElementById('partnerActionVincular');
+        const ctaHint = document.getElementById('partnerCtaHint');
+        const linkedBadge = document.getElementById('partnerLinkedBadge');
         const empresaVincId = companyInfo.id || new URLSearchParams(location.search).get('id');
         const jaVinculado = Boolean(companyInfo.vinculada || companyInfo.inscrito || companyInfo.ja_vinculado || companyInfo.cliente_vinculado);
-        if (vincularBtn && perfilViewer === 'cliente' && empresaVincId && !jaVinculado) {
-          vincularBtn.hidden = false;
-          vincularBtn.addEventListener('click', async () => {
-            vincularBtn.disabled = true;
-            const { res, data: d } = await api.request(`/cliente/empresas/${empresaVincId}/vincular`, { method: 'POST' }, { notify: false });
-            if (res.ok && d?.success !== false) {
-              ui.message(d?.message || 'Você se vinculou a esta empresa!', 'success');
-              setTimeout(() => window.location.reload(), 900);
-            } else {
-              vincularBtn.disabled = false;
-              ui.message(d?.message || 'Não foi possível vincular agora.', 'error');
-            }
-          });
+
+        if (perfilViewer === 'cliente' && empresaVincId && !jaVinculado) {
+          // Não vinculado: "Vincular-me" é o primário; "Ler QR" vira alternativa.
+          if (vincularBtn) {
+            vincularBtn.hidden = false;
+            vincularBtn.addEventListener('click', async () => {
+              vincularBtn.disabled = true;
+              const { res, data: d } = await api.request(`/cliente/empresas/${empresaVincId}/vincular`, { method: 'POST' }, { notify: false });
+              if (res.ok && d?.success !== false) {
+                ui.message(d?.message || 'Pronto! Você se vinculou a esta empresa.', 'success');
+                setTimeout(() => window.location.reload(), 900);
+              } else {
+                vincularBtn.disabled = false;
+                ui.message(d?.message || 'Não foi possível vincular agora.', 'error');
+              }
+            });
+          }
+          if (qrBtn) {
+            qrBtn.classList.remove('btn--primary');
+            qrBtn.classList.add('btn--neutral');
+            qrBtn.innerHTML = '<span class="material-symbols-outlined">qr_code_scanner</span>Ler QR no balcão';
+          }
+          if (ctaHint) {
+            ctaHint.textContent = 'Vincule-se para liberar bônus, fidelidade e promoções desta empresa.';
+            ctaHint.classList.remove('hidden');
+          }
+        } else if (perfilViewer === 'cliente' && jaVinculado) {
+          // Já vinculado: mostra selo e mantém "Ler QR" para pontuar/resgatar.
+          if (linkedBadge) linkedBadge.classList.remove('hidden');
         }
 
         const endereco = safeText(companyInfo.endereco, '');

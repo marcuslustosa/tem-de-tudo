@@ -4302,7 +4302,7 @@ body[data-page="meus_pontos"] {
 
 /* Chips de categoria (scroll horizontal, Mercado Livre / iFood) */
 .tdt-chips {
-  display: flex; gap: 8px; margin: 16px -16px 0; padding: 0 16px 2px;
+  display: flex; gap: 8px; margin: 16px 0 0; padding: 0 0 2px;
   overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
 }
 .tdt-chips::-webkit-scrollbar { display: none; }
@@ -4754,4 +4754,56 @@ nav button#btnBottomScan {
   /* A app bar da home não fica presa à largura mobile no desktop. */
   body.tdt-has-sidebar .tdt-appbar__inner,
   body.tdt-has-sidebar .tdt-home { max-width: 1100px; }
+}
+
+/* Página da empresa: dica de vínculo e selo de vinculado. */
+.tdt-detail-hint { margin-top: 10px; font-size: 13px; line-height: 1.5; color: var(--i9-text-muted); text-align: center; }
+.tdt-linked-badge {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; padding: 10px 14px;
+  border-radius: 12px; background: rgba(0,175,168,0.1); color: #067d78; font-size: 13.5px; font-weight: 700;
+}
+.tdt-linked-badge .material-symbols-outlined { font-size: 19px; }
+
+/* ==========================================================================
+   Busca de empresas (parceiros_tem_de_tudo) v3 — chips compactos + resultados.
+   ========================================================================== */
+body[data-page="parceiros_tem_de_tudo"] { background: #fff !important; }
+/* Chips: vence as classes utilitárias que o handler alterna. */
+.parceiro-filtro-btn.tdt-chip {
+  background: var(--i9-surface-soft) !important; color: var(--i9-navy) !important;
+  height: 38px; padding: 0 15px; border: 1px solid transparent !important;
+}
+.parceiro-filtro-btn.tdt-chip.is-active {
+  background: var(--i9-navy) !important; color: #fff !important;
+}
+/* Resultados como lista limpa (linhas + divisória), igual à home. */
+body[data-page="parceiros_tem_de_tudo"] #partners-grid { display: flex; flex-direction: column; gap: 0; }
+body[data-page="parceiros_tem_de_tudo"] #partners-grid > .tdt-row {
+  box-shadow: none; border: 0; border-radius: 0; background: transparent; padding: 12px 0;
+}
+body[data-page="parceiros_tem_de_tudo"] #partners-grid > .tdt-row + .tdt-row { border-top: 1px solid rgba(17, 27, 63, 0.06); }
+@media (min-width: 1024px) {
+  body[data-page="parceiros_tem_de_tudo"] #partners-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
+  body[data-page="parceiros_tem_de_tudo"] #partners-grid > .tdt-row { border-top: 1px solid rgba(17, 27, 63, 0.06); }
+  body[data-page="parceiros_tem_de_tudo"] #partners-grid > .tdt-row + .tdt-row { border-top: 1px solid rgba(17, 27, 63, 0.06); }
+}
+
+/* Criar conta / entrar: fundo branco (sem lavanda herdado). */
+body[data-page="criar_conta"], body[data-page="entrar"] { background: #ffffff !important; }
+
+/* Busca v3: anula o "cartão flutuante" legado de header/main (desalinhava chips). */
+body[data-page="parceiros_tem_de_tudo"] > header.tdt-appbar {
+  width: auto !important; margin: 0 !important; border: 0 !important; border-bottom: 1px solid transparent !important;
+  border-radius: 0 !important; box-shadow: none !important;
+}
+body[data-page="parceiros_tem_de_tudo"] > header.tdt-appbar.is-stuck { border-bottom-color: rgba(17,27,63,0.07) !important; }
+body[data-page="parceiros_tem_de_tudo"] > main.tdt-home { width: 100% !important; max-width: 480px; }
+@media (min-width: 1024px) {
+  body.tdt-has-sidebar[data-page="parceiros_tem_de_tudo"] > main.tdt-home { max-width: 1100px; }
+}
+
+/* Busca: a regra legada "nav {}" (do dock antigo) NÃO deve afetar os chips. */
+body[data-page="parceiros_tem_de_tudo"] nav.tdt-chips {
+  position: static !important; left: auto !important; transform: none !important;
+  width: auto !important; border: 0 !important; box-shadow: none !important;
 }

@@ -92,140 +92,83 @@
       },
     }
   </script>
-  <link rel="stylesheet" href="/css/i9plus-phase8.css?v=20260718-app3" />
+  <link rel="stylesheet" href="/css/i9plus-phase8.css?v=20260718-app4" />
 </head>
-<body class="bg-surface font-body text-on-surface" data-page="parceiros_tem_de_tudo">
-  <header class="bg-[#f7f7f7] dark:bg-slate-950 flex justify-between items-center w-full px-6 py-4 max-w-md lg:max-w-[1100px] mx-auto docked full-width top-0 sticky z-40">
-    <div class="flex items-center gap-3">
-      <button type="button" onclick="if(history.length>1){history.back()}else{location.href='/meus_pontos.html'}" aria-label="Voltar" class="flex h-10 w-10 items-center justify-center rounded-full text-[#2e2e34] hover:bg-[#dedbe7]/60 transition-colors">
-        <span class="material-symbols-outlined">arrow_back</span>
-      </button>
-      <div class="w-12 h-12 rounded-[18px] overflow-hidden bg-surface-container border border-primary/20 p-2">
-        <img alt="Tem de Tudo" class="w-full h-full object-contain" src="/img/logo.png" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
-      </div>
-      <div>
-        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-outline">Buscar lojas</p>
-        <h1 class="font-['Plus_Jakarta_Sans'] font-bold text-lg text-[#2e2e34] dark:text-white">Buscar novo comércio</h1>
+<body class="text-[#17171c]" data-page="parceiros_tem_de_tudo">
+  <header class="tdt-appbar" id="parcAppbar">
+    <div class="tdt-appbar__inner">
+      <div class="flex items-center gap-2 min-w-0">
+        <button type="button" onclick="if(history.length>1){history.back()}else{location.href='/meus_pontos.html'}" aria-label="Voltar" class="tdt-icon-btn"><span class="material-symbols-outlined">arrow_back</span></button>
+        <div class="min-w-0">
+          <span class="tdt-appbar__hello" style="font-size:18px">Buscar empresas</span>
+        </div>
       </div>
     </div>
-    <button class="text-[#b01774] dark:text-[#b01774] hover:opacity-80 transition-opacity scale-95 active:transition-all" type="button">
-      <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-    </button>
   </header>
 
-  <main class="max-w-md lg:max-w-[1100px] mx-auto px-6 pb-32">
-    <section class="mt-4 space-y-6">
-      <div class="space-y-3">
-        <div class="relative flex gap-3">
-          <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-            <span class="material-symbols-outlined text-[#b01774]" data-icon="search">search</span>
-          </div>
-          <input
-            class="w-full h-14 pl-12 pr-4 bg-surface-container-lowest border-none rounded-xl shadow-[0_4px_20px_rgba(11,31,58,0.04)] focus:ring-2 focus:ring-primary/20 text-body-md placeholder:text-outline-variant"
-            placeholder="Digite o nome ou código do comércio"
-            type="text"
-            id="parceiroBusca"
-          />
-          <button id="parceiroBuscaBtn" type="button" class="parceiro-search-trigger inline-flex h-14 w-14 items-center justify-center rounded-[18px] bg-[linear-gradient(135deg,#133f8c_0%,#b01774_100%)] text-white shadow-[0_12px_28px_rgba(176,0,118,0.24)]">
-            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">search</span>
-          </button>
-        </div>
-        <p id="partnersSearchHint" class="hidden text-xs font-semibold text-[#B01774]">No mínimo 4 caracteres!</p>
+  <main class="tdt-home">
+    <form class="tdt-searchbar" role="search" onsubmit="return false">
+      <span class="material-symbols-outlined tdt-searchbar__icon" aria-hidden="true">search</span>
+      <input id="parceiroBusca" type="search" placeholder="Nome ou código do comércio" autocomplete="off" enterkeyhint="search" aria-label="Buscar empresas" />
+      <button id="parceiroBuscaBtn" type="button" class="btn btn--primary" style="height:38px;min-height:38px;padding:0 16px;border-radius:10px">Buscar</button>
+    </form>
+    <p id="partnersSearchHint" class="hidden mt-1.5 px-1 text-xs font-semibold text-[#B01774]">No mínimo 4 caracteres!</p>
+
+    <nav class="tdt-chips" aria-label="Categorias">
+      <button class="parceiro-filtro-btn tdt-chip is-active" type="button" data-category-key="todos"><span class="material-symbols-outlined">grid_view</span>Tudo</button>
+      <button class="parceiro-filtro-btn tdt-chip" type="button" data-category-key="restaurantes"><span class="material-symbols-outlined">restaurant</span>Restaurantes</button>
+      <button class="parceiro-filtro-btn tdt-chip" type="button" data-category-key="sorveterias"><span class="material-symbols-outlined">icecream</span>Sorveterias</button>
+      <button class="parceiro-filtro-btn tdt-chip" type="button" data-category-key="bares"><span class="material-symbols-outlined">local_bar</span>Bares</button>
+      <button class="parceiro-filtro-btn tdt-chip" type="button" data-category-key="japonesa"><span class="material-symbols-outlined">ramen_dining</span>Japonesa</button>
+      <button class="parceiro-filtro-btn tdt-chip" type="button" data-category-key="petshops"><span class="material-symbols-outlined">pets</span>Petshops</button>
+      <button class="parceiro-filtro-btn tdt-chip" type="button" data-category-key="beleza"><span class="material-symbols-outlined">content_cut</span>Beleza</button>
+    </nav>
+
+    <section class="tdt-section" style="margin-top:18px">
+      <div class="tdt-section__head">
+        <h2 class="tdt-section__title">Empresas</h2>
       </div>
 
-      <article class="rounded-[28px] bg-white p-5 shadow-[0_14px_36px_rgba(11,31,58,0.06)] ring-1 ring-black/5">
-        <div class="flex items-center justify-between gap-3">
-          <div>
-            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Categorias</p>
-            <h2 class="mt-2 font-headline text-xl font-extrabold text-on-surface">Descubra por segmento</h2>
-          </div>
-          <button class="parceiro-filtro-btn parceiro-filtro-btn--all inline-flex h-11 items-center justify-center rounded-full bg-primary px-4 text-xs font-bold uppercase tracking-[0.16em] text-white" type="button" data-category-key="todos">Todos</button>
-        </div>
-        <div class="mt-4 grid grid-cols-2 lg:grid-cols-3 gap-3" id="partnerCategoryGrid">
-          <button class="parceiro-filtro-btn parceiro-category-card" type="button" data-category-key="restaurantes">
-            <span class="parceiro-category-media parceiro-category-media--restaurantes"><span class="material-symbols-outlined">restaurant</span></span>
-            <span class="parceiro-category-label">Restaurantes</span>
-          </button>
-          <button class="parceiro-filtro-btn parceiro-category-card" type="button" data-category-key="sorveterias">
-            <span class="parceiro-category-media parceiro-category-media--sorveterias"><span class="material-symbols-outlined">icecream</span></span>
-            <span class="parceiro-category-label">Sorveterias</span>
-          </button>
-          <button class="parceiro-filtro-btn parceiro-category-card" type="button" data-category-key="bares">
-            <span class="parceiro-category-media parceiro-category-media--bares"><span class="material-symbols-outlined">local_bar</span></span>
-            <span class="parceiro-category-label">Bares</span>
-          </button>
-          <button class="parceiro-filtro-btn parceiro-category-card" type="button" data-category-key="japonesa">
-            <span class="parceiro-category-media parceiro-category-media--japonesa"><span class="material-symbols-outlined">ramen_dining</span></span>
-            <span class="parceiro-category-label">Japonesa</span>
-          </button>
-          <button class="parceiro-filtro-btn parceiro-category-card" type="button" data-category-key="petshops">
-            <span class="parceiro-category-media parceiro-category-media--petshops"><span class="material-symbols-outlined">pets</span></span>
-            <span class="parceiro-category-label">Petshops</span>
-          </button>
-          <button class="parceiro-filtro-btn parceiro-category-card" type="button" data-category-key="beleza">
-            <span class="parceiro-category-media parceiro-category-media--beleza"><span class="material-symbols-outlined">content_cut</span></span>
-            <span class="parceiro-category-label">Beleza</span>
-          </button>
-        </div>
-      </article>
-    </section>
-
-    <section class="mt-8 space-y-4">
-      <div class="flex items-end justify-between gap-3">
-        <div>
-          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Resultados e destaques</p>
-          <h2 class="mt-2 font-headline text-2xl font-extrabold text-on-surface">Escolha onde pontuar hoje</h2>
-        </div>
-      </div>
-      <div id="partners-skeleton" class="grid gap-4 lg:grid-cols-2 hidden">
-        <div class="tdt-skeleton-card"><div class="flex gap-4"><div class="tdt-skeleton h-20 w-20 rounded-[22px]"></div><div class="flex-1 space-y-2"><div class="tdt-skeleton h-3 w-1/3"></div><div class="tdt-skeleton h-4 w-2/3"></div><div class="tdt-skeleton h-3 w-1/2"></div><div class="tdt-skeleton h-8 w-full rounded-full"></div></div></div></div>
-        <div class="tdt-skeleton-card"><div class="flex gap-4"><div class="tdt-skeleton h-20 w-20 rounded-[22px]"></div><div class="flex-1 space-y-2"><div class="tdt-skeleton h-3 w-1/3"></div><div class="tdt-skeleton h-4 w-2/3"></div><div class="tdt-skeleton h-3 w-1/2"></div><div class="tdt-skeleton h-8 w-full rounded-full"></div></div></div></div>
+      <div id="partners-skeleton" class="tdt-list hidden">
+        <div class="tdt-skel-row"><div class="tdt-skel-box" style="width:60px;height:60px"></div><div style="flex:1"><div class="tdt-skel-box" style="width:55%;height:14px"></div><div class="tdt-skel-box" style="width:35%;height:11px;margin-top:8px"></div></div></div>
+        <div class="tdt-skel-row"><div class="tdt-skel-box" style="width:60px;height:60px"></div><div style="flex:1"><div class="tdt-skel-box" style="width:45%;height:14px"></div><div class="tdt-skel-box" style="width:40%;height:11px;margin-top:8px"></div></div></div>
+        <div class="tdt-skel-row"><div class="tdt-skel-box" style="width:60px;height:60px"></div><div style="flex:1"><div class="tdt-skel-box" style="width:50%;height:14px"></div><div class="tdt-skel-box" style="width:30%;height:11px;margin-top:8px"></div></div></div>
       </div>
 
-      <div id="partners-empty" class="hidden rounded-[28px] bg-white p-8 text-center shadow-[0_12px_32px_rgba(11,31,58,0.06)] ring-1 ring-black/5">
-        <span class="material-symbols-outlined text-4xl text-outline-variant">storefront</span>
-        <p class="mt-3 font-headline text-lg font-extrabold text-on-surface" data-empty-title>Nenhuma empresa encontrada.</p>
-        <p class="mt-1 text-sm text-on-surface-variant" data-empty-subtitle>Tente pesquisar outro nome ou categoria.</p>
+      <div id="partners-empty" class="hidden tdt-empty">
+        <div class="tdt-empty__icon"><span class="material-symbols-outlined">storefront</span></div>
+        <p data-empty-title>Nenhuma empresa encontrada.</p>
+        <p data-empty-subtitle class="mt-1">Tente outro nome ou categoria.</p>
       </div>
 
-      <div id="partners-error" class="hidden rounded-[28px] bg-white p-8 text-center shadow-[0_12px_32px_rgba(11,31,58,0.06)] ring-1 ring-error/20">
-        <span class="material-symbols-outlined text-4xl text-error">wifi_off</span>
-        <p class="mt-3 font-headline text-lg font-extrabold text-on-surface">Não foi possível carregar as empresas.</p>
-        <p class="mt-1 text-sm text-on-surface-variant">Verifique sua conexão e tente novamente.</p>
-        <button id="partners-retry" type="button" class="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-bold text-on-primary">Tentar novamente</button>
+      <div id="partners-error" class="hidden tdt-empty">
+        <div class="tdt-empty__icon"><span class="material-symbols-outlined">wifi_off</span></div>
+        <p>Não foi possível carregar as empresas.</p>
+        <button id="partners-retry" type="button" class="btn btn--neutral mt-3">Tentar novamente</button>
       </div>
 
-      <div id="partners-grid" class="grid gap-4 lg:grid-cols-2"></div>
+      <div id="partners-grid" class="tdt-list"></div>
 
-      <div class="mt-2 flex justify-center">
-        <button id="partners-load-more" type="button" class="hidden inline-flex h-11 items-center justify-center rounded-full border border-primary/20 bg-white px-6 text-sm font-bold text-primary shadow-sm">Ver mais empresas</button>
+      <div class="mt-4 flex justify-center">
+        <button id="partners-load-more" type="button" class="hidden btn btn--neutral">Ver mais empresas</button>
       </div>
     </section>
   </main>
 
-  <nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-white/90 backdrop-blur-xl border-t border-[#00666e]/20 shadow-[0_-8px_32px_rgba(11,31,58,0.08)] z-50 rounded-t-[1.5rem]">
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#133f8c] transition-colors scale-90 active:transition-transform duration-200" href="/meus_pontos.html">
-      <span class="material-symbols-outlined" data-icon="home">home</span>
-      <span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider mt-1">Início</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#b01774] relative after:content-[''] after:w-1 after:h-1 after:bg-[#b01774] after:rounded-full after:mt-1 scale-90 active:transition-transform duration-200" href="/parceiros_tem_de_tudo.html">
-      <span class="material-symbols-outlined" data-icon="storefront" style="font-variation-settings: 'FILL' 1;">storefront</span>
-      <span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider mt-1">Buscar lojas</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#133f8c] transition-colors scale-90 active:transition-transform duration-200" href="/meus_pontos.html">
-      <span class="material-symbols-outlined" data-icon="stars">stars</span>
-      <span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider mt-1">Pontos</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#133f8c] transition-colors scale-90 active:transition-transform duration-200" href="/recompensas.html">
-      <span class="material-symbols-outlined" data-icon="redeem">redeem</span>
-      <span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider mt-1">Prêmios</span>
-    </a>
-    <a class="flex flex-col items-center justify-center text-[#aeacb4] hover:text-[#133f8c] transition-colors scale-90 active:transition-transform duration-200" href="/meu_perfil.html">
-      <span class="material-symbols-outlined" data-icon="person">person</span>
-      <span class="font-['Plus_Jakarta_Sans'] font-semibold text-[10px] uppercase tracking-wider mt-1">Perfil</span>
-    </a>
-  </nav>
-
-  <script src="/dist/stitch-app.min.js?v=20260718-app3"></script>
+  <script src="/dist/stitch-app.min.js?v=20260718-app4"></script>
+  <script>
+    (function () {
+      // Garante que a lista de categorias começa no "Tudo" (sem rolagem inicial).
+      function resetChips() { var c = document.querySelector('.tdt-chips'); if (c) c.scrollLeft = 0; }
+      window.addEventListener('load', function () { resetChips(); setTimeout(resetChips, 300); });
+      // App bar ganha borda ao rolar.
+      var bar = document.getElementById('parcAppbar');
+      if (bar) {
+        var onScroll = function () { bar.classList.toggle('is-stuck', window.scrollY > 4); };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      }
+    })();
+  </script>
 </body>
 </html>
