@@ -3315,7 +3315,7 @@ body[data-page="recompensas"] .redemption-row:hover {
 
 /* ---- Base global: acessibilidade, sem scroll horizontal, media fluida ---- */
 /* overflow-x no <html> elimina scroll horizontal sem afetar position:sticky. */
-html { overflow-x: hidden; }
+html { overflow-x: clip; }
 body[data-page] {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -3657,7 +3657,7 @@ html {
   touch-action: pan-x pan-y; /* permite rolar, bloqueia pinch/double-tap zoom */
 }
 body {
-  overflow-x: hidden;              /* nada vaza na horizontal */
+  overflow-x: clip;                /* nada vaza na horizontal (clip nao cria container de scroll) */
   overscroll-behavior-y: contain;  /* evita "puxar" a tela alem do conteudo */
 }
 /* Textos longos quebram a linha em vez de esticar o container.
@@ -5005,7 +5005,7 @@ body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--rejected {
   .admin-header .font-headline { font-size: 1.05rem !important; }
 
   /* Canvas sem overflow horizontal + respiro. */
-  main.lg\:ml-64 { overflow-x: hidden; }
+  main.lg\:ml-64 { overflow-x: clip; }
   body[data-page="dashboard_admin_master"] .p-6,
   body[data-page="gest_o_de_estabelecimentos"] .p-6,
   body[data-page="gest_o_de_clientes_master"] .p-6,
