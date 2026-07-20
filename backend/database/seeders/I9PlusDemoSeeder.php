@@ -14,6 +14,7 @@ use App\Models\InscricaoEmpresa;
 use App\Models\LembreteAusencia;
 use App\Models\LembreteEnvio;
 use App\Models\NotificacaoPush;
+use App\Models\Ponto;
 use App\Models\Promocao;
 use App\Models\PromocaoResgate;
 use App\Models\User;
@@ -316,6 +317,28 @@ class I9PlusDemoSeeder extends Seeder
         $this->syncInscricao($clients['ana'], $companies['florenza'], $today->copy()->subDays(18), $today->copy()->subDays(6), false);
         $this->syncInscricao($clients['maria'], $companies['florenza'], $today->copy()->subDays(28), $today->copy()->subDays(8), false);
         $this->syncInscricao($clients['push_iphone'], $companies['malagueta'], $today->copy()->subDays(9), $today->copy()->subDays(2), false);
+
+        // Historico de pontos ficticio (extrato) para os clientes demo.
+        $this->syncPontos($clients['joao'], [
+            [$companies['malagueta'], 10, 'Bônus de adesão validado', 'bonus', 28],
+            [$companies['malagueta'], 5, 'Compra validada no balcão', 'compra', 21],
+            [$companies['texano'], 1, 'Visita registrada', 'visita', 16],
+            [$companies['malagueta'], 3, 'Pontos em promoção relâmpago', 'promo', 11],
+            [$companies['texano'], 8, 'Combo especial resgatado', 'resgate', 6],
+            [$companies['malagueta'], 2, 'Check-in pelo QR Code', 'visita', 2],
+        ]);
+        $this->syncPontos($clients['ana'], [
+            [$companies['malagueta'], 5, 'Compra validada no balcão', 'compra', 9],
+            [$companies['florenza'], 4, 'Pontos de boas-vindas', 'bonus', 4],
+        ]);
+        $this->syncPontos($clients['maria'], [
+            [$companies['makoto'], 6, 'Rodízio pontuado', 'compra', 7],
+            [$companies['florenza'], 2, 'Visita registrada', 'visita', 3],
+        ]);
+        $this->syncPontos($clients['pedro'], [
+            [$companies['malagueta'], 5, 'Compra validada no balcão', 'compra', 40],
+            [$companies['texano'], 1, 'Visita registrada', 'visita', 33],
+        ]);
 
         $bonusMap = [];
         foreach ($activeCompanyKeys as $companyKey) {
@@ -778,6 +801,38 @@ class I9PlusDemoSeeder extends Seeder
         $inscricao->save();
 
         return $inscricao->refresh();
+    }
+
+    /**
+     * Extrato de pontos ficticio para clientes demo.
+     * $entries: [ [Empresa $empresa, int $pontos, string $descricao, string $tipo, int $diasAtras], ... ]
+     */
+    private function syncPontos(User $cliente, array $entries): void
+    {
+        if (!Schema::hasTable('pontos')) {
+            return;
+        }
+
+        foreach ($entries as [$empresa, $pontos, $descricao, $tipo, $diasAtras]) {
+            $quando = Carbon::now()->subDays($diasAtras);
+
+            $ponto = Ponto::firstOrNew([
+                'user_id' => $cliente->id,
+                'empresa_id' => $empresa->id,
+                'descricao' => $descricao,
+            ]);
+
+            $this->fillModel($ponto, [
+                'user_id' => $cliente->id,
+                'empresa_id' => $empresa->id,
+                'descricao' => $descricao,
+                'pontos' => $pontos,
+                'tipo' => $tipo,
+            ]);
+            $ponto->created_at = $quando;
+            $ponto->updated_at = $quando;
+            $ponto->save();
+        }
     }
 
     private function syncBonusAdesao(Empresa $empresa, array $attributes): BonusAdesao
