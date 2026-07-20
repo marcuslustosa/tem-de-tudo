@@ -2562,7 +2562,10 @@
         enable.disabled = true;
         try {
           const currentState = await getState();
-          if (!canTriggerPermissionPrompt(currentState)) {
+          // Só mostra instrução manual quando o browser realmente não pode pedir a
+          // permissão (iOS fora do app, sem suporte, ou já bloqueado). Config de push
+          // pendente no servidor NÃO impede pedir a permissão do navegador.
+          if (['ios_install_required', 'unsupported', 'denied'].includes(currentState?.key)) {
             await openPrompt('manual', currentState);
             ui.message(currentState?.status || 'Verifique o status das notificacoes neste dispositivo.', currentState?.tone || 'info');
             return;
@@ -2572,6 +2575,9 @@
           paintCard(card, result.state);
           if (result.success) {
             ui.message(result.message || 'Notificacoes ativadas neste dispositivo.', 'success');
+          } else if (result.message) {
+            // Ex.: permissão concedida, mas o envio do servidor ainda está pendente.
+            ui.message(result.message, 'info');
           } else {
             await openPrompt('manual', result.state);
             ui.message(result.state?.status || 'Não foi possível ativar as notificações neste momento.', result.state?.tone || 'warning');
@@ -4374,11 +4380,15 @@
         }
 
         const endereco = safeText(companyInfo.endereco, '');
+        // "Como chegar" funciona sempre: usa o endereço quando houver; senão, busca
+        // o Maps pelo nome da empresa (+ endereço parcial se existir).
+        const mapsQuery = [endereco, safeText(companyInfo.nome, '')].filter(Boolean).join(' ').trim()
+          || safeText(companyInfo.nome, '');
         const mapsBtn = document.getElementById('partnerActionMaps');
-        if (mapsBtn && endereco) {
+        if (mapsBtn && mapsQuery) {
           mapsBtn.hidden = false;
           mapsBtn.addEventListener('click', () => {
-            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco)}`, '_blank', 'noopener');
+            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`, '_blank', 'noopener');
           });
         }
 
