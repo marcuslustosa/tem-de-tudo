@@ -4939,7 +4939,18 @@
       };
 
       ui.setPageState('loading', 'Carregando historico...');
-      const { data } = await api.request('/pontos/historico');
+      const [{ data }, dadosResp] = await Promise.all([
+        api.request('/pontos/historico'),
+        api.request('/pontos/meus-dados', {}, { notify: false }).catch(() => null),
+      ]);
+      // Topo (saldo/nivel) ligado ao saldo real do cliente.
+      const dados = dadosResp?.data?.data || dadosResp?.data || {};
+      const saldo = Number(dados.pontos_total ?? 0);
+      const heroPtsEl = document.getElementById('hist-hero-points');
+      if (heroPtsEl) heroPtsEl.textContent = saldo.toLocaleString('pt-BR');
+      const heroTierEl = document.getElementById('hist-hero-tier');
+      const nivelNome = dados.nivel && typeof dados.nivel === 'object' ? dados.nivel.nome : dados.nivel;
+      if (heroTierEl && nivelNome) heroTierEl.textContent = `Membro ${nivelNome}`;
       loading?.classList.add('hidden');
       let itens = data?.data?.data || data?.data || [];
       ui.clearPageState();
