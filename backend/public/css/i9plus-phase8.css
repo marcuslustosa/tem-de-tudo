@@ -5199,3 +5199,39 @@ body[data-page="meu_perfil"] .profile-surface-card .text-2xl { font-size: 1.15re
 
 /* Página da empresa: remove o rótulo de categoria acima do nome (desnecessário). */
 body[data-page="detalhe_do_parceiro"] .tdt-detail-cat { display: none; }
+
+/* ==========================================================================
+   Wallet + quick actions (2026-07-20) — estrutura ref. MediQ + e-wallet + food.
+   Reutilizável: card de saldo em destaque + fileira de ações rápidas.
+   ========================================================================== */
+.wallet-card {
+  background: var(--i9-blue); color: #fff; border-radius: 24px; padding: 20px;
+  box-shadow: 0 12px 30px rgba(26, 95, 208, 0.24), 0 2px 6px rgba(17, 27, 63, 0.06);
+  margin-bottom: 16px;
+}
+.wallet-card__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.wallet-card__label { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.82); }
+.wallet-card__tier { font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.16); padding: 5px 11px; border-radius: 999px; white-space: nowrap; }
+.wallet-card__balance { margin-top: 12px; font-size: 34px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+.wallet-card__balance span { font-size: 15px; font-weight: 600; opacity: 0.85; letter-spacing: 0; }
+.wallet-card__progress { margin-top: 18px; }
+.wallet-card__bar { height: 8px; border-radius: 999px; background: rgba(255,255,255,0.22); overflow: hidden; }
+.wallet-card__fill { height: 100%; border-radius: 999px; background: #fff; transition: width .5s ease; }
+.wallet-card__msg { margin-top: 9px; font-size: 11.5px; color: rgba(255,255,255,0.82); }
+
+.quick-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+.quick-row__item {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  text-decoration: none; font-size: 11.5px; font-weight: 700; color: var(--i9-navy); text-align: center;
+}
+.quick-row__icon {
+  width: 54px; height: 54px; border-radius: 17px; display: inline-flex; align-items: center; justify-content: center;
+  background: #fff; box-shadow: 0 1px 3px rgba(17,27,63,0.05), 0 8px 18px rgba(17,27,63,0.06);
+  transition: transform .15s ease;
+}
+.quick-row__item:active .quick-row__icon { transform: scale(0.95); }
+.quick-row__icon .material-symbols-outlined { font-size: 25px; }
+.quick-row__icon--mag { color: var(--i9-magenta); }
+.quick-row__icon--blue { color: var(--i9-blue); }
+.quick-row__icon--teal { color: #067d78; }
+.quick-row__icon--navy { color: var(--i9-navy); }

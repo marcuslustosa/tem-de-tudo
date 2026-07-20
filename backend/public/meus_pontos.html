@@ -12,7 +12,7 @@
   <link rel="icon" type="image/png" href="/img/logo.png" />
   <link rel="shortcut icon" href="/img/logo.png" />
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
-  <link href="/css/i9plus-phase8.css?v=20260720-app14" rel="stylesheet" />
+  <link href="/css/i9plus-phase8.css?v=20260720-app15" rel="stylesheet" />
   <style>
     body { background: #ffffff; min-height: 100vh; }
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
@@ -38,6 +38,35 @@
   </header>
 
   <main class="tdt-home">
+    <!-- Wallet: saldo de pontos em destaque -->
+    <section class="wallet-card">
+      <div class="wallet-card__top">
+        <span class="wallet-card__label">Saldo de pontos</span>
+        <span id="hero-nivel" class="wallet-card__tier">Membro</span>
+      </div>
+      <h1 id="hero-saldo" class="wallet-card__balance">0 <span>Pontos</span></h1>
+      <div class="wallet-card__progress">
+        <div class="wallet-card__bar"><div id="hero-progress-bar" class="wallet-card__fill" style="width:0%"></div></div>
+        <p id="hero-progress-msg" class="wallet-card__msg">Carregando seu saldo…</p>
+      </div>
+    </section>
+
+    <!-- Wallet: ações rápidas -->
+    <section class="quick-row" aria-label="Ações rápidas">
+      <a href="/validar_resgate.html?modo=vinculo-empresa" class="quick-row__item" id="btnReadCompanyQr">
+        <span class="quick-row__icon quick-row__icon--mag"><span class="material-symbols-outlined">qr_code_scanner</span></span>Ler QR
+      </a>
+      <a href="/recompensas.html" class="quick-row__item">
+        <span class="quick-row__icon quick-row__icon--blue"><span class="material-symbols-outlined">redeem</span></span>Benefícios
+      </a>
+      <a href="/hist_rico_de_uso.html" class="quick-row__item">
+        <span class="quick-row__icon quick-row__icon--teal"><span class="material-symbols-outlined">history</span></span>Histórico
+      </a>
+      <a href="/meu_perfil.html" class="quick-row__item">
+        <span class="quick-row__icon quick-row__icon--navy"><span class="material-symbols-outlined">person</span></span>Perfil
+      </a>
+    </section>
+
     <!-- Busca -->
     <form id="homeSearchForm" class="tdt-searchbar" role="search">
       <span class="material-symbols-outlined tdt-searchbar__icon" aria-hidden="true">search</span>
@@ -54,16 +83,6 @@
       <a href="/parceiros_tem_de_tudo.html?categoria=petshops" class="tdt-chip"><span class="material-symbols-outlined">pets</span>Petshops</a>
       <a href="/parceiros_tem_de_tudo.html?categoria=bares" class="tdt-chip"><span class="material-symbols-outlined">local_bar</span>Bares</a>
     </nav>
-
-    <!-- Ação central: ler QR -->
-    <a href="/validar_resgate.html?modo=vinculo-empresa" class="tdt-qr-cta" id="btnReadCompanyQr">
-      <span class="tdt-qr-cta__icon"><span class="material-symbols-outlined">qr_code_scanner</span></span>
-      <span class="tdt-qr-cta__text">
-        <b>Ler QR da empresa</b>
-        <small>Vincule-se e resgate seus benefícios</small>
-      </span>
-      <span class="material-symbols-outlined tdt-qr-cta__chevron">arrow_forward</span>
-    </a>
 
     <!-- Minhas empresas -->
     <section class="tdt-section" id="linkedCompaniesSection">
@@ -92,7 +111,7 @@
     </section>
   </main>
 
-  <script src="/dist/stitch-app.min.js?v=20260720-app14"></script>
+  <script src="/dist/stitch-app.min.js?v=20260720-app15"></script>
   <script>
     // App bar ganha borda/sombra ao rolar (sensação de app nativo).
     (function () {

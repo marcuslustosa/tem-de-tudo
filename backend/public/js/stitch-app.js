@@ -2877,6 +2877,26 @@
           welcomeEl.textContent = `Olá, ${firstName}`;
         }
 
+        // Wallet: saldo de pontos e nível reais (mesma fonte do perfil/histórico).
+        try {
+          const { data: pontosResp } = await api.request('/pontos/meus-dados', {}, { notify: false });
+          const pd = pontosResp?.data || {};
+          const saldo = Number(pd.pontos_total ?? currentUser?.pontos ?? 0);
+          const saldoEl = document.getElementById('hero-saldo');
+          if (saldoEl) saldoEl.innerHTML = `${saldo.toLocaleString('pt-BR')} <span>Pontos</span>`;
+          const nivelNome = pd.nivel && typeof pd.nivel === 'object' ? pd.nivel.nome : pd.nivel;
+          const nivelEl = document.getElementById('hero-nivel');
+          if (nivelEl) nivelEl.textContent = nivelNome ? `Membro ${nivelNome}` : 'Membro';
+          const meta = Number(pd.nivel?.proximo) || Math.max(500, saldo + 200);
+          const perc = Math.max(4, Math.min(100, Math.round((saldo / meta) * 100)));
+          const bar = document.getElementById('hero-progress-bar');
+          if (bar) bar.style.width = perc + '%';
+          const msg = document.getElementById('hero-progress-msg');
+          if (msg) msg.textContent = meta > saldo
+            ? `Faltam ${(meta - saldo).toLocaleString('pt-BR')} pontos para o próximo nível`
+            : 'Você está no nível máximo. Aproveite!';
+        } catch (_) { /* mantém o placeholder se falhar */ }
+
         const renderCompanyCard = (company) => {
           const rating = Number(company.avaliacao_media || 0);
           const reviews = Number(company.total_avaliacoes || 0);
@@ -3009,14 +3029,17 @@
 
       const saldoEl = document.getElementById('hero-saldo') || document.querySelector('section.bg-brand-gradient h1');
       if (saldoEl) {
-        saldoEl.innerHTML = `${saldo.toLocaleString('pt-BR')} <span class="text-xl font-medium opacity-90">Pontos</span>`;
+        saldoEl.innerHTML = `${saldo.toLocaleString('pt-BR')} <span>Pontos</span>`;
       }
 
       const nivelEl = document.getElementById('hero-nivel') || document.querySelector('section.bg-brand-gradient .glass-card span:last-child');
-      if (nivelEl) nivelEl.textContent = pontosData.nivel_vip ? `Nivel ${pontosData.nivel_vip}` : 'Nivel Cliente';
+      const nivelNome = pontosData.nivel && typeof pontosData.nivel === 'object'
+        ? pontosData.nivel.nome
+        : (pontosData.nivel_vip || pontosData.nivel);
+      if (nivelEl) nivelEl.textContent = nivelNome ? `Membro ${nivelNome}` : 'Membro';
 
       const progressPct = document.getElementById('hero-pct') || document.querySelector('section.bg-brand-gradient .font-poppins.text-lg');
-      const progressBar = document.querySelector('section.bg-brand-gradient .h-full.bg-gradient-to-r');
+      const progressBar = document.getElementById('hero-progress-bar') || document.querySelector('section.bg-brand-gradient .h-full.bg-gradient-to-r');
       const meta = Math.max(1000, saldo + 500);
       const perc = Math.max(0, Math.min(100, Math.round((saldo / meta) * 100)));
       if (progressPct) progressPct.textContent = `${perc}%`;
