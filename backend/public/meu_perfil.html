@@ -11,7 +11,7 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <link href="/css/i9plus-phase8.css?v=20260719-app8" rel="stylesheet" />
+  <link href="/css/i9plus-phase8.css?v=20260719-app10" rel="stylesheet" />
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
@@ -95,21 +95,13 @@
   </style>
 </head>
 <body class="bg-surface text-on-surface min-h-screen pb-24" data-page="meu_perfil">
-  <header class="sticky top-0 z-40 border-b border-[#e9e7f1] bg-white shadow-sm">
-    <div class="mx-auto flex w-full max-w-[1180px] items-center justify-between px-5 py-4 sm:px-6 lg:px-8">
-      <div class="flex items-center gap-3">
-        <div class="flex h-11 w-11 items-center justify-center rounded-[18px] bg-[#f7f7f7] p-2 border border-[#e9e7f1]">
-          <img src="/img/logo.png" alt="Tem de Tudo" class="h-full w-full object-contain" onerror="this.onerror=null;this.src='/img/logo.png.png';" />
-        </div>
-        <div>
-          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-[#5b5b62]">Meu Perfil</p>
-          <h1 id="profileHeaderGreeting" class="mt-1 text-lg font-extrabold leading-tight text-[#2e2e34]">Olá, cliente</h1>
-        </div>
-      </div>
-      <button class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#f7f7f7] text-[#5b5b62] border border-[#e9e7f1] transition hover:bg-[#e9e7f1]" type="button" aria-label="Notificações">
-        <span class="material-symbols-outlined">notifications</span>
-      </button>
+  <header class="profile-appbar">
+    <div class="profile-appbar__inner">
+      <a href="/index.html" data-page-back="1" class="profile-appbar__btn" aria-label="Voltar"><span class="material-symbols-outlined">arrow_back</span></a>
+      <p class="profile-appbar__title">Meu Perfil</p>
+      <span class="profile-appbar__btn profile-appbar__btn--ghost" aria-hidden="true"></span>
     </div>
+    <span id="profileHeaderGreeting" class="hidden"></span>
   </header>
 
   <main class="mx-auto w-full max-w-[1180px] px-4 pb-10 pt-5 sm:px-6 lg:px-8">
@@ -142,8 +134,23 @@
               </div>
             </div>
 
-            <a href="/validar_resgate.html?modo=vinculo-empresa" class="mt-3 inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-white px-5 text-sm font-extrabold text-[#111B3F]"><span class="material-symbols-outlined text-[19px]">qr_code_scanner</span>Ler QR da empresa</a>
+            <a href="/validar_resgate.html?modo=vinculo-empresa" class="profile-hero__cta"><span class="material-symbols-outlined text-[20px]">qr_code_scanner</span>Ler QR da empresa</a>
           </div>
+        </section>
+
+        <section class="profile-quick" aria-label="Atalhos">
+          <a href="/recompensas.html" class="profile-quick__item">
+            <span class="profile-quick__icon profile-quick__icon--mag"><span class="material-symbols-outlined">redeem</span></span>
+            <span class="profile-quick__label">Benefícios</span>
+          </a>
+          <a href="/hist_rico_de_uso.html" class="profile-quick__item">
+            <span class="profile-quick__icon profile-quick__icon--navy"><span class="material-symbols-outlined">history</span></span>
+            <span class="profile-quick__label">Histórico</span>
+          </a>
+          <a href="/configuracoes_cliente.html" class="profile-quick__item">
+            <span class="profile-quick__icon profile-quick__icon--teal"><span class="material-symbols-outlined">settings</span></span>
+            <span class="profile-quick__label">Config.</span>
+          </a>
         </section>
 
         <section id="profileLinkedCompaniesSection" data-profile-client-only="true" class="profile-surface-card space-y-4">
@@ -169,9 +176,9 @@
           </div>
           <p class="text-sm font-semibold text-[#111B3F]" data-push-status>Verificando suporte e permissões deste dispositivo...</p>
           <p class="text-sm leading-6 text-slate-500" data-push-helper>Use este botão somente quando quiser receber campanhas das empresas vinculadas à sua conta.</p>
-          <div class="flex flex-col gap-3 sm:flex-row">
-            <button type="button" class="app-primary-button justify-center" data-push-enable>Ativar notificações</button>
-            <button type="button" class="app-secondary-button justify-center" data-push-disable>Desativar neste dispositivo</button>
+          <div class="flex flex-col gap-3">
+            <button type="button" class="profile-btn profile-btn--teal" data-push-enable><span class="material-symbols-outlined text-[19px]">notifications_active</span>Ativar notificações</button>
+            <button type="button" class="profile-btn profile-btn--ghost" data-push-disable>Desativar neste dispositivo</button>
           </div>
         </section>
 
@@ -294,7 +301,7 @@
             </div>
           </div>
 
-          <button id="pfSalvar" class="inline-flex h-12 w-full items-center justify-center rounded-full bg-[#111B3F] px-5 text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(17,27,63,0.16)]" type="button">Salvar dados</button>
+          <button id="pfSalvar" class="profile-btn profile-btn--navy" type="button"><span class="material-symbols-outlined text-[19px]">check</span>Salvar dados</button>
         </section>
 
         <section class="profile-surface-card space-y-5">
@@ -316,34 +323,13 @@
               <input id="pwConf" type="password" class="block w-full rounded-[18px] border border-outline-variant bg-surface-container px-4 py-3 text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20" placeholder="Repita a nova senha" />
             </div>
           </div>
-          <button id="pwSalvar" class="inline-flex h-12 w-full items-center justify-center rounded-full bg-[#111B3F] px-5 text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(17,27,63,0.16)]" type="button">Alterar senha</button>
+          <button id="pwSalvar" class="profile-btn profile-btn--navy" type="button"><span class="material-symbols-outlined text-[19px]">lock_reset</span>Alterar senha</button>
         </section>
 
         <div id="profileReferralHost" data-profile-client-only="true"></div>
       </div>
 
       <aside class="space-y-6">
-        <section class="profile-surface-card">
-          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Ações rápidas</p>
-          <div class="mt-5 space-y-3">
-            <a href="/recompensas.html" class="profile-action-row">
-              <span class="profile-action-icon bg-primary/10 text-primary"><span class="material-symbols-outlined">redeem</span></span>
-              <span class="flex-1 text-sm font-semibold text-on-surface">Meus benefícios</span>
-              <span class="material-symbols-outlined text-slate-400">chevron_right</span>
-            </a>
-            <a href="/hist_rico_de_uso.html" class="profile-action-row">
-              <span class="profile-action-icon bg-secondary/10 text-secondary"><span class="material-symbols-outlined">history</span></span>
-              <span class="flex-1 text-sm font-semibold text-on-surface">Histórico de pontos</span>
-              <span class="material-symbols-outlined text-slate-400">chevron_right</span>
-            </a>
-            <a href="/configuracoes_cliente.html" class="profile-action-row">
-              <span class="profile-action-icon bg-tertiary/10 text-tertiary"><span class="material-symbols-outlined">settings</span></span>
-              <span class="flex-1 text-sm font-semibold text-on-surface">Configurações</span>
-              <span class="material-symbols-outlined text-slate-400">chevron_right</span>
-            </a>
-          </div>
-        </section>
-
         <section class="profile-surface-card">
           <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Suporte e conta</p>
           <div class="mt-5 space-y-3">
@@ -353,7 +339,7 @@
               <span class="material-symbols-outlined text-slate-400">chevron_right</span>
             </a>
             <a href="/validar_resgate.html?modo=vinculo-empresa" data-profile-client-only="true" class="profile-action-row">
-              <span class="profile-action-icon bg-[#111B3F]/8 text-[#111B3F]"><span class="material-symbols-outlined">qr_code_scanner</span></span>
+              <span class="profile-action-icon bg-[#B01774]/10 text-[#B01774]"><span class="material-symbols-outlined">qr_code_scanner</span></span>
               <span class="flex-1 text-sm font-semibold text-on-surface">Ler QR da empresa</span>
               <span class="material-symbols-outlined text-slate-400">chevron_right</span>
             </a>
@@ -373,6 +359,6 @@
     </div>
   </main>
 
-  <script src="/dist/stitch-app.min.js?v=20260719-app8"></script>
+  <script src="/dist/stitch-app.min.js?v=20260719-app10"></script>
 </body>
 </html>

@@ -1872,8 +1872,18 @@ body[data-page="meu_perfil"] {
     #0f172f;
 }
 
+/* Coluna de app (480px centralizada) no mobile/tablet, igual as demais telas;
+   so no desktop (>=1024px, com sidebar) expande para o layout de 2 colunas. */
 body[data-page="meu_perfil"] main {
-  width: min(1180px, calc(100% - 16px));
+  width: min(480px, calc(100% - 16px));
+  margin-inline: auto;
+}
+body[data-page="meu_perfil"] > header > div {
+  max-width: 480px;
+}
+@media (min-width: 1024px) {
+  body[data-page="meu_perfil"] main { width: min(1180px, calc(100% - 16px)); }
+  body[data-page="meu_perfil"] > header > div { max-width: 1180px; }
 }
 
 body[data-page="meu_perfil"] .profile-surface-card {
@@ -5121,3 +5131,72 @@ body[data-page="gest_o_de_estabelecimentos"] .estabs-status-card--rejected {
 /* Ícone teal da marca na sidebar admin → sólido (sem degradê). */
 [style*="linear-gradient(135deg,#133f8c 0%,#00afa8"],
 [style*="linear-gradient(135deg, #133f8c 0%, #00afa8"] { background: var(--i9-navy) !important; }
+
+/* ==========================================================================
+   Meu Perfil v5 (2026-07-19) — appbar limpa, hero, atalhos e botões por tipo.
+   ========================================================================== */
+/* App bar minimalista (troca o cabeçalho estilo site) */
+body[data-page="meu_perfil"] .profile-appbar {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(255,255,255,0.86); backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid rgba(17,27,63,0.06);
+}
+body[data-page="meu_perfil"] .profile-appbar__inner {
+  max-width: 480px; margin: 0 auto; height: 56px; padding: 0 10px;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+@media (min-width: 1024px) { body[data-page="meu_perfil"] .profile-appbar__inner { max-width: 1180px; padding: 0 24px; } }
+body[data-page="meu_perfil"] .profile-appbar__btn {
+  width: 40px; height: 40px; border-radius: 12px; flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--i9-navy); background: transparent; text-decoration: none;
+}
+body[data-page="meu_perfil"] .profile-appbar__btn:hover { background: var(--i9-surface-soft); }
+body[data-page="meu_perfil"] .profile-appbar__btn--ghost { pointer-events: none; }
+body[data-page="meu_perfil"] .profile-appbar__title {
+  font-weight: 800; font-size: 16px; color: var(--i9-navy); letter-spacing: -0.01em;
+}
+
+/* CTA magenta do hero (Ler QR) */
+body[data-page="meu_perfil"] .profile-hero__cta {
+  margin-top: 16px; height: 48px; width: 100%; border-radius: 16px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--i9-magenta); color: #fff; font-weight: 800; font-size: 14px;
+  text-decoration: none; box-shadow: 0 8px 20px rgba(176,23,116,0.32);
+}
+body[data-page="meu_perfil"] .profile-hero__cta:active { transform: scale(0.99); }
+
+/* Atalhos: grid de 3 ícones compacto */
+body[data-page="meu_perfil"] .profile-quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+body[data-page="meu_perfil"] .profile-quick__item {
+  display: flex; flex-direction: column; align-items: center; gap: 9px;
+  padding: 16px 8px; border-radius: 18px; background: #fff;
+  border: 1px solid rgba(17,27,63,0.06); box-shadow: 0 1px 3px rgba(17,27,63,0.05);
+  text-decoration: none; transition: transform .15s ease, box-shadow .15s ease;
+}
+body[data-page="meu_perfil"] .profile-quick__item:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(17,27,63,0.08); }
+body[data-page="meu_perfil"] .profile-quick__icon { width: 44px; height: 44px; border-radius: 14px; display: inline-flex; align-items: center; justify-content: center; }
+body[data-page="meu_perfil"] .profile-quick__icon .material-symbols-outlined { font-size: 23px; }
+body[data-page="meu_perfil"] .profile-quick__icon--mag { background: rgba(176,23,116,0.10); color: var(--i9-magenta); }
+body[data-page="meu_perfil"] .profile-quick__icon--navy { background: rgba(17,27,63,0.08); color: var(--i9-navy); }
+body[data-page="meu_perfil"] .profile-quick__icon--teal { background: rgba(0,175,168,0.12); color: #067d78; }
+body[data-page="meu_perfil"] .profile-quick__label { font-size: 12.5px; font-weight: 700; color: var(--i9-navy); }
+
+/* Botões por tipo de ação (semânticos) */
+body[data-page="meu_perfil"] .profile-btn {
+  width: 100%; height: 48px; border-radius: 14px; padding: 0 18px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-weight: 800; font-size: 14px; border: 0; cursor: pointer; color: #fff;
+  transition: filter .15s ease, transform .08s ease;
+}
+body[data-page="meu_perfil"] .profile-btn:active { transform: scale(0.99); }
+body[data-page="meu_perfil"] .profile-btn:hover { filter: brightness(1.06); }
+body[data-page="meu_perfil"] .profile-btn--navy { background: var(--i9-navy); box-shadow: 0 8px 20px rgba(17,27,63,0.18); }
+body[data-page="meu_perfil"] .profile-btn--teal { background: var(--i9-teal); box-shadow: 0 8px 20px rgba(0,175,168,0.24); }
+body[data-page="meu_perfil"] .profile-btn--ghost { background: #fff; color: var(--i9-navy); border: 1px solid rgba(17,27,63,0.14); box-shadow: none; }
+body[data-page="meu_perfil"] .profile-btn--ghost:hover { background: var(--i9-surface-soft); filter: none; }
+
+/* Enxugar: títulos de seção menores, cards mais compactos, eyebrow discreto */
+body[data-page="meu_perfil"] .profile-surface-card { padding: 20px; border-radius: 22px; }
+body[data-page="meu_perfil"] .profile-surface-card h3 { font-size: 1.15rem !important; margin-top: 2px; }
+body[data-page="meu_perfil"] .profile-surface-card .text-2xl { font-size: 1.15rem !important; }
