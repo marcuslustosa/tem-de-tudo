@@ -64,7 +64,7 @@ O app foi desenvolvido para **SQLite/MySQL** (tolerantes) mas roda em **PostgreS
 
 ## Convenções
 
-- Mensagens de commit terminam com a linha de co-autoria do Claude.
+- Mensagens de commit **nunca** levam linha de co-autoria (sem `Co-Authored-By` de IA).
 - Frontend: textos em pt-BR **com acentuação correta**; cor da marca / magenta = **#b01774**
   (token `--i9-gradient` em [i9plus-phase8.css](backend/public/css/i9plus-phase8.css)).
 - Models com mutator boolean próprio (não duplicar): `Promocao` (ativo), `NotificacaoPush`
