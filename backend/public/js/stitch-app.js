@@ -5863,41 +5863,9 @@
               <p class="mt-2 text-sm font-bold text-on-surface">${formatDatePtBr(lastSent, 'Nenhum envio')}</p>
             </div>
           </div>
-          <div class="grid gap-2 sm:grid-cols-3">
-            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html">
-              <span class="material-symbols-outlined">campaign</span>
-              <span>Gestão de Ofertas</span>
-            </a>
-            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#empresaOffersPushSummary">
-              <span class="material-symbols-outlined">send</span>
-              <span>Operar campanhas</span>
-            </a>
-            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#formOferta">
-              <span class="material-symbols-outlined">add_circle</span>
-              <span>Criar promoção instantânea</span>
-            </a>
-            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#returnReminderSection">
-              <span class="material-symbols-outlined">notifications_active</span>
-              <span>Lembrete de retorno</span>
-            </a>
-            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#birthdayBonusSection">
-              <span class="material-symbols-outlined">cake</span>
-              <span>Bônus aniversário</span>
-            </a>
-            <a class="empresa-shortcut-card" href="/gest_o_de_ofertas_parceiro.html#cartaoFidelidadeSection">
-              <span class="material-symbols-outlined">loyalty</span>
-              <span>Fidelidade</span>
-            </a>
-            <a class="empresa-shortcut-card" href="/clientes_fidelizados_loja.html">
-              <span class="material-symbols-outlined">groups</span>
-              <span>Clientes vinculados</span>
-            </a>
-            <a class="empresa-shortcut-card" href="/validar_resgate.html?modo=beneficios">
-              <span class="material-symbols-outlined">qr_code_2</span>
-              <span>Meu QR</span>
-            </a>
-          </div>
         `;
+        // Atalhos de ação foram removidos daqui: eram idênticos aos da grade
+        // "Ferramentas" no topo do painel. Esta seção mantém só os KPIs de push.
       };
       ui.clearPageState();
 
