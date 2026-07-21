@@ -2084,13 +2084,7 @@ body[data-page="detalhe_do_parceiro"] .partner-rating-pill {
 }
 
 body[data-page="detalhe_do_parceiro"] #partner-rating::before {
-  content: "Nota ";
-  font-size: 0.72rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: rgba(255, 255, 255, 0.58);
-  margin-right: 4px;
+  content: none;
 }
 
 body[data-page="detalhe_do_parceiro"] #partner-rating-stars,
@@ -5598,3 +5592,33 @@ body[data-page="parceiros_tem_de_tudo"] #partners-grid.tdt-store-grid > * {
   body[data-page="parceiros_tem_de_tudo"] #partners-grid.tdt-store-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; column-gap: 18px; }
   .tdt-store-card__name { font-size: 15px; }
 }
+
+/* ==========================================================================
+   Detalhe do parceiro — hero de loja com profundidade e barra de ações 3-up.
+   Capa em gradiente roxo (não faixa chapada); ações viram tiles com ícone
+   sobre o texto. Layout real, não recolorir.
+   ========================================================================== */
+body[data-page="detalhe_do_parceiro"] #partner-banner-fallback {
+  height: 156px; aspect-ratio: auto;
+  background:
+    radial-gradient(120% 150% at 82% -20%, rgba(167,139,250,0.55) 0%, rgba(167,139,250,0) 55%),
+    linear-gradient(135deg, #4c1d95 0%, #5b21b6 52%, #3b0d6b 100%);
+}
+body[data-page="detalhe_do_parceiro"] .tdt-cover__img { max-height: 220px; }
+body[data-page="detalhe_do_parceiro"] .tdt-detail-head { margin-top: -42px; align-items: flex-end; }
+body[data-page="detalhe_do_parceiro"] .tdt-detail-logo { width: 88px; height: 88px; border-radius: 22px; border-width: 4px; }
+body[data-page="detalhe_do_parceiro"] .tdt-detail-name { font-size: 24px; }
+
+/* Barra de ações: colunas iguais (flex), ícone acima do rótulo, tile branco + ícone roxo */
+body[data-page="detalhe_do_parceiro"] .tdt-detail-icons { display: flex; gap: 10px; margin-top: 16px; }
+body[data-page="detalhe_do_parceiro"] .tdt-icon-action {
+  flex: 1; flex-direction: column; justify-content: center; text-align: center;
+  height: auto; gap: 6px; padding: 13px 8px; border-radius: 16px;
+  background: #fff; border: 1px solid rgba(20,22,40,0.07); box-shadow: 0 2px 12px rgba(20,22,40,0.05);
+  font-size: 12.5px; font-weight: 700; color: var(--i9-navy);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+body[data-page="detalhe_do_parceiro"] .tdt-icon-action:hover {
+  transform: translateY(-2px); border-color: rgba(91,33,182,0.22); box-shadow: 0 10px 22px rgba(20,22,40,0.1);
+}
+body[data-page="detalhe_do_parceiro"] .tdt-icon-action .material-symbols-outlined { font-size: 24px; color: #5b21b6; }
