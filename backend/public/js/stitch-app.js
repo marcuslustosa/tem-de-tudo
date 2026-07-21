@@ -1930,8 +1930,10 @@
     const scope = getScopeForCurrentPage();
     // Admin já possui shell/sidebar próprio de desktop — não duplicar.
     if (scope === 'admin') return;
-    // Se a página já traz uma sidebar de desktop embutida, não injeta outra.
-    if (document.querySelector('.admin-sidebar, aside.sidebar, [data-desktop-sidebar]')) return;
+    // Se a página já traz uma sidebar de desktop embutida, não injeta outra
+    // (senão duas sidebars ficam sobrepostas em left:0). Detecta tanto as
+    // marcadas quanto o padrão utilitário `hidden lg:flex fixed left-0`.
+    if (document.querySelector('.admin-sidebar, aside.sidebar, [data-desktop-sidebar], nav.fixed.left-0.lg\\:flex, aside.fixed.left-0.lg\\:flex')) return;
     const pageKey = `${scope}:${page}`;
     const config = buildNavConfigs(pageKey)[scope];
     if (!config) return;
@@ -6194,7 +6196,7 @@
               <h2 class="text-2xl font-extrabold text-[#111B3F]">Campanhas e push</h2>
             </div>
           </div>
-          <div class="mt-5 grid gap-3 sm:grid-cols-4">
+          <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div class="rounded-[18px] bg-slate-50 p-4 border border-black/5">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Clientes vinculados</p>
               <p class="mt-2 text-2xl font-extrabold text-[#191b2c]">${linkedCustomers.toLocaleString('pt-BR')}</p>
