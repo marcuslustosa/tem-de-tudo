@@ -2961,10 +2961,32 @@
         if (linkedEmpty) linkedEmpty.classList.toggle('hidden', linkedCompanies.length > 0);
         if (linkedCount) linkedCount.textContent = linkedCompanies.length ? plural(linkedCompanies.length, 'empresa') : 'Nenhuma empresa vinculada ainda';
 
+        // Card rico para o carrossel horizontal de "Descubra empresas" (estilo food/OLX).
+        const renderFeaturedCard = (company) => {
+          const rating = Number(company.avaliacao_media || 0);
+          const cat = safeText(company.categoria || company.ramo, 'Empresa');
+          const linked = company.vinculada || company.is_linked || company.ja_vinculada;
+          return `
+            <a href="/detalhe_do_parceiro.html?id=${encodeURIComponent(company.id)}" class="tdt-feat-card">
+              <div class="tdt-feat-card__img">
+                <img src="${safeImage(company.logo, IMAGE_FALLBACKS.store)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+                ${linked ? '<span class="tdt-feat-card__badge">Vinculada</span>' : ''}
+              </div>
+              <div class="tdt-feat-card__body">
+                <div class="tdt-feat-card__name">${safeText(company.nome, 'Empresa')}</div>
+                <div class="tdt-feat-card__meta">
+                  <span class="tdt-feat-card__star"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>${rating > 0 ? rating.toFixed(1).replace('.', ',') : 'Novo'}</span>
+                  <span>·</span><span>${cat}</span>
+                </div>
+              </div>
+            </a>
+          `;
+        };
+
         const featuredList = document.getElementById('featuredCompaniesList');
         const featuredSection = document.getElementById('featuredCompaniesSection');
         if (featuredList) {
-          featuredList.innerHTML = featuredCompanies.map(renderCompanyCard).join('');
+          featuredList.innerHTML = featuredCompanies.map(renderFeaturedCard).join('');
         }
         if (featuredSection) {
           featuredSection.classList.toggle('hidden', featuredCompanies.length === 0);

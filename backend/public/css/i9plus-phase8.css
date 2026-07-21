@@ -5498,3 +5498,56 @@ body[data-page="meus_pontos"] .quick-row__icon--navy {
 
 /* Hero da home tambem no roxo profundo (vence a regra com escopo de pagina) */
 body[data-page="meus_pontos"] .wallet-card { background: #3b0d6b !important; }
+
+/* ==========================================================================
+   Carrossel "Descubra empresas" — cards ricos com imagem (estilo food/OLX).
+   ========================================================================== */
+.tdt-feat-scroll {
+  display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
+  padding: 4px 2px 6px; margin: 0 -2px;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.tdt-feat-scroll::-webkit-scrollbar { display: none; }
+.tdt-feat-card {
+  flex: 0 0 auto; width: 200px; scroll-snap-align: start;
+  background: #fff; border: 1px solid rgba(20,22,40,0.05); border-radius: 18px;
+  overflow: hidden; text-decoration: none;
+  box-shadow: 0 2px 12px rgba(20,22,40,0.05); transition: transform .15s ease, box-shadow .15s ease;
+}
+.tdt-feat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(20,22,40,0.10); }
+.tdt-feat-card__img { position: relative; width: 100%; height: 116px; background: #f0eef7; }
+.tdt-feat-card__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tdt-feat-card__badge {
+  position: absolute; top: 8px; left: 8px; background: rgba(59,13,107,0.92); color: #fff;
+  font-size: 10px; font-weight: 800; padding: 4px 9px; border-radius: 999px; letter-spacing: .02em;
+}
+.tdt-feat-card__body { padding: 11px 12px 13px; }
+.tdt-feat-card__name { font-size: 14.5px; font-weight: 800; color: #191b2c; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tdt-feat-card__meta { margin-top: 5px; display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: #6b7280; }
+.tdt-feat-card__star { display: inline-flex; align-items: center; gap: 3px; color: #f59e0b; font-weight: 800; }
+.tdt-feat-card__star .material-symbols-outlined { font-size: 15px; }
+@media (min-width: 1024px) { .tdt-feat-card { width: 232px; } .tdt-feat-card__img { height: 132px; } }
+
+/* Vence as regras legadas de #id (grid/borda/sombra) que ainda batem no featured:
+   força carrossel horizontal em TODAS as larguras. Especificidade (1,2,1) > (1,1,1). */
+body[data-page="meus_pontos"] #featuredCompaniesList.tdt-feat-scroll {
+  display: flex; flex-direction: row; flex-wrap: nowrap;
+  grid-template-columns: none; column-gap: 0; gap: 14px;
+  overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
+}
+body[data-page="meus_pontos"] #featuredCompaniesList.tdt-feat-scroll > * {
+  box-shadow: 0 2px 12px rgba(20,22,40,0.05);
+  border: 1px solid rgba(20,22,40,0.05);
+  border-radius: 18px;
+  border-top: 1px solid rgba(20,22,40,0.05);
+}
+@media (min-width: 1024px) {
+  body[data-page="meus_pontos"] #featuredCompaniesList.tdt-feat-scroll {
+    display: flex; grid-template-columns: none; column-gap: 0;
+  }
+}
+
+/* .hidden do Tailwind (CDN) empata em especificidade com .tdt-list/.tdt-feat-scroll
+   e perde por ordem de fonte, deixando skeletons/vazios visíveis mesmo ocultos.
+   Garante que ocultar sempre vença enquanto a classe estiver presente. */
+.hidden { display: none !important; }
