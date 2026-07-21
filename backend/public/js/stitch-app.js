@@ -7886,8 +7886,8 @@
 
         growthChart.insertAdjacentHTML('beforebegin', `
           <div class="admin-graph-legend">
-            <span class="admin-graph-legend-item"><span class="admin-graph-dot" style="background:#133f8c"></span>Usuarios cadastrados</span>
-            <span class="admin-graph-legend-item"><span class="admin-graph-dot" style="background:#b01774"></span>Empresas cadastradas</span>
+            <span class="admin-graph-legend-item"><span class="admin-graph-dot" style="background:#191b2c"></span>Usuarios cadastrados</span>
+            <span class="admin-graph-legend-item"><span class="admin-graph-dot" style="background:#0d9488"></span>Empresas cadastradas</span>
           </div>
         `);
       }
@@ -7897,7 +7897,7 @@
         dashboardSearchUi.hint.textContent = message;
         dashboardSearchUi.hint.style.color = (
           tone === 'success' ? '#00afa8'
-            : tone === 'warning' ? '#b01774'
+            : tone === 'warning' ? '#d97706'
               : '#5b5b62'
         );
       };
