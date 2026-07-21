@@ -1810,7 +1810,7 @@
         </div>
         <div class="rounded-[22px] bg-slate-50 p-4">
           <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Empresas para explorar</p>
-          <p class="mt-2 text-2xl font-extrabold text-[#6d28d9]">${featuredCompanies.length.toLocaleString('pt-BR')}</p>
+          <p class="mt-2 text-2xl font-extrabold text-[#5b21b6]">${featuredCompanies.length.toLocaleString('pt-BR')}</p>
         </div>
         <div class="rounded-[22px] bg-slate-50 p-4">
           <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Regra de push</p>
@@ -1861,11 +1861,11 @@
         </div>
         <div class="rounded-xl bg-surface-container-low p-4">
           <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Com push ativo</p>
-          <p class="mt-2 text-2xl font-extrabold text-[#6d28d9]">${Number(pushActive || 0).toLocaleString('pt-BR')}</p>
+          <p class="mt-2 text-2xl font-extrabold text-[#5b21b6]">${Number(pushActive || 0).toLocaleString('pt-BR')}</p>
         </div>
         <div class="rounded-xl bg-surface-container-low p-4">
           <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Sem push ativo</p>
-          <p class="mt-2 text-2xl font-extrabold text-[#6d28d9]">${Number(pushInactive || 0).toLocaleString('pt-BR')}</p>
+          <p class="mt-2 text-2xl font-extrabold text-[#5b21b6]">${Number(pushInactive || 0).toLocaleString('pt-BR')}</p>
         </div>
       </div>
     `;
@@ -4157,7 +4157,7 @@
               row.innerHTML = `
                 <span class="w-10 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">${entry.star}★</span>
                 <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
-                  <div class="h-full rounded-full bg-[#6d28d9]" style="width:${percent}%"></div>
+                  <div class="h-full rounded-full bg-[#5b21b6]" style="width:${percent}%"></div>
                 </div>
                 <span class="w-14 text-right text-xs font-semibold text-slate-500">${entryTotal}</span>
               `;
@@ -4181,7 +4181,7 @@
                 <div class="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p class="text-sm font-extrabold text-[#111B3F]">${reviewerName}</p>
-                    <p class="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-[#6d28d9]">${renderStars(Number(review?.nota || review?.estrelas || 0))}</p>
+                    <p class="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-[#5b21b6]">${renderStars(Number(review?.nota || review?.estrelas || 0))}</p>
                   </div>
                   <span class="text-xs text-slate-400">${formatDatePtBr(review?.updated_at || review?.created_at, 'Agora')}</span>
                 </div>
@@ -4759,7 +4759,7 @@
             </div>
 
             <div class="loyalty-reward-chip mt-4">
-              <span class="material-symbols-outlined text-[#6d28d9]" style="font-variation-settings:'FILL' 1;">redeem</span>
+              <span class="material-symbols-outlined text-[#5b21b6]" style="font-variation-settings:'FILL' 1;">redeem</span>
               <div class="min-w-0">
                 <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Próxima recompensa</p>
                 <p class="truncate text-sm font-extrabold text-on-surface">${reward}</p>
@@ -4807,7 +4807,7 @@
           const data = i.created_at ? new Date(i.created_at).toLocaleDateString('pt-BR') : '--';
           return `
             <div class="redemption-row">
-              <span class="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#6d28d9]/10 text-[#6d28d9]"><span class="material-symbols-outlined text-[20px]">redeem</span></span>
+              <span class="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#5b21b6]/10 text-[#5b21b6]"><span class="material-symbols-outlined text-[20px]">redeem</span></span>
               <div class="min-w-0 flex-1">
                 <p class="truncate text-sm font-bold text-on-surface">${desc}</p>
                 <p class="truncate text-xs text-on-surface-variant">${nome} • ${data}</p>
@@ -5206,7 +5206,7 @@
               <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-start justify-between gap-2">
                   <div>
-                    <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-[#6d28d9]">${category}</p>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-[#5b21b6]">${category}</p>
                     <h4 class="mt-1 text-base font-extrabold leading-tight text-[#111B3F]">${safeText(company?.nome, 'Empresa')}</h4>
                   </div>
                   <span class="rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">${ratingLabel}</span>
@@ -5840,7 +5840,7 @@
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Com push ativo</p>
-              <p class="mt-2 text-2xl font-extrabold text-[#6d28d9]">${activePushCustomers.toLocaleString('pt-BR')}</p>
+              <p class="mt-2 text-2xl font-extrabold text-[#5b21b6]">${activePushCustomers.toLocaleString('pt-BR')}</p>
             </div>
             <div class="rounded-xl bg-surface-container-low p-4">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Campanhas ativas</p>
@@ -6221,7 +6221,7 @@
             </div>
             <div class="rounded-[18px] bg-slate-50 p-4 border border-black/5">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Com push ativo</p>
-              <p class="mt-2 text-2xl font-extrabold text-[#6d28d9]">${activePushCustomers.toLocaleString('pt-BR')}</p>
+              <p class="mt-2 text-2xl font-extrabold text-[#5b21b6]">${activePushCustomers.toLocaleString('pt-BR')}</p>
             </div>
             <div class="rounded-[18px] bg-slate-50 p-4 border border-black/5">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Sem push</p>
@@ -6344,7 +6344,7 @@
         const overlay = document.createElement('div');
         overlay.className = 'tdt-modal-overlay';
         const precoLine = dataPreview.preco
-          ? `<p class="mt-1 text-sm font-extrabold text-[#6d28d9]">R$ ${Number(dataPreview.preco).toFixed(2).replace('.', ',')}</p>`
+          ? `<p class="mt-1 text-sm font-extrabold text-[#5b21b6]">R$ ${Number(dataPreview.preco).toFixed(2).replace('.', ',')}</p>`
           : '';
         const brindeLine = dataPreview.brinde
           ? `<p class="mt-1 text-xs text-on-surface-variant">🎁 Brinde: ${safeText(dataPreview.brinde)}</p>`
@@ -6431,7 +6431,7 @@
           const meta = empresaPromoBadge(p);
           const canSend = Boolean(p.ativo && p.status === 'available' && !p.enviada_em && weeklyStatus.remaining > 0);
           const precoTxt = (p.preco || p.desconto)
-            ? `<span class="inline-flex items-center rounded-full bg-[#6d28d9]/10 px-2 py-0.5 text-[10px] font-bold text-[#6d28d9]">R$ ${Number(p.preco || p.desconto).toFixed(2).replace('.', ',')}</span>`
+            ? `<span class="inline-flex items-center rounded-full bg-[#5b21b6]/10 px-2 py-0.5 text-[10px] font-bold text-[#5b21b6]">R$ ${Number(p.preco || p.desconto).toFixed(2).replace('.', ',')}</span>`
             : '';
           const tipoTxt = (p.tipo || p.tipo_recompensa)
             ? `<span class="inline-flex items-center rounded-full bg-surface-container px-2 py-0.5 text-[10px] font-bold text-on-surface-variant uppercase">${safeText(p.tipo || p.tipo_recompensa)}</span>`
@@ -7493,11 +7493,11 @@
             </div>
             <div class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Com push ativo</p>
-              <p class="mt-2 text-3xl font-extrabold text-[#6d28d9]">${activePushCustomers.toLocaleString('pt-BR')}</p>
+              <p class="mt-2 text-3xl font-extrabold text-[#5b21b6]">${activePushCustomers.toLocaleString('pt-BR')}</p>
             </div>
             <div class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Sem push</p>
-              <p class="mt-2 text-3xl font-extrabold text-[#6d28d9]">${inactivePushCustomers.toLocaleString('pt-BR')}</p>
+              <p class="mt-2 text-3xl font-extrabold text-[#5b21b6]">${inactivePushCustomers.toLocaleString('pt-BR')}</p>
             </div>
             <div class="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
               <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Promocoes ativas</p>
@@ -7524,7 +7524,7 @@
                 </div>
                 <div class="rounded-xl bg-surface-container-low p-4">
                   <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Clientes inativos</p>
-                  <p class="mt-2 text-2xl font-extrabold text-[#6d28d9]">${Number(summaryCards.clientes_inativos || 0).toLocaleString('pt-BR')}</p>
+                  <p class="mt-2 text-2xl font-extrabold text-[#5b21b6]">${Number(summaryCards.clientes_inativos || 0).toLocaleString('pt-BR')}</p>
                 </div>
                 <div class="rounded-xl bg-surface-container-low p-4">
                   <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">Media de avaliacao</p>
@@ -7886,8 +7886,8 @@
 
         growthChart.insertAdjacentHTML('beforebegin', `
           <div class="admin-graph-legend">
-            <span class="admin-graph-legend-item"><span class="admin-graph-dot" style="background:#6d28d9"></span>Usuarios cadastrados</span>
-            <span class="admin-graph-legend-item"><span class="admin-graph-dot" style="background:#6d28d9"></span>Empresas cadastradas</span>
+            <span class="admin-graph-legend-item"><span class="admin-graph-dot" style="background:#5b21b6"></span>Usuarios cadastrados</span>
+            <span class="admin-graph-legend-item"><span class="admin-graph-dot" style="background:#5b21b6"></span>Empresas cadastradas</span>
           </div>
         `);
       }
@@ -7896,7 +7896,7 @@
         if (!dashboardSearchUi.hint) return;
         dashboardSearchUi.hint.textContent = message;
         dashboardSearchUi.hint.style.color = (
-          tone === 'success' ? '#6d28d9'
+          tone === 'success' ? '#5b21b6'
             : tone === 'warning' ? '#d97706'
               : '#5b5b62'
         );
@@ -8314,8 +8314,8 @@
           <div class="mt-3"><span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold ${venc.cls}"><span class="w-2 h-2 rounded-full ${venc.dot}"></span>${venc.label}</span></div>
           <div class="grid grid-cols-3 gap-2 mt-4 text-center">
             <div class="rounded-xl bg-surface-container-low p-3"><p class="text-lg font-extrabold text-[#191b2c]">${Number(toNumber(e.total_promocoes, e.campanhas, 0)).toLocaleString('pt-BR')}</p><p class="text-[10px] uppercase font-bold text-on-surface-variant">Campanhas</p></div>
-            <div class="rounded-xl bg-surface-container-low p-3"><p class="text-lg font-extrabold text-[#6d28d9]">${Number(toNumber(e.total_clientes, e.clientes, 0)).toLocaleString('pt-BR')}</p><p class="text-[10px] uppercase font-bold text-on-surface-variant">Clientes</p></div>
-            <div class="rounded-xl bg-surface-container-low p-3"><p class="text-lg font-extrabold text-[#6d28d9]">${Number(toNumber(e.total_resgates, e.resgates, 0)).toLocaleString('pt-BR')}</p><p class="text-[10px] uppercase font-bold text-on-surface-variant">Resgates</p></div>
+            <div class="rounded-xl bg-surface-container-low p-3"><p class="text-lg font-extrabold text-[#5b21b6]">${Number(toNumber(e.total_clientes, e.clientes, 0)).toLocaleString('pt-BR')}</p><p class="text-[10px] uppercase font-bold text-on-surface-variant">Clientes</p></div>
+            <div class="rounded-xl bg-surface-container-low p-3"><p class="text-lg font-extrabold text-[#5b21b6]">${Number(toNumber(e.total_resgates, e.resgates, 0)).toLocaleString('pt-BR')}</p><p class="text-[10px] uppercase font-bold text-on-surface-variant">Resgates</p></div>
           </div>
         `);
       };
