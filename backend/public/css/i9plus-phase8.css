@@ -5542,10 +5542,15 @@ body[data-page="meus_pontos"] #featuredCompaniesList.tdt-feat-scroll > * {
   }
 }
 
-/* .hidden do Tailwind (CDN) empata em especificidade com .tdt-list/.tdt-feat-scroll
-   e perde por ordem de fonte, deixando skeletons/vazios visíveis mesmo ocultos.
-   Garante que ocultar sempre vença enquanto a classe estiver presente. */
-.hidden { display: none !important; }
+/* .hidden do Tailwind (CDN) empata em especificidade com as classes de display
+   abaixo e perde por ordem de fonte, deixando skeletons/vazios visíveis mesmo
+   ocultos. Escopado SÓ nessas classes: um `.hidden` global com !important
+   quebraria o padrão `hidden lg:flex` (sidebars/elementos só-desktop). */
+.tdt-list.hidden,
+.tdt-store-grid.hidden,
+.tdt-feat-scroll.hidden,
+.tdt-empty.hidden,
+.tdt-chips.hidden { display: none !important; }
 
 /* ==========================================================================
    Buscar empresas — grid de cards ricos com imagem (estilo food/OLX).
@@ -5636,4 +5641,22 @@ body[data-page="detalhe_do_parceiro"] .tdt-icon-action .material-symbols-outline
   body[data-page="recompensas"] #loyaltyList > * + *,
   body[data-page="recompensas"] #loyaltySkeleton > * + * { margin-top: 0 !important; }
   body[data-page="recompensas"] #redemptionSection.mb-24 { margin-bottom: 32px; }
+}
+
+/* ==========================================================================
+   Admin/painéis com <main class="lg:ml-64 ... mx-auto">: o mx-auto calcula
+   margin-right NEGATIVO junto do ml-64 e o conteúdo vaza ~192px à direita
+   (cortando KPIs e a coluna direita). Fixa a margem no desktop.
+   ========================================================================== */
+@media (min-width: 1024px) {
+  body[data-page="dashboard_admin_master"] main,
+  body[data-page="gestao_pontos"] main,
+  body[data-page="minhas_campanhas_loja"] main {
+    /* Desconta a sidebar (16rem): a regra legada usava calc(100% - 64px),
+       que somado ao ml-64 estourava ~192px à direita. */
+    width: min(calc(100% - 16rem), 1500px) !important;
+    max-width: none !important;
+    margin-left: 16rem !important;
+    margin-right: auto !important;
+  }
 }
