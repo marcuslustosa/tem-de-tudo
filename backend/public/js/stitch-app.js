@@ -3447,22 +3447,24 @@
         const linked = Boolean(
           e?.vinculada || e?.inscrito || e?.ja_vinculado || e?.is_linked || e?.cliente_vinculado,
         );
-        const linkedTag = linked ? '<span class="tdt-tag tdt-tag--new">Vinculada</span>' : '';
+        const linkedBadge = linked ? '<span class="tdt-store-card__badge">Vinculada</span>' : '';
         const ratingStar = rating > 0
-          ? `<span class="tdt-row__star"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>${rating.toFixed(1).replace('.', ',')}</span>`
-          : `<span class="tdt-row__star"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>Novo</span>`;
+          ? `<span class="tdt-store-card__star"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>${rating.toFixed(1).replace('.', ',')}</span>`
+          : `<span class="tdt-store-card__star tdt-store-card__star--new"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">star</span>Novo</span>`;
+        const distance = (e && e._distanceKm != null) ? `<span class="dot"></span><span>${formatDistance(e._distanceKm)}</span>` : '';
 
         return `
-          <a href="/detalhe_do_parceiro.html?id=${e.id}" class="tdt-row" data-parceiro-id="${e.id}">
-            <img class="tdt-row__img" src="${safeImage(e.logo, IMAGE_FALLBACKS.store)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
-            <div class="tdt-row__body">
-              <div class="tdt-row__name">${safeText(e.nome, 'Parceiro')}</div>
-              <div class="tdt-row__meta">
-                ${ratingStar}<span class="dot"></span><span>${safeText(e.categoria || e.ramo, 'Empresa')}</span>
-              </div>
-              ${linkedTag ? `<div class="tdt-row__tags">${linkedTag}</div>` : ''}
+          <a href="/detalhe_do_parceiro.html?id=${e.id}" class="tdt-store-card" data-parceiro-id="${e.id}">
+            <div class="tdt-store-card__img">
+              <img src="${safeImage(e.logo, IMAGE_FALLBACKS.store)}" alt="" loading="lazy" onerror="this.onerror=null;this.src='${IMAGE_FALLBACKS.store}'" />
+              ${linkedBadge}
             </div>
-            <span class="material-symbols-outlined tdt-row__chevron">chevron_right</span>
+            <div class="tdt-store-card__body">
+              <div class="tdt-store-card__name">${safeText(e.nome, 'Parceiro')}</div>
+              <div class="tdt-store-card__meta">
+                ${ratingStar}<span class="dot"></span><span>${safeText(e.categoria || e.ramo, 'Empresa')}</span>${distance}
+              </div>
+            </div>
           </a>`;
       };
 
