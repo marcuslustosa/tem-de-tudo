@@ -1930,10 +1930,10 @@
     const scope = getScopeForCurrentPage();
     // Admin já possui shell/sidebar próprio de desktop — não duplicar.
     if (scope === 'admin') return;
-    // Se a página já traz uma sidebar de desktop embutida, não injeta outra
-    // (senão duas sidebars ficam sobrepostas em left:0). Detecta tanto as
-    // marcadas quanto o padrão utilitário `hidden lg:flex fixed left-0`.
-    if (document.querySelector('.admin-sidebar, aside.sidebar, [data-desktop-sidebar], nav.fixed.left-0.lg\\:flex, aside.fixed.left-0.lg\\:flex')) return;
+    // Se a página já traz uma sidebar de desktop embutida e marcada, não injeta
+    // outra. As sidebars estáticas utilitárias (`hidden lg:flex fixed left-0`)
+    // das telas de empresa são ocultadas via CSS para usar a unificada.
+    if (document.querySelector('.admin-sidebar, aside.sidebar, [data-desktop-sidebar]')) return;
     const pageKey = `${scope}:${page}`;
     const config = buildNavConfigs(pageKey)[scope];
     if (!config) return;
