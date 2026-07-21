@@ -5622,3 +5622,17 @@ body[data-page="detalhe_do_parceiro"] .tdt-icon-action:hover {
   transform: translateY(-2px); border-color: rgba(91,33,182,0.22); box-shadow: 0 10px 22px rgba(20,22,40,0.1);
 }
 body[data-page="detalhe_do_parceiro"] .tdt-icon-action .material-symbols-outlined { font-size: 24px; color: #5b21b6; }
+
+/* ==========================================================================
+   Recompensas — no desktop os cartões fidelidade viram 2 colunas (paravam de
+   pé esticando a largura toda). Aproveita o espaço e reduz o vão do histórico.
+   ========================================================================== */
+@media (min-width: 1024px) {
+  body[data-page="recompensas"] #loyaltyList,
+  body[data-page="recompensas"] #loyaltySkeleton {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start;
+  }
+  body[data-page="recompensas"] #loyaltyList > * + *,
+  body[data-page="recompensas"] #loyaltySkeleton > * + * { margin-top: 0 !important; }
+  body[data-page="recompensas"] #redemptionSection.mb-24 { margin-bottom: 32px; }
+}
