@@ -2373,38 +2373,13 @@
     }
 
     async function maybePromptAfterAuth() {
-      if (!canAutoPromptOnCurrentPage()) return;
-
-      // Cadastro/vínculo via QR recém-concluído: a celebração do bônus tem
-      // prioridade nesta carga. Não consome o motivo — o convite de push
-      // aparece na próxima página elegível.
-      if (page === 'detalhe_do_parceiro'
-        && new URLSearchParams(window.location.search).get('linked') === '1') return;
-
-      const viewer = auth.normalizeUser(auth.getStored()?.user);
-      const perfil = auth.normalizePerfil(viewer?.perfil || viewer?.role || viewer?.tipo);
-      if (perfil !== 'cliente') {
-        clearPushPrompt();
-        return;
-      }
-
-      // Igual à localização: enquanto o push não estiver ativo, o convite
-      // aparece 1x por sessão, mesmo sem login/cadastro recém-feito.
-      const reason = getPushPrompt();
-      let alreadyAskedThisSession = false;
-      try { alreadyAskedThisSession = sessionStorage.getItem('tdt_push_nudged') === '1'; } catch (_) { /* ignore */ }
-      if (!reason && alreadyAskedThisSession) return;
-
-      const state = await getState();
-      if (state.key === 'enabled') {
-        clearPushPrompt();
-        return;
-      }
-
+      // Auto-open desativado (decisão de UX): o convite de push NUNCA abre
+      // sozinho — ele cobria o topo redesenhado em toda página. Agora só
+      // aparece quando o usuário toca no sino ([data-push-open]).
+      // Aqui apenas descartamos o motivo guardado para não reabrir em cargas
+      // futuras via fluxos legados.
       clearPushPrompt();
       try { sessionStorage.setItem('tdt_push_nudged', '1'); } catch (_) { /* ignore */ }
-      updatePromptModal(state, reason || 'nudge');
-      ensurePromptModal().classList.remove('hidden');
     }
 
     function paintCard(card, state) {
@@ -2615,6 +2590,19 @@
           console.error('push_card_refresh_fail', err);
         });
       });
+
+      // Convite de push só via sino: liga o clique em qualquer [data-push-open]
+      // (ex.: o sino da app bar) para abrir o modal sob demanda. Uma vez só.
+      if (!document.documentElement.dataset.pushOpenBound) {
+        document.documentElement.dataset.pushOpenBound = '1';
+        document.addEventListener('click', (ev) => {
+          const trigger = ev.target.closest('[data-push-open]');
+          if (!trigger) return;
+          ev.preventDefault();
+          openPrompt('manual').catch((err) => console.error('push_open_fail', err));
+        });
+      }
+
       maybePromptAfterAuth().catch((err) => {
         console.error('push_prompt_mount_fail', err);
       });
