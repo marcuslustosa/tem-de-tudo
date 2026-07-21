@@ -5365,3 +5365,79 @@ body[data-page="meus_pontos"] .tdt-row__name { font-size: 15.5px !important; fon
 body[data-page="meus_pontos"] .tdt-row__star { color: #f59e0b !important; font-weight: 800; }
 body[data-page="meus_pontos"] .tdt-row__chevron { color: #b9bccb !important; }
 body[data-page="meus_pontos"] .tdt-tag--points { background: rgba(43,212,198,0.14) !important; color: #0d9488 !important; }
+
+/* ==========================================================================
+   INK v8 GLOBAL (2026-07-20) — idioma da home v7 em TODO o app.
+   Fundo suave, hero premium ink + acento teal + profundidade, cards com respiro.
+   ========================================================================== */
+:root { --i9-ink: #191b2c; --i9-teal-ink: #0d9488; }
+
+/* Fundo suave em todas as telas (profundidade, nao branco chapado) */
+body[data-page] { background: #f3f4f8 !important; }
+
+/* HERO unico premium: ink + profundidade + acento teal */
+.wallet-card, #profileHeroShell, .signature-gradient, .loyalty-points-hero,
+.home-client-hero, .tdt-receipt-hero, .app-auth-hero, .profile-hero-shell {
+  position: relative; overflow: hidden;
+  background: var(--i9-ink) !important;
+  box-shadow: 0 20px 44px rgba(20,22,40,0.26), 0 2px 6px rgba(20,22,40,0.10) !important;
+}
+.wallet-card::before, #profileHeroShell::before, .signature-gradient::before,
+.loyalty-points-hero::before, .home-client-hero::before, .tdt-receipt-hero::before {
+  content:""; position:absolute; right:-50px; top:-60px; width:180px; height:180px; border-radius:50%;
+  background:#2bd4c6; opacity:.16; filter:blur(20px); pointer-events:none; z-index:0;
+}
+.wallet-card::after, #profileHeroShell::after {
+  content:""; position:absolute; left:-30px; bottom:-70px; width:150px; height:150px; border-radius:50%;
+  background:#b01774; opacity:.12; filter:blur(26px); pointer-events:none; z-index:0;
+}
+#profileHeroShell > *, .wallet-card > * { position: relative; z-index: 1; }
+.profile-hero-shade { background: transparent !important; }
+.wallet-card__tier { background: rgba(43,212,198,0.16) !important; color:#4fe6d8 !important; }
+.wallet-card__fill { background:#2bd4c6 !important; }
+
+/* Botao primario = ink (premium). CTA do perfil = ink no branco. */
+.btn--primary, .app-primary-button, .btn--dark, .profile-btn--navy,
+.tdt-receipt-actions__primary, .home-search__btn { background: var(--i9-ink) !important; }
+body[data-page="meu_perfil"] .profile-hero__cta { color: var(--i9-ink) !important; }
+
+/* Acentos (links, icones de destaque, chips ativos, tags) = teal + ink */
+.tdt-section__link, .tdt-section__count, .tdt-searchbar__icon,
+.tdt-detail-cat, .tdt-row__star ~ span { color: var(--i9-teal-ink) !important; }
+.tdt-chip.is-active, .parceiro-filtro-btn.tdt-chip.is-active { background: var(--i9-ink) !important; color:#fff !important; border-color: var(--i9-ink) !important; }
+.tdt-chip.is-active .material-symbols-outlined { color:#2bd4c6 !important; }
+.tdt-qr-cta, .tdt-sidebar__cta, .app-mobile-dock__item--accent .app-mobile-dock__item-icon,
+nav button#btnBottomScan, .tdt-install-bar__icon { background: var(--i9-ink) !important; }
+.tdt-tag--points { background: rgba(43,212,198,0.14) !important; color: var(--i9-teal-ink) !important; }
+
+/* Cards com respiro (nao apertados) — mobile e desktop */
+.profile-surface-card, .push-consent-card { padding: 20px !important; }
+.tdt-panel, .tdt-benefit, .tdt-stat-card { padding: 18px !important; }
+.tdt-row { padding: 12px !important; border-radius: 18px !important; }
+.tdt-list { gap: 12px !important; }
+
+/* Ações de ofertas/push (empresa) — botões com ícone, ink/branco (não quadrado feio) */
+.offers-action {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 48px; border-radius: 14px; padding: 0 16px;
+  background: #fff; color: var(--i9-ink); border: 1px solid rgba(20,22,40,0.10);
+  font-weight: 700; font-size: 13.5px; text-decoration: none;
+  box-shadow: 0 1px 3px rgba(20,22,40,0.05); transition: transform .1s ease, box-shadow .15s ease;
+}
+.offers-action:hover { box-shadow: 0 8px 18px rgba(20,22,40,0.09); transform: translateY(-1px); }
+.offers-action:active { transform: scale(0.98); }
+.offers-action--primary { background: var(--i9-ink); color: #fff; border-color: var(--i9-ink); }
+.offers-action .material-symbols-outlined { color: #2bd4c6; }
+
+/* ---- Fixes finais INK v8: uploader dropzone neutro + ícones perfil ink/teal ---- */
+.tdt-uploader__preview { background: #f4f5f8 !important; border: 2px dashed rgba(20,22,40,0.14) !important; color: #8a8fa3 !important; }
+.tdt-uploader__preview .material-symbols-outlined { color: #9aa0b3 !important; }
+.tdt-uploader__btn--primary { background: var(--i9-ink) !important; color: #fff !important; }
+.tdt-uploader__btn--ghost { color: var(--i9-ink) !important; }
+
+body[data-page="meu_perfil"] .profile-quick__icon--mag  { background: rgba(43,212,198,0.12) !important; color: #0d9488 !important; }
+body[data-page="meu_perfil"] .profile-quick__icon--navy { background: rgba(25,27,44,0.06)  !important; color: #191b2c !important; }
+body[data-page="meu_perfil"] .profile-quick__icon--teal { background: rgba(43,212,198,0.12) !important; color: #0d9488 !important; }
+
+/* Ícone Benefícios magenta na home -> teal (coerência) */
+body[data-page="meus_pontos"] .quick-row__icon--mag { background: rgba(43,212,198,0.12) !important; color: #0d9488 !important; }
