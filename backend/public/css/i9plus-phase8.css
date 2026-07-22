@@ -5772,3 +5772,28 @@ body[data-page="criar_conta"] button[type="submit"]:hover {
   background: linear-gradient(150deg, #64299f 0%, #42147a 55%, #35105f 100%) !important;
   box-shadow: 0 14px 30px rgba(46,11,82,0.46), inset 0 1px 0 rgba(255,255,255,0.24) !important;
 }
+
+/* ==========================================================================
+   FIXES (2026-07-21) — detalhe: capa/título; mobile: largura do perfil.
+   ========================================================================== */
+/* Cover é filho do BODY: margin 0 -16px vazava 32px no mobile. */
+.tdt-cover { margin: 0 !important; }
+
+/* Título/identidade SEMPRE no branco (sem overlap na faixa ou na imagem). */
+body[data-page="detalhe_do_parceiro"] .tdt-detail-head { margin-top: 14px !important; }
+
+/* Sem imagem de capa: esconde a faixa; back button no topo branco. */
+body.detalhe-no-cover .tdt-cover__img { display: none !important; }
+body.detalhe-no-cover .tdt-cover__top {
+  position: static !important;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 0 !important;
+}
+body.detalhe-no-cover .tdt-detail-head { margin-top: 6px !important; }
+/* Com imagem: um respiro entre a capa e a identidade no branco. */
+body.detalhe-has-cover .tdt-detail-head { margin-top: 12px !important; }
+
+/* Meu Perfil no mobile: o grid vira 1 coluna `auto` e o nome nowrap estica a
+   coluna além da tela. minmax(0,1fr) força caber. */
+@media (max-width: 1023px) {
+  body[data-page="meu_perfil"] main > .grid { grid-template-columns: minmax(0, 1fr) !important; }
+}

@@ -1005,7 +1005,9 @@
       if (!user) return false;
       const perfil = normalizePerfil(user.perfil || user.role || user.tipo);
       if (perfis.length && !perfis.includes(perfil)) {
-        saveAccessNotice(restrictedAreaMessage(perfis), 'warning');
+        // Usuário JÁ autenticado que abriu uma área de outro perfil (ex.: empresa
+        // clicando num atalho de cliente): redireciona pra área dele SEM o aviso
+        // alarmante "Acesso restrito..." — ele está logado, só clicou no lugar errado.
         window.location.href = redirectMap[perfil] || buildLoginRedirect();
         return false;
       }
@@ -4320,14 +4322,23 @@
         const bannerImg = document.getElementById('partner-banner');
         const bannerFallback = document.getElementById('partner-banner-fallback');
         const bannerUrl = safeText(companyInfo.banner, '');
+        // Sem imagem de capa: esconde a faixa (o título fica no branco, sem overlap).
+        // Com imagem: mostra a capa; título continua no branco, abaixo dela.
+        const markNoCover = () => {
+          if (bannerImg) bannerImg.style.display = 'none';
+          if (bannerFallback) bannerFallback.style.display = 'none';
+          document.body.classList.add('detalhe-no-cover');
+          document.body.classList.remove('detalhe-has-cover');
+        };
         if (bannerImg && bannerUrl) {
           bannerImg.src = bannerUrl;
           bannerImg.style.display = 'block';
+          document.body.classList.add('detalhe-has-cover');
+          document.body.classList.remove('detalhe-no-cover');
           bannerImg.onload = () => { if (bannerFallback) bannerFallback.style.display = 'none'; };
-          bannerImg.onerror = () => {
-            bannerImg.style.display = 'none';
-            if (bannerFallback) bannerFallback.style.display = 'block';
-          };
+          bannerImg.onerror = markNoCover;
+        } else {
+          markNoCover();
         }
 
         // ----- Redes sociais (apenas ícones, abrem direto) -----
