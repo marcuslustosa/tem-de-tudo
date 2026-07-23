@@ -238,8 +238,8 @@ class I9PlusDemoSeeder extends Seeder
         ];
 
         $clients = [
-            'joao' => $this->syncUser('joao@demo.local', [
-                'name' => 'João Cliente Demo',
+            'joao' => $this->syncUser(env('DEMO_CLIENTE_EMAIL', 'joao@demo.local'), [
+                'name' => env('DEMO_CLIENTE_NAME', 'João Cliente Demo'),
                 'password' => Hash::make(self::DEMO_PASSWORD),
                 'perfil' => 'cliente',
                 'status' => 'ativo',
