@@ -82,10 +82,13 @@ else
   echo "Migrations no start desativadas (RUN_MIGRATIONS_ON_START=false)."
 fi
 
-if [ "${SEED_ON_START:-false}" = "true" ]; then
-  echo "Executando seeders..."
+if [ "${SEED_ON_START:-true}" = "true" ]; then
+  echo "Executando seeders (demo)..."
   DEMO_SEEDER_CLASS="${DEMO_SEEDER_CLASS:-Database\\Seeders\\I9PlusDemoSeeder}"
-  php artisan db:seed --class="${DEMO_SEEDER_CLASS}" --force --no-interaction
+  # Blindado: com set -e um seed que falhe derrubaria o deploy inteiro. O demo
+  # e idempotente e opcional, entao um erro aqui NAO pode impedir o app de subir.
+  php artisan db:seed --class="${DEMO_SEEDER_CLASS}" --force --no-interaction \
+    || echo "AVISO: seed demo falhou (ignorado, app segue normalmente)."
 else
   echo "Seed no start desativado (SEED_ON_START=false)."
 fi
