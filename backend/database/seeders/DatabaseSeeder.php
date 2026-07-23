@@ -489,5 +489,16 @@ class DatabaseSeeder extends Seeder
                 ]
             );
         }
+
+        // Demo RICO (pontos + extrato + cartoes fidelidade + recompensas) nas
+        // contas @demo.local (joao/ana/maria/pedro/cliente.push). E idempotente.
+        // Envolvido em try/catch para NUNCA derrubar o seed principal / deploy.
+        try {
+            $this->call(\Database\Seeders\I9PlusDemoSeeder::class);
+        } catch (\Throwable $e) {
+            if (isset($this->command)) {
+                $this->command->warn('I9PlusDemoSeeder ignorado: ' . $e->getMessage());
+            }
+        }
     }
 }
