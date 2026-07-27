@@ -89,12 +89,20 @@ chmod -R 775 storage bootstrap/cache
 # Migrations automatizadas (controlaveis via env)
 if [ "${RUN_MIGRATIONS_ON_START:-true}" = "true" ]; then
   php artisan migrate --force --no-interaction
-  if [ "${SEED_ON_START:-false}" = "true" ]; then
-    DEMO_SEEDER_CLASS="${DEMO_SEEDER_CLASS:-Database\\Seeders\\I9PlusDemoSeeder}"
-    php artisan db:seed --class="${DEMO_SEEDER_CLASS}" --force --no-interaction
-  fi
 else
   echo "RUN_MIGRATIONS_ON_START=false: migrations no start desativadas."
+fi
+
+# Seed demo (pontos, extrato, fidelidade, recompensas). E idempotente e roda
+# independente das migrations. Blindado: com `set -e` um seed que falhasse
+# derrubaria o boot inteiro, entao o erro e apenas registrado.
+if [ "${SEED_ON_START:-true}" = "true" ]; then
+  DEMO_SEEDER_CLASS="${DEMO_SEEDER_CLASS:-Database\\Seeders\\I9PlusDemoSeeder}"
+  echo "Executando seed demo (${DEMO_SEEDER_CLASS})..."
+  php artisan db:seed --class="${DEMO_SEEDER_CLASS}" --force --no-interaction \
+    || echo "AVISO: seed demo falhou (ignorado, app segue normalmente)."
+else
+  echo "SEED_ON_START=false: seed demo desativado."
 fi
 
 # Storage link para uploads/public assets

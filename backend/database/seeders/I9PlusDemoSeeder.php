@@ -318,26 +318,28 @@ class I9PlusDemoSeeder extends Seeder
         $this->syncInscricao($clients['maria'], $companies['florenza'], $today->copy()->subDays(28), $today->copy()->subDays(8), false);
         $this->syncInscricao($clients['push_iphone'], $companies['malagueta'], $today->copy()->subDays(9), $today->copy()->subDays(2), false);
 
-        // Historico de pontos ficticio (extrato) para os clientes demo.
+        // Historico de pontos ficticio (extrato) para os clientes demo. O saldo que o
+        // app mostra vem da tabela `pontos` (ganhos - resgates), entao cada extrato
+        // fecha com o campo `pontos` do respectivo cliente acima.
         $this->syncPontos($clients['joao'], [
-            [$companies['malagueta'], 10, 'Bônus de adesão validado', 'bonus', 28],
-            [$companies['malagueta'], 5, 'Compra validada no balcão', 'compra', 21],
-            [$companies['texano'], 1, 'Visita registrada', 'visita', 16],
-            [$companies['malagueta'], 3, 'Pontos em promoção relâmpago', 'promo', 11],
-            [$companies['texano'], 8, 'Combo especial resgatado', 'resgate', 6],
-            [$companies['malagueta'], 2, 'Check-in pelo QR Code', 'visita', 2],
+            [$companies['malagueta'], 120, 'Bônus de adesão validado', 'bonus', 28],
+            [$companies['malagueta'], 85, 'Compra validada no balcão', 'compra', 21],
+            [$companies['texano'], 30, 'Visita registrada', 'visita', 16],
+            [$companies['malagueta'], 60, 'Pontos em promoção relâmpago', 'promo', 11],
+            [$companies['texano'], 20, 'Combo especial resgatado', 'resgate', 6],
+            [$companies['malagueta'], 45, 'Check-in pelo QR Code', 'visita', 2],
         ]);
         $this->syncPontos($clients['ana'], [
-            [$companies['malagueta'], 5, 'Compra validada no balcão', 'compra', 9],
-            [$companies['florenza'], 4, 'Pontos de boas-vindas', 'bonus', 4],
+            [$companies['malagueta'], 380, 'Compra validada no balcão', 'compra', 9],
+            [$companies['florenza'], 180, 'Pontos de boas-vindas', 'bonus', 4],
         ]);
         $this->syncPontos($clients['maria'], [
-            [$companies['makoto'], 6, 'Rodízio pontuado', 'compra', 7],
-            [$companies['florenza'], 2, 'Visita registrada', 'visita', 3],
+            [$companies['makoto'], 120, 'Rodízio pontuado', 'compra', 7],
+            [$companies['florenza'], 60, 'Visita registrada', 'visita', 3],
         ]);
         $this->syncPontos($clients['pedro'], [
-            [$companies['malagueta'], 5, 'Compra validada no balcão', 'compra', 40],
-            [$companies['texano'], 1, 'Visita registrada', 'visita', 33],
+            [$companies['malagueta'], 25, 'Compra validada no balcão', 'compra', 40],
+            [$companies['texano'], 15, 'Visita registrada', 'visita', 33],
         ]);
 
         $bonusMap = [];
@@ -754,6 +756,14 @@ class I9PlusDemoSeeder extends Seeder
     {
         $normalizedEmail = strtolower(trim($email));
         $user = User::firstOrNew(['email' => $normalizedEmail]);
+
+        // Em producao o cliente principal e a conta de handoff (DEMO_CLIENTE_EMAIL),
+        // cuja senha vem de DEMO_CLIENTE_PASSWORD. O seed roda a cada boot, entao so
+        // define senha em usuario novo para nao invalidar o acesso ja divulgado.
+        if ($user->exists) {
+            unset($attributes['password']);
+        }
+
         $this->fillModel($user, array_merge(['email' => $normalizedEmail], $attributes));
         $user->save();
 

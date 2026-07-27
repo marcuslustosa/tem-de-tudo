@@ -1,6 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
+# ATENCAO: este script NAO e o boot da Railway. A imagem usa
+# ENTRYPOINT ["start-railway.sh"], gerado dentro do Dockerfile (heredoc).
+# Mudanca de comportamento no boot de producao tem que ser feita LA tambem.
+
 echo "=== Iniciando Tem de Tudo ==="
 
 cd /var/www/html

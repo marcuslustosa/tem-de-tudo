@@ -123,6 +123,9 @@ class ClienteAPIController extends Controller
                     ->get()
                     ->map(function ($empresa) {
                         $card = new Empresa((array) $empresa);
+                        // `id` nao esta no fillable, entao o construtor descarta e o card
+                        // sairia sem link (`/detalhe_do_parceiro.html?id=`).
+                        $card->id = (int) ($empresa->id ?? 0);
                         $card->exists = true;
 
                         return $this->serializeCompanyCard($card, [
