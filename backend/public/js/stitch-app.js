@@ -2381,13 +2381,36 @@
     }
 
     async function maybePromptAfterAuth() {
-      // Auto-open desativado (decisão de UX): o convite de push NUNCA abre
-      // sozinho — ele cobria o topo redesenhado em toda página. Agora só
-      // aparece quando o usuário toca no sino ([data-push-open]).
-      // Aqui apenas descartamos o motivo guardado para não reabrir em cargas
-      // futuras via fluxos legados.
+      // Convite de push logo apos entrar: um toque em "Ativar notificacoes" ja
+      // abre o pedido do navegador e conclui a inscricao. O pedido de permissao
+      // PRECISA sair de um gesto do usuario — por isso o modal, e nao a chamada
+      // direta (o navegador bloquearia, e negar e permanente).
+      const reason = getPushPrompt();
+      if (!reason) return;
       clearPushPrompt();
-      try { sessionStorage.setItem('tdt_push_nudged', '1'); } catch (_) { /* ignore */ }
+
+      const state = await getState();
+
+      // Ja ativado, negado ou sem suporte: nao ha o que pedir.
+      if (!canTriggerPermissionPrompt(state)) return;
+
+      // iPhone fora do app instalado: push nao funciona por restricao do
+      // sistema. Pedir permissao ali so queima a chance — o caminho e instalar.
+      if (state?.key === 'ios_install_required') return;
+
+      // No maximo um convite a cada 7 dias, para nao virar incomodo.
+      const CHAVE = 'tdt_push_convite_em';
+      try {
+        const ultimo = Number(localStorage.getItem(CHAVE) || 0);
+        if (ultimo && Date.now() - ultimo < 7 * 24 * 60 * 60 * 1000) return;
+        localStorage.setItem(CHAVE, String(Date.now()));
+      } catch (_) { /* sem storage: segue e mostra */ }
+
+      // Espera a tela assentar antes de abrir, para nao competir com o
+      // carregamento do saldo.
+      setTimeout(() => {
+        openPrompt(reason, state).catch((err) => console.error('push_prompt_open_fail', err));
+      }, 1200);
     }
 
     function paintCard(card, state) {
