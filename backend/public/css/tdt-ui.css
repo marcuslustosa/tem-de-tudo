@@ -558,13 +558,20 @@ button { font-family: inherit; }
    ============================================================ */
 /* As duas colunas precisam esticar ate o rodape; sem isto a marca acaba no
    meio da tela e sobra uma faixa preta embaixo. */
+/* ATENCAO: no celular as duas secoes viram LINHAS. Com grid-auto-rows de 100vh
+   cada uma, a marca sozinha ocupava a tela inteira e o formulario de login
+   nascia abaixo da dobra — quem abria /entrar.html no telefone via so uma tela
+   roxa. No telefone a marca e um cabecalho de altura automatica e o formulario
+   fica com o resto; a divisao em duas colunas so vale no desktop. */
 body.ap-authbody {
-  padding: 0; display: grid; min-height: 100vh;
-  grid-template-columns: minmax(0, 1fr); grid-auto-rows: minmax(100vh, auto); align-items: stretch;
+  padding: 0; display: grid; min-height: 100dvh;
+  grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr;
+  align-items: stretch;
 }
-body.ap-authbody > section { min-height: 100%; }
+body.ap-authbody > section { min-height: 0; }
 @media (min-width: 1000px) {
-  body.ap-authbody { grid-template-columns: 1.05fr 1fr; grid-auto-rows: minmax(100vh, auto); }
+  body.ap-authbody { grid-template-columns: 1.05fr 1fr; grid-template-rows: minmax(100vh, auto); }
+  body.ap-authbody > section { min-height: 100%; }
 }
 
 .ap-auth__brand {
@@ -584,7 +591,15 @@ body.ap-authbody > section { min-height: 100%; }
 .ap-auth__proof { position: relative; display: flex; gap: 26px; margin-top: 28px; flex-wrap: wrap; }
 .ap-auth__proof b { display: block; font-size: 23px; font-weight: 800; letter-spacing: -0.6px; }
 .ap-auth__proof span { font-size: 12px; color: rgba(255,255,255,0.62); }
-@media (max-width: 999px) { .ap-auth__claim { padding-top: 20px; } .ap-auth__proof { display: none; } }
+/* No telefone a marca e so um cabecalho: nada de prova social nem respiro de
+   desktop empurrando o formulario para fora da tela. */
+@media (max-width: 999px) {
+  .ap-auth__brand { padding: 20px 20px 24px; }
+  .ap-auth__claim { margin-top: 18px; padding-top: 0; }
+  .ap-auth__claim h1 { font-size: 24px; }
+  .ap-auth__claim p { margin-top: 8px; font-size: 13.5px; }
+  .ap-auth__proof { display: none; }
+}
 
 .ap-auth__form { position: relative; display: flex; align-items: center; justify-content: center; padding: 28px 20px 40px; background: var(--bg); }
 .ap-auth__box { width: 100%; max-width: 420px; }
