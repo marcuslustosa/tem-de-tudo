@@ -10,8 +10,8 @@
   <link rel="icon" type="image/png" href="/img/logo.png" />
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.json" />
-  <link href="/css/tdt-ui.css?v=20260728-ui19" rel="stylesheet" />
-  <script src="/js/tdt-app.js?v=20260728-ui19"></script>
+  <link href="/css/tdt-ui.css?v=20260728-ui22" rel="stylesheet" />
+  <script src="/js/tdt-app.js?v=20260728-ui22"></script>
 </head>
 <body class="ap-authbody" data-page="entrar">
 
@@ -59,13 +59,116 @@
         <a href="/forgot_password.html" class="ap-link" style="font-size:13.5px">Esqueci minha senha</a>
       </div>
       <button class="ap-btn" type="submit">Entrar</button>
-      <p id="loginMessage" style="margin:14px 0 0;font-size:13.5px;text-align:center;color:var(--text-muted)"></p>
+      <p id="loginMessage" class="ap-msg hidden"></p>
     </form>
 
     <p class="ap-auth__foot">Ainda não tem conta? <a href="/criar_conta.html" class="ap-link">Criar conta grátis</a></p>
   </div>
 </section>
 
+<!-- O login desta tela e feito aqui, sem depender do bundle: o dispatcher so
+     tem handler para data-page="acessar_conta", e a funcao handleLogin() do
+     bundle nunca chega a ser chamada. A flag abaixo evita ligacao dupla. -->
+<script>window.__inlineLoginManaged = true;</script>
 <script src="/dist/stitch-app.min.js?v=20260721-app51"></script>
+<script>
+  (function () {
+    var pass = document.getElementById('loginPassword');
+    var btn = document.getElementById('togglePass');
+    var icon = document.getElementById('toggleIcon');
+    if (pass && btn && icon) {
+      btn.addEventListener('click', function () {
+        var escondida = pass.type === 'password';
+        pass.type = escondida ? 'text' : 'password';
+        icon.textContent = escondida ? 'visibility_off' : 'visibility';
+      });
+    }
+  })();
+
+  (function () {
+    var form = document.getElementById('loginForm');
+    var emailEl = document.getElementById('loginEmail');
+    var passEl = document.getElementById('loginPassword');
+    var msgEl = document.getElementById('loginMessage');
+    var botao = form && form.querySelector('button[type="submit"]');
+    if (!form || !emailEl || !passEl) return;
+
+    var destinos = {
+      cliente: '/meus_pontos.html',
+      empresa: '/dashboard_parceiro.html',
+      admin: '/dashboard_admin_master.html',
+      revenda: '/revenda_painel.html'
+    };
+
+    function normalizaPerfil(valor) {
+      var v = (valor || '').toString().toLowerCase().trim();
+      if (['admin', 'administrador', 'master', 'admin_master', 'administrador_master'].indexOf(v) >= 0) return 'admin';
+      if (['empresa', 'estabelecimento', 'parceiro', 'lojista'].indexOf(v) >= 0) return 'empresa';
+      if (['cliente', 'customer'].indexOf(v) >= 0) return 'cliente';
+      return v || null;
+    }
+
+    function destino(perfil) {
+      var pendente = (localStorage.getItem('tem_de_tudo_pending_company_qr') || '').trim();
+      if (perfil === 'cliente' && pendente) {
+        return '/vincular_empresa.html?code=' + encodeURIComponent(pendente);
+      }
+      var next = new URLSearchParams(window.location.search).get('next');
+      if (next) {
+        try {
+          var url = new URL(next, window.location.origin);
+          if (url.origin === window.location.origin) return url.pathname + url.search + url.hash;
+        } catch (e) {}
+      }
+      return destinos[perfil] || '/meus_pontos.html';
+    }
+
+    function aviso(texto, tipo) {
+      if (!msgEl) return;
+      msgEl.textContent = texto || '';
+      msgEl.className = texto ? 'ap-msg ap-msg--' + (tipo || 'error') : 'ap-msg hidden';
+    }
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      aviso('');
+      var email = (emailEl.value || '').trim();
+      var senha = passEl.value || '';
+      if (!email || !senha) return aviso('Informe e-mail ou CPF e a senha.', 'error');
+
+      if (botao) { botao.disabled = true; botao.textContent = 'Entrando...'; }
+      try {
+        var res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ email: email, password: senha })
+        });
+        var data = await res.json().catch(function () { return {}; });
+        var token = data.token || data.access_token || (data.data && data.data.token);
+        var bruto = data.user || (data.data && data.data.user) || data.usuario;
+
+        if (!res.ok || !token || !bruto) {
+          aviso(data.message || 'Não foi possível entrar. Confira os dados e tente de novo.', 'error');
+          return;
+        }
+
+        var perfil = normalizaPerfil(bruto.perfil || bruto.role || bruto.tipo);
+        var usuario = Object.assign({}, bruto, { perfil: perfil || bruto.perfil || null });
+        localStorage.setItem('tem_de_tudo_token', token);
+        localStorage.setItem('tem_de_tudo_user', JSON.stringify(usuario));
+        if (perfil === 'cliente') {
+          try { sessionStorage.setItem('tem_de_tudo_push_prompt', 'login'); } catch (e) {}
+        }
+        aviso('Login realizado. Redirecionando...', 'success');
+        setTimeout(function () { window.location.href = destino(perfil); }, 200);
+      } catch (err) {
+        console.error('LOGIN_FALHOU', err);
+        aviso('Erro de rede. Verifique sua conexão e tente novamente.', 'error');
+      } finally {
+        if (botao) { botao.disabled = false; botao.textContent = 'Entrar'; }
+      }
+    });
+  })();
+</script>
 </body>
 </html>
