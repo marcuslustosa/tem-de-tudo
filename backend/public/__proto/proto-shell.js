@@ -37,7 +37,7 @@
         { id: 'empresa-clientes', href: 'empresa-clientes.html', icon: 'group', label: 'Clientes' },
         { id: 'empresa-ofertas', href: 'empresa-ofertas.html', icon: 'local_offer', label: 'Ofertas', badge: '2' },
         { id: 'empresa-validar', href: 'empresa-validar.html', icon: 'qr_code_scanner', label: 'Validar' },
-        { id: 'empresa-config', href: '#', icon: 'settings', label: 'Configurações' }
+        { id: 'empresa-config', href: 'empresa-config.html', icon: 'settings', label: 'Configurações' }
       ],
       dockCta: { href: 'empresa-validar.html', icon: 'qr_code_scanner' },
       dock: ['empresa-painel', 'empresa-clientes', 'empresa-ofertas', 'empresa-config']
@@ -49,12 +49,27 @@
       nav: [
         { id: 'admin-painel', href: 'admin-painel.html', icon: 'monitoring', label: 'Painel' },
         { id: 'admin-empresas', href: 'admin-empresas.html', icon: 'storefront', label: 'Empresas', badge: '4' },
-        { id: 'admin-usuarios', href: '#', icon: 'group', label: 'Usuários' },
-        { id: 'admin-relatorios', href: '#', icon: 'bar_chart', label: 'Relatórios' },
-        { id: 'admin-tickets', href: '#', icon: 'support_agent', label: 'Suporte' }
+        { id: 'admin-usuarios', href: 'admin-usuarios.html', icon: 'group', label: 'Usuários' },
+        { id: 'admin-relatorios', href: 'admin-relatorios.html', icon: 'bar_chart', label: 'Relatórios' },
+        { id: 'admin-conteudo', href: 'admin-conteudo.html', icon: 'wallpaper', label: 'Conteúdo' },
+        { id: 'admin-tickets', href: 'admin-tickets.html', icon: 'support_agent', label: 'Suporte', badge: '6' },
+        { id: 'admin-config', href: 'admin-config.html', icon: 'settings', label: 'Configurações' }
       ],
       dockCta: { href: 'admin-empresas.html', icon: 'add_business' },
       dock: ['admin-painel', 'admin-empresas', 'admin-usuarios', 'admin-tickets']
+    },
+    revenda: {
+      sub: 'Painel de revenda',
+      cta: { href: 'revenda.html', icon: 'add_business', label: 'Cadastrar empresa' },
+      who: { av: 'RS', name: 'Revenda Sul', meta: 'Saldo R$ 1.240,00', href: '#' },
+      nav: [
+        { id: 'revenda', href: 'revenda.html', icon: 'dashboard', label: 'Painel' },
+        { id: 'revenda-empresas', href: 'revenda.html', icon: 'storefront', label: 'Minhas empresas' },
+        { id: 'revenda-creditos', href: 'revenda.html', icon: 'account_balance_wallet', label: 'Créditos' },
+        { id: 'revenda-suporte', href: 'admin-tickets.html', icon: 'support_agent', label: 'Suporte' }
+      ],
+      dockCta: { href: 'revenda.html', icon: 'add_business' },
+      dock: ['revenda', 'revenda-empresas', 'revenda-creditos', 'revenda-suporte']
     }
   };
 

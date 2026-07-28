@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Configurações da plataforma</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-profile="admin" data-page="admin-config" data-title="Configurações" data-sub="Regras que valem para a plataforma inteira">
+
+<div class="ap-shell">
+  <div class="ap-main">
+
+    <div class="ap-seg">
+      <button class="ap-seg__i is-active" type="button">Programa</button>
+      <button class="ap-seg__i" type="button">Segurança</button>
+      <button class="ap-seg__i" type="button">Integrações</button>
+    </div>
+
+    <!-- REGRAS GLOBAIS -->
+    <section class="ap-panel">
+      <h3 class="ap-panel__t">Regras do programa</h3>
+
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">workspace_premium</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Faixa do nível Prata</div>
+          <div class="ap-row__d">Pontos acumulados para sair do Bronze</div>
+        </div>
+        <input class="ap-input" type="text" value="300" style="width:96px;height:42px;text-align:center" />
+      </div>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">workspace_premium</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Faixa do nível Ouro</div>
+          <div class="ap-row__d">Pontos acumulados para chegar ao topo</div>
+        </div>
+        <input class="ap-input" type="text" value="500" style="width:96px;height:42px;text-align:center" />
+      </div>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">hourglass_bottom</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Validade dos pontos</div>
+          <div class="ap-row__d">Em meses, contados da última visita. Zero = não expiram.</div>
+        </div>
+        <input class="ap-input" type="text" value="12" style="width:96px;height:42px;text-align:center" />
+      </div>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">how_to_reg</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Aprovar empresas manualmente</div>
+          <div class="ap-row__d">Se desligado, empresas novas entram já ativas</div>
+        </div>
+        <div class="ap-switch is-on"><i></i></div>
+      </div>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">public</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Vitrine pública</div>
+          <div class="ap-row__d">Empresas aparecem para quem ainda não tem conta</div>
+        </div>
+        <div class="ap-switch is-on"><i></i></div>
+      </div>
+
+      <button class="ap-btn" type="button" style="margin-top:16px">Salvar regras</button>
+    </section>
+
+    <!-- SEGURANCA -->
+    <section class="ap-panel">
+      <h3 class="ap-panel__t">Segurança e antifraude</h3>
+
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">timer</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Intervalo mínimo entre pontuações</div>
+          <div class="ap-row__d">Evita o mesmo cliente pontuar várias vezes seguidas (minutos)</div>
+        </div>
+        <input class="ap-input" type="text" value="30" style="width:96px;height:42px;text-align:center" />
+      </div>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">qr_code_2</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Rotacionar QR do cliente</div>
+          <div class="ap-row__d">Gera um código novo a cada leitura</div>
+        </div>
+        <div class="ap-switch is-on"><i></i></div>
+      </div>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">badge</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">CPF e nascimento só por admin</div>
+          <div class="ap-row__d">Bloqueia alteração pelo próprio cliente</div>
+        </div>
+        <div class="ap-switch is-on"><i></i></div>
+      </div>
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">history</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Log de auditoria</div>
+          <div class="ap-row__d">Registra toda ação de admin e de empresa</div>
+        </div>
+        <div class="ap-switch is-on"><i></i></div>
+      </div>
+    </section>
+
+    <!-- INTEGRACOES -->
+    <section class="ap-panel">
+      <h3 class="ap-panel__t">Integrações</h3>
+      <div class="ap-tx">
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">notifications_active</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Notificações push (Web Push)</div><div class="ap-tx__d">chave VAPID configurada</div></div>
+          <span class="ap-pill ap-pill--ok">Conectado</span>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">mail</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Envio de e-mail</div><div class="ap-tx__d">SMTP · remetente hello@temdetudo.com</div></div>
+          <span class="ap-pill ap-pill--ok">Conectado</span>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">chat</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">WhatsApp Business</div><div class="ap-tx__d">ainda não configurado</div></div>
+          <span class="ap-pill ap-pill--warn">Pendente</span>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">monitoring</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Monitoramento de erros</div><div class="ap-tx__d">Sentry · 3 alertas nas últimas 24h</div></div>
+          <span class="ap-pill ap-pill--ok">Conectado</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <aside class="ap-rail">
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Impacto das mudanças</h3>
+      <p style="margin:0;font-size:13.5px;color:var(--text-muted);line-height:1.6">
+        Alterar as faixas de nível recalcula o nível de <b>4.086 clientes</b> na próxima madrugada.
+        Ninguém perde pontos — só o rótulo do nível muda.
+      </p>
+      <div style="height:1px;background:var(--border);margin:16px 0"></div>
+      <p style="margin:0;font-size:13.5px;color:var(--text-muted);line-height:1.6">
+        Ligar a validade dos pontos afeta <b>612 clientes</b> com última visita há mais de 12 meses.
+        Eles recebem aviso 30 dias antes.
+      </p>
+    </div>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Últimas alterações</h3>
+      <div class="ap-tx">
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">tune</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Faixa Ouro: 600 → 500</div><div class="ap-tx__d">Admin Demo · 12 jul</div></div>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">shield</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Rotação de QR ativada</div><div class="ap-tx__d">Admin Demo · 02 jul</div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

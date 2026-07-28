@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Usuários</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-profile="admin" data-page="admin-usuarios" data-title="Usuários" data-sub="4.286 contas na plataforma">
+
+<div class="ap-shell">
+  <div class="ap-main">
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+      <div class="ap-search" style="flex:1;min-width:220px;">
+        <span class="material-symbols-outlined">search</span>
+        <input type="search" placeholder="Buscar por nome, e-mail ou telefone" />
+      </div>
+      <div class="ap-seg">
+        <button class="ap-seg__i is-active" type="button">Todos</button>
+        <button class="ap-seg__i" type="button">Clientes</button>
+        <button class="ap-seg__i" type="button">Empresas</button>
+        <button class="ap-seg__i" type="button">Admins</button>
+      </div>
+      <button class="ap-btn ap-btn--sm" type="button">
+        <span class="material-symbols-outlined" style="font-size:19px">person_add</span> Novo usuário
+      </button>
+    </div>
+
+    <section class="ap-kgrid">
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">person</span> Clientes</div>
+        <div class="ap-k__v">4.086</div>
+        <div class="ap-k__d is-up">+318 <span>em 7 dias</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">storefront</span> Empresas</div>
+        <div class="ap-k__v">186</div>
+        <div class="ap-k__d is-up">+9 <span>no mês</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">shield_person</span> Admins</div>
+        <div class="ap-k__v">6</div>
+        <div class="ap-k__d"><span>2 com acesso master</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">block</span> Bloqueados</div>
+        <div class="ap-k__v">8</div>
+        <div class="ap-k__d is-down">+3 <span>no mês</span></div>
+      </div>
+    </section>
+
+    <section class="ap-panel">
+      <div class="ap-chart__head" style="margin-bottom:14px">
+        <div>
+          <h2 class="ap-chart__t">Todos os usuários</h2>
+          <div class="ap-chart__s">Ordenado por cadastro mais recente</div>
+        </div>
+        <div class="ap-chart__act">
+          <button class="ap-btn ap-btn--ghost ap-btn--sm" type="button">
+            <span class="material-symbols-outlined" style="font-size:18px">download</span> Exportar
+          </button>
+        </div>
+      </div>
+
+      <div class="ap-tablewrap">
+        <table class="ap-dt">
+          <thead>
+            <tr><th>Usuário</th><th>Perfil</th><th>Situação</th>
+            <th style="text-align:right">Pontos</th><th>Cadastro</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#6d28d9,#b01774)">CD</span>
+                <span><span class="ap-dt__n">Cliente Demo</span><span class="ap-dt__m">cliente.demo@temdetudo.com</span></span>
+              </div></td>
+              <td><span class="ap-pill ap-pill--info">Cliente</span></td>
+              <td><span class="ap-pill ap-pill--ok"><span class="material-symbols-outlined">check_circle</span> Ativo</span></td>
+              <td class="ap-dt__num">320</td>
+              <td>24/04/2026</td>
+              <td style="text-align:right"><button class="ap-mini" type="button">Gerenciar</button></td>
+            </tr>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#f97316,#b45309)">CM</span>
+                <span><span class="ap-dt__n">Camila Malagueta</span><span class="ap-dt__m">camila@malagueta.com</span></span>
+              </div></td>
+              <td><span class="ap-pill ap-pill--warn">Empresa</span></td>
+              <td><span class="ap-pill ap-pill--ok"><span class="material-symbols-outlined">check_circle</span> Ativa</span></td>
+              <td class="ap-dt__num">—</td>
+              <td>15/05/2026</td>
+              <td style="text-align:right"><button class="ap-mini" type="button">Gerenciar</button></td>
+            </tr>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#2563eb,#1e3a8a)">AD</span>
+                <span><span class="ap-dt__n">Admin Demo</span><span class="ap-dt__m">admin.demo@temdetudo.com</span></span>
+              </div></td>
+              <td><span class="ap-pill ap-pill--bad">Admin</span></td>
+              <td><span class="ap-pill ap-pill--ok"><span class="material-symbols-outlined">check_circle</span> Ativo</span></td>
+              <td class="ap-dt__num">—</td>
+              <td>24/04/2026</td>
+              <td style="text-align:right"><button class="ap-mini" type="button">Gerenciar</button></td>
+            </tr>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#a855f7,#581c87)">AF</span>
+                <span><span class="ap-dt__n">Ana Fidelidade</span><span class="ap-dt__m">ana@demo.local</span></span>
+              </div></td>
+              <td><span class="ap-pill ap-pill--info">Cliente</span></td>
+              <td><span class="ap-pill ap-pill--ok"><span class="material-symbols-outlined">check_circle</span> Ativa</span></td>
+              <td class="ap-dt__num">560</td>
+              <td>02/06/2026</td>
+              <td style="text-align:right"><button class="ap-mini" type="button">Gerenciar</button></td>
+            </tr>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#94a3b8,#334155)">RS</span>
+                <span><span class="ap-dt__n">Rafael Santos</span><span class="ap-dt__m">rafael@email.com</span></span>
+              </div></td>
+              <td><span class="ap-pill ap-pill--info">Cliente</span></td>
+              <td><span class="ap-pill ap-pill--bad"><span class="material-symbols-outlined">block</span> Bloqueado</span></td>
+              <td class="ap-dt__num">0</td>
+              <td>19/07/2026</td>
+              <td style="text-align:right"><button class="ap-mini" type="button">Reativar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin-top:16px;">
+        <span style="font-size:12.5px;color:var(--text-faint)">Mostrando 5 de 4.286</span>
+        <div style="margin-left:auto;display:flex;gap:8px;">
+          <button class="ap-mini" type="button"><span class="material-symbols-outlined">chevron_left</span></button>
+          <button class="ap-mini" type="button"><span class="material-symbols-outlined">chevron_right</span></button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <aside class="ap-rail">
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Dados sensíveis</h3>
+      <p style="margin:0;font-size:13.5px;color:var(--text-muted);line-height:1.6">
+        CPF e data de nascimento só podem ser alterados por um admin — é o que evita fraude na
+        pontuação e no benefício de aniversário. Toda alteração fica registrada no log.
+      </p>
+      <button class="ap-btn ap-btn--ghost" type="button" style="margin-top:14px">Ver log de alterações</button>
+    </div>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Pedidos de privacidade</h3>
+      <div class="ap-tx">
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">download</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Exportação de dados</div><div class="ap-tx__d">Rafael Santos · há 2 dias</div></div>
+          <span class="ap-pill ap-pill--warn">Aberto</span>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">delete</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Exclusão de conta</div><div class="ap-tx__d">Julia Prado · ontem</div></div>
+          <span class="ap-pill ap-pill--warn">Aberto</span>
+        </div>
+      </div>
+      <p style="margin:14px 0 0;font-size:12px;color:var(--text-faint);line-height:1.5">
+        Prazo legal de resposta: 15 dias corridos.
+      </p>
+    </div>
+  </aside>
+</div>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

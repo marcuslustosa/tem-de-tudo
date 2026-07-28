@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Definir nova senha</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body class="ap-authbody" data-shell="none">
+
+<section class="ap-auth__brand">
+  <div class="ap-auth__logo"><span class="ap-brand__mark">TT</span> Tem de Tudo</div>
+  <div class="ap-auth__claim">
+    <h1>Só falta a<br>senha nova.</h1>
+    <p>Depois de salvar, você entra direto — e as sessões abertas em outros aparelhos são encerradas por segurança.</p>
+  </div>
+</section>
+
+<section class="ap-auth__form">
+  <button class="ap-themebtn ap-auth__theme" type="button" data-theme-btn>
+    <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
+    <span id="themeLabel">Escuro</span>
+  </button>
+
+  <div class="ap-auth__box">
+    <h2 class="ap-auth__t">Definir nova senha</h2>
+    <p class="ap-auth__s">Redefinindo a senha de <b>cliente.demo@temdetudo.com</b>.</p>
+
+    <form onsubmit="return false;">
+      <div class="ap-field">
+        <label class="ap-field__l" for="np">Nova senha</label>
+        <input class="ap-input" id="np" type="password" placeholder="Mínimo de 8 caracteres" />
+      </div>
+
+      <!-- Forca da senha: medidor contra o limite, nao grafico -->
+      <div style="margin:-4px 0 16px">
+        <div class="ap-lv__bar" style="height:6px">
+          <div class="ap-lv__fill" style="width:66%"></div>
+        </div>
+        <div style="display:flex;margin-top:7px;font-size:12px">
+          <span style="color:var(--text-muted)">Força da senha</span>
+          <b style="margin-left:auto">Boa</b>
+        </div>
+      </div>
+
+      <div class="ap-field">
+        <label class="ap-field__l" for="np2">Repetir a senha</label>
+        <input class="ap-input" id="np2" type="password" placeholder="Digite de novo" />
+      </div>
+
+      <div style="display:grid;gap:8px;margin:14px 0 22px;font-size:13px;color:var(--text-muted)">
+        <div style="display:flex;align-items:center;gap:9px">
+          <span class="material-symbols-outlined" style="font-size:18px;color:#059669">check_circle</span> Pelo menos 8 caracteres
+        </div>
+        <div style="display:flex;align-items:center;gap:9px">
+          <span class="material-symbols-outlined" style="font-size:18px;color:#059669">check_circle</span> Letras e números
+        </div>
+        <div style="display:flex;align-items:center;gap:9px">
+          <span class="material-symbols-outlined" style="font-size:18px;color:var(--text-faint)">radio_button_unchecked</span> Um símbolo (recomendado)
+        </div>
+      </div>
+
+      <button class="ap-btn" type="submit">Salvar e entrar</button>
+    </form>
+
+    <p class="ap-auth__foot">O link expira em 60 minutos. <a href="recuperar-senha.html" class="ap-link">Pedir outro</a></p>
+  </div>
+</section>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

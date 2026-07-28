@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Configurações da empresa</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-profile="empresa" data-page="empresa-config" data-title="Configurações" data-sub="Dados da loja, equipe e plano">
+
+<div class="ap-shell">
+  <div class="ap-main">
+
+    <div class="ap-seg">
+      <button class="ap-seg__i is-active" type="button">Loja</button>
+      <button class="ap-seg__i" type="button">Programa</button>
+      <button class="ap-seg__i" type="button">Equipe</button>
+      <button class="ap-seg__i" type="button">Plano</button>
+    </div>
+
+    <!-- DADOS DA LOJA -->
+    <section class="ap-panel">
+      <h3 class="ap-panel__t">Dados da loja</h3>
+
+      <div style="display:flex;gap:16px;align-items:center;margin-bottom:20px;flex-wrap:wrap">
+        <div class="ap-cover__av" style="width:74px;height:74px;border:0;background:linear-gradient(140deg,#f97316,#b45309)">MG</div>
+        <div>
+          <button class="ap-mini" type="button"><span class="material-symbols-outlined">photo_camera</span> Trocar logo</button>
+          <p style="margin:8px 0 0;font-size:12px;color:var(--text-faint)">PNG ou JPG quadrado, mínimo de 512px.</p>
+        </div>
+      </div>
+
+      <div class="ap-field">
+        <label class="ap-field__l" for="nome">Nome da empresa</label>
+        <input class="ap-input" id="nome" type="text" value="Malagueta Galpão" />
+      </div>
+      <div class="ap-field">
+        <label class="ap-field__l" for="desc">Descrição</label>
+        <input class="ap-input" id="desc" type="text" value="Galpão gastronômico com almoço executivo e happy hour." />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="ap-field">
+          <label class="ap-field__l" for="cat">Categoria</label>
+          <input class="ap-input" id="cat" type="text" value="Restaurante" />
+        </div>
+        <div class="ap-field">
+          <label class="ap-field__l" for="cnpj">CNPJ</label>
+          <input class="ap-input" id="cnpj" type="text" value="11.111.111/0001-11" />
+        </div>
+      </div>
+      <div class="ap-field">
+        <label class="ap-field__l" for="end">Endereço</label>
+        <input class="ap-input" id="end" type="text" value="Rua do Mercado, 128 - Centro, São Paulo - SP" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="ap-field">
+          <label class="ap-field__l" for="tel2">Telefone</label>
+          <input class="ap-input" id="tel2" type="text" value="(11) 4002-1101" />
+        </div>
+        <div class="ap-field">
+          <label class="ap-field__l" for="wpp">WhatsApp</label>
+          <input class="ap-input" id="wpp" type="text" value="(11) 98888-2101" />
+        </div>
+      </div>
+
+      <button class="ap-btn" type="button" style="margin-top:8px">Salvar alterações</button>
+    </section>
+
+    <!-- REGRAS DO PROGRAMA -->
+    <section class="ap-panel">
+      <h3 class="ap-panel__t">Regras do programa</h3>
+
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">stars</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Pontos por visita</div>
+          <div class="ap-row__d">Quanto o cliente ganha a cada validação no balcão</div>
+        </div>
+        <input class="ap-input" type="text" value="1" style="width:82px;height:42px;text-align:center" />
+      </div>
+
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">loyalty</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Meta do cartão fidelidade</div>
+          <div class="ap-row__d">Visitas necessárias para liberar a recompensa</div>
+        </div>
+        <input class="ap-input" type="text" value="15" style="width:82px;height:42px;text-align:center" />
+      </div>
+
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">cake</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Benefício de aniversário</div>
+          <div class="ap-row__d">Liberado sozinho no mês do cliente</div>
+        </div>
+        <div class="ap-switch is-on"><i></i></div>
+      </div>
+
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">notifications_active</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Lembrete de ausência</div>
+          <div class="ap-row__d">Avisa quem não aparece há 30 dias</div>
+        </div>
+        <div class="ap-switch is-on"><i></i></div>
+      </div>
+
+      <div class="ap-row">
+        <div class="ap-row__ic"><span class="material-symbols-outlined">public</span></div>
+        <div class="ap-row__b">
+          <div class="ap-row__t">Aparecer na vitrine pública</div>
+          <div class="ap-row__d">Sua página fica visível para quem ainda não é cliente</div>
+        </div>
+        <div class="ap-switch is-on"><i></i></div>
+      </div>
+    </section>
+
+    <!-- EQUIPE -->
+    <section class="ap-panel">
+      <div class="ap-chart__head" style="margin-bottom:8px">
+        <div>
+          <h2 class="ap-chart__t">Equipe do balcão</h2>
+          <div class="ap-chart__s">Quem pode validar pontos e benefícios</div>
+        </div>
+        <div class="ap-chart__act">
+          <button class="ap-mini" type="button"><span class="material-symbols-outlined">person_add</span> Convidar</button>
+        </div>
+      </div>
+
+      <div class="ap-tx">
+        <div class="ap-tx__r">
+          <div class="ap-dt__av" style="background:linear-gradient(140deg,#f97316,#b45309)">CM</div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Camila Malagueta</div><div class="ap-tx__d">camila@malagueta.com</div></div>
+          <span class="ap-pill ap-pill--info">Dona</span>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-dt__av" style="background:linear-gradient(140deg,#2563eb,#1e3a8a)">BR</div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Bruno Ribeiro</div><div class="ap-tx__d">bruno@malagueta.com</div></div>
+          <span class="ap-pill ap-pill--ok">Operador</span>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-dt__av" style="background:linear-gradient(140deg,#94a3b8,#334155)">LS</div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Lucas Souza</div><div class="ap-tx__d">convite pendente · enviado ontem</div></div>
+          <span class="ap-pill ap-pill--warn">Pendente</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- RAIL -->
+  <aside class="ap-rail">
+    <div class="ap-qr">
+      <div class="ap-qr__top"><span>QR do balcão</span><span>Malagueta</span></div>
+      <div class="ap-qr__code"><i></i></div>
+      <div class="ap-qr__who">
+        <div class="ap-qr__name">Imprima e deixe visível</div>
+        <div class="ap-qr__hint">É por aqui que o cliente entra</div>
+      </div>
+    </div>
+    <button class="ap-btn ap-btn--ghost" type="button">
+      <span class="material-symbols-outlined" style="font-size:20px">print</span> Baixar para impressão
+    </button>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Seu plano</h3>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="ap-pill ap-pill--ok"><span class="material-symbols-outlined">check_circle</span> Ativo</span>
+        <span style="font-size:13px;color:var(--text-muted)">Anual</span>
+      </div>
+      <div class="ap-lv" style="margin-top:16px">
+        <div class="ap-lv__row">
+          <div class="ap-lv__top"><span class="ap-lv__n">Vence em 12/2026</span><span class="ap-lv__v">62%</span></div>
+          <div class="ap-lv__bar"><div class="ap-lv__fill" style="width:62%"></div></div>
+        </div>
+      </div>
+      <div style="display:grid;gap:9px;margin-top:16px;font-size:13.5px">
+        <div style="display:flex"><span style="color:var(--text-muted)">Clientes</span><b style="margin-left:auto">312 / ilimitado</b></div>
+        <div style="display:flex"><span style="color:var(--text-muted)">Push por mês</span><b style="margin-left:auto">214 / 2.000</b></div>
+      </div>
+      <button class="ap-btn ap-btn--ghost" type="button" style="margin-top:16px">Ver faturas</button>
+    </div>
+  </aside>
+</div>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

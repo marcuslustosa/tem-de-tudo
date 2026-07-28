@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Recuperar senha</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body class="ap-authbody" data-shell="none">
+
+<section class="ap-auth__brand">
+  <div class="ap-auth__logo"><span class="ap-brand__mark">TT</span> Tem de Tudo</div>
+  <div class="ap-auth__claim">
+    <h1>Esqueceu a senha?<br>Acontece.</h1>
+    <p>Enviamos um link de redefinição para o seu e-mail. Ele vale por 60 minutos e só pode ser usado uma vez.</p>
+  </div>
+</section>
+
+<section class="ap-auth__form">
+  <button class="ap-themebtn ap-auth__theme" type="button" data-theme-btn>
+    <span class="material-symbols-outlined" id="themeIcon">dark_mode</span>
+    <span id="themeLabel">Escuro</span>
+  </button>
+
+  <div class="ap-auth__box">
+    <h2 class="ap-auth__t">Recuperar senha</h2>
+    <p class="ap-auth__s">Informe o e-mail cadastrado. Se existir uma conta, o link chega em alguns minutos.</p>
+
+    <form onsubmit="return false;">
+      <div class="ap-field">
+        <label class="ap-field__l" for="em3">E-mail</label>
+        <input class="ap-input" id="em3" type="email" placeholder="voce@email.com" autocomplete="email" />
+      </div>
+      <button class="ap-btn" type="submit">Enviar link de redefinição</button>
+    </form>
+
+    <!-- Estado de sucesso: confirmacao sem revelar se o e-mail existe -->
+    <div class="ap-panel" style="margin-top:22px">
+      <div style="display:flex;gap:13px;align-items:flex-start">
+        <div class="ap-row__ic" style="background:color-mix(in srgb, #059669 14%, transparent);color:#047857">
+          <span class="material-symbols-outlined">mark_email_read</span>
+        </div>
+        <div>
+          <div style="font-size:14.5px;font-weight:700">Pedido enviado</div>
+          <p style="margin:5px 0 0;font-size:13px;color:var(--text-muted);line-height:1.55">
+            Se houver conta com esse e-mail, o link chegará em instantes. Confira também o spam.
+          </p>
+          <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+            <button class="ap-mini" type="button">Reenviar em 0:47</button>
+            <button class="ap-mini" type="button">Trocar e-mail</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="ap-auth__foot"><a href="entrar.html" class="ap-link">Voltar para o login</a></p>
+  </div>
+</section>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>

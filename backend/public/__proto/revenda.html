@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Protótipo · Painel de revenda</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="proto.css" />
+<script>(function(){try{var t=localStorage.getItem('proto-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body data-profile="revenda" data-page="revenda" data-title="Painel de revenda" data-sub="Suas empresas e seus créditos">
+
+<div class="ap-shell">
+  <div class="ap-main">
+
+    <!-- HEROI: aqui o numero e dinheiro -->
+    <section class="ap-hero">
+      <div class="ap-hero__grid">
+        <div class="ap-hero__left">
+          <div class="ap-hero__label">Saldo em créditos</div>
+          <h1 class="ap-hero__value">R$ 1.240<small>,00</small></h1>
+          <span class="ap-hero__tier"><span class="material-symbols-outlined">bolt</span> dá para ativar 4 empresas no plano anual</span>
+        </div>
+        <div class="ap-ring">
+          <svg width="108" height="108" viewBox="0 0 108 108" aria-hidden="true">
+            <circle cx="54" cy="54" r="46" fill="none" stroke="var(--ring-track)" stroke-width="10"/>
+            <circle cx="54" cy="54" r="46" fill="none" stroke="url(#g3)" stroke-width="10" stroke-linecap="round"
+                    stroke-dasharray="289" stroke-dashoffset="130"/>
+            <defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#e91e85"/><stop offset="100%" stop-color="#f7c948"/>
+            </linearGradient></defs>
+          </svg>
+          <div class="ap-ring__txt">
+            <div class="ap-ring__num">55%</div>
+            <div class="ap-ring__cap">da meta</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ap-hero__kpis">
+        <div class="ap-kpi ap-kpi--in">
+          <div class="ap-kpi__k"><span class="material-symbols-outlined">add_business</span> Ativadas no mês</div>
+          <div class="ap-kpi__v">6</div>
+        </div>
+        <div class="ap-kpi ap-kpi--out">
+          <div class="ap-kpi__k"><span class="material-symbols-outlined">event_busy</span> Vencendo em 30d</div>
+          <div class="ap-kpi__v">3</div>
+        </div>
+      </div>
+    </section>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <button class="ap-btn" type="button">
+        <span class="material-symbols-outlined" style="font-size:20px">add_business</span> Cadastrar empresa
+      </button>
+      <button class="ap-btn ap-btn--ghost" type="button">
+        <span class="material-symbols-outlined" style="font-size:20px">account_balance_wallet</span> Comprar créditos
+      </button>
+    </div>
+
+    <section class="ap-kgrid">
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">storefront</span> Empresas</div>
+        <div class="ap-k__v">22</div>
+        <div class="ap-k__d is-up">+6 <span>no mês</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">check_circle</span> Ativas</div>
+        <div class="ap-k__v">19</div>
+        <div class="ap-k__d"><span>86% da carteira</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">payments</span> Comissão do mês</div>
+        <div class="ap-k__v">R$ 980</div>
+        <div class="ap-k__d is-up">+18% <span>vs. junho</span></div>
+      </div>
+      <div class="ap-k">
+        <div class="ap-k__l"><span class="material-symbols-outlined">group</span> Clientes gerados</div>
+        <div class="ap-k__v">1.104</div>
+        <div class="ap-k__d is-up">+212 <span>no mês</span></div>
+      </div>
+    </section>
+
+    <!-- CARTEIRA -->
+    <section class="ap-panel">
+      <div class="ap-chart__head" style="margin-bottom:14px">
+        <div>
+          <h2 class="ap-chart__t">Minhas empresas</h2>
+          <div class="ap-chart__s">Vencimentos mais próximos primeiro</div>
+        </div>
+        <div class="ap-chart__act">
+          <button class="ap-btn ap-btn--ghost ap-btn--sm" type="button">
+            <span class="material-symbols-outlined" style="font-size:18px">download</span> Exportar
+          </button>
+        </div>
+      </div>
+
+      <div class="ap-tablewrap">
+        <table class="ap-dt">
+          <thead>
+            <tr><th>Empresa</th><th>Plano</th><th>Situação</th>
+              <th style="text-align:right">Clientes</th><th>Vence</th><th></th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#ef4444,#7f1d1d)">TB</span>
+                <span><span class="ap-dt__n">Texano Burger</span><span class="ap-dt__m">Bela Vista</span></span>
+              </div></td>
+              <td>Mensal</td>
+              <td><span class="ap-pill ap-pill--warn"><span class="material-symbols-outlined">event_busy</span> Vence em 12d</span></td>
+              <td class="ap-dt__num">208</td>
+              <td>08/08/2026</td>
+              <td style="text-align:right"><button class="ap-mini ap-mini--ok" type="button">Renovar</button></td>
+            </tr>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#a855f7,#581c87)">FB</span>
+                <span><span class="ap-dt__n">Florenza Boutique</span><span class="ap-dt__m">Jardins</span></span>
+              </div></td>
+              <td>Mensal</td>
+              <td><span class="ap-pill ap-pill--warn"><span class="material-symbols-outlined">event_busy</span> Vence em 21d</span></td>
+              <td class="ap-dt__num">142</td>
+              <td>17/08/2026</td>
+              <td style="text-align:right"><button class="ap-mini ap-mini--ok" type="button">Renovar</button></td>
+            </tr>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#0ea5e9,#0c4a6e)">MS</span>
+                <span><span class="ap-dt__n">Makoto Sushi</span><span class="ap-dt__m">Vila Madalena</span></span>
+              </div></td>
+              <td>Anual</td>
+              <td><span class="ap-pill ap-pill--ok"><span class="material-symbols-outlined">check_circle</span> Ativa</span></td>
+              <td class="ap-dt__num">164</td>
+              <td>03/2027</td>
+              <td style="text-align:right"><button class="ap-mini" type="button">Ver</button></td>
+            </tr>
+            <tr>
+              <td><div class="ap-dt__who">
+                <span class="ap-dt__av" style="background:linear-gradient(140deg,#94a3b8,#334155)">PA</span>
+                <span><span class="ap-dt__n">Pet Amigo</span><span class="ap-dt__m">Perdizes</span></span>
+              </div></td>
+              <td>—</td>
+              <td><span class="ap-pill ap-pill--bad"><span class="material-symbols-outlined">hourglass_top</span> Aguardando admin</span></td>
+              <td class="ap-dt__num">0</td>
+              <td>—</td>
+              <td style="text-align:right"><button class="ap-mini" type="button">Acompanhar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <aside class="ap-rail">
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Extrato de créditos</h3>
+      <div class="ap-tx">
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">add_card</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Compra de créditos</div><div class="ap-tx__d">22 jul</div></div>
+          <div class="ap-tx__v is-in">+2.000</div>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">storefront</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Ativação · Makoto Sushi</div><div class="ap-tx__d">18 jul · plano anual</div></div>
+          <div class="ap-tx__v is-out">−480</div>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">autorenew</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Renovação · Texano</div><div class="ap-tx__d">08 jul · mensal</div></div>
+          <div class="ap-tx__v is-out">−140</div>
+        </div>
+        <div class="ap-tx__r">
+          <div class="ap-tx__ic"><span class="material-symbols-outlined">redeem</span></div>
+          <div class="ap-tx__b"><div class="ap-tx__t">Bônus por meta</div><div class="ap-tx__d">01 jul · 5 ativações</div></div>
+          <div class="ap-tx__v is-in">+300</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ap-panel">
+      <h3 class="ap-panel__t">Meta do mês</h3>
+      <div class="ap-lv">
+        <div class="ap-lv__row">
+          <div class="ap-lv__top"><span class="ap-lv__n">6 de 11 ativações</span><span class="ap-lv__v">55%</span></div>
+          <div class="ap-lv__bar"><div class="ap-lv__fill" style="width:55%"></div></div>
+        </div>
+      </div>
+      <p style="margin:14px 0 0;font-size:12.5px;color:var(--text-faint);line-height:1.55">
+        Ao bater a meta, você ganha R$ 300 em créditos e sobe a comissão para 22% no mês seguinte.
+      </p>
+    </div>
+  </aside>
+</div>
+
+<script src="proto-shell.js"></script>
+</body>
+</html>
